@@ -8,7 +8,7 @@
 
 每个JPEG实际经系统解码器和SequenceCaptureReader核验hash、日期/亚秒/缺失时区、曝光、机型与方向，侧车不替代检测输入。原始DNG与伴随JPG身份、顺序各自保留；0188仍为未知，不凑作负例。
 
-## 当前人工标签质量
+## dev4 人工标签质量基线
 
 | 案例（正例/总输入） | TP/FN | 已知负边TN/FP | 当前结论 |
 |---|---:|---:|---|
@@ -39,3 +39,8 @@ GitHub Actions将普通回归、客户端构建和严格质量状态分别记录
 - 批准行为基线SHA256：`0e945e7cf7178793edb91870f5e75af34f8c44e4505c972cb3f5f58acb02f6f3`
 
 重现步骤见[离线回归说明](offline-regression.md)，质量问题和候选CV/ML路线见[算法评估](../planning/12-sequence-grouping-algorithms.md)。当前005的A质量门未完成，B/C仍未实施。
+
+
+## 元数据研究回归追加
+
+008新增独立 `SequenceGroupingMetadata/v2` 历史原片补充集，不改这里的v1转换图、元数据断言、标签或批准基线。原片只读审计与30项对照已完成：Sony短间隔重启修复一处漏连，仍有一处误并；DJI假设配对恢复已知正边，配对与完整终点未获验收。研究行为一致性和实际质量分别记录，旧dev4与007继续回归。完整方法、冻结结果和再现入口见[元数据实验](../planning/14-metadata-first-sequences.md)。

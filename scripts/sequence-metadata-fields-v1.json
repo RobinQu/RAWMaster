@@ -1,0 +1,420 @@
+{
+  "diagnosticSelectors": [
+    "ExifTool:Warning",
+    "ExifTool:Error"
+  ],
+  "fields": [
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.Make",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:Make"
+    },
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.Model",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:Model"
+    },
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.DateTimeOriginal",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:DateTimeOriginal"
+    },
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.SubSecTimeOriginal",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:SubSecTimeOriginal"
+    },
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.OffsetTimeOriginal",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:OffsetTimeOriginal"
+    },
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ExposureTime",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ExposureTime"
+    },
+    {
+      "candidateRole": "capture-metadata",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.Orientation",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:Orientation"
+    },
+    {
+      "candidateRole": "unvalidated-image-counter",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ImageNumber",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ImageNumber"
+    },
+    {
+      "candidateRole": "unvalidated-capture-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ImageUniqueID",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ImageUniqueID"
+    },
+    {
+      "candidateRole": "unvalidated-raw-data-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.RawDataUniqueID",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:RawDataUniqueID"
+    },
+    {
+      "candidateRole": "unvalidated-body-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.SerialNumber",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:SerialNumber"
+    },
+    {
+      "candidateRole": "unvalidated-body-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.CameraSerialNumber",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:CameraSerialNumber"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.SequenceNumber",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:SequenceNumber"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "ValueConv adds 1; not raw tag bytes",
+      "fieldID": "sony.SequenceImageNumber",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:SequenceImageNumber"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "ValueConv adds 1; not raw tag bytes",
+      "fieldID": "sony.SequenceFileNumber",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:SequenceFileNumber"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.SequenceLength",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:SequenceLength"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.ReleaseMode",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:ReleaseMode"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.ReleaseMode2",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:ReleaseMode2"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.ReleaseMode3",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:ReleaseMode3"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.DriveMode",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:DriveMode"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.DriveMode2",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:DriveMode2"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.DriveModeSetting",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:DriveModeSetting"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "decoderNotes": "May have several catalog definitions/instances; print conversion disabled, ValueConv/RawConv still apply",
+      "fieldID": "sony.ShutterType",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:ShutterType"
+    },
+    {
+      "candidateRole": "unvalidated-body-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "fieldID": "sony.SerialNumber",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:SerialNumber"
+    },
+    {
+      "candidateRole": "unvalidated-body-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "fieldID": "sony.InternalSerialNumber",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:InternalSerialNumber"
+    },
+    {
+      "allowedObservedG0": [
+        "MakerNotes",
+        "APP7"
+      ],
+      "candidateRole": "unvalidated-sensor-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/DJI.pm",
+      "fieldID": "dji.SensorID",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeObservationNote": "Same requested selector observed with G0 APP7 and G1 DJI; SensorID only. This does not resolve internal parser table or device/capture semantics.",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "DJI:SensorID"
+    },
+    {
+      "candidateRole": "unvalidated-capture-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/XMP.pm",
+      "fieldID": "xmp.ImageUniqueID",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "XMP-exif:ImageUniqueID"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "No matching named still-image definition selected from pinned DJI.pm",
+      "fieldID": "dji.unresolved.CaptureMode",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": null,
+      "unsupportedCandidate": "CaptureMode"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "No matching named still-image definition selected from pinned DJI.pm",
+      "fieldID": "dji.unresolved.PhotoCaptureMode",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": null,
+      "unsupportedCandidate": "PhotoCaptureMode"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "No matching named still-image definition selected from pinned DJI.pm",
+      "fieldID": "dji.unresolved.SequenceNumber",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": null,
+      "unsupportedCandidate": "SequenceNumber"
+    },
+    {
+      "candidateRole": "unvalidated-shooting-context",
+      "catalogDefinition": "No matching named still-image definition selected from pinned DJI.pm",
+      "fieldID": "dji.unresolved.CaptureUUID",
+      "kind": "number",
+      "privacy": "public-counter",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": null,
+      "unsupportedCandidate": "CaptureUUID"
+    },
+    {
+      "candidateRole": "camera-model-context",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.UniqueCameraModel",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:UniqueCameraModel"
+    },
+    {
+      "candidateRole": "unvalidated-capture-identifier",
+      "catalogDefinition": "lib/Image/ExifTool/XMP.pm",
+      "fieldID": "xmpEX.ImageUniqueID",
+      "kind": "identity",
+      "privacy": "private-opaque",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "XMP-exifEX:ImageUniqueID"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ISO",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ISO"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.FNumber",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:FNumber"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.FocalLength",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:FocalLength"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ExposureProgram",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ExposureProgram"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ExifImageWidth",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ExifImageWidth"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ExifImageHeight",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ExifImageHeight"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ImageWidth",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ImageWidth"
+    },
+    {
+      "candidateRole": "settings-context-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "fieldID": "exif.ImageHeight",
+      "kind": "number",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:ImageHeight"
+    },
+    {
+      "candidateRole": "native-container-fact-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool.pm",
+      "fieldID": "file.FileType",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "File:FileType"
+    },
+    {
+      "candidateRole": "native-container-fact-not-association-proof",
+      "catalogDefinition": "lib/Image/ExifTool.pm",
+      "fieldID": "file.MIMEType",
+      "kind": "string",
+      "privacy": "public-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "File:MIMEType"
+    }
+  ],
+  "groupFamilies": "0:1:4",
+  "registryVersion": "sequence-original-metadata-fields-v1",
+  "schemaVersion": 1,
+  "toolCommit": "2200871d9cef988051d2a99d67df3bda6cbb30a8",
+  "toolVersion": "13.59"
+}

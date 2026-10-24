@@ -55,6 +55,26 @@ enum ProbeEvaluator {
         try labels.validate(assetIDs: manifest.entries.map(\.assetID))
         let expectedToken = try SequenceAnalysisToken.make(manifest: manifest, versions: policy.detector.versions(order: manifest.orderVersion), policyFingerprint: policy.detector.fingerprint)
         try result.validate(manifest: manifest, expectedToken: expectedToken, observations: analysis.observations)
+        return try evaluateValidated(analysis, labels: labels, policy: policy)
+    }
+    static func evaluateMetadata(analysis: ProbeAnalysis, labels: ProbeLabels, policy: ProbePolicy,
+                                 configuration: SequenceMetadataExperimentConfiguration,
+                                 files: [SequenceCaptureFileInput], map: SequenceCaptureEventMap,
+                                 metadata: SequenceMetadataSnapshot,
+                                 confirmedPairs: [SequenceConfirmedCapturePair]) throws -> ProbeEvaluation {
+        try policy.validate()
+        try labels.validate(assetIDs: analysis.manifest.entries.map(\.assetID))
+        guard policy.detector.metadataExperiment == configuration else {
+            throw SequenceProbeError.invalid("Metadata evaluator policy/configuration mismatch")
+        }
+        try SequenceMetadataEventPipeline.validateProjection(result: analysis.result, observations: analysis.observations,
+            featuresAvailable: analysis.featuresAvailable, files: files, manifest: analysis.manifest,
+            metadata: metadata, map: map, configuration: policy.detector, confirmedPairs: confirmedPairs)
+        return try evaluateValidated(analysis, labels: labels, policy: policy)
+    }
+    // Both entry points complete their own strict validation before this unchanged metric body.
+    private static func evaluateValidated(_ analysis: ProbeAnalysis, labels: ProbeLabels, policy: ProbePolicy) throws -> ProbeEvaluation {
+        let manifest = analysis.manifest, result = analysis.result
         guard analysis.featuresAvailable.count == manifest.entries.count else { throw SequenceProbeError.invalid("Missing feature coverage") }
         let ordinals = Dictionary(uniqueKeysWithValues: manifest.entries.map { ($0.assetID, $0.ordinal) })
         var membership: [Int: Int] = [:], coverage: [Int: SequenceCoverageRange] = [:], counts: [String: Int] = [:]

@@ -1,0 +1,4125 @@
+{
+  "aggregateDescriptiveOnly": {
+    "assumed-continuation": {
+      "maxEngineManagedEstimateBytes": 2847488,
+      "maxProcessPeakResidentBytes": 71450624,
+      "sonyDescriptiveMetricsUnderDeclaredSource": {
+        "exactSonyGroups": 4,
+        "falseNegative": 1,
+        "falsePositive": 1,
+        "sonyGroupCount": 5,
+        "trueNegative": 6,
+        "truePositive": 799
+      },
+      "sumSixSingleRunWholeUnitSeconds": 4.098506458333304
+    },
+    "assumed-shortRestart": {
+      "maxEngineManagedEstimateBytes": 2847488,
+      "maxProcessPeakResidentBytes": 71155712,
+      "sonyDescriptiveMetricsUnderDeclaredSource": {
+        "exactSonyGroups": 4,
+        "falseNegative": 0,
+        "falsePositive": 1,
+        "sonyGroupCount": 5,
+        "trueNegative": 6,
+        "truePositive": 800
+      },
+      "sumSixSingleRunWholeUnitSeconds": 4.0828067499996905
+    },
+    "dev4": {
+      "maxEngineManagedEstimateBytes": 2831104,
+      "maxProcessPeakResidentBytes": 64552960,
+      "sonyDescriptiveMetricsUnderDeclaredSource": {
+        "exactSonyGroups": 4,
+        "falseNegative": 1,
+        "falsePositive": 1,
+        "sonyGroupCount": 5,
+        "trueNegative": 6,
+        "truePositive": 799
+      },
+      "sumSixSingleRunWholeUnitSeconds": 2.76657566666654
+    },
+    "strict-continuation": {
+      "maxEngineManagedEstimateBytes": 2847488,
+      "maxProcessPeakResidentBytes": 71041024,
+      "sonyDescriptiveMetricsUnderDeclaredSource": {
+        "exactSonyGroups": 4,
+        "falseNegative": 1,
+        "falsePositive": 1,
+        "sonyGroupCount": 5,
+        "trueNegative": 6,
+        "truePositive": 799
+      },
+      "sumSixSingleRunWholeUnitSeconds": 4.07650645833337
+    },
+    "strict-shortRestart": {
+      "maxEngineManagedEstimateBytes": 2847488,
+      "maxProcessPeakResidentBytes": 72040448,
+      "sonyDescriptiveMetricsUnderDeclaredSource": {
+        "exactSonyGroups": 4,
+        "falseNegative": 0,
+        "falsePositive": 1,
+        "sonyGroupCount": 5,
+        "trueNegative": 6,
+        "truePositive": 800
+      },
+      "sumSixSingleRunWholeUnitSeconds": 4.0912598333334245
+    }
+  },
+  "artifacts": {
+    "complete.json": "b6d950057c0386bdef0d1caa7fe502947e25fa3256dd17e756cfda9b3d74e8ec",
+    "freeze.json": "5669775dc4af53b8c0897b8a54914f8d17f21e18a8a2762063918eb98207dd24",
+    "quality.json": "7577cf5efc5473852b9d2b25fc9a9063b5106680791b33bdd2f3eb020093468e"
+  },
+  "audit": {
+    "analysisReady": true,
+    "factsSealSHA256": "ba663312eec6cfd0aabfcc2837bd39e75fa45f64d4585c63a60c20c4497c3f17",
+    "interpretation": "Wrapper RSS high-water measured; child RSS sampled only, not guaranteed child peak. No original metadata values or private HMAC key in public report.",
+    "measurements": {
+      "afterHashSeconds": 26.778488792013377,
+      "beforeHashSeconds": 26.85568237514235,
+      "childPeakRSSBytes": 4456448,
+      "childRSSSamples": 1269,
+      "metadataPhaseWallSeconds": 82.09107133303769,
+      "metadataSeconds": 81.27785222302191,
+      "wrapperPeakRSSBytes": 38895616
+    },
+    "metadataRows": 1265,
+    "normalizerVersion": "qualified-parser-facts-v1.1",
+    "registrySHA256": "3e5f23907acdfdc2a7d268204fa2a4dfa2603053815d82bd698926f3404f5e46",
+    "requested": 1265,
+    "scriptSHA256": "dc3e68496081614eb846d22ad542cd2989bc7ed6ad1bcc5665004ab4af284b00",
+    "sourceVerified": 1265,
+    "totalSeconds": 136.54505695821717
+  },
+  "automaticImportEnabled": false,
+  "benchmarkUnits": 0,
+  "bootstrapUnits": 6,
+  "controls": {
+    "executableSHA256": "f40d7ccf99b17fcb0579bffd4338af97842c1ebbc5d6820f11f17771b89d1cbf",
+    "fixtureIndexSHA256": "e2bc0f560c96d9c60cea737d43718d3d867aacc7c0e6599a44f6d7da58efb48c",
+    "fixtureSnapshotSHA256": "86b1930e9bcb0fd450631d8c13b558eb1c1a4212de753b53d4a6c4fa6ea490be",
+    "metadataCaseSHA256s": {
+      "burst123": "c3da5e0e8ee50ef69e9fa2127a88a9fceac0642a9e7b8a27ba63cd9f234a15e4",
+      "burst14-context38": "7274232715b6660a1b98b56d2f64499bd44fa506292639e261a54c5e8061ae11",
+      "burst193-context217": "8d1e86308509dcd14a22efa394fc28ee631ed2f15dd05ebe5525f586f6398bb8",
+      "burst48-context72": "4a214714b1384402751256d63b2aa0a6bb3bbf6aa4fd6542b95c0f9979ca7ef9",
+      "dji187-context376": "399704ccbc243a8b4777917baa9c9ea995c609a2557b7d7572832f3ab929d1de",
+      "interval427-context439": "f369028f90b9329c94ec2a58e6243009196d0a9cacb634c2cb9bb57a85335fe7"
+    },
+    "metadataIndexSHA256": "ec832150d7cf51675f29a3851206e314722fe0d39d2bc0df40cf1761c85b0e36",
+    "metadataSnapshotSHA256": "ecd54a8931abc6d7693c643893f62b80aaac74b7a61d3d22784d60d1b890a93f",
+    "oldGoldenSHA256": "0e945e7cf7178793edb91870f5e75af34f8c44e4505c972cb3f5f58acb02f6f3",
+    "schedule": {
+      "batchSeconds": 1800,
+      "benchmarkUnits": 0,
+      "bootstrapUnits": 6,
+      "qualityUnits": 30,
+      "terminationGraceSeconds": 2,
+      "unitSeconds": 60
+    },
+    "sourceSnapshotSHA256": "22b86f5392975eb86651a949ec12d571c870a7a1335e8046e833a4bccdb8d525"
+  },
+  "date": "2026-10-24",
+  "executionComplete": true,
+  "experiment": "metadata-events-and-local-counter-rescue-v1",
+  "finalRegression": {
+    "candidateNativeBehaviorControls": 24,
+    "defaultGoldenCases": 6,
+    "failures": 0,
+    "observedBehaviorSHA256": "0b3d5c6d09a35bc655633c5e1633def18bad2fee6eb5cf1b4f253e2991de2dbc",
+    "oldSpatialNativeControls": 12,
+    "optionalSkipped": 7,
+    "releaseTests": 298,
+    "sourceBoundary": "run01 measured source/binary closure is preserved above; final additions only native observed-behavior regression, runner baseline freeze, tooling tamper test and docs, no classifier changes.",
+    "toolingFailures": 0,
+    "toolingTests": 33
+  },
+  "limitations": [
+    "All six cases are seen development data; no independent generalization claim.",
+    "Sony shortRestart repairs one positive edge; known negative560/561 still merged, so exact4/5 unchanged.",
+    "Strict DJI reports188 algorithm-unknown adjacent edges and373 unknown-positive edges; distinct from the two truth-unknown0188assets.",
+    "DJI assumed association is conditional only:188event proposals, no confirmed pair ground truth or pair precision.",
+    "DJI includes0188with unknown group membership; no labeled complete endpoint/negative boundary; exact-group gate remains unmet.",
+    "burst123 has no labeled negative; cannot independently accept quality.",
+    "Native body identity not verified; original user source declaration remains separately recorded.",
+    "Local metadata rescue counts are gate passes; later anchors can still reject.",
+    "One quality execution per case/variant; no264benchmark phase, no P50/P95 or import/UI latency claim.",
+    "Process RSS includes control loading/native preparation/candidate/sealing/evaluation; detector-managed estimate excludes caller inputs/frameworks.",
+    "Original media only read in sealed audit02; quality run used historical supplement and actual JPEG native reader.",
+    "Old v1 images/truth/dev4 and007 controls unchanged; metadata variants remain opt-in and import disabled."
+  ],
+  "platform": {
+    "architecture": "arm64",
+    "decoder": "ImageIO native SequenceCaptureReader",
+    "imageIOBundleVersion": "2851",
+    "operatingSystem": "Version 27.0.1 (Build 26A434)",
+    "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0"
+  },
+  "pretrainedModelsAdded": false,
+  "quality": [
+    {
+      "analysisSealSHA256": "03dededcae38ae78f4c76547bc5cd876cd7c18deb4b51720a8e0a466df488794",
+      "assetCount": 123,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst123",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2426624,
+      "eventCount": null,
+      "eventMapFingerprint": null,
+      "fileRanges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-123-user-positive",
+          "kind": "burst",
+          "memberCount": 123,
+          "missingMembers": [],
+          "typedMemberCount": 123
+        }
+      ],
+      "metadataLocalGateStatistics": null,
+      "metrics": {
+        "coverageCounts": {
+          "complete": 123
+        },
+        "exactGroupFraction": 1,
+        "failures": [
+          "negative-support-below-frozen-minimum"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 122,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "processPeakResidentBytes": 40566784,
+      "processWallSeconds": 0.3635977499998262,
+      "proposalCount": null,
+      "resultSHA256": "7ce7e87c3d5a17e8e71edaf514d40107a3c2cf385e2b139b440292605d24549a",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "dev4",
+      "wholeUnitSeconds": 0.28241412500028673
+    },
+    {
+      "analysisSealSHA256": "fbe08ba154330913780930e35e8c82b70e80647b552019445dbb382ef2f12584",
+      "assetCount": 123,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst123",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2443008,
+      "eventCount": 123,
+      "eventMapFingerprint": "1449f15373f495ef53a2273d1c466d7f054b6b35d3690f24d158bdefce466b76",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "68c28a99579582c7585764c6b00838afe9c75544264e789205b1ed332e7d88e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-123-user-positive",
+          "kind": "burst",
+          "memberCount": 123,
+          "missingMembers": [],
+          "typedMemberCount": 123
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 123,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 123
+        },
+        "exactGroupFraction": 1,
+        "failures": [
+          "negative-support-below-frozen-minimum"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 122,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "d67f63f57bfa262808753dc3884758b4831b36be99a1ce460b8395e6092ee7eb",
+      "processPeakResidentBytes": 43745280,
+      "processWallSeconds": 0.49404504099993574,
+      "proposalCount": 0,
+      "resultSHA256": "6e2f4bbd098ac645738c241897ff5ce9cc93083f06e38a97789e5a608e65def0",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-continuation",
+      "wholeUnitSeconds": 0.4112308750000011
+    },
+    {
+      "analysisSealSHA256": "39325d342da4e3378bb242ca1dc13208055fbdcc2e770dc79c92c3911c773b29",
+      "assetCount": 123,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst123",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2443008,
+      "eventCount": 123,
+      "eventMapFingerprint": "1449f15373f495ef53a2273d1c466d7f054b6b35d3690f24d158bdefce466b76",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "68c28a99579582c7585764c6b00838afe9c75544264e789205b1ed332e7d88e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-123-user-positive",
+          "kind": "burst",
+          "memberCount": 123,
+          "missingMembers": [],
+          "typedMemberCount": 123
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 123,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 123
+        },
+        "exactGroupFraction": 1,
+        "failures": [
+          "negative-support-below-frozen-minimum"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 122,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "2091fcd6f462a168d4429d345637342fd9492a3e3937fff762cd052e0fcc66d5",
+      "processPeakResidentBytes": 43728896,
+      "processWallSeconds": 0.4895269579997148,
+      "proposalCount": 0,
+      "resultSHA256": "8e9e5a3a1c3b8b960a38315f2f54c0eb541092e4b779602fd2632b5f10fdd1a1",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-shortRestart",
+      "wholeUnitSeconds": 0.40782249999983833
+    },
+    {
+      "analysisSealSHA256": "082227cc78d262b33ca856e233a261a3972f5bae496d9042ccfbf67dbfb28a8b",
+      "assetCount": 123,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst123",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2443008,
+      "eventCount": 123,
+      "eventMapFingerprint": "357f81830d0a36386aff62d9e1fa241cee2936d87e0fe703b435688dcc4513ef",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "68c28a99579582c7585764c6b00838afe9c75544264e789205b1ed332e7d88e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-123-user-positive",
+          "kind": "burst",
+          "memberCount": 123,
+          "missingMembers": [],
+          "typedMemberCount": 123
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 123,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 123
+        },
+        "exactGroupFraction": 1,
+        "failures": [
+          "negative-support-below-frozen-minimum"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 122,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "616ea819a4231720cc76824b20535e693bc1ec0821f889756f9a228657796e94",
+      "processPeakResidentBytes": 43565056,
+      "processWallSeconds": 0.4942282920001162,
+      "proposalCount": 0,
+      "resultSHA256": "15be27417a0e1bcd7339bc6b88edea7b6dbc5e8c43e95e683f813e9ced95ef14",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-continuation",
+      "wholeUnitSeconds": 0.4125036666664528
+    },
+    {
+      "analysisSealSHA256": "917ff3f580610c00cc3472a69a494149bfdb3c96810d032c6d74d5c71c79e13f",
+      "assetCount": 123,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst123",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2443008,
+      "eventCount": 123,
+      "eventMapFingerprint": "357f81830d0a36386aff62d9e1fa241cee2936d87e0fe703b435688dcc4513ef",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "68c28a99579582c7585764c6b00838afe9c75544264e789205b1ed332e7d88e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-123-user-positive",
+          "kind": "burst",
+          "memberCount": 123,
+          "missingMembers": [],
+          "typedMemberCount": 123
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 123,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 123
+        },
+        "exactGroupFraction": 1,
+        "failures": [
+          "negative-support-below-frozen-minimum"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 122,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "0782cf3dc8a90876e5d84ce5694f4f0b32edbd4d7b5942c77e38ed703cd1fd2e",
+      "processPeakResidentBytes": 43401216,
+      "processWallSeconds": 0.49578670899973076,
+      "proposalCount": 0,
+      "resultSHA256": "2b1dddfa396899ec75d4427e4c107ddc3a373a42295ede46aac8248057d44153",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-shortRestart",
+      "wholeUnitSeconds": 0.4136827499996798
+    },
+    {
+      "analysisSealSHA256": "028834919ee47d2460822d16f35d4505f8a99b5dba3cf238dc79394cbf66f4d1",
+      "assetCount": 38,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst14-context38",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2317824,
+      "eventCount": null,
+      "eventMapFingerprint": null,
+      "fileRanges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 14,
+          "missingMembers": [],
+          "typedMemberCount": 14
+        }
+      ],
+      "metadataLocalGateStatistics": null,
+      "metrics": {
+        "coverageCounts": {
+          "complete": 38
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 13,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "processPeakResidentBytes": 35782656,
+      "processWallSeconds": 0.18044366699996317,
+      "proposalCount": null,
+      "resultSHA256": "5555b41073974a35ab555cfdce3db04aae2cd9549a4dad2f29fe04a5fa761bbf",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "dev4",
+      "wholeUnitSeconds": 0.09903745833344146
+    },
+    {
+      "analysisSealSHA256": "16194f081dab1de487840120ad6b1a0332368b7c57e6c50cac626accb9e2758b",
+      "assetCount": 38,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst14-context38",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2334208,
+      "eventCount": 38,
+      "eventMapFingerprint": "9055222550b27856e707aaa6e404154283c6714c57fd61841b81f891947f5eb5",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 14,
+          "missingMembers": [],
+          "typedMemberCount": 14
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 38,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 38
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 13,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "dde5c2ae125fd11c977aa70c311e98abfc5fe9e8ac2410fadb7bc9a62715f2ca",
+      "processPeakResidentBytes": 36978688,
+      "processWallSeconds": 0.22986704100003408,
+      "proposalCount": 0,
+      "resultSHA256": "818e81f5aa8e9aad7daf65ec47a10b955564e41e11a2345f2062fa20de091be4",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-continuation",
+      "wholeUnitSeconds": 0.14777558333344132
+    },
+    {
+      "analysisSealSHA256": "8116295f05b5ca7fc1e32eaec2451e9c6b726869fa85e53992447b9b0cd3cded",
+      "assetCount": 38,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst14-context38",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2334208,
+      "eventCount": 38,
+      "eventMapFingerprint": "9055222550b27856e707aaa6e404154283c6714c57fd61841b81f891947f5eb5",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 14,
+          "missingMembers": [],
+          "typedMemberCount": 14
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 38,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 38
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 13,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "c7843566fe0ff124f72465e1f93dc3b3880acd4ec94276e852c33d812a734ed3",
+      "processPeakResidentBytes": 36945920,
+      "processWallSeconds": 0.23234166700012793,
+      "proposalCount": 0,
+      "resultSHA256": "60a4647a4521107f5df55c88a00250f9ece472de761e2017a70a81bb98913172",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-shortRestart",
+      "wholeUnitSeconds": 0.14790916666652265
+    },
+    {
+      "analysisSealSHA256": "3566d1e3cdbd3e85dab74021293fd923381a95c6507c402f7d550c3c1bddfbd6",
+      "assetCount": 38,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst14-context38",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2334208,
+      "eventCount": 38,
+      "eventMapFingerprint": "b803c08497b3a00619b3c4079adeeb1f81d1984fcb349f9df6b72859210c328d",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 14,
+          "missingMembers": [],
+          "typedMemberCount": 14
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 38,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 38
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 13,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6761cac6c899a2214910f0a1ba971316ecf1460e1b4b3e9ba7147430fc365a08",
+      "processPeakResidentBytes": 36962304,
+      "processWallSeconds": 0.2294051250000848,
+      "proposalCount": 0,
+      "resultSHA256": "9d604ea4f76ff976142b9f8e8db96478c68aab6282b4df4865e712d72f1dd50d",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-continuation",
+      "wholeUnitSeconds": 0.14519808333307083
+    },
+    {
+      "analysisSealSHA256": "14f6956fda6ad2828d689595d9ea7b229225aa9ccbe5bee4c9c176c817c216de",
+      "assetCount": 38,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst14-context38",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2334208,
+      "eventCount": 38,
+      "eventMapFingerprint": "b803c08497b3a00619b3c4079adeeb1f81d1984fcb349f9df6b72859210c328d",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "cd091d0e605040c72529bf2fa8f1fd6c5f5bbc1e19f099922baabc2cbea56d43:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "development-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 14,
+          "missingMembers": [],
+          "typedMemberCount": 14
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 38,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 38
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 13,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "3523febb5780d769163dcff75b4961afca5c09beb15ba9007a46615279d0f178",
+      "processPeakResidentBytes": 36896768,
+      "processWallSeconds": 0.22325937499999782,
+      "proposalCount": 0,
+      "resultSHA256": "3c4f275a3f2e31b359265e418d14b83f3589ca132a672b66dfad9049bfca8251",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-shortRestart",
+      "wholeUnitSeconds": 0.14162424999994982
+    },
+    {
+      "analysisSealSHA256": "1c0525b98f7d043ae3ebb54c060d3a8cf7bc39fa2c011a1bc84f19788250626d",
+      "assetCount": 72,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst48-context72",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2361344,
+      "eventCount": null,
+      "eventMapFingerprint": null,
+      "fileRanges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 48,
+          "missingMembers": [],
+          "typedMemberCount": 48
+        }
+      ],
+      "metadataLocalGateStatistics": null,
+      "metrics": {
+        "coverageCounts": {
+          "complete": 72
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 47,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "processPeakResidentBytes": 37814272,
+      "processWallSeconds": 0.24603291599987642,
+      "proposalCount": null,
+      "resultSHA256": "7ba058940bd27ae18566baae20faaeb7d8046b7195383a1bdacce481aa742527",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "dev4",
+      "wholeUnitSeconds": 0.16451941666628045
+    },
+    {
+      "analysisSealSHA256": "e163857b10c96b8b8fe8dae048fdaf836ca26727e70f0dd0219f19711f67240a",
+      "assetCount": 72,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst48-context72",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2377728,
+      "eventCount": 72,
+      "eventMapFingerprint": "0e092372e8c6c6c542fcedc9a5ef393babc672aa10b73e36a40dfbe4417379b7",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 48,
+          "missingMembers": [],
+          "typedMemberCount": 48
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 72,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 72
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 47,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "438c3ea966149bb8c4cee6362146e1de210472976d09a016da29da145f9ed08e",
+      "processPeakResidentBytes": 39518208,
+      "processWallSeconds": 0.3253621249996286,
+      "proposalCount": 0,
+      "resultSHA256": "2a5ce42b0e0e09d24c77087b255285d731b1e6f224ed0c0d11f710043ca2cd76",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-continuation",
+      "wholeUnitSeconds": 0.24350833333301125
+    },
+    {
+      "analysisSealSHA256": "d2692f025eae8a4b35dd9efde1876062aa47fa1ff62057ea931bf7918a3880d7",
+      "assetCount": 72,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst48-context72",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2377728,
+      "eventCount": 72,
+      "eventMapFingerprint": "0e092372e8c6c6c542fcedc9a5ef393babc672aa10b73e36a40dfbe4417379b7",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 48,
+          "missingMembers": [],
+          "typedMemberCount": 48
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 72,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 72
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 47,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "db3523c22432107b466e52c50274c138c2a42a5b71829407043bb27831d4edf7",
+      "processPeakResidentBytes": 39698432,
+      "processWallSeconds": 0.3253420829996685,
+      "proposalCount": 0,
+      "resultSHA256": "1d3203a2246b34f1e48ad6fb6e0a5b4709a1e039adeaeaec7b4340dd5ef1f253",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-shortRestart",
+      "wholeUnitSeconds": 0.24383633333354737
+    },
+    {
+      "analysisSealSHA256": "42ad9032b29de295a32da1122eebeb9d5b3e04a02473a57d3ef3825c2d157fe9",
+      "assetCount": 72,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst48-context72",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2377728,
+      "eventCount": 72,
+      "eventMapFingerprint": "9ff28dd4cee8241b5a32872930f58a307c87b4381d99f7311ff101117f64a13c",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 48,
+          "missingMembers": [],
+          "typedMemberCount": 48
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 72,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 72
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 47,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "e7c1c7a9b264af30f33a5f6ca78d098d9280095c7ff23ed444a0c11569bc4db7",
+      "processPeakResidentBytes": 39583744,
+      "processWallSeconds": 0.3308971249998649,
+      "proposalCount": 0,
+      "resultSHA256": "bd7cbcb91ce9344da2c4a98828b2ee924f8d2703e30b9c4b8b67c0930c1cf7be",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-continuation",
+      "wholeUnitSeconds": 0.2480139583331038
+    },
+    {
+      "analysisSealSHA256": "0366a6f015cab93d687f2583405d515e4c6a89da1859541ccbf29e3ef38acf8d",
+      "assetCount": 72,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst48-context72",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2377728,
+      "eventCount": 72,
+      "eventMapFingerprint": "9ff28dd4cee8241b5a32872930f58a307c87b4381d99f7311ff101117f64a13c",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "2dad579a362ac5797f5e800919898d16d40586a81f633728e0e36cfd7e43897c:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 48,
+          "missingMembers": [],
+          "typedMemberCount": 48
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 72,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 72
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 2,
+        "truePositive": 47,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "10fc0591810acd6bfaf264501a787a36049f26413f1eb30a1861e8210b220763",
+      "processPeakResidentBytes": 39649280,
+      "processWallSeconds": 0.3258790840000074,
+      "proposalCount": 0,
+      "resultSHA256": "198015c7657c173ada8756c06cc0f97458173a15f7bb4c704d19af18e59828e4",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-shortRestart",
+      "wholeUnitSeconds": 0.2438113749999502
+    },
+    {
+      "analysisSealSHA256": "ef5e1b3e4af057a2d0dc55b3da14955d680ad1a841f195e89d0a43a9095cecd0",
+      "assetCount": 439,
+      "associationHypothesisAssumed": false,
+      "caseID": "interval427-context439",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2831104,
+      "eventCount": null,
+      "eventMapFingerprint": null,
+      "fileRanges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-interval-context-user-positive",
+          "kind": "interval",
+          "memberCount": 427,
+          "missingMembers": [],
+          "typedMemberCount": 427
+        }
+      ],
+      "metadataLocalGateStatistics": null,
+      "metrics": {
+        "coverageCounts": {
+          "complete": 427,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 426,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "processPeakResidentBytes": 64552960,
+      "processWallSeconds": 0.9751944580002601,
+      "proposalCount": null,
+      "resultSHA256": "3ae1fdcac93ca703002045f5da2b28236e0d7d65653340730d59e5883817aab7",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "dev4",
+      "wholeUnitSeconds": 0.8917099166665139
+    },
+    {
+      "analysisSealSHA256": "ae1c4d99fc76f857499931ebc4f99f424358d9c27af14385222e489b14df5c32",
+      "assetCount": 439,
+      "associationHypothesisAssumed": false,
+      "caseID": "interval427-context439",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2847488,
+      "eventCount": 439,
+      "eventMapFingerprint": "fe226be9b340e9bc146bcdeb2be51ecfc9a8556e5641611e73cebd322f745215",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "114930cf8e781176d835fda04dc1b8c41f0c37d54fcbf9c4f5ede1c079c2af2e:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-interval-context-user-positive",
+          "kind": "interval",
+          "memberCount": 427,
+          "missingMembers": [],
+          "typedMemberCount": 427
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 439,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 427,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 426,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "e88893716ccd5673c84fd66a4ed47ed088b30eddbddfa64b204847b4e18fd536",
+      "processPeakResidentBytes": 71041024,
+      "processWallSeconds": 1.4622858749999068,
+      "proposalCount": 0,
+      "resultSHA256": "4b3b4c42714054e6247af192907002d9c3483bf986d88cbab2cf67a16c82ebc6",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-continuation",
+      "wholeUnitSeconds": 1.3773387083333546
+    },
+    {
+      "analysisSealSHA256": "32add44e3dc8860cb7b6ae0ce9487bdc420161cd09b8039ca0f3138a157a488f",
+      "assetCount": 439,
+      "associationHypothesisAssumed": false,
+      "caseID": "interval427-context439",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2847488,
+      "eventCount": 439,
+      "eventMapFingerprint": "fe226be9b340e9bc146bcdeb2be51ecfc9a8556e5641611e73cebd322f745215",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "114930cf8e781176d835fda04dc1b8c41f0c37d54fcbf9c4f5ede1c079c2af2e:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-interval-context-user-positive",
+          "kind": "interval",
+          "memberCount": 427,
+          "missingMembers": [],
+          "typedMemberCount": 427
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 439,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 427,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 426,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "48d7c106d3d4c544c7ad6e484d3075fdde18622fde72a7fe4b875f24cdf892d3",
+      "processPeakResidentBytes": 72040448,
+      "processWallSeconds": 1.4714148749999367,
+      "proposalCount": 0,
+      "resultSHA256": "fac075b0ae4dbb2458a6d8fc7c39ca3b78d7b92553b2422e202520f7c4c8f5aa",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-shortRestart",
+      "wholeUnitSeconds": 1.3867165000001478
+    },
+    {
+      "analysisSealSHA256": "4c53440c2c45fb1e63e402e5c1bc077d8e8d2d23e6f87ebb39174e4eb9bdcfdf",
+      "assetCount": 439,
+      "associationHypothesisAssumed": false,
+      "caseID": "interval427-context439",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2847488,
+      "eventCount": 439,
+      "eventMapFingerprint": "0090e013377380bc18424843e2ce32b9dc48bbf80d7a0a3f907ac8ef28193e28",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "114930cf8e781176d835fda04dc1b8c41f0c37d54fcbf9c4f5ede1c079c2af2e:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-interval-context-user-positive",
+          "kind": "interval",
+          "memberCount": 427,
+          "missingMembers": [],
+          "typedMemberCount": 427
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 439,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 427,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 426,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "4b74a3031284aba058d6e9dc2bd52cf80535bf0b96150a1b20c9f6c97120af4f",
+      "processPeakResidentBytes": 71450624,
+      "processWallSeconds": 1.5075811250003426,
+      "proposalCount": 0,
+      "resultSHA256": "c6f0c07038d790604a42228a1957e3591ef6b0af9ff104ad6c9be12258f7b977",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-continuation",
+      "wholeUnitSeconds": 1.4223130416667118
+    },
+    {
+      "analysisSealSHA256": "b145b45e08dc1dcb68b3d14bc91f6bd4231543f87401ee31159af94db819d129",
+      "assetCount": 439,
+      "associationHypothesisAssumed": false,
+      "caseID": "interval427-context439",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2847488,
+      "eventCount": 439,
+      "eventMapFingerprint": "0090e013377380bc18424843e2ce32b9dc48bbf80d7a0a3f907ac8ef28193e28",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "114930cf8e781176d835fda04dc1b8c41f0c37d54fcbf9c4f5ede1c079c2af2e:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": true,
+          "exactMembershipAndType": true,
+          "extraMembers": [],
+          "id": "validation-interval-context-user-positive",
+          "kind": "interval",
+          "memberCount": 427,
+          "missingMembers": [],
+          "typedMemberCount": 427
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 439,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 427,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 1,
+        "failures": [],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 426,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "7c46bc2099a8c7dccd6dafc3718f2ec0904bd67d2b939b83080d2598f032a3d3",
+      "processPeakResidentBytes": 71155712,
+      "processWallSeconds": 1.485455125000044,
+      "proposalCount": 0,
+      "resultSHA256": "97d22e449f7bed219d910726846af9b6abf9b30d3d52d156d832cd181a701385",
+      "topQualityAccepted": true,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-shortRestart",
+      "wholeUnitSeconds": 1.4006711250003718
+    },
+    {
+      "analysisSealSHA256": "cf50bfec936d31ffbb715ee90eabe3de7645cfcfc81e1f35dffaef24d02feba2",
+      "assetCount": 217,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst193-context217",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2546944,
+      "eventCount": null,
+      "eventMapFingerprint": null,
+      "fileRanges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 55
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 56,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216"
+          ],
+          "id": "a2-validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 193,
+          "missingMembers": [],
+          "typedMemberCount": 193
+        }
+      ],
+      "metadataLocalGateStatistics": null,
+      "metrics": {
+        "coverageCounts": {
+          "complete": 205,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 1,
+        "falsePositive": 1,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 0.9947916666666666,
+        "recall": 0.9947916666666666,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 191,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "processPeakResidentBytes": 47185920,
+      "processWallSeconds": 0.6538193329997739,
+      "proposalCount": null,
+      "resultSHA256": "43d62470dac080ab394e01f6c3efc22268f0d869b26650941c8d99f1c2e12eb1",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "dev4",
+      "wholeUnitSeconds": 0.5718622083331866
+    },
+    {
+      "analysisSealSHA256": "23a6d272dc85f49d71bce2bba4f1f290f433926aafaf21e399796aa219c9554c",
+      "assetCount": 217,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst193-context217",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2563328,
+      "eventCount": 217,
+      "eventMapFingerprint": "34d83b4d725aa836c4db323523aa3fd5e4fa2dc21605c0ee87c6cd6e5bb909e8",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "9f604d7824835a000766145c5277f59d59ac20d05b62ef4129080e03bb1821e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 55
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "9f604d7824835a000766145c5277f59d59ac20d05b62ef4129080e03bb1821e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 56,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216"
+          ],
+          "id": "a2-validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 193,
+          "missingMembers": [],
+          "typedMemberCount": 193
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 217,
+        "rejectedContexts": 1,
+        "rescueCandidates": 1,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 205,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 1,
+        "falsePositive": 1,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 0.9947916666666666,
+        "recall": 0.9947916666666666,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 191,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "dbf46dceb0d2b3470c74023f6880fd85fe3832a2c2383f32106ce6324f9b21e4",
+      "processPeakResidentBytes": 52953088,
+      "processWallSeconds": 0.8994173750002119,
+      "proposalCount": 0,
+      "resultSHA256": "c0041b35e144b3de21d993d057059999c1ec9e36afc9fba96a72ba3abe33c732",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-continuation",
+      "wholeUnitSeconds": 0.8166710000000421
+    },
+    {
+      "analysisSealSHA256": "19abfb75b59cac8d471c21c387bd496dbd2934605dfdaf27aa61b9372087a90c",
+      "assetCount": 217,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst193-context217",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2563328,
+      "eventCount": 217,
+      "eventMapFingerprint": "34d83b4d725aa836c4db323523aa3fd5e4fa2dc21605c0ee87c6cd6e5bb909e8",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "9f604d7824835a000766145c5277f59d59ac20d05b62ef4129080e03bb1821e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216"
+          ],
+          "id": "a2-validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 193,
+          "missingMembers": [],
+          "typedMemberCount": 193
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 217,
+        "rejectedContexts": 0,
+        "rescueCandidates": 1,
+        "shortRestartRescues": 1
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 205,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 1,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 0.9948186528497409,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 192,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "c2f14371195c2d80ffea0007c3843015c8637452c36489e20a42ea5515181846",
+      "processPeakResidentBytes": 52297728,
+      "processWallSeconds": 0.9015183330002401,
+      "proposalCount": 0,
+      "resultSHA256": "30902ea61980d36453a65ada15e90e2414c7b743694453c698061bd7da3f8b89",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "strict-shortRestart",
+      "wholeUnitSeconds": 0.8185167500000716
+    },
+    {
+      "analysisSealSHA256": "0f5d310f0cae896605a8cbc9fa84b65594b8784e7dcc7afe1bbed8f91ded5bca",
+      "assetCount": 217,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst193-context217",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2563328,
+      "eventCount": 217,
+      "eventMapFingerprint": "f59591e1633307d4db754dfaf42159b7dd90bb0f67e7cd182449798a892efad7",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "9f604d7824835a000766145c5277f59d59ac20d05b62ef4129080e03bb1821e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 55
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "9f604d7824835a000766145c5277f59d59ac20d05b62ef4129080e03bb1821e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 56,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216"
+          ],
+          "id": "a2-validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 193,
+          "missingMembers": [],
+          "typedMemberCount": 193
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 217,
+        "rejectedContexts": 1,
+        "rescueCandidates": 1,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 205,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 1,
+        "falsePositive": 1,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 0.9947916666666666,
+        "recall": 0.9947916666666666,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 191,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "ed13051704840900a3d1c7fbddf38af6098836faf85b3abce23d34e7101e1b3a",
+      "processPeakResidentBytes": 52854784,
+      "processWallSeconds": 0.9014563750001798,
+      "proposalCount": 0,
+      "resultSHA256": "15ea997104fc3df270716ca9cbaca620d72277acc830b0c949560d1b1939d898",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-continuation",
+      "wholeUnitSeconds": 0.8178187916669231
+    },
+    {
+      "analysisSealSHA256": "376b4d6fafb964b91b9ca0e56a3bb0674d3aa6d5132e4d9bfd4b972a8e80ece5",
+      "assetCount": 217,
+      "associationHypothesisAssumed": false,
+      "caseID": "burst193-context217",
+      "completeGroupTruth": true,
+      "engineManagedPeakEstimateBytes": 2563328,
+      "eventCount": 217,
+      "eventMapFingerprint": "f59591e1633307d4db754dfaf42159b7dd90bb0f67e7cd182449798a892efad7",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "9f604d7824835a000766145c5277f59d59ac20d05b62ef4129080e03bb1821e8:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216"
+          ],
+          "id": "a2-validation-burst-context-user-positive",
+          "kind": "burst",
+          "memberCount": 193,
+          "missingMembers": [],
+          "typedMemberCount": 193
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 217,
+        "rejectedContexts": 0,
+        "rescueCandidates": 1,
+        "shortRestartRescues": 1
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 205,
+          "insufficient": 12
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 1,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 0.9948186528497409,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 1,
+        "truePositive": 192,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "d1a306288ae4a01b33432d24a0bfb7f11a00a5237fb79c10a5183573be96ffac",
+      "processPeakResidentBytes": 52887552,
+      "processWallSeconds": 0.9069834169999922,
+      "proposalCount": 0,
+      "resultSHA256": "d05e476650ffabb4a0f437d6c4a96da0e114517b40ca9784d71ed6c787d7edd1",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [],
+      "variant": "assumed-shortRestart",
+      "wholeUnitSeconds": 0.8220828333332975
+    },
+    {
+      "analysisSealSHA256": "683b77fec99775f639064cb6ec5fe5ad0b8a0f476c11815bb10ba00ca1efe8c2",
+      "assetCount": 376,
+      "associationHypothesisAssumed": false,
+      "caseID": "dji187-context376",
+      "completeGroupTruth": false,
+      "engineManagedPeakEstimateBytes": 2750464,
+      "eventCount": null,
+      "eventMapFingerprint": null,
+      "fileRanges": [],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [],
+          "id": "dji187-known-positive",
+          "kind": "interval",
+          "memberCount": 374,
+          "missingMembers": [
+            "asset0000",
+            "asset0001",
+            "asset0002",
+            "asset0003",
+            "asset0004",
+            "asset0005",
+            "asset0006",
+            "asset0007",
+            "asset0008",
+            "asset0009",
+            "asset0010",
+            "asset0011",
+            "asset0012",
+            "asset0013",
+            "asset0014",
+            "asset0015",
+            "asset0016",
+            "asset0017",
+            "asset0018",
+            "asset0019",
+            "asset0020",
+            "asset0021",
+            "asset0022",
+            "asset0023",
+            "asset0024",
+            "asset0025",
+            "asset0026",
+            "asset0027",
+            "asset0028",
+            "asset0029",
+            "asset0030",
+            "asset0031",
+            "asset0032",
+            "asset0033",
+            "asset0034",
+            "asset0035",
+            "asset0036",
+            "asset0037",
+            "asset0038",
+            "asset0039",
+            "asset0040",
+            "asset0041",
+            "asset0042",
+            "asset0043",
+            "asset0044",
+            "asset0045",
+            "asset0046",
+            "asset0047",
+            "asset0048",
+            "asset0049",
+            "asset0050",
+            "asset0051",
+            "asset0052",
+            "asset0053",
+            "asset0054",
+            "asset0055",
+            "asset0056",
+            "asset0057",
+            "asset0058",
+            "asset0059",
+            "asset0060",
+            "asset0061",
+            "asset0062",
+            "asset0063",
+            "asset0064",
+            "asset0065",
+            "asset0066",
+            "asset0067",
+            "asset0068",
+            "asset0069",
+            "asset0070",
+            "asset0071",
+            "asset0072",
+            "asset0073",
+            "asset0074",
+            "asset0075",
+            "asset0076",
+            "asset0077",
+            "asset0078",
+            "asset0079",
+            "asset0080",
+            "asset0081",
+            "asset0082",
+            "asset0083",
+            "asset0084",
+            "asset0085",
+            "asset0086",
+            "asset0087",
+            "asset0088",
+            "asset0089",
+            "asset0090",
+            "asset0091",
+            "asset0092",
+            "asset0093",
+            "asset0094",
+            "asset0095",
+            "asset0096",
+            "asset0097",
+            "asset0098",
+            "asset0099",
+            "asset0100",
+            "asset0101",
+            "asset0102",
+            "asset0103",
+            "asset0104",
+            "asset0105",
+            "asset0106",
+            "asset0107",
+            "asset0108",
+            "asset0109",
+            "asset0110",
+            "asset0111",
+            "asset0112",
+            "asset0113",
+            "asset0114",
+            "asset0115",
+            "asset0116",
+            "asset0117",
+            "asset0118",
+            "asset0119",
+            "asset0120",
+            "asset0121",
+            "asset0122",
+            "asset0123",
+            "asset0124",
+            "asset0125",
+            "asset0126",
+            "asset0127",
+            "asset0128",
+            "asset0129",
+            "asset0130",
+            "asset0131",
+            "asset0132",
+            "asset0133",
+            "asset0134",
+            "asset0135",
+            "asset0136",
+            "asset0137",
+            "asset0138",
+            "asset0139",
+            "asset0140",
+            "asset0141",
+            "asset0142",
+            "asset0143",
+            "asset0144",
+            "asset0145",
+            "asset0146",
+            "asset0147",
+            "asset0148",
+            "asset0149",
+            "asset0150",
+            "asset0151",
+            "asset0152",
+            "asset0153",
+            "asset0154",
+            "asset0155",
+            "asset0156",
+            "asset0157",
+            "asset0158",
+            "asset0159",
+            "asset0160",
+            "asset0161",
+            "asset0162",
+            "asset0163",
+            "asset0164",
+            "asset0165",
+            "asset0166",
+            "asset0167",
+            "asset0168",
+            "asset0169",
+            "asset0170",
+            "asset0171",
+            "asset0172",
+            "asset0173",
+            "asset0174",
+            "asset0175",
+            "asset0176",
+            "asset0177",
+            "asset0178",
+            "asset0179",
+            "asset0180",
+            "asset0181",
+            "asset0182",
+            "asset0183",
+            "asset0184",
+            "asset0185",
+            "asset0186",
+            "asset0187",
+            "asset0188",
+            "asset0189",
+            "asset0190",
+            "asset0191",
+            "asset0192",
+            "asset0193",
+            "asset0194",
+            "asset0195",
+            "asset0196",
+            "asset0197",
+            "asset0198",
+            "asset0199",
+            "asset0200",
+            "asset0201",
+            "asset0202",
+            "asset0203",
+            "asset0204",
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216",
+            "asset0217",
+            "asset0218",
+            "asset0219",
+            "asset0220",
+            "asset0221",
+            "asset0222",
+            "asset0223",
+            "asset0224",
+            "asset0225",
+            "asset0226",
+            "asset0227",
+            "asset0228",
+            "asset0229",
+            "asset0230",
+            "asset0231",
+            "asset0232",
+            "asset0233",
+            "asset0234",
+            "asset0235",
+            "asset0236",
+            "asset0237",
+            "asset0238",
+            "asset0239",
+            "asset0240",
+            "asset0241",
+            "asset0242",
+            "asset0243",
+            "asset0244",
+            "asset0245",
+            "asset0246",
+            "asset0247",
+            "asset0248",
+            "asset0249",
+            "asset0250",
+            "asset0251",
+            "asset0252",
+            "asset0253",
+            "asset0254",
+            "asset0255",
+            "asset0256",
+            "asset0257",
+            "asset0258",
+            "asset0259",
+            "asset0260",
+            "asset0261",
+            "asset0262",
+            "asset0263",
+            "asset0264",
+            "asset0265",
+            "asset0266",
+            "asset0267",
+            "asset0268",
+            "asset0269",
+            "asset0270",
+            "asset0271",
+            "asset0272",
+            "asset0273",
+            "asset0274",
+            "asset0275",
+            "asset0276",
+            "asset0277",
+            "asset0278",
+            "asset0279",
+            "asset0280",
+            "asset0281",
+            "asset0282",
+            "asset0283",
+            "asset0284",
+            "asset0285",
+            "asset0286",
+            "asset0287",
+            "asset0288",
+            "asset0289",
+            "asset0290",
+            "asset0291",
+            "asset0292",
+            "asset0293",
+            "asset0294",
+            "asset0295",
+            "asset0296",
+            "asset0297",
+            "asset0298",
+            "asset0299",
+            "asset0300",
+            "asset0301",
+            "asset0302",
+            "asset0303",
+            "asset0304",
+            "asset0305",
+            "asset0306",
+            "asset0307",
+            "asset0308",
+            "asset0309",
+            "asset0310",
+            "asset0311",
+            "asset0312",
+            "asset0313",
+            "asset0314",
+            "asset0315",
+            "asset0316",
+            "asset0317",
+            "asset0318",
+            "asset0319",
+            "asset0320",
+            "asset0321",
+            "asset0322",
+            "asset0323",
+            "asset0324",
+            "asset0325",
+            "asset0326",
+            "asset0327",
+            "asset0328",
+            "asset0329",
+            "asset0330",
+            "asset0331",
+            "asset0332",
+            "asset0333",
+            "asset0334",
+            "asset0335",
+            "asset0336",
+            "asset0337",
+            "asset0338",
+            "asset0339",
+            "asset0340",
+            "asset0341",
+            "asset0342",
+            "asset0343",
+            "asset0344",
+            "asset0345",
+            "asset0346",
+            "asset0347",
+            "asset0348",
+            "asset0349",
+            "asset0350",
+            "asset0351",
+            "asset0352",
+            "asset0353",
+            "asset0354",
+            "asset0355",
+            "asset0356",
+            "asset0357",
+            "asset0358",
+            "asset0359",
+            "asset0360",
+            "asset0361",
+            "asset0362",
+            "asset0363",
+            "asset0364",
+            "asset0365",
+            "asset0366",
+            "asset0367",
+            "asset0368",
+            "asset0369",
+            "asset0370",
+            "asset0371",
+            "asset0372",
+            "asset0373"
+          ],
+          "typedMemberCount": 0
+        }
+      ],
+      "metadataLocalGateStatistics": null,
+      "metrics": {
+        "coverageCounts": {
+          "insufficient": 376
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "negative-support-below-frozen-minimum",
+          "precision-unmet-or-undefined",
+          "recall-unmet-or-undefined",
+          "typed-coverage-unmet-or-undefined",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 373,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": null,
+        "recall": 0,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 0,
+        "typedCoverage": 0,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "processPeakResidentBytes": 56541184,
+      "processWallSeconds": 0.8408245829996304,
+      "proposalCount": null,
+      "resultSHA256": "275643dc27bc86721ddf38aaad2dce106c7fc2351c7a683b7089c38cb96506a2",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [
+        "asset0374",
+        "asset0375"
+      ],
+      "variant": "dev4",
+      "wholeUnitSeconds": 0.7570325416668311
+    },
+    {
+      "analysisSealSHA256": "d159e182faf0bb92c2e6ed1ce19cb7deb82a72ce502065db96a6950bb2188742",
+      "assetCount": 376,
+      "associationHypothesisAssumed": false,
+      "caseID": "dji187-context376",
+      "completeGroupTruth": false,
+      "engineManagedPeakEstimateBytes": 2766848,
+      "eventCount": 376,
+      "eventMapFingerprint": "4d0c1cb700dbe4da3828bb343cfb189732661cf90ff52e424732fbc0822e34b3",
+      "fileRanges": [],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [],
+          "id": "dji187-known-positive",
+          "kind": "interval",
+          "memberCount": 374,
+          "missingMembers": [
+            "asset0000",
+            "asset0001",
+            "asset0002",
+            "asset0003",
+            "asset0004",
+            "asset0005",
+            "asset0006",
+            "asset0007",
+            "asset0008",
+            "asset0009",
+            "asset0010",
+            "asset0011",
+            "asset0012",
+            "asset0013",
+            "asset0014",
+            "asset0015",
+            "asset0016",
+            "asset0017",
+            "asset0018",
+            "asset0019",
+            "asset0020",
+            "asset0021",
+            "asset0022",
+            "asset0023",
+            "asset0024",
+            "asset0025",
+            "asset0026",
+            "asset0027",
+            "asset0028",
+            "asset0029",
+            "asset0030",
+            "asset0031",
+            "asset0032",
+            "asset0033",
+            "asset0034",
+            "asset0035",
+            "asset0036",
+            "asset0037",
+            "asset0038",
+            "asset0039",
+            "asset0040",
+            "asset0041",
+            "asset0042",
+            "asset0043",
+            "asset0044",
+            "asset0045",
+            "asset0046",
+            "asset0047",
+            "asset0048",
+            "asset0049",
+            "asset0050",
+            "asset0051",
+            "asset0052",
+            "asset0053",
+            "asset0054",
+            "asset0055",
+            "asset0056",
+            "asset0057",
+            "asset0058",
+            "asset0059",
+            "asset0060",
+            "asset0061",
+            "asset0062",
+            "asset0063",
+            "asset0064",
+            "asset0065",
+            "asset0066",
+            "asset0067",
+            "asset0068",
+            "asset0069",
+            "asset0070",
+            "asset0071",
+            "asset0072",
+            "asset0073",
+            "asset0074",
+            "asset0075",
+            "asset0076",
+            "asset0077",
+            "asset0078",
+            "asset0079",
+            "asset0080",
+            "asset0081",
+            "asset0082",
+            "asset0083",
+            "asset0084",
+            "asset0085",
+            "asset0086",
+            "asset0087",
+            "asset0088",
+            "asset0089",
+            "asset0090",
+            "asset0091",
+            "asset0092",
+            "asset0093",
+            "asset0094",
+            "asset0095",
+            "asset0096",
+            "asset0097",
+            "asset0098",
+            "asset0099",
+            "asset0100",
+            "asset0101",
+            "asset0102",
+            "asset0103",
+            "asset0104",
+            "asset0105",
+            "asset0106",
+            "asset0107",
+            "asset0108",
+            "asset0109",
+            "asset0110",
+            "asset0111",
+            "asset0112",
+            "asset0113",
+            "asset0114",
+            "asset0115",
+            "asset0116",
+            "asset0117",
+            "asset0118",
+            "asset0119",
+            "asset0120",
+            "asset0121",
+            "asset0122",
+            "asset0123",
+            "asset0124",
+            "asset0125",
+            "asset0126",
+            "asset0127",
+            "asset0128",
+            "asset0129",
+            "asset0130",
+            "asset0131",
+            "asset0132",
+            "asset0133",
+            "asset0134",
+            "asset0135",
+            "asset0136",
+            "asset0137",
+            "asset0138",
+            "asset0139",
+            "asset0140",
+            "asset0141",
+            "asset0142",
+            "asset0143",
+            "asset0144",
+            "asset0145",
+            "asset0146",
+            "asset0147",
+            "asset0148",
+            "asset0149",
+            "asset0150",
+            "asset0151",
+            "asset0152",
+            "asset0153",
+            "asset0154",
+            "asset0155",
+            "asset0156",
+            "asset0157",
+            "asset0158",
+            "asset0159",
+            "asset0160",
+            "asset0161",
+            "asset0162",
+            "asset0163",
+            "asset0164",
+            "asset0165",
+            "asset0166",
+            "asset0167",
+            "asset0168",
+            "asset0169",
+            "asset0170",
+            "asset0171",
+            "asset0172",
+            "asset0173",
+            "asset0174",
+            "asset0175",
+            "asset0176",
+            "asset0177",
+            "asset0178",
+            "asset0179",
+            "asset0180",
+            "asset0181",
+            "asset0182",
+            "asset0183",
+            "asset0184",
+            "asset0185",
+            "asset0186",
+            "asset0187",
+            "asset0188",
+            "asset0189",
+            "asset0190",
+            "asset0191",
+            "asset0192",
+            "asset0193",
+            "asset0194",
+            "asset0195",
+            "asset0196",
+            "asset0197",
+            "asset0198",
+            "asset0199",
+            "asset0200",
+            "asset0201",
+            "asset0202",
+            "asset0203",
+            "asset0204",
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216",
+            "asset0217",
+            "asset0218",
+            "asset0219",
+            "asset0220",
+            "asset0221",
+            "asset0222",
+            "asset0223",
+            "asset0224",
+            "asset0225",
+            "asset0226",
+            "asset0227",
+            "asset0228",
+            "asset0229",
+            "asset0230",
+            "asset0231",
+            "asset0232",
+            "asset0233",
+            "asset0234",
+            "asset0235",
+            "asset0236",
+            "asset0237",
+            "asset0238",
+            "asset0239",
+            "asset0240",
+            "asset0241",
+            "asset0242",
+            "asset0243",
+            "asset0244",
+            "asset0245",
+            "asset0246",
+            "asset0247",
+            "asset0248",
+            "asset0249",
+            "asset0250",
+            "asset0251",
+            "asset0252",
+            "asset0253",
+            "asset0254",
+            "asset0255",
+            "asset0256",
+            "asset0257",
+            "asset0258",
+            "asset0259",
+            "asset0260",
+            "asset0261",
+            "asset0262",
+            "asset0263",
+            "asset0264",
+            "asset0265",
+            "asset0266",
+            "asset0267",
+            "asset0268",
+            "asset0269",
+            "asset0270",
+            "asset0271",
+            "asset0272",
+            "asset0273",
+            "asset0274",
+            "asset0275",
+            "asset0276",
+            "asset0277",
+            "asset0278",
+            "asset0279",
+            "asset0280",
+            "asset0281",
+            "asset0282",
+            "asset0283",
+            "asset0284",
+            "asset0285",
+            "asset0286",
+            "asset0287",
+            "asset0288",
+            "asset0289",
+            "asset0290",
+            "asset0291",
+            "asset0292",
+            "asset0293",
+            "asset0294",
+            "asset0295",
+            "asset0296",
+            "asset0297",
+            "asset0298",
+            "asset0299",
+            "asset0300",
+            "asset0301",
+            "asset0302",
+            "asset0303",
+            "asset0304",
+            "asset0305",
+            "asset0306",
+            "asset0307",
+            "asset0308",
+            "asset0309",
+            "asset0310",
+            "asset0311",
+            "asset0312",
+            "asset0313",
+            "asset0314",
+            "asset0315",
+            "asset0316",
+            "asset0317",
+            "asset0318",
+            "asset0319",
+            "asset0320",
+            "asset0321",
+            "asset0322",
+            "asset0323",
+            "asset0324",
+            "asset0325",
+            "asset0326",
+            "asset0327",
+            "asset0328",
+            "asset0329",
+            "asset0330",
+            "asset0331",
+            "asset0332",
+            "asset0333",
+            "asset0334",
+            "asset0335",
+            "asset0336",
+            "asset0337",
+            "asset0338",
+            "asset0339",
+            "asset0340",
+            "asset0341",
+            "asset0342",
+            "asset0343",
+            "asset0344",
+            "asset0345",
+            "asset0346",
+            "asset0347",
+            "asset0348",
+            "asset0349",
+            "asset0350",
+            "asset0351",
+            "asset0352",
+            "asset0353",
+            "asset0354",
+            "asset0355",
+            "asset0356",
+            "asset0357",
+            "asset0358",
+            "asset0359",
+            "asset0360",
+            "asset0361",
+            "asset0362",
+            "asset0363",
+            "asset0364",
+            "asset0365",
+            "asset0366",
+            "asset0367",
+            "asset0368",
+            "asset0369",
+            "asset0370",
+            "asset0371",
+            "asset0372",
+            "asset0373"
+          ],
+          "typedMemberCount": 0
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 188,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "insufficient": 376
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "negative-support-below-frozen-minimum",
+          "precision-unmet-or-undefined",
+          "recall-unmet-or-undefined",
+          "typed-coverage-unmet-or-undefined",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 373,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": null,
+        "recall": 0,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 0,
+        "typedCoverage": 0,
+        "unknownCount": 188,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 373
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "9bde9ea01bcbbe7dc4b772723f457cae55494fadd0f360b5bf0b0d85d8f86f3f",
+      "processPeakResidentBytes": 64274432,
+      "processWallSeconds": 1.1659972079996805,
+      "proposalCount": 188,
+      "resultSHA256": "577babeddab5b457c5aa1417dc64149b0c5b754c99f619b8beb03ada25629d77",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [
+        "asset0374",
+        "asset0375"
+      ],
+      "variant": "strict-continuation",
+      "wholeUnitSeconds": 1.0799819583335193
+    },
+    {
+      "analysisSealSHA256": "3b54c97adb171b70503457ccf94f91cdcd2fe0236bc3cf18a81339cb33e22766",
+      "assetCount": 376,
+      "associationHypothesisAssumed": false,
+      "caseID": "dji187-context376",
+      "completeGroupTruth": false,
+      "engineManagedPeakEstimateBytes": 2766848,
+      "eventCount": 376,
+      "eventMapFingerprint": "4d0c1cb700dbe4da3828bb343cfb189732661cf90ff52e424732fbc0822e34b3",
+      "fileRanges": [],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [],
+          "id": "dji187-known-positive",
+          "kind": "interval",
+          "memberCount": 374,
+          "missingMembers": [
+            "asset0000",
+            "asset0001",
+            "asset0002",
+            "asset0003",
+            "asset0004",
+            "asset0005",
+            "asset0006",
+            "asset0007",
+            "asset0008",
+            "asset0009",
+            "asset0010",
+            "asset0011",
+            "asset0012",
+            "asset0013",
+            "asset0014",
+            "asset0015",
+            "asset0016",
+            "asset0017",
+            "asset0018",
+            "asset0019",
+            "asset0020",
+            "asset0021",
+            "asset0022",
+            "asset0023",
+            "asset0024",
+            "asset0025",
+            "asset0026",
+            "asset0027",
+            "asset0028",
+            "asset0029",
+            "asset0030",
+            "asset0031",
+            "asset0032",
+            "asset0033",
+            "asset0034",
+            "asset0035",
+            "asset0036",
+            "asset0037",
+            "asset0038",
+            "asset0039",
+            "asset0040",
+            "asset0041",
+            "asset0042",
+            "asset0043",
+            "asset0044",
+            "asset0045",
+            "asset0046",
+            "asset0047",
+            "asset0048",
+            "asset0049",
+            "asset0050",
+            "asset0051",
+            "asset0052",
+            "asset0053",
+            "asset0054",
+            "asset0055",
+            "asset0056",
+            "asset0057",
+            "asset0058",
+            "asset0059",
+            "asset0060",
+            "asset0061",
+            "asset0062",
+            "asset0063",
+            "asset0064",
+            "asset0065",
+            "asset0066",
+            "asset0067",
+            "asset0068",
+            "asset0069",
+            "asset0070",
+            "asset0071",
+            "asset0072",
+            "asset0073",
+            "asset0074",
+            "asset0075",
+            "asset0076",
+            "asset0077",
+            "asset0078",
+            "asset0079",
+            "asset0080",
+            "asset0081",
+            "asset0082",
+            "asset0083",
+            "asset0084",
+            "asset0085",
+            "asset0086",
+            "asset0087",
+            "asset0088",
+            "asset0089",
+            "asset0090",
+            "asset0091",
+            "asset0092",
+            "asset0093",
+            "asset0094",
+            "asset0095",
+            "asset0096",
+            "asset0097",
+            "asset0098",
+            "asset0099",
+            "asset0100",
+            "asset0101",
+            "asset0102",
+            "asset0103",
+            "asset0104",
+            "asset0105",
+            "asset0106",
+            "asset0107",
+            "asset0108",
+            "asset0109",
+            "asset0110",
+            "asset0111",
+            "asset0112",
+            "asset0113",
+            "asset0114",
+            "asset0115",
+            "asset0116",
+            "asset0117",
+            "asset0118",
+            "asset0119",
+            "asset0120",
+            "asset0121",
+            "asset0122",
+            "asset0123",
+            "asset0124",
+            "asset0125",
+            "asset0126",
+            "asset0127",
+            "asset0128",
+            "asset0129",
+            "asset0130",
+            "asset0131",
+            "asset0132",
+            "asset0133",
+            "asset0134",
+            "asset0135",
+            "asset0136",
+            "asset0137",
+            "asset0138",
+            "asset0139",
+            "asset0140",
+            "asset0141",
+            "asset0142",
+            "asset0143",
+            "asset0144",
+            "asset0145",
+            "asset0146",
+            "asset0147",
+            "asset0148",
+            "asset0149",
+            "asset0150",
+            "asset0151",
+            "asset0152",
+            "asset0153",
+            "asset0154",
+            "asset0155",
+            "asset0156",
+            "asset0157",
+            "asset0158",
+            "asset0159",
+            "asset0160",
+            "asset0161",
+            "asset0162",
+            "asset0163",
+            "asset0164",
+            "asset0165",
+            "asset0166",
+            "asset0167",
+            "asset0168",
+            "asset0169",
+            "asset0170",
+            "asset0171",
+            "asset0172",
+            "asset0173",
+            "asset0174",
+            "asset0175",
+            "asset0176",
+            "asset0177",
+            "asset0178",
+            "asset0179",
+            "asset0180",
+            "asset0181",
+            "asset0182",
+            "asset0183",
+            "asset0184",
+            "asset0185",
+            "asset0186",
+            "asset0187",
+            "asset0188",
+            "asset0189",
+            "asset0190",
+            "asset0191",
+            "asset0192",
+            "asset0193",
+            "asset0194",
+            "asset0195",
+            "asset0196",
+            "asset0197",
+            "asset0198",
+            "asset0199",
+            "asset0200",
+            "asset0201",
+            "asset0202",
+            "asset0203",
+            "asset0204",
+            "asset0205",
+            "asset0206",
+            "asset0207",
+            "asset0208",
+            "asset0209",
+            "asset0210",
+            "asset0211",
+            "asset0212",
+            "asset0213",
+            "asset0214",
+            "asset0215",
+            "asset0216",
+            "asset0217",
+            "asset0218",
+            "asset0219",
+            "asset0220",
+            "asset0221",
+            "asset0222",
+            "asset0223",
+            "asset0224",
+            "asset0225",
+            "asset0226",
+            "asset0227",
+            "asset0228",
+            "asset0229",
+            "asset0230",
+            "asset0231",
+            "asset0232",
+            "asset0233",
+            "asset0234",
+            "asset0235",
+            "asset0236",
+            "asset0237",
+            "asset0238",
+            "asset0239",
+            "asset0240",
+            "asset0241",
+            "asset0242",
+            "asset0243",
+            "asset0244",
+            "asset0245",
+            "asset0246",
+            "asset0247",
+            "asset0248",
+            "asset0249",
+            "asset0250",
+            "asset0251",
+            "asset0252",
+            "asset0253",
+            "asset0254",
+            "asset0255",
+            "asset0256",
+            "asset0257",
+            "asset0258",
+            "asset0259",
+            "asset0260",
+            "asset0261",
+            "asset0262",
+            "asset0263",
+            "asset0264",
+            "asset0265",
+            "asset0266",
+            "asset0267",
+            "asset0268",
+            "asset0269",
+            "asset0270",
+            "asset0271",
+            "asset0272",
+            "asset0273",
+            "asset0274",
+            "asset0275",
+            "asset0276",
+            "asset0277",
+            "asset0278",
+            "asset0279",
+            "asset0280",
+            "asset0281",
+            "asset0282",
+            "asset0283",
+            "asset0284",
+            "asset0285",
+            "asset0286",
+            "asset0287",
+            "asset0288",
+            "asset0289",
+            "asset0290",
+            "asset0291",
+            "asset0292",
+            "asset0293",
+            "asset0294",
+            "asset0295",
+            "asset0296",
+            "asset0297",
+            "asset0298",
+            "asset0299",
+            "asset0300",
+            "asset0301",
+            "asset0302",
+            "asset0303",
+            "asset0304",
+            "asset0305",
+            "asset0306",
+            "asset0307",
+            "asset0308",
+            "asset0309",
+            "asset0310",
+            "asset0311",
+            "asset0312",
+            "asset0313",
+            "asset0314",
+            "asset0315",
+            "asset0316",
+            "asset0317",
+            "asset0318",
+            "asset0319",
+            "asset0320",
+            "asset0321",
+            "asset0322",
+            "asset0323",
+            "asset0324",
+            "asset0325",
+            "asset0326",
+            "asset0327",
+            "asset0328",
+            "asset0329",
+            "asset0330",
+            "asset0331",
+            "asset0332",
+            "asset0333",
+            "asset0334",
+            "asset0335",
+            "asset0336",
+            "asset0337",
+            "asset0338",
+            "asset0339",
+            "asset0340",
+            "asset0341",
+            "asset0342",
+            "asset0343",
+            "asset0344",
+            "asset0345",
+            "asset0346",
+            "asset0347",
+            "asset0348",
+            "asset0349",
+            "asset0350",
+            "asset0351",
+            "asset0352",
+            "asset0353",
+            "asset0354",
+            "asset0355",
+            "asset0356",
+            "asset0357",
+            "asset0358",
+            "asset0359",
+            "asset0360",
+            "asset0361",
+            "asset0362",
+            "asset0363",
+            "asset0364",
+            "asset0365",
+            "asset0366",
+            "asset0367",
+            "asset0368",
+            "asset0369",
+            "asset0370",
+            "asset0371",
+            "asset0372",
+            "asset0373"
+          ],
+          "typedMemberCount": 0
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 188,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "insufficient": 376
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "negative-support-below-frozen-minimum",
+          "precision-unmet-or-undefined",
+          "recall-unmet-or-undefined",
+          "typed-coverage-unmet-or-undefined",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 373,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": null,
+        "recall": 0,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 0,
+        "typedCoverage": 0,
+        "unknownCount": 188,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 373
+      },
+      "metricsMeaning": "strictGroupingMetricsUnderDeclaredSource",
+      "pairPrecision": null,
+      "policyFingerprint": "f09f7749e33d82430770c06127a0e007abec834496ddb69a3c1dde95344c025f",
+      "processPeakResidentBytes": 64323584,
+      "processWallSeconds": 1.1721853750000264,
+      "proposalCount": 188,
+      "resultSHA256": "dfd21460ccada0d03c4e0bc93f047bf9e2ef2f6236cf9a1e619118d30d58fcd8",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [
+        "asset0374",
+        "asset0375"
+      ],
+      "variant": "strict-shortRestart",
+      "wholeUnitSeconds": 1.0864585833332967
+    },
+    {
+      "analysisSealSHA256": "d452a963a1a8e6da2e2407b62f314d247fc1f2f566e52ea30005446ee8bfb973",
+      "assetCount": 376,
+      "associationHypothesisAssumed": true,
+      "caseID": "dji187-context376",
+      "completeGroupTruth": false,
+      "engineManagedPeakEstimateBytes": 2526208,
+      "eventCount": 188,
+      "eventMapFingerprint": "dd7812f95200b4748d45f81f0018a363aa37ec3c710a57567a066306dd619724",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "ed0162cb0afae529bb7d786b72946ab3bcb10124ef3b80b98901ee3af53af6b6",
+          "clockPartitionID": "9dec2c3048a031cc3e0e10ebbbf4aa5a94eaadbb9cbbeb46d1ed79062f62ffda:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 0,
+            "last": 375
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0374",
+            "asset0375"
+          ],
+          "id": "dji187-known-positive",
+          "kind": "interval",
+          "memberCount": 374,
+          "missingMembers": [],
+          "typedMemberCount": 374
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 188,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 376
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "negative-support-below-frozen-minimum",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 373,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "conditionalGroupingMetrics",
+      "pairPrecision": null,
+      "policyFingerprint": "2e2ad60aef8dddf52ead813ab084ca7a1092cc08a41038e49bbe16d343876298",
+      "processPeakResidentBytes": 63881216,
+      "processWallSeconds": 1.1369240829999399,
+      "proposalCount": 188,
+      "resultSHA256": "978cc460d4146e1fd93d2514b861b40cd4c6372de18f9e57e1e978ea17c4082c",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [
+        "asset0374",
+        "asset0375"
+      ],
+      "variant": "assumed-continuation",
+      "wholeUnitSeconds": 1.052658916667042
+    },
+    {
+      "analysisSealSHA256": "392a97bd0132490d35fbd53c43803b7a258f707deae940370320c24aef8baf42",
+      "assetCount": 376,
+      "associationHypothesisAssumed": true,
+      "caseID": "dji187-context376",
+      "completeGroupTruth": false,
+      "engineManagedPeakEstimateBytes": 2526208,
+      "eventCount": 188,
+      "eventMapFingerprint": "dd7812f95200b4748d45f81f0018a363aa37ec3c710a57567a066306dd619724",
+      "fileRanges": [
+        {
+          "cameraPartitionID": "ed0162cb0afae529bb7d786b72946ab3bcb10124ef3b80b98901ee3af53af6b6",
+          "clockPartitionID": "9dec2c3048a031cc3e0e10ebbbf4aa5a94eaadbb9cbbeb46d1ed79062f62ffda:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 0,
+            "last": 375
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase",
+            "capture-event-projection-v1"
+          ]
+        }
+      ],
+      "groups": [
+        {
+          "exactMembership": false,
+          "exactMembershipAndType": false,
+          "extraMembers": [
+            "asset0374",
+            "asset0375"
+          ],
+          "id": "dji187-known-positive",
+          "kind": "interval",
+          "memberCount": 374,
+          "missingMembers": [],
+          "typedMemberCount": 374
+        }
+      ],
+      "metadataLocalGateStatistics": {
+        "continuationRescues": 0,
+        "observedContexts": 188,
+        "rejectedContexts": 0,
+        "rescueCandidates": 0,
+        "shortRestartRescues": 0
+      },
+      "metrics": {
+        "coverageCounts": {
+          "complete": 376
+        },
+        "exactGroupFraction": 0,
+        "failures": [
+          "negative-support-below-frozen-minimum",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative": 0,
+        "falsePositive": 0,
+        "nativeDeviceIdentityVerified": false,
+        "precision": 1,
+        "recall": 1,
+        "sourceDeclaredByUser": true,
+        "trueNegative": 0,
+        "truePositive": 373,
+        "typedCoverage": 1,
+        "unknownCount": 0,
+        "unknownNegativePairs": 0,
+        "unknownPositivePairs": 0
+      },
+      "metricsMeaning": "conditionalGroupingMetrics",
+      "pairPrecision": null,
+      "policyFingerprint": "5506b5fa1a33783c4a62bcb49f1e7ee7127086467e6d4ae767a095a00cccd133",
+      "processPeakResidentBytes": 63356928,
+      "processWallSeconds": 1.1467020000000048,
+      "proposalCount": 188,
+      "resultSHA256": "46cbaf60555562ad00b99eb09c3efd3e1477dd2d853e6fd63109f610d4b2a4fd",
+      "topQualityAccepted": false,
+      "truthUnknownAssetIDs": [
+        "asset0374",
+        "asset0375"
+      ],
+      "variant": "assumed-shortRestart",
+      "wholeUnitSeconds": 1.0609344166664414
+    }
+  ],
+  "qualityAccepted": false,
+  "qualityUnits": 30,
+  "role": "seen-development-regression; no independent holdout claim",
+  "runID": "c40cd979-a041-4591-a60e-b38473b13489",
+  "schemaVersion": 1
+}
