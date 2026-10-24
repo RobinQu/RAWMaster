@@ -24,6 +24,8 @@ private struct SequenceWorkingFrame: Sendable {
     let camera: String
     let clock: SequenceClockPartition
     let feature: SequenceFrameFeature
+    let contentHash: String
+    var spatialFeature: SequenceSpatialFeature?
 }
 
 /// Streaming fixed-origin phase fit. Neither the origin nor its global constraints slide forward.
@@ -179,6 +181,16 @@ public struct SequenceDetector: Sendable {
     public private(set) var isStopped = false
     public private(set) var processedCount = 0
     private var finalized = false
+    private let spatialMetrics: (@Sendable (SequenceSpatialMetricsEvent) -> Void)?
+    public private(set) var spatialStatistics: SequenceSpatialStatistics?
+    private var spatialCache: [SequenceSpatialCacheKey: SequenceSpatialEvidence] = [:]
+    private var spatialCacheOrder: [SequenceSpatialCacheKey] = []
+    private let spatialCacheNamespace: String?
+    public var spatialManagedLiveBytes: Int {
+        guard configuration.spatialExperiment != nil else { return 0 }
+        let held = (active?.recent ?? []) + bridgeRight + intervalRight
+        return held.reduce(0) { $0 + ($1.spatialFeature?.managedByteEstimate ?? 0) } + spatialCache.count * 1024
+    }
     private let trace: SequenceTraceRecorder?
     public var traceSummary: SequenceTraceSummary? { trace?.summary }
     private var rows: [SequenceRowCoverage] = []
@@ -201,7 +213,8 @@ public struct SequenceDetector: Sendable {
     public init(manifest: SequenceInputManifest, token: SequenceAnalysisToken,
                 configuration: SequenceDetectorConfiguration = .init(),
                 trace observer: (@Sendable (SequenceTraceEvent) -> Void)? = nil,
-                traceLimits: SequenceTraceLimits = .init()) throws {
+                traceLimits: SequenceTraceLimits = .init(),
+                spatialMetrics: (@Sendable (SequenceSpatialMetricsEvent) -> Void)? = nil) throws {
         try configuration.validate()
         let expected = try SequenceAnalysisToken.make(manifest: manifest, versions: token.versions,
             policyFingerprint: token.policyFingerprint, inputRevision: token.inputRevision,
@@ -210,24 +223,50 @@ public struct SequenceDetector: Sendable {
               token.versions == configuration.versions(order: manifest.orderVersion) else { throw SequenceDetectorError.incompatibleToken }
         self.manifest = manifest; self.token = token; self.configuration = configuration
         self.trace = observer.map { SequenceTraceRecorder(limits: traceLimits, sink: $0) }
+        self.spatialMetrics = spatialMetrics
+        self.spatialStatistics = configuration.spatialExperiment == nil ? nil : SequenceSpatialStatistics()
+        self.spatialCacheNamespace = configuration.spatialExperiment == nil ? nil : token.policyFingerprint + ":" + manifest.contentFingerprint
     }
     public mutating func cancel() {
         trace?.emit(SequenceTraceEvent(ordinal: processedCount, stage: .decision, reason: .cancelled, accepted: false))
         if !isStopped { warnings.append("cancelled-before-complete-result") }
         isStopped = true
+        releaseSpatialBuffers()
+    }
+    private mutating func releaseSpatialBuffers() {
+        guard configuration.spatialExperiment != nil else { return }
+        if var run = active {
+            for index in run.recent.indices { run.recent[index].spatialFeature = nil }
+            active = run
+        }
+        for index in bridgeRight.indices { bridgeRight[index].spatialFeature = nil }
+        for index in intervalRight.indices { intervalRight[index].spatialFeature = nil }
+        spatialCache.removeAll(keepingCapacity: false); spatialCacheOrder.removeAll(keepingCapacity: false)
     }
     public mutating func consume(_ observation: SequenceObservation, cancelled: () -> Bool = { false }) throws {
+        do { try consumeImpl(observation, cancelled: cancelled) }
+        catch is CancellationError { if !isStopped { cancel() }; throw CancellationError() }
+        catch {
+            if configuration.spatialExperiment != nil { isStopped = true; releaseSpatialBuffers() }
+            throw error
+        }
+    }
+    private mutating func consumeImpl(_ observation: SequenceObservation, cancelled: () -> Bool) throws {
         guard !finalized else { throw SequenceDetectorError.finished }
         if Task.isCancelled || cancelled() { cancel(); throw CancellationError() }
         guard !isStopped else { throw SequenceDetectorError.stopped }
         guard observation.input.entry.ordinal == processedCount, processedCount < manifest.entries.count else {
             isStopped = true; warnings.append("invalid-input-order"); throw SequenceDetectorError.invalidOrder
         }
+        if configuration.spatialExperiment != nil, observation.feature != nil, observation.spatialFeature == nil {
+            isStopped = true; releaseSpatialBuffers(); throw SequenceDetectorError.missingSpatialFeature
+        }
         trace?.beginFrame(observation.input.entry.ordinal)
         guard estimatedBytes(additionalRow: true) <= configuration.memoryBudgetBytes else {
             trace?.emit(SequenceTraceEvent(ordinal: observation.input.entry.ordinal, stage: .input, reason: .budgetExceeded, accepted: false))
             isStopped = true; warnings.append("managed-budget-exceeded"); throw SequenceDetectorError.budgetExceeded
         }
+        if configuration.spatialExperiment != nil, observation.spatialFeature != nil { spatialStatistics?.observedSpatialFeatures += 1 }
         for warning in observation.warnings.prefix(8) where warnings.count < 32 {
             let bounded = String(warning.prefix(128))
             if !warnings.contains(bounded) { warnings.append(bounded) }
@@ -249,7 +288,7 @@ public struct SequenceDetector: Sendable {
                 var event = SequenceTraceEvent(ordinal: input.entry.ordinal, stage: .input, reason: .inputBarrier, accepted: false)
                 event.barrier = reasons.first; trace.emit(event)
             }
-            flush(); resetObservedContext()
+            try flush(cancelled: cancelled); resetObservedContext()
             let unreadable = reasons.contains(.unreadable) || reasons.contains(.missingEmbeddedPreview)
             let state: SequenceCoverageState = reasons.contains(.incomplete) ? .incomplete : unreadable ? .unreadable : .insufficient
             rows.append(SequenceRowCoverage(state: state, reasons: reasons))
@@ -262,14 +301,15 @@ public struct SequenceDetector: Sendable {
                 offset: input.evidence!.time.offsetMinutes, exposure: input.evidence!.exposureSeconds,
                 make: canonical(input.evidence!.cameraMake), model: canonical(input.evidence!.cameraModel),
                 camera: input.entry.camera.partitionID(manifestFingerprint: manifest.contentFingerprint)!,
-                clock: input.clock!, feature: observation.feature!)
+                clock: input.clock!, feature: observation.feature!, contentHash: input.entry.contentHash!,
+                spatialFeature: configuration.spatialExperiment == nil ? nil : observation.spatialFeature)
             rows.append(SequenceRowCoverage(state: .insufficient, reasons: [.noSequenceSupport]))
             if let issue = contextIssue(for: frame) {
                 if let trace {
                     var event = SequenceTraceEvent(ordinal: frame.ordinal, stage: .input, reason: .contextBarrier, accepted: false)
                     event.barrier = issue; trace.emit(event)
                 }
-                flush(); resetObservedContext()
+                try flush(cancelled: cancelled); resetObservedContext()
                 rows[frame.ordinal] = SequenceRowCoverage(state: .insufficient, reasons: [issue])
                 if issue == .assertionMismatch {
                     let warning = "camera-metadata-contradicts-single-device-evidence"
@@ -277,13 +317,17 @@ public struct SequenceDetector: Sendable {
                 }
             } else {
                 recordObservedContext(frame)
-                accept(frame)
+                try accept(frame, cancelled: cancelled)
             }
         }
         recordPeak()
         if Task.isCancelled || cancelled() { cancel(); throw CancellationError() }
     }
     public mutating func finish(sealedInputComplete: Bool = true, cancelled: () -> Bool = { false }) throws -> SequenceAnalysisResult {
+        do { return try finishImpl(sealedInputComplete: sealedInputComplete, cancelled: cancelled) }
+        catch is CancellationError { if !isStopped { cancel() }; throw CancellationError() }
+    }
+    private mutating func finishImpl(sealedInputComplete: Bool, cancelled: () -> Bool) throws -> SequenceAnalysisResult {
         guard !finalized else { throw SequenceDetectorError.finished }
         if Task.isCancelled || cancelled() { cancel() }
         if !sealedInputComplete || processedCount != manifest.entries.count {
@@ -303,7 +347,8 @@ public struct SequenceDetector: Sendable {
                 for index in firstOpen..<rows.count { rows[index] = SequenceRowCoverage(state: .incomplete, reasons: [.incomplete]) }
             }
             active = nil; bridgeRight.removeAll(); intervalRight.removeAll()
-        } else { flush() }
+        } else { try flush(cancelled: cancelled) }
+        releaseSpatialBuffers()
         finalized = true
         var coverage: [SequenceCoverageRange] = []
         var start = 0
@@ -344,11 +389,17 @@ public struct SequenceDetector: Sendable {
         // allowance also covers worst-case ranges and finish's compact coverage output.
         let frames = configuration.contextFrames + configuration.anchorCount + configuration.bridgeSupportFrames
             + Self.intervalPendingCapacity + 2
-        return SequenceCaptureReader.scratchReservationBytes + (rows.count + (additionalRow ? 1 : 0)) * 1_280
+        let legacy = SequenceCaptureReader.scratchReservationBytes + (rows.count + (additionalRow ? 1 : 0)) * 1_280
             + frames * 5_120 + 8_192
+        guard configuration.spatialExperiment != nil else { return legacy }
+        return legacy + frames * (114 * 1024) + 2 * 1024 * 1024
+            + SequenceSpatialMatcher.scratchReservationBytes + 64 * 1024
     }
-    private mutating func recordPeak() { managedPeakEstimateBytes = max(managedPeakEstimateBytes, estimatedBytes()) }
-    private func locallyRelated(_ a: SequenceWorkingFrame, _ b: SequenceWorkingFrame) -> Bool {
+    private mutating func recordPeak() {
+        managedPeakEstimateBytes = max(managedPeakEstimateBytes, estimatedBytes())
+        if spatialStatistics != nil { spatialStatistics?.managedPeakEstimateBytes = managedPeakEstimateBytes }
+    }
+    private mutating func locallyRelated(_ a: SequenceWorkingFrame, _ b: SequenceWorkingFrame, cancelled: () -> Bool) throws -> Bool {
         guard a.feature.isInformative, b.feature.isInformative else {
             trace?.emit(SequenceTraceEvent(ordinal: b.ordinal, stage: .local, reason: .uninformative, accepted: false)); return false
         }
@@ -373,15 +424,19 @@ public struct SequenceDetector: Sendable {
             event.distances(d, histogram: configuration.localHistogramLimit, luminance: strongLuminance, hash: configuration.anchorHashLimit)
             trace.emit(event)
         }
-        return rescued
+        if rescued { return true }
+        guard configuration.spatialExperiment?.mode == .localRescueAndBridgeVeto,
+              d.histogram > configuration.localHistogramLimit, d.histogram <= configuration.anchorHistogramLimit,
+              d.luminance <= configuration.localLuminanceLimit, d.hash <= configuration.localHashLimit else { return false }
+        return try spatialPair(a, b, purpose: .denseBurstLocal, cancelled: cancelled).verdict == .supported
     }
-    private func dense(_ a: SequenceWorkingFrame, _ b: SequenceWorkingFrame) -> Bool {
+    private mutating func dense(_ a: SequenceWorkingFrame, _ b: SequenceWorkingFrame, cancelled: () -> Bool) throws -> Bool {
         let gap = b.time.gap(since: a.time)
         let exposurePass = (a.exposure.map { $0 <= configuration.denseGapSeconds } ?? true)
             && (b.exposure.map { $0 <= configuration.denseGapSeconds } ?? true)
         let precisionPass = a.time.nanosecond != nil && b.time.nanosecond != nil
         let temporalPass = exposurePass && precisionPass && gap > 0 && gap <= configuration.denseGapSeconds
-        let accepted = temporalPass && locallyRelated(a, b)
+        let accepted = try temporalPass && locallyRelated(a, b, cancelled: cancelled)
         if let trace {
             let reason: SequenceTraceReason = !exposurePass ? .exposureLimit : !precisionPass ? .precisionLimit : !temporalPass ? .gapLimit : accepted ? .passed : .distanceLimit
             var event = SequenceTraceEvent(ordinal: b.ordinal, stage: .dense, reason: reason, accepted: accepted)
@@ -419,26 +474,26 @@ public struct SequenceDetector: Sendable {
         }
         return changed
     }
-    private mutating func accept(_ frame: SequenceWorkingFrame) {
+    private mutating func accept(_ frame: SequenceWorkingFrame, cancelled: () -> Bool) throws {
         guard var run = active else {
             trace?.emit(SequenceTraceEvent(ordinal: frame.ordinal, stage: .decision, reason: .runStarted, accepted: true))
             active = SequenceActiveRun(frame); return
         }
         if run.camera != frame.camera || run.clock != frame.clock {
             trace?.emit(SequenceTraceEvent(ordinal: frame.ordinal, stage: .decision, reason: .partitionBoundary, accepted: false))
-            flush(); active = SequenceActiveRun(frame); return
+            try flush(cancelled: cancelled); active = SequenceActiveRun(frame); return
         }
         if !intervalRight.isEmpty {
-            acceptIntervalRight(frame, left: run)
+            try acceptIntervalRight(frame, left: run, cancelled: cancelled)
             return
         }
         if !bridgeRight.isEmpty {
-            if !dense(bridgeRight.last!, frame) {
-                separateBridge(); accept(frame); return
+            if try !dense(bridgeRight.last!, frame, cancelled: cancelled) {
+                separateBridge(); try accept(frame, cancelled: cancelled); return
             }
             bridgeRight.append(frame)
             if bridgeRight.count >= configuration.bridgeSupportFrames {
-                if bridgeSupported(left: run, right: bridgeRight) {
+                if try bridgeSupported(left: run, right: bridgeRight, burstSpatial: true, cancelled: cancelled) {
                     for right in bridgeRight { run.append(right, configuration: configuration) }
                     active = run; bridgeRight.removeAll()
                 } else { separateBridge() }
@@ -448,7 +503,7 @@ public struct SequenceDetector: Sendable {
         let previous = run.recent.last!
         switch run.kind {
         case .burst:
-            if dense(previous, frame), anchored(frame.feature, in: run, ordinal: frame.ordinal) {
+            if try dense(previous, frame, cancelled: cancelled), anchored(frame.feature, in: run, ordinal: frame.ordinal) {
                 run.append(frame, configuration: configuration); active = run
             } else {
                 let gap = frame.time.gap(since: previous.time)
@@ -461,7 +516,7 @@ public struct SequenceDetector: Sendable {
                         trace.emit(event)
                     }
                     bridgeRight = [frame]
-                } else { flush(); active = SequenceActiveRun(frame) }
+                } else { try flush(cancelled: cancelled); active = SequenceActiveRun(frame) }
             }
         case .interval:
             let scenePass = !strongSceneChange(previous, frame)
@@ -477,10 +532,10 @@ public struct SequenceDetector: Sendable {
                 traceInterval(run, ordinal: frame.ordinal, reason: .epochPending, accepted: false)
             } else {
                 traceInterval(run, ordinal: frame.ordinal, reason: .epochRejected, accepted: false)
-                flush(); active = SequenceActiveRun(frame)
+                try flush(cancelled: cancelled); active = SequenceActiveRun(frame)
             }
         default:
-            if dense(previous, frame) {
+            if try dense(previous, frame, cancelled: cancelled) {
                 // Earlier unsupported seeds stay flat; no deleted intermediate rows are bridged.
                 if let trace {
                     var event = SequenceTraceEvent(ordinal: frame.ordinal, stage: .decision, reason: .burstSeed, accepted: true)
@@ -492,7 +547,7 @@ public struct SequenceDetector: Sendable {
                 run.append(frame, configuration: configuration)
                 let pending = Array(run.recent.suffix(Self.intervalPendingCapacity))
                 if let seed = firstStableSeed(in: pending) {
-                    if let prepared = prepareInterval(seed: seed.frames, cadence: seed.cadence, pending: pending) {
+                    if let prepared = try prepareInterval(seed: seed.frames, cadence: seed.cadence, pending: pending, cancelled: cancelled) {
                         active = prepared.run
                         traceInterval(prepared.run, ordinal: frame.ordinal, reason: .episodeStarted, accepted: true)
                     } else {
@@ -553,8 +608,8 @@ public struct SequenceDetector: Sendable {
         }
         return nil
     }
-    private func prepareInterval(seed: [SequenceWorkingFrame], cadence: SequenceCadence,
-                                 pending: [SequenceWorkingFrame], anchorConstraint: SequenceActiveRun? = nil) -> SequencePreparedInterval? {
+    private mutating func prepareInterval(seed: [SequenceWorkingFrame], cadence: SequenceCadence,
+                                 pending: [SequenceWorkingFrame], anchorConstraint: SequenceActiveRun? = nil, cancelled: () -> Bool) throws -> SequencePreparedInterval? {
         let initial: SequenceIntervalConsensus?
         if let left = anchorConstraint {
             // A right-hand fit cannot redefine the episode reference or relax an earlier bound.
@@ -595,7 +650,7 @@ public struct SequenceDetector: Sendable {
             }
             guard pauseAllowed(left: left, right: firstSupport[0]),
                   selected.frames.allSatisfy({ anchored($0.feature, in: anchorRun, ordinal: $0.ordinal) }),
-                  bridgeSupported(left: left, right: firstSupport, supportCount: 3) else {
+                  try bridgeSupported(left: left, right: firstSupport, supportCount: 3, cancelled: cancelled) else {
                 traceInterval(left, ordinal: seed.last!.ordinal, reason: .epochRejected, accepted: false)
                 allowStartup = false; break
             }
@@ -661,37 +716,37 @@ public struct SequenceDetector: Sendable {
         }
         return accepted
     }
-    private mutating func acceptIntervalRight(_ frame: SequenceWorkingFrame, left: SequenceActiveRun) {
+    private mutating func acceptIntervalRight(_ frame: SequenceWorkingFrame, left: SequenceActiveRun, cancelled: () -> Bool) throws {
         // An independently established dense burst must not be swallowed by an interval hypothesis.
-        if let previous = intervalRight.last, dense(previous, frame) {
-            separateIntervalRight(); accept(frame); return
+        if let previous = intervalRight.last, try dense(previous, frame, cancelled: cancelled) {
+            try separateIntervalRight(cancelled: cancelled); try accept(frame, cancelled: cancelled); return
         }
         if intervalRight.count == Self.intervalPendingCapacity {
             let evicted = intervalRight.removeFirst()
             trace?.emit(SequenceTraceEvent(ordinal: evicted.ordinal, stage: .episode, reason: .pendingEvicted, accepted: false))
             emit(left); active = nil; closedIntervalLast = nil
             let pending = intervalRight; intervalRight.removeAll()
-            for retained in pending { accept(retained) }
-            accept(frame); return
+            for retained in pending { try accept(retained, cancelled: cancelled) }
+            try accept(frame, cancelled: cancelled); return
         }
         intervalRight.append(frame)
         guard let seed = firstStableSeed(in: intervalRight) else { return }
-        guard let right = prepareInterval(seed: seed.frames, cadence: seed.cadence, pending: intervalRight, anchorConstraint: left) else {
+        guard let right = try prepareInterval(seed: seed.frames, cadence: seed.cadence, pending: intervalRight, anchorConstraint: left, cancelled: cancelled) else {
             traceInterval(left, ordinal: frame.ordinal, reason: .consensusConflict, accepted: false)
-            separateIntervalRight(); return
+            try separateIntervalRight(cancelled: cancelled); return
         }
         guard let certificate = right.run.intervalConsensus?.feasible,
               let combined = left.intervalConsensus?.accepting(certificate) else {
             traceInterval(left, ordinal: frame.ordinal, reason: .consensusConflict, accepted: false)
-            separateIntervalRight(); return
+            try separateIntervalRight(cancelled: cancelled); return
         }
         guard right.run.first == intervalRight[0].ordinal,
               pauseAllowed(left: left, right: right.firstCadenceSupport[0]),
               right.firstCadenceSupport.allSatisfy({ anchored($0.feature, in: left, ordinal: $0.ordinal) }),
               anchored(right.run.anchors[0], in: left, ordinal: right.run.first),
-              bridgeSupported(left: left, right: right.firstCadenceSupport, supportCount: 3) else {
+              try bridgeSupported(left: left, right: right.firstCadenceSupport, supportCount: 3, cancelled: cancelled) else {
             traceInterval(left, ordinal: frame.ordinal, reason: .epochRejected, accepted: false)
-            separateIntervalRight(); return
+            try separateIntervalRight(cancelled: cancelled); return
         }
         var joined = left
         joined.cadence = right.run.cadence; joined.intervalConsensus = combined
@@ -699,13 +754,13 @@ public struct SequenceDetector: Sendable {
         intervalRight.removeAll(); active = joined
         traceInterval(joined, ordinal: frame.ordinal, reason: .epochAccepted, accepted: true)
     }
-    private mutating func separateIntervalRight() {
+    private mutating func separateIntervalRight(cancelled: () -> Bool) throws {
         if let left = active { emit(left) }
         active = nil; closedIntervalLast = nil
         let pending = intervalRight; intervalRight.removeAll()
-        for frame in pending { accept(frame) }
+        for frame in pending { try accept(frame, cancelled: cancelled) }
     }
-    private func bridgeSupported(left: SequenceActiveRun, right: [SequenceWorkingFrame], supportCount: Int? = nil) -> Bool {
+    private mutating func bridgeSupported(left: SequenceActiveRun, right: [SequenceWorkingFrame], supportCount: Int? = nil, burstSpatial: Bool = false, cancelled: () -> Bool) throws -> Bool {
         let count = supportCount ?? configuration.bridgeSupportFrames
         let before = Array(left.recent.suffix(count))
         guard before.count == count,
@@ -727,7 +782,7 @@ public struct SequenceDetector: Sendable {
                 histogram: configuration.bridgeHistogramLimit, luminance: configuration.bridgeLuminanceLimit, hash: configuration.bridgeHashLimit)
             trace.emit(event)
         }
-        if accepted { return true }
+        if accepted { return try !burstSpatial || spatialBridge(before, right, cancelled: cancelled) }
         // All global anchors and both dense support windows were checked above.
         // Only the histogram may exceed its ordinary bridge limit.
         let eligible = h > configuration.bridgeHistogramLimit
@@ -747,7 +802,75 @@ public struct SequenceDetector: Sendable {
                 histogram: configuration.anchorHistogramLimit, luminance: strongLuminance, hash: configuration.bridgeHashLimit)
             trace.emit(event)
         }
-        return rescued
+        guard rescued else { return false }
+        return try !burstSpatial || spatialBridge(before, right, cancelled: cancelled)
+    }
+    private mutating func spatialPair(_ first: SequenceWorkingFrame, _ second: SequenceWorkingFrame,
+                                      purpose: SequenceSpatialDecisionPurpose, cancelled: () -> Bool) throws -> SequenceSpatialEvidence {
+        try checkSpatialCancellation(cancelled)
+        guard let spatial = configuration.spatialExperiment, let a = first.spatialFeature, let b = second.spatialFeature,
+              let namespace = spatialCacheNamespace, first.ordinal < second.ordinal else { throw SequenceDetectorError.missingSpatialFeature }
+        let key = SequenceSpatialCacheKey(source: first.ordinal, target: second.ordinal, sourceHash: first.contentHash,
+            targetHash: second.contentHash, namespace: namespace)
+        spatialStatistics?.pairRequests += 1
+        let start = spatialMetrics == nil ? nil : DispatchTime.now().uptimeNanoseconds
+        let evidence: SequenceSpatialEvidence, hit: Bool
+        if let cached = spatialCache[key] {
+            evidence = cached; hit = true; spatialStatistics?.cacheHits += 1
+            spatialCacheOrder.removeAll { $0 == key }; spatialCacheOrder.append(key)
+        } else {
+            spatialStatistics?.pairComputations += 1
+            evidence = try SequenceSpatialMatcher.compare(a, b, configuration: spatial, cancelled: cancelled); hit = false
+            try checkSpatialCancellation(cancelled)
+            if spatialCacheOrder.count == 64 { spatialCache.removeValue(forKey: spatialCacheOrder.removeFirst()) }
+            spatialCache[key] = evidence; spatialCacheOrder.append(key)
+            spatialStatistics?.coarseCandidates += evidence.coarseCandidates
+            spatialStatistics?.fineCandidates += evidence.fineCandidates
+            spatialStatistics?.patchCandidates += evidence.patchCandidates
+            let previousMaximum = spatialStatistics?.maximumCandidatesPerPair ?? 0
+            spatialStatistics?.maximumCandidatesPerPair = max(previousMaximum, evidence.candidateCount)
+        }
+        switch evidence.verdict {
+        case .supported: spatialStatistics?.supportedPairs += 1
+        case .rejected: spatialStatistics?.rejectedPairs += 1
+        case .insufficient: spatialStatistics?.insufficientPairs += 1
+        }
+        recordPeak()
+        if let observer = spatialMetrics, let start {
+            observer(SequenceSpatialMetricsEvent(referenceOrdinal: first.ordinal, ordinal: second.ordinal, purpose: purpose,
+                durationSeconds: Double(DispatchTime.now().uptimeNanoseconds - start) / 1e9, cacheHit: hit,
+                verdict: evidence.verdict, managedLiveBytes: spatialManagedLiveBytes, managedPeakBytes: managedPeakEstimateBytes,
+                scratchReservedBytes: SequenceSpatialMatcher.scratchReservationBytes, candidateCount: hit ? 0 : evidence.candidateCount,
+                evidence: evidence))
+        }
+        if let trace {
+            var event = SequenceTraceEvent(ordinal: second.ordinal, stage: purpose == .denseBurstLocal ? .local : .bridge,
+                reason: evidence.verdict == .supported ? .spatialSupported : .spatialRejected, accepted: evidence.verdict == .supported)
+            event.referenceOrdinal = first.ordinal; event.spatial = evidence; event.spatialPurpose = purpose
+            event.spatialFeatureVersion = SequenceSpatialFeature.version; trace.emit(event)
+        }
+        try checkSpatialCancellation(cancelled)
+        return evidence
+    }
+    private mutating func spatialBridge(_ left: [SequenceWorkingFrame], _ right: [SequenceWorkingFrame], cancelled: () -> Bool) throws -> Bool {
+        guard configuration.spatialExperiment != nil else { return true }
+        // The experiment is defined for the frozen three-by-three support, never a best subset.
+        guard left.count == 3, right.count == 3 else { return false }
+        var rows = [Int](repeating: 0, count: 3), columns = rows, supported = 0
+        for row in 0..<3 { for column in 0..<3 {
+            let value = try spatialPair(left[row], right[column], purpose: .burstPauseBridge, cancelled: cancelled)
+            if value.verdict == .supported { supported += 1; rows[row] += 1; columns[column] += 1 }
+        } }
+        let accepted = supported >= 6 && rows.allSatisfy { $0 > 0 } && columns.allSatisfy { $0 > 0 }
+        if let trace {
+            var event = SequenceTraceEvent(ordinal: right[2].ordinal, stage: .bridge,
+                reason: accepted ? .spatialSupported : .spatialRejected, accepted: accepted)
+            event.referenceOrdinal = left[2].ordinal; event.spatialPurpose = .burstPauseBridge
+            event.spatialFeatureVersion = SequenceSpatialFeature.version; event.spatialSupportedPairs = supported
+            event.spatialRowsSupported = rows.filter { $0 > 0 }.count; event.spatialColumnsSupported = columns.filter { $0 > 0 }.count
+            trace.emit(event)
+        }
+        return accepted
     }
     private mutating func emit(_ run: SequenceActiveRun, through closedLast: Int? = nil) {
         let last = closedLast ?? run.last
@@ -773,7 +896,7 @@ public struct SequenceDetector: Sendable {
         }
         bridgeRight.removeAll()
     }
-    private mutating func flush() {
+    private mutating func flush(cancelled: () -> Bool) throws {
         trace?.emit(SequenceTraceEvent(ordinal: processedCount > 0 ? processedCount - 1 : 0, stage: .decision, reason: .runFlushed, accepted: true))
         if let active { emit(active) }
         active = nil
@@ -787,8 +910,8 @@ public struct SequenceDetector: Sendable {
         }
         bridgeRight.removeAll()
         if !pendingInterval.isEmpty {
-            for frame in pendingInterval { accept(frame) }
-            flush()
+            for frame in pendingInterval { try accept(frame, cancelled: cancelled) }
+            try flush(cancelled: cancelled)
         }
     }
 }

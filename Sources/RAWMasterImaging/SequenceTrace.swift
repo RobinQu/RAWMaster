@@ -26,7 +26,7 @@ public struct SequenceTraceLimits: Codable, Sendable, Equatable {
         try validate()
     }
 }
-public enum SequenceTraceError: Error { case invalidLimits }
+public enum SequenceTraceError: Error { case invalidLimits, invalidSpatialEvidence }
 
 public struct SequenceTraceSummary: Codable, Sendable, Equatable {
     public let emittedEvents: Int
@@ -51,7 +51,7 @@ public enum SequenceTraceReason: String, Codable, Sendable {
     case nonPositiveGap, stepLimit, gapResidual, phaseConflict, missingRunLimit, missingFractionLimit, baseSupportLimit
     case burstSeed, intervalSeed, bridgePending, bridgeAccepted, bridgeRejected, runFlushed, emitted
     case cancelled, incompleteTail, budgetExceeded
-    case structuralRescue, structuralRescueRejected
+    case structuralRescue, structuralRescueRejected, spatialSupported, spatialRejected
     case periodCertificateConflict
     case episodeStarted, episodeExtended, epochPending, epochAccepted, epochRejected
     case consensusConflict, weakConfirmed, startupAccepted, startupRejected, startupSpanLimit, pendingEvicted, closedLeft
@@ -68,6 +68,12 @@ public struct SequenceTraceEvent: Codable, Sendable, Equatable {
     public var reason: SequenceTraceReason
     public var accepted: Bool
     public var rescueEligible: Bool?
+    public var spatial: SequenceSpatialEvidence?
+    public var spatialPurpose: SequenceSpatialDecisionPurpose?
+    public var spatialFeatureVersion: String?
+    public var spatialSupportedPairs: Int?
+    public var spatialRowsSupported: Int?
+    public var spatialColumnsSupported: Int?
     public var barrier: SequenceReason?
     public var referenceOrdinal: Int?
     public var runFirst: Int?
@@ -122,6 +128,7 @@ public struct SequenceTraceEvent: Codable, Sendable, Equatable {
         self.ordinal = ordinal; self.stage = stage; self.reason = reason; self.accepted = accepted
     }
     public func encodedJSONLine() throws -> Data {
+        guard spatial?.isFinite ?? true else { throw SequenceTraceError.invalidSpatialEvidence }
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         var data = try encoder.encode(self); data.append(10); return data
     }

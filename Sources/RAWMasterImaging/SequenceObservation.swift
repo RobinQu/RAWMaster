@@ -5,8 +5,9 @@ public struct SequenceObservation: Sendable {
     public let input: SequenceAssetInput
     public let feature: SequenceFrameFeature?
     public let warnings: [String]
-    public init(input: SequenceAssetInput, feature: SequenceFrameFeature?, warnings: [String] = []) {
-        self.input = input; self.feature = feature; self.warnings = warnings
+    public let spatialFeature: SequenceSpatialFeature?
+    public init(input: SequenceAssetInput, feature: SequenceFrameFeature?, warnings: [String] = [], spatialFeature: SequenceSpatialFeature? = nil) {
+        self.input = input; self.feature = feature; self.warnings = warnings; self.spatialFeature = spatialFeature
     }
 }
 
@@ -22,7 +23,7 @@ public struct SequenceObservationPreprocessor: Sendable {
     public init(manifest: SequenceInputManifest) { manifestFingerprint = manifest.contentFingerprint }
 
     public mutating func make(entry: SequenceManifestEntry, evidence: SequenceCaptureEvidence?,
-                              feature: SequenceFrameFeature?, barrier: SequenceReason? = nil) -> SequenceObservation {
+                              feature: SequenceFrameFeature?, barrier: SequenceReason? = nil, spatialFeature: SequenceSpatialFeature? = nil) -> SequenceObservation {
         var failure = barrier ?? entry.barrier
         var warnings: [String] = []
         func canonical(_ value: String?) -> String? {
@@ -50,20 +51,21 @@ public struct SequenceObservationPreprocessor: Sendable {
         }
         if failure != nil {
             previous = nil; eraID = nil; knownMake = nil; knownModel = nil; preciseHighWater = nil
-            return SequenceObservation(input: SequenceAssetInput(entry: entry, evidence: evidence, clock: nil, barrier: failure), feature: feature, warnings: warnings)
+            return SequenceObservation(input: SequenceAssetInput(entry: entry, evidence: evidence, clock: nil, barrier: failure), feature: feature, warnings: warnings, spatialFeature: spatialFeature)
         }
         if previous?.camera != camera || eraID == nil { eraID = "\(camera!):era:\(entry.ordinal)" }
         if let local = evidence?.time.local, let nano = local.nanosecond { preciseHighWater = (local.civilSecond, nano) }
         knownMake = make ?? knownMake; knownModel = model ?? knownModel
         previous = (camera!, evidence!.time)
         return SequenceObservation(input: SequenceAssetInput(entry: entry, evidence: evidence,
-            clock: SequenceClockPartition(id: eraID!, basis: .localCivil, derivationVersion: Self.version)), feature: feature)
+            clock: SequenceClockPartition(id: eraID!, basis: .localCivil, derivationVersion: Self.version)), feature: feature, spatialFeature: spatialFeature)
     }
 }
 
 public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
     public static let algorithmVersion = "sequence-local-anchor-cadence-dev-4"
     public static let policyVersion = "sequence-policy-dev-4"
+    public var spatialExperiment: SequenceSpatialConfiguration? = nil
     public var memoryBudgetBytes = 64 * 1024 * 1024
     public var contextFrames = 12
     public var anchorCount = 3
@@ -99,10 +101,13 @@ public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
     public init() {}
     public var fingerprint: String { get throws { try validate(); return try SequenceFingerprint.digest(self) } }
     public func versions(order: String) -> SequenceAnalysisVersions {
-        SequenceAnalysisVersions(extractor: SequenceCaptureReader.extractorVersion, feature: SequenceFrameFeature.version,
-            algorithm: Self.algorithmVersion, policy: Self.policyVersion, order: order)
+        SequenceAnalysisVersions(extractor: SequenceCaptureReader.extractorVersion, feature: spatialExperiment == nil ? SequenceFrameFeature.version : SequenceFrameFeature.version + "+" + SequenceSpatialFeature.version,
+            algorithm: spatialExperiment == nil ? Self.algorithmVersion : "sequence-local-anchor-cadence-spatial-exp-1",
+            policy: spatialExperiment == nil ? Self.policyVersion : "sequence-spatial-policy-exp-1", order: order)
     }
     public func validate() throws {
+        try spatialExperiment?.validate()
+        if spatialExperiment != nil, bridgeSupportFrames != 3 { throw SequenceDetectorError.invalidConfiguration }
         let values = [denseGapSeconds, maximumBridgeSeconds, minimumIntervalPeriod, maximumIntervalPeriod,
             absoluteCadenceTolerance, relativeCadenceTolerance, maximumMissingFraction,
             maximumEpisodePausePeriods, maximumEpisodePauseSeconds, maximumStartupPeriods]
@@ -122,4 +127,4 @@ public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
         }
     }
 }
-public enum SequenceDetectorError: Error { case invalidConfiguration, invalidOrder, stopped, finished, budgetExceeded, incompatibleToken }
+public enum SequenceDetectorError: Error { case invalidConfiguration, invalidOrder, stopped, finished, budgetExceeded, incompatibleToken, missingSpatialFeature }

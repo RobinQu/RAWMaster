@@ -20,8 +20,10 @@ public struct SequenceCaptureReadResult: Sendable {
     public let evidence: SequenceCaptureEvidence
     public let feature: SequenceFrameFeature?
     public let previewFailure: String?
+    public let spatialFeature: SequenceSpatialFeature?
+    public let spatialExtractionSeconds: Double?
 }
-public enum SequenceReadError: Error, Equatable { case unreadable, sourceChanged, invalidBinding }
+public enum SequenceReadError: Error, Equatable { case unreadable, sourceChanged, invalidBinding, spatialExtractionFailed }
 
 /// A single bounded synchronous unit; scheduling/admission belongs to the caller.
 public enum SequenceCaptureReader {
@@ -32,8 +34,10 @@ public enum SequenceCaptureReader {
     /// verifiedCredential must correspond to the caller-verified contentHash, not a newly guessed identity.
     public static func read(at url: URL, assetID: String, contentHash: String, evidenceRevision: Int,
                             verifiedCredential: SequenceFileCredential,
+                            spatial: SequenceSpatialConfiguration? = nil,
                             cancelled: () -> Bool = { false }) throws -> SequenceCaptureReadResult {
         if Task.isCancelled || cancelled() { throw CancellationError() }
+        try spatial?.validate()
         guard !assetID.isEmpty, contentHash.utf8.count == 64,
               contentHash.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) }), evidenceRevision >= 0 else {
             throw SequenceReadError.invalidBinding
@@ -60,17 +64,29 @@ public enum SequenceCaptureReader {
                 imageNumberRaw: auxiliary[kCGImagePropertyExifAuxImageNumber].map { String(describing: $0) },
                 exposureSeconds: exposure, orientation: orientation, warnings: warnings)
             guard (1...8).contains(orientation) else {
-                return SequenceCaptureReadResult(evidence: evidence, feature: nil, previewFailure: "invalid-orientation")
+                return SequenceCaptureReadResult(evidence: evidence, feature: nil, previewFailure: "invalid-orientation", spatialFeature: nil, spatialExtractionSeconds: nil)
             }
             let raw = rawExtensions.contains(url.pathExtension.lowercased())
             let options: [CFString: Any] = [kCGImageSourceCreateThumbnailFromImageIfAbsent: !raw,
                 kCGImageSourceCreateThumbnailFromImageAlways: !raw, kCGImageSourceCreateThumbnailWithTransform: true,
                 kCGImageSourceThumbnailMaxPixelSize: SequenceFrameFeature.maximumPixel, kCGImageSourceShouldCacheImmediately: true]
             guard let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else {
-                return SequenceCaptureReadResult(evidence: evidence, feature: nil, previewFailure: "missing-embedded-preview")
+                return SequenceCaptureReadResult(evidence: evidence, feature: nil, previewFailure: "missing-embedded-preview", spatialFeature: nil, spatialExtractionSeconds: nil)
             }
-            do { return SequenceCaptureReadResult(evidence: evidence, feature: try SequenceFrameFeature.extract(image), previewFailure: nil) }
-            catch { return SequenceCaptureReadResult(evidence: evidence, feature: nil, previewFailure: "invalid-preview") }
+            let legacy: SequenceFrameFeature
+            do { legacy = try SequenceFrameFeature.extract(image) }
+            catch { return SequenceCaptureReadResult(evidence: evidence, feature: nil, previewFailure: "invalid-preview", spatialFeature: nil, spatialExtractionSeconds: nil) }
+            // Additional extraction stays outside the old preview catch; it cannot erase legacy evidence.
+            var spatialFeature: SequenceSpatialFeature?, spatialSeconds: Double?
+            if spatial != nil {
+                let started = DispatchTime.now().uptimeNanoseconds
+                do { spatialFeature = try SequenceSpatialFeature.extract(image, cancelled: cancelled) }
+                catch is CancellationError { throw CancellationError() }
+                catch { throw SequenceReadError.spatialExtractionFailed }
+                spatialSeconds = Double(DispatchTime.now().uptimeNanoseconds - started) / 1e9
+            }
+            return SequenceCaptureReadResult(evidence: evidence, feature: legacy, previewFailure: nil,
+                spatialFeature: spatialFeature, spatialExtractionSeconds: spatialSeconds)
         }
         if Task.isCancelled || cancelled() { throw CancellationError() }
         guard try SequenceFileCredential.capture(at: url) == verifiedCredential else { throw SequenceReadError.sourceChanged }

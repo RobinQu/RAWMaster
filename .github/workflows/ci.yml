@@ -22,6 +22,10 @@ jobs:
           uname -m >> output/validation/ci/platform.txt
           swift --version >> output/validation/ci/platform.txt
           xcodebuild -version >> output/validation/ci/platform.txt
+      - name: Validate offline experiment runner
+        run: |
+          set -o pipefail
+          PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s Tests/Tooling -v 2>&1 | tee output/validation/ci/experiment-runner-tests.log
       - name: Run regression tests including all JPEG fixtures
         env:
           RAWMASTER_SEQUENCE_FIXTURE_REPORT: ${{ github.workspace }}/output/validation/ci/fixture-regression.json

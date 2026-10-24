@@ -1,0 +1,4015 @@
+{
+  "aggregateDescriptiveOnly": {
+    "baseline": {
+      "exactSonyGroups": 4,
+      "falseNegative": 374,
+      "falsePositive": 1,
+      "sonyFalseNegative": 1,
+      "sonyGroupCount": 5,
+      "sumCaseMedianSeconds": 2.325791083276272,
+      "trueNegative": 6,
+      "truePositive": 799
+    },
+    "bridgeVetoOnly": {
+      "exactSonyGroups": 2,
+      "falseNegative": 390,
+      "falsePositive": 0,
+      "sonyFalseNegative": 17,
+      "sonyGroupCount": 5,
+      "sumCaseMedianSeconds": 2.523920458275825,
+      "trueNegative": 7,
+      "truePositive": 783
+    },
+    "localRescueAndBridgeVeto": {
+      "exactSonyGroups": 2,
+      "falseNegative": 390,
+      "falsePositive": 0,
+      "sonyFalseNegative": 17,
+      "sonyGroupCount": 5,
+      "sumCaseMedianSeconds": 2.526278708362952,
+      "trueNegative": 7,
+      "truePositive": 783
+    }
+  },
+  "artifacts": {
+    "benchmark.json": "27291b1eb590cb93c9e49291625f347cb3e43a1ab1006bfb99594747c3cea8f9",
+    "complete.json": "5d2bf971d8e26afddaeb75b4ec2e5fbb9881283bc742670ea79b9b5199d7532c",
+    "edge-deltas.json": "c5ab5233261dd89ebe9dd30d2f50f88c84a10fe19a7857d5d4c13668e31da6f9",
+    "freeze.json": "cd44cca6eb1bff480cbfe416707d3dad9d52f5dbfba9c736956f0eb4f4399031",
+    "quality.json": "275be1e899779663b719bd0a202164ada0294646143d057e7e6953079d9ebc1a"
+  },
+  "benchmarkUnits": 264,
+  "controls": {
+    "approvedGoldenSHA256": "0e945e7cf7178793edb91870f5e75af34f8c44e4505c972cb3f5f58acb02f6f3",
+    "executableSHA256": "f515ab4bf71d32f168ad149431768224c0adfd811fb7357e36e7bed16fff5d76",
+    "fixtureIndexSHA256": "e2bc0f560c96d9c60cea737d43718d3d867aacc7c0e6599a44f6d7da58efb48c",
+    "fixtureSnapshotSHA256": "86b1930e9bcb0fd450631d8c13b558eb1c1a4212de753b53d4a6c4fa6ea490be",
+    "schedule": {
+      "batchSeconds": 1800,
+      "benchmarkUnits": 264,
+      "measuredPerPair": 10,
+      "qualityUnits": 18,
+      "seed": 0,
+      "terminationGraceSeconds": 2,
+      "unitSeconds": 60,
+      "warmupsPerPair": 1
+    },
+    "sourceSnapshotSHA256": "9757d4333906316bbe35c1d786c64ad75c067bb98dea8566429593aa34c468c6",
+    "variants": [
+      {
+        "configuration": {
+          "absoluteCadenceTolerance": 0.1,
+          "anchorCount": 3,
+          "anchorHashLimit": 0.7,
+          "anchorHistogramLimit": 0.35,
+          "anchorLuminanceLimit": 0.28,
+          "anchorStride": 8,
+          "bridgeHashLimit": 0.65,
+          "bridgeHistogramLimit": 0.23,
+          "bridgeLuminanceLimit": 0.26,
+          "bridgeStructuralRescueFraction": 0.5,
+          "bridgeSupportFrames": 3,
+          "contextFrames": 12,
+          "denseGapSeconds": 0.6,
+          "intervalSceneHashLimit": 0.7,
+          "intervalSceneHistogramLimit": 0.55,
+          "intervalSceneLuminanceLimit": 0.3,
+          "localHashLimit": 0.55,
+          "localHistogramLimit": 0.16,
+          "localLuminanceLimit": 0.23,
+          "localStructuralRescueFraction": 0.5,
+          "maximumBridgeSeconds": 12,
+          "maximumConsecutiveMissingGaps": 2,
+          "maximumEpisodePausePeriods": 12,
+          "maximumEpisodePauseSeconds": 3600,
+          "maximumIntervalPeriod": 86400,
+          "maximumMissingFraction": 0.5,
+          "maximumMissingFrames": 3,
+          "maximumStartupPeriods": 3,
+          "memoryBudgetBytes": 67108864,
+          "minimumIntervalFrames": 4,
+          "minimumIntervalPeriod": 1,
+          "relativeCadenceTolerance": 0.08
+        },
+        "policyFingerprint": "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+        "variant": "baseline",
+        "versions": {
+          "algorithm": "sequence-local-anchor-cadence-dev-4",
+          "extractor": "sequence-imageio-exif-v1",
+          "feature": "sequence-srgb32-hist16-dhash-v1",
+          "order": "session-natural-path-v1",
+          "policy": "sequence-policy-dev-4"
+        }
+      },
+      {
+        "configuration": {
+          "absoluteCadenceTolerance": 0.1,
+          "anchorCount": 3,
+          "anchorHashLimit": 0.7,
+          "anchorHistogramLimit": 0.35,
+          "anchorLuminanceLimit": 0.28,
+          "anchorStride": 8,
+          "bridgeHashLimit": 0.65,
+          "bridgeHistogramLimit": 0.23,
+          "bridgeLuminanceLimit": 0.26,
+          "bridgeStructuralRescueFraction": 0.5,
+          "bridgeSupportFrames": 3,
+          "contextFrames": 12,
+          "denseGapSeconds": 0.6,
+          "intervalSceneHashLimit": 0.7,
+          "intervalSceneHistogramLimit": 0.55,
+          "intervalSceneLuminanceLimit": 0.3,
+          "localHashLimit": 0.55,
+          "localHistogramLimit": 0.16,
+          "localLuminanceLimit": 0.23,
+          "localStructuralRescueFraction": 0.5,
+          "maximumBridgeSeconds": 12,
+          "maximumConsecutiveMissingGaps": 2,
+          "maximumEpisodePausePeriods": 12,
+          "maximumEpisodePauseSeconds": 3600,
+          "maximumIntervalPeriod": 86400,
+          "maximumMissingFraction": 0.5,
+          "maximumMissingFrames": 3,
+          "maximumStartupPeriods": 3,
+          "memoryBudgetBytes": 67108864,
+          "minimumIntervalFrames": 4,
+          "minimumIntervalPeriod": 1,
+          "relativeCadenceTolerance": 0.08,
+          "spatialExperiment": {
+            "mode": "bridgeVetoOnly",
+            "recipe": {
+              "coarsePixel": 24,
+              "coarseRadius": 3,
+              "fineRadius": 3,
+              "maximumPixel": 96,
+              "maximumTranslation": 12,
+              "minimumCorrelation": 0.8,
+              "minimumDeviation": 0.025,
+              "minimumGradient": 0.01,
+              "minimumGradientCosine": 0.7,
+              "minimumOverlap": 0.75,
+              "minimumPeakMargin": 0.03,
+              "minimumQuadrants": 3,
+              "minimumSupportedFraction": 0.8,
+              "minimumTexturedPatches": 6,
+              "minimumValidSide": 48,
+              "patchSize": 16,
+              "residualRadius": 3
+            },
+            "recipeVersion": "spatial-translation-patch-v1"
+          }
+        },
+        "policyFingerprint": "12da1f0c925b615544f07e674b83671f164b98836003ca5642352689ef0c70c6",
+        "variant": "bridgeVetoOnly",
+        "versions": {
+          "algorithm": "sequence-local-anchor-cadence-spatial-exp-1",
+          "extractor": "sequence-imageio-exif-v1",
+          "feature": "sequence-srgb32-hist16-dhash-v1+spatial-translation-patch-v1",
+          "order": "session-natural-path-v1",
+          "policy": "sequence-spatial-policy-exp-1"
+        }
+      },
+      {
+        "configuration": {
+          "absoluteCadenceTolerance": 0.1,
+          "anchorCount": 3,
+          "anchorHashLimit": 0.7,
+          "anchorHistogramLimit": 0.35,
+          "anchorLuminanceLimit": 0.28,
+          "anchorStride": 8,
+          "bridgeHashLimit": 0.65,
+          "bridgeHistogramLimit": 0.23,
+          "bridgeLuminanceLimit": 0.26,
+          "bridgeStructuralRescueFraction": 0.5,
+          "bridgeSupportFrames": 3,
+          "contextFrames": 12,
+          "denseGapSeconds": 0.6,
+          "intervalSceneHashLimit": 0.7,
+          "intervalSceneHistogramLimit": 0.55,
+          "intervalSceneLuminanceLimit": 0.3,
+          "localHashLimit": 0.55,
+          "localHistogramLimit": 0.16,
+          "localLuminanceLimit": 0.23,
+          "localStructuralRescueFraction": 0.5,
+          "maximumBridgeSeconds": 12,
+          "maximumConsecutiveMissingGaps": 2,
+          "maximumEpisodePausePeriods": 12,
+          "maximumEpisodePauseSeconds": 3600,
+          "maximumIntervalPeriod": 86400,
+          "maximumMissingFraction": 0.5,
+          "maximumMissingFrames": 3,
+          "maximumStartupPeriods": 3,
+          "memoryBudgetBytes": 67108864,
+          "minimumIntervalFrames": 4,
+          "minimumIntervalPeriod": 1,
+          "relativeCadenceTolerance": 0.08,
+          "spatialExperiment": {
+            "mode": "localRescueAndBridgeVeto",
+            "recipe": {
+              "coarsePixel": 24,
+              "coarseRadius": 3,
+              "fineRadius": 3,
+              "maximumPixel": 96,
+              "maximumTranslation": 12,
+              "minimumCorrelation": 0.8,
+              "minimumDeviation": 0.025,
+              "minimumGradient": 0.01,
+              "minimumGradientCosine": 0.7,
+              "minimumOverlap": 0.75,
+              "minimumPeakMargin": 0.03,
+              "minimumQuadrants": 3,
+              "minimumSupportedFraction": 0.8,
+              "minimumTexturedPatches": 6,
+              "minimumValidSide": 48,
+              "patchSize": 16,
+              "residualRadius": 3
+            },
+            "recipeVersion": "spatial-translation-patch-v1"
+          }
+        },
+        "policyFingerprint": "f8d1d24dfb5996f2c9f1d37f6f835f7e973f6731a6aed8a9885afdb302cc5bee",
+        "variant": "localRescueAndBridgeVeto",
+        "versions": {
+          "algorithm": "sequence-local-anchor-cadence-spatial-exp-1",
+          "extractor": "sequence-imageio-exif-v1",
+          "feature": "sequence-srgb32-hist16-dhash-v1+spatial-translation-patch-v1",
+          "order": "session-natural-path-v1",
+          "policy": "sequence-spatial-policy-exp-1"
+        }
+      }
+    ]
+  },
+  "date": "2026-10-24",
+  "defaultGoldenUnchanged": true,
+  "descriptorBootstrapUnits": 1,
+  "experimentID": "spatial-cv-v1",
+  "limitations": [
+    "All six cases are seen development data; not unseen validation.",
+    "Only 7 explicitly labeled negative edges; unknown and unlabeled context excluded.",
+    "DJI double-format assets remain separate; 373 positive-edge misses unchanged; 0188 unknown.",
+    "Interval quality trace hits the existing per-frame cap; marked incomplete and not treated as complete causal evidence.",
+    "Fresh release processes do not mean cold filesystem caches. Candidate n=10 per case; each paired baseline n=10, pooled baseline n=20.",
+    "NativeRead includes spatialExtraction; engineConsume includes spatialPair. Do not add nested times.",
+    "wholeCaseSeconds spans before-hash through after-hash, before fixture audit, truth evaluation and report writes. Sum of case medians is descriptive, not one end-to-end session.",
+    "Process RSS high-water sampled at analysis completion excludes later metadata audit/report phase and is not GUI memory. Managed reservation estimate is separate.",
+    "Cancellation functionality and buffer release verified; request-to-stop latency distribution not measured.",
+    "JPEG proxies on one M4 Max; no new RAW, low-memory hardware or UI performance acceptance."
+  ],
+  "performance": {
+    "cacheBoundary": "Fresh process, not cold OS filesystem cache; no cache flush. Warmups excluded; first-observed quality runs separately preserved.",
+    "groups": [
+      {
+        "caseID": "burst123",
+        "engineManagedPeakEstimateBytes": {
+          "count": 20,
+          "max": 2426624,
+          "p50": 2426624,
+          "p95": 2426624
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 20,
+          "max": 34734080,
+          "p50": 34619392,
+          "p95": 34734080
+        },
+        "runs": 20,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 2460,
+            "max": 0.0001257082913070917,
+            "p50": 5.291658453643322e-05,
+            "p95": 6.433343514800072e-05
+          },
+          "engineFinish": {
+            "count": 20,
+            "max": 0.005838625133037567,
+            "p50": 0.005420291796326637,
+            "p95": 0.005626708269119263
+          },
+          "nativeRead": {
+            "count": 2460,
+            "max": 0.004901000065729022,
+            "p50": 0.001319083385169506,
+            "p95": 0.0015540833119302988
+          },
+          "spatialExtraction": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "baseline",
+        "wholeCaseSeconds": {
+          "count": 20,
+          "max": 0.24857075000181794,
+          "p50": 0.23084583319723606,
+          "p95": 0.24814066663384438
+        }
+      },
+      {
+        "caseID": "burst123",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8849152,
+          "p50": 8849152,
+          "p95": 8849152
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 270,
+          "max": 0.000299084,
+          "p50": 0.000199291,
+          "p95": 0.000231667
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 270,
+        "pairRequests": 270,
+        "pairVerdicts": {
+          "insufficient": 60,
+          "rejected": 210,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 38191104,
+          "p50": 37519360,
+          "p95": 38191104
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 1230,
+            "max": 0.0021470417268574238,
+            "p50": 5.512498319149017e-05,
+            "p95": 6.995839066803455e-05
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.005708999931812286,
+            "p50": 0.005363000091165304,
+            "p95": 0.005708999931812286
+          },
+          "nativeRead": {
+            "count": 1230,
+            "max": 0.004918791586533189,
+            "p50": 0.0014410833828151226,
+            "p95": 0.0016500833444297314
+          },
+          "spatialExtraction": {
+            "count": 1230,
+            "max": 0.000261834,
+            "p50": 0.000112125,
+            "p95": 0.000217375
+          },
+          "spatialPair": {
+            "count": 270,
+            "max": 0.000299084,
+            "p50": 0.000199291,
+            "p95": 0.000231667
+          }
+        },
+        "variant": "bridgeVetoOnly",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.26306162495166063,
+          "p50": 0.25226495834067464,
+          "p95": 0.26306162495166063
+        }
+      },
+      {
+        "caseID": "burst123",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8849152,
+          "p50": 8849152,
+          "p95": 8849152
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 270,
+          "max": 0.0003055,
+          "p50": 0.000198333,
+          "p95": 0.000240166
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 270,
+        "pairRequests": 270,
+        "pairVerdicts": {
+          "insufficient": 60,
+          "rejected": 210,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 39387136,
+          "p50": 37650432,
+          "p95": 39387136
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 1230,
+            "max": 0.0021524999756366014,
+            "p50": 5.4083531722426414e-05,
+            "p95": 6.787502206861973e-05
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.005560749908909202,
+            "p50": 0.005338791757822037,
+            "p95": 0.005560749908909202
+          },
+          "nativeRead": {
+            "count": 1230,
+            "max": 0.004579499829560518,
+            "p50": 0.0014223749749362469,
+            "p95": 0.0016290834173560143
+          },
+          "spatialExtraction": {
+            "count": 1230,
+            "max": 0.000263084,
+            "p50": 0.000111833,
+            "p95": 0.0002205
+          },
+          "spatialPair": {
+            "count": 270,
+            "max": 0.0003055,
+            "p50": 0.000198333,
+            "p95": 0.000240166
+          }
+        },
+        "variant": "localRescueAndBridgeVeto",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.2536276667378843,
+          "p50": 0.2488179167266935,
+          "p95": 0.2536276667378843
+        }
+      },
+      {
+        "caseID": "burst14-context38",
+        "engineManagedPeakEstimateBytes": {
+          "count": 20,
+          "max": 2317824,
+          "p50": 2317824,
+          "p95": 2317824
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 20,
+          "max": 33734656,
+          "p50": 33619968,
+          "p95": 33718272
+        },
+        "runs": 20,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 760,
+            "max": 9.887502528727055e-05,
+            "p50": 5.404162220656872e-05,
+            "p95": 6.975000724196434e-05
+          },
+          "engineFinish": {
+            "count": 20,
+            "max": 0.0018009583000093699,
+            "p50": 0.0016547916457057,
+            "p95": 0.0017772084102034569
+          },
+          "nativeRead": {
+            "count": 760,
+            "max": 0.004755666712298989,
+            "p50": 0.0014932916965335608,
+            "p95": 0.0017261668108403683
+          },
+          "spatialExtraction": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "baseline",
+        "wholeCaseSeconds": {
+          "count": 20,
+          "max": 0.08946866658516228,
+          "p50": 0.08257820829749107,
+          "p95": 0.08581570838578045
+        }
+      },
+      {
+        "caseID": "burst14-context38",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8740352,
+          "p50": 8740352,
+          "p95": 8740352
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 36339712,
+          "p50": 36012032,
+          "p95": 36339712
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 380,
+            "max": 9.908340871334076e-05,
+            "p50": 5.550007335841656e-05,
+            "p95": 7.045851089060307e-05
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.0017812915612012148,
+            "p50": 0.0016825832426548004,
+            "p95": 0.0017812915612012148
+          },
+          "nativeRead": {
+            "count": 380,
+            "max": 0.005066416691988707,
+            "p50": 0.0016238749958574772,
+            "p95": 0.0018723751418292522
+          },
+          "spatialExtraction": {
+            "count": 380,
+            "max": 0.000235,
+            "p50": 0.000105792,
+            "p95": 0.000142458
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "bridgeVetoOnly",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.09448625007644296,
+          "p50": 0.0871657500974834,
+          "p95": 0.09448625007644296
+        }
+      },
+      {
+        "caseID": "burst14-context38",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8740352,
+          "p50": 8740352,
+          "p95": 8740352
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 36225024,
+          "p50": 35946496,
+          "p95": 36225024
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 380,
+            "max": 9.716651402413845e-05,
+            "p50": 5.5166659876704216e-05,
+            "p95": 7.020845077931881e-05
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.0017603749874979258,
+            "p50": 0.0016745415050536394,
+            "p95": 0.0017603749874979258
+          },
+          "nativeRead": {
+            "count": 380,
+            "max": 0.004626708338037133,
+            "p50": 0.0016175834462046623,
+            "p95": 0.0018038749694824219
+          },
+          "spatialExtraction": {
+            "count": 380,
+            "max": 0.000239042,
+            "p50": 0.000104625,
+            "p95": 0.000195541
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "localRescueAndBridgeVeto",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.08946325001306832,
+          "p50": 0.08703754167072475,
+          "p95": 0.08946325001306832
+        }
+      },
+      {
+        "caseID": "burst48-context72",
+        "engineManagedPeakEstimateBytes": {
+          "count": 20,
+          "max": 2361344,
+          "p50": 2361344,
+          "p95": 2361344
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 20,
+          "max": 34390016,
+          "p50": 34242560,
+          "p95": 34390016
+        },
+        "runs": 20,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 1440,
+            "max": 0.0001016249880194664,
+            "p50": 5.420832894742489e-05,
+            "p95": 6.824987940490246e-05
+          },
+          "engineFinish": {
+            "count": 20,
+            "max": 0.0034562500659376383,
+            "p50": 0.0032256250269711018,
+            "p95": 0.003395333420485258
+          },
+          "nativeRead": {
+            "count": 1440,
+            "max": 0.005657333415001631,
+            "p50": 0.0012806665617972612,
+            "p95": 0.0016213334165513515
+          },
+          "spatialExtraction": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "baseline",
+        "wholeCaseSeconds": {
+          "count": 20,
+          "max": 0.14501766674220562,
+          "p50": 0.13638149993494153,
+          "p95": 0.14178733341395855
+        }
+      },
+      {
+        "caseID": "burst48-context72",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8783872,
+          "p50": 8783872,
+          "p95": 8783872
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 360,
+          "max": 0.000527459,
+          "p50": 1.2542e-05,
+          "p95": 5.9541e-05
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 360,
+        "pairRequests": 360,
+        "pairVerdicts": {
+          "insufficient": 350,
+          "rejected": 10,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 37240832,
+          "p50": 36536320,
+          "p95": 37240832
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 720,
+            "max": 0.0007350000087171793,
+            "p50": 5.3999945521354675e-05,
+            "p95": 0.00019145850092172623
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.0033280833158642054,
+            "p50": 0.00321554159745574,
+            "p95": 0.0033280833158642054
+          },
+          "nativeRead": {
+            "count": 720,
+            "max": 0.004671916831284761,
+            "p50": 0.0013740833383053541,
+            "p95": 0.001706999959424138
+          },
+          "spatialExtraction": {
+            "count": 720,
+            "max": 0.000260458,
+            "p50": 0.000103834,
+            "p95": 0.000123666
+          },
+          "spatialPair": {
+            "count": 360,
+            "max": 0.000527459,
+            "p50": 1.2542e-05,
+            "p95": 5.9541e-05
+          }
+        },
+        "variant": "bridgeVetoOnly",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.1525517082773149,
+          "p50": 0.1440061666071415,
+          "p95": 0.1525517082773149
+        }
+      },
+      {
+        "caseID": "burst48-context72",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8783872,
+          "p50": 8783872,
+          "p95": 8783872
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 360,
+          "max": 0.000485083,
+          "p50": 1.2458e-05,
+          "p95": 6.1292e-05
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 360,
+        "pairRequests": 360,
+        "pairVerdicts": {
+          "insufficient": 350,
+          "rejected": 10,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 38240256,
+          "p50": 36749312,
+          "p95": 38240256
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 720,
+            "max": 0.0006858750712126493,
+            "p50": 5.4166652262210846e-05,
+            "p95": 0.0001821666955947876
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.0033499998971819878,
+            "p50": 0.003120250068604946,
+            "p95": 0.0033499998971819878
+          },
+          "nativeRead": {
+            "count": 720,
+            "max": 0.004820874892175198,
+            "p50": 0.0013927917461842299,
+            "p95": 0.0017627498600631952
+          },
+          "spatialExtraction": {
+            "count": 720,
+            "max": 0.000246625,
+            "p50": 0.00010425,
+            "p95": 0.000132375
+          },
+          "spatialPair": {
+            "count": 360,
+            "max": 0.000485083,
+            "p50": 1.2458e-05,
+            "p95": 6.1292e-05
+          }
+        },
+        "variant": "localRescueAndBridgeVeto",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.15058250003494322,
+          "p50": 0.14531049993820488,
+          "p95": 0.15058250003494322
+        }
+      },
+      {
+        "caseID": "interval427-context439",
+        "engineManagedPeakEstimateBytes": {
+          "count": 20,
+          "max": 2831104,
+          "p50": 2831104,
+          "p95": 2831104
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 20,
+          "max": 39321600,
+          "p50": 38862848,
+          "p95": 39256064
+        },
+        "runs": 20,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 8780,
+            "max": 0.00026483344845473766,
+            "p50": 5.2708201110363007e-05,
+            "p95": 6.533344276249409e-05
+          },
+          "engineFinish": {
+            "count": 20,
+            "max": 0.019987416686490178,
+            "p50": 0.019210875034332275,
+            "p95": 0.019784666830673814
+          },
+          "nativeRead": {
+            "count": 8780,
+            "max": 0.005351333413273096,
+            "p50": 0.001149666728451848,
+            "p95": 0.001411666627973318
+          },
+          "spatialExtraction": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "baseline",
+        "wholeCaseSeconds": {
+          "count": 20,
+          "max": 0.7592120834160596,
+          "p50": 0.7482733333017677,
+          "p95": 0.7555754999630153
+        }
+      },
+      {
+        "caseID": "interval427-context439",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 9253632,
+          "p50": 9253632,
+          "p95": 9253632
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 42991616,
+          "p50": 41484288,
+          "p95": 42991616
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 4390,
+            "max": 0.0003026248887181282,
+            "p50": 5.470821633934975e-05,
+            "p95": 7.120822556316853e-05
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.01959108328446746,
+            "p50": 0.019266458228230476,
+            "p95": 0.01959108328446746
+          },
+          "nativeRead": {
+            "count": 4390,
+            "max": 0.00541349989362061,
+            "p50": 0.0012678331695497036,
+            "p95": 0.0015372498892247677
+          },
+          "spatialExtraction": {
+            "count": 4390,
+            "max": 0.000246083,
+            "p50": 0.000102541,
+            "p95": 0.000119
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "bridgeVetoOnly",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.8210060417186469,
+          "p50": 0.797320208279416,
+          "p95": 0.8210060417186469
+        }
+      },
+      {
+        "caseID": "interval427-context439",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 9253632,
+          "p50": 9253632,
+          "p95": 9253632
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 43122688,
+          "p50": 41582592,
+          "p95": 43122688
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 4390,
+            "max": 0.0002693748101592064,
+            "p50": 5.4999953135848045e-05,
+            "p95": 7.008342072367668e-05
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.019828374963253736,
+            "p50": 0.01933629158884287,
+            "p95": 0.019828374963253736
+          },
+          "nativeRead": {
+            "count": 4390,
+            "max": 0.0056766250636428595,
+            "p50": 0.0012812917120754719,
+            "p95": 0.0015384999569505453
+          },
+          "spatialExtraction": {
+            "count": 4390,
+            "max": 0.000256542,
+            "p50": 0.000103625,
+            "p95": 0.000121291
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "localRescueAndBridgeVeto",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.8361133332364261,
+          "p50": 0.8014409583993256,
+          "p95": 0.8361133332364261
+        }
+      },
+      {
+        "caseID": "burst193-context217",
+        "engineManagedPeakEstimateBytes": {
+          "count": 20,
+          "max": 2546944,
+          "p50": 2546944,
+          "p95": 2546944
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 20,
+          "max": 36683776,
+          "p50": 36536320,
+          "p95": 36667392
+        },
+        "runs": 20,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 4340,
+            "max": 0.00017066672444343567,
+            "p50": 5.5166659876704216e-05,
+            "p95": 7.500010542571545e-05
+          },
+          "engineFinish": {
+            "count": 20,
+            "max": 0.0095102081540972,
+            "p50": 0.009237666614353657,
+            "p95": 0.009501166641712189
+          },
+          "nativeRead": {
+            "count": 4340,
+            "max": 0.005259125027805567,
+            "p50": 0.0016724164597690105,
+            "p95": 0.00197629164904356
+          },
+          "spatialExtraction": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "baseline",
+        "wholeCaseSeconds": {
+          "count": 20,
+          "max": 0.5139106665737927,
+          "p50": 0.5071277085226029,
+          "p95": 0.5136053748428822
+        }
+      },
+      {
+        "caseID": "burst193-context217",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8969472,
+          "p50": 8969472,
+          "p95": 8969472
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 990,
+          "max": 0.000742541,
+          "p50": 0.000527333,
+          "p95": 0.00058925
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 990,
+        "pairRequests": 990,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 920,
+          "supported": 70
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 41058304,
+          "p50": 39518208,
+          "p95": 41058304
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 2170,
+            "max": 0.005415708292275667,
+            "p50": 5.5666547268629074e-05,
+            "p95": 0.0011800001375377178
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.009533166652545333,
+            "p50": 0.009132708422839642,
+            "p95": 0.009533166652545333
+          },
+          "nativeRead": {
+            "count": 2170,
+            "max": 0.005210541654378176,
+            "p50": 0.001795416697859764,
+            "p95": 0.0020482917316257954
+          },
+          "spatialExtraction": {
+            "count": 2170,
+            "max": 0.000255625,
+            "p50": 0.000105125,
+            "p95": 0.000142875
+          },
+          "spatialPair": {
+            "count": 990,
+            "max": 0.000742541,
+            "p50": 0.000527333,
+            "p95": 0.00058925
+          }
+        },
+        "variant": "bridgeVetoOnly",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.5874944166280329,
+          "p50": 0.5813521665986627,
+          "p95": 0.5874944166280329
+        }
+      },
+      {
+        "caseID": "burst193-context217",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 8969472,
+          "p50": 8969472,
+          "p95": 8969472
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 1000,
+          "max": 0.000624792,
+          "p50": 0.000521042,
+          "p95": 0.000583208
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 1000,
+        "pairRequests": 1000,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 930,
+          "supported": 70
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 40353792,
+          "p50": 39419904,
+          "p95": 40353792
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 2170,
+            "max": 0.005416916683316231,
+            "p50": 5.5625103414058685e-05,
+            "p95": 0.0011893750634044409
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.009482416557148099,
+            "p50": 0.00925304158590734,
+            "p95": 0.009482416557148099
+          },
+          "nativeRead": {
+            "count": 2170,
+            "max": 0.005345999961718917,
+            "p50": 0.001793708186596632,
+            "p95": 0.0020515834912657738
+          },
+          "spatialExtraction": {
+            "count": 2170,
+            "max": 0.000246083,
+            "p50": 0.000105,
+            "p95": 0.000129458
+          },
+          "spatialPair": {
+            "count": 1000,
+            "max": 0.000624792,
+            "p50": 0.000521042,
+            "p95": 0.000583208
+          }
+        },
+        "variant": "localRescueAndBridgeVeto",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.5897639999166131,
+          "p50": 0.5812142083887011,
+          "p95": 0.5897639999166131
+        }
+      },
+      {
+        "caseID": "dji187-context376",
+        "engineManagedPeakEstimateBytes": {
+          "count": 20,
+          "max": 2750464,
+          "p50": 2750464,
+          "p95": 2750464
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 20,
+          "max": 37109760,
+          "p50": 36667392,
+          "p95": 37093376
+        },
+        "runs": 20,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 7520,
+            "max": 0.00021350011229515076,
+            "p50": 0.00010645831935107708,
+            "p95": 0.00011320854537189007
+          },
+          "engineFinish": {
+            "count": 20,
+            "max": 0.0012603749055415392,
+            "p50": 0.0011974582448601723,
+            "p95": 0.001222041668370366
+          },
+          "nativeRead": {
+            "count": 7520,
+            "max": 0.004412166774272919,
+            "p50": 0.001168583519756794,
+            "p95": 0.0012233750894665718
+          },
+          "spatialExtraction": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "baseline",
+        "wholeCaseSeconds": {
+          "count": 20,
+          "max": 0.633848125115037,
+          "p50": 0.6205845000222325,
+          "p95": 0.6271243332885206
+        }
+      },
+      {
+        "caseID": "dji187-context376",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 9172992,
+          "p50": 9172992,
+          "p95": 9172992
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 41533440,
+          "p50": 38944768,
+          "p95": 41533440
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 3760,
+            "max": 0.00015074992552399635,
+            "p50": 0.00011416664347052574,
+            "p95": 0.00012179184705018997
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.0012461666483432055,
+            "p50": 0.0011854583863168955,
+            "p95": 0.0012461666483432055
+          },
+          "nativeRead": {
+            "count": 3760,
+            "max": 0.0053774581756442785,
+            "p50": 0.001270583365112543,
+            "p95": 0.0013286250177770853
+          },
+          "spatialExtraction": {
+            "count": 3760,
+            "max": 0.000140584,
+            "p50": 9.5e-05,
+            "p95": 0.000104208
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "bridgeVetoOnly",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.672425374854356,
+          "p50": 0.6618112083524466,
+          "p95": 0.672425374854356
+        }
+      },
+      {
+        "caseID": "dji187-context376",
+        "engineManagedPeakEstimateBytes": {
+          "count": 10,
+          "max": 9172992,
+          "p50": 9172992,
+          "p95": 9172992
+        },
+        "matcherHitSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "matcherMissSeconds": {
+          "count": 0,
+          "max": null,
+          "p50": null,
+          "p95": null
+        },
+        "pairCacheHits": 0,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "pairVerdicts": {
+          "insufficient": 0,
+          "rejected": 0,
+          "supported": 0
+        },
+        "processPeakResidentBytes": {
+          "count": 10,
+          "max": 39616512,
+          "p50": 38977536,
+          "p95": 39616512
+        },
+        "runs": 10,
+        "stagesSeconds": {
+          "engineConsume": {
+            "count": 3760,
+            "max": 0.00021254178136587143,
+            "p50": 0.00011475011706352234,
+            "p95": 0.00012320838868618011
+          },
+          "engineFinish": {
+            "count": 10,
+            "max": 0.001212583389133215,
+            "p50": 0.001186541747301817,
+            "p95": 0.001212583389133215
+          },
+          "nativeRead": {
+            "count": 3760,
+            "max": 0.005264416802674532,
+            "p50": 0.0012703333050012589,
+            "p95": 0.0013290001079440117
+          },
+          "spatialExtraction": {
+            "count": 3760,
+            "max": 0.0001595,
+            "p50": 9.5083e-05,
+            "p95": 0.000107458
+          },
+          "spatialPair": {
+            "count": 0,
+            "max": null,
+            "p50": null,
+            "p95": null
+          }
+        },
+        "variant": "localRescueAndBridgeVeto",
+        "wholeCaseSeconds": {
+          "count": 10,
+          "max": 0.6763746666256338,
+          "p50": 0.662457583239302,
+          "p95": 0.6763746666256338
+        }
+      }
+    ],
+    "pairedRawDeltas": [
+      {
+        "candidateMinusBaselineSeconds": 0.02008966659195721,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/0",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.020571541506797075,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/1",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.01735291676595807,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/2",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005009458400309086,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/3",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004828750155866146,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/4",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.021522125229239464,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/5",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.021867749746888876,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/6",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.016518541844561696,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/7",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.02060445840470493,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/8",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.014490874949842691,
+        "caseID": "burst123",
+        "pairID": "burst123/bridgeVetoOnly/measured/9",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.025662000058218837,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/0",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.015876916935667396,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/1",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.014584833523258567,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/2",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.009396666660904884,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/3",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.022972250124439597,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/4",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.02467600000090897,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/5",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.016894458327442408,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/6",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.01907912502065301,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/7",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.01526558306068182,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/8",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.020142458146438003,
+        "caseID": "burst123",
+        "pairID": "burst123/localRescueAndBridgeVeto/measured/9",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.002984041580930352,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/0",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005246833432465792,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/1",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0037430832162499428,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/2",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.007216541795060039,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/3",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005017583491280675,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/4",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004717833595350385,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/5",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.002576249884441495,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/6",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0034560419153422117,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/7",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.006726458435878158,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/8",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.003743249922990799,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/bridgeVetoOnly/measured/9",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004784958437085152,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/0",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004059541504830122,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/1",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004390583140775561,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/2",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004592875251546502,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/3",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.006134791765362024,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/4",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005267249885946512,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/5",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0056917499750852585,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/6",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.004864083370193839,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/7",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.003073666477575898,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/8",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005163958529010415,
+        "caseID": "burst14-context38",
+        "pairID": "burst14-context38/localRescueAndBridgeVeto/measured/9",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07099649985320866,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/0",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07252641674131155,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/1",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.06801629159599543,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/2",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07625904190354049,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/3",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0750737083144486,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/4",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.08036670810543001,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/5",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07069116667844355,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/6",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07813712488859892,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/7",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07693925010971725,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/8",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07188766682520509,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/bridgeVetoOnly/measured/9",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07941349991597235,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/0",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.06342870858497918,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/1",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07250162493437529,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/2",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.06623212527483702,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/3",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07642308343201876,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/4",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07246491662226617,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/5",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.06962070846930146,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/6",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.08299504173919559,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/7",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07126312516629696,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/8",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07555375015363097,
+        "caseID": "burst193-context217",
+        "pairID": "burst193-context217/localRescueAndBridgeVeto/measured/9",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0064245834946632385,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/0",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.006311749806627631,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/1",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.00641349982470274,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/2",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.00932049984112382,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/3",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.011821208288893104,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/4",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": -0.0003652917221188545,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/5",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.01586037501692772,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/6",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.008906374918296933,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/7",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005773583194240928,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/8",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.009468083269894123,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/bridgeVetoOnly/measured/9",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.006036750040948391,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/0",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.005926166428253055,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/1",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.00608500000089407,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/2",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.006842500064522028,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/3",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.012565916869789362,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/4",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0077725418377667665,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/5",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.006487333448603749,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/6",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.010001166490837932,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/7",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.009039541706442833,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/8",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.009458541637286544,
+        "caseID": "burst48-context72",
+        "pairID": "burst48-context72/localRescueAndBridgeVeto/measured/9",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0427389582619071,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/0",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.03717683348804712,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/1",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04602758330293,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/2",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.027228499995544553,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/3",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.046800333308056,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/4",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.043759750202298164,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/5",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0546813749242574,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/6",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.03468687506392598,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/7",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.041102541610598564,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/8",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.03566045826300979,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/bridgeVetoOnly/measured/9",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.040029624942690134,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/0",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.05029720836319029,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/1",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.039423083420842886,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/2",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.03714400017634034,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/3",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04333733324892819,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/4",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.039752541575580835,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/5",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04039804171770811,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/6",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.038575583370402455,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/7",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.043247208232060075,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/8",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04717833315953612,
+        "caseID": "dji187-context376",
+        "pairID": "dji187-context376/localRescueAndBridgeVeto/measured/9",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04611512506380677,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/0",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.054071916500106454,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/1",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.06606720830313861,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/2",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.05208891653455794,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/3",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.060748541727662086,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/4",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04321345826610923,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/5",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.03599691670387983,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/6",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.056289791595190763,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/7",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07409062515944242,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/8",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.05804858356714249,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/bridgeVetoOnly/measured/9",
+        "variant": "bridgeVetoOnly"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.03986137523315847,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/0",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.06333045824430883,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/1",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.043709833174943924,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/2",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04074079170823097,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/3",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.0828488334082067,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/4",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.08652679156512022,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/5",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.07605883339419961,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/6",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.04375041648745537,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/7",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.045345958322286606,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/8",
+        "variant": "localRescueAndBridgeVeto"
+      },
+      {
+        "candidateMinusBaselineSeconds": 0.05209095822647214,
+        "caseID": "interval427-context439",
+        "pairID": "interval427-context439/localRescueAndBridgeVeto/measured/9",
+        "variant": "localRescueAndBridgeVeto"
+      }
+    ],
+    "quantile": "nearest-rank; nativeRead contains spatialExtraction, engineConsume contains spatialPair; do not add nested stages"
+  },
+  "platform": {
+    "architecture": "arm64",
+    "decoder": "ImageIO native SequenceCaptureReader",
+    "imageIOBundleVersion": "2851",
+    "operatingSystem": "Version 27.0.1 (Build 26A434)",
+    "swift": "swift-driver version: 1.168.6 Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0"
+  },
+  "quality": [
+    {
+      "assetCount": 123,
+      "caseID": "burst123",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [
+        "negative-support-below-frozen-minimum"
+      ],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "7ce7e87c3d5a17e8e71edaf514d40107a3c2cf385e2b139b440292605d24549a",
+      "spatialStatistics": null,
+      "traceIncomplete": false,
+      "traceSHA256": "d4df743753d5ced16e2d21aca079fea0d30f082fa5ff46a152442db7680b3618",
+      "trueNegative": 0,
+      "truePositive": 122,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "baseline"
+    },
+    {
+      "assetCount": 123,
+      "caseID": "burst123",
+      "classificationFailures": [
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [
+        "negative-support-below-frozen-minimum"
+      ],
+      "exactGroupFraction": 0,
+      "falseNegative": 3,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 28
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 29,
+            "last": 50
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 51,
+            "last": 63
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 64,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9754098360655737,
+      "resultSHA256": "4fb16d4b559ce582a94d2f65b0c7fbc630c2e8e68f97a84048099c1697eaef4f",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 1323,
+        "fineCandidates": 945,
+        "insufficientPairs": 6,
+        "managedPeakEstimateBytes": 8849152,
+        "maximumCandidatesPerPair": 98,
+        "observedSpatialFeatures": 123,
+        "pairComputations": 27,
+        "pairRequests": 27,
+        "patchCandidates": 0,
+        "rejectedPairs": 21,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "9c09a307e8822ab9013e43a2d78c0a5d7ec321a424979cf62d5f88b5225b3b34",
+      "trueNegative": 0,
+      "truePositive": 119,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "bridgeVetoOnly"
+    },
+    {
+      "assetCount": 123,
+      "caseID": "burst123",
+      "classificationFailures": [
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [
+        "negative-support-below-frozen-minimum"
+      ],
+      "exactGroupFraction": 0,
+      "falseNegative": 3,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 28
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 29,
+            "last": 50
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 51,
+            "last": 63
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+          "clockPartitionID": "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 64,
+            "last": 122
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9754098360655737,
+      "resultSHA256": "78b09f6ec3d0160c48dce0c46c97b26e90d27d51b62b80f12e08d01166a5a75e",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 1323,
+        "fineCandidates": 945,
+        "insufficientPairs": 6,
+        "managedPeakEstimateBytes": 8849152,
+        "maximumCandidatesPerPair": 98,
+        "observedSpatialFeatures": 123,
+        "pairComputations": 27,
+        "pairRequests": 27,
+        "patchCandidates": 0,
+        "rejectedPairs": 21,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "b5634360cb99004ca57c974864bcd387a14849bfe0261888a3a6fde71733b7bd",
+      "trueNegative": 0,
+      "truePositive": 119,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "localRescueAndBridgeVeto"
+    },
+    {
+      "assetCount": 38,
+      "caseID": "burst14-context38",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "5555b41073974a35ab555cfdce3db04aae2cd9549a4dad2f29fe04a5fa761bbf",
+      "spatialStatistics": null,
+      "traceIncomplete": false,
+      "traceSHA256": "eb224c8a8342de8ecdf41cb99aeb3b70b47104f5ba3cd3bf40446d70c8c6fcf7",
+      "trueNegative": 2,
+      "truePositive": 13,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "baseline"
+    },
+    {
+      "assetCount": 38,
+      "caseID": "burst14-context38",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "211030eae8621922ae5ea25ff517ad75a6bc414a5cf20c479f85bdb987d8614f",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 0,
+        "fineCandidates": 0,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 8740352,
+        "maximumCandidatesPerPair": 0,
+        "observedSpatialFeatures": 38,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "patchCandidates": 0,
+        "rejectedPairs": 0,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "3205229ff7371433581abaee53858c591d0c833e4155bfdb3a7a140a2e8e6658",
+      "trueNegative": 2,
+      "truePositive": 13,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "bridgeVetoOnly"
+    },
+    {
+      "assetCount": 38,
+      "caseID": "burst14-context38",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 1
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 2,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 25
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+          "clockPartitionID": "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 26,
+            "last": 37
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "86f4561c3a9fe2c43e32d8046dd5e26d9bd131ead58c2d93260c4e1f571cdb6a",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 0,
+        "fineCandidates": 0,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 8740352,
+        "maximumCandidatesPerPair": 0,
+        "observedSpatialFeatures": 38,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "patchCandidates": 0,
+        "rejectedPairs": 0,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "fc21594bb689d360740685b4a2592e284a46a4e84a690827999e25bef84c3b74",
+      "trueNegative": 2,
+      "truePositive": 13,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "localRescueAndBridgeVeto"
+    },
+    {
+      "assetCount": 72,
+      "caseID": "burst48-context72",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "7ba058940bd27ae18566baae20faaeb7d8046b7195383a1bdacce481aa742527",
+      "spatialStatistics": null,
+      "traceIncomplete": false,
+      "traceSHA256": "006972c64e315818c55df75b50ff1235b303c2f7262210767e3012a06a4824d2",
+      "trueNegative": 2,
+      "truePositive": 47,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "baseline"
+    },
+    {
+      "assetCount": 72,
+      "caseID": "burst48-context72",
+      "classificationFailures": [
+        "recall-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 0,
+      "falseNegative": 4,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 22
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 23,
+            "last": 32
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 33,
+            "last": 43
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 44,
+            "last": 52
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 53,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9148936170212766,
+      "resultSHA256": "0fe9ecc3e8d931e62aa58fb507a5eee0d4f6f393f5f5ff22127d8b4598183115",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 1764,
+        "fineCandidates": 49,
+        "insufficientPairs": 35,
+        "managedPeakEstimateBytes": 8783872,
+        "maximumCandidatesPerPair": 539,
+        "observedSpatialFeatures": 72,
+        "pairComputations": 36,
+        "pairRequests": 36,
+        "patchCandidates": 441,
+        "rejectedPairs": 1,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "322200d8d6959d946737a9c96abeff43146c300c12c665a0e5307e0b30073abb",
+      "trueNegative": 2,
+      "truePositive": 43,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "bridgeVetoOnly"
+    },
+    {
+      "assetCount": 72,
+      "caseID": "burst48-context72",
+      "classificationFailures": [
+        "recall-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 0,
+      "falseNegative": 4,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 0,
+            "last": 3
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 4,
+            "last": 11
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 22
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 23,
+            "last": 32
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 33,
+            "last": 43
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 44,
+            "last": 52
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 53,
+            "last": 59
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 60,
+            "last": 65
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+          "clockPartitionID": "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 66,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9148936170212766,
+      "resultSHA256": "34248d5492eca690c9deaccacae3bbd389b681e5add1c85819af61b0d2d5f36a",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 1764,
+        "fineCandidates": 49,
+        "insufficientPairs": 35,
+        "managedPeakEstimateBytes": 8783872,
+        "maximumCandidatesPerPair": 539,
+        "observedSpatialFeatures": 72,
+        "pairComputations": 36,
+        "pairRequests": 36,
+        "patchCandidates": 441,
+        "rejectedPairs": 1,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "3d0282e1d71769a19b53f6f0b9656e40f76494cc493172cf8298ad7ae1d9abfc",
+      "trueNegative": 2,
+      "truePositive": 43,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "localRescueAndBridgeVeto"
+    },
+    {
+      "assetCount": 439,
+      "caseID": "interval427-context439",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "3ae1fdcac93ca703002045f5da2b28236e0d7d65653340730d59e5883817aab7",
+      "spatialStatistics": null,
+      "traceIncomplete": true,
+      "traceSHA256": "1cc085184ba6b47afee9dad3ebfdc17c0dff5af5751efbd56ff27965f030cf50",
+      "trueNegative": 1,
+      "truePositive": 426,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "baseline"
+    },
+    {
+      "assetCount": 439,
+      "caseID": "interval427-context439",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "6771b96f26c3fcfa077488ad7e92aa8e774ae4b3d1f7daf7e4da9f3944c84f9a",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 0,
+        "fineCandidates": 0,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 9253632,
+        "maximumCandidatesPerPair": 0,
+        "observedSpatialFeatures": 439,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "patchCandidates": 0,
+        "rejectedPairs": 0,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": true,
+      "traceSHA256": "e9b8bfe01db5147150f8cb7d1bb1e2d656d41ba9b00e10db2403020f57e1d4d5",
+      "trueNegative": 1,
+      "truePositive": 426,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "bridgeVetoOnly"
+    },
+    {
+      "assetCount": 439,
+      "caseID": "interval427-context439",
+      "classificationFailures": [],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 1,
+      "falseNegative": 0,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": true,
+      "ranges": [
+        {
+          "cameraPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+          "clockPartitionID": "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92:era:0",
+          "kind": "interval",
+          "range": {
+            "first": 12,
+            "last": 438
+          },
+          "reasons": [
+            "cadence",
+            "fixed-origin-phase"
+          ]
+        }
+      ],
+      "recall": 1,
+      "resultSHA256": "684fe7eaf2deee7a17b6233552b1bcfe8be0757a3e66bac524b68447a5067068",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 0,
+        "fineCandidates": 0,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 9253632,
+        "maximumCandidatesPerPair": 0,
+        "observedSpatialFeatures": 439,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "patchCandidates": 0,
+        "rejectedPairs": 0,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": true,
+      "traceSHA256": "3208b65422f6789a6b6e2c9bf05c8cca413f4798a6afe9dfb6986a89d1c113bd",
+      "trueNegative": 1,
+      "truePositive": 426,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "localRescueAndBridgeVeto"
+    },
+    {
+      "assetCount": 217,
+      "caseID": "burst193-context217",
+      "classificationFailures": [
+        "confirmed-negative-boundary-merged",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 0,
+      "falseNegative": 1,
+      "falsePositive": 1,
+      "precision": 0.9947916666666666,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 55
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 56,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9947916666666666,
+      "resultSHA256": "43d62470dac080ab394e01f6c3efc22268f0d869b26650941c8d99f1c2e12eb1",
+      "spatialStatistics": null,
+      "traceIncomplete": false,
+      "traceSHA256": "fe476360bad9be46b86b7ca4615ddcf1e013d30e13a9af1a8a7b8811103b6637",
+      "trueNegative": 1,
+      "truePositive": 191,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "baseline"
+    },
+    {
+      "assetCount": 217,
+      "caseID": "burst193-context217",
+      "classificationFailures": [
+        "recall-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 0,
+      "falseNegative": 10,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 35
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 36,
+            "last": 55
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 56,
+            "last": 63
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 64,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 72,
+            "last": 106
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 107,
+            "last": 117
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 118,
+            "last": 132
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 133,
+            "last": 139
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 140,
+            "last": 150
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 151,
+            "last": 162
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 163,
+            "last": 204
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 205,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9479166666666666,
+      "resultSHA256": "f69d7cfb995061b263de01e4dbda08f8e7eda9920079dcea1eff3a1766287798",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 4851,
+        "fineCandidates": 4662,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 8969472,
+        "maximumCandidatesPerPair": 539,
+        "observedSpatialFeatures": 217,
+        "pairComputations": 99,
+        "pairRequests": 99,
+        "patchCandidates": 39690,
+        "rejectedPairs": 92,
+        "supportedPairs": 7
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "3ad36934438a96f0743b8bf72426fe18179abb4c0061d023ca07d1d0bccea49f",
+      "trueNegative": 2,
+      "truePositive": 182,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "bridgeVetoOnly"
+    },
+    {
+      "assetCount": 217,
+      "caseID": "burst193-context217",
+      "classificationFailures": [
+        "recall-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": true,
+      "evidenceLimitations": [],
+      "exactGroupFraction": 0,
+      "falseNegative": 10,
+      "falsePositive": 0,
+      "precision": 1,
+      "qualityAccepted": false,
+      "ranges": [
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 12,
+            "last": 35
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 36,
+            "last": 55
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 56,
+            "last": 63
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 64,
+            "last": 71
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 72,
+            "last": 106
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 107,
+            "last": 117
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 118,
+            "last": 132
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 133,
+            "last": 139
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 140,
+            "last": 150
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 151,
+            "last": 162
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 163,
+            "last": 204
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        },
+        {
+          "cameraPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+          "clockPartitionID": "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+          "kind": "burst",
+          "range": {
+            "first": 205,
+            "last": 216
+          },
+          "reasons": [
+            "local-continuity",
+            "bounded-anchors"
+          ]
+        }
+      ],
+      "recall": 0.9479166666666666,
+      "resultSHA256": "34a04d72d936583151cfb44991a762d61980ca8da39ec676d1d279a3b61941dc",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 4900,
+        "fineCandidates": 4711,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 8969472,
+        "maximumCandidatesPerPair": 539,
+        "observedSpatialFeatures": 217,
+        "pairComputations": 100,
+        "pairRequests": 100,
+        "patchCandidates": 40131,
+        "rejectedPairs": 93,
+        "supportedPairs": 7
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "897c7b1a95f241090f1b2856a807251d3c230299f62103f10330c31723cea40f",
+      "trueNegative": 2,
+      "truePositive": 182,
+      "typedCoverage": 1,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "localRescueAndBridgeVeto"
+    },
+    {
+      "assetCount": 376,
+      "caseID": "dji187-context376",
+      "classificationFailures": [
+        "precision-unmet-or-undefined",
+        "recall-unmet-or-undefined",
+        "typed-coverage-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": false,
+      "evidenceLimitations": [
+        "negative-support-below-frozen-minimum",
+        "full-group-extent-not-labeled; DJI0188 remains unknown"
+      ],
+      "exactGroupFraction": 0,
+      "falseNegative": 373,
+      "falsePositive": 0,
+      "precision": null,
+      "qualityAccepted": false,
+      "ranges": [],
+      "recall": 0,
+      "resultSHA256": "275643dc27bc86721ddf38aaad2dce106c7fc2351c7a683b7089c38cb96506a2",
+      "spatialStatistics": null,
+      "traceIncomplete": false,
+      "traceSHA256": "05458bdccc5e5c5028e2da7b5872097b0fbd5d31f0b1b1ce401e3f902bc29bd2",
+      "trueNegative": 0,
+      "truePositive": 0,
+      "typedCoverage": 0,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "baseline"
+    },
+    {
+      "assetCount": 376,
+      "caseID": "dji187-context376",
+      "classificationFailures": [
+        "precision-unmet-or-undefined",
+        "recall-unmet-or-undefined",
+        "typed-coverage-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": false,
+      "evidenceLimitations": [
+        "negative-support-below-frozen-minimum",
+        "full-group-extent-not-labeled; DJI0188 remains unknown"
+      ],
+      "exactGroupFraction": 0,
+      "falseNegative": 373,
+      "falsePositive": 0,
+      "precision": null,
+      "qualityAccepted": false,
+      "ranges": [],
+      "recall": 0,
+      "resultSHA256": "f654e5cb29f3c29bd020135521db13a349c914a33fd9d8519c461994485012e8",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 0,
+        "fineCandidates": 0,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 9172992,
+        "maximumCandidatesPerPair": 0,
+        "observedSpatialFeatures": 376,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "patchCandidates": 0,
+        "rejectedPairs": 0,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "c9a4ad255d13b65241de643b8c6dcc974173edbc8aff88436766887447bb66b4",
+      "trueNegative": 0,
+      "truePositive": 0,
+      "typedCoverage": 0,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "bridgeVetoOnly"
+    },
+    {
+      "assetCount": 376,
+      "caseID": "dji187-context376",
+      "classificationFailures": [
+        "precision-unmet-or-undefined",
+        "recall-unmet-or-undefined",
+        "typed-coverage-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth": false,
+      "evidenceLimitations": [
+        "negative-support-below-frozen-minimum",
+        "full-group-extent-not-labeled; DJI0188 remains unknown"
+      ],
+      "exactGroupFraction": 0,
+      "falseNegative": 373,
+      "falsePositive": 0,
+      "precision": null,
+      "qualityAccepted": false,
+      "ranges": [],
+      "recall": 0,
+      "resultSHA256": "ac6e61bb07b3ab0e0ae9aa17012d0762567e1cdbe6a0d3fcb3f2b1a319315d97",
+      "spatialStatistics": {
+        "cacheHits": 0,
+        "coarseCandidates": 0,
+        "fineCandidates": 0,
+        "insufficientPairs": 0,
+        "managedPeakEstimateBytes": 9172992,
+        "maximumCandidatesPerPair": 0,
+        "observedSpatialFeatures": 376,
+        "pairComputations": 0,
+        "pairRequests": 0,
+        "patchCandidates": 0,
+        "rejectedPairs": 0,
+        "supportedPairs": 0
+      },
+      "traceIncomplete": false,
+      "traceSHA256": "97fa9e105a0a911384326c2574576a1ad931e69f3082fe7e0a8f1aa94a8edabe",
+      "trueNegative": 0,
+      "truePositive": 0,
+      "typedCoverage": 0,
+      "unknownNegativePairs": 0,
+      "unknownPositivePairs": 0,
+      "variant": "localRescueAndBridgeVeto"
+    }
+  ],
+  "qualityAccepted": false,
+  "qualityUnits": 18,
+  "representativeEvidence": {
+    "rejectedKnownNegativeBridge": {
+      "accepted": false,
+      "ordinal": 207,
+      "processingOrdinal": 207,
+      "reason": "spatialRejected",
+      "referenceOrdinal": 204,
+      "spatialColumnsSupported": 0,
+      "spatialFeatureVersion": "spatial-translation-patch-v1",
+      "spatialPurpose": "burstPauseBridge",
+      "spatialRowsSupported": 0,
+      "spatialSupportedPairs": 0,
+      "stage": "bridge"
+    },
+    "unrecoveredInternalEdge": {
+      "accepted": false,
+      "ordinal": 56,
+      "processingOrdinal": 56,
+      "reason": "spatialRejected",
+      "referenceOrdinal": 55,
+      "spatial": {
+        "centerSupported": false,
+        "coarseCandidates": 49,
+        "correlation": 0.9800609,
+        "dx": 1,
+        "dy": -2,
+        "fineCandidates": 49,
+        "maximumResidual": 0,
+        "overlap": 0.9586589,
+        "patchCandidates": 441,
+        "peakMargin": 0.1311683,
+        "reason": "centralMismatch",
+        "supportedPatches": 5,
+        "supportedQuadrants": 2,
+        "texturedPatches": 9,
+        "verdict": "rejected"
+      },
+      "spatialFeatureVersion": "spatial-translation-patch-v1",
+      "spatialPurpose": "denseBurstLocal",
+      "stage": "local"
+    }
+  },
+  "runID": "c0ced0b8-2959-49a1-b9a1-cd0a81652b73",
+  "schemaVersion": 1,
+  "spatialTraceReasonCounts": {
+    "baseline": {},
+    "bridgeVetoOnly": {
+      "ambiguousPeak": 41,
+      "centralMismatch": 84,
+      "globalCorrelation": 30,
+      "supported": 7
+    },
+    "localRescueAndBridgeVeto": {
+      "ambiguousPeak": 41,
+      "centralMismatch": 85,
+      "globalCorrelation": 30,
+      "supported": 7
+    }
+  },
+  "traceAndRepeatResultParity": true,
+  "verification": {
+    "releaseNewTests": 23,
+    "swiftFailures": 0,
+    "swiftSkipped": 6,
+    "swiftTests": 271,
+    "toolingTests": 8
+  }
+}
