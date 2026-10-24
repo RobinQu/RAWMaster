@@ -61,7 +61,7 @@ enum ProbeEvaluator {
                                  configuration: SequenceMetadataExperimentConfiguration,
                                  files: [SequenceCaptureFileInput], map: SequenceCaptureEventMap,
                                  metadata: SequenceMetadataSnapshot,
-                                 confirmedPairs: [SequenceConfirmedCapturePair]) throws -> ProbeEvaluation {
+                                 confirmedPairs: [SequenceConfirmedCapturePair], focusSnapshot: SequenceFocusSnapshot? = nil) throws -> ProbeEvaluation {
         try policy.validate()
         try labels.validate(assetIDs: analysis.manifest.entries.map(\.assetID))
         guard policy.detector.metadataExperiment == configuration else {
@@ -69,7 +69,7 @@ enum ProbeEvaluator {
         }
         try SequenceMetadataEventPipeline.validateProjection(result: analysis.result, observations: analysis.observations,
             featuresAvailable: analysis.featuresAvailable, files: files, manifest: analysis.manifest,
-            metadata: metadata, map: map, configuration: policy.detector, confirmedPairs: confirmedPairs)
+            metadata: metadata, map: map, configuration: policy.detector, confirmedPairs: confirmedPairs, focusSnapshot: focusSnapshot)
         return try evaluateValidated(analysis, labels: labels, policy: policy)
     }
     // Both entry points complete their own strict validation before this unchanged metric body.

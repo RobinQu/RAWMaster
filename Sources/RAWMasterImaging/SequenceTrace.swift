@@ -117,6 +117,7 @@ public struct SequenceTraceEvent: Codable, Sendable, Equatable {
     public var upperGapBound: Double?
     public var metadataRescue: SequenceMetadataBurstDecision?
     public var metadataRuleVersion: String?
+    public var pauseBridge: SequencePauseBridgeEvidence?
     public var aggregation: SequenceTraceAggregation?
     public var leftRepresentative0: Int?
     public var leftRepresentative1: Int?

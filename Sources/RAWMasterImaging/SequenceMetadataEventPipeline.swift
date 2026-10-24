@@ -11,15 +11,18 @@ public struct SequenceMetadataEventAnalysis: Sendable {
     public let eventManifest: SequenceInputManifest
     public let eventResult: SequenceAnalysisResult
     public let metadataStatistics: SequenceMetadataBurstStatistics?
+    public let pauseBridgeStatistics: SequencePauseBridgeStatistics?
     public let managedPeakEstimateBytes: Int
     public let analysisSeconds: Double
     public var associationHypothesisAssumed: Bool { map.associationHypothesisAssumed }
     public init(manifest: SequenceInputManifest, result: SequenceAnalysisResult, observations: [SequenceAssetInput],
                 featuresAvailable: [Bool], map: SequenceCaptureEventMap, configuration: SequenceDetectorConfiguration,
                 eventManifest: SequenceInputManifest, eventResult: SequenceAnalysisResult,
-                metadataStatistics: SequenceMetadataBurstStatistics?, managedPeakEstimateBytes: Int, analysisSeconds: Double) {
+                metadataStatistics: SequenceMetadataBurstStatistics?, managedPeakEstimateBytes: Int, analysisSeconds: Double,
+                pauseBridgeStatistics: SequencePauseBridgeStatistics? = nil) {
         self.manifest = manifest; self.result = result; self.observations = observations; self.featuresAvailable = featuresAvailable
         self.map = map; self.configuration = configuration; self.eventManifest = eventManifest; self.eventResult = eventResult
+        self.pauseBridgeStatistics = pauseBridgeStatistics
         self.metadataStatistics = metadataStatistics; self.managedPeakEstimateBytes = managedPeakEstimateBytes; self.analysisSeconds = analysisSeconds
     }
 }
@@ -31,7 +34,8 @@ public enum SequenceMetadataEventPipeline {
         let fileObservations: [SequenceAssetInput]
     }
     static func prepare(files: [SequenceCaptureFileInput], manifest: SequenceInputManifest, metadata: SequenceMetadataSnapshot,
-                        map: SequenceCaptureEventMap, cancelled: () -> Bool) throws -> Prepared {
+                        map: SequenceCaptureEventMap, cancelled: () -> Bool, focusSnapshot: SequenceFocusSnapshot? = nil) throws -> Prepared {
+        let focusFingerprint = try focusSnapshot?.boundFingerprint(manifest: manifest, metadata: metadata)
         let firstEntries = map.events.map { event -> SequenceManifestEntry in
             let file = files[event.members.first(where: { $0.assetID == event.representativeAssetID })!.ordinal]
             let issue = event.members.compactMap { SequenceCaptureEvents.fileIssue(files[$0.ordinal]) }.first
@@ -82,7 +86,11 @@ public enum SequenceMetadataEventPipeline {
             previousCamera = camera; previousOffset = originalTime.offsetMinutes; hasPreviousOffset = true
             let observed = preprocessor.make(entry: eventManifest.entries[event.eventOrdinal], evidence: file.currentEvidence,
                 feature: file.feature, barrier: barrier,
-                metadataBurstContext: SequenceMetadataBurstContext.make(file: file, snapshot: metadata))
+                metadataBurstContext: SequenceMetadataBurstContext.make(file: file, snapshot: metadata),
+                pauseBridgeContext: focusSnapshot.map { snapshot in
+                    SequencePauseBridgeContext.make(file: file, focus: snapshot.files[file.entry.ordinal],
+                        focusAuditSeal: snapshot.focusAuditSeal, scopeFingerprint: focusFingerprint!, manifest: manifest)
+                })
             eventObservations.append(observed)
             for member in event.members {
                 let item = files[member.ordinal]
@@ -96,10 +104,12 @@ public enum SequenceMetadataEventPipeline {
                                metadata: SequenceMetadataSnapshot, confirmedPairs: [SequenceConfirmedCapturePair] = [],
                                associationPolicy: SequenceAssociationPolicy, rescuePolicy: SequenceMetadataRescuePolicy,
                                baseConfiguration: SequenceDetectorConfiguration = .init(),
+                               focusSnapshot: SequenceFocusSnapshot? = nil, pauseBridgePolicy: SequencePauseBridgePolicy? = nil,
                                trace: (@Sendable (SequenceTraceEvent) -> Void)? = nil,
                                cancelled: () -> Bool = { false }) throws -> SequenceMetadataEventAnalysis {
         let start = ProcessInfo.processInfo.systemUptime
-        guard baseConfiguration.spatialExperiment == nil, baseConfiguration.metadataExperiment == nil else {
+        guard baseConfiguration.spatialExperiment == nil, baseConfiguration.metadataExperiment == nil,
+              baseConfiguration.pauseBridgeExperiment == nil, (focusSnapshot == nil) == (pauseBridgePolicy == nil) else {
             throw SequenceMetadataError.invalid("Metadata pipeline requires an unmodified nonspatial base configuration")
         }
         let map = try SequenceCaptureEvents.make(files: files, manifest: manifest, metadata: metadata,
@@ -108,8 +118,13 @@ public enum SequenceMetadataEventPipeline {
         configuration.metadataExperiment = SequenceMetadataExperimentConfiguration(associationPolicy: associationPolicy,
             rescuePolicy: rescuePolicy, auditSeal: metadata.auditSeal, snapshotFingerprint: metadata.fingerprint,
             eventMapFingerprint: map.fingerprint)
+        if let focusSnapshot, let pauseBridgePolicy {
+            configuration.pauseBridgeExperiment = SequencePauseBridgeConfiguration(policy: pauseBridgePolicy,
+                focusAuditSeal: focusSnapshot.focusAuditSeal,
+                focusSnapshotFingerprint: try focusSnapshot.boundFingerprint(manifest: manifest, metadata: metadata))
+        }
         try configuration.validate()
-        let prepared = try prepare(files: files, manifest: manifest, metadata: metadata, map: map, cancelled: cancelled)
+        let prepared = try prepare(files: files, manifest: manifest, metadata: metadata, map: map, cancelled: cancelled, focusSnapshot: focusSnapshot)
         let token = try SequenceAnalysisToken.make(manifest: prepared.eventManifest,
             versions: configuration.versions(order: prepared.eventManifest.orderVersion), policyFingerprint: configuration.fingerprint)
         var detector = try SequenceDetector(manifest: prepared.eventManifest, token: token, configuration: configuration, trace: trace)
@@ -138,24 +153,31 @@ public enum SequenceMetadataEventPipeline {
             warnings: eventResult.warnings + (map.associationHypothesisAssumed ? ["Association hypothesis assumed; conditional grouping metrics only"] : []))
         let features = files.map { $0.feature != nil }
         try validateProjection(result: result, observations: prepared.fileObservations, featuresAvailable: features,
-            files: files, manifest: manifest, metadata: metadata, map: map, configuration: configuration, confirmedPairs: confirmedPairs)
+            files: files, manifest: manifest, metadata: metadata, map: map, configuration: configuration, confirmedPairs: confirmedPairs, focusSnapshot: focusSnapshot)
         return SequenceMetadataEventAnalysis(manifest: manifest, result: result, observations: prepared.fileObservations,
             featuresAvailable: features, map: map, configuration: configuration, eventManifest: prepared.eventManifest,
             eventResult: eventResult, metadataStatistics: detector.metadataStatistics,
-            managedPeakEstimateBytes: detector.managedPeakEstimateBytes, analysisSeconds: ProcessInfo.processInfo.systemUptime - start)
+            managedPeakEstimateBytes: detector.managedPeakEstimateBytes, analysisSeconds: ProcessInfo.processInfo.systemUptime - start,
+            pauseBridgeStatistics: detector.pauseBridgeStatistics)
     }
     /// Mapping/input validation only, not a second classifier run after labels have been opened.
     public static func validateProjection(result: SequenceAnalysisResult, observations: [SequenceAssetInput], featuresAvailable: [Bool],
                                           files: [SequenceCaptureFileInput], manifest: SequenceInputManifest,
                                           metadata: SequenceMetadataSnapshot, map: SequenceCaptureEventMap,
                                           configuration: SequenceDetectorConfiguration,
-                                          confirmedPairs: [SequenceConfirmedCapturePair]) throws {
+                                          confirmedPairs: [SequenceConfirmedCapturePair], focusSnapshot: SequenceFocusSnapshot? = nil) throws {
         guard let recipe = configuration.metadataExperiment, configuration.spatialExperiment == nil,
               recipe.auditSeal == metadata.auditSeal, recipe.snapshotFingerprint == metadata.fingerprint,
               recipe.eventMapFingerprint == map.fingerprint else { throw SequenceMetadataError.invalid("Metadata recipe/input identity mismatch") }
         try configuration.validate()
+        if let pause = configuration.pauseBridgeExperiment {
+            guard let focusSnapshot, pause.focusAuditSeal == focusSnapshot.focusAuditSeal,
+                  pause.focusSnapshotFingerprint == (try focusSnapshot.boundFingerprint(manifest: manifest, metadata: metadata)) else {
+                throw SequenceMetadataError.invalid("Pause bridge focus snapshot is missing, changed or stale")
+            }
+        } else if focusSnapshot != nil { throw SequenceMetadataError.invalid("Unexpected focus snapshot without pause bridge policy") }
         try map.validate(files: files, manifest: manifest, metadata: metadata, confirmedPairs: confirmedPairs, policy: recipe.associationPolicy)
-        let expected = try prepare(files: files, manifest: manifest, metadata: metadata, map: map, cancelled: { false })
+        let expected = try prepare(files: files, manifest: manifest, metadata: metadata, map: map, cancelled: { false }, focusSnapshot: focusSnapshot)
         guard observations == expected.fileObservations, featuresAvailable == files.map({ $0.feature != nil }) else {
             throw SequenceMetadataError.invalid("Projected observations were repaired, lost, reordered or substituted")
         }

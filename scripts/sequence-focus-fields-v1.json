@@ -1,0 +1,126 @@
+{
+  "diagnosticSelectors": [
+    "ExifTool:Warning",
+    "ExifTool:Error"
+  ],
+  "fields": [
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x2027 int16u[4]; playback zoom location; centre may be fallback",
+      "fieldID": "sony.FocusLocation",
+      "kind": "tuple",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:FocusLocation",
+      "tupleCount": 4
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x204a int16u[4]; near duplicate of FocusLocation, not independent proof",
+      "fieldID": "sony.FocusLocation2",
+      "kind": "tuple",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:FocusLocation2",
+      "tupleCount": 4
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x2037 int16u[3]; includes display-validity component, not subject bounding box",
+      "fieldID": "sony.FocusFrameSize",
+      "kind": "tuple",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:FocusFrameSize",
+      "tupleCount": 3
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x201b and Tag9402 plus older routes; preserve conflicting instances",
+      "fieldID": "sony.FocusMode",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:FocusMode"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x201c; requested mode may differ from actual AF mode",
+      "fieldID": "sony.AFAreaModeSetting",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:AFAreaModeSetting"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Tag9402 and older routes; runtime decoder route unresolved",
+      "fieldID": "sony.AFAreaMode",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:AFAreaMode"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x201d int16u[2]; conditional selected point; coordinate reference unverified",
+      "fieldID": "sony.FlexibleSpotPosition",
+      "kind": "tuple",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:FlexibleSpotPosition",
+      "tupleCount": 2
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x201e; model/lens/mode-dependent code, not universal coordinate",
+      "fieldID": "sony.AFPointSelected",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:AFPointSelected"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Main0x2021; tracking mode, not tracked-object identity",
+      "fieldID": "sony.AFTracking",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:AFTracking"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Tag9402 and older routes; raw code, not metres",
+      "fieldID": "sony.FocusPosition2",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:FocusPosition2"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Sony.pm",
+      "catalogNotes": "Tag9400c and older routes; discrete rotation, not attitude",
+      "fieldID": "sony.CameraOrientation",
+      "kind": "code",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "Sony:CameraOrientation"
+    },
+    {
+      "catalogDefinition": "lib/Image/ExifTool/Exif.pm",
+      "catalogNotes": "EXIF0x9206 rational; finite/zero/inf/undef distinct, no Composite substitute",
+      "fieldID": "exif.SubjectDistance",
+      "kind": "distance",
+      "privacy": "public-focus-capture",
+      "runtimeTableResolution": "unresolved-unless-output-proves-it",
+      "selector": "EXIF:SubjectDistance"
+    }
+  ],
+  "groupFamilies": "0:1:4",
+  "normalizerVersion": "qualified-focus-facts-v1",
+  "registryVersion": "sequence-focus-metadata-fields-v1",
+  "schemaVersion": 1,
+  "toolCommit": "2200871d9cef988051d2a99d67df3bda6cbb30a8",
+  "toolVersion": "13.59"
+}

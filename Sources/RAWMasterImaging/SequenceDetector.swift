@@ -27,6 +27,7 @@ private struct SequenceWorkingFrame: Sendable {
     let contentHash: String
     var spatialFeature: SequenceSpatialFeature?
     let metadataBurstContext: SequenceMetadataBurstContext?
+    let pauseBridgeContext: SequencePauseBridgeContext?
 }
 
 /// Streaming fixed-origin phase fit. Neither the origin nor its global constraints slide forward.
@@ -182,6 +183,7 @@ public struct SequenceDetector: Sendable {
     public private(set) var isStopped = false
     public private(set) var processedCount = 0
     public private(set) var metadataStatistics: SequenceMetadataBurstStatistics?
+    public private(set) var pauseBridgeStatistics: SequencePauseBridgeStatistics?
     private var finalized = false
     private let spatialMetrics: (@Sendable (SequenceSpatialMetricsEvent) -> Void)?
     public private(set) var spatialStatistics: SequenceSpatialStatistics?
@@ -225,6 +227,7 @@ public struct SequenceDetector: Sendable {
               token.versions == configuration.versions(order: manifest.orderVersion) else { throw SequenceDetectorError.incompatibleToken }
         self.manifest = manifest; self.token = token; self.configuration = configuration
         self.metadataStatistics = configuration.metadataExperiment == nil ? nil : SequenceMetadataBurstStatistics()
+        self.pauseBridgeStatistics = configuration.pauseBridgeExperiment == nil ? nil : SequencePauseBridgeStatistics()
         self.trace = observer.map { SequenceTraceRecorder(limits: traceLimits, sink: $0) }
         self.spatialMetrics = spatialMetrics
         self.spatialStatistics = configuration.spatialExperiment == nil ? nil : SequenceSpatialStatistics()
@@ -271,6 +274,13 @@ public struct SequenceDetector: Sendable {
             }
             metadataStatistics?.observedContexts += 1
         }
+        if let focus = configuration.pauseBridgeExperiment, observation.feature != nil,
+           observation.input.validationIssues(manifest: manifest, versions: token.versions).isEmpty {
+            guard observation.pauseBridgeContext?.isBound(entry: observation.input.entry, configuration: focus) == true else {
+                isStopped = true; throw SequenceDetectorError.missingPauseBridgeContext
+            }
+            pauseBridgeStatistics?.observedContexts += 1
+        }
         trace?.beginFrame(observation.input.entry.ordinal)
         guard estimatedBytes(additionalRow: true) <= configuration.memoryBudgetBytes else {
             trace?.emit(SequenceTraceEvent(ordinal: observation.input.entry.ordinal, stage: .input, reason: .budgetExceeded, accepted: false))
@@ -313,7 +323,8 @@ public struct SequenceDetector: Sendable {
                 camera: input.entry.camera.partitionID(manifestFingerprint: manifest.contentFingerprint)!,
                 clock: input.clock!, feature: observation.feature!, contentHash: input.entry.contentHash!,
                 spatialFeature: configuration.spatialExperiment == nil ? nil : observation.spatialFeature,
-                metadataBurstContext: configuration.metadataExperiment == nil ? nil : observation.metadataBurstContext)
+                metadataBurstContext: configuration.metadataExperiment == nil ? nil : observation.metadataBurstContext,
+                pauseBridgeContext: configuration.pauseBridgeExperiment == nil ? nil : observation.pauseBridgeContext)
             rows.append(SequenceRowCoverage(state: .insufficient, reasons: [.noSequenceSupport]))
             if let issue = contextIssue(for: frame) {
                 if let trace {
@@ -402,7 +413,8 @@ public struct SequenceDetector: Sendable {
             + Self.intervalPendingCapacity + 2
         let legacy = SequenceCaptureReader.scratchReservationBytes + (rows.count + (additionalRow ? 1 : 0)) * 1_280
             + frames * (5_120 + (configuration.metadataExperiment == nil ? 0 : 512)) + 8_192
-        guard configuration.spatialExperiment != nil else { return legacy }
+        let focus = configuration.pauseBridgeExperiment == nil ? 0 : frames * 8_192 + 8_192
+        guard configuration.spatialExperiment != nil else { return legacy + focus }
         return legacy + frames * (114 * 1024) + 2 * 1024 * 1024
             + SequenceSpatialMatcher.scratchReservationBytes + 64 * 1024
     }
@@ -813,7 +825,10 @@ public struct SequenceDetector: Sendable {
                 histogram: configuration.bridgeHistogramLimit, luminance: configuration.bridgeLuminanceLimit, hash: configuration.bridgeHashLimit)
             trace.emit(event)
         }
-        if accepted { return try !burstSpatial || spatialBridge(before, right, cancelled: cancelled) }
+        if accepted {
+            guard try !burstSpatial || pauseBridgeAllows(before, right, cancelled: cancelled) else { return false }
+            return try !burstSpatial || spatialBridge(before, right, cancelled: cancelled)
+        }
         // All global anchors and both dense support windows were checked above.
         // Only the histogram may exceed its ordinary bridge limit.
         let eligible = h > configuration.bridgeHistogramLimit
@@ -834,7 +849,30 @@ public struct SequenceDetector: Sendable {
             trace.emit(event)
         }
         guard rescued else { return false }
+        guard try !burstSpatial || pauseBridgeAllows(before, right, cancelled: cancelled) else { return false }
         return try !burstSpatial || spatialBridge(before, right, cancelled: cancelled)
+    }
+    private mutating func pauseBridgeAllows(_ left: [SequenceWorkingFrame], _ right: [SequenceWorkingFrame], cancelled: () -> Bool) throws -> Bool {
+        guard configuration.pauseBridgeExperiment != nil else { return true }
+        try SequenceCaptureEvents.checkCancellation(cancelled)
+        pauseBridgeStatistics?.bridgeCandidates += 1
+        let value = try SequencePauseBridgeRule.decide(leftFeatures: left.map(\.feature), rightFeatures: right.map(\.feature),
+            leftContexts: left.map(\.pauseBridgeContext), rightContexts: right.map(\.pauseBridgeContext),
+            denseGapSeconds: configuration.denseGapSeconds, maximumBridgeSeconds: configuration.maximumBridgeSeconds,
+            cancelled: cancelled)
+        if value.verdict == .notApplicable { pauseBridgeStatistics?.notApplicable += 1 }
+        if value.focusGeometryPassed { pauseBridgeStatistics?.focusGeometryPassed += 1 }
+        if value.appearanceSeparationPassed { pauseBridgeStatistics?.appearanceSeparationPassed += 1 }
+        if value.verdict == .vetoed { pauseBridgeStatistics?.vetoes += 1 }
+        if let trace {
+            var event = SequenceTraceEvent(ordinal: right.last!.ordinal, stage: .bridge,
+                reason: value.verdict == .vetoed ? .bridgeRejected : .bridgeAccepted, accepted: value.verdict != .vetoed)
+            event.referenceOrdinal = left.last?.ordinal
+            event.pauseBridge = value
+            trace.emit(event)
+        }
+        try SequenceCaptureEvents.checkCancellation(cancelled)
+        return value.verdict != .vetoed
     }
     private mutating func spatialPair(_ first: SequenceWorkingFrame, _ second: SequenceWorkingFrame,
                                       purpose: SequenceSpatialDecisionPurpose, cancelled: () -> Bool) throws -> SequenceSpatialEvidence {

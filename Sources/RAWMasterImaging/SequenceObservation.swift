@@ -7,8 +7,9 @@ public struct SequenceObservation: Sendable {
     public let warnings: [String]
     public let spatialFeature: SequenceSpatialFeature?
     public let metadataBurstContext: SequenceMetadataBurstContext?
-    public init(input: SequenceAssetInput, feature: SequenceFrameFeature?, warnings: [String] = [], spatialFeature: SequenceSpatialFeature? = nil, metadataBurstContext: SequenceMetadataBurstContext? = nil) {
-        self.metadataBurstContext = metadataBurstContext
+    public let pauseBridgeContext: SequencePauseBridgeContext?
+    public init(input: SequenceAssetInput, feature: SequenceFrameFeature?, warnings: [String] = [], spatialFeature: SequenceSpatialFeature? = nil, metadataBurstContext: SequenceMetadataBurstContext? = nil, pauseBridgeContext: SequencePauseBridgeContext? = nil) {
+        self.metadataBurstContext = metadataBurstContext; self.pauseBridgeContext = pauseBridgeContext
         self.input = input; self.feature = feature; self.warnings = warnings; self.spatialFeature = spatialFeature
     }
 }
@@ -25,7 +26,7 @@ public struct SequenceObservationPreprocessor: Sendable {
     public init(manifest: SequenceInputManifest) { manifestFingerprint = manifest.contentFingerprint }
 
     public mutating func make(entry: SequenceManifestEntry, evidence: SequenceCaptureEvidence?,
-                              feature: SequenceFrameFeature?, barrier: SequenceReason? = nil, spatialFeature: SequenceSpatialFeature? = nil, metadataBurstContext: SequenceMetadataBurstContext? = nil) -> SequenceObservation {
+                              feature: SequenceFrameFeature?, barrier: SequenceReason? = nil, spatialFeature: SequenceSpatialFeature? = nil, metadataBurstContext: SequenceMetadataBurstContext? = nil, pauseBridgeContext: SequencePauseBridgeContext? = nil) -> SequenceObservation {
         var failure = barrier ?? entry.barrier
         var warnings: [String] = []
         func canonical(_ value: String?) -> String? {
@@ -53,14 +54,14 @@ public struct SequenceObservationPreprocessor: Sendable {
         }
         if failure != nil {
             previous = nil; eraID = nil; knownMake = nil; knownModel = nil; preciseHighWater = nil
-            return SequenceObservation(input: SequenceAssetInput(entry: entry, evidence: evidence, clock: nil, barrier: failure), feature: feature, warnings: warnings, spatialFeature: spatialFeature, metadataBurstContext: metadataBurstContext)
+            return SequenceObservation(input: SequenceAssetInput(entry: entry, evidence: evidence, clock: nil, barrier: failure), feature: feature, warnings: warnings, spatialFeature: spatialFeature, metadataBurstContext: metadataBurstContext, pauseBridgeContext: pauseBridgeContext)
         }
         if previous?.camera != camera || eraID == nil { eraID = "\(camera!):era:\(entry.ordinal)" }
         if let local = evidence?.time.local, let nano = local.nanosecond { preciseHighWater = (local.civilSecond, nano) }
         knownMake = make ?? knownMake; knownModel = model ?? knownModel
         previous = (camera!, evidence!.time)
         return SequenceObservation(input: SequenceAssetInput(entry: entry, evidence: evidence,
-            clock: SequenceClockPartition(id: eraID!, basis: .localCivil, derivationVersion: Self.version)), feature: feature, spatialFeature: spatialFeature, metadataBurstContext: metadataBurstContext)
+            clock: SequenceClockPartition(id: eraID!, basis: .localCivil, derivationVersion: Self.version)), feature: feature, spatialFeature: spatialFeature, metadataBurstContext: metadataBurstContext, pauseBridgeContext: pauseBridgeContext)
     }
 }
 
@@ -69,6 +70,7 @@ public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
     public static let policyVersion = "sequence-policy-dev-4"
     public var spatialExperiment: SequenceSpatialConfiguration? = nil
     public var metadataExperiment: SequenceMetadataExperimentConfiguration? = nil
+    public var pauseBridgeExperiment: SequencePauseBridgeConfiguration? = nil
     public var memoryBudgetBytes = 64 * 1024 * 1024
     public var contextFrames = 12
     public var anchorCount = 3
@@ -104,13 +106,17 @@ public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
     public init() {}
     public var fingerprint: String { get throws { try validate(); return try SequenceFingerprint.digest(self) } }
     public func versions(order: String) -> SequenceAnalysisVersions {
-        SequenceAnalysisVersions(extractor: SequenceCaptureReader.extractorVersion, feature: metadataExperiment != nil ? SequenceFrameFeature.version + "+metadata-context-v1" : spatialExperiment == nil ? SequenceFrameFeature.version : SequenceFrameFeature.version + "+" + SequenceSpatialFeature.version,
-            algorithm: metadataExperiment != nil ? "sequence-local-anchor-cadence-metadata-exp-1" : spatialExperiment == nil ? Self.algorithmVersion : "sequence-local-anchor-cadence-spatial-exp-1",
-            policy: metadataExperiment != nil ? "sequence-metadata-policy-exp-1" : spatialExperiment == nil ? Self.policyVersion : "sequence-spatial-policy-exp-1", order: order)
+        SequenceAnalysisVersions(extractor: SequenceCaptureReader.extractorVersion, feature: pauseBridgeExperiment != nil ? SequenceFrameFeature.version + "+metadata-focus-pause-v1" : metadataExperiment != nil ? SequenceFrameFeature.version + "+metadata-context-v1" : spatialExperiment == nil ? SequenceFrameFeature.version : SequenceFrameFeature.version + "+" + SequenceSpatialFeature.version,
+            algorithm: pauseBridgeExperiment != nil ? "sequence-local-anchor-cadence-focus-pause-exp-1" : metadataExperiment != nil ? "sequence-local-anchor-cadence-metadata-exp-1" : spatialExperiment == nil ? Self.algorithmVersion : "sequence-local-anchor-cadence-spatial-exp-1",
+            policy: pauseBridgeExperiment != nil ? "sequence-focus-pause-policy-exp-1" : metadataExperiment != nil ? "sequence-metadata-policy-exp-1" : spatialExperiment == nil ? Self.policyVersion : "sequence-spatial-policy-exp-1", order: order)
     }
     public func validate() throws {
         try spatialExperiment?.validate()
         try metadataExperiment?.validate()
+        try pauseBridgeExperiment?.validate()
+        if pauseBridgeExperiment != nil, metadataExperiment == nil || spatialExperiment != nil || bridgeSupportFrames != 3 {
+            throw SequenceDetectorError.invalidConfiguration
+        }
         guard spatialExperiment == nil || metadataExperiment == nil else { throw SequenceDetectorError.invalidConfiguration }
         if spatialExperiment != nil, bridgeSupportFrames != 3 { throw SequenceDetectorError.invalidConfiguration }
         let values = [denseGapSeconds, maximumBridgeSeconds, minimumIntervalPeriod, maximumIntervalPeriod,
@@ -132,4 +138,4 @@ public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
         }
     }
 }
-public enum SequenceDetectorError: Error { case invalidConfiguration, invalidOrder, stopped, finished, budgetExceeded, incompatibleToken, missingSpatialFeature, missingMetadataContext }
+public enum SequenceDetectorError: Error { case invalidConfiguration, invalidOrder, stopped, finished, budgetExceeded, incompatibleToken, missingSpatialFeature, missingMetadataContext, missingPauseBridgeContext }
