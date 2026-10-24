@@ -1,0 +1,26 @@
+{
+  "mode": "built-in image_gen",
+  "purpose": "Prepare approved C2 light / C1 dark artwork for native icon masking",
+  "prompts": [
+    {
+      "id": "dark",
+      "reference": "/Users/robinqu/Workspace/github/robinqu/RAWMaster/assets/icon-candidates/2026-10-23-round2/C1-chromatic-minimal.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production full-bleed bitmap artwork for a native macOS app icon. The input is the APPROVED icon design and must be preserved. Change only the outer background packaging: remove the surrounding margin and rounded-square tile outline / rim, extending the tile's own background color and subtle gradient all the way to all four square canvas edges. The result must be a fully opaque square artwork with square corners and NO enclosing rounded-square shape, NO exterior margin, NO frame or edge highlights, because macOS will apply its own icon mask. Preserve the exact two overlapping rounded diamond shapes, their proportions, centered alignment, all their colors, their central overlap color, existing material and edge detail. Keep the entire combined diamond symbol around 74% of canvas width with ample negative space and equal centering. Do not add or remove any foreground element. This is asset preparation, NOT redesign. One square 1024x1024 opaque bitmap. No text or extra objects. Preserve the navy background, bright cyan/blue/violet plates, and pale luminous overlap of C1."
+    },
+    {
+      "id": "light",
+      "reference": "/Users/robinqu/Workspace/github/robinqu/RAWMaster/assets/icon-candidates/2026-10-23-round2/C2-chromatic-glass.png",
+      "prompt": "Use case: precise-object-edit. Asset type: production full-bleed bitmap artwork for a native macOS app icon. The input is the APPROVED icon design and must be preserved. Change only the outer background packaging: remove the surrounding margin and rounded-square tile outline / rim, extending the tile's own background color and subtle gradient all the way to all four square canvas edges. The result must be a fully opaque square artwork with square corners and NO enclosing rounded-square shape, NO exterior margin, NO frame or edge highlights, because macOS will apply its own icon mask. Preserve the exact two overlapping rounded diamond shapes, their proportions, centered alignment, all their colors, their central overlap color, existing material and edge detail. Keep the entire combined diamond symbol around 74% of canvas width with ample negative space and equal centering. Do not add or remove any foreground element. This is asset preparation, NOT redesign. One square 1024x1024 opaque bitmap. No text or extra objects. Preserve the pearl-white background, thin cyan-blue/periwinkle translucent plates, and cobalt-blue overlap of C2."
+    }
+  ],
+  "sources": [
+    {
+      "id": "dark",
+      "path": "/Users/robinqu/.codex/generated_images/01a1488a-6797-7e31-b253-f45a665198fb/exec-9b2e19e7-d704-48c0-b532-9938cec8e61a.png"
+    },
+    {
+      "id": "light",
+      "path": "/Users/robinqu/.codex/generated_images/01a1488a-6797-7e31-b253-f45a665198fb/exec-c6e57ef4-dfd0-4168-94a0-bd4737efaa8c.png"
+    }
+  ]
+}

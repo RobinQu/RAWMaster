@@ -1,0 +1,78 @@
+name: macOS regression
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  regression:
+    runs-on: macos-26
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Record platform
+        run: |
+          mkdir -p output/validation/ci
+          sw_vers > output/validation/ci/platform.txt
+          uname -m >> output/validation/ci/platform.txt
+          swift --version >> output/validation/ci/platform.txt
+          xcodebuild -version >> output/validation/ci/platform.txt
+      - name: Run regression tests including all JPEG fixtures
+        env:
+          RAWMASTER_SEQUENCE_FIXTURE_REPORT: ${{ github.workspace }}/output/validation/ci/fixture-regression.json
+        run: |
+          set -o pipefail
+          export RAWMASTER_SEQUENCE_FIXTURE_SWIFT_VERSION="$(swift --version)"
+          swift test --jobs 3 2>&1 | tee output/validation/ci/tests.log
+      - name: Build client
+        run: swift build -c release --product RAWMaster --jobs 3
+      - name: Measure strict grouping quality (currently unmet)
+        id: grouping-quality
+        env:
+          RAWMASTER_SEQUENCE_FIXTURE_REPORT: ${{ github.workspace }}/output/validation/ci/fixture-quality.json
+        run: |
+          set -o pipefail
+          set +e
+          ./scripts/sequence-fixture-quality.sh 2>&1 | tee output/validation/ci/quality.log
+          quality_statuses=("${PIPESTATUS[@]}")
+          quality_exit=${quality_statuses[0]}
+          if [ "${quality_statuses[1]}" -ne 0 ]; then
+            echo 'quality_status=log-write-error' >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          set -e
+          echo "exit_code=$quality_exit" >> "$GITHUB_OUTPUT"
+          if [ "$quality_exit" -eq 2 ]; then
+            echo 'quality_status=measured-unmet' >> "$GITHUB_OUTPUT"
+            echo '::warning::Grouping quality was measured and remains unmet; see fixture-quality.json.'
+          elif [ "$quality_exit" -eq 0 ]; then
+            echo 'quality_status=accepted' >> "$GITHUB_OUTPUT"
+          else
+            echo 'quality_status=execution-or-integrity-error' >> "$GITHUB_OUTPUT"
+            exit "$quality_exit"
+          fi
+      - name: Report separate regression and quality outcomes
+        if: always()
+        env:
+          QUALITY_STATUS: ${{ steps.grouping-quality.outputs.quality_status }}
+        run: |
+          {
+            echo '## Sequence grouping'
+            echo 'Default tests check approved behavior, fixture integrity and real JPEG processing.'
+            echo "Strict human-label quality outcome: **$QUALITY_STATUS**."
+            echo 'A successful regression job does not mean grouping quality is accepted.'
+            echo 'Known quality gaps and unsupported DJI dual-format behavior remain visible in the uploaded reports.'
+            echo 'Runner platform is recorded; this is not M4 hardware or RAW decoder acceptance.'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload reports and logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: sequence-regression-${{ github.run_id }}
+          path: output/validation/ci/
+          if-no-files-found: error

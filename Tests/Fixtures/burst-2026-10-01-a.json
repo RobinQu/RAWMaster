@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "confirmedBy": "user",
+  "confirmedOn": "2026-10-23",
+  "fixture": "2026-10-01-a",
+  "role": "independent-positive-with-user-confirmed-negative-boundaries",
+  "sourceDirectoryHint": "2026-10-01-a/DCIM/100MSDCF",
+  "groups": [
+    {
+      "id": "user-confirmed-independent-burst",
+      "kind": "user-defined-logical-burst",
+      "files": [
+        "DSC01497.ARW",
+        "DSC01498.ARW",
+        "DSC01499.ARW",
+        "DSC01500.ARW",
+        "DSC01501.ARW",
+        "DSC01502.ARW",
+        "DSC01503.ARW",
+        "DSC01504.ARW",
+        "DSC01505.ARW",
+        "DSC01506.ARW",
+        "DSC01507.ARW",
+        "DSC01508.ARW",
+        "DSC01509.ARW",
+        "DSC01510.ARW"
+      ]
+    }
+  ],
+  "limitations": [
+    "One independent complete shooting segment; small sample, one camera/mode only.",
+    "Do not tune rules against this independent segment.",
+    "No labels exist outside the stated 16-file scope."
+  ],
+  "scopeFiles": [
+    "DSC01496.ARW",
+    "DSC01497.ARW",
+    "DSC01498.ARW",
+    "DSC01499.ARW",
+    "DSC01500.ARW",
+    "DSC01501.ARW",
+    "DSC01502.ARW",
+    "DSC01503.ARW",
+    "DSC01504.ARW",
+    "DSC01505.ARW",
+    "DSC01506.ARW",
+    "DSC01507.ARW",
+    "DSC01508.ARW",
+    "DSC01509.ARW",
+    "DSC01510.ARW",
+    "DSC01511.ARW"
+  ],
+  "negativeAdjacentPairs": [
+    [
+      "DSC01496.ARW",
+      "DSC01497.ARW"
+    ],
+    [
+      "DSC01510.ARW",
+      "DSC01511.ARW"
+    ]
+  ],
+  "negativeBoundaries": [
+    {
+      "from": "DSC01496.ARW",
+      "to": "DSC01497.ARW"
+    },
+    {
+      "from": "DSC01510.ARW",
+      "to": "DSC01511.ARW"
+    }
+  ]
+}

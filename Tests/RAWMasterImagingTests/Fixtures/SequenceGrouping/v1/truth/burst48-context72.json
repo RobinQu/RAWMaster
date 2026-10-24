@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "role": "development-regression-fixture",
+  "groups": [
+    {
+      "id": "validation-burst-context-user-positive",
+      "kind": "burst",
+      "assetIDs": [
+        "asset0012",
+        "asset0013",
+        "asset0014",
+        "asset0015",
+        "asset0016",
+        "asset0017",
+        "asset0018",
+        "asset0019",
+        "asset0020",
+        "asset0021",
+        "asset0022",
+        "asset0023",
+        "asset0024",
+        "asset0025",
+        "asset0026",
+        "asset0027",
+        "asset0028",
+        "asset0029",
+        "asset0030",
+        "asset0031",
+        "asset0032",
+        "asset0033",
+        "asset0034",
+        "asset0035",
+        "asset0036",
+        "asset0037",
+        "asset0038",
+        "asset0039",
+        "asset0040",
+        "asset0041",
+        "asset0042",
+        "asset0043",
+        "asset0044",
+        "asset0045",
+        "asset0046",
+        "asset0047",
+        "asset0048",
+        "asset0049",
+        "asset0050",
+        "asset0051",
+        "asset0052",
+        "asset0053",
+        "asset0054",
+        "asset0055",
+        "asset0056",
+        "asset0057",
+        "asset0058",
+        "asset0059"
+      ]
+    }
+  ],
+  "negativePairs": [
+    {
+      "from": "asset0011",
+      "to": "asset0012"
+    },
+    {
+      "from": "asset0059",
+      "to": "asset0060"
+    }
+  ]
+}

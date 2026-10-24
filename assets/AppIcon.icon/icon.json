@@ -1,0 +1,35 @@
+{
+  "fill-specializations": [
+    { "value": { "solid": "srgb:0.98,0.98,0.98,1" } },
+    { "appearance": "dark", "value": { "solid": "srgb:0.015,0.035,0.13,1" } }
+  ],
+  "groups": [
+    {
+      "name": "Minimal chromatic artwork",
+      "shadow": { "kind": "none", "opacity": 0 },
+      "specular": false,
+      "translucency": { "enabled": false, "value": 0 },
+      "layers": [
+        {
+          "name": "Light · Minimal C2",
+          "image-name": "LightMinimal.png",
+          "glass": false,
+          "opacity-specializations": [
+            { "value": 1 },
+            { "appearance": "dark", "value": 0 }
+          ]
+        },
+        {
+          "name": "Dark · Minimal C1",
+          "image-name": "DarkMinimal.png",
+          "glass": false,
+          "opacity-specializations": [
+            { "value": 0 },
+            { "appearance": "dark", "value": 1 }
+          ]
+        }
+      ]
+    }
+  ],
+  "supported-platforms": { "squares": [ "macOS" ] }
+}

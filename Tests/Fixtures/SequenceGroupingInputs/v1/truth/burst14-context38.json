@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "role": "development-regression-fixture",
+  "groups": [
+    {
+      "id": "development-burst-context-user-positive",
+      "kind": "burst",
+      "assetIDs": [
+        "asset0012",
+        "asset0013",
+        "asset0014",
+        "asset0015",
+        "asset0016",
+        "asset0017",
+        "asset0018",
+        "asset0019",
+        "asset0020",
+        "asset0021",
+        "asset0022",
+        "asset0023",
+        "asset0024",
+        "asset0025"
+      ]
+    }
+  ],
+  "negativePairs": [
+    {
+      "from": "asset0011",
+      "to": "asset0012"
+    },
+    {
+      "from": "asset0025",
+      "to": "asset0026"
+    }
+  ]
+}

@@ -1,0 +1,1337 @@
+{
+  "cases" : [
+    {
+      "assetCount" : 123,
+      "classificationFailures" : [
+
+      ],
+      "completeGroupTruth" : true,
+      "evaluation" : {
+        "acceptanceConfigured" : true,
+        "acceptedWithinDeclaredSourceScope" : false,
+        "coverageCounts" : {
+          "complete" : 123
+        },
+        "exactGroupFraction" : 1,
+        "failures" : [
+          "negative-support-below-frozen-minimum"
+        ],
+        "falseNegative" : 0,
+        "falsePositive" : 0,
+        "groups" : [
+          {
+            "exactMembership" : true,
+            "exactMembershipAndType" : true,
+            "extraMembers" : [
+
+            ],
+            "id" : "development-123-user-positive",
+            "kind" : "burst",
+            "memberCount" : 123,
+            "missingMembers" : [
+
+            ],
+            "typedMemberCount" : 123
+          }
+        ],
+        "knownCameraMakes" : [
+          "sony"
+        ],
+        "knownCameraModels" : [
+          "ilce-1m2"
+        ],
+        "metricDefinition" : "manifest-adjacent-edges-v2; positive edges require consecutive ordinals in the same labeled group; only explicit adjacent negative edges enter acceptance",
+        "nativeDeviceIdentityVerified" : false,
+        "negativePairs" : [
+
+        ],
+        "precision" : 1,
+        "qualityUnderAssumption" : false,
+        "recall" : 1,
+        "sourceAssertionMismatchOrdinals" : [
+
+        ],
+        "sourceDeclarationContradictions" : [
+
+        ],
+        "sourceDeclarationPartitionID" : "manifest-assertion:fixture-declared-burst123:revision:0:3d17a140e579af30fc0a8d616dc76573f75de4cc185632a29cb51d54cb4f4d75",
+        "sourceDeclaredByUser" : true,
+        "trueNegative" : 0,
+        "truePositive" : 122,
+        "typedCoverage" : 1,
+        "unknownCount" : 0,
+        "unknownNegativePairs" : 0,
+        "unknownPositivePairs" : 0,
+        "unlabeledPairsExcluded" : true
+      },
+      "evidenceLimitations" : [
+        "negative-support-below-frozen-minimum"
+      ],
+      "id" : "burst123",
+      "integrityValidated" : true,
+      "manifestSHA256" : "0fd2f3882a4063c4d5dbecc264cf2efe8bafebb332ac01c148d80c5b73adc965",
+      "metadataSHA256" : "1d7d84539ee45f038ba2dc353e5f4b2fd09fb037de8292efe886181846aad84c",
+      "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "qualityAccepted" : false,
+      "result" : {
+        "coverage" : [
+          {
+            "range" : {
+              "first" : 0,
+              "last" : 122
+            },
+            "reasons" : [
+
+            ],
+            "state" : "complete"
+          }
+        ],
+        "ranges" : [
+          {
+            "cameraPartitionID" : "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81",
+            "clockPartitionID" : "e627e85beb4a65aa642ec282e422800c6b4be3133d46f7618b60cae65cc4aa81:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 0,
+              "last" : 122
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          }
+        ],
+        "token" : {
+          "generation" : 0,
+          "inputFingerprint" : "71d58cdafafd661c19c9292c1e989a3fbd9080b40637aca9db87e74a5e4d348d",
+          "inputRevision" : 0,
+          "manifestFingerprint" : "3d17a140e579af30fc0a8d616dc76573f75de4cc185632a29cb51d54cb4f4d75",
+          "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+          "scopeID" : "fixture-burst123",
+          "structureRevision" : 0,
+          "versions" : {
+            "algorithm" : "sequence-local-anchor-cadence-dev-4",
+            "extractor" : "sequence-imageio-exif-v1",
+            "feature" : "sequence-srgb32-hist16-dhash-v1",
+            "order" : "session-natural-path-v1",
+            "policy" : "sequence-policy-dev-4"
+          }
+        },
+        "warnings" : [
+
+        ]
+      },
+      "truthSHA256" : "101cea192f495e1402e76ffe77153e58eedde8bd8bb382c08f2aaeb6567c4e61",
+      "unknownAssetIDs" : [
+
+      ]
+    },
+    {
+      "assetCount" : 38,
+      "classificationFailures" : [
+
+      ],
+      "completeGroupTruth" : true,
+      "evaluation" : {
+        "acceptanceConfigured" : true,
+        "acceptedWithinDeclaredSourceScope" : true,
+        "coverageCounts" : {
+          "complete" : 38
+        },
+        "exactGroupFraction" : 1,
+        "failures" : [
+
+        ],
+        "falseNegative" : 0,
+        "falsePositive" : 0,
+        "groups" : [
+          {
+            "exactMembership" : true,
+            "exactMembershipAndType" : true,
+            "extraMembers" : [
+
+            ],
+            "id" : "development-burst-context-user-positive",
+            "kind" : "burst",
+            "memberCount" : 14,
+            "missingMembers" : [
+
+            ],
+            "typedMemberCount" : 14
+          }
+        ],
+        "knownCameraMakes" : [
+          "sony"
+        ],
+        "knownCameraModels" : [
+          "ilce-1m2"
+        ],
+        "metricDefinition" : "manifest-adjacent-edges-v2; positive edges require consecutive ordinals in the same labeled group; only explicit adjacent negative edges enter acceptance",
+        "nativeDeviceIdentityVerified" : false,
+        "negativePairs" : [
+          {
+            "decidable" : true,
+            "from" : "asset0011",
+            "merged" : false,
+            "reasons" : [
+
+            ],
+            "to" : "asset0012"
+          },
+          {
+            "decidable" : true,
+            "from" : "asset0025",
+            "merged" : false,
+            "reasons" : [
+
+            ],
+            "to" : "asset0026"
+          }
+        ],
+        "precision" : 1,
+        "qualityUnderAssumption" : true,
+        "recall" : 1,
+        "sourceAssertionMismatchOrdinals" : [
+
+        ],
+        "sourceDeclarationContradictions" : [
+
+        ],
+        "sourceDeclarationPartitionID" : "manifest-assertion:fixture-declared-burst14-context38:revision:0:2e4f1e86b022a37f9552709528f6244be51b4c73f0c803a1744329538bec30e5",
+        "sourceDeclaredByUser" : true,
+        "trueNegative" : 2,
+        "truePositive" : 13,
+        "typedCoverage" : 1,
+        "unknownCount" : 0,
+        "unknownNegativePairs" : 0,
+        "unknownPositivePairs" : 0,
+        "unlabeledPairsExcluded" : true
+      },
+      "evidenceLimitations" : [
+
+      ],
+      "id" : "burst14-context38",
+      "integrityValidated" : true,
+      "manifestSHA256" : "9b8c80c2bf15129eeeb7a77915572863f225e8928e6aacfa5cb3384d670b61a0",
+      "metadataSHA256" : "4ff929f5d1bcfe71d4f66604f6c9bd6545a06e354e013e916df49bf989cc6794",
+      "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "qualityAccepted" : true,
+      "result" : {
+        "coverage" : [
+          {
+            "range" : {
+              "first" : 0,
+              "last" : 37
+            },
+            "reasons" : [
+
+            ],
+            "state" : "complete"
+          }
+        ],
+        "ranges" : [
+          {
+            "cameraPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+            "clockPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 0,
+              "last" : 1
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+            "clockPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 2,
+              "last" : 11
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+            "clockPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 12,
+              "last" : 25
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9",
+            "clockPartitionID" : "7908a45c1b505ae9fd56c354b3f96bd58296c3f3bf5150210c11681d430bfbc9:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 26,
+              "last" : 37
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          }
+        ],
+        "token" : {
+          "generation" : 0,
+          "inputFingerprint" : "7c794aaff76bddb9979b26a7f0594b23ee34e7e4c18ee5ba3769297cb88b5a86",
+          "inputRevision" : 0,
+          "manifestFingerprint" : "2e4f1e86b022a37f9552709528f6244be51b4c73f0c803a1744329538bec30e5",
+          "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+          "scopeID" : "fixture-burst14-context38",
+          "structureRevision" : 0,
+          "versions" : {
+            "algorithm" : "sequence-local-anchor-cadence-dev-4",
+            "extractor" : "sequence-imageio-exif-v1",
+            "feature" : "sequence-srgb32-hist16-dhash-v1",
+            "order" : "session-natural-path-v1",
+            "policy" : "sequence-policy-dev-4"
+          }
+        },
+        "warnings" : [
+
+        ]
+      },
+      "truthSHA256" : "b91b3ac54fdde276ec539b5902f6acc6884083ef666c95c2ede41b18f36bfe98",
+      "unknownAssetIDs" : [
+
+      ]
+    },
+    {
+      "assetCount" : 72,
+      "classificationFailures" : [
+
+      ],
+      "completeGroupTruth" : true,
+      "evaluation" : {
+        "acceptanceConfigured" : true,
+        "acceptedWithinDeclaredSourceScope" : true,
+        "coverageCounts" : {
+          "complete" : 72
+        },
+        "exactGroupFraction" : 1,
+        "failures" : [
+
+        ],
+        "falseNegative" : 0,
+        "falsePositive" : 0,
+        "groups" : [
+          {
+            "exactMembership" : true,
+            "exactMembershipAndType" : true,
+            "extraMembers" : [
+
+            ],
+            "id" : "validation-burst-context-user-positive",
+            "kind" : "burst",
+            "memberCount" : 48,
+            "missingMembers" : [
+
+            ],
+            "typedMemberCount" : 48
+          }
+        ],
+        "knownCameraMakes" : [
+          "sony"
+        ],
+        "knownCameraModels" : [
+          "ilce-1m2"
+        ],
+        "metricDefinition" : "manifest-adjacent-edges-v2; positive edges require consecutive ordinals in the same labeled group; only explicit adjacent negative edges enter acceptance",
+        "nativeDeviceIdentityVerified" : false,
+        "negativePairs" : [
+          {
+            "decidable" : true,
+            "from" : "asset0011",
+            "merged" : false,
+            "reasons" : [
+
+            ],
+            "to" : "asset0012"
+          },
+          {
+            "decidable" : true,
+            "from" : "asset0059",
+            "merged" : false,
+            "reasons" : [
+
+            ],
+            "to" : "asset0060"
+          }
+        ],
+        "precision" : 1,
+        "qualityUnderAssumption" : true,
+        "recall" : 1,
+        "sourceAssertionMismatchOrdinals" : [
+
+        ],
+        "sourceDeclarationContradictions" : [
+
+        ],
+        "sourceDeclarationPartitionID" : "manifest-assertion:fixture-declared-burst48-context72:revision:0:9f1f440e8364f9677954265e2a80b5a74888cadf927863537f34ee188ed39aea",
+        "sourceDeclaredByUser" : true,
+        "trueNegative" : 2,
+        "truePositive" : 47,
+        "typedCoverage" : 1,
+        "unknownCount" : 0,
+        "unknownNegativePairs" : 0,
+        "unknownPositivePairs" : 0,
+        "unlabeledPairsExcluded" : true
+      },
+      "evidenceLimitations" : [
+
+      ],
+      "id" : "burst48-context72",
+      "integrityValidated" : true,
+      "manifestSHA256" : "70a0eba9e8b7a1bb420b448f454295ad0ba6e6ccb01ad94e4946b928ce3b0aee",
+      "metadataSHA256" : "3e814dd866850aac6371e22b9885bef669dd192c321e15cfc59efbb0474f6bc4",
+      "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "qualityAccepted" : true,
+      "result" : {
+        "coverage" : [
+          {
+            "range" : {
+              "first" : 0,
+              "last" : 71
+            },
+            "reasons" : [
+
+            ],
+            "state" : "complete"
+          }
+        ],
+        "ranges" : [
+          {
+            "cameraPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+            "clockPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 0,
+              "last" : 3
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+            "clockPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 4,
+              "last" : 11
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+            "clockPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 12,
+              "last" : 59
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+            "clockPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 60,
+              "last" : 65
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded",
+            "clockPartitionID" : "a70de8db5ea5bab42a560e3b3ecb445e09c844a552aa082036f0bde4ef8c6ded:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 66,
+              "last" : 71
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          }
+        ],
+        "token" : {
+          "generation" : 0,
+          "inputFingerprint" : "64b2dd6421a666d518a12e34f8a26347665cd970cdce9c6d5519c3858567e446",
+          "inputRevision" : 0,
+          "manifestFingerprint" : "9f1f440e8364f9677954265e2a80b5a74888cadf927863537f34ee188ed39aea",
+          "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+          "scopeID" : "fixture-burst48-context72",
+          "structureRevision" : 0,
+          "versions" : {
+            "algorithm" : "sequence-local-anchor-cadence-dev-4",
+            "extractor" : "sequence-imageio-exif-v1",
+            "feature" : "sequence-srgb32-hist16-dhash-v1",
+            "order" : "session-natural-path-v1",
+            "policy" : "sequence-policy-dev-4"
+          }
+        },
+        "warnings" : [
+
+        ]
+      },
+      "truthSHA256" : "2e1101235eddc1f5d3095fa02732f7bf5eba1dba4bd938e2ed40ddfd5129c04c",
+      "unknownAssetIDs" : [
+
+      ]
+    },
+    {
+      "assetCount" : 439,
+      "classificationFailures" : [
+
+      ],
+      "completeGroupTruth" : true,
+      "evaluation" : {
+        "acceptanceConfigured" : true,
+        "acceptedWithinDeclaredSourceScope" : true,
+        "coverageCounts" : {
+          "complete" : 427,
+          "insufficient" : 12
+        },
+        "exactGroupFraction" : 1,
+        "failures" : [
+
+        ],
+        "falseNegative" : 0,
+        "falsePositive" : 0,
+        "groups" : [
+          {
+            "exactMembership" : true,
+            "exactMembershipAndType" : true,
+            "extraMembers" : [
+
+            ],
+            "id" : "validation-interval-context-user-positive",
+            "kind" : "interval",
+            "memberCount" : 427,
+            "missingMembers" : [
+
+            ],
+            "typedMemberCount" : 427
+          }
+        ],
+        "knownCameraMakes" : [
+          "sony"
+        ],
+        "knownCameraModels" : [
+          "ilce-7rm5"
+        ],
+        "metricDefinition" : "manifest-adjacent-edges-v2; positive edges require consecutive ordinals in the same labeled group; only explicit adjacent negative edges enter acceptance",
+        "nativeDeviceIdentityVerified" : false,
+        "negativePairs" : [
+          {
+            "decidable" : true,
+            "from" : "asset0011",
+            "merged" : false,
+            "reasons" : [
+
+            ],
+            "to" : "asset0012"
+          }
+        ],
+        "precision" : 1,
+        "qualityUnderAssumption" : true,
+        "recall" : 1,
+        "sourceAssertionMismatchOrdinals" : [
+
+        ],
+        "sourceDeclarationContradictions" : [
+
+        ],
+        "sourceDeclarationPartitionID" : "manifest-assertion:fixture-declared-interval427-context439:revision:0:b7aa1bdc8c06393784ca9795c529faa150c334cbde4fa01d7c2f23974b17bd5c",
+        "sourceDeclaredByUser" : true,
+        "trueNegative" : 1,
+        "truePositive" : 426,
+        "typedCoverage" : 1,
+        "unknownCount" : 0,
+        "unknownNegativePairs" : 0,
+        "unknownPositivePairs" : 0,
+        "unlabeledPairsExcluded" : true
+      },
+      "evidenceLimitations" : [
+
+      ],
+      "id" : "interval427-context439",
+      "integrityValidated" : true,
+      "manifestSHA256" : "e09a1a13a608fe76c9c2adcec8707e15993a83bf13f5b21733fb998c160399c4",
+      "metadataSHA256" : "9f7c469969f2c7d00c6f8162d2fd7edd0c96bd5f69d79fe44f478cc2259ed2a4",
+      "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "qualityAccepted" : true,
+      "result" : {
+        "coverage" : [
+          {
+            "range" : {
+              "first" : 0,
+              "last" : 11
+            },
+            "reasons" : [
+              "noSequenceSupport"
+            ],
+            "state" : "insufficient"
+          },
+          {
+            "range" : {
+              "first" : 12,
+              "last" : 438
+            },
+            "reasons" : [
+
+            ],
+            "state" : "complete"
+          }
+        ],
+        "ranges" : [
+          {
+            "cameraPartitionID" : "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92",
+            "clockPartitionID" : "98f4a4bac328f4006f6770dbd34b7d87823c8f4c3705e8414a62a572b6c33c92:era:0",
+            "kind" : "interval",
+            "range" : {
+              "first" : 12,
+              "last" : 438
+            },
+            "reasons" : [
+              "cadence",
+              "fixed-origin-phase"
+            ]
+          }
+        ],
+        "token" : {
+          "generation" : 0,
+          "inputFingerprint" : "9c960ce09aea978ce03ee4246859d57d03c2a3a547a836a2feba3749d38fbfaf",
+          "inputRevision" : 0,
+          "manifestFingerprint" : "b7aa1bdc8c06393784ca9795c529faa150c334cbde4fa01d7c2f23974b17bd5c",
+          "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+          "scopeID" : "fixture-interval427-context439",
+          "structureRevision" : 0,
+          "versions" : {
+            "algorithm" : "sequence-local-anchor-cadence-dev-4",
+            "extractor" : "sequence-imageio-exif-v1",
+            "feature" : "sequence-srgb32-hist16-dhash-v1",
+            "order" : "session-natural-path-v1",
+            "policy" : "sequence-policy-dev-4"
+          }
+        },
+        "warnings" : [
+
+        ]
+      },
+      "truthSHA256" : "364258159558db343cf2afd6ed0f6cdc7d48aac3c1474b02bef4e20aa3d16712",
+      "unknownAssetIDs" : [
+
+      ]
+    },
+    {
+      "assetCount" : 217,
+      "classificationFailures" : [
+        "confirmed-negative-boundary-merged",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth" : true,
+      "evaluation" : {
+        "acceptanceConfigured" : true,
+        "acceptedWithinDeclaredSourceScope" : false,
+        "coverageCounts" : {
+          "complete" : 205,
+          "insufficient" : 12
+        },
+        "exactGroupFraction" : 0,
+        "failures" : [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative" : 1,
+        "falsePositive" : 1,
+        "groups" : [
+          {
+            "exactMembership" : false,
+            "exactMembershipAndType" : false,
+            "extraMembers" : [
+              "asset0205",
+              "asset0206",
+              "asset0207",
+              "asset0208",
+              "asset0209",
+              "asset0210",
+              "asset0211",
+              "asset0212",
+              "asset0213",
+              "asset0214",
+              "asset0215",
+              "asset0216"
+            ],
+            "id" : "a2-validation-burst-context-user-positive",
+            "kind" : "burst",
+            "memberCount" : 193,
+            "missingMembers" : [
+
+            ],
+            "typedMemberCount" : 193
+          }
+        ],
+        "knownCameraMakes" : [
+          "sony"
+        ],
+        "knownCameraModels" : [
+          "ilce-1m2"
+        ],
+        "metricDefinition" : "manifest-adjacent-edges-v2; positive edges require consecutive ordinals in the same labeled group; only explicit adjacent negative edges enter acceptance",
+        "nativeDeviceIdentityVerified" : false,
+        "negativePairs" : [
+          {
+            "decidable" : true,
+            "from" : "asset0011",
+            "merged" : false,
+            "reasons" : [
+
+            ],
+            "to" : "asset0012"
+          },
+          {
+            "decidable" : true,
+            "from" : "asset0204",
+            "merged" : true,
+            "reasons" : [
+
+            ],
+            "to" : "asset0205"
+          }
+        ],
+        "precision" : 0.9947916666666666,
+        "qualityUnderAssumption" : false,
+        "recall" : 0.9947916666666666,
+        "sourceAssertionMismatchOrdinals" : [
+
+        ],
+        "sourceDeclarationContradictions" : [
+
+        ],
+        "sourceDeclarationPartitionID" : "manifest-assertion:fixture-declared-burst193-context217:revision:0:f5f03072d436115221588f15740df440032f1ccf445c54ceee5f71081eca4907",
+        "sourceDeclaredByUser" : true,
+        "trueNegative" : 1,
+        "truePositive" : 191,
+        "typedCoverage" : 1,
+        "unknownCount" : 0,
+        "unknownNegativePairs" : 0,
+        "unknownPositivePairs" : 0,
+        "unlabeledPairsExcluded" : true
+      },
+      "evidenceLimitations" : [
+
+      ],
+      "id" : "burst193-context217",
+      "integrityValidated" : true,
+      "manifestSHA256" : "37ab682c6b1b2ca316016521f096d00b77e421b89a86d2abf3c858c68a06c067",
+      "metadataSHA256" : "932dc146796b616970fc6ad336b35f230a318cb0ca9b4c1bfa4cef9430e967e7",
+      "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "qualityAccepted" : false,
+      "result" : {
+        "coverage" : [
+          {
+            "range" : {
+              "first" : 0,
+              "last" : 11
+            },
+            "reasons" : [
+              "noSequenceSupport"
+            ],
+            "state" : "insufficient"
+          },
+          {
+            "range" : {
+              "first" : 12,
+              "last" : 216
+            },
+            "reasons" : [
+
+            ],
+            "state" : "complete"
+          }
+        ],
+        "ranges" : [
+          {
+            "cameraPartitionID" : "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+            "clockPartitionID" : "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 12,
+              "last" : 55
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          },
+          {
+            "cameraPartitionID" : "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4",
+            "clockPartitionID" : "38ecaf5988719cbc506be9e51987ab8475467633667a95bd99ee9ed0c4a047d4:era:0",
+            "kind" : "burst",
+            "range" : {
+              "first" : 56,
+              "last" : 216
+            },
+            "reasons" : [
+              "local-continuity",
+              "bounded-anchors"
+            ]
+          }
+        ],
+        "token" : {
+          "generation" : 0,
+          "inputFingerprint" : "14db3325ea84f8bf9a721243567bcc34ad7e57262a25326ff6fce7a83465df87",
+          "inputRevision" : 0,
+          "manifestFingerprint" : "f5f03072d436115221588f15740df440032f1ccf445c54ceee5f71081eca4907",
+          "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+          "scopeID" : "fixture-burst193-context217",
+          "structureRevision" : 0,
+          "versions" : {
+            "algorithm" : "sequence-local-anchor-cadence-dev-4",
+            "extractor" : "sequence-imageio-exif-v1",
+            "feature" : "sequence-srgb32-hist16-dhash-v1",
+            "order" : "session-natural-path-v1",
+            "policy" : "sequence-policy-dev-4"
+          }
+        },
+        "warnings" : [
+
+        ]
+      },
+      "truthSHA256" : "020093cc24f1a2fe196db4bf17a5a3c1072ef9a6a014c1b3518d04bcae62ec65",
+      "unknownAssetIDs" : [
+
+      ]
+    },
+    {
+      "assetCount" : 376,
+      "classificationFailures" : [
+        "precision-unmet-or-undefined",
+        "recall-unmet-or-undefined",
+        "typed-coverage-unmet-or-undefined",
+        "exact-whole-group-unmet-or-undefined"
+      ],
+      "completeGroupTruth" : false,
+      "evaluation" : {
+        "acceptanceConfigured" : true,
+        "acceptedWithinDeclaredSourceScope" : false,
+        "coverageCounts" : {
+          "insufficient" : 376
+        },
+        "exactGroupFraction" : 0,
+        "failures" : [
+          "negative-support-below-frozen-minimum",
+          "precision-unmet-or-undefined",
+          "recall-unmet-or-undefined",
+          "typed-coverage-unmet-or-undefined",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "falseNegative" : 373,
+        "falsePositive" : 0,
+        "groups" : [
+          {
+            "exactMembership" : false,
+            "exactMembershipAndType" : false,
+            "extraMembers" : [
+
+            ],
+            "id" : "dji187-known-positive",
+            "kind" : "interval",
+            "memberCount" : 374,
+            "missingMembers" : [
+              "asset0000",
+              "asset0001",
+              "asset0002",
+              "asset0003",
+              "asset0004",
+              "asset0005",
+              "asset0006",
+              "asset0007",
+              "asset0008",
+              "asset0009",
+              "asset0010",
+              "asset0011",
+              "asset0012",
+              "asset0013",
+              "asset0014",
+              "asset0015",
+              "asset0016",
+              "asset0017",
+              "asset0018",
+              "asset0019",
+              "asset0020",
+              "asset0021",
+              "asset0022",
+              "asset0023",
+              "asset0024",
+              "asset0025",
+              "asset0026",
+              "asset0027",
+              "asset0028",
+              "asset0029",
+              "asset0030",
+              "asset0031",
+              "asset0032",
+              "asset0033",
+              "asset0034",
+              "asset0035",
+              "asset0036",
+              "asset0037",
+              "asset0038",
+              "asset0039",
+              "asset0040",
+              "asset0041",
+              "asset0042",
+              "asset0043",
+              "asset0044",
+              "asset0045",
+              "asset0046",
+              "asset0047",
+              "asset0048",
+              "asset0049",
+              "asset0050",
+              "asset0051",
+              "asset0052",
+              "asset0053",
+              "asset0054",
+              "asset0055",
+              "asset0056",
+              "asset0057",
+              "asset0058",
+              "asset0059",
+              "asset0060",
+              "asset0061",
+              "asset0062",
+              "asset0063",
+              "asset0064",
+              "asset0065",
+              "asset0066",
+              "asset0067",
+              "asset0068",
+              "asset0069",
+              "asset0070",
+              "asset0071",
+              "asset0072",
+              "asset0073",
+              "asset0074",
+              "asset0075",
+              "asset0076",
+              "asset0077",
+              "asset0078",
+              "asset0079",
+              "asset0080",
+              "asset0081",
+              "asset0082",
+              "asset0083",
+              "asset0084",
+              "asset0085",
+              "asset0086",
+              "asset0087",
+              "asset0088",
+              "asset0089",
+              "asset0090",
+              "asset0091",
+              "asset0092",
+              "asset0093",
+              "asset0094",
+              "asset0095",
+              "asset0096",
+              "asset0097",
+              "asset0098",
+              "asset0099",
+              "asset0100",
+              "asset0101",
+              "asset0102",
+              "asset0103",
+              "asset0104",
+              "asset0105",
+              "asset0106",
+              "asset0107",
+              "asset0108",
+              "asset0109",
+              "asset0110",
+              "asset0111",
+              "asset0112",
+              "asset0113",
+              "asset0114",
+              "asset0115",
+              "asset0116",
+              "asset0117",
+              "asset0118",
+              "asset0119",
+              "asset0120",
+              "asset0121",
+              "asset0122",
+              "asset0123",
+              "asset0124",
+              "asset0125",
+              "asset0126",
+              "asset0127",
+              "asset0128",
+              "asset0129",
+              "asset0130",
+              "asset0131",
+              "asset0132",
+              "asset0133",
+              "asset0134",
+              "asset0135",
+              "asset0136",
+              "asset0137",
+              "asset0138",
+              "asset0139",
+              "asset0140",
+              "asset0141",
+              "asset0142",
+              "asset0143",
+              "asset0144",
+              "asset0145",
+              "asset0146",
+              "asset0147",
+              "asset0148",
+              "asset0149",
+              "asset0150",
+              "asset0151",
+              "asset0152",
+              "asset0153",
+              "asset0154",
+              "asset0155",
+              "asset0156",
+              "asset0157",
+              "asset0158",
+              "asset0159",
+              "asset0160",
+              "asset0161",
+              "asset0162",
+              "asset0163",
+              "asset0164",
+              "asset0165",
+              "asset0166",
+              "asset0167",
+              "asset0168",
+              "asset0169",
+              "asset0170",
+              "asset0171",
+              "asset0172",
+              "asset0173",
+              "asset0174",
+              "asset0175",
+              "asset0176",
+              "asset0177",
+              "asset0178",
+              "asset0179",
+              "asset0180",
+              "asset0181",
+              "asset0182",
+              "asset0183",
+              "asset0184",
+              "asset0185",
+              "asset0186",
+              "asset0187",
+              "asset0188",
+              "asset0189",
+              "asset0190",
+              "asset0191",
+              "asset0192",
+              "asset0193",
+              "asset0194",
+              "asset0195",
+              "asset0196",
+              "asset0197",
+              "asset0198",
+              "asset0199",
+              "asset0200",
+              "asset0201",
+              "asset0202",
+              "asset0203",
+              "asset0204",
+              "asset0205",
+              "asset0206",
+              "asset0207",
+              "asset0208",
+              "asset0209",
+              "asset0210",
+              "asset0211",
+              "asset0212",
+              "asset0213",
+              "asset0214",
+              "asset0215",
+              "asset0216",
+              "asset0217",
+              "asset0218",
+              "asset0219",
+              "asset0220",
+              "asset0221",
+              "asset0222",
+              "asset0223",
+              "asset0224",
+              "asset0225",
+              "asset0226",
+              "asset0227",
+              "asset0228",
+              "asset0229",
+              "asset0230",
+              "asset0231",
+              "asset0232",
+              "asset0233",
+              "asset0234",
+              "asset0235",
+              "asset0236",
+              "asset0237",
+              "asset0238",
+              "asset0239",
+              "asset0240",
+              "asset0241",
+              "asset0242",
+              "asset0243",
+              "asset0244",
+              "asset0245",
+              "asset0246",
+              "asset0247",
+              "asset0248",
+              "asset0249",
+              "asset0250",
+              "asset0251",
+              "asset0252",
+              "asset0253",
+              "asset0254",
+              "asset0255",
+              "asset0256",
+              "asset0257",
+              "asset0258",
+              "asset0259",
+              "asset0260",
+              "asset0261",
+              "asset0262",
+              "asset0263",
+              "asset0264",
+              "asset0265",
+              "asset0266",
+              "asset0267",
+              "asset0268",
+              "asset0269",
+              "asset0270",
+              "asset0271",
+              "asset0272",
+              "asset0273",
+              "asset0274",
+              "asset0275",
+              "asset0276",
+              "asset0277",
+              "asset0278",
+              "asset0279",
+              "asset0280",
+              "asset0281",
+              "asset0282",
+              "asset0283",
+              "asset0284",
+              "asset0285",
+              "asset0286",
+              "asset0287",
+              "asset0288",
+              "asset0289",
+              "asset0290",
+              "asset0291",
+              "asset0292",
+              "asset0293",
+              "asset0294",
+              "asset0295",
+              "asset0296",
+              "asset0297",
+              "asset0298",
+              "asset0299",
+              "asset0300",
+              "asset0301",
+              "asset0302",
+              "asset0303",
+              "asset0304",
+              "asset0305",
+              "asset0306",
+              "asset0307",
+              "asset0308",
+              "asset0309",
+              "asset0310",
+              "asset0311",
+              "asset0312",
+              "asset0313",
+              "asset0314",
+              "asset0315",
+              "asset0316",
+              "asset0317",
+              "asset0318",
+              "asset0319",
+              "asset0320",
+              "asset0321",
+              "asset0322",
+              "asset0323",
+              "asset0324",
+              "asset0325",
+              "asset0326",
+              "asset0327",
+              "asset0328",
+              "asset0329",
+              "asset0330",
+              "asset0331",
+              "asset0332",
+              "asset0333",
+              "asset0334",
+              "asset0335",
+              "asset0336",
+              "asset0337",
+              "asset0338",
+              "asset0339",
+              "asset0340",
+              "asset0341",
+              "asset0342",
+              "asset0343",
+              "asset0344",
+              "asset0345",
+              "asset0346",
+              "asset0347",
+              "asset0348",
+              "asset0349",
+              "asset0350",
+              "asset0351",
+              "asset0352",
+              "asset0353",
+              "asset0354",
+              "asset0355",
+              "asset0356",
+              "asset0357",
+              "asset0358",
+              "asset0359",
+              "asset0360",
+              "asset0361",
+              "asset0362",
+              "asset0363",
+              "asset0364",
+              "asset0365",
+              "asset0366",
+              "asset0367",
+              "asset0368",
+              "asset0369",
+              "asset0370",
+              "asset0371",
+              "asset0372",
+              "asset0373"
+            ],
+            "typedMemberCount" : 0
+          }
+        ],
+        "knownCameraMakes" : [
+          "dji"
+        ],
+        "knownCameraModels" : [
+          "fc9313"
+        ],
+        "metricDefinition" : "manifest-adjacent-edges-v2; positive edges require consecutive ordinals in the same labeled group; only explicit adjacent negative edges enter acceptance",
+        "nativeDeviceIdentityVerified" : false,
+        "negativePairs" : [
+
+        ],
+        "qualityUnderAssumption" : false,
+        "recall" : 0,
+        "sourceAssertionMismatchOrdinals" : [
+
+        ],
+        "sourceDeclarationContradictions" : [
+
+        ],
+        "sourceDeclarationPartitionID" : "manifest-assertion:fixture-declared-dji187-context376:revision:0:2f835db51f77340450095837fffe1d82f9fbc23ce0b92da12045363c7b66f917",
+        "sourceDeclaredByUser" : true,
+        "trueNegative" : 0,
+        "truePositive" : 0,
+        "typedCoverage" : 0,
+        "unknownCount" : 0,
+        "unknownNegativePairs" : 0,
+        "unknownPositivePairs" : 0,
+        "unlabeledPairsExcluded" : true
+      },
+      "evidenceLimitations" : [
+        "negative-support-below-frozen-minimum",
+        "full-group-extent-not-labeled; DJI0188 remains unknown"
+      ],
+      "id" : "dji187-context376",
+      "integrityValidated" : true,
+      "manifestSHA256" : "597c121de98a95e01f1cc0f1d5dd639bed1134a5df7d441fc94994d48f36ac79",
+      "metadataSHA256" : "95de577024c75632d653fd5bdef4002f2b75243786c24c31c49f8070b9c32c9f",
+      "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+      "qualityAccepted" : false,
+      "result" : {
+        "coverage" : [
+          {
+            "range" : {
+              "first" : 0,
+              "last" : 375
+            },
+            "reasons" : [
+              "noSequenceSupport"
+            ],
+            "state" : "insufficient"
+          }
+        ],
+        "ranges" : [
+
+        ],
+        "token" : {
+          "generation" : 0,
+          "inputFingerprint" : "3b4bc44c9f2683c4fad6d3ea1527d1bce8b8eb9493a1d3ac2587ca503c9f4d2d",
+          "inputRevision" : 0,
+          "manifestFingerprint" : "2f835db51f77340450095837fffe1d82f9fbc23ce0b92da12045363c7b66f917",
+          "policyFingerprint" : "6d2d41684046f60da698eec7e19ed37c74673662fa33500db90fbdc8e7ecfcc4",
+          "scopeID" : "fixture-dji187-context376",
+          "structureRevision" : 0,
+          "versions" : {
+            "algorithm" : "sequence-local-anchor-cadence-dev-4",
+            "extractor" : "sequence-imageio-exif-v1",
+            "feature" : "sequence-srgb32-hist16-dhash-v1",
+            "order" : "session-natural-path-v1",
+            "policy" : "sequence-policy-dev-4"
+          }
+        },
+        "warnings" : [
+
+        ]
+      },
+      "truthSHA256" : "c35215eac0a9d77dd6ffd08c166b2119b89097f765ced85f341fc24341a5a66d",
+      "unknownAssetIDs" : [
+        "asset0374",
+        "asset0375"
+      ]
+    }
+  ],
+  "datasetID" : "sequence-grouping-jpeg-v1",
+  "indexSHA256" : "e2bc0f560c96d9c60cea737d43718d3d867aacc7c0e6599a44f6d7da58efb48c",
+  "referencePlatform" : {
+    "architecture" : "arm64",
+    "decoder" : "ImageIO native SequenceCaptureReader",
+    "imageIOBundleVersion" : "2851",
+    "operatingSystem" : "Version 27.0.1 (Build 26A434)",
+    "swift" : "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0\n"
+  },
+  "schemaVersion" : 1
+}

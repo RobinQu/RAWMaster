@@ -1,0 +1,2238 @@
+{
+  "assets" : [
+    {
+      "assetID" : "asset0000",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "751"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "751"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "c13df3a4293a15aa95a6802612edd3f3df87970b762ffc89e4926dfb94dcbb82",
+        "sha256Before" : "c13df3a4293a15aa95a6802612edd3f3df87970b762ffc89e4926dfb94dcbb82"
+      }
+    },
+    {
+      "assetID" : "asset0001",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "818"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "818"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "d8ac58b9e78f21712657c4ac220fab2bdc22fa889246ad23d25183274bf2af26",
+        "sha256Before" : "d8ac58b9e78f21712657c4ac220fab2bdc22fa889246ad23d25183274bf2af26"
+      }
+    },
+    {
+      "assetID" : "asset0002",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "885"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "885"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "bc89573ce5a097e3743365ff85b05d344f60be292bc3dfb2bb3f01938a0c03d1",
+        "sha256Before" : "bc89573ce5a097e3743365ff85b05d344f60be292bc3dfb2bb3f01938a0c03d1"
+      }
+    },
+    {
+      "assetID" : "asset0003",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "952"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:08",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "952"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "bf8102b3ee2aa0c42cc2c28d10abfd3f3254aa85622426e6e419adc105065077",
+        "sha256Before" : "bf8102b3ee2aa0c42cc2c28d10abfd3f3254aa85622426e6e419adc105065077"
+      }
+    },
+    {
+      "assetID" : "asset0004",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:10",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "887"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:10",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "887"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3c2c6715ea319e04436e99be80a251ac75275725a1720db6d2151b47614df171",
+        "sha256Before" : "3c2c6715ea319e04436e99be80a251ac75275725a1720db6d2151b47614df171"
+      }
+    },
+    {
+      "assetID" : "asset0005",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:10",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "954"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:10",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "954"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "dc97263b3040c5b7f397c9059e9588cf0c8772fb10a7c7eff93cce7089956ec1",
+        "sha256Before" : "dc97263b3040c5b7f397c9059e9588cf0c8772fb10a7c7eff93cce7089956ec1"
+      }
+    },
+    {
+      "assetID" : "asset0006",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "020"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "020"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "488f0440ba91d00587e62cb6fa0cf6b61e1877be44152bf138f0288c9481778a",
+        "sha256Before" : "488f0440ba91d00587e62cb6fa0cf6b61e1877be44152bf138f0288c9481778a"
+      }
+    },
+    {
+      "assetID" : "asset0007",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "087"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "087"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "89ac0cefc449c4e607b6afa55c220f0b06851e019637fee6b6576020b6f9ec99",
+        "sha256Before" : "89ac0cefc449c4e607b6afa55c220f0b06851e019637fee6b6576020b6f9ec99"
+      }
+    },
+    {
+      "assetID" : "asset0008",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "154"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "154"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "7e4796ac20ab20f9c7552963b6a02164754104fae7669d1a0dc48383f4a8bdb3",
+        "sha256Before" : "7e4796ac20ab20f9c7552963b6a02164754104fae7669d1a0dc48383f4a8bdb3"
+      }
+    },
+    {
+      "assetID" : "asset0009",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "221"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "221"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "66ee74d7cef185bedb8dc88f4dc574febf9119a0a330b5a4fcd91bde4510d56a",
+        "sha256Before" : "66ee74d7cef185bedb8dc88f4dc574febf9119a0a330b5a4fcd91bde4510d56a"
+      }
+    },
+    {
+      "assetID" : "asset0010",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "288"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "288"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3ecd4d6489e696dcb2a8597fe9d1911aea4aa3f612bb9c392a2e17003a49aa48",
+        "sha256Before" : "3ecd4d6489e696dcb2a8597fe9d1911aea4aa3f612bb9c392a2e17003a49aa48"
+      }
+    },
+    {
+      "assetID" : "asset0011",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "353"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:11",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "353"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "b5723359cd2411fef233dd44e9004312277badb70441b0ff3201bc8162b4fc21",
+        "sha256Before" : "b5723359cd2411fef233dd44e9004312277badb70441b0ff3201bc8162b4fc21"
+      }
+    },
+    {
+      "assetID" : "asset0012",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "539"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "539"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "e30785b4d68162e4d79dd392003689df3f29a561b7ce55d1b7c5204cc7579256",
+        "sha256Before" : "e30785b4d68162e4d79dd392003689df3f29a561b7ce55d1b7c5204cc7579256"
+      }
+    },
+    {
+      "assetID" : "asset0013",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "605"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "605"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "845386d28efb582d7647f61bfe5f66bb01ccdd1fc4f972c7faf8521a52768024",
+        "sha256Before" : "845386d28efb582d7647f61bfe5f66bb01ccdd1fc4f972c7faf8521a52768024"
+      }
+    },
+    {
+      "assetID" : "asset0014",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "672"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "672"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "b1438c4a26d78970cfaf5e20f5c272cb65283d1a48807300e93305fb863bee7c",
+        "sha256Before" : "b1438c4a26d78970cfaf5e20f5c272cb65283d1a48807300e93305fb863bee7c"
+      }
+    },
+    {
+      "assetID" : "asset0015",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "739"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "739"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "ebd1a8ed3182d8ce8421b33dcf9e88f7c9ec16bbc1bf367aaa8cb13a03d58802",
+        "sha256Before" : "ebd1a8ed3182d8ce8421b33dcf9e88f7c9ec16bbc1bf367aaa8cb13a03d58802"
+      }
+    },
+    {
+      "assetID" : "asset0016",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "805"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "805"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "8f62d0de80d0445fe9e72f9f0b0a479611e3e94efc66261747eb8ed8c245a728",
+        "sha256Before" : "8f62d0de80d0445fe9e72f9f0b0a479611e3e94efc66261747eb8ed8c245a728"
+      }
+    },
+    {
+      "assetID" : "asset0017",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "872"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "872"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "fa66ffd3d520aecb69a024022b10f2b14367f7cb8d75f72bf81cd8fa2921a32e",
+        "sha256Before" : "fa66ffd3d520aecb69a024022b10f2b14367f7cb8d75f72bf81cd8fa2921a32e"
+      }
+    },
+    {
+      "assetID" : "asset0018",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "939"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:12",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "939"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3d29e26fbaea53d03e823ca1488c1db713baee92ee1208068c0a4b079ed75e4b",
+        "sha256Before" : "3d29e26fbaea53d03e823ca1488c1db713baee92ee1208068c0a4b079ed75e4b"
+      }
+    },
+    {
+      "assetID" : "asset0019",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "006"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "006"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "ddd03876fa3e87d1b661334427965025447b68080ab2f6dc7f8d706bf1abbc13",
+        "sha256Before" : "ddd03876fa3e87d1b661334427965025447b68080ab2f6dc7f8d706bf1abbc13"
+      }
+    },
+    {
+      "assetID" : "asset0020",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "072"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "072"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "39ca20612f1aa1e96ce14c6d384819d9592d1e9cacfa5f2dd1b8d292b64a151c",
+        "sha256Before" : "39ca20612f1aa1e96ce14c6d384819d9592d1e9cacfa5f2dd1b8d292b64a151c"
+      }
+    },
+    {
+      "assetID" : "asset0021",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "139"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "139"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3ab496d52bbc6efec47c8834e0300369f25a8c88460b4c1ffbcd3b0ce25ffd2c",
+        "sha256Before" : "3ab496d52bbc6efec47c8834e0300369f25a8c88460b4c1ffbcd3b0ce25ffd2c"
+      }
+    },
+    {
+      "assetID" : "asset0022",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "206"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:13",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "206"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "244bc4a7ac6cece3d399fafc841d751deae52072754034294cae95e1b9e7ead1",
+        "sha256Before" : "244bc4a7ac6cece3d399fafc841d751deae52072754034294cae95e1b9e7ead1"
+      }
+    },
+    {
+      "assetID" : "asset0023",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "607"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "607"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "ca089453ba30c85a381e61047f986aad445014169774461077336990dfbb1320",
+        "sha256Before" : "ca089453ba30c85a381e61047f986aad445014169774461077336990dfbb1320"
+      }
+    },
+    {
+      "assetID" : "asset0024",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "674"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "674"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "1f04a1646112737842ff4d494244be32fd3ad604ee9741236c3b1f2c5a8b0d30",
+        "sha256Before" : "1f04a1646112737842ff4d494244be32fd3ad604ee9741236c3b1f2c5a8b0d30"
+      }
+    },
+    {
+      "assetID" : "asset0025",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "741"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "741"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "744d9c1d2884a3daa7fd4c1cfc38ea15cc44aca11e3dcb1907e427ccb4ef8839",
+        "sha256Before" : "744d9c1d2884a3daa7fd4c1cfc38ea15cc44aca11e3dcb1907e427ccb4ef8839"
+      }
+    },
+    {
+      "assetID" : "asset0026",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "807"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "807"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "ed8d37382dafdb2c25a23dd2066cc8d41b7a1cdd584cce83bd46e6615dc3cb10",
+        "sha256Before" : "ed8d37382dafdb2c25a23dd2066cc8d41b7a1cdd584cce83bd46e6615dc3cb10"
+      }
+    },
+    {
+      "assetID" : "asset0027",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "874"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "874"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "7502d81e91ab17d54cd410c1808a30b65be3b47e531797bec68919c74bb8bf84",
+        "sha256Before" : "7502d81e91ab17d54cd410c1808a30b65be3b47e531797bec68919c74bb8bf84"
+      }
+    },
+    {
+      "assetID" : "asset0028",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "941"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:14",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "941"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "16fad1f500e20242b522b6c23beabece9e64e3263118adac352b1a3c4f3e3471",
+        "sha256Before" : "16fad1f500e20242b522b6c23beabece9e64e3263118adac352b1a3c4f3e3471"
+      }
+    },
+    {
+      "assetID" : "asset0029",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "008"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "008"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "6a4b1591a48d888816ee543dfb09613f41c063b049ca7cd4e7de0a8976468572",
+        "sha256Before" : "6a4b1591a48d888816ee543dfb09613f41c063b049ca7cd4e7de0a8976468572"
+      }
+    },
+    {
+      "assetID" : "asset0030",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "074"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "074"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "d6e21d05673a44a0b6e688e02836b4e5d55b78f848341cafaa3f52588ad82d05",
+        "sha256Before" : "d6e21d05673a44a0b6e688e02836b4e5d55b78f848341cafaa3f52588ad82d05"
+      }
+    },
+    {
+      "assetID" : "asset0031",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "141"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "141"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "79b28dabe75dd524d8d8a7df7ec4032ccee56820591196795f1ea34dcb42d0e9",
+        "sha256Before" : "79b28dabe75dd524d8d8a7df7ec4032ccee56820591196795f1ea34dcb42d0e9"
+      }
+    },
+    {
+      "assetID" : "asset0032",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "208"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:15",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "208"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "a8cdf39e43c785bdaeb4492570881c17eb5f8aaca7112f74bc95c79163df6a42",
+        "sha256Before" : "a8cdf39e43c785bdaeb4492570881c17eb5f8aaca7112f74bc95c79163df6a42"
+      }
+    },
+    {
+      "assetID" : "asset0033",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "415"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "415"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "d77e1f264a4d4e9f26989bd634fc2c6892703cca08064d462da83605caa90385",
+        "sha256Before" : "d77e1f264a4d4e9f26989bd634fc2c6892703cca08064d462da83605caa90385"
+      }
+    },
+    {
+      "assetID" : "asset0034",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "482"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "482"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "79ae409c0c95d55ca71799953e1712279d1f2007f3515c08b1b542861eaf7022",
+        "sha256Before" : "79ae409c0c95d55ca71799953e1712279d1f2007f3515c08b1b542861eaf7022"
+      }
+    },
+    {
+      "assetID" : "asset0035",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "549"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "549"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "9213fed80f446bd6225434a6ea83e25275f9b3a29016d655c3912606f7860287",
+        "sha256Before" : "9213fed80f446bd6225434a6ea83e25275f9b3a29016d655c3912606f7860287"
+      }
+    },
+    {
+      "assetID" : "asset0036",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "615"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "615"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "7e1c08d929be90733292ccc335567900e022dcfdf1f10b220c02a1e8ac312892",
+        "sha256Before" : "7e1c08d929be90733292ccc335567900e022dcfdf1f10b220c02a1e8ac312892"
+      }
+    },
+    {
+      "assetID" : "asset0037",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "682"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "682"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "0b5f2b95ddd393bfbfd58531f247529af938051da28fc3ec500bdb7893630726",
+        "sha256Before" : "0b5f2b95ddd393bfbfd58531f247529af938051da28fc3ec500bdb7893630726"
+      }
+    },
+    {
+      "assetID" : "asset0038",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "749"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "749"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "135db9d06e3437b2825bf883ea9eebafa55157f70f452612e0740ca42099253e",
+        "sha256Before" : "135db9d06e3437b2825bf883ea9eebafa55157f70f452612e0740ca42099253e"
+      }
+    },
+    {
+      "assetID" : "asset0039",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "815"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "815"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "ab2a9b86d3b2bd39c2b68cb096505d59498cf75dc535bc56273614f8de620ed2",
+        "sha256Before" : "ab2a9b86d3b2bd39c2b68cb096505d59498cf75dc535bc56273614f8de620ed2"
+      }
+    },
+    {
+      "assetID" : "asset0040",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "882"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "882"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "71cf895ae1c040f967bc1ba67936b15efe97c7fbf3d7b1c6e6ec7045a92a2423",
+        "sha256Before" : "71cf895ae1c040f967bc1ba67936b15efe97c7fbf3d7b1c6e6ec7045a92a2423"
+      }
+    },
+    {
+      "assetID" : "asset0041",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "949"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:22",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "949"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "d3b38bbc4839c17560d4b178990ffae74baaa7b947bb55667d0669e74205c421",
+        "sha256Before" : "d3b38bbc4839c17560d4b178990ffae74baaa7b947bb55667d0669e74205c421"
+      }
+    },
+    {
+      "assetID" : "asset0042",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "016"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "016"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "735c3487798b055b8c3cd72001dc56b8ebc6aa77836a9ece1915c7c5c7643496",
+        "sha256Before" : "735c3487798b055b8c3cd72001dc56b8ebc6aa77836a9ece1915c7c5c7643496"
+      }
+    },
+    {
+      "assetID" : "asset0043",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "083"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "083"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "6d0694d2c63299ab7fbd511c42aca264106557385ed6c773aee7883edcb2232d",
+        "sha256Before" : "6d0694d2c63299ab7fbd511c42aca264106557385ed6c773aee7883edcb2232d"
+      }
+    },
+    {
+      "assetID" : "asset0044",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "733"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "733"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "4133e37a867c9bcaca27093ee62147b15758935e97c94d5296d1157bf064668c",
+        "sha256Before" : "4133e37a867c9bcaca27093ee62147b15758935e97c94d5296d1157bf064668c"
+      }
+    },
+    {
+      "assetID" : "asset0045",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "800"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "800"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "50939b3bd5034e1133a38321fa888aa1b3e07f7f27d1ad62d17539c7ff71a97f",
+        "sha256Before" : "50939b3bd5034e1133a38321fa888aa1b3e07f7f27d1ad62d17539c7ff71a97f"
+      }
+    },
+    {
+      "assetID" : "asset0046",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "866"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "866"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "cfa2ee1f8a7d0d9db8dc875aee4c9eb36baa52b4e34bf497344db9d06c9ff3d0",
+        "sha256Before" : "cfa2ee1f8a7d0d9db8dc875aee4c9eb36baa52b4e34bf497344db9d06c9ff3d0"
+      }
+    },
+    {
+      "assetID" : "asset0047",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "933"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:23",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "933"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "43678fcfbaf363f11c0a01721146cb76b05cd3f4d895b6a320838cadff696a0c",
+        "sha256Before" : "43678fcfbaf363f11c0a01721146cb76b05cd3f4d895b6a320838cadff696a0c"
+      }
+    },
+    {
+      "assetID" : "asset0048",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "000"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "000"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "615f1e42005b85e5bc9756c81aa1efd45551d1743f1806f4fb62c88af045887f",
+        "sha256Before" : "615f1e42005b85e5bc9756c81aa1efd45551d1743f1806f4fb62c88af045887f"
+      }
+    },
+    {
+      "assetID" : "asset0049",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "067"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "067"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "505038709215c7b4d93c5adefc2e4c1a1d7bbbbd73997002f800739b0c0fc8ae",
+        "sha256Before" : "505038709215c7b4d93c5adefc2e4c1a1d7bbbbd73997002f800739b0c0fc8ae"
+      }
+    },
+    {
+      "assetID" : "asset0050",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "134"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "134"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "79edbcd9132ea730330742dc47871defcafb7df7f09efdb1183a12e2128cd881",
+        "sha256Before" : "79edbcd9132ea730330742dc47871defcafb7df7f09efdb1183a12e2128cd881"
+      }
+    },
+    {
+      "assetID" : "asset0051",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "200"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "200"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "a7f7505e2e64ec7af548f68d9a65628085d7e608e89da521af829860992ed4cf",
+        "sha256Before" : "a7f7505e2e64ec7af548f68d9a65628085d7e608e89da521af829860992ed4cf"
+      }
+    },
+    {
+      "assetID" : "asset0052",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "267"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:24",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "267"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "fff69f6cfe53b75ce9bd634ba020697bc1f433f507e2b3f90b7ac1de09d34e42",
+        "sha256Before" : "fff69f6cfe53b75ce9bd634ba020697bc1f433f507e2b3f90b7ac1de09d34e42"
+      }
+    },
+    {
+      "assetID" : "asset0053",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "656"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "656"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "6d08a8fdeeaecd2c136759d5c1a3b07c0ac9926479bcd487cae944a64efac37d",
+        "sha256Before" : "6d08a8fdeeaecd2c136759d5c1a3b07c0ac9926479bcd487cae944a64efac37d"
+      }
+    },
+    {
+      "assetID" : "asset0054",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "722"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "722"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3251d9ef8fa4cb75672d6241c08ce0de987fd18a67124f5fc13f30c4f56a19dd",
+        "sha256Before" : "3251d9ef8fa4cb75672d6241c08ce0de987fd18a67124f5fc13f30c4f56a19dd"
+      }
+    },
+    {
+      "assetID" : "asset0055",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "789"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "789"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "a7233952f95bc6780e591ba0f4070e4cf13a32459b6a81cec1321f49c4a7996a",
+        "sha256Before" : "a7233952f95bc6780e591ba0f4070e4cf13a32459b6a81cec1321f49c4a7996a"
+      }
+    },
+    {
+      "assetID" : "asset0056",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "856"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "856"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "812d3dfdf55316c5993f4db7222fa0fd63c9c95d6052ef9576b1b9b235d51e60",
+        "sha256Before" : "812d3dfdf55316c5993f4db7222fa0fd63c9c95d6052ef9576b1b9b235d51e60"
+      }
+    },
+    {
+      "assetID" : "asset0057",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "922"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "922"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "4a4bc14d867efde164ad0b4e442d891bb9336e6d449c9a38984030ef0bc11392",
+        "sha256Before" : "4a4bc14d867efde164ad0b4e442d891bb9336e6d449c9a38984030ef0bc11392"
+      }
+    },
+    {
+      "assetID" : "asset0058",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "989"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:29",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "989"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "a3197413940b26d1b0af4671ab7f9360f91971fa8be777502922185fe0a9aa32",
+        "sha256Before" : "a3197413940b26d1b0af4671ab7f9360f91971fa8be777502922185fe0a9aa32"
+      }
+    },
+    {
+      "assetID" : "asset0059",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:30",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "056"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:30",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "056"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "190949897fd5762768d2673f1b8bf4305daafdc46541ad1a681c1b17713f0233",
+        "sha256Before" : "190949897fd5762768d2673f1b8bf4305daafdc46541ad1a681c1b17713f0233"
+      }
+    },
+    {
+      "assetID" : "asset0060",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "774"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "774"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "36a144fc817f66ae301c2f519761c26689bb594b0b8e03c44b1d64e325fa444c",
+        "sha256Before" : "36a144fc817f66ae301c2f519761c26689bb594b0b8e03c44b1d64e325fa444c"
+      }
+    },
+    {
+      "assetID" : "asset0061",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "841"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "841"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "4dac2aaacfb73a972d20f89e959fb9859c5afb117cad14cdec169a99983df605",
+        "sha256Before" : "4dac2aaacfb73a972d20f89e959fb9859c5afb117cad14cdec169a99983df605"
+      }
+    },
+    {
+      "assetID" : "asset0062",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "908"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "908"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3c28a41c9fdd59eb621cd221599cf66482cd501d73a274fa78fb614ed799da1d",
+        "sha256Before" : "3c28a41c9fdd59eb621cd221599cf66482cd501d73a274fa78fb614ed799da1d"
+      }
+    },
+    {
+      "assetID" : "asset0063",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "975"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:31",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "975"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "10694c3198353f1657714d3a6e00213716a3fa53dbe51b89e3abbd1f22d07a28",
+        "sha256Before" : "10694c3198353f1657714d3a6e00213716a3fa53dbe51b89e3abbd1f22d07a28"
+      }
+    },
+    {
+      "assetID" : "asset0064",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "041"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "041"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "bb9f8bd036c31bcab5207ce48428fb641da6c0480230e51ad1dd9dafabf49b46",
+        "sha256Before" : "bb9f8bd036c31bcab5207ce48428fb641da6c0480230e51ad1dd9dafabf49b46"
+      }
+    },
+    {
+      "assetID" : "asset0065",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "108"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "108"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "713834002f81723b514fc6cc8c10e2468b5037026d85bcb5cfbf4da40e259434",
+        "sha256Before" : "713834002f81723b514fc6cc8c10e2468b5037026d85bcb5cfbf4da40e259434"
+      }
+    },
+    {
+      "assetID" : "asset0066",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "175"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "175"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3850a76959955b24f93535cea8fde6783086fb16cc8bad6796efbc6ad90f5b4c",
+        "sha256Before" : "3850a76959955b24f93535cea8fde6783086fb16cc8bad6796efbc6ad90f5b4c"
+      }
+    },
+    {
+      "assetID" : "asset0067",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "242"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "242"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3857eedcfd221e30ad707ebf8778f93ee644ce358d944da36481c2acb2037f99",
+        "sha256Before" : "3857eedcfd221e30ad707ebf8778f93ee644ce358d944da36481c2acb2037f99"
+      }
+    },
+    {
+      "assetID" : "asset0068",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "308"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "308"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "b9cbdcd6a8d74522b03826c99d08ed1af59d9f3c7c3e4311b7383b5de5d81bf2",
+        "sha256Before" : "b9cbdcd6a8d74522b03826c99d08ed1af59d9f3c7c3e4311b7383b5de5d81bf2"
+      }
+    },
+    {
+      "assetID" : "asset0069",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "375"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "375"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "c58ad97fe644ca185fe147926deeedadccb54823a0487e8f51c1d932077ae3f3",
+        "sha256Before" : "c58ad97fe644ca185fe147926deeedadccb54823a0487e8f51c1d932077ae3f3"
+      }
+    },
+    {
+      "assetID" : "asset0070",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "442"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "442"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "3a2c0ae438421a8015fd70ba8000741356303083cb919634701dcfffde53e50e",
+        "sha256Before" : "3a2c0ae438421a8015fd70ba8000741356303083cb919634701dcfffde53e50e"
+      }
+    },
+    {
+      "assetID" : "asset0071",
+      "expectedJPEG" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "509"
+      },
+      "exposureRoundtrip" : {
+        "absoluteDifferenceSeconds" : 6.3816139872496791e-16,
+        "actualSeconds" : 0.00079999997978904874,
+        "allowedDifferenceSeconds" : 1e-08
+      },
+      "sourceCapture" : {
+        "cameraMake" : "SONY",
+        "cameraModel" : "ILCE-1M2",
+        "dateTimeOriginalRaw" : "2026:09:30 12:18:32",
+        "exposureSeconds" : 0.00079999997978968691,
+        "offsetTimeOriginalRaw" : null,
+        "orientation" : 1,
+        "subsecTimeOriginalRaw" : "509"
+      },
+      "sourceIntegrity" : {
+        "credentialUnchanged" : true,
+        "sha256After" : "b1f6993b3019dd30fc713dfc321cbfa8435b50ff183aab29f00b090d118cdc73",
+        "sha256Before" : "b1f6993b3019dd30fc713dfc321cbfa8435b50ff183aab29f00b090d118cdc73"
+      }
+    }
+  ],
+  "caseID" : "burst48-context72",
+  "schemaVersion" : 1
+}

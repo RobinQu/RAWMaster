@@ -1,0 +1,6397 @@
+{
+  "schemaVersion": 1,
+  "datasetID": "sequence-grouping-jpeg-v1",
+  "recipe": {
+    "maximumPixel": 1024,
+    "jpegQuality": 0.8,
+    "colorSpace": "sRGB",
+    "orientation": 1,
+    "rawMode": "embedded-preview-only",
+    "exposureAbsoluteToleranceSeconds": 1e-08,
+    "exposureRelativeTolerance": 1e-06
+  },
+  "cases": [
+    {
+      "id": "burst123",
+      "sourceRelativeRoot": "2026-10-04-c/DCIM/100MSDCF",
+      "files": [
+        {
+          "assetID": "asset0000",
+          "ordinal": 0,
+          "relativePath": "DSC02468.ARW"
+        },
+        {
+          "assetID": "asset0001",
+          "ordinal": 1,
+          "relativePath": "DSC02469.ARW"
+        },
+        {
+          "assetID": "asset0002",
+          "ordinal": 2,
+          "relativePath": "DSC02470.ARW"
+        },
+        {
+          "assetID": "asset0003",
+          "ordinal": 3,
+          "relativePath": "DSC02471.ARW"
+        },
+        {
+          "assetID": "asset0004",
+          "ordinal": 4,
+          "relativePath": "DSC02472.ARW"
+        },
+        {
+          "assetID": "asset0005",
+          "ordinal": 5,
+          "relativePath": "DSC02473.ARW"
+        },
+        {
+          "assetID": "asset0006",
+          "ordinal": 6,
+          "relativePath": "DSC02474.ARW"
+        },
+        {
+          "assetID": "asset0007",
+          "ordinal": 7,
+          "relativePath": "DSC02475.ARW"
+        },
+        {
+          "assetID": "asset0008",
+          "ordinal": 8,
+          "relativePath": "DSC02476.ARW"
+        },
+        {
+          "assetID": "asset0009",
+          "ordinal": 9,
+          "relativePath": "DSC02477.ARW"
+        },
+        {
+          "assetID": "asset0010",
+          "ordinal": 10,
+          "relativePath": "DSC02478.ARW"
+        },
+        {
+          "assetID": "asset0011",
+          "ordinal": 11,
+          "relativePath": "DSC02479.ARW"
+        },
+        {
+          "assetID": "asset0012",
+          "ordinal": 12,
+          "relativePath": "DSC02480.ARW"
+        },
+        {
+          "assetID": "asset0013",
+          "ordinal": 13,
+          "relativePath": "DSC02481.ARW"
+        },
+        {
+          "assetID": "asset0014",
+          "ordinal": 14,
+          "relativePath": "DSC02482.ARW"
+        },
+        {
+          "assetID": "asset0015",
+          "ordinal": 15,
+          "relativePath": "DSC02483.ARW"
+        },
+        {
+          "assetID": "asset0016",
+          "ordinal": 16,
+          "relativePath": "DSC02484.ARW"
+        },
+        {
+          "assetID": "asset0017",
+          "ordinal": 17,
+          "relativePath": "DSC02485.ARW"
+        },
+        {
+          "assetID": "asset0018",
+          "ordinal": 18,
+          "relativePath": "DSC02486.ARW"
+        },
+        {
+          "assetID": "asset0019",
+          "ordinal": 19,
+          "relativePath": "DSC02487.ARW"
+        },
+        {
+          "assetID": "asset0020",
+          "ordinal": 20,
+          "relativePath": "DSC02488.ARW"
+        },
+        {
+          "assetID": "asset0021",
+          "ordinal": 21,
+          "relativePath": "DSC02489.ARW"
+        },
+        {
+          "assetID": "asset0022",
+          "ordinal": 22,
+          "relativePath": "DSC02490.ARW"
+        },
+        {
+          "assetID": "asset0023",
+          "ordinal": 23,
+          "relativePath": "DSC02491.ARW"
+        },
+        {
+          "assetID": "asset0024",
+          "ordinal": 24,
+          "relativePath": "DSC02492.ARW"
+        },
+        {
+          "assetID": "asset0025",
+          "ordinal": 25,
+          "relativePath": "DSC02493.ARW"
+        },
+        {
+          "assetID": "asset0026",
+          "ordinal": 26,
+          "relativePath": "DSC02494.ARW"
+        },
+        {
+          "assetID": "asset0027",
+          "ordinal": 27,
+          "relativePath": "DSC02495.ARW"
+        },
+        {
+          "assetID": "asset0028",
+          "ordinal": 28,
+          "relativePath": "DSC02496.ARW"
+        },
+        {
+          "assetID": "asset0029",
+          "ordinal": 29,
+          "relativePath": "DSC02497.ARW"
+        },
+        {
+          "assetID": "asset0030",
+          "ordinal": 30,
+          "relativePath": "DSC02498.ARW"
+        },
+        {
+          "assetID": "asset0031",
+          "ordinal": 31,
+          "relativePath": "DSC02499.ARW"
+        },
+        {
+          "assetID": "asset0032",
+          "ordinal": 32,
+          "relativePath": "DSC02500.ARW"
+        },
+        {
+          "assetID": "asset0033",
+          "ordinal": 33,
+          "relativePath": "DSC02501.ARW"
+        },
+        {
+          "assetID": "asset0034",
+          "ordinal": 34,
+          "relativePath": "DSC02502.ARW"
+        },
+        {
+          "assetID": "asset0035",
+          "ordinal": 35,
+          "relativePath": "DSC02503.ARW"
+        },
+        {
+          "assetID": "asset0036",
+          "ordinal": 36,
+          "relativePath": "DSC02504.ARW"
+        },
+        {
+          "assetID": "asset0037",
+          "ordinal": 37,
+          "relativePath": "DSC02505.ARW"
+        },
+        {
+          "assetID": "asset0038",
+          "ordinal": 38,
+          "relativePath": "DSC02506.ARW"
+        },
+        {
+          "assetID": "asset0039",
+          "ordinal": 39,
+          "relativePath": "DSC02507.ARW"
+        },
+        {
+          "assetID": "asset0040",
+          "ordinal": 40,
+          "relativePath": "DSC02508.ARW"
+        },
+        {
+          "assetID": "asset0041",
+          "ordinal": 41,
+          "relativePath": "DSC02509.ARW"
+        },
+        {
+          "assetID": "asset0042",
+          "ordinal": 42,
+          "relativePath": "DSC02510.ARW"
+        },
+        {
+          "assetID": "asset0043",
+          "ordinal": 43,
+          "relativePath": "DSC02511.ARW"
+        },
+        {
+          "assetID": "asset0044",
+          "ordinal": 44,
+          "relativePath": "DSC02512.ARW"
+        },
+        {
+          "assetID": "asset0045",
+          "ordinal": 45,
+          "relativePath": "DSC02513.ARW"
+        },
+        {
+          "assetID": "asset0046",
+          "ordinal": 46,
+          "relativePath": "DSC02514.ARW"
+        },
+        {
+          "assetID": "asset0047",
+          "ordinal": 47,
+          "relativePath": "DSC02515.ARW"
+        },
+        {
+          "assetID": "asset0048",
+          "ordinal": 48,
+          "relativePath": "DSC02516.ARW"
+        },
+        {
+          "assetID": "asset0049",
+          "ordinal": 49,
+          "relativePath": "DSC02517.ARW"
+        },
+        {
+          "assetID": "asset0050",
+          "ordinal": 50,
+          "relativePath": "DSC02518.ARW"
+        },
+        {
+          "assetID": "asset0051",
+          "ordinal": 51,
+          "relativePath": "DSC02519.ARW"
+        },
+        {
+          "assetID": "asset0052",
+          "ordinal": 52,
+          "relativePath": "DSC02520.ARW"
+        },
+        {
+          "assetID": "asset0053",
+          "ordinal": 53,
+          "relativePath": "DSC02521.ARW"
+        },
+        {
+          "assetID": "asset0054",
+          "ordinal": 54,
+          "relativePath": "DSC02522.ARW"
+        },
+        {
+          "assetID": "asset0055",
+          "ordinal": 55,
+          "relativePath": "DSC02523.ARW"
+        },
+        {
+          "assetID": "asset0056",
+          "ordinal": 56,
+          "relativePath": "DSC02524.ARW"
+        },
+        {
+          "assetID": "asset0057",
+          "ordinal": 57,
+          "relativePath": "DSC02525.ARW"
+        },
+        {
+          "assetID": "asset0058",
+          "ordinal": 58,
+          "relativePath": "DSC02526.ARW"
+        },
+        {
+          "assetID": "asset0059",
+          "ordinal": 59,
+          "relativePath": "DSC02527.ARW"
+        },
+        {
+          "assetID": "asset0060",
+          "ordinal": 60,
+          "relativePath": "DSC02528.ARW"
+        },
+        {
+          "assetID": "asset0061",
+          "ordinal": 61,
+          "relativePath": "DSC02529.ARW"
+        },
+        {
+          "assetID": "asset0062",
+          "ordinal": 62,
+          "relativePath": "DSC02530.ARW"
+        },
+        {
+          "assetID": "asset0063",
+          "ordinal": 63,
+          "relativePath": "DSC02531.ARW"
+        },
+        {
+          "assetID": "asset0064",
+          "ordinal": 64,
+          "relativePath": "DSC02532.ARW"
+        },
+        {
+          "assetID": "asset0065",
+          "ordinal": 65,
+          "relativePath": "DSC02533.ARW"
+        },
+        {
+          "assetID": "asset0066",
+          "ordinal": 66,
+          "relativePath": "DSC02534.ARW"
+        },
+        {
+          "assetID": "asset0067",
+          "ordinal": 67,
+          "relativePath": "DSC02535.ARW"
+        },
+        {
+          "assetID": "asset0068",
+          "ordinal": 68,
+          "relativePath": "DSC02536.ARW"
+        },
+        {
+          "assetID": "asset0069",
+          "ordinal": 69,
+          "relativePath": "DSC02537.ARW"
+        },
+        {
+          "assetID": "asset0070",
+          "ordinal": 70,
+          "relativePath": "DSC02538.ARW"
+        },
+        {
+          "assetID": "asset0071",
+          "ordinal": 71,
+          "relativePath": "DSC02539.ARW"
+        },
+        {
+          "assetID": "asset0072",
+          "ordinal": 72,
+          "relativePath": "DSC02540.ARW"
+        },
+        {
+          "assetID": "asset0073",
+          "ordinal": 73,
+          "relativePath": "DSC02541.ARW"
+        },
+        {
+          "assetID": "asset0074",
+          "ordinal": 74,
+          "relativePath": "DSC02542.ARW"
+        },
+        {
+          "assetID": "asset0075",
+          "ordinal": 75,
+          "relativePath": "DSC02543.ARW"
+        },
+        {
+          "assetID": "asset0076",
+          "ordinal": 76,
+          "relativePath": "DSC02544.ARW"
+        },
+        {
+          "assetID": "asset0077",
+          "ordinal": 77,
+          "relativePath": "DSC02545.ARW"
+        },
+        {
+          "assetID": "asset0078",
+          "ordinal": 78,
+          "relativePath": "DSC02546.ARW"
+        },
+        {
+          "assetID": "asset0079",
+          "ordinal": 79,
+          "relativePath": "DSC02547.ARW"
+        },
+        {
+          "assetID": "asset0080",
+          "ordinal": 80,
+          "relativePath": "DSC02548.ARW"
+        },
+        {
+          "assetID": "asset0081",
+          "ordinal": 81,
+          "relativePath": "DSC02549.ARW"
+        },
+        {
+          "assetID": "asset0082",
+          "ordinal": 82,
+          "relativePath": "DSC02550.ARW"
+        },
+        {
+          "assetID": "asset0083",
+          "ordinal": 83,
+          "relativePath": "DSC02551.ARW"
+        },
+        {
+          "assetID": "asset0084",
+          "ordinal": 84,
+          "relativePath": "DSC02552.ARW"
+        },
+        {
+          "assetID": "asset0085",
+          "ordinal": 85,
+          "relativePath": "DSC02553.ARW"
+        },
+        {
+          "assetID": "asset0086",
+          "ordinal": 86,
+          "relativePath": "DSC02554.ARW"
+        },
+        {
+          "assetID": "asset0087",
+          "ordinal": 87,
+          "relativePath": "DSC02555.ARW"
+        },
+        {
+          "assetID": "asset0088",
+          "ordinal": 88,
+          "relativePath": "DSC02556.ARW"
+        },
+        {
+          "assetID": "asset0089",
+          "ordinal": 89,
+          "relativePath": "DSC02557.ARW"
+        },
+        {
+          "assetID": "asset0090",
+          "ordinal": 90,
+          "relativePath": "DSC02558.ARW"
+        },
+        {
+          "assetID": "asset0091",
+          "ordinal": 91,
+          "relativePath": "DSC02559.ARW"
+        },
+        {
+          "assetID": "asset0092",
+          "ordinal": 92,
+          "relativePath": "DSC02560.ARW"
+        },
+        {
+          "assetID": "asset0093",
+          "ordinal": 93,
+          "relativePath": "DSC02561.ARW"
+        },
+        {
+          "assetID": "asset0094",
+          "ordinal": 94,
+          "relativePath": "DSC02562.ARW"
+        },
+        {
+          "assetID": "asset0095",
+          "ordinal": 95,
+          "relativePath": "DSC02563.ARW"
+        },
+        {
+          "assetID": "asset0096",
+          "ordinal": 96,
+          "relativePath": "DSC02564.ARW"
+        },
+        {
+          "assetID": "asset0097",
+          "ordinal": 97,
+          "relativePath": "DSC02565.ARW"
+        },
+        {
+          "assetID": "asset0098",
+          "ordinal": 98,
+          "relativePath": "DSC02566.ARW"
+        },
+        {
+          "assetID": "asset0099",
+          "ordinal": 99,
+          "relativePath": "DSC02567.ARW"
+        },
+        {
+          "assetID": "asset0100",
+          "ordinal": 100,
+          "relativePath": "DSC02568.ARW"
+        },
+        {
+          "assetID": "asset0101",
+          "ordinal": 101,
+          "relativePath": "DSC02569.ARW"
+        },
+        {
+          "assetID": "asset0102",
+          "ordinal": 102,
+          "relativePath": "DSC02570.ARW"
+        },
+        {
+          "assetID": "asset0103",
+          "ordinal": 103,
+          "relativePath": "DSC02571.ARW"
+        },
+        {
+          "assetID": "asset0104",
+          "ordinal": 104,
+          "relativePath": "DSC02572.ARW"
+        },
+        {
+          "assetID": "asset0105",
+          "ordinal": 105,
+          "relativePath": "DSC02573.ARW"
+        },
+        {
+          "assetID": "asset0106",
+          "ordinal": 106,
+          "relativePath": "DSC02574.ARW"
+        },
+        {
+          "assetID": "asset0107",
+          "ordinal": 107,
+          "relativePath": "DSC02575.ARW"
+        },
+        {
+          "assetID": "asset0108",
+          "ordinal": 108,
+          "relativePath": "DSC02576.ARW"
+        },
+        {
+          "assetID": "asset0109",
+          "ordinal": 109,
+          "relativePath": "DSC02577.ARW"
+        },
+        {
+          "assetID": "asset0110",
+          "ordinal": 110,
+          "relativePath": "DSC02578.ARW"
+        },
+        {
+          "assetID": "asset0111",
+          "ordinal": 111,
+          "relativePath": "DSC02579.ARW"
+        },
+        {
+          "assetID": "asset0112",
+          "ordinal": 112,
+          "relativePath": "DSC02580.ARW"
+        },
+        {
+          "assetID": "asset0113",
+          "ordinal": 113,
+          "relativePath": "DSC02581.ARW"
+        },
+        {
+          "assetID": "asset0114",
+          "ordinal": 114,
+          "relativePath": "DSC02582.ARW"
+        },
+        {
+          "assetID": "asset0115",
+          "ordinal": 115,
+          "relativePath": "DSC02583.ARW"
+        },
+        {
+          "assetID": "asset0116",
+          "ordinal": 116,
+          "relativePath": "DSC02584.ARW"
+        },
+        {
+          "assetID": "asset0117",
+          "ordinal": 117,
+          "relativePath": "DSC02585.ARW"
+        },
+        {
+          "assetID": "asset0118",
+          "ordinal": 118,
+          "relativePath": "DSC02586.ARW"
+        },
+        {
+          "assetID": "asset0119",
+          "ordinal": 119,
+          "relativePath": "DSC02587.ARW"
+        },
+        {
+          "assetID": "asset0120",
+          "ordinal": 120,
+          "relativePath": "DSC02588.ARW"
+        },
+        {
+          "assetID": "asset0121",
+          "ordinal": 121,
+          "relativePath": "DSC02589.ARW"
+        },
+        {
+          "assetID": "asset0122",
+          "ordinal": 122,
+          "relativePath": "DSC02590.ARW"
+        }
+      ],
+      "truthPath": "truth/burst123.json",
+      "completeGroupTruth": true,
+      "unknownAssetIDs": []
+    },
+    {
+      "id": "burst14-context38",
+      "sourceRelativeRoot": "2026-10-01-a/DCIM/100MSDCF",
+      "files": [
+        {
+          "assetID": "asset0000",
+          "ordinal": 0,
+          "relativePath": "DSC01485.ARW"
+        },
+        {
+          "assetID": "asset0001",
+          "ordinal": 1,
+          "relativePath": "DSC01486.ARW"
+        },
+        {
+          "assetID": "asset0002",
+          "ordinal": 2,
+          "relativePath": "DSC01487.ARW"
+        },
+        {
+          "assetID": "asset0003",
+          "ordinal": 3,
+          "relativePath": "DSC01488.ARW"
+        },
+        {
+          "assetID": "asset0004",
+          "ordinal": 4,
+          "relativePath": "DSC01489.ARW"
+        },
+        {
+          "assetID": "asset0005",
+          "ordinal": 5,
+          "relativePath": "DSC01490.ARW"
+        },
+        {
+          "assetID": "asset0006",
+          "ordinal": 6,
+          "relativePath": "DSC01491.ARW"
+        },
+        {
+          "assetID": "asset0007",
+          "ordinal": 7,
+          "relativePath": "DSC01492.ARW"
+        },
+        {
+          "assetID": "asset0008",
+          "ordinal": 8,
+          "relativePath": "DSC01493.ARW"
+        },
+        {
+          "assetID": "asset0009",
+          "ordinal": 9,
+          "relativePath": "DSC01494.ARW"
+        },
+        {
+          "assetID": "asset0010",
+          "ordinal": 10,
+          "relativePath": "DSC01495.ARW"
+        },
+        {
+          "assetID": "asset0011",
+          "ordinal": 11,
+          "relativePath": "DSC01496.ARW"
+        },
+        {
+          "assetID": "asset0012",
+          "ordinal": 12,
+          "relativePath": "DSC01497.ARW"
+        },
+        {
+          "assetID": "asset0013",
+          "ordinal": 13,
+          "relativePath": "DSC01498.ARW"
+        },
+        {
+          "assetID": "asset0014",
+          "ordinal": 14,
+          "relativePath": "DSC01499.ARW"
+        },
+        {
+          "assetID": "asset0015",
+          "ordinal": 15,
+          "relativePath": "DSC01500.ARW"
+        },
+        {
+          "assetID": "asset0016",
+          "ordinal": 16,
+          "relativePath": "DSC01501.ARW"
+        },
+        {
+          "assetID": "asset0017",
+          "ordinal": 17,
+          "relativePath": "DSC01502.ARW"
+        },
+        {
+          "assetID": "asset0018",
+          "ordinal": 18,
+          "relativePath": "DSC01503.ARW"
+        },
+        {
+          "assetID": "asset0019",
+          "ordinal": 19,
+          "relativePath": "DSC01504.ARW"
+        },
+        {
+          "assetID": "asset0020",
+          "ordinal": 20,
+          "relativePath": "DSC01505.ARW"
+        },
+        {
+          "assetID": "asset0021",
+          "ordinal": 21,
+          "relativePath": "DSC01506.ARW"
+        },
+        {
+          "assetID": "asset0022",
+          "ordinal": 22,
+          "relativePath": "DSC01507.ARW"
+        },
+        {
+          "assetID": "asset0023",
+          "ordinal": 23,
+          "relativePath": "DSC01508.ARW"
+        },
+        {
+          "assetID": "asset0024",
+          "ordinal": 24,
+          "relativePath": "DSC01509.ARW"
+        },
+        {
+          "assetID": "asset0025",
+          "ordinal": 25,
+          "relativePath": "DSC01510.ARW"
+        },
+        {
+          "assetID": "asset0026",
+          "ordinal": 26,
+          "relativePath": "DSC01511.ARW"
+        },
+        {
+          "assetID": "asset0027",
+          "ordinal": 27,
+          "relativePath": "DSC01512.ARW"
+        },
+        {
+          "assetID": "asset0028",
+          "ordinal": 28,
+          "relativePath": "DSC01513.ARW"
+        },
+        {
+          "assetID": "asset0029",
+          "ordinal": 29,
+          "relativePath": "DSC01514.ARW"
+        },
+        {
+          "assetID": "asset0030",
+          "ordinal": 30,
+          "relativePath": "DSC01515.ARW"
+        },
+        {
+          "assetID": "asset0031",
+          "ordinal": 31,
+          "relativePath": "DSC01516.ARW"
+        },
+        {
+          "assetID": "asset0032",
+          "ordinal": 32,
+          "relativePath": "DSC01517.ARW"
+        },
+        {
+          "assetID": "asset0033",
+          "ordinal": 33,
+          "relativePath": "DSC01518.ARW"
+        },
+        {
+          "assetID": "asset0034",
+          "ordinal": 34,
+          "relativePath": "DSC01519.ARW"
+        },
+        {
+          "assetID": "asset0035",
+          "ordinal": 35,
+          "relativePath": "DSC01520.ARW"
+        },
+        {
+          "assetID": "asset0036",
+          "ordinal": 36,
+          "relativePath": "DSC01521.ARW"
+        },
+        {
+          "assetID": "asset0037",
+          "ordinal": 37,
+          "relativePath": "DSC01522.ARW"
+        }
+      ],
+      "truthPath": "truth/burst14-context38.json",
+      "completeGroupTruth": true,
+      "unknownAssetIDs": []
+    },
+    {
+      "id": "burst48-context72",
+      "sourceRelativeRoot": "2026-10-01-a/DCIM/100MSDCF",
+      "files": [
+        {
+          "assetID": "asset0000",
+          "ordinal": 0,
+          "relativePath": "DSC01709.ARW"
+        },
+        {
+          "assetID": "asset0001",
+          "ordinal": 1,
+          "relativePath": "DSC01710.ARW"
+        },
+        {
+          "assetID": "asset0002",
+          "ordinal": 2,
+          "relativePath": "DSC01711.ARW"
+        },
+        {
+          "assetID": "asset0003",
+          "ordinal": 3,
+          "relativePath": "DSC01712.ARW"
+        },
+        {
+          "assetID": "asset0004",
+          "ordinal": 4,
+          "relativePath": "DSC01713.ARW"
+        },
+        {
+          "assetID": "asset0005",
+          "ordinal": 5,
+          "relativePath": "DSC01714.ARW"
+        },
+        {
+          "assetID": "asset0006",
+          "ordinal": 6,
+          "relativePath": "DSC01715.ARW"
+        },
+        {
+          "assetID": "asset0007",
+          "ordinal": 7,
+          "relativePath": "DSC01716.ARW"
+        },
+        {
+          "assetID": "asset0008",
+          "ordinal": 8,
+          "relativePath": "DSC01717.ARW"
+        },
+        {
+          "assetID": "asset0009",
+          "ordinal": 9,
+          "relativePath": "DSC01718.ARW"
+        },
+        {
+          "assetID": "asset0010",
+          "ordinal": 10,
+          "relativePath": "DSC01719.ARW"
+        },
+        {
+          "assetID": "asset0011",
+          "ordinal": 11,
+          "relativePath": "DSC01720.ARW"
+        },
+        {
+          "assetID": "asset0012",
+          "ordinal": 12,
+          "relativePath": "DSC01721.ARW"
+        },
+        {
+          "assetID": "asset0013",
+          "ordinal": 13,
+          "relativePath": "DSC01722.ARW"
+        },
+        {
+          "assetID": "asset0014",
+          "ordinal": 14,
+          "relativePath": "DSC01723.ARW"
+        },
+        {
+          "assetID": "asset0015",
+          "ordinal": 15,
+          "relativePath": "DSC01724.ARW"
+        },
+        {
+          "assetID": "asset0016",
+          "ordinal": 16,
+          "relativePath": "DSC01725.ARW"
+        },
+        {
+          "assetID": "asset0017",
+          "ordinal": 17,
+          "relativePath": "DSC01726.ARW"
+        },
+        {
+          "assetID": "asset0018",
+          "ordinal": 18,
+          "relativePath": "DSC01727.ARW"
+        },
+        {
+          "assetID": "asset0019",
+          "ordinal": 19,
+          "relativePath": "DSC01728.ARW"
+        },
+        {
+          "assetID": "asset0020",
+          "ordinal": 20,
+          "relativePath": "DSC01729.ARW"
+        },
+        {
+          "assetID": "asset0021",
+          "ordinal": 21,
+          "relativePath": "DSC01730.ARW"
+        },
+        {
+          "assetID": "asset0022",
+          "ordinal": 22,
+          "relativePath": "DSC01731.ARW"
+        },
+        {
+          "assetID": "asset0023",
+          "ordinal": 23,
+          "relativePath": "DSC01732.ARW"
+        },
+        {
+          "assetID": "asset0024",
+          "ordinal": 24,
+          "relativePath": "DSC01733.ARW"
+        },
+        {
+          "assetID": "asset0025",
+          "ordinal": 25,
+          "relativePath": "DSC01734.ARW"
+        },
+        {
+          "assetID": "asset0026",
+          "ordinal": 26,
+          "relativePath": "DSC01735.ARW"
+        },
+        {
+          "assetID": "asset0027",
+          "ordinal": 27,
+          "relativePath": "DSC01736.ARW"
+        },
+        {
+          "assetID": "asset0028",
+          "ordinal": 28,
+          "relativePath": "DSC01737.ARW"
+        },
+        {
+          "assetID": "asset0029",
+          "ordinal": 29,
+          "relativePath": "DSC01738.ARW"
+        },
+        {
+          "assetID": "asset0030",
+          "ordinal": 30,
+          "relativePath": "DSC01739.ARW"
+        },
+        {
+          "assetID": "asset0031",
+          "ordinal": 31,
+          "relativePath": "DSC01740.ARW"
+        },
+        {
+          "assetID": "asset0032",
+          "ordinal": 32,
+          "relativePath": "DSC01741.ARW"
+        },
+        {
+          "assetID": "asset0033",
+          "ordinal": 33,
+          "relativePath": "DSC01742.ARW"
+        },
+        {
+          "assetID": "asset0034",
+          "ordinal": 34,
+          "relativePath": "DSC01743.ARW"
+        },
+        {
+          "assetID": "asset0035",
+          "ordinal": 35,
+          "relativePath": "DSC01744.ARW"
+        },
+        {
+          "assetID": "asset0036",
+          "ordinal": 36,
+          "relativePath": "DSC01745.ARW"
+        },
+        {
+          "assetID": "asset0037",
+          "ordinal": 37,
+          "relativePath": "DSC01746.ARW"
+        },
+        {
+          "assetID": "asset0038",
+          "ordinal": 38,
+          "relativePath": "DSC01747.ARW"
+        },
+        {
+          "assetID": "asset0039",
+          "ordinal": 39,
+          "relativePath": "DSC01748.ARW"
+        },
+        {
+          "assetID": "asset0040",
+          "ordinal": 40,
+          "relativePath": "DSC01749.ARW"
+        },
+        {
+          "assetID": "asset0041",
+          "ordinal": 41,
+          "relativePath": "DSC01750.ARW"
+        },
+        {
+          "assetID": "asset0042",
+          "ordinal": 42,
+          "relativePath": "DSC01751.ARW"
+        },
+        {
+          "assetID": "asset0043",
+          "ordinal": 43,
+          "relativePath": "DSC01752.ARW"
+        },
+        {
+          "assetID": "asset0044",
+          "ordinal": 44,
+          "relativePath": "DSC01753.ARW"
+        },
+        {
+          "assetID": "asset0045",
+          "ordinal": 45,
+          "relativePath": "DSC01754.ARW"
+        },
+        {
+          "assetID": "asset0046",
+          "ordinal": 46,
+          "relativePath": "DSC01755.ARW"
+        },
+        {
+          "assetID": "asset0047",
+          "ordinal": 47,
+          "relativePath": "DSC01756.ARW"
+        },
+        {
+          "assetID": "asset0048",
+          "ordinal": 48,
+          "relativePath": "DSC01757.ARW"
+        },
+        {
+          "assetID": "asset0049",
+          "ordinal": 49,
+          "relativePath": "DSC01758.ARW"
+        },
+        {
+          "assetID": "asset0050",
+          "ordinal": 50,
+          "relativePath": "DSC01759.ARW"
+        },
+        {
+          "assetID": "asset0051",
+          "ordinal": 51,
+          "relativePath": "DSC01760.ARW"
+        },
+        {
+          "assetID": "asset0052",
+          "ordinal": 52,
+          "relativePath": "DSC01761.ARW"
+        },
+        {
+          "assetID": "asset0053",
+          "ordinal": 53,
+          "relativePath": "DSC01762.ARW"
+        },
+        {
+          "assetID": "asset0054",
+          "ordinal": 54,
+          "relativePath": "DSC01763.ARW"
+        },
+        {
+          "assetID": "asset0055",
+          "ordinal": 55,
+          "relativePath": "DSC01764.ARW"
+        },
+        {
+          "assetID": "asset0056",
+          "ordinal": 56,
+          "relativePath": "DSC01765.ARW"
+        },
+        {
+          "assetID": "asset0057",
+          "ordinal": 57,
+          "relativePath": "DSC01766.ARW"
+        },
+        {
+          "assetID": "asset0058",
+          "ordinal": 58,
+          "relativePath": "DSC01767.ARW"
+        },
+        {
+          "assetID": "asset0059",
+          "ordinal": 59,
+          "relativePath": "DSC01768.ARW"
+        },
+        {
+          "assetID": "asset0060",
+          "ordinal": 60,
+          "relativePath": "DSC01769.ARW"
+        },
+        {
+          "assetID": "asset0061",
+          "ordinal": 61,
+          "relativePath": "DSC01770.ARW"
+        },
+        {
+          "assetID": "asset0062",
+          "ordinal": 62,
+          "relativePath": "DSC01771.ARW"
+        },
+        {
+          "assetID": "asset0063",
+          "ordinal": 63,
+          "relativePath": "DSC01772.ARW"
+        },
+        {
+          "assetID": "asset0064",
+          "ordinal": 64,
+          "relativePath": "DSC01773.ARW"
+        },
+        {
+          "assetID": "asset0065",
+          "ordinal": 65,
+          "relativePath": "DSC01774.ARW"
+        },
+        {
+          "assetID": "asset0066",
+          "ordinal": 66,
+          "relativePath": "DSC01775.ARW"
+        },
+        {
+          "assetID": "asset0067",
+          "ordinal": 67,
+          "relativePath": "DSC01776.ARW"
+        },
+        {
+          "assetID": "asset0068",
+          "ordinal": 68,
+          "relativePath": "DSC01777.ARW"
+        },
+        {
+          "assetID": "asset0069",
+          "ordinal": 69,
+          "relativePath": "DSC01778.ARW"
+        },
+        {
+          "assetID": "asset0070",
+          "ordinal": 70,
+          "relativePath": "DSC01779.ARW"
+        },
+        {
+          "assetID": "asset0071",
+          "ordinal": 71,
+          "relativePath": "DSC01780.ARW"
+        }
+      ],
+      "truthPath": "truth/burst48-context72.json",
+      "completeGroupTruth": true,
+      "unknownAssetIDs": []
+    },
+    {
+      "id": "interval427-context439",
+      "sourceRelativeRoot": "2026-10-06-a/DCIM/100MSDCF",
+      "files": [
+        {
+          "assetID": "asset0000",
+          "ordinal": 0,
+          "relativePath": "DSC05982.ARW"
+        },
+        {
+          "assetID": "asset0001",
+          "ordinal": 1,
+          "relativePath": "DSC05983.ARW"
+        },
+        {
+          "assetID": "asset0002",
+          "ordinal": 2,
+          "relativePath": "DSC05984.ARW"
+        },
+        {
+          "assetID": "asset0003",
+          "ordinal": 3,
+          "relativePath": "DSC05985.ARW"
+        },
+        {
+          "assetID": "asset0004",
+          "ordinal": 4,
+          "relativePath": "DSC05986.ARW"
+        },
+        {
+          "assetID": "asset0005",
+          "ordinal": 5,
+          "relativePath": "DSC05987.ARW"
+        },
+        {
+          "assetID": "asset0006",
+          "ordinal": 6,
+          "relativePath": "DSC05988.ARW"
+        },
+        {
+          "assetID": "asset0007",
+          "ordinal": 7,
+          "relativePath": "DSC05989.ARW"
+        },
+        {
+          "assetID": "asset0008",
+          "ordinal": 8,
+          "relativePath": "DSC05990.ARW"
+        },
+        {
+          "assetID": "asset0009",
+          "ordinal": 9,
+          "relativePath": "DSC05991.ARW"
+        },
+        {
+          "assetID": "asset0010",
+          "ordinal": 10,
+          "relativePath": "DSC05992.ARW"
+        },
+        {
+          "assetID": "asset0011",
+          "ordinal": 11,
+          "relativePath": "DSC05993.ARW"
+        },
+        {
+          "assetID": "asset0012",
+          "ordinal": 12,
+          "relativePath": "DSC05994.ARW"
+        },
+        {
+          "assetID": "asset0013",
+          "ordinal": 13,
+          "relativePath": "DSC05995.ARW"
+        },
+        {
+          "assetID": "asset0014",
+          "ordinal": 14,
+          "relativePath": "DSC05996.ARW"
+        },
+        {
+          "assetID": "asset0015",
+          "ordinal": 15,
+          "relativePath": "DSC05997.ARW"
+        },
+        {
+          "assetID": "asset0016",
+          "ordinal": 16,
+          "relativePath": "DSC05998.ARW"
+        },
+        {
+          "assetID": "asset0017",
+          "ordinal": 17,
+          "relativePath": "DSC05999.ARW"
+        },
+        {
+          "assetID": "asset0018",
+          "ordinal": 18,
+          "relativePath": "DSC06000.ARW"
+        },
+        {
+          "assetID": "asset0019",
+          "ordinal": 19,
+          "relativePath": "DSC06001.ARW"
+        },
+        {
+          "assetID": "asset0020",
+          "ordinal": 20,
+          "relativePath": "DSC06002.ARW"
+        },
+        {
+          "assetID": "asset0021",
+          "ordinal": 21,
+          "relativePath": "DSC06003.ARW"
+        },
+        {
+          "assetID": "asset0022",
+          "ordinal": 22,
+          "relativePath": "DSC06004.ARW"
+        },
+        {
+          "assetID": "asset0023",
+          "ordinal": 23,
+          "relativePath": "DSC06005.ARW"
+        },
+        {
+          "assetID": "asset0024",
+          "ordinal": 24,
+          "relativePath": "DSC06006.ARW"
+        },
+        {
+          "assetID": "asset0025",
+          "ordinal": 25,
+          "relativePath": "DSC06007.ARW"
+        },
+        {
+          "assetID": "asset0026",
+          "ordinal": 26,
+          "relativePath": "DSC06008.ARW"
+        },
+        {
+          "assetID": "asset0027",
+          "ordinal": 27,
+          "relativePath": "DSC06009.ARW"
+        },
+        {
+          "assetID": "asset0028",
+          "ordinal": 28,
+          "relativePath": "DSC06010.ARW"
+        },
+        {
+          "assetID": "asset0029",
+          "ordinal": 29,
+          "relativePath": "DSC06011.ARW"
+        },
+        {
+          "assetID": "asset0030",
+          "ordinal": 30,
+          "relativePath": "DSC06012.ARW"
+        },
+        {
+          "assetID": "asset0031",
+          "ordinal": 31,
+          "relativePath": "DSC06013.ARW"
+        },
+        {
+          "assetID": "asset0032",
+          "ordinal": 32,
+          "relativePath": "DSC06014.ARW"
+        },
+        {
+          "assetID": "asset0033",
+          "ordinal": 33,
+          "relativePath": "DSC06015.ARW"
+        },
+        {
+          "assetID": "asset0034",
+          "ordinal": 34,
+          "relativePath": "DSC06016.ARW"
+        },
+        {
+          "assetID": "asset0035",
+          "ordinal": 35,
+          "relativePath": "DSC06017.ARW"
+        },
+        {
+          "assetID": "asset0036",
+          "ordinal": 36,
+          "relativePath": "DSC06018.ARW"
+        },
+        {
+          "assetID": "asset0037",
+          "ordinal": 37,
+          "relativePath": "DSC06019.ARW"
+        },
+        {
+          "assetID": "asset0038",
+          "ordinal": 38,
+          "relativePath": "DSC06020.ARW"
+        },
+        {
+          "assetID": "asset0039",
+          "ordinal": 39,
+          "relativePath": "DSC06021.ARW"
+        },
+        {
+          "assetID": "asset0040",
+          "ordinal": 40,
+          "relativePath": "DSC06022.ARW"
+        },
+        {
+          "assetID": "asset0041",
+          "ordinal": 41,
+          "relativePath": "DSC06023.ARW"
+        },
+        {
+          "assetID": "asset0042",
+          "ordinal": 42,
+          "relativePath": "DSC06024.ARW"
+        },
+        {
+          "assetID": "asset0043",
+          "ordinal": 43,
+          "relativePath": "DSC06025.ARW"
+        },
+        {
+          "assetID": "asset0044",
+          "ordinal": 44,
+          "relativePath": "DSC06026.ARW"
+        },
+        {
+          "assetID": "asset0045",
+          "ordinal": 45,
+          "relativePath": "DSC06027.ARW"
+        },
+        {
+          "assetID": "asset0046",
+          "ordinal": 46,
+          "relativePath": "DSC06028.ARW"
+        },
+        {
+          "assetID": "asset0047",
+          "ordinal": 47,
+          "relativePath": "DSC06029.ARW"
+        },
+        {
+          "assetID": "asset0048",
+          "ordinal": 48,
+          "relativePath": "DSC06030.ARW"
+        },
+        {
+          "assetID": "asset0049",
+          "ordinal": 49,
+          "relativePath": "DSC06031.ARW"
+        },
+        {
+          "assetID": "asset0050",
+          "ordinal": 50,
+          "relativePath": "DSC06032.ARW"
+        },
+        {
+          "assetID": "asset0051",
+          "ordinal": 51,
+          "relativePath": "DSC06033.ARW"
+        },
+        {
+          "assetID": "asset0052",
+          "ordinal": 52,
+          "relativePath": "DSC06034.ARW"
+        },
+        {
+          "assetID": "asset0053",
+          "ordinal": 53,
+          "relativePath": "DSC06035.ARW"
+        },
+        {
+          "assetID": "asset0054",
+          "ordinal": 54,
+          "relativePath": "DSC06036.ARW"
+        },
+        {
+          "assetID": "asset0055",
+          "ordinal": 55,
+          "relativePath": "DSC06037.ARW"
+        },
+        {
+          "assetID": "asset0056",
+          "ordinal": 56,
+          "relativePath": "DSC06038.ARW"
+        },
+        {
+          "assetID": "asset0057",
+          "ordinal": 57,
+          "relativePath": "DSC06039.ARW"
+        },
+        {
+          "assetID": "asset0058",
+          "ordinal": 58,
+          "relativePath": "DSC06040.ARW"
+        },
+        {
+          "assetID": "asset0059",
+          "ordinal": 59,
+          "relativePath": "DSC06041.ARW"
+        },
+        {
+          "assetID": "asset0060",
+          "ordinal": 60,
+          "relativePath": "DSC06042.ARW"
+        },
+        {
+          "assetID": "asset0061",
+          "ordinal": 61,
+          "relativePath": "DSC06043.ARW"
+        },
+        {
+          "assetID": "asset0062",
+          "ordinal": 62,
+          "relativePath": "DSC06044.ARW"
+        },
+        {
+          "assetID": "asset0063",
+          "ordinal": 63,
+          "relativePath": "DSC06045.ARW"
+        },
+        {
+          "assetID": "asset0064",
+          "ordinal": 64,
+          "relativePath": "DSC06046.ARW"
+        },
+        {
+          "assetID": "asset0065",
+          "ordinal": 65,
+          "relativePath": "DSC06047.ARW"
+        },
+        {
+          "assetID": "asset0066",
+          "ordinal": 66,
+          "relativePath": "DSC06048.ARW"
+        },
+        {
+          "assetID": "asset0067",
+          "ordinal": 67,
+          "relativePath": "DSC06049.ARW"
+        },
+        {
+          "assetID": "asset0068",
+          "ordinal": 68,
+          "relativePath": "DSC06050.ARW"
+        },
+        {
+          "assetID": "asset0069",
+          "ordinal": 69,
+          "relativePath": "DSC06051.ARW"
+        },
+        {
+          "assetID": "asset0070",
+          "ordinal": 70,
+          "relativePath": "DSC06052.ARW"
+        },
+        {
+          "assetID": "asset0071",
+          "ordinal": 71,
+          "relativePath": "DSC06053.ARW"
+        },
+        {
+          "assetID": "asset0072",
+          "ordinal": 72,
+          "relativePath": "DSC06054.ARW"
+        },
+        {
+          "assetID": "asset0073",
+          "ordinal": 73,
+          "relativePath": "DSC06055.ARW"
+        },
+        {
+          "assetID": "asset0074",
+          "ordinal": 74,
+          "relativePath": "DSC06056.ARW"
+        },
+        {
+          "assetID": "asset0075",
+          "ordinal": 75,
+          "relativePath": "DSC06057.ARW"
+        },
+        {
+          "assetID": "asset0076",
+          "ordinal": 76,
+          "relativePath": "DSC06058.ARW"
+        },
+        {
+          "assetID": "asset0077",
+          "ordinal": 77,
+          "relativePath": "DSC06059.ARW"
+        },
+        {
+          "assetID": "asset0078",
+          "ordinal": 78,
+          "relativePath": "DSC06060.ARW"
+        },
+        {
+          "assetID": "asset0079",
+          "ordinal": 79,
+          "relativePath": "DSC06061.ARW"
+        },
+        {
+          "assetID": "asset0080",
+          "ordinal": 80,
+          "relativePath": "DSC06062.ARW"
+        },
+        {
+          "assetID": "asset0081",
+          "ordinal": 81,
+          "relativePath": "DSC06063.ARW"
+        },
+        {
+          "assetID": "asset0082",
+          "ordinal": 82,
+          "relativePath": "DSC06064.ARW"
+        },
+        {
+          "assetID": "asset0083",
+          "ordinal": 83,
+          "relativePath": "DSC06065.ARW"
+        },
+        {
+          "assetID": "asset0084",
+          "ordinal": 84,
+          "relativePath": "DSC06066.ARW"
+        },
+        {
+          "assetID": "asset0085",
+          "ordinal": 85,
+          "relativePath": "DSC06067.ARW"
+        },
+        {
+          "assetID": "asset0086",
+          "ordinal": 86,
+          "relativePath": "DSC06068.ARW"
+        },
+        {
+          "assetID": "asset0087",
+          "ordinal": 87,
+          "relativePath": "DSC06069.ARW"
+        },
+        {
+          "assetID": "asset0088",
+          "ordinal": 88,
+          "relativePath": "DSC06070.ARW"
+        },
+        {
+          "assetID": "asset0089",
+          "ordinal": 89,
+          "relativePath": "DSC06071.ARW"
+        },
+        {
+          "assetID": "asset0090",
+          "ordinal": 90,
+          "relativePath": "DSC06072.ARW"
+        },
+        {
+          "assetID": "asset0091",
+          "ordinal": 91,
+          "relativePath": "DSC06073.ARW"
+        },
+        {
+          "assetID": "asset0092",
+          "ordinal": 92,
+          "relativePath": "DSC06074.ARW"
+        },
+        {
+          "assetID": "asset0093",
+          "ordinal": 93,
+          "relativePath": "DSC06075.ARW"
+        },
+        {
+          "assetID": "asset0094",
+          "ordinal": 94,
+          "relativePath": "DSC06076.ARW"
+        },
+        {
+          "assetID": "asset0095",
+          "ordinal": 95,
+          "relativePath": "DSC06077.ARW"
+        },
+        {
+          "assetID": "asset0096",
+          "ordinal": 96,
+          "relativePath": "DSC06078.ARW"
+        },
+        {
+          "assetID": "asset0097",
+          "ordinal": 97,
+          "relativePath": "DSC06079.ARW"
+        },
+        {
+          "assetID": "asset0098",
+          "ordinal": 98,
+          "relativePath": "DSC06080.ARW"
+        },
+        {
+          "assetID": "asset0099",
+          "ordinal": 99,
+          "relativePath": "DSC06081.ARW"
+        },
+        {
+          "assetID": "asset0100",
+          "ordinal": 100,
+          "relativePath": "DSC06082.ARW"
+        },
+        {
+          "assetID": "asset0101",
+          "ordinal": 101,
+          "relativePath": "DSC06083.ARW"
+        },
+        {
+          "assetID": "asset0102",
+          "ordinal": 102,
+          "relativePath": "DSC06084.ARW"
+        },
+        {
+          "assetID": "asset0103",
+          "ordinal": 103,
+          "relativePath": "DSC06085.ARW"
+        },
+        {
+          "assetID": "asset0104",
+          "ordinal": 104,
+          "relativePath": "DSC06086.ARW"
+        },
+        {
+          "assetID": "asset0105",
+          "ordinal": 105,
+          "relativePath": "DSC06087.ARW"
+        },
+        {
+          "assetID": "asset0106",
+          "ordinal": 106,
+          "relativePath": "DSC06088.ARW"
+        },
+        {
+          "assetID": "asset0107",
+          "ordinal": 107,
+          "relativePath": "DSC06089.ARW"
+        },
+        {
+          "assetID": "asset0108",
+          "ordinal": 108,
+          "relativePath": "DSC06090.ARW"
+        },
+        {
+          "assetID": "asset0109",
+          "ordinal": 109,
+          "relativePath": "DSC06091.ARW"
+        },
+        {
+          "assetID": "asset0110",
+          "ordinal": 110,
+          "relativePath": "DSC06092.ARW"
+        },
+        {
+          "assetID": "asset0111",
+          "ordinal": 111,
+          "relativePath": "DSC06093.ARW"
+        },
+        {
+          "assetID": "asset0112",
+          "ordinal": 112,
+          "relativePath": "DSC06094.ARW"
+        },
+        {
+          "assetID": "asset0113",
+          "ordinal": 113,
+          "relativePath": "DSC06095.ARW"
+        },
+        {
+          "assetID": "asset0114",
+          "ordinal": 114,
+          "relativePath": "DSC06096.ARW"
+        },
+        {
+          "assetID": "asset0115",
+          "ordinal": 115,
+          "relativePath": "DSC06097.ARW"
+        },
+        {
+          "assetID": "asset0116",
+          "ordinal": 116,
+          "relativePath": "DSC06098.ARW"
+        },
+        {
+          "assetID": "asset0117",
+          "ordinal": 117,
+          "relativePath": "DSC06099.ARW"
+        },
+        {
+          "assetID": "asset0118",
+          "ordinal": 118,
+          "relativePath": "DSC06100.ARW"
+        },
+        {
+          "assetID": "asset0119",
+          "ordinal": 119,
+          "relativePath": "DSC06101.ARW"
+        },
+        {
+          "assetID": "asset0120",
+          "ordinal": 120,
+          "relativePath": "DSC06102.ARW"
+        },
+        {
+          "assetID": "asset0121",
+          "ordinal": 121,
+          "relativePath": "DSC06103.ARW"
+        },
+        {
+          "assetID": "asset0122",
+          "ordinal": 122,
+          "relativePath": "DSC06104.ARW"
+        },
+        {
+          "assetID": "asset0123",
+          "ordinal": 123,
+          "relativePath": "DSC06105.ARW"
+        },
+        {
+          "assetID": "asset0124",
+          "ordinal": 124,
+          "relativePath": "DSC06106.ARW"
+        },
+        {
+          "assetID": "asset0125",
+          "ordinal": 125,
+          "relativePath": "DSC06107.ARW"
+        },
+        {
+          "assetID": "asset0126",
+          "ordinal": 126,
+          "relativePath": "DSC06108.ARW"
+        },
+        {
+          "assetID": "asset0127",
+          "ordinal": 127,
+          "relativePath": "DSC06109.ARW"
+        },
+        {
+          "assetID": "asset0128",
+          "ordinal": 128,
+          "relativePath": "DSC06110.ARW"
+        },
+        {
+          "assetID": "asset0129",
+          "ordinal": 129,
+          "relativePath": "DSC06111.ARW"
+        },
+        {
+          "assetID": "asset0130",
+          "ordinal": 130,
+          "relativePath": "DSC06112.ARW"
+        },
+        {
+          "assetID": "asset0131",
+          "ordinal": 131,
+          "relativePath": "DSC06113.ARW"
+        },
+        {
+          "assetID": "asset0132",
+          "ordinal": 132,
+          "relativePath": "DSC06114.ARW"
+        },
+        {
+          "assetID": "asset0133",
+          "ordinal": 133,
+          "relativePath": "DSC06115.ARW"
+        },
+        {
+          "assetID": "asset0134",
+          "ordinal": 134,
+          "relativePath": "DSC06116.ARW"
+        },
+        {
+          "assetID": "asset0135",
+          "ordinal": 135,
+          "relativePath": "DSC06117.ARW"
+        },
+        {
+          "assetID": "asset0136",
+          "ordinal": 136,
+          "relativePath": "DSC06118.ARW"
+        },
+        {
+          "assetID": "asset0137",
+          "ordinal": 137,
+          "relativePath": "DSC06119.ARW"
+        },
+        {
+          "assetID": "asset0138",
+          "ordinal": 138,
+          "relativePath": "DSC06120.ARW"
+        },
+        {
+          "assetID": "asset0139",
+          "ordinal": 139,
+          "relativePath": "DSC06121.ARW"
+        },
+        {
+          "assetID": "asset0140",
+          "ordinal": 140,
+          "relativePath": "DSC06122.ARW"
+        },
+        {
+          "assetID": "asset0141",
+          "ordinal": 141,
+          "relativePath": "DSC06123.ARW"
+        },
+        {
+          "assetID": "asset0142",
+          "ordinal": 142,
+          "relativePath": "DSC06124.ARW"
+        },
+        {
+          "assetID": "asset0143",
+          "ordinal": 143,
+          "relativePath": "DSC06125.ARW"
+        },
+        {
+          "assetID": "asset0144",
+          "ordinal": 144,
+          "relativePath": "DSC06126.ARW"
+        },
+        {
+          "assetID": "asset0145",
+          "ordinal": 145,
+          "relativePath": "DSC06127.ARW"
+        },
+        {
+          "assetID": "asset0146",
+          "ordinal": 146,
+          "relativePath": "DSC06128.ARW"
+        },
+        {
+          "assetID": "asset0147",
+          "ordinal": 147,
+          "relativePath": "DSC06129.ARW"
+        },
+        {
+          "assetID": "asset0148",
+          "ordinal": 148,
+          "relativePath": "DSC06130.ARW"
+        },
+        {
+          "assetID": "asset0149",
+          "ordinal": 149,
+          "relativePath": "DSC06131.ARW"
+        },
+        {
+          "assetID": "asset0150",
+          "ordinal": 150,
+          "relativePath": "DSC06132.ARW"
+        },
+        {
+          "assetID": "asset0151",
+          "ordinal": 151,
+          "relativePath": "DSC06133.ARW"
+        },
+        {
+          "assetID": "asset0152",
+          "ordinal": 152,
+          "relativePath": "DSC06134.ARW"
+        },
+        {
+          "assetID": "asset0153",
+          "ordinal": 153,
+          "relativePath": "DSC06135.ARW"
+        },
+        {
+          "assetID": "asset0154",
+          "ordinal": 154,
+          "relativePath": "DSC06136.ARW"
+        },
+        {
+          "assetID": "asset0155",
+          "ordinal": 155,
+          "relativePath": "DSC06137.ARW"
+        },
+        {
+          "assetID": "asset0156",
+          "ordinal": 156,
+          "relativePath": "DSC06138.ARW"
+        },
+        {
+          "assetID": "asset0157",
+          "ordinal": 157,
+          "relativePath": "DSC06139.ARW"
+        },
+        {
+          "assetID": "asset0158",
+          "ordinal": 158,
+          "relativePath": "DSC06140.ARW"
+        },
+        {
+          "assetID": "asset0159",
+          "ordinal": 159,
+          "relativePath": "DSC06141.ARW"
+        },
+        {
+          "assetID": "asset0160",
+          "ordinal": 160,
+          "relativePath": "DSC06142.ARW"
+        },
+        {
+          "assetID": "asset0161",
+          "ordinal": 161,
+          "relativePath": "DSC06143.ARW"
+        },
+        {
+          "assetID": "asset0162",
+          "ordinal": 162,
+          "relativePath": "DSC06144.ARW"
+        },
+        {
+          "assetID": "asset0163",
+          "ordinal": 163,
+          "relativePath": "DSC06145.ARW"
+        },
+        {
+          "assetID": "asset0164",
+          "ordinal": 164,
+          "relativePath": "DSC06146.ARW"
+        },
+        {
+          "assetID": "asset0165",
+          "ordinal": 165,
+          "relativePath": "DSC06147.ARW"
+        },
+        {
+          "assetID": "asset0166",
+          "ordinal": 166,
+          "relativePath": "DSC06148.ARW"
+        },
+        {
+          "assetID": "asset0167",
+          "ordinal": 167,
+          "relativePath": "DSC06149.ARW"
+        },
+        {
+          "assetID": "asset0168",
+          "ordinal": 168,
+          "relativePath": "DSC06150.ARW"
+        },
+        {
+          "assetID": "asset0169",
+          "ordinal": 169,
+          "relativePath": "DSC06151.ARW"
+        },
+        {
+          "assetID": "asset0170",
+          "ordinal": 170,
+          "relativePath": "DSC06152.ARW"
+        },
+        {
+          "assetID": "asset0171",
+          "ordinal": 171,
+          "relativePath": "DSC06153.ARW"
+        },
+        {
+          "assetID": "asset0172",
+          "ordinal": 172,
+          "relativePath": "DSC06154.ARW"
+        },
+        {
+          "assetID": "asset0173",
+          "ordinal": 173,
+          "relativePath": "DSC06155.ARW"
+        },
+        {
+          "assetID": "asset0174",
+          "ordinal": 174,
+          "relativePath": "DSC06156.ARW"
+        },
+        {
+          "assetID": "asset0175",
+          "ordinal": 175,
+          "relativePath": "DSC06157.ARW"
+        },
+        {
+          "assetID": "asset0176",
+          "ordinal": 176,
+          "relativePath": "DSC06158.ARW"
+        },
+        {
+          "assetID": "asset0177",
+          "ordinal": 177,
+          "relativePath": "DSC06159.ARW"
+        },
+        {
+          "assetID": "asset0178",
+          "ordinal": 178,
+          "relativePath": "DSC06160.ARW"
+        },
+        {
+          "assetID": "asset0179",
+          "ordinal": 179,
+          "relativePath": "DSC06161.ARW"
+        },
+        {
+          "assetID": "asset0180",
+          "ordinal": 180,
+          "relativePath": "DSC06162.ARW"
+        },
+        {
+          "assetID": "asset0181",
+          "ordinal": 181,
+          "relativePath": "DSC06163.ARW"
+        },
+        {
+          "assetID": "asset0182",
+          "ordinal": 182,
+          "relativePath": "DSC06164.ARW"
+        },
+        {
+          "assetID": "asset0183",
+          "ordinal": 183,
+          "relativePath": "DSC06165.ARW"
+        },
+        {
+          "assetID": "asset0184",
+          "ordinal": 184,
+          "relativePath": "DSC06166.ARW"
+        },
+        {
+          "assetID": "asset0185",
+          "ordinal": 185,
+          "relativePath": "DSC06167.ARW"
+        },
+        {
+          "assetID": "asset0186",
+          "ordinal": 186,
+          "relativePath": "DSC06168.ARW"
+        },
+        {
+          "assetID": "asset0187",
+          "ordinal": 187,
+          "relativePath": "DSC06169.ARW"
+        },
+        {
+          "assetID": "asset0188",
+          "ordinal": 188,
+          "relativePath": "DSC06170.ARW"
+        },
+        {
+          "assetID": "asset0189",
+          "ordinal": 189,
+          "relativePath": "DSC06171.ARW"
+        },
+        {
+          "assetID": "asset0190",
+          "ordinal": 190,
+          "relativePath": "DSC06172.ARW"
+        },
+        {
+          "assetID": "asset0191",
+          "ordinal": 191,
+          "relativePath": "DSC06173.ARW"
+        },
+        {
+          "assetID": "asset0192",
+          "ordinal": 192,
+          "relativePath": "DSC06174.ARW"
+        },
+        {
+          "assetID": "asset0193",
+          "ordinal": 193,
+          "relativePath": "DSC06175.ARW"
+        },
+        {
+          "assetID": "asset0194",
+          "ordinal": 194,
+          "relativePath": "DSC06176.ARW"
+        },
+        {
+          "assetID": "asset0195",
+          "ordinal": 195,
+          "relativePath": "DSC06177.ARW"
+        },
+        {
+          "assetID": "asset0196",
+          "ordinal": 196,
+          "relativePath": "DSC06178.ARW"
+        },
+        {
+          "assetID": "asset0197",
+          "ordinal": 197,
+          "relativePath": "DSC06179.ARW"
+        },
+        {
+          "assetID": "asset0198",
+          "ordinal": 198,
+          "relativePath": "DSC06180.ARW"
+        },
+        {
+          "assetID": "asset0199",
+          "ordinal": 199,
+          "relativePath": "DSC06181.ARW"
+        },
+        {
+          "assetID": "asset0200",
+          "ordinal": 200,
+          "relativePath": "DSC06182.ARW"
+        },
+        {
+          "assetID": "asset0201",
+          "ordinal": 201,
+          "relativePath": "DSC06183.ARW"
+        },
+        {
+          "assetID": "asset0202",
+          "ordinal": 202,
+          "relativePath": "DSC06184.ARW"
+        },
+        {
+          "assetID": "asset0203",
+          "ordinal": 203,
+          "relativePath": "DSC06185.ARW"
+        },
+        {
+          "assetID": "asset0204",
+          "ordinal": 204,
+          "relativePath": "DSC06186.ARW"
+        },
+        {
+          "assetID": "asset0205",
+          "ordinal": 205,
+          "relativePath": "DSC06187.ARW"
+        },
+        {
+          "assetID": "asset0206",
+          "ordinal": 206,
+          "relativePath": "DSC06188.ARW"
+        },
+        {
+          "assetID": "asset0207",
+          "ordinal": 207,
+          "relativePath": "DSC06189.ARW"
+        },
+        {
+          "assetID": "asset0208",
+          "ordinal": 208,
+          "relativePath": "DSC06190.ARW"
+        },
+        {
+          "assetID": "asset0209",
+          "ordinal": 209,
+          "relativePath": "DSC06191.ARW"
+        },
+        {
+          "assetID": "asset0210",
+          "ordinal": 210,
+          "relativePath": "DSC06192.ARW"
+        },
+        {
+          "assetID": "asset0211",
+          "ordinal": 211,
+          "relativePath": "DSC06193.ARW"
+        },
+        {
+          "assetID": "asset0212",
+          "ordinal": 212,
+          "relativePath": "DSC06194.ARW"
+        },
+        {
+          "assetID": "asset0213",
+          "ordinal": 213,
+          "relativePath": "DSC06195.ARW"
+        },
+        {
+          "assetID": "asset0214",
+          "ordinal": 214,
+          "relativePath": "DSC06196.ARW"
+        },
+        {
+          "assetID": "asset0215",
+          "ordinal": 215,
+          "relativePath": "DSC06197.ARW"
+        },
+        {
+          "assetID": "asset0216",
+          "ordinal": 216,
+          "relativePath": "DSC06198.ARW"
+        },
+        {
+          "assetID": "asset0217",
+          "ordinal": 217,
+          "relativePath": "DSC06199.ARW"
+        },
+        {
+          "assetID": "asset0218",
+          "ordinal": 218,
+          "relativePath": "DSC06200.ARW"
+        },
+        {
+          "assetID": "asset0219",
+          "ordinal": 219,
+          "relativePath": "DSC06201.ARW"
+        },
+        {
+          "assetID": "asset0220",
+          "ordinal": 220,
+          "relativePath": "DSC06202.ARW"
+        },
+        {
+          "assetID": "asset0221",
+          "ordinal": 221,
+          "relativePath": "DSC06203.ARW"
+        },
+        {
+          "assetID": "asset0222",
+          "ordinal": 222,
+          "relativePath": "DSC06204.ARW"
+        },
+        {
+          "assetID": "asset0223",
+          "ordinal": 223,
+          "relativePath": "DSC06205.ARW"
+        },
+        {
+          "assetID": "asset0224",
+          "ordinal": 224,
+          "relativePath": "DSC06206.ARW"
+        },
+        {
+          "assetID": "asset0225",
+          "ordinal": 225,
+          "relativePath": "DSC06207.ARW"
+        },
+        {
+          "assetID": "asset0226",
+          "ordinal": 226,
+          "relativePath": "DSC06208.ARW"
+        },
+        {
+          "assetID": "asset0227",
+          "ordinal": 227,
+          "relativePath": "DSC06209.ARW"
+        },
+        {
+          "assetID": "asset0228",
+          "ordinal": 228,
+          "relativePath": "DSC06210.ARW"
+        },
+        {
+          "assetID": "asset0229",
+          "ordinal": 229,
+          "relativePath": "DSC06211.ARW"
+        },
+        {
+          "assetID": "asset0230",
+          "ordinal": 230,
+          "relativePath": "DSC06212.ARW"
+        },
+        {
+          "assetID": "asset0231",
+          "ordinal": 231,
+          "relativePath": "DSC06213.ARW"
+        },
+        {
+          "assetID": "asset0232",
+          "ordinal": 232,
+          "relativePath": "DSC06214.ARW"
+        },
+        {
+          "assetID": "asset0233",
+          "ordinal": 233,
+          "relativePath": "DSC06215.ARW"
+        },
+        {
+          "assetID": "asset0234",
+          "ordinal": 234,
+          "relativePath": "DSC06216.ARW"
+        },
+        {
+          "assetID": "asset0235",
+          "ordinal": 235,
+          "relativePath": "DSC06217.ARW"
+        },
+        {
+          "assetID": "asset0236",
+          "ordinal": 236,
+          "relativePath": "DSC06218.ARW"
+        },
+        {
+          "assetID": "asset0237",
+          "ordinal": 237,
+          "relativePath": "DSC06219.ARW"
+        },
+        {
+          "assetID": "asset0238",
+          "ordinal": 238,
+          "relativePath": "DSC06220.ARW"
+        },
+        {
+          "assetID": "asset0239",
+          "ordinal": 239,
+          "relativePath": "DSC06221.ARW"
+        },
+        {
+          "assetID": "asset0240",
+          "ordinal": 240,
+          "relativePath": "DSC06222.ARW"
+        },
+        {
+          "assetID": "asset0241",
+          "ordinal": 241,
+          "relativePath": "DSC06223.ARW"
+        },
+        {
+          "assetID": "asset0242",
+          "ordinal": 242,
+          "relativePath": "DSC06224.ARW"
+        },
+        {
+          "assetID": "asset0243",
+          "ordinal": 243,
+          "relativePath": "DSC06225.ARW"
+        },
+        {
+          "assetID": "asset0244",
+          "ordinal": 244,
+          "relativePath": "DSC06226.ARW"
+        },
+        {
+          "assetID": "asset0245",
+          "ordinal": 245,
+          "relativePath": "DSC06227.ARW"
+        },
+        {
+          "assetID": "asset0246",
+          "ordinal": 246,
+          "relativePath": "DSC06228.ARW"
+        },
+        {
+          "assetID": "asset0247",
+          "ordinal": 247,
+          "relativePath": "DSC06229.ARW"
+        },
+        {
+          "assetID": "asset0248",
+          "ordinal": 248,
+          "relativePath": "DSC06230.ARW"
+        },
+        {
+          "assetID": "asset0249",
+          "ordinal": 249,
+          "relativePath": "DSC06231.ARW"
+        },
+        {
+          "assetID": "asset0250",
+          "ordinal": 250,
+          "relativePath": "DSC06232.ARW"
+        },
+        {
+          "assetID": "asset0251",
+          "ordinal": 251,
+          "relativePath": "DSC06233.ARW"
+        },
+        {
+          "assetID": "asset0252",
+          "ordinal": 252,
+          "relativePath": "DSC06234.ARW"
+        },
+        {
+          "assetID": "asset0253",
+          "ordinal": 253,
+          "relativePath": "DSC06235.ARW"
+        },
+        {
+          "assetID": "asset0254",
+          "ordinal": 254,
+          "relativePath": "DSC06236.ARW"
+        },
+        {
+          "assetID": "asset0255",
+          "ordinal": 255,
+          "relativePath": "DSC06237.ARW"
+        },
+        {
+          "assetID": "asset0256",
+          "ordinal": 256,
+          "relativePath": "DSC06238.ARW"
+        },
+        {
+          "assetID": "asset0257",
+          "ordinal": 257,
+          "relativePath": "DSC06239.ARW"
+        },
+        {
+          "assetID": "asset0258",
+          "ordinal": 258,
+          "relativePath": "DSC06240.ARW"
+        },
+        {
+          "assetID": "asset0259",
+          "ordinal": 259,
+          "relativePath": "DSC06241.ARW"
+        },
+        {
+          "assetID": "asset0260",
+          "ordinal": 260,
+          "relativePath": "DSC06242.ARW"
+        },
+        {
+          "assetID": "asset0261",
+          "ordinal": 261,
+          "relativePath": "DSC06243.ARW"
+        },
+        {
+          "assetID": "asset0262",
+          "ordinal": 262,
+          "relativePath": "DSC06244.ARW"
+        },
+        {
+          "assetID": "asset0263",
+          "ordinal": 263,
+          "relativePath": "DSC06245.ARW"
+        },
+        {
+          "assetID": "asset0264",
+          "ordinal": 264,
+          "relativePath": "DSC06246.ARW"
+        },
+        {
+          "assetID": "asset0265",
+          "ordinal": 265,
+          "relativePath": "DSC06247.ARW"
+        },
+        {
+          "assetID": "asset0266",
+          "ordinal": 266,
+          "relativePath": "DSC06248.ARW"
+        },
+        {
+          "assetID": "asset0267",
+          "ordinal": 267,
+          "relativePath": "DSC06249.ARW"
+        },
+        {
+          "assetID": "asset0268",
+          "ordinal": 268,
+          "relativePath": "DSC06250.ARW"
+        },
+        {
+          "assetID": "asset0269",
+          "ordinal": 269,
+          "relativePath": "DSC06251.ARW"
+        },
+        {
+          "assetID": "asset0270",
+          "ordinal": 270,
+          "relativePath": "DSC06252.ARW"
+        },
+        {
+          "assetID": "asset0271",
+          "ordinal": 271,
+          "relativePath": "DSC06253.ARW"
+        },
+        {
+          "assetID": "asset0272",
+          "ordinal": 272,
+          "relativePath": "DSC06254.ARW"
+        },
+        {
+          "assetID": "asset0273",
+          "ordinal": 273,
+          "relativePath": "DSC06255.ARW"
+        },
+        {
+          "assetID": "asset0274",
+          "ordinal": 274,
+          "relativePath": "DSC06256.ARW"
+        },
+        {
+          "assetID": "asset0275",
+          "ordinal": 275,
+          "relativePath": "DSC06257.ARW"
+        },
+        {
+          "assetID": "asset0276",
+          "ordinal": 276,
+          "relativePath": "DSC06258.ARW"
+        },
+        {
+          "assetID": "asset0277",
+          "ordinal": 277,
+          "relativePath": "DSC06259.ARW"
+        },
+        {
+          "assetID": "asset0278",
+          "ordinal": 278,
+          "relativePath": "DSC06260.ARW"
+        },
+        {
+          "assetID": "asset0279",
+          "ordinal": 279,
+          "relativePath": "DSC06261.ARW"
+        },
+        {
+          "assetID": "asset0280",
+          "ordinal": 280,
+          "relativePath": "DSC06262.ARW"
+        },
+        {
+          "assetID": "asset0281",
+          "ordinal": 281,
+          "relativePath": "DSC06263.ARW"
+        },
+        {
+          "assetID": "asset0282",
+          "ordinal": 282,
+          "relativePath": "DSC06264.ARW"
+        },
+        {
+          "assetID": "asset0283",
+          "ordinal": 283,
+          "relativePath": "DSC06265.ARW"
+        },
+        {
+          "assetID": "asset0284",
+          "ordinal": 284,
+          "relativePath": "DSC06266.ARW"
+        },
+        {
+          "assetID": "asset0285",
+          "ordinal": 285,
+          "relativePath": "DSC06267.ARW"
+        },
+        {
+          "assetID": "asset0286",
+          "ordinal": 286,
+          "relativePath": "DSC06268.ARW"
+        },
+        {
+          "assetID": "asset0287",
+          "ordinal": 287,
+          "relativePath": "DSC06269.ARW"
+        },
+        {
+          "assetID": "asset0288",
+          "ordinal": 288,
+          "relativePath": "DSC06270.ARW"
+        },
+        {
+          "assetID": "asset0289",
+          "ordinal": 289,
+          "relativePath": "DSC06271.ARW"
+        },
+        {
+          "assetID": "asset0290",
+          "ordinal": 290,
+          "relativePath": "DSC06272.ARW"
+        },
+        {
+          "assetID": "asset0291",
+          "ordinal": 291,
+          "relativePath": "DSC06273.ARW"
+        },
+        {
+          "assetID": "asset0292",
+          "ordinal": 292,
+          "relativePath": "DSC06274.ARW"
+        },
+        {
+          "assetID": "asset0293",
+          "ordinal": 293,
+          "relativePath": "DSC06275.ARW"
+        },
+        {
+          "assetID": "asset0294",
+          "ordinal": 294,
+          "relativePath": "DSC06276.ARW"
+        },
+        {
+          "assetID": "asset0295",
+          "ordinal": 295,
+          "relativePath": "DSC06277.ARW"
+        },
+        {
+          "assetID": "asset0296",
+          "ordinal": 296,
+          "relativePath": "DSC06278.ARW"
+        },
+        {
+          "assetID": "asset0297",
+          "ordinal": 297,
+          "relativePath": "DSC06279.ARW"
+        },
+        {
+          "assetID": "asset0298",
+          "ordinal": 298,
+          "relativePath": "DSC06280.ARW"
+        },
+        {
+          "assetID": "asset0299",
+          "ordinal": 299,
+          "relativePath": "DSC06281.ARW"
+        },
+        {
+          "assetID": "asset0300",
+          "ordinal": 300,
+          "relativePath": "DSC06282.ARW"
+        },
+        {
+          "assetID": "asset0301",
+          "ordinal": 301,
+          "relativePath": "DSC06283.ARW"
+        },
+        {
+          "assetID": "asset0302",
+          "ordinal": 302,
+          "relativePath": "DSC06284.ARW"
+        },
+        {
+          "assetID": "asset0303",
+          "ordinal": 303,
+          "relativePath": "DSC06285.ARW"
+        },
+        {
+          "assetID": "asset0304",
+          "ordinal": 304,
+          "relativePath": "DSC06286.ARW"
+        },
+        {
+          "assetID": "asset0305",
+          "ordinal": 305,
+          "relativePath": "DSC06287.ARW"
+        },
+        {
+          "assetID": "asset0306",
+          "ordinal": 306,
+          "relativePath": "DSC06288.ARW"
+        },
+        {
+          "assetID": "asset0307",
+          "ordinal": 307,
+          "relativePath": "DSC06289.ARW"
+        },
+        {
+          "assetID": "asset0308",
+          "ordinal": 308,
+          "relativePath": "DSC06290.ARW"
+        },
+        {
+          "assetID": "asset0309",
+          "ordinal": 309,
+          "relativePath": "DSC06291.ARW"
+        },
+        {
+          "assetID": "asset0310",
+          "ordinal": 310,
+          "relativePath": "DSC06292.ARW"
+        },
+        {
+          "assetID": "asset0311",
+          "ordinal": 311,
+          "relativePath": "DSC06293.ARW"
+        },
+        {
+          "assetID": "asset0312",
+          "ordinal": 312,
+          "relativePath": "DSC06294.ARW"
+        },
+        {
+          "assetID": "asset0313",
+          "ordinal": 313,
+          "relativePath": "DSC06295.ARW"
+        },
+        {
+          "assetID": "asset0314",
+          "ordinal": 314,
+          "relativePath": "DSC06296.ARW"
+        },
+        {
+          "assetID": "asset0315",
+          "ordinal": 315,
+          "relativePath": "DSC06297.ARW"
+        },
+        {
+          "assetID": "asset0316",
+          "ordinal": 316,
+          "relativePath": "DSC06298.ARW"
+        },
+        {
+          "assetID": "asset0317",
+          "ordinal": 317,
+          "relativePath": "DSC06299.ARW"
+        },
+        {
+          "assetID": "asset0318",
+          "ordinal": 318,
+          "relativePath": "DSC06300.ARW"
+        },
+        {
+          "assetID": "asset0319",
+          "ordinal": 319,
+          "relativePath": "DSC06301.ARW"
+        },
+        {
+          "assetID": "asset0320",
+          "ordinal": 320,
+          "relativePath": "DSC06302.ARW"
+        },
+        {
+          "assetID": "asset0321",
+          "ordinal": 321,
+          "relativePath": "DSC06303.ARW"
+        },
+        {
+          "assetID": "asset0322",
+          "ordinal": 322,
+          "relativePath": "DSC06304.ARW"
+        },
+        {
+          "assetID": "asset0323",
+          "ordinal": 323,
+          "relativePath": "DSC06305.ARW"
+        },
+        {
+          "assetID": "asset0324",
+          "ordinal": 324,
+          "relativePath": "DSC06306.ARW"
+        },
+        {
+          "assetID": "asset0325",
+          "ordinal": 325,
+          "relativePath": "DSC06307.ARW"
+        },
+        {
+          "assetID": "asset0326",
+          "ordinal": 326,
+          "relativePath": "DSC06308.ARW"
+        },
+        {
+          "assetID": "asset0327",
+          "ordinal": 327,
+          "relativePath": "DSC06309.ARW"
+        },
+        {
+          "assetID": "asset0328",
+          "ordinal": 328,
+          "relativePath": "DSC06310.ARW"
+        },
+        {
+          "assetID": "asset0329",
+          "ordinal": 329,
+          "relativePath": "DSC06311.ARW"
+        },
+        {
+          "assetID": "asset0330",
+          "ordinal": 330,
+          "relativePath": "DSC06312.ARW"
+        },
+        {
+          "assetID": "asset0331",
+          "ordinal": 331,
+          "relativePath": "DSC06313.ARW"
+        },
+        {
+          "assetID": "asset0332",
+          "ordinal": 332,
+          "relativePath": "DSC06314.ARW"
+        },
+        {
+          "assetID": "asset0333",
+          "ordinal": 333,
+          "relativePath": "DSC06315.ARW"
+        },
+        {
+          "assetID": "asset0334",
+          "ordinal": 334,
+          "relativePath": "DSC06316.ARW"
+        },
+        {
+          "assetID": "asset0335",
+          "ordinal": 335,
+          "relativePath": "DSC06317.ARW"
+        },
+        {
+          "assetID": "asset0336",
+          "ordinal": 336,
+          "relativePath": "DSC06318.ARW"
+        },
+        {
+          "assetID": "asset0337",
+          "ordinal": 337,
+          "relativePath": "DSC06319.ARW"
+        },
+        {
+          "assetID": "asset0338",
+          "ordinal": 338,
+          "relativePath": "DSC06320.ARW"
+        },
+        {
+          "assetID": "asset0339",
+          "ordinal": 339,
+          "relativePath": "DSC06321.ARW"
+        },
+        {
+          "assetID": "asset0340",
+          "ordinal": 340,
+          "relativePath": "DSC06322.ARW"
+        },
+        {
+          "assetID": "asset0341",
+          "ordinal": 341,
+          "relativePath": "DSC06323.ARW"
+        },
+        {
+          "assetID": "asset0342",
+          "ordinal": 342,
+          "relativePath": "DSC06324.ARW"
+        },
+        {
+          "assetID": "asset0343",
+          "ordinal": 343,
+          "relativePath": "DSC06325.ARW"
+        },
+        {
+          "assetID": "asset0344",
+          "ordinal": 344,
+          "relativePath": "DSC06326.ARW"
+        },
+        {
+          "assetID": "asset0345",
+          "ordinal": 345,
+          "relativePath": "DSC06327.ARW"
+        },
+        {
+          "assetID": "asset0346",
+          "ordinal": 346,
+          "relativePath": "DSC06328.ARW"
+        },
+        {
+          "assetID": "asset0347",
+          "ordinal": 347,
+          "relativePath": "DSC06329.ARW"
+        },
+        {
+          "assetID": "asset0348",
+          "ordinal": 348,
+          "relativePath": "DSC06330.ARW"
+        },
+        {
+          "assetID": "asset0349",
+          "ordinal": 349,
+          "relativePath": "DSC06331.ARW"
+        },
+        {
+          "assetID": "asset0350",
+          "ordinal": 350,
+          "relativePath": "DSC06332.ARW"
+        },
+        {
+          "assetID": "asset0351",
+          "ordinal": 351,
+          "relativePath": "DSC06333.ARW"
+        },
+        {
+          "assetID": "asset0352",
+          "ordinal": 352,
+          "relativePath": "DSC06334.ARW"
+        },
+        {
+          "assetID": "asset0353",
+          "ordinal": 353,
+          "relativePath": "DSC06335.ARW"
+        },
+        {
+          "assetID": "asset0354",
+          "ordinal": 354,
+          "relativePath": "DSC06336.ARW"
+        },
+        {
+          "assetID": "asset0355",
+          "ordinal": 355,
+          "relativePath": "DSC06337.ARW"
+        },
+        {
+          "assetID": "asset0356",
+          "ordinal": 356,
+          "relativePath": "DSC06338.ARW"
+        },
+        {
+          "assetID": "asset0357",
+          "ordinal": 357,
+          "relativePath": "DSC06339.ARW"
+        },
+        {
+          "assetID": "asset0358",
+          "ordinal": 358,
+          "relativePath": "DSC06340.ARW"
+        },
+        {
+          "assetID": "asset0359",
+          "ordinal": 359,
+          "relativePath": "DSC06341.ARW"
+        },
+        {
+          "assetID": "asset0360",
+          "ordinal": 360,
+          "relativePath": "DSC06342.ARW"
+        },
+        {
+          "assetID": "asset0361",
+          "ordinal": 361,
+          "relativePath": "DSC06343.ARW"
+        },
+        {
+          "assetID": "asset0362",
+          "ordinal": 362,
+          "relativePath": "DSC06344.ARW"
+        },
+        {
+          "assetID": "asset0363",
+          "ordinal": 363,
+          "relativePath": "DSC06345.ARW"
+        },
+        {
+          "assetID": "asset0364",
+          "ordinal": 364,
+          "relativePath": "DSC06346.ARW"
+        },
+        {
+          "assetID": "asset0365",
+          "ordinal": 365,
+          "relativePath": "DSC06347.ARW"
+        },
+        {
+          "assetID": "asset0366",
+          "ordinal": 366,
+          "relativePath": "DSC06348.ARW"
+        },
+        {
+          "assetID": "asset0367",
+          "ordinal": 367,
+          "relativePath": "DSC06349.ARW"
+        },
+        {
+          "assetID": "asset0368",
+          "ordinal": 368,
+          "relativePath": "DSC06350.ARW"
+        },
+        {
+          "assetID": "asset0369",
+          "ordinal": 369,
+          "relativePath": "DSC06351.ARW"
+        },
+        {
+          "assetID": "asset0370",
+          "ordinal": 370,
+          "relativePath": "DSC06352.ARW"
+        },
+        {
+          "assetID": "asset0371",
+          "ordinal": 371,
+          "relativePath": "DSC06353.ARW"
+        },
+        {
+          "assetID": "asset0372",
+          "ordinal": 372,
+          "relativePath": "DSC06354.ARW"
+        },
+        {
+          "assetID": "asset0373",
+          "ordinal": 373,
+          "relativePath": "DSC06355.ARW"
+        },
+        {
+          "assetID": "asset0374",
+          "ordinal": 374,
+          "relativePath": "DSC06356.ARW"
+        },
+        {
+          "assetID": "asset0375",
+          "ordinal": 375,
+          "relativePath": "DSC06357.ARW"
+        },
+        {
+          "assetID": "asset0376",
+          "ordinal": 376,
+          "relativePath": "DSC06358.ARW"
+        },
+        {
+          "assetID": "asset0377",
+          "ordinal": 377,
+          "relativePath": "DSC06359.ARW"
+        },
+        {
+          "assetID": "asset0378",
+          "ordinal": 378,
+          "relativePath": "DSC06360.ARW"
+        },
+        {
+          "assetID": "asset0379",
+          "ordinal": 379,
+          "relativePath": "DSC06361.ARW"
+        },
+        {
+          "assetID": "asset0380",
+          "ordinal": 380,
+          "relativePath": "DSC06362.ARW"
+        },
+        {
+          "assetID": "asset0381",
+          "ordinal": 381,
+          "relativePath": "DSC06363.ARW"
+        },
+        {
+          "assetID": "asset0382",
+          "ordinal": 382,
+          "relativePath": "DSC06364.ARW"
+        },
+        {
+          "assetID": "asset0383",
+          "ordinal": 383,
+          "relativePath": "DSC06365.ARW"
+        },
+        {
+          "assetID": "asset0384",
+          "ordinal": 384,
+          "relativePath": "DSC06366.ARW"
+        },
+        {
+          "assetID": "asset0385",
+          "ordinal": 385,
+          "relativePath": "DSC06367.ARW"
+        },
+        {
+          "assetID": "asset0386",
+          "ordinal": 386,
+          "relativePath": "DSC06368.ARW"
+        },
+        {
+          "assetID": "asset0387",
+          "ordinal": 387,
+          "relativePath": "DSC06369.ARW"
+        },
+        {
+          "assetID": "asset0388",
+          "ordinal": 388,
+          "relativePath": "DSC06370.ARW"
+        },
+        {
+          "assetID": "asset0389",
+          "ordinal": 389,
+          "relativePath": "DSC06371.ARW"
+        },
+        {
+          "assetID": "asset0390",
+          "ordinal": 390,
+          "relativePath": "DSC06372.ARW"
+        },
+        {
+          "assetID": "asset0391",
+          "ordinal": 391,
+          "relativePath": "DSC06373.ARW"
+        },
+        {
+          "assetID": "asset0392",
+          "ordinal": 392,
+          "relativePath": "DSC06374.ARW"
+        },
+        {
+          "assetID": "asset0393",
+          "ordinal": 393,
+          "relativePath": "DSC06375.ARW"
+        },
+        {
+          "assetID": "asset0394",
+          "ordinal": 394,
+          "relativePath": "DSC06376.ARW"
+        },
+        {
+          "assetID": "asset0395",
+          "ordinal": 395,
+          "relativePath": "DSC06377.ARW"
+        },
+        {
+          "assetID": "asset0396",
+          "ordinal": 396,
+          "relativePath": "DSC06378.ARW"
+        },
+        {
+          "assetID": "asset0397",
+          "ordinal": 397,
+          "relativePath": "DSC06379.ARW"
+        },
+        {
+          "assetID": "asset0398",
+          "ordinal": 398,
+          "relativePath": "DSC06380.ARW"
+        },
+        {
+          "assetID": "asset0399",
+          "ordinal": 399,
+          "relativePath": "DSC06381.ARW"
+        },
+        {
+          "assetID": "asset0400",
+          "ordinal": 400,
+          "relativePath": "DSC06382.ARW"
+        },
+        {
+          "assetID": "asset0401",
+          "ordinal": 401,
+          "relativePath": "DSC06383.ARW"
+        },
+        {
+          "assetID": "asset0402",
+          "ordinal": 402,
+          "relativePath": "DSC06384.ARW"
+        },
+        {
+          "assetID": "asset0403",
+          "ordinal": 403,
+          "relativePath": "DSC06385.ARW"
+        },
+        {
+          "assetID": "asset0404",
+          "ordinal": 404,
+          "relativePath": "DSC06386.ARW"
+        },
+        {
+          "assetID": "asset0405",
+          "ordinal": 405,
+          "relativePath": "DSC06387.ARW"
+        },
+        {
+          "assetID": "asset0406",
+          "ordinal": 406,
+          "relativePath": "DSC06388.ARW"
+        },
+        {
+          "assetID": "asset0407",
+          "ordinal": 407,
+          "relativePath": "DSC06389.ARW"
+        },
+        {
+          "assetID": "asset0408",
+          "ordinal": 408,
+          "relativePath": "DSC06390.ARW"
+        },
+        {
+          "assetID": "asset0409",
+          "ordinal": 409,
+          "relativePath": "DSC06391.ARW"
+        },
+        {
+          "assetID": "asset0410",
+          "ordinal": 410,
+          "relativePath": "DSC06392.ARW"
+        },
+        {
+          "assetID": "asset0411",
+          "ordinal": 411,
+          "relativePath": "DSC06393.ARW"
+        },
+        {
+          "assetID": "asset0412",
+          "ordinal": 412,
+          "relativePath": "DSC06394.ARW"
+        },
+        {
+          "assetID": "asset0413",
+          "ordinal": 413,
+          "relativePath": "DSC06395.ARW"
+        },
+        {
+          "assetID": "asset0414",
+          "ordinal": 414,
+          "relativePath": "DSC06396.ARW"
+        },
+        {
+          "assetID": "asset0415",
+          "ordinal": 415,
+          "relativePath": "DSC06397.ARW"
+        },
+        {
+          "assetID": "asset0416",
+          "ordinal": 416,
+          "relativePath": "DSC06398.ARW"
+        },
+        {
+          "assetID": "asset0417",
+          "ordinal": 417,
+          "relativePath": "DSC06399.ARW"
+        },
+        {
+          "assetID": "asset0418",
+          "ordinal": 418,
+          "relativePath": "DSC06400.ARW"
+        },
+        {
+          "assetID": "asset0419",
+          "ordinal": 419,
+          "relativePath": "DSC06401.ARW"
+        },
+        {
+          "assetID": "asset0420",
+          "ordinal": 420,
+          "relativePath": "DSC06402.ARW"
+        },
+        {
+          "assetID": "asset0421",
+          "ordinal": 421,
+          "relativePath": "DSC06403.ARW"
+        },
+        {
+          "assetID": "asset0422",
+          "ordinal": 422,
+          "relativePath": "DSC06404.ARW"
+        },
+        {
+          "assetID": "asset0423",
+          "ordinal": 423,
+          "relativePath": "DSC06405.ARW"
+        },
+        {
+          "assetID": "asset0424",
+          "ordinal": 424,
+          "relativePath": "DSC06406.ARW"
+        },
+        {
+          "assetID": "asset0425",
+          "ordinal": 425,
+          "relativePath": "DSC06407.ARW"
+        },
+        {
+          "assetID": "asset0426",
+          "ordinal": 426,
+          "relativePath": "DSC06408.ARW"
+        },
+        {
+          "assetID": "asset0427",
+          "ordinal": 427,
+          "relativePath": "DSC06409.ARW"
+        },
+        {
+          "assetID": "asset0428",
+          "ordinal": 428,
+          "relativePath": "DSC06410.ARW"
+        },
+        {
+          "assetID": "asset0429",
+          "ordinal": 429,
+          "relativePath": "DSC06411.ARW"
+        },
+        {
+          "assetID": "asset0430",
+          "ordinal": 430,
+          "relativePath": "DSC06412.ARW"
+        },
+        {
+          "assetID": "asset0431",
+          "ordinal": 431,
+          "relativePath": "DSC06413.ARW"
+        },
+        {
+          "assetID": "asset0432",
+          "ordinal": 432,
+          "relativePath": "DSC06414.ARW"
+        },
+        {
+          "assetID": "asset0433",
+          "ordinal": 433,
+          "relativePath": "DSC06415.ARW"
+        },
+        {
+          "assetID": "asset0434",
+          "ordinal": 434,
+          "relativePath": "DSC06416.ARW"
+        },
+        {
+          "assetID": "asset0435",
+          "ordinal": 435,
+          "relativePath": "DSC06417.ARW"
+        },
+        {
+          "assetID": "asset0436",
+          "ordinal": 436,
+          "relativePath": "DSC06418.ARW"
+        },
+        {
+          "assetID": "asset0437",
+          "ordinal": 437,
+          "relativePath": "DSC06419.ARW"
+        },
+        {
+          "assetID": "asset0438",
+          "ordinal": 438,
+          "relativePath": "DSC06420.ARW"
+        }
+      ],
+      "truthPath": "truth/interval427-context439.json",
+      "completeGroupTruth": true,
+      "unknownAssetIDs": []
+    },
+    {
+      "id": "burst193-context217",
+      "sourceRelativeRoot": "2026-09-29-b/DCIM/100MSDCF",
+      "files": [
+        {
+          "assetID": "asset0000",
+          "ordinal": 0,
+          "relativePath": "DSC00356.ARW"
+        },
+        {
+          "assetID": "asset0001",
+          "ordinal": 1,
+          "relativePath": "DSC00357.ARW"
+        },
+        {
+          "assetID": "asset0002",
+          "ordinal": 2,
+          "relativePath": "DSC00358.ARW"
+        },
+        {
+          "assetID": "asset0003",
+          "ordinal": 3,
+          "relativePath": "DSC00359.ARW"
+        },
+        {
+          "assetID": "asset0004",
+          "ordinal": 4,
+          "relativePath": "DSC00360.ARW"
+        },
+        {
+          "assetID": "asset0005",
+          "ordinal": 5,
+          "relativePath": "DSC00361.ARW"
+        },
+        {
+          "assetID": "asset0006",
+          "ordinal": 6,
+          "relativePath": "DSC00362.ARW"
+        },
+        {
+          "assetID": "asset0007",
+          "ordinal": 7,
+          "relativePath": "DSC00363.ARW"
+        },
+        {
+          "assetID": "asset0008",
+          "ordinal": 8,
+          "relativePath": "DSC00364.ARW"
+        },
+        {
+          "assetID": "asset0009",
+          "ordinal": 9,
+          "relativePath": "DSC00365.ARW"
+        },
+        {
+          "assetID": "asset0010",
+          "ordinal": 10,
+          "relativePath": "DSC00366.ARW"
+        },
+        {
+          "assetID": "asset0011",
+          "ordinal": 11,
+          "relativePath": "DSC00367.ARW"
+        },
+        {
+          "assetID": "asset0012",
+          "ordinal": 12,
+          "relativePath": "DSC00368.ARW"
+        },
+        {
+          "assetID": "asset0013",
+          "ordinal": 13,
+          "relativePath": "DSC00369.ARW"
+        },
+        {
+          "assetID": "asset0014",
+          "ordinal": 14,
+          "relativePath": "DSC00370.ARW"
+        },
+        {
+          "assetID": "asset0015",
+          "ordinal": 15,
+          "relativePath": "DSC00371.ARW"
+        },
+        {
+          "assetID": "asset0016",
+          "ordinal": 16,
+          "relativePath": "DSC00372.ARW"
+        },
+        {
+          "assetID": "asset0017",
+          "ordinal": 17,
+          "relativePath": "DSC00373.ARW"
+        },
+        {
+          "assetID": "asset0018",
+          "ordinal": 18,
+          "relativePath": "DSC00374.ARW"
+        },
+        {
+          "assetID": "asset0019",
+          "ordinal": 19,
+          "relativePath": "DSC00375.ARW"
+        },
+        {
+          "assetID": "asset0020",
+          "ordinal": 20,
+          "relativePath": "DSC00376.ARW"
+        },
+        {
+          "assetID": "asset0021",
+          "ordinal": 21,
+          "relativePath": "DSC00377.ARW"
+        },
+        {
+          "assetID": "asset0022",
+          "ordinal": 22,
+          "relativePath": "DSC00378.ARW"
+        },
+        {
+          "assetID": "asset0023",
+          "ordinal": 23,
+          "relativePath": "DSC00379.ARW"
+        },
+        {
+          "assetID": "asset0024",
+          "ordinal": 24,
+          "relativePath": "DSC00380.ARW"
+        },
+        {
+          "assetID": "asset0025",
+          "ordinal": 25,
+          "relativePath": "DSC00381.ARW"
+        },
+        {
+          "assetID": "asset0026",
+          "ordinal": 26,
+          "relativePath": "DSC00382.ARW"
+        },
+        {
+          "assetID": "asset0027",
+          "ordinal": 27,
+          "relativePath": "DSC00383.ARW"
+        },
+        {
+          "assetID": "asset0028",
+          "ordinal": 28,
+          "relativePath": "DSC00384.ARW"
+        },
+        {
+          "assetID": "asset0029",
+          "ordinal": 29,
+          "relativePath": "DSC00385.ARW"
+        },
+        {
+          "assetID": "asset0030",
+          "ordinal": 30,
+          "relativePath": "DSC00386.ARW"
+        },
+        {
+          "assetID": "asset0031",
+          "ordinal": 31,
+          "relativePath": "DSC00387.ARW"
+        },
+        {
+          "assetID": "asset0032",
+          "ordinal": 32,
+          "relativePath": "DSC00388.ARW"
+        },
+        {
+          "assetID": "asset0033",
+          "ordinal": 33,
+          "relativePath": "DSC00389.ARW"
+        },
+        {
+          "assetID": "asset0034",
+          "ordinal": 34,
+          "relativePath": "DSC00390.ARW"
+        },
+        {
+          "assetID": "asset0035",
+          "ordinal": 35,
+          "relativePath": "DSC00391.ARW"
+        },
+        {
+          "assetID": "asset0036",
+          "ordinal": 36,
+          "relativePath": "DSC00392.ARW"
+        },
+        {
+          "assetID": "asset0037",
+          "ordinal": 37,
+          "relativePath": "DSC00393.ARW"
+        },
+        {
+          "assetID": "asset0038",
+          "ordinal": 38,
+          "relativePath": "DSC00394.ARW"
+        },
+        {
+          "assetID": "asset0039",
+          "ordinal": 39,
+          "relativePath": "DSC00395.ARW"
+        },
+        {
+          "assetID": "asset0040",
+          "ordinal": 40,
+          "relativePath": "DSC00396.ARW"
+        },
+        {
+          "assetID": "asset0041",
+          "ordinal": 41,
+          "relativePath": "DSC00397.ARW"
+        },
+        {
+          "assetID": "asset0042",
+          "ordinal": 42,
+          "relativePath": "DSC00398.ARW"
+        },
+        {
+          "assetID": "asset0043",
+          "ordinal": 43,
+          "relativePath": "DSC00399.ARW"
+        },
+        {
+          "assetID": "asset0044",
+          "ordinal": 44,
+          "relativePath": "DSC00400.ARW"
+        },
+        {
+          "assetID": "asset0045",
+          "ordinal": 45,
+          "relativePath": "DSC00401.ARW"
+        },
+        {
+          "assetID": "asset0046",
+          "ordinal": 46,
+          "relativePath": "DSC00402.ARW"
+        },
+        {
+          "assetID": "asset0047",
+          "ordinal": 47,
+          "relativePath": "DSC00403.ARW"
+        },
+        {
+          "assetID": "asset0048",
+          "ordinal": 48,
+          "relativePath": "DSC00404.ARW"
+        },
+        {
+          "assetID": "asset0049",
+          "ordinal": 49,
+          "relativePath": "DSC00405.ARW"
+        },
+        {
+          "assetID": "asset0050",
+          "ordinal": 50,
+          "relativePath": "DSC00406.ARW"
+        },
+        {
+          "assetID": "asset0051",
+          "ordinal": 51,
+          "relativePath": "DSC00407.ARW"
+        },
+        {
+          "assetID": "asset0052",
+          "ordinal": 52,
+          "relativePath": "DSC00408.ARW"
+        },
+        {
+          "assetID": "asset0053",
+          "ordinal": 53,
+          "relativePath": "DSC00409.ARW"
+        },
+        {
+          "assetID": "asset0054",
+          "ordinal": 54,
+          "relativePath": "DSC00410.ARW"
+        },
+        {
+          "assetID": "asset0055",
+          "ordinal": 55,
+          "relativePath": "DSC00411.ARW"
+        },
+        {
+          "assetID": "asset0056",
+          "ordinal": 56,
+          "relativePath": "DSC00412.ARW"
+        },
+        {
+          "assetID": "asset0057",
+          "ordinal": 57,
+          "relativePath": "DSC00413.ARW"
+        },
+        {
+          "assetID": "asset0058",
+          "ordinal": 58,
+          "relativePath": "DSC00414.ARW"
+        },
+        {
+          "assetID": "asset0059",
+          "ordinal": 59,
+          "relativePath": "DSC00415.ARW"
+        },
+        {
+          "assetID": "asset0060",
+          "ordinal": 60,
+          "relativePath": "DSC00416.ARW"
+        },
+        {
+          "assetID": "asset0061",
+          "ordinal": 61,
+          "relativePath": "DSC00417.ARW"
+        },
+        {
+          "assetID": "asset0062",
+          "ordinal": 62,
+          "relativePath": "DSC00418.ARW"
+        },
+        {
+          "assetID": "asset0063",
+          "ordinal": 63,
+          "relativePath": "DSC00419.ARW"
+        },
+        {
+          "assetID": "asset0064",
+          "ordinal": 64,
+          "relativePath": "DSC00420.ARW"
+        },
+        {
+          "assetID": "asset0065",
+          "ordinal": 65,
+          "relativePath": "DSC00421.ARW"
+        },
+        {
+          "assetID": "asset0066",
+          "ordinal": 66,
+          "relativePath": "DSC00422.ARW"
+        },
+        {
+          "assetID": "asset0067",
+          "ordinal": 67,
+          "relativePath": "DSC00423.ARW"
+        },
+        {
+          "assetID": "asset0068",
+          "ordinal": 68,
+          "relativePath": "DSC00424.ARW"
+        },
+        {
+          "assetID": "asset0069",
+          "ordinal": 69,
+          "relativePath": "DSC00425.ARW"
+        },
+        {
+          "assetID": "asset0070",
+          "ordinal": 70,
+          "relativePath": "DSC00426.ARW"
+        },
+        {
+          "assetID": "asset0071",
+          "ordinal": 71,
+          "relativePath": "DSC00427.ARW"
+        },
+        {
+          "assetID": "asset0072",
+          "ordinal": 72,
+          "relativePath": "DSC00428.ARW"
+        },
+        {
+          "assetID": "asset0073",
+          "ordinal": 73,
+          "relativePath": "DSC00429.ARW"
+        },
+        {
+          "assetID": "asset0074",
+          "ordinal": 74,
+          "relativePath": "DSC00430.ARW"
+        },
+        {
+          "assetID": "asset0075",
+          "ordinal": 75,
+          "relativePath": "DSC00431.ARW"
+        },
+        {
+          "assetID": "asset0076",
+          "ordinal": 76,
+          "relativePath": "DSC00432.ARW"
+        },
+        {
+          "assetID": "asset0077",
+          "ordinal": 77,
+          "relativePath": "DSC00433.ARW"
+        },
+        {
+          "assetID": "asset0078",
+          "ordinal": 78,
+          "relativePath": "DSC00434.ARW"
+        },
+        {
+          "assetID": "asset0079",
+          "ordinal": 79,
+          "relativePath": "DSC00435.ARW"
+        },
+        {
+          "assetID": "asset0080",
+          "ordinal": 80,
+          "relativePath": "DSC00436.ARW"
+        },
+        {
+          "assetID": "asset0081",
+          "ordinal": 81,
+          "relativePath": "DSC00437.ARW"
+        },
+        {
+          "assetID": "asset0082",
+          "ordinal": 82,
+          "relativePath": "DSC00438.ARW"
+        },
+        {
+          "assetID": "asset0083",
+          "ordinal": 83,
+          "relativePath": "DSC00439.ARW"
+        },
+        {
+          "assetID": "asset0084",
+          "ordinal": 84,
+          "relativePath": "DSC00440.ARW"
+        },
+        {
+          "assetID": "asset0085",
+          "ordinal": 85,
+          "relativePath": "DSC00441.ARW"
+        },
+        {
+          "assetID": "asset0086",
+          "ordinal": 86,
+          "relativePath": "DSC00442.ARW"
+        },
+        {
+          "assetID": "asset0087",
+          "ordinal": 87,
+          "relativePath": "DSC00443.ARW"
+        },
+        {
+          "assetID": "asset0088",
+          "ordinal": 88,
+          "relativePath": "DSC00444.ARW"
+        },
+        {
+          "assetID": "asset0089",
+          "ordinal": 89,
+          "relativePath": "DSC00445.ARW"
+        },
+        {
+          "assetID": "asset0090",
+          "ordinal": 90,
+          "relativePath": "DSC00446.ARW"
+        },
+        {
+          "assetID": "asset0091",
+          "ordinal": 91,
+          "relativePath": "DSC00447.ARW"
+        },
+        {
+          "assetID": "asset0092",
+          "ordinal": 92,
+          "relativePath": "DSC00448.ARW"
+        },
+        {
+          "assetID": "asset0093",
+          "ordinal": 93,
+          "relativePath": "DSC00449.ARW"
+        },
+        {
+          "assetID": "asset0094",
+          "ordinal": 94,
+          "relativePath": "DSC00450.ARW"
+        },
+        {
+          "assetID": "asset0095",
+          "ordinal": 95,
+          "relativePath": "DSC00451.ARW"
+        },
+        {
+          "assetID": "asset0096",
+          "ordinal": 96,
+          "relativePath": "DSC00452.ARW"
+        },
+        {
+          "assetID": "asset0097",
+          "ordinal": 97,
+          "relativePath": "DSC00453.ARW"
+        },
+        {
+          "assetID": "asset0098",
+          "ordinal": 98,
+          "relativePath": "DSC00454.ARW"
+        },
+        {
+          "assetID": "asset0099",
+          "ordinal": 99,
+          "relativePath": "DSC00455.ARW"
+        },
+        {
+          "assetID": "asset0100",
+          "ordinal": 100,
+          "relativePath": "DSC00456.ARW"
+        },
+        {
+          "assetID": "asset0101",
+          "ordinal": 101,
+          "relativePath": "DSC00457.ARW"
+        },
+        {
+          "assetID": "asset0102",
+          "ordinal": 102,
+          "relativePath": "DSC00458.ARW"
+        },
+        {
+          "assetID": "asset0103",
+          "ordinal": 103,
+          "relativePath": "DSC00459.ARW"
+        },
+        {
+          "assetID": "asset0104",
+          "ordinal": 104,
+          "relativePath": "DSC00460.ARW"
+        },
+        {
+          "assetID": "asset0105",
+          "ordinal": 105,
+          "relativePath": "DSC00461.ARW"
+        },
+        {
+          "assetID": "asset0106",
+          "ordinal": 106,
+          "relativePath": "DSC00462.ARW"
+        },
+        {
+          "assetID": "asset0107",
+          "ordinal": 107,
+          "relativePath": "DSC00463.ARW"
+        },
+        {
+          "assetID": "asset0108",
+          "ordinal": 108,
+          "relativePath": "DSC00464.ARW"
+        },
+        {
+          "assetID": "asset0109",
+          "ordinal": 109,
+          "relativePath": "DSC00465.ARW"
+        },
+        {
+          "assetID": "asset0110",
+          "ordinal": 110,
+          "relativePath": "DSC00466.ARW"
+        },
+        {
+          "assetID": "asset0111",
+          "ordinal": 111,
+          "relativePath": "DSC00467.ARW"
+        },
+        {
+          "assetID": "asset0112",
+          "ordinal": 112,
+          "relativePath": "DSC00468.ARW"
+        },
+        {
+          "assetID": "asset0113",
+          "ordinal": 113,
+          "relativePath": "DSC00469.ARW"
+        },
+        {
+          "assetID": "asset0114",
+          "ordinal": 114,
+          "relativePath": "DSC00470.ARW"
+        },
+        {
+          "assetID": "asset0115",
+          "ordinal": 115,
+          "relativePath": "DSC00471.ARW"
+        },
+        {
+          "assetID": "asset0116",
+          "ordinal": 116,
+          "relativePath": "DSC00472.ARW"
+        },
+        {
+          "assetID": "asset0117",
+          "ordinal": 117,
+          "relativePath": "DSC00473.ARW"
+        },
+        {
+          "assetID": "asset0118",
+          "ordinal": 118,
+          "relativePath": "DSC00474.ARW"
+        },
+        {
+          "assetID": "asset0119",
+          "ordinal": 119,
+          "relativePath": "DSC00475.ARW"
+        },
+        {
+          "assetID": "asset0120",
+          "ordinal": 120,
+          "relativePath": "DSC00476.ARW"
+        },
+        {
+          "assetID": "asset0121",
+          "ordinal": 121,
+          "relativePath": "DSC00477.ARW"
+        },
+        {
+          "assetID": "asset0122",
+          "ordinal": 122,
+          "relativePath": "DSC00478.ARW"
+        },
+        {
+          "assetID": "asset0123",
+          "ordinal": 123,
+          "relativePath": "DSC00479.ARW"
+        },
+        {
+          "assetID": "asset0124",
+          "ordinal": 124,
+          "relativePath": "DSC00480.ARW"
+        },
+        {
+          "assetID": "asset0125",
+          "ordinal": 125,
+          "relativePath": "DSC00481.ARW"
+        },
+        {
+          "assetID": "asset0126",
+          "ordinal": 126,
+          "relativePath": "DSC00482.ARW"
+        },
+        {
+          "assetID": "asset0127",
+          "ordinal": 127,
+          "relativePath": "DSC00483.ARW"
+        },
+        {
+          "assetID": "asset0128",
+          "ordinal": 128,
+          "relativePath": "DSC00484.ARW"
+        },
+        {
+          "assetID": "asset0129",
+          "ordinal": 129,
+          "relativePath": "DSC00485.ARW"
+        },
+        {
+          "assetID": "asset0130",
+          "ordinal": 130,
+          "relativePath": "DSC00486.ARW"
+        },
+        {
+          "assetID": "asset0131",
+          "ordinal": 131,
+          "relativePath": "DSC00487.ARW"
+        },
+        {
+          "assetID": "asset0132",
+          "ordinal": 132,
+          "relativePath": "DSC00488.ARW"
+        },
+        {
+          "assetID": "asset0133",
+          "ordinal": 133,
+          "relativePath": "DSC00489.ARW"
+        },
+        {
+          "assetID": "asset0134",
+          "ordinal": 134,
+          "relativePath": "DSC00490.ARW"
+        },
+        {
+          "assetID": "asset0135",
+          "ordinal": 135,
+          "relativePath": "DSC00491.ARW"
+        },
+        {
+          "assetID": "asset0136",
+          "ordinal": 136,
+          "relativePath": "DSC00492.ARW"
+        },
+        {
+          "assetID": "asset0137",
+          "ordinal": 137,
+          "relativePath": "DSC00493.ARW"
+        },
+        {
+          "assetID": "asset0138",
+          "ordinal": 138,
+          "relativePath": "DSC00494.ARW"
+        },
+        {
+          "assetID": "asset0139",
+          "ordinal": 139,
+          "relativePath": "DSC00495.ARW"
+        },
+        {
+          "assetID": "asset0140",
+          "ordinal": 140,
+          "relativePath": "DSC00496.ARW"
+        },
+        {
+          "assetID": "asset0141",
+          "ordinal": 141,
+          "relativePath": "DSC00497.ARW"
+        },
+        {
+          "assetID": "asset0142",
+          "ordinal": 142,
+          "relativePath": "DSC00498.ARW"
+        },
+        {
+          "assetID": "asset0143",
+          "ordinal": 143,
+          "relativePath": "DSC00499.ARW"
+        },
+        {
+          "assetID": "asset0144",
+          "ordinal": 144,
+          "relativePath": "DSC00500.ARW"
+        },
+        {
+          "assetID": "asset0145",
+          "ordinal": 145,
+          "relativePath": "DSC00501.ARW"
+        },
+        {
+          "assetID": "asset0146",
+          "ordinal": 146,
+          "relativePath": "DSC00502.ARW"
+        },
+        {
+          "assetID": "asset0147",
+          "ordinal": 147,
+          "relativePath": "DSC00503.ARW"
+        },
+        {
+          "assetID": "asset0148",
+          "ordinal": 148,
+          "relativePath": "DSC00504.ARW"
+        },
+        {
+          "assetID": "asset0149",
+          "ordinal": 149,
+          "relativePath": "DSC00505.ARW"
+        },
+        {
+          "assetID": "asset0150",
+          "ordinal": 150,
+          "relativePath": "DSC00506.ARW"
+        },
+        {
+          "assetID": "asset0151",
+          "ordinal": 151,
+          "relativePath": "DSC00507.ARW"
+        },
+        {
+          "assetID": "asset0152",
+          "ordinal": 152,
+          "relativePath": "DSC00508.ARW"
+        },
+        {
+          "assetID": "asset0153",
+          "ordinal": 153,
+          "relativePath": "DSC00509.ARW"
+        },
+        {
+          "assetID": "asset0154",
+          "ordinal": 154,
+          "relativePath": "DSC00510.ARW"
+        },
+        {
+          "assetID": "asset0155",
+          "ordinal": 155,
+          "relativePath": "DSC00511.ARW"
+        },
+        {
+          "assetID": "asset0156",
+          "ordinal": 156,
+          "relativePath": "DSC00512.ARW"
+        },
+        {
+          "assetID": "asset0157",
+          "ordinal": 157,
+          "relativePath": "DSC00513.ARW"
+        },
+        {
+          "assetID": "asset0158",
+          "ordinal": 158,
+          "relativePath": "DSC00514.ARW"
+        },
+        {
+          "assetID": "asset0159",
+          "ordinal": 159,
+          "relativePath": "DSC00515.ARW"
+        },
+        {
+          "assetID": "asset0160",
+          "ordinal": 160,
+          "relativePath": "DSC00516.ARW"
+        },
+        {
+          "assetID": "asset0161",
+          "ordinal": 161,
+          "relativePath": "DSC00517.ARW"
+        },
+        {
+          "assetID": "asset0162",
+          "ordinal": 162,
+          "relativePath": "DSC00518.ARW"
+        },
+        {
+          "assetID": "asset0163",
+          "ordinal": 163,
+          "relativePath": "DSC00519.ARW"
+        },
+        {
+          "assetID": "asset0164",
+          "ordinal": 164,
+          "relativePath": "DSC00520.ARW"
+        },
+        {
+          "assetID": "asset0165",
+          "ordinal": 165,
+          "relativePath": "DSC00521.ARW"
+        },
+        {
+          "assetID": "asset0166",
+          "ordinal": 166,
+          "relativePath": "DSC00522.ARW"
+        },
+        {
+          "assetID": "asset0167",
+          "ordinal": 167,
+          "relativePath": "DSC00523.ARW"
+        },
+        {
+          "assetID": "asset0168",
+          "ordinal": 168,
+          "relativePath": "DSC00524.ARW"
+        },
+        {
+          "assetID": "asset0169",
+          "ordinal": 169,
+          "relativePath": "DSC00525.ARW"
+        },
+        {
+          "assetID": "asset0170",
+          "ordinal": 170,
+          "relativePath": "DSC00526.ARW"
+        },
+        {
+          "assetID": "asset0171",
+          "ordinal": 171,
+          "relativePath": "DSC00527.ARW"
+        },
+        {
+          "assetID": "asset0172",
+          "ordinal": 172,
+          "relativePath": "DSC00528.ARW"
+        },
+        {
+          "assetID": "asset0173",
+          "ordinal": 173,
+          "relativePath": "DSC00529.ARW"
+        },
+        {
+          "assetID": "asset0174",
+          "ordinal": 174,
+          "relativePath": "DSC00530.ARW"
+        },
+        {
+          "assetID": "asset0175",
+          "ordinal": 175,
+          "relativePath": "DSC00531.ARW"
+        },
+        {
+          "assetID": "asset0176",
+          "ordinal": 176,
+          "relativePath": "DSC00532.ARW"
+        },
+        {
+          "assetID": "asset0177",
+          "ordinal": 177,
+          "relativePath": "DSC00533.ARW"
+        },
+        {
+          "assetID": "asset0178",
+          "ordinal": 178,
+          "relativePath": "DSC00534.ARW"
+        },
+        {
+          "assetID": "asset0179",
+          "ordinal": 179,
+          "relativePath": "DSC00535.ARW"
+        },
+        {
+          "assetID": "asset0180",
+          "ordinal": 180,
+          "relativePath": "DSC00536.ARW"
+        },
+        {
+          "assetID": "asset0181",
+          "ordinal": 181,
+          "relativePath": "DSC00537.ARW"
+        },
+        {
+          "assetID": "asset0182",
+          "ordinal": 182,
+          "relativePath": "DSC00538.ARW"
+        },
+        {
+          "assetID": "asset0183",
+          "ordinal": 183,
+          "relativePath": "DSC00539.ARW"
+        },
+        {
+          "assetID": "asset0184",
+          "ordinal": 184,
+          "relativePath": "DSC00540.ARW"
+        },
+        {
+          "assetID": "asset0185",
+          "ordinal": 185,
+          "relativePath": "DSC00541.ARW"
+        },
+        {
+          "assetID": "asset0186",
+          "ordinal": 186,
+          "relativePath": "DSC00542.ARW"
+        },
+        {
+          "assetID": "asset0187",
+          "ordinal": 187,
+          "relativePath": "DSC00543.ARW"
+        },
+        {
+          "assetID": "asset0188",
+          "ordinal": 188,
+          "relativePath": "DSC00544.ARW"
+        },
+        {
+          "assetID": "asset0189",
+          "ordinal": 189,
+          "relativePath": "DSC00545.ARW"
+        },
+        {
+          "assetID": "asset0190",
+          "ordinal": 190,
+          "relativePath": "DSC00546.ARW"
+        },
+        {
+          "assetID": "asset0191",
+          "ordinal": 191,
+          "relativePath": "DSC00547.ARW"
+        },
+        {
+          "assetID": "asset0192",
+          "ordinal": 192,
+          "relativePath": "DSC00548.ARW"
+        },
+        {
+          "assetID": "asset0193",
+          "ordinal": 193,
+          "relativePath": "DSC00549.ARW"
+        },
+        {
+          "assetID": "asset0194",
+          "ordinal": 194,
+          "relativePath": "DSC00550.ARW"
+        },
+        {
+          "assetID": "asset0195",
+          "ordinal": 195,
+          "relativePath": "DSC00551.ARW"
+        },
+        {
+          "assetID": "asset0196",
+          "ordinal": 196,
+          "relativePath": "DSC00552.ARW"
+        },
+        {
+          "assetID": "asset0197",
+          "ordinal": 197,
+          "relativePath": "DSC00553.ARW"
+        },
+        {
+          "assetID": "asset0198",
+          "ordinal": 198,
+          "relativePath": "DSC00554.ARW"
+        },
+        {
+          "assetID": "asset0199",
+          "ordinal": 199,
+          "relativePath": "DSC00555.ARW"
+        },
+        {
+          "assetID": "asset0200",
+          "ordinal": 200,
+          "relativePath": "DSC00556.ARW"
+        },
+        {
+          "assetID": "asset0201",
+          "ordinal": 201,
+          "relativePath": "DSC00557.ARW"
+        },
+        {
+          "assetID": "asset0202",
+          "ordinal": 202,
+          "relativePath": "DSC00558.ARW"
+        },
+        {
+          "assetID": "asset0203",
+          "ordinal": 203,
+          "relativePath": "DSC00559.ARW"
+        },
+        {
+          "assetID": "asset0204",
+          "ordinal": 204,
+          "relativePath": "DSC00560.ARW"
+        },
+        {
+          "assetID": "asset0205",
+          "ordinal": 205,
+          "relativePath": "DSC00561.ARW"
+        },
+        {
+          "assetID": "asset0206",
+          "ordinal": 206,
+          "relativePath": "DSC00562.ARW"
+        },
+        {
+          "assetID": "asset0207",
+          "ordinal": 207,
+          "relativePath": "DSC00563.ARW"
+        },
+        {
+          "assetID": "asset0208",
+          "ordinal": 208,
+          "relativePath": "DSC00564.ARW"
+        },
+        {
+          "assetID": "asset0209",
+          "ordinal": 209,
+          "relativePath": "DSC00565.ARW"
+        },
+        {
+          "assetID": "asset0210",
+          "ordinal": 210,
+          "relativePath": "DSC00566.ARW"
+        },
+        {
+          "assetID": "asset0211",
+          "ordinal": 211,
+          "relativePath": "DSC00567.ARW"
+        },
+        {
+          "assetID": "asset0212",
+          "ordinal": 212,
+          "relativePath": "DSC00568.ARW"
+        },
+        {
+          "assetID": "asset0213",
+          "ordinal": 213,
+          "relativePath": "DSC00569.ARW"
+        },
+        {
+          "assetID": "asset0214",
+          "ordinal": 214,
+          "relativePath": "DSC00570.ARW"
+        },
+        {
+          "assetID": "asset0215",
+          "ordinal": 215,
+          "relativePath": "DSC00571.ARW"
+        },
+        {
+          "assetID": "asset0216",
+          "ordinal": 216,
+          "relativePath": "DSC00572.ARW"
+        }
+      ],
+      "truthPath": "truth/burst193-context217.json",
+      "completeGroupTruth": true,
+      "unknownAssetIDs": []
+    },
+    {
+      "id": "dji187-context376",
+      "sourceRelativeRoot": "2026-10-04-a/DCIM/DJI_001",
+      "files": [
+        {
+          "assetID": "asset0000",
+          "ordinal": 0,
+          "relativePath": "DJI_20261002061628_0001_D.DNG"
+        },
+        {
+          "assetID": "asset0001",
+          "ordinal": 1,
+          "relativePath": "DJI_20261002061628_0001_D.JPG"
+        },
+        {
+          "assetID": "asset0002",
+          "ordinal": 2,
+          "relativePath": "DJI_20261002061633_0002_D.DNG"
+        },
+        {
+          "assetID": "asset0003",
+          "ordinal": 3,
+          "relativePath": "DJI_20261002061633_0002_D.JPG"
+        },
+        {
+          "assetID": "asset0004",
+          "ordinal": 4,
+          "relativePath": "DJI_20261002061638_0003_D.DNG"
+        },
+        {
+          "assetID": "asset0005",
+          "ordinal": 5,
+          "relativePath": "DJI_20261002061638_0003_D.JPG"
+        },
+        {
+          "assetID": "asset0006",
+          "ordinal": 6,
+          "relativePath": "DJI_20261002061643_0004_D.DNG"
+        },
+        {
+          "assetID": "asset0007",
+          "ordinal": 7,
+          "relativePath": "DJI_20261002061643_0004_D.JPG"
+        },
+        {
+          "assetID": "asset0008",
+          "ordinal": 8,
+          "relativePath": "DJI_20261002061648_0005_D.DNG"
+        },
+        {
+          "assetID": "asset0009",
+          "ordinal": 9,
+          "relativePath": "DJI_20261002061648_0005_D.JPG"
+        },
+        {
+          "assetID": "asset0010",
+          "ordinal": 10,
+          "relativePath": "DJI_20261002061653_0006_D.DNG"
+        },
+        {
+          "assetID": "asset0011",
+          "ordinal": 11,
+          "relativePath": "DJI_20261002061653_0006_D.JPG"
+        },
+        {
+          "assetID": "asset0012",
+          "ordinal": 12,
+          "relativePath": "DJI_20261002061658_0007_D.DNG"
+        },
+        {
+          "assetID": "asset0013",
+          "ordinal": 13,
+          "relativePath": "DJI_20261002061658_0007_D.JPG"
+        },
+        {
+          "assetID": "asset0014",
+          "ordinal": 14,
+          "relativePath": "DJI_20261002061703_0008_D.DNG"
+        },
+        {
+          "assetID": "asset0015",
+          "ordinal": 15,
+          "relativePath": "DJI_20261002061703_0008_D.JPG"
+        },
+        {
+          "assetID": "asset0016",
+          "ordinal": 16,
+          "relativePath": "DJI_20261002061708_0009_D.DNG"
+        },
+        {
+          "assetID": "asset0017",
+          "ordinal": 17,
+          "relativePath": "DJI_20261002061708_0009_D.JPG"
+        },
+        {
+          "assetID": "asset0018",
+          "ordinal": 18,
+          "relativePath": "DJI_20261002061713_0010_D.DNG"
+        },
+        {
+          "assetID": "asset0019",
+          "ordinal": 19,
+          "relativePath": "DJI_20261002061713_0010_D.JPG"
+        },
+        {
+          "assetID": "asset0020",
+          "ordinal": 20,
+          "relativePath": "DJI_20261002061718_0011_D.DNG"
+        },
+        {
+          "assetID": "asset0021",
+          "ordinal": 21,
+          "relativePath": "DJI_20261002061718_0011_D.JPG"
+        },
+        {
+          "assetID": "asset0022",
+          "ordinal": 22,
+          "relativePath": "DJI_20261002061723_0012_D.DNG"
+        },
+        {
+          "assetID": "asset0023",
+          "ordinal": 23,
+          "relativePath": "DJI_20261002061723_0012_D.JPG"
+        },
+        {
+          "assetID": "asset0024",
+          "ordinal": 24,
+          "relativePath": "DJI_20261002061728_0013_D.DNG"
+        },
+        {
+          "assetID": "asset0025",
+          "ordinal": 25,
+          "relativePath": "DJI_20261002061728_0013_D.JPG"
+        },
+        {
+          "assetID": "asset0026",
+          "ordinal": 26,
+          "relativePath": "DJI_20261002061733_0014_D.DNG"
+        },
+        {
+          "assetID": "asset0027",
+          "ordinal": 27,
+          "relativePath": "DJI_20261002061733_0014_D.JPG"
+        },
+        {
+          "assetID": "asset0028",
+          "ordinal": 28,
+          "relativePath": "DJI_20261002061738_0015_D.DNG"
+        },
+        {
+          "assetID": "asset0029",
+          "ordinal": 29,
+          "relativePath": "DJI_20261002061738_0015_D.JPG"
+        },
+        {
+          "assetID": "asset0030",
+          "ordinal": 30,
+          "relativePath": "DJI_20261002061743_0016_D.DNG"
+        },
+        {
+          "assetID": "asset0031",
+          "ordinal": 31,
+          "relativePath": "DJI_20261002061743_0016_D.JPG"
+        },
+        {
+          "assetID": "asset0032",
+          "ordinal": 32,
+          "relativePath": "DJI_20261002061748_0017_D.DNG"
+        },
+        {
+          "assetID": "asset0033",
+          "ordinal": 33,
+          "relativePath": "DJI_20261002061748_0017_D.JPG"
+        },
+        {
+          "assetID": "asset0034",
+          "ordinal": 34,
+          "relativePath": "DJI_20261002061753_0018_D.DNG"
+        },
+        {
+          "assetID": "asset0035",
+          "ordinal": 35,
+          "relativePath": "DJI_20261002061753_0018_D.JPG"
+        },
+        {
+          "assetID": "asset0036",
+          "ordinal": 36,
+          "relativePath": "DJI_20261002061758_0019_D.DNG"
+        },
+        {
+          "assetID": "asset0037",
+          "ordinal": 37,
+          "relativePath": "DJI_20261002061758_0019_D.JPG"
+        },
+        {
+          "assetID": "asset0038",
+          "ordinal": 38,
+          "relativePath": "DJI_20261002061803_0020_D.DNG"
+        },
+        {
+          "assetID": "asset0039",
+          "ordinal": 39,
+          "relativePath": "DJI_20261002061803_0020_D.JPG"
+        },
+        {
+          "assetID": "asset0040",
+          "ordinal": 40,
+          "relativePath": "DJI_20261002061808_0021_D.DNG"
+        },
+        {
+          "assetID": "asset0041",
+          "ordinal": 41,
+          "relativePath": "DJI_20261002061808_0021_D.JPG"
+        },
+        {
+          "assetID": "asset0042",
+          "ordinal": 42,
+          "relativePath": "DJI_20261002061813_0022_D.DNG"
+        },
+        {
+          "assetID": "asset0043",
+          "ordinal": 43,
+          "relativePath": "DJI_20261002061813_0022_D.JPG"
+        },
+        {
+          "assetID": "asset0044",
+          "ordinal": 44,
+          "relativePath": "DJI_20261002061818_0023_D.DNG"
+        },
+        {
+          "assetID": "asset0045",
+          "ordinal": 45,
+          "relativePath": "DJI_20261002061818_0023_D.JPG"
+        },
+        {
+          "assetID": "asset0046",
+          "ordinal": 46,
+          "relativePath": "DJI_20261002061823_0024_D.DNG"
+        },
+        {
+          "assetID": "asset0047",
+          "ordinal": 47,
+          "relativePath": "DJI_20261002061823_0024_D.JPG"
+        },
+        {
+          "assetID": "asset0048",
+          "ordinal": 48,
+          "relativePath": "DJI_20261002061828_0025_D.DNG"
+        },
+        {
+          "assetID": "asset0049",
+          "ordinal": 49,
+          "relativePath": "DJI_20261002061828_0025_D.JPG"
+        },
+        {
+          "assetID": "asset0050",
+          "ordinal": 50,
+          "relativePath": "DJI_20261002061833_0026_D.DNG"
+        },
+        {
+          "assetID": "asset0051",
+          "ordinal": 51,
+          "relativePath": "DJI_20261002061833_0026_D.JPG"
+        },
+        {
+          "assetID": "asset0052",
+          "ordinal": 52,
+          "relativePath": "DJI_20261002061838_0027_D.DNG"
+        },
+        {
+          "assetID": "asset0053",
+          "ordinal": 53,
+          "relativePath": "DJI_20261002061838_0027_D.JPG"
+        },
+        {
+          "assetID": "asset0054",
+          "ordinal": 54,
+          "relativePath": "DJI_20261002061843_0028_D.DNG"
+        },
+        {
+          "assetID": "asset0055",
+          "ordinal": 55,
+          "relativePath": "DJI_20261002061843_0028_D.JPG"
+        },
+        {
+          "assetID": "asset0056",
+          "ordinal": 56,
+          "relativePath": "DJI_20261002061848_0029_D.DNG"
+        },
+        {
+          "assetID": "asset0057",
+          "ordinal": 57,
+          "relativePath": "DJI_20261002061848_0029_D.JPG"
+        },
+        {
+          "assetID": "asset0058",
+          "ordinal": 58,
+          "relativePath": "DJI_20261002061853_0030_D.DNG"
+        },
+        {
+          "assetID": "asset0059",
+          "ordinal": 59,
+          "relativePath": "DJI_20261002061853_0030_D.JPG"
+        },
+        {
+          "assetID": "asset0060",
+          "ordinal": 60,
+          "relativePath": "DJI_20261002061858_0031_D.DNG"
+        },
+        {
+          "assetID": "asset0061",
+          "ordinal": 61,
+          "relativePath": "DJI_20261002061858_0031_D.JPG"
+        },
+        {
+          "assetID": "asset0062",
+          "ordinal": 62,
+          "relativePath": "DJI_20261002061903_0032_D.DNG"
+        },
+        {
+          "assetID": "asset0063",
+          "ordinal": 63,
+          "relativePath": "DJI_20261002061903_0032_D.JPG"
+        },
+        {
+          "assetID": "asset0064",
+          "ordinal": 64,
+          "relativePath": "DJI_20261002061908_0033_D.DNG"
+        },
+        {
+          "assetID": "asset0065",
+          "ordinal": 65,
+          "relativePath": "DJI_20261002061908_0033_D.JPG"
+        },
+        {
+          "assetID": "asset0066",
+          "ordinal": 66,
+          "relativePath": "DJI_20261002061913_0034_D.DNG"
+        },
+        {
+          "assetID": "asset0067",
+          "ordinal": 67,
+          "relativePath": "DJI_20261002061913_0034_D.JPG"
+        },
+        {
+          "assetID": "asset0068",
+          "ordinal": 68,
+          "relativePath": "DJI_20261002061918_0035_D.DNG"
+        },
+        {
+          "assetID": "asset0069",
+          "ordinal": 69,
+          "relativePath": "DJI_20261002061918_0035_D.JPG"
+        },
+        {
+          "assetID": "asset0070",
+          "ordinal": 70,
+          "relativePath": "DJI_20261002061923_0036_D.DNG"
+        },
+        {
+          "assetID": "asset0071",
+          "ordinal": 71,
+          "relativePath": "DJI_20261002061923_0036_D.JPG"
+        },
+        {
+          "assetID": "asset0072",
+          "ordinal": 72,
+          "relativePath": "DJI_20261002061928_0037_D.DNG"
+        },
+        {
+          "assetID": "asset0073",
+          "ordinal": 73,
+          "relativePath": "DJI_20261002061928_0037_D.JPG"
+        },
+        {
+          "assetID": "asset0074",
+          "ordinal": 74,
+          "relativePath": "DJI_20261002061933_0038_D.DNG"
+        },
+        {
+          "assetID": "asset0075",
+          "ordinal": 75,
+          "relativePath": "DJI_20261002061933_0038_D.JPG"
+        },
+        {
+          "assetID": "asset0076",
+          "ordinal": 76,
+          "relativePath": "DJI_20261002061938_0039_D.DNG"
+        },
+        {
+          "assetID": "asset0077",
+          "ordinal": 77,
+          "relativePath": "DJI_20261002061938_0039_D.JPG"
+        },
+        {
+          "assetID": "asset0078",
+          "ordinal": 78,
+          "relativePath": "DJI_20261002061943_0040_D.DNG"
+        },
+        {
+          "assetID": "asset0079",
+          "ordinal": 79,
+          "relativePath": "DJI_20261002061943_0040_D.JPG"
+        },
+        {
+          "assetID": "asset0080",
+          "ordinal": 80,
+          "relativePath": "DJI_20261002061948_0041_D.DNG"
+        },
+        {
+          "assetID": "asset0081",
+          "ordinal": 81,
+          "relativePath": "DJI_20261002061948_0041_D.JPG"
+        },
+        {
+          "assetID": "asset0082",
+          "ordinal": 82,
+          "relativePath": "DJI_20261002061953_0042_D.DNG"
+        },
+        {
+          "assetID": "asset0083",
+          "ordinal": 83,
+          "relativePath": "DJI_20261002061953_0042_D.JPG"
+        },
+        {
+          "assetID": "asset0084",
+          "ordinal": 84,
+          "relativePath": "DJI_20261002061958_0043_D.DNG"
+        },
+        {
+          "assetID": "asset0085",
+          "ordinal": 85,
+          "relativePath": "DJI_20261002061958_0043_D.JPG"
+        },
+        {
+          "assetID": "asset0086",
+          "ordinal": 86,
+          "relativePath": "DJI_20261002062003_0044_D.DNG"
+        },
+        {
+          "assetID": "asset0087",
+          "ordinal": 87,
+          "relativePath": "DJI_20261002062003_0044_D.JPG"
+        },
+        {
+          "assetID": "asset0088",
+          "ordinal": 88,
+          "relativePath": "DJI_20261002062008_0045_D.DNG"
+        },
+        {
+          "assetID": "asset0089",
+          "ordinal": 89,
+          "relativePath": "DJI_20261002062008_0045_D.JPG"
+        },
+        {
+          "assetID": "asset0090",
+          "ordinal": 90,
+          "relativePath": "DJI_20261002062013_0046_D.DNG"
+        },
+        {
+          "assetID": "asset0091",
+          "ordinal": 91,
+          "relativePath": "DJI_20261002062013_0046_D.JPG"
+        },
+        {
+          "assetID": "asset0092",
+          "ordinal": 92,
+          "relativePath": "DJI_20261002062018_0047_D.DNG"
+        },
+        {
+          "assetID": "asset0093",
+          "ordinal": 93,
+          "relativePath": "DJI_20261002062018_0047_D.JPG"
+        },
+        {
+          "assetID": "asset0094",
+          "ordinal": 94,
+          "relativePath": "DJI_20261002062023_0048_D.DNG"
+        },
+        {
+          "assetID": "asset0095",
+          "ordinal": 95,
+          "relativePath": "DJI_20261002062023_0048_D.JPG"
+        },
+        {
+          "assetID": "asset0096",
+          "ordinal": 96,
+          "relativePath": "DJI_20261002062028_0049_D.DNG"
+        },
+        {
+          "assetID": "asset0097",
+          "ordinal": 97,
+          "relativePath": "DJI_20261002062028_0049_D.JPG"
+        },
+        {
+          "assetID": "asset0098",
+          "ordinal": 98,
+          "relativePath": "DJI_20261002062033_0050_D.DNG"
+        },
+        {
+          "assetID": "asset0099",
+          "ordinal": 99,
+          "relativePath": "DJI_20261002062033_0050_D.JPG"
+        },
+        {
+          "assetID": "asset0100",
+          "ordinal": 100,
+          "relativePath": "DJI_20261002062038_0051_D.DNG"
+        },
+        {
+          "assetID": "asset0101",
+          "ordinal": 101,
+          "relativePath": "DJI_20261002062038_0051_D.JPG"
+        },
+        {
+          "assetID": "asset0102",
+          "ordinal": 102,
+          "relativePath": "DJI_20261002062043_0052_D.DNG"
+        },
+        {
+          "assetID": "asset0103",
+          "ordinal": 103,
+          "relativePath": "DJI_20261002062043_0052_D.JPG"
+        },
+        {
+          "assetID": "asset0104",
+          "ordinal": 104,
+          "relativePath": "DJI_20261002062048_0053_D.DNG"
+        },
+        {
+          "assetID": "asset0105",
+          "ordinal": 105,
+          "relativePath": "DJI_20261002062048_0053_D.JPG"
+        },
+        {
+          "assetID": "asset0106",
+          "ordinal": 106,
+          "relativePath": "DJI_20261002062053_0054_D.DNG"
+        },
+        {
+          "assetID": "asset0107",
+          "ordinal": 107,
+          "relativePath": "DJI_20261002062053_0054_D.JPG"
+        },
+        {
+          "assetID": "asset0108",
+          "ordinal": 108,
+          "relativePath": "DJI_20261002062058_0055_D.DNG"
+        },
+        {
+          "assetID": "asset0109",
+          "ordinal": 109,
+          "relativePath": "DJI_20261002062058_0055_D.JPG"
+        },
+        {
+          "assetID": "asset0110",
+          "ordinal": 110,
+          "relativePath": "DJI_20261002062103_0056_D.DNG"
+        },
+        {
+          "assetID": "asset0111",
+          "ordinal": 111,
+          "relativePath": "DJI_20261002062103_0056_D.JPG"
+        },
+        {
+          "assetID": "asset0112",
+          "ordinal": 112,
+          "relativePath": "DJI_20261002062108_0057_D.DNG"
+        },
+        {
+          "assetID": "asset0113",
+          "ordinal": 113,
+          "relativePath": "DJI_20261002062108_0057_D.JPG"
+        },
+        {
+          "assetID": "asset0114",
+          "ordinal": 114,
+          "relativePath": "DJI_20261002062113_0058_D.DNG"
+        },
+        {
+          "assetID": "asset0115",
+          "ordinal": 115,
+          "relativePath": "DJI_20261002062113_0058_D.JPG"
+        },
+        {
+          "assetID": "asset0116",
+          "ordinal": 116,
+          "relativePath": "DJI_20261002062118_0059_D.DNG"
+        },
+        {
+          "assetID": "asset0117",
+          "ordinal": 117,
+          "relativePath": "DJI_20261002062118_0059_D.JPG"
+        },
+        {
+          "assetID": "asset0118",
+          "ordinal": 118,
+          "relativePath": "DJI_20261002062123_0060_D.DNG"
+        },
+        {
+          "assetID": "asset0119",
+          "ordinal": 119,
+          "relativePath": "DJI_20261002062123_0060_D.JPG"
+        },
+        {
+          "assetID": "asset0120",
+          "ordinal": 120,
+          "relativePath": "DJI_20261002062128_0061_D.DNG"
+        },
+        {
+          "assetID": "asset0121",
+          "ordinal": 121,
+          "relativePath": "DJI_20261002062128_0061_D.JPG"
+        },
+        {
+          "assetID": "asset0122",
+          "ordinal": 122,
+          "relativePath": "DJI_20261002062133_0062_D.DNG"
+        },
+        {
+          "assetID": "asset0123",
+          "ordinal": 123,
+          "relativePath": "DJI_20261002062133_0062_D.JPG"
+        },
+        {
+          "assetID": "asset0124",
+          "ordinal": 124,
+          "relativePath": "DJI_20261002062138_0063_D.DNG"
+        },
+        {
+          "assetID": "asset0125",
+          "ordinal": 125,
+          "relativePath": "DJI_20261002062138_0063_D.JPG"
+        },
+        {
+          "assetID": "asset0126",
+          "ordinal": 126,
+          "relativePath": "DJI_20261002062143_0064_D.DNG"
+        },
+        {
+          "assetID": "asset0127",
+          "ordinal": 127,
+          "relativePath": "DJI_20261002062143_0064_D.JPG"
+        },
+        {
+          "assetID": "asset0128",
+          "ordinal": 128,
+          "relativePath": "DJI_20261002062148_0065_D.DNG"
+        },
+        {
+          "assetID": "asset0129",
+          "ordinal": 129,
+          "relativePath": "DJI_20261002062148_0065_D.JPG"
+        },
+        {
+          "assetID": "asset0130",
+          "ordinal": 130,
+          "relativePath": "DJI_20261002062153_0066_D.DNG"
+        },
+        {
+          "assetID": "asset0131",
+          "ordinal": 131,
+          "relativePath": "DJI_20261002062153_0066_D.JPG"
+        },
+        {
+          "assetID": "asset0132",
+          "ordinal": 132,
+          "relativePath": "DJI_20261002062158_0067_D.DNG"
+        },
+        {
+          "assetID": "asset0133",
+          "ordinal": 133,
+          "relativePath": "DJI_20261002062158_0067_D.JPG"
+        },
+        {
+          "assetID": "asset0134",
+          "ordinal": 134,
+          "relativePath": "DJI_20261002062203_0068_D.DNG"
+        },
+        {
+          "assetID": "asset0135",
+          "ordinal": 135,
+          "relativePath": "DJI_20261002062203_0068_D.JPG"
+        },
+        {
+          "assetID": "asset0136",
+          "ordinal": 136,
+          "relativePath": "DJI_20261002062208_0069_D.DNG"
+        },
+        {
+          "assetID": "asset0137",
+          "ordinal": 137,
+          "relativePath": "DJI_20261002062208_0069_D.JPG"
+        },
+        {
+          "assetID": "asset0138",
+          "ordinal": 138,
+          "relativePath": "DJI_20261002062213_0070_D.DNG"
+        },
+        {
+          "assetID": "asset0139",
+          "ordinal": 139,
+          "relativePath": "DJI_20261002062213_0070_D.JPG"
+        },
+        {
+          "assetID": "asset0140",
+          "ordinal": 140,
+          "relativePath": "DJI_20261002062218_0071_D.DNG"
+        },
+        {
+          "assetID": "asset0141",
+          "ordinal": 141,
+          "relativePath": "DJI_20261002062218_0071_D.JPG"
+        },
+        {
+          "assetID": "asset0142",
+          "ordinal": 142,
+          "relativePath": "DJI_20261002062223_0072_D.DNG"
+        },
+        {
+          "assetID": "asset0143",
+          "ordinal": 143,
+          "relativePath": "DJI_20261002062223_0072_D.JPG"
+        },
+        {
+          "assetID": "asset0144",
+          "ordinal": 144,
+          "relativePath": "DJI_20261002062228_0073_D.DNG"
+        },
+        {
+          "assetID": "asset0145",
+          "ordinal": 145,
+          "relativePath": "DJI_20261002062228_0073_D.JPG"
+        },
+        {
+          "assetID": "asset0146",
+          "ordinal": 146,
+          "relativePath": "DJI_20261002062233_0074_D.DNG"
+        },
+        {
+          "assetID": "asset0147",
+          "ordinal": 147,
+          "relativePath": "DJI_20261002062233_0074_D.JPG"
+        },
+        {
+          "assetID": "asset0148",
+          "ordinal": 148,
+          "relativePath": "DJI_20261002062238_0075_D.DNG"
+        },
+        {
+          "assetID": "asset0149",
+          "ordinal": 149,
+          "relativePath": "DJI_20261002062238_0075_D.JPG"
+        },
+        {
+          "assetID": "asset0150",
+          "ordinal": 150,
+          "relativePath": "DJI_20261002062243_0076_D.DNG"
+        },
+        {
+          "assetID": "asset0151",
+          "ordinal": 151,
+          "relativePath": "DJI_20261002062243_0076_D.JPG"
+        },
+        {
+          "assetID": "asset0152",
+          "ordinal": 152,
+          "relativePath": "DJI_20261002062248_0077_D.DNG"
+        },
+        {
+          "assetID": "asset0153",
+          "ordinal": 153,
+          "relativePath": "DJI_20261002062248_0077_D.JPG"
+        },
+        {
+          "assetID": "asset0154",
+          "ordinal": 154,
+          "relativePath": "DJI_20261002062253_0078_D.DNG"
+        },
+        {
+          "assetID": "asset0155",
+          "ordinal": 155,
+          "relativePath": "DJI_20261002062253_0078_D.JPG"
+        },
+        {
+          "assetID": "asset0156",
+          "ordinal": 156,
+          "relativePath": "DJI_20261002062258_0079_D.DNG"
+        },
+        {
+          "assetID": "asset0157",
+          "ordinal": 157,
+          "relativePath": "DJI_20261002062258_0079_D.JPG"
+        },
+        {
+          "assetID": "asset0158",
+          "ordinal": 158,
+          "relativePath": "DJI_20261002062303_0080_D.DNG"
+        },
+        {
+          "assetID": "asset0159",
+          "ordinal": 159,
+          "relativePath": "DJI_20261002062303_0080_D.JPG"
+        },
+        {
+          "assetID": "asset0160",
+          "ordinal": 160,
+          "relativePath": "DJI_20261002062308_0081_D.DNG"
+        },
+        {
+          "assetID": "asset0161",
+          "ordinal": 161,
+          "relativePath": "DJI_20261002062308_0081_D.JPG"
+        },
+        {
+          "assetID": "asset0162",
+          "ordinal": 162,
+          "relativePath": "DJI_20261002062313_0082_D.DNG"
+        },
+        {
+          "assetID": "asset0163",
+          "ordinal": 163,
+          "relativePath": "DJI_20261002062313_0082_D.JPG"
+        },
+        {
+          "assetID": "asset0164",
+          "ordinal": 164,
+          "relativePath": "DJI_20261002062318_0083_D.DNG"
+        },
+        {
+          "assetID": "asset0165",
+          "ordinal": 165,
+          "relativePath": "DJI_20261002062318_0083_D.JPG"
+        },
+        {
+          "assetID": "asset0166",
+          "ordinal": 166,
+          "relativePath": "DJI_20261002062323_0084_D.DNG"
+        },
+        {
+          "assetID": "asset0167",
+          "ordinal": 167,
+          "relativePath": "DJI_20261002062323_0084_D.JPG"
+        },
+        {
+          "assetID": "asset0168",
+          "ordinal": 168,
+          "relativePath": "DJI_20261002062328_0085_D.DNG"
+        },
+        {
+          "assetID": "asset0169",
+          "ordinal": 169,
+          "relativePath": "DJI_20261002062328_0085_D.JPG"
+        },
+        {
+          "assetID": "asset0170",
+          "ordinal": 170,
+          "relativePath": "DJI_20261002062333_0086_D.DNG"
+        },
+        {
+          "assetID": "asset0171",
+          "ordinal": 171,
+          "relativePath": "DJI_20261002062333_0086_D.JPG"
+        },
+        {
+          "assetID": "asset0172",
+          "ordinal": 172,
+          "relativePath": "DJI_20261002062338_0087_D.DNG"
+        },
+        {
+          "assetID": "asset0173",
+          "ordinal": 173,
+          "relativePath": "DJI_20261002062338_0087_D.JPG"
+        },
+        {
+          "assetID": "asset0174",
+          "ordinal": 174,
+          "relativePath": "DJI_20261002062343_0088_D.DNG"
+        },
+        {
+          "assetID": "asset0175",
+          "ordinal": 175,
+          "relativePath": "DJI_20261002062343_0088_D.JPG"
+        },
+        {
+          "assetID": "asset0176",
+          "ordinal": 176,
+          "relativePath": "DJI_20261002062348_0089_D.DNG"
+        },
+        {
+          "assetID": "asset0177",
+          "ordinal": 177,
+          "relativePath": "DJI_20261002062348_0089_D.JPG"
+        },
+        {
+          "assetID": "asset0178",
+          "ordinal": 178,
+          "relativePath": "DJI_20261002062353_0090_D.DNG"
+        },
+        {
+          "assetID": "asset0179",
+          "ordinal": 179,
+          "relativePath": "DJI_20261002062353_0090_D.JPG"
+        },
+        {
+          "assetID": "asset0180",
+          "ordinal": 180,
+          "relativePath": "DJI_20261002062358_0091_D.DNG"
+        },
+        {
+          "assetID": "asset0181",
+          "ordinal": 181,
+          "relativePath": "DJI_20261002062358_0091_D.JPG"
+        },
+        {
+          "assetID": "asset0182",
+          "ordinal": 182,
+          "relativePath": "DJI_20261002062403_0092_D.DNG"
+        },
+        {
+          "assetID": "asset0183",
+          "ordinal": 183,
+          "relativePath": "DJI_20261002062403_0092_D.JPG"
+        },
+        {
+          "assetID": "asset0184",
+          "ordinal": 184,
+          "relativePath": "DJI_20261002062408_0093_D.DNG"
+        },
+        {
+          "assetID": "asset0185",
+          "ordinal": 185,
+          "relativePath": "DJI_20261002062408_0093_D.JPG"
+        },
+        {
+          "assetID": "asset0186",
+          "ordinal": 186,
+          "relativePath": "DJI_20261002062413_0094_D.DNG"
+        },
+        {
+          "assetID": "asset0187",
+          "ordinal": 187,
+          "relativePath": "DJI_20261002062413_0094_D.JPG"
+        },
+        {
+          "assetID": "asset0188",
+          "ordinal": 188,
+          "relativePath": "DJI_20261002062418_0095_D.DNG"
+        },
+        {
+          "assetID": "asset0189",
+          "ordinal": 189,
+          "relativePath": "DJI_20261002062418_0095_D.JPG"
+        },
+        {
+          "assetID": "asset0190",
+          "ordinal": 190,
+          "relativePath": "DJI_20261002062423_0096_D.DNG"
+        },
+        {
+          "assetID": "asset0191",
+          "ordinal": 191,
+          "relativePath": "DJI_20261002062423_0096_D.JPG"
+        },
+        {
+          "assetID": "asset0192",
+          "ordinal": 192,
+          "relativePath": "DJI_20261002062428_0097_D.DNG"
+        },
+        {
+          "assetID": "asset0193",
+          "ordinal": 193,
+          "relativePath": "DJI_20261002062428_0097_D.JPG"
+        },
+        {
+          "assetID": "asset0194",
+          "ordinal": 194,
+          "relativePath": "DJI_20261002062433_0098_D.DNG"
+        },
+        {
+          "assetID": "asset0195",
+          "ordinal": 195,
+          "relativePath": "DJI_20261002062433_0098_D.JPG"
+        },
+        {
+          "assetID": "asset0196",
+          "ordinal": 196,
+          "relativePath": "DJI_20261002062438_0099_D.DNG"
+        },
+        {
+          "assetID": "asset0197",
+          "ordinal": 197,
+          "relativePath": "DJI_20261002062438_0099_D.JPG"
+        },
+        {
+          "assetID": "asset0198",
+          "ordinal": 198,
+          "relativePath": "DJI_20261002062443_0100_D.DNG"
+        },
+        {
+          "assetID": "asset0199",
+          "ordinal": 199,
+          "relativePath": "DJI_20261002062443_0100_D.JPG"
+        },
+        {
+          "assetID": "asset0200",
+          "ordinal": 200,
+          "relativePath": "DJI_20261002062448_0101_D.DNG"
+        },
+        {
+          "assetID": "asset0201",
+          "ordinal": 201,
+          "relativePath": "DJI_20261002062448_0101_D.JPG"
+        },
+        {
+          "assetID": "asset0202",
+          "ordinal": 202,
+          "relativePath": "DJI_20261002062453_0102_D.DNG"
+        },
+        {
+          "assetID": "asset0203",
+          "ordinal": 203,
+          "relativePath": "DJI_20261002062453_0102_D.JPG"
+        },
+        {
+          "assetID": "asset0204",
+          "ordinal": 204,
+          "relativePath": "DJI_20261002062458_0103_D.DNG"
+        },
+        {
+          "assetID": "asset0205",
+          "ordinal": 205,
+          "relativePath": "DJI_20261002062458_0103_D.JPG"
+        },
+        {
+          "assetID": "asset0206",
+          "ordinal": 206,
+          "relativePath": "DJI_20261002062503_0104_D.DNG"
+        },
+        {
+          "assetID": "asset0207",
+          "ordinal": 207,
+          "relativePath": "DJI_20261002062503_0104_D.JPG"
+        },
+        {
+          "assetID": "asset0208",
+          "ordinal": 208,
+          "relativePath": "DJI_20261002062508_0105_D.DNG"
+        },
+        {
+          "assetID": "asset0209",
+          "ordinal": 209,
+          "relativePath": "DJI_20261002062508_0105_D.JPG"
+        },
+        {
+          "assetID": "asset0210",
+          "ordinal": 210,
+          "relativePath": "DJI_20261002062513_0106_D.DNG"
+        },
+        {
+          "assetID": "asset0211",
+          "ordinal": 211,
+          "relativePath": "DJI_20261002062513_0106_D.JPG"
+        },
+        {
+          "assetID": "asset0212",
+          "ordinal": 212,
+          "relativePath": "DJI_20261002062518_0107_D.DNG"
+        },
+        {
+          "assetID": "asset0213",
+          "ordinal": 213,
+          "relativePath": "DJI_20261002062518_0107_D.JPG"
+        },
+        {
+          "assetID": "asset0214",
+          "ordinal": 214,
+          "relativePath": "DJI_20261002062523_0108_D.DNG"
+        },
+        {
+          "assetID": "asset0215",
+          "ordinal": 215,
+          "relativePath": "DJI_20261002062523_0108_D.JPG"
+        },
+        {
+          "assetID": "asset0216",
+          "ordinal": 216,
+          "relativePath": "DJI_20261002062528_0109_D.DNG"
+        },
+        {
+          "assetID": "asset0217",
+          "ordinal": 217,
+          "relativePath": "DJI_20261002062528_0109_D.JPG"
+        },
+        {
+          "assetID": "asset0218",
+          "ordinal": 218,
+          "relativePath": "DJI_20261002062533_0110_D.DNG"
+        },
+        {
+          "assetID": "asset0219",
+          "ordinal": 219,
+          "relativePath": "DJI_20261002062533_0110_D.JPG"
+        },
+        {
+          "assetID": "asset0220",
+          "ordinal": 220,
+          "relativePath": "DJI_20261002062538_0111_D.DNG"
+        },
+        {
+          "assetID": "asset0221",
+          "ordinal": 221,
+          "relativePath": "DJI_20261002062538_0111_D.JPG"
+        },
+        {
+          "assetID": "asset0222",
+          "ordinal": 222,
+          "relativePath": "DJI_20261002062543_0112_D.DNG"
+        },
+        {
+          "assetID": "asset0223",
+          "ordinal": 223,
+          "relativePath": "DJI_20261002062543_0112_D.JPG"
+        },
+        {
+          "assetID": "asset0224",
+          "ordinal": 224,
+          "relativePath": "DJI_20261002062548_0113_D.DNG"
+        },
+        {
+          "assetID": "asset0225",
+          "ordinal": 225,
+          "relativePath": "DJI_20261002062548_0113_D.JPG"
+        },
+        {
+          "assetID": "asset0226",
+          "ordinal": 226,
+          "relativePath": "DJI_20261002062553_0114_D.DNG"
+        },
+        {
+          "assetID": "asset0227",
+          "ordinal": 227,
+          "relativePath": "DJI_20261002062553_0114_D.JPG"
+        },
+        {
+          "assetID": "asset0228",
+          "ordinal": 228,
+          "relativePath": "DJI_20261002062558_0115_D.DNG"
+        },
+        {
+          "assetID": "asset0229",
+          "ordinal": 229,
+          "relativePath": "DJI_20261002062558_0115_D.JPG"
+        },
+        {
+          "assetID": "asset0230",
+          "ordinal": 230,
+          "relativePath": "DJI_20261002062603_0116_D.DNG"
+        },
+        {
+          "assetID": "asset0231",
+          "ordinal": 231,
+          "relativePath": "DJI_20261002062603_0116_D.JPG"
+        },
+        {
+          "assetID": "asset0232",
+          "ordinal": 232,
+          "relativePath": "DJI_20261002062608_0117_D.DNG"
+        },
+        {
+          "assetID": "asset0233",
+          "ordinal": 233,
+          "relativePath": "DJI_20261002062608_0117_D.JPG"
+        },
+        {
+          "assetID": "asset0234",
+          "ordinal": 234,
+          "relativePath": "DJI_20261002062613_0118_D.DNG"
+        },
+        {
+          "assetID": "asset0235",
+          "ordinal": 235,
+          "relativePath": "DJI_20261002062613_0118_D.JPG"
+        },
+        {
+          "assetID": "asset0236",
+          "ordinal": 236,
+          "relativePath": "DJI_20261002062618_0119_D.DNG"
+        },
+        {
+          "assetID": "asset0237",
+          "ordinal": 237,
+          "relativePath": "DJI_20261002062618_0119_D.JPG"
+        },
+        {
+          "assetID": "asset0238",
+          "ordinal": 238,
+          "relativePath": "DJI_20261002062623_0120_D.DNG"
+        },
+        {
+          "assetID": "asset0239",
+          "ordinal": 239,
+          "relativePath": "DJI_20261002062623_0120_D.JPG"
+        },
+        {
+          "assetID": "asset0240",
+          "ordinal": 240,
+          "relativePath": "DJI_20261002062628_0121_D.DNG"
+        },
+        {
+          "assetID": "asset0241",
+          "ordinal": 241,
+          "relativePath": "DJI_20261002062628_0121_D.JPG"
+        },
+        {
+          "assetID": "asset0242",
+          "ordinal": 242,
+          "relativePath": "DJI_20261002062633_0122_D.DNG"
+        },
+        {
+          "assetID": "asset0243",
+          "ordinal": 243,
+          "relativePath": "DJI_20261002062633_0122_D.JPG"
+        },
+        {
+          "assetID": "asset0244",
+          "ordinal": 244,
+          "relativePath": "DJI_20261002062638_0123_D.DNG"
+        },
+        {
+          "assetID": "asset0245",
+          "ordinal": 245,
+          "relativePath": "DJI_20261002062638_0123_D.JPG"
+        },
+        {
+          "assetID": "asset0246",
+          "ordinal": 246,
+          "relativePath": "DJI_20261002062643_0124_D.DNG"
+        },
+        {
+          "assetID": "asset0247",
+          "ordinal": 247,
+          "relativePath": "DJI_20261002062643_0124_D.JPG"
+        },
+        {
+          "assetID": "asset0248",
+          "ordinal": 248,
+          "relativePath": "DJI_20261002062648_0125_D.DNG"
+        },
+        {
+          "assetID": "asset0249",
+          "ordinal": 249,
+          "relativePath": "DJI_20261002062648_0125_D.JPG"
+        },
+        {
+          "assetID": "asset0250",
+          "ordinal": 250,
+          "relativePath": "DJI_20261002062653_0126_D.DNG"
+        },
+        {
+          "assetID": "asset0251",
+          "ordinal": 251,
+          "relativePath": "DJI_20261002062653_0126_D.JPG"
+        },
+        {
+          "assetID": "asset0252",
+          "ordinal": 252,
+          "relativePath": "DJI_20261002062658_0127_D.DNG"
+        },
+        {
+          "assetID": "asset0253",
+          "ordinal": 253,
+          "relativePath": "DJI_20261002062658_0127_D.JPG"
+        },
+        {
+          "assetID": "asset0254",
+          "ordinal": 254,
+          "relativePath": "DJI_20261002062703_0128_D.DNG"
+        },
+        {
+          "assetID": "asset0255",
+          "ordinal": 255,
+          "relativePath": "DJI_20261002062703_0128_D.JPG"
+        },
+        {
+          "assetID": "asset0256",
+          "ordinal": 256,
+          "relativePath": "DJI_20261002062708_0129_D.DNG"
+        },
+        {
+          "assetID": "asset0257",
+          "ordinal": 257,
+          "relativePath": "DJI_20261002062708_0129_D.JPG"
+        },
+        {
+          "assetID": "asset0258",
+          "ordinal": 258,
+          "relativePath": "DJI_20261002062713_0130_D.DNG"
+        },
+        {
+          "assetID": "asset0259",
+          "ordinal": 259,
+          "relativePath": "DJI_20261002062713_0130_D.JPG"
+        },
+        {
+          "assetID": "asset0260",
+          "ordinal": 260,
+          "relativePath": "DJI_20261002062718_0131_D.DNG"
+        },
+        {
+          "assetID": "asset0261",
+          "ordinal": 261,
+          "relativePath": "DJI_20261002062718_0131_D.JPG"
+        },
+        {
+          "assetID": "asset0262",
+          "ordinal": 262,
+          "relativePath": "DJI_20261002062723_0132_D.DNG"
+        },
+        {
+          "assetID": "asset0263",
+          "ordinal": 263,
+          "relativePath": "DJI_20261002062723_0132_D.JPG"
+        },
+        {
+          "assetID": "asset0264",
+          "ordinal": 264,
+          "relativePath": "DJI_20261002062728_0133_D.DNG"
+        },
+        {
+          "assetID": "asset0265",
+          "ordinal": 265,
+          "relativePath": "DJI_20261002062728_0133_D.JPG"
+        },
+        {
+          "assetID": "asset0266",
+          "ordinal": 266,
+          "relativePath": "DJI_20261002062733_0134_D.DNG"
+        },
+        {
+          "assetID": "asset0267",
+          "ordinal": 267,
+          "relativePath": "DJI_20261002062733_0134_D.JPG"
+        },
+        {
+          "assetID": "asset0268",
+          "ordinal": 268,
+          "relativePath": "DJI_20261002062738_0135_D.DNG"
+        },
+        {
+          "assetID": "asset0269",
+          "ordinal": 269,
+          "relativePath": "DJI_20261002062738_0135_D.JPG"
+        },
+        {
+          "assetID": "asset0270",
+          "ordinal": 270,
+          "relativePath": "DJI_20261002062743_0136_D.DNG"
+        },
+        {
+          "assetID": "asset0271",
+          "ordinal": 271,
+          "relativePath": "DJI_20261002062743_0136_D.JPG"
+        },
+        {
+          "assetID": "asset0272",
+          "ordinal": 272,
+          "relativePath": "DJI_20261002062748_0137_D.DNG"
+        },
+        {
+          "assetID": "asset0273",
+          "ordinal": 273,
+          "relativePath": "DJI_20261002062748_0137_D.JPG"
+        },
+        {
+          "assetID": "asset0274",
+          "ordinal": 274,
+          "relativePath": "DJI_20261002062753_0138_D.DNG"
+        },
+        {
+          "assetID": "asset0275",
+          "ordinal": 275,
+          "relativePath": "DJI_20261002062753_0138_D.JPG"
+        },
+        {
+          "assetID": "asset0276",
+          "ordinal": 276,
+          "relativePath": "DJI_20261002062758_0139_D.DNG"
+        },
+        {
+          "assetID": "asset0277",
+          "ordinal": 277,
+          "relativePath": "DJI_20261002062758_0139_D.JPG"
+        },
+        {
+          "assetID": "asset0278",
+          "ordinal": 278,
+          "relativePath": "DJI_20261002062803_0140_D.DNG"
+        },
+        {
+          "assetID": "asset0279",
+          "ordinal": 279,
+          "relativePath": "DJI_20261002062803_0140_D.JPG"
+        },
+        {
+          "assetID": "asset0280",
+          "ordinal": 280,
+          "relativePath": "DJI_20261002062808_0141_D.DNG"
+        },
+        {
+          "assetID": "asset0281",
+          "ordinal": 281,
+          "relativePath": "DJI_20261002062808_0141_D.JPG"
+        },
+        {
+          "assetID": "asset0282",
+          "ordinal": 282,
+          "relativePath": "DJI_20261002062813_0142_D.DNG"
+        },
+        {
+          "assetID": "asset0283",
+          "ordinal": 283,
+          "relativePath": "DJI_20261002062813_0142_D.JPG"
+        },
+        {
+          "assetID": "asset0284",
+          "ordinal": 284,
+          "relativePath": "DJI_20261002062818_0143_D.DNG"
+        },
+        {
+          "assetID": "asset0285",
+          "ordinal": 285,
+          "relativePath": "DJI_20261002062818_0143_D.JPG"
+        },
+        {
+          "assetID": "asset0286",
+          "ordinal": 286,
+          "relativePath": "DJI_20261002062823_0144_D.DNG"
+        },
+        {
+          "assetID": "asset0287",
+          "ordinal": 287,
+          "relativePath": "DJI_20261002062823_0144_D.JPG"
+        },
+        {
+          "assetID": "asset0288",
+          "ordinal": 288,
+          "relativePath": "DJI_20261002062828_0145_D.DNG"
+        },
+        {
+          "assetID": "asset0289",
+          "ordinal": 289,
+          "relativePath": "DJI_20261002062828_0145_D.JPG"
+        },
+        {
+          "assetID": "asset0290",
+          "ordinal": 290,
+          "relativePath": "DJI_20261002062833_0146_D.DNG"
+        },
+        {
+          "assetID": "asset0291",
+          "ordinal": 291,
+          "relativePath": "DJI_20261002062833_0146_D.JPG"
+        },
+        {
+          "assetID": "asset0292",
+          "ordinal": 292,
+          "relativePath": "DJI_20261002062838_0147_D.DNG"
+        },
+        {
+          "assetID": "asset0293",
+          "ordinal": 293,
+          "relativePath": "DJI_20261002062838_0147_D.JPG"
+        },
+        {
+          "assetID": "asset0294",
+          "ordinal": 294,
+          "relativePath": "DJI_20261002062843_0148_D.DNG"
+        },
+        {
+          "assetID": "asset0295",
+          "ordinal": 295,
+          "relativePath": "DJI_20261002062843_0148_D.JPG"
+        },
+        {
+          "assetID": "asset0296",
+          "ordinal": 296,
+          "relativePath": "DJI_20261002062848_0149_D.DNG"
+        },
+        {
+          "assetID": "asset0297",
+          "ordinal": 297,
+          "relativePath": "DJI_20261002062848_0149_D.JPG"
+        },
+        {
+          "assetID": "asset0298",
+          "ordinal": 298,
+          "relativePath": "DJI_20261002062853_0150_D.DNG"
+        },
+        {
+          "assetID": "asset0299",
+          "ordinal": 299,
+          "relativePath": "DJI_20261002062853_0150_D.JPG"
+        },
+        {
+          "assetID": "asset0300",
+          "ordinal": 300,
+          "relativePath": "DJI_20261002062858_0151_D.DNG"
+        },
+        {
+          "assetID": "asset0301",
+          "ordinal": 301,
+          "relativePath": "DJI_20261002062858_0151_D.JPG"
+        },
+        {
+          "assetID": "asset0302",
+          "ordinal": 302,
+          "relativePath": "DJI_20261002062903_0152_D.DNG"
+        },
+        {
+          "assetID": "asset0303",
+          "ordinal": 303,
+          "relativePath": "DJI_20261002062903_0152_D.JPG"
+        },
+        {
+          "assetID": "asset0304",
+          "ordinal": 304,
+          "relativePath": "DJI_20261002062908_0153_D.DNG"
+        },
+        {
+          "assetID": "asset0305",
+          "ordinal": 305,
+          "relativePath": "DJI_20261002062908_0153_D.JPG"
+        },
+        {
+          "assetID": "asset0306",
+          "ordinal": 306,
+          "relativePath": "DJI_20261002062913_0154_D.DNG"
+        },
+        {
+          "assetID": "asset0307",
+          "ordinal": 307,
+          "relativePath": "DJI_20261002062913_0154_D.JPG"
+        },
+        {
+          "assetID": "asset0308",
+          "ordinal": 308,
+          "relativePath": "DJI_20261002062918_0155_D.DNG"
+        },
+        {
+          "assetID": "asset0309",
+          "ordinal": 309,
+          "relativePath": "DJI_20261002062918_0155_D.JPG"
+        },
+        {
+          "assetID": "asset0310",
+          "ordinal": 310,
+          "relativePath": "DJI_20261002062923_0156_D.DNG"
+        },
+        {
+          "assetID": "asset0311",
+          "ordinal": 311,
+          "relativePath": "DJI_20261002062923_0156_D.JPG"
+        },
+        {
+          "assetID": "asset0312",
+          "ordinal": 312,
+          "relativePath": "DJI_20261002062928_0157_D.DNG"
+        },
+        {
+          "assetID": "asset0313",
+          "ordinal": 313,
+          "relativePath": "DJI_20261002062928_0157_D.JPG"
+        },
+        {
+          "assetID": "asset0314",
+          "ordinal": 314,
+          "relativePath": "DJI_20261002062933_0158_D.DNG"
+        },
+        {
+          "assetID": "asset0315",
+          "ordinal": 315,
+          "relativePath": "DJI_20261002062933_0158_D.JPG"
+        },
+        {
+          "assetID": "asset0316",
+          "ordinal": 316,
+          "relativePath": "DJI_20261002062938_0159_D.DNG"
+        },
+        {
+          "assetID": "asset0317",
+          "ordinal": 317,
+          "relativePath": "DJI_20261002062938_0159_D.JPG"
+        },
+        {
+          "assetID": "asset0318",
+          "ordinal": 318,
+          "relativePath": "DJI_20261002062943_0160_D.DNG"
+        },
+        {
+          "assetID": "asset0319",
+          "ordinal": 319,
+          "relativePath": "DJI_20261002062943_0160_D.JPG"
+        },
+        {
+          "assetID": "asset0320",
+          "ordinal": 320,
+          "relativePath": "DJI_20261002062948_0161_D.DNG"
+        },
+        {
+          "assetID": "asset0321",
+          "ordinal": 321,
+          "relativePath": "DJI_20261002062948_0161_D.JPG"
+        },
+        {
+          "assetID": "asset0322",
+          "ordinal": 322,
+          "relativePath": "DJI_20261002062953_0162_D.DNG"
+        },
+        {
+          "assetID": "asset0323",
+          "ordinal": 323,
+          "relativePath": "DJI_20261002062953_0162_D.JPG"
+        },
+        {
+          "assetID": "asset0324",
+          "ordinal": 324,
+          "relativePath": "DJI_20261002062958_0163_D.DNG"
+        },
+        {
+          "assetID": "asset0325",
+          "ordinal": 325,
+          "relativePath": "DJI_20261002062958_0163_D.JPG"
+        },
+        {
+          "assetID": "asset0326",
+          "ordinal": 326,
+          "relativePath": "DJI_20261002063003_0164_D.DNG"
+        },
+        {
+          "assetID": "asset0327",
+          "ordinal": 327,
+          "relativePath": "DJI_20261002063003_0164_D.JPG"
+        },
+        {
+          "assetID": "asset0328",
+          "ordinal": 328,
+          "relativePath": "DJI_20261002063008_0165_D.DNG"
+        },
+        {
+          "assetID": "asset0329",
+          "ordinal": 329,
+          "relativePath": "DJI_20261002063008_0165_D.JPG"
+        },
+        {
+          "assetID": "asset0330",
+          "ordinal": 330,
+          "relativePath": "DJI_20261002063013_0166_D.DNG"
+        },
+        {
+          "assetID": "asset0331",
+          "ordinal": 331,
+          "relativePath": "DJI_20261002063013_0166_D.JPG"
+        },
+        {
+          "assetID": "asset0332",
+          "ordinal": 332,
+          "relativePath": "DJI_20261002063018_0167_D.DNG"
+        },
+        {
+          "assetID": "asset0333",
+          "ordinal": 333,
+          "relativePath": "DJI_20261002063018_0167_D.JPG"
+        },
+        {
+          "assetID": "asset0334",
+          "ordinal": 334,
+          "relativePath": "DJI_20261002063023_0168_D.DNG"
+        },
+        {
+          "assetID": "asset0335",
+          "ordinal": 335,
+          "relativePath": "DJI_20261002063023_0168_D.JPG"
+        },
+        {
+          "assetID": "asset0336",
+          "ordinal": 336,
+          "relativePath": "DJI_20261002063028_0169_D.DNG"
+        },
+        {
+          "assetID": "asset0337",
+          "ordinal": 337,
+          "relativePath": "DJI_20261002063028_0169_D.JPG"
+        },
+        {
+          "assetID": "asset0338",
+          "ordinal": 338,
+          "relativePath": "DJI_20261002063033_0170_D.DNG"
+        },
+        {
+          "assetID": "asset0339",
+          "ordinal": 339,
+          "relativePath": "DJI_20261002063033_0170_D.JPG"
+        },
+        {
+          "assetID": "asset0340",
+          "ordinal": 340,
+          "relativePath": "DJI_20261002063038_0171_D.DNG"
+        },
+        {
+          "assetID": "asset0341",
+          "ordinal": 341,
+          "relativePath": "DJI_20261002063038_0171_D.JPG"
+        },
+        {
+          "assetID": "asset0342",
+          "ordinal": 342,
+          "relativePath": "DJI_20261002063043_0172_D.DNG"
+        },
+        {
+          "assetID": "asset0343",
+          "ordinal": 343,
+          "relativePath": "DJI_20261002063043_0172_D.JPG"
+        },
+        {
+          "assetID": "asset0344",
+          "ordinal": 344,
+          "relativePath": "DJI_20261002063048_0173_D.DNG"
+        },
+        {
+          "assetID": "asset0345",
+          "ordinal": 345,
+          "relativePath": "DJI_20261002063048_0173_D.JPG"
+        },
+        {
+          "assetID": "asset0346",
+          "ordinal": 346,
+          "relativePath": "DJI_20261002063053_0174_D.DNG"
+        },
+        {
+          "assetID": "asset0347",
+          "ordinal": 347,
+          "relativePath": "DJI_20261002063053_0174_D.JPG"
+        },
+        {
+          "assetID": "asset0348",
+          "ordinal": 348,
+          "relativePath": "DJI_20261002063058_0175_D.DNG"
+        },
+        {
+          "assetID": "asset0349",
+          "ordinal": 349,
+          "relativePath": "DJI_20261002063058_0175_D.JPG"
+        },
+        {
+          "assetID": "asset0350",
+          "ordinal": 350,
+          "relativePath": "DJI_20261002063103_0176_D.DNG"
+        },
+        {
+          "assetID": "asset0351",
+          "ordinal": 351,
+          "relativePath": "DJI_20261002063103_0176_D.JPG"
+        },
+        {
+          "assetID": "asset0352",
+          "ordinal": 352,
+          "relativePath": "DJI_20261002063108_0177_D.DNG"
+        },
+        {
+          "assetID": "asset0353",
+          "ordinal": 353,
+          "relativePath": "DJI_20261002063108_0177_D.JPG"
+        },
+        {
+          "assetID": "asset0354",
+          "ordinal": 354,
+          "relativePath": "DJI_20261002063113_0178_D.DNG"
+        },
+        {
+          "assetID": "asset0355",
+          "ordinal": 355,
+          "relativePath": "DJI_20261002063113_0178_D.JPG"
+        },
+        {
+          "assetID": "asset0356",
+          "ordinal": 356,
+          "relativePath": "DJI_20261002063118_0179_D.DNG"
+        },
+        {
+          "assetID": "asset0357",
+          "ordinal": 357,
+          "relativePath": "DJI_20261002063118_0179_D.JPG"
+        },
+        {
+          "assetID": "asset0358",
+          "ordinal": 358,
+          "relativePath": "DJI_20261002063123_0180_D.DNG"
+        },
+        {
+          "assetID": "asset0359",
+          "ordinal": 359,
+          "relativePath": "DJI_20261002063123_0180_D.JPG"
+        },
+        {
+          "assetID": "asset0360",
+          "ordinal": 360,
+          "relativePath": "DJI_20261002063128_0181_D.DNG"
+        },
+        {
+          "assetID": "asset0361",
+          "ordinal": 361,
+          "relativePath": "DJI_20261002063128_0181_D.JPG"
+        },
+        {
+          "assetID": "asset0362",
+          "ordinal": 362,
+          "relativePath": "DJI_20261002063133_0182_D.DNG"
+        },
+        {
+          "assetID": "asset0363",
+          "ordinal": 363,
+          "relativePath": "DJI_20261002063133_0182_D.JPG"
+        },
+        {
+          "assetID": "asset0364",
+          "ordinal": 364,
+          "relativePath": "DJI_20261002063138_0183_D.DNG"
+        },
+        {
+          "assetID": "asset0365",
+          "ordinal": 365,
+          "relativePath": "DJI_20261002063138_0183_D.JPG"
+        },
+        {
+          "assetID": "asset0366",
+          "ordinal": 366,
+          "relativePath": "DJI_20261002063143_0184_D.DNG"
+        },
+        {
+          "assetID": "asset0367",
+          "ordinal": 367,
+          "relativePath": "DJI_20261002063143_0184_D.JPG"
+        },
+        {
+          "assetID": "asset0368",
+          "ordinal": 368,
+          "relativePath": "DJI_20261002063148_0185_D.DNG"
+        },
+        {
+          "assetID": "asset0369",
+          "ordinal": 369,
+          "relativePath": "DJI_20261002063148_0185_D.JPG"
+        },
+        {
+          "assetID": "asset0370",
+          "ordinal": 370,
+          "relativePath": "DJI_20261002063153_0186_D.DNG"
+        },
+        {
+          "assetID": "asset0371",
+          "ordinal": 371,
+          "relativePath": "DJI_20261002063153_0186_D.JPG"
+        },
+        {
+          "assetID": "asset0372",
+          "ordinal": 372,
+          "relativePath": "DJI_20261002063158_0187_D.DNG"
+        },
+        {
+          "assetID": "asset0373",
+          "ordinal": 373,
+          "relativePath": "DJI_20261002063158_0187_D.JPG"
+        },
+        {
+          "assetID": "asset0374",
+          "ordinal": 374,
+          "relativePath": "DJI_20261002063203_0188_D.DNG"
+        },
+        {
+          "assetID": "asset0375",
+          "ordinal": 375,
+          "relativePath": "DJI_20261002063203_0188_D.JPG"
+        }
+      ],
+      "truthPath": "truth/dji187-context376.json",
+      "completeGroupTruth": false,
+      "unknownAssetIDs": [
+        "asset0374",
+        "asset0375"
+      ]
+    }
+  ]
+}

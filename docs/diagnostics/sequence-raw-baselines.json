@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-24",
+  "algorithmVersion": "sequence-local-anchor-cadence-dev-4",
+  "sourceScope": "User-supplied original Sony RAW manifests; no JPEG proxies used in these measurements. Local full reports/receipts retained outside Git under output/validation/005-2026-10-24.",
+  "platform": "M4 Max / 128GB / macOS 27.0.1; standalone probe, not application UI performance",
+  "qualityAccepted": false,
+  "cases": [
+    {
+      "id": "sony-burst-123",
+      "role": "seen-development-regression",
+      "inputCount": 123,
+      "ranges": [
+        {
+          "kind": "burst",
+          "firstOrdinal": 0,
+          "lastOrdinal": 122,
+          "firstSourceFile": "DSC02468.ARW",
+          "lastSourceFile": "DSC02590.ARW"
+        }
+      ],
+      "metrics": {
+        "truePositive": 122,
+        "falseNegative": 0,
+        "trueNegative": 0,
+        "falsePositive": 0,
+        "unknownCount": 0,
+        "precision": 1,
+        "recall": 1,
+        "typedCoverage": 1,
+        "exactGroupFraction": 1,
+        "failures": [
+          "negative-support-below-frozen-minimum"
+        ],
+        "acceptedWithinDeclaredSourceScope": false
+      },
+      "sourceFilesUnchanged": true,
+      "frozenSourceClosureSHA256": "2f848803e34ae2f8df223e5b5c24e4e01f351b08367b3b5d83430dc922133d64",
+      "frozenProbeBinarySHA256": "27d36124a4703ad97707def0d3effabdb4f71afc7e3a732172659cdb6af7450e",
+      "readerAndEngineSeconds": 1.628038499969989,
+      "processPeakResidentBytes": 33013760,
+      "nativeDeviceIdentityVerified": false
+    },
+    {
+      "id": "sony-burst-14",
+      "role": "seen-development-regression",
+      "inputCount": 38,
+      "ranges": [
+        {
+          "kind": "burst",
+          "firstOrdinal": 0,
+          "lastOrdinal": 1,
+          "firstSourceFile": "DSC01485.ARW",
+          "lastSourceFile": "DSC01486.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 2,
+          "lastOrdinal": 11,
+          "firstSourceFile": "DSC01487.ARW",
+          "lastSourceFile": "DSC01496.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 12,
+          "lastOrdinal": 25,
+          "firstSourceFile": "DSC01497.ARW",
+          "lastSourceFile": "DSC01510.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 26,
+          "lastOrdinal": 37,
+          "firstSourceFile": "DSC01511.ARW",
+          "lastSourceFile": "DSC01522.ARW"
+        }
+      ],
+      "metrics": {
+        "truePositive": 13,
+        "falseNegative": 0,
+        "trueNegative": 2,
+        "falsePositive": 0,
+        "unknownCount": 0,
+        "precision": 1,
+        "recall": 1,
+        "typedCoverage": 1,
+        "exactGroupFraction": 1,
+        "failures": [],
+        "acceptedWithinDeclaredSourceScope": true
+      },
+      "sourceFilesUnchanged": true,
+      "frozenSourceClosureSHA256": "2f848803e34ae2f8df223e5b5c24e4e01f351b08367b3b5d83430dc922133d64",
+      "frozenProbeBinarySHA256": "27d36124a4703ad97707def0d3effabdb4f71afc7e3a732172659cdb6af7450e",
+      "readerAndEngineSeconds": 0.5653797083068639,
+      "processPeakResidentBytes": 31899648,
+      "nativeDeviceIdentityVerified": false
+    },
+    {
+      "id": "sony-burst-48",
+      "role": "seen-development-regression",
+      "inputCount": 72,
+      "ranges": [
+        {
+          "kind": "burst",
+          "firstOrdinal": 0,
+          "lastOrdinal": 3,
+          "firstSourceFile": "DSC01709.ARW",
+          "lastSourceFile": "DSC01712.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 4,
+          "lastOrdinal": 11,
+          "firstSourceFile": "DSC01713.ARW",
+          "lastSourceFile": "DSC01720.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 12,
+          "lastOrdinal": 59,
+          "firstSourceFile": "DSC01721.ARW",
+          "lastSourceFile": "DSC01768.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 60,
+          "lastOrdinal": 65,
+          "firstSourceFile": "DSC01769.ARW",
+          "lastSourceFile": "DSC01774.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 66,
+          "lastOrdinal": 71,
+          "firstSourceFile": "DSC01775.ARW",
+          "lastSourceFile": "DSC01780.ARW"
+        }
+      ],
+      "metrics": {
+        "truePositive": 47,
+        "falseNegative": 0,
+        "trueNegative": 2,
+        "falsePositive": 0,
+        "unknownCount": 0,
+        "precision": 1,
+        "recall": 1,
+        "typedCoverage": 1,
+        "exactGroupFraction": 1,
+        "failures": [],
+        "acceptedWithinDeclaredSourceScope": true
+      },
+      "sourceFilesUnchanged": true,
+      "frozenSourceClosureSHA256": "2f848803e34ae2f8df223e5b5c24e4e01f351b08367b3b5d83430dc922133d64",
+      "frozenProbeBinarySHA256": "27d36124a4703ad97707def0d3effabdb4f71afc7e3a732172659cdb6af7450e",
+      "readerAndEngineSeconds": 0.9213692082557827,
+      "processPeakResidentBytes": 33619968,
+      "nativeDeviceIdentityVerified": false
+    },
+    {
+      "id": "sony-interval-427",
+      "role": "seen-development-regression",
+      "inputCount": 439,
+      "ranges": [
+        {
+          "kind": "interval",
+          "firstOrdinal": 12,
+          "lastOrdinal": 438,
+          "firstSourceFile": "DSC05994.ARW",
+          "lastSourceFile": "DSC06420.ARW"
+        }
+      ],
+      "metrics": {
+        "truePositive": 426,
+        "falseNegative": 0,
+        "trueNegative": 1,
+        "falsePositive": 0,
+        "unknownCount": 0,
+        "precision": 1,
+        "recall": 1,
+        "typedCoverage": 1,
+        "exactGroupFraction": 1,
+        "failures": [],
+        "acceptedWithinDeclaredSourceScope": true
+      },
+      "sourceFilesUnchanged": true,
+      "frozenSourceClosureSHA256": "2f848803e34ae2f8df223e5b5c24e4e01f351b08367b3b5d83430dc922133d64",
+      "frozenProbeBinarySHA256": "27d36124a4703ad97707def0d3effabdb4f71afc7e3a732172659cdb6af7450e",
+      "readerAndEngineSeconds": 4.818080791737884,
+      "processPeakResidentBytes": 34816000,
+      "nativeDeviceIdentityVerified": false
+    },
+    {
+      "id": "sony-burst-193",
+      "role": "first-frozen-independent-evaluation-failed-now-seen",
+      "inputCount": 217,
+      "ranges": [
+        {
+          "kind": "burst",
+          "firstOrdinal": 12,
+          "lastOrdinal": 55,
+          "firstSourceFile": "DSC00368.ARW",
+          "lastSourceFile": "DSC00411.ARW"
+        },
+        {
+          "kind": "burst",
+          "firstOrdinal": 56,
+          "lastOrdinal": 216,
+          "firstSourceFile": "DSC00412.ARW",
+          "lastSourceFile": "DSC00572.ARW"
+        }
+      ],
+      "metrics": {
+        "truePositive": 191,
+        "falseNegative": 1,
+        "trueNegative": 1,
+        "falsePositive": 1,
+        "unknownCount": 0,
+        "precision": 0.9947916666666666,
+        "recall": 0.9947916666666666,
+        "typedCoverage": 1,
+        "exactGroupFraction": 0,
+        "failures": [
+          "confirmed-negative-boundary-merged",
+          "exact-whole-group-unmet-or-undefined"
+        ],
+        "acceptedWithinDeclaredSourceScope": false
+      },
+      "sourceFilesUnchanged": true,
+      "frozenSourceClosureSHA256": "2f848803e34ae2f8df223e5b5c24e4e01f351b08367b3b5d83430dc922133d64",
+      "frozenProbeBinarySHA256": "27d36124a4703ad97707def0d3effabdb4f71afc7e3a732172659cdb6af7450e",
+      "readerAndEngineSeconds": 2.7155464582610875,
+      "processPeakResidentBytes": 34816000,
+      "nativeDeviceIdentityVerified": false
+    }
+  ],
+  "djiOriginalDetectorMeasurement": "Not performed. Original DJI conversion and JPEG development regression are separate; 0188 boundary unknown."
+}

@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-23",
+  "mode": "built-in image_gen",
+  "variants": [
+    {
+      "id": "C1",
+      "file": "C1-chromatic-minimal.png",
+      "reference": "../2026-10-23/C-raw-layers.png",
+      "prompt": "Use case: logo-brand.\nAsset type: RAWMaster macOS app icon concept, next design iteration C1.\nInput image 1 is a concept reference only: preserve its overlapping RAW color planes identity and cyan/blue/violet family, completely simplify its heavy 3D execution.\nDesign a hyper-minimal, exquisitely precise native Mac app icon. One dark ink-navy continuous rounded-square tile with generous negative space. Center a compact unified mark made of exactly two broad overlapping rounded diamond plates, vertically offset, cyan upper and cobalt-violet lower, with a clearly luminous pale cyan central overlap. Optical color mixing, clean geometric silhouettes. Nearly flat design, solid clear colors, only a restrained gentle color transition across each plate; no extrusion, no neon bloom, no glowing outlines, no visible grain or realistic texture. Very subtle top highlight on tile is acceptable. Sophisticated professional photography software brand, recognizable at 32px, the two plate silhouette is the hero. Front-on orthographic composition, tile occupies approximately 88% of a square 1024x1024 canvas, centered with transparent outer margin. No text, letters, numbers, badges, presentation layout, or additional objects. One standalone icon only."
+    },
+    {
+      "id": "C2",
+      "file": "C2-chromatic-glass.png",
+      "reference": "../2026-10-23/C-raw-layers.png",
+      "prompt": "Use case: logo-brand.\nAsset type: RAWMaster macOS app icon concept, next design iteration C2.\nInput image 1 is a concept reference only. Keep the identity of overlapping cyan blue violet rounded diamond RAW color planes, but reinterpret with sharply restrained 2026 Liquid Glass material and hyper-minimal geometry.\nSingle warm pearl-white continuous rounded-square icon tile, soft nearly-flat satin finish. Exactly two thin translucent colored rounded diamond plates in the center, staggered vertically, cyan-blue above and periwinkle-violet below, overlapping to create an elegant saturated cobalt central rhombus. Both layers clearly readable as a single compact brand symbol. Front-on flat graphic silhouette; a very fine crisp top-down specular edge and a tiny amount of refraction provide the ONLY sense of depth. Generous negative space. No heavy bevels, no chunky extrusion, no decorative shadows, no glossy candy shine, no glowing haze, no texture. Premium calm professional Mac photography software. Keep the mark high contrast and readable at 32px. Tile occupies approximately 88% of square 1024x1024 canvas; centered, transparent outside tile. No text, letters, numbers, badges, backdrop, or extra objects. One standalone icon only."
+    },
+    {
+      "id": "D1",
+      "file": "D1-viewfinder-minimal.png",
+      "reference": "../2026-10-23/D-viewfinder.png",
+      "prompt": "Use case: logo-brand.\nAsset type: RAWMaster native macOS app icon next iteration D1, hyper minimal.\nInput image 1 is a concept reference: retain photography viewfinder, mountain and amber sun identity, but radically simplify ALL geometry and rendering.\nCreate a single dark graphite-navy continuous rounded-square tile with uniform smooth matte surface. The central symbol is an ultra-clean ivory camera framing glyph: four short equal rounded L corners forming a compact open square. Inside sits ONE bold ivory angular mountain ridge shape, exactly two straight slopes and one small secondary peak, no terrain layers, and ONE small solid amber circular sun at the upper right. Optical balance, broad generous negative space, crisp thick strokes optimized for 32px Dock visibility, beautifully precise geometric alignment. Elegant near-flat graphic design, only microscopic soft material separation permitted, no dramatic shadows. The icon should feel like a purposeful professional image culling tool. Do not copy a generic Photos app flower. No textures, bevels, engraving, neon, lens flare, realistic landscape, detailed snow, multi-layer mountains, letters, words, labels, or badge. One icon only, orthographic straight-on. Tile occupies 88% of square1024x1024 canvas with smooth clean transparent margins."
+    },
+    {
+      "id": "D2",
+      "file": "D2-viewfinder-glass.png",
+      "reference": "../2026-10-23/D-viewfinder.png",
+      "prompt": "Use case: logo-brand.\nAsset type: RAWMaster native macOS app icon next iteration D2, minimal Liquid Glass.\nInput image 1 is a concept reference: preserve camera framing corners, mountain ridge and amber sun, but replace its detailed paper-cut mountains and chunky 3D style with a sparse sharp 2026 Mac icon.\nA single ivory-white continuous rounded-square tile. One compact centered symbol: four smooth rounded framing corners in deep graphite, surrounding a single translucent cool navy mountain wedge with only one main triangular peak and a lower shoulder. One small saturated amber circular sun nestled above the mountain toward upper right. Simple broad shapes and generous negative space; mountain no more than 2 planar shapes. Framing glyph and mountain are crisp and legible at 32px. Very restrained glass edge on the navy mountain, a fine specular highlight from directly above, almost no shadow. Matte-white tile, thin layers, NOT thick 3D. Tasteful professional photography identity. Clear geometric silhouettes. No realistic scenery, texture, snowy detail, reflections of studio equipment, dramatic bevels, neon glow, text, letters, symbols beyond requested motif, or extra objects. Orthographic front view, one standalone icon, tile fills approximately88% of a square1024x1024 canvas, transparent clean smooth margin outside tile."
+    }
+  ],
+  "light_preview_cleanup": {
+    "transparent_background": false
+  }
+}
