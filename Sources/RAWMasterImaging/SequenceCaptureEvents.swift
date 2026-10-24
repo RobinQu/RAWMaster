@@ -161,14 +161,15 @@ public enum SequenceCaptureEvents {
                               _ metadata: SequenceMetadataSnapshot) throws {
         try metadata.validateBindings(manifest: manifest)
         guard files.count == manifest.entries.count, files.count <= 30_000 else { throw SequenceMetadataError.invalid("Metadata file scope incomplete or too large") }
+        try metadata.runtimeProof?.validateInputs(files: files)
         var profiles: [String: (Set<String>, Set<String>)] = [:]
         var devices: [String: [String: Set<String>]] = [:]
         for (ordinal, file) in files.enumerated() {
             guard file.entry == manifest.entries[ordinal], file.metadata == metadata.files[ordinal], file.contentVersion >= 0,
                   file.metadata.assetID == file.entry.assetID,
-                  file.metadata.originalFormat != .unknown,
+                  (file.metadata.originalFormat != .unknown || metadata.runtimeProof != nil),
                   file.metadata.keyID == metadata.files.first?.keyID,
-                  file.metadata.originalCapture.extractorVersion == SequenceMetadataEvidenceLoader.originalExtractor,
+                  file.metadata.originalCapture.extractorVersion == (metadata.runtimeProof == nil ? SequenceMetadataEvidenceLoader.originalExtractor : SequenceRuntimeMetadataProof.extractorVersion),
                   file.metadata.originalCapture.assetID == file.entry.assetID,
                   file.metadata.originalCapture.contentHash == file.metadata.originalSHA256,
                   file.entry.contentHash.map({ $0 == file.metadata.currentSHA256 }) ?? (file.entry.barrier != nil || file.readBarrier != nil),

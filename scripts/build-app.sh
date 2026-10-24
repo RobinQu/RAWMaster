@@ -31,6 +31,7 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
 <key>NSSupportsAutomaticTermination</key><false/>
 </dict></plist>
 PLIST
+python3 scripts/package-metadata-tool.py --source "$PWD/output/tools/exiftool" --destination "$app/Contents/Resources/MetadataTool"
 ./scripts/build-icons.sh "$app/Contents/Resources"
 python3 scripts/check-app-icon.py "$app"
 codesign --force --sign - "$app"

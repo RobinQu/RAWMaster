@@ -1,6 +1,6 @@
 import Foundation
 
-public enum GroupOrigin: String, Codable, Sendable { case manual, acceptedSuggestion }
+public enum GroupOrigin: String, Codable, Sendable { case manual, acceptedSuggestion, automaticPendingReview }
 
 public enum Decision: String, Codable, Sendable, CaseIterable { case undecided, keep, reject }
 public enum ImportMode: String, Codable, Sendable, CaseIterable { case reference, copy }

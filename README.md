@@ -4,14 +4,22 @@
 
 ## 运行
 
-已构建应用位于 `output/RAWMaster.app`，双击打开。重新构建：
+已构建应用位于 `output/RAWMaster.app`，双击打开。重新构建（首次先准备下方固定版本的元数据工具）：
 
 ```sh
 ./scripts/build-app.sh release
 open output/RAWMaster.app
 ```
 
-需要 macOS SDK / Swift 6 工具链。产品面向 Apple M4 及以后；当前验收环境是 M4 Max、128 GB、macOS 27.0.1。包的最低构建目标为 macOS 15，不代表旧系统或低配机型已完成兼容验收。当前应用为本机自用的临时签名构建，尚无公证及正式发布流程。运行时只使用系统框架，无第三方数据库或同步服务依赖。
+首次构建自动分组组件前，准备固定的官方 ExifTool 源码；打包脚本校验提交与文件内容，应用运行时使用包内副本，不依赖全局安装：
+
+```sh
+mkdir -p output/tools
+git clone https://github.com/exiftool/exiftool.git output/tools/exiftool
+git -C output/tools/exiftool checkout --detach 2200871d9cef988051d2a99d67df3bda6cbb30a8
+```
+
+需要 macOS SDK / Swift 6 工具链。产品面向 Apple M4 及以后；当前验收环境是 M4 Max、128 GB、macOS 27.0.1。包的最低构建目标为 macOS 15，不代表旧系统或低配机型已完成兼容验收。当前应用为本机自用的临时签名构建，尚无公证及正式发布流程。运行时使用系统框架及包内固定的 ExifTool 13.59 元数据组件，无第三方数据库或同步服务依赖。
 
 ## 使用
 
@@ -29,7 +37,7 @@ open output/RAWMaster.app
 
 ## 验证与研发文档
 
-下一批已确认、正在研发：[005 连拍与间隔序列自动堆叠](docs/planning/10-automatic-sequence-stacks-review.md)，包括导入自动分组、网格/胶片条堆叠与历史重跑。A 阶段的检测与验证代码已建立，已见样本修复回归通过，但新连拍仍有误并和断组，尚未接入运行中的应用。当前算法及CV/机器学习/多模态评估见[技术方案](docs/planning/12-sequence-grouping-algorithms.md)。
+个人试用接入：[新导入自动分组与标注复核](docs/planning/16-automatic-grouping-personal-trial.md)。完整导入后自动生成“待复核”连拍/间隔组，保留全部照片，可从“最近组操作…”整批恢复；这是用户授权的人工试用，不代表独立质量验收通过。[005序列堆叠](docs/planning/10-automatic-sequence-stacks-review.md)的历史重跑与进一步界面增量继续独立推进。旧标注、误例和基线保留；[离线HTML标注工具](docs/diagnostics/sequence-review-report.md)只保存独立修订草稿。算法及CV/机器学习/多模态评估见[技术方案](docs/planning/12-sequence-grouping-algorithms.md)。
 
 M2a 已获批准并分阶段实现：[功能取舍与体验方案](docs/planning/09-next-batch-review.md)、[004 规格](specs/004-client-next-batch/spec.md)、[技术计划](specs/004-client-next-batch/plan.md)、[实际验证与限制](specs/004-client-next-batch/validation.md)。主题三档、原片重新定位、人工组编辑与恢复已实现。连拍已有开发组和独立边界样本；时间窗试评估未建立通过验收的生产规则，按 SC05 仅交付 [隔离诊断与评估](docs/diagnostics/README.md)，暂不提供正式建议入口。最终普通测试与同机发布性能门通过；前两次绘制波动及桌面矩阵限制保留于验证记录。
 

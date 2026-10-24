@@ -6,16 +6,18 @@ public struct SequenceMetadataExperimentConfiguration: Codable, Sendable, Equata
     public let associationPolicy: SequenceAssociationPolicy
     public let rescuePolicy: SequenceMetadataRescuePolicy
     public let auditSeal, snapshotFingerprint, eventMapFingerprint: String
+    public let runtimeExtractorVersion: String?
     public let semanticVersion: String
     public init(associationPolicy: SequenceAssociationPolicy, rescuePolicy: SequenceMetadataRescuePolicy,
                 auditSeal: String, snapshotFingerprint: String, eventMapFingerprint: String,
-                semanticVersion: String = Self.version) {
+                semanticVersion: String = Self.version, runtimeExtractorVersion: String? = nil) {
         self.associationPolicy = associationPolicy; self.rescuePolicy = rescuePolicy
         self.auditSeal = auditSeal; self.snapshotFingerprint = snapshotFingerprint
-        self.eventMapFingerprint = eventMapFingerprint; self.semanticVersion = semanticVersion
+        self.eventMapFingerprint = eventMapFingerprint; self.semanticVersion = semanticVersion; self.runtimeExtractorVersion = runtimeExtractorVersion
     }
     public func validate() throws {
         let digests = [auditSeal, snapshotFingerprint, eventMapFingerprint]
+        guard runtimeExtractorVersion == nil || runtimeExtractorVersion == SequenceRuntimeMetadataProof.extractorVersion else { throw SequenceMetadataError.invalid("Unknown runtime extractor") }
         guard semanticVersion == Self.version, digests.allSatisfy({ value in
             value.utf8.count == 64 && value.utf8.allSatisfy({ (48...57).contains($0) || (97...102).contains($0) })
         }) else { throw SequenceMetadataError.invalid("Invalid metadata experiment identity") }

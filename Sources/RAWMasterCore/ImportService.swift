@@ -3,12 +3,16 @@ import ImageIO
 
 public final class ImportService: @unchecked Sendable {
   private let store: LibraryStore
+  private let postIngest: ImportPostIngestCallback?
   private let control = JobControl()
   private static let extensions: Set<String> = [
     "arw", "dng", "raw", "cr2", "cr3", "nef", "raf", "orf", "rw2", "jpg", "jpeg", "heic", "tif",
     "tiff",
   ]
-  public init(store: LibraryStore) { self.store = store }
+  public init(store: LibraryStore, postIngest: ImportPostIngestCallback? = nil) {
+    self.store = store
+    self.postIngest = postIngest
+  }
   public func cancel() { control.cancel() }
   public func importDirectory(
     source: URL, destination: URL?, projectName: String, mode: ImportMode, projectID: String? = nil,
@@ -76,7 +80,11 @@ public final class ImportService: @unchecked Sendable {
       operation: {
         do {
           try Task.checkCancellation()
-          return try await Task.detached(priority: .userInitiated, operation: body).value
+          let result = try await Task.detached(priority: .userInitiated, operation: body).value
+          if result.status == "completed", result.scanCompleted == true, let postIngest {
+            await postIngest(result, { try self.control.check() }, progress)
+          }
+          return result
         } catch {
           progress(
             TaskProgress(title: "导入未完成", message: error.localizedDescription, isRunning: false))

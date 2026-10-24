@@ -2,6 +2,7 @@ import AppKit
 import Combine
 import Foundation
 import RAWMasterCore
+import RAWMasterImaging
 
 // Views are snapshots of LibraryStore, which remains the single authority for decisions.
 @MainActor
@@ -81,7 +82,7 @@ final class AppModel: ObservableObject {
             try FileManager.default.createDirectory(at: libraryURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             let database = try LibraryStore(databaseURL: libraryURL)
             store = database
-            importer = ImportService(store: database)
+            importer = ImportService(store: database, postIngest: RuntimeAutomaticGroupingCoordinator.callback(store: database, libraryURL: libraryURL))
             exporter = ExportService(store: database)
             relocator = RelocationService(store: database)
             scope = Scope(rawValue: defaults.string(forKey: "browse.scope") ?? "all") ?? .all

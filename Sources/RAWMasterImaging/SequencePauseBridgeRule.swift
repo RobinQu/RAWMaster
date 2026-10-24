@@ -36,7 +36,7 @@ public enum SequencePauseBridgeRule {
         let focus = context.focus
         let names = ["sony.FocusLocation", "sony.FocusLocation2", "sony.FocusFrameSize",
                      "sony.FocusMode", "sony.AFTracking", "sony.CameraOrientation"]
-        guard focus.state == .audited, names.allSatisfy({ focus.fieldStates[$0] == .present }),
+        guard context.runtimeCohortComparable, (focus.state == .audited || focus.state == .runtimeExtracted), names.allSatisfy({ focus.fieldStates[$0] == .present }),
               focus.resolvedCodes["sony.FocusMode"] == 3,
               let tracking = focus.resolvedCodes["sony.AFTracking"], [1, 2].contains(tracking),
               let orientation = context.orientation, [1, 3, 6, 8].contains(orientation),

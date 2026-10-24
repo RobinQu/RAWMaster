@@ -4,7 +4,7 @@ import Darwin
 import RAWMasterCore
 
 /// Capture this credential around the caller's verified SHA-256 read. Stat alone does not verify content.
-public struct SequenceFileCredential: Sendable, Equatable {
+public struct SequenceFileCredential: Codable, Sendable, Equatable {
     public let device: Int64, inode: UInt64, size: Int64
     public let modifiedSeconds: Int64, modifiedNanoseconds: Int64
     public let changedSeconds: Int64, changedNanoseconds: Int64

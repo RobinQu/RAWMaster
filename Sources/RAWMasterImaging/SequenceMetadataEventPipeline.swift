@@ -117,7 +117,7 @@ public enum SequenceMetadataEventPipeline {
         var configuration = baseConfiguration
         configuration.metadataExperiment = SequenceMetadataExperimentConfiguration(associationPolicy: associationPolicy,
             rescuePolicy: rescuePolicy, auditSeal: metadata.auditSeal, snapshotFingerprint: metadata.fingerprint,
-            eventMapFingerprint: map.fingerprint)
+            eventMapFingerprint: map.fingerprint, runtimeExtractorVersion: metadata.runtimeProof.map { _ in SequenceRuntimeMetadataProof.extractorVersion })
         if let focusSnapshot, let pauseBridgePolicy {
             configuration.pauseBridgeExperiment = SequencePauseBridgeConfiguration(policy: pauseBridgePolicy,
                 focusAuditSeal: focusSnapshot.focusAuditSeal,

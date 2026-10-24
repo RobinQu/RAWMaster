@@ -1,7 +1,7 @@
 import Foundation
 import RAWMasterCore
 
-public enum SequenceFocusAuditState: String, Codable, Sendable { case audited, outsideAuditedCohort }
+public enum SequenceFocusAuditState: String, Codable, Sendable { case audited, outsideAuditedCohort, runtimeExtracted }
 public struct SequenceFocusFileEvidence: Codable, Sendable, Equatable {
     public let assetID, currentSHA256, originalSHA256: String
     public let ordinal: Int
@@ -21,10 +21,11 @@ public struct SequenceFocusSnapshot: Codable, Sendable, Equatable {
     /// Verified curated-file byte SHA. The classifier additionally binds the actual DTO contents.
     public let focusAuditSeal, fingerprint, metadataSnapshotFingerprint: String
     public let files: [SequenceFocusFileEvidence]
+    public let runtimeProofDigest: String?
     public init(focusAuditSeal: String, fingerprint: String, metadataSnapshotFingerprint: String,
-                files: [SequenceFocusFileEvidence]) {
+                files: [SequenceFocusFileEvidence], runtimeProofDigest: String? = nil) {
         self.focusAuditSeal = focusAuditSeal; self.fingerprint = fingerprint
-        self.metadataSnapshotFingerprint = metadataSnapshotFingerprint; self.files = files
+        self.metadataSnapshotFingerprint = metadataSnapshotFingerprint; self.files = files; self.runtimeProofDigest = runtimeProofDigest
     }
     public static let tupleCounts = ["sony.FocusLocation": 4, "sony.FocusLocation2": 4,
         "sony.FocusFrameSize": 3, "sony.FlexibleSpotPosition": 2]
@@ -36,6 +37,10 @@ public struct SequenceFocusSnapshot: Codable, Sendable, Equatable {
         guard SequenceMetadataEvidenceLoader.isSHA(focusAuditSeal), SequenceMetadataEvidenceLoader.isSHA(fingerprint),
               metadataSnapshotFingerprint == metadata.fingerprint, files.count == manifest.entries.count,
               files.count <= 30_000 else { throw SequenceMetadataError.invalid("Focus snapshot scope/lineage mismatch") }
+        guard runtimeProofDigest == (try metadata.runtimeProof?.digest()) else { throw SequenceMetadataError.invalid("Focus runtime provenance mismatch") }
+        if metadata.runtimeProof != nil {
+            guard focusAuditSeal == metadata.auditSeal, fingerprint == (try SequenceFingerprint.digest(files)) else { throw SequenceMetadataError.invalid("Live focus receipt changed") }
+        }
         for (index, file) in files.enumerated() {
             let entry = manifest.entries[index], original = metadata.files[index]
             guard file.ordinal == index, file.assetID == entry.assetID, file.currentSHA256 == entry.contentHash,
@@ -45,16 +50,17 @@ public struct SequenceFocusSnapshot: Codable, Sendable, Equatable {
                   Set(file.resolvedTuples.keys).isSubset(of: Set(Self.tupleCounts.keys)) else {
                 throw SequenceMetadataError.invalid("Focus file identity or field scope mismatch")
             }
+            if metadata.runtimeProof != nil && file.state != .runtimeExtracted { throw SequenceMetadataError.invalid("Live focus rows require live extraction state") }
             if file.state == .outsideAuditedCohort {
                 guard file.fieldStates.isEmpty, file.resolvedCodes.isEmpty, file.resolvedTuples.isEmpty else {
                     throw SequenceMetadataError.invalid("Unaudited focus row contains claimed facts")
                 }
                 continue
             }
-            guard Set(file.fieldStates.keys) == Self.allFields, original.originalFormat == .arw, original.originalCapture.cameraMake == "SONY",
-                  original.originalCapture.cameraModel == "ILCE-1M2" else {
-                throw SequenceMetadataError.invalid("Focus audit row outside its audited camera cohort")
-            }
+            if file.state == .runtimeExtracted {
+                guard let proof = metadata.runtimeProof, try proof.files[index].focusDigest == SequenceFingerprint.digest(file) else { throw SequenceMetadataError.invalid("Focus runtime facts changed") }
+            } else if metadata.runtimeProof != nil { throw SequenceMetadataError.invalid("Runtime facts cannot claim historical audit") }
+            guard Set(file.fieldStates.keys) == Self.allFields, (file.state == .runtimeExtracted || (original.originalFormat == .arw && original.originalCapture.cameraMake == "SONY" && original.originalCapture.cameraModel == "ILCE-1M2")) else { throw SequenceMetadataError.invalid("Focus cohort mismatch") }
             for (field, value) in file.resolvedCodes {
                 guard file.fieldStates[field] == .present, value >= 0, value <= Int(UInt32.max) else {
                     throw SequenceMetadataError.invalid("Invalid resolved focus code")
@@ -121,6 +127,7 @@ public struct SequencePauseBridgeContext: Sendable, Equatable {
     let nanosecond: Int?
     let settings: [String: String]
     let focus: SequenceFocusFileEvidence
+    var runtimeCohortComparable = true
     static let settingFields = ["exif.ExposureTime", "exif.ISO", "exif.FNumber", "exif.FocalLength", "exif.ExposureProgram"]
     static func make(file: SequenceCaptureFileInput, focus: SequenceFocusFileEvidence,
                      focusAuditSeal: String, scopeFingerprint: String, manifest: SequenceInputManifest) -> Self {
@@ -136,7 +143,7 @@ public struct SequencePauseBridgeContext: Sendable, Equatable {
                 if valid { settings[field] = NSDecimalNumber(decimal: number).stringValue }
             }
         }
-        return Self(assetID: file.entry.assetID, currentSHA256: metadata.currentSHA256,
+        var context = Self(assetID: file.entry.assetID, currentSHA256: metadata.currentSHA256,
             originalSHA256: metadata.originalSHA256, focusAuditSeal: focusAuditSeal, scopeFingerprint: scopeFingerprint,
             cameraPartitionID: file.entry.camera.partitionID(manifestFingerprint: manifest.contentFingerprint),
             originalOffsetMinutes: metadata.originalCapture.time.offsetMinutes,
@@ -148,6 +155,8 @@ public struct SequencePauseBridgeContext: Sendable, Equatable {
             sequenceImageNumber: SequenceMetadataBurstContext.integer("sony.SequenceImageNumber", in: metadata),
             localSecond: metadata.originalCapture.time.local?.civilSecond, nanosecond: metadata.originalCapture.time.local?.nanosecond,
             settings: settings, focus: focus)
+        context.runtimeCohortComparable = focus.state != .runtimeExtracted || (metadata.originalFormat == .arw && metadata.originalCapture.cameraMake == "SONY" && metadata.originalCapture.cameraModel == "ILCE-1M2")
+        return context
     }
     func isBound(entry: SequenceManifestEntry, configuration: SequencePauseBridgeConfiguration) -> Bool {
         assetID == entry.assetID && currentSHA256 == entry.contentHash && focus.assetID == assetID

@@ -1,0 +1,689 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-24",
+  "purpose": "Personal automatic post-ingest grouping functional validation; not an independent classifier quality acceptance",
+  "environment": {
+    "machine": "Apple M4 Max",
+    "memoryGiB": 128,
+    "macOS": "27.0.1",
+    "configuration": "release"
+  },
+  "metadataProvider": {
+    "version": "runtime-exiftool-jsonq-v1",
+    "toolVersion": "13.59",
+    "commit": "2200871d9cef988051d2a99d67df3bda6cbb30a8",
+    "closureSHA256": "8d48cc55aa7f8d05dc037c08d914e008318d58d5396619e26141809af80d1acd",
+    "trackedFiles": 249,
+    "actualSelectors": 51,
+    "fieldStateSlots": 55,
+    "transport": "JSONQ parser-decoded strings; not raw tag bytes"
+  },
+  "ordinaryRegression": {
+    "tests": 356,
+    "skippedOptInTests": 10,
+    "failures": 0,
+    "legacyNativeControls": 54,
+    "legacyLabelsAndBaselinesChanged": false
+  },
+  "toolingRegression": {
+    "tests": 78,
+    "skipped": 1,
+    "failures": 0
+  },
+  "originalCopyProof": {
+    "files": 102,
+    "bytes": 5771136512,
+    "allSourceAndCopySHAMatchImmutableV1": true,
+    "originalMtimeAndInodeUnchanged": true
+  },
+  "retainedInitialFailure": {
+    "assetCount": 50,
+    "groupCount": 0,
+    "elapsedSeconds": 12.371723999998721,
+    "sourceSHAUnchanged": true,
+    "runState": "completedNoGroups",
+    "cause": "The live qualified-key allowlist rejected collapsed File:FileType/File:MIMEType and actual EXIF IFD2/SubIFD1 entries, converting every file to an unreadable barrier. Existing labels were not the cause.",
+    "evidenceQualifiedKeySHA256": "f1b319511f60c2d3cbc00d8595ab837fd7bc427ec4ba3d3dd316aae1baca795d",
+    "repair": "Accept only observed qualified aliases plus collapsed ExifTool diagnostics; preserve warning privacy/errors; treat nonempty all-metadata-failed scope as retryable failure. No classifier threshold or label changes."
+  },
+  "scenarios": [
+    {
+      "caseID": "sony-burst",
+      "expectedFirst": "DSC01721.ARW",
+      "expectedLast": "DSC01768.ARW",
+      "meaning": "50 files including two confirmed outside neighbors; exact48 complete labeled group",
+      "summarySHA256": "484b4ab7744cbf7d6a0ab4e1b53ae39fc89d8a6638c06532f3d6002b9edee813",
+      "assetCount": 50,
+      "diagnostics": {
+        "assetCount": 50,
+        "associationHypothesisAssumed": false,
+        "barrierCounts": {},
+        "coverageReasonFileCounts": {
+          "noSequenceSupport": 2
+        },
+        "coverageStateFileCounts": {
+          "complete": 48,
+          "insufficient": 2
+        },
+        "eventCount": 50,
+        "fieldStateCounts": {
+          "dji.SensorID": {
+            "absent": 50
+          },
+          "dji.unresolved.CaptureMode": {
+            "unsupportedSelector": 50
+          },
+          "dji.unresolved.CaptureUUID": {
+            "unsupportedSelector": 50
+          },
+          "dji.unresolved.PhotoCaptureMode": {
+            "unsupportedSelector": 50
+          },
+          "dji.unresolved.SequenceNumber": {
+            "unsupportedSelector": 50
+          },
+          "exif.CameraSerialNumber": {
+            "absent": 50
+          },
+          "exif.DateTimeOriginal": {
+            "present": 50
+          },
+          "exif.ExifImageHeight": {
+            "present": 50
+          },
+          "exif.ExifImageWidth": {
+            "present": 50
+          },
+          "exif.ExposureProgram": {
+            "present": 50
+          },
+          "exif.ExposureTime": {
+            "present": 50
+          },
+          "exif.FNumber": {
+            "present": 50
+          },
+          "exif.FocalLength": {
+            "present": 50
+          },
+          "exif.ImageHeight": {
+            "conflicting": 50
+          },
+          "exif.ImageNumber": {
+            "absent": 50
+          },
+          "exif.ImageUniqueID": {
+            "absent": 50
+          },
+          "exif.ImageWidth": {
+            "conflicting": 50
+          },
+          "exif.ISO": {
+            "present": 50
+          },
+          "exif.Make": {
+            "present": 50
+          },
+          "exif.Model": {
+            "present": 50
+          },
+          "exif.OffsetTimeOriginal": {
+            "present": 50
+          },
+          "exif.Orientation": {
+            "present": 50
+          },
+          "exif.RawDataUniqueID": {
+            "absent": 50
+          },
+          "exif.SerialNumber": {
+            "absent": 50
+          },
+          "exif.SubjectDistance": {
+            "absent": 50
+          },
+          "exif.SubSecTimeOriginal": {
+            "present": 50
+          },
+          "exif.UniqueCameraModel": {
+            "absent": 50
+          },
+          "file.FileType": {
+            "present": 50
+          },
+          "file.MIMEType": {
+            "present": 50
+          },
+          "sony.AFAreaMode": {
+            "present": 50
+          },
+          "sony.AFAreaModeSetting": {
+            "present": 50
+          },
+          "sony.AFPointSelected": {
+            "present": 50
+          },
+          "sony.AFTracking": {
+            "present": 50
+          },
+          "sony.CameraOrientation": {
+            "present": 50
+          },
+          "sony.DriveMode": {
+            "absent": 50
+          },
+          "sony.DriveMode2": {
+            "absent": 50
+          },
+          "sony.DriveModeSetting": {
+            "absent": 50
+          },
+          "sony.FlexibleSpotPosition": {
+            "present": 50
+          },
+          "sony.FocusFrameSize": {
+            "present": 50
+          },
+          "sony.FocusLocation": {
+            "present": 50
+          },
+          "sony.FocusLocation2": {
+            "present": 50
+          },
+          "sony.FocusMode": {
+            "present": 50
+          },
+          "sony.FocusPosition2": {
+            "present": 50
+          },
+          "sony.InternalSerialNumber": {
+            "absent": 50
+          },
+          "sony.ReleaseMode": {
+            "present": 50
+          },
+          "sony.ReleaseMode2": {
+            "present": 50
+          },
+          "sony.ReleaseMode3": {
+            "absent": 50
+          },
+          "sony.SequenceFileNumber": {
+            "present": 50
+          },
+          "sony.SequenceImageNumber": {
+            "present": 50
+          },
+          "sony.SequenceLength": {
+            "present": 50
+          },
+          "sony.SequenceNumber": {
+            "present": 50
+          },
+          "sony.SerialNumber": {
+            "absent": 50
+          },
+          "sony.ShutterType": {
+            "absent": 50
+          },
+          "xmp.ImageUniqueID": {
+            "absent": 50
+          },
+          "xmpEX.ImageUniqueID": {
+            "absent": 50
+          }
+        },
+        "groupCount": 1,
+        "metadataFailureCount": 0,
+        "nativeContradictionCounts": {},
+        "nativeEvidenceCount": 50,
+        "previewCount": 50,
+        "timePrecisionCounts": {
+          "subsecond": 50
+        }
+      },
+      "elapsedSeconds": 12.12311795833375,
+      "groupCount": 1,
+      "mode": "reference",
+      "providerVersion": "runtime-exiftool-jsonq-v1",
+      "ranges": [
+        {
+          "count": 48,
+          "firstOrdinal": 1,
+          "lastOrdinal": 48
+        }
+      ],
+      "runState": "applied",
+      "sourceSHAUnchanged": true,
+      "undone": true
+    },
+    {
+      "caseID": "sony-interval-prefix",
+      "expectedFirst": "DSC05994.ARW",
+      "expectedLast": "DSC06009.ARW",
+      "meaning": "28-file bounded prefix; expected16-member observed subset of original427 group, not full endpoint acceptance",
+      "summarySHA256": "5db1c53fe3d521b2939f0dd002ecd8c7830b8bdb6a51fae01c98e7bc836e2d0b",
+      "assetCount": 28,
+      "diagnostics": {
+        "assetCount": 28,
+        "associationHypothesisAssumed": false,
+        "barrierCounts": {},
+        "coverageReasonFileCounts": {
+          "noSequenceSupport": 12
+        },
+        "coverageStateFileCounts": {
+          "complete": 16,
+          "insufficient": 12
+        },
+        "eventCount": 28,
+        "fieldStateCounts": {
+          "dji.SensorID": {
+            "absent": 28
+          },
+          "dji.unresolved.CaptureMode": {
+            "unsupportedSelector": 28
+          },
+          "dji.unresolved.CaptureUUID": {
+            "unsupportedSelector": 28
+          },
+          "dji.unresolved.PhotoCaptureMode": {
+            "unsupportedSelector": 28
+          },
+          "dji.unresolved.SequenceNumber": {
+            "unsupportedSelector": 28
+          },
+          "exif.CameraSerialNumber": {
+            "absent": 28
+          },
+          "exif.DateTimeOriginal": {
+            "present": 28
+          },
+          "exif.ExifImageHeight": {
+            "present": 28
+          },
+          "exif.ExifImageWidth": {
+            "present": 28
+          },
+          "exif.ExposureProgram": {
+            "present": 28
+          },
+          "exif.ExposureTime": {
+            "present": 28
+          },
+          "exif.FNumber": {
+            "present": 28
+          },
+          "exif.FocalLength": {
+            "present": 28
+          },
+          "exif.ImageHeight": {
+            "conflicting": 28
+          },
+          "exif.ImageNumber": {
+            "absent": 28
+          },
+          "exif.ImageUniqueID": {
+            "absent": 28
+          },
+          "exif.ImageWidth": {
+            "conflicting": 28
+          },
+          "exif.ISO": {
+            "present": 28
+          },
+          "exif.Make": {
+            "present": 28
+          },
+          "exif.Model": {
+            "present": 28
+          },
+          "exif.OffsetTimeOriginal": {
+            "present": 28
+          },
+          "exif.Orientation": {
+            "present": 28
+          },
+          "exif.RawDataUniqueID": {
+            "absent": 28
+          },
+          "exif.SerialNumber": {
+            "absent": 28
+          },
+          "exif.SubjectDistance": {
+            "absent": 28
+          },
+          "exif.SubSecTimeOriginal": {
+            "present": 28
+          },
+          "exif.UniqueCameraModel": {
+            "absent": 28
+          },
+          "file.FileType": {
+            "present": 28
+          },
+          "file.MIMEType": {
+            "present": 28
+          },
+          "sony.AFAreaMode": {
+            "present": 28
+          },
+          "sony.AFAreaModeSetting": {
+            "present": 28
+          },
+          "sony.AFPointSelected": {
+            "present": 28
+          },
+          "sony.AFTracking": {
+            "present": 28
+          },
+          "sony.CameraOrientation": {
+            "present": 28
+          },
+          "sony.DriveMode": {
+            "absent": 28
+          },
+          "sony.DriveMode2": {
+            "absent": 28
+          },
+          "sony.DriveModeSetting": {
+            "absent": 28
+          },
+          "sony.FlexibleSpotPosition": {
+            "present": 28
+          },
+          "sony.FocusFrameSize": {
+            "present": 28
+          },
+          "sony.FocusLocation": {
+            "present": 28
+          },
+          "sony.FocusLocation2": {
+            "present": 28
+          },
+          "sony.FocusMode": {
+            "present": 28
+          },
+          "sony.FocusPosition2": {
+            "present": 28
+          },
+          "sony.InternalSerialNumber": {
+            "present": 28
+          },
+          "sony.ReleaseMode": {
+            "present": 28
+          },
+          "sony.ReleaseMode2": {
+            "present": 28
+          },
+          "sony.ReleaseMode3": {
+            "absent": 28
+          },
+          "sony.SequenceFileNumber": {
+            "present": 28
+          },
+          "sony.SequenceImageNumber": {
+            "present": 28
+          },
+          "sony.SequenceLength": {
+            "present": 28
+          },
+          "sony.SequenceNumber": {
+            "present": 28
+          },
+          "sony.SerialNumber": {
+            "absent": 28
+          },
+          "sony.ShutterType": {
+            "absent": 28
+          },
+          "xmp.ImageUniqueID": {
+            "absent": 28
+          },
+          "xmpEX.ImageUniqueID": {
+            "absent": 28
+          }
+        },
+        "groupCount": 1,
+        "metadataFailureCount": 0,
+        "nativeContradictionCounts": {},
+        "nativeEvidenceCount": 28,
+        "previewCount": 28,
+        "timePrecisionCounts": {
+          "subsecond": 28
+        }
+      },
+      "elapsedSeconds": 8.949152708333713,
+      "groupCount": 1,
+      "mode": "copy",
+      "providerVersion": "runtime-exiftool-jsonq-v1",
+      "ranges": [
+        {
+          "count": 16,
+          "firstOrdinal": 12,
+          "lastOrdinal": 27
+        }
+      ],
+      "runState": "applied",
+      "sourceSHAUnchanged": true,
+      "undone": true
+    },
+    {
+      "caseID": "dji-12-events",
+      "expectedFirst": "DJI_20261002061628_0001_D.DNG",
+      "expectedLast": "DJI_20261002061723_0012_D.JPG",
+      "meaning": "24 nativefiles/12provisional events; known-positive subset, no new negative endpoint or pair-precision proof",
+      "summarySHA256": "fddb40beadcc359b5d540deb0cc6f8a98ff460435c78626233989e6cdfec67be",
+      "assetCount": 24,
+      "diagnostics": {
+        "assetCount": 24,
+        "associationHypothesisAssumed": true,
+        "barrierCounts": {},
+        "coverageReasonFileCounts": {},
+        "coverageStateFileCounts": {
+          "complete": 24
+        },
+        "eventCount": 12,
+        "fieldStateCounts": {
+          "dji.SensorID": {
+            "present": 24
+          },
+          "dji.unresolved.CaptureMode": {
+            "unsupportedSelector": 24
+          },
+          "dji.unresolved.CaptureUUID": {
+            "unsupportedSelector": 24
+          },
+          "dji.unresolved.PhotoCaptureMode": {
+            "unsupportedSelector": 24
+          },
+          "dji.unresolved.SequenceNumber": {
+            "unsupportedSelector": 24
+          },
+          "exif.CameraSerialNumber": {
+            "absent": 12,
+            "present": 12
+          },
+          "exif.DateTimeOriginal": {
+            "present": 24
+          },
+          "exif.ExifImageHeight": {
+            "absent": 12,
+            "present": 12
+          },
+          "exif.ExifImageWidth": {
+            "absent": 12,
+            "present": 12
+          },
+          "exif.ExposureProgram": {
+            "present": 24
+          },
+          "exif.ExposureTime": {
+            "present": 24
+          },
+          "exif.FNumber": {
+            "present": 24
+          },
+          "exif.FocalLength": {
+            "present": 24
+          },
+          "exif.ImageHeight": {
+            "absent": 12,
+            "conflicting": 12
+          },
+          "exif.ImageNumber": {
+            "absent": 24
+          },
+          "exif.ImageUniqueID": {
+            "absent": 24
+          },
+          "exif.ImageWidth": {
+            "absent": 12,
+            "conflicting": 12
+          },
+          "exif.ISO": {
+            "present": 24
+          },
+          "exif.Make": {
+            "present": 24
+          },
+          "exif.Model": {
+            "present": 24
+          },
+          "exif.OffsetTimeOriginal": {
+            "absent": 24
+          },
+          "exif.Orientation": {
+            "present": 24
+          },
+          "exif.RawDataUniqueID": {
+            "absent": 24
+          },
+          "exif.SerialNumber": {
+            "present": 24
+          },
+          "exif.SubjectDistance": {
+            "present": 24
+          },
+          "exif.SubSecTimeOriginal": {
+            "absent": 24
+          },
+          "exif.UniqueCameraModel": {
+            "present": 24
+          },
+          "file.FileType": {
+            "present": 24
+          },
+          "file.MIMEType": {
+            "present": 24
+          },
+          "sony.AFAreaMode": {
+            "absent": 24
+          },
+          "sony.AFAreaModeSetting": {
+            "absent": 24
+          },
+          "sony.AFPointSelected": {
+            "absent": 24
+          },
+          "sony.AFTracking": {
+            "absent": 24
+          },
+          "sony.CameraOrientation": {
+            "absent": 24
+          },
+          "sony.DriveMode": {
+            "absent": 24
+          },
+          "sony.DriveMode2": {
+            "absent": 24
+          },
+          "sony.DriveModeSetting": {
+            "absent": 24
+          },
+          "sony.FlexibleSpotPosition": {
+            "absent": 24
+          },
+          "sony.FocusFrameSize": {
+            "absent": 24
+          },
+          "sony.FocusLocation": {
+            "absent": 24
+          },
+          "sony.FocusLocation2": {
+            "absent": 24
+          },
+          "sony.FocusMode": {
+            "absent": 24
+          },
+          "sony.FocusPosition2": {
+            "absent": 24
+          },
+          "sony.InternalSerialNumber": {
+            "absent": 24
+          },
+          "sony.ReleaseMode": {
+            "absent": 24
+          },
+          "sony.ReleaseMode2": {
+            "absent": 24
+          },
+          "sony.ReleaseMode3": {
+            "absent": 24
+          },
+          "sony.SequenceFileNumber": {
+            "absent": 24
+          },
+          "sony.SequenceImageNumber": {
+            "absent": 24
+          },
+          "sony.SequenceLength": {
+            "absent": 24
+          },
+          "sony.SequenceNumber": {
+            "absent": 24
+          },
+          "sony.SerialNumber": {
+            "absent": 24
+          },
+          "sony.ShutterType": {
+            "absent": 24
+          },
+          "xmp.ImageUniqueID": {
+            "absent": 24
+          },
+          "xmpEX.ImageUniqueID": {
+            "absent": 24
+          }
+        },
+        "groupCount": 1,
+        "metadataFailureCount": 0,
+        "nativeContradictionCounts": {},
+        "nativeEvidenceCount": 24,
+        "previewCount": 24,
+        "timePrecisionCounts": {
+          "seconds": 24
+        }
+      },
+      "elapsedSeconds": 4.031441041664948,
+      "groupCount": 1,
+      "mode": "reference",
+      "providerVersion": "runtime-exiftool-jsonq-v1",
+      "ranges": [
+        {
+          "count": 24,
+          "firstOrdinal": 0,
+          "lastOrdinal": 23
+        }
+      ],
+      "runState": "applied",
+      "sourceSHAUnchanged": true,
+      "undone": true
+    }
+  ],
+  "limitations": [
+    "All samples were previously seen development data. These are bounded import/undo/resume tests, not independent full-batch quality acceptance.",
+    "DJI association remains assumed; pairPrecision is undefined and0188 remains unknown.",
+    "Whole-application RSS and forcibly interrupting nativeImageIO reads are not claimed.",
+    "Native desktop launch and local HTML browser interaction remain manual acceptance items. The browser denied file URLs, and Terminal computer-use access was denied; no bypass attempted."
+  ]
+}

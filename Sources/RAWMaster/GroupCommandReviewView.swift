@@ -14,6 +14,7 @@ extension GroupCommandRequest {
         case .merge: return "合并拍摄组"
         case .split: return "拆分拍摄组"
         case .restore: return "恢复组操作前的状态"
+        case .automaticBatch: return "自动建立待复核拍摄组"
         }
     }
 }

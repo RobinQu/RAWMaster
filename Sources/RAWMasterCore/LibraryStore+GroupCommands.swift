@@ -59,7 +59,7 @@ extension LibraryStore {
       return .split(
         groupID: id, movedAssetIDs: try unique(ids).sorted(), newName: try trimmed(name),
         newKind: try trimmed(kind))
-    case .restore: return request
+    case .restore, .automaticBatch: return request
     }
   }
   private func derivedGroupID(_ previewID: String, role: String) throws -> String {
@@ -285,6 +285,23 @@ extension LibraryStore {
         id: try fresh("create:0"), projectID: assets[0].projectID, name: name, kind: kind,
         assetIDs: ids, includedAssetIDs: ids)
       after = [g]
+    case .automaticBatch(let batch):
+      let input = try validateAutomaticGroupingBatch(batch)
+      for (index, proposal) in batch.groups.enumerated() {
+        let kind: String
+        switch proposal.kind {
+        case .burst: kind = "连拍"
+        case .interval: kind = "间隔拍摄"
+        case .sequence: kind = "文件序列"
+        }
+        after.append(CaptureGroup(id: try fresh("automatic:\(index)"), projectID: input.projectID,
+          name: "\(kind) \(index + 1) · 待复核", kind: kind, assetIDs: proposal.assetIDs,
+          includedAssetIDs: proposal.assetIDs, origin: .automaticPendingReview, locked: false))
+      }
+      warnings.append("自动分组仅供人工复核；所有照片保持参与，不会排除或删除原片")
+      if batch.provenance.associationHypothesisAssumed {
+        warnings.append("RAW/JPEG 拍摄事件关联包含设备元数据假设，请复核")
+      }
     case .rename(let groupID, let name):
       var g = try group(groupID)
       before = [g]
@@ -487,6 +504,9 @@ extension LibraryStore {
         parent.record.compensationIDs.append(record.id)
         try statement(
           "UPDATE group_commands SET data=? WHERE id=?", [try json(parent), original.id])
+      }
+      if case .automaticBatch(let batch) = request {
+        try finalizeAutomaticGroupingBatch(batch, command: record)
       }
       try operation(entity: record.id, action: "groupCommand", payload: try json(record))
       return record

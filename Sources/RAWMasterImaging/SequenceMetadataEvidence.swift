@@ -24,14 +24,16 @@ public struct SequenceMetadataSnapshot: Codable, Sendable, Equatable {
     /// fingerprint is the curated sidecar's verified byte SHA, not a self-referential JSON digest.
     public let auditSeal, fingerprint, v1IndexSHA256, caseManifestSHA256: String
     public let files: [SequenceMetadataFileEvidence]
-    public init(auditSeal: String, fingerprint: String, v1IndexSHA256: String, caseManifestSHA256: String, files: [SequenceMetadataFileEvidence]) {
+    public let runtimeProof: SequenceRuntimeMetadataProof?
+    public init(auditSeal: String, fingerprint: String, v1IndexSHA256: String, caseManifestSHA256: String, files: [SequenceMetadataFileEvidence], runtimeProof: SequenceRuntimeMetadataProof? = nil) {
         self.auditSeal = auditSeal; self.fingerprint = fingerprint; self.v1IndexSHA256 = v1IndexSHA256
-        self.caseManifestSHA256 = caseManifestSHA256; self.files = files
+        self.caseManifestSHA256 = caseManifestSHA256; self.files = files; self.runtimeProof = runtimeProof
     }
     public func validateBindings(manifest: SequenceInputManifest) throws {
         guard SequenceMetadataEvidenceLoader.isSHA(auditSeal), SequenceMetadataEvidenceLoader.isSHA(fingerprint),
               SequenceMetadataEvidenceLoader.isSHA(v1IndexSHA256), SequenceMetadataEvidenceLoader.isSHA(caseManifestSHA256),
               files.count == manifest.entries.count else { throw SequenceMetadataEvidenceError.invalid("Metadata snapshot identity/count") }
+        try runtimeProof?.validate(snapshot: self, manifest: manifest)
         for (file, entry) in zip(files, manifest.entries) {
             guard file.assetID == entry.assetID, file.currentSHA256 == entry.contentHash, file.auditSeal == auditSeal,
                   SequenceMetadataEvidenceLoader.isSHA(file.originalSHA256), SequenceMetadataEvidenceLoader.isSHA(file.keyID),

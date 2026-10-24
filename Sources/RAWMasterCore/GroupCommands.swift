@@ -11,6 +11,7 @@ public enum GroupCommandRequest: Codable, Sendable {
   case merge(groupIDs: [String], name: String, kind: String)
   case split(groupID: String, movedAssetIDs: [String], newName: String, newKind: String)
   case restore(commandID: String)
+  case automaticBatch(AutomaticGroupingBatch)
 }
 public enum GroupTouchDomain: Codable, Sendable, Hashable {
   case existence, all, name, kind, lock
