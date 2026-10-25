@@ -22,6 +22,8 @@ jobs:
           uname -m >> output/validation/ci/platform.txt
           swift --version >> output/validation/ci/platform.txt
           xcodebuild -version >> output/validation/ci/platform.txt
+      - name: Prepare pinned annotation DOM tests
+        run: npm ci --prefix Tests/ReviewUI --ignore-scripts --no-audit --no-fund
       - name: Validate offline experiment runner
         run: |
           set -o pipefail

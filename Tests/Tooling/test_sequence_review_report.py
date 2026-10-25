@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import os
 import pathlib
 import shutil
 import subprocess
@@ -136,6 +137,19 @@ console.log('revision validator pass');
 '''
         completed = subprocess.run([shutil.which('node'), '-e', program, str(REPO / 'scripts/sequence-review-report/review.js'), str(catalog_path)], capture_output=True, text=True)
         self.assertEqual(completed.returncode, 0, completed.stderr)
+
+
+    def testContinuousAnnotationDOMWorkflowPreservesDraftAndProgress(self):
+        node = shutil.which('node')
+        modules = pathlib.Path(os.environ.get('RAWMASTER_REVIEW_NODE_MODULES', REPO / 'Tests/ReviewUI/node_modules'))
+        if not node or not (modules / 'jsdom').is_dir():
+            self.skipTest('Run npm ci --prefix Tests/ReviewUI --ignore-scripts for pinned in-memory DOM tests')
+        catalog_path = self.root / 'dom-catalog.json'
+        catalog_path.write_text(json.dumps(self.catalog()))
+        env = dict(os.environ, RAWMASTER_REVIEW_NODE_MODULES=str(modules))
+        completed = subprocess.run([node, str(REPO / 'Tests/ReviewUI/continuous-annotation.cjs'), str(catalog_path)],
+                                   capture_output=True, text=True, env=env)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
 
 
 if __name__ == '__main__': unittest.main()
