@@ -243,5 +243,30 @@ console.log('revision validator pass');
             bad = json.loads(json.dumps(g)); mutate(bad)
             with self.assertRaises(report.InvalidReport): report.attach_guidance(c, bad)
 
+    @unittest.skipUnless(shutil.which('node'), 'Node needed for accepted annotation validation')
+    def testAcceptedHumanLabelsBindToOriginalFixturesAndReproduceFrozenRescore(self):
+        fixture = REPO / 'Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1'
+        catalog = report.jpeg_annotation_projection(report.build_catalog(fixture, report.default_sources(REPO), sources_base=REPO), ['dji187-context376'])
+        catalog_path = self.root / 'accepted-label-catalog.json'; catalog_path.write_text(json.dumps(catalog))
+        program = r'''
+const assert=require('assert/strict'),fs=require('fs'),crypto=require('crypto'),path=require('path');
+const repo=process.argv[1],C=JSON.parse(fs.readFileSync(process.argv[2])),M=require(path.join(repo,'scripts/sequence-review-report/review.js')),G=require(path.join(repo,'scripts/sequence-review-report/guided-review.js'));
+const dir=path.join(repo,'Tests/Fixtures/SequenceGroupingAnnotations/v1'),bytes=fs.readFileSync(path.join(dir,'accepted-revision.json')),d=M.validate(M.parseStrictJSON(bytes.toString()),C),r=JSON.parse(fs.readFileSync(path.join(dir,'receipt.json')));
+assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),r.acceptedRevisionSHA256);
+assert.equal(d.caseEdits.reduce((n,e)=>n+e.edgeEdits.length,0),23);
+for(const answer of r.completedReviewAnswers){const c=C.cases.find(c=>c.id===answer.caseID),first=c.assets.findIndex(a=>a.filename===answer.left);assert.equal(c.assets[first+1].filename,answer.right);assert.equal(G.relation(c,d,first),answer.relation);}
+for(const old of r.retainedPriorAssertions)assert.deepEqual(d.caseEdits.find(e=>e.caseID===old.caseID).edgeEdits.find(e=>e.leftAssetID===old.leftAssetID),Object.fromEntries(Object.entries(old).filter(([k])=>k!=='caseID')));
+const burst=C.cases.find(c=>c.id==='burst48-context72'),groups=M.groups(burst,d);assert.deepEqual(groups.map(g=>[g.firstOrdinal,g.lastOrdinal,g.kind]),[[0,3,'sequence'],[4,11,'sequence'],[12,32,'burst'],[33,59,'burst']]);
+assert.equal(burst.truth.groups[0].assetIDs.length,48,'original truth remains intact');
+const dji=C.cases.find(c=>c.id==='dji187-context376');assert.equal(M.groups(dji,d)[0].lastOrdinal,187);assert.equal(G.relation(dji,d,186),'same');assert.equal(dji.completeGroupTruth,false,'new same edge does not invent an outside endpoint');
+const counts={TP:0,FP:0,FN:0,TN:0,unknown:0},errors=[];
+for(const c of C.cases){const unit=c.algorithms.find(u=>u.id==='009:009-strict');if(!unit)continue;const member=Array(c.assets.length).fill(-1);unit.ranges.forEach((g,i)=>{for(let n=g.range.first;n<=g.range.last;n++)member[n]=i;});G.relations(c,d).forEach((e,n)=>{if(e==='unknown'){counts.unknown++;return;}const joined=member[n]>=0&&member[n]===member[n+1],result=e==='same'?(joined?'TP':'FN'):(joined?'FP':'TN');counts[result]++;if(result==='FP'||result==='FN')errors.push([c.id,c.assets[n].filename,c.assets[n+1].filename,result]);});}
+assert.deepEqual(counts,r.frozenResultReevaluation.totals);
+assert.deepEqual(errors,[['burst48-context72','DSC01741.ARW','DSC01742.ARW','FP']]);
+console.log('Accepted annotation bindings and frozen-result rescore verified; known FP is recorded, not a passing production quality claim.');
+'''
+        completed = subprocess.run([shutil.which('node'), '-e', program, str(REPO), str(catalog_path)], capture_output=True, text=True)
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
 
 if __name__ == '__main__': unittest.main()

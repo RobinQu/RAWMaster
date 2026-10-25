@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "acceptedAt": "2026-10-25",
+  "status": "accepted-human-annotation-overlay",
+  "baseFixtureIndexSHA256": "e2bc0f560c96d9c60cea737d43718d3d867aacc7c0e6599a44f6d7da58efb48c",
+  "annotationIndexSHA256": "311a07d3539253c16031aa49d2fceb0bbb9f4f572b8ae116f6e77bedaa4e8293",
+  "acceptedRevisionSHA256": "ba193b709d4e7606e318a2fd780f03ddfb725678dc628f6d82a6bca1f9d32381",
+  "sourceExports": [
+    {
+      "filename": "RAWMaster-label-revision-e2bc0f560c96.json",
+      "sha256": "74499c20fd0c2456d132ac43f402ce52b77e0eca377d6ba15478f4c05334d343",
+      "edgeEdits": 5
+    },
+    {
+      "filename": "RAWMaster-label-revision-311a07d35392.json",
+      "sha256": "382a25d429c6c1d7ec324d16a819df304d622d47cd725548e5e1c157b3f30729",
+      "edgeEdits": 19
+    }
+  ],
+  "mergePolicy": "Latest explicit assertion wins; absence in a later export does not withdraw earlier confirmed assertions. Four prior assertions absent in the latest export were retained; neither source export was modified.",
+  "retainedPriorAssertions": [
+    {
+      "caseID": "burst123",
+      "leftAssetID": "asset0028",
+      "rightAssetID": "asset0029",
+      "relation": "same",
+      "note": ""
+    },
+    {
+      "caseID": "burst123",
+      "leftAssetID": "asset0050",
+      "rightAssetID": "asset0051",
+      "relation": "same",
+      "note": ""
+    },
+    {
+      "caseID": "burst123",
+      "leftAssetID": "asset0063",
+      "rightAssetID": "asset0064",
+      "relation": "same",
+      "note": ""
+    },
+    {
+      "caseID": "interval427-context439",
+      "leftAssetID": "asset0010",
+      "rightAssetID": "asset0011",
+      "relation": "separate",
+      "note": ""
+    }
+  ],
+  "edgeEditCount": 23,
+  "completedReviewAnswers": [
+    {
+      "taskID": "burst48-01731-01732",
+      "caseID": "burst48-context72",
+      "left": "DSC01731.ARW",
+      "right": "DSC01732.ARW",
+      "relation": "same"
+    },
+    {
+      "taskID": "burst48-01741-01742",
+      "caseID": "burst48-context72",
+      "left": "DSC01741.ARW",
+      "right": "DSC01742.ARW",
+      "relation": "separate"
+    },
+    {
+      "taskID": "burst48-01752-01753",
+      "caseID": "burst48-context72",
+      "left": "DSC01752.ARW",
+      "right": "DSC01753.ARW",
+      "relation": "same"
+    },
+    {
+      "taskID": "burst48-01761-01762",
+      "caseID": "burst48-context72",
+      "left": "DSC01761.ARW",
+      "right": "DSC01762.ARW",
+      "relation": "same"
+    },
+    {
+      "taskID": "dji-0187-0188",
+      "caseID": "dji187-context376",
+      "left": "DJI_20261002063158_0187_D.JPG",
+      "right": "DJI_20261002063203_0188_D.JPG",
+      "relation": "same"
+    }
+  ],
+  "semanticNotes": [
+    "burst48 core is two groups: DSC01721–DSC01741 (21), DSC01742–DSC01768 (27).",
+    "Added context groups DSC01709–DSC01712 (4) and DSC01713–DSC01720 (8) retain type sequence, as exported.",
+    "DJI JPEG 0001–0188 is confirmed same interval group; no following out-of-group sample is available, so complete terminal-boundary validation remains unsupported.",
+    "The original fixture truth, visual suggestions and sealed algorithm baselines are preserved."
+  ],
+  "frozenResultReevaluation": {
+    "algorithmID": "009:009-strict",
+    "method": "Read-only rescore of existing file-range predictions using adjacent known edges from accepted human revision; algorithm not rerun; this is not a new independent test.",
+    "totals": {
+      "TP": 809,
+      "FP": 1,
+      "FN": 0,
+      "TN": 9,
+      "unknown": 65
+    },
+    "precision": 0.9987654320987654,
+    "recall": 1,
+    "cases": [
+      {
+        "caseID": "burst123",
+        "scored": true,
+        "algorithmID": "009:009-strict",
+        "TP": 122,
+        "FP": 0,
+        "FN": 0,
+        "TN": 0,
+        "unknown": 0,
+        "errors": []
+      },
+      {
+        "caseID": "burst14-context38",
+        "scored": true,
+        "algorithmID": "009:009-strict",
+        "TP": 13,
+        "FP": 0,
+        "FN": 0,
+        "TN": 2,
+        "unknown": 22,
+        "errors": []
+      },
+      {
+        "caseID": "burst48-context72",
+        "scored": true,
+        "algorithmID": "009:009-strict",
+        "TP": 56,
+        "FP": 1,
+        "FN": 0,
+        "TN": 3,
+        "unknown": 11,
+        "errors": [
+          {
+            "firstOrdinal": 32,
+            "left": "DSC01741.ARW",
+            "right": "DSC01742.ARW",
+            "expected": "separate",
+            "outcome": "FP"
+          }
+        ]
+      },
+      {
+        "caseID": "interval427-context439",
+        "scored": true,
+        "algorithmID": "009:009-strict",
+        "TP": 426,
+        "FP": 0,
+        "FN": 0,
+        "TN": 2,
+        "unknown": 10,
+        "errors": []
+      },
+      {
+        "caseID": "burst193-context217",
+        "scored": true,
+        "algorithmID": "009:009-strict",
+        "TP": 192,
+        "FP": 0,
+        "FN": 0,
+        "TN": 2,
+        "unknown": 22,
+        "errors": []
+      },
+      {
+        "caseID": "dji187-context376",
+        "scored": false,
+        "reason": "No JPEG-only frozen algorithm result; DNG/JPEG metrics are not reused",
+        "positiveEdges": 187,
+        "negativeEdges": 0
+      }
+    ]
+  }
+}
