@@ -218,5 +218,30 @@ console.log('revision validator pass');
             capture_output=True, text=True, env=dict(os.environ, RAWMASTER_REVIEW_NODE_MODULES=str(modules)))
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
 
+    def testGuidedAnnotationKeepsChoicesAndGroupRangesConsistent(self):
+        node = shutil.which('node')
+        modules = pathlib.Path(os.environ.get('RAWMASTER_REVIEW_NODE_MODULES', REPO / 'Tests/ReviewUI/node_modules'))
+        if not node or not (modules / 'jsdom').is_dir():
+            self.skipTest('Run npm ci --prefix Tests/ReviewUI --ignore-scripts')
+        catalog_path = self.root / 'guided-catalog.json'; catalog_path.write_text(json.dumps(self.catalog()))
+        completed = subprocess.run([node, str(REPO / 'Tests/ReviewUI/guided-annotation.cjs'), str(catalog_path)],
+            capture_output=True, text=True, env=dict(os.environ, RAWMASTER_REVIEW_NODE_MODULES=str(modules)))
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
+    def testHumanReviewGuidanceRequiresExactBoundaryAndImageBindings(self):
+        c = self.catalog(); assets = c['cases'][0]['assets']; before = json.dumps(c, sort_keys=True)
+        g = {'schemaVersion': 1, 'annotationIndexSHA256': c['indexSHA256'], 'tasks': [
+            {'id': 'test', 'caseID': 'example', 'firstOrdinal': 1, 'leftAssetID': 'f1', 'rightAssetID': 'f2',
+             'imageSHA256': [a['jpegSHA256'] for a in assets[1:3]], 'scope': {'first': 0, 'last': 5}, 'recommendedRelation': 'separate'}],
+             'viewedImages': [{'caseID': 'example', 'ordinal': 1, 'assetID': 'f1', 'jpegSHA256': assets[1]['jpegSHA256']}]}
+        attached = report.attach_guidance(c, g)
+        self.assertEqual(attached['binding'], c['binding']); self.assertEqual(json.dumps(c, sort_keys=True), before)
+        for mutate in [lambda x: x.update(annotationIndexSHA256='bad'),
+                       lambda x: x['tasks'][0].update(firstOrdinal=2),
+                       lambda x: x['tasks'][0]['scope'].update(last=1),
+                       lambda x: x['viewedImages'][0].update(jpegSHA256='bad')]:
+            bad = json.loads(json.dumps(g)); mutate(bad)
+            with self.assertRaises(report.InvalidReport): report.attach_guidance(c, bad)
+
 
 if __name__ == '__main__': unittest.main()

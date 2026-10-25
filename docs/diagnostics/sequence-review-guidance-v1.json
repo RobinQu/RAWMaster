@@ -1,0 +1,779 @@
+{
+  "schemaVersion": 1,
+  "annotationIndexSHA256": "311a07d3539253c16031aa49d2fceb0bbb9f4f572b8ae116f6e77bedaa4e8293",
+  "reviewedAt": "2026-10-25",
+  "reviewMethod": "Codex native image inspection of 5 JPEG contact sheets; read-only comparison with sealed metadata and user confirmations",
+  "tasks": [
+    {
+      "id": "burst48-01731-01732",
+      "caseID": "burst48-context72",
+      "firstOrdinal": 22,
+      "leftAssetID": "asset0022",
+      "rightAssetID": "asset0023",
+      "imageSHA256": [
+        "699b89e7c48153143dc98e7de919b39ab846aa29cc6f7c234e43e7ea23fa7157",
+        "af87a9cb811c07fc21a24a241e19bfca181fb341a3a3a6449fa404da611904db"
+      ],
+      "scope": {
+        "first": 12,
+        "last": 59
+      },
+      "title": "DSC01731.ARW → DSC01732.ARW",
+      "question": "右图是否应开始一段新的连拍？",
+      "reason": "两张相隔 1.401 秒，序列文件计数从 11 变回 1。",
+      "visualObservation": "两张均是岸边同一只鸟，构图略有平移；画面相似并不能确认一次连续快门。",
+      "suggestion": "建议分开，仍由你确认。",
+      "recommendedRelation": "separate",
+      "evidence": {
+        "gapSeconds": 1.401,
+        "sequenceFileNumber": [
+          "11",
+          "1"
+        ],
+        "sequenceImageNumber": [
+          "12",
+          "6"
+        ]
+      }
+    },
+    {
+      "id": "burst48-01741-01742",
+      "caseID": "burst48-context72",
+      "firstOrdinal": 32,
+      "leftAssetID": "asset0032",
+      "rightAssetID": "asset0033",
+      "imageSHA256": [
+        "8f279d502cfe238443a4920bdd4742505f9f09c73e5cbaeaf623554d718d24f1",
+        "59e89613a232d51181c445e7f883c29f0400c33fb83d5969c7e5f44aa8e72a3a"
+      ],
+      "scope": {
+        "first": 12,
+        "last": 59
+      },
+      "title": "DSC01741.ARW → DSC01742.ARW",
+      "question": "右图是否应开始一段新的连拍？",
+      "reason": "两张相隔 7.207 秒，序列文件计数从 10 变回 1。",
+      "visualObservation": "后一张鸟在画面中更大、朝向及取景改变，前后属于同一场景。",
+      "suggestion": "建议分开，仍由你确认。",
+      "recommendedRelation": "separate",
+      "evidence": {
+        "gapSeconds": 7.207,
+        "sequenceFileNumber": [
+          "10",
+          "1"
+        ],
+        "sequenceImageNumber": [
+          "15",
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "burst48-01752-01753",
+      "caseID": "burst48-context72",
+      "firstOrdinal": 43,
+      "leftAssetID": "asset0043",
+      "rightAssetID": "asset0044",
+      "imageSHA256": [
+        "fb6fa4f1d479a5fca8eb66e682c34863fd47af61eb4161b300243ebc2e320542",
+        "195e411c21bfe3bae41eae68348f8a0b2bc6d56a166beb097eb2e72d9198472b"
+      ],
+      "scope": {
+        "first": 12,
+        "last": 59
+      },
+      "title": "DSC01752.ARW → DSC01753.ARW",
+      "question": "右图是否应开始一段新的连拍？",
+      "reason": "两张相隔 0.65 秒，序列文件计数从 11 变回 1。",
+      "visualObservation": "鸟的位置和背景基本连续，后一张头颈姿态改变；仅看图像很容易把两次连拍并在一起。",
+      "suggestion": "建议分开，仍由你确认。",
+      "recommendedRelation": "separate",
+      "evidence": {
+        "gapSeconds": 0.65,
+        "sequenceFileNumber": [
+          "11",
+          "1"
+        ],
+        "sequenceImageNumber": [
+          "11",
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "burst48-01761-01762",
+      "caseID": "burst48-context72",
+      "firstOrdinal": 52,
+      "leftAssetID": "asset0052",
+      "rightAssetID": "asset0053",
+      "imageSHA256": [
+        "f9ad80abb75a4842e19b6b52563520a9d239bd56b48b7545179c0521375377a9",
+        "4e6aaeff99eef405ee466441b5f1309f84b3455f0fb9c2c991ba75da6e25b24a"
+      ],
+      "scope": {
+        "first": 12,
+        "last": 59
+      },
+      "title": "DSC01761.ARW → DSC01762.ARW",
+      "question": "右图是否应开始一段新的连拍？",
+      "reason": "两张相隔 5.389 秒，序列文件计数从 9 变回 1。",
+      "visualObservation": "主体和岸边背景持续，后一张取景略有变化；元数据记录了明显暂停和计数重启。",
+      "suggestion": "建议分开，仍由你确认。",
+      "recommendedRelation": "separate",
+      "evidence": {
+        "gapSeconds": 5.389,
+        "sequenceFileNumber": [
+          "9",
+          "1"
+        ],
+        "sequenceImageNumber": [
+          "9",
+          "1"
+        ]
+      }
+    },
+    {
+      "id": "dji-0187-0188",
+      "caseID": "dji187-context376",
+      "firstOrdinal": 186,
+      "leftAssetID": "asset0373",
+      "rightAssetID": "asset0375",
+      "imageSHA256": [
+        "504df1986a1d24f49a1987a7377a8113d84a0c5de7e4045326d21549dc66abb4",
+        "b39e8ed4602d1cf2f907ba6c1b2301d1e5a26702f5f372436b192e412b82fd01"
+      ],
+      "scope": {
+        "first": 0,
+        "last": 187
+      },
+      "title": "DJI 0187 → 0188",
+      "question": "0188 是否仍属于前面的间隔拍摄？",
+      "reason": "时间间隔仍为 5 秒；0188 的快门由 1/3200 秒变为 1/8000 秒，ISO 从 200 变为 130。",
+      "visualObservation": "0181–0187 的河流和地平线构图连续；0188 构图基本相同但明显更暗，与曝光参数变化一致。亮度变化不足以确定是否另组。",
+      "suggestion": "仍无法确定。若记不清，可选择“暂不确定”。",
+      "recommendedRelation": "unknown",
+      "evidence": {
+        "gapSeconds": 5,
+        "shutterSeconds": [
+          0.0003125,
+          0.000125
+        ],
+        "iso": [
+          200,
+          130
+        ]
+      }
+    }
+  ],
+  "settled": [
+    {
+      "caseID": "burst123",
+      "text": "DSC02496/02497、02518/02519、02531/02532：导出的 3 条修订已明确确认同组，移出待确认队列。",
+      "basis": "用户导出的修订文件"
+    },
+    {
+      "caseID": "burst48-context72",
+      "text": "DSC01720 在组外、DSC01769 在组外；保留原来的两端边界。本次只复核内部 4 处重启。",
+      "basis": "用户明确答复及导出修订"
+    },
+    {
+      "caseID": "burst193-context217",
+      "text": "DSC00367、DSC00561 均已确认可算组外；主体和场景连续不推翻你的分组意图。",
+      "basis": "用户明确答复"
+    },
+    {
+      "caseID": "interval427-context439",
+      "text": "DSC05994–DSC06420 已确认同组；DSC05993 在组外。DSC05992/05993 分开这一新增修订已记录。",
+      "basis": "用户明确答复及导出修订"
+    },
+    {
+      "caseID": "burst14-context38",
+      "text": "DSC01497–DSC01510 及两侧组外边界已确认，当前没有需要重复询问的新证据。",
+      "basis": "用户明确答复"
+    },
+    {
+      "caseID": "dji187-context376",
+      "text": "仅使用 JPEG；0001–0187 已确认同组，0188 仍未知。",
+      "basis": "用户明确答复"
+    }
+  ],
+  "viewedImages": [
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0011",
+      "ordinal": 11,
+      "jpegSHA256": "212d60e9069d4d24fe7063a939954e14be117e0933acce1241fb05eaefd75554",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0012",
+      "ordinal": 12,
+      "jpegSHA256": "bb3deb6640023ee0e0e18040dcd02b5f1822e267e4b40812e436c78317feafb3",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0013",
+      "ordinal": 13,
+      "jpegSHA256": "5b428def7f120222ed1d587b389175dda9a3f21ba098254c2a496a5ff0bde788",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0014",
+      "ordinal": 14,
+      "jpegSHA256": "8ca8ffd8e68ef0f3134e44570fd20a81725d4ff4144bd136a5e6d16a96951c5a",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0015",
+      "ordinal": 15,
+      "jpegSHA256": "3dca0232dac96098a211e7471f47c4da7cfaa19bf34242dda51cbd83be2c1f8c",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0016",
+      "ordinal": 16,
+      "jpegSHA256": "65f0baac7d8b470a4d2f03fa47e81357c0f47433ed2ce4b30edd44130dbb61a8",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0017",
+      "ordinal": 17,
+      "jpegSHA256": "9b69f8bd28185a803de9638d0e75dfce43090fb87c96ab00ec9f7ce20d352d68",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0018",
+      "ordinal": 18,
+      "jpegSHA256": "fb6f0d23ff8ac84e55580458ce2e41f403be649db9c1d16a673738229588b147",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0019",
+      "ordinal": 19,
+      "jpegSHA256": "b6b9d1616abe08fc8da441bf0e3324bca7d3f3e624545860a8523a7097248a07",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0020",
+      "ordinal": 20,
+      "jpegSHA256": "231670fed75da1c8b2dae2b6e9c81afeb0d318b398738760d95cf0eb19d831f4",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0021",
+      "ordinal": 21,
+      "jpegSHA256": "45cf9dc9c3ab2a61ad9cfedee9843376085bcf27d23499b5e22d78e40ff7ff01",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0022",
+      "ordinal": 22,
+      "jpegSHA256": "699b89e7c48153143dc98e7de919b39ab846aa29cc6f7c234e43e7ea23fa7157",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0023",
+      "ordinal": 23,
+      "jpegSHA256": "af87a9cb811c07fc21a24a241e19bfca181fb341a3a3a6449fa404da611904db",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0024",
+      "ordinal": 24,
+      "jpegSHA256": "88a5bba8a9c0e49e8469f99160a0c23df1c2534c8b347b21fd9a8afa73449b4d",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0025",
+      "ordinal": 25,
+      "jpegSHA256": "386ea491496367694ac6bebdd3f46eb37d82a85bb2e0cdd246c0c24723e038c4",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0026",
+      "ordinal": 26,
+      "jpegSHA256": "5ac2a02f79e0e1ab958ce28772e54dffc466fce25fe1f5e5d76cca66c1413ed2",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0027",
+      "ordinal": 27,
+      "jpegSHA256": "ae0e9ea11c703526078bb311171e9eb583cb679aa688bb363538ab8e5020c8bf",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0028",
+      "ordinal": 28,
+      "jpegSHA256": "6144df23dd6c2c5db844b9b4b013d07b708c49f3b9597b8735fb18c9a668d83b",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0029",
+      "ordinal": 29,
+      "jpegSHA256": "92714ed84cc458304c68d899145503260349f51ed25697f5a1879f20cab67552",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0030",
+      "ordinal": 30,
+      "jpegSHA256": "d19f50a80a6d22ccfaf24fbe6393f787b91a6b3855dc02819a68071dbf5378d4",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0031",
+      "ordinal": 31,
+      "jpegSHA256": "3d410663d9bcee05e4d59f46f2626588eb63cf2d770bf10fd2e46bf36fd8d476",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0032",
+      "ordinal": 32,
+      "jpegSHA256": "8f279d502cfe238443a4920bdd4742505f9f09c73e5cbaeaf623554d718d24f1",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0033",
+      "ordinal": 33,
+      "jpegSHA256": "59e89613a232d51181c445e7f883c29f0400c33fb83d5969c7e5f44aa8e72a3a",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0034",
+      "ordinal": 34,
+      "jpegSHA256": "c72ee3d9aa538fb80ed205738b745a850322337f7f61d1a02b0a95efab8972d6",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0035",
+      "ordinal": 35,
+      "jpegSHA256": "7f25c4cf14478ef45efea62f6e33dbad372a38b3ec7216d580182139d0f8f46a",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0036",
+      "ordinal": 36,
+      "jpegSHA256": "27ccf96c82581d4deb88492595d6238c902136bbcce1ac235938b4b164506ec8",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0037",
+      "ordinal": 37,
+      "jpegSHA256": "b2a7fbdb910cf8d8c7977211c985e092ff3c4cc2ac60e97637f24b07db95393d",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0038",
+      "ordinal": 38,
+      "jpegSHA256": "4ee581bd77c7a1b367db62757605a7e58f580cd6a6ff588cbace42e1ab2c534e",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0039",
+      "ordinal": 39,
+      "jpegSHA256": "fd79e5af3f546659d5ae006c38271913d56879543ee0492978fc516a263fe8ad",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0040",
+      "ordinal": 40,
+      "jpegSHA256": "193525ae39960971fd64b56f13d58a3d11089fbd6dada12c56e00715a2e67a5e",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0041",
+      "ordinal": 41,
+      "jpegSHA256": "fab66a53ae402674982be446a1ad4374fc2a710eb43ea27e64c9843a2b9dc1fc",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0042",
+      "ordinal": 42,
+      "jpegSHA256": "3b138a06796fddc121fe78a2e00dfe9c2721e317f498b33f65352d2dbdfbc51b",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0043",
+      "ordinal": 43,
+      "jpegSHA256": "fb6fa4f1d479a5fca8eb66e682c34863fd47af61eb4161b300243ebc2e320542",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0044",
+      "ordinal": 44,
+      "jpegSHA256": "195e411c21bfe3bae41eae68348f8a0b2bc6d56a166beb097eb2e72d9198472b",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0045",
+      "ordinal": 45,
+      "jpegSHA256": "9fa1e8d12b7cf0d4d101936864287bb86a7ee59786e69662544626bc6c2ec366",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0046",
+      "ordinal": 46,
+      "jpegSHA256": "42f3dde01b6fb393fc47840493c25ebdf39de7cf90a0264baa7a1ee22d57e599",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0047",
+      "ordinal": 47,
+      "jpegSHA256": "d4aa2b936308122cd03f16e3b046e2b813e8ace2280ac842f139ac98e62235cf",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0048",
+      "ordinal": 48,
+      "jpegSHA256": "4f032284108f65fc1b42e1f41e6f35510e8d87ccac76fe30d1e2c14a78dc3742",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0049",
+      "ordinal": 49,
+      "jpegSHA256": "9004910d850f8ec67387345765e1ec3a71f4b2b94f1ba07ff90f172dde1bd0b2",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0050",
+      "ordinal": 50,
+      "jpegSHA256": "bdffa5345c20390e0dd611561f44a6a737b6a982e6ed766c46694ad4096b0068",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0051",
+      "ordinal": 51,
+      "jpegSHA256": "f5e8e6661eafd898177c7ff88a8b5efa7d231cdebd5f3eed0b853889d74cdf5e",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0052",
+      "ordinal": 52,
+      "jpegSHA256": "f9ad80abb75a4842e19b6b52563520a9d239bd56b48b7545179c0521375377a9",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0053",
+      "ordinal": 53,
+      "jpegSHA256": "4e6aaeff99eef405ee466441b5f1309f84b3455f0fb9c2c991ba75da6e25b24a",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0054",
+      "ordinal": 54,
+      "jpegSHA256": "d9fd8046dde69e6411ddcfefa17e9ff0a07d455de001da1307055990317a5b4b",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0055",
+      "ordinal": 55,
+      "jpegSHA256": "e928a19358f406f4647ec1d6008cef2acf8c3637a3a22fc36252bd09d28e585d",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0056",
+      "ordinal": 56,
+      "jpegSHA256": "5d51c160b35f35c5dc55056aba933e511b0cd6f62681399f5955b959a1f5a13a",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0057",
+      "ordinal": 57,
+      "jpegSHA256": "24e50d09651ae99f87ec29cf88032ad5f94b360e0db4a296e9c4edae26b24648",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0058",
+      "ordinal": 58,
+      "jpegSHA256": "56ebcea61cb39080d078d14bd14e3c1e9235504e4d42eed8d2f19e17787a9cd7",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0059",
+      "ordinal": 59,
+      "jpegSHA256": "16582130491c8afc849422f7dd001d27f6082ed8a573df9dd5041283fdbf17d9",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "burst48-context72",
+      "assetID": "asset0060",
+      "ordinal": 60,
+      "jpegSHA256": "aa4134933da3ed2eeeb2e31fb2943c3edf2c4de3d38fc39b78cec9a7183e7a57",
+      "contactSheet": "burst48-all.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0361",
+      "ordinal": 180,
+      "jpegSHA256": "7061ef72a0142b8d5800ac41646009a979c7f39c90b11ba30372057a2e1a3c7e",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0363",
+      "ordinal": 181,
+      "jpegSHA256": "bfd7d4fa135f87bb52465065fe90a0d736b917ded2b23c74d5e49b18cebba00d",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0365",
+      "ordinal": 182,
+      "jpegSHA256": "0adab51114c7f3398eba80a50e7ba69a9f62da1064e6277ab1ca45484a5226e5",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0367",
+      "ordinal": 183,
+      "jpegSHA256": "71302073456e9bab483beca91e00bfbc5c05fae6d736261dd40af8a3115e00fc",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0369",
+      "ordinal": 184,
+      "jpegSHA256": "4d57eeff41b309568c1e69f4da3527f3cfc6942e52c9626e0de35ddcb8a8950a",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0371",
+      "ordinal": 185,
+      "jpegSHA256": "a7aafaedf40653530c38db78b07827dc3bcdf4ef4a9bb174b5859ee3d44f73de",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0373",
+      "ordinal": 186,
+      "jpegSHA256": "504df1986a1d24f49a1987a7377a8113d84a0c5de7e4045326d21549dc66abb4",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "dji187-context376",
+      "assetID": "asset0375",
+      "ordinal": 187,
+      "jpegSHA256": "b39e8ed4602d1cf2f907ba6c1b2301d1e5a26702f5f372436b192e412b82fd01",
+      "contactSheet": "dji-tail.jpg"
+    },
+    {
+      "caseID": "burst123",
+      "assetID": "asset0028",
+      "ordinal": 28,
+      "jpegSHA256": "3801d46968577d4d10e2ec1f480cbbdc772a97471cc982995e097661641d5227",
+      "contactSheet": "resolved-review.jpg"
+    },
+    {
+      "caseID": "burst123",
+      "assetID": "asset0029",
+      "ordinal": 29,
+      "jpegSHA256": "751ae03f16afdcf1c3263f1b366b4c2ed848e1001e0a31f20f52f77c93fb0e51",
+      "contactSheet": "resolved-review.jpg"
+    },
+    {
+      "caseID": "burst123",
+      "assetID": "asset0050",
+      "ordinal": 50,
+      "jpegSHA256": "64a0ef23091bb93ea31c19927ec12dd6f95cc82f90df2d5ee345389ae36b8ad0",
+      "contactSheet": "resolved-review.jpg"
+    },
+    {
+      "caseID": "burst123",
+      "assetID": "asset0051",
+      "ordinal": 51,
+      "jpegSHA256": "370736480c77666ae9bf4cd78f58aa31e87d9a397207256a7508f9976f372356",
+      "contactSheet": "resolved-review.jpg"
+    },
+    {
+      "caseID": "burst123",
+      "assetID": "asset0063",
+      "ordinal": 63,
+      "jpegSHA256": "e49882d4a8cf5c6322c87fea3057f2e783250d0f01dbf090620972a220f0e109",
+      "contactSheet": "resolved-review.jpg"
+    },
+    {
+      "caseID": "burst123",
+      "assetID": "asset0064",
+      "ordinal": 64,
+      "jpegSHA256": "a26d3cc96fe25c28e379f834672290635186fcad2b3bb4768a25ad8d604042fd",
+      "contactSheet": "resolved-review.jpg"
+    },
+    {
+      "caseID": "burst193-context217",
+      "assetID": "asset0011",
+      "ordinal": 11,
+      "jpegSHA256": "a0d1fd52ce1532c42328c52f8ea9b79d19559fe93b0b8d94343a942b6db816d5",
+      "contactSheet": "known-boundaries.jpg"
+    },
+    {
+      "caseID": "burst193-context217",
+      "assetID": "asset0012",
+      "ordinal": 12,
+      "jpegSHA256": "b44bfdd2b2efa29dee43e891e7d9b6fc31fc987481bf3e5907b26c1a1c9f2f79",
+      "contactSheet": "known-boundaries.jpg"
+    },
+    {
+      "caseID": "burst193-context217",
+      "assetID": "asset0203",
+      "ordinal": 203,
+      "jpegSHA256": "f617158aadc883bab7843dc273af0edf8b2308440caa0ec154c05a25529a023c",
+      "contactSheet": "known-boundaries.jpg"
+    },
+    {
+      "caseID": "burst193-context217",
+      "assetID": "asset0204",
+      "ordinal": 204,
+      "jpegSHA256": "f7fe0a19d38e39d1e925124e5e0e6908ce6604fe2db8ee2f1016e0f7b13227cc",
+      "contactSheet": "known-boundaries.jpg"
+    },
+    {
+      "caseID": "burst193-context217",
+      "assetID": "asset0205",
+      "ordinal": 205,
+      "jpegSHA256": "eb06c62c247ef486975b008a3ea2bc415dc7c482534fc7f38503d1f7137f1618",
+      "contactSheet": "known-boundaries.jpg"
+    },
+    {
+      "caseID": "burst193-context217",
+      "assetID": "asset0206",
+      "ordinal": 206,
+      "jpegSHA256": "ce81c5b4e14575249fd8f1a9faae44da6b3184a70f0d02670c2af66313f309e1",
+      "contactSheet": "known-boundaries.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0010",
+      "ordinal": 10,
+      "jpegSHA256": "99f9a6388a3d0d4c10e538766538c0468387e391bf9227c789fe7abba553a480",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0011",
+      "ordinal": 11,
+      "jpegSHA256": "9368a3311b87c75b53256d667ef1ad6968b1180151ef344ddbfb7fc00091f97d",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0012",
+      "ordinal": 12,
+      "jpegSHA256": "557c224845f55038b952483503c54516e4f66e5a75e26783751be3ca22742fc6",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0013",
+      "ordinal": 13,
+      "jpegSHA256": "8f4805a613f25cf381f7a125b350a97fbb85b9afb646addecb93cc5fa194a45c",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0014",
+      "ordinal": 14,
+      "jpegSHA256": "c0ce3370fd2a368ad915dc0b6519d8ac54f1577b97751bb7ae86ccbce71410ef",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0015",
+      "ordinal": 15,
+      "jpegSHA256": "f706dfd98376b46bfe293e807dc12093f7a50bb6a40fe2cc165eca1c681bd830",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0016",
+      "ordinal": 16,
+      "jpegSHA256": "624ef8599583316f43bd56c86ea0dcc381c4b42b045e28b652a6529b217feeeb",
+      "contactSheet": "interval-start.jpg"
+    },
+    {
+      "caseID": "interval427-context439",
+      "assetID": "asset0017",
+      "ordinal": 17,
+      "jpegSHA256": "c4c40584d0f2b8577df48c885c792fb9dad884656de8f7c2819d58e2d73ed441",
+      "contactSheet": "interval-start.jpg"
+    }
+  ],
+  "evidenceSources": [
+    {
+      "path": "Tests/RAWMasterImagingTests/Fixtures/SequenceGroupingMetadata/v2/cases/burst48-context72.json",
+      "sha256": "4a214714b1384402751256d63b2aa0a6bb3bbf6aa4fd6542b95c0f9979ca7ef9"
+    },
+    {
+      "path": "Tests/RAWMasterImagingTests/Fixtures/SequenceGroupingMetadata/v2/cases/dji187-context376.json",
+      "sha256": "399704ccbc243a8b4777917baa9c9ea995c609a2557b7d7572832f3ab929d1de"
+    },
+    {
+      "path": "output/annotations/20261025-01/RAWMaster-label-revision-e2bc0f560c96.json",
+      "sha256": "74499c20fd0c2456d132ac43f402ce52b77e0eca377d6ba15478f4c05334d343"
+    }
+  ],
+  "limitations": [
+    "四处连拍分界为复核建议，尚未替换原标签或重新评测。",
+    "仅复核 78 张缩图及对应已有元数据，不是全部数据集的逐张独立验收。",
+    "DSC06421 已由用户确认组外，但当前 fixture 未包含它；本次在用户提供且可访问的目录中也未找到 DSC06421.ARW。这是缺少后邻片的素材覆盖问题，不是待用户重复确认的问题。",
+    "浏览器中尚未导出的新标注无法从这些文件核对；页面会读取原草稿并显示当前状态。"
+  ],
+  "fixtureCoverage": [
+    {
+      "caseID": "interval427-context439",
+      "filename": "DSC06421.ARW",
+      "presentInFixture": false,
+      "presentAtProvidedSourcePath": false,
+      "sourceDirectoryAvailable": true,
+      "checkedAt": "2026-10-25",
+      "labelStatus": "user-confirmed outside; no available image to evaluate"
+    }
+  ]
+}

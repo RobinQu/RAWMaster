@@ -312,6 +312,34 @@ def jpeg_annotation_projection(catalog, case_ids):
     return result
 
 
+def attach_guidance(catalog, guidance):
+    if guidance.get('schemaVersion') != 1 or guidance.get('annotationIndexSHA256') != catalog['indexSHA256']:
+        raise InvalidReport('Review guidance is not bound to this annotation dataset')
+    cases = {c['id']: c for c in catalog['cases']}; seen = set()
+    for task in guidance['tasks']:
+        case = cases.get(task['caseID']); first = task['firstOrdinal']
+        if not case or task['id'] in seen or type(first) is not int or not 0 <= first < len(case['assets']) - 1:
+            raise InvalidReport('Invalid guidance task identity or boundary')
+        seen.add(task['id']); left, right = case['assets'][first:first + 2]
+        if [task['leftAssetID'], task['rightAssetID']] != [left['assetID'], right['assetID']] or task['imageSHA256'] != [left['jpegSHA256'], right['jpegSHA256']]:
+            raise InvalidReport('Guidance boundary identity/hash mismatch')
+        scope = task['scope']
+        if not (type(scope['first']) is int and type(scope['last']) is int and 0 <= scope['first'] <= first < scope['last'] < len(case['assets'])):
+            raise InvalidReport('Guidance scope outside dataset')
+        if task['recommendedRelation'] not in ('same', 'separate', 'unknown'):
+            raise InvalidReport('Invalid guidance recommendation')
+    for item in guidance['viewedImages']:
+        case = cases.get(item['caseID']); ordinal = item['ordinal']
+        if not case or type(ordinal) is not int or not 0 <= ordinal < len(case['assets']):
+            raise InvalidReport('Invalid inspected image ordinal')
+        asset = case['assets'][ordinal]
+        if item['assetID'] != asset['assetID'] or item['jpegSHA256'] != asset['jpegSHA256']:
+            raise InvalidReport('Inspected image binding mismatch')
+    result = json.loads(json.dumps(catalog)); result['guidance'] = guidance
+    result.pop('catalogSHA256', None); result['catalogSHA256'] = sha_bytes(encoded(result))
+    return result
+
+
 def generate(fixture_root, output, catalog, thumbnailer=thumbnail):
     root = fixture_root.resolve(); output = output.resolve()
     if output.exists() or output.is_relative_to(root) or root.is_relative_to(output):
@@ -333,7 +361,7 @@ def generate(fixture_root, output, catalog, thumbnailer=thumbnail):
     document = (assets / 'index.html').read_text()
     payload = encoded(catalog).decode().replace('&', '\\u0026').replace('<', '\\u003c').replace('>', '\\u003e').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
     (output / 'index.html').write_text(document.replace('__CATALOG_JSON__', payload), encoding='utf-8')
-    for name in ('review.js', 'review.css'): shutil.copyfile(assets / name, output / name)
+    for name in ('review.js', 'guided-review.js', 'review.css'): shutil.copyfile(assets / name, output / name)
     (output / 'catalog.json').write_bytes(encoded(catalog))
     (output / 'preservation-receipt.json').write_bytes(encoded({'schemaVersion': 1, 'indexSHA256': catalog['indexSHA256'], 'assetCount': len(entries),
         'operation': 'Existing JPEG → RGB JPEG longest edge <=384; Pillow LANCZOS quality80 subsampling2, no original RAW access', 'files': preservation}))
@@ -346,6 +374,7 @@ def main():
     parser.add_argument('--visual-review', type=pathlib.Path)
     parser.add_argument('--output', type=pathlib.Path, required=True)
     parser.add_argument('--jpeg-only-case', action='append', default=[], help='Separate annotation projection; preserves source fixtures and baselines')
+    parser.add_argument('--guidance', type=pathlib.Path, help='Hash-bound human review queue')
     args = parser.parse_args()
     repo = pathlib.Path(__file__).resolve().parents[1]
     sources = read_json(args.sources) if args.sources else default_sources(repo)
@@ -353,6 +382,8 @@ def main():
         args.sources.resolve().parent if args.sources else repo)
     if args.jpeg_only_case:
         catalog = jpeg_annotation_projection(catalog, args.jpeg_only_case)
+    if args.guidance:
+        catalog = attach_guidance(catalog, read_json(args.guidance))
     generate(args.fixture_root, args.output, catalog)
     print('Built', catalog['assetCount'], 'files,', len(catalog['errors']), 'unique historical error edges:', args.output / 'index.html')
 
