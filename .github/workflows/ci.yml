@@ -37,6 +37,18 @@ jobs:
           swift test --jobs 3 2>&1 | tee output/validation/ci/tests.log
       - name: Build client
         run: swift build -c release --product RAWMaster --jobs 3
+      - name: Compare accepted annotations with versioned grouping rules
+        run: |
+          set -o pipefail
+          binary_dir="$(swift build --show-bin-path)"
+          test_bundle="$binary_dir/RAWMasterImagingTests.xctest"
+          if [ ! -d "$test_bundle" ]; then
+            test_bundle="$binary_dir/RAWMasterPackageTests.xctest"
+          fi
+          python3 scripts/sequence-accepted-regression.py \
+            --binary "$test_bundle" --repeats 3 \
+            --output output/validation/ci/accepted-annotations \
+            2>&1 | tee output/validation/ci/accepted-annotations.log
       - name: Measure strict grouping quality (currently unmet)
         id: grouping-quality
         env:
@@ -70,9 +82,10 @@ jobs:
           {
             echo '## Sequence grouping'
             echo 'Default tests check approved behavior, fixture integrity and real JPEG processing.'
+            echo 'Accepted-annotation regression separately compares versioned rules on the human revision, including DJI JPEG-only inputs; failures block this job.'
             echo "Strict human-label quality outcome: **$QUALITY_STATUS**."
             echo 'A successful regression job does not mean grouping quality is accepted.'
-            echo 'Known quality gaps and unsupported DJI dual-format behavior remain visible in the uploaded reports.'
+            echo 'The original truth and dual-format frozen controls remain separate from the accepted revision; DJI has no confirmed outside endpoint.'
             echo 'Runner platform is recorded; this is not M4 hardware or RAW decoder acceptance.'
           } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload reports and logs

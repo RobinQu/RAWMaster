@@ -93,6 +93,7 @@ public struct SequenceFocusSnapshot: Codable, Sendable, Equatable {
 }
 public enum SequencePauseBridgePolicy: String, Codable, Sendable {
     case focusRectAndCohortSeparation = "focus-rect-and-cohort-separation-v1"
+    case focusResetAndCohortSeparation = "focus-reset-and-cohort-separation-v2"
 }
 public struct SequencePauseBridgeConfiguration: Codable, Sendable, Equatable {
     public let policy: SequencePauseBridgePolicy
@@ -113,6 +114,9 @@ public struct SequencePauseBridgeStatistics: Codable, Sendable, Equatable {
     public internal(set) var focusGeometryPassed = 0
     public internal(set) var appearanceSeparationPassed = 0
     public internal(set) var vetoes = 0
+    // Absent for v1 so its serialized evidence remains reproducible.
+    public internal(set) var focusResetCandidates: Int?
+    public internal(set) var focusResetVetoes: Int?
     public init() {}
 }
 /// Immutable factory-produced scope member. No public initializer or Codable entry point:
@@ -128,6 +132,7 @@ public struct SequencePauseBridgeContext: Sendable, Equatable {
     let settings: [String: String]
     let focus: SequenceFocusFileEvidence
     var runtimeCohortComparable = true
+    var resetCohortComparable = false
     static let settingFields = ["exif.ExposureTime", "exif.ISO", "exif.FNumber", "exif.FocalLength", "exif.ExposureProgram"]
     static func make(file: SequenceCaptureFileInput, focus: SequenceFocusFileEvidence,
                      focusAuditSeal: String, scopeFingerprint: String, manifest: SequenceInputManifest) -> Self {
@@ -156,6 +161,10 @@ public struct SequencePauseBridgeContext: Sendable, Equatable {
             localSecond: metadata.originalCapture.time.local?.civilSecond, nanosecond: metadata.originalCapture.time.local?.nanosecond,
             settings: settings, focus: focus)
         context.runtimeCohortComparable = focus.state != .runtimeExtracted || (metadata.originalFormat == .arw && metadata.originalCapture.cameraMake == "SONY" && metadata.originalCapture.cameraModel == "ILCE-1M2")
+        // This additional hypothesis has evidence only for this audited camera family.
+        context.resetCohortComparable = (focus.state == .audited || focus.state == .runtimeExtracted)
+            && metadata.originalFormat == .arw
+            && metadata.originalCapture.cameraMake == "SONY" && metadata.originalCapture.cameraModel == "ILCE-1M2"
         return context
     }
     func isBound(entry: SequenceManifestEntry, configuration: SequencePauseBridgeConfiguration) -> Bool {

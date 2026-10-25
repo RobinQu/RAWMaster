@@ -106,7 +106,12 @@ public struct SequenceDetectorConfiguration: Codable, Sendable, Equatable {
     public init() {}
     public var fingerprint: String { get throws { try validate(); return try SequenceFingerprint.digest(self) } }
     public func versions(order: String) -> SequenceAnalysisVersions {
-        SequenceAnalysisVersions(extractor: metadataExperiment?.runtimeExtractorVersion ?? SequenceCaptureReader.extractorVersion, feature: pauseBridgeExperiment != nil ? SequenceFrameFeature.version + "+metadata-focus-pause-v1" : metadataExperiment != nil ? SequenceFrameFeature.version + "+metadata-context-v1" : spatialExperiment == nil ? SequenceFrameFeature.version : SequenceFrameFeature.version + "+" + SequenceSpatialFeature.version,
+        if pauseBridgeExperiment?.policy == .focusResetAndCohortSeparation {
+            return SequenceAnalysisVersions(extractor: metadataExperiment?.runtimeExtractorVersion ?? SequenceCaptureReader.extractorVersion,
+                feature: SequenceFrameFeature.version + "+metadata-focus-reset-v2",
+                algorithm: "sequence-local-anchor-cadence-focus-reset-exp-2", policy: "sequence-focus-reset-policy-exp-2", order: order)
+        }
+        return SequenceAnalysisVersions(extractor: metadataExperiment?.runtimeExtractorVersion ?? SequenceCaptureReader.extractorVersion, feature: pauseBridgeExperiment != nil ? SequenceFrameFeature.version + "+metadata-focus-pause-v1" : metadataExperiment != nil ? SequenceFrameFeature.version + "+metadata-context-v1" : spatialExperiment == nil ? SequenceFrameFeature.version : SequenceFrameFeature.version + "+" + SequenceSpatialFeature.version,
             algorithm: pauseBridgeExperiment != nil ? "sequence-local-anchor-cadence-focus-pause-exp-1" : metadataExperiment != nil ? "sequence-local-anchor-cadence-metadata-exp-1" : spatialExperiment == nil ? Self.algorithmVersion : "sequence-local-anchor-cadence-spatial-exp-1",
             policy: pauseBridgeExperiment != nil ? "sequence-focus-pause-policy-exp-1" : metadataExperiment != nil ? "sequence-metadata-policy-exp-1" : spatialExperiment == nil ? Self.policyVersion : "sequence-spatial-policy-exp-1", order: order)
     }

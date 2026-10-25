@@ -228,6 +228,10 @@ public struct SequenceDetector: Sendable {
         self.manifest = manifest; self.token = token; self.configuration = configuration
         self.metadataStatistics = configuration.metadataExperiment == nil ? nil : SequenceMetadataBurstStatistics()
         self.pauseBridgeStatistics = configuration.pauseBridgeExperiment == nil ? nil : SequencePauseBridgeStatistics()
+        if configuration.pauseBridgeExperiment?.policy == .focusResetAndCohortSeparation {
+            self.pauseBridgeStatistics?.focusResetCandidates = 0
+            self.pauseBridgeStatistics?.focusResetVetoes = 0
+        }
         self.trace = observer.map { SequenceTraceRecorder(limits: traceLimits, sink: $0) }
         self.spatialMetrics = spatialMetrics
         self.spatialStatistics = configuration.spatialExperiment == nil ? nil : SequenceSpatialStatistics()
@@ -853,17 +857,22 @@ public struct SequenceDetector: Sendable {
         return try !burstSpatial || spatialBridge(before, right, cancelled: cancelled)
     }
     private mutating func pauseBridgeAllows(_ left: [SequenceWorkingFrame], _ right: [SequenceWorkingFrame], cancelled: () -> Bool) throws -> Bool {
-        guard configuration.pauseBridgeExperiment != nil else { return true }
+        guard let policy = configuration.pauseBridgeExperiment?.policy else { return true }
         try SequenceCaptureEvents.checkCancellation(cancelled)
         pauseBridgeStatistics?.bridgeCandidates += 1
         let value = try SequencePauseBridgeRule.decide(leftFeatures: left.map(\.feature), rightFeatures: right.map(\.feature),
             leftContexts: left.map(\.pauseBridgeContext), rightContexts: right.map(\.pauseBridgeContext),
             denseGapSeconds: configuration.denseGapSeconds, maximumBridgeSeconds: configuration.maximumBridgeSeconds,
+            policy: policy,
             cancelled: cancelled)
         if value.verdict == .notApplicable { pauseBridgeStatistics?.notApplicable += 1 }
         if value.focusGeometryPassed { pauseBridgeStatistics?.focusGeometryPassed += 1 }
         if value.appearanceSeparationPassed { pauseBridgeStatistics?.appearanceSeparationPassed += 1 }
         if value.verdict == .vetoed { pauseBridgeStatistics?.vetoes += 1 }
+        if value.focusReset != nil {
+            pauseBridgeStatistics?.focusResetCandidates? += 1
+            if value.verdict == .vetoed { pauseBridgeStatistics?.focusResetVetoes? += 1 }
+        }
         if let trace {
             var event = SequenceTraceEvent(ordinal: right.last!.ordinal, stage: .bridge,
                 reason: value.verdict == .vetoed ? .bridgeRejected : .bridgeAccepted, accepted: value.verdict != .vetoed)

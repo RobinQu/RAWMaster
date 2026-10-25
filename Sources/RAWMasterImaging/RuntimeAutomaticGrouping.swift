@@ -23,6 +23,8 @@ public enum RuntimeAutomaticGroupingCoordinator {
     }
 }
 public struct RuntimeAutomaticGroupingAnalyzer: Sendable {
+    /// Shared by live import/regroup analysis and the additive regression controls.
+    static let pauseBridgePolicy: SequencePauseBridgePolicy = .focusResetAndCohortSeparation
     public let libraryURL: URL
     public let toolRoot: URL?
     private let diagnostics: (@Sendable (RuntimeAutomaticGroupingDiagnostics)->Void)?
@@ -161,7 +163,7 @@ public struct RuntimeAutomaticGroupingAnalyzer: Sendable {
         let files = entries.enumerated().map { i,entry in SequenceCaptureFileInput(entry:entry,currentEvidence:primaries[i],metadata:metadataFiles[i],contentVersion:input.assetRevisions[i],feature:features[i],readBarrier:barriers[i]) }
         progress(TaskProgress(title:"自动分组：分析序列",total:input.assets.count))
         let analysis = try SequenceMetadataEventPipeline.analyze(files:files,manifest:manifest,metadata:metadata,associationPolicy:.assumeCorroborated,rescuePolicy:.allowShortRestart,
-            focusSnapshot:focus,pauseBridgePolicy:.focusRectAndCohortSeparation,cancelled:{ (try? checkpoint()) == nil })
+            focusSnapshot:focus,pauseBridgePolicy:Self.pauseBridgePolicy,cancelled:{ (try? checkpoint()) == nil })
         try checkpoint()
         if let diagnostics {
             var fieldStates:[String:[String:Int]] = [:], barrierCounts:[String:Int] = [:], precision:[String:Int] = [:]

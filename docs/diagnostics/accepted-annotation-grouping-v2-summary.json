@@ -1,0 +1,250 @@
+{
+  "acceptedRevisionSHA256": "ba193b709d4e7606e318a2fd780f03ddfb725678dc628f6d82a6bca1f9d32381",
+  "artifacts": {
+    "final-swift.log": "e28ead99ce6bf2db976bc1f92d41e3fdada6b22788f37943d777749fddda7852",
+    "final-tooling.log": "f40606f21d21397239801b0fc34991baf65e93cfbf5d16d026b3b6025e8c4a3f",
+    "final/predictions.json": "3a952642bd51a0ceec2d4a96fd443aed1ac8900c7f551c71e1927c7f181aa38d",
+    "final/predictions.json.score.json": "06d1b4d795478e61f1c6aa2ffc52ebb8a561928dfe10db0a7e15d689c0702f52",
+    "final/report.json": "462adce761b6bc32bc2e793972a2c64ef21fe784e78ed5bda97eb388e5dad48c",
+    "runtime-copy-receipt.json": "3deb96dd345a818764f42e7feedc917d5f178fb2194a0a4fe0b67e37d30c3557",
+    "runtime-copy-summary.json": "6fd2793ca79c6ef3b940c81fb699313f6ce584e626506a0c8097555a1fba2e06",
+    "runtime-copy.log": "426beaad6f8fa9aa381d7e8971d91a41b06109fa23a6204aad63e17c191e5559",
+    "runtime-raw-summary.json": "06c6aa85d4ffe5c4a025dc29b150942486ea3a5a570d882b980a7864d23e4078"
+  },
+  "cases": 6,
+  "changedEdges": [
+    {
+      "associationPolicy": "strict",
+      "caseID": "burst48-context72",
+      "changed": [
+        {
+          "afterJoined": false,
+          "beforeJoined": true,
+          "firstOrdinal": 32,
+          "left": "DSC01741.ARW",
+          "relation": "separate",
+          "right": "DSC01742.ARW"
+        }
+      ],
+      "changedUnknown": [],
+      "lostKnownPositive": [],
+      "newFalseMerge": []
+    },
+    {
+      "associationPolicy": "assumeCorroborated",
+      "caseID": "burst48-context72",
+      "changed": [
+        {
+          "afterJoined": false,
+          "beforeJoined": true,
+          "firstOrdinal": 32,
+          "left": "DSC01741.ARW",
+          "relation": "separate",
+          "right": "DSC01742.ARW"
+        }
+      ],
+      "changedUnknown": [],
+      "lostKnownPositive": [],
+      "newFalseMerge": []
+    }
+  ],
+  "coverageAndEventMappingPreserved": true,
+  "date": "2026-10-25",
+  "developmentKnownEdgeRegressionPassed": true,
+  "execution": {
+    "executableSHA256": "d78a3ffa15dc1e52d8104639fea13ce26b52b92c484b246fad3e477fac9816dc",
+    "exitCode": 0,
+    "mode": "execute-xctest",
+    "selector": "RAWMasterImagingTests.SequenceAcceptedAnnotationTests/testAcceptedHumanGroupingRegression"
+  },
+  "independentQualityAccepted": false,
+  "inputAssets": 1077,
+  "kind": "accepted-annotation-grouping-development-summary",
+  "limitations": [
+    "All six cases are development data used for diagnosis or rule design; not independent accuracy estimates.",
+    "65 unknown adjacent edges excluded from precision/recall and unchanged.",
+    "DJI JPEG0001–0188 matches its observed interval range but has no known outside endpoint.",
+    "New reset branch applies only to audited/runtime Sony ILCE-1M2 ARW; other devices retain prior rules.",
+    "Performance is a same-run comparison, not a fixed latency budget or RAW/GUI benchmark.",
+    "Historical bulk regroup is not shipped; existing saved groups are not rewritten automatically."
+  ],
+  "liveRAWCopyImportAdditionalTests": 1,
+  "liveRAWImports": [
+    {
+      "assetCount": 50,
+      "elapsedSeconds": 14.840106999996351,
+      "groupCount": 2,
+      "mode": "reference",
+      "ranges": [
+        {
+          "count": 21,
+          "firstOrdinal": 1,
+          "lastOrdinal": 21
+        },
+        {
+          "count": 27,
+          "firstOrdinal": 22,
+          "lastOrdinal": 48
+        }
+      ],
+      "runState": "applied",
+      "sourceSHAUnchanged": true,
+      "undone": true
+    },
+    {
+      "assetCount": 50,
+      "elapsedSeconds": 17.59818229166558,
+      "groupCount": 2,
+      "mode": "copy",
+      "ranges": [
+        {
+          "count": 21,
+          "firstOrdinal": 1,
+          "lastOrdinal": 21
+        },
+        {
+          "count": 27,
+          "firstOrdinal": 22,
+          "lastOrdinal": 48
+        }
+      ],
+      "runState": "applied",
+      "sourceSHAUnchanged": true,
+      "undone": true
+    }
+  ],
+  "modelIntroduced": false,
+  "nativePreparationAssets": 1265,
+  "noChangedUnknownEdges": true,
+  "noLostKnownPositive": true,
+  "oldTruthDeltas": [
+    {
+      "acceptedRelation": "separate",
+      "afterJoined": false,
+      "associationPolicy": "strict",
+      "beforeJoined": true,
+      "caseID": "burst48-context72",
+      "firstOrdinal": 32,
+      "left": "DSC01741.ARW",
+      "oldRelation": "same",
+      "relation": "separate",
+      "right": "DSC01742.ARW"
+    },
+    {
+      "acceptedRelation": "separate",
+      "afterJoined": false,
+      "associationPolicy": "assumeCorroborated",
+      "beforeJoined": true,
+      "caseID": "burst48-context72",
+      "firstOrdinal": 32,
+      "left": "DSC01741.ARW",
+      "oldRelation": "same",
+      "relation": "separate",
+      "right": "DSC01742.ARW"
+    }
+  ],
+  "originalLabelsAndBaselinesPreserved": true,
+  "performance": [
+    {
+      "associationPolicy": "strict",
+      "fixedPerformanceGate": false,
+      "relativeChange": -0.01003119036165212,
+      "repeatsPerCase": 3,
+      "sumCaseMedianSeconds": {
+        "candidate": 2.6816368750005495,
+        "legacy": 2.7088094583305065
+      }
+    },
+    {
+      "associationPolicy": "assumeCorroborated",
+      "fixedPerformanceGate": false,
+      "relativeChange": 0.00879678025807129,
+      "repeatsPerCase": 3,
+      "sumCaseMedianSeconds": {
+        "candidate": 2.7264206249965355,
+        "legacy": 2.70264604165277
+      }
+    }
+  ],
+  "platform": {
+    "architecture": "arm64",
+    "decoder": "ImageIO native SequenceCaptureReader",
+    "imageIOBundleVersion": "2851",
+    "operatingSystem": "Version 27.0.1 (Build 26A434)",
+    "swift": "not-injected-by-direct-swift-test"
+  },
+  "policy": "focus-reset-and-cohort-separation-v2",
+  "predictionSHA256": "3a952642bd51a0ceec2d4a96fd443aed1ac8900c7f551c71e1927c7f181aa38d",
+  "preparationSeconds": 9.62629158332129,
+  "runtimePolicyEnabled": true,
+  "schemaVersion": 1,
+  "sourceSnapshotSHA256": "21287a98d3d1b39550a37b12058fec4350a027c72f28d642e57be03aa4f17453",
+  "swiftRegression": {
+    "failures": 0,
+    "liveRAWReferenceImportIncluded": true,
+    "skipped": 9,
+    "tests": 365
+  },
+  "swiftToolchain": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0",
+  "timingBoundary": "Preparation includes 1,265 native JPEG hashes/reads plus default control analysis, metadata/focus validation and projection. Engine samples classify only 1,077 selected inputs with already-read features. No RAW decode, ExifTool extraction, database, GUI, or independent-device benchmark.",
+  "toolingRegression": {
+    "failures": 0,
+    "skipped": 1,
+    "tests": 90
+  },
+  "totals": [
+    {
+      "associationPolicy": "strict",
+      "counts": {
+        "FN": 0,
+        "FP": 1,
+        "TN": 9,
+        "TP": 996,
+        "unknown": 65
+      },
+      "groupsMatched": 7,
+      "groupsTotal": 9,
+      "variant": "legacy"
+    },
+    {
+      "associationPolicy": "assumeCorroborated",
+      "counts": {
+        "FN": 0,
+        "FP": 1,
+        "TN": 9,
+        "TP": 996,
+        "unknown": 65
+      },
+      "groupsMatched": 7,
+      "groupsTotal": 9,
+      "variant": "legacy"
+    },
+    {
+      "associationPolicy": "strict",
+      "counts": {
+        "FN": 0,
+        "FP": 0,
+        "TN": 10,
+        "TP": 996,
+        "unknown": 65
+      },
+      "groupsMatched": 9,
+      "groupsTotal": 9,
+      "variant": "candidate"
+    },
+    {
+      "associationPolicy": "assumeCorroborated",
+      "counts": {
+        "FN": 0,
+        "FP": 0,
+        "TN": 10,
+        "TP": 996,
+        "unknown": 65
+      },
+      "groupsMatched": 9,
+      "groupsTotal": 9,
+      "variant": "candidate"
+    }
+  ],
+  "variants": 24
+}

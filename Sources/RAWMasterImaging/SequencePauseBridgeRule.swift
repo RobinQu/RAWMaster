@@ -6,22 +6,32 @@ public enum SequencePauseBridgeReason: String, Codable, Sendable {
     case incompleteSupport, unavailableContext, sourceOrClockMismatch, incomparableSettings
     case counterContextUnavailable, continuousCounter, focusUnavailable, focusNotCohesive, focusOverlaps
     case appearanceNotSeparated, jointFocusAppearanceSeparation
+    case focusResetNotSeparated, jointFocusResetHistogramSeparation
+}
+/// Recorded codes and display geometry are corroborating evidence, not subject identity or metres.
+public struct SequenceFocusResetEvidence: Codable, Sendable, Equatable {
+    public let counterRestart: Bool
+    public let leftTrackingCode, rightTrackingCode, leftFocusPositionCode, rightFocusPositionCode: Int
+    public let validDisplayRegions, disjointDisplayRegions, histogramSeparated: Bool
 }
 public struct SequencePauseBridgeEvidence: Codable, Sendable, Equatable {
     public let verdict: SequencePauseBridgeVerdict
     public let reason: SequencePauseBridgeReason
     public let leftOverlaps, rightOverlaps, crossOverlaps: Int?
     public let histogramGap, luminanceGap, hashGap: Double?
+    public let focusReset: SequenceFocusResetEvidence?
     public var focusGeometryPassed: Bool { leftOverlaps == 3 && rightOverlaps == 3 && crossOverlaps == 0 }
     public var appearanceSeparationPassed: Bool {
         [histogramGap, luminanceGap, hashGap].allSatisfy { value in value.map { $0.isFinite && $0 > 0 } ?? false }
     }
     init(_ verdict: SequencePauseBridgeVerdict, _ reason: SequencePauseBridgeReason,
          leftOverlaps: Int? = nil, rightOverlaps: Int? = nil, crossOverlaps: Int? = nil,
-         histogramGap: Double? = nil, luminanceGap: Double? = nil, hashGap: Double? = nil) {
+         histogramGap: Double? = nil, luminanceGap: Double? = nil, hashGap: Double? = nil,
+         focusReset: SequenceFocusResetEvidence? = nil) {
         self.verdict = verdict; self.reason = reason; self.leftOverlaps = leftOverlaps
         self.rightOverlaps = rightOverlaps; self.crossOverlaps = crossOverlaps
         self.histogramGap = histogramGap; self.luminanceGap = luminanceGap; self.hashGap = hashGap
+        self.focusReset = focusReset
     }
 }
 struct SequenceFocusRectangle: Sendable, Equatable {
@@ -32,13 +42,14 @@ struct SequenceFocusRectangle: Sendable, Equatable {
 }
 /// A single, explicitly versioned development hypothesis. No labels, paths or sample IDs enter it.
 public enum SequencePauseBridgeRule {
-    static func rectangle(_ context: SequencePauseBridgeContext) -> SequenceFocusRectangle? {
+    static func rectangle(_ context: SequencePauseBridgeContext, allowTrackingOff: Bool = false) -> SequenceFocusRectangle? {
         let focus = context.focus
         let names = ["sony.FocusLocation", "sony.FocusLocation2", "sony.FocusFrameSize",
                      "sony.FocusMode", "sony.AFTracking", "sony.CameraOrientation"]
         guard context.runtimeCohortComparable, (focus.state == .audited || focus.state == .runtimeExtracted), names.allSatisfy({ focus.fieldStates[$0] == .present }),
               focus.resolvedCodes["sony.FocusMode"] == 3,
-              let tracking = focus.resolvedCodes["sony.AFTracking"], [1, 2].contains(tracking),
+              let tracking = focus.resolvedCodes["sony.AFTracking"],
+              ([1, 2].contains(tracking) || (allowTrackingOff && tracking == 0)),
               let orientation = context.orientation, [1, 3, 6, 8].contains(orientation),
               focus.resolvedCodes["sony.CameraOrientation"] == orientation,
               let primary = focus.resolvedTuples["sony.FocusLocation"], primary.count == 4,
@@ -82,7 +93,17 @@ public enum SequencePauseBridgeRule {
     static func decide(leftFeatures: [SequenceFrameFeature], rightFeatures: [SequenceFrameFeature],
                        leftContexts: [SequencePauseBridgeContext?], rightContexts: [SequencePauseBridgeContext?],
                        denseGapSeconds: Double, maximumBridgeSeconds: Double,
+                       policy: SequencePauseBridgePolicy = .focusRectAndCohortSeparation,
                        cancelled: () -> Bool) throws -> SequencePauseBridgeEvidence {
+        if policy == .focusResetAndCohortSeparation {
+            let legacy = try decide(leftFeatures: leftFeatures, rightFeatures: rightFeatures,
+                leftContexts: leftContexts, rightContexts: rightContexts, denseGapSeconds: denseGapSeconds,
+                maximumBridgeSeconds: maximumBridgeSeconds, cancelled: cancelled)
+            guard legacy.verdict != .vetoed else { return legacy }
+            return try SequencePauseBridgeResetRule.decide(leftFeatures: leftFeatures, rightFeatures: rightFeatures,
+                leftContexts: leftContexts, rightContexts: rightContexts, denseGapSeconds: denseGapSeconds,
+                maximumBridgeSeconds: maximumBridgeSeconds, fallback: legacy, cancelled: cancelled)
+        }
         try SequenceCaptureEvents.checkCancellation(cancelled)
         guard leftFeatures.count == 3, rightFeatures.count == 3, leftContexts.count == 3, rightContexts.count == 3 else {
             return .init(.notApplicable, .incompleteSupport)
@@ -114,7 +135,7 @@ public enum SequencePauseBridgeRule {
         if contexts[3].sequenceNumber! > contexts[2].sequenceNumber!, contexts[3].sequenceNumber! - contexts[2].sequenceNumber! == 1 {
             return .init(.notApplicable, .continuousCounter)
         }
-        let rectangles = contexts.compactMap(rectangle)
+        let rectangles = contexts.compactMap { rectangle($0) }
         guard rectangles.count == 6 else { return .init(.notApplicable, .focusUnavailable) }
         let intra = [(0, 1), (0, 2), (1, 2)]
         let leftOverlaps = intra.filter { rectangles[$0.0].overlaps(rectangles[$0.1]) }.count

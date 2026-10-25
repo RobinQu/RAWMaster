@@ -88,17 +88,19 @@ final class SequencePauseBridgeRuleTests: XCTestCase {
         return input.files.indices.map { SequencePauseBridgeContext.make(file: input.files[$0], focus: input.focus.files[$0],
             focusAuditSeal: input.focus.focusAuditSeal, scopeFingerprint: digest, manifest: input.manifest) }
     }
-    func decision(_ input: Fixture, cancelled: () -> Bool = { false }) throws -> SequencePauseBridgeEvidence {
+    func decision(_ input: Fixture, policy: SequencePauseBridgePolicy = .focusRectAndCohortSeparation,
+                  cancelled: () -> Bool = { false }) throws -> SequencePauseBridgeEvidence {
         let values = try contexts(input)
         return try SequencePauseBridgeRule.decide(leftFeatures: Array(input.files.prefix(3)).map { $0.feature! },
             rightFeatures: Array(input.files.suffix(3)).map { $0.feature! }, leftContexts: values.prefix(3).map { Optional($0) },
-            rightContexts: values.suffix(3).map { Optional($0) }, denseGapSeconds: 0.6, maximumBridgeSeconds: 12, cancelled: cancelled)
+            rightContexts: values.suffix(3).map { Optional($0) }, denseGapSeconds: 0.6, maximumBridgeSeconds: 12, policy: policy, cancelled: cancelled)
     }
     func run(_ input: Fixture, focus: Bool = true, base: SequenceDetectorConfiguration = .init(),
+             policy: SequencePauseBridgePolicy = .focusRectAndCohortSeparation,
              cancelled: () -> Bool = { false }) throws -> SequenceMetadataEventAnalysis {
         try SequenceMetadataEventPipeline.analyze(files: input.files, manifest: input.manifest, metadata: input.metadata,
             associationPolicy: .strict, rescuePolicy: .allowShortRestart, baseConfiguration: base,
-            focusSnapshot: focus ? input.focus : nil, pauseBridgePolicy: focus ? .focusRectAndCohortSeparation : nil, cancelled: cancelled)
+            focusSnapshot: focus ? input.focus : nil, pauseBridgePolicy: focus ? policy : nil, cancelled: cancelled)
     }
     func testJointEvidenceVetoesOnlyAfterLegacyAcceptanceAndKeepsAllFiles() throws {
         let input = try fixture(), legacy = try run(input, focus: false), candidate = try run(input)
@@ -276,4 +278,209 @@ final class SequencePauseBridgeRuleTests: XCTestCase {
         XCTAssertNotEqual(old.result.token.versions, new.result.token.versions)
         XCTAssertNotEqual(old.result.token.policyFingerprint, new.result.token.policyFingerprint)
     }
+    // v2 uses a histogram-only change here so v1 cannot satisfy its three-channel veto.
+    func resetFixture(times: [Double] = [0, 0.05, 0.1, 2, 2.05, 2.1],
+                      counters: [Int] = [1, 2, 3, 1, 2, 3],
+                      setting: (Int, String, String)? = nil) throws -> Fixture {
+        var input = try fixture(times: times, counters: counters, setting: setting)
+        for i in 3..<6 { input = changed(input, index: i, codes: ["sony.AFTracking": 0, "sony.FocusPosition2": 130]) }
+        let ordinary = try feature(), changedColor = try feature(right: true)
+        let shifted = try SequenceFrameFeature(width: ordinary.width, height: ordinary.height,
+            normalizedLuminance: ordinary.normalizedLuminance, colorHistogram: changedColor.colorHistogram,
+            differenceHash: ordinary.differenceHash, mean: ordinary.mean, standardDeviation: ordinary.standardDeviation)
+        let files = input.files.enumerated().map { i, old in
+            SequenceCaptureFileInput(entry: old.entry, currentEvidence: old.currentEvidence, metadata: old.metadata,
+                contentVersion: old.contentVersion, feature: i < 3 ? ordinary : shifted, readBarrier: old.readBarrier)
+        }
+        return Fixture(manifest: input.manifest, metadata: input.metadata, files: files, focus: input.focus)
+    }
+    func testV2AddsResetEvidenceWithoutChangingV1OrAssociation() throws {
+        let input = try resetFixture(), old = try run(input), new = try run(input, policy: .focusResetAndCohortSeparation)
+        XCTAssertEqual(old.result.ranges.map(\.range), [try SequenceOrdinalRange(first: 0, last: 5)])
+        XCTAssertEqual(new.result.ranges.map(\.range), [try SequenceOrdinalRange(first: 0, last: 2), try SequenceOrdinalRange(first: 3, last: 5)])
+        XCTAssertEqual(new.result.coverage, old.result.coverage)
+        XCTAssertEqual(new.map, old.map)
+        XCTAssertEqual(new.metadataStatistics, old.metadataStatistics)
+        XCTAssertNotEqual(new.result.token.policyFingerprint, old.result.token.policyFingerprint)
+        XCTAssertNotEqual(new.result.token.versions, old.result.token.versions)
+        let result = try decision(input, policy: .focusResetAndCohortSeparation)
+        XCTAssertEqual(result.reason, .jointFocusResetHistogramSeparation)
+        XCTAssertEqual(result.focusReset?.leftTrackingCode, 2)
+        XCTAssertEqual(result.focusReset?.rightTrackingCode, 0)
+        XCTAssertEqual(result.focusReset?.leftFocusPositionCode, 100)
+        XCTAssertEqual(result.focusReset?.rightFocusPositionCode, 130)
+        XCTAssertEqual(result.focusReset?.counterRestart, true)
+        XCTAssertEqual(result.focusReset?.validDisplayRegions, true)
+        XCTAssertEqual(result.focusReset?.disjointDisplayRegions, true)
+        XCTAssertEqual(result.focusReset?.histogramSeparated, true)
+        XCTAssertGreaterThan(try XCTUnwrap(result.histogramGap), 0)
+        XCTAssertEqual(result.luminanceGap, 0); XCTAssertEqual(result.hashGap, 0)
+        XCTAssertFalse(result.appearanceSeparationPassed) // v1's H/L/hash meaning remains unchanged.
+        XCTAssertEqual(new.pauseBridgeStatistics?.focusResetCandidates, 1)
+        XCTAssertEqual(new.pauseBridgeStatistics?.focusResetVetoes, 1)
+        XCTAssertNil(old.pauseBridgeStatistics?.focusResetCandidates)
+        let serialized = String(decoding: try JSONEncoder().encode(old.pauseBridgeStatistics), as: UTF8.self)
+        XCTAssertFalse(serialized.contains("focusReset"))
+        XCTAssertEqual(try decision(fixture(), policy: .focusResetAndCohortSeparation), try decision(fixture()))
+    }
+    func testResetRequiresStableTrackingLossAndChangedNonsentinelFocusCode() throws {
+        let input = try resetFixture()
+        var noLoss = input, noChange = input, noPriorTracking = input
+        for i in 3..<6 {
+            noLoss = changed(noLoss, index: i, codes: ["sony.AFTracking": 2])
+            noChange = changed(noChange, index: i, codes: ["sony.FocusPosition2": 100])
+        }
+        for i in 0..<3 { noPriorTracking = changed(noPriorTracking, index: i, codes: ["sony.AFTracking": 0]) }
+        let mutations = [noLoss, noChange, noPriorTracking,
+            changed(input, index: 0, codes: ["sony.AFTracking": 1]),
+            changed(input, index: 3, codes: ["sony.AFTracking": 1]),
+            changed(input, index: 4, codes: ["sony.FocusPosition2": 129])]
+        for value in mutations {
+            XCTAssertNotEqual(try decision(value, policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+        for name in ["sony.AFTracking", "sony.FocusPosition2"] {
+            for state in [SequenceMetadataFieldState.absent, .conflicting, .invalid] {
+                let value = changed(input, index: 3, states: [name: state])
+                XCTAssertNotEqual(try decision(value, policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+            }
+        }
+        for code in [0, 255, 256, Int(UInt32.max)] {
+            var value = input
+            for i in 3..<6 { value = changed(value, index: i, codes: ["sony.FocusPosition2": code]) }
+            XCTAssertNotEqual(try decision(value, policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+    }
+    func testResetNeedsBothDisjointValidDisplayGeometryAndHistogramSeparation() throws {
+        let input = try resetFixture()
+        var sameLocation = input
+        for i in 3..<6 { sameLocation = changed(sameLocation, index: i,
+            tuples: ["sony.FocusLocation": [1000, 800, 200, 200], "sony.FocusLocation2": [1000, 800, 200, 200]]) }
+        let overlapping = try decision(sameLocation, policy: .focusResetAndCohortSeparation)
+        XCTAssertEqual(overlapping.verdict, .retained)
+        XCTAssertEqual(overlapping.focusReset?.disjointDisplayRegions, false)
+        for tuples in [["sony.FocusLocation": [1000, 800, 500, 400], "sony.FocusLocation2": [1000, 800, 500, 400]],
+                       ["sony.FocusLocation2": [1000, 800, 703, 200]], ["sony.FocusFrameSize": [80, 60, 0]],
+                       ["sony.FocusLocation": [1000, 800, 10, 200], "sony.FocusLocation2": [1000, 800, 10, 200]],
+                       ["sony.FocusLocation2": [999, 800, 700, 200]]] {
+            let value = changed(input, index: 3, tuples: tuples)
+            XCTAssertNotEqual(try decision(value, policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+        for codes in [["sony.AFTracking": 99], ["sony.FocusMode": 0], ["sony.CameraOrientation": 8]] {
+            XCTAssertNotEqual(try decision(changed(input, index: 3, codes: codes), policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+        let c = try contexts(input), same = try feature()
+        let result = try SequencePauseBridgeRule.decide(leftFeatures: [same, same, same], rightFeatures: [same, same, same],
+            leftContexts: c.prefix(3).map(Optional.some), rightContexts: c.suffix(3).map(Optional.some),
+            denseGapSeconds: 0.6, maximumBridgeSeconds: 12, policy: .focusResetAndCohortSeparation, cancelled: { false })
+        XCTAssertEqual(result.verdict, .retained)
+        XCTAssertEqual(result.focusReset?.histogramSeparated, false)
+        XCTAssertEqual(result.histogramGap, 0)
+    }
+    func testResetDoesNotInterpretFocusCodeMagnitudeOrAssumeTrackedObjectCohesion() throws {
+        var input = try resetFixture()
+        for i in 3..<6 { input = changed(input, index: i, codes: ["sony.FocusPosition2": 99]) }
+        // One code step, either direction, is a change only when every other independent gate agrees.
+        XCTAssertEqual(try decision(input, policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        input = changed(input, index: 4,
+            tuples: ["sony.FocusLocation": [1000, 800, 850, 200], "sony.FocusLocation2": [1000, 800, 850, 200]])
+        let result = try decision(input, policy: .focusResetAndCohortSeparation)
+        XCTAssertEqual(result.verdict, .vetoed)
+        XCTAssertEqual(result.rightOverlaps, 1) // Display regions can move within one right-hand cohort.
+        XCTAssertFalse(result.focusGeometryPassed) // v1's all-intra-overlap statistic is not relabeled.
+    }
+    func testResetRequiresCounterDecreaseDenseSupportPauseAndComparableSettings() throws {
+        for counters in [[1, 2, 3, 4, 5, 6], [1, 2, 3, 5, 6, 7], [1, 2, 3, 3, 4, 5], [1, 3, 4, 1, 2, 3]] {
+            XCTAssertNotEqual(try decision(resetFixture(counters: counters), policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+        for times in [[0.0, 0.05, 0.1, 0.6, 0.65, 0.7], [0, 0.05, 0.1, 13, 13.05, 13.1], [0, 0.7, 0.8, 2, 2.05, 2.1]] {
+            XCTAssertNotEqual(try decision(resetFixture(times: times), policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+        for key in ["exif.ExposureTime", "exif.ISO", "exif.FNumber", "exif.FocalLength", "exif.ExposureProgram",
+                    "exif.Orientation", "exif.ExifImageWidth", "exif.ExifImageHeight"] {
+            XCTAssertNotEqual(try decision(resetFixture(setting: (3, key, "200")), policy: .focusResetAndCohortSeparation).verdict, .vetoed)
+        }
+        XCTAssertThrowsError(try decision(resetFixture(), policy: .focusResetAndCohortSeparation, cancelled: { true })) {
+            XCTAssertTrue($0 is CancellationError)
+        }
+    }
+    func testResetCohortScopeMissingContextAndCameraClockMismatchFallback() throws {
+        let input = try resetFixture(), original = try contexts(input)
+        func evaluate(_ contexts: [SequencePauseBridgeContext?]) throws -> SequencePauseBridgeEvidence {
+            try SequencePauseBridgeRule.decide(leftFeatures: input.files.prefix(3).map { $0.feature! },
+                rightFeatures: input.files.suffix(3).map { $0.feature! }, leftContexts: Array(contexts.prefix(3)),
+                rightContexts: Array(contexts.suffix(3)), denseGapSeconds: 0.6, maximumBridgeSeconds: 12,
+                policy: .focusResetAndCohortSeparation, cancelled: { false })
+        }
+        var missing = original.map(Optional.some); missing[3] = nil
+        XCTAssertNotEqual(try evaluate(missing).verdict, .vetoed)
+        for mutate in ["cohort", "camera", "clock", "scope", "audit"] {
+            let old = original[3]
+            var replacement = SequencePauseBridgeContext(assetID: old.assetID, currentSHA256: old.currentSHA256,
+                originalSHA256: old.originalSHA256, focusAuditSeal: mutate == "audit" ? try sha("other") : old.focusAuditSeal,
+                scopeFingerprint: mutate == "scope" ? try sha("other") : old.scopeFingerprint,
+                cameraPartitionID: mutate == "camera" ? "other-device" : old.cameraPartitionID,
+                originalOffsetMinutes: mutate == "clock" ? 0 : old.originalOffsetMinutes,
+                orientation: old.orientation, referenceWidth: old.referenceWidth, referenceHeight: old.referenceHeight,
+                releaseMode: old.releaseMode, sequenceNumber: old.sequenceNumber, sequenceImageNumber: old.sequenceImageNumber,
+                localSecond: old.localSecond, nanosecond: old.nanosecond, settings: old.settings, focus: old.focus)
+            replacement.resetCohortComparable = mutate != "cohort"
+            var values = original.map(Optional.some); values[3] = replacement
+            XCTAssertNotEqual(try evaluate(values).verdict, .vetoed, mutate)
+        }
+        let short = try SequencePauseBridgeRule.decide(leftFeatures: input.files.prefix(2).map { $0.feature! },
+            rightFeatures: input.files.suffix(3).map { $0.feature! }, leftContexts: original.prefix(2).map(Optional.some),
+            rightContexts: original.suffix(3).map(Optional.some), denseGapSeconds: 0.6, maximumBridgeSeconds: 12,
+            policy: .focusResetAndCohortSeparation, cancelled: { false })
+        XCTAssertEqual(short.verdict, .notApplicable)
+    }
+
+    func testResetFactoryLimitsBothAuditedAndRuntimeRowsToKnownCameraAndFormat() throws {
+        let input = try resetFixture(), old = input.files[0], original = old.metadata.originalCapture
+        let digest = try input.focus.boundFingerprint(manifest: input.manifest, metadata: input.metadata)
+        func context(make: String = "SONY", model: String = "ILCE-1M2", format: SequenceOriginalFormat = .arw,
+                     state: SequenceFocusAuditState) -> SequencePauseBridgeContext {
+            let capture = SequenceCaptureEvidence(assetID: original.assetID, contentHash: original.contentHash,
+                extractorVersion: original.extractorVersion, evidenceRevision: original.evidenceRevision,
+                time: original.time, cameraMake: make, cameraModel: model, imageNumberRaw: original.imageNumberRaw,
+                exposureSeconds: original.exposureSeconds, orientation: original.orientation, warnings: original.warnings)
+            let metadata = SequenceMetadataFileEvidence(assetID: old.metadata.assetID, currentSHA256: old.metadata.currentSHA256,
+                originalSHA256: old.metadata.originalSHA256, auditSeal: old.metadata.auditSeal, keyID: old.metadata.keyID,
+                originalFormat: format, originalCapture: capture, fieldStates: old.metadata.fieldStates,
+                resolvedNumbers: old.metadata.resolvedNumbers, opaqueCandidates: old.metadata.opaqueCandidates)
+            let file = SequenceCaptureFileInput(entry: old.entry, currentEvidence: old.currentEvidence, metadata: metadata,
+                contentVersion: old.contentVersion, feature: old.feature, readBarrier: old.readBarrier)
+            let previous = input.focus.files[0]
+            let focus = SequenceFocusFileEvidence(assetID: previous.assetID, currentSHA256: previous.currentSHA256,
+                originalSHA256: previous.originalSHA256, ordinal: previous.ordinal, state: state,
+                fieldStates: state == .outsideAuditedCohort ? [:] : previous.fieldStates,
+                resolvedCodes: state == .outsideAuditedCohort ? [:] : previous.resolvedCodes,
+                resolvedTuples: state == .outsideAuditedCohort ? [:] : previous.resolvedTuples)
+            return SequencePauseBridgeContext.make(file: file, focus: focus, focusAuditSeal: input.focus.focusAuditSeal,
+                scopeFingerprint: digest, manifest: input.manifest)
+        }
+        for state in [SequenceFocusAuditState.audited, .runtimeExtracted] {
+            XCTAssertTrue(context(state: state).resetCohortComparable)
+            XCTAssertTrue(context(state: state).runtimeCohortComparable)
+            XCTAssertFalse(context(make: "Other", state: state).resetCohortComparable)
+            XCTAssertFalse(context(model: "ILCE-7RM5", state: state).resetCohortComparable)
+            XCTAssertFalse(context(model: "", state: state).resetCohortComparable)
+            for format in [SequenceOriginalFormat.jpeg, .dng, .unknown] {
+                XCTAssertFalse(context(format: format, state: state).resetCohortComparable)
+            }
+        }
+        XCTAssertFalse(context(state: .outsideAuditedCohort).resetCohortComparable)
+    }
+    func testRuntimeSharedPolicySelectsNewVersionAndPreservesAssociationPolicy() throws {
+        XCTAssertEqual(RuntimeAutomaticGroupingAnalyzer.pauseBridgePolicy, .focusResetAndCohortSeparation)
+        let input = try resetFixture()
+        let analysis = try SequenceMetadataEventPipeline.analyze(files: input.files, manifest: input.manifest,
+            metadata: input.metadata, associationPolicy: .assumeCorroborated, rescuePolicy: .allowShortRestart,
+            focusSnapshot: input.focus, pauseBridgePolicy: RuntimeAutomaticGroupingAnalyzer.pauseBridgePolicy)
+        XCTAssertEqual(analysis.configuration.pauseBridgeExperiment?.policy, .focusResetAndCohortSeparation)
+        XCTAssertEqual(analysis.configuration.metadataExperiment?.associationPolicy, .assumeCorroborated)
+        XCTAssertEqual(analysis.configuration.metadataExperiment?.rescuePolicy, .allowShortRestart)
+        XCTAssertEqual(analysis.result.token.versions.algorithm, "sequence-local-anchor-cadence-focus-reset-exp-2")
+        XCTAssertEqual(analysis.pauseBridgeStatistics?.focusResetVetoes, 1)
+    }
+
 }
