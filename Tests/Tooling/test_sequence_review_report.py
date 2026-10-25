@@ -208,5 +208,15 @@ console.log('revision validator pass');
             capture_output=True, text=True, env=dict(os.environ, RAWMASTER_REVIEW_NODE_MODULES=str(modules)))
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
 
+    def testConflictingAndUnfinishedDraftsRemainExportableAndRecoverable(self):
+        node = shutil.which('node')
+        modules = pathlib.Path(os.environ.get('RAWMASTER_REVIEW_NODE_MODULES', REPO / 'Tests/ReviewUI/node_modules'))
+        if not node or not (modules / 'jsdom').is_dir():
+            self.skipTest('Run npm ci --prefix Tests/ReviewUI --ignore-scripts')
+        catalog_path = self.root / 'export-catalog.json'; catalog_path.write_text(json.dumps(self.catalog()))
+        completed = subprocess.run([node, str(REPO / 'Tests/ReviewUI/export-recovery.cjs'), str(catalog_path)],
+            capture_output=True, text=True, env=dict(os.environ, RAWMASTER_REVIEW_NODE_MODULES=str(modules)))
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
 
 if __name__ == '__main__': unittest.main()
