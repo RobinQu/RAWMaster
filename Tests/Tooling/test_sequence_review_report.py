@@ -151,5 +151,62 @@ console.log('revision validator pass');
                                    capture_output=True, text=True, env=env)
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
 
+    def jpeg_projection(self):
+        catalog = self.catalog()
+        case = catalog['cases'][0]
+        for a in case['assets']:
+            a['filename'] = 'capture%d.%s' % (a['ordinal'] // 2, 'JPG' if a['ordinal'] % 2 else 'DNG')
+        # A second unchanged case exercises migration of existing Sony-style labels.
+        other = json.loads(json.dumps(case)); other['id'] = 'unchanged'
+        for a in other['assets']:
+            a['caseID'] = 'unchanged'
+        catalog['cases'].append(other)
+        catalog['assetCount'] = 12
+        catalog['binding']['truthSHA256ByCase']['unchanged'] = other['truthSHA256']
+        catalog['binding']['assetBindings'] += [{k: a[k] for k in ('caseID', 'assetID', 'ordinal', 'jpegSHA256', 'originalSHA256')} for a in other['assets']]
+        return catalog, report.jpeg_annotation_projection(catalog, ['example'])
+
+    def testJPEGProjectionPreservesSourceBindingAndUnknownWithoutReinterpretingMetrics(self):
+        source, projected = self.jpeg_projection()
+        before = json.dumps(source, sort_keys=True)
+        case = projected['cases'][0]
+        self.assertEqual([(a['ordinal'], a['sourceOrdinal'], a['assetID']) for a in case['assets']], [(0, 1, 'f1'), (1, 3, 'f3'), (2, 5, 'f5')])
+        self.assertTrue(all(a['filename'].endswith('.JPG') for a in case['assets']))
+        self.assertEqual(case['truth']['groups'][0]['assetIDs'], ['f1', 'f3'])
+        self.assertEqual(case['unknownAssetIDs'], ['f5'])
+        self.assertEqual(case['truth']['negativePairs'], [])
+        self.assertEqual(report.known_edges(case), {0: 'same'})
+        self.assertEqual(case['algorithms'], [])
+        self.assertFalse(any(e['caseID'] == 'example' for e in projected['errors']))
+        self.assertEqual(projected['cases'][1], source['cases'][1])
+        self.assertEqual(projected['assetCount'], 9)
+        self.assertEqual(projected['annotationProjection']['legacyCatalog']['binding'], source['binding'])
+        self.assertNotEqual(projected['indexSHA256'], source['indexSHA256'])
+        self.assertNotEqual(case['truthSHA256'], source['cases'][0]['truthSHA256'])
+        self.assertEqual(json.dumps(source, sort_keys=True), before)
+        detached = report.jpeg_annotation_projection(source, ['example'])
+        detached['annotationProjection']['legacyCatalog']['cases'][0]['assets'][0]['filename'] = 'changed'
+        detached['annotationProjection']['descriptor']['sourceBinding']['assetBindings'].clear()
+        self.assertEqual(json.dumps(source, sort_keys=True), before)
+        with self.assertRaises(report.InvalidReport):
+            report.jpeg_annotation_projection(source, ['missing'])
+        with self.assertRaises(report.InvalidReport):
+            report.jpeg_annotation_projection(projected, ['example'])
+        for a in case['assets'][:2]:
+            a['filename'] = 'raw.DNG'
+        with self.assertRaises(report.InvalidReport):
+            report.jpeg_annotation_projection({k: v for k, v in projected.items() if k != 'annotationProjection'}, ['example'])
+
+    def testJPEGProjectionDraftMigrationAndDOMKeepLegacyStorageUnchanged(self):
+        node = shutil.which('node')
+        modules = pathlib.Path(os.environ.get('RAWMASTER_REVIEW_NODE_MODULES', REPO / 'Tests/ReviewUI/node_modules'))
+        if not node or not (modules / 'jsdom').is_dir():
+            self.skipTest('Run npm ci --prefix Tests/ReviewUI --ignore-scripts')
+        _, projected = self.jpeg_projection()
+        catalog_path = self.root / 'jpeg-catalog.json'; catalog_path.write_text(json.dumps(projected))
+        completed = subprocess.run([node, str(REPO / 'Tests/ReviewUI/jpeg-annotation.cjs'), str(catalog_path)],
+            capture_output=True, text=True, env=dict(os.environ, RAWMASTER_REVIEW_NODE_MODULES=str(modules)))
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
 
 if __name__ == '__main__': unittest.main()

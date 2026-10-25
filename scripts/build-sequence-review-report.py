@@ -259,6 +259,59 @@ def thumbnail(source, destination):
         return {'width': image.width, 'height': image.height}
 
 
+def jpeg_annotation_projection(catalog, case_ids):
+    """Create a separate annotation dataset, preserving the sealed file-level source."""
+    selected = set(case_ids)
+    if not selected or not selected <= {c['id'] for c in catalog['cases']}:
+        raise InvalidReport('JPEG annotation selection is empty or references unknown case')
+    if 'annotationProjection' in catalog:
+        raise InvalidReport('Annotation projection cannot be projected again')
+    result = json.loads(json.dumps(catalog))
+    descriptor = {'policy': 'jpeg-only-annotation-v1', 'sourceBinding': json.loads(json.dumps(catalog['binding'])), 'cases': []}
+    for case in result['cases']:
+        if case['id'] not in selected:
+            continue
+        original_count = len(case['assets'])
+        kept = [a for a in case['assets'] if pathlib.PurePosixPath(a['filename']).suffix.lower() in ('.jpg', '.jpeg')]
+        if len(kept) < 2:
+            raise InvalidReport('JPEG annotation requires at least two JPEG captures')
+        allowed = {a['assetID'] for a in kept}
+        descriptor['cases'].append({'caseID': case['id'], 'sourceCount': original_count,
+            'keptAssetIDs': [a['assetID'] for a in kept]})
+        for ordinal, asset in enumerate(kept):
+            asset['sourceOrdinal'] = asset['ordinal']
+            asset['ordinal'] = ordinal
+        case['assets'] = kept
+        case['truth']['groups'] = [{**g, 'assetIDs': [a for a in g['assetIDs'] if a in allowed]}
+            for g in case['truth']['groups'] if sum(a in allowed for a in g['assetIDs']) >= 2]
+        # Only explicitly labeled retained endpoints survive; never invent a negative boundary.
+        case['truth']['negativePairs'] = [p for p in case['truth']['negativePairs'] if p['from'] in allowed and p['to'] in allowed]
+        case['unknownAssetIDs'] = [a for a in case['unknownAssetIDs'] if a in allowed]
+        case['truthSHA256'] = sha_bytes(encoded(case['truth']))
+        case['annotationOnly'] = True
+        case['annotationNote'] = f'仅标注 JPEG 拍摄序列：{len(kept)} 张；已排除 {original_count - len(kept)} 个非 JPEG 表示。未确认的组边界继续保持未知。历史文件级算法结果保存在旧报告，不作为此序列的评分。'
+        case['algorithms'] = []
+        known_edges(case)
+    result['errors'] = [e for e in result['errors'] if e['caseID'] not in selected]
+    result['attributions'] = [a for a in result['attributions'] if a['caseID'] not in selected]
+    # Historical visual statements about DNG/JPEG pairs must not become JPEG-only claims.
+    result['visualReview']['reviews'] = [r for r in result['visualReview']['reviews'] if r['caseID'] not in selected]
+    result['visualReview'].setdefault('limitations', []).append('DJI 改用 JPEG 单表示标注；原 DNG/JPEG 视觉复核和文件级评分仍保存在源报告，本页不将其重解释为 JPEG 事件级评测。')
+    result['annotationProjection'] = json.loads(json.dumps({'descriptor': descriptor, 'sourceCatalogSHA256': catalog['catalogSHA256'],
+        'legacyCatalog': {'indexSHA256': catalog['indexSHA256'], 'binding': catalog['binding'],
+            'cases': [{k: c[k] for k in ('id', 'truthSHA256', 'assets', 'truth')} for c in catalog['cases']]}}))
+    result['indexSHA256'] = sha_bytes(encoded(descriptor))
+    result['datasetID'] += '-jpeg-annotation-v1'
+    result['assetCount'] = sum(len(c['assets']) for c in result['cases'])
+    result['binding'] = {'indexSHA256': result['indexSHA256'],
+        'truthSHA256ByCase': {c['id']: c['truthSHA256'] for c in result['cases']},
+        'assetBindings': [{k: a[k] for k in ('caseID', 'assetID', 'ordinal', 'jpegSHA256', 'originalSHA256')}
+            for c in result['cases'] for a in c['assets']]}
+    result.pop('catalogSHA256', None)
+    result['catalogSHA256'] = sha_bytes(encoded(result))
+    return result
+
+
 def generate(fixture_root, output, catalog, thumbnailer=thumbnail):
     root = fixture_root.resolve(); output = output.resolve()
     if output.exists() or output.is_relative_to(root) or root.is_relative_to(output):
@@ -292,11 +345,14 @@ def main():
     parser.add_argument('--sources', type=pathlib.Path)
     parser.add_argument('--visual-review', type=pathlib.Path)
     parser.add_argument('--output', type=pathlib.Path, required=True)
+    parser.add_argument('--jpeg-only-case', action='append', default=[], help='Separate annotation projection; preserves source fixtures and baselines')
     args = parser.parse_args()
     repo = pathlib.Path(__file__).resolve().parents[1]
     sources = read_json(args.sources) if args.sources else default_sources(repo)
     catalog = build_catalog(args.fixture_root, sources, read_json(args.visual_review) if args.visual_review else None,
         args.sources.resolve().parent if args.sources else repo)
+    if args.jpeg_only_case:
+        catalog = jpeg_annotation_projection(catalog, args.jpeg_only_case)
     generate(args.fixture_root, args.output, catalog)
     print('Built', catalog['assetCount'], 'files,', len(catalog['errors']), 'unique historical error edges:', args.output / 'index.html')
 

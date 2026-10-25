@@ -53,7 +53,7 @@ python3 scripts/build-sequence-review-report.py \
 python3 -m unittest discover -s Tests/Tooling -p test_sequence_review_report.py -v
 ```
 
-9 项合成测试不解码图像，缩图使用 stub；覆盖完整错误集、未知不补负例、哈希/路径篡改拒绝、源字节保留、输出禁止覆盖、HTML 转义，封存计数一致性，以及 Node 下的纯修订校验器往返/篡改/双向关系与组冲突检查。真实 1,265 张缩图已核验；浏览器 file:// 交互仍受工具安全策略限制，不能以内存 DOM 测试冒充真实浏览器验收。
+合成测试不解码图像，缩图使用 stub；覆盖完整错误集、未知不补负例、哈希/路径篡改拒绝、源字节保留、输出禁止覆盖、HTML 转义，封存计数一致性，以及 Node 下的纯修订校验器往返/篡改/双向关系与组冲突检查。原报告的 1,265 张缩图已核验；浏览器 file:// 交互仍受工具安全策略限制，不能以内存 DOM 测试冒充真实浏览器验收。
 
 
 ## 连续标注（2026-10-25）
@@ -76,3 +76,28 @@ python3 -m unittest discover -s Tests/Tooling -p test_sequence_review_report.py 
 ```
 
 CI 在完整工具回归前安装该固定测试依赖。覆盖跨片段/数据集/算法组导航，保存/放弃/无效范围保护，刷新恢复、旧 schema1 草稿保留、逐对自动前进、拆分/撤销、连续保存范围、进度标记和存储不可用降级。它不替代真实浏览器呈现与下载验收。
+
+## DJI JPEG 单表示标注（2026-10-25）
+
+用户确认 DJI 的间隔拍摄标注只使用相机 JPEG，不重复标注对应 DNG。本次调整只创建标注投影，不修改原始文件、v1 fixture、旧 truth、历史基线或客户端算法。它与客户端 RAW+JPEG 先形成单张照片资源、再进行序列分组的粒度一致；JPEG 子集本身不验证客户端的 RAW+JPEG 关联实现。
+
+- `dji187-context376` 从 376 个文件投影为 188 张 JPEG；0001–0187 的 187 张继续保留已确认同组，0188 的归属仍未知，不增加组外负边。
+- 根据原文件名 `.JPG`/`.JPEG` 选择，不能根据缩图扩展名选择：DNG 对应的低分辨率缩图本身也是 `.jpg`。
+- 新 ordinal 为 0–187；保留稳定 assetID、原片及缩图哈希、`sourceOrdinal`，投影描述绑定完整源文件列表。其他案例不改变。
+- DJI 历史文件级错误边、算法评分和 DNG/JPEG 视觉复核保存在旧报告，不直接转换为 JPEG 事件级评分。新版以独立的“JPEG 序列标注”入口进入连续标注；没有声称已重新运行算法或已通过质量门槛。
+- 新 indexSHA256 是投影描述的 SHA256，新 truthSHA256 是投影标签的 SHA256。完整源绑定保留在 `annotationProjection.legacyCatalog`。schema1 导出继续严格绑定新列表，旧版与新版草稿使用不同存储键。
+- 新版可自动读取同地址下的旧草稿，或导入旧 JSON：先验证完整源绑定，再迁移未改动案例的修订；旧存储保持原字节不动。旧修订若含 DJI 边界/组编辑则明确拒绝自动迁移，要求保留旧导出并在 JPEG 序列重新标注，避免猜测 DNG 编号含义。加载失败后仍可使用旧报告/旧导出恢复。
+
+新建投影报告：
+
+```sh
+python3 scripts/build-sequence-review-report.py \
+  --fixture-root Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1 \
+  --visual-review docs/diagnostics/sequence-codex-visual-review-v1.json \
+  --jpeg-only-case dji187-context376 \
+  --output output/reports/sequence-review-jpeg-new
+```
+
+既有报告原地升级时，先在独立新目录备份完整旧报告，再从其已封存 catalog 生成投影并验证所有保留缩图的哈希，最后更新原报告地址。投影后共 1,077 张标注图片，减少的 188 张均为 DJI DNG 对应缩图；未修改任何源 fixture 图片。
+
+12 项报告测试包含 JPEG 子集选择、密集编号/源编号追溯、0188 式未知边界保留、源对象不变、历史评分隔离、旧标注迁移与篡改拒绝，以及内存 DOM 中 JPEG→JPEG 相邻标注、旧存储字节保留和连续工作流。
