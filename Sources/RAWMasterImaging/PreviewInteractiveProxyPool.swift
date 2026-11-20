@@ -10,6 +10,9 @@ struct PreviewInteractiveInputDescriptor:Encodable {
   let device:Int32,inode:UInt64,byteCount:Int64
   let seconds,nanos,changedSeconds,changedNanos:Int
   let decoder,originalDefaults,nativeContract:String
+  /// Identifies the actual cached base producer, independently of RAW adjustment semantics.
+  let proxyDecoder:String
+  var usesFlashRaw:Bool{proxyDecoder=="flashraw-linear-f16-metal-v1"}
   let sourceIsRAW:Bool
   let orientation,width,height:Int
   let extentXBits,extentYBits,scaleBits:UInt64

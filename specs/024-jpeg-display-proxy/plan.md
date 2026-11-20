@@ -8,6 +8,8 @@ JPEG 不替代 RAW、线性 RGBAf 交互代理、完整显影、保存或导出�
 
 FlashRaw Metal 适合作为独立显示代理的加速候选，但其颜色和默认显影尚不兼容 Core Image；线性 F32 的 Metal 内存代价也高于 SIMD。编辑热操作继续复用缓存基图与现有 GPU 后缀，不按滑杆重新解码 RAW。
 
+Lightflow 的 REA／运行时研究进一步支持这一分工：其 FlashRaw 只提供 CFA，自有 WebGPU 引擎负责显影、分级纹理、瓦片和编辑。完整证据与原生演进顺序见 [Lightflow REA 与 FlashRaw 原生演进研究](lightflow-rea.md)。实际重构、性能与安装验收见 [FlashRaw 重构与性能验收](flashraw-validation.md)。
+
 ## 实测依据
 
 样本为 9504 × 6336 的 Sony RAW，代理输出为 2400 × 1600、sRGB、JPEG 质量 0.90。

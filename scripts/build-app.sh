@@ -52,6 +52,15 @@ rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
 cp -R "$imaging_resources" "$app/Contents/Resources/"
 verify_photo_filter_resources "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
 
+flashraw_library="${FLASHRAW_LIBRARY:-$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib}"
+if [[ ! -f "$flashraw_library" ]]; then
+  print -u2 "Missing FlashRaw C ABI library. Set FLASHRAW_LIBRARY to a gpu-enabled libflashraw_capi.dylib."
+  exit 1
+fi
+mkdir -p "$app/Contents/Resources/FlashRaw"
+cp "$flashraw_library" "$app/Contents/Resources/FlashRaw/libflashraw_capi.dylib"
+cp "$PWD/output/tools/flashraw-src/LICENSE-MIT" "$PWD/output/tools/flashraw-src/LICENSE-APACHE" "$app/Contents/Resources/FlashRaw/"
+
 runtime_artifacts="${RAWMASTER_RUNTIME_ARTIFACTS_DIR:-$PWD/output/runtime-artifacts}"
 # Runtime executables stay inside a data archive until the native installer has
 # authenticated them. A packaged app must work without a system Python or uv.

@@ -56,7 +56,7 @@ enum DevelopmentAdvancedDetailEngineV3 {
     guard let result=CIImage(mtlTexture:texture,options:[.colorSpace:DevelopmentColorEngineV3.linearSRGB]) else { throw DevelopmentV3Error.invalidGraph }
     return extent.origin == .zero ? result:result.transformed(by:.init(translationX:extent.minX,y:extent.minY))
   }
-  static func apply(_ parameters: DevelopmentAdvancedDetailV3,to image: CIImage,sourceSize: DevelopmentPixelSize,context: CIContext, checkCancellation: (() throws -> Void)? = nil) throws -> CIImage {
+  static func apply(_ parameters: DevelopmentAdvancedDetailV3,to image: CIImage,sourceSize: DevelopmentPixelSize,context: CIContext, checkCancellation: (() throws -> Void)? = nil,deferValidation:Bool = false) throws -> CIImage {
     try parameters.validate()
     if parameters.dehaze.enabled && parameters.dehaze.amount != 0 { throw DevelopmentV3Error.unsupportedAdjustment(.dehaze) }
     let texture=parameters.texture.enabled && parameters.texture.amount != 0,clarity=parameters.clarity.enabled && parameters.clarity.amount != 0
@@ -66,17 +66,17 @@ enum DevelopmentAdvancedDetailEngineV3 {
     if e.height > e.width {
       // These isotropic operators must not depend on Core Image's portrait/landscape pass order.
       let normalized=image.oriented(.left)
-      let result=try apply(parameters,to:normalized,sourceSize:.init(width:sourceSize.height,height:sourceSize.width),context:context,checkCancellation:checkCancellation)
+      let result=try apply(parameters,to:normalized,sourceSize:.init(width:sourceSize.height,height:sourceSize.width),context:context,checkCancellation:checkCancellation,deferValidation:deferValidation)
       return result.oriented(.right)
     }
-    // Existing shared finite gate, same worker/context/F32. Its independent completion-error P1
-    // is tracked separately; this implementation does not modify the historical v2 validator.
-    try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
+    // Interactive proxy performs one finite gate after the shared suffix surface. Canonical
+    // callers retain the existing input and output validation pairs.
+    if !deferValidation { try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation) }
     var output=image
     if texture { output=try applyBand(.texture,amount:parameters.texture.amount,to:output,radius:r.texture) }
     if clarity { output=try applyBand(.clarity,amount:parameters.clarity.amount,to:output,radius:r.clarity) }
     output=try materialize(output,context:context,checkCancellation:checkCancellation)
-    try DevelopmentColorEngineV3.validateFinite(output,context:context,checkCancellation:checkCancellation)
+    if !deferValidation { try DevelopmentColorEngineV3.validateFinite(output,context:context,checkCancellation:checkCancellation) }
     return output
   }
   static func applyBand(_ band: Band,amount: Double,to image: CIImage,radius: Double) throws -> CIImage {

@@ -131,7 +131,7 @@ enum DevelopmentBrillianceAdaptiveV1 {
     return .init(straight:straight,restore:restore)
   }
   static func apply(_ light:DevelopmentLightV3,to image:CIImage,sourceIsRAW:Bool=false,context:CIContext?=nil,
-                    checkCancellation:(()throws->Void)?=nil,interactiveMapKey:String?=nil)throws->CIImage {
+                    checkCancellation:(()throws->Void)?=nil,interactiveMapKey:String?=nil,interactiveProxy:Bool=false)throws->CIImage {
     try light.validate()
     // No map, kernel, context, or alpha normalization for zero/disabled/other versions.
     guard isActive(light) else {return image}
@@ -155,7 +155,7 @@ enum DevelopmentBrillianceAdaptiveV1 {
       if let interactiveMapKey{interactiveMaps.setObject(rows,forKey:interactiveMapKey as NSString)}
     }
     let processed:CIImage
-    if let materialized=try DevelopmentBrillianceNativeRGV1.apply(straight,rows:rows,strength:light.brilliance,sourceIsRAW:sourceIsRAW,context:context,check:check) {
+    if !interactiveProxy,let materialized=try DevelopmentBrillianceNativeRGV1.apply(straight,rows:rows,strength:light.brilliance,sourceIsRAW:sourceIsRAW,context:context,check:check) {
       processed=materialized
     } else if #available(macOS 26.0,*) {
       processed=try PublicBrilliance.graph(image:straight,provider:rows,local:light.brilliance,shadow:0,observeTiledJoint:{_ in})

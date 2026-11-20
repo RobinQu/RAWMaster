@@ -37,9 +37,10 @@ final class PreviewPresentationLedger: @unchecked Sendable {
   /// A single physical budget for every opted-in pane, service and retained image.
   /// Closing an individual scope never shuts admission for unrelated scopes.
   static let shared = PreviewPresentationLedger()
-  init(cpuBudget: Int = 268_435_456, gpuBudget: Int = 134_217_728) {
+  init(cpuBudget: Int = 268_435_456, gpuBudget: Int = 201_326_592) {
     self.cpuBudget = max(0, min(268_435_456, cpuBudget))
-    self.gpuBudget = max(0, min(134_217_728, gpuBudget))
+    // Two 2400px RGBA32F proxies plus the compact display output fit this shared cap.
+    self.gpuBudget = max(0, min(201_326_592, gpuBudget))
   }
   func reserveSharedSurface(bytes: Int) throws -> PreviewPresentationReservation {
     try reserve(bytes: bytes, kind: .sharedSurface, scopeID: nil)

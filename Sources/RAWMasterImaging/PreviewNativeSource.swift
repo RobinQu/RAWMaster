@@ -74,6 +74,7 @@ final class PreviewNativeSource: @unchecked Sendable {
   private let tint: Float
   private let contextMemoryLimitMiB: Int
   private(set) var context: CIContext
+  private var retainedInteractiveContext: CIContext?
   init(capture: URL, byteCount: Int64, artifact: Bool, memoryLimit: Int) throws {
     self.capture = capture; self.byteCount = byteCount; self.artifact = artifact
     // Construct/warm the lazy filter kernel only on this existing native worker. Facts later
@@ -147,7 +148,14 @@ final class PreviewNativeSource: @unchecked Sendable {
     autoreleasepool {
       context.clearCaches()
       context = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:contextMemoryLimitMiB])
+      retainedInteractiveContext = nil
     }
+  }
+  func interactiveContext(memoryLimit: Int) throws -> CIContext {
+    if let retainedInteractiveContext { return retainedInteractiveContext }
+    let made = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryLimit])
+    retainedInteractiveContext = made
+    return made
   }
   func render(recipe: DevelopmentRecipe, maxPixel: Int, rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "",
               thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,

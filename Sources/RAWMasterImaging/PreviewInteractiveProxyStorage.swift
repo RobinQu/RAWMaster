@@ -84,6 +84,15 @@ final class PreviewInteractiveProxyStorage {
       throw error}
     try check()
   }
+  func fillFlashRaw(_ frame: FlashRawFrame, check: () throws -> Void) throws {
+    try check(); try ticket.requireOpenAdmission()
+    guard layout.float, let texture else { throw PreviewPresentationError.invalidLayout }
+    joined = false
+    try FlashRawMetalConverterCache.convert(frame, into: texture,
+      outputSize: CGSize(width: layout.width, height: layout.height))
+    joined = true
+    try check()
+  }
   // Shared by the actual joined readback and pure malformed-write regressions.
   // Poison every channel on EVERY submission: an old successful zero is unsafe.
   static func poisonCheckedPixel(_ address:UnsafeMutableRawPointer){

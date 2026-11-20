@@ -3,8 +3,19 @@ import CoreImage
 import Metal
 import RAWMasterCore
 
+struct PreviewInteractivePhaseProfile {
+  static let enabled=ProcessInfo.processInfo.environment["RAWMASTER_INTERACTIVE_TIMING"] == "1"
+  private var previous=DispatchTime.now().uptimeNanoseconds
+  mutating func mark(_ label:String) {
+    guard Self.enabled else{return}
+    let now=DispatchTime.now().uptimeNanoseconds
+    FileHandle.standardError.write(Data("INTERACTIVE-PHASE \(label) \(Double(now-previous)/1_000_000)\n".utf8))
+    previous=now
+  }
+}
+
 enum PreviewInteractiveProxyV3 {
-  static let version="actual-parameters-linear-proxy-v2-local-operators"
+  static let version="actual-parameters-linear-proxy-v3-flashraw-neutral"
   private static let transportAlphaKernel: Result<CIKernel,Error> = Result {
     let source = #"""
     #include <metal_stdlib>
@@ -95,9 +106,17 @@ enum PreviewInteractiveProxyV3 {
       guard value.x.isFinite,value.x==0 else{throw DevelopmentError.invalidEncoding}
     }
   }
-  static func suffix(_ p:DevelopmentAdjustmentsV3,source:CIImage,sourceIsRAW:Bool,nativeSize:CGSize,scale:Double,context:CIContext,check:@escaping ()throws->Void,illustrativeAdaptiveBrilliance:Bool=false,interactiveMapNamespace:String?=nil)throws->CIImage {
+  static func suffix(_ p:DevelopmentAdjustmentsV3,source:CIImage,sourceIsRAW:Bool,nativeSize:CGSize,scale:Double,context:CIContext,check:@escaping ()throws->Void,illustrativeAdaptiveBrilliance:Bool=false,interactiveMapNamespace:String?=nil,flashRaw:Bool=false,asShotWhiteBalance:DevelopmentAsShotWhiteBalance?=nil)throws->CIImage {
     var image=source
-    if !sourceIsRAW {
+    if flashRaw {
+      if let b=p.legacyBasis,b.exposureEV != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:b.exposureEV])}
+      let requested=try DevelopmentWhiteBalanceEngineV3.nativeTarget(p.whiteBalance) ?? p.legacyBasis?.whiteBalance ?? .asShot
+      if case let .temperatureTint(t,v)=requested {
+        guard let original=asShotWhiteBalance else{throw DevelopmentV3Error.unsupportedNativeParameters}
+        image=image.applyingFilter("CITemperatureAndTint",parameters:["inputNeutral":CIVector(x:CGFloat(original.temperature),y:CGFloat(original.tint)),"inputTargetNeutral":CIVector(x:t,y:v)])
+      }
+      if p.light.enabled,p.light.exposure != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:2*p.light.exposure])}
+    } else if !sourceIsRAW {
       if let b=p.legacyBasis {
         if !p.whiteBalance.enabled,case let .temperatureTint(t,v)=b.whiteBalance{image=image.applyingFilter("CITemperatureAndTint",parameters:["inputNeutral":CIVector(x:t,y:v),"inputTargetNeutral":CIVector(x:6500,y:0)])}
         if b.exposureEV != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:b.exposureEV])}
@@ -106,7 +125,7 @@ enum PreviewInteractiveProxyV3 {
     }
     // Both RAW and image use the same legacy point basis BEFORE Light, not image-only.
     if let color=p.legacyBasis?.color,!color.isNeutral{image=try DevelopmentColorEngineV2.apply(color,to:image)}
-    if !sourceIsRAW,p.light.enabled,p.light.exposure != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:2*p.light.exposure])}
+    if !flashRaw,!sourceIsRAW,p.light.enabled,p.light.exposure != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:2*p.light.exposure])}
     try check()
     let radius=max(1,min(Double(nativeSize.width),Double(nativeSize.height))*DevelopmentSpatialEngineV3.radiusFraction)*scale
     if DevelopmentBrillianceAdaptiveV1.isActive(p.light) {
@@ -114,7 +133,7 @@ enum PreviewInteractiveProxyV3 {
       // proxy identity and all other parameters; settled/save/export retain native evaluation.
       var identity=p;identity.light.brilliance=0
       let key=try interactiveMapNamespace.map{$0+":"+(try EditingFingerprint.of(identity))}
-      image=try DevelopmentBrillianceAdaptiveV1.apply(p.light,to:image,sourceIsRAW:sourceIsRAW,context:context,checkCancellation:check,interactiveMapKey:key)
+      image=try DevelopmentBrillianceAdaptiveV1.apply(p.light,to:image,sourceIsRAW:sourceIsRAW,context:context,checkCancellation:check,interactiveMapKey:key,interactiveProxy:interactiveMapNamespace != nil)
       var remainder=p.light;remainder.brilliance=0
       image=try DevelopmentSpatialEngineV3.applyLight(remainder,to:image,proxyRadius:radius)
     } else { image=try DevelopmentSpatialEngineV3.applyLight(p.light,to:image,proxyRadius:radius) }
@@ -139,7 +158,7 @@ enum PreviewInteractiveProxyV3 {
     let clarity=advanced.clarity.enabled && advanced.clarity.amount != 0
     if texture || clarity {
       var bands=advanced;bands.dehaze = .init()
-      image=try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,sourceSize:proxySize,context:context,checkCancellation:check)
+      image=try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,sourceSize:proxySize,context:context,checkCancellation:check,deferValidation:true)
     }
     return image
   }
@@ -174,8 +193,11 @@ extension PreviewNativeSource {
       return .init(descriptor:nil,geometry:nil,outputLayout:layout,fallback:reason)
     }
     let scale=try PreviewInteractiveProxyV3.scale(nativeSize),layout=try PreviewInteractiveProxyV3.inputLayout(nativeSize)
-    let params=hasRAWFilter ? try interactiveNativeParameters(p):nil
-    var mode="image",temperature:UInt32?,tint:UInt32?
+    let useFlashRaw=hasRAWFilter && FlashRawSource.isAvailable
+    // A FlashRaw proxy is neutral and shared by exposure/WB/NR variants. The Core Image
+    // route retains its original parameter fingerprint and compatibility contract.
+    let params=hasRAWFilter && !useFlashRaw ? try interactiveNativeParameters(p):nil
+    var mode=useFlashRaw ? "flashraw-neutral":"image",temperature:UInt32?,tint:UInt32?
     if let params {
       switch params.whiteBalance {
       case .asShot:mode="original-neutral-untouched"
@@ -183,7 +205,7 @@ extension PreviewNativeSource {
       }
     }
     let stamp=captureStamp
-    let descriptor=PreviewInteractiveInputDescriptor(version:PreviewInteractiveProxyV3.version,sourceKey:sourceKey,verifiedContentID:verifiedContentID,captureID:captureID,generation:generation,device:stamp.device,inode:stamp.inode,byteCount:stamp.size,seconds:stamp.seconds,nanos:stamp.nanoseconds,changedSeconds:stamp.changedSeconds,changedNanos:stamp.changedNanoseconds,decoder:decoder,originalDefaults:originalNativeDefaultsFingerprint ?? "image-oriented-input-v1",nativeContract:DevelopmentRendererV3.nativeContract,sourceIsRAW:hasRAWFilter,orientation:originalEXIFOrientation,width:Int(nativeSize.width),height:Int(nativeSize.height),extentXBits:Double(orientedNativeExtent.minX).bitPattern,extentYBits:Double(orientedNativeExtent.minY).bitPattern,scaleBits:scale.bitPattern,proxyWidth:layout.width,proxyHeight:layout.height,rowBytes:layout.rowBytes,nativeExposureBits:params?.exposure.bitPattern,whiteBalanceMode:mode,nativeTemperatureBits:temperature,nativeTintBits:tint,nativeNoise:params?.noiseReduction)
+    let descriptor=PreviewInteractiveInputDescriptor(version:PreviewInteractiveProxyV3.version,sourceKey:sourceKey,verifiedContentID:verifiedContentID,captureID:captureID,generation:generation,device:stamp.device,inode:stamp.inode,byteCount:stamp.size,seconds:stamp.seconds,nanos:stamp.nanoseconds,changedSeconds:stamp.changedSeconds,changedNanos:stamp.changedNanoseconds,decoder:decoder,originalDefaults:originalNativeDefaultsFingerprint ?? "image-oriented-input-v1",nativeContract:useFlashRaw ? "flashraw-linear-f16-metal-v1":DevelopmentRendererV3.nativeContract,proxyDecoder:useFlashRaw ? "flashraw-linear-f16-metal-v1":"core-image",sourceIsRAW:hasRAWFilter,orientation:originalEXIFOrientation,width:Int(nativeSize.width),height:Int(nativeSize.height),extentXBits:Double(orientedNativeExtent.minX).bitPattern,extentYBits:Double(orientedNativeExtent.minY).bitPattern,scaleBits:scale.bitPattern,proxyWidth:layout.width,proxyHeight:layout.height,rowBytes:layout.rowBytes,nativeExposureBits:params?.exposure.bitPattern,whiteBalanceMode:mode,nativeTemperatureBits:temperature,nativeTintBits:tint,nativeNoise:params?.noiseReduction)
     let geometry=try PreviewInteractiveProxyV3.geometry(p.geometry,nativeSize:nativeSize,inputScale:scale,maxPixel:maxPixel)
     return .init(descriptor:descriptor,geometry:geometry,outputLayout:geometry.layout,fallback:nil)
   }
@@ -196,10 +218,9 @@ extension PreviewNativeSource {
   func renderInteractiveProxy(recipe:DevelopmentRecipe,maxPixel:Int,plan:PreviewInteractivePlan,pool:PreviewInteractiveProxyPool,scope:PreviewPresentationScope,rawBasePool:PreviewRawBasePool?,memoryLimit:Int,cancellation:DevelopmentAnalysisCancellation)throws->PreviewPixels {
     try validateCaptureAuthority();try cancellation.check();try scope.requireOpenAdmission()
     guard memoryLimit==512 else{throw PreviewPresentationError.unsupported}
-    self.context.clearCaches() // Drop the prior canonical context cache before opt-in allocation.
+    var profile=PreviewInteractivePhaseProfile()
     guard let p=recipe.adjustmentsV3 else{throw DevelopmentError.unsupportedEngine}
-    let context=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryLimit])
-    defer{context.clearCaches()}
+    let context=try interactiveContext(memoryLimit:memoryLimit)
     guard let device=MTLCreateSystemDefaultDevice(),device.hasUnifiedMemory else{throw PreviewPresentationError.unsupported}
     if let reason=plan.fallback {
       // Same actual complete canonical graph. Output is reserved BEFORE fresh native work;
@@ -228,62 +249,82 @@ extension PreviewNativeSource {
     // legacy/current curve+levels/6-color metadata Array/Data tables under existing Core16point
     // limits, their aliases and temporary parameters. CI-private/driver intermediates are unknown.
     let metadataPeak=65536
-    var reservations=[plan.outputLayout.bytes,validationLayout.bytes,metadataPeak]
+    // One explicitly shared suffix surface prevents validation and presentation from
+    // re-evaluating the same uncached CI graph. It is charged independently of the base.
+    var reservations=[plan.outputLayout.bytes,validationLayout.bytes,proxyLayout.bytes,metadataPeak]
     if pin==nil{reservations.append(proxyLayout.bytes)}
     let tickets=try scope.reserveSharedOperation(bytes:reservations)
-    defer{tickets[2].releaseAfterStorageReleased()}
+    defer{tickets[3].releaseAfterStorageReleased()}
     let output=PreviewInteractiveManagedOutput(layout:plan.outputLayout,ticket:tickets[0],device:device)
     let scratch=try PreviewInteractiveProxyStorage(layout:validationLayout,ticket:tickets[1],device:device)
+    let suffixSurface=try PreviewInteractiveProxyStorage(layout:proxyLayout,ticket:tickets[2],device:device)
     let check:()throws->Void={try cancellation.check();try scope.requireOpenAdmission();try pin?.check()}
     do {
       if pin==nil {
-        let storage=try PreviewInteractiveProxyStorage(layout:proxyLayout,ticket:tickets[3],device:device)
+        let storage=try PreviewInteractiveProxyStorage(layout:proxyLayout,ticket:tickets[4],device:device)
         guard let currentBuildID=buildID else{throw PreviewPresentationError.allocationProtocol}
         try pool.attachBuildingStorage(storage,id:currentBuildID)
         try autoreleasepool {
-          let input:CIImage
-          if descriptor.sourceIsRAW {
-            guard let fresh=CIRAWFilter(imageURL:capture)else{throw DevelopmentError.unreadable}
-            guard fresh.decoderVersion.rawValue==descriptor.decoder else{throw DevelopmentV3Error.unsupportedNativeParameters}
-            // asShot means no TT setter on this FRESH decoder; original chromaticity is untouched.
-            try DevelopmentRendererV3.configure(fresh,parameters:interactiveNativeParameters(p))
-            guard let image=fresh.outputImage else{throw DevelopmentError.unreadable};input=image
-          }else{
-            guard let image=CIImage(contentsOf:capture,options:[.applyOrientationProperty:true])else{throw DevelopmentError.unreadable};input=image
+          if descriptor.usesFlashRaw {
+            let flash=try FlashRawSource.open(capture)
+            let frame=try flash.decode(output:.linearRGBF16,backend:.gpu,demosaic:.bilinear)
+            let orientedSize=frame.info.orientation >= 5 && frame.info.orientation <= 8 ? CGSize(width:frame.info.height,height:frame.info.width):CGSize(width:frame.info.width,height:frame.info.height)
+            guard orientedSize==nativeSize else{throw PreviewPresentationError.allocationProtocol}
+            try storage.fillFlashRaw(frame,check:check)
+          } else {
+            let input:CIImage
+            if descriptor.sourceIsRAW {
+              guard let fresh=CIRAWFilter(imageURL:capture)else{throw DevelopmentError.unreadable}
+              guard fresh.decoderVersion.rawValue==descriptor.decoder else{throw DevelopmentV3Error.unsupportedNativeParameters}
+              // asShot means no TT setter on this FRESH decoder; original chromaticity is untouched.
+              try DevelopmentRendererV3.configure(fresh,parameters:interactiveNativeParameters(p))
+              guard let image=fresh.outputImage else{throw DevelopmentError.unreadable};input=image
+            }else{
+              guard let image=CIImage(contentsOf:capture,options:[.applyOrientationProperty:true])else{throw DevelopmentError.unreadable};input=image
+            }
+            guard input.extent==orientedNativeExtent else{throw PreviewPresentationError.allocationProtocol}
+            let normalized=input.transformed(by:.init(translationX:-input.extent.minX,y:-input.extent.minY))
+            let scaled=normalized.samplingLinear().transformed(by:.init(scaleX:descriptor.scale,y:descriptor.scale))
+            let canvas=try PreviewInteractiveProxyV3.transportAlpha(PreviewInteractiveProxyV3.canvas(scaled,width:proxyLayout.width,height:proxyLayout.height))
+            try storage.fill(canvas,context:context,check:check)
           }
-          guard input.extent==orientedNativeExtent else{throw PreviewPresentationError.allocationProtocol}
-          let normalized=input.transformed(by:.init(translationX:-input.extent.minX,y:-input.extent.minY))
-          let scaled=normalized.samplingLinear().transformed(by:.init(scaleX:descriptor.scale,y:descriptor.scale))
-          let canvas=try PreviewInteractiveProxyV3.transportAlpha(PreviewInteractiveProxyV3.canvas(scaled,width:proxyLayout.width,height:proxyLayout.height))
-          try storage.fill(canvas,context:context,check:check)
           // Validate the already-joined IOSurface on GPU and read back only its 1px maximum.
           // The former full-frame CPU scan added a second complete memory pass on every cold fill.
           let _:Void=try storage.withImage{base in
             try PreviewInteractiveProxyV3.validate(base,using:scratch,context:context,check:check)
           }
-          try validateCaptureAuthority();try check();context.clearCaches()
+          try validateCaptureAuthority();try check();
         }
         guard let buildID else{throw PreviewPresentationError.allocationProtocol}
         pin=try pool.publish(descriptor,storage,buildID:buildID)
       }
       guard let acquired=pin else{throw PreviewPresentationError.allocationProtocol}
+      profile.mark("base-ready")
       let result=try acquired.storage.withImage{base in
         try check()
         let source=base.cropped(to:descriptor.contentRect)
-        let suffix=try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:descriptor.sourceIsRAW,nativeSize:nativeSize,scale:descriptor.scale,context:context,check:check,interactiveMapNamespace:try descriptor.fingerprint())
-        try PreviewInteractiveProxyV3.validate(suffix,using:scratch,context:context,check:check)
-        let transformed=suffix.samplingLinear().transformed(by:geometry.transform)
+        let suffix=try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:descriptor.sourceIsRAW,nativeSize:nativeSize,scale:descriptor.scale,context:context,check:check,interactiveMapNamespace:try descriptor.fingerprint(),flashRaw:descriptor.usesFlashRaw,asShotWhiteBalance:asShotWhiteBalance)
+        try suffixSurface.fill(suffix,context:context,check:check)
+        profile.mark("suffix-rendered-once")
+        let settledSuffix=try suffixSurface.withImage{joined->CIImage in
+          try PreviewInteractiveProxyV3.validate(joined,using:scratch,context:context,check:check)
+          return joined
+        }
+        profile.mark("suffix-validated")
+        let transformed=settledSuffix.samplingLinear().transformed(by:geometry.transform)
         let final=PreviewInteractiveProxyV3.canvas(transformed,width:plan.outputLayout.width,height:plan.outputLayout.height)
         try PreviewInteractiveProxyV3.validate(final,using:scratch,context:context,check:check)
+        profile.mark("final-validated")
         let canonical=CGSize(width:geometry.mapping.outputSize.width,height:geometry.mapping.outputSize.height)
         let approximation=PreviewApproximationInfo(version:PreviewInteractiveProxyV3.version,nativeInputSize:nativeSize,proxyInputSize:descriptor.proxySize,canonicalCanvasSize:canonical,outputPixelSize:CGSize(width:plan.outputLayout.width,height:plan.outputLayout.height),nativeToProxyScale:descriptor.scale)
         let value=try output.materialize(final,context:context,nativeSize:canonical,approximation:approximation,check:check)
+        profile.mark("output-materialized")
         // No graph/context alias may outlive the pin; output provider owns a DIFFERENT allocation.
-        context.clearCaches();return value
+        return value
       }
       try validateCaptureAuthority();try check();pin=nil;return result
     }catch{
-      context.clearCaches();pool.retire(sourceKey:descriptor.sourceKey);pin=nil
+      pool.retire(sourceKey:descriptor.sourceKey);pin=nil
       do{try validateCaptureAuthority()}catch{throw error}
       throw error
     }
