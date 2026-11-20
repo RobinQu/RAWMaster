@@ -125,13 +125,32 @@ FlashRaw 的官方 PyPI wheel 使用 NEON 多线程时约为 297 ms，但其输�
 
 报告：`output/performance/raw-decode-path-v3-20261120/raw-decode-path-evaluation.json`、`output/performance/flashraw-evaluation-20261120/flashraw-evaluation.json`。内嵌预览因画幅比例差异，不引用逐像素误差。
 
+### Metal 版本复核
+
+从官方 0.3.1 源码以 `gpu,jpegxl` 构建后，Metal 后端在 Apple M4 Max 上实际可用，不能将 wheel 缺少 GPU feature 误判为 FlashRaw 没有 Metal 版本。
+
+| 验证项 | 实测结果 |
+| --- | --- |
+| 3 张 RAW 的 Metal 解码中位数 | 约 33–41 ms |
+| C++ C ABI 首次 Metal 解码 | 约 99 ms |
+| C++ C ABI 后续 Metal 解码 | 约 38–40 ms |
+| Metal 峰值 RSS | 约 699–837 MB |
+| NEON 峰值 RSS | 约 386–460 MB |
+| Core Image 显影差异 | p99 仍为 63–72 级，未消除 |
+
+`gpu_available()` 返回 true，证明可以通过其 C99 C ABI 或 C++17 RAII wrapper 接入，无需 Python 或命令行进程。Entropy decoding 仍由 CPU 执行，GPU 负责数据并行的后处理；Metal 比 NEON 后处理更快，但峰值内存约高 1.8 倍。[GPU 架构与限制](https://github.com/ybouane/flashraw/blob/main/docs/gpu.md)、[C ABI](https://github.com/ybouane/flashraw/blob/main/docs/c-api.md)。
+
+报告：`output/performance/flashraw-metal-evaluation-20261120/flashraw-metal-evaluation.json`。
+
 ### 推荐实施顺序
 
 1. **首屏使用内嵌预览**，避免无意义的完整 RAW 解码；其仅作近似占位，随后替换为统一显影结果。
 2. **标准显示缓存继续使用 JPEG**，不为追求压缩率切换到 HEIF、JPEG XL 或 WebP。
 3. **保留现有线性 RGBAf 编辑路径**，避免颜色、HDR 和局部调整语义变化。Core Image 全尺寸仍是兼容性基线。
-4. **FlashRaw 暂只作为独立研究候选**。若未来采用，先验证每个相机系列的色彩、白平衡、方向、裁切和线性输出，并准备 Core Image 回退；不用于当前保存、导出或最终调整。
-5. 若高倍缩放仍需优化，再评估区域／瓦片解码，避免重新读取完整 RAW，而不是扩大单张 JPEG 或改变压缩格式。
+4. **FlashRaw Metal 优先用于独立显示代理**，通过 C ABI 接入并复用长生命周期 GPU context／buffer pool，避免每帧创建进程或重复初始化。代理键必须包含 FlashRaw 版本、后端和显影契约；不受支持或校验失败的文件回退到 Core Image。
+5. **不直接替换最终显影**。在逐相机验证线性输出、白平衡、裁切、默认降噪、Alpha／HDR 与错误语义之前，FlashRaw 不用于当前保存、导出或最终调整。若高倍缩放仍需优化，再评估区域／瓦片解码，并优先复用其统一内存和分块能力。
+
+## 成熟软件的策略
 
 ## 成熟软件的策略
 
