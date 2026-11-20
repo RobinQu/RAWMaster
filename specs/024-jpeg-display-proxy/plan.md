@@ -6,6 +6,8 @@
 
 JPEG 不替代 RAW、线性 RGBAf 交互代理、完整显影、保存或导出输入。当前连续缩放性能问题来自重复提交原生渲染，修复后，JPEG 对连续缩放手势本身不再提供同量级收益。它主要缩短首次显示、切换照片和缓存未命中的等待。
 
+FlashRaw Metal 适合作为独立显示代理的加速候选，但其颜色和默认显影尚不兼容 Core Image；线性 F32 的 Metal 内存代价也高于 SIMD。编辑热操作继续复用缓存基图与现有 GPU 后缀，不按滑杆重新解码 RAW。
+
 ## 实测依据
 
 样本为 9504 × 6336 的 Sony RAW，代理输出为 2400 × 1600、sRGB、JPEG 质量 0.90。
@@ -142,15 +144,73 @@ FlashRaw 的官方 PyPI wheel 使用 NEON 多线程时约为 297 ms，但其输�
 
 报告：`output/performance/flashraw-metal-evaluation-20261120/flashraw-metal-evaluation.json`。
 
+### 去马赛克与线性输出的资源复核
+
+以下均为 3 张 Sony RAW 的本机实测，不是上游公开基准。RGBA8 使用各档去马赛克；线性测试使用 bilinear。时间为解码中位数，不包含 JPEG 编码或应用后续调整。
+
+| 输出与后端 | 去马赛克 | 解码中位数范围 | 选择结论 |
+| --- | --- | ---: | --- |
+| Metal RGBA8 | bilinear | 33.0–41.6 ms | 显示代理首选候选 |
+| Metal RGBA8 | auto／AHD | 53.8–66.1 ms | 质量候选，仍需像素验收 |
+| Metal RGBA8 | edge-aware | 76.4–91.5 ms | 暂不默认启用 |
+| SIMD RGBA8 | bilinear | 42.9–51.8 ms | 无 GPU 或内存受限时回退 |
+| SIMD RGBA8 | auto／AHD | 100.0–125.8 ms | 明显慢于 Metal |
+| SIMD RGBA8 | edge-aware | 734.2–902.7 ms | 不采用 |
+| Metal linear RGB F32 | bilinear | 37.9–49.9 ms | 峰值 RSS 约 1.39–1.68 GiB，不默认采用 |
+| SIMD linear RGB F32 | bilinear | 39.8–48.6 ms | 峰值 RSS 约 0.73–0.88 GiB；若做线性实验优先此档 |
+
+Metal 的浮点输出没有形成速度优势，反而显著提高内存代价。即使后续接入线性代理，也必须按输出格式分别选择后端，不能把“Metal 更快”作为全局策略。
+
+报告：`output/performance/flashraw-linear-demosaic-20261120/rgba8-demosaic.jsonl`、`output/performance/flashraw-linear-demosaic-20261120/linear-rgb.jsonl`。
+
+### 线性像素与 Core Image 默认显影差异
+
+对 3 张样本分别将 Core Image 默认 RAW 输出和 FlashRaw Metal bilinear 线性输出缩放至 2400 × 1600，再在线性 sRGB、RGBAf 中逐像素比较：
+
+- 线性通道绝对误差的 p99 为 0.297–0.426（0…1 标度）；这不是 8 位色阶误差。
+- 每通道最小二乘增益达到 1.51–2.63，但增益匹配后的 p99 仍为 0.0428–0.2497，说明不是统一曝光倍数即可对齐。
+- 样本的 Core Image 默认基线曝光为 0.35–0.40 EV，`boostAmount = 1`、`boostShadowAmount = 0.9`、`shadowBias = 3`，并带非零锐化及降噪默认值。这些默认处理与 FlashRaw 的色度学显影不是同一契约。
+- 对照图确认 FlashRaw 结果整体更暗；残差仍可能包含去马赛克、相机颜色校准、白平衡和局部色调处理差异，不能把全部误差归因于单一颜色矩阵。
+- FlashRaw 的线性输出保持传感器方向，而当前 `CIRAWFilter` 输出已应用方向；接入时必须显式统一方向、裁切和原生坐标映射。
+- 本次比较通过带线性 sRGB ICC 的 16 位 TIFF 传输，只验证量化并裁切到 `[0,1]` 后的样本。它不能证明超色域、HDR 或高于 1 的浮点值兼容。FlashRaw CLI 的 `.raw` 也会把 `linear-rgb` 量化为 RGB16，生产接入应使用 C ABI 的 F32 frame，而不是把该文件误读为 Float32。
+
+报告：`output/performance/flashraw-linear-demosaic-20261120/01-linear-comparison.json`、`02-linear-comparison.json`、`03-linear-comparison.json`；首份对照图为同目录 `core-linear.png` 与 `flashraw-linear.png`。
+
+### 各项编辑操作能否借助 FlashRaw 提速
+
+当前交互路径已经把 RAW 解码、原生曝光／白平衡／降噪构成前缀，并缓存为长边 2400 的线性 RGBAf 代理；绝大多数其他滑杆只执行后续 GPU 算子。因此，**不能为每次调整重新运行 FlashRaw**。这样会把一次点运算变成完整 RAW 解码，既更慢又改变颜色契约。
+
+现有代理描述键包含原生曝光、色温／色调和降噪参数，所以这些参数变化可能使基图缓存失效。优先工作是把可等价表达的操作移到缓存后的线性后缀，或复用稳定的中性基图，并重新验证 settled／save 一致性；仅更换解码器而保留逐参数重建，无法解决根本问题。
+
+| 操作 | FlashRaw 覆盖与限制 | RAWMaster 建议 |
+| --- | --- | --- |
+| 曝光 | 可在显影中融合 EV；GPU 支持 | 可进入未来的基础代理契约，但热调整继续在线性代理上做点运算 |
+| 黑点、白点 | 有通用线性 levels，GPU 支持；不等同于当前界面所有黑白点语义 | 不直接映射现有滑杆；先做参数与直方图等价验证 |
+| 白平衡 | as-shot 可走 Metal；自定义 RGB multipliers、自动及 Daylight 当前回退 CPU | 暂不放进 Metal 热路径；保留现有原生／GPU 实现，必要时再评估上游补 GPU custom WB |
+| 高光、阴影、亮度、对比度 | 没有与当前空间算子等价的编辑实现；highlight 模式也不是这些滑杆 | 继续现有 GPU 后缀 |
+| 饱和度、自然饱和度、色偏、黑白 | 无对应编辑器算子 | 继续现有 GPU 后缀 |
+| 曲线、Levels、HSL／选择性颜色、滤镜 | 无对应编辑器算子；通用 black／white point 不代表曲线或 Levels 已覆盖 | 继续现有 GPU 后缀，优先合并点运算与查表 |
+| 纹理、清晰度、去朦胧、自适应鲜明度 | 无对应实现 | FlashRaw 不会加速这些热操作；直接优化现有 Metal 算子、金字塔和缓存 |
+| RAW 降噪、锐化、细节 | FlashRaw 没有与 Apple 默认 NR／锐化等价的实现；edge-aware smoothing 不是同语义替代 | 保留 Core Image 前缀与既有验收，不用速度换默认显影差异 |
+| 暗角、定义、局部调整、修复、红眼、颗粒 | 无对应编辑器算子 | 继续现有 GPU 后缀 |
+| 裁切、旋转、透视 | 有传感器 active crop、方向和 region／tile，但不是用户几何变换 | 区域解码仅作为高倍查看候选；不得改变当前原生坐标和用户几何映射 |
+| 保存、导出、最终显影 | 输出颜色、默认处理和格式语义尚未对齐 | 继续 Core Image canonical 路径 |
+
+融合参数的附加验证中，同一 CLI 冷进程条件下，普通 RGBA8 与同时加入曝光／黑／白点的解码中位数分别为 83.343 ms 和 83.625 ms，说明这些参数本身几乎没有额外计算成本；自定义 RGB 白平衡则实际回退到 `CPU x16`。该绝对耗时包含独立进程和 GPU 初始化，不能与长生命周期 C ABI 的 38–40 ms 直接比较。报告：`output/performance/flashraw-options-20261120/options.jsonl`。
+
+当前干净环境的暖交互中位数为：曝光／颜色 49.5 ms、Texture 78.2 ms、Clarity 70.2 ms、Dehaze 46.6–60.1 ms、自适应 Brilliance 157.8 ms、几何 33.3 ms。它们已经复用线性代理；FlashRaw 只可能缩短冷基图生成，不能从上述数字中再“减去一次 RAW 解码”。这些为 API 返回时间，不是 WindowServer 呈现或跨应用同画布成绩。报告：`output/performance/interactive-final-clean-20261120/interactive-performance.json`。
+
+C ABI 当前暴露的是主机侧 frame；Rust 的 GPU-resident 输出和零拷贝设备互操作并未经 C ABI 暴露。若未来需要把 FlashRaw 线性结果直接接入 Metal／Core Image，需要另行实现共享 device、RGB 到 RGBAf、Alpha、方向和内存所有权桥接，并测量上传／转换成本，不能假定已具备零拷贝 Swift 接入。
+
 ### 推荐实施顺序
 
 1. **首屏使用内嵌预览**，避免无意义的完整 RAW 解码；其仅作近似占位，随后替换为统一显影结果。
 2. **标准显示缓存继续使用 JPEG**，不为追求压缩率切换到 HEIF、JPEG XL 或 WebP。
 3. **保留现有线性 RGBAf 编辑路径**，避免颜色、HDR 和局部调整语义变化。Core Image 全尺寸仍是兼容性基线。
-4. **FlashRaw Metal 优先用于独立显示代理**，通过 C ABI 接入并复用长生命周期 GPU context／buffer pool，避免每帧创建进程或重复初始化。代理键必须包含 FlashRaw 版本、后端和显影契约；不受支持或校验失败的文件回退到 Core Image。
-5. **不直接替换最终显影**。在逐相机验证线性输出、白平衡、裁切、默认降噪、Alpha／HDR 与错误语义之前，FlashRaw 不用于当前保存、导出或最终调整。若高倍缩放仍需优化，再评估区域／瓦片解码，并优先复用其统一内存和分块能力。
-
-## 成熟软件的策略
+4. **FlashRaw Metal 优先用于独立显示代理**，通过 C ABI 接入并复用长生命周期 GPU context／buffer pool，避免每帧创建进程或重复初始化。代理键必须包含 FlashRaw 版本、后端、去马赛克和显影契约；不受支持或校验失败的文件回退到 Core Image。
+5. **线性 FlashRaw 仅做隔离实验**。优先评估 SIMD F32 的内存优势，完成逐相机颜色、白平衡、方向、裁切、默认降噪、超色域／HDR、Alpha 和错误语义验证；未通过前不得进入保存、导出或最终调整。
+6. **编辑热路径继续复用缓存代理和现有 GPU 后缀**。性能工作优先投向自适应 Brilliance、Texture、Clarity 和 Dehaze 的算子融合、金字塔复用及中间结果缓存，而不是按滑杆重复显影 RAW。
+7. **高倍缩放另行评估区域／瓦片解码**。只有缓存未命中且 ROI 稳定时才解码原生区域；连续手势仍采样现有纹理，避免每个缩放事件重启 RAW 工作。
 
 ## 成熟软件的策略
 
