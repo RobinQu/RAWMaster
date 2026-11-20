@@ -59,22 +59,40 @@ final class EditingInteractivePerformanceTests: XCTestCase {
         let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0, rawBaseCacheBytes: 0, interactiveEvaluation: .proxyV1))
         let consumer = PreviewConsumerID()
         let session = try await service.open(source: .raw(source))
+        let dehazeContext = try DevelopmentDehazeContextFactoryV1.fromCapture(sourceURL, generation: session.sourceGeneration)
+        let neutralRecipe = DevelopmentRecipe(adjustmentsV3: .init())
         var revision: UInt64 = 0
 
-        func recipe(_ label: String, mutate: (inout DevelopmentAdjustmentsV3) -> Void) -> (String, DevelopmentRecipe) {
+        func recipe(_ label: String, dehazeAlgorithm: DevelopmentDehazeAlgorithm? = nil,
+                    mutate: (inout DevelopmentAdjustmentsV3) -> Void) throws -> (String, DevelopmentRecipe) {
             var parameters = DevelopmentAdjustmentsV3()
             mutate(&parameters)
+            if let dehazeAlgorithm {
+                let projection = try neutralRecipe.prospectiveDehazeInputV1(context: dehazeContext, algorithm: dehazeAlgorithm)
+                parameters.advancedDetail.preparedDehaze = .init(sourceBinding: dehazeContext.source,
+                    inputFingerprint: projection.input.inputFingerprint, airlight: .init(red: 0.5, green: 0.75, blue: 1),
+                    algorithmVersion: dehazeAlgorithm.rawValue)
+            }
             return (label, DevelopmentRecipe(adjustmentsV3: parameters))
         }
         let recipes = [
-            recipe("neutral") { _ in },
-            recipe("exposure-color") { value in
+            try recipe("neutral") { _ in },
+            try recipe("exposure-color") { value in
                 value.light.enabled = true; value.light.exposure = 0.35
                 value.color.enabled = true; value.color.saturation = 0.3; value.color.vibrance = 0.15
             },
-            recipe("texture") { value in value.advancedDetail.texture = .init(enabled: true, amount: 25) },
-            recipe("clarity") { value in value.advancedDetail.clarity = .init(enabled: true, amount: 25) },
-            recipe("geometry") { value in
+            try recipe("adaptive-brilliance") { value in
+                value.light = .init(enabled: true, brilliance: 0.35, brillianceVersion: .adaptiveLocalV1)
+            },
+            try recipe("texture") { value in value.advancedDetail.texture = .init(enabled: true, amount: 25) },
+            try recipe("clarity") { value in value.advancedDetail.clarity = .init(enabled: true, amount: 25) },
+            try recipe("dehaze-v1", dehazeAlgorithm: .v1) { value in
+                value.advancedDetail.dehaze = .init(enabled: true, amount: 25)
+            },
+            try recipe("dehaze-v2", dehazeAlgorithm: .positiveColorGuideV2) { value in
+                value.advancedDetail.dehaze = .init(enabled: true, amount: 25)
+            },
+            try recipe("geometry") { value in
                 value.geometry.straightenDegrees = 2
                 value.geometry.crop = .init(x: 0.08, y: 0.06, width: 0.84, height: 0.88)
             }
@@ -131,6 +149,7 @@ final class EditingInteractivePerformanceTests: XCTestCase {
         let report: [String: Any] = [
             "sourceSHA256": source.contentSHA256,
             "decoderVersion": session.decoderVersion,
+            "proxyVersion": PreviewInteractiveProxyV3.version,
             "policy": "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=0",
             "measurements": try JSONSerialization.jsonObject(with: JSONEncoder().encode(measurements)),
             "caveats": [

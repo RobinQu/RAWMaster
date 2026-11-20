@@ -102,7 +102,7 @@ final class PreviewInteractiveProxyStorage {
     guard let address=CVPixelBufferGetBaseAddress(buffer),let surface,address==IOSurfaceGetBaseAddress(surface)else{throw PreviewPresentationError.invalidLayout}
     try body(address)
   }
-  func withImage(_ body:(CIImage)throws->PreviewPixels)throws->PreviewPixels {
+  func withImage<T>(_ body:(CIImage)throws->T)throws->T {
     guard layout.float,joined,let buffer else{throw PreviewPresentationError.allocationProtocol}
     return try autoreleasepool{try body(CIImage(cvPixelBuffer:buffer,options:[.colorSpace:DevelopmentColorEngineV3.linearSRGB]))}
   }

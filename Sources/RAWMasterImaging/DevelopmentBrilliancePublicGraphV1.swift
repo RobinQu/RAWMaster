@@ -148,13 +148,22 @@ enum PublicBrilliance {
     static let y = FixedBlurAxis(length: 768)
     static let extent = CGRect(x: 0, y: 0, width: 1024, height: 768)
 
+    private static let generalKernels = NSCache<NSString, CIKernel>()
+    private static let colorKernels = NSCache<NSString, CIColorKernel>()
+
     static func general(_ source: String) throws -> CIKernel {
+        let key = source as NSString
+        if let cached = generalKernels.object(forKey: key) { return cached }
         guard let kernel = CIKernel(source: source) else { throw PublicBrillianceError.invalid("CIKernel compilation") }
+        generalKernels.setObject(kernel, forKey: key)
         return kernel
     }
 
     static func color(_ source: String) throws -> CIColorKernel {
+        let key = source as NSString
+        if let cached = colorKernels.object(forKey: key) { return cached }
         guard let kernel = CIColorKernel(source: source) else { throw PublicBrillianceError.invalid("CIColorKernel compilation") }
+        colorKernels.setObject(kernel, forKey: key)
         return kernel
     }
 

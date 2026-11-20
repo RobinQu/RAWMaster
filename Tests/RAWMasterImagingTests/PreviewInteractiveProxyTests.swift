@@ -284,4 +284,44 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     XCTAssertThrowsError(try native.renderInteractiveProxy(recipe:neutral(),maxPixel:2400,plan:plan,pool:pool,scope:scope,rawBasePool:nil,memoryLimit:512,cancellation:cancellation))
     XCTAssertEqual(pool.statistics(ledger:ledger).fills,0);XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
   }
+  func testInteractiveDehazeRequiresCurrentPreparationBeforeProxyRendering()async throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:0,interactiveEvaluation:.proxyV1))
+    do {
+      let lease=try await service.open(source:.raw(source)),consumer=PreviewConsumerID()
+      let context=try DevelopmentDehazeContextFactoryV1.fromCapture(source.sourceLocation,generation:lease.sourceGeneration)
+      let projection=try neutral().prospectiveDehazeInputV1(context:context)
+      var p=DevelopmentAdjustmentsV3();p.advancedDetail.dehaze = .init(enabled:true,amount:25)
+      p.advancedDetail.preparedDehaze = .init(sourceBinding:context.source,inputFingerprint:projection.input.inputFingerprint,
+        airlight:.init(red:0.5,green:0.75,blue:1))
+      let recipe=DevelopmentRecipe(adjustmentsV3:p)
+      let frame=try await service.render(request(lease,consumer,recipe,1))
+      XCTAssertTrue(frame.approximate)
+      var stale=recipe;let old=try XCTUnwrap(p.advancedDetail.preparedDehaze)
+      stale.adjustmentsV3!.advancedDetail.preparedDehaze = .init(sourceBinding:old.sourceBinding,
+        inputFingerprint:String(repeating:"e",count:64),airlight:old.airlight)
+      do {
+        _=try await service.render(request(lease,consumer,stale,2));XCTFail("Stale preparation must not render")
+      }catch{ XCTAssertEqual(error as? DevelopmentDehazePreparationError,.preparationRequired) }
+      await service.closeAll()
+    }catch{await service.closeAll();throw error}
+  }
+  func testPreparedDehazeUsesActualProxyScaleForBothAlgorithms()throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let context=DevelopmentColorEngineV3.makeContext();defer{context.clearCaches()}
+    let dehazeContext=try DevelopmentDehazeContextFactoryV1.fromCapture(source.sourceLocation)
+    let input=try XCTUnwrap(CIImage(contentsOf:source.sourceLocation,options:[.applyOrientationProperty:true]))
+    for algorithm in [DevelopmentDehazeAlgorithm.v1,.positiveColorGuideV2] {
+      let projection=try neutral().prospectiveDehazeInputV1(context:dehazeContext,algorithm:algorithm)
+      var p=DevelopmentAdjustmentsV3();p.advancedDetail.dehaze = .init(enabled:true,amount:25)
+      p.advancedDetail.preparedDehaze = .init(sourceBinding:dehazeContext.source,inputFingerprint:projection.input.inputFingerprint,
+        airlight:.init(red:0.5,green:0.75,blue:1),algorithmVersion:algorithm.rawValue)
+      let recipe=DevelopmentRecipe(adjustmentsV3:p)
+      XCTAssertEqual(try PreviewInteractiveProxyV3.support(recipe,sourceIsRAW:false),.canonical(.advanced))
+      XCTAssertEqual(try PreviewInteractiveProxyV3.support(recipe,sourceIsRAW:false,allowAdvancedDetail:true),.eligible)
+      let output=try PreviewInteractiveProxyV3.suffix(p,source:input,sourceIsRAW:false,nativeSize:CGSize(width:28,height:18),scale:1,context:context,check:{})
+      XCTAssertEqual(output.extent,input.extent)
+      try DevelopmentLocalEngineV3.validatePixels(output,context:context)
+    }
+  }
 }

@@ -4,7 +4,7 @@ import Metal
 import RAWMasterCore
 
 enum PreviewInteractiveProxyV3 {
-  static let version="actual-parameters-linear-proxy-v1"
+  static let version="actual-parameters-linear-proxy-v2-local-operators"
   private static let transportAlphaKernel: Result<CIKernel,Error> = Result {
     let source = #"""
     #include <metal_stdlib>
@@ -37,15 +37,14 @@ enum PreviewInteractiveProxyV3 {
     try recipe.validate()
     guard recipe.schemaVersion==3,let p=recipe.adjustmentsV3 else{return .canonical(.schema)}
     try p.noiseReduction.validate(for:sourceIsRAW ? .raw:.image)
-    if DevelopmentBrillianceAdaptiveV1.isActive(p.light){return .canonical(.adaptiveBrilliance)}
+    if !allowAdvancedDetail,DevelopmentBrillianceAdaptiveV1.isActive(p.light){return .canonical(.adaptiveBrilliance)}
     if p.geometry.verticalPerspective != 0 || p.geometry.horizontalPerspective != 0{return .canonical(.projective)}
     if p.filter.enabled,p.filter.selection != .original,p.filter.intensity != 0{return .canonical(.filter)}
     if !sourceIsRAW,p.noiseReduction.enabled,p.noiseReduction.nonRawAmount != 0{return .canonical(.nonRawNoise)}
     if p.definition.enabled,p.definition.amount != 0{return .canonical(.definition)}
     if p.sharpen.enabled,p.sharpen.intensity != 0{return .canonical(.sharpen)}
-    // Only the main interactive preview opts into proxy-scale Texture/Clarity. Legacy thumbnail
-    // and analysis callers keep their original rejection contract. Dehaze always stays canonical.
-    if p.advancedDetail.dehaze.enabled,p.advancedDetail.dehaze.amount != 0{return .canonical(.advanced)}
+    // Only the main interactive preview opts into proxy-scale local operators. Legacy thumbnail
+    // and analysis callers keep their original rejection contract.
     if !allowAdvancedDetail,p.advancedDetail.hasEffects{return .canonical(.advanced)}
     if DevelopmentLocalEngineV3.active(p.localEdits){return .canonical(.local)}
     if p.blackAndWhite.enabled,p.blackAndWhite.grain != 0{return .canonical(.grain)}
@@ -96,7 +95,7 @@ enum PreviewInteractiveProxyV3 {
       guard value.x.isFinite,value.x==0 else{throw DevelopmentError.invalidEncoding}
     }
   }
-  static func suffix(_ p:DevelopmentAdjustmentsV3,source:CIImage,sourceIsRAW:Bool,nativeSize:CGSize,scale:Double,context:CIContext,check:@escaping ()throws->Void,illustrativeAdaptiveBrilliance:Bool=false)throws->CIImage {
+  static func suffix(_ p:DevelopmentAdjustmentsV3,source:CIImage,sourceIsRAW:Bool,nativeSize:CGSize,scale:Double,context:CIContext,check:@escaping ()throws->Void,illustrativeAdaptiveBrilliance:Bool=false,interactiveMapNamespace:String?=nil)throws->CIImage {
     var image=source
     if !sourceIsRAW {
       if let b=p.legacyBasis {
@@ -111,21 +110,35 @@ enum PreviewInteractiveProxyV3 {
     try check()
     let radius=max(1,min(Double(nativeSize.width),Double(nativeSize.height))*DevelopmentSpatialEngineV3.radiusFraction)*scale
     if DevelopmentBrillianceAdaptiveV1.isActive(p.light) {
-      // Only the independent thumbnail renderer may use this approximate, compact-domain
-      // operator. Main preview admission remains canonical and cannot reach this branch.
-      guard illustrativeAdaptiveBrilliance,max(image.extent.width,image.extent.height)<=256 else {throw PreviewPresentationError.unsupported}
-      image=try DevelopmentBrillianceAdaptiveV1.apply(p.light,to:image,checkCancellation:check)
+      // Only the 31-cell map is reusable across strength changes. Its key includes the source,
+      // proxy identity and all other parameters; settled/save/export retain native evaluation.
+      var identity=p;identity.light.brilliance=0
+      let key=try interactiveMapNamespace.map{$0+":"+(try EditingFingerprint.of(identity))}
+      image=try DevelopmentBrillianceAdaptiveV1.apply(p.light,to:image,sourceIsRAW:sourceIsRAW,context:context,checkCancellation:check,interactiveMapKey:key)
       var remainder=p.light;remainder.brilliance=0
       image=try DevelopmentSpatialEngineV3.applyLight(remainder,to:image,proxyRadius:radius)
     } else { image=try DevelopmentSpatialEngineV3.applyLight(p.light,to:image,proxyRadius:radius) }
     image=try DevelopmentColorEngineV3.applyPointwise(p,to:image)
     image=try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:image)
     image=try DevelopmentGlobalEngineV3.apply(p,to:image,sourceIsRAW:sourceIsRAW)
-    let texture=p.advancedDetail.texture.enabled && p.advancedDetail.texture.amount != 0
-    let clarity=p.advancedDetail.clarity.enabled && p.advancedDetail.clarity.amount != 0
+    let proxySize=DevelopmentPixelSize(width:Int(image.extent.width),height:Int(image.extent.height))
+    let advanced=p.advancedDetail,dehaze=advanced.dehaze
+    if dehaze.enabled,dehaze.amount != 0 {
+      guard let prepared=advanced.preparedDehaze else{throw DevelopmentDehazePreparationError.preparationRequired}
+      // Airlight is prepared once on the source. Only the spatial guide is rebuilt at proxy
+      // scale on each adjustment; native source bindings must not be applied to this image.
+      if DevelopmentDehazeEngineV3.usesPositiveV2(advanced) {
+        let guide=try DevelopmentDehazeColorGuideV2.guide(image,airlight:prepared.airlight,sourceSize:proxySize)
+        image=try DevelopmentDehazeColorGuideV2.restore(image,guide:guide,airlight:prepared.airlight,amount:dehaze.amount)
+      } else {
+        let guide=try DevelopmentDehazeEngineV3.darkGuide(image,airlight:prepared.airlight,sourceSize:proxySize)
+        image=try DevelopmentDehazeEngineV3.applyGuide(to:image,guide:guide,airlight:prepared.airlight,amount:dehaze.amount)
+      }
+    }
+    let texture=advanced.texture.enabled && advanced.texture.amount != 0
+    let clarity=advanced.clarity.enabled && advanced.clarity.amount != 0
     if texture || clarity {
-      var bands=p.advancedDetail;bands.dehaze = .init()
-      let proxySize=DevelopmentPixelSize(width:Int(image.extent.width),height:Int(image.extent.height))
+      var bands=advanced;bands.dehaze = .init()
       image=try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,sourceSize:proxySize,context:context,checkCancellation:check)
     }
     return image
@@ -201,6 +214,10 @@ extension PreviewNativeSource {
       descriptor.width==Int(nativeSize.width),descriptor.height==Int(nativeSize.height),descriptor.decoder==decoder else{throw PreviewPresentationError.allocationProtocol}
     let binding=DevelopmentLocalEditSourceBinding(sourceContentID:descriptor.verifiedContentID,exifOrientation:originalEXIFOrientation,orientedWidth:descriptor.width,orientedHeight:descriptor.height)
     try p.localEdits.validate(expectedSource:binding);try p.whiteBalance.resolvedState?.validate(expectedSource:binding)
+    if p.advancedDetail.dehaze.enabled,p.advancedDetail.dehaze.amount != 0 {
+      let context=try dehazeContext(source:binding,generation:descriptor.generation)
+      guard (try recipe.dehazePreparationStatusV1(context:context)) == .ready else{throw DevelopmentDehazePreparationError.staleInput}
+    }
     var pin=try pool.lookup(descriptor)
     let buildID:UUID?
     if pin==nil{buildID=try pool.beginBuild(descriptor);pool.evictUnpinnedBeforeFill();rawBasePool?.evictUnpinned()}else{buildID=nil}
@@ -238,7 +255,12 @@ extension PreviewNativeSource {
           let normalized=input.transformed(by:.init(translationX:-input.extent.minX,y:-input.extent.minY))
           let scaled=normalized.samplingLinear().transformed(by:.init(scaleX:descriptor.scale,y:descriptor.scale))
           let canvas=try PreviewInteractiveProxyV3.transportAlpha(PreviewInteractiveProxyV3.canvas(scaled,width:proxyLayout.width,height:proxyLayout.height))
-          try storage.fill(canvas,context:context,check:check);try storage.validateAllRGBA()
+          try storage.fill(canvas,context:context,check:check)
+          // Validate the already-joined IOSurface on GPU and read back only its 1px maximum.
+          // The former full-frame CPU scan added a second complete memory pass on every cold fill.
+          let _:Void=try storage.withImage{base in
+            try PreviewInteractiveProxyV3.validate(base,using:scratch,context:context,check:check)
+          }
           try validateCaptureAuthority();try check();context.clearCaches()
         }
         guard let buildID else{throw PreviewPresentationError.allocationProtocol}
@@ -248,7 +270,7 @@ extension PreviewNativeSource {
       let result=try acquired.storage.withImage{base in
         try check()
         let source=base.cropped(to:descriptor.contentRect)
-        let suffix=try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:descriptor.sourceIsRAW,nativeSize:nativeSize,scale:descriptor.scale,context:context,check:check)
+        let suffix=try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:descriptor.sourceIsRAW,nativeSize:nativeSize,scale:descriptor.scale,context:context,check:check,interactiveMapNamespace:try descriptor.fingerprint())
         try PreviewInteractiveProxyV3.validate(suffix,using:scratch,context:context,check:check)
         let transformed=suffix.samplingLinear().transformed(by:geometry.transform)
         let final=PreviewInteractiveProxyV3.canvas(transformed,width:plan.outputLayout.width,height:plan.outputLayout.height)

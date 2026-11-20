@@ -172,18 +172,31 @@ final class DevelopmentBrillianceAdaptiveV1Tests:XCTestCase {
       for c in 0..<3 {XCTAssertEqual(partial[i+c]*2,opaque[i+c],accuracy:0.000002)}
     }
   }
-  func testAdaptiveUsesCanonicalPreviewAndDoesNotActivateFixedQA()throws {
+  func testAdaptiveUsesProxyOnlyForMainInteractivePreviewAndDoesNotActivateFixedQA()throws {
     var p=DevelopmentAdjustmentsV3();p.light=light(0.25);p.light.exposure=0.2;p.light.shadows=0.3
     let recipe=DevelopmentRecipe(adjustmentsV3:p)
     XCTAssertFalse(DevelopmentBrilliancePublicV1.active(recipe))
     XCTAssertEqual(try PreviewInteractiveProxyV3.support(recipe,sourceIsRAW:true),.canonical(.adaptiveBrilliance))
     XCTAssertEqual(try PreviewInteractiveProxyV3.support(recipe,sourceIsRAW:false),.canonical(.adaptiveBrilliance))
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(recipe,sourceIsRAW:true,allowAdvancedDetail:true),.eligible)
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(recipe,sourceIsRAW:false,allowAdvancedDetail:true),.eligible)
     XCTAssertNotNil(try PreviewNativePointwiseV1.routeEligibility(recipe,size:.init(width:256,height:192)))
     XCTAssertNoThrow(try DevelopmentThumbnailEngine.checkSupport(recipe,sourceIsRAW:true))
     let context=DevelopmentColorEngineV3.makeContext();defer{context.clearCaches()}
-    XCTAssertThrowsError(try PreviewInteractiveProxyV3.suffix(p,source:image(),sourceIsRAW:false,nativeSize:.init(width:256,height:192),scale:1,context:context,check:{}))
+    let interactive=try PreviewInteractiveProxyV3.suffix(p,source:image(),sourceIsRAW:false,nativeSize:.init(width:256,height:192),scale:1,context:context,check:{})
+    XCTAssertTrue(try pixels(interactive,context:context).allSatisfy(\.isFinite))
     let illustrated=try PreviewInteractiveProxyV3.suffix(p,source:image(),sourceIsRAW:false,nativeSize:.init(width:256,height:192),scale:1,context:context,check:{},illustrativeAdaptiveBrilliance:true)
     XCTAssertTrue(try pixels(illustrated,context:context).allSatisfy(\.isFinite))
+  }
+  func testInteractiveMapCacheReusesPrefixWithoutFreezingStrengthOrCanonicalPath()throws {
+    let context=DevelopmentColorEngineV3.makeContext();defer{context.clearCaches()}
+    let source=image(),key="interactive-map-test-"+UUID().uuidString
+    let quarter=try pixels(DevelopmentBrillianceAdaptiveV1.apply(light(0.25),to:source,context:context,interactiveMapKey:key),context:context)
+    let half=try pixels(DevelopmentBrillianceAdaptiveV1.apply(light(0.5),to:source,context:context,interactiveMapKey:key),context:context)
+    XCTAssertNotEqual(quarter,half)
+    XCTAssertTrue(half.allSatisfy(\.isFinite))
+    let canonical=try pixels(DevelopmentBrillianceAdaptiveV1.apply(light(0.5),to:source,context:context),context:context)
+    XCTAssertEqual(half,canonical)
   }
   func testNewLightSummaryExplicitlySelectsAdaptive()throws {
     var bins=[UInt64](repeating:0,count:256);bins[128]=100

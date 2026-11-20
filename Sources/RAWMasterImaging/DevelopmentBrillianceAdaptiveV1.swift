@@ -3,11 +3,16 @@ import Foundation
 import Metal
 import RAWMasterCore
 
-/// RAWMaster's versioned adaptive Brilliance. The map and guide always come from the same
-/// full native prefix; FIT, detail, analysis and exports do not select different operators.
-/// The existing opaque SDR +0.5 Photos comparison does not qualify RAW or combined edits.
+/// RAWMaster's versioned adaptive Brilliance. Canonical rendering derives its map and guide
+/// from one full native prefix; the explicitly approximate interactive proxy uses its own
+/// bounded prefix. The existing opaque SDR +0.5 Photos comparison does not qualify RAW or combined edits.
 enum DevelopmentBrillianceAdaptiveV1 {
   static let version = "rawmaster-adaptive-brilliance-v1/native-prefix-map31/straight-linear-rgb"
+  /// Only immutable 31x31 maps are shared. The caller's key binds source, proxy and every
+  /// upstream parameter; settled/save/export do not supply a key and retain canonical evaluation.
+  private static let interactiveMaps:NSCache<NSString,MapRows> = {
+    let cache=NSCache<NSString,MapRows>();cache.countLimit=4;return cache
+  }()
   static func makeContext()->CIContext {
     CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,
       .workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
@@ -126,7 +131,7 @@ enum DevelopmentBrillianceAdaptiveV1 {
     return .init(straight:straight,restore:restore)
   }
   static func apply(_ light:DevelopmentLightV3,to image:CIImage,sourceIsRAW:Bool=false,context:CIContext?=nil,
-                    checkCancellation:(()throws->Void)?=nil)throws->CIImage {
+                    checkCancellation:(()throws->Void)?=nil,interactiveMapKey:String?=nil)throws->CIImage {
     try light.validate()
     // No map, kernel, context, or alpha normalization for zero/disabled/other versions.
     guard isActive(light) else {return image}
@@ -142,8 +147,13 @@ enum DevelopmentBrillianceAdaptiveV1 {
     guard let straight=kernels.straight.apply(extent:image.extent,roiCallback:{_,r in r},arguments:[image]) else {
       throw DevelopmentV3Error.invalidGraph
     }
-    let generated=try makeMap(straight,check:check)
-    let rows=try MapRows(generated,width:31,height:31)
+    let rows:MapRows
+    if let interactiveMapKey,let cached=interactiveMaps.object(forKey:interactiveMapKey as NSString) {
+      rows=cached
+    } else {
+      rows=try MapRows(makeMap(straight,check:check),width:31,height:31)
+      if let interactiveMapKey{interactiveMaps.setObject(rows,forKey:interactiveMapKey as NSString)}
+    }
     let processed:CIImage
     if let materialized=try DevelopmentBrillianceNativeRGV1.apply(straight,rows:rows,strength:light.brilliance,sourceIsRAW:sourceIsRAW,context:context,check:check) {
       processed=materialized
