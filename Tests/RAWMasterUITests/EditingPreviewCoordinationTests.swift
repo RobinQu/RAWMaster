@@ -308,6 +308,32 @@ final class EditingPreviewCoordinationTests: XCTestCase {
         XCTAssertEqual(detail.count, 1); XCTAssertEqual(detail.first?.viewport.maxPixel, 0)
         await controller.shutdown()
     }
+    @MainActor func testContinuousZoomDoesNotRepeatNativeDetailRendering() async throws {
+        let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
+        let backend = ControllablePreviewBackend()
+        let controller = try EditingController(store: f.store, libraryURL: f.library, defaults: f.defaults, previewBackend: backend)
+        controller.focus(f.assets[0]); try await wait { controller.preview != nil }
+        controller.requestDetailPreview()
+        try await wait { controller.previews.primary.frame?.quality == .detail }
+        let initialRequests = await backend.requests.count
+        for _ in 0..<20 {
+            controller.setActualPixels(false, requestPreview: false)
+            controller.requestDetailPreview()
+        }
+        await Task.yield()
+        let zoomRequests = await backend.requests
+        XCTAssertEqual(zoomRequests.count, initialRequests)
+        XCTAssertEqual(zoomRequests.filter { $0.quality == .detail }.count, 1)
+        XCTAssertFalse(controller.actualPixels)
+        controller.previewContextChanged()
+        try await wait { controller.previews.primary.frame?.quality == .settled }
+        controller.requestDetailPreview()
+        try await wait { await backend.requests.count == initialRequests + 2 }
+        let explicitDetailRequests = await backend.requests.filter { $0.quality == .detail }
+        XCTAssertEqual(explicitDetailRequests.count, 2)
+        await controller.shutdown()
+    }
+
     @MainActor func testControllerSourceInvalidationDisablesDevelopmentUntilCoreAndServiceRevalidate() async throws {
         let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
         let backend = ControllablePreviewBackend(hold: true)

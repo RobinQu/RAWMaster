@@ -98,6 +98,7 @@ struct WorkbenchView: View {
         .navigationTitle("RAWMaster")
         .navigationSubtitle(model.windowContextTitle)
         .toolbarVisibility(model.isNativeEditing ? .hidden : .visible, for: .windowToolbar)
+        .background(WorkbenchWindowTitleSynchronizer(contextTitle: model.windowContextTitle))
     }
     private var workflowSheets: some View {
         toolbarSurface
@@ -749,5 +750,25 @@ struct InspectorView: View {
     }
     private func section<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 11) { Divider(); Text(title).font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary); content() }
+    }
+}
+
+
+/// Keeps the document title stable when the immersive editor hides the toolbar
+/// that would otherwise present navigationSubtitle.
+struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
+    let contextTitle: String
+
+    static func apply(to window: NSWindow?, contextTitle: String) {
+        window?.title = contextTitle.isEmpty ? "RAWMaster" : "RAWMaster – " + contextTitle
+    }
+
+    func makeNSView(context: Context) -> NSView { NSView(frame: .zero) }
+
+    func updateNSView(_ view: NSView, context: Context) {
+        DispatchQueue.main.async { [weak view] in
+            guard let view else { return }
+            Self.apply(to: view.window, contextTitle: contextTitle)
+        }
     }
 }

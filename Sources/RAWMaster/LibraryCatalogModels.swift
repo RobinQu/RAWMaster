@@ -55,6 +55,7 @@ extension AppModel {
     var catalogTitle: String { scope == .imports ? "导入记录" : "拍摄序列" }
     var windowContextTitle: String {
         if isCatalog { return catalogTitle }
+        if isNativeEditing, let filename = editing?.asset?.filename ?? focusedAsset?.filename { return filename + " — " + scopeTitle }
         if mode == .single, let filename = focusedAsset?.filename { return filename + " — " + scopeTitle }
         return mode == .compare ? "对比 · " + scopeTitle : scopeTitle
     }

@@ -31,6 +31,24 @@ final class AppModelTests: XCTestCase {
         func clean() { try? FileManager.default.removeItem(at: root) }
     }
 
+    @MainActor func testNativeEditingKeepsSinglePhotoWindowTitleAndHiddenToolbarTitle() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        _ = try await fixture.populate(count: 1)
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.setMode(.single)
+        model.select(try XCTUnwrap(model.assets.first))
+        let browsingTitle = model.windowContextTitle
+        model.openNativeEditing()
+        XCTAssertTrue(model.isNativeEditing)
+        XCTAssertEqual(model.windowContextTitle, browsingTitle)
+        let window = NSWindow(contentRect: .init(x: 0, y: 0, width: 800, height: 600),
+            styleMask: [.titled, .resizable], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle)
+        XCTAssertEqual(window.title, "RAWMaster – " + browsingTitle)
+    }
+
     @MainActor func testShiftSelectionAndManualGroupPreserveShotOrder() async throws {
         let fixture = try Fixture(); defer { fixture.clean() }
         _ = try await fixture.populate()

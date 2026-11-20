@@ -25,6 +25,9 @@ import RAWMasterAI
     @Published var comparisonVersionID: String?
     @Published var comparing = false { willSet { if newValue { cancelCurrentDevelopmentCropAutomatic(); developmentPicker = nil; cancelDevelopmentLocalInput(); developmentDehazeInput.cancel(); developmentThumbnails.pause() } } }
     @Published var actualPixels = false
+    /// Latch only the source-native detail request. Zoom presentation may change actualPixels
+    /// without asking for another full RAW render on every gesture event.
+    private var detailPreviewRequested = false
     @Published var cropEditing = false { willSet { if newValue { developmentPicker = nil; cancelDevelopmentLocalInput(clearTool: true); developmentDehazeInput.cancel(); developmentThumbnails.pause() } } }
     @Published private(set) var recipe = DevelopmentRecipe()
     @Published private(set) var savedRecipe = DevelopmentRecipe()
@@ -390,9 +393,18 @@ import RAWMasterAI
         previewControls = []; previewInteracting = false; previewGestureID = nil; lastPreviewAdjustmentInput = nil
         requestPreview(input: input)
     }
-    func setActualPixels(_ value: Bool, nativeEvent: Bool = false) {
+    func setActualPixels(_ value: Bool, nativeEvent: Bool = false, requestPreview: Bool = true) {
         guard !shuttingDown, actualPixels != value, !(value && cropEditing && stage == .development) else { return }
-        actualPixels = value; previewContextChanged(input: .capture(control: "actualPixels", phase: "discrete", nativeEvent: nativeEvent))
+        actualPixels = value
+        if requestPreview {
+            detailPreviewRequested = value
+            previewContextChanged(input: .capture(control: "actualPixels", phase: "discrete", nativeEvent: nativeEvent))
+        }
+    }
+    func requestDetailPreview(nativeEvent: Bool = false) {
+        guard !shuttingDown, !detailPreviewRequested, !(cropEditing && stage == .development) else { return }
+        detailPreviewRequested = true
+        setActualPixels(true, nativeEvent: nativeEvent)
     }
     func resetRecipe(nativeEvent: Bool = false) {
         setRecipe(control: "reset.all", nativeEvent: nativeEvent) { recipe in
@@ -457,6 +469,7 @@ import RAWMasterAI
     }
     func requestPreview(input: EditingPreviewInput? = nil) {
         guard !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
+        if !actualPixels { detailPreviewRequested = false }
         let input = input ?? .capture(control: "view", phase: "discrete")
         let editingDraft = stage == .development && sourceReady
         var currentRecipe = editingDraft ? recipe : (selectedVersion?.recipe ?? recipe)

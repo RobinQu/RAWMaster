@@ -124,8 +124,8 @@ struct EditingImageCanvas: View {
                     // Bind image, ID and quality to the same coordinator-owned frame.
                     let frame = editing.previews.primary.frame
                     ZoomableImageView(image: nil, actualPixels: editing.actualPixels && frame?.quality == .detail, transform: $transform,
-                        backgroundColor: AppPalette.canvasNSColor, onActualPixelsChange: { editing.setActualPixels($0, nativeEvent: true) },
-                        onRequestDetail: { editing.setActualPixels(true, nativeEvent: true) }, frameID: frame?.id,
+                        backgroundColor: AppPalette.canvasNSColor, onActualPixelsChange: { editing.setActualPixels($0, nativeEvent: true, requestPreview: false) },
+                        onRequestDetail: { editing.requestDetailPreview(nativeEvent: true) }, frameID: frame?.id,
                         onFrameDrawn: { editing.previews.primary.didDraw($0, canvasDiagnostic: true) },
                         onViewportChange: InteractionTrace.shared.initialWindowViewportSink(frameID: frame?.id, quality: frame?.quality),
                         onCanvasDiagnostic: InteractionTrace.shared.canvasDiagnosticSink)
@@ -164,7 +164,8 @@ private struct EditingVersionPane: View {
                 ZoomableImageView(image: editing.previews.comparison.frame?.image,
                     actualPixels: editing.actualPixels && editing.previews.comparison.frame?.quality == .detail,
                     transform: $transform, backgroundColor: AppPalette.canvasNSColor,
-                    onActualPixelsChange: { editing.setActualPixels($0, nativeEvent: true) }, onRequestDetail: { editing.setActualPixels(true, nativeEvent: true) },
+                    onActualPixelsChange: { editing.setActualPixels($0, nativeEvent: true, requestPreview: false) },
+                    onRequestDetail: { editing.requestDetailPreview(nativeEvent: true) },
                     frameID: editing.previews.comparison.frame?.id, onFrameDrawn: { editing.previews.comparison.didDraw($0) })
                 if let error = editing.previews.comparison.error { Text(error).font(.caption).foregroundStyle(AppPalette.warning).padding(20) }
                 else if editing.previews.comparison.frame == nil { ProgressView().controlSize(.small) }
