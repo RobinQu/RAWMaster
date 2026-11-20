@@ -128,6 +128,11 @@ final class AppearanceTests: XCTestCase {
         let editor = NSTextView(frame: CGRect(x: 0, y: 0, width: 80, height: 50))
         workbench.contentView?.addSubview(editor); workbench.makeFirstResponder(editor)
         XCTAssertFalse(monitor.shouldHandle(try key(workbench, flags: .command), keyWindow: workbench, isActive: true), "Native text editing / undo must keep its key events")
+        let release = try XCTUnwrap(NSEvent.keyEvent(with: .keyUp, location: .zero, modifierFlags: [], timestamp: 1,
+            windowNumber: workbench.windowNumber, context: nil, characters: "m", charactersIgnoringModifiers: "m", isARepeat: false, keyCode: 46))
+        XCTAssertTrue(monitor.ownsWindowEvent(release, keyWindow: workbench, isActive: true), "Releasing original comparison must survive a change to text-field focus")
+        XCTAssertFalse(monitor.ownsWindowEvent(release, keyWindow: settings, isActive: true))
+        XCTAssertFalse(monitor.ownsWindowEvent(release, keyWindow: workbench, isActive: false))
     }
     @MainActor final class EditorWithUndo: NSTextView {
         let localUndo = UndoManager()
@@ -160,6 +165,53 @@ final class AppearanceTests: XCTestCase {
         workbench.makeFirstResponder(workbench.contentView)
         WorkbenchUndoRouting.undo(model: model, window: workbench)
         XCTAssertEqual(model.focusedAsset?.decision, .undecided)
+    }
+    @MainActor func testNativeDevelopmentEmptyHistoryCannotUndoReviewOrApplyReviewKeys() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.autoAdvance = false
+        model.selectScope(.project, id: fixture.assets[0].projectID)
+        model.setMode(.single); model.select(fixture.assets[0]); model.decide(.keep)
+        model.openNativeEditing(); XCTAssertTrue(model.isNativeEditing)
+        let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 300, height: 200), styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false; defer { window.close() }
+        window.contentView?.addSubview(WorkbenchKeyAnchor(frame: .zero))
+        window.makeFirstResponder(window.contentView)
+        WorkbenchUndoRouting.undo(model: model, window: window)
+        WorkbenchUndoRouting.redo(model: model, window: window)
+        XCTAssertEqual(model.focusedAsset?.decision, .keep, "An empty adjustment history must never consume a review decision")
+        for (text, code) in [("x", UInt16(7)), ("1", UInt16(18))] {
+            let event = try XCTUnwrap(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: [], timestamp: 0,
+                windowNumber: window.windowNumber, context: nil, characters: text, charactersIgnoringModifiers: text, isARepeat: false, keyCode: code))
+            _ = model.handleKey(event)
+        }
+        XCTAssertEqual(model.focusedAsset?.decision, .keep)
+        XCTAssertEqual(model.focusedAsset?.rating, fixture.assets[0].rating)
+        await model.editing?.shutdown()
+    }
+    @MainActor func testNativeDevelopmentMenuUndoRedoUsesControlCallbacksAndIgnoresSettings() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.autoAdvance = false
+        model.selectScope(.project, id: fixture.assets[0].projectID)
+        model.setMode(.single); model.select(fixture.assets[0]); model.decide(.keep); model.openNativeEditing()
+        XCTAssertTrue(model.isNativeEditing)
+        let workbench = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 300, height: 200), styleMask: [.titled], backing: .buffered, defer: false)
+        let settings = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 300, height: 200), styleMask: [.titled], backing: .buffered, defer: false)
+        workbench.isReleasedWhenClosed = false; settings.isReleasedWhenClosed = false
+        defer { workbench.close(); settings.close() }
+        workbench.contentView?.addSubview(WorkbenchKeyAnchor(frame: .zero))
+        let control = DevelopmentEditingControl(frame: CGRect(x: 0, y: 0, width: 60, height: 40))
+        var undoCount = 0, redoCount = 0
+        control.undoAction = { undoCount += 1 }; control.redoAction = { redoCount += 1 }
+        workbench.contentView?.addSubview(control); XCTAssertTrue(workbench.makeFirstResponder(control))
+        WorkbenchUndoRouting.undo(model: model, window: workbench); WorkbenchUndoRouting.redo(model: model, window: workbench)
+        XCTAssertEqual(undoCount, 1); XCTAssertEqual(redoCount, 1)
+        control.removeFromSuperview(); settings.contentView?.addSubview(control); XCTAssertTrue(settings.makeFirstResponder(control))
+        WorkbenchUndoRouting.undo(model: model, window: settings); WorkbenchUndoRouting.redo(model: model, window: settings)
+        XCTAssertEqual(undoCount, 1); XCTAssertEqual(redoCount, 1)
+        XCTAssertEqual(model.focusedAsset?.decision, .keep)
+        await model.editing?.shutdown()
     }
     @MainActor private func descendants(_ view: NSView) -> [NSView] { view.subviews.flatMap { [$0] + descendants($0) } }
 }

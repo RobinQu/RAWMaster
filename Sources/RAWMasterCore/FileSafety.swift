@@ -45,9 +45,15 @@ enum FileSafety {
     var digest = SHA256()
     while true {
       try cancel()
-      let chunk = try h.read(upToCount: 1024 * 1024) ?? Data()
-      if chunk.isEmpty { break }
-      digest.update(data: chunk)
+      // FileHandle's Objective-C read buffers otherwise survive the long-lived import
+      // worker's ambient pool. Consume each buffer before draining this chunk's pool.
+      let count = try autoreleasepool {
+        let chunk = try h.read(upToCount: 1024 * 1024) ?? Data()
+        guard !chunk.isEmpty else { return 0 }
+        digest.update(data: chunk)
+        return chunk.count
+      }
+      if count == 0 { break }
     }
     guard before == (try stat(url)) else { throw LibraryError.sourceChanged(url.path) }
     return digest.finalize().map { String(format: "%02x", $0) }.joined()
@@ -88,10 +94,14 @@ enum FileSafety {
     do {
       while true {
         try cancel()
-        let data = try input.read(upToCount: 1024 * 1024) ?? Data()
-        if data.isEmpty { break }
-        try output.write(contentsOf: data)
-        digest.update(data: data)
+        let count = try autoreleasepool {
+          let data = try input.read(upToCount: 1024 * 1024) ?? Data()
+          guard !data.isEmpty else { return 0 }
+          try output.write(contentsOf: data)
+          digest.update(data: data)
+          return data.count
+        }
+        if count == 0 { break }
       }
       try output.synchronize()
       try input.close()

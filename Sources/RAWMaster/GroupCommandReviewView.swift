@@ -4,17 +4,20 @@ import RAWMasterCore
 extension GroupCommandRequest {
     var title: String {
         switch self {
-        case .create: return "建立拍摄组"
+        case .create, .createWithProperties: return "建立拍摄组"
+        case .updateProperties: return "修改组属性"
         case .rename: return "修改组名称"
         case .setKind: return "修改组用途"
         case .setLocked: return "修改组保护"
         case .removeMembers: return "从组中移出所选"
+        case .addMembers: return "加入拍摄组"
         case .reorder: return "调整组内顺序"
         case .setParticipation: return "调整序列参与"
         case .merge: return "合并拍摄组"
         case .split: return "拆分拍摄组"
         case .restore: return "恢复组操作前的状态"
         case .automaticBatch: return "自动建立待复核拍摄组"
+        case .automaticRegroup: return "重新扫描分组"
         }
     }
 }

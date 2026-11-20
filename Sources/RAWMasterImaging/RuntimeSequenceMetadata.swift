@@ -303,7 +303,16 @@ struct RuntimeSequenceTool: Sendable {
         let before = try SequenceFileCredential.capture(at:url)
         let handle = try FileHandle(forReadingFrom:url); defer { try? handle.close() }
         var digest = SHA256()
-        while true { try check(); let bytes = try handle.read(upToCount:1024*1024) ?? Data(); if bytes.isEmpty { break }; digest.update(data:bytes) }
+        while true {
+            try check()
+            let count = try autoreleasepool {
+                let bytes = try handle.read(upToCount:1024*1024) ?? Data()
+                guard !bytes.isEmpty else { return 0 }
+                digest.update(data:bytes)
+                return bytes.count
+            }
+            if count == 0 { break }
+        }
         guard try SequenceFileCredential.capture(at:url) == before else { throw RuntimeSequenceError.invalid("分组时素材发生变化") }
         return digest.finalize().map { String(format:"%02x",$0) }.joined()
     }
@@ -326,7 +335,9 @@ enum RuntimeMetadataChild {
         posix_spawn_file_actions_adddup2(&actions, stderrPipe[1], STDERR_FILENO)
         posix_spawn_file_actions_addopen(&actions, STDIN_FILENO,"/dev/null",O_RDONLY,0)
         for fd in stdoutPipe+stderrPipe { posix_spawn_file_actions_addclose(&actions,fd) }
-        posix_spawnattr_setflags(&attributes,Int16(POSIX_SPAWN_SETPGROUP))
+        // Concurrent providers must not inherit another worker's pipe write ends: doing so
+        // couples EOF/timeout to unrelated children. Explicit dup2/open stdio actions survive.
+        posix_spawnattr_setflags(&attributes,Int16(POSIX_SPAWN_SETPGROUP | POSIX_SPAWN_CLOEXEC_DEFAULT))
         posix_spawnattr_setpgroup(&attributes,0)
         let argv = (["/usr/bin/perl"]+arguments).map { strdup($0) }+[nil]
         let envStrings: [String] = ["PATH=/usr/bin:/bin","LANG=C","LC_ALL=C"]

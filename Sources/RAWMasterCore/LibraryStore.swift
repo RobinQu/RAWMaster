@@ -5,10 +5,13 @@ import Foundation
 public final class LibraryStore: @unchecked Sendable {
   var db: OpaquePointer?
   let lock = NSRecursiveLock()
+  let importLockDirectory: URL
   let encoder = JSONEncoder(), decoder = JSONDecoder()
   var deviceID = ""
   public private(set) var lastMigrationBackupURL: URL?
   public init(databaseURL: URL, migrationBackupDirectory: URL? = nil) throws {
+    let canonicalDatabase = databaseURL.standardizedFileURL.resolvingSymlinksInPath()
+    importLockDirectory = canonicalDatabase.deletingLastPathComponent().appendingPathComponent("." + canonicalDatabase.lastPathComponent + ".imports", isDirectory: true)
     // Validate first, including active-WAL state. Unknown databases never enter a writer connection.
     let inspected = try DatabaseSchema.inspectAndBackup(
       databaseURL, directory: migrationBackupDirectory)
@@ -28,8 +31,15 @@ public final class LibraryStore: @unchecked Sendable {
         if found == 0 { try createSchema() }
         if found == 1 { try migrateVersionOne() }
         if found == 1 || found == 2 { try createGroupCommandSchema() }
+        if found < 4 { try createTriageSchema() }
+        if found < 5 { try createProjectReviewSchema() }
+        if found < 6 { try createColorLabelSchema() }
+        if found < 7 { try createEditingSchema() }
       }
       try exec("PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA synchronous=FULL;")
+      // The primary membership key starts with group_id. Asset edits and membership
+      // projection also need the reverse lookup, including in existing catalogues.
+      try exec("CREATE INDEX IF NOT EXISTS membership_asset_id ON membership(asset_id)")
       if let existing = try rows("SELECT value FROM metadata WHERE key='deviceID'").first?.first {
         deviceID = existing
       } else {
@@ -142,6 +152,22 @@ public final class LibraryStore: @unchecked Sendable {
       }
     }
   }
+  /// A consistent catalogue view across several public read methods. The body
+  /// must only read; nested snapshots reuse the caller's existing transaction.
+  public func withReadSnapshot<T>(_ body: () throws -> T) throws -> T {
+    try locked {
+      if sqlite3_get_autocommit(db) == 0 { return try body() }
+      try exec("BEGIN DEFERRED")
+      do {
+        let result = try body()
+        try exec("COMMIT")
+        return result
+      } catch {
+        try? exec("ROLLBACK")
+        throw error
+      }
+    }
+  }
   func operation(
     entity: String, action: String, payload: String, base: Int = -1, result: Int = -1
   ) throws {
@@ -179,14 +205,23 @@ public final class LibraryStore: @unchecked Sendable {
       let data = try rows(
         "SELECT data FROM assets" + (sessionID == nil ? "" : " WHERE session_id=?")
           + " ORDER BY rowid", sessionID.map { [$0] } ?? [])
+      // One ordered projection replaces a query (and table scan) for every photo.
+      // Keep the legacy first-membership-by-rowid and any-included semantics.
+      let memberships = try rows(
+        "SELECT m.asset_id,m.group_id,m.position,m.included FROM membership m"
+          + (sessionID == nil ? "" : " JOIN assets a ON a.id=m.asset_id WHERE a.session_id=?")
+          + " ORDER BY m.rowid", sessionID.map { [$0] } ?? [])
+      var first: [String: (groupID: String, position: Int?)] = [:]
+      var included = Set<String>()
+      for member in memberships {
+        if first[member[0]] == nil { first[member[0]] = (member[1], Int(member[2])) }
+        if member[3] == "1" { included.insert(member[0]) }
+      }
       return try data.map { row in
         var a = try decode(row[0], AssetRecord.self)
-        let members = try rows(
-          "SELECT group_id,position,included FROM membership WHERE asset_id=? ORDER BY rowid",
-          [a.id])
-        a.groupID = members.first?.first
-        a.sequenceIndex = members.first.flatMap { Int($0[1]) }
-        a.isSequenceMember = members.contains { $0[2] == "1" }
+        a.groupID = first[a.id]?.groupID
+        a.sequenceIndex = first[a.id]?.position
+        a.isSequenceMember = included.contains(a.id)
         return a
       }
     }
@@ -239,12 +274,15 @@ public final class LibraryStore: @unchecked Sendable {
       payload: try json(Snapshot(asset: current, memberships: memberships)), base: base,
       result: base + 1)
   }
-  public func updateSelection(ids: [String], decision: Decision?, rating: Int?) throws
+  public func updateSelection(ids: [String], decision: Decision?, rating: Int?, markReviewed: Bool = false) throws
     -> [SelectionChange]
   {
     if let rating, !(0...5).contains(rating) { throw LibraryError.invalid("星级必须为 0–5") }
     return try transaction {
-      try Array(Set(ids)).sorted().compactMap { id in
+      if markReviewed && (decision != nil || rating != nil) {
+        try writeReview(assertAdmitted(ids), reviewed: true)
+      }
+      return try Array(Set(ids)).sorted().compactMap { id in
         var a = try asset(id)
         let c = SelectionChange(
           assetID: id, oldDecision: a.decision, newDecision: decision ?? a.decision,
@@ -335,31 +373,46 @@ public final class LibraryStore: @unchecked Sendable {
   }
   func saveSession(_ s: ImportSession) throws {
     try transaction {
+      try assertSessionWritable(s.id)
       try statement(
         "INSERT INTO sessions VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data",
         [s.id, try json(s)])
     }
   }
   func register(_ a: AssetRecord) throws -> AssetRecord {
+    try transaction { try registerInTransaction(a) }
+  }
+  /// Discovery has no file I/O here; a bounded batch shares one durable commit.
+  func registerDiscovered(_ records: [AssetRecord]) throws {
+    guard records.count <= 64 else { throw LibraryError.invalid("发现批次超出预算") }
+    guard !records.isEmpty else { return }
     try transaction {
-      if let existing = try rows(
-        "SELECT data FROM assets WHERE session_id=? AND source_path=?", [a.sessionID, a.sourcePath]
-      ).first {
-        return try decode(existing[0], AssetRecord.self)
-      }
-      try statement(
-        "INSERT INTO assets(id,session_id,source_path,data) VALUES(?,?,?,?)",
-        [a.id, a.sessionID, a.sourcePath, try json(a)])
-      try operation(entity: a.id, action: "discover", payload: try json(a), result: 0)
-      return a
+      for record in records { _ = try registerInTransaction(record) }
     }
+  }
+  private func registerInTransaction(_ a: AssetRecord) throws -> AssetRecord {
+    try assertSessionWritable(a.sessionID)
+    if let existing = try rows(
+      "SELECT data FROM assets WHERE session_id=? AND source_path=?", [a.sessionID, a.sourcePath]
+    ).first {
+      return try decode(existing[0], AssetRecord.self)
+    }
+    try statement(
+      "INSERT INTO assets(id,session_id,source_path,data) VALUES(?,?,?,?)",
+      [a.id, a.sessionID, a.sourcePath, try json(a)])
+    try operation(entity: a.id, action: "discover", payload: try json(a), base: 0, result: 0)
+    if try workflow(a.sessionID) == nil || workflow(a.sessionID)?.phase == .legacyHistory {
+      try writeAdmission(ProjectAdmission(assetID: a.id, projectID: a.projectID))
+    }
+    return a
   }
   func saveImportAsset(
     _ imported: AssetRecord, expectedSourceFingerprint: String? = nil,
-    expectedManagedFingerprint: String? = nil
+    expectedManagedFingerprint: String? = nil, session: ImportSession? = nil
   ) throws {
     try transaction {
       var a = try asset(imported.id)
+      try assertSessionWritable(a.sessionID)
       if let expectedSourceFingerprint {
         guard LocationIdentity.fingerprint(a, role: .source) == expectedSourceFingerprint else {
           throw LibraryError.invalid("来源位置在导入期间改变，请重试")
@@ -383,6 +436,12 @@ public final class LibraryStore: @unchecked Sendable {
       a.importState = imported.importState
       a.error = imported.error
       try changeAsset(a, action: "importState")
+      if let session {
+        guard session.id == a.sessionID else { throw LibraryError.invalid("导入进度与素材会话不一致") }
+        try statement(
+          "INSERT INTO sessions VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data",
+          [session.id, try json(session)])
+      }
     }
   }
 }

@@ -34,4 +34,27 @@ public final class AutomaticGroupingService: @unchecked Sendable {
       progress(TaskProgress(title: "自动分组未完成", message: "素材已导入并保留：" + error.localizedDescription, isRunning: false))
     }
   }
+  /// User-requested rerun. It never clears old groups until a fully evidenced replacement commits.
+  public func regroup(sessionID: String, checkCancellation: @escaping @Sendable () throws -> Void,
+                      progress: @escaping @Sendable (TaskProgress) -> Void) async throws -> AutomaticGroupingRunRecord {
+    let lease = try store.acquireAutomaticGroupingLease(sessionID)
+    defer { withExtendedLifetime(lease) {} }
+    try checkCancellation()
+    let input = try store.claimAutomaticRegroup(sessionID: sessionID)
+    do {
+      progress(TaskProgress(title: "重新扫描分组", total: input.assets.count, message: "重新分析整批；原有分组保留到替换成功"))
+      let analysis = try await analyzer(input, checkCancellation, progress)
+      try checkCancellation()
+      if let replacement = try store.prepareAutomaticRegroup(analysis, input: input, checkCancellation: checkCancellation) {
+        try store.commitAutomaticRegroup(replacement, checkCancellation: checkCancellation)
+      }
+      guard let record = try store.automaticGroupingRun(sessionID: sessionID) else { throw LibraryError.invalid("缺少重分组结果") }
+      progress(TaskProgress(title: "重新扫描分组", completed: input.assets.count, total: input.assets.count, message: record.message ?? "分析完成", isRunning: false))
+      return record
+    } catch {
+      try? store.failAutomaticGrouping(input, error: error)
+      progress(TaskProgress(title: "重新分组未完成", message: "原有分组保留：" + error.localizedDescription, isRunning: false))
+      throw error
+    }
+  }
 }

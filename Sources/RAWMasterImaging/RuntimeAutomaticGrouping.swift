@@ -33,7 +33,9 @@ public struct RuntimeAutomaticGroupingAnalyzer: Sendable {
     }
     public func analyze(_ input:AutomaticGroupingInput, check:@escaping @Sendable () throws->Void,
                         progress:@escaping @Sendable (TaskProgress)->Void) async throws -> AutomaticGroupingAnalysis {
-        try await Task.detached(priority:.utility) { try run(input,check:check,progress:progress) }.value
+        try await OrderedMetadataWorkers.offMain(check:check) { checkpoint in
+            try run(input,check:checkpoint,progress:progress)
+        }
     }
     private func run(_ input:AutomaticGroupingInput, check:@escaping @Sendable () throws->Void,
                      progress:@escaping @Sendable (TaskProgress)->Void) throws -> AutomaticGroupingAnalysis {
@@ -46,7 +48,7 @@ public struct RuntimeAutomaticGroupingAnalyzer: Sendable {
         guard input.assets.count <= 30_000, input.assets.count == input.assetRevisions.count else { throw RuntimeSequenceError.invalid("自动分组会话范围无效或超出预算") }
         let tool = try RuntimeSequenceTool(root:toolRoot)
         let key = try Self.key(libraryURL:libraryURL), keyID = key.withUnsafeBytes { SequenceMetadataEvidenceLoader.sha256(Data($0)) }
-        struct Verified { let credential:SequenceFileCredential; let stamp:AutomaticGroupingFileStamp; let sha:String }
+        struct Verified: Sendable { let credential:SequenceFileCredential; let stamp:AutomaticGroupingFileStamp; let sha:String }
         var before:[Verified] = []
         for (i,asset) in input.assets.enumerated() {
             try checkpoint()
@@ -62,45 +64,75 @@ public struct RuntimeAutomaticGroupingAnalyzer: Sendable {
         var features:[SequenceFrameFeature?] = [], barriers:[SequenceReason?] = [], formats:[SequenceOriginalFormat] = []
         var metadataBytes = 0, featureBytes = 0, metadataFailureCount = 0
         var nativeContradictionCounts:[String:Int] = [:]
-        for (i,asset) in input.assets.enumerated() {
-            try checkpoint()
-            var facts:RuntimeNormalizedMetadata, barrier:SequenceReason?
-            do { facts = try RuntimeJSONQ.normalize(tool.read(asset.resolvedURL,check:checkpoint), expectedSource:asset.resolvedURL.path,key:key) }
-            catch is CancellationError { throw CancellationError() }
-            catch RuntimeSequenceError.providerUnavailable(let message) { throw RuntimeSequenceError.providerUnavailable(message) }
-            catch {
-                try checkpoint()
-                metadataFailureCount += 1
-                facts = RuntimeNormalizedMetadata()
-                for field in RuntimeSequenceRegistry.fields { facts.states[field.id] = field.selector == nil ? .unsupportedSelector : .invalid }
-                barrier = .unreadable
-            }
-            metadataBytes += try JSONEncoder().encode(facts).count
-            guard metadataBytes <= 64*1024*1024 else { throw RuntimeSequenceError.invalid("自动分组元数据超出预算") }
-            let format:SequenceOriginalFormat
-            switch facts.strings["file.FileType"] { case "ARW":format = .arw;case "DNG":format = .dng;case "JPEG":format = .jpeg;default:format = .unknown }
-            if format == .unknown { barrier = barrier ?? .unsupported }
-            let exposure = facts.numbers["exif.ExposureTime"].flatMap(Double.init).flatMap { $0.isFinite && $0 > 0 ? $0 : nil }
-            let orientation = facts.numbers["exif.Orientation"].flatMap { SequenceCaptureEvents.decimal($0) }.map { NSDecimalNumber(decimal:$0).intValue } ?? 1
-            let primary = SequenceCaptureEvidence(assetID:asset.id,contentHash:before[i].sha,
-                extractorVersion:SequenceRuntimeMetadataProof.extractorVersion,evidenceRevision:input.assetRevisions[i],
-                time:SequenceTimestampParser.parse(original:facts.strings["exif.DateTimeOriginal"],subseconds:facts.strings["exif.SubSecTimeOriginal"],offset:facts.strings["exif.OffsetTimeOriginal"]),
-                cameraMake:facts.strings["exif.Make"],cameraModel:facts.strings["exif.Model"],imageNumberRaw:facts.numbers["exif.ImageNumber"],
-                exposureSeconds:exposure,orientation:orientation,warnings:["Live JSONQ parser-decoded metadata; not raw stored tag bytes"]+facts.warningDigests.map { "Opaque parser warning: "+$0 })
+        struct ReadFacts: Sendable {
+            let facts:RuntimeNormalizedMetadata
+            let primary:SequenceCaptureEvidence
             let native:SequenceCaptureReadResult?
-            do { native = try SequenceCaptureReader.read(at:asset.resolvedURL,assetID:asset.id,contentHash:before[i].sha,
-                    evidenceRevision:input.assetRevisions[i],verifiedCredential:before[i].credential,cancelled:{ (try? checkpoint()) == nil }) }
-            catch is CancellationError { throw CancellationError() }
-            catch { try checkpoint();native = nil;barrier = barrier ?? .unreadable }
-            if let evidence = native?.evidence, let contradiction = SequenceRuntimeMetadataProof.nativeContradiction(evidence,primary) {
-                nativeContradictionCounts[contradiction.rawValue,default:0] += 1
-                barrier = barrier ?? contradiction
+            let barrier, contradiction:SequenceReason?
+            let format:SequenceOriginalFormat
+            let encodedBytes:Int
+            let metadataFailed:Bool
+        }
+        // Only independent metadata/native reads run concurrently. Keeping full hash passes
+        // sequential avoids saturating source storage and preserves the original integrity proof.
+        let verified = before
+        let workerCount = min(4, max(2, ProcessInfo.processInfo.activeProcessorCount / 2))
+        for offset in stride(from:0, to:input.assets.count, by:workerCount) {
+            try checkpoint()
+            let end = min(offset + workerCount, input.assets.count)
+            let chunk = Array(input.assets[offset..<end])
+            let reads = try OrderedMetadataWorkers.map(chunk, limit:workerCount, check:checkpoint) { index, asset, workerCheck in
+                let i = offset + index
+                var facts:RuntimeNormalizedMetadata, barrier:SequenceReason?
+                var metadataFailed = false, contradiction:SequenceReason?
+                do { facts = try RuntimeJSONQ.normalize(tool.read(asset.resolvedURL,check:workerCheck), expectedSource:asset.resolvedURL.path,key:key) }
+                catch is CancellationError { throw CancellationError() }
+                catch RuntimeSequenceError.providerUnavailable(let message) { throw RuntimeSequenceError.providerUnavailable(message) }
+                catch {
+                    try workerCheck()
+                    metadataFailed = true
+                    facts = RuntimeNormalizedMetadata()
+                    for field in RuntimeSequenceRegistry.fields { facts.states[field.id] = field.selector == nil ? .unsupportedSelector : .invalid }
+                    barrier = .unreadable
+                }
+                let encodedBytes = try JSONEncoder().encode(facts).count
+                let format:SequenceOriginalFormat
+                switch facts.strings["file.FileType"] { case "ARW":format = .arw;case "DNG":format = .dng;case "JPEG":format = .jpeg;default:format = .unknown }
+                if format == .unknown { barrier = barrier ?? .unsupported }
+                let exposure = facts.numbers["exif.ExposureTime"].flatMap(Double.init).flatMap { $0.isFinite && $0 > 0 ? $0 : nil }
+                let orientation = facts.numbers["exif.Orientation"].flatMap { SequenceCaptureEvents.decimal($0) }.map { NSDecimalNumber(decimal:$0).intValue } ?? 1
+                let primary = SequenceCaptureEvidence(assetID:asset.id,contentHash:verified[i].sha,
+                    extractorVersion:SequenceRuntimeMetadataProof.extractorVersion,evidenceRevision:input.assetRevisions[i],
+                    time:SequenceTimestampParser.parse(original:facts.strings["exif.DateTimeOriginal"],subseconds:facts.strings["exif.SubSecTimeOriginal"],offset:facts.strings["exif.OffsetTimeOriginal"]),
+                    cameraMake:facts.strings["exif.Make"],cameraModel:facts.strings["exif.Model"],imageNumberRaw:facts.numbers["exif.ImageNumber"],
+                    exposureSeconds:exposure,orientation:orientation,warnings:["Live JSONQ parser-decoded metadata; not raw stored tag bytes"]+facts.warningDigests.map { "Opaque parser warning: "+$0 })
+                let native:SequenceCaptureReadResult?
+                do { native = try SequenceCaptureReader.read(at:asset.resolvedURL,assetID:asset.id,contentHash:verified[i].sha,
+                        evidenceRevision:input.assetRevisions[i],verifiedCredential:verified[i].credential,cancelled:{ (try? workerCheck()) == nil }) }
+                catch is CancellationError { throw CancellationError() }
+                catch { try workerCheck();native = nil;barrier = barrier ?? .unreadable }
+                if let evidence = native?.evidence {
+                    contradiction = SequenceRuntimeMetadataProof.nativeContradiction(evidence,primary)
+                    barrier = barrier ?? contradiction
+                }
+                if native?.feature == nil { barrier = barrier ?? .missingEmbeddedPreview }
+                return ReadFacts(facts:facts,primary:primary,native:native,barrier:barrier,contradiction:contradiction,
+                    format:format,encodedBytes:encodedBytes,metadataFailed:metadataFailed)
             }
-            if native?.feature == nil { barrier = barrier ?? .missingEmbeddedPreview }
-            featureBytes += native?.feature?.managedByteEstimate ?? 0
-            guard featureBytes <= 256*1024*1024 else { throw RuntimeSequenceError.invalid("自动分组预览特征超出预算") }
-            normalized.append(facts);natives.append(native?.evidence);primaries.append(primary);features.append(native?.feature);barriers.append(barrier);formats.append(format)
-            progress(TaskProgress(title:"自动分组：读取拍摄信息",completed:i+1,total:input.assets.count))
+            // Join each small chunk before admitting more work, then account in source order.
+            // This bounds temporary memory at a budget boundary to at most four per-file units.
+            for (index,read) in reads.enumerated() {
+                try checkpoint()
+                metadataBytes += read.encodedBytes
+                guard metadataBytes <= 64*1024*1024 else { throw RuntimeSequenceError.invalid("自动分组元数据超出预算") }
+                featureBytes += read.native?.feature?.managedByteEstimate ?? 0
+                guard featureBytes <= 256*1024*1024 else { throw RuntimeSequenceError.invalid("自动分组预览特征超出预算") }
+                if read.metadataFailed { metadataFailureCount += 1 }
+                if let contradiction = read.contradiction { nativeContradictionCounts[contradiction.rawValue,default:0] += 1 }
+                normalized.append(read.facts);natives.append(read.native?.evidence);primaries.append(read.primary)
+                features.append(read.native?.feature);barriers.append(read.barrier);formats.append(read.format)
+                progress(TaskProgress(title:"自动分组：读取拍摄信息",completed:offset+index+1,total:input.assets.count))
+            }
         }
         try Self.validateMetadataAvailability(assetCount:input.assets.count,metadataFailureCount:metadataFailureCount)
         // Every current file is reverified after all metadata/preview reads, before publishing any result.

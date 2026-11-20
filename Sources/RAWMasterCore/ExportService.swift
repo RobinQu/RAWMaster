@@ -24,9 +24,13 @@ public struct ExportManifest: Codable, Sendable {
   public var sessions: [ImportSession]
   public var groups: [CaptureGroup]
   public var items: [ExportManifestItem]
+  public var formats: ExportFormats?
+  public var requestedAssetIDs: [String]?
+  public var missingFormats: [String]?
+  public var allowedAssetIDs: [String]?
   public init(
     schemaVersion: Int = 2, createdAt: Date = Date(), status: String, sessions: [ImportSession],
-    groups: [CaptureGroup] = [], items: [ExportManifestItem]
+    groups: [CaptureGroup] = [], items: [ExportManifestItem], formats: ExportFormats? = nil, requestedAssetIDs: [String]? = nil, missingFormats: [String]? = nil, allowedAssetIDs: [String]? = nil
   ) {
     self.schemaVersion = schemaVersion
     self.createdAt = createdAt
@@ -34,6 +38,8 @@ public struct ExportManifest: Codable, Sendable {
     self.sessions = sessions
     self.groups = groups
     self.items = items
+    self.formats = formats; self.requestedAssetIDs = requestedAssetIDs; self.missingFormats = missingFormats
+    self.allowedAssetIDs = allowedAssetIDs
   }
 }
 public final class ExportService: @unchecked Sendable {
@@ -42,7 +48,7 @@ public final class ExportService: @unchecked Sendable {
   public init(store: LibraryStore) { self.store = store }
   public func cancel() { control.cancel() }
   public func exportAssets(
-    ids: [String], destination: URL, manifestIDs: [String]? = nil,
+    ids: [String], destination: URL, manifestIDs: [String]? = nil, formats: ExportFormats = .allOriginals, allowedAssetIDs: [String]? = nil,
     progress: @escaping @Sendable (TaskProgress) -> Void
   ) async throws -> ExportReport {
     try control.begin()
@@ -53,7 +59,7 @@ public final class ExportService: @unchecked Sendable {
           try Task.checkCancellation()
           return try await Task.detached(priority: .userInitiated) { [self] in
             try run(
-              ids: ids, destination: destination, manifestIDs: manifestIDs, progress: progress)
+              ids: ids, destination: destination, manifestIDs: manifestIDs, formats: formats, allowedAssetIDs: allowedAssetIDs, progress: progress)
           }.value
         } catch {
           progress(
@@ -63,12 +69,17 @@ public final class ExportService: @unchecked Sendable {
       }, onCancel: { self.control.cancel() })
   }
   private func run(
-    ids: [String], destination: URL, manifestIDs: [String]?,
+    ids: [String], destination: URL, manifestIDs: [String]?, formats: ExportFormats, allowedAssetIDs: [String]?,
     progress: @escaping @Sendable (TaskProgress) -> Void
   ) throws -> ExportReport {
     let all = try store.loadAssets()
     let sessions = try store.loadSessions()
-    let copyIDs = Set(ids)
+    let selection = try store.exportSelection(ids: ids, formats: formats, allowedAssetIDs: allowedAssetIDs)
+    let admitted = Set(try store.loadAdmissions().map(\.assetID))
+    guard Set(manifestIDs ?? ids).isSubset(of: admitted) else { throw LibraryError.invalid("清单范围含未纳入项目的素材") }
+    let allowed = allowedAssetIDs.map { Set($0).intersection(admitted) } ?? admitted
+    guard Set(manifestIDs ?? ids).isSubset(of: allowed) else { throw LibraryError.invalid("清单范围超出当前筛选范围") }
+    let copyIDs = Set(selection.assetIDs)
     let scope = Set(manifestIDs ?? ids).union(copyIDs)
     guard copyIDs.isSubset(of: Set(all.map(\.id))), scope.isSubset(of: Set(all.map(\.id))) else {
       throw LibraryError.invalid("导出范围包含不存在的素材")
@@ -86,6 +97,8 @@ public final class ExportService: @unchecked Sendable {
     try FileSafety.checkTarget(output, sources: roots)
     try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
     var report = ExportReport(destinationPath: output.path)
+    report.failed = selection.missingFormats.count
+    report.errors = selection.missingFormats
     var items: [ExportManifestItem] = []
     var processed = 0
     var cancelled = false
@@ -97,7 +110,12 @@ public final class ExportService: @unchecked Sendable {
           isRunning: false))
     }
     let sorted = all.filter { scope.contains($0.id) }
-    let groups = try store.loadGroups().filter { !Set($0.assetIDs).isDisjoint(with: scope) }
+    let groups = try store.loadGroups().filter { !Set($0.assetIDs).isDisjoint(with: scope) }.map { original -> CaptureGroup in
+      var group = original
+      group.assetIDs = group.assetIDs.filter { allowed.contains($0) }
+      group.includedAssetIDs = group.includedAssetIDs.filter { allowed.contains($0) }
+      return group
+    }
     for a in sorted {
       var item = ExportManifestItem(
         asset: a, copyRequested: copyIDs.contains(a.id), status: "notRequested", outputPath: nil,
@@ -142,7 +160,8 @@ public final class ExportService: @unchecked Sendable {
       createdAt: Date(),
       status: cancelled ? "cancelled" : (report.failed > 0 ? "partial" : "completed"),
       sessions: sessions.filter { s in sorted.contains { $0.sessionID == s.id } }, groups: groups,
-      items: items)
+      items: items, formats: formats, requestedAssetIDs: Array(Set(ids)).sorted(), missingFormats: selection.missingFormats,
+      allowedAssetIDs: allowedAssetIDs.map { Array(Set($0).intersection(admitted)).sorted() })
     let stem = "selection-" + UUID().uuidString
     let jsonURL = output.appendingPathComponent(stem + ".json")
     let csvURL = output.appendingPathComponent(stem + ".csv")
@@ -154,7 +173,7 @@ public final class ExportService: @unchecked Sendable {
     try encoder.encode(manifest).write(to: jsonURL, options: .withoutOverwriting)
     let headers = [
       "assetID", "sessionID", "sourcePath", "currentPath", "relativePath", "decision", "rating",
-      "copyRequested", "status", "outputPath", "error", "sha256", "groupMembershipJSON",
+      "copyRequested", "status", "outputPath", "error", "sha256", "groupMembershipJSON", "requestedFormats", "requestedAssetIDsJSON", "missingFormatsJSON", "allowedAssetIDsJSON",
     ]
     func quote(_ s: String) -> String {
       "\"" + s.replacingOccurrences(of: "\"", with: "\"\"") + "\""
@@ -169,6 +188,9 @@ public final class ExportService: @unchecked Sendable {
       return String(
         decoding: (try? JSONEncoder().encode(membership)) ?? Data("[]".utf8), as: UTF8.self)
     }
+    let requestedJSON = String(decoding: try JSONEncoder().encode(Array(Set(ids)).sorted()), as: UTF8.self)
+    let missingJSON = String(decoding: try JSONEncoder().encode(selection.missingFormats), as: UTF8.self)
+    let allowedJSON = String(decoding: try JSONEncoder().encode(manifest.allowedAssetIDs), as: UTF8.self)
     let csv =
       ([headers]
       + items.map { i in
@@ -176,7 +198,8 @@ public final class ExportService: @unchecked Sendable {
           i.asset.id, i.asset.sessionID, i.asset.sourcePath, i.asset.currentPath,
           i.asset.relativePath, i.asset.decision.rawValue, String(i.asset.rating),
           String(i.copyRequested), i.status, i.outputPath ?? "", i.error ?? "",
-          i.asset.contentHash ?? "", membershipJSON(i.asset.id),
+          i.asset.contentHash ?? "", membershipJSON(i.asset.id), formats.rawValue,
+          requestedJSON, missingJSON, allowedJSON,
         ]
       }).map { $0.map(quote).joined(separator: ",") }.joined(separator: "\r\n") + "\r\n"
     try Data(csv.utf8).write(to: csvURL, options: .withoutOverwriting)

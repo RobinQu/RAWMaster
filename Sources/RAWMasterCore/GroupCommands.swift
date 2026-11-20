@@ -2,16 +2,20 @@ import Foundation
 
 public enum GroupCommandRequest: Codable, Sendable {
   case create(assetIDs: [String], name: String, kind: String)
+  case createWithProperties(assetIDs: [String], name: String, kind: String, locked: Bool)
+  case updateProperties(groupID: String, name: String, kind: String, locked: Bool)
   case rename(groupID: String, name: String)
   case setKind(groupID: String, kind: String)
   case setLocked(groupID: String, locked: Bool)
   case removeMembers(groupID: String, assetIDs: [String])
+  case addMembers(groupID: String, assetIDs: [String])
   case reorder(groupID: String, assetIDs: [String])
   case setParticipation(groupIDs: [String], assetIDs: [String], included: Bool)
   case merge(groupIDs: [String], name: String, kind: String)
   case split(groupID: String, movedAssetIDs: [String], newName: String, newKind: String)
   case restore(commandID: String)
   case automaticBatch(AutomaticGroupingBatch)
+  case automaticRegroup(AutomaticGroupingReplacement)
 }
 public enum GroupTouchDomain: Codable, Sendable, Hashable {
   case existence, all, name, kind, lock

@@ -1,0 +1,287 @@
+import XCTest
+import AppKit
+import CoreImage
+import ImageIO
+import Metal
+import RAWMasterCore
+@testable import RAWMasterImaging
+
+final class PreviewInteractiveProxyTests:XCTestCase {
+  private func fixture(orientation:Int=1)throws->(URL,EditingSourceSnapshot) {
+    let root=FileManager.default.temporaryDirectory.appendingPathComponent("RAWMaster-I1-"+UUID().uuidString)
+    try FileManager.default.createDirectory(at:root,withIntermediateDirectories:false)
+    let file=root.appendingPathComponent("source.tiff")
+    let bitmap=try XCTUnwrap(NSBitmapImageRep(bitmapDataPlanes:nil,pixelsWide:28,pixelsHigh:18,bitsPerSample:8,samplesPerPixel:4,hasAlpha:true,isPlanar:false,colorSpaceName:.deviceRGB,bytesPerRow:112,bitsPerPixel:32))
+    for y in 0..<18{for x in 0..<28{let i=y*112+x*4;bitmap.bitmapData![i]=UInt8(x*7+12);bitmap.bitmapData![i+1]=UInt8(y*11+9);bitmap.bitmapData![i+2]=UInt8((x*3+y*5)%170+20);bitmap.bitmapData![i+3]=255}}
+    let writer=try XCTUnwrap(CGImageDestinationCreateWithURL(file as CFURL,"public.tiff" as CFString,1,nil))
+    CGImageDestinationAddImage(writer,try XCTUnwrap(bitmap.cgImage),[kCGImagePropertyOrientation:orientation]as CFDictionary)
+    XCTAssertTrue(CGImageDestinationFinalize(writer))
+    let bytes=try FileManager.default.attributesOfItem(atPath:file.path)[.size] as? NSNumber
+    let source=EditingSourceSnapshot(projectID:"I1",assetID:"asymmetric",contentSHA256:try RenderFiles.hash(file),byteCount:try XCTUnwrap(bytes).int64Value,admissionFingerprint:"owned-tiny",sourceLocation:file)
+    return(root,source)
+  }
+  private func neutral()->DevelopmentRecipe{DevelopmentRecipe(adjustmentsV3:.init())}
+  private func request(_ lease:PreviewSessionInfo,_ consumer:PreviewConsumerID,_ recipe:DevelopmentRecipe,_ revision:UInt64,quality:PreviewQuality = .interactive,role:PreviewConsumerRole = .primary)->DevelopmentPreviewRequest {
+    .init(sessionID:lease.id,sourceGeneration:lease.sourceGeneration,consumerID:consumer,role:role,revision:revision,recipe:recipe,quality:quality,viewport:.init(maxPixel:quality == .detail ? 0:2400))
+  }
+  private func bytes(_ image:NSImage)throws->[UInt8] {
+    guard let cg=image.cgImage(forProposedRect:nil,context:nil,hints:nil),let context=CGContext(data:nil,width:cg.width,height:cg.height,bitsPerComponent:8,bytesPerRow:cg.width*4,space:PhotoRenderer.sRGB,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue)else{throw DevelopmentError.unreadable}
+    context.setBlendMode(.copy);context.interpolationQuality = .none;context.draw(cg,in:CGRect(x:0,y:0,width:cg.width,height:cg.height))
+    return Array(UnsafeBufferPointer(start:context.data!.assumingMemoryBound(to:UInt8.self),count:cg.width*cg.height*4))
+  }
+  func testPolicyDefaultOffAndSupportNeverDropsUnsupportedWholeRecipe()throws {
+    XCTAssertEqual(PreviewResourcePolicy.default.interactiveEvaluation,.canonical)
+    let n=neutral();XCTAssertEqual(try PreviewInteractiveProxyV3.support(n,sourceIsRAW:false),.eligible)
+    var p=n.adjustmentsV3!
+    p.definition = .init(enabled:true,amount:0.5)
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.definition))
+    p=n.adjustmentsV3!;p.filter = .init(enabled:true,selection:.vivid,intensity:37)
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.filter))
+    p=n.adjustmentsV3!;p.geometry.version = .projectiveV3_1;p.geometry.verticalPerspective=5
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.projective))
+    p=n.adjustmentsV3!;p.blackAndWhite = .init(enabled:true,grain:0.1)
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.grain))
+    p=n.adjustmentsV3!;p.color.saturation = .nan
+    XCTAssertThrowsError(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false))
+  }
+  func testUniformScaleAndNativeGeometryConjugationPreserveLandmarkPhase()throws {
+    let size=CGSize(width:9504,height:6336),s=try PreviewInteractiveProxyV3.scale(size)
+    let input=try PreviewInteractiveProxyV3.inputLayout(size)
+    XCTAssertEqual(s,2400.0/9504);XCTAssertEqual(input.width,2400);XCTAssertEqual(input.height,1600)
+    for q in 0..<4{for reflect in [false,true]{
+      var g=DevelopmentGeometryV3(version:.projectiveV3_1,straightenDegrees:7,crop:.init(x:0.12,y:0.08,width:0.7,height:0.8))
+      g.clockwiseQuarterTurns=q;g.flipHorizontal=reflect
+      g=try g.applyingLateOperation(.rotateClockwise)
+      let sampled=try PreviewInteractiveProxyV3.geometry(g,nativeSize:size,inputScale:s,maxPixel:2400)
+      var observed=0
+      for source in [DevelopmentSourcePoint(x:0.35,y:0.35),.init(x:0.5,y:0.5),.init(x:0.6,y:0.55)] {
+        guard let out=try sampled.mapping.outputPoint(fromSource:source)else{continue}
+        observed+=1
+        let inputCI=CGPoint(x:source.x*size.width*s,y:(1-source.y)*size.height*s)
+        let actual=inputCI.applying(sampled.transform)
+        let expected=CGPoint(x:out.x*Double(sampled.mapping.outputSize.width)*sampled.outputScale,y:(1-out.y)*Double(sampled.mapping.outputSize.height)*sampled.outputScale)
+        XCTAssertEqual(actual.x,expected.x,accuracy:1e-9);XCTAssertEqual(actual.y,expected.y,accuracy:1e-9)
+      }
+      XCTAssertGreaterThan(observed,0)
+      XCTAssertLessThanOrEqual(max(sampled.layout.width,sampled.layout.height),2400)
+      XCTAssertLessThanOrEqual(sampled.outputScale,s)
+    }}
+    let radius=max(1,Double(3)*DevelopmentSpatialEngineV3.radiusFraction)*0.25
+    XCTAssertEqual(radius,0.25) // A proxy below native minimum must not clamp back to1.
+  }
+  func testAtomicKnownPeakReservationRejectsBeforeAnyPartialAllocation()throws {
+    let ledger=PreviewPresentationLedger(cpuBudget:100,gpuBudget:90),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    XCTAssertThrowsError(try scope.reserveSharedOperation(bytes:[50,41]))
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0);XCTAssertEqual(ledger.statistics.chargedGPUBytes,0)
+    let tickets=try scope.reserveSharedOperation(bytes:[50,40]);XCTAssertEqual(ledger.statistics.chargedCPUBytes,90)
+    scope.closeAndRetire();XCTAssertEqual(ledger.statistics.retiredCPUBytes,90)
+    for ticket in tickets{ticket.releaseAfterStorageReleased()}
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
+  }
+  func testActualFloatStoragePaddingRowsHDRAlphaAndHiddenNonfiniteGate()throws {
+    let device=try XCTUnwrap(MTLCreateSystemDefaultDevice()),ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    let ctx=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
+    defer{ctx.clearCaches();scope.closeAndRetire()}
+    try autoreleasepool {
+      let width=7,height=5,layout=try PreviewInteractiveLayout.make(width:width,height:height,float:true)
+      XCTAssertGreaterThanOrEqual(layout.rowBytes,width*16);XCTAssertGreaterThanOrEqual(layout.bytes,layout.rowBytes*height)
+      var samples=[SIMD4<Float>]()
+      for y in 0..<height{for x in 0..<width{samples.append(.init(Float(x)*0.1-0.2,Float(y)*0.2,2.0,1))}}
+      samples[3] = .init(0.1,0.2,0.3,0.5);samples[7] = .init(0,0,0,0)
+      let image=CIImage(bitmapData:samples.withUnsafeBytes{Data($0)},bytesPerRow:width*16,size:CGSize(width:width,height:height),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+      let ticket=try scope.reserveSharedOperation(bytes:[layout.bytes])[0]
+      let storage=try PreviewInteractiveProxyStorage(layout:layout,ticket:ticket,device:device)
+      try storage.fill(image,context:ctx,check:{});try storage.validateAllRGBA()
+      try storage.withPixels{p,row in for y in 0..<height{for x in 0..<width{
+        let actual=p.loadUnaligned(fromByteOffset:y*row+x*16,as:SIMD4<Float>.self)
+        for c in 0..<4{XCTAssertEqual(actual[c],samples[y*width+x][c],accuracy:2e-6)}
+      }}}
+      ctx.clearCaches()
+    }
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
+    // Actual joined input, not a fake writer/no-write seam. The transparent NaN must fail.
+    try autoreleasepool {
+      let layout=try PreviewInteractiveLayout.make(width:1,height:1,float:true)
+      let ticket=try scope.reserveSharedOperation(bytes:[layout.bytes])[0]
+      let storage=try PreviewInteractiveProxyStorage(layout:layout,ticket:ticket,device:device)
+      let values:[SIMD4<Float>]=[.init(.nan,0,0,0)]
+      let image=CIImage(bitmapData:values.withUnsafeBytes{Data($0)},bytesPerRow:16,size:.init(width:1,height:1),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+      XCTAssertThrowsError(try storage.fill(image,context:ctx,check:{}))
+      XCTAssertThrowsError(try storage.withPixels{_,_ in ()}) // A rejected joined write is never readable as a prior valid result.
+      ctx.clearCaches()
+    }
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
+  }
+  func testCheckedMaximumPoisonRejectsNoWritePartialAndMalformedRGBA()throws {
+    var pixel=SIMD4<Float>(0,0,0,1)
+    try withUnsafeMutableBytes(of:&pixel){bytes in
+      let address=try XCTUnwrap(bytes.baseAddress)
+      XCTAssertEqual(try PreviewInteractiveProxyStorage.readCheckedPixel(UnsafeRawPointer(address)),SIMD4<Float>(0,0,0,1))
+      PreviewInteractiveProxyStorage.poisonCheckedPixel(address)
+      XCTAssertThrowsError(try PreviewInteractiveProxyStorage.readCheckedPixel(UnsafeRawPointer(address))) // No write after prior successful zero.
+      address.storeBytes(of:Float(0),as:Float.self)
+      XCTAssertThrowsError(try PreviewInteractiveProxyStorage.readCheckedPixel(UnsafeRawPointer(address))) // Red-only write must not pass.
+      for component in 0..<4{for malformed in [Float.nan,Float.infinity,-Float.infinity]{
+        var value=SIMD4<Float>(0,0,0,1);value[component]=malformed
+        address.storeBytes(of:value,as:SIMD4<Float>.self)
+        XCTAssertThrowsError(try PreviewInteractiveProxyStorage.readCheckedPixel(UnsafeRawPointer(address)))
+      }}
+      let clear=SIMD4<Float>(repeating:0)
+      address.storeBytes(of:clear,as:SIMD4<Float>.self)
+      XCTAssertEqual(try PreviewInteractiveProxyStorage.readCheckedPixel(UnsafeRawPointer(address)),clear) // Genuine fully-written transparent zero is valid.
+      PreviewInteractiveProxyStorage.poisonCheckedPixel(address)
+      // Scalar stores model exactly three channels, leaving the alpha poison.
+      for component in 0..<3{address.storeBytes(of:Float(0),toByteOffset:component*4,as:Float.self)}
+      XCTAssertThrowsError(try PreviewInteractiveProxyStorage.readCheckedPixel(UnsafeRawPointer(address)))
+    }
+  }
+  func testActualMaximumScratchReusedTaskChecksCompleteRGBA()throws {
+    let device=try XCTUnwrap(MTLCreateSystemDefaultDevice()),ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    let context=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
+    defer{context.clearCaches();scope.closeAndRetire()}
+    try autoreleasepool{
+      let layout=try PreviewInteractiveLayout.make(width:1,height:1,float:true)
+      let ticket=try scope.reserveSharedOperation(bytes:[layout.bytes])[0]
+      let scratch=try PreviewInteractiveProxyStorage(layout:layout,ticket:ticket,device:device)
+      for invalid in [false,true,false]{
+        let source=CIImage(color:CIColor(red:0.2,green:0.3,blue:0.4,alpha:1)).cropped(to:CGRect(x:0,y:0,width:3,height:2))
+        let input=invalid ? CIImage(color:CIColor(red:1,green:0,blue:0,alpha:1)).cropped(to:source.extent):source
+        let mask:CIImage
+        if invalid{mask=input}
+        else{
+          let kernel=try DevelopmentLocalEngineV3.kernel("rmLocalInvalid")
+          mask=try XCTUnwrap(kernel.apply(extent:input.extent,roiCallback:{_,r in r},arguments:[input.samplingNearest()]))
+        }
+        let maximum=mask.applyingFilter("CIAreaMaximum",parameters:[kCIInputExtentKey:CIVector(cgRect:mask.extent)]).cropped(to:CGRect(x:0,y:0,width:1,height:1))
+        try scratch.fill(maximum,context:context,check:{})
+        try scratch.withPixels{address,_ in
+          let value=try PreviewInteractiveProxyStorage.readCheckedPixel(address)
+          XCTAssertEqual(value.x,invalid ? 1:0);XCTAssertEqual(value.w,invalid ? 1:0)
+        }
+      }
+      context.clearCaches()
+    }
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0);XCTAssertEqual(ledger.statistics.chargedGPUBytes,0)
+  }
+  func testActualImageProxyWarmHitNativeDescriptorAndSettledCanonicalSeparation()async throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
+    do {
+      let lease=try await service.open(source:.raw(source)),consumer=PreviewConsumerID(),n=neutral()
+      let first=try await service.render(request(lease,consumer,n,1))
+      XCTAssertTrue(first.approximate);XCTAssertEqual(first.approximation?.version,PreviewInteractiveProxyV3.version)
+      XCTAssertEqual(first.approximation?.nativeInputSize,CGSize(width:28,height:18))
+      XCTAssertEqual(first.canonicalPixelSize,CGSize(width:28,height:18))
+      var changed=n;changed.adjustmentsV3!.color = .init(enabled:true,saturation:0.1)
+      let next=try await service.render(request(lease,consumer,changed,2))
+      XCTAssertTrue(next.approximate);XCTAssertNotEqual(first.outputKey,next.outputKey)
+      let reused=await service.interactiveProxyStatisticsForTesting();XCTAssertEqual(reused.fills,1);XCTAssertEqual(reused.hits,1)
+      let settled=try await service.render(request(lease,consumer,n,3,quality:.settled))
+      XCTAssertFalse(settled.approximate);XCTAssertNil(settled.approximation);XCTAssertNotEqual(first.outputKey,settled.outputKey)
+      let actual=try bytes(first.image),expected=try bytes(settled.image)
+      XCTAssertEqual(actual.count,expected.count)
+      for i in actual.indices{XCTAssertLessThanOrEqual(abs(Int(actual[i])-Int(expected[i])),2)}
+      let stats=await service.statistics();XCTAssertEqual(stats.maximumObservedNativeRenders,1)
+    }catch{await service.closeAll();throw error}
+    await service.closeAll()
+    let closed=await service.interactiveProxyStatisticsForTesting();XCTAssertEqual(closed.residentBytes,0);XCTAssertEqual(closed.pinnedBytes,0)
+  }
+  func testActualEXIFCropStraightenAndLateD4StayRegisteredAgainstCanonical()async throws {
+    for orientation in [1,6,8] {
+      let(root,source)=try fixture(orientation:orientation);defer{try? FileManager.default.removeItem(at:root)}
+      let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
+      do {
+        let lease=try await service.open(source:.raw(source)),consumer=PreviewConsumerID()
+        var r=neutral(),g=DevelopmentGeometryV3(version:.projectiveV3_1,straightenDegrees:7,crop:.init(x:0.1,y:0.1,width:0.8,height:0.8))
+        g.flipHorizontal=true;g=try g.applyingLateOperation(.rotateClockwise);r.adjustmentsV3!.geometry=g
+        let candidate=try await service.render(request(lease,consumer,r,1))
+        let reference=try await service.render(request(lease,consumer,r,2,quality:.settled))
+        XCTAssertTrue(candidate.approximate);XCTAssertEqual(candidate.canonicalPixelSize,reference.canonicalPixelSize)
+        XCTAssertEqual(candidate.outputPixelSize,reference.outputPixelSize)
+        let a=try bytes(candidate.image),b=try bytes(reference.image)
+        XCTAssertEqual(a.count,b.count)
+        for i in a.indices{XCTAssertLessThanOrEqual(abs(Int(a[i])-Int(b[i])),2)}
+      }catch{await service.closeAll();throw error}
+      await service.closeAll()
+    }
+  }
+  func testWholeRecipeFilterFallbackIsChargedCanonicalAndReportsClosedReason()async throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
+    do {
+      let lease=try await service.open(source:.raw(source)),consumer=PreviewConsumerID()
+      var r=neutral();r.adjustmentsV3!.filter = .init(enabled:true,selection:.vivid,intensity:37)
+      let frame=try await service.render(request(lease,consumer,r,1))
+      XCTAssertFalse(frame.approximate);XCTAssertNil(frame.approximation)
+      let independent=try await DevelopmentService().preview(source:source,recipe:r,maxPixel:2400)
+      XCTAssertEqual(try bytes(frame.image),try bytes(independent.image))
+      let settled=try await service.render(request(lease,consumer,r,2,quality:.settled))
+      XCTAssertEqual(frame.outputKey,settled.outputKey);XCTAssertEqual(try bytes(frame.image),try bytes(settled.image))
+      let stats=await service.statistics();XCTAssertEqual(stats.interactiveProxyCanonicalFallbacks,1);XCTAssertEqual(stats.interactiveProxyLastFallbackReason,"filter")
+      let pool=await service.interactiveProxyStatisticsForTesting();XCTAssertEqual(pool.fills,0);XCTAssertGreaterThan(pool.owned.chargedCPUBytes,0)
+    }catch{await service.closeAll();throw error}
+    await service.closeAll()
+  }
+  func testProviderRemainsChargedAcrossScopeCloseUntilActualImageRelease()throws {
+    let device=try XCTUnwrap(MTLCreateSystemDefaultDevice()),ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    let ctx=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
+    var held:NSImage?
+    try autoreleasepool {
+      let layout=try PreviewInteractiveLayout.make(width:17,height:11,float:false)
+      let ticket=try scope.reserveSharedOperation(bytes:[layout.bytes])[0]
+      let output=PreviewInteractiveManagedOutput(layout:layout,ticket:ticket,device:device)
+      let image=CIImage(color:CIColor(red:0.2,green:0.4,blue:0.6,alpha:1)).cropped(to:CGRect(x:0,y:0,width:17,height:11))
+      held=try output.materialize(image,context:ctx,nativeSize:.init(width:17,height:11),check:{}).image
+      ctx.clearCaches()
+    }
+    scope.closeAndRetire();XCTAssertGreaterThan(ledger.statistics.retiredCPUBytes,0)
+    XCTAssertGreaterThan(ledger.statistics.chargedGPUBytes,0)
+    try autoreleasepool{XCTAssertFalse(try bytes(try XCTUnwrap(held)).isEmpty)}
+    autoreleasepool{held=nil;ctx.clearCaches()}
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0);XCTAssertEqual(ledger.statistics.chargedGPUBytes,0)
+    XCTAssertEqual(ledger.statistics.cleanupFailures,0)
+  }
+  func testNativeDescriptorUsesOrientedFactsAndIgnoresOnlyImageSuffixValues()throws {
+    for orientation in [1,6,8] {
+      let(root,source)=try fixture(orientation:orientation);defer{try? FileManager.default.removeItem(at:root)}
+      let native=try PreviewNativeSource(capture:source.sourceLocation,byteCount:source.byteCount,artifact:false,memoryLimit:512)
+      let a=try native.interactivePlan(recipe:neutral(),sourceKey:"source",generation:1,verifiedContentID:source.contentSHA256,maxPixel:2400)
+      var changed=neutral();changed.adjustmentsV3!.color = .init(enabled:true,saturation:0.4)
+      changed.adjustmentsV3!.light = .init(enabled:true,exposure:0.5,brightness:0.2)
+      let b=try native.interactivePlan(recipe:changed,sourceKey:"source",generation:1,verifiedContentID:source.contentSHA256,maxPixel:2400)
+      XCTAssertEqual(try a.descriptor?.fingerprint(),try b.descriptor?.fingerprint())
+      XCTAssertEqual(a.descriptor?.orientation,orientation)
+      let expected=orientation==1 ? CGSize(width:28,height:18):CGSize(width:18,height:28)
+      XCTAssertEqual(a.descriptor?.nativeSize,expected)
+      let newEpoch=try native.interactivePlan(recipe:neutral(),sourceKey:"source",generation:2,verifiedContentID:source.contentSHA256,maxPixel:2400)
+      XCTAssertNotEqual(try a.descriptor?.fingerprint(),try newEpoch.descriptor?.fingerprint())
+    }
+  }
+  func testBuildRetirementFenceCannotPublishIntoInvalidatedSource()throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let native=try PreviewNativeSource(capture:source.sourceLocation,byteCount:source.byteCount,artifact:false,memoryLimit:512)
+    let plan=try native.interactivePlan(recipe:neutral(),sourceKey:"source",generation:1,verifiedContentID:source.contentSHA256,maxPixel:2400)
+    let descriptor=try XCTUnwrap(plan.descriptor),pool=PreviewInteractiveProxyPool()
+    let build=try pool.beginBuild(descriptor);defer{pool.endBuild(build)}
+    pool.retire(sourceKey:"source")
+    let ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    try autoreleasepool {
+      let layout=try PreviewInteractiveLayout.make(width:descriptor.proxyWidth,height:descriptor.proxyHeight,float:true)
+      let ticket=try scope.reserveSharedOperation(bytes:[layout.bytes])[0]
+      let storage=try PreviewInteractiveProxyStorage(layout:layout,ticket:ticket,device:try XCTUnwrap(MTLCreateSystemDefaultDevice()))
+      XCTAssertThrowsError(try pool.attachBuildingStorage(storage,id:build))
+      XCTAssertThrowsError(try pool.publish(descriptor,storage,buildID:build))
+      XCTAssertEqual(pool.statistics(ledger:ledger).fills,0)
+    }
+    XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
+  }
+  func testCancelledBeforeFillCreatesNoProxyAndNoSecondWorker()throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let native=try PreviewNativeSource(capture:source.sourceLocation,byteCount:source.byteCount,artifact:false,memoryLimit:512)
+    let plan=try native.interactivePlan(recipe:neutral(),sourceKey:"source",generation:1,verifiedContentID:source.contentSHA256,maxPixel:2400)
+    let pool=PreviewInteractiveProxyPool(),ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    let cancellation=DevelopmentAnalysisCancellation();cancellation.cancel()
+    XCTAssertThrowsError(try native.renderInteractiveProxy(recipe:neutral(),maxPixel:2400,plan:plan,pool:pool,scope:scope,rawBasePool:nil,memoryLimit:512,cancellation:cancellation))
+    XCTAssertEqual(pool.statistics(ledger:ledger).fills,0);XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
+  }
+}

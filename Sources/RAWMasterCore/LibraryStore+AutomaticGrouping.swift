@@ -41,12 +41,17 @@ extension LibraryStore {
                   [automaticRunKey(record.sessionID), try json(record)])
   }
   /// Full history is intentional: removing a member or undoing a group must not erase protection.
-  func automaticGroupingSnapshot(sessionID: String, runID: String) throws -> AutomaticGroupingInput {
+  func automaticGroupingSnapshot(sessionID: String, runID: String, explicitRegroup: Bool = false) throws -> AutomaticGroupingInput {
     try locked {
       guard let sessionRow = try rows("SELECT data FROM sessions WHERE id=?", [sessionID]).first else {
         throw LibraryError.invalid("自动分组会话不存在")
       }
       let session = try decode(sessionRow[0], ImportSession.self)
+      if explicitRegroup {
+        guard let state = try workflow(sessionID), state.phase == .screening, !state.importActive else {
+          throw LibraryError.invalid("只有尚未关闭的初筛会话可以重新分组")
+        }
+      }
       let assets = SequenceBaseOrder.sorted(try loadAssets(sessionID: sessionID), sessions: [session])
       guard session.status == "completed", session.scanCompleted == true,
         assets.allSatisfy({ $0.importState == .ready && $0.projectID == session.projectID })
@@ -59,10 +64,45 @@ extension LibraryStore {
       let allIDs = Set(assets.map(\.id))
       let memberships = try rows("SELECT group_id,asset_id,position,included FROM membership ORDER BY group_id,position,asset_id")
       let history = try rows("SELECT id,data FROM group_commands ORDER BY rowid")
-      var protected = Set(memberships.map { $0[1] }).intersection(allIDs)
-      for row in history {
-        let record = try decode(row[1], GroupCommandEnvelope.self).record
+      let records = try history.map { try decode($0[1], GroupCommandEnvelope.self).record }
+      func automaticSession(_ record: GroupCommandRecord) -> String? {
+        switch record.request { case .automaticBatch(let batch): return batch.sessionID
+        case .automaticRegroup(let replacement): return replacement.batch.sessionID
+        default: return nil }
+      }
+      let currentGroups = try loadGroups()
+      let manualRecords = records.filter { automaticSession($0) == nil }
+      let manuallyTouchedGroups = Set(manualRecords.flatMap { ($0.before + $0.after).map(\.id) })
+      var replacementIDs: [String] = []
+      if explicitRegroup {
+        for g in currentGroups where g.projectID == session.projectID && g.origin == .automaticPendingReview
+          && !g.locked && !g.assetIDs.isEmpty && Set(g.assetIDs).isSubset(of: allIDs) && !manuallyTouchedGroups.contains(g.id) {
+          guard let creator = records.last(where: { automaticSession($0) == sessionID && $0.after.contains(where: { $0.id == g.id }) }),
+            let created = creator.after.first(where: { $0.id == g.id }),
+            try SequenceCanonical.digest(g) == SequenceCanonical.digest(created),
+            let head = creator.afterDomains.first(where: { $0.groupID == g.id && $0.domain == .all }),
+            let row = try rows("SELECT revision,logical_writer_id,last_operation_id FROM group_domains WHERE group_id=? AND domain='all'", [g.id]).first,
+            row == [String(head.revision), head.logicalWriterID ?? "", head.lastOperationID ?? ""] else { continue }
+          replacementIDs.append(g.id)
+        }
+      }
+      replacementIDs.sort()
+      var replaceable = Set(replacementIDs)
+      var protected = Set(memberships.filter { !replaceable.contains($0[0]) }.map { $0[1] }).intersection(allIDs)
+      for record in explicitRegroup ? manualRecords : records {
         protected.formUnion((record.before + record.after).flatMap(\.assetIDs).filter { allIDs.contains($0) })
+      }
+      // A manual overlap protects the WHOLE old automatic group, not only its overlapping file.
+      // Propagate to a fixed point so overlapping retained groups cannot indirectly lose structure.
+      if explicitRegroup {
+        var changed = true
+        while changed {
+          changed = false
+          for g in currentGroups where replaceable.contains(g.id) && !protected.isDisjoint(with: g.assetIDs) {
+            replaceable.remove(g.id); protected.formUnion(g.assetIDs); changed = true
+          }
+        }
+        replacementIDs = replaceable.sorted()
       }
       // Include the full group causal state conservatively. A concurrent manual edit, even an
       // undo that restores equal values, invalidates the prepared analysis. Ledger writes are excluded.
@@ -74,25 +114,40 @@ extension LibraryStore {
         let revisions: [Int]
         let locations: [[String]]
         let groups, memberships, domains, history: [[String]]
+        let explicitRegroup: Bool
+        let replacementIDs: [String]
       }
       let fingerprint = try SequenceCanonical.digest(Scope(
         version: "automatic-grouping-scope-v1", session: sessionRow[0], assets: assets,
         revisions: revisions, locations: assets.map {
           [LocationIdentity.fingerprint($0, role: .source), LocationIdentity.fingerprint($0, role: .managed)]
-        }, groups: groupRows, memberships: memberships, domains: domains, history: history))
+        }, groups: groupRows, memberships: memberships, domains: domains, history: history,
+        explicitRegroup: explicitRegroup, replacementIDs: replacementIDs))
       return AutomaticGroupingInput(runID: runID, sessionID: sessionID, projectID: session.projectID,
-        scopeFingerprint: fingerprint, assets: assets, assetRevisions: revisions, protectedAssetIDs: protected)
+        scopeFingerprint: fingerprint, assets: assets, assetRevisions: revisions, protectedAssetIDs: protected,
+        replacementGroupIDs: replacementIDs, isExplicitRegroup: explicitRegroup)
     }
   }
   func claimAutomaticGrouping(sessionID: String) throws -> AutomaticGroupingInput? {
     try transaction {
-      if try automaticGroupingRun(sessionID: sessionID)?.state.succeeded == true { return nil }
+      if try automaticGroupingRun(sessionID: sessionID)?.successSnapshot != nil { return nil }
       let input = try automaticGroupingSnapshot(sessionID: sessionID, runID: UUID().uuidString)
       try saveAutomaticGroupingRun(AutomaticGroupingRunRecord(
         runID: input.runID, sessionID: sessionID, scopeFingerprint: input.scopeFingerprint,
         state: .running, startedAt: Date(), finishedAt: nil, commandID: nil,
         groupIDs: [], skippedProtectedRanges: 0, message: nil, provenance: nil,
         preparedBatchFingerprint: nil))
+      return input
+    }
+  }
+  func claimAutomaticRegroup(sessionID: String) throws -> AutomaticGroupingInput {
+    try transaction {
+      let previous = try automaticGroupingRun(sessionID: sessionID)
+      let input = try automaticGroupingSnapshot(sessionID: sessionID, runID: UUID().uuidString, explicitRegroup: true)
+      try saveAutomaticGroupingRun(AutomaticGroupingRunRecord(runID: input.runID, sessionID: sessionID,
+        scopeFingerprint: input.scopeFingerprint, state: .running, startedAt: Date(), finishedAt: nil,
+        commandID: nil, groupIDs: [], skippedProtectedRanges: 0, message: nil, provenance: nil,
+        preparedBatchFingerprint: nil, lastSuccess: previous?.successSnapshot))
       return input
     }
   }
@@ -106,8 +161,7 @@ extension LibraryStore {
       try saveAutomaticGroupingRun(run)
     }
   }
-  func prepareAutomaticGrouping(_ analysis: AutomaticGroupingAnalysis, input: AutomaticGroupingInput,
-    checkCancellation: () throws -> Void) throws -> AutomaticGroupingBatch? {
+  private func makeAutomaticGroupingBatch(_ analysis: AutomaticGroupingAnalysis, input: AutomaticGroupingInput) throws -> AutomaticGroupingBatch {
     guard analysis.runID == input.runID, analysis.scopeFingerprint == input.scopeFingerprint,
       analysis.manifest.scopeID == "automatic-grouping/" + input.sessionID,
       analysis.manifest.sessionID == input.sessionID,
@@ -145,9 +199,14 @@ extension LibraryStore {
       groups.append(AutomaticGroupingBatchGroup(firstOrdinal: detected.range.first,
         lastOrdinal: detected.range.last, assetIDs: ids, kind: detected.kind))
     }
-    let batch = AutomaticGroupingBatch(runID: input.runID, sessionID: input.sessionID,
+    return AutomaticGroupingBatch(runID: input.runID, sessionID: input.sessionID,
       scopeFingerprint: input.scopeFingerprint, groups: groups, proofs: analysis.sourceProofs,
       provenance: analysis.provenance, skippedProtectedRanges: skipped)
+  }
+  func prepareAutomaticGrouping(_ analysis: AutomaticGroupingAnalysis, input: AutomaticGroupingInput,
+    checkCancellation: () throws -> Void) throws -> AutomaticGroupingBatch? {
+    guard !input.isExplicitRegroup else { throw LibraryError.invalid("显式重分组必须使用原子替换流程") }
+    let batch = try makeAutomaticGroupingBatch(analysis, input: input)
     return try transaction {
       try checkCancellation()
       let current = try automaticGroupingSnapshot(sessionID: input.sessionID, runID: input.runID)
@@ -157,19 +216,46 @@ extension LibraryStore {
         throw LibraryError.invalid("自动分组期间会话或人工操作已改变，请稍后重试")
       }
       try validateAutomaticGroupingProofs(batch, input: current)
-      run.provenance = analysis.provenance; run.skippedProtectedRanges = skipped
-      if groups.isEmpty {
+      run.provenance = analysis.provenance; run.skippedProtectedRanges = batch.skippedProtectedRanges
+      if batch.groups.isEmpty {
         run.state = .completedNoGroups; run.finishedAt = Date()
         run.message = "未新增拍摄组；已有人工组和历史操作受保护"
+        run.lastSuccess = run.successSnapshot
       } else { run.preparedBatchFingerprint = try SequenceCanonical.digest(batch) }
       try saveAutomaticGroupingRun(run)
-      return groups.isEmpty ? nil : batch
+      return batch.groups.isEmpty ? nil : batch
     }
   }
-  private func validateAutomaticGroupingProofs(_ batch: AutomaticGroupingBatch, input: AutomaticGroupingInput) throws {
+  func prepareAutomaticRegroup(_ analysis: AutomaticGroupingAnalysis, input: AutomaticGroupingInput,
+    checkCancellation: () throws -> Void) throws -> AutomaticGroupingReplacement? {
+    guard input.isExplicitRegroup else { throw LibraryError.invalid("缺少显式重分组凭据") }
+    let batch = try makeAutomaticGroupingBatch(analysis, input: input)
+    let replacement = AutomaticGroupingReplacement(batch: batch, removedGroupIDs: input.replacementGroupIDs,
+      featuresAvailable: analysis.featuresAvailable)
+    return try transaction {
+      try checkCancellation()
+      let current = try automaticGroupingSnapshot(sessionID: input.sessionID, runID: input.runID, explicitRegroup: true)
+      guard current.scopeFingerprint == input.scopeFingerprint,
+        var run = try automaticGroupingRun(sessionID: input.sessionID), run.runID == input.runID, run.state == .running else {
+        throw LibraryError.invalid("重新分组期间会话或人工操作已改变，请重试")
+      }
+      try validateReplacementProofs(replacement, input: current, checkCancellation: checkCancellation)
+      run.provenance = analysis.provenance; run.skippedProtectedRanges = batch.skippedProtectedRanges
+      if replacement.removedGroupIDs.isEmpty && batch.groups.isEmpty {
+        run.state = .completedNoGroups; run.finishedAt = Date()
+        run.message = "分析已完成，没有可替换或新增的自动组；人工操作保留"
+        run.lastSuccess = run.successSnapshot
+      } else { run.preparedBatchFingerprint = try SequenceCanonical.digest(replacement) }
+      try saveAutomaticGroupingRun(run)
+      return replacement.removedGroupIDs.isEmpty && batch.groups.isEmpty ? nil : replacement
+    }
+  }
+  private func validateAutomaticGroupingProofs(_ batch: AutomaticGroupingBatch, input: AutomaticGroupingInput,
+    additionalMemberIDs: Set<String> = [], checkCancellation: () throws -> Void = { try Task.checkCancellation() }) throws {
     guard batch.proofs.count == input.assets.count else { throw LibraryError.invalid("读取凭据覆盖不完整") }
-    let memberIDs = Set(batch.groups.flatMap(\.assetIDs))
+    let memberIDs = Set(batch.groups.flatMap(\.assetIDs)).union(additionalMemberIDs)
     for (asset, proof) in zip(input.assets, batch.proofs) {
+      try checkCancellation()
       guard proof.assetID == asset.id else { throw LibraryError.invalid("读取凭据顺序改变") }
       if memberIDs.contains(asset.id) {
         guard proof.issue == nil, let hash = proof.verifiedSHA256, hash == asset.contentHash,
@@ -177,6 +263,20 @@ extension LibraryStore {
         else { throw LibraryError.sourceChanged(asset.filename) }
       }
     }
+  }
+  private func validateReplacementProofs(_ replacement: AutomaticGroupingReplacement, input: AutomaticGroupingInput,
+    checkCancellation: () throws -> Void = { try Task.checkCancellation() }) throws {
+    guard replacement.removedGroupIDs == input.replacementGroupIDs, replacement.featuresAvailable.count == input.assets.count else {
+      throw LibraryError.invalid("重分组替换范围或图像证据已改变")
+    }
+    let removed = try loadGroups().filter { replacement.removedGroupIDs.contains($0.id) }
+    let oldIDs = Set(removed.flatMap(\.assetIDs))
+    let required = oldIDs.union(replacement.batch.groups.flatMap(\.assetIDs))
+    for (index, asset) in input.assets.enumerated() where required.contains(asset.id) {
+      try checkCancellation()
+      guard replacement.featuresAvailable[index] else { throw LibraryError.invalid("旧组或新组成员缺少可靠图像证据，原有分组已保留：\(asset.filename)") }
+    }
+    try validateAutomaticGroupingProofs(replacement.batch, input: input, additionalMemberIDs: oldIDs, checkCancellation: checkCancellation)
   }
   /// Called again inside the group command transaction, before any group write.
   func validateAutomaticGroupingBatch(_ batch: AutomaticGroupingBatch) throws -> AutomaticGroupingInput {
@@ -186,6 +286,11 @@ extension LibraryStore {
     else { throw LibraryError.invalid("自动分组请求尚未验证、已完成或已失效") }
     let input = try automaticGroupingSnapshot(sessionID: batch.sessionID, runID: batch.runID)
     guard input.scopeFingerprint == batch.scopeFingerprint else { throw LibraryError.invalid("自动分组预览后素材或人工操作已改变") }
+    try validateAutomaticGroupingRanges(batch, input: input)
+    try validateAutomaticGroupingProofs(batch, input: input)
+    return input
+  }
+  private func validateAutomaticGroupingRanges(_ batch: AutomaticGroupingBatch, input: AutomaticGroupingInput) throws {
     var previousEnd = -1
     for group in batch.groups {
       guard group.firstOrdinal > previousEnd, group.lastOrdinal >= group.firstOrdinal,
@@ -195,17 +300,37 @@ extension LibraryStore {
       else { throw LibraryError.invalid("自动分组范围重叠、越界或触及人工操作") }
       previousEnd = group.lastOrdinal
     }
-    try validateAutomaticGroupingProofs(batch, input: input)
+  }
+  func validateAutomaticRegroup(_ replacement: AutomaticGroupingReplacement) throws -> AutomaticGroupingInput {
+    let batch = replacement.batch
+    guard let run = try automaticGroupingRun(sessionID: batch.sessionID), run.state == .running,
+      run.runID == batch.runID, run.scopeFingerprint == batch.scopeFingerprint,
+      run.preparedBatchFingerprint == (try SequenceCanonical.digest(replacement)),
+      !batch.groups.isEmpty || !replacement.removedGroupIDs.isEmpty else { throw LibraryError.invalid("重分组替换尚未验证、已完成或已失效") }
+    let input = try automaticGroupingSnapshot(sessionID: batch.sessionID, runID: batch.runID, explicitRegroup: true)
+    guard input.scopeFingerprint == batch.scopeFingerprint else { throw LibraryError.invalid("重新分组提交前会话或人工操作已改变") }
+    try validateAutomaticGroupingRanges(batch, input: input)
+    try validateReplacementProofs(replacement, input: input)
     return input
   }
   /// Runs within commitGroupCommand's transaction, after its durable undo record is written.
-  func finalizeAutomaticGroupingBatch(_ batch: AutomaticGroupingBatch, command: GroupCommandRecord) throws {
+  func finalizeAutomaticGroupingBatch(_ batch: AutomaticGroupingBatch, command: GroupCommandRecord, preparedFingerprint: String? = nil) throws {
     guard var run = try automaticGroupingRun(sessionID: batch.sessionID), run.state == .running,
-      run.runID == batch.runID, run.preparedBatchFingerprint == (try SequenceCanonical.digest(batch))
+      run.runID == batch.runID, run.preparedBatchFingerprint == (try preparedFingerprint ?? SequenceCanonical.digest(batch))
     else { throw LibraryError.invalid("自动分组提交凭据已失效") }
-    run.state = .applied; run.commandID = command.id; run.groupIDs = command.after.map(\.id)
-    run.finishedAt = Date(); run.message = "已新增 \(run.groupIDs.count) 个待复核组；全部照片保留"
+    run.state = batch.groups.isEmpty ? .completedNoGroups : .applied
+    run.commandID = command.id; run.groupIDs = command.after.map(\.id)
+    run.finishedAt = Date(); run.message = "分组已更新：\(run.groupIDs.count) 个待复核组；人工操作和全部照片保留"
+    run.lastSuccess = run.successSnapshot
     try saveAutomaticGroupingRun(run)
+  }
+  func commitAutomaticRegroup(_ replacement: AutomaticGroupingReplacement, checkCancellation: () throws -> Void) throws {
+    try locked {
+      try checkCancellation()
+      let preview = try previewGroupCommand(.automaticRegroup(replacement))
+      try checkCancellation()
+      _ = try commitGroupCommand(preview)
+    }
   }
   func commitAutomaticGroupingBatch(_ batch: AutomaticGroupingBatch, checkCancellation: () throws -> Void) throws {
     try locked {

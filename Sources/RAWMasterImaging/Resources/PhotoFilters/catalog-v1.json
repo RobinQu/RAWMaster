@@ -1,0 +1,342 @@
+{
+  "schemaVersion": 1,
+  "operatorVersion": "photo-filter-v1/observed-delta64/planes0-1-25-50-100/manual-trilinear-f32/linear-strength/HDR-boundary-residual-mono-noir-endpoint-v2/alpha-bypass65535",
+  "representation": "linear-delta64-rgba32f-v1",
+  "cubeDimension": 64,
+  "atlasWidth": 512,
+  "atlasHeight": 512,
+  "axisCodes": [
+    0,
+    1040,
+    2080,
+    3121,
+    4161,
+    5201,
+    6241,
+    7282,
+    8322,
+    9362,
+    10402,
+    11443,
+    12483,
+    13523,
+    14563,
+    15604,
+    16644,
+    17684,
+    18724,
+    19765,
+    20805,
+    21845,
+    22885,
+    23925,
+    24966,
+    26006,
+    27046,
+    28086,
+    29127,
+    30167,
+    31207,
+    32247,
+    33288,
+    34328,
+    35368,
+    36408,
+    37449,
+    38489,
+    39529,
+    40569,
+    41610,
+    42650,
+    43690,
+    44730,
+    45770,
+    46811,
+    47851,
+    48891,
+    49931,
+    50972,
+    52012,
+    53052,
+    54092,
+    55133,
+    56173,
+    57213,
+    58253,
+    59294,
+    60334,
+    61374,
+    62414,
+    63455,
+    64495,
+    65535
+  ],
+  "inputICCsha256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+  "alphaPolicy": "source-alpha-preserved/lowalpha-1over65535-bypass",
+  "hdrPolicy": "boundary-residual-mono-noir-endpoint-v2",
+  "sourceBindingsSHA256": "506e7ddd2fa4305efbb12c49ed6b8b689a7c915d8c432a54ab4fb81adf400037",
+  "builderSHA256": "cb7c2ee0334c942cd2f67583b8108583a8899c2c36fc6fc004a696a71f73f30c",
+  "looks": [
+    {
+      "id": "vivid",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "vivid-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "0bb6fe4e82fea43f9d2503fa4fd82554237fa6bebe496bca4553bebfa0dd3eca"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "vivid-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "736ec91d399c282d4cedf930ff31cce0bcd3c139a49472a112f6c3cb981a9bab"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "vivid-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "8031f1e8ad2c8f849d117ddfcfd761ee2848022ab86f00d2b6220a3456bb4c72"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "vivid-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "f1888d489d0a4595a42b53c40a25e9d21add9143786d554412d4f8648e59ffd8"
+        }
+      ]
+    },
+    {
+      "id": "vividWarm",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "vividWarm-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "2b0b7a542c9650b6caa8a2c9c566e5a400d8d3eb55147a9239141335653c8c2c"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "vividWarm-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "bf6c031a4fe11310aa5544d7d11a6d09447bdcf64f07108d3f245e0574067ee1"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "vividWarm-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "4541aa50c8893f8f2a255003a51362f2eb7283d8121bee07ad8d4d80f1e5bb3d"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "vividWarm-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "9b9652d7576cf73b3834167955721abeddc9b9bbaeedb891c10f21eca8e41b8c"
+        }
+      ]
+    },
+    {
+      "id": "vividCool",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "vividCool-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "61d6d2e329938f41c016766bbac85cb215b98c51d10f3d4f9615bb60d9c8e0a9"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "vividCool-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "c34be0f3bffec77250d90a49fb66395721f9fcae241ce729f573be9e677bccef"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "vividCool-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "bce47f69c4b759f4a4702fa436fb5b9b0e8473a25e2fbb4861200e56aad68bd1"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "vividCool-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "ef9549c80df50e6fa0d072e7b37a47c64ca1fa04cb258f7235a863589f940829"
+        }
+      ]
+    },
+    {
+      "id": "dramatic",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "dramatic-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "70973e528eece7e2c92f74c7152d12d0184596cb110ad1964cead973a7362f1b"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "dramatic-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "85ba413dbd7a1b8143322b4c4079eeaeb2591c49599676c00cd5261b97abc849"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "dramatic-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "532076212904b33083e66dd117165a77be7a7584049a942506d10b9db1d48432"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "dramatic-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "1378bc3a831617078cc7a593ab4c4eb9c85b1d41575feaddc642d47402b64520"
+        }
+      ]
+    },
+    {
+      "id": "dramaticWarm",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "dramaticWarm-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "baddbf4697acfe8da5231f4b092b34c115e29ee37bd776540b1698b4cd09742d"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "dramaticWarm-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "dba95da7f838cd1b868f9c113754e428cb2c505f58befea00de8ae1ff46a40cc"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "dramaticWarm-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "ecbd8cc0b256685f31952441540d3c19ffed39496bb48395f2e8797e76a8ad8e"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "dramaticWarm-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "88b18a4e52cbc8c5eca5c7079f96cb04452dede170e45c0e62d9e41fee1f5cd5"
+        }
+      ]
+    },
+    {
+      "id": "dramaticCool",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "dramaticCool-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "a8811b8d26e670d85af0335b728ca8da7f2a798a50bdc525315d3df4eff37077"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "dramaticCool-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "545f97836cac30bce66480f100f42b5b27b064044a3b51e7caa56449dbc5c51d"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "dramaticCool-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "ebf1956e4bee43315add32a601960730618aa9ea3784a35a0fd52f7e64a8b982"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "dramaticCool-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "995af365eb36f52387b2cc16480c02388c5b5966362f5715a3840a008c39d17e"
+        }
+      ]
+    },
+    {
+      "id": "mono",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "mono-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "115391277fcccc18dfb28c72e9153708827a1cf9185af7a550f09f2804bf8cd2"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "mono-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "6980ec21f8fcf05745cc6b9c8741d1780fa2342d39a919defcd37fb4a1fb40e8"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "mono-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "c23e4d5eb22e2734238a717f71d2bf2c1d4b2bf63854e2f1db4d73a21cf4397c"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "mono-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "909b13eea5637c29d10bc7d9b6607a536468a1ab8f366d270265198fd78c0056"
+        }
+      ]
+    },
+    {
+      "id": "silvertone",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "silvertone-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "7b19a7c501b33ecd868fdd76e1585091818d249a871d3435b4c8f230bc7d378e"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "silvertone-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "235a60380578958f2d4111be773eba34f69f63632e2c262fe217b6603dab7cef"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "silvertone-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "b7d5149316b8cb5c931801451f7f61cc09107c7195a71ed51ae448898faaa0a4"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "silvertone-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "b9d1f8757e8b3292003cef2b7586daba7befebfb9564e1af0ab643dd6cd86fb0"
+        }
+      ]
+    },
+    {
+      "id": "noir",
+      "planes": [
+        {
+          "intensityPercent": 1,
+          "file": "noir-001.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "8bc3b55f5869ff168ae6df8e6d715b9b0d4035d46fdd12f043d6a092526f5fa6"
+        },
+        {
+          "intensityPercent": 25,
+          "file": "noir-025.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "000f4a8b572218006a68f3965790145a5eb22deeb37b66324f3adde4b73f3fff"
+        },
+        {
+          "intensityPercent": 50,
+          "file": "noir-050.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "01e9b5c00651eda5105e64c2136a20afce49af7a6104b4ad9ae09e5bd8fb3074"
+        },
+        {
+          "intensityPercent": 100,
+          "file": "noir-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "sha256": "5ab0230227dfc57306483be83f64ef50a7463bb30255515db519348ba3ee075b"
+        }
+      ]
+    }
+  ]
+}

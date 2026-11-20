@@ -11,6 +11,72 @@ binary_dir="$(swift build --configuration "$configuration" --show-bin-path)"
 app="$PWD/output/RAWMaster.app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary_dir/RAWMaster" "$app/Contents/MacOS/RAWMaster"
+ai_resources="$binary_dir/RAWMaster_RAWMasterAI.bundle"
+if [[ ! -d "$ai_resources" ]]; then
+  print -u2 "Missing AI runtime resources: $ai_resources"
+  exit 1
+fi
+rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterAI.bundle"
+cp -R "$ai_resources" "$app/Contents/Resources/"
+# The actual Imaging bundle is mandatory in the App; no development-directory fallback.
+verify_photo_filter_resources() {
+  python3 - "$1/Contents/Resources/PhotoFilters" <<'PHOTO_FILTER_PY'
+from pathlib import Path
+import hashlib,json,sys
+root=Path(sys.argv[1])
+def sha(path):
+    h=hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda:stream.read(65536),b''):h.update(block)
+    return h.hexdigest()
+catalog=root/'catalog-v1.json'
+if not catalog.is_file() or catalog.is_symlink() or sha(catalog)!='0a8a0e9aa4fb7dacdf6ad20d12d5f24dda4132c4b7880acd7fab1c28fa6c61f9':
+    raise SystemExit('Missing or unverified bundled photo-filter catalog')
+value=json.loads(catalog.read_text());planes=[p for look in value['looks'] for p in look['planes']]
+expected={'catalog-v1.json'}|{p['file'] for p in planes}
+if len(value['looks'])!=9 or len(planes)!=36 or len(expected)!=37 or {p.name for p in root.iterdir()}!=expected:
+    raise SystemExit('Unexpected photo-filter resource inventory')
+for plane in planes:
+    name=plane['file'];path=root/name
+    if Path(name).name!=name or path.is_symlink() or not path.is_file() or path.stat().st_size!=plane['byteCount'] or sha(path)!=plane['sha256']:
+        raise SystemExit('Photo-filter payload integrity failure: '+name)
+PHOTO_FILTER_PY
+}
+imaging_resources="$binary_dir/RAWMaster_RAWMasterImaging.bundle"
+if [[ ! -d "$imaging_resources" ]]; then
+  print -u2 "Missing Imaging filter resources: $imaging_resources"
+  exit 1
+fi
+verify_photo_filter_resources "$imaging_resources"
+rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
+cp -R "$imaging_resources" "$app/Contents/Resources/"
+verify_photo_filter_resources "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
+
+runtime_artifacts="${RAWMASTER_RUNTIME_ARTIFACTS_DIR:-$PWD/output/runtime-artifacts}"
+# Runtime executables stay inside a data archive until the native installer has
+# authenticated them. A packaged app must work without a system Python or uv.
+python3 - "$runtime_artifacts" <<'PY'
+import hashlib, json, sys
+from pathlib import Path
+root = Path(sys.argv[1])
+catalog = root / 'catalog.json'
+expected = '6ae90188e67edc237a0a90ac7bf2d5acf26afcbdff697a4355f599dd9e85ec37'
+def sha(path):
+    result = hashlib.sha256()
+    with path.open('rb') as source:
+        for chunk in iter(lambda: source.read(8*1024*1024), b''):
+            result.update(chunk)
+    return result.hexdigest()
+if not catalog.is_file() or catalog.is_symlink() or sha(catalog) != expected:
+    raise SystemExit('Missing or unverified offline runtime catalog. Set RAWMASTER_RUNTIME_ARTIFACTS_DIR to the fixed artifact directory produced by scripts/package-runtime-artifact.py.')
+for artifact in json.loads(catalog.read_text())['artifacts']:
+    name = artifact['archivePath']
+    path = root / name
+    if Path(name).name != name or path.is_symlink() or not path.is_file() or path.stat().st_size != artifact['archiveByteCount'] or sha(path) != artifact['archiveSHA256']:
+        raise SystemExit('Offline runtime archive failed integrity verification: ' + name)
+PY
+mkdir -p "$app/Contents/Resources/RuntimeArtifacts"
+cp "$runtime_artifacts/catalog.json" "$runtime_artifacts/rawmaster-comfymlx-v4-arm64-py312.zip" "$app/Contents/Resources/RuntimeArtifacts/"
 cat > "$app/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -31,6 +97,12 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
 <key>NSSupportsAutomaticTermination</key><false/>
 </dict></plist>
 PLIST
+build_version="${RAWMASTER_BUILD_VERSION:-1}"
+if [[ ! "$build_version" =~ '^[0-9A-Za-z._-]+$' ]]; then
+  print -u2 'Invalid RAWMASTER_BUILD_VERSION'
+  exit 2
+fi
+plutil -replace CFBundleVersion -string "$build_version" "$app/Contents/Info.plist"
 python3 scripts/package-metadata-tool.py --source "$PWD/output/tools/exiftool" --destination "$app/Contents/Resources/MetadataTool"
 ./scripts/build-icons.sh "$app/Contents/Resources"
 python3 scripts/check-app-icon.py "$app"

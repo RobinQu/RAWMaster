@@ -2,7 +2,7 @@ import CSQLite
 import Foundation
 
 enum DatabaseSchema {
-  static let version = 3
+  static let version = 7
   static let columns: [String: Set<String>] = [
     "projects": ["id", "data"], "sessions": ["id", "data"],
     "assets": ["id", "session_id", "source_path", "data", "revision"],
@@ -60,12 +60,95 @@ enum DatabaseSchema {
         "group_id", "domain", "revision", "logical_writer_id", "last_operation_id", "tombstoned",
       ]
     }
-    guard names == Set(required.keys), Set(userObjects) == Set(required.keys) else {
+    if found >= 4 {
+      for (table, key) in [("session_workflows", "id"), ("project_admissions", "asset_id"), ("triage_records", "asset_id"), ("capture_pairs", "id"), ("pair_dismissals", "id"), ("triage_commands", "id"), ("quality_evidence", "asset_id"), ("asset_tags", "asset_id"), ("workflow_completions", "id")] {
+        required[table] = [key, "data"]
+      }
+    }
+    if found >= 5 {
+      for (table, key) in [("review_records", "asset_id"), ("project_review_states", "project_id"), ("tag_commands", "id"), ("tag_domains", "asset_id")] {
+        required[table] = [key, "data"]
+      }
+    }
+    if found >= 6 { required["asset_color_labels"] = ["asset_id", "data"] }
+    if found >= 7 {
+      required["editing_works"] = ["id", "project_id", "asset_id", "data"]
+      required["editing_versions"] = ["id", "work_id", "parent_id", "data"]
+      required["editing_dispositions"] = ["version_id", "disposition"]
+      required["processing_jobs"] = ["id", "work_id", "command_id", "data"]
+      required["editing_commands"] = ["id", "fingerprint", "action", "data"]
+      required["provider_profiles"] = ["id", "data"]
+      required["archive_publications"] = ["id", "version_id", "data"]
+      required["editing_exports"] = ["id", "work_id", "command_id", "data"]
+    }
+    // Only the known reverse membership index is additive across supported
+    // versions; retain the strict rejection of all other unknown objects.
+    let indexes = Set(try strings(db, "SELECT name FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'"))
+    let editingIndexes: [String: (String, [String])] = found >= 7 ? [
+      "editing_works_source": ("editing_works", ["project_id", "asset_id"]),
+      "editing_versions_work": ("editing_versions", ["work_id"]),
+      "processing_jobs_work": ("processing_jobs", ["work_id"]),
+      "editing_exports_work": ("editing_exports", ["work_id"])
+    ] : [:]
+    guard indexes.isSubset(of: Set(["membership_asset_id"]).union(editingIndexes.keys)),
+      Set(editingIndexes.keys).isSubset(of: indexes),
+      names == Set(required.keys), Set(userObjects) == Set(required.keys).union(indexes) else {
       throw LibraryError.invalid("资料库结构与版本不符，未修改原库")
+    }
+    if indexes.contains("membership_asset_id") {
+      guard try strings(db, "SELECT tbl_name FROM sqlite_master WHERE type='index' AND name='membership_asset_id'") == ["membership"],
+        try strings(db, "PRAGMA index_info(membership_asset_id)", column: 2) == ["asset_id"],
+        try strings(db, "SELECT \"unique\" FROM pragma_index_list('membership') WHERE name='membership_asset_id'") == ["0"],
+        try strings(db, "SELECT partial FROM pragma_index_list('membership') WHERE name='membership_asset_id'") == ["0"] else {
+        throw LibraryError.invalid("资料库成员索引无法识别，未修改原库")
+      }
+    }
+    for (name, definition) in editingIndexes {
+      guard try strings(db, "SELECT tbl_name FROM sqlite_master WHERE type='index' AND name='\(name)'") == [definition.0],
+        try strings(db, "PRAGMA index_info(\(name))", column: 2) == definition.1,
+        try strings(db, "SELECT \"unique\" FROM pragma_index_list('\(definition.0)') WHERE name='\(name)'") == ["0"],
+        try strings(db, "SELECT partial FROM pragma_index_list('\(definition.0)') WHERE name='\(name)'") == ["0"] else {
+        throw LibraryError.invalid("资料库制作索引无法识别，未修改原库")
+      }
     }
     for (table, expected) in required {
       guard Set(try strings(db, "PRAGMA table_info(\(table))", column: 1)) == expected else {
         throw LibraryError.invalid("资料库表 \(table) 无法识别，未修改原库")
+      }
+    }
+    if found >= 7 {
+      let primaryKeys = ["editing_works": "id", "editing_versions": "id", "editing_dispositions": "version_id",
+                         "processing_jobs": "id", "editing_commands": "id", "provider_profiles": "id", "archive_publications": "id", "editing_exports": "id"]
+      let nonNullColumns: [String: Set<String>] = [
+        "editing_works": ["project_id", "asset_id", "data"], "editing_versions": ["work_id", "data"],
+        "editing_dispositions": ["disposition"], "processing_jobs": ["work_id", "command_id", "data"],
+        "editing_commands": ["fingerprint", "action", "data"], "provider_profiles": ["data"],
+        "archive_publications": ["version_id", "data"], "editing_exports": ["work_id", "command_id", "data"]
+      ]
+      for (table, primary) in primaryKeys {
+        guard Set(try strings(db, "SELECT name FROM pragma_table_info('\(table)') WHERE \"notnull\"=1")) == nonNullColumns[table],
+          try strings(db, "SELECT name FROM pragma_table_info('\(table)') WHERE pk>0 ORDER BY pk") == [primary],
+          try strings(db, "SELECT DISTINCT upper(type) FROM pragma_table_info('\(table)')") == ["TEXT"] else {
+          throw LibraryError.invalid("资料库制作主键无法识别，未修改原库")
+        }
+      }
+      for (table, primary) in primaryKeys {
+        let uniqueIndexes = try strings(db, "SELECT name FROM pragma_index_list('\(table)') WHERE \"unique\"=1 ORDER BY origin,name")
+        var actual: Set<String> = []
+        for name in uniqueIndexes {
+          let origin = try strings(db, "SELECT origin FROM pragma_index_list('\(table)') WHERE name='\(name)'").first ?? ""
+          let keys = try strings(db, "PRAGMA index_info('\(name)')", column: 2)
+          guard try strings(db, "SELECT partial FROM pragma_index_list('\(table)') WHERE name='\(name)'") == ["0"] else {
+            throw LibraryError.invalid("资料库制作唯一约束无法识别，未修改原库")
+          }
+          actual.insert(origin + ":" + keys.joined(separator: ","))
+        }
+        var expected: Set<String> = ["pk:" + primary]
+        if table == "processing_jobs" || table == "editing_exports" { expected.insert("u:command_id") }
+        if table == "archive_publications" { expected.insert("u:version_id") }
+        guard actual == expected, uniqueIndexes.count == expected.count else {
+          throw LibraryError.invalid("资料库制作唯一约束无法识别，未修改原库")
+        }
       }
     }
     return found

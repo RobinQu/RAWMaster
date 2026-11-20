@@ -1,6 +1,9 @@
 import Foundation
 import ImageIO
 
+public enum ImportExecutionStage: Sendable, Equatable { case intake, grouping }
+public typealias ImportStageCallback = @Sendable (String, ImportExecutionStage) -> Void
+
 public final class ImportService: @unchecked Sendable {
   private let store: LibraryStore
   private let postIngest: ImportPostIngestCallback?
@@ -15,10 +18,11 @@ public final class ImportService: @unchecked Sendable {
   }
   public func cancel() { control.cancel() }
   public func importDirectory(
-    source: URL, destination: URL?, projectName: String, mode: ImportMode, projectID: String? = nil,
+    source: URL, destination: URL?, projectName: String, mode: ImportMode, projectID: String? = nil, initialScreening: Bool = false,
+    stageChanged: @escaping ImportStageCallback = { _, _ in },
     progress: @escaping @Sendable (TaskProgress) -> Void
   ) async throws -> ImportSession {
-    return try await execute(progress: progress) { [self] in
+    return try await execute(stageChanged: stageChanged, progress: progress) { [self] in
       let root = FileSafety.canonical(source)
       var isDirectory: ObjCBool = false
       guard FileManager.default.fileExists(atPath: root.path, isDirectory: &isDirectory),
@@ -28,49 +32,22 @@ public final class ImportService: @unchecked Sendable {
         guard let destination else { throw LibraryError.invalid("请选择复制目标目录") }
         try FileSafety.checkTarget(destination, sources: try store.protectedSourceRoots() + [root])
       }
-      let projects = try store.loadProjects()
-      let project: ProjectRecord
-      if let projectID {
-        guard let p = projects.first(where: { $0.id == projectID }) else {
-          throw LibraryError.invalid("项目不存在")
-        }
-        project = p
-      } else {
-        project = ProjectRecord(name: projectName.isEmpty ? root.lastPathComponent : projectName)
-        try store.saveProject(project)
-      }
-      // Reopening a source in its existing project continues its original mode and destination.
-      let existing = try store.loadSessions().first {
-        $0.projectID == project.id
-          && (FileSafety.canonical($0.sourceURL) == root
-            || FileSafety.canonical($0.effectiveSourceURL) == root)
-      }
-      if let existing {
-        guard existing.mode == mode,
-          (existing.effectiveManagedRoot ?? existing.destinationPath)
-            == destination.map({ FileSafety.canonical($0).path })
-        else { throw LibraryError.invalid("该来源已存在于此项目，接入方式或目标不同；请恢复原会话，或选择新项目") }
-      }
-      let session =
-        existing
-        ?? ImportSession(
-          projectID: project.id, projectName: project.name, sourcePath: root.path,
-          destinationPath: destination.map { FileSafety.canonical($0).path }, mode: mode)
-      try store.saveSession(session)
-      return try run(session, progress: progress)
+      let session = try store.prepareImportSession(root: root, destination: destination, mode: mode, projectName: projectName, projectID: projectID, initialScreening: initialScreening)
+      return try run(session, stageChanged: stageChanged, progress: progress)
     }
   }
-  public func resume(sessionID: String, progress: @escaping @Sendable (TaskProgress) -> Void)
+  public func resume(sessionID: String, stageChanged: @escaping ImportStageCallback = { _, _ in }, progress: @escaping @Sendable (TaskProgress) -> Void)
     async throws -> ImportSession
   {
-    return try await execute(progress: progress) { [self] in
+    return try await execute(stageChanged: stageChanged, progress: progress) { [self] in
       guard let s = try store.loadSessions().first(where: { $0.id == sessionID }) else {
         throw LibraryError.invalid("导入会话不存在")
       }
-      return try run(s, progress: progress)
+      return try run(s, stageChanged: stageChanged, progress: progress)
     }
   }
   private func execute(
+    stageChanged: @escaping ImportStageCallback,
     progress: @escaping @Sendable (TaskProgress) -> Void,
     body: @escaping @Sendable () throws -> ImportSession
   ) async throws -> ImportSession {
@@ -82,6 +59,7 @@ public final class ImportService: @unchecked Sendable {
           try Task.checkCancellation()
           let result = try await Task.detached(priority: .userInitiated, operation: body).value
           if result.status == "completed", result.scanCompleted == true, let postIngest {
+            stageChanged(result.id, .grouping)
             await postIngest(result, { try self.control.check() }, progress)
           }
           return result
@@ -92,9 +70,14 @@ public final class ImportService: @unchecked Sendable {
         }
       }, onCancel: { self.control.cancel() })
   }
-  private func run(_ original: ImportSession, progress: @escaping @Sendable (TaskProgress) -> Void)
+  private func run(_ original: ImportSession, stageChanged: @escaping ImportStageCallback, progress: @escaping @Sendable (TaskProgress) -> Void)
     throws -> ImportSession
   {
+    let executionLease = try store.acquireImportLease(original.id)
+    defer { executionLease.release() }
+    try store.setImportActive(original.id, active: true)
+    defer { try? store.setImportActive(original.id, active: false) }
+    stageChanged(original.id, .intake)
     var session = original
     session.status = "scanning"
     session.failed = 0
@@ -139,39 +122,52 @@ public final class ImportService: @unchecked Sendable {
         let byPosition = Dictionary(
           registered.map { (FileSafety.canonical($0.resolvedSourceURL).path, $0) },
           uniquingKeysWith: { first, _ in first })
-        for case let url as URL in iterator {
-          try control.check()
-          guard Self.extensions.contains(url.pathExtension.lowercased()) else { continue }
-          // Resolve both sides: Foundation may enumerate /var while the selected root is /private/var.
-          let resolved = FileSafety.canonical(url)
-          guard FileSafety.contains(root, resolved), let stamp = try? FileSafety.stat(resolved)
-          else { continue }
-          let relative = String(resolved.path.dropFirst(FileSafety.canonical(root).path.count + 1))
-          _ = try FileSafety.safeRelative(relative)
-          if let existing = byRelative[relative] ?? byPosition[resolved.path] {
-            if FileSafety.canonical(existing.resolvedSourceURL) != resolved {
-              if let identity = existing.contentHash,
-                try FileSafety.hash(resolved, cancel: { try self.control.check() }) == identity
-              {
-                try store.adoptDiscoveredSource(
-                  assetID: existing.id, path: resolved.path,
-                  expectedFingerprint: LocationIdentity.fingerprint(existing, role: .source))
-              } else {
-                discoveryConflicts.insert(existing.id)
+        var discoveryBatch: [AssetRecord] = []
+        do {
+          for case let url as URL in iterator {
+            try control.check()
+            guard Self.extensions.contains(url.pathExtension.lowercased()) else { continue }
+            // Resolve both sides: Foundation may enumerate /var while the selected root is /private/var.
+            let resolved = FileSafety.canonical(url)
+            guard FileSafety.contains(root, resolved), let stamp = try? FileSafety.stat(resolved)
+            else { continue }
+            let relative = String(resolved.path.dropFirst(FileSafety.canonical(root).path.count + 1))
+            _ = try FileSafety.safeRelative(relative)
+            if let existing = byRelative[relative] ?? byPosition[resolved.path] {
+              if FileSafety.canonical(existing.resolvedSourceURL) != resolved {
+                if let identity = existing.contentHash,
+                  try FileSafety.hash(resolved, cancel: { try self.control.check() }) == identity
+                {
+                  try store.adoptDiscoveredSource(
+                    assetID: existing.id, path: resolved.path,
+                    expectedFingerprint: LocationIdentity.fingerprint(existing, role: .source))
+                } else {
+                  discoveryConflicts.insert(existing.id)
+                }
+              }
+            } else {
+              let record = AssetRecord(
+                sessionID: session.id, projectID: session.projectID, projectName: session.projectName,
+                sourcePath: resolved.path, relativePath: relative, fileSize: stamp.size,
+                effectiveSourcePath: resolved.path)
+              discoveryBatch.append(record)
+              if discoveryBatch.count == 64 {
+                try store.registerDiscovered(discoveryBatch)
+                discoveryBatch.removeAll(keepingCapacity: true)
               }
             }
-          } else {
-            let record = AssetRecord(
-              sessionID: session.id, projectID: session.projectID, projectName: session.projectName,
-              sourcePath: resolved.path, relativePath: relative, fileSize: stamp.size,
-              effectiveSourcePath: resolved.path)
-            _ = try store.register(record)
+            if processed % 32 == 0 {
+              progress(TaskProgress(title: "扫描素材", completed: 0, total: 0, message: relative))
+            }
+            processed += 1
           }
-          if processed % 32 == 0 {
-            progress(TaskProgress(title: "扫描素材", completed: 0, total: 0, message: relative))
-          }
-          processed += 1
+        } catch LibraryError.cancelled {
+          // Graceful cancellation retains the already discovered tail as well as
+          // complete batches. A crash can simply rediscover that bounded tail.
+          try store.registerDiscovered(discoveryBatch)
+          throw LibraryError.cancelled
         }
+        try store.registerDiscovered(discoveryBatch)
         if let scanError { throw scanError }
         session.scanCompleted = true
       } else if try store.loadAssets(sessionID: session.id).isEmpty {
@@ -205,9 +201,8 @@ public final class ImportService: @unchecked Sendable {
             }
             try store.saveImportAsset(
               a, expectedSourceFingerprint: sourceFingerprint,
-              expectedManagedFingerprint: managedFingerprint)
+              expectedManagedFingerprint: managedFingerprint, session: session)
             processed += 1
-            try store.saveSession(session)
             continue
           }
           // Completed copies are validated again on resume; reference files are rehashed.
@@ -278,10 +273,9 @@ public final class ImportService: @unchecked Sendable {
         }
         try store.saveImportAsset(
           a, expectedSourceFingerprint: sourceFingerprint,
-          expectedManagedFingerprint: managedFingerprint)
+          expectedManagedFingerprint: managedFingerprint, session: session)
         assets[i] = a
         processed += 1
-        try store.saveSession(session)
         progress(
           TaskProgress(
             title: "导入", completed: processed, total: session.discovered,
@@ -290,6 +284,12 @@ public final class ImportService: @unchecked Sendable {
       session.status =
         (session.failed == 0 && session.scanCompleted == true) ? "completed" : "partial"
       try store.saveSession(session)
+      // Pairing is part of this ingest run: keep the cross-connection lease and
+      // active marker until automatic post-processing has finished.
+      if let workflow = try store.loadWorkflows().first(where: { $0.id == session.id }), workflow.phase != .legacyHistory {
+        try control.check()
+        _ = try store.scanCapturePairs(sessionID: session.id)
+      }
       return session
     } catch {
       session.status =

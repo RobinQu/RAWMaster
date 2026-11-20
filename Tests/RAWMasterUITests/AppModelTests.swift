@@ -133,7 +133,7 @@ final class AppModelTests: XCTestCase {
         XCTAssertTrue(sawNewScopeDuringJob, "Newly discovered session must appear while import is still active")
     }
 
-    @MainActor func testReimportOldProjectNeverNavigatesToNewerProjectWithSameSource() async throws {
+    @MainActor func testReimportOldProjectStartsNewTriageWithoutNavigatingToNewerProjectWithSameSource() async throws {
         let fixture = try Fixture(); defer { fixture.clean() }
         let older = try await fixture.populate(count: 3, name: "Older")
         let newer = try await fixture.populate(count: 3, name: "Newer")
@@ -146,7 +146,8 @@ final class AppModelTests: XCTestCase {
         try await waitForJob(model)
         withExtendedLifetime(observation) {}
         XCTAssertFalse(navigatedToWrongProject)
-        XCTAssertEqual(model.scopeID, older.id)
+        XCTAssertNotEqual(model.scopeID, older.id, "A legacy import remains history; a new batch starts a distinct triage session")
+        XCTAssertTrue(model.isTriageScope)
         XCTAssertEqual(model.scopedAssets.count, 3)
         XCTAssertTrue(model.scopedAssets.allSatisfy { $0.projectID == older.projectID })
     }
@@ -157,8 +158,8 @@ final class AppModelTests: XCTestCase {
         fixture.defaults.set("session", forKey: "browse.scope")
         fixture.defaults.set("nonexistent-session", forKey: "browse.id")
         let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
-        XCTAssertEqual(model.scope, .all)
-        XCTAssertEqual(model.scopedAssets.count, 1)
+        XCTAssertEqual(model.scope, .imports)
+        XCTAssertTrue(model.scopedAssets.isEmpty)
         model.selectedIDs = ["nonexistent-asset"]
         model.decide(.keep)
         XCTAssertNotNil(model.errorMessage)

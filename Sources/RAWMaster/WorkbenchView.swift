@@ -9,54 +9,117 @@ private let panelColor = AppPalette.panel
 
 struct WorkbenchView: View {
     @EnvironmentObject var model: AppModel
-    var body: some View {
+    @State private var sidebarBeforeEditing: Bool?
+    private var workbenchSurface: some View {
         VStack(spacing: 0) {
             HSplitView {
                 if model.showSidebar { SidebarView().frame(minWidth: 185, idealWidth: 215, maxWidth: 280) }
-                VStack(spacing: 0) {
-                    browserHeader
-                    Divider()
-                    if model.scopedAssets.isEmpty { emptyState }
-                    else { BrowserView() }
-                    Divider()
-                    decisionBar
-                    if !model.filteredAssets.isEmpty { Divider(); FilmstripView() }
-                }.frame(minWidth: 540, maxWidth: .infinity, maxHeight: .infinity)
-                if model.showInspector { InspectorView().frame(minWidth: 245, idealWidth: 275, maxWidth: 350) }
+                browserColumn
+                rightSidebar
             }
-            Divider()
-            statusBar
+            if !model.isNativeEditing {
+                Divider()
+                statusBar
+            }
         }
         .background(canvasColor)
         .background(SelectionUpdateProbe(assetID: model.focusedID).allowsHitTesting(false))
-        .background(KeyboardMonitor { model.handleKey($0) })
+        .background(KeyboardMonitor(handler: { model.handleKey($0) }, searchOwnership: { model.searchControlsOwnKeyboard = $0 }, searchHasOwnership: { model.searchControlsOwnKeyboard }, keyUpHandler: { event in
+            guard model.isNativeEditing, let editing = model.editing else { return false }
+            if event.keyCode == 49 {
+                let wasPanning = editing.developmentLocalInput.panHeld
+                editing.setDevelopmentLocalPanHeld(false)
+                return wasPanning
+            }
+            guard event.charactersIgnoringModifiers?.lowercased() == "m" else { return false }
+            editing.setDevelopmentOriginalHeld(false)
+            return true
+        }, focusChanged: { focused in
+            guard model.isNativeEditing, let editing = model.editing else { return }
+            if focused {
+                if editing.stage == .development { editing.beginDevelopmentInterface() }
+            } else {
+                editing.setDevelopmentOriginalHeld(false)
+                editing.suspendDevelopmentFocus()
+            }
+        }))
+    }
+    private var browserColumn: some View {
+        Group {
+            if model.isCatalog {
+                LibraryCatalogView().id(model.catalogKind?.rawValue ?? "catalog")
+            } else if model.isNativeEditing, let editing = model.editing {
+                BrowserView()
+                    .overlay(alignment: .top) { ImmersiveEditingHeader(editing: editing) }
+            } else {
+                VStack(spacing: 0) {
+                    browserHeader
+                    if model.supportsProjectSearch && model.mode == .grid { ProjectSearchHeader().id(model.searchScopeIdentity) }
+                    if model.isTriageScope { TriageStatusStrip() }
+                    else if model.scope == .session { SessionHistoryBrowsingControls() }
+                    Divider()
+                    if model.scopedAssets.isEmpty && model.mode != .compare { emptyState }
+                    else { BrowserView() }
+                    Divider()
+                    if model.mode == .compare { ComparisonToolbar() }
+                    else if model.isTriageScope { TriageDecisionBar() }
+                    else if model.isHistoryScope { HistoryActionBar() }
+                    else if model.mode == .single { decisionBar }
+                    if model.mode != .grid { Divider(); FilmstripView() }
+                }
+            }
+        }.frame(minWidth: 540, maxWidth: .infinity, maxHeight: .infinity)
+    }
+    @ViewBuilder private var rightSidebar: some View {
+        if !model.isCatalog && model.mode != .compare && (model.showsRightSidebar || model.isNativeEditing) {
+            if model.isNativeEditing, let editing = model.editing {
+                NativeEditingInspector(editing: editing).frame(minWidth: 336, idealWidth: 360, maxWidth: 400)
+            } else { InspectorView().frame(minWidth: 245, idealWidth: 275, maxWidth: 350) }
+        }
+    }
+    private var toolbarSurface: some View {
+        workbenchSurface
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button { model.showSidebar.toggle() } label: { Image(systemName: "sidebar.left") }.help("显示或收起项目栏")
             }
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(id: TitlebarDoubleClickRouter.brandItemID, placement: .principal) {
                 HStack(spacing: 8) {
                     BrandIconView(size: 24)
                     Text("RAWMaster").font(.headline)
                     Text("LOCAL CULLING").font(.system(size: 9, weight: .medium, design: .monospaced)).foregroundStyle(.secondary)
                 }
-                // Decorative toolbar content must let title-bar double clicks and drags
-                // reach AppKit, just like the surrounding empty title-bar area.
+                // This is decorative window chrome. Leave dragging and double
+                // clicks to AppKit, just like the empty title-bar regions.
                 .allowsHitTesting(false)
             }
-            ToolbarItemGroup(placement: .primaryAction) {
-                Button { model.openImport() } label: { Label("接入素材", systemImage: "square.and.arrow.down") }.disabled(model.isBusy)
-                Button { model.showExport = true } label: { Label("交付精选", systemImage: "square.and.arrow.up") }.disabled(model.scopedAssets.isEmpty || model.isBusy)
-                Button { model.showInspector.toggle() } label: { Image(systemName: "sidebar.right") }.help("信息栏 · Tab")
-            }
+            ToolbarItemGroup(placement: .primaryAction) { WorkbenchToolbarActions() }
         }
+        .navigationTitle("RAWMaster")
+        .navigationSubtitle(model.windowContextTitle)
+        .toolbarVisibility(model.isNativeEditing ? .hidden : .visible, for: .windowToolbar)
+    }
+    private var workflowSheets: some View {
+        toolbarSurface
+        .modifier(EditingWorkflowPresentation(editing: model.editing))
         .sheet(isPresented: $model.showImport) { ImportSheet() }
         .sheet(isPresented: $model.showExport) { ExportSheet() }
+        .sheet(isPresented: $model.showTimelapse) {
+            if let composer = model.timelapseComposer { TimelapseSheet(composer: composer) }
+        }
         .sheet(isPresented: $model.showGroups) { GroupSheet() }
         .sheet(isPresented: $model.showGroupReview) { GroupCommandReviewSheet() }
         .sheet(isPresented: $model.showGroupHistory) { GroupHistoryView() }
         .sheet(isPresented: $model.showExportReport) { ExportReportView() }
         .sheet(isPresented: $model.showRelocation) { RelocationWorkflowView() }
+        .sheet(isPresented: $model.showCompletion) { CompletionReviewSheet() }
+        .sheet(isPresented: $model.showQualityReview) { QualityEvidenceSheet() }
+        .sheet(isPresented: $model.showPairReview) { CapturePairReviewSheet() }
+        .sheet(isPresented: $model.showTagPreview) { BatchTagPreviewSheet() }
+        .sheet(isPresented: $model.showTagHistory) { TagOperationHistorySheet() }
+    }
+    var body: some View {
+        workflowSheets
         .onDrop(of: [UTType.fileURL], isTargeted: nil) { providers in
             guard !model.isBusy, let provider = providers.first else { return false }
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
@@ -67,27 +130,119 @@ struct WorkbenchView: View {
                 }
             }; return true
         }
-        .onChange(of: model.mode) { model.saveBrowse() }
+        .onChange(of: model.hasBusinessSheet) { if $0 { model.closeSearchControls() } }
+        .onChange(of: model.isNativeEditing, initial: true) { _, editing in
+            if editing {
+                if sidebarBeforeEditing == nil { sidebarBeforeEditing = model.showSidebar }
+                model.showSidebar = false
+            } else if let previous = sidebarBeforeEditing {
+                model.showSidebar = previous
+                sidebarBeforeEditing = nil
+            }
+        }
+        .onExitCommand {
+            if model.canActivateProjectSearch {
+                if model.showSearchFilters { model.hideSearchFilters() } else { model.hideSearchField() }
+            }
+        }
+        .onChange(of: model.focusedID) { _, _ in
+            model.synchronizeNativeEditingContext()
+        }
+        .onChange(of: model.focusedAsset?.availability) { _, _ in
+            model.synchronizeNativeEditingContext()
+        }
+        .onChange(of: model.focusedAsset?.resolvedURL) { _, _ in
+            model.synchronizeNativeEditingContext()
+        }
+        .onChange(of: model.mode) {
+            model.saveBrowse()
+            model.synchronizeNativeEditingContext()
+        }
+        .onChange(of: model.canOpenNativeEditing) { _, allowed in
+            if !allowed { model.editing?.leaveBrowsingContext() }
+        }
         .onChange(of: model.filter) { model.saveBrowse() }
+        .onChange(of: model.syncCompare) { model.saveBrowse() }
     }
     private var browserHeader: some View {
-        HStack(spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text(model.scopeTitle).font(.system(size: 20, weight: .semibold)).lineLimit(1)
-                Text("\(model.scopedAssets.count) 张已登记 · \(model.keptCount) 张保留 · \(model.scope == .group ? "组内顺序" : "按文件名")").font(.caption).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 6) {
+            if model.canReturnToCatalog || model.mode != .grid {
+                HStack(spacing: 10) {
+                    if model.mode != .grid {
+                        Button { model.setMode(.grid) } label: { Label("照片网格", systemImage: "chevron.left") }
+                    } else if model.canReturnToCatalog {
+                        Button { model.returnToCatalog() } label: { Label(model.catalogParentTitle, systemImage: "chevron.left") }
+                    }
+                    if model.canReturnToCatalog && model.mode != .grid {
+                        Text(model.catalogParentTitle).foregroundStyle(.tertiary)
+                        Image(systemName: "chevron.right").font(.system(size: 8)).foregroundStyle(.tertiary)
+                    }
+                    Spacer(minLength: 0)
+                }.font(.caption).buttonStyle(.borderless).padding(.top, model.scope == .session ? 8 : 0)
             }
-            Spacer(minLength: 10)
-            Picker("筛选", selection: $model.filter) {
-                ForEach(AppModel.Filter.allCases, id: \.self) { Text($0.title).tag($0) }
-            }.labelsHidden().frame(width: 112)
-            Picker("浏览", selection: Binding(get: { model.mode }, set: { model.setMode($0) })) {
-                Image(systemName: "square.grid.2x2").tag(AppModel.BrowserMode.grid)
-                Image(systemName: "rectangle").tag(AppModel.BrowserMode.single)
-                Image(systemName: "rectangle.split.2x1").tag(AppModel.BrowserMode.compare)
-            }.pickerStyle(.segmented).labelsHidden().accessibilityLabel("浏览").frame(width: 120).help("网格 G · 单张 E · 比较 C")
-        }.padding(.horizontal, 20).padding(.vertical, 15)
+            if model.scope == .session, let session = model.sessions.first(where: { $0.id == model.scopeID }) {
+                SessionWorkflowHeader(session: session)
+            } else {
+            HStack(spacing: 12) {
+                Text(model.scopeTitle).font(.system(size: 20, weight: .semibold)).lineLimit(1)
+                Spacer(minLength: 8)
+                if let group = model.activeGroup { GroupPropertiesButton(groupID: group.id) }
+                if model.scope == .group, let group = model.activeGroup, model.isTimelapseGroup(group) {
+                    Button { model.openTimelapse() } label: { Label("合成延时视频…", systemImage: "timelapse") }
+                        .disabled(!model.canComposeTimelapse()).accessibilityIdentifier("timelapse.open")
+                }
+                if model.isTriageScope || model.isHistoryScope {
+                    Picker("初筛范围", selection: $model.triageFilter) {
+                        ForEach(AppModel.TriageFilter.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }.labelsHidden().frame(width: 118)
+                } else if model.scope != .group {
+                    Menu {
+                        Picker("排序", selection: $model.reviewSort) {
+                            ForEach(ProjectReviewSort.allCases, id: \.self) { Text($0.title).tag($0) }
+                        }
+                    } label: { Image(systemName: "arrow.up.arrow.down") }
+                        .menuStyle(.borderlessButton).frame(width: 26).help("排序：" + model.reviewSort.title).accessibilityLabel("排序")
+                }
+                Picker("浏览", selection: Binding(get: { model.mode }, set: { model.setMode($0) })) {
+                    Image(systemName: "square.grid.2x2").tag(AppModel.BrowserMode.grid)
+                    Image(systemName: "rectangle").tag(AppModel.BrowserMode.single)
+                    Image(systemName: "rectangle.split.2x1").tag(AppModel.BrowserMode.compare)
+                }.pickerStyle(.segmented).labelsHidden().accessibilityLabel("浏览").frame(width: 120).help("网格 G · 单张 E · 比较 C")
+            }.frame(height: 26)
+            HStack(spacing: 8) {
+                Text(headerCounts).font(.caption2).foregroundStyle(.secondary).fixedSize()
+                    .help("范围共 \(model.scopeCaptureCount) 次拍摄、\(model.scopedAssets.count) 个文件；\(model.keptCount) 个文件入选")
+                if model.scope == .project, let progress = model.projectProgress {
+                    Text("已审 \(progress.reviewedCaptures)/\(progress.totalCaptures)").font(.caption2.monospacedDigit()).foregroundStyle(.secondary).fixedSize()
+                        .help("已审 \(progress.reviewedFiles)/\(progress.totalFiles) 个文件；\(progress.partiallyReviewedCaptures) 个组合部分已审；仅序列用途 \(progress.sequenceOnlyFiles) 个，包含在总数中。")
+                }
+                Spacer(minLength: 0)
+            }.frame(height: 24)
+            }
+        }.padding(.horizontal, 18).padding(.vertical, model.scope == .session ? 0 : 10)
     }
-    private var emptyState: some View {
+    private var headerCounts: String {
+        if model.isTriageScope { return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopedAssets.count) 个文件 · 初筛" }
+        if model.isHistoryScope { return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopedAssets.count) 个文件 · 导入历史" }
+        if model.hasSearchConditions { return "匹配 \(model.matchedCaptureCount)/\(model.scopeCaptureCount) 次 · \(model.filteredAssets.count)/\(model.scopedAssets.count) 文件" }
+        return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopedAssets.count) 个文件"
+    }
+    @ViewBuilder private var emptyState: some View {
+        if model.scope == .session {
+            VStack(alignment: .leading, spacing: 12) {
+                Label("此导入会话尚无照片", systemImage: "tray").font(.title3.weight(.semibold))
+                Text(model.isBusy ? "登记的照片会逐步出现在这里，整批任务状态见上方。" : "整批接入与重新分组操作见上方；重新扫描来源与重新分组是两个独立操作。")
+                    .font(.caption).foregroundStyle(.secondary)
+                Button("返回导入记录") { model.returnToCatalog() }
+                Spacer(minLength: 0)
+            }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        } else if model.scope == .group {
+            VStack(alignment: .leading, spacing: 12) {
+                Label("当前序列没有可浏览的照片", systemImage: "square.stack.3d.up").font(.title3.weight(.semibold))
+                Button("返回拍摄序列") { model.returnToCatalog() }
+                Spacer(minLength: 0)
+            }.padding(28).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        } else {
         VStack(spacing: 18) {
             Image(systemName: "photo.stack").font(.system(size: 48, weight: .ultraLight)).foregroundStyle(AppPalette.accent.opacity(0.75))
             Text(model.isBusy ? "正在发现素材" : "从一次拍摄开始").font(.title2.weight(.medium))
@@ -98,25 +253,29 @@ struct WorkbenchView: View {
                 Text("支持原地引用或复制导入，也可以拖入文件夹").font(.caption).foregroundStyle(.secondary)
             }
         }.frame(maxWidth: .infinity, maxHeight: .infinity).padding(40)
+        }
     }
     private var decisionBar: some View {
         HStack(spacing: 10) {
-            Text("已选 \(model.selectedIDs.count) 张").font(.caption).foregroundStyle(.secondary).frame(minWidth: 76, alignment: .leading)
+            Text(model.actionScopeLabel).font(.caption).foregroundStyle(.secondary).frame(minWidth: 76, alignment: .leading)
             Button { model.decide(.keep) } label: { Label("保留", systemImage: "flag.fill") }.tint(AppPalette.keep).help("P")
             Button { model.decide(.reject) } label: { Label("排除", systemImage: "xmark") }.help("X · 仅改变决定，保留原片和组关系")
             Button { model.decide(.undecided) } label: { Image(systemName: "circle.dotted") }.help("清除决定 U")
             Divider().frame(height: 18)
             RatingButtons(rating: model.focusedAsset?.rating ?? 0) { model.decide(rating: $0) }
+            ProjectReviewActions()
             Spacer(minLength: 2)
             Button { model.undo() } label: { Image(systemName: "arrow.uturn.backward") }.disabled(model.undoCount == 0).help("撤销上一步操作 ⌘Z")
             Menu {
-                Button("建立拍摄组…") { model.editGroup() }
+                GroupSelectionActionButton()
                 Toggle("决定后自动前进", isOn: $model.autoAdvance)
                 Button("刷新文件可用性") { model.refreshAvailability() }
             } label: { Image(systemName: "ellipsis.circle") }.menuStyle(.borderlessButton).frame(width: 24)
         }
-        .disabled(model.selectedIDs.isEmpty)
-        .buttonStyle(.borderless).padding(.horizontal, 16).padding(.vertical, 11).background(panelColor)
+        .disabled(model.actionAssetIDs.isEmpty)
+        .buttonStyle(.borderless)
+        .padding(.horizontal, 16).padding(.vertical, 11)
+        .background(.regularMaterial)
     }
     private var statusBar: some View {
         VStack(spacing: 0) {
@@ -129,7 +288,11 @@ struct WorkbenchView: View {
                 }.padding(12).background(AppPalette.warning.opacity(0.12))
             }
             HStack(spacing: 12) {
-                if let progress = model.progress {
+                if model.scope == .session && (model.sessionTask?.sessionID == model.scopeID || model.sessionTask == nil && !model.isBusy) {
+                    Text(model.isHistoryScope ? "历史记录只读 · 恢复仅作用当前所选" : "初筛决定作用当前所选 · 整批会话操作见上方")
+                        .font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                } else if let progress = model.progress {
                     if progress.isRunning { ProgressView().controlSize(.small) }
                     VStack(alignment: .leading, spacing: 3) {
                         HStack {
@@ -140,12 +303,16 @@ struct WorkbenchView: View {
                         if progress.isRunning && progress.total > 0 { ProgressView(value: Double(progress.completed), total: Double(max(1, progress.total))).frame(maxWidth: 500) }
                     }
                     Spacer()
-                    if progress.isRunning { Button("暂停") { model.cancelJob() }.controlSize(.small) }
+                    if progress.isRunning {
+                        if let task = model.sessionTask {
+                            Button(task.isCancelling ? "正在取消…" : "取消任务") { model.cancelSessionTask() }.disabled(task.isCancelling).controlSize(.small)
+                        } else { Button("暂停") { model.cancelJob() }.controlSize(.small) }
+                    }
                 } else {
                     Image(systemName: "externaldrive").foregroundStyle(.secondary)
-                    Text("本地资料库 · 决定自动保存 · 原片只读").font(.caption).foregroundStyle(.secondary)
+                    Text(model.isNativeEditing ? "照片编辑 · 原片只读" : (model.isCatalog ? "本地资料库" : "本地资料库 · 决定自动保存 · 原片只读")).font(.caption).foregroundStyle(.secondary)
                     Spacer()
-                    Text("P 保留   X 排除   U 清除   0–5 星级").font(.caption).foregroundStyle(.tertiary)
+                    Text(model.isNativeEditing ? (model.editing?.stage == .development ? "⌘Z 撤销调整 · 按住 M 查看原片" : "候选版本需显式采用") : (model.isCatalog ? "单击选择 · 双击 / Return 打开 · ⌘F 搜索" : "P 保留   X 排除   U 清除   0–5 星级")).font(.caption).foregroundStyle(.tertiary)
                 }
             }.padding(.horizontal, 16).frame(minHeight: 42).background(panelColor)
         }
@@ -154,88 +321,74 @@ struct WorkbenchView: View {
 
 struct SidebarView: View {
     @EnvironmentObject var model: AppModel
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: 5) {
+                Button { model.openImport() } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "plus.circle.fill").font(.system(size: 18))
+                        Text("创建导入会话").font(.system(size: 12, weight: .semibold))
+                        Spacer(minLength: 0)
+                    }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
+                        .background(AppPalette.accent.opacity(0.11), in: RoundedRectangle(cornerRadius: 8))
+                }.buttonStyle(.plain).foregroundStyle(AppPalette.accent).disabled(model.isBusy)
+                    .padding(.bottom, 10).help("创建全局导入会话 · ⌘I")
                 sectionTitle("资料库")
-                row("全部素材", icon: "photo.on.rectangle.angled", count: model.assets.count, selected: model.scope == .all) { model.selectScope(.all) }
+                row("全部素材", icon: "photo.on.rectangle.angled", count: model.publishedAssets.count,
+                    selected: model.scope == .all) { model.selectScope(.all) }
+                row("导入记录", icon: "tray.and.arrow.down", count: model.sessions.count,
+                    selected: model.scope == .imports || model.scope == .session) { model.openImportCatalog() }
+                row("拍摄序列", icon: "square.stack.3d.up", count: model.visibleGroups.count,
+                    selected: model.scope == .sequences || model.scope == .group) { model.openSequenceCatalog() }
                 sectionTitle("项目")
                 ForEach(model.projects, id: \.id) { project in
-                    row(project.name, icon: "folder", count: model.assets.filter { $0.projectID == project.id }.count, selected: model.scope == .project && model.scopeID == project.id) { model.selectScope(.project, id: project.id) }
+                    row(project.name, icon: "folder", count: model.publishedAssets.filter { $0.projectID == project.id }.count,
+                        selected: model.scope == .project && model.scopeID == project.id) { model.selectScope(.project, id: project.id) }
                 }
-                if model.projects.isEmpty { Text("尚无项目").font(.caption).foregroundStyle(.tertiary).padding(.horizontal, 10) }
-                sectionTitle("导入会话")
-                ForEach(model.sessions, id: \.id) { session in
-                    VStack(alignment: .leading, spacing: 2) {
-                        row(URL(fileURLWithPath: session.sourcePath).lastPathComponent, icon: session.mode == .copy ? "doc.on.doc" : "link", count: session.discovered, selected: model.scope == .session && model.scopeID == session.id) { model.selectScope(.session, id: session.id) }
-                        HStack(spacing: 4) {
-                            Text(model.statusTitle(for: session)).lineLimit(1)
-                            if session.failed > 0 { Text("· \(session.failed) 异常").foregroundStyle(AppPalette.warning) }
-                        }.font(.system(size: 10)).foregroundStyle(.tertiary).padding(.leading, 36)
-                    }.contextMenu {
-                        Button("继续 / 重新校验") { model.resume(session) }.disabled(model.isBusy)
-                        Divider()
-                        Button("重新定位原始来源…") { model.prepareRelocation(sessionID: session.id, role: .source) }.disabled(model.isBusy)
-                        if session.mode == .copy { Button("重新定位受管副本…") { model.prepareRelocation(sessionID: session.id, role: .managed) }.disabled(model.isBusy) }
-                        Button("在 Finder 中显示当前来源") { model.reveal(session.effectiveSourceURL.path) }
-                    }
-                }
-                if !model.relocationHistory.isEmpty {
-                    sectionTitle("找回原片记录")
-                    ForEach(model.relocationHistory, id: \.id) { report in
-                        Button { model.reviewRelocation(report) } label: {
-                            VStack(alignment: .leading, spacing: 3) {
-                                Label("\(report.role.title) · \(report.items.count) 张", systemImage: "externaldrive.badge.magnifyingglass")
-                                Text(report.statusTitle).font(.system(size: 10)).foregroundStyle(.secondary)
-                            }.font(.caption).padding(8).frame(maxWidth: .infinity, alignment: .leading)
-                        }.buttonStyle(.plain).disabled(model.relocationIsRunning && model.relocationReport?.id != report.id)
-                    }
-                }
-                sectionTitle("手动拍摄组")
-                ForEach(model.groups, id: \.id) { group in
-                    row(group.name, icon: group.locked ? "lock" : "square.stack.3d.up", count: group.assetIDs.count, selected: model.scope == .group && model.scopeID == group.id) { model.selectScope(.group, id: group.id) }
-                        .contextMenu { Button("管理拍摄组…") { model.editGroup(group.id) } }
-                }
-                Button { model.editGroup() } label: { Label("将所选建立为组", systemImage: "plus") }.buttonStyle(.plain).font(.caption).padding(9).foregroundStyle(.secondary).disabled(model.selectedIDs.isEmpty)
-                Button { model.openGroupHistory() } label: { Label("最近组操作…", systemImage: "clock.arrow.circlepath") }.buttonStyle(.plain).font(.caption).padding(9).foregroundStyle(.secondary)
-                Spacer(minLength: 20)
-                Text("排除不会删除原片，也不会移出序列。")
-                    .font(.caption).foregroundStyle(.tertiary).fixedSize(horizontal: false, vertical: true).padding(10)
+                if model.projects.isEmpty { Text("尚无项目").font(.caption).foregroundStyle(.secondary).padding(10) }
             }.padding(10)
-        }.background(panelColor)
+        }.frame(maxHeight: .infinity)
+            .background { if reduceTransparency { AppPalette.panel } else { NativeSidebarMaterial() } }
     }
-    private func sectionTitle(_ title: String) -> some View { Text(title).font(.system(size: 10, weight: .semibold)).foregroundStyle(.secondary).textCase(.uppercase).padding(.horizontal, 9).padding(.top, 18).padding(.bottom, 4) }
+    private func sectionTitle(_ title: String) -> some View {
+        Text(title).font(.system(size: 11, weight: .semibold)).foregroundStyle(.secondary)
+            .padding(.horizontal, 9).padding(.top, 16).padding(.bottom, 4)
+    }
     private func row(_ title: String, icon: String, count: Int, selected: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 9) {
                 Image(systemName: icon).frame(width: 17).foregroundStyle(selected ? AppPalette.accent : .secondary)
-                Text(title).lineLimit(1)
+                Text(title).lineLimit(1).truncationMode(.middle)
                 Spacer(minLength: 4)
                 Text("\(count)").font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
             }.font(.system(size: 12)).padding(.horizontal, 9).padding(.vertical, 8).contentShape(Rectangle())
                 .background(selected ? AppPalette.accent.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 6))
-        }.buttonStyle(.plain)
+        }.buttonStyle(.plain).accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
 
 struct BrowserView: View {
     @EnvironmentObject var model: AppModel
-    @State private var compareTransform = ImageTransform()
+    @State private var collapsedGroupIDs = Set<String>()
     var body: some View {
         VStack(spacing: 0) {
+            if model.mode == .single && !model.isNativeEditing { PairPreviewControls() }
             switch model.mode {
-            case .grid: grid
+            case .grid: grid.overlay(alignment: .bottom) {
+                if model.selectedIDs.count > 1 && !model.isTriageScope && !model.isHistoryScope { GridSelectionActionBar().padding(14) }
+            }
             case .single:
-                if let asset = model.focusedAsset { ImagePanel(asset: asset, actualPixels: model.actualPixels, sharedTransform: nil) }
+                if model.isNativeEditing, let editing = model.editing { EditingImageCanvas(editing: editing) }
+                else if let asset = model.focusedAsset { ImagePanel(asset: model.previewAsset(for: asset), actualPixels: model.actualPixels, sharedTransform: nil) }
                 else { ContentUnavailableView("选择一张照片", systemImage: "photo") }
             case .compare:
-                if model.compareAssets.count >= 2 { comparison }
-                else { ContentUnavailableView("选择 2–4 张照片进行比较", systemImage: "rectangle.split.2x1", description: Text("在网格或胶片条按住 ⌘ 点击多选，然后按 C。")) }
+                if model.compareAssets.count >= 2 { ComparisonContentView() }
+                else { ComparisonEmptyState() }
             }
-            if model.mode != .grid {
+            if model.mode == .single && !model.isNativeEditing {
                 HStack(spacing: 12) {
                     Button { model.actualPixels.toggle() } label: { Label(model.actualPixels ? "适合窗口" : "查看原始像素 1:1", systemImage: model.actualPixels ? "1.magnifyingglass" : "arrow.down.right.and.arrow.up.left") }.help("Z · 按需解码 RAW 原始分辨率")
-                    if model.mode == .compare { Toggle("同步缩放与平移", isOn: $model.syncCompare).toggleStyle(.checkbox) }
                     Spacer()
                     Text("滚轮缩放 · 拖动平移").font(.caption).foregroundStyle(.tertiary)
                 }.font(.caption).buttonStyle(.borderless).padding(.horizontal, 16).padding(.vertical, 9)
@@ -243,43 +396,64 @@ struct BrowserView: View {
         }.background(canvasColor)
     }
     private var grid: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 190, maximum: 290), spacing: 14)], spacing: 14) {
-                    ForEach(model.filteredAssets, id: \.id) { asset in
-                        AssetCard(asset: asset, selected: model.selectedIDs.contains(asset.id), compact: false)
-                            .id(asset.id)
-                            .overlay(CardInputLayer(onPress: { model.select(asset, modifiers: $0) }, onDoubleClick: { model.select(asset); model.setMode(.single) }))
-                            .accessibilityAddTraits(.isButton)
-                            .accessibilityAction { model.select(asset) }
-                            .contextMenu { assetMenu(asset) }
-                    }
-                }.padding(18)
-                if model.filteredAssets.isEmpty { ContentUnavailableView("当前筛选下没有素材", systemImage: "line.3.horizontal.decrease.circle").padding(40) }
-            }.onChange(of: model.navigationReveal) { if let request = model.navigationReveal { proxy.scrollTo(request.assetID) } }
-                .onAppear { if let id = model.focusedID { proxy.scrollTo(id) } }
-        }
-    }
-    private var comparison: some View {
-        GeometryReader { geometry in
-            let columns = model.compareAssets.count == 2 ? 2 : 2
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: columns), spacing: 1) {
-                ForEach(model.compareAssets, id: \.id) { asset in
-                    ImagePanel(asset: asset, actualPixels: model.actualPixels, sharedTransform: model.syncCompare ? $compareTransform : nil)
-                        .frame(height: max(100, (geometry.size.height - 1) / CGFloat(model.compareAssets.count > 2 ? 2 : 1)))
-                        .overlay(alignment: .topLeading) {
-                            Button { model.focusedID = asset.id } label: { Image(systemName: asset.id == model.focusedID ? "circle.inset.filled" : "circle").padding(9) }.buttonStyle(.plain).foregroundStyle(AppPalette.accent)
+        let layout = model.sequenceBrowserLayout
+        let items = layout.gridItems(collapsedGroupIDs: collapsedGroupIDs)
+        return GeometryReader { geometry in
+            let placement = SequenceGridGeometry(width: geometry.size.width - 36)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVGrid(columns: Array(repeating: GridItem(.fixed(placement.cellWidth), spacing: SequenceGridGeometry.spacing), count: placement.columns),
+                              alignment: .leading, spacing: SequenceGridGeometry.spacing) {
+                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                            SequenceGridCell(item: item, connections: placement.connections(at: index, in: items),
+                                header: placement.header(at: index, in: items),
+                                headerHeight: placement.headerHeight(inRowContaining: index, items: items),
+                                memberships: layout.memberships[item.asset.id] ?? [], collapsedGroupIDs: $collapsedGroupIDs)
+                                .id(item.id)
                         }
-                }
+                    }.padding(18).padding(.bottom, model.selectedIDs.count > 1 ? 115 : 0)
+                    if model.filteredAssets.isEmpty { ContentUnavailableView("当前筛选下没有素材", systemImage: "line.3.horizontal.decrease.circle").padding(40) }
+                }.onChange(of: model.navigationReveal) {
+                    if let id = model.navigationReveal?.assetID { reveal(id, layout: layout, proxy: proxy) }
+                }.onChange(of: model.focusedID) {
+                    if let id = model.focusedID, let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
+                }.onAppear { if let id = model.focusedID { reveal(id, layout: layout, proxy: proxy) } }
             }
         }
     }
-    @ViewBuilder private func assetMenu(_ asset: AssetRecord) -> some View {
-        Button("单张查看") { model.select(asset); model.setMode(.single) }
-        Button("保留") { model.select(asset); model.decide(.keep) }
-        Button("排除") { model.select(asset); model.decide(.reject) }
-        Divider()
-        Button("在 Finder 中显示") { model.reveal(asset.currentPath) }
+    private func reveal(_ id: String, layout: BrowserSequenceLayout, proxy: ScrollViewProxy) {
+        if let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
+        DispatchQueue.main.async { proxy.scrollTo(id) }
+    }
+}
+
+struct GridSelectionActionBar: View {
+    @EnvironmentObject var model: AppModel
+    var body: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 12) {
+                Text("已选 \(model.selectedIDs.count) 张").font(.caption.weight(.semibold)).foregroundStyle(AppPalette.accent)
+                Button { model.decide(.keep) } label: { Label("保留", systemImage: "flag.fill") }.tint(AppPalette.keep)
+                Button { model.decide(.reject) } label: { Label("排除", systemImage: "xmark") }
+                RatingButtons(rating: model.focusedAsset?.rating ?? 0) { model.decide(rating: $0) }
+                ColorLabelPicker(assetIDs: model.actionAssetIDs)
+                Spacer(minLength: 0)
+                Button { model.selectedIDs = []; model.focusedID = nil } label: { Image(systemName: "xmark.circle.fill") }
+                    .help("取消选择").accessibilityLabel("取消选择")
+            }.buttonStyle(.borderless)
+            Divider()
+            HStack(spacing: 8) {
+                Button { model.setMode(.compare) } label: { Label("对比", systemImage: "rectangle.split.2x1") }
+                Button { model.confirmSelectedPair() } label: { Label("关联 RAW+JPG", systemImage: "link") }
+                    .disabled(!model.canLinkSelectedPair).help("选择同一导入会话内的一个 RAW 文件和一个 JPG 文件")
+                GroupSelectionActionButton()
+                Spacer(minLength: 0)
+                Button { model.openSelectionExport() } label: { Label("批量导出", systemImage: "square.and.arrow.up") }
+                    .buttonStyle(.borderedProminent).disabled(!model.canExport)
+            }.buttonStyle(.bordered).controlSize(.small)
+        }.padding(12).frame(maxWidth: 700)
+            .floatingSelectionSurface()
+            .accessibilityElement(children: .contain).accessibilityLabel("所选照片操作")
     }
 }
 
@@ -287,16 +461,25 @@ struct AssetCard: View {
     let asset: AssetRecord
     let selected: Bool
     let compact: Bool
+    var previewAsset: AssetRecord? = nil
+    var triageDisposition: TriageDisposition? = nil
     var body: some View {
         VStack(spacing: compact ? 3 : 8) {
             ZStack(alignment: .topTrailing) {
-                ThumbnailView(asset: asset).frame(height: compact ? 62 : 142).frame(maxWidth: .infinity).background(AppPalette.thumbnailWell).clipped()
-                if asset.decision != .undecided { Image(systemName: asset.decision.symbol).font(.system(size: 12, weight: .semibold)).foregroundStyle(asset.decision == .keep ? AppPalette.keep : AppPalette.warning).padding(6).background(AppPalette.overlay, in: Circle()).padding(5) }
+                ThumbnailView(asset: previewAsset ?? asset).frame(height: compact ? 62 : 142).frame(maxWidth: .infinity).background(AppPalette.thumbnailWell).clipped()
+                if let disposition = triageDisposition {
+                    Image(systemName: disposition.symbol).font(.system(size: 12, weight: .semibold)).foregroundStyle(disposition == .passed ? AppPalette.keep : (disposition == .pending ? .secondary : AppPalette.warning)).padding(6).background(AppPalette.overlay, in: Circle()).padding(5)
+                } else if asset.decision != .undecided { Image(systemName: asset.decision.symbol).font(.system(size: 12, weight: .semibold)).foregroundStyle(asset.decision == .keep ? AppPalette.keep : AppPalette.warning).padding(6).background(AppPalette.overlay, in: Circle()).padding(5) }
             }
             HStack(spacing: 4) {
                 Text(asset.filename).lineLimit(1).truncationMode(.middle)
+                ColorLabelBadge(assetID: asset.id)
                 Spacer(minLength: 1)
-                if asset.rating > 0 { Text(String(repeating: "★", count: asset.rating)).foregroundStyle(AppPalette.rating).font(.system(size: 9)) }
+                if triageDisposition == nil && asset.rating > 0 {
+                    Text(compact ? "★ \(asset.rating)" : String(repeating: "★", count: asset.rating))
+                        .foregroundStyle(AppPalette.rating).font(.system(size: 9))
+                        .lineLimit(1).fixedSize(horizontal: true, vertical: false)
+                }
             }.font(.system(size: compact ? 9 : 11)).foregroundStyle(selected ? .primary : .secondary).padding(.horizontal, compact ? 4 : 8)
             if !compact {
                 HStack {
@@ -307,11 +490,12 @@ struct AssetCard: View {
                 }.font(.system(size: 9)).foregroundStyle(.tertiary).padding(.horizontal, 8).padding(.bottom, 7)
             }
         }.padding(compact ? 3 : 5)
-            .background(selected ? AppPalette.accent.opacity(0.10) : panelColor, in: RoundedRectangle(cornerRadius: 6))
-            .overlay(RoundedRectangle(cornerRadius: 6).stroke(selected ? AppPalette.accent : AppPalette.boundary, lineWidth: selected ? 2 : 1))
+            .background(selected ? AppPalette.accent.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 10))
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(selected ? AppPalette.accent : AppPalette.boundary.opacity(0.45), lineWidth: selected ? 2 : 0.5))
+            .shadow(color: .black.opacity(selected ? 0.10 : 0.035), radius: selected ? 8 : 3, y: 1)
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(asset.filename)，\(asset.decision.title)，\(asset.rating) 星")
+            .accessibilityLabel(triageDisposition.map { "\(asset.filename)，初筛处置：\($0.title)" } ?? "\(asset.filename)，\(asset.decision.title)，\(asset.rating) 星")
     }
 }
 
@@ -410,21 +594,38 @@ struct ImagePanel: View {
 
 struct FilmstripView: View {
     @EnvironmentObject var model: AppModel
+    @State private var collapsedGroupIDs = Set<String>()
     var body: some View {
+        let layout = model.sequenceBrowserLayout
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
-                LazyHStack(spacing: 8) {
-                    ForEach(model.filteredAssets, id: \.id) { asset in
-                        AssetCard(asset: asset, selected: model.selectedIDs.contains(asset.id), compact: true).frame(width: 102).id(asset.id)
-                            .overlay(CardInputLayer(onPress: { model.select(asset, modifiers: $0) }, onDoubleClick: { model.select(asset); model.setMode(.single) }))
-                            .accessibilityAddTraits(.isButton)
-                            .accessibilityAction { model.select(asset) }
+                LazyHStack(alignment: .top, spacing: 10) {
+                    ForEach(layout.segments) { segment in
+                        SequenceBrowserSection(segment: segment, compact: true, collapsedGroupIDs: $collapsedGroupIDs) {
+                            LazyHStack(alignment: .top, spacing: 8) {
+                                ForEach(segment.assets, id: \.id) { asset in
+                                    WorkflowAssetTile(asset: asset, compact: true, sequenceMemberships: layout.memberships[asset.id] ?? [])
+                                        .frame(width: 110).id(asset.id)
+                                }
+                            }
+                        }
                     }
-                }.padding(.horizontal, 14).padding(.vertical, 10)
-            }.frame(height: 105).background(AppPalette.canvas)
-                .onChange(of: model.navigationReveal) { if let request = model.navigationReveal { proxy.scrollTo(request.assetID) } }
-                .onAppear { if let id = model.focusedID { proxy.scrollTo(id) } }
+                    if layout.segments.isEmpty {
+                        Label("当前范围没有照片", systemImage: "photo.on.rectangle").font(.caption).foregroundStyle(.secondary)
+                            .frame(height: 100)
+                    }
+                }.padding(.horizontal, 14).padding(.vertical, 8)
+            }.frame(height: 160).background(AppPalette.canvas)
+                .onChange(of: model.navigationReveal) { if let id = model.navigationReveal?.assetID { reveal(id, layout: layout, proxy: proxy) } }
+                .onChange(of: model.focusedID) {
+                    if let id = model.focusedID, let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
+                }
+                .onAppear { if let id = model.focusedID { reveal(id, layout: layout, proxy: proxy) } }
         }
+    }
+    private func reveal(_ id: String, layout: BrowserSequenceLayout, proxy: ScrollViewProxy) {
+        if let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
+        DispatchQueue.main.async { proxy.scrollTo(id) }
     }
 }
 
@@ -447,10 +648,47 @@ struct InspectorView: View {
                 HStack { Text("照片信息").font(.headline); Spacer(); Image(systemName: "info.circle").foregroundStyle(.secondary) }
                 if let asset = model.focusedAsset {
                     Text(asset.filename).font(.system(size: 14, weight: .medium)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                    if model.isTriageScope || model.isHistoryScope {
+                        section("初筛处置") {
+                            Label(model.disposition(of: asset.id).title, systemImage: model.disposition(of: asset.id).symbol).font(.caption)
+                            Text(model.actionScopeLabel).font(.caption).foregroundStyle(.secondary)
+                            if let evidence = model.evidence(for: asset.id) {
+                                Text(evidence.status.displayTitle).font(.caption).foregroundStyle(evidence.status == .risk ? AppPalette.warning : .secondary)
+                                Text(evidence.reasons.joined(separator: " · ")).font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                    } else {
                     section("选片决定") {
                         HStack { Image(systemName: asset.decision.symbol).foregroundStyle(asset.decision == .keep ? AppPalette.keep : .secondary); Text(asset.decision.title); Spacer() }
                         RatingButtons(rating: asset.rating) { model.decide(rating: $0) }
                         if model.selectedIDs.count > 1 { Text("操作应用到已选 \(model.selectedIDs.count) 张").font(.caption).foregroundStyle(AppPalette.accent) }
+                    }
+                    section("审阅进度") {
+                        Label(model.isReviewed(asset.id) ? "已审" : "未审", systemImage: model.isReviewed(asset.id) ? "checkmark.circle" : "circle")
+                            .font(.caption)
+                        HStack { Button("标记已审") { model.markSelectedReviewed(true) }; Button("标记未审") { model.markSelectedReviewed(false) } }.controlSize(.small).disabled(model.actionAssetIDs.isEmpty)
+                        Text("浏览不标记已审；评分或决定会标记。撤销决定保留已审记录。").font(.caption).foregroundStyle(.secondary)
+                    }
+                    section("颜色标签") {
+                        ColorLabelPicker(assetIDs: model.actionAssetIDs)
+                        Text("颜色标签独立保存，可通过搜索筛选；使用“移除颜色标签”清除。").font(.caption).foregroundStyle(.secondary)
+                    }
+                    section("文字标签") { BatchTagEditor() }
+                    }
+                    if let pair = model.pair(for: asset.id) {
+                        section("RAW + JPEG") {
+                            Group {
+                                if model.hasSearchConditions {
+                                    Text("当前检索仅操作所选的匹配成员，不包含未匹配的伴随文件。")
+                                } else if model.pairHasConflict(pair) {
+                                    Text("两个文件已有决定不一致，保持原值；操作仅作用于所选成员。")
+                                } else {
+                                    Text(model.collapses(pair) ? "当前组合卡操作作用于整对；展开后可单独操作。" : "当前逐文件显示，操作仅作用于所选成员。")
+                                }
+                            }.font(.caption).foregroundStyle(.secondary)
+                            Button("展开 / 收起组合") { model.togglePair(pair) }.controlSize(.small)
+                            if model.canMaintainPairs { Button("解除关联") { model.unlinkPair(pair.id) }.controlSize(.small) }
+                        }
                     }
                     section("拍摄与文件") {
                         info("相机", asset.camera ?? "读取中 / 未知")
@@ -459,15 +697,20 @@ struct InspectorView: View {
                         if let date = asset.capturedAt { info("拍摄时间", date.formatted(date: .abbreviated, time: .standard)) }
                         info("接入状态", asset.importState.title)
                         info("可用性", asset.availability.title)
+                        if model.isSequenceOnly(asset.id) { Label("仅序列用途 · 默认不进入单张精选交付", systemImage: "square.stack").font(.caption).foregroundStyle(.secondary) }
                         if let error = asset.error { Text(error).font(.caption).foregroundStyle(AppPalette.warning).textSelection(.enabled) }
                     }
                     section("手动拍摄组") {
                         let memberships = model.groups.filter { $0.assetIDs.contains(asset.id) }
                         if memberships.isEmpty { Text("尚未分组").font(.caption).foregroundStyle(.secondary) }
                         ForEach(memberships, id: \.id) { group in
-                            Button { model.selectScope(.group, id: group.id); model.select(asset) } label: { Label("\(group.name) · \(group.kind)", systemImage: "square.stack.3d.up") }.buttonStyle(.plain).font(.caption).foregroundStyle(AppPalette.accent)
+                            if model.isTriageScope {
+                                Button { model.editGroup(group.id) } label: { Label("\(group.name) · \(group.kind) · 管理", systemImage: "square.stack.3d.up") }.buttonStyle(.plain).font(.caption).foregroundStyle(AppPalette.accent)
+                            } else {
+                                Button { model.selectScope(.group, id: group.id); model.select(asset) } label: { Label("\(group.name) · \(group.kind)", systemImage: "square.stack.3d.up") }.buttonStyle(.plain).font(.caption).foregroundStyle(AppPalette.accent)
+                            }
                         }
-                        Button("将所选建立为组…") { model.editGroup() }.controlSize(.small)
+                        GroupSelectionActionButton().controlSize(.small)
                         if let group = model.activeGroup {
                             Button { model.editGroup(group.id) } label: { Label(group.locked ? "组结构受保护 · 管理…" : "组结构未保护 · 管理…", systemImage: group.locked ? "lock" : "lock.open") }.buttonStyle(.plain).font(.caption).foregroundStyle(AppPalette.accent)
                             Text("组内顺序：\((model.activeGroup?.assetIDs.firstIndex(of: asset.id) ?? 0) + 1)").font(.caption)
@@ -476,7 +719,7 @@ struct InspectorView: View {
                                 Button("参与当前序列") { model.setSequence(true) }
                                 Button("不参与当前序列") { model.setSequence(false) }
                                 Divider()
-                                Button("从当前组移出") { model.removeFromGroup() }
+                                Button("从拍摄组中移除") { model.removeFromGroup() }.disabled(!model.canPerformGroupSelectionAction)
                             }.controlSize(.small)
                         }
                         Text(model.activeGroup.map { $0.includedAssetIDs.contains(asset.id) ? "参与当前序列；排除决定不会移除序列成员。" : "当前不参与此序列。" } ?? (asset.isSequenceMember ? "参与至少一个序列；排除决定不会移除序列成员。" : "独立选片决定与序列参与分别保存。"))

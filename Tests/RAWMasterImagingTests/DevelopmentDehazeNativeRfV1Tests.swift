@@ -1,0 +1,164 @@
+import AppKit
+import CoreImage
+import Darwin
+import Foundation
+import RAWMasterCore
+import XCTest
+@testable import RAWMasterImaging
+
+final class DevelopmentDehazeNativeRfV1Tests:XCTestCase {
+  private let air=DevelopmentDehazeAirlightV1(red:Double(Float(0.91)),green:Double(Float(0.82)),blue:Double(Float(0.97)))
+  private func image(_ values:[SIMD4<Float>],_ width:Int,_ height:Int)->CIImage {
+    CIImage(bitmapData:values.withUnsafeBytes{Data($0)},bytesPerRow:width*16,
+      size:.init(width:width,height:height),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+  }
+  private func input(_ width:Int,_ height:Int)->CIImage {
+    let values=(0..<width*height).map { i -> SIMD4<Float> in
+      let x=Float(i%width)/Float(width),y=Float(i/width)/Float(height)
+      let alpha:Float = i%11==0 ? 0:(i%7==0 ? 1e-8:(i%5==0 ? 0.5:1))
+      return SIMD4((x*1.4-0.2)*alpha,(y*0.7+0.1)*alpha,((x+y)*0.9+0.2)*alpha,alpha)
+    }
+    return image(values,width,height)
+  }
+  private func parameters(_ width:Int,_ height:Int,_ amount:Double,_ algorithm:Int)->DevelopmentAdvancedDetailV3 {
+    .init(dehaze:.init(enabled:true,amount:amount),preparedDehaze:.init(
+      sourceBinding:.init(sourceContentID:String(repeating:"a",count:64),exifOrientation:1,orientedWidth:width,orientedHeight:height),
+      inputFingerprint:String(repeating:"b",count:64),airlight:air,algorithmVersion:algorithm))
+  }
+  private func pixels(_ graph:CIImage,_ context:CIContext)throws->[SIMD4<Float>] {
+    let e=graph.extent,w=Int(e.width),h=Int(e.height)
+    var result=Array(repeating:SIMD4<Float>.zero,count:w*h),seen=0
+    // The production analysis read has an intentional 512x512 admission bound.
+    // Keep the full 513-pixel fixture and assemble all native pixels, top row first.
+    for y in stride(from:0,to:h,by:512){for x in stride(from:0,to:w,by:512){
+      let tw=min(512,w-x),th=min(512,h-y),top=h-y-th
+      try DevelopmentLocalEngineV3.read(graph,rect:CGRect(x:e.minX+CGFloat(x),y:e.minY+CGFloat(y),width:CGFloat(tw),height:CGFloat(th)),context:context){tile in
+        for row in 0..<th {for column in 0..<tw {result[(top+row)*w+x+column]=tile[row*tw+column]}}
+        seen+=tile.count
+      }
+    }}
+    XCTAssertEqual(seen,w*h)
+    return result
+  }
+  private func output(_ input:CIImage,_ amount:Double,_ algorithm:Int,bounded:Bool,raw:Bool=false,
+    observer:DevelopmentDehazeNativeResources.Observer?=nil)throws->[SIMD4<Float>] {
+    let width=Int(input.extent.width),height=Int(input.extent.height)
+    let operation = { () throws -> [SIMD4<Float>] in
+      let context=DevelopmentColorEngineV3.makeContext();defer{context.clearCaches()}
+      let graph=try DevelopmentDehazeEngineV3.apply(self.parameters(width,height,amount,algorithm),to:input,
+        sourceSize:.init(width:width,height:height),sourceIsRAW:raw,context:context)
+      return try self.pixels(graph,context)
+    }
+    return bounded ? try DevelopmentDehazeNativeResources.run(owner:.init(observer:observer),operation):try autoreleasepool(invoking:operation)
+  }
+  func testNativeFullGraphParitySignedStrengthsPortraitAlphaHDRAcross256Bands()throws {
+    // Compare complete pre-existing fused graphs, not a second implementation of the scalar.
+    // Distinct x/y ramps plus two orientations exercise physical row order and tail bands.
+    for (w,h) in [(257,513),(513,257)] {
+      let source=input(w,h)
+      for algorithm in [1,2] {for amount in [-100.0,-25,-0.01,0.01,25,50,100] {
+        let fused=try output(source,amount,algorithm,bounded:false)
+        var directories=[URL]()
+        let bounded=try output(source,amount,algorithm,bounded:true,observer:{phase,url in
+          if case .directoryCreated=phase{directories.append(url)}
+        })
+        XCTAssertEqual(directories.count,1);XCTAssertEqual(fused.count,bounded.count)
+        var worst:Float=0;var alphaMismatch=false
+        for i in fused.indices {
+          alphaMismatch = alphaMismatch || fused[i].w.bitPattern != bounded[i].w.bitPattern
+          for c in 0..<3 {worst=max(worst,abs(fused[i][c]-bounded[i][c]))}
+        }
+        XCTAssertFalse(alphaMismatch)
+        XCTAssertLessThanOrEqual(worst,3e-5,"algorithm \(algorithm), amount \(amount), \(w)x\(h)")
+        for url in directories{XCTAssertFalse(FileManager.default.fileExists(atPath:url.path))}
+      }}
+    }
+  }
+  func testZeroHasNoFileAndNativeBudgetFallbackDoesNotChangeSource()throws {
+    let source=input(17,31),context=DevelopmentColorEngineV3.makeContext()
+    var events=0
+    try DevelopmentDehazeNativeResources.run(owner:.init(observer:{_,_ in events+=1})){
+      let result=try DevelopmentDehazeEngineV3.apply(parameters(17,31,0,2),to:source,
+        sourceSize:.init(width:17,height:31),context:context)
+      XCTAssertTrue(result===source)
+    }
+    XCTAssertEqual(events,0)
+    XCTAssertTrue(DevelopmentDehazeNativeRfV1.supports(width:5760,height:8640))
+    XCTAssertTrue(DevelopmentDehazeNativeRfV1.supports(width:9504,height:6336))
+    XCTAssertFalse(DevelopmentDehazeNativeRfV1.supports(width:9505,height:1))
+    XCTAssertFalse(DevelopmentDehazeNativeRfV1.supports(width:9504,height:65536))
+    XCTAssertFalse(DevelopmentDehazeNativeRfV1.supports(width:Int.max,height:2))
+    let translated=source.transformed(by:.init(translationX:1,y:0))
+    try DevelopmentDehazeNativeResources.run {
+      XCTAssertNil(try DevelopmentDehazeNativeRfV1.apply(.signedV1,to:translated,airlight:air,
+        sourceSize:.init(width:17,height:31),amount:25,context:context))
+    }
+  }
+  func testNegativeAlgorithm2RAWUsesOnlyExistingThreeULPCoverageRepair()throws {
+    for bits:UInt32 in [1065353217,1065353218,1065353219] {
+      let a=Float(bitPattern:bits),source=image(Array(repeating:SIMD4<Float>(0.2*a,0.4*a,1.2*a,a),count:32),8,4)
+      let v1=try output(source,-50,1,bounded:false,raw:true)
+      let v2=try output(source,-50,2,bounded:true,raw:true)
+      for i in v1.indices {for c in 0..<4{XCTAssertEqual(v1[i][c],v2[i][c],accuracy:3e-5)}}
+    }
+    for a in [Float(bitPattern:1065353220),Float(1.125)] {
+      let source=image(Array(repeating:SIMD4<Float>(0.2,0.4,0.6,a),count:32),8,4)
+      XCTAssertThrowsError(try output(source,-25,2,bounded:true,raw:true))
+    }
+  }
+  func testJoinedFailureAndCancellationCloseFDAndRemoveOwnedDirectories()throws {
+    let source=input(33,513)
+    enum Stop:Error{case deliberate}
+    for stop in [DevelopmentDehazeNativeResources.Phase.directoryCreated,.scalarSubmitted,.scalarJoined,.providerReady] {
+      var directory:URL?
+      let before=Set(try FileManager.default.contentsOfDirectory(atPath:"/dev/fd"))
+      XCTAssertThrowsError(try output(source,25,2,bounded:true,observer:{phase,url in
+        directory=url
+        if phase==stop {
+          if phase == .scalarSubmitted{throw CancellationError()}
+          throw Stop.deliberate
+        }
+      }))
+      XCTAssertNotNil(directory)
+      if let directory{XCTAssertFalse(FileManager.default.fileExists(atPath:directory.path))}
+      // Readlink only our scratch path: unrelated driver descriptors may be opened lazily.
+      for fd in try FileManager.default.contentsOfDirectory(atPath:"/dev/fd") where !before.contains(fd) {
+        let target=try? FileManager.default.destinationOfSymbolicLink(atPath:"/dev/fd/"+fd)
+        XCTAssertFalse(target?.contains("RAWMaster-native-dehaze-rf-")==true)
+      }
+    }
+  }
+  func testLazyGraphCannotEscapeOwnerAndLateReleaseStillCleansStorage()throws {
+    let source=input(17,31)
+    let context=DevelopmentColorEngineV3.makeContext()
+    var escaped:CIImage?,directory:URL?
+    let observed=DevelopmentDehazeNativeResources(observer:{phase,url in
+      if phase == .directoryCreated{directory=url}
+    })
+    // Retain the owner for checked retry after releasing the deliberately escaping graph.
+    let captureID=UUID()
+    XCTAssertThrowsError(try DevelopmentDehazeNativeResources.run(owner:observed){
+      escaped=try DevelopmentDehazeEngineV3.apply(parameters(17,31,25,2),to:source,
+        sourceSize:.init(width:17,height:31),context:context)
+      throw PreviewCaptureFault(captureID:captureID)
+    }){error in
+      XCTAssertNotNil(error as? DevelopmentDehazeNativeResources.ExitFailure)
+      XCTAssertEqual(DevelopmentDehazeNativeResources.captureFault(error)?.captureID,captureID)
+    }
+    XCTAssertNotNil(escaped);XCTAssertNotNil(directory)
+    autoreleasepool{escaped=nil;context.clearCaches()}
+    try observed.finish()
+    if let directory{XCTAssertFalse(FileManager.default.fileExists(atPath:directory.path))}
+  }
+  func testMalformedScalarFailureCleansPartialFileAndFixed25GuardRemains()throws {
+    let source=image(Array(repeating:SIMD4<Float>(0.2,0.3,0.4,1.125),count:33*513),33,513)
+    var directories=[URL]()
+    XCTAssertThrowsError(try output(source,50,2,bounded:true,observer:{phase,url in
+      if phase == .directoryCreated{directories.append(url)}
+    }))
+    XCTAssertEqual(directories.count,1)
+    for url in directories{XCTAssertFalse(FileManager.default.fileExists(atPath:url.path))}
+    let legal=input(2,2)
+    XCTAssertThrowsError(try DevelopmentDehazeRfTransportV1.restore(legal,legal,airlight:air,amount:50))
+  }
+}

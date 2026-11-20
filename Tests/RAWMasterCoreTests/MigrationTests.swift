@@ -12,7 +12,7 @@ final class MigrationTests: XCTestCase {
       "CREATE TABLE relocation_sessions(id TEXT PRIMARY KEY,data TEXT NOT NULL); PRAGMA user_version=2"
     )
     let library = try LibraryStore(databaseURL: database)
-    XCTAssertEqual(try DatabaseSchema.strings(library.db, "PRAGMA user_version"), ["3"])
+    XCTAssertEqual(try DatabaseSchema.strings(library.db, "PRAGMA user_version"), ["7"])
     XCTAssertEqual(try library.loadGroupCommands().count, 0)
     XCTAssertFalse(try library.rows("SELECT * FROM group_domains WHERE group_id='group'").isEmpty)
     XCTAssertEqual(try library.loadGroups()[0].assetIDs, ["asset"])
@@ -106,6 +106,60 @@ final class MigrationTests: XCTestCase {
     XCTAssertEqual(
       try DatabaseSchema.strings(library.db, "SELECT count(*) FROM operations"), ["469"])
     XCTAssertEqual(try FileSafety.hash(original), before)
+  }
+  func testVersionSixMigrationPreservesAllExistingPayloadsAndMembershipIndex() throws {
+    do {
+      let active = try v1Fixture()
+      sqlite3_close(active)
+      let library = try LibraryStore(databaseURL: database)
+      try library.exec("DROP TABLE editing_works; DROP TABLE editing_versions; DROP TABLE editing_dispositions; DROP TABLE processing_jobs; DROP TABLE editing_commands; DROP TABLE provider_profiles; DROP TABLE archive_publications; DROP TABLE editing_exports; PRAGMA user_version=6")
+    }
+    let connection = try open()
+    let before = try DatabaseSchema.strings(connection, "SELECT data FROM assets")
+    let operations = try DatabaseSchema.strings(connection, "SELECT count(*) FROM operations")
+    sqlite3_close(connection)
+    let upgraded = try LibraryStore(databaseURL: database)
+    XCTAssertEqual(try DatabaseSchema.validate(upgraded.db), 7)
+    XCTAssertEqual(try DatabaseSchema.strings(upgraded.db, "SELECT data FROM assets"), before)
+    XCTAssertEqual(try DatabaseSchema.strings(upgraded.db, "SELECT count(*) FROM operations"), operations)
+    XCTAssertEqual(try DatabaseSchema.strings(upgraded.db, "PRAGMA index_info(membership_asset_id)", column: 2), ["asset_id"])
+    XCTAssertTrue(try upgraded.loadPhotoWorks().isEmpty)
+    let backup = try XCTUnwrap(upgraded.lastMigrationBackupURL)
+    var old: OpaquePointer?
+    XCTAssertEqual(sqlite3_open_v2(backup.path, &old, SQLITE_OPEN_READONLY, nil), SQLITE_OK)
+    defer { sqlite3_close(old) }
+    XCTAssertEqual(try DatabaseSchema.validate(old), 6)
+    XCTAssertEqual(try DatabaseSchema.strings(old, "SELECT data FROM assets"), before)
+  }
+  func testMalformedEditingIndexRejectedBeforeAnyWriterMutation() throws {
+    do {
+      let library = try LibraryStore(databaseURL: database)
+      try library.exec("DROP INDEX processing_jobs_work; CREATE INDEX processing_jobs_work ON processing_jobs(command_id)")
+      try library.exec("PRAGMA wal_checkpoint(TRUNCATE)")
+    }
+    let before = try Data(contentsOf: database)
+    XCTAssertThrowsError(try LibraryStore(databaseURL: database))
+    XCTAssertEqual(try Data(contentsOf: database), before)
+  }
+  func testMalformedEditingPrimaryKeyRejectedWithoutMutation() throws {
+    do {
+      let library = try LibraryStore(databaseURL: database)
+      try library.exec("DROP TABLE editing_commands; CREATE TABLE editing_commands(id TEXT,fingerprint TEXT NOT NULL,action TEXT NOT NULL,data TEXT NOT NULL)")
+      try library.exec("PRAGMA wal_checkpoint(TRUNCATE)")
+    }
+    let before = try Data(contentsOf: database)
+    XCTAssertThrowsError(try LibraryStore(databaseURL: database))
+    XCTAssertEqual(try Data(contentsOf: database), before)
+  }
+  func testUnexpectedEditingUniqueConstraintRejectedBeforeWriterMutation() throws {
+    do {
+      let library = try LibraryStore(databaseURL: database)
+      try library.exec("DROP TABLE editing_works; CREATE TABLE editing_works(id TEXT PRIMARY KEY, project_id TEXT NOT NULL, asset_id TEXT NOT NULL UNIQUE, data TEXT NOT NULL); CREATE INDEX editing_works_source ON editing_works(project_id,asset_id)")
+      try library.exec("PRAGMA wal_checkpoint(TRUNCATE)")
+    }
+    let before = try Data(contentsOf: database)
+    XCTAssertThrowsError(try LibraryStore(databaseURL: database))
+    XCTAssertEqual(try Data(contentsOf: database), before)
   }
   var root: URL!
   var database: URL!
@@ -205,7 +259,7 @@ final class MigrationTests: XCTestCase {
     XCTAssertEqual(group.assetIDs, ["asset"])
     XCTAssertEqual(group.includedAssetIDs, [])
     XCTAssertEqual(try library.loadSessions()[0].effectiveManagedRoot, "/old/work")
-    XCTAssertEqual(try DatabaseSchema.strings(library.db, "PRAGMA user_version"), ["3"])
+    XCTAssertEqual(try DatabaseSchema.strings(library.db, "PRAGMA user_version"), ["7"])
     let reopened = try LibraryStore(databaseURL: database)
     XCTAssertNil(reopened.lastMigrationBackupURL)
     XCTAssertEqual(try reopened.loadAssets()[0].decision, .keep)

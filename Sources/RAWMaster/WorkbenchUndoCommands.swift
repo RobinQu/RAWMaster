@@ -31,13 +31,40 @@ final class WorkbenchKeyAnchor: NSView {
 @MainActor
 enum WorkbenchUndoRouting {
     static func undo(model: AppModel?, window: NSWindow?) {
+        route(model: model, window: window, redo: false)
+    }
+    static func redo(model: AppModel?, window: NSWindow?) {
+        route(model: model, window: window, redo: true)
+    }
+    private static func route(model: AppModel?, window: NSWindow?, redo: Bool) {
         guard let window else { return }
-        if let responder = window.firstResponder, responder is NSTextView || responder is NSTextField {
-            if let manager = responder.undoManager, manager.canUndo { manager.undo() }
+        if let editor = window.firstResponder as? NSTextView {
+            routeText(editor.undoManager, redo: redo)
+            return
+        }
+        if let field = window.firstResponder as? NSTextField {
+            routeText(field.currentEditor()?.undoManager, redo: redo)
             return
         }
         guard WorkbenchWindowContext.contains(window) else { return }
+        if let control = window.firstResponder as? DevelopmentEditingControl {
+            if model?.isNativeEditing == true {
+                if redo { control.redoAction?() } else { control.undoAction?() }
+            }
+            return
+        }
+        if model?.isNativeEditing == true {
+            if let editing = model?.editing, let context = editing.developmentContext {
+                editing.undoDevelopment(context: context, redo: redo)
+            }
+            return
+        }
+        guard !redo else { return }
         model?.undo()
+    }
+    private static func routeText(_ manager: UndoManager?, redo: Bool) {
+        if redo { if manager?.canRedo == true { manager?.redo() } }
+        else if manager?.canUndo == true { manager?.undo() }
     }
 }
 
@@ -49,6 +76,8 @@ struct WorkbenchUndoCommands: Commands {
             // Routing is checked at dispatch time, including when Settings is the key window.
             Button("撤销") { WorkbenchUndoRouting.undo(model: model, window: NSApp.keyWindow) }
                 .keyboardShortcut("z", modifiers: .command)
+            Button("重做") { WorkbenchUndoRouting.redo(model: model, window: NSApp.keyWindow) }
+                .keyboardShortcut("z", modifiers: [.command, .shift])
         }
     }
 }

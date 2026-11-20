@@ -42,11 +42,17 @@ extension LibraryStore {
     switch request {
     case .create(let ids, let name, let kind):
       return .create(assetIDs: try unique(ids), name: try trimmed(name), kind: try trimmed(kind))
+    case .createWithProperties(let ids, let name, let kind, let locked):
+      return .createWithProperties(assetIDs: try unique(ids), name: try trimmed(name), kind: try trimmed(kind), locked: locked)
+    case .updateProperties(let id, let name, let kind, let locked):
+      return .updateProperties(groupID: id, name: try trimmed(name), kind: try trimmed(kind), locked: locked)
     case .rename(let id, let name): return .rename(groupID: id, name: try trimmed(name))
     case .setKind(let id, let kind): return .setKind(groupID: id, kind: try trimmed(kind))
     case .setLocked: return request
     case .removeMembers(let id, let ids):
       return .removeMembers(groupID: id, assetIDs: try unique(ids).sorted())
+    case .addMembers(let id, let ids):
+      return .addMembers(groupID: id, assetIDs: try unique(ids))
     case .reorder(let id, let ids): return .reorder(groupID: id, assetIDs: try unique(ids))
     case .setParticipation(let groups, let ids, let included):
       return .setParticipation(
@@ -59,7 +65,7 @@ extension LibraryStore {
       return .split(
         groupID: id, movedAssetIDs: try unique(ids).sorted(), newName: try trimmed(name),
         newKind: try trimmed(kind))
-    case .restore, .automaticBatch: return request
+    case .restore, .automaticBatch, .automaticRegroup: return request
     }
   }
   private func derivedGroupID(_ previewID: String, role: String) throws -> String {
@@ -238,6 +244,17 @@ extension LibraryStore {
     }
     return restored
   }
+  /// Read a durable command without depending on the bounded history window.
+  public func loadGroupCommand(id: String) throws -> GroupCommandRecord? {
+    try locked {
+      guard let row = try rows("SELECT data FROM group_commands WHERE id=?", [id]).first else {
+        return nil
+      }
+      var record = try decode(row[0], GroupCommandEnvelope.self).record
+      record.restoreStatus = try restoreStatus(record)
+      return record
+    }
+  }
   public func loadGroupCommands(limit: Int = 50) throws -> [GroupCommandRecord] {
     try locked {
       let records = try rows(
@@ -285,6 +302,18 @@ extension LibraryStore {
         id: try fresh("create:0"), projectID: assets[0].projectID, name: name, kind: kind,
         assetIDs: ids, includedAssetIDs: ids)
       after = [g]
+    case .createWithProperties(let ids, let name, let kind, let locked):
+      let assets = try ids.map { try asset($0) }
+      guard Set(assets.map(\.projectID)).count == 1 else { throw LibraryError.invalid("不能跨项目建组") }
+      after = [CaptureGroup(id: try fresh("create:0"), projectID: assets[0].projectID,
+        name: name, kind: kind, assetIDs: ids, includedAssetIDs: ids, locked: locked)]
+    case .updateProperties(let groupID, let name, let kind, let locked):
+      var g = try group(groupID)
+      before = [g]
+      g.name = name; g.kind = kind; g.locked = locked
+      after = [g]
+      // A full form save guards every displayed field, including unchanged values.
+      depend(groupID, [.existence, .name, .kind, .lock])
     case .automaticBatch(let batch):
       let input = try validateAutomaticGroupingBatch(batch)
       for (index, proposal) in batch.groups.enumerated() {
@@ -302,6 +331,18 @@ extension LibraryStore {
       if batch.provenance.associationHypothesisAssumed {
         warnings.append("RAW/JPEG 拍摄事件关联包含设备元数据假设，请复核")
       }
+    case .automaticRegroup(let replacement):
+      let input = try validateAutomaticRegroup(replacement)
+      before = try replacement.removedGroupIDs.map { try group($0) }
+      for g in before { depend(g.id, [.all, .existence]) }
+      for (index, proposal) in replacement.batch.groups.enumerated() {
+        let kind: String
+        switch proposal.kind { case .burst: kind = "连拍"; case .interval: kind = "间隔拍摄"; case .sequence: kind = "文件序列" }
+        after.append(CaptureGroup(id: try fresh("automatic:\(index)"), projectID: input.projectID,
+          name: "\(kind) \(index + 1) · 待复核", kind: kind, assetIDs: proposal.assetIDs,
+          includedAssetIDs: proposal.assetIDs, origin: .automaticPendingReview, locked: false))
+      }
+      warnings.append("仅替换未被人工修改的自动组；人工组、保护状态和所有照片保留。此操作可整体撤销。")
     case .rename(let groupID, let name):
       var g = try group(groupID)
       before = [g]
@@ -332,6 +373,21 @@ extension LibraryStore {
       after = [g]
       depend(groupID, [.existence, .lock])
       if g.assetIDs.isEmpty { warnings.append("移出后将保留一个空拍摄组") }
+    case .addMembers(let groupID, let ids):
+      var g = try group(groupID)
+      let assets = try ids.map { try asset($0) }
+      guard assets.allSatisfy({ $0.projectID == g.projectID }) else { throw LibraryError.invalid("不能将其他项目的素材加入拍摄组") }
+      let existing = Set(g.assetIDs)
+      let appended = ids.filter { !existing.contains($0) }
+      guard !appended.isEmpty else { throw LibraryError.invalid("所选照片已在此组中，没有可加入的新成员") }
+      before = [g]
+      g.assetIDs.append(contentsOf: appended)
+      let included = Set(g.includedAssetIDs).union(appended)
+      g.includedAssetIDs = g.assetIDs.filter { included.contains($0) }
+      g.locked = true
+      after = [g]
+      // Appending depends on the complete order/tail, not only the new member domains.
+      depend(groupID, [.all, .existence, .lock])
     case .reorder(let groupID, let ids):
       var g = try group(groupID)
       before = [g]
@@ -507,6 +563,10 @@ extension LibraryStore {
       }
       if case .automaticBatch(let batch) = request {
         try finalizeAutomaticGroupingBatch(batch, command: record)
+      }
+      if case .automaticRegroup(let replacement) = request {
+        try finalizeAutomaticGroupingBatch(replacement.batch, command: record,
+          preparedFingerprint: try SequenceCanonical.digest(replacement))
       }
       try operation(entity: record.id, action: "groupCommand", payload: try json(record))
       return record

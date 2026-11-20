@@ -11,11 +11,15 @@ public struct AutomaticGroupingInput: Sendable {
   public let assets: [AssetRecord]
   public let assetRevisions: [Int]
   public let protectedAssetIDs: Set<String>
+  public let replacementGroupIDs: [String]
+  public let isExplicitRegroup: Bool
   public init(runID: String, sessionID: String, projectID: String, scopeFingerprint: String,
-              assets: [AssetRecord], assetRevisions: [Int], protectedAssetIDs: Set<String>) {
+              assets: [AssetRecord], assetRevisions: [Int], protectedAssetIDs: Set<String>,
+              replacementGroupIDs: [String] = [], isExplicitRegroup: Bool = false) {
     self.runID = runID; self.sessionID = sessionID; self.projectID = projectID
     self.scopeFingerprint = scopeFingerprint; self.assets = assets
     self.assetRevisions = assetRevisions; self.protectedAssetIDs = protectedAssetIDs
+    self.replacementGroupIDs = replacementGroupIDs; self.isExplicitRegroup = isExplicitRegroup
   }
 }
 
@@ -90,6 +94,26 @@ public struct AutomaticGroupingRunRecord: Codable, Sendable {
   public var message: String?
   public var provenance: AutomaticGroupingProvenance?
   var preparedBatchFingerprint: String?
+  public var lastSuccess: AutomaticGroupingSuccess? = nil
+  var successSnapshot: AutomaticGroupingSuccess? {
+    state.succeeded ? AutomaticGroupingSuccess(runID: runID, commandID: commandID,
+      groupIDs: groupIDs, finishedAt: finishedAt ?? startedAt, provenance: provenance) : lastSuccess
+  }
+}
+
+public struct AutomaticGroupingSuccess: Codable, Sendable {
+  public let runID: String
+  public let commandID: String?
+  public let groupIDs: [String]
+  public let finishedAt: Date
+  public let provenance: AutomaticGroupingProvenance?
+}
+
+/// Explicit replacement, including evidence for removed members even when no new ranges were found.
+public struct AutomaticGroupingReplacement: Codable, Sendable {
+  public let batch: AutomaticGroupingBatch
+  public let removedGroupIDs: [String]
+  public let featuresAvailable: [Bool]
 }
 
 /// Core-prepared groups, retained in the ordinary durable group history.
