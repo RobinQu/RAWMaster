@@ -93,6 +93,46 @@ io.robinqu.RAWMaster/DisplayProxy/v1/<内容哈希前两位>/<完整内容哈希
 
 报告：`output/performance/jpeg-batch-throughput-v2-20261120/jpeg-batch-throughput.json`。第一版未限制实际并发的测量已废弃，不作为依据。
 
+## 格式与转换实现复审
+
+### 编解码成本
+
+使用同一张已显影 PNG 比较格式。下表为 3 张图片的均值；命令行进程启动时间包含在内，不能与 Core Image 的 47.8 ms JPEG 解码结果直接比较绝对值。
+
+| 格式 | 编码中位数均值 | 解码中位数均值 | 平均文件大小 | 结论 |
+| --- | ---: | ---: | ---: | --- |
+| JPEG | 64.9 ms | 184.9 ms | 约 1.07 MB | 解码最快，继续作为交互显示缓存 |
+| HEIF | 123.7 ms | 259.7 ms | 约 1.04 MB | 体积收益不稳定，编码与解码更慢 |
+| JPEG XL（effort 3） | 212.7 ms | 314.6 ms | 约 0.55 MB | 约减半体积，但编解码均更慢 |
+| WebP（method 4） | 236.3 ms | 455.7 ms | 约 0.54 MB | 约减半体积，但解码最慢 |
+
+JPEG XL 的并行、渐进解码和压缩效率在标准设计上具有优势，但当前实现与样本并未转化为交互收益。[JPEG XL 官方说明](https://jpeg.org/jpegxl/)和[白皮书](https://ds.jpeg.org/whitepapers/jpeg-xl-whitepaper.pdf)可作为后续复测依据，不用于替代本次实测结论。报告：`output/performance/image-format-evaluation-v2-20261120/image-format-evaluation.json`。
+
+### RAW 解码路径
+
+| 路径 | 中位数／范围 | 像素与兼容性结论 |
+| --- | ---: | --- |
+| Core Image 全尺寸 | 约 552 ms | 当前基准 |
+| Core Image 半尺寸 | 约 438 ms | 约快 21%，但 p99 误差为 2–5 级 |
+| 半尺寸＋草稿模式 | 约 443 ms | 没有进一步提速，误差反而更高 |
+| 四分之一尺寸＋草稿模式 | 约 415 ms | p99 误差为 5–15 级，不作为默认路径 |
+| 相机内嵌预览 | 约 12–15 ms | 最快，但画幅与色彩契约不同，只作首屏占位 |
+| FlashRaw CPU 多线程 | 约 297 ms | 速度有吸引力，但颜色与显影结果不兼容 |
+
+Apple 允许在较小解码比例下通过草稿模式提速，但本次样本没有产生额外收益，因此不默认启用。[allowDraftMode](https://developer.apple.com/documentation/coreimage/cirawfilteroption/allowdraftmode)、[isDraftModeEnabled](https://developer.apple.com/documentation/coreimage/cirawfilter/isdraftmodeenabled)。
+
+FlashRaw 的官方 PyPI wheel 使用 NEON 多线程时约为 297 ms，但其输出与 Core Image 的 p99 通道差异达到 63–72 级，不能直接替换现有显影。官方 wheel 没有可用 Metal 后端；单线程反而需要约 1.37 秒。其融合显影、区域解码、MIT／Apache 许可和公开测试语料仍值得作为独立候选继续评估，但必须先完成颜色契约验证，不能引用公开基准的加速倍数代替本机验收。[FlashRaw 项目](https://github.com/ybouane/flashraw)、[官方基准](https://github.com/ybouane/flashraw/blob/main/docs/benchmarks.md)。
+
+报告：`output/performance/raw-decode-path-v3-20261120/raw-decode-path-evaluation.json`、`output/performance/flashraw-evaluation-20261120/flashraw-evaluation.json`。内嵌预览因画幅比例差异，不引用逐像素误差。
+
+### 推荐实施顺序
+
+1. **首屏使用内嵌预览**，避免无意义的完整 RAW 解码；其仅作近似占位，随后替换为统一显影结果。
+2. **标准显示缓存继续使用 JPEG**，不为追求压缩率切换到 HEIF、JPEG XL 或 WebP。
+3. **保留现有线性 RGBAf 编辑路径**，避免颜色、HDR 和局部调整语义变化。Core Image 全尺寸仍是兼容性基线。
+4. **FlashRaw 暂只作为独立研究候选**。若未来采用，先验证每个相机系列的色彩、白平衡、方向、裁切和线性输出，并准备 Core Image 回退；不用于当前保存、导出或最终调整。
+5. 若高倍缩放仍需优化，再评估区域／瓦片解码，避免重新读取完整 RAW，而不是扩大单张 JPEG 或改变压缩格式。
+
 ## 成熟软件的策略
 
 ### Lightroom Classic
