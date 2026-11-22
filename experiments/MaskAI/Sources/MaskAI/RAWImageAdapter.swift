@@ -27,11 +27,11 @@ public enum RAWImageAdapter {
         guard let raw = CIRAWFilter(imageURL: url) else { throw MaskAIError.invalidInput("CIRAWFilter cannot open \(url.path).") }
         raw.scaleFactor = 1
         raw.isDraftModeEnabled = false
-        guard let output = raw.outputImage, !output.extent.isEmpty else {
+        // CIRAWFilter applies the file orientation to its output image.
+        guard let oriented = raw.outputImage, !oriented.extent.isEmpty else {
             throw MaskAIError.invalidInput("CIRAWFilter returned no image for \(url.path).")
         }
         let orientation = Int(raw.orientation.rawValue)
-        let oriented = output.oriented(forExifOrientation: Int32(orientation))
         let nativeWidth = Int(oriented.extent.width.rounded())
         let nativeHeight = Int(oriented.extent.height.rounded())
         let image = try NativeImage(ciImage: oriented, maximumLongEdge: maximumLongEdge)
@@ -50,10 +50,10 @@ public enum RAWImageAdapter {
         guard let raw = CIRAWFilter(imageURL: url) else { throw MaskAIError.invalidInput("CIRAWFilter cannot open \(url.path).") }
         raw.scaleFactor = 1
         raw.isDraftModeEnabled = false
-        guard let output = raw.outputImage, !output.extent.isEmpty else {
+        // CIRAWFilter applies the file orientation to its output image.
+        guard let oriented = raw.outputImage, !oriented.extent.isEmpty else {
             throw MaskAIError.invalidInput("CIRAWFilter returned no image for \(url.path).")
         }
-        let oriented = output.oriented(forExifOrientation: Int32(Int(raw.orientation.rawValue)))
         let width = oriented.extent.width, height = oriented.extent.height
         // Match MaskImage: integral source pixels, lower bounds floor and upper bounds ceil.
         // NormalizedRect is top-left; CIImage source coordinates are bottom-left.
@@ -80,14 +80,19 @@ public extension NativeImage {
         let height = max(1, Int(image.extent.height.rounded()))
         var bytes = [UInt8](repeating: 0, count: width * height * 4)
         let context = CIContext(options: [.cacheIntermediates: false])
-        let destination = CIRenderDestination(bitmapData: &bytes, width: width, height: height,
-                                               bytesPerRow: width * 4, format: .RGBA8)
-        destination.colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
-        destination.alphaMode = .premultiplied
-        destination.isFlipped = true
-        destination.isDithered = false
-        _ = try context.startTask(toRender: image, from: CGRect(x: 0, y: 0, width: width, height: height),
-                                  to: destination, at: .zero).waitUntilCompleted()
+        try bytes.withUnsafeMutableBytes { buffer in
+            guard let address = buffer.baseAddress else {
+                throw MaskAIError.invalidInput("Missing image render storage.")
+            }
+            let destination = CIRenderDestination(bitmapData: address, width: width, height: height,
+                                                  bytesPerRow: width * 4, format: .RGBA8)
+            destination.colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
+            destination.alphaMode = .premultiplied
+            destination.isFlipped = true
+            destination.isDithered = false
+            _ = try context.startTask(toRender: image, from: CGRect(x: 0, y: 0, width: width, height: height),
+                                      to: destination, at: .zero).waitUntilCompleted()
+        }
         try self.init(width: width, height: height, rgba: bytes)
     }
 

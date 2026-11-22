@@ -2,7 +2,7 @@
 
 ## 状态与目的
 
-- 状态：集成设计与独立真实 RAW 验证已完成；生产合并未执行。详见 `validation.md`。
+- 独立服务及真实 RAW 验证已有可重算结果，当前开发版本接入产品编辑入口。与 Camera Raw 基础编辑的联合签收按[集成验收单](../031-preset-browser/integration-validation.md)执行。[首轮验证](validation.md) · [人像与雪景追加验证](portrait-snow-validation.md)
 - 前置证据：026 独立模块的原生 ONNX 推理、公开图像测试与有限摄影质量检查。
 - 目的：定义 Mask AI 与现有配方、编辑控制器、预览、持久化和导出的集成边界，并验证真实 RAW 输入上的蒙版及实际局部像素效果。
 

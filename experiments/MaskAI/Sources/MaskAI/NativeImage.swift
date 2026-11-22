@@ -19,23 +19,7 @@ public struct NativeImage: Sendable {
         guard let source = CIImage(contentsOf: url, options: [.applyOrientationProperty: true]), !source.extent.isEmpty else {
             throw MaskAIError.invalidInput("Cannot read image at \(url.path).")
         }
-        let sourceWidth = Int(source.extent.width.rounded())
-        let sourceHeight = Int(source.extent.height.rounded())
-        let scale = min(1, Double(maximumLongEdge) / Double(max(sourceWidth, sourceHeight)))
-        let image = scale == 1 ? source : source.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-        let width = max(1, Int(image.extent.width.rounded()))
-        let height = max(1, Int(image.extent.height.rounded()))
-        var bytes = [UInt8](repeating: 0, count: width * height * 4)
-        let context = CIContext(options: [.cacheIntermediates: false])
-        let destination = CIRenderDestination(bitmapData: &bytes, width: width, height: height,
-                                               bytesPerRow: width * 4, format: .RGBA8)
-        destination.colorSpace = CGColorSpace(name: CGColorSpace.sRGB)
-        destination.alphaMode = .premultiplied
-        destination.isFlipped = true
-        destination.isDithered = false
-        _ = try context.startTask(toRender: image, from: CGRect(x: 0, y: 0, width: width, height: height),
-                                  to: destination, at: .zero).waitUntilCompleted()
-        try self.init(width: width, height: height, rgba: bytes)
+        try self.init(ciImage: source, maximumLongEdge: maximumLongEdge)
     }
 
     public func resized(toWidth targetWidth: Int, toHeight targetHeight: Int) throws -> NativeImage {
