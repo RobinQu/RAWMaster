@@ -45,6 +45,33 @@ import RAWMasterCore
         _ = row.perform(action)
     }
 
+    private func choose(_ mode: EditingFilterBrowserMode, in window: NSWindow) throws {
+        let id = "editing.filters.browserMode." + mode.rawValue
+        let press = NSSelectorFromString("accessibilityPerformPress")
+        var nodes = [element("editing.filters.browserMode", in: window) ?? window]
+        var seen = Set<ObjectIdentifier>()
+        while let node = nodes.popLast() {
+            guard seen.insert(ObjectIdentifier(node)).inserted else { continue }
+            let matches = attribute(node, "accessibilityIdentifier") as? String == id
+                || ["accessibilityLabel","accessibilityTitle","accessibilityDescription"].contains { attribute(node, $0) as? String == mode.title }
+            if matches, node.responds(to: press) { _ = node.perform(press); return }
+            nodes += attribute(node, "accessibilityChildren") as? [NSObject] ?? []
+        }
+        // AppKit also exposes the segmented picker through its native target/action on some releases.
+        var views = [try XCTUnwrap(window.contentView)]
+        while let view = views.popLast() {
+            if let control = view as? NSSegmentedControl,
+               let index = (0..<control.segmentCount).first(where: { control.label(forSegment: $0) == mode.title }),
+               let action = control.action {
+                control.selectedSegment = index
+                XCTAssertTrue(control.sendAction(action, to: control.target))
+                return
+            }
+            views += view.subviews
+        }
+        XCTFail("Missing filter browser option " + mode.title)
+    }
+
     private func search(_ query: String, field: NSTextField, window: NSWindow) throws {
         XCTAssertTrue(window.makeFirstResponder(field))
         let editor = try XCTUnwrap(window.fieldEditor(false, for: field) as? NSTextView)
@@ -60,6 +87,7 @@ import RAWMasterCore
         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
         let fixture = try EditingWorkflowTests.Fixture()
         defer { fixture.clean() }
+        fixture.defaults.set(EditingFilterBrowserMode.catalog.rawValue, forKey: EditingFilterBrowserMode.defaultsKey)
         let backend = PhotosDevelopmentBackend()
         let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: backend)
         app.selectScope(.project, id: fixture.assets[0].projectID)
@@ -135,5 +163,108 @@ import RAWMasterCore
         XCTAssertEqual(session.recipe, beforeFull)
         let requests = await backend.thumbnailRequests
         XCTAssertFalse(requests.contains { $0.kind == .filters }, "Browsing, filtering and adopting must not request filter tiles")
+    }
+
+    func testClassicAndCatalogSwitchInWindowRestoresPreferenceAndCancelsDrafts() async throws {
+        _ = NSApplication.shared
+        let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let old = NSApp.accessibilityAttributeValue(ax)
+        NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+        defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let catalog = DevelopmentPresetCatalog(root: fixture.root.appending(path: "switch-presets"))
+        var patch = DevelopmentPresetPatch()
+        patch.semanticMasks = [try DevelopmentPresetMaskIntent(target: .subject, name: "主体", adjustments: .init(exposure: 0.4))]
+        let record = DevelopmentPresetRecord(id: "fixture-subject", name: "人物选区", group: "个人预设", kind: .user, patch: patch)
+        var exposure = DevelopmentPresetPatch()
+        exposure.exposure = 0.3
+        let hoverRecord = DevelopmentPresetRecord(id: "fixture-light", name: "提亮", group: "个人预设", kind: .user, patch: exposure)
+        _ = try catalog.importBatch([record, hoverRecord], originals: [:])
+        func openEditor() async throws -> (app: AppModel, editing: EditingController, context: EditingInteractionContext) {
+            let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults,
+                               editingPreviewBackend: PhotosDevelopmentBackend(filtersEnabled: true))
+            app.selectScope(.project, id: fixture.assets[0].projectID)
+            app.select(fixture.assets[0]); app.setMode(.single); app.openNativeEditing()
+            let editing = try XCTUnwrap(app.editing)
+            try await eventually("Opening editor with filter capability") {
+                if editing.work != nil, editing.developmentContext == nil { editing.beginDevelopmentInterface() }
+                return editing.developmentContext != nil && editing.availableDevelopmentFilters.contains(.vivid)
+            }
+            return (app, editing, try XCTUnwrap(editing.developmentContext))
+        }
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 780, height: 850), styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.orderOut(nil); window.contentView = nil; window.close() }
+        func mount(_ editing: EditingController, _ context: EditingInteractionContext) {
+            let host = NSHostingView(rootView: HStack {
+                EditingLeftSidebar(editing: editing, presetCatalog: catalog)
+                ScrollView { PhotosMaskControls(editing: editing, session: editing.developmentSession, context: context) }
+            }.frame(width: 780, height: 850))
+            window.contentView = host; window.orderBack(nil); host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
+        }
+        XCTAssertNil(fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey))
+        let first = try await openEditor(), editing = first.editing
+        let initial = editing.recipe, history = editing.developmentSession.history.entryCount
+        let entered = expectation(description: "Semantic preparation entered")
+        let cancelled = expectation(description: "Leaving catalog cancelled its model task")
+        editing.developmentMaskInput = EditingMaskInputSession(editing: editing, generate: { _,_,_,_ in
+            entered.fulfill()
+            do { try await Task.sleep(for: .seconds(30)); throw CancellationError() }
+            catch { if Task.isCancelled { cancelled.fulfill() }; throw error }
+        })
+        mount(editing, first.context)
+        try await eventually("First launch must mount classic filter controls") {
+            self.element("editing.filters.reset", in: window) != nil && self.element("editing.filter.favorite.vivid", in: window) != nil
+        }
+        XCTAssertNil(element("editing.presets.search", in: window))
+        try press("editing.filter.favorite.vivid", in: window)
+        XCTAssertTrue(editing.favoriteDevelopmentFilters.contains(.vivid))
+        editing.developmentMaskInput.select(.linear, context: first.context)
+        XCTAssertEqual(editing.developmentMaskInput.activeKind, .linear)
+        editing.previewDevelopmentFilter(.vivid, context: first.context)
+        XCTAssertNotNil(editing.hoveredPresetID)
+        try choose(.catalog, in: window)
+        try await eventually("Catalog must replace the classic grid, clear its hover and retain the right-hand mask controls") {
+            self.element("editing.presets.search", in: window) != nil && self.element("editing.filters.reset", in: window) == nil
+                && self.element("photos.mask.subject", in: window) != nil && editing.hoveredPresetID == nil
+        }
+        XCTAssertEqual(fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey), EditingFilterBrowserMode.catalog.rawValue)
+        try await eventually("The catalog must load the previously favorited classic filter") { self.element("editing.filter.favorite.vivid", in: window) != nil }
+        try press("editing.filter.favorite.vivid", in: window)
+        XCTAssertFalse(editing.favoriteDevelopmentFilters.contains(.vivid))
+        let host = try XCTUnwrap(window.contentView)
+        let field = try XCTUnwrap(textField(in: host))
+        try search(record.name, field: field, window: window)
+        try await eventually("The semantic preset is searchable") { self.element("editing.preset.fixture-subject", in: window) != nil }
+        try press("editing.preset.fixture-subject", in: window)
+        try await eventually("Semantic selection requires an explicit preparation") { self.element("editing.presets.prepareMasks", in: window) != nil }
+        try press("editing.presets.prepareMasks", in: window)
+        await fulfillment(of: [entered], timeout: 3)
+        editing.previewDevelopmentPreset(hoverRecord, context: first.context)
+        XCTAssertEqual(editing.hoveredPresetID, hoverRecord.id)
+        try choose(.classic, in: window)
+        await fulfillment(of: [cancelled], timeout: 3)
+        try await eventually("Classic entry restores its controls") {
+            self.element("editing.filters.reset", in: window) != nil && self.element("editing.presets.search", in: window) == nil
+        }
+        XCTAssertEqual(fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey), EditingFilterBrowserMode.classic.rawValue)
+        XCTAssertEqual(editing.recipe, initial); XCTAssertEqual(editing.developmentSession.history.entryCount, history)
+        XCTAssertNil(editing.hoveredPresetID)
+        XCTAssertEqual(editing.developmentMaskInput.activeKind, .linear)
+        XCTAssertTrue(editing.developmentSession.parameters.masks.isEmpty)
+        try choose(.catalog, in: window)
+        try await eventually("The selected directory preference must persist before closing") {
+            fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey) == EditingFilterBrowserMode.catalog.rawValue
+        }
+        window.contentView = nil; await editing.shutdown(finishPreviews: false)
+        let reopened = try await openEditor()
+        mount(reopened.editing, reopened.context)
+        try await eventually("A fresh editor must open the explicitly selected catalog") {
+            self.element("editing.presets.search", in: window) != nil && self.element("editing.filters.reset", in: window) == nil
+        }
+        XCTAssertFalse(reopened.editing.favoriteDevelopmentFilters.contains(.vivid))
+        XCTAssertEqual(reopened.editing.recipe, initial)
+        XCTAssertNil(reopened.editing.hoveredPresetID)
+        window.contentView = nil; await reopened.editing.shutdown(finishPreviews: false)
     }
 }

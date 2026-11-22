@@ -47,6 +47,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
     struct Draw {
         let event: ImageFrameDrawEvent
         let revision, generation: UInt64
+        let leaseID, consumerID: UUID
         let quality: String
         let approximate: Bool
         let renderedSize: CGSize
@@ -57,6 +58,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         func evidence(start: UInt64) -> [String: Any] {
             ["inputNS":start, "drawBeganNS":event.drawBeganUptimeNanoseconds, "drawReturnedNS":event.drawReturnedUptimeNanoseconds,
              "frameID":event.frameID.uuidString, "revision":revision, "generation":generation, "quality":quality,
+             "leaseID":leaseID.uuidString, "consumerID":consumerID.uuidString,
              "approximate":approximate, "width":event.imagePixelWidth, "height":event.imagePixelHeight,
              "renderedWidth":Int(renderedSize.width), "renderedHeight":Int(renderedSize.height)]
         }
@@ -72,6 +74,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                   let event = pane.currentAcceptedDraw, event.frameID == frame.id,
                   event.drawReturnedUptimeNanoseconds >= start else { return false }
             accepted = Draw(event: event, revision: frame.revision, generation: frame.generation,
+                            leaseID:frame.leaseID.rawValue, consumerID:frame.consumerID.rawValue,
                             quality: frame.quality.rawValue, approximate: frame.approximate, renderedSize:frame.outputSize)
             return true
         }
@@ -113,14 +116,19 @@ final class EditingInteractionPerformanceTests: XCTestCase {
     }
 
     @MainActor private func comparePresetWithManualExposure(editing: EditingController, context: EditingInteractionContext,
-                                                             report: inout [String: Any]) async throws {
+                                                             mirrored: Bool, diagnostic: Bool, report: inout [String: Any]) async throws {
         let session = editing.developmentSession
         let baseline = session.recipe
         let baselineFingerprint = try EditingFingerprint.of(baseline)
         var samples = ["preset": [Double](), "manual": [Double]()], draws: [[String: Any]] = []
         var exposureValues: [Double] = []
+        var matchedPairs = 0
+        var warmCounts = [String:[String:UInt64]]()
+        let evenOrder = mirrored ? ["manual","preset"] : ["preset","manual"]
         defer {
-            var result: [String: Any] = ["order":"alternating AB/BA", "exposureValues":exposureValues, "draws":draws,
+            var result: [String: Any] = ["order":mirrored ? "alternating BA/AB" : "alternating AB/BA", "exposureValues":exposureValues, "draws":draws,
+                "mirrored":mirrored, "evenPairOrder":evenOrder, "countsTowardAcceptance":!diagnostic,
+                "matchedRecipeAndExposurePairs":matchedPairs, "warmObservedCounters":warmCounts,
                 "baselineRecipeSHA256":baselineFingerprint, "firstPair":"warm-up",
                 "boundary":"discrete edit to accepted settled AppKit canvas draw return"]
             for path in ["preset", "manual"] {
@@ -129,9 +137,21 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             }
             let preset = statistics(Array((samples["preset"] ?? []).dropFirst()))["p95Ms"] as? Double
             let manual = statistics(Array((samples["manual"] ?? []).dropFirst()))["p95Ms"] as? Double
-            let passes = samples["preset"]?.count == 31 && samples["manual"]?.count == 31 && (preset ?? .infinity) <= (manual ?? -.infinity)
-            result["passes"] = passes
-            Self.gate(passes, "paired.30Warm.presetP95AtMostManualP95", &report)
+            let complete = samples["preset"]?.count == 31 && samples["manual"]?.count == 31 && matchedPairs == 31
+            let passes = complete && (preset ?? .infinity) <= (manual ?? -.infinity)
+            result["meetsReferenceP95Comparison"] = passes
+            if diagnostic {
+                let prefix = mirrored ? "paired.mirror" : "paired.trace"
+                Self.gate(complete, prefix + ".completeMatchedExposurePairs", &report)
+                let accounted = ["preset","manual"].allSatisfy { path in
+                    guard let counts = warmCounts[path], let hits = counts["bitmapHits"], let renders = counts["renders"] else { return false }
+                    return counts["submitted"] == 30 && hits + renders == 30
+                }
+                Self.gate(accounted, prefix + ".completeWarmFrameCounters", &report)
+            } else {
+                result["passes"] = passes
+                Self.gate(passes, "paired.30Warm.presetP95AtMostManualP95", &report)
+            }
             report["pairedExposure"] = result
         }
         for pair in 0...30 {
@@ -140,7 +160,9 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             var patch = DevelopmentPresetPatch(); patch.exposure = target
             let preset = DevelopmentPresetRecord(id: "qa-exposure", name: "曝光", group: "QA", kind: .user, patch: patch)
             var firstRecipe: DevelopmentRecipe?
-            for path in pair.isMultiple(of: 2) ? ["preset","manual"] : ["manual","preset"] {
+            var firstFingerprint: String?
+            let order = pair.isMultiple(of:2) ? evenOrder : Array(evenOrder.reversed())
+            for (position,path) in order.enumerated() {
                 guard session.recipe == baseline else { throw ProbeFailure("Paired baseline recipe changed") }
                 let baselineDraw = try await drawn(editing, recipe: baseline, quality: .settled, label: "matched baseline for " + path)
                 let before = await ImageEngines.previewLifecycle.statistics()
@@ -160,12 +182,30 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                 row["committedNS"] = committed
                 row["synchronousCommandMs"] = Double(committed - started) / 1_000_000
                 row["pair"] = pair; row["path"] = path; row["baselineFrameID"] = baselineDraw.event.frameID.uuidString
+                row["positionInPair"] = position + 1
+                row["targetNativeExposure"] = target
+                let actual = try Self.required(session.recipe.adjustmentsV3?.light.exposure)
+                row["resultNativeExposure"] = actual
                 row["baselineDrawNS"] = baselineDraw.event.drawReturnedUptimeNanoseconds
-                row["resultRecipeSHA256"] = try EditingFingerprint.of(session.recipe)
-                row["previewCounters"] = Self.previewDelta(before, await ImageEngines.previewLifecycle.statistics())
+                let hash = try EditingFingerprint.of(session.recipe)
+                row["resultRecipeSHA256"] = hash
+                let after = await ImageEngines.previewLifecycle.statistics()
+                row["previewCounters"] = Self.previewDelta(before,after)
                 draws.append(row)
-                if let firstRecipe, firstRecipe != session.recipe { throw ProbeFailure("Paired recipes differ at pair \(pair)") }
-                firstRecipe = session.recipe
+                if pair > 0 {
+                    warmCounts[path,default:[:]]["renders",default:0] += after.completedRenders - before.completedRenders
+                    warmCounts[path,default:[:]]["bitmapHits",default:0] += after.cacheHits - before.cacheHits
+                    warmCounts[path,default:[:]]["submitted",default:0] += after.submittedRequests - before.submittedRequests
+                    warmCounts[path,default:[:]]["fallbacks",default:0] += after.interactiveProxyCanonicalFallbacks - before.interactiveProxyCanonicalFallbacks
+                }
+                guard actual == target else { throw ProbeFailure("Wrong native exposure at pair \(pair)") }
+                if let firstRecipe {
+                    guard firstRecipe == session.recipe, firstFingerprint == hash else { throw ProbeFailure("Paired recipes differ at pair \(pair)") }
+                    matchedPairs += 1
+                } else {
+                    firstRecipe = session.recipe
+                    firstFingerprint = hash
+                }
                 try session.undo(context: context)
             }
         }
@@ -175,6 +215,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
     @MainActor func testOptInRealRAWCompoundEditingCanvasPerformance() async throws {
         let env = ProcessInfo.processInfo.environment
         guard env["RAWMASTER_EDITING_PERF"] == "1" else { throw XCTSkip("Real RAW window measurement is opt-in") }
+        defer { if InteractionTrace.shared.isEnabled { InteractionTrace.shared.flush() } }
         guard let path = env["RAWMASTER_EDITING_PERF_OUTPUT"], !path.isEmpty else { throw ProbeFailure("Set a fresh RAWMASTER_EDITING_PERF_OUTPUT to save evidence") }
         let output = URL(fileURLWithPath: path, isDirectory: true)
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
@@ -197,7 +238,11 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             let gates = report["gates"] as? [String:Bool] ?? [:]
             let failures = gates.filter { !$0.value }.keys.sorted()
             guard !gates.isEmpty, failures.isEmpty else { throw ProbeFailure("Failed acceptance gates: " + failures.joined(separator: ", ")) }
-            report["status"] = "passed"; report["passes"] = true
+            if report["pairedDiagnostic"] as? Bool == true {
+                report["status"] = "diagnostic-complete"
+            } else {
+                report["status"] = "passed"; report["passes"] = true
+            }
         } catch {
             report["status"] = "failed"; report["passes"] = false; report["failure"] = error.localizedDescription
             try writeReport()
@@ -244,14 +289,24 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let defaults = try Self.required(UserDefaults(suiteName: "EditingPerformance-" + UUID().uuidString))
         let filterOnly = environment["RAWMASTER_EDITING_PERF_FILTER_ONLY"] == "1"
         let pairedPreset = environment["RAWMASTER_EDITING_PERF_PRESET_PAIR"] == "1"
+        let mirrored = environment["RAWMASTER_EDITING_PERF_PRESET_MIRROR"] == "1"
+        let pairedDiagnostic = pairedPreset && (mirrored || InteractionTrace.shared.isEnabled)
         let measureMask = environment["RAWMASTER_EDITING_PERF_MASK_SUBJECT"] == "1"
         guard [filterOnly,pairedPreset,measureMask].filter({ $0 }).count <= 1 else { throw ProbeFailure("Conflicting measurement selections") }
+        guard !mirrored || pairedPreset else { throw ProbeFailure("Mirrored diagnostics require RAWMASTER_EDITING_PERF_PRESET_PAIR=1") }
         let burst = environment["RAWMASTER_EDITING_PERF_INTERACTIVE_BURST"] == "1"
         report["sourceSHA256"] = prepared.2; report["sourcePixelWidth"] = asset.width ?? 0; report["sourcePixelHeight"] = asset.height ?? 0
         report["lightflowReference"] = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: lightflowPath)))
         report["filterOnly"] = filterOnly
         report["protocol"] = filterOnly ? "filter-canvas-burst-v1" : (burst ? "interactive-burst-one-settled-per-case-v1" : "settled-every-gesture-v1")
-        if pairedPreset { report["protocol"] = "031-discrete-preset-manual-settled-v1" }
+        if pairedPreset {
+            if mirrored { report["protocol"] = "031-discrete-preset-manual-settled-mirror-diagnostic-v1" }
+            else if pairedDiagnostic { report["protocol"] = "031-discrete-preset-manual-settled-trace-diagnostic-v1" }
+            else { report["protocol"] = "031-discrete-preset-manual-settled-v1" }
+            report["pairedDiagnostic"] = pairedDiagnostic
+            report["mirroredPresetDiagnostic"] = mirrored
+            report["interactionTraceEnabled"] = InteractionTrace.shared.isEnabled
+        }
         if measureMask { report["protocol"] = "027-editor-subject-and-frozen-export-v1" }
         report["engineBeforeApp"] = await Self.counters()
         let appModel = AppModel(libraryURL: library, defaults: defaults)
@@ -320,7 +375,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             ]
 
             var adoptedMask: DevelopmentMaskLayerV3?
-            if pairedPreset { try await comparePresetWithManualExposure(editing: editing, context: context, report: &report) }
+            if pairedPreset { try await comparePresetWithManualExposure(editing: editing, context: context, mirrored:mirrored, diagnostic:pairedDiagnostic, report: &report) }
             if measureMask {
                 report["measurementBoundary"] = "mask request to published adoptable candidate; adoption to accepted settled AppKit draw return; export to TIFF writer return"
                 adoptedMask = try await measureSubjectMask(editing: editing, context: context, report: &report)

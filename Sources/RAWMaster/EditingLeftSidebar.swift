@@ -1,10 +1,18 @@
 import SwiftUI
 import RAWMasterCore
 
+enum EditingFilterBrowserMode: String, CaseIterable {
+    case classic, catalog
+    static let defaultsKey = "editing.filterBrowserMode.v1"
+    var title: String { self == .classic ? "经典滤镜" : "预设目录" }
+}
+
 /// Filters, named snapshots and linear history share one vertical tool stack.
 struct EditingLeftSidebar: View {
     @ObservedObject var editing: EditingController
-    var presetCatalog: DevelopmentPresetCatalog = .shared
+    let presetCatalog: DevelopmentPresetCatalog
+    @AppStorage private var browserMode: EditingFilterBrowserMode
+    @State private var viewportHeight: CGFloat = 600
     @State private var summaryExpanded = true
     @State private var filtersExpanded = true
     @State private var snapshotsExpanded = true
@@ -12,6 +20,12 @@ struct EditingLeftSidebar: View {
     @State private var lensName: String?
     @State private var renamingSnapshot: DevelopmentSnapshot?
     @State private var snapshotName = ""
+
+    init(editing: EditingController, presetCatalog: DevelopmentPresetCatalog = .shared) {
+        self.editing = editing
+        self.presetCatalog = presetCatalog
+        _browserMode = AppStorage(wrappedValue: .classic, EditingFilterBrowserMode.defaultsKey, store: editing.filterBrowserDefaults)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -46,9 +60,32 @@ struct EditingLeftSidebar: View {
                             rawSummary
                         }
                         Divider().opacity(0.65)
-                        LeftRailSection(title: "预设", symbol: "camera.filters", expanded: $filtersExpanded, headingIdentifier: "editing.leftRail.filters") {
-                            DevelopmentPresetBrowser(editing: editing, session: session, context: context, scroller: proxy, catalog: presetCatalog)
-                                .padding(.horizontal, 12).padding(.bottom, 12)
+                        LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: $filtersExpanded, headingIdentifier: "editing.leftRail.filters",
+                                        enabled: browserMode == .classic ? Binding(get: { session.parameters.filter.enabled }, set: {
+                                            updateFilter(.setEnabled(.filter, $0), session: session, context: context)
+                                        }) : nil, enableDisabled: editing.availableDevelopmentFilters.count <= 1,
+                                        resetAction: browserMode == .classic ? { updateFilter(.reset(.filter), session: session, context: context) } : nil) {
+                            VStack(alignment: .leading, spacing: 10) {
+                                Picker("滤镜浏览方式", selection: Binding(get: { browserMode }, set: { mode in
+                                    guard mode != browserMode else { return }
+                                    editing.cancelPresetHover()
+                                    browserMode = mode
+                                })) {
+                                    ForEach(EditingFilterBrowserMode.allCases, id: \.self) { mode in
+                                        Text(mode.title).tag(mode).accessibilityIdentifier("editing.filters.browserMode." + mode.rawValue)
+                                    }
+                                }
+                                .pickerStyle(.segmented).labelsHidden().controlSize(.small)
+                                .accessibilityIdentifier("editing.filters.browserMode")
+                                switch browserMode {
+                                case .classic:
+                                    PhotosFilterControls(editing: editing, session: session, owner: editing.developmentThumbnails,
+                                                         context: context, viewportHeight: viewportHeight)
+                                case .catalog:
+                                    DevelopmentPresetBrowser(editing: editing, session: session, context: context, scroller: proxy, catalog: presetCatalog)
+                                }
+                            }
+                            .padding(.horizontal, 12).padding(.bottom, 12)
                         }
                         Divider().opacity(0.65)
                         LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
@@ -64,6 +101,10 @@ struct EditingLeftSidebar: View {
                     }
                 }
                 .coordinateSpace(name: "photos.inspector.scroll")
+                .background(GeometryReader { geometry in
+                    Color.clear.onAppear { viewportHeight = geometry.size.height }
+                        .onChange(of: geometry.size.height) { _, value in viewportHeight = value }
+                })
                 .onAppear { if historyExpanded { scrollToCurrent(session: session, proxy: proxy) } }
                 .onChange(of: historyExpanded) { _, expanded in
                     if expanded { scrollToCurrent(session: session, proxy: proxy) }
@@ -115,6 +156,12 @@ struct EditingLeftSidebar: View {
                 .lineLimit(2).truncationMode(.middle)
         }
         .font(.system(size: 10))
+    }
+
+    private func updateFilter(_ command: DevelopmentAdjustmentCommand, session: EditingDevelopmentSession,
+                              context: EditingInteractionContext) {
+        do { try session.apply(command, event: .init(context: context, control: .init(group: .filter, name: "滤镜"))) }
+        catch { editing.message = "滤镜状态未更新，请完成当前调整后重试。" }
     }
 
     @ViewBuilder private func snapshotList(session: EditingDevelopmentSession,

@@ -260,6 +260,7 @@ import RAWMasterAI
     private var profileObservation: AnyCancellable?
     private let outputRoot: URL
     private let defaults: UserDefaults
+    var filterBrowserDefaults: UserDefaults { defaults }
     let developmentLensProfileDefaults: DevelopmentLensProfileDefaultsStore
     private var pendingExportAssetID: String?
     private var focusedAdmissionFingerprint: String?

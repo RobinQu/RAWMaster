@@ -8,6 +8,11 @@ from statistics import median
 BIRD = "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
 PORTRAIT = "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8"
 FLASHRAW = "flashraw-0.3.1-linear-srgb-bilinear"
+PAIR_GATE = "paired.30Warm.presetP95AtMostManualP95"
+
+
+class WindowLatencyExceeded(ValueError):
+    """A complete, consistent window receipt exceeds its stated latency requirement."""
 
 
 def require(condition, reason):
@@ -21,7 +26,10 @@ def p95(samples):
 
 
 def verify(name, data):
-    require(data["status"] == "passed" and data["passes"] is True, data.get("failure", "window run failed"))
+    pair_pending = (name == "paired" and data["status"] == "failed" and data["passes"] is False
+                    and data["gates"].get(PAIR_GATE) is False)
+    require(pair_pending or (data["status"] == "passed" and data["passes"] is True),
+            data.get("failure", "window run failed"))
     require(data["build"] == "release" and data["composition"] == "AppModel.editing / ImageEngines.editing",
             "requires the shipping composition in Release")
     portrait = name == "portrait"
@@ -31,7 +39,8 @@ def verify(name, data):
     require((data["sourcePixelWidth"], data["sourcePixelHeight"]) == stored, "capture dimensions mismatch")
     require(data["recipeRawDecoder"] == FLASHRAW and data["engineAfterInitialSettled"]["canonicalTextureFills"] > 0,
             "requires FlashRaw-backed initial frame")
-    require(data["gates"] and all(v is True for v in data["gates"].values()), "reported gate failed")
+    require(data["gates"] and all(v is True or (pair_pending and k == PAIR_GATE)
+                                  for k, v in data["gates"].items()), "unexpected reported gate failed")
 
     if name == "classic":
         samples = []
@@ -74,8 +83,11 @@ def verify(name, data):
                 require(math.isclose(sample, (row["drawReturnedNS"] - row["inputNS"])/1e6, abs_tol=1e-6)
                         and math.isclose(row["synchronousCommandMs"], (row["committedNS"] - row["inputNS"])/1e6, abs_tol=1e-6),
                         "reported latency does not match the timestamps")
-        require(p95(pair["preset"]["warm"]["samplesMs"]) <= p95(pair["manual"]["warm"]["samplesMs"]),
-                "discrete preset slower than matched manual p95")
+        preset, manual = (p95(pair[arm]["warm"]["samplesMs"]) for arm in ("preset", "manual"))
+        require(pair["passes"] is (preset <= manual) and data["gates"][PAIR_GATE] is (preset <= manual)
+                and data["passes"] is (preset <= manual), "reported verdict disagrees with the observed p95s")
+        if preset > manual:
+            raise WindowLatencyExceeded(f"SC-02 preset p95 {preset:.3f} ms exceeds matched manual p95 {manual:.3f} ms")
         return
 
     orientation, width, height = (8, 4000, 6000) if portrait else (1, 9504, 6336)
