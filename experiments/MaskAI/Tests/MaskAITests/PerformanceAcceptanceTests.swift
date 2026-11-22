@@ -30,7 +30,13 @@ final class PerformanceAcceptanceTests: XCTestCase {
         guard ProcessInfo.processInfo.environment["MASK_AI_PERFORMANCE_TESTS"] == "1" else {
             throw XCTSkip("Set MASK_AI_PERFORMANCE_TESTS=1 for real-RAW performance acceptance.")
         }
-        let output = moduleRoot.appending(path: "Validation/Performance")
+        let output: URL
+        if let directory = ProcessInfo.processInfo.environment["MASK_AI_PERFORMANCE_OUTPUT"] {
+            output = URL(fileURLWithPath: directory, isDirectory: true)
+            guard !FileManager.default.fileExists(atPath: output.path) else { throw CocoaError(.fileWriteFileExists) }
+        } else {
+            output = moduleRoot.appending(path: "Validation/Performance")
+        }
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         let snapshotRoot = output.appending(path: "Snapshots")
         try? FileManager.default.removeItem(at: snapshotRoot)

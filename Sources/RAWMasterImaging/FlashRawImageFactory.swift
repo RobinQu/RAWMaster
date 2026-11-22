@@ -64,7 +64,8 @@ enum FlashRawImageFactory {
     return try DevelopmentWhiteBalanceEngineV3.applyFlashRaw(p, to: reduced, asShotWhiteBalance: asShotWhiteBalance)
   }
 
-  static func linearImage(capture: URL, rawDetails: DevelopmentRawDetails? = nil) throws -> CIImage {
+  static func linearImage(capture: URL, rawDetails: DevelopmentRawDetails? = nil,
+                          analysis: (source: DevelopmentLocalEditSourceBinding, maximumLongEdge: Int)? = nil) throws -> CIImage {
     let source = try FlashRawSource.open(capture)
     guard source.decoderVersion == "0.3.1" else { throw FlashRawError.unavailable("FlashRaw 0.3.1 is required by this recipe") }
     let frame = try source.decode(output: .linearRGBF16, backend: .gpu, demosaic: source.demosaic(for: rawDetails))
@@ -74,9 +75,22 @@ enum FlashRawImageFactory {
       throw FlashRawError.invalidFrame("invalid full-resolution output")
     }
     let rotated = (5...8).contains(info.orientation)
-    let width = rotated ? info.height : info.width
-    let height = rotated ? info.width : info.height
-    // Native samples are already F16. At native resolution rotation is an integer permutation.
+    let nativeWidth = rotated ? info.height : info.width
+    let nativeHeight = rotated ? info.width : info.height
+    let scale: Double
+    if let analysis {
+      guard analysis.maximumLongEdge > 0, info.orientation == analysis.source.exifOrientation,
+            nativeWidth == analysis.source.orientedWidth, nativeHeight == analysis.source.orientedHeight else {
+        throw DevelopmentMaskError.staleSource
+      }
+      scale = min(1, Double(analysis.maximumLongEdge) / Double(max(nativeWidth, nativeHeight)))
+    } else {
+      scale = 1
+    }
+    // The existing Metal sampling pass folds EXIF orientation and proxy scaling into one texture.
+    // At native resolution no interpolation takes place.
+    let width = max(1, Int((Double(nativeWidth) * scale).rounded()))
+    let height = max(1, Int((Double(nativeHeight) * scale).rounded()))
     let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba16Float,
       width: width, height: height, mipmapped: false)
     descriptor.storageMode = .private

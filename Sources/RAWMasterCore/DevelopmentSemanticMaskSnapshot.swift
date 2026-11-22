@@ -23,6 +23,8 @@ public struct DevelopmentSemanticMaskSnapshot: Codable, Equatable, Sendable {
   public let source: DevelopmentLocalEditSourceBinding
   public let target: DevelopmentSemanticTarget
   public let generator: String
+  /// The neutral input decoder used for this frozen selection. Older snapshots omit its identity.
+  public let analysisDecoder: String?
   public let modelHashes: [String]
   /// A point, or opposing corners of a box, in top-left oriented source coordinates.
   public let prompt: [DevelopmentSourcePoint]
@@ -34,12 +36,13 @@ public struct DevelopmentSemanticMaskSnapshot: Codable, Equatable, Sendable {
   public init(
     source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget, generator: String,
     modelHashes: [String] = [], prompt: [DevelopmentSourcePoint] = [], width: Int, height: Int,
-    png: Data, wasRefined: Bool = false
+    png: Data, wasRefined: Bool = false, analysisDecoder: String? = nil
   ) {
     manualRefinement = wasRefined ? true : nil
     self.source = source
     self.target = target
     self.generator = generator
+    self.analysisDecoder = analysisDecoder
     self.modelHashes = modelHashes
     self.prompt = prompt
     self.width = width
@@ -52,7 +55,8 @@ public struct DevelopmentSemanticMaskSnapshot: Codable, Equatable, Sendable {
   public func validate(png: Data) throws {
     try source.validate()
     guard (1...1536).contains(width), (1...1536).contains(height),
-      (1...96).contains(generator.count), modelHashes.count <= 4,
+      (1...96).contains(generator.count), analysisDecoder.map({ (1...96).contains($0.count) }) ?? true,
+      modelHashes.count <= 4,
       modelHashes.allSatisfy(EditingFingerprint.isSHA256), prompt.count <= 2,
       [.instance, .object].contains(target) ? !prompt.isEmpty : prompt.isEmpty,
       png.count >= 33,

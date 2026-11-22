@@ -91,11 +91,12 @@ public actor DevelopmentService {
       defer { ownedContext?.clearCaches() }
       let brillianceRequest=brillianceScope.map{DevelopmentBrilliancePublicV1.Request(scope:$0,check:{try Task.checkCancellation()})}
       let (image, depth) = try PhotoRenderer.develop(captured, recipe, context:ownedContext,brillianceQARequest:brillianceRequest)
+      let legacyMask = try DevelopmentLegacyMaskOutput.make(capture: captured, recipe: recipe, extent: image.extent, format: format)
       return try PhotoRenderer.write(image, format: format, destination: destination,
         protectedURLs: protectedURLs + [source.sourceLocation], sourceDepth: depth, preparePublication: preparePublication,
         renderContext: ownedContext ?? PhotoRenderer.renderingContext(recipe),
         tiffTransport:(newBrilliance || ((dehazeBanded || (adaptive && format == .tiff16)) && image.extent == image.extent.integral)) ? .nativeBands256:.whole,
-        beforePublish: { try RenderFiles.verify(source) })
+        legacyMask: legacyMask, beforePublish: { try RenderFiles.verify(source) })
     }
   }
   public func inspect(fileURL: URL, sourceEffectiveBitDepth: Int? = nil) async throws -> RenderArtifact {
@@ -231,7 +232,7 @@ enum PhotoRenderer {
     let cos2 = c*c - s*s
     return CGSize(width: (width*c-height*s)/cos2, height: (height*c-width*s)/cos2)
   }
-  static func write(_ original: CIImage, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL], sourceDepth: Int?, preparePublication: RenderPublicationPreparation? = nil, renderContext: CIContext? = nil, tiffTransport:TIFF16Output.Transport = .whole, beforePublish: () throws -> Void = {}) throws -> RenderedPhoto {
+  static func write(_ original: CIImage, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL], sourceDepth: Int?, preparePublication: RenderPublicationPreparation? = nil, renderContext: CIContext? = nil, tiffTransport:TIFF16Output.Transport = .whole, legacyMask: DevelopmentLegacyMaskOutput? = nil, beforePublish: () throws -> Void = {}) throws -> RenderedPhoto {
     let telemetry = ImagePerformanceTelemetry.shared
     let token = telemetry.begin(operation: "导出图像", stage: format.filenameExtension, queue: "导出")
     var outcome = ImagePerformanceOutcome.failed
@@ -248,7 +249,9 @@ enum PhotoRenderer {
     var image = original
     if format == .jpeg8 { image = image.composited(over: CIImage(color: .white).cropped(to: image.extent)) }
     if TIFF16Output.requiresTiles(image.extent) {
-      try TIFF16Output.write(image, context:context, colorSpace:sRGB, to:stage, transport:.nativeTiles, format:format)
+      try TIFF16Output.write(image, context:context, colorSpace:sRGB, to:stage, transport:.nativeTiles, format:format, legacyMask:legacyMask)
+    } else if let legacyMask {
+      try TIFF16Output.write(image, context:context, colorSpace:sRGB, to:stage, transport:tiffTransport, format:format, legacyMask:legacyMask)
     } else {
       switch format {
       case .jpeg8: try context.writeJPEGRepresentation(of: image, to: stage, colorSpace: sRGB, options: [CIImageRepresentationOption(rawValue: kCGImageDestinationLossyCompressionQuality as String): 0.95])
@@ -369,13 +372,13 @@ enum TIFF16Output {
     }
   }
   static func write(_ image: CIImage, context: CIContext, colorSpace: CGColorSpace, to url: URL,
-                    transport:Transport = .whole, format:PhotoRenderFormat = .tiff16, jpegQuality:Double = 0.95) throws {
+                    transport:Transport = .whole, format:PhotoRenderFormat = .tiff16, jpegQuality:Double = 0.95, legacyMask:DevelopmentLegacyMaskOutput? = nil) throws {
     let extent=image.extent,layout=try Layout.checked(extent)
     if transport != .whole {
       guard extent == extent.integral else { throw DevelopmentError.invalidEncoding }
     }
     if format == .tiff16, transport == .nativeTiles, try LargeTIFF16Writer.writeIfRepresentable(
-      image:image,layout:layout,context:context,colorSpace:colorSpace,url:url) { return }
+      image:image,layout:layout,context:context,colorSpace:colorSpace,url:url,legacyMask:legacyMask) { return }
     // Same opt-in scalar diagnostic as native finite validation. This records only
     // synchronous stage boundaries, not the continuously sampled process peak.
     let qaScalars=ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] == "1"
@@ -439,6 +442,7 @@ enum TIFF16Output {
             try Task.checkCancellation()
           }
         }
+        try legacyMask?.restore(buffer:pages.pointer, rowBytes:layout.rowBytes, top:0, rows:layout.height, format:format, colorSpace:colorSpace)
       }
       trace("end")
       try Task.checkCancellation()

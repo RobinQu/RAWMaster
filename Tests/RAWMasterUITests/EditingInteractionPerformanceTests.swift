@@ -6,9 +6,25 @@ import XCTest
 @testable import RAWMasterImaging
 @testable import RAWMaster
 
-/// Opt-in real RAW controller + native AppKit canvas timing. Programmatic input is not physical input.
+/// Opt-in real RAW controller + native AppKit canvas timing. The draw event carries the actual return time.
 final class EditingInteractionPerformanceTests: XCTestCase {
-    private enum Failure: Error { case timedOut(String), conflictingMeasurements }
+    struct ProbeFailure: LocalizedError {
+        let message: String
+        var errorDescription: String? { message }
+        init(_ message: String) { self.message = message }
+    }
+
+    static func required<T>(_ value: T?, _ message: String = "Required probe value is absent",
+                            file: StaticString = #fileID, line: UInt = #line) throws -> T {
+        guard let value else { throw ProbeFailure("\(file):\(line) \(message)") }
+        return value
+    }
+
+    static func gate(_ condition: Bool, _ name: String, _ report: inout [String: Any]) {
+        var gates = report["gates"] as? [String: Bool] ?? [:]
+        gates[name] = condition && (gates[name] ?? true)
+        report["gates"] = gates
+    }
 
     @MainActor func wait(_ label: String, seconds: Double = 30, _ condition: @escaping @MainActor () -> Bool) async throws {
         let deadline = ContinuousClock.now + .seconds(seconds)
@@ -16,8 +32,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             if condition() { return }
             try await Task.sleep(nanoseconds: 2_000_000)
         }
-        XCTFail("Timed out: " + label)
-        throw Failure.timedOut(label)
+        throw ProbeFailure("Timed out: " + label)
     }
 
     func statistics(_ values: [Double]) -> [String: Any] {
@@ -29,83 +44,160 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             "maxMs": sorted[sorted.count - 1], "samplesMs": values]
     }
 
-    @MainActor private func comparePresetWithManualExposure(
-        editing: EditingController, context: EditingInteractionContext
-    ) async throws -> [String: Any] {
+    struct Draw {
+        let event: ImageFrameDrawEvent
+        let revision, generation: UInt64
+        let quality: String
+        let approximate: Bool
+        func duration(since start: UInt64) throws -> Double {
+            guard event.drawReturnedUptimeNanoseconds >= start else { throw ProbeFailure("Draw predates input") }
+            return Double(event.drawReturnedUptimeNanoseconds - start) / 1_000_000
+        }
+        func evidence(start: UInt64) -> [String: Any] {
+            ["inputNS":start, "drawBeganNS":event.drawBeganUptimeNanoseconds, "drawReturnedNS":event.drawReturnedUptimeNanoseconds,
+             "frameID":event.frameID.uuidString, "revision":revision, "generation":generation, "quality":quality,
+             "approximate":approximate, "width":event.imagePixelWidth, "height":event.imagePixelHeight]
+        }
+    }
+
+    @MainActor func drawn(_ editing: EditingController, recipe: DevelopmentRecipe, quality: PreviewQuality,
+                          after start: UInt64 = 0, label: String, seconds: Double = 90) async throws -> Draw {
+        let pane = editing.previews.primary
+        var accepted: Draw?
+        try await wait(label, seconds: seconds) {
+            guard pane.frameRecipe == recipe, let frame = pane.frame, frame.quality == quality,
+                  let event = pane.currentAcceptedDraw, event.frameID == frame.id,
+                  event.drawReturnedUptimeNanoseconds >= start else { return false }
+            accepted = Draw(event: event, revision: frame.revision, generation: frame.generation,
+                            quality: frame.quality.rawValue, approximate: frame.approximate)
+            return true
+        }
+        return try Self.required(accepted)
+    }
+
+    static func counters() async -> [String: Any] {
+        let stats = await ImageEngines.previewLifecycle.statistics()
+        let monitoring = await ImageEngines.monitoring.performanceSnapshot()
+        let texture = FlashRawCanonicalTexturePool.shared.statistics()
+        let decodes = monitoring.aggregates.filter { $0.boundary == .decode }
+        return ["submitted":stats.submittedRequests, "completed":stats.completedRenders, "superseded":stats.supersededRequests,
+                "bitmapCacheHits":stats.cacheHits, "sourceCaptures":stats.sourceCaptures, "sourceHashPasses":stats.sourceFullHashPasses,
+                "rawBaseFills":stats.rawBaseFills, "rawBaseHits":stats.rawBaseHits, "rawBaseMisses":stats.rawBaseMisses,
+                "canonicalTextureFills":texture.fills, "canonicalTextureHits":texture.hits, "canonicalTextureBytes":texture.residentBytes,
+                "fallbacks":stats.interactiveProxyCanonicalFallbacks, "lastFallback":stats.interactiveProxyLastFallbackReason ?? "",
+                "nativeInteractiveJobs":stats.nativeProfileInteractiveJobs, "nativeCanonicalJobs":stats.nativeProfileCanonicalJobs,
+                "nativeLastRoute":stats.nativeProfileLastRoute, "flashRawLatestDecodeBackend":monitoring.latestFlashRaw?.decoderBackend ?? "",
+                "decodeOperations":decodes.map { ["operation":$0.operation,"stage":$0.stage,"count":$0.sampleCount] as [String:Any] }]
+    }
+
+    static func previewDelta(_ old: PreviewStatistics, _ new: PreviewStatistics) -> [String: Any] {
+        ["submitted":new.submittedRequests - old.submittedRequests, "renders":new.completedRenders - old.completedRenders,
+         "bitmapHits":new.cacheHits - old.cacheHits, "rawBaseFills":new.rawBaseFills - old.rawBaseFills,
+         "rawBaseHits":new.rawBaseHits - old.rawBaseHits, "fallbacks":new.interactiveProxyCanonicalFallbacks - old.interactiveProxyCanonicalFallbacks,
+         "lastNativeRoute":new.nativeProfileLastRoute, "lastFallback":new.interactiveProxyLastFallbackReason ?? ""]
+    }
+
+    @MainActor private func comparePresetWithManualExposure(editing: EditingController, context: EditingInteractionContext,
+                                                             report: inout [String: Any]) async throws {
         let session = editing.developmentSession
         let baseline = session.recipe
-        var samples = ["preset": [Double](), "manual": [Double]()]
+        let baselineFingerprint = try EditingFingerprint.of(baseline)
+        var samples = ["preset": [Double](), "manual": [Double]()], draws: [[String: Any]] = []
         var exposureValues: [Double] = []
+        defer {
+            var result: [String: Any] = ["order":"alternating AB/BA", "exposureValues":exposureValues, "draws":draws,
+                "baselineRecipeSHA256":baselineFingerprint, "firstPair":"warm-up",
+                "boundary":"discrete edit to accepted settled AppKit canvas draw return"]
+            for path in ["preset", "manual"] {
+                let series = samples[path] ?? []
+                result[path] = ["firstMs":series.first.map { $0 as Any } ?? NSNull(), "warm":statistics(Array(series.dropFirst()))]
+            }
+            let preset = statistics(Array((samples["preset"] ?? []).dropFirst()))["p95Ms"] as? Double
+            let manual = statistics(Array((samples["manual"] ?? []).dropFirst()))["p95Ms"] as? Double
+            let passes = samples["preset"]?.count == 31 && samples["manual"]?.count == 31 && (preset ?? .infinity) <= (manual ?? -.infinity)
+            result["passes"] = passes
+            Self.gate(passes, "paired.30Warm.presetP95AtMostManualP95", &report)
+            report["pairedExposure"] = result
+        }
         for pair in 0...30 {
             let target = 0.12 + Double(pair) * 0.005
             exposureValues.append(target)
-            var patch = DevelopmentPresetPatch()
-            patch.exposure = target
+            var patch = DevelopmentPresetPatch(); patch.exposure = target
             let preset = DevelopmentPresetRecord(id: "qa-exposure", name: "曝光", group: "QA", kind: .user, patch: patch)
-            let order = pair.isMultiple(of: 2) ? ["preset", "manual"] : ["manual", "preset"]
             var firstRecipe: DevelopmentRecipe?
-            for path in order {
-                XCTAssertEqual(session.recipe, baseline)
+            for path in pair.isMultiple(of: 2) ? ["preset","manual"] : ["manual","preset"] {
+                guard session.recipe == baseline else { throw ProbeFailure("Paired baseline recipe changed") }
+                let before = await ImageEngines.previewLifecycle.statistics()
+                let baselineDraw = try await drawn(editing, recipe: baseline, quality: .settled, label: "matched baseline for " + path)
                 let started = DispatchTime.now().uptimeNanoseconds
-                if path == "preset" {
-                    try session.adoptPreset(preset, context: context, revision: session.revision)
-                } else {
-                    var light = session.parameters.light
-                    light.enabled = true
-                    light.exposure = target
+                if path == "preset" { try session.adoptPreset(preset, context: context, revision: session.revision) }
+                else {
+                    var light = session.parameters.light; light.enabled = true; light.exposure = target
                     try session.apply(.setParameters(.light(light)), event: .init(context: context,
                         control: .init(group: .light, name: "曝光"),
                         nativeInput: .capture(control: "light.exposure", phase: "discrete", nativeEvent: true)))
                 }
-                try await wait("settled draw for " + path, seconds: 60) {
-                    editing.previews.primary.frameRecipe == session.recipe &&
-                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
-                }
-                samples[path, default: []].append(Double(DispatchTime.now().uptimeNanoseconds - started) / 1_000_000)
-                if let firstRecipe { XCTAssertEqual(session.recipe, firstRecipe) } else { firstRecipe = session.recipe }
+                let settled = try await drawn(editing, recipe: session.recipe, quality: .settled, after: started,
+                                              label: "settled draw for " + path)
+                samples[path, default: []].append(try settled.duration(since: started))
+                var row = settled.evidence(start: started)
+                row["pair"] = pair; row["path"] = path; row["baselineFrameID"] = baselineDraw.event.frameID.uuidString
+                row["baselineDrawNS"] = baselineDraw.event.drawReturnedUptimeNanoseconds
+                row["resultRecipeSHA256"] = try EditingFingerprint.of(session.recipe)
+                row["previewCounters"] = Self.previewDelta(before, await ImageEngines.previewLifecycle.statistics())
+                draws.append(row)
+                if let firstRecipe, firstRecipe != session.recipe { throw ProbeFailure("Paired recipes differ at pair \(pair)") }
+                firstRecipe = session.recipe
                 try session.undo(context: context)
-                try await wait("restore matched baseline", seconds: 60) {
-                    session.recipe == baseline && editing.previews.primary.frameRecipe == baseline &&
-                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
-                }
             }
         }
-        var result: [String: Any] = ["order": "alternating AB/BA", "exposureValues": exposureValues,
-            "boundary": "discrete edit to accepted settled canvas draw return", "firstPair": "warm-up"]
-        var p95: [String: Double] = [:]
-        for path in ["preset", "manual"] {
-            let series = try XCTUnwrap(samples[path])
-            let warm = statistics(Array(series.dropFirst()))
-            result[path] = ["firstMs": try XCTUnwrap(series.first), "warm": warm] as [String: Any]
-            p95[path] = try XCTUnwrap(warm["p95Ms"] as? Double)
-        }
-        let presetP95 = try XCTUnwrap(p95["preset"])
-        let manualP95 = try XCTUnwrap(p95["manual"])
-        result["passes"] = presetP95 <= manualP95
-        XCTAssertLessThanOrEqual(presetP95, manualP95, "031 SC-02 same-source discrete exposure")
-        return result
+        _ = try await drawn(editing, recipe: baseline, quality: .settled, label: "last paired undo")
     }
 
     @MainActor func testOptInRealRAWCompoundEditingCanvasPerformance() async throws {
-        let environment = ProcessInfo.processInfo.environment
-        guard environment["RAWMASTER_EDITING_PERF"] == "1",
-              let sourcePath = environment["RAWMASTER_EDITING_PERF_SOURCE"],
-              let outputPath = environment["RAWMASTER_EDITING_PERF_OUTPUT"],
-              let lightflowPath = environment["RAWMASTER_LIGHTFLOW_REFERENCE"] else {
-            throw XCTSkip("Explicit RAW, new output and Lightflow reference are required")
+        let env = ProcessInfo.processInfo.environment
+        guard env["RAWMASTER_EDITING_PERF"] == "1" else { throw XCTSkip("Real RAW window measurement is opt-in") }
+        guard let path = env["RAWMASTER_EDITING_PERF_OUTPUT"], !path.isEmpty else { throw ProbeFailure("Set a fresh RAWMASTER_EDITING_PERF_OUTPUT to save evidence") }
+        let output = URL(fileURLWithPath: path, isDirectory: true)
+        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+        let destination = output.appendingPathComponent("editing-interaction-performance.json")
+        guard !FileManager.default.fileExists(atPath: destination.path) else { throw CocoaError(.fileWriteFileExists) }
+        var report: [String: Any] = ["status":"running", "build":"release", "gates":[String:Bool](),
+            "measurementBoundary":"programmatic recipe commit to accepted AppKit canvas draw return; not physical input or WindowServer presentation",
+            "engine":String(reflecting: type(of: ImageEngines.editing)), "composition":"AppModel.editing / ImageEngines.editing",
+            "clock":"DispatchTime.uptimeNanoseconds, frame-correlated drawReturnedUptimeNanoseconds"]
+        func writeReport() throws {
+            try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted,.sortedKeys]).write(to: destination, options: .withoutOverwriting)
         }
         #if DEBUG
+        report["status"] = "skipped"; report["build"] = "debug"; report["failure"] = "Release measurements required"
+        try writeReport()
         throw XCTSkip("Release measurements required")
+        #else
+        do {
+            try await runWindow(environment: env, output: output, report: &report)
+            let gates = report["gates"] as? [String:Bool] ?? [:]
+            let failures = gates.filter { !$0.value }.keys.sorted()
+            guard !gates.isEmpty, failures.isEmpty else { throw ProbeFailure("Failed acceptance gates: " + failures.joined(separator: ", ")) }
+            report["status"] = "passed"; report["passes"] = true
+        } catch {
+            report["status"] = "failed"; report["passes"] = false; report["failure"] = error.localizedDescription
+            try writeReport()
+            throw error
+        }
+        try writeReport()
+        print("EDITING-CANVAS-PERFORMANCE \(destination.path)")
         #endif
+    }
+
+    @MainActor private func runWindow(environment: [String:String], output: URL, report: inout [String:Any]) async throws {
+        let sourcePath = try Self.required(environment["RAWMASTER_EDITING_PERF_SOURCE"], "Missing explicit RAW")
+        let lightflowPath = try Self.required(environment["RAWMASTER_LIGHTFLOW_REFERENCE"], "Missing Lightflow reference")
         _ = NSApplication.shared
         let source = URL(fileURLWithPath: sourcePath).resolvingSymlinksInPath()
-        let output = URL(fileURLWithPath: outputPath, isDirectory: true)
-        try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
-        let reportURL = output.appendingPathComponent("editing-interaction-performance.json")
         let run = output.appendingPathComponent("fixture", isDirectory: true)
-        let ownedURLs = [reportURL, run, output.appending(path: "reopened-subject.tiff"), output.appending(path: "disabled-layer-control.tiff"),
-                         output.appending(path: "same-renderer-zero-coverage.tiff")]
-        guard !ownedURLs.contains(where: { FileManager.default.fileExists(atPath: $0.path) }) else {
+        guard ![run,output.appending(path:"reopened-subject.tiff"),output.appending(path:"disabled-layer-control.tiff"),
+                output.appending(path:"same-renderer-zero-coverage.tiff")].contains(where: { FileManager.default.fileExists(atPath:$0.path) }) else {
             throw CocoaError(.fileWriteFileExists)
         }
         try FileManager.default.createDirectory(at: run, withIntermediateDirectories: false)
@@ -129,45 +221,43 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                 width: width, height: height, contentHash: hash, importState: .ready))
             return (store, asset, hash)
         }.value
-        let store = prepared.0, asset = prepared.1
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: "EditingPerformance-" + UUID().uuidString))
+
+        let asset = prepared.1
+        let defaults = try Self.required(UserDefaults(suiteName: "EditingPerformance-" + UUID().uuidString))
         let filterOnly = environment["RAWMASTER_EDITING_PERF_FILTER_ONLY"] == "1"
         let pairedPreset = environment["RAWMASTER_EDITING_PERF_PRESET_PAIR"] == "1"
         let measureMask = environment["RAWMASTER_EDITING_PERF_MASK_SUBJECT"] == "1"
-        if measureMask && (filterOnly || pairedPreset) {
-            throw Failure.conflictingMeasurements
-        }
-        let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0,
-            rawBaseCacheBytes: filterOnly || pairedPreset || measureMask ? 1_073_741_824 : 0, interactiveEvaluation: .proxyV1))
-        let backend = SharedEditingPreviewBackend(service: service)
-        let editing = try EditingController(store: store, libraryURL: library, defaults: defaults, previewBackend: backend)
+        guard [filterOnly,pairedPreset,measureMask].filter({ $0 }).count <= 1 else { throw ProbeFailure("Conflicting measurement selections") }
+        let burst = environment["RAWMASTER_EDITING_PERF_INTERACTIVE_BURST"] == "1"
+        report["sourceSHA256"] = prepared.2; report["sourcePixelWidth"] = asset.width ?? 0; report["sourcePixelHeight"] = asset.height ?? 0
+        report["lightflowReference"] = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: lightflowPath)))
+        report["filterOnly"] = filterOnly
+        report["protocol"] = filterOnly ? "filter-canvas-burst-v1" : (burst ? "interactive-burst-one-settled-per-case-v1" : "settled-every-gesture-v1")
+        if pairedPreset { report["protocol"] = "031-discrete-preset-manual-settled-v1" }
+        if measureMask { report["protocol"] = "027-editor-subject-and-frozen-export-v1" }
+        report["engineBeforeApp"] = await Self.counters()
         let appModel = AppModel(libraryURL: library, defaults: defaults)
+        let editing = try Self.required(appModel.editing, appModel.errorMessage ?? "AppModel failed to construct its production editor")
         let host = NSHostingView(rootView: EditingImageCanvas(editing: editing).environmentObject(appModel))
         let window = NSWindow(contentRect: .init(x: 40, y: 40, width: 1100, height: 760),
             styleMask: [.titled, .resizable], backing: .buffered, defer: false)
-        window.isReleasedWhenClosed = false
-        window.contentView = host
-        window.orderFront(nil)
+        window.isReleasedWhenClosed = false; window.contentView = host; window.orderFront(nil)
         defer { window.orderOut(nil); window.contentView = nil; window.close() }
-        let interactiveBurst = environment["RAWMASTER_EDITING_PERF_INTERACTIVE_BURST"] == "1"
-        var report: [String: Any] = [
-            "build": "release", "sourceSHA256": prepared.2,
-            "protocol": filterOnly ? "filter-canvas-burst-v1" : (interactiveBurst ? "interactive-burst-one-settled-per-case-v1" : "settled-every-gesture-v1"),
-            "filterOnly": filterOnly,
-            "sourcePixelWidth": asset.width ?? 0, "sourcePixelHeight": asset.height ?? 0,
-            "measurementBoundary": "programmatic recipe commit to accepted AppKit canvas draw return; not physical input or WindowServer presentation",
-            "lightflowReference": try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: lightflowPath)))
-        ]
-        var editorDidClose = false
+        var didClose = false
         do {
             editing.isPresented = true
             editing.focus(asset)
-            try await wait("initial real RAW frame") { editing.work != nil && editing.previews.primary.frame != nil }
+            try await wait("initial real RAW frame", seconds:90) { editing.work != nil && editing.previews.primary.frame != nil }
             editing.beginDevelopmentInterface()
             try await wait("active editing session") { editing.developmentContext != nil }
             host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
-            try await wait("initial canvas draw") { editing.previews.primary.currentFrameWasDrawn }
-            let context = try XCTUnwrap(editing.developmentContext)
+            let context = try Self.required(editing.developmentContext)
+            let initial = try await drawn(editing, recipe: editing.recipe, quality: .settled, label: "initial settled draw")
+            report["initialFrame"] = initial.evidence(start: initial.event.drawBeganUptimeNanoseconds)
+            report["recipeRawDecoder"] = editing.developmentSession.parameters.rawDecoder?.rawValue ?? "core-image"
+            report["window"] = ["width":host.bounds.width,"height":host.bounds.height,"backingScale":window.backingScaleFactor]
+            report["engineAfterInitialSettled"] = await Self.counters()
+
             let standardCases: [(String, Int, (Double) -> [DevelopmentAdjustmentCommand])] = [
                 ("exposure", 8, { value in
                     var p = DevelopmentLightV3(); p.enabled = true; p.exposure = value
@@ -210,28 +300,20 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                         .setParameters(.filter(.init(enabled: true, selection: .vivid, intensity: 50)))]
                 })
             ]
-            if pairedPreset {
-                report["protocol"] = "031-discrete-preset-manual-settled-v1"
-                report["pairedExposure"] = try await comparePresetWithManualExposure(editing: editing, context: context)
-            }
+
             var adoptedMask: DevelopmentMaskLayerV3?
+            if pairedPreset { try await comparePresetWithManualExposure(editing: editing, context: context, report: &report) }
             if measureMask {
-                report["protocol"] = "027-editor-subject-and-frozen-export-v1"
-                report["measurementBoundary"] = "Mask request to a candidate ready for review. Adoption to settled AppKit draw return. Reopened recipe to TIFF writer return."
-                try await wait("initial settled draw before subject request", seconds: 90) {
-                    editing.previews.primary.frameRecipe == editing.recipe &&
-                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
-                }
-                let before = await service.statistics()
+                report["measurementBoundary"] = "mask request to published adoptable candidate; adoption to accepted settled AppKit draw return; export to TIFF writer return"
                 adoptedMask = try await measureSubjectMask(editing: editing, context: context, report: &report)
-                let after = await service.statistics()
-                report["previewRawBase"] = ["fillsBefore": before.rawBaseFills, "fillsAfter": after.rawBaseFills,
-                                            "hitsBefore": before.rawBaseHits, "hitsAfter": after.rawBaseHits]
             }
             let cases = pairedPreset || measureMask ? [] : (filterOnly ? filterCases : standardCases)
             var allInteractive: [Double] = [], coldInteractive: [Double] = [], warmInteractive: [Double] = []
             for (label, count, makeCommands) in cases {
-                var interactive: [Double] = [], settled: [Double] = []
+                var interactive: [Double] = [], settled: [Double] = [], evidence: [[String:Any]] = []
+                let before = await Self.counters()
+                defer { report[label] = ["interactive":statistics(interactive), "settledAfterGesture":statistics(settled),
+                                         "draws":evidence, "engineBefore":before] }
                 for index in 1...count {
                     let step: Double = switch label {
                     case "exposure": 0.05
@@ -239,65 +321,99 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                     case "filterIntensity": 12
                     default: 5
                     }
-                    let value = Double(index) * step
+                    let commands = makeCommands(Double(index) * step)
                     let token = try editing.developmentSession.beginGesture(.init(group: nil, name: label), context: context)
                     let started = DispatchTime.now().uptimeNanoseconds
-                    try editing.developmentSession.applyAtomically(makeCommands(value), title: label,
+                    try editing.developmentSession.applyAtomically(commands, title: label,
                         event: .init(context: context, control: .init(group: nil, name: label),
                             nativeInput: .capture(control: "performance." + label, phase: "change", nativeEvent: true, gestureID: token.id)), gesture: token)
-                    try await wait(label + " interactive draw \(index)") {
-                        editing.previews.primary.frameRecipe == editing.recipe
-                            && editing.previews.primary.frame?.quality == .interactive
-                            && editing.previews.primary.currentFrameWasDrawn
-                    }
-                    interactive.append(Double(DispatchTime.now().uptimeNanoseconds - started) / 1_000_000)
+                    let draw = try await drawn(editing, recipe: editing.recipe, quality: .interactive, after: started,
+                                               label: label + " interactive draw \(index)")
+                    interactive.append(try draw.duration(since: started)); evidence.append(draw.evidence(start:started))
                     let settling = DispatchTime.now().uptimeNanoseconds
                     try editing.developmentSession.endGesture(token, .commit)
-                    if !filterOnly && (!interactiveBurst || index == count) {
-                        try await wait(label + " settled draw \(index)", seconds: 60) {
-                            editing.previews.primary.frameRecipe == editing.recipe
-                                && editing.previews.primary.frame?.quality == .settled
-                                && editing.previews.primary.currentFrameWasDrawn
-                        }
-                        settled.append(Double(DispatchTime.now().uptimeNanoseconds - settling) / 1_000_000)
+                    if !filterOnly && (!burst || index == count) {
+                        let final = try await drawn(editing, recipe: editing.recipe, quality: .settled, after: settling,
+                                                    label: label + " settled draw \(index)")
+                        settled.append(try final.duration(since: settling)); evidence.append(final.evidence(start:settling))
                     }
-                    XCTAssertEqual(editing.developmentContext, context)
-                    XCTAssertNil(editing.message)
-                    let route = editing.previews.primary.frame
-                    print("PERF-ROUTE \(label) \(index) approximate=\(route?.approximate == true)")
+                    guard editing.developmentContext == context, editing.message == nil else { throw ProbeFailure("Editor changed context in " + label) }
                 }
                 allInteractive += interactive
                 if let first = interactive.first { coldInteractive.append(first) }
                 warmInteractive += interactive.dropFirst()
-                report[label] = ["interactive": statistics(interactive), "settledAfterGesture": statistics(settled)]
             }
-            report["allInteractive"] = statistics(allInteractive)
-            report["coldInteractiveFirstPerCase"] = statistics(coldInteractive)
-            report["warmInteractiveAfterFirstPerCase"] = statistics(warmInteractive)
-            report["sourceSHA256After"] = try await Task.detached { try FileSafety.hash(source) }.value
-            XCTAssertEqual(report["sourceSHA256After"] as? String, prepared.2)
+            if !cases.isEmpty {
+                report["allInteractive"] = statistics(allInteractive)
+                report["coldInteractiveFirstPerCase"] = statistics(coldInteractive)
+                let warm = statistics(warmInteractive)
+                report["warmInteractiveAfterFirstPerCase"] = warm
+                if filterOnly {
+                    let p50 = try Self.required(warm["medianMs"] as? Double), p95 = try Self.required(warm["p95Ms"] as? Double)
+                    report["classicThresholdsMs"] = ["warmP50Max":20,"warmP95Max":33]
+                    Self.gate(warmInteractive.count == 19, "classic.19WarmHistoricalSamples", &report)
+                    Self.gate(p50 <= 20, "classic.warmP50AtMost20ms", &report)
+                    Self.gate(p95 <= 33, "classic.warmP95AtMost33ms", &report)
+                }
+            }
+            let hashAfter = try await Task.detached { try FileSafety.hash(source) }.value
+            report["sourceSHA256After"] = hashAfter
+            Self.gate(hashAfter == prepared.2, "source.preserved", &report)
+            report["engineAfterInteraction"] = await Self.counters()
             await editing.shutdown()
-            await service.closeAll()
-            editorDidClose = true
+            await ImageEngines.previewLifecycle.closeAll()
+            didClose = true
             if let adoptedMask {
                 report["memoryAfterEditorShutdown"] = try Self.maskProcessMemory()
-                try await Self.exportReopenedMask(library: library, workID: context.workID, layer: adoptedMask,
-                                                  output: output, report: &report)
-                let toggle = try XCTUnwrap(report["togglePixelComparison"] as? [String: Int])
-                XCTAssertEqual(toggle["protectedMaximumRGBA16Difference"], 0, "Protected pixels changed when toggling the layer, including legacy work")
-                let hashAfterExport = try await Task.detached { try FileSafety.hash(source) }.value
-                report["sourceSHA256AfterExport"] = hashAfterExport
-                XCTAssertEqual(hashAfterExport, prepared.2)
+                let sourceID = try Self.required(adoptedMask.semanticSnapshot?.source.sourceContentID)
+                let input = editing.developmentMaskInput
+                let before = try Self.required(await input.analysisDiagnostics(for: sourceID), "Missing pre-export mask diagnostics")
+                report["modelInvocationsBeforeReopen"] = before.modelInvocations
+                let reopenStart = DispatchTime.now().uptimeNanoseconds
+                let reopenedModel = AppModel(libraryURL: library, defaults: defaults)
+                let reopened = try Self.required(reopenedModel.editing, "Failed to reopen normal editor")
+                let reopenedInput = reopened.developmentMaskInput
+                do {
+                    let initialCalls = await reopenedInput.analysisDiagnostics(for: sourceID)?.modelInvocations ?? 0
+                    let reopenedCanvas = NSHostingView(rootView: EditingImageCanvas(editing: reopened).environmentObject(reopenedModel))
+                    window.contentView = reopenedCanvas
+                    reopened.isPresented = true; reopened.focus(asset)
+                    try await wait("reopened RAW editor", seconds:90) { reopened.work?.id == context.workID && reopened.previews.primary.frame != nil }
+                    reopened.beginDevelopmentInterface()
+                    try await wait("reopened edit context", seconds:90) { reopened.developmentContext != nil }
+                    reopenedCanvas.layoutSubtreeIfNeeded(); window.displayIfNeeded()
+                    let frozen = try await drawn(reopened, recipe: reopened.recipe, quality: .settled, after: reopenStart, label: "reopened frozen mask draw")
+                    report["reopenedDraw"] = frozen.evidence(start:reopenStart)
+                    report["reopenedToFrozenSettledDrawMs"] = try frozen.duration(since:reopenStart)
+                    Self.gate(reopened.recipe.adjustmentsV3?.masks.contains(adoptedMask) == true, "mask.freshEditorReopensAdoptedLayer", &report)
+                    let reopenedCalls = await reopenedInput.analysisDiagnostics(for:sourceID)?.modelInvocations ?? 0
+                    report["freshEditorInvocationsBeforeReopen"] = initialCalls
+                    report["freshEditorInvocationsAtSettled"] = reopenedCalls
+                    try await Self.exportReopenedMask(library: library, workID: context.workID, layer: adoptedMask,
+                                                      output: output, report: &report)
+                    let exportedCalls = await reopenedInput.analysisDiagnostics(for:sourceID)?.modelInvocations ?? 0
+                    report["freshEditorInvocationsAfterExport"] = exportedCalls
+                    Self.gate(initialCalls == 0 && reopenedCalls == 0 && exportedCalls == 0,
+                              "mask.freshEditorReopenAndExportNoModelInvocations", &report)
+                } catch {
+                    await reopened.shutdown(); await ImageEngines.previewLifecycle.closeAll()
+                    throw error
+                }
+                await reopened.shutdown(); await ImageEngines.previewLifecycle.closeAll()
+                let after = try Self.required(await input.analysisDiagnostics(for: sourceID), "Missing post-export mask diagnostics")
+                report["modelInvocationsAfterExport"] = after.modelInvocations
+                Self.gate(before.modelInvocations == after.modelInvocations, "mask.reopenExportNoModelInvocations", &report)
+                let control = try Self.required(report["togglePixelComparison"] as? [String:Int])
+                Self.gate(control["protectedMaximumRGBA16Difference"] == 0, "mask.disabledToggleProtectedPixelsExact", &report)
+                let finalHash = try await Task.detached { try FileSafety.hash(source) }.value
+                report["sourceSHA256AfterExport"] = finalHash
+                Self.gate(finalHash == prepared.2, "source.preservedAfterExport", &report)
             }
+            report["engineAfterReleaseAndExport"] = await Self.counters()
         } catch {
-            if !editorDidClose { await editing.shutdown(); await service.closeAll() }
-            report["failure"] = error.localizedDescription
-            let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
-            try data.write(to: reportURL, options: .withoutOverwriting)
+            report["engineAtFailure"] = await Self.counters()
+            if !didClose { await editing.shutdown(); await ImageEngines.previewLifecycle.closeAll() }
             throw error
         }
-        try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
-            .write(to: reportURL, options: .withoutOverwriting)
-        print("EDITING-CANVAS-PERFORMANCE \(report)")
     }
 }

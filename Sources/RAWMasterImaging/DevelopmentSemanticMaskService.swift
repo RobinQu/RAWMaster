@@ -10,6 +10,7 @@ public struct DevelopmentMaskCandidate: Sendable {
   public let source: DevelopmentLocalEditSourceBinding
   public let target: DevelopmentSemanticTarget
   public let generator: String
+  public let analysisDecoder: String?
   public let modelHashes: [String]
   public let prompt: [DevelopmentSourcePoint]
   private let initialDigest: String
@@ -30,7 +31,8 @@ public struct DevelopmentMaskCandidate: Sendable {
     layer.subjectPNG = png
     layer.semanticSnapshot = .init(
       source: source, target: target, generator: generator, modelHashes: modelHashes,
-      prompt: prompt, width: bitmap.width, height: bitmap.height, png: png, wasRefined: refined)
+      prompt: prompt, width: bitmap.width, height: bitmap.height, png: png, wasRefined: refined,
+      analysisDecoder: analysisDecoder)
     try layer.validate()
     return layer
   }
@@ -43,6 +45,7 @@ public struct DevelopmentMaskCandidate: Sendable {
     previouslyRefined = layer.semanticSnapshot?.wasRefined ?? true
     target = layer.semanticSnapshot?.target ?? .subject
     generator = layer.semanticSnapshot?.generator ?? "vision-foreground-legacy"
+    analysisDecoder = layer.semanticSnapshot?.analysisDecoder
     modelHashes = layer.semanticSnapshot?.modelHashes ?? []
     prompt = layer.semanticSnapshot?.prompt ?? []
   }
@@ -50,12 +53,13 @@ public struct DevelopmentMaskCandidate: Sendable {
   init(
     bitmap: DevelopmentMaskBitmap, source: DevelopmentLocalEditSourceBinding,
     target: DevelopmentSemanticTarget,
-    generator: String, modelHashes: [String], prompt: [DevelopmentSourcePoint]
+    generator: String, modelHashes: [String], prompt: [DevelopmentSourcePoint], analysisDecoder: String? = nil
   ) {
     self.bitmap = bitmap
     self.source = source
     self.target = target
     self.generator = generator
+    self.analysisDecoder = analysisDecoder
     initialDigest = DevelopmentSemanticMaskSnapshot.digest(Data(bitmap.values))
     previouslyRefined = false
     self.modelHashes = modelHashes
@@ -87,16 +91,49 @@ private final class MaskCancellation: @unchecked Sendable {
   }
 }
 
+/// Counters belong to the editor's actual analysis service. A decode counts a completed neutral
+/// pixel materialization. Candidate counts exclude brushes, failures and cancelled publications.
+public struct DevelopmentMaskAnalysisDiagnostics: Sendable, Equatable {
+  public let sourceContentID: String
+  public let exifOrientation, orientedWidth, orientedHeight: Int
+  public fileprivate(set) var decoder = ""
+  public fileprivate(set) var analysisWidth = 0, analysisHeight = 0
+  public fileprivate(set) var flashRawDecodes = 0, coreImageRawDecodes = 0, imageIODecodes = 0
+  public fileprivate(set) var sourceHashChecks = 0, exactCacheHits = 0, successfulGenerations = 0
+  public fileprivate(set) var visionRequests = 0, landscapeRuns = 0, objectEncoderRuns = 0, objectDecoderRuns = 0
+  public var modelInvocations: Int { visionRequests + landscapeRuns + objectEncoderRuns + objectDecoderRuns }
+
+  fileprivate init(source: DevelopmentLocalEditSourceBinding) {
+    sourceContentID = source.sourceContentID
+    exifOrientation = source.exifOrientation
+    orientedWidth = source.orientedWidth
+    orientedHeight = source.orientedHeight
+  }
+}
+
 public actor DevelopmentSemanticMaskService {
   private let pack: DevelopmentMaskModelPack
   private let client: MaskAIClient
   private var activeSource: DevelopmentLocalEditSourceBinding?
+  private var activeRawDecoder: DevelopmentRAWDecoder?
+  private var diagnostics: [DevelopmentMaskAnalysisDiagnostics] = []
+  private static let maximumLongEdge = 1536
+
+  public func analysisDiagnostics(for sourceContentID: String) -> DevelopmentMaskAnalysisDiagnostics? {
+    diagnostics.first { $0.sourceContentID == sourceContentID }
+  }
+  private func verifyCapture(_ capture: URL, source: DevelopmentLocalEditSourceBinding) throws {
+    diagnostics[0].sourceHashChecks += 1
+    guard try RenderFiles.hash(capture) == source.sourceContentID else {
+      throw DevelopmentMaskError.staleSource
+    }
+  }
   private var image: NativeImage?
   private var instances: (VNImageRequestHandler, VNInstanceMaskObservation)?
   private struct Intent: Equatable {
     let source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget
     let prompt: [DevelopmentSourcePoint], hashes: [String], generator: String
-    let analysisInput = "neutral-oriented-srgb-1536-v1"
+    let rawDecoder: DevelopmentRAWDecoder?
   }
   private var recent: [(intent: Intent, candidate: DevelopmentMaskCandidate)] = []
   private(set) var exactCacheHits = 0
@@ -116,6 +153,7 @@ public actor DevelopmentSemanticMaskService {
 
   public func release() {
     activeSource = nil
+    activeRawDecoder = nil
     recent.removeAll()
     releaseAnalysisResources()
   }
@@ -126,23 +164,23 @@ public actor DevelopmentSemanticMaskService {
   }
   public nonisolated func generate(
     capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget,
-    prompt: [DevelopmentSourcePoint] = []
+    prompt: [DevelopmentSourcePoint] = [], rawDecoder: DevelopmentRAWDecoder? = nil
   ) async throws -> DevelopmentMaskCandidate {
     let stop = MaskCancellation()
     return try await withTaskCancellationHandler {
       try await compute(
-        capture: capture, source: source, target: target, prompt: prompt, stop: stop)
+        capture: capture, source: source, target: target, prompt: prompt, rawDecoder: rawDecoder, stop: stop)
     } onCancel: {
       stop.cancel()
     }
   }
   private func compute(
     capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget,
-    prompt: [DevelopmentSourcePoint], stop: MaskCancellation
+    prompt: [DevelopmentSourcePoint], rawDecoder: DevelopmentRAWDecoder?, stop: MaskCancellation
   ) throws -> DevelopmentMaskCandidate {
     defer { if stop.native.isCancelled { releaseAnalysisResources() } }
     try prompt.forEach { try $0.validate() }
-    try admit(capture, source: source, stop: stop)
+    try admit(capture, source: source, rawDecoder: rawDecoder, stop: stop)
     let component: DevelopmentMaskModelPack.Component?
     let generator: String
     switch target {
@@ -170,16 +208,17 @@ public actor DevelopmentSemanticMaskService {
     }
     let intent = Intent(
       source: source, target: target, prompt: prompt, hashes: component.map(pack.modelHashes) ?? [],
-      generator: generator)
+      generator: generator, rawDecoder: rawDecoder)
     if let i = recent.firstIndex(where: { $0.intent == intent }) {
       return try stop.whileActive {
         let hit = recent.remove(at: i)
         recent.append(hit)
         exactCacheHits += 1
+        diagnostics[0].exactCacheHits += 1
         return hit.candidate
       }
     }
-    let input = try prepare(capture, source: source, stop: stop)
+    let input = try prepare(capture, source: source, rawDecoder: rawDecoder, stop: stop)
     let bitmap: DevelopmentMaskBitmap
     switch target {
     case .brush:
@@ -189,6 +228,14 @@ public actor DevelopmentSemanticMaskService {
     case .subject, .background, .instance:
       bitmap = try visionMask(input, target: target, prompt: prompt, stop: stop)
     case .object, .sky, .water:
+      let sceneRuns = client.scenes.inferenceRunCount
+      let encoderRuns = client.objects.encoderRunCount
+      let decoderRuns = client.objects.decoderRunCount
+      defer {
+        diagnostics[0].landscapeRuns += client.scenes.inferenceRunCount - sceneRuns
+        diagnostics[0].objectEncoderRuns += client.objects.encoderRunCount - encoderRuns
+        diagnostics[0].objectDecoderRuns += client.objects.decoderRunCount - decoderRuns
+      }
       let mask: MaskImage
       if target == .object {
         mask = try client.object(
@@ -208,15 +255,14 @@ public actor DevelopmentSemanticMaskService {
     {
       throw DevelopmentMaskError.absent
     }
-    guard try RenderFiles.hash(capture) == source.sourceContentID else {
-      throw DevelopmentMaskError.staleSource
-    }
+    try verifyCapture(capture, source: source)
     let result = DevelopmentMaskCandidate(
       bitmap: bitmap, source: source, target: target, generator: generator,
-      modelHashes: intent.hashes, prompt: prompt)
+      modelHashes: intent.hashes, prompt: prompt, analysisDecoder: diagnostics[0].decoder)
     return try stop.whileActive {
       if target != .brush {
         successfulGenerations += 1
+        diagnostics[0].successfulGenerations += 1
         recent.append((intent, result))
         while recent.count > Self.maximumEntries || cachedCoverageBytes > Self.maximumCoverageBytes
         { recent.removeFirst() }
@@ -226,67 +272,85 @@ public actor DevelopmentSemanticMaskService {
   }
 
   private func admit(
-    _ capture: URL, source: DevelopmentLocalEditSourceBinding, stop: MaskCancellation
+    _ capture: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?,
+    stop: MaskCancellation
   ) throws {
     try stop.native.throwIfCancelled()
     try source.validate()
-    guard try RenderFiles.hash(capture) == source.sourceContentID else {
-      throw DevelopmentMaskError.staleSource
+    // All generation, instance lookup and hashing below are synchronous within this actor.
+    // Keep a few small diagnostic records after unloading the much larger analysis resources.
+    if let index = diagnostics.firstIndex(where: { $0.sourceContentID == source.sourceContentID }) {
+      if index != 0 { diagnostics.insert(diagnostics.remove(at: index), at: 0) }
+    } else {
+      diagnostics.insert(.init(source: source), at: 0)
+      if diagnostics.count > Self.maximumEntries { diagnostics.removeLast() }
     }
-    if activeSource != source {
+    try verifyCapture(capture, source: source)
+    if activeSource != source || activeRawDecoder != rawDecoder {
       release()
       activeSource = source
+      activeRawDecoder = rawDecoder
     }
   }
   private func prepare(
-    _ capture: URL, source: DevelopmentLocalEditSourceBinding, stop: MaskCancellation
+    _ capture: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?,
+    stop: MaskCancellation
   ) throws -> NativeImage {
     if image == nil {
-      let decoded = try Self.load(capture, source: source)
+      let decoded = try load(capture, source: source, rawDecoder: rawDecoder)
       try stop.native.throwIfCancelled()
-      guard try RenderFiles.hash(capture) == source.sourceContentID else {
-        throw DevelopmentMaskError.staleSource
-      }
+      try verifyCapture(capture, source: source)
       image = decoded
     }
     guard let image else { throw DevelopmentMaskError.noImage }
     return image
   }
 
-  private static func load(_ url: URL, source: DevelopmentLocalEditSourceBinding) throws
+  private func load(_ url: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?) throws
     -> NativeImage
   {
     let image: CIImage
-    let orientation: Int
-    if PhotoRenderer.rawExtensions.contains(url.pathExtension.lowercased()) {
+    let decoder: String
+    let isRAW = PhotoRenderer.rawExtensions.contains(url.pathExtension.lowercased())
+    if let rawDecoder {
+      guard isRAW else { throw DevelopmentMaskError.noImage }
+      switch rawDecoder {
+      case .flashRaw031:
+        image = try FlashRawImageFactory.linearImage(capture: url, analysis: (source, Self.maximumLongEdge))
+      }
+      decoder = rawDecoder.rawValue
+    } else if isRAW {
       guard let raw = CIRAWFilter(imageURL: url), let full = raw.outputImage else {
         throw DevelopmentMaskError.noImage
       }
-      orientation = Int(raw.orientation.rawValue)
-      guard Int(full.extent.width) == source.orientedWidth,
-        Int(full.extent.height) == source.orientedHeight
-      else {
+      guard Int(raw.orientation.rawValue) == source.exifOrientation,
+            Int(full.extent.width) == source.orientedWidth, Int(full.extent.height) == source.orientedHeight else {
         throw DevelopmentMaskError.staleSource
       }
-      raw.scaleFactor = Float(
-        min(1, 1536.0 / Double(max(source.orientedWidth, source.orientedHeight))))
+      raw.scaleFactor = Float(min(1, Double(Self.maximumLongEdge) / Double(max(source.orientedWidth, source.orientedHeight))))
       guard let scaled = raw.outputImage else { throw DevelopmentMaskError.noImage }
       image = scaled
+      decoder = "core-image-raw/" + raw.decoderVersion.rawValue
     } else {
       guard let file = CGImageSourceCreateWithURL(url as CFURL, nil),
         let properties = CGImageSourceCopyPropertiesAtIndex(file, 0, nil) as? [CFString: Any],
         let oriented = CIImage(contentsOf: url, options: [.applyOrientationProperty: true])
       else { throw DevelopmentMaskError.noImage }
-      orientation = properties[kCGImagePropertyOrientation] as? Int ?? 1
-      guard Int(oriented.extent.width) == source.orientedWidth,
-        Int(oriented.extent.height) == source.orientedHeight
-      else {
+      guard (properties[kCGImagePropertyOrientation] as? Int ?? 1) == source.exifOrientation,
+            Int(oriented.extent.width) == source.orientedWidth, Int(oriented.extent.height) == source.orientedHeight else {
         throw DevelopmentMaskError.staleSource
       }
       image = oriented
+      decoder = "image-io"
     }
-    guard orientation == source.exifOrientation else { throw DevelopmentMaskError.staleSource }
-    return try NativeImage(ciImage: image, maximumLongEdge: 1536)
+    let decoded = try NativeImage(ciImage: image, maximumLongEdge: Self.maximumLongEdge)
+    diagnostics[0].decoder = decoder
+    diagnostics[0].analysisWidth = decoded.width
+    diagnostics[0].analysisHeight = decoded.height
+    if rawDecoder != nil { diagnostics[0].flashRawDecodes += 1 }
+    else if isRAW { diagnostics[0].coreImageRawDecodes += 1 }
+    else { diagnostics[0].imageIODecodes += 1 }
+    return decoded
   }
 
   private func observation(for input: NativeImage, stop: MaskCancellation) throws -> (
@@ -307,6 +371,7 @@ public actor DevelopmentSemanticMaskService {
       try stop.attach(request)
       defer { try? stop.attach(nil) }
       try handler.perform([request])
+      diagnostics[0].visionRequests += 1
       try stop.native.throwIfCancelled()
       guard let observation = request.results?.first, !observation.allInstances.isEmpty else {
         throw DevelopmentMaskError.absent
@@ -345,23 +410,23 @@ public actor DevelopmentSemanticMaskService {
     public let point: DevelopmentSourcePoint
   }
 
-  public nonisolated func instanceOptions(capture: URL, source: DevelopmentLocalEditSourceBinding)
+  public nonisolated func instanceOptions(capture: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder? = nil)
     async throws -> [InstanceOption]
   {
     let stop = MaskCancellation()
     return try await withTaskCancellationHandler {
-      try await listInstances(capture: capture, source: source, stop: stop)
+      try await listInstances(capture: capture, source: source, rawDecoder: rawDecoder, stop: stop)
     } onCancel: {
       stop.cancel()
     }
   }
 
   private func listInstances(
-    capture: URL, source: DevelopmentLocalEditSourceBinding, stop: MaskCancellation
+    capture: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?, stop: MaskCancellation
   ) throws -> [InstanceOption] {
     defer { if stop.native.isCancelled { releaseAnalysisResources() } }
-    try admit(capture, source: source, stop: stop)
-    let input = try prepare(capture, source: source, stop: stop)
+    try admit(capture, source: source, rawDecoder: rawDecoder, stop: stop)
+    let input = try prepare(capture, source: source, rawDecoder: rawDecoder, stop: stop)
     let (_, obs) = try observation(for: input, stop: stop)
     return try Self.labels(in: obs) { base, w, h, stride in
       // The centroid can lie in a hole. Choose an actual foreground pixel nearest the center.

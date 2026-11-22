@@ -16,7 +16,7 @@ import RAWMasterImaging
     typealias Install = @Sendable (DevelopmentMaskModelPack.Component, URL) async throws -> Void
     private let installComponent: Install
     private let service: DevelopmentSemanticMaskService
-    private let generateCandidate: Generate
+    private let generateOverride: Generate?
     let pack: DevelopmentMaskModelPack
     @Published private(set) var activeKind: DevelopmentMaskKindV3?
     @Published private(set) var instanceOptions: [DevelopmentSemanticMaskService.InstanceOption] = []
@@ -48,12 +48,20 @@ import RAWMasterImaging
     init(editing: EditingController, pack: DevelopmentMaskModelPack = .installed, install: Install? = nil, generate: Generate? = nil) {
         self.editing = editing; self.pack = pack
         self.installComponent = install ?? { try await pack.install($0,from:$1) }
-        let service = DevelopmentSemanticMaskService(pack:pack)
-        self.service = service
-        generateCandidate = generate ?? { try await service.generate(capture:$0, source:$1, target:$2, prompt:$3) }
+        service = DevelopmentSemanticMaskService(pack:pack)
+        generateOverride = generate
     }
     func candidateCounts() async -> (exactCacheHits: Int, successfulGenerations: Int) {
         await service.candidateCounts
+    }
+
+    func analysisDiagnostics(for sourceContentID: String) async -> DevelopmentMaskAnalysisDiagnostics? {
+        await service.analysisDiagnostics(for: sourceContentID)
+    }
+    private func generateCandidate(_ capture: URL, _ source: DevelopmentLocalEditSourceBinding, _ target: DevelopmentSemanticTarget,
+                                   _ prompt: [DevelopmentSourcePoint], rawDecoder: DevelopmentRAWDecoder?) async throws -> DevelopmentMaskCandidate {
+        if let generateOverride { return try await generateOverride(capture, source, target, prompt) }
+        return try await service.generate(capture: capture, source: source, target: target, prompt: prompt, rawDecoder: rawDecoder)
     }
 
     var canvasOwner: CanvasOwner? {
@@ -66,7 +74,7 @@ import RAWMasterImaging
     }
     func presetCandidate(capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget) async throws -> DevelopmentMaskCandidate {
         guard [.subject,.background,.sky,.water].contains(target) else { throw DevelopmentMaskError.invalidPrompt }
-        return try await generateCandidate(capture,source,target,[])
+        return try await generateCandidate(capture,source,target,[],rawDecoder:editing?.developmentSession.parameters.rawDecoder)
     }
     func allowsInput(_ context: EditingInteractionContext) -> Bool {
         editing?.allowsDevelopmentMaskInput(context) == true
@@ -123,9 +131,10 @@ import RAWMasterImaging
             ticket = (token,context,editing.developmentSession.revision)
             if target == .instance, let url = editing.work?.source.sourceLocation, let source = editing.developmentSession.source {
                 busy = true
+                let rawDecoder = editing.developmentSession.parameters.rawDecoder
                 task = Task {
                     do {
-                        let options = try await service.instanceOptions(capture:url,source:source)
+                        let options = try await service.instanceOptions(capture:url,source:source,rawDecoder:rawDecoder)
                         guard owns(token) else { return }
                         instanceOptions = options; busy = false
                     } catch { finish(error,token:token) }
@@ -143,9 +152,10 @@ import RAWMasterImaging
               let capture = editing.work?.source.sourceLocation else { return }
         let token = UUID()
         ticket = (token,context,editing.developmentSession.revision); busy = true; note = nil
+        let rawDecoder = editing.developmentSession.parameters.rawDecoder
         task = Task {
             do {
-                let result = try await generateCandidate(capture,source,target,prompt)
+                let result = try await generateCandidate(capture,source,target,prompt,rawDecoder:rawDecoder)
                 guard owns(token) else { return }
                 selecting = nil; candidate = result; busy = false; changed = target != .brush; showsOverlay = true
                 if target == .brush { brush = .add }

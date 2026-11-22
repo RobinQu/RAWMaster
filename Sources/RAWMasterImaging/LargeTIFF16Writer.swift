@@ -37,7 +37,7 @@ enum LargeTIFF16Writer {
 
     /// Let Image I/O choose its container if this photograph exceeds classic TIFF's UInt32 offsets.
     static func writeIfRepresentable(image:CIImage, layout:TIFF16Output.Layout, context:CIContext,
-                                     colorSpace:CGColorSpace, url:URL) throws -> Bool {
+                                     colorSpace:CGColorSpace, url:URL, legacyMask:DevelopmentLegacyMaskOutput? = nil) throws -> Bool {
         guard let profile=colorSpace.copyICCData() as Data?, !profile.isEmpty else { throw DevelopmentError.invalidEncoding }
         guard layout.payload < Int(UInt32.max), layout.width<=Int(UInt32.max), layout.height<=Int(UInt32.max) else { return false }
         let counts = stride(from:0,to:layout.height,by:rowsPerStrip).map {
@@ -70,6 +70,7 @@ enum LargeTIFF16Writer {
                 let h=min(rowsPerStrip,layout.height-top)
                 try TIFF16Output.renderBand(image,context:context,colorSpace:colorSpace,layout:layout,
                                             format:.tiff16,top:top,height:h,buffer:band)
+                try legacyMask?.restore(buffer:band, rowBytes:layout.rowBytes, top:top, rows:h, format:.tiff16, colorSpace:colorSpace)
                 try file.write(contentsOf:Data(bytesNoCopy:band,count:h*layout.rowBytes,deallocator:.none))
             }
             try file.close()

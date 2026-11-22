@@ -301,6 +301,7 @@ enum EditingPreviewPromptDispatch {
     private var displayedChannel: PreviewProgressChannelID?
     private var frameInput: EditingPreviewInput?
     private var frameDrawn = false
+    private var lastAcceptedDraw: ImageFrameDrawEvent?
     private(set) var frameRecipe: DevelopmentRecipe?
     private(set) var framePresentationID: String?
     private(set) var frameSourceKey: String?
@@ -311,6 +312,10 @@ enum EditingPreviewPromptDispatch {
     private var activeDiagnostic: (input: EditingPreviewInput, revision: UInt64, quality: PreviewQuality)?
     var currentRevision: UInt64 { revision }
     var currentFrameWasDrawn: Bool { frameDrawn && frame?.revision == revision && displayedEpoch == publicationEpoch }
+    var currentAcceptedDraw: ImageFrameDrawEvent? {
+        guard currentFrameWasDrawn, let lastAcceptedDraw, lastAcceptedDraw.frameID == frame?.id else { return nil }
+        return lastAcceptedDraw
+    }
     var currentSourceGeneration: UInt64? { lease?.generation }
     var canInspectDevelopmentSource: Bool {
         !stopped && !sourceInvalidated && desired?.intent.isRaw == true && lease != nil && boundSourceKey == desired?.intent.sourceKey
@@ -755,6 +760,7 @@ enum EditingPreviewPromptDispatch {
               frame.revision == displayedRevision, !sourceInvalidated, !stopped,
               (displayedChannel == nil ? frame.revision == revision : displayedChannel == channel?.id) else { return false }
         frameDrawn = true
+        lastAcceptedDraw = event
         accepted = true
         if let frameInput {
             InteractionTrace.shared.preview("preview.draw-return", input: frameInput, role: role, revision: displayedRevision,

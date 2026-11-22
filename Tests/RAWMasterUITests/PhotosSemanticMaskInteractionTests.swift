@@ -30,6 +30,7 @@ private actor MaskCompletionGate {
         let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
         let (model,editing,context) = try await open(f); _ = model
         let input = editing.developmentMaskInput
+        let preAdoptionRecipe = editing.recipe
         input.begin(.brush,context:context)
         try await wait { input.candidate != nil || input.note != nil }
         XCTAssertNil(input.note)
@@ -61,6 +62,7 @@ private actor MaskCompletionGate {
         XCTAssertEqual(input.candidate?.bitmap.values[20*120+30],255)
         input.cancel()
         editing.undoDevelopment(context:context); XCTAssertTrue(editing.developmentSession.parameters.masks.isEmpty)
+        let afterUndo = editing.recipe
         editing.undoDevelopment(context:context,redo:true); XCTAssertEqual(editing.developmentSession.parameters.masks,[layer])
         var exposed = layer
         exposed.adjustments.exposure = 0.4
@@ -74,13 +76,26 @@ private actor MaskCompletionGate {
         try await EditingInteractionPerformanceTests.exportReopenedMask(library: f.library, workID: context.workID,
             layer: exposed, output: f.root, report: &exportRecord)
         XCTAssertEqual((exportRecord["export"] as? [String: Any])?["bitsPerComponent"] as? Int, 16)
+        let naturalToggle = try XCTUnwrap(exportRecord["togglePixelComparison"] as? [String: Int])
+        XCTAssertEqual(naturalToggle["protectedMaximumRGBA16Difference"], 0, "Every zero-coverage RGBA16 channel must survive the natural layer toggle.")
+        XCTAssertGreaterThan(naturalToggle["protectedPixels"] ?? 0, 0)
+        XCTAssertGreaterThan(naturalToggle["selectedBrighterPixels"] ?? 0, 0)
+        let workSource = try disk.photoWork(id: context.workID).source
+        let original = try await DevelopmentService().render(source: workSource, recipe: preAdoptionRecipe, format: .tiff16,
+            destination: f.root.appending(path: "before-mask-adoption.tiff"))
+        let undone = try await DevelopmentService().render(source: workSource, recipe: afterUndo, format: .tiff16,
+            destination: f.root.appending(path: "after-mask-undo.tiff"))
+        XCTAssertEqual(original.artifact.sha256, exportRecord["controlTIFFSHA256"] as? String)
+        XCTAssertEqual(undone.artifact.sha256, original.artifact.sha256)
+        exportRecord["historicalBeforeAdoptionTIFFSHA256"] = original.artifact.sha256
+        exportRecord["undoToHistoricalTIFFSHA256"] = undone.artifact.sha256
         if let output = ProcessInfo.processInfo.environment["RAWMASTER_MASK_FIXTURE_EVIDENCE"] {
             let directory = URL(fileURLWithPath: output)
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
             let original = try disk.photoWork(id: context.workID).source.sourceLocation
             try FileManager.default.copyItem(at: original, to: directory.appending(path: "input.png"))
             try XCTUnwrap(exposed.subjectPNG).write(to: directory.appending(path: "frozen-mask.png"), options: .withoutOverwriting)
-            for name in ["reopened-subject.tiff", "disabled-layer-control.tiff", "same-renderer-zero-coverage.tiff"] {
+            for name in ["reopened-subject.tiff", "disabled-layer-control.tiff", "same-renderer-zero-coverage.tiff", "before-mask-adoption.tiff", "after-mask-undo.tiff"] {
                 let image = f.root.appending(path: name)
                 if FileManager.default.fileExists(atPath: image.path) {
                     try FileManager.default.copyItem(at: image, to: directory.appending(path: name))
