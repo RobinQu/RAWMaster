@@ -3768,3 +3768,77 @@ extension PhotosDevelopmentIntegrationTests {
         await editing.shutdown(); await service.closeAll()
     }
 }
+
+extension PhotosDevelopmentIntegrationTests {
+    @MainActor func testDevelopmentPresetHoverNeverCommitsOrRequestsDirectoryThumbnailsAndBlocksUnavailableSources() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend(filtersEnabled: true)
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults, previewBackend: backend)
+        try await ready(editing, asset: fixture.assets[0])
+        let context = try await activate(editing)
+        let before = editing.recipe, history = editing.developmentSession.history.entryCount
+        var patch = DevelopmentPresetPatch()
+        patch.exposure = 0.75
+        var record = DevelopmentPresetRecord(id: "native", name: "曝光", group: "个人", kind: .user, patch: patch)
+        editing.previewDevelopmentPreset(record, context: context)
+        for _ in 0..<200 where editing.filterHoverFrame == nil { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertNotNil(editing.filterHoverFrame)
+        XCTAssertEqual(editing.hoveredPresetID, record.id)
+        let thumbnails = await backend.thumbnailRequests
+        let analysis = await backend.userRequests
+        XCTAssertTrue(thumbnails.isEmpty)
+        XCTAssertTrue(analysis.isEmpty)
+        XCTAssertEqual(editing.recipe, before)
+        XCTAssertEqual(editing.developmentSession.history.entryCount, history)
+        record.blockingReasons = ["缺少配置文件"]
+        editing.previewDevelopmentPreset(record, context: context)
+        XCTAssertNil(editing.filterHoverFrame)
+        XCTAssertThrowsError(try editing.developmentSession.adoptPreset(record, context: context, revision: editing.developmentSession.revision))
+        await editing.shutdown()
+    }
+}
+
+extension PhotosDevelopmentIntegrationTests {
+    @MainActor func testDevelopmentPresetAdoptionPersistsThroughRealSaveAndVerifiedDatabaseBackup() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        let service = DevelopmentPreviewService()
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults,
+            previewBackend: SharedEditingPreviewBackend(service: service))
+        try await ready(editing, asset: fixture.assets[0])
+        let ctx = try await activate(editing), work = try XCTUnwrap(editing.work)
+        let catalog = DevelopmentPresetCatalog(root: root.appendingPathComponent("presets"))
+        var patch = DevelopmentPresetPatch()
+        patch.exposure = 0.5
+        let row = try catalog.create(name: "低反差", group: "纪实", patch: patch)
+        try editing.developmentSession.adoptPreset(row, context: ctx, revision: editing.developmentSession.revision)
+        let baked = editing.recipe
+        var persisted = try fixture.store.photoWork(id: work.id)
+        for _ in 0..<500 where persisted.livePresetAdoptions?.first?.presetID != row.id {
+            try await Task.sleep(nanoseconds: 10_000_000)
+            persisted = try fixture.store.photoWork(id: work.id)
+        }
+        XCTAssertEqual(persisted.liveRecipe, baked)
+        XCTAssertEqual(persisted.livePresetAdoptions?.first?.sourceID, ctx.sourceContentID)
+        editing.saveDevelopment(context: ctx)
+        for _ in 0..<500 where editing.saving { try await Task.sleep(nanoseconds: 10_000_000) }
+        let version = try XCTUnwrap(editing.versions.last(where: { $0.kind == .development }))
+        XCTAssertEqual(version.presetAdoptions?.first?.presetID, row.id)
+        XCTAssertEqual(version.presetAdoptions?.first?.version, row.version)
+        XCTAssertEqual(version.presetAdoptions?.first?.fields, ["exposure"])
+        XCTAssertEqual(version.presetAdoptions?.first?.resultFingerprint, try EditingFingerprint.of(baked))
+        try catalog.delete(row)
+        let backup = root.appendingPathComponent("backup")
+        _ = try fixture.store.backupEditingLibrary(to: backup)
+        let restored = try LibraryStore.restoreEditingLibrary(from: backup, databaseURL: root.appendingPathComponent("restored.sqlite"),
+            archiveRoot: root.appendingPathComponent("restored-archive"))
+        let frozen = try restored.editingVersion(id: version.id)
+        XCTAssertEqual(frozen.recipe, baked)
+        XCTAssertEqual(frozen.presetAdoptions, version.presetAdoptions)
+        XCTAssertEqual(frozen.artifact?.sha256, version.artifact?.sha256)
+        await editing.shutdown()
+        await service.closeAll()
+    }
+}

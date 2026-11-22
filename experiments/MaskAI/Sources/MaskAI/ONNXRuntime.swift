@@ -1,5 +1,6 @@
 import Foundation
 import CONNXRuntime
+import Darwin
 
 public final class ONNXCancellation: @unchecked Sendable {
     private let lock = NSLock()
@@ -12,9 +13,10 @@ public final class ONNXCancellation: @unchecked Sendable {
     public func cancel() {
         lock.lock()
         cancelled = true
-        let active = self.active
+        if let active, let error = active.api.pointee.RunOptionsSetTerminate(active.options) {
+            active.api.pointee.ReleaseStatus(error)
+        }
         lock.unlock()
-        if let active { _ = active.api.pointee.RunOptionsSetTerminate(active.options) }
     }
 
     public func throwIfCancelled() throws {
@@ -126,12 +128,20 @@ public struct ONNXTensor: Sendable {
 }
 
 private final class ONNXRuntimeContext {
-    static let shared = try! ONNXRuntimeContext()
+    private let handle: UnsafeMutableRawPointer
     let api: UnsafePointer<OrtApi>
     let env: OpaquePointer
 
-    init() throws {
-        guard let base = OrtGetApiBase(), let api = base.pointee.GetApi(UInt32(ORT_API_VERSION)) else {
+    init(library: URL) throws {
+        guard let handle = dlopen(library.path, RTLD_NOW | RTLD_LOCAL) else {
+            throw MaskAIError.modelUnavailable("ONNX Runtime is unavailable at " + library.path)
+        }
+        var ready = false
+        defer { if !ready { dlclose(handle) } }
+        typealias Entry = @convention(c) () -> UnsafePointer<OrtApiBase>?
+        guard let symbol = dlsym(handle, "OrtGetApiBase"),
+              let base = unsafeBitCast(symbol, to: Entry.self)(),
+              let api = base.pointee.GetApi(UInt32(ORT_API_VERSION)) else {
             throw MaskAIError.inferenceFailed("ONNX Runtime API \(ORT_API_VERSION) is unavailable.")
         }
         self.api = api
@@ -139,6 +149,8 @@ private final class ONNXRuntimeContext {
         try Self.check(api, api.pointee.CreateEnv(ORT_LOGGING_LEVEL_WARNING, "MaskAI", &environment))
         guard let environment else { throw MaskAIError.inferenceFailed("ONNX Runtime returned no environment.") }
         env = environment
+        self.handle = handle
+        ready = true
     }
 
     static func check(_ api: UnsafePointer<OrtApi>, _ status: OpaquePointer?) throws {
@@ -148,7 +160,7 @@ private final class ONNXRuntimeContext {
         throw MaskAIError.inferenceFailed(message)
     }
 
-    deinit { api.pointee.ReleaseEnv(env) }
+    deinit { api.pointee.ReleaseEnv(env); dlclose(handle) }
 }
 
 public final class ONNXSession {
@@ -157,9 +169,10 @@ public final class ONNXSession {
     public let inputNames: [String]
     public let outputNames: [String]
 
-    public init(modelAt url: URL, threadCount: Int = 4) throws {
+    public init(modelAt url: URL, threadCount: Int = 4, runtime: URL? = nil) throws {
         guard FileManager.default.fileExists(atPath: url.path) else { throw MaskAIError.modelUnavailable(url.path) }
-        context = ONNXRuntimeContext.shared
+        let pack = url.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        context = try ONNXRuntimeContext(library: runtime ?? pack.appending(path: "ONNXRuntime/lib/libonnxruntime.1.27.0.dylib"))
         let api = context.api.pointee
         var options: OpaquePointer?
         try ONNXRuntimeContext.check(context.api, api.CreateSessionOptions(&options))

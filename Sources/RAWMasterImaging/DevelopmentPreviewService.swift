@@ -506,6 +506,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
           request.recipe.adjustmentsV3!.advancedDetail.dehaze.amount != 0 {
           try DevelopmentDehazeContextFactoryV1.requirePrepared(request.recipe,context:admittedDehazeContext(native,key:lease.key,source:binding,generation:lease.generation))
         }
+        try DevelopmentMaskLayerV3.validateSource(request.recipe.adjustmentsV3!.masks, expected:binding)
         try request.recipe.adjustmentsV3!.localEdits.validate(expectedSource:binding)
         try request.recipe.adjustmentsV3!.whiteBalance.resolvedState?.validate(expectedSource:binding)
         _ = try request.recipe.adjustmentsV3!.geometry.mapping(sourceSize:binding.sourceSize)

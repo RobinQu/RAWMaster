@@ -32,6 +32,22 @@ if [[ ! -d "$ai_resources" ]]; then
 fi
 rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterAI.bundle"
 cp -R "$ai_resources" "$app/Contents/Resources/"
+core_resources="$binary_dir/RAWMaster_RAWMasterCore.bundle"
+migration_rules="Contents/Resources/AdobePresetMigration-v1.json"
+python3 - "$core_resources/$migration_rules" "$PWD/specs/031-preset-browser/contracts/migration-manifest-v1.json" <<'MIGRATION_RULES_PY'
+from pathlib import Path
+import json, sys
+rules_path, fixture_path = map(Path, sys.argv[1:])
+rules = json.loads(rules_path.read_bytes())
+fixture = json.loads(fixture_path.read_bytes())
+expected = [{"path": row["sourceRelativePath"], "sha256": row["sha256"], "bytes": row["bytes"]}
+            for row in fixture["entries"] if row["origin"] == "adobeBuiltinAdaptive"]
+if len(expected) != 53 or rules != expected:
+    raise SystemExit("Camera Raw migration allowlist differs from the reviewed paths, sizes or digests")
+MIGRATION_RULES_PY
+rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterCore.bundle"
+cp -R "$core_resources" "$app/Contents/Resources/"
+cmp "$core_resources/$migration_rules" "$app/Contents/Resources/RAWMaster_RAWMasterCore.bundle/$migration_rules"
 # The actual Imaging bundle is mandatory in the App; no development-directory fallback.
 verify_photo_filter_resources() {
   python3 - "$1/Contents/Resources/PhotoFilters" <<'PHOTO_FILTER_PY'

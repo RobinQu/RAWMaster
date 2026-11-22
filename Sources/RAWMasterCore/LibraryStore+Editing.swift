@@ -5,6 +5,7 @@ private struct LiveDevelopmentStateCommand: Codable {
   let parentVersionID: String
   let expectedRevision: Int
   let recipe: DevelopmentRecipe
+  var presetAdoptions: [DevelopmentPresetAdoption]?
 }
 
 extension LibraryStore {
@@ -120,10 +121,10 @@ extension LibraryStore {
   /// Persist the current non-destructive edit without rendering or creating an immutable candidate.
   /// The optimistic revision prevents an older asynchronous gesture from overwriting a newer one.
   public func saveLiveDevelopmentState(workID: String, recipe: DevelopmentRecipe, parentVersionID: String,
-                                       expectedRevision: Int, commandID: String = UUID().uuidString) throws -> PhotoWork {
+                                       expectedRevision: Int, commandID: String = UUID().uuidString, presetAdoptions: [DevelopmentPresetAdoption]? = nil) throws -> PhotoWork {
     try transaction {
       let fingerprint = try EditingFingerprint.of(LiveDevelopmentStateCommand(workID: workID,
-        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe))
+        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe, presetAdoptions: presetAdoptions))
       if let existing = try commandResult(id: commandID, fingerprint: fingerprint,
           action: "saveLiveDevelopment", type: PhotoWork.self) { return existing }
       var work = try photoWork(id: workID)
@@ -132,6 +133,7 @@ extension LibraryStore {
             (work.liveRevision ?? 0) == expectedRevision else { throw EditingError.staleAdoption }
       try recipe.validate(); try validateAdmission(work.source)
       work.liveRecipe = recipe; work.liveParentVersionID = parentVersionID
+      work.livePresetAdoptions = presetAdoptions
       work.liveRevision = expectedRevision + 1
       try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
       try saveCommand(id: commandID, fingerprint: fingerprint, action: "saveLiveDevelopment", result: work)

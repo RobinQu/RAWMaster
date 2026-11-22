@@ -2,13 +2,6 @@
 import Foundation
 import PackageDescription
 
-let packageRoot = URL(fileURLWithPath: #filePath).deletingLastPathComponent().path
-let runtimeLibrary = "\(packageRoot)/Vendor/ONNXRuntime/lib"
-let runtimeLinkSettings: [LinkerSetting] = [
-    .unsafeFlags(["-L\(runtimeLibrary)"]),
-    .unsafeFlags(["-Xlinker", "-rpath", "-Xlinker", runtimeLibrary]),
-]
-
 let package = Package(
     name: "MaskAI",
     platforms: [.macOS(.v15)],
@@ -18,7 +11,7 @@ let package = Package(
     ],
     targets: [
         .systemLibrary(name: "CONNXRuntime", path: "Sources/CONNXRuntime"),
-        .target(name: "MaskAI", dependencies: ["CONNXRuntime"], linkerSettings: runtimeLinkSettings),
+        .target(name: "MaskAI", dependencies: ["CONNXRuntime"]),
         .executableTarget(name: "mask-ai-probe", dependencies: ["MaskAI"]),
         .testTarget(name: "MaskAITests", dependencies: ["MaskAI"]),
     ],

@@ -391,7 +391,9 @@ struct EditingImageCanvas: View {
     private var currentPane: some View {
         VStack(spacing: 0) {
             ZStack {
-                if let picker = editing.developmentPicker,
+                if editing.comparing || editing.developmentShowingOriginal {
+                    comparisonCanvas
+                } else if let picker = editing.developmentPicker,
                    let frame = editing.developmentPickerFrame(for: picker), let image = editing.preview {
                     PhotosDevelopmentPickerCanvas(image: image, frame: frame,
                         onFrameDrawn: { editing.previews.primary.didDraw($0) },
@@ -406,7 +408,7 @@ struct EditingImageCanvas: View {
                     PhotosCropCanvas(editing: editing, context: context, transform: $transform).id(context)
                 } else if localInput.tool != nil, editing.stage == .development, let context = editing.developmentContext {
                     PhotosLocalEditingCanvas(editing: editing, input: localInput, context: context, transform: $transform).id(context)
-                } else if editing.developmentMaskInput.activeKind != nil, editing.stage == .development, let context = editing.developmentContext {
+                } else if maskInput.usesCanvas, editing.stage == .development, let context = editing.developmentContext {
                     PhotosMaskEditingCanvas(editing: editing, input: editing.developmentMaskInput, context: context, transform: $transform).id(context)
                 } else {
                     comparisonCanvas

@@ -211,13 +211,15 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
   func testBudgetUnavailableIsTypedAndDoesNotWaitForCallersOwnOutstandingGraph()throws {
     let root=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let baseline=DevelopmentPhotoFilterCharge.snapshot().union
+    // Other filter tests can already hold verified LUTs in the process-wide cache.
+    let reserveBytes = max(0, DevelopmentPhotoFilterCharge.maximumBytes - baseline - 1024 * 1024)
     try autoreleasepool {
-      let reservation=try DevelopmentPhotoFilterCharge(bytes:31*1024*1024,state:.active)
+      let reservation = reserveBytes > 0 ? try DevelopmentPhotoFilterCharge(bytes: reserveBytes, state: .active) : nil
       let store=DevelopmentPhotoFilterResourceStore(resourceRoot:root)
       try withExtendedLifetime(reservation) {
         XCTAssertEqual(store.capabilities().filters,[.original,.vivid])
         XCTAssertThrowsError(try store.pair(.init(enabled:true,selection:.vivid,intensity:37))){XCTAssertEqual($0 as? DevelopmentPhotoFilterError,.budgetUnavailable)}
-        XCTAssertEqual(DevelopmentPhotoFilterCharge.snapshot().union,baseline+31*1024*1024)
+        XCTAssertEqual(DevelopmentPhotoFilterCharge.snapshot().union,baseline+reserveBytes)
       }
       store.trimReady()
     }

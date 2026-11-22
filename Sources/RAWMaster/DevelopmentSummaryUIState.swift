@@ -22,10 +22,12 @@ struct DevelopmentSummaryUIState: Equatable {
     private var light: Known?
     private var color: Known?
     private var blackAndWhite: Known?
+    var presetAdoptions: [DevelopmentPresetAdoption] = []
+    var presetAuditBytes: Int { presetAdoptions.reduce(0) { $0 + $1.estimatedBytes } }
     init() {}
     static let groups: [DevelopmentAdjustmentID] = [.light, .color, .blackAndWhite]
     static let conservativeCost = 1024
-    var isEmpty: Bool { light == nil && color == nil && blackAndWhite == nil }
+    var isEmpty: Bool { light == nil && color == nil && blackAndWhite == nil && presetAdoptions.isEmpty }
     var amounts: [DevelopmentAdjustmentID: Double] {
         var result: [DevelopmentAdjustmentID: Double] = [:]
         for group in Self.groups { if let known = value(group) { result[group] = known.amount } }

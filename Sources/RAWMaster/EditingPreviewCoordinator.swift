@@ -405,11 +405,11 @@ enum EditingPreviewPromptDispatch {
     }
     var thumbnailBackend: any EditingPreviewBackend { backend }
     func renderDevelopmentFilterHover(recipe: DevelopmentRecipe, consumerID: PreviewConsumerID,
-                                      revision: UInt64) async throws -> EditingPreviewBitmap {
+                                      revision: UInt64, quality: PreviewQuality = .interactive) async throws -> EditingPreviewBitmap {
         guard canInspectDevelopmentSource, let lease else { throw DevelopmentPreviewError.sourceInvalidated }
         return try await backend.render(.init(sessionID: lease.id, sourceGeneration: lease.generation,
             consumerID: consumerID, role: .primary, revision: revision, recipe: recipe,
-            quality: .interactive, viewport: .init(maxPixel: 2400)))
+            quality: quality, viewport: .init(maxPixel: 2400)))
     }
     func cancelDevelopmentFilterHover(_ consumerID: PreviewConsumerID) async {
         await backend.cancel(consumerID)

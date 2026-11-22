@@ -63,7 +63,7 @@ struct DevelopmentUndoHistory {
         // Absent metadata owns no allocated endpoint. A present immutable endpoint is billed
         // conservatively, including its fixed SHA when no recipe history entry exists.
         var summaryEndpoint: SummaryEndpoint?
-        var endpointCost: Int { summaryEndpoint == nil ? 0 : DevelopmentSummaryUIState.conservativeCost }
+        var endpointCost: Int { summaryEndpoint.map { DevelopmentSummaryUIState.conservativeCost + $0.ui.presetAuditBytes } ?? 0 }
         var retainedBytes: Int {
             // Slider snapshots share immutable table storage. Charge each table once per branch.
             var cubes: [String: Int] = [:]
@@ -129,7 +129,7 @@ struct DevelopmentUndoHistory {
         }
         let entry = Entry(before: before, after: after, beforeUI: beforeUI.validating(for: before), afterUI: afterUI.validating(for: after),
                           title: String(title.prefix(128)),
-                          cost: Self.metadataCost(before) + Self.metadataCost(after) + 1024 + DevelopmentSummaryUIState.conservativeCost,
+                          cost: Self.metadataCost(before) + Self.metadataCost(after) + 1024 + DevelopmentSummaryUIState.conservativeCost + beforeUI.presetAuditBytes + afterUI.presetAuditBytes,
                           lutCosts: Self.lutCosts(before, after))
         branch.summaryEndpoint = .init(ui: entry.afterUI, recipe: after)
         // An oversized edit remains the current draft. It does not escape the history budget.

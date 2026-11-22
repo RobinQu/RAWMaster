@@ -204,6 +204,7 @@ public struct EditingVersion: Codable, Equatable, Sendable, Identifiable {
   public var kind: EditingVersionKind
   public var source: EditingSourceSnapshot
   public var recipe: DevelopmentRecipe
+  public var presetAdoptions: [DevelopmentPresetAdoption]?
   /// Frozen on creation. Add a new version to attach new bytes; never mutate this reference.
   public var artifact: RenderArtifact?
   public var configuration: [String: String]
@@ -225,6 +226,7 @@ public struct PhotoWork: Codable, Equatable, Sendable, Identifiable {
   public var liveRecipe: DevelopmentRecipe?
   public var liveParentVersionID: String?
   public var liveRevision: Int?
+  public var livePresetAdoptions: [DevelopmentPresetAdoption]?
   public var createdAt: Date
   public init(id: String = UUID().uuidString, source: EditingSourceSnapshot, originalVersionID: String = UUID().uuidString, createdAt: Date = Date()) {
     self.id = id; self.source = source; self.originalVersionID = originalVersionID

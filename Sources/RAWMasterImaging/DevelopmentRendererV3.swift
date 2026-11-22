@@ -139,7 +139,7 @@ enum DevelopmentRendererV3 {
       ((g.version == .adjustV3 || g.version == .projectiveV3_1) && (g.straightenDegrees != 0 || g.crop != NormalizedCrop() || g.clockwiseQuarterTurns != 0 || g.flipHorizontal || g.flipVertical || g.verticalPerspective != 0 || g.horizontalPerspective != 0 || g.lateOrientation.orientation != .identity))
   }
   private static func validateLocalSource(_ p: DevelopmentAdjustmentsV3, capture: URL, isRAW: Bool) throws {
-    guard p.localEdits.sourceBinding != nil || p.whiteBalance.resolvedState != nil else { return }
+    guard p.localEdits.sourceBinding != nil || p.whiteBalance.resolvedState != nil || p.masks.contains(where: { $0.semanticSnapshot != nil }) else { return }
     let size: CGSize, orientation: Int
     if isRAW {
       guard let raw = CIRAWFilter(imageURL:capture) else { throw DevelopmentError.unreadable }
@@ -153,6 +153,7 @@ enum DevelopmentRendererV3 {
     guard size.width.isFinite, size.height.isFinite, size.width > 0, size.height > 0,
       size.width <= Double(DevelopmentLocalEditLimits.maximumSourceDimension), size.height <= Double(DevelopmentLocalEditLimits.maximumSourceDimension) else { throw DevelopmentV3Error.invalidGraph }
     let binding = DevelopmentLocalEditSourceBinding(sourceContentID:try RenderFiles.hash(capture),exifOrientation:orientation,orientedWidth:Int(size.width),orientedHeight:Int(size.height))
+    try DevelopmentMaskLayerV3.validateSource(p.masks, expected:binding)
     try p.localEdits.validate(expectedSource:binding)
     try p.whiteBalance.resolvedState?.validate(expectedSource:binding)
   }

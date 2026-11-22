@@ -117,6 +117,27 @@ enum EditingDevelopmentTransaction {
     @Published private(set) var context: EditingInteractionContext?
     @Published private(set) var page: EditingDevelopmentPage = .adjust
     @Published private(set) var revision = UUID()
+    struct PresetAmountSession {
+        let record: DevelopmentPresetRecord
+        let baseline: DevelopmentRecipe
+        let amount: Double
+        let context: EditingInteractionContext
+        let priorAdoptions: [DevelopmentPresetAdoption]
+    }
+    static let presetAmountControl = "预设强度"
+    private(set) var presetAmountSession: PresetAmountSession?
+    var presetAdoptions: [DevelopmentPresetAdoption] { summaryUI.presetAdoptions }
+    var presetAdoptionsChanged: (() -> Void)?
+    private var publishedAdoptions: [DevelopmentPresetAdoption] = []
+
+    func restorePresetAdoptions(_ adoptions: [DevelopmentPresetAdoption], for expected: DevelopmentRecipe) {
+        guard recipe == expected, summaryUI.presetAdoptions.isEmpty, !adoptions.isEmpty,
+              adoptions.allSatisfy({ $0.sourceID == context?.sourceContentID }) else { return }
+        summaryUI.presetAdoptions = adoptions
+        history.updateCurrentUI(summaryUI, current: expected)
+        publishedAdoptions = adoptions
+    }
+    var presetSourceIssue: ((DevelopmentPresetRecord, EditingInteractionContext) -> String?)?
     @Published private(set) var expandedGroups: Set<DevelopmentAdjustmentID> = [.light]
     @Published private(set) var expandedOptions: Set<DevelopmentAdjustmentID> = []
     @Published private(set) var cropConstraint = PhotosCropConstraint()
@@ -280,6 +301,111 @@ enum EditingDevelopmentTransaction {
         try require(expected)
         return token
     }
+    func endPresetAmountSession() {
+        guard presetAmountSession != nil else { return }
+        presetAmountSession = nil
+        publish()
+    }
+
+    /// Preview, click and Amount all resolve against the same immutable pre-adoption recipe.
+    func previewPreset(_ record: DevelopmentPresetRecord, context expected: EditingInteractionContext,
+                       revision expectedRevision: UUID, preparedMasks: [DevelopmentMaskLayerV3]? = nil) throws -> DevelopmentRecipe {
+        try validateInteraction(expected)
+        guard revision == expectedRevision else { throw EditingDevelopmentSessionError.staleInteraction }
+        return try resolvePreset(record, baseline: recipe, amount: 1, context: expected, preparedMasks: preparedMasks)
+    }
+
+    private func resolvePreset(_ record: DevelopmentPresetRecord, baseline: DevelopmentRecipe, amount: Double,
+                               context expected: EditingInteractionContext, preparedMasks: [DevelopmentMaskLayerV3]?) throws -> DevelopmentRecipe {
+        guard record.reason(for: expected.sourceContentID) == nil, presetSourceIssue?(record, expected) == nil else { throw DevelopmentPresetError.unavailable }
+        if amount != 1, !record.supportsAmount(from: baseline) { throw DevelopmentPresetError.unsupportedAmount }
+        if let full = record.patch.fullRecipe {
+            guard amount == 1, record.patch.boundSourceID == expected.sourceContentID else { throw DevelopmentPresetError.differentSource }
+            try record.patch.validate()
+            if let p = full.adjustmentsV3 {
+                let target = try commandContext()
+                try DevelopmentMaskLayerV3.validateSource(p.masks, expected: target.source)
+                let validated = try EditingDevelopmentTransaction.applying([.setParameters(.filter(p.filter))], to: full,
+                    context: target, noiseReduction: noiseReductionCapability)
+                guard validated == full else { throw DevelopmentPresetError.unavailable }
+            }
+            return full
+        }
+        var patch = record.patch
+        let intents = patch.semanticMasks
+        patch.semanticMasks = nil
+        var commands = try patch.commands(from: baseline, amount: amount)
+        if let intents {
+            guard amount == 1, let preparedMasks, intents.count == preparedMasks.count,
+                  let source, let p = try baseline.promotingToV3().adjustmentsV3 else { throw DevelopmentPresetError.needsPreparation }
+            for (intent, layer) in zip(intents, preparedMasks) {
+                guard let snapshot = layer.semanticSnapshot, snapshot.source == source, snapshot.target == intent.target,
+                      !snapshot.wasRefined, snapshot.prompt.isEmpty, layer.kind == .subject,
+                      layer.name == intent.name, layer.enabled == intent.enabled, layer.inverted == intent.inverted,
+                      layer.opacity == intent.opacity, layer.adjustments == intent.adjustments else {
+                    throw DevelopmentPresetError.needsPreparation
+                }
+            }
+            commands.append(.setMasks(p.masks + preparedMasks))
+        } else if preparedMasks != nil { throw DevelopmentPresetError.invalid }
+        return try EditingDevelopmentTransaction.applying(commands, to: baseline, context: try commandContext(),
+                                                          noiseReduction: noiseReductionCapability)
+    }
+
+    @discardableResult
+    func adoptPreset(_ record: DevelopmentPresetRecord, amount: Double = 1, context expected: EditingInteractionContext,
+                     revision expectedRevision: UUID, adjustingAmount: Bool = false, gesture token: EditingGestureToken? = nil,
+                     preparedMasks: [DevelopmentMaskLayerV3]? = nil) throws -> Bool {
+        try validateInteraction(expected, gesture: token)
+        guard revision == expectedRevision else { throw EditingDevelopmentSessionError.staleInteraction }
+        let before = recipe
+        let anchor = presetAmountSession
+        if adjustingAmount {
+            guard anchor?.record == record, anchor?.context == expected else { throw EditingDevelopmentSessionError.staleInteraction }
+        }
+        let baseline: DevelopmentRecipe, priorAdoptions: [DevelopmentPresetAdoption]
+        if let anchor, anchor.record == record, anchor.context == expected, record.patch.semanticMasks == nil {
+            baseline = anchor.baseline
+            priorAdoptions = anchor.priorAdoptions
+        } else {
+            baseline = before
+            priorAdoptions = summaryUI.presetAdoptions
+        }
+        let after = try resolvePreset(record, baseline: baseline, amount: amount, context: expected, preparedMasks: preparedMasks)
+        try validateInteraction(expected, gesture: token)
+        guard revision == expectedRevision, recipe == before else { throw EditingDevelopmentSessionError.recipeDiverged }
+        let next = PresetAmountSession(record: record, baseline: baseline, amount: amount, context: expected, priorAdoptions: priorAdoptions)
+        if after == before {
+            if anchor?.record != record || anchor?.amount != amount {
+                presetAmountSession = next
+                publish(keepingPreset: true)
+            }
+            return false
+        }
+        let beforeUI = summaryUI.validating(for: before)
+        var afterUI = beforeUI.reconciling(to: after)
+        afterUI.presetAdoptions = priorAdoptions
+        if after != baseline {
+            afterUI.presetAdoptions.append(try .init(record: record, sourceID: expected.sourceContentID, amount: amount,
+                                                      baseline: baseline, result: after, masks: preparedMasks))
+        }
+        let omitted = record.metadata["confirmedOmissions"].map { " · 略过 " + String($0.prefix(160)) } ?? ""
+        let action = record.metadata["semanticReconstruction"] == "true" ? "本张重建 · " : "预设 · "
+        let title = adjustingAmount ? Self.presetAmountControl : action + record.name + omitted
+        invalidatePendingAnalysis()
+        try commit(after, event: .init(context: expected, control: .init(group: nil, name: title),
+            nativeInput: .capture(control: adjustingAmount ? "preset.amount" : "preset.apply",
+                phase: token == nil ? "discrete" : "change", nativeEvent: true, gestureID: token?.id)))
+        summaryUI = afterUI
+        if token != nil { gesture?.lastApplied = after }
+        else {
+            history.record(before: before, after: after, title: title, beforeUI: beforeUI, afterUI: afterUI)
+            summaryUI = history.currentUI(current: after)
+        }
+        presetAmountSession = next
+        publish(keepingPreset: true)
+        return true
+    }
     @discardableResult func apply(_ command: DevelopmentAdjustmentCommand, event: EditingCommandEvent,
                                  gesture token: EditingGestureToken? = nil) throws -> Bool {
         try applyAtomically([command], title: event.control.name, event: event, gesture: token)
@@ -343,7 +469,8 @@ enum EditingDevelopmentTransaction {
             summaryUI = current.beforeUI.validating(for: recipe)
             history.updateCurrentUI(summaryUI, current: recipe); summaryUI = history.currentUI(current: recipe)
         }
-        gesture = nil; gestureActivityChanged?(current.control, false); publish()
+        gesture = nil; gestureActivityChanged?(current.control, false)
+        publish(keepingPreset: disposition == .commit && current.control.name == Self.presetAmountControl)
     }
     /// Existing legacy controls still use Controller's validated recipe mutation. Observe that
     /// sole write without converting legacy math or creating a second recipe authority.
@@ -656,7 +783,14 @@ enum EditingDevelopmentTransaction {
         // All admission is already closed when the external cancellation owner is notified.
         if let cancelledOperation { invalidateAnalysis?(cancelledOperation) }
     }
-    private func publish() { revision = UUID() }
+    private func publish(keepingPreset: Bool = false) {
+        if !keepingPreset { presetAmountSession = nil }
+        revision = UUID()
+        if publishedAdoptions != summaryUI.presetAdoptions {
+            publishedAdoptions = summaryUI.presetAdoptions
+            if context != nil { presetAdoptionsChanged?() }
+        }
+    }
 }
 
 enum EditingPointerPressure {
