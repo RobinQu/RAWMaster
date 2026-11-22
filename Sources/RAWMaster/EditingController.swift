@@ -293,7 +293,8 @@ import RAWMasterAI
     private var providers: [String: any AIEditingProvider] = [:]
     private var unrecordedOutputs: [String: AIEditOutput] = [:]
     private var drafts: [String: (DevelopmentRecipe, DevelopmentRecipe, String?)] = [:]
-    private var liveStateTasks: [String: Task<Void, Never>] = [:]
+    // Keep in-flight SQLite attempts joinable after a newer edit replaces their work owner.
+    private var liveStateTasks: [ObjectIdentifier: Task<Void, Never>] = [:]
     private var liveRecipeGeneration: UInt64 = 0
     private final class QueuedLiveState {
         let recipeGeneration: UInt64, parent: String, expectedRevision: Int
@@ -309,6 +310,7 @@ import RAWMasterAI
     var providerOverride: (any AIEditingProvider)?
     var generationPreparationHook: (@Sendable () async throws -> Void)?
     var developmentSaveRenderWillBeginHook: (@Sendable () async throws -> Void)?
+    var liveStateCASWillBeginHook: (@Sendable (String, DevelopmentRecipe) async -> Void)?
     var retryAdmissionHook: (@Sendable () async throws -> Void)?
     var subjectAnalysis: any ImageSubjectAnalyzing = ImageEngines.subjectAnalysis
     var developmentDeviceDepthProvider: ((URL) throws -> DevelopmentLensBlurDepthPayloadV1)?
@@ -559,8 +561,11 @@ import RAWMasterAI
         return versions.first(where: { $0.id == parent && $0.recipe == frozen })?.presetAdoptions
     }
     private func scheduleLiveStatePersistence() {
-        guard !shuttingDown, sourceReady, stage == .development,
-              let current = work, let parent = draftParentID else { return }
+        guard stage == .development, let current = work, let parent = draftParentID else { return }
+        scheduleLiveStatePersistence(work:current,parent:parent)
+    }
+    private func scheduleLiveStatePersistence(work current:PhotoWork, parent:String) {
+        guard !shuttingDown, sourceReady else { return }
         let workID = current.id, assetID = current.source.assetID
         let frozen = recipe, expectedRevision = current.liveRevision ?? 0
         let adoptions = presetAdoptions(for: frozen, work: current, parent: parent)
@@ -571,32 +576,46 @@ import RAWMasterAI
             queued.adoptions = adoptions
             return
         }
-        liveStateTasks[workID]?.cancel()
+        if let previous = liveStateWrites[workID] { liveStateTasks[ObjectIdentifier(previous)]?.cancel() }
         let queued = QueuedLiveState(recipeGeneration:liveRecipeGeneration, parent:parent, expectedRevision:expectedRevision, adoptions:adoptions)
         liveStateWrites[workID] = queued
-        let database = store
-        liveStateTasks[workID] = Task { @MainActor [weak self] in
+        let database = store, writeID = ObjectIdentifier(queued)
+        let beforeCAS = liveStateCASWillBeginHook
+        liveStateTasks[writeID] = Task { @MainActor [weak self] in
             defer {
+                self?.liveStateTasks[writeID] = nil
                 if let self, self.liveStateWrites[workID] === queued {
-                    self.liveStateWrites[workID] = nil; self.liveStateTasks[workID] = nil
+                    self.liveStateWrites[workID] = nil
                 }
+            }
+            @MainActor func requireOwnership() throws {
+                try Task.checkCancellation()
+                if let self, self.liveStateWrites[workID] !== queued { throw CancellationError() }
             }
             do {
                 try await Task.sleep(nanoseconds: 180_000_000)
                 queued.started = true
                 let adoptions = queued.adoptions
                 var revision = expectedRevision, updated: PhotoWork?
-                for _ in 0..<3 {
+                for attempt in 0..<3 {
+                    try requireOwnership()
+                    let expected = revision
                     do {
                         updated = try await Task.detached(priority: .utility) {
-                            try database.saveLiveDevelopmentState(workID: workID, recipe: frozen,
-                                parentVersionID: parent, expectedRevision: revision, presetAdoptions: adoptions)
+                            if let beforeCAS { await beforeCAS(workID,frozen) }
+                            return try database.saveLiveDevelopmentState(workID: workID, recipe: frozen,
+                                parentVersionID: parent, expectedRevision: expected, presetAdoptions: adoptions)
                         }.value
                         break
                     } catch EditingError.staleAdoption {
+                        // A previously submitted CAS can finish after cancellation. Only the
+                        // still-current save may rebase onto the revision it lost to.
+                        try requireOwnership()
+                        guard attempt < 2 else { throw EditingError.staleAdoption }
                         revision = try await Task.detached(priority: .utility) {
                             try database.photoWork(id: workID).liveRevision ?? 0
                         }.value
+                        try requireOwnership()
                     }
                 }
                 guard let updated else { throw EditingError.staleAdoption }
@@ -916,12 +935,15 @@ import RAWMasterAI
                 let version = try await renderAndArchive(work: current, parent: parent, recipe: frozen, adoptions: adoptions)
                 guard focusGeneration == generation, work?.id == current.id else { return }
                 await refreshWork()
-                guard focusGeneration == generation, work?.id == current.id else { return }
+                guard focusGeneration == generation, let refreshed = work, refreshed.id == current.id else { return }
                 guard !shuttingDown, sourceReady, developmentBranchID == branchID,
                       context == nil || developmentSessionStorage?.context == context,
                       saveTicket == nil || developmentSessionStorage?.acceptsSaveCompletion(saveTicket!) == true else { return }
                 selectedVersionID = version.id; savedRecipe = frozen
                 drafts[current.source.assetID] = (recipe, frozen, version.id); draftParentID = version.id
+                // The immutable candidate contains the frozen Save input. The live draft
+                // may already include later edits; reopen those on the newly saved parent.
+                scheduleLiveStatePersistence(work:refreshed,parent:version.id)
                 message = "已保存初修候选。采用后才会成为当前版本。"
                 if returnAfterSaving { leaveBrowsingContext() }
                 else if openExportAfterSaving { exportVersionID = version.id; showExport = true }

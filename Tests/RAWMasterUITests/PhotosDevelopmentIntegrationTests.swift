@@ -3799,6 +3799,55 @@ extension PhotosDevelopmentIntegrationTests {
 }
 
 extension PhotosDevelopmentIntegrationTests {
+    @MainActor func testSupersededLiveWriteCannotRetryOverNewerBranchAfterPhotoSwitch() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let editing = try EditingController(store:fixture.store, libraryURL:fixture.library, defaults:fixture.defaults,
+                                           previewBackend:PhotosDevelopmentBackend())
+        try await ready(editing,asset:fixture.assets[0])
+        let first = try await activate(editing), work = try XCTUnwrap(editing.work)
+        let alternate = try fixture.store.appendEditingVersion(.init(workID:work.id, parentVersionID:work.originalVersionID,
+            kind:.development, source:work.source, recipe:editing.recipe))
+        func record(_ id:String, _ ev:Double) -> DevelopmentPresetRecord {
+            var patch = DevelopmentPresetPatch(); patch.exposure = ev
+            return .init(id:id,name:id,group:"个人",kind:.user,patch:patch)
+        }
+        let entered = expectation(description:"old SQLite compare-and-swap admitted")
+        let hold = PhotosAnalysisGate()
+        editing.liveStateCASWillBeginHook = { id,recipe in
+            if id == work.id, recipe.adjustmentsV3?.light.exposure == 0.25, !(await hold.hasReleased) {
+                entered.fulfill()
+                await hold.suspend()
+            }
+        }
+        do {
+            let session = editing.developmentSession
+            try session.adoptPreset(record("first",0.25),context:first,revision:session.revision)
+            await fulfillment(of:[entered],timeout:5)
+            editing.selectVersion(alternate,continueEditing:true)
+            let next = try await activate(editing,excluding:first.draftBranchID)
+            try session.adoptPreset(record("last",0.75),context:next,revision:session.revision)
+            let chosen = editing.recipe, receipts = session.presetAdoptions
+            // This photo's newest pending write still owns its branch after focus moves on.
+            editing.focus(fixture.assets[1])
+            var accepted = try fixture.store.photoWork(id:work.id)
+            for _ in 0..<500 where accepted.livePresetAdoptions?.first?.presetID != "last" {
+                try await Task.sleep(nanoseconds:10_000_000)
+                accepted = try fixture.store.photoWork(id:work.id)
+            }
+            XCTAssertEqual(accepted.liveParentVersionID,alternate.id)
+            XCTAssertEqual(accepted.liveRecipe,chosen)
+            XCTAssertEqual(accepted.livePresetAdoptions,receipts)
+            XCTAssertEqual(receipts.map(\.presetID),["last"])
+            // A's old CAS now loses to B. Joining every pending database attempt makes
+            // the final read sensitive to an incorrect rebase/retry, even with no open UI.
+            await hold.release(); await editing.shutdown()
+            XCTAssertEqual(try fixture.store.photoWork(id:work.id),accepted)
+        } catch {
+            await hold.release(); await editing.shutdown()
+            throw error
+        }
+    }
+
     @MainActor func testDevelopmentPresetAdoptionPersistsThroughRealSaveAndVerifiedDatabaseBackup() async throws {
         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
@@ -3840,6 +3889,11 @@ extension PhotosDevelopmentIntegrationTests {
         XCTAssertEqual(version.presetAdoptions?.first?.version, row.version)
         XCTAssertEqual(version.presetAdoptions?.first?.fields, ["exposure"])
         XCTAssertEqual(version.presetAdoptions?.first?.resultFingerprint, try EditingFingerprint.of(baked))
+        await editing.shutdown()
+        let closedDraft = try LibraryStore(databaseURL:fixture.library).photoWork(id:work.id)
+        XCTAssertEqual(closedDraft.liveParentVersionID,version.id)
+        XCTAssertEqual(closedDraft.liveRecipe,baked)
+        XCTAssertEqual(closedDraft.livePresetAdoptions,[receipt])
         try catalog.delete(row)
         let backup = root.appendingPathComponent("backup")
         _ = try fixture.store.backupEditingLibrary(to: backup)
@@ -3849,7 +3903,46 @@ extension PhotosDevelopmentIntegrationTests {
         XCTAssertEqual(frozen.recipe, baked)
         XCTAssertEqual(frozen.presetAdoptions, version.presetAdoptions)
         XCTAssertEqual(frozen.artifact?.sha256, version.artifact?.sha256)
-        await editing.shutdown()
         await service.closeAll()
+    }
+
+    @MainActor func testSaveThenImmediateCloseReopensLaterDraftOnNewParent() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let editing = try EditingController(store:fixture.store,libraryURL:fixture.library,defaults:fixture.defaults,
+                                           previewBackend:PhotosDevelopmentBackend())
+        try await ready(editing,asset:fixture.assets[0])
+        let context = try await activate(editing), work = try XCTUnwrap(editing.work)
+        var patch = DevelopmentPresetPatch(); patch.exposure = 0.35
+        let preset = DevelopmentPresetRecord(id:"during-save",name:"柔光",group:"个人",kind:.user,patch:patch)
+        try editing.developmentSession.adoptPreset(preset,context:context,revision:editing.developmentSession.revision)
+        let frozen = editing.recipe, receipts = editing.developmentSession.presetAdoptions
+        let hold = PhotosAnalysisGate(), entered = expectation(description:"immutable candidate render started")
+        editing.developmentSaveRenderWillBeginHook = { entered.fulfill(); await hold.suspend() }
+        editing.saveDevelopment(context:context)
+        await fulfillment(of:[entered],timeout:10)
+        editing.setRecipe(control:"color.saturation",nativeEvent:true) { $0.adjustmentsV3?.color = .init(enabled:true,saturation:0.2) }
+        let later = editing.recipe
+        XCTAssertNotEqual(later,frozen)
+        await hold.release()
+        for _ in 0..<1000 where editing.saving { try await Task.sleep(nanoseconds:5_000_000) }
+        XCTAssertFalse(editing.saving)
+        let version = try XCTUnwrap(editing.selectedVersion)
+        XCTAssertEqual(version.kind,.development)
+        XCTAssertEqual(version.recipe,frozen)
+        XCTAssertEqual(version.presetAdoptions,receipts)
+        await editing.shutdown()
+        let reopenedStore = try LibraryStore(databaseURL:fixture.library)
+        let persisted = try reopenedStore.photoWork(id:work.id)
+        XCTAssertEqual(persisted.liveParentVersionID,version.id)
+        XCTAssertEqual(persisted.liveRecipe,later)
+        XCTAssertEqual(persisted.livePresetAdoptions,receipts)
+        let reopened = try EditingController(store:reopenedStore,libraryURL:fixture.library,defaults:fixture.defaults,
+                                             previewBackend:PhotosDevelopmentBackend())
+        try await ready(reopened,asset:fixture.assets[0])
+        _ = try await activate(reopened)
+        XCTAssertEqual(reopened.draftParentID,version.id)
+        XCTAssertEqual(reopened.recipe,later)
+        XCTAssertEqual(reopened.developmentSession.presetAdoptions,receipts)
+        await reopened.shutdown()
     }
 }

@@ -64,6 +64,16 @@ def verify(name, data):
                     "missing matched AB/BA pair")
             require(first["resultRecipeSHA256"] == second["resultRecipeSHA256"]
                     and first["quality"] == second["quality"] == "settled", "paired recipe or frame differs")
+            for row in (first, second):
+                require(row["baselineDrawNS"] <= row["inputNS"] <= row["committedNS"]
+                        <= row["drawBeganNS"] <= row["drawReturnedNS"], "invalid order of matched draw timestamps")
+                require((row["width"], row["height"]) == (row["renderedWidth"], row["renderedHeight"]) == (2400, 1600),
+                        "paired edit used a different viewport")
+                arm = pair[row["path"]]
+                sample = arm["firstMs"] if i == 0 else arm["warm"]["samplesMs"][i-1]
+                require(math.isclose(sample, (row["drawReturnedNS"] - row["inputNS"])/1e6, abs_tol=1e-6)
+                        and math.isclose(row["synchronousCommandMs"], (row["committedNS"] - row["inputNS"])/1e6, abs_tol=1e-6),
+                        "reported latency does not match the timestamps")
         require(p95(pair["preset"]["warm"]["samplesMs"]) <= p95(pair["manual"]["warm"]["samplesMs"]),
                 "discrete preset slower than matched manual p95")
         return
@@ -91,11 +101,15 @@ def verify(name, data):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("receipts", type=Path, help="directory containing classic.json, paired.json, portrait.json and bird.json")
+    parser.add_argument("--confirm", action="store_true", help="also require independent confirm-classic and confirm-paired window runs")
     args = parser.parse_args()
     failures = []
-    for name in ("classic", "paired", "portrait", "bird"):
+    cases = ["classic", "paired", "portrait", "bird"]
+    if args.confirm:
+        cases.extend(["confirm-classic", "confirm-paired"])
+    for name in cases:
         try:
-            verify(name, json.loads((args.receipts / f"{name}.json").read_bytes()))
+            verify(name.removeprefix("confirm-"), json.loads((args.receipts / f"{name}.json").read_bytes()))
         except (KeyError, ValueError, OSError, TypeError, IndexError) as error:
             failures.append(f"{name}: {error}")
         else:
