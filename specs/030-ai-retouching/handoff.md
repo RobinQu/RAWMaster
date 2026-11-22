@@ -12,6 +12,10 @@
 | 跨场景去干扰 | 在照片上核对污点、旁人或物体的位置。支持保留、修正选区、预览补全和拒绝候选 | Adobe 各子工具的行为、Dreamer 的选区工作流和污点注入试验。细小污点、遮挡补全、反光须分别验收。[生成专项规格](generative-editing.md) · [产品和实测报告](../../docs/research/generative-retouching-field-review.md) |
 | 人像换光与风光参考 | 选择灯位或参考照片，检查光向、五官和衣纹。风光先按雪山、森林、城市、湖泊、海边选择适用风格，再核对地形、建筑和人物 | 留存错光、重画和权重消融案例。摄影师参考、授权状态、底模与 LoRA 配对信息供内容与成像共同审核。[交互样稿](assets/generative-workflows.html) · [社区与配置登记](../../docs/research/landscape-photographers-and-lora.md) |
 
+## 下阶段优先入口
+
+首批原生智能编辑先按 034 贯通快速 Prompt 的范围、双模型、候选审阅、采用与撤销。此处的三场景预设、生成专项与 PoC 继续提供样片与验收依据。[034 规格](../034-quick-prompt-editing/spec.md) · [034 实施任务](../034-quick-prompt-editing/tasks.md)
+
 ## 工程接手路径
 
 1. 产品和设计先走查单张预览、草稿取消、换片、无模型和拒绝候选，逐项登记 T020/T025。严格纪实仅运行已登记的原生变换。[需求与成功标准](spec.md) · [任务与依赖](tasks.md)

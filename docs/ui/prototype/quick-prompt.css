@@ -1,0 +1,315 @@
+.prompt-entry {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.canvas-dock .prompt-entry {
+  min-height: 32px;
+  min-width: 32px;
+}
+.prompt-entry i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.quick-dock {
+  display: block;
+  width: min(672px, calc(100% - 24px));
+  padding: 10px 12px;
+  border: 1px solid light-dark(#fff, #b9d1da60);
+  border-radius: 22px;
+  background: light-dark(#f7faf6e9, #20292de8);
+  box-shadow: inset 0 1px 0 light-dark(#fff8, #ffffff12), 0 8px 34px #0005;
+  backdrop-filter: blur(20px) saturate(135%);
+}
+.quick-morphing {
+  overflow: clip;
+}
+.quick-morphing .quick-inner {
+  animation: quick-reveal 195ms 48ms ease-out both;
+}
+@keyframes quick-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.quick-inner {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.quick-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quick-head strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.quick-head strong .icon {
+  color: var(--accent);
+}
+.quick-scope {
+  margin-left: auto;
+  padding: 2px 7px;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: var(--text);
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.quick-dock textarea {
+  width: 100%;
+  min-height: 54px;
+  padding: 7px 9px;
+  border: 1px solid light-dark(#a3b0ac, #677b80);
+  border-radius: 10px;
+  resize: vertical;
+  max-height: 130px;
+  background: light-dark(#ffffffe5, #141c20ed);
+  color: var(--text);
+  font: inherit;
+}
+.quick-dock textarea::placeholder {
+  color: var(--muted);
+}
+.quick-templates, .quick-footer, .quick-model-action, .quick-buttons, .quick-feedback {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.quick-footer {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.quick-chips {
+  display: flex;
+  gap: 5px;
+  min-width: 0;
+  padding: 2px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.quick-dock button, .quick-menu summary, .quick-dock select {
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.2;
+}
+.quick-dock .quick-chips button, .quick-dock .quick-buttons button,
+.quick-menu summary, .quick-dock select {
+  min-height: 30px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+}
+.quick-dock .quick-buttons button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--active);
+  color: var(--accent);
+}
+.quick-model-action {
+  flex-wrap: wrap;
+}
+.quick-model-action select {
+  max-width: 100%;
+}
+.quick-dock button.quick-primary {
+  min-height: 32px;
+  padding: 6px 11px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-weight: 650;
+}
+.quick-dock button.quick-primary:disabled {
+  opacity: .55;
+}
+.quick-menu {
+  position: relative;
+}
+.quick-menu summary {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+.quick-menu summary::after {
+  content: '⌄';
+  padding-left: 4px;
+}
+.quick-menu[open] summary {
+  border-color: var(--accent);
+}
+.quick-menu > div {
+  position: absolute;
+  z-index: 1;
+  bottom: calc(100% + 6px);
+  right: 0;
+  width: max-content;
+  min-width: 146px;
+  max-width: 240px;
+  display: grid;
+  gap: 2px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  box-shadow: 0 5px 18px #0004;
+}
+.quick-menu[data-menu="scope"] > div {
+  left: 0;
+  right: auto;
+}
+.quick-menu > div b {
+  padding: 4px 6px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.quick-menu > div button {
+  justify-content: flex-start;
+  min-height: 26px;
+  height: auto;
+  padding: 5px 6px;
+  white-space: normal;
+}
+.quick-dock button:hover:not(:disabled), .quick-menu summary:hover {
+  border-color: var(--accent);
+}
+.quick-feedback {
+  min-height: 17px;
+  color: var(--muted);
+  font-size: 11px;
+  flex-wrap: wrap;
+  gap: 3px 7px;
+}
+.quick-feedback .quick-link {
+  padding: 0 2px;
+  min-height: 24px;
+  height: 24px;
+  color: var(--accent);
+}
+.quick-result {
+  display: grid;
+  gap: 5px;
+}
+.quick-result p {
+  margin: 0;
+  font-size: 12px;
+}
+.quick-result .quick-buttons {
+  flex-wrap: wrap;
+}
+.quick-spinner {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border: 2px solid var(--line);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: quick-spin .9s linear infinite;
+}
+@keyframes quick-spin {
+  to { transform: rotate(360deg); }
+}
+.quick-gesture, .quick-effect, .quick-outline, .quick-upload-outline {
+  position: absolute;
+}
+.quick-gesture, .quick-effect {
+  inset: 0;
+}
+.quick-gesture {
+  cursor: crosshair;
+  touch-action: none;
+}
+.quick-effect, .quick-outline, .quick-upload-outline {
+  pointer-events: none;
+}
+.quick-outline, .quick-upload-outline {
+  border: 1.5px dashed #d3f6ff;
+  background: #53c1dc25;
+  box-shadow: 0 0 0 1px #092932bb;
+}
+.quick-upload {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+}
+.quick-upload-image {
+  position: relative;
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--inset);
+}
+.quick-upload-image img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  object-fit: cover;
+}
+.quick-upload p, .quick-sent-text p {
+  margin: 6px 0 0;
+}
+.quick-sent-text {
+  margin-top: 12px;
+}
+.quick-sent-text p {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+@media (max-width: 740px) {
+  .prompt-entry-label {
+    display: none;
+  }
+}
+@media (max-width: 860px) {
+  .canvas-panel.has-quick-prompt {
+    height: clamp(420px, 67svh, 610px);
+  }
+}
+@media (max-width: 400px) {
+  .canvas-dock:not(.quick-dock) {
+    gap: 1px;
+    padding: 4px;
+  }
+  .quick-dock {
+    width: calc(100% - 8px);
+    padding: 8px;
+    border-radius: 17px;
+  }
+  .quick-model-action select {
+    max-width: 168px;
+  }
+  .quick-upload {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .quick-spinner {
+    animation: none;
+  }
+}
+@media (prefers-contrast: more), (prefers-reduced-transparency: reduce) {
+  .quick-dock {
+    border-color: var(--text);
+    background: var(--panel);
+    backdrop-filter: none;
+  }
+}
