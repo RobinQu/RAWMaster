@@ -26,12 +26,27 @@ public struct PresetExchangeStage: Sendable {
   public let records: [DevelopmentPresetRecord]
   fileprivate let originals: [String: Data]
   fileprivate let collisions: [String: Set<String>]
+  fileprivate let frozenRecordCount: Int?
+  public let frozenBatchPreviouslyRemoved: Bool
   public var visibleCount: Int { records.filter(\.isBrowsable).count }
   public var hasConflicts: Bool { !collisions.isEmpty }
+  public var frozenMigrationReady: Bool {
+    guard let count = frozenRecordCount else { return false }
+    return !frozenBatchPreviouslyRemoved && records.count == count && items.count == count && !hasConflicts
+      && items.allSatisfy { $0.status == .ready || $0.status == .duplicate }
+  }
+  public func lensBlurAssessment(for record: DevelopmentPresetRecord) throws -> PresetLensBlurAssessment {
+    guard let sha = record.sourceSHA256, let original = originals[sha] else { throw DevelopmentPresetError.missingOriginal }
+    return try DevelopmentPresetExchange.lensBlurAssessment(for: record, original: original)
+  }
 
   /// Includes duplicate content so each confirmed batch owns its own reference.
   public func commit(to catalog: DevelopmentPresetCatalog, keepingConflicts: Bool = false) throws -> [String] {
     try Task.checkCancellation()
+    if frozenRecordCount != nil && !frozenMigrationReady {
+      if frozenBatchPreviouslyRemoved { throw PresetExchangeError.invalid("用户已撤销本次冻结迁移批次") }
+      throw PresetExchangeError.invalid("冻结迁移要求清单中每个文件均通过核验，并解决全部 UUID 冲突")
+    }
     let allowed = records.compactMap { record -> DevelopmentPresetRecord? in
       var row = record
       if let related = collisions[row.id] {
@@ -41,7 +56,8 @@ public struct PresetExchangeStage: Sendable {
       return row
     }
     let hashes = Set(allowed.compactMap(\.sourceSHA256))
-    return try catalog.importBatch(allowed, originals: originals.filter { hashes.contains($0.key) }, batchID: batchID)
+    return try catalog.importBatch(allowed, originals: originals.filter { hashes.contains($0.key) }, batchID: batchID,
+                                  requireUnambiguousUUIDs: frozenRecordCount != nil)
   }
 
   public func commitDisposition(for item: PresetInspectionItem, inserted: Set<String>, keepingConflicts: Bool) -> String? {
@@ -73,6 +89,7 @@ public struct PresetExchangeStage: Sendable {
 }
 
 public enum DevelopmentPresetExchange {
+  public static let frozenMigrationV1SHA256 = "a5e60e133e26b859539b1a14521f81a306907e0cbabb2243879b7720fd421f58"
   public static let systemRoot = URL(fileURLWithPath: "/Library/Application Support/Adobe/CameraRaw/Settings", isDirectory: true)
   public static let userRoot = FileManager.default.homeDirectoryForCurrentUser
     .appendingPathComponent("Library/Application Support/Adobe/CameraRaw/ImportedSettings", isDirectory: true)
@@ -130,25 +147,43 @@ public enum DevelopmentPresetExchange {
     if let system {
       let root = system.resolvingSymlinksInPath().standardizedFileURL
       for rule in scan.rules {
-        try Task.checkCancellation()
-        let url = root.appendingPathComponent(rule.path)
-        if !FileManager.default.fileExists(atPath: url.path) { scan.note(rule.path, "adobeBuiltin", .missing, "核准路径缺失"); continue }
-        guard url.standardizedFileURL == url.resolvingSymlinksInPath().standardizedFileURL else {
-          scan.note(rule.path, "adobeBuiltin", .rejected, "路径包含符号链接"); continue
-        }
-        do {
-          let bytes = try PresetExchangeLimits.read(root: root, relative: rule.path, limit: PresetExchangeLimits.xmpBytes)
-          let hash = hash(bytes)
-          guard bytes.count == rule.bytes, hash == rule.sha256 else {
-            scan.note(rule.path, "adobeBuiltin", .changed, "安装版本与核准哈希不符", hash: hash); continue
-          }
-          try scan.add(bytes, path: rule.path, origin: "adobeBuiltin", hash: hash)
-        } catch is CancellationError { throw CancellationError() }
-        catch let error as BatchLimit { throw error }
-        catch { scan.note(rule.path, "adobeBuiltin", .rejected, error.localizedDescription) }
+        try scan.inspectExpected(root: root, rule: rule, origin: "adobeBuiltin")
       }
     }
     if let user { try scan.enumerateUser(user) }
+    return try scan.finish()
+  }
+
+  /// Replays the versioned engineering manifest. The interactive Adobe importer can still discover user files.
+  public static func inspectFrozenAdobe(manifest: URL, system: URL = systemRoot, user: URL = userRoot,
+                                        catalog: DevelopmentPresetCatalog) throws -> PresetExchangeStage {
+    struct Manifest: Decodable {
+      struct Entry: Decodable {
+        enum Root: String, Decodable { case systemCameraRawSettings, userImportedSettings }
+        let sourceRoot: Root
+        let sourceRelativePath, sha256: String
+        let bytes: Int
+      }
+      let entries: [Entry]
+    }
+    let data = try PresetExchangeLimits.read(manifest, limit: 1_048_576)
+    guard hash(data) == frozenMigrationV1SHA256 else {
+      throw PresetExchangeError.invalid("迁移清单与冻结的 031 v1 SHA-256 不符")
+    }
+    let entries = try JSONDecoder().decode(Manifest.self, from: data).entries
+    let systemCount = entries.filter { $0.sourceRoot == .systemCameraRawSettings }.count
+    guard systemCount == 53, entries.count - systemCount == 25,
+          Set(entries.map(\.sha256)).count == entries.count else {
+      throw PresetExchangeError.invalid("冻结迁移条目数量或内容标识无效")
+    }
+    var scan = try Scan(catalog: catalog, frozenRecordCount: entries.count)
+    let system = system.resolvingSymlinksInPath().standardizedFileURL
+    let user = user.resolvingSymlinksInPath().standardizedFileURL
+    for entry in entries {
+      let builtin = entry.sourceRoot == .systemCameraRawSettings
+      let rule = PresetMigrationRule(path: entry.sourceRelativePath, sha256: entry.sha256, bytes: entry.bytes)
+      try scan.inspectExpected(root: builtin ? system : user, rule: rule, origin: builtin ? "adobeBuiltin" : "userImported")
+    }
     return try scan.finish()
   }
 
@@ -285,18 +320,44 @@ public enum DevelopmentPresetExchange {
     let rules: [PresetMigrationRule]
     let knownBuiltins: Set<String>
     let existing: [DevelopmentPresetRecord]
-    let batchID = ISO8601DateFormatter().string(from: Date()) + "-" + UUID().uuidString
+    let batchID: String
+    let frozenRecordCount: Int?
+    let frozenBatchPreviouslyRemoved: Bool
     var items: [PresetInspectionItem] = []
     var candidates: [String: DevelopmentPresetRecord] = [:]
     var originals: [String: Data] = [:]
     var total = 0
-    init(catalog: DevelopmentPresetCatalog) throws {
+    init(catalog: DevelopmentPresetCatalog, frozenRecordCount: Int? = nil) throws {
       rules = try migrationRules(); knownBuiltins = Set(rules.map(\.sha256))
       existing = try catalog.records()
+      self.frozenRecordCount = frozenRecordCount
+      batchID = frozenRecordCount == nil
+        ? ISO8601DateFormatter().string(from: Date()) + "-" + UUID().uuidString
+        : "adobe-frozen-v1-" + frozenMigrationV1SHA256
+      frozenBatchPreviouslyRemoved = frozenRecordCount == nil ? false : try catalog.wasImportBatchRemoved(batchID)
     }
 
     mutating func note(_ path: String, _ origin: String, _ status: PresetInspectionStatus, _ detail: String, hash: String? = nil) {
       items.append(PresetInspectionItem(id: items.count, path: path, origin: origin, status: status, sha256: hash, detail: detail))
+    }
+
+    mutating func inspectExpected(root: URL, rule: PresetMigrationRule, origin: String) throws {
+      try Task.checkCancellation()
+      let url = root.appendingPathComponent(rule.path)
+      guard FileManager.default.fileExists(atPath: url.path) else { note(rule.path, origin, .missing, "核准路径缺失"); return }
+      guard url.standardizedFileURL == url.resolvingSymlinksInPath().standardizedFileURL else {
+        note(rule.path, origin, .rejected, "路径包含符号链接"); return
+      }
+      do {
+        let bytes = try PresetExchangeLimits.read(root: root, relative: rule.path, limit: PresetExchangeLimits.xmpBytes)
+        let sha = hash(bytes)
+        guard bytes.count == rule.bytes, sha == rule.sha256 else {
+          note(rule.path, origin, .changed, "安装版本与核准字节数或哈希不符", hash: sha); return
+        }
+        try add(bytes, path: rule.path, origin: origin, hash: sha)
+      } catch is CancellationError { throw CancellationError() }
+      catch let error as BatchLimit { throw error }
+      catch { note(rule.path, origin, .rejected, error.localizedDescription) }
     }
 
     mutating func add(_ bytes: Data, path: String, origin: String, hash supplied: String? = nil) throws {
@@ -370,7 +431,7 @@ public enum DevelopmentPresetExchange {
       var all = Dictionary(existing.map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
       for row in candidates.values { all[row.id] = row }
       let known = Array(all.values)
-      let uuids = Dictionary(grouping: known.filter { $0.metadata["uuid"]?.isEmpty == false }, by: { $0.metadata["uuid"]! })
+      let uuids = Dictionary(grouping: known.filter { $0.metadata["uuid"]?.isEmpty == false }, by: { $0.metadata["uuid"]!.lowercased() })
       let previousIDs = Set(existing.map(\.id))
       var collisions: [String: Set<String>] = [:]
       var entries = items
@@ -384,19 +445,22 @@ public enum DevelopmentPresetExchange {
         try resolved.validate()
         return resolved
       }.sorted { $0.id < $1.id }
-      for row in records where !previousIDs.contains(row.id) {
+      for row in records where frozenRecordCount != nil || !previousIDs.contains(row.id) {
         guard let uuid = row.metadata["uuid"] else { continue }
-        let other = (uuids[uuid] ?? []).filter { $0.id != row.id }.compactMap(\.sourceSHA256)
+        let other = (uuids[uuid.lowercased()] ?? []).filter { $0.id != row.id }.compactMap(\.sourceSHA256)
         if !other.isEmpty { collisions[row.id] = Set(other) }
       }
       for index in entries.indices {
         let item = entries[index]
-        if let sha = item.sha256, collisions["xmp." + sha] != nil, item.status == .ready {
+        if let sha = item.sha256, collisions["xmp." + sha] != nil,
+           item.status == .ready || (frozenRecordCount != nil && item.status == .duplicate) {
           entries[index].status = .conflict; entries[index].detail += " · UUID 相同，内容哈希不同"
         }
       }
       try Task.checkCancellation()
-      return PresetExchangeStage(batchID: batchID, items: entries, records: records, originals: originals, collisions: collisions)
+      return PresetExchangeStage(batchID: batchID, items: entries, records: records, originals: originals,
+                                 collisions: collisions, frozenRecordCount: frozenRecordCount,
+                                 frozenBatchPreviouslyRemoved: frozenBatchPreviouslyRemoved)
     }
   }
 }

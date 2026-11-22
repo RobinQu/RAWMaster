@@ -26,8 +26,10 @@ struct RAWMasterDiagnostics {
         do {
             let arguments = Array(CommandLine.arguments.dropFirst())
             if arguments.first == "--burst-evidence" { exit(try await BurstEvidenceCLI.run(arguments)) }
+            if arguments.first == "--migrate-frozen-presets" { exit(try FrozenPresetMigrationCLI.run(Array(arguments.dropFirst()))) }
             guard let path = arguments.first, !path.hasPrefix("--") else {
                 print("Usage: RAWMasterDiagnostics <RAW-file> [--output <directory>] [--smoke]")
+                print(FrozenPresetMigrationCLI.usage)
                 return
             }
             let url = URL(fileURLWithPath: path)

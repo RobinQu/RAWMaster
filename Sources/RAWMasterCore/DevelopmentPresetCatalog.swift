@@ -137,7 +137,8 @@ public final class DevelopmentPresetCatalog: Sendable {
     }
 
     /// Returns only IDs introduced by this call. Existing SHA-identical sources may carry a prior batch's metadata.
-    public func importBatch(_ records: [DevelopmentPresetRecord], originals: [String: Data], batchID: String? = nil) throws -> [String] {
+    public func importBatch(_ records: [DevelopmentPresetRecord], originals: [String: Data], batchID: String? = nil,
+                            requireUnambiguousUUIDs: Bool = false) throws -> [String] {
         guard records.count <= 8192, originals.count <= 8192 else { throw DevelopmentPresetError.invalid }
         if let batchID {
             guard (1...256).contains(batchID.utf8.count), records.allSatisfy({ $0.kind != .user && $0.sourceSHA256 != nil }) else {
@@ -164,6 +165,10 @@ public final class DevelopmentPresetCatalog: Sendable {
             for incoming in records {
                 let record = try storedRecord(incoming)
                 try record.validate()
+                if requireUnambiguousUUIDs, let uuid = record.metadata["uuid"]?.lowercased(), !uuid.isEmpty,
+                   let sha = record.sourceSHA256, !(uuidSources[uuid] ?? []).subtracting([sha]).isEmpty {
+                    throw DevelopmentPresetError.conflict
+                }
                 if let previous = known[record.id] {
                     guard previous == record || (previous.sourceSHA256 != nil && previous.sourceSHA256 == record.sourceSHA256 && previous.kind == record.kind) else {
                         throw DevelopmentPresetError.conflict
@@ -234,6 +239,10 @@ public final class DevelopmentPresetCatalog: Sendable {
     public func importBatchIDs() throws -> [String] {
         let history = try importHistory()
         return history.unsequenced + history.committed
+    }
+
+    func wasImportBatchRemoved(_ batchID: String) throws -> Bool {
+        try read { $0.retiredBatches?.contains(batchID) == true }
     }
 
     public func importHistory() throws -> ImportHistory {

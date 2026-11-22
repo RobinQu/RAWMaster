@@ -227,6 +227,12 @@ struct DevelopmentPresetBrowser: View {
             if let reason = editing.sourceIssueForPreset(selected, context: context) {
                 Text(reason).font(.caption2).foregroundStyle(.secondary).lineLimit(4).help(reason)
             }
+            if selected.metadata["capability"] == "lensBlur", selected.metadata["analysis"] == "perPhotoDepth" {
+                let ticket = PresetLensBlurReconstructionControls.Ticket(id: selected.id, version: selected.version,
+                    context: context, revision: renderedRevision)
+                PresetLensBlurReconstructionControls(editing: editing, session: session, catalog: catalog,
+                    record: selected, ticket: ticket).id(ticket)
+            }
         }
         if let selected {
             let working = workingRecord(selected)

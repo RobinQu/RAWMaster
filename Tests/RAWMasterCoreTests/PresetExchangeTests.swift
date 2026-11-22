@@ -336,6 +336,167 @@ final class PresetExchangeTests: XCTestCase {
     XCTAssertEqual(try resumed.records().count, 1)
   }
 
+  private var frozenManifest: URL {
+    URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+      .appendingPathComponent("specs/031-preset-browser/contracts/migration-manifest-v1.json")
+  }
+
+  func testFrozenMigrationRejectsChangedManifestAndIncompleteSelection() throws {
+    var tampered = try Data(contentsOf: frozenManifest)
+    tampered.append(10)
+    let changed = try write("forged.json", tampered)
+    XCTAssertThrowsError(try DevelopmentPresetExchange.inspectFrozenAdobe(manifest: changed, system: root, user: root, catalog: store))
+    let stage = try DevelopmentPresetExchange.inspectFrozenAdobe(manifest: frozenManifest, system: root, user: root, catalog: store)
+    XCTAssertFalse(stage.frozenMigrationReady)
+    XCTAssertEqual(stage.items.count, 78)
+    XCTAssertEqual(stage.items.filter { $0.origin == "adobeBuiltin" && $0.status == .missing }.count, 53)
+    XCTAssertEqual(stage.items.filter { $0.origin == "userImported" && $0.status == .missing }.count, 25)
+    XCTAssertThrowsError(try stage.commit(to: store, keepingConflicts: true))
+    XCTAssertTrue(try store.records().isEmpty)
+    XCTAssertTrue(try store.importBatchIDs().isEmpty)
+  }
+
+  func testStrictBatchRejectsCompetingUUIDEvenWhenRecordAlreadyExists() throws {
+    let original = xmp("c:UUID=\"ABC\" c:Exposure2012=\"1\"")
+    let first = try DevelopmentPresetExchange.inspectFiles([write("A.xmp", original)], catalog: store)
+    let row = try XCTUnwrap(first.records.first)
+    _ = try first.commit(to: store)
+    let conflict = try DevelopmentPresetExchange.inspectFiles([write("B.xmp", xmp("c:UUID=\"abc\" c:Exposure2012=\"2\""))], catalog: store)
+    _ = try conflict.commit(to: store, keepingConflicts: true)
+    let snapshot = try store.records()
+    let batchIDs = try store.importBatchIDs()
+    XCTAssertThrowsError(try store.importBatch([row], originals: [try XCTUnwrap(row.sourceSHA256): original],
+        batchID: "frozen-after-inspection", requireUnambiguousUUIDs: true))
+    XCTAssertEqual(try store.records(), snapshot)
+    XCTAssertEqual(try store.importBatchIDs(), batchIDs)
+  }
+
+  func testFrozenInstalledReplayAndSourceDriftOnExplicitRequest() throws {
+    guard ProcessInfo.processInfo.environment["RAWMASTER_CHECK_ADOBE_PRESET_FIXTURE"] == "1" else {
+      throw XCTSkip("Local migration fixture is opt-in")
+    }
+    let host = try DevelopmentPresetExchange.inspectFrozenAdobe(manifest: frozenManifest, catalog: store)
+    XCTAssertTrue(host.frozenMigrationReady)
+    let system = root.appendingPathComponent("system"), user = root.appendingPathComponent("user")
+    for item in host.items {
+      let builtin = item.origin == "adobeBuiltin"
+      let source = (builtin ? DevelopmentPresetExchange.systemRoot : DevelopmentPresetExchange.userRoot).appendingPathComponent(item.path)
+      let target = (builtin ? system : user).appendingPathComponent(item.path)
+      try FileManager.default.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
+      try FileManager.default.copyItem(at: source, to: target)
+    }
+    _ = try write("user/New Unlisted After Snapshot.xmp", xmp("c:Exposure2012=\"0.25\""))
+    var patch = DevelopmentPresetPatch()
+    patch.exposure = 0.2
+    let personal = try store.create(name: "Before frozen import", group: "Personal", patch: patch)
+    try store.toggleFavorite(personal.id)
+    let scene = try XCTUnwrap(host.items.first { $0.origin == "adobeBuiltin" })
+    let earlier = try DevelopmentPresetExchange.inspectFiles([system.appendingPathComponent(scene.path)], catalog: store)
+    _ = try earlier.commit(to: store)
+    let earlierRecord = try XCTUnwrap(earlier.records.first)
+    try store.toggleFavorite(earlierRecord.id)
+    let favorites = try store.favoriteIDs()
+    func inspect() throws -> PresetExchangeStage {
+      try DevelopmentPresetExchange.inspectFrozenAdobe(manifest: frozenManifest, system: system, user: user, catalog: store)
+    }
+    let initial = try inspect()
+    XCTAssertEqual(initial.batchID, host.batchID)
+    XCTAssertEqual(initial.items.count, 78)
+    XCTAssertEqual(initial.items.filter { $0.status == .duplicate }.count, 1)
+    XCTAssertTrue(initial.frozenMigrationReady)
+    XCTAssertEqual(try initial.commit(to: store).count, 77)
+    let firstSnapshot = try store.records()
+    XCTAssertEqual(firstSnapshot.count, 79)
+    let replay = try inspect()
+    XCTAssertTrue(replay.frozenMigrationReady)
+    XCTAssertEqual(replay.items.filter { $0.status == .duplicate }.count, 78)
+    XCTAssertTrue(try replay.commit(to: store).isEmpty)
+    XCTAssertEqual(try store.records(), firstSnapshot)
+    XCTAssertEqual(try store.importBatchIDs(), [earlier.batchID, initial.batchID])
+    XCTAssertEqual(try store.favoriteIDs(), favorites)
+    for row in replay.records {
+      _ = try store.originalData(sha256: XCTUnwrap(row.sourceSHA256))
+    }
+    let victim = try XCTUnwrap(host.items.first { $0.origin == "userImported" })
+    let path = user.appendingPathComponent(victim.path)
+    var bytes = try Data(contentsOf: path)
+    bytes[0] ^= 1
+    try bytes.write(to: path)
+    let drift = try inspect()
+    XCTAssertFalse(drift.frozenMigrationReady)
+    XCTAssertEqual(drift.items.filter { $0.status == .changed }.map(\.path), [victim.path])
+    XCTAssertThrowsError(try drift.commit(to: store))
+    XCTAssertEqual(try store.records(), firstSnapshot)
+    try FileManager.default.removeItem(at: path)
+    XCTAssertEqual(try inspect().items.filter { $0.status == .missing }.map(\.path), [victim.path])
+    try store.removeImportBatch(initial.batchID)
+    XCTAssertEqual(Set(try store.records().map(\.id)), [earlierRecord.id, personal.id])
+    XCTAssertEqual(try store.favoriteIDs(), favorites)
+    XCTAssertThrowsError(try replay.commit(to: store), "A user's explicit removal must survive a replay")
+    XCTAssertEqual(try store.importBatchIDs(), [earlier.batchID])
+    let retired = try DevelopmentPresetExchange.inspectFrozenAdobe(manifest: frozenManifest, catalog: store)
+    XCTAssertTrue(retired.frozenBatchPreviouslyRemoved)
+    XCTAssertFalse(retired.frozenMigrationReady)
+  }
+
+  func testFrozenLensBlurMapsOnlyAuditedOpticsAndValidatesPerPhotoDepth() throws {
+    guard ProcessInfo.processInfo.environment["RAWMASTER_CHECK_ADOBE_PRESET_FIXTURE"] == "1" else {
+      throw XCTSkip("Local migration fixture is opt-in")
+    }
+    let stage = try DevelopmentPresetExchange.inspectFrozenAdobe(manifest: frozenManifest, catalog: store)
+    _ = try stage.commit(to: store)
+    let active = stage.records.filter { $0.metadata["analysis"] == "perPhotoDepth" }
+    XCTAssertEqual(active.count, 12)
+    let sourceID = String(repeating: "a", count: 64), otherID = String(repeating: "b", count: 64)
+    let depth = try DevelopmentLensBlurDepthPayloadV1(kind: .disparity, width: 2, height: 2, values: [1, 0.3, 0.4, 0])
+    let scene = DevelopmentSceneDepthV1(sourceSHA256: sourceID, map: depth)
+    let focus = DevelopmentSourcePoint(x: 0.25, y: 0.65)
+    var baseline = try DevelopmentRecipe(exposureEV: 0.7).promotingToV3()
+    baseline.adjustmentsV3?.effects = .init(enabled: true, grain: 0.36)
+    var mapped = Set<String>(), omissions = Set<String>()
+    for row in active {
+      let assessment = try stage.lensBlurAssessment(for: row)
+      XCTAssertEqual(assessment, try DevelopmentPresetExchange.lensBlurAssessment(for: row, catalog: store))
+      XCTAssertFalse(row.blockingReasons.isEmpty)
+      guard case .approximate(let plan) = assessment else {
+        if case .unavailable(let reason) = assessment { omissions.insert(reason) }
+        continue
+      }
+      let basename = URL(fileURLWithPath: try XCTUnwrap(row.metadata["relativePath"])).deletingPathExtension().lastPathComponent
+      mapped.insert(basename)
+      let attributes = try CameraRawXMP.read(store.originalData(sha256: plan.presetSHA256)).lensBlur
+      let candidate = try plan.prepare(record: row, baseline: baseline, sourceID: sourceID, scene: scene, focus: focus, focusRange: 0.27)
+      let full = try XCTUnwrap(candidate.patch.fullRecipe)
+      let blur = try XCTUnwrap(full.adjustmentsV3?.effects?.lensBlur)
+      XCTAssertEqual(blur.amount, try XCTUnwrap(Double(attributes["BlurAmount"] ?? "")) / 100)
+      XCTAssertEqual(blur.catEyeAmount, try XCTUnwrap(Double(attributes["CatEyeAmount"] ?? "")) / 100)
+      XCTAssertEqual(blur.bokehBoost, try XCTUnwrap(Double(attributes["HighlightsBoost"] ?? "")) / 100)
+      XCTAssertEqual(blur.sceneDepth, scene)
+      XCTAssertEqual(blur.bokehStyle, .circle)
+      XCTAssertEqual(blur.focusX, focus.x)
+      XCTAssertEqual(blur.focusRange, 0.27)
+      var restored = full
+      restored.adjustmentsV3?.effects?.lensBlur = nil
+      XCTAssertEqual(restored, baseline)
+      XCTAssertNotNil(candidate.reason(for: otherID))
+      let audit = try DevelopmentPresetAdoption(record: candidate, sourceID: sourceID, amount: 1, baseline: baseline, result: full, masks: nil)
+      XCTAssertEqual(audit.policy, "nativeDepthApproximation")
+      XCTAssertEqual(audit.fields, ["effects.lensBlur"])
+      XCTAssertNotNil(audit.omitted)
+      XCTAssertThrowsError(try plan.prepare(record: row, baseline: baseline, sourceID: otherID, scene: scene, focus: focus, focusRange: 0.27))
+      XCTAssertThrowsError(try plan.prepare(record: row, baseline: baseline, sourceID: sourceID, scene: nil, focus: focus, focusRange: 0.27))
+      XCTAssertThrowsError(try plan.prepare(record: row, baseline: baseline, sourceID: sourceID, scene: scene, focus: nil, focusRange: nil))
+      var seeded = full
+      seeded.adjustmentsV3?.effects?.lensBlur?.focusX = 0.91
+      seeded.adjustmentsV3?.effects?.lensBlur?.deviceDepth = try .init(kind: .depth, width: 1, height: 1, values: [0.44])
+      let reused = try plan.prepare(record: row, baseline: seeded, sourceID: sourceID, scene: nil, focus: nil, focusRange: nil)
+      XCTAssertEqual(reused.patch.fullRecipe, seeded)
+    }
+    XCTAssertEqual(mapped, ["Circle", "Circle Swirl", "Strong", "Subtle"])
+    XCTAssertEqual(omissions.count, 4)
+    XCTAssertEqual(try store.records(), stage.records)
+  }
+
   func testInstalledSnapshotOnExplicitRequest() throws {
     guard ProcessInfo.processInfo.environment["RAWMASTER_CHECK_ADOBE_PRESET_FIXTURE"] == "1" else {
       throw XCTSkip("Local migration fixture is opt-in")

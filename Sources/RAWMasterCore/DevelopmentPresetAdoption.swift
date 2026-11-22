@@ -22,12 +22,15 @@ public struct DevelopmentPresetAdoption: Codable, Equatable, Sendable {
         baselineFingerprint = try EditingFingerprint.of(baseline)
         resultFingerprint = try EditingFingerprint.of(result)
         var included = record.patch.fields.map(\.rawValue).sorted()
-        if record.patch.fullRecipe != nil { included.append("fullRecipe") }
+        let depthApproximation = record.metadata["reconstruction"] == "nativeDepthCircleV1" && record.patch.fullRecipe != nil
+        if depthApproximation { included.append("effects.lensBlur") }
+        else if record.patch.fullRecipe != nil { included.append("fullRecipe") }
         if record.patch.resetLensBlur == true { included.append("resetLensBlur") }
         included += (record.patch.semanticMasks ?? []).map { "mask." + $0.target.rawValue }
         fields = included
         omitted = record.metadata["confirmedOmissions"]
-        policy = record.metadata["semanticReconstruction"] == "true" ? "reconstructed" : (omitted == nil ? "strict" : "confirmedSubset")
+        if depthApproximation { policy = "nativeDepthApproximation" }
+        else { policy = record.metadata["semanticReconstruction"] == "true" ? "reconstructed" : (omitted == nil ? "strict" : "confirmedSubset") }
         let resolved = masks ?? record.patch.fullRecipe?.adjustmentsV3?.masks ?? []
         assetHashes = Array(Set(resolved.compactMap(\.semanticSnapshot).flatMap { [$0.pngSHA256] + $0.modelHashes })).sorted()
     }

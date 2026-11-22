@@ -1,0 +1,125 @@
+{
+  "actionsByCapability": {
+    "adaptiveProfile": {
+      "inspectionOnly": 2
+    },
+    "lensBlur": {
+      "confirmedNativeDepthApproximation": 4,
+      "inspectionOnly": 8,
+      "lensBlurReset": 1
+    },
+    "normalPreset": {
+      "confirmedGlobalSubset": 7,
+      "inspectionOnly": 12
+    },
+    "semanticCorrection": {
+      "confirmedSkyReconstruction": 5,
+      "confirmedSubjectReconstruction": 4,
+      "inspectionOnly": 29
+    },
+    "staticLook": {
+      "hiddenDependency": 6
+    }
+  },
+  "all80CatalogFileSHA256StableAcrossReplays": true,
+  "batchID": "adobe-frozen-v1-a5e60e133e26b859539b1a14521f81a306907e0cbabb2243879b7720fd421f58",
+  "binarySHA256": "3c4919d7481aef4d7d3612e5c5da0007408dc3522d2d822b4080206abd6246ec",
+  "capabilityCounts": {
+    "adaptiveProfile": 2,
+    "lensBlur": 13,
+    "normalPreset": 19,
+    "semanticCorrection": 38,
+    "staticLook": 6
+  },
+  "coreExchangeTests": {
+    "passed": 19,
+    "skipped": 0
+  },
+  "counts": {
+    "browsable": 72,
+    "existingProductionRecordsBefore": 0,
+    "frozenAdaptive": 53,
+    "frozenUser": 25,
+    "hiddenDependencies": 6,
+    "productionBatchesAfterReplay": 1,
+    "productionInserted": 78,
+    "productionInsertedOnReplay": 0,
+    "productionVerifiedOriginalBytes": 1881440,
+    "productionVerifiedOriginals": 78
+  },
+  "evidenceDirectory": "output/quick-prompt-native/frozen-migration/",
+  "manifest": "specs/031-preset-browser/contracts/migration-manifest-v1.json",
+  "manifestSHA256": "a5e60e133e26b859539b1a14521f81a306907e0cbabb2243879b7720fd421f58",
+  "nativeAppDebugBuild": "passed",
+  "productionCatalog": "macOS user Application Support / RAWMaster / Presets",
+  "realPortrait": {
+    "depthDimensions": [
+      256,
+      194
+    ],
+    "distinctPreviews": 4,
+    "equivalence": "Native approximate optics using local depth and focus. No Adobe-reference image comparison.",
+    "maxChanged": 111421,
+    "minChanged": 80472,
+    "model": "depth-anything-v2-small-f16-cfef6f6",
+    "previews": [
+      {
+        "name": "Circle",
+        "previewPixelCount": 153600,
+        "previewRGBA8SHA256": "7098a51bb3aad6f93867edee5530cae46e0b3664128cd7a7b8b06c1d8df62981",
+        "previewRGBPixelsChangedByAtLeast2": 104884,
+        "reopenedRecipe": true,
+        "sourceXMPSHA256": "3cd10cd47965bfbc1af043163df658e39b74b31ac48b816a6b6d247b8df76d21"
+      },
+      {
+        "name": "Strong",
+        "previewPixelCount": 153600,
+        "previewRGBA8SHA256": "eb6577ad7447fde95cf27d757b90d38f3e455a7af8657f5fadd40d69c189efdf",
+        "previewRGBPixelsChangedByAtLeast2": 111421,
+        "reopenedRecipe": true,
+        "sourceXMPSHA256": "52c2f8a8c899ade63d98299a46f54969d907ae56ee3890e6f195815108554e7c"
+      },
+      {
+        "name": "Subtle",
+        "previewPixelCount": 153600,
+        "previewRGBA8SHA256": "9279a454aa3f837a67b9cb0f7ced4cecfbd5e40b20b18c0fe03cc60a80a2a659",
+        "previewRGBPixelsChangedByAtLeast2": 80472,
+        "reopenedRecipe": true,
+        "sourceXMPSHA256": "7006d7992a047baf706ffcf30802f1e4c4d2806a8fe717c2e2bc4fdb3a3de56f"
+      },
+      {
+        "name": "Circle Swirl",
+        "previewPixelCount": 153600,
+        "previewRGBA8SHA256": "20c6695dc9b87225ba75674debd2aabcb10a721752cceb78d53ba56a8f2a5ee9",
+        "previewRGBPixelsChangedByAtLeast2": 104550,
+        "reopenedRecipe": true,
+        "sourceXMPSHA256": "d0b585dcf5cd52644e52f80c92f159241d484e8dbedacf6d9ae49028b7b363d9"
+      }
+    ],
+    "sampledPreviewPixels": 153600,
+    "sourceSHA256": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8",
+    "sourceSHA256After": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8",
+    "tiff": {
+      "bitDepth": 16,
+      "height": 6000,
+      "preset": "Circle",
+      "sha256": "4d0d961e17d7b76d3cba18c18b4f389e46f45cf6f888ed837fb126dab1bcf164",
+      "width": 4000
+    }
+  },
+  "reportSHA256": {
+    "depth-imaging-tests.log": "82f6f0a782119d07462984722f1ca7f578923ff56483b818c17cc300697f858a",
+    "final-core-tests.log": "1eeff7f5c3e40d01220d492778393a7085202163c906c8d738586a42ff540cc1",
+    "portrait-depth/report.json": "8612c51691490ab28ca4ae84a2c553cb759c628b5e5d71fbe8ad65f7e4fa4b5c",
+    "production-apply.json": "b68ae937ce5ba83fb16045f9b6fa4c1b30c151233593a63aacdb210f25864046",
+    "production-final-replay.json": "b3b491d5b03d422d15cc9a076d10bcb05fad19922a763a53b40f26577ab3d5b6",
+    "production-integrity.json": "de39734138b6085500daf4a85256d7dbd63883bd95c288afd41aad78724d5728",
+    "production-preflight.json": "1839c72eec55e6ddaf07de3acf3299fe1ced6365e99969480909c2461be8369c",
+    "source-check-before.json": "7324ce5bad05ea5921baaedd76039b00185efcdb3e578be5ab7a0e5865f51883",
+    "staging-final-apply.json": "a1020c8b902892d7e0fd1bcdec80143affb7f1e35709e32e6ae00df8a7b3bc63",
+    "staging-final-replay.json": "20f1c0ad7773697014003ab3e9396df250434e0e602c5bf6ab51c0d36ce34d87",
+    "staging-preflight.json": "137fe4421d2fcd7defcf83cc084ee49a227e0f62fdc454d2b1cd7d25c7b1e46a"
+  },
+  "schemaVersion": 1,
+  "sourceSHA256Unchanged": true
+}
