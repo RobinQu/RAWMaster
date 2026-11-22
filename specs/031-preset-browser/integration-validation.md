@@ -8,7 +8,10 @@
 
 蒙版开发版的 RAW 分析取 CIRAWFilter 已定向的中性 sRGB 图，长边 1,536 像素。合入采用 FlashRaw 的引擎时，要用相同原件对照方向、有效区域和裁切，逐张记录分析前缀和重复解码次数。只有缓存身份与像素空间一致才可复用引擎的分析图。既有蒙版回放直接读取冻结结果。[编辑器功能证据](../027-mask-ai-raw-integration/editor-validation.md)
 
-2026-11-22 17:03，基础编辑会话仍在复核显示和尾延迟，报告记录为 `measured-with-open-parity-gaps`，对齐状态为 `not-qualified`。截至此次核对，基础会话报告 RAWMaster 已实测 157 项、Camera Raw 已验证 100 项。集成待接收已对齐范围的稳定修订。随后基础会话报告，在同一 RAW 上 8 项基础调整的三轮中位数和 p95 达到 LightFlow 门槛。另外 31 项最终帧全部达到，首帧有 27 项达到。裁剪后暗角的中点和圆度、锐化半径、明度降噪细节仍在检查。第一段 Adobe 前台采集已结束，另有 11 项待完整实机计数。截至本次功能交付，基础会话尚未给出已对齐范围的最终版本。主工作区的动态证据位于 `docs/research/camera-raw-parity/performance-data.json`。
+2026-11-22 18:02 复核，基础编辑报告仍标记 `measured-with-open-parity-gaps` / `not-qualified`，源码身份为 `b89702e8 + 当前工作区改动`。此处等待对齐范围的可重建交付版本。主工作区的动态证据位于 `docs/research/camera-raw-parity/performance-data.json`。
+
+- 基础会话已对 15 张真实 RAW 完成后台测试。8 项基础调整连续三轮的中位数与 p95 达到 LightFlow 门槛，另有按面板分组的首帧、最终帧对照。31 项一组的首帧／最终帧分别通过 27／31 项。另一次 37 项对照分别通过 36／37 项。
+- 两轮 Camera Raw 前台实测后，有 6 项滑块到照片屏幕响应的记录通过验证。第二轮因 Adobe 模态对话框中断，剩余项以基础编辑的最终交付记录为准。
 
 本次只读交接检查发现，功能增量所改的既有文件中有 9 个也被基础编辑会话修改，包括 Package.swift、EditingController、DevelopmentAdjustmentCommands、DevelopmentMaskEngineV3、DevelopmentPreviewService、DevelopmentRendererV3、PreviewInteractiveProxyV3、EditingDevelopmentSessionTests 及 build-app.sh。功能新增文件当时没有重名。接到目标快照后重新计算交集，在对应方法上分别合并模型包、源绑定、预览与资源复制逻辑，随后运行双方回归。[开发版本与功能证据](feature-validation.md)
 
