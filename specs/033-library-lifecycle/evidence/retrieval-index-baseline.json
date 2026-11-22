@@ -1,0 +1,77 @@
+{
+  "protocol": "library-retrieval-1",
+  "cases_sha256": "3e0bd6d6181a184297d381cabdc350111056a410df5eda8b8fdc6ad3162eb57e",
+  "runtime": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "python": "3.12.11",
+    "onnxruntime": "1.23.2",
+    "provider": "CPUExecutionProvider",
+    "intra_op_threads": 2,
+    "inter_op_threads": 1,
+    "opencv": "4.12.0",
+    "numpy": "2.2.6",
+    "Pillow": "11.3.0",
+    "tokenizers": "0.22.1",
+    "onnx": "1.19.1"
+  },
+  "models_sha256": {
+    "clip-q8.onnx": "a2c2849329eafb24100acec5a9421a39f8cb445296444c5c98855b69e5e7a751",
+    "tokenizer.json": "7dfbf1966ebf99d471c3796e9b457329d2b2182b817e144f1e904b957745c839",
+    "preprocessor_config.json": "61a78fdd2c7ac17b54b6190c0f4cb23423192c535003d52528d01e318a47608b",
+    "siglip-vision-q8.onnx": "5f2b401c1a4fc095702a5d45348e17ad46c4f87064085365b43c6e8eaa5c0070",
+    "siglip-text-q8.onnx": "3a0603d3a00c05a80a6ded4743c16aaac7b1e62cdcc7e362e7ce418659b96400",
+    "siglip-tokenizer.json": "cb9140fae3ac5122c972d37adf83e1248471a38147ad76f8215c8872c6fd8322",
+    "siglip-preprocessor.json": "9b36b57ebaf20f09bf4c22100ccc21877ea6bfe5aead0c00c59f8af8ccefacfc",
+    "sface.onnx": "0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79",
+    "yunet": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4"
+  },
+  "catalogue": {
+    "model": "siglip",
+    "model_key": "5f2b401c1a4fc095702a5d45348e17ad46c4f87064085365b43c6e8eaa5c0070/9b36b57ebaf20f09bf4c22100ccc21877ea6bfe5aead0c00c59f8af8ccefacfc",
+    "sqlite_version": "3.49.1",
+    "logical_photos": 1265,
+    "unique_encoded": 1265,
+    "corpus_sha256": "73d8d368dad27f3b52059a09de8035275ed7295890ede3279ec00acb1cd3d665",
+    "first_index_ms_excl_model_load": 78731.67,
+    "rehash_and_lookup_after_reopen_ms": 101.88,
+    "replay_model_calls": 0,
+    "prep_ms": {
+      "p50": 2.9332,
+      "p95": 3.7563
+    },
+    "encode_ms": {
+      "p50": 56.6066,
+      "p95": 59.5049
+    },
+    "vector_bytes": 3886080,
+    "sqlite_bytes": 5681152,
+    "search": [
+      {
+        "scope": "all",
+        "rows": 1265,
+        "queries": 11,
+        "read_candidate_blobs_ms": {
+          "p50": 2.6023,
+          "p95": 3.1686
+        },
+        "exact_rank_top5_ms": {
+          "p50": 0.1606,
+          "p95": 0.2216
+        }
+      },
+      {
+        "scope": "burst14-context38",
+        "rows": 38,
+        "queries": 11,
+        "read_candidate_blobs_ms": {
+          "p50": 0.062,
+          "p95": 0.1229
+        },
+        "exact_rank_top5_ms": {
+          "p50": 0.0092,
+          "p95": 0.0129
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,460 @@
+{
+  "protocol": "library-retrieval-1",
+  "samples": {
+    "A1": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0000.jpg",
+      "sha256": "b81ffe7523b5060d3edab4f2458fb99bf0803a46e45e89372129d43466340ddb"
+    },
+    "A2": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0017.jpg",
+      "sha256": "6bb403e7f5ef579fb787573391c6d0bb8540077f2d645ecbd8e3228d61a0e156"
+    },
+    "A3": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0035.jpg",
+      "sha256": "cb4a5ac556a6b3e161de5250889601b838f28ed286b426fd1e994d72d9c98c5c"
+    },
+    "A4": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0052.jpg",
+      "sha256": "45a8cc936599d7dc59804389fde8aabf35f1ae2eee98100d1c3ddf6338d6b9da"
+    },
+    "A5": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0070.jpg",
+      "sha256": "7e6830a24dca6c60fd83f531bfa1e06c4807f92e32fde48d9e0fac7002da65f5"
+    },
+    "A6": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0087.jpg",
+      "sha256": "6c304bf0989a47cc23a5caac6342d0a34da39d95f7f551f2468f357996599072"
+    },
+    "A7": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0105.jpg",
+      "sha256": "5764d69368fb7a37bea9fef57dac571b3d5241f43d2dc4d1f607887b7a477550"
+    },
+    "A8": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst123/files/asset0122.jpg",
+      "sha256": "0f53466900bc649616a8cfd03129fea88039daeaae25be3ced2ee0eed16055c8"
+    },
+    "B1": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0000.jpg",
+      "sha256": "01aeb1b5315442cf1f91dc42795dda3fdfe45bd6dc0697ec2fd62d5e9ad3cce1"
+    },
+    "B2": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0005.jpg",
+      "sha256": "54619de9d6c2071b4b8dfbd6d626bd19de379234c2ad6361fe0accf6a3ec39ba"
+    },
+    "B3": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0011.jpg",
+      "sha256": "fe9f1b81924eaba5ee8461a40858fe9f431dcbcb5c74637a0a194525401a8b9c"
+    },
+    "B4": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0016.jpg",
+      "sha256": "9a3c046d36de49de4e0b946d517a186f48aba06953d2c58b996682ac1a3b390c"
+    },
+    "B5": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0021.jpg",
+      "sha256": "9e15e6be6412edd6ce772bef027f77e5fc3b91da5443443861c3b87b84838459"
+    },
+    "B6": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0026.jpg",
+      "sha256": "d880ea95207f68e562d17d4f04d7835c2e66f548970f7438ea195f8cc41854c8"
+    },
+    "B7": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0032.jpg",
+      "sha256": "cc95348b499e76ade004aea00c283858008d9f29b41110c2427b0be7340e332f"
+    },
+    "B8": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst14-context38/files/asset0037.jpg",
+      "sha256": "7656a577a411911f3ce59cd5b6a5846d8245c90d7de9c79badb13cac5a67c499"
+    },
+    "C1": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0000.jpg",
+      "sha256": "45ad2e0a8c484f57d1301c6261eb891281e8183cf0f6f02bc4e7ce2e64e52b8c"
+    },
+    "C2": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0031.jpg",
+      "sha256": "80b36db1ff5cc5b5160375acf3f28aeef2e57a33c02a1f049c6ea7dd1224d304"
+    },
+    "C3": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0062.jpg",
+      "sha256": "1820999b241d936db5cb6b9dc48ad79fbbeaefa190572fe0c63fd6631cc92cc5"
+    },
+    "C4": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0093.jpg",
+      "sha256": "404067d0be787fbae0a6808c8f2e39413ed2dfa75d1d727383951ea2840c027f"
+    },
+    "C5": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0123.jpg",
+      "sha256": "7e2c5ce821f397a97a11a84839daefa5594da0dfe1bd0eb35534ac9709fb3db1"
+    },
+    "C6": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0154.jpg",
+      "sha256": "68e526f86f6b803440034fadffe8087ffb6d80839cdebb45a5c4a5987d5b8e3b"
+    },
+    "C7": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0185.jpg",
+      "sha256": "f923d2fb95f646c76a8e9dba2be121575cbc67443427b8f812f043c082609c5d"
+    },
+    "C8": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst193-context217/files/asset0216.jpg",
+      "sha256": "7c565d276fe819caffa0be2cc9c20d0e1e822d90f2d74725ca8f1d0f810442c7"
+    },
+    "D1": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0000.jpg",
+      "sha256": "b4d632f0df0d9b5618d36e813af62efdf71f9bd4bce55bea8bffdaefe9c5244d"
+    },
+    "D2": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0010.jpg",
+      "sha256": "40e3be4a4de428b991b05715f01951694fba8d3fea1ba0fff606be9e7ff495f6"
+    },
+    "D3": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0020.jpg",
+      "sha256": "231670fed75da1c8b2dae2b6e9c81afeb0d318b398738760d95cf0eb19d831f4"
+    },
+    "D4": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0030.jpg",
+      "sha256": "d19f50a80a6d22ccfaf24fbe6393f787b91a6b3855dc02819a68071dbf5378d4"
+    },
+    "D5": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0041.jpg",
+      "sha256": "fab66a53ae402674982be446a1ad4374fc2a710eb43ea27e64c9843a2b9dc1fc"
+    },
+    "D6": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0051.jpg",
+      "sha256": "f5e8e6661eafd898177c7ff88a8b5efa7d231cdebd5f3eed0b853889d74cdf5e"
+    },
+    "D7": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0061.jpg",
+      "sha256": "d6a3de37592537bdb16815a2ab5557c5edba269d5bd5b7fb499b9ff89c6a0bfd"
+    },
+    "D8": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/burst48-context72/files/asset0071.jpg",
+      "sha256": "25f082fb4b55d2dfef377bb168b3749b70bda47b4302beaf6d8f6f82e7a7eb17"
+    },
+    "E1": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0000.jpg",
+      "sha256": "8cddfc382644c17eeab8eda8f9d87c7188513ccef350cc3b6867e99ef241a556"
+    },
+    "E2": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0054.jpg",
+      "sha256": "2a8a9b69cbe4cf3f2e99960d74df4e29b1369304d5bea907db48d152c58ea15a"
+    },
+    "E3": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0107.jpg",
+      "sha256": "d4060b99d5db634d0fcc904aceb2bf29e9dd587d17f2d04abc85056aaa623e6a"
+    },
+    "E4": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0161.jpg",
+      "sha256": "9c81f60e1b269742006080d93614883a73e30c53a7729c61ad6d9b65abfae060"
+    },
+    "E5": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0214.jpg",
+      "sha256": "ee3f6a59e64bfbd78743b95c91fc2da8463268c0bfa1aa3e1ccd63e8d4df89c6"
+    },
+    "E6": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0268.jpg",
+      "sha256": "5b31eb06e828dd7c5031f3eaca307944cb3bd81cd29846fd4665b91ea9f4bf41"
+    },
+    "E7": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0321.jpg",
+      "sha256": "34e593136ef4289a29a295eac31ec5b65f26b8ad73fb70e429dac482192d9b71"
+    },
+    "E8": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/dji187-context376/files/asset0375.jpg",
+      "sha256": "b39e8ed4602d1cf2f907ba6c1b2301d1e5a26702f5f372436b192e412b82fd01"
+    },
+    "F1": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0000.jpg",
+      "sha256": "8c0861fa9b7abb777da12e26fd68b6aaa8331c152cb5ad92147228ab37ce3290"
+    },
+    "F2": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0063.jpg",
+      "sha256": "df75812868269b55cb4c9250d3460468c3f43b9972808cf90b0f401c04415770"
+    },
+    "F3": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0125.jpg",
+      "sha256": "9f437f6ed92f7a43ed2f0868764daf71f9327803cd5340b393866ca43755d24a"
+    },
+    "F4": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0188.jpg",
+      "sha256": "bbe3262cc162d0a8f0d604db2c6d8694d7bb89b6b7eed2567797296df178381c"
+    },
+    "F5": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0250.jpg",
+      "sha256": "96b5d3448cd55ac524af08b0b70ab546228c73e096f06f5ff79fc4e6b41f0349"
+    },
+    "F6": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0313.jpg",
+      "sha256": "738eb16c26c69bc64812634ae0dc819ce68d4d8837554880e7675506e5f07315"
+    },
+    "F7": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0375.jpg",
+      "sha256": "51c61e6d3e598daf1800527efff519a88db722086d78b52b80ec2a2bc2206411"
+    },
+    "F8": {
+      "file": "Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/interval427-context439/files/asset0438.jpg",
+      "sha256": "9e742648821d6322cb5268a32d4bfdbb4d98ea7596acaec37c68e691f97a1f55"
+    },
+    "P1": {
+      "file": "experiments/MaskAI/Fixtures/Downloaded/car.png",
+      "sha256": "c6ae6440e3862dd9768cd9f7098b783ac980629dd7bc1fe69c10b39fca5a84cd"
+    },
+    "P2": {
+      "file": "experiments/MaskAI/Fixtures/Downloaded/lena.jpg",
+      "sha256": "7de7ed51a1594fff247f4cae2301eceacf5313d6011e37b4a4c8733f7bb72c07"
+    },
+    "P3": {
+      "file": "experiments/MaskAI/Fixtures/Downloaded/messi5.jpg",
+      "sha256": "1d570e49654e84c7a943918537bd9e5e1ef82920152e147c834006e235be97c9"
+    },
+    "P4": {
+      "file": "experiments/MaskAI/Fixtures/Downloaded/mountain-lake.jpg",
+      "sha256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442"
+    },
+    "P5": {
+      "file": "experiments/MaskAI/Fixtures/Downloaded/snow.jpg",
+      "sha256": "bbb3ec36c6a49d873bad48082323791b3e0dbfab154026518f6af987b37c88ec"
+    }
+  },
+  "queries": [
+    {
+      "text": "穿着白色上衣的人和脚下蓝色的倒影",
+      "relevant": [
+        "A1",
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A8"
+      ]
+    },
+    {
+      "text": "一群鸟在开阔的草地上",
+      "relevant": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8"
+      ]
+    },
+    {
+      "text": "浅水里有裸露的岩石",
+      "relevant": [
+        "C2",
+        "C3",
+        "C4",
+        "C5",
+        "C6",
+        "C7",
+        "C8"
+      ]
+    },
+    {
+      "text": "水边的海鸥",
+      "relevant": [
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7",
+        "D8"
+      ]
+    },
+    {
+      "text": "高处俯瞰平原上蜿蜒的河道，远处有太阳",
+      "relevant": [
+        "E1",
+        "E2",
+        "E3",
+        "E4",
+        "E5",
+        "E6",
+        "E7",
+        "E8"
+      ]
+    },
+    {
+      "text": "黎明或黄昏，蓝色天空下有阴暗的山脊",
+      "relevant": [
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8"
+      ]
+    },
+    {
+      "text": "一辆停着的白色皮卡车",
+      "relevant": [
+        "P1"
+      ]
+    },
+    {
+      "text": "一张戴着宽檐帽的肖像照片",
+      "relevant": [
+        "P2"
+      ]
+    },
+    {
+      "text": "足球运动员在踢球",
+      "relevant": [
+        "P3"
+      ]
+    },
+    {
+      "text": "碧绿色山湖中的小船",
+      "relevant": [
+        "P4"
+      ]
+    },
+    {
+      "text": "雪地里的针叶树",
+      "relevant": [
+        "P5"
+      ]
+    }
+  ],
+  "nominated_face_center_boxes": {
+    "A1": [
+      0.43,
+      0.231,
+      0.53,
+      0.315
+    ],
+    "A2": [
+      0.385,
+      0.201,
+      0.485,
+      0.285
+    ],
+    "A3": [
+      0.41,
+      0.351,
+      0.51,
+      0.435
+    ],
+    "A4": [
+      0.39,
+      0.071,
+      0.49,
+      0.155
+    ],
+    "A5": [
+      0.45,
+      0.178,
+      0.55,
+      0.262
+    ],
+    "A6": [
+      0.465,
+      0.145,
+      0.565,
+      0.229
+    ],
+    "A7": [
+      0.47,
+      0.265,
+      0.57,
+      0.349
+    ],
+    "A8": [
+      0.49,
+      0.195,
+      0.59,
+      0.279
+    ],
+    "F1": [
+      0.727,
+      0.382,
+      0.797,
+      0.494
+    ],
+    "P2": [
+      0.416,
+      0.396,
+      0.716,
+      0.756
+    ],
+    "P3": [
+      0.407,
+      0.255,
+      0.477,
+      0.367
+    ]
+  },
+  "empty_face_controls": [
+    "B1",
+    "B2",
+    "B3",
+    "B4",
+    "B5",
+    "B6",
+    "B7",
+    "B8",
+    "C1",
+    "C2",
+    "C3",
+    "C4",
+    "C5",
+    "C6",
+    "C7",
+    "C8",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "E1",
+    "E2",
+    "E3",
+    "E4",
+    "E5",
+    "E6",
+    "E7",
+    "E8",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "P5"
+  ],
+  "labeled_face_groups": [
+    [
+      "A1",
+      "A2",
+      "A3",
+      "A4",
+      "A5",
+      "A6",
+      "A7",
+      "A8"
+    ],
+    [
+      "P2"
+    ],
+    [
+      "P3"
+    ]
+  ],
+  "face_operating_point": {
+    "yunet_confidence": 0.9,
+    "yunet_nms_iou": 0.3,
+    "resize_long_edge": 640,
+    "sface_cosine_complete_link": 0.5,
+    "camera_roll_variations": "none"
+  }
+}

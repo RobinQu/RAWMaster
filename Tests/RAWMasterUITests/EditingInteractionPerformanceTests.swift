@@ -282,6 +282,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             let asset = try store.register(.init(sessionID: session.id, projectID: project.id, projectName: project.name,
                 sourcePath: source.path, currentPath: source.path, filename: source.lastPathComponent, fileSize: bytes,
                 width: width, height: height, contentHash: hash, importState: .ready))
+            try store.completedDirectImport(session)
             return (store, asset, hash)
         }.value
 

@@ -19,6 +19,7 @@ final class EditingTests: XCTestCase {
     try store.saveSession(session)
     asset = try store.register(.init(sessionID: session.id, projectID: project.id, sourcePath: sourceURL.path,
       fileSize: try FileSafety.stat(sourceURL).size, contentHash: try FileSafety.hash(sourceURL), importState: .ready))
+    try store.completedDirectImport(session)
     source = try store.editingSourceSnapshot(assetID: asset.id, verifiedSHA256: FileSafety.hash(sourceURL), verifiedByteCount: FileSafety.stat(sourceURL).size)
   }
   override func tearDownWithError() throws { store = nil; try? FileManager.default.removeItem(at: root) }
@@ -51,17 +52,53 @@ final class EditingTests: XCTestCase {
     try store.validateEditingSource(source)
     var moved = source!; moved.sourceLocation = root.appendingPathComponent("relocated.RAW")
     XCTAssertTrue(source.hasSameIdentity(as: moved))
-    let admission = try store.loadAdmissions().first!
-    var readmitted = admission; readmitted.admittedAt = admission.admittedAt.addingTimeInterval(1)
-    try store.statement("UPDATE project_admissions SET data=? WHERE asset_id=?", [try store.json(readmitted), asset.id])
+    let scope = try XCTUnwrap(store.rows("SELECT scope_id FROM lc_scopes WHERE asset_id=?", [asset.id]).first?.first)
+    try store.statement("UPDATE lc_scope_times SET admitted_at=admitted_at+1 WHERE scope_id=?", [scope])
     XCTAssertThrowsError(try store.createPhotoWork(source: source)) { XCTAssertEqual($0 as? EditingError, .staleSource) }
-    try store.statement("UPDATE project_admissions SET data=? WHERE asset_id=?", [try store.json(admission), asset.id])
+    try store.statement("UPDATE lc_scope_times SET admitted_at=admitted_at-1 WHERE scope_id=?", [scope])
+    try store.validateEditingSource(source)
     var changed = asset!; changed.contentHash = String(repeating: "b", count: 64)
     try store.statement("UPDATE assets SET data=? WHERE id=?", [try store.json(changed), asset.id])
     XCTAssertThrowsError(try store.validateEditingSource(source))
   }
+  func testProvisionalLegacyAdmissionCannotOpenAPendingOrFinallyExcludedFile() async throws {
+    let folder = root.appendingPathComponent("screening")
+    try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+    try Data("pending original".utf8).write(to: folder.appendingPathComponent("screen.RAW"))
+    let session = try await ImportService(store: store).importDirectory(
+      source: folder, destination: nil, projectName: "Triage", mode: .reference, initialScreening: true, progress: { _ in })
+    let pending = try XCTUnwrap(store.loadAssets(sessionID: session.id).first)
+    try store.writeAdmission(ProjectAdmission(assetID: pending.id, projectID: pending.projectID))
+    XCTAssertThrowsError(try store.captureEditingSourceSnapshot(assetID: pending.id)) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+    let preview = try store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true, dispositions: [pending.id:.excluded])
+    _ = try store.commitCompletion(preview)
+    XCTAssertEqual(try store.rows("SELECT disposition FROM lc_occurrences WHERE asset_id=?", [pending.id]), [["excluded"]])
+    XCTAssertThrowsError(try store.captureEditingSourceSnapshot(assetID: pending.id)) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+  }
+  func testMigratedV7AdmittedWorkKeepsItsOriginalEditingFingerprint() throws {
+    let data = try XCTUnwrap(store.rows("SELECT data FROM project_admissions WHERE asset_id=?", [asset.id]).first?.first)
+    var legacySource = source!
+    legacySource.admissionFingerprint = try EditingFingerprint.of(store.decode(data, ProjectAdmission.self))
+    var existing = try work()
+    var original = try store.editingVersion(id: existing.originalVersionID)
+    existing.source = legacySource
+    original.source = legacySource
+    try store.statement("UPDATE editing_works SET data=? WHERE id=?", [try store.json(existing),existing.id])
+    try store.statement("UPDATE editing_versions SET data=? WHERE id=?", [try store.json(original),original.id])
+    try removeCatalogSchemaForLegacyFixture(store)
+    try store.exec("PRAGMA user_version=7; PRAGMA wal_checkpoint(TRUNCATE)")
+    store = nil
+    store = try LibraryStore(databaseURL: database)
+    let recaptured = try store.captureEditingSourceSnapshot(assetID: asset.id)
+    XCTAssertEqual(recaptured.admissionFingerprint, legacySource.admissionFingerprint)
+    XCTAssertTrue(try store.photoWork(id: existing.id).source.hasSameIdentity(as: recaptured))
+    try store.validateEditingSource(legacySource)
+    _ = try store.appendEditingVersion(version(existing))
+  }
   func testOriginalCandidateCASIdempotencyAndReviewSeparationSurviveRestart() throws {
     let before = try Data(contentsOf: sourceURL)
+    let admission = try XCTUnwrap(store.loadAdmissions().first { $0.assetID == asset.id })
+    XCTAssertEqual(try EditingFingerprint.of(admission), source.admissionFingerprint)
     let first = try store.createPhotoWork(source: source, commandID: "create-1")
     XCTAssertEqual(first, try store.createPhotoWork(source: source, commandID: "create-1"))
     XCTAssertEqual(first.adoptedVersionID, first.originalVersionID)

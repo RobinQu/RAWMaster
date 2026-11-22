@@ -1,0 +1,231 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "engineAdapter": "BrowserWebGpu:  ( )",
+  "adapter": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "isFallbackAdapter": false
+  },
+  "size": [
+    128,
+    128
+  ],
+  "source": "opaque RGBA16F synthetic ramp",
+  "recipe": {
+    "version": 1,
+    "source": {
+      "demosaic": "auto",
+      "highlightReconstruction": true,
+      "lensCorrections": true,
+      "assumeColorSpace": null
+    },
+    "base": {
+      "profile": "standard",
+      "profileAmount": 100,
+      "wbMode": "as-shot",
+      "temperature": 6500,
+      "tint": 0,
+      "exposure": 0,
+      "contrast": 0,
+      "highlights": 0,
+      "shadows": 0,
+      "whites": 0,
+      "blacks": 0,
+      "vibrance": 0,
+      "saturation": 0
+    },
+    "retouch": [],
+    "geometry": {
+      "crop": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      },
+      "angle": 0,
+      "quarterTurns": 0,
+      "flipH": false,
+      "flipV": false,
+      "aspect": null
+    }
+  },
+  "branches": {
+    "nodes": [
+      {
+        "id": "A",
+        "kind": "corrector",
+        "enabled": true,
+        "number": 1,
+        "label": "A",
+        "color": null,
+        "x": 1,
+        "y": 0,
+        "opacity": 0.55,
+        "mask": null,
+        "tools": {
+          "basic": {
+            "temperature": 0,
+            "tint": 0,
+            "exposure": -0.75,
+            "contrast": 0,
+            "highlights": 0,
+            "shadows": 0,
+            "whites": 0,
+            "blacks": 0,
+            "texture": 0,
+            "clarity": 0,
+            "dehaze": 0,
+            "vibrance": 0,
+            "saturation": 0
+          }
+        }
+      },
+      {
+        "id": "B",
+        "kind": "corrector",
+        "enabled": true,
+        "number": 2,
+        "label": "B",
+        "color": null,
+        "x": 1,
+        "y": 0,
+        "opacity": 0.7,
+        "mask": null,
+        "tools": {
+          "basic": {
+            "temperature": 0,
+            "tint": 0,
+            "exposure": 1,
+            "contrast": 0,
+            "highlights": 0,
+            "shadows": 0,
+            "whites": 0,
+            "blacks": 0,
+            "texture": 0,
+            "clarity": 0,
+            "dehaze": 0,
+            "vibrance": 0,
+            "saturation": 0
+          }
+        }
+      },
+      {
+        "id": "M",
+        "kind": "layer",
+        "enabled": true,
+        "number": 0,
+        "label": "Layer",
+        "color": null,
+        "x": 2,
+        "y": 0,
+        "opacity": 1,
+        "mask": null,
+        "tools": {},
+        "blendModes": [
+          "normal",
+          "normal"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "@input",
+        "to": "A",
+        "index": 0
+      },
+      {
+        "from": "@input",
+        "to": "B",
+        "index": 0
+      },
+      {
+        "from": "A",
+        "to": "M",
+        "index": 0
+      },
+      {
+        "from": "B",
+        "to": "M",
+        "index": 1
+      },
+      {
+        "from": "M",
+        "to": "@output",
+        "index": 0
+      }
+    ]
+  },
+  "rows": [
+    {
+      "label": "A",
+      "sha256": "98937c095646e20375fc336c999666e89eb4cad3b762407456488b56ab812a40",
+      "attempts": [
+        {
+          "segments": 3,
+          "cached": 0,
+          "provisional": false
+        }
+      ]
+    },
+    {
+      "label": "B",
+      "sha256": "94222754a61c983fde23b9ade8312bdcd72fa69295ef0d4c83fb67a9f2ed93ea",
+      "attempts": [
+        {
+          "segments": 2,
+          "cached": 1,
+          "provisional": false
+        }
+      ]
+    },
+    {
+      "label": "A+B",
+      "sha256": "a5fd65970edac2abc28732ccaea69c23ac3bfed4d958688c53cdf2c9fd95a1cf",
+      "attempts": [
+        {
+          "segments": 1,
+          "cached": 3,
+          "provisional": false
+        }
+      ]
+    },
+    {
+      "label": "B+A",
+      "sha256": "a4250f6c770cd110840753ab65d157373c8950f5c12458dc65fd13d5e69377a3",
+      "attempts": [
+        {
+          "segments": 1,
+          "cached": 3,
+          "provisional": false
+        }
+      ]
+    },
+    {
+      "label": "A+B again",
+      "sha256": "a5fd65970edac2abc28732ccaea69c23ac3bfed4d958688c53cdf2c9fd95a1cf",
+      "attempts": [
+        {
+          "segments": 0,
+          "cached": 3,
+          "provisional": false
+        }
+      ]
+    }
+  ],
+  "memory": {
+    "cacheBytes": 1179648,
+    "cacheEntries": 9,
+    "guideBytes": 0,
+    "guides": 0,
+    "budget": 67108864,
+    "pipelines": 4,
+    "sources": 1,
+    "handles": 0,
+    "poolLiveBytes": 1179648,
+    "poolFreeBytes": 0,
+    "sourceBytes": 131072,
+    "tickets": 0,
+    "wasmHeapBytes": 3801088
+  }
+}

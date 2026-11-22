@@ -4,6 +4,7 @@ import Combine
 import Foundation
 import RAWMasterCore
 import RAWMasterImaging
+import RAWMasterLibrary
 
 /// One immutable group snapshot and one independently cancellable render at a time.
 @MainActor
@@ -225,7 +226,11 @@ extension AppModel {
         do {
             let input = try makeTimelapseInput(groupID: id)
             closeSearchControls()
-            timelapseComposer = TimelapseComposer(input: input, runningChanged: { [weak self] running in
+            guard let actions = catalogActions else { throw LibraryEngineError("资料库已关闭") }
+            timelapseComposer = TimelapseComposer(input: input, render: { input,settings,destination,preview,progress in
+                if preview { return try await TimelapseRenderer.render(input:input,settings:settings,destination:destination,preview:true,progress:progress) }
+                return try await LibraryGroupRendering.export(actions:actions,input:input,settings:settings,destination:destination,progress:progress)
+            }, runningChanged: { [weak self] running in
                 self?.timelapseIsRunning = running
             })
             errorMessage = nil; showTimelapse = true

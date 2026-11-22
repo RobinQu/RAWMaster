@@ -10,12 +10,21 @@ public final class EditingArchive: @unchecked Sendable {
   public init(root: URL, protectedRoots: [URL]) throws {
     guard root.isFileURL, root.path.hasPrefix("/") else { throw EditingError.unsafePath }
     let canonical = FileSafety.canonical(root)
-    try FileSafety.checkTarget(canonical, sources: protectedRoots)
-    self.root = canonical; self.protectedRoots = protectedRoots.map(FileSafety.canonical)
+    let resolvedSources = Set(protectedRoots.map(FileSafety.canonical))
+    let paths = Set(resolvedSources.map(\.path))
+    // Each source is resolved once for this opening. Resolve every newly used target independently.
+    func validateDirectory(_ target: URL) throws {
+      let destination = FileSafety.canonical(target).path
+      if paths.contains(where: { $0 == "/" || destination == $0 || destination.hasPrefix($0 + "/") }) {
+        throw LibraryError.invalid("目标目录不能位于源素材目录内：\(target.path)")
+      }
+    }
+    try validateDirectory(canonical)
+    self.root = canonical; self.protectedRoots = Array(resolvedSources)
     try FileManager.default.createDirectory(at: canonical, withIntermediateDirectories: true)
     for name in ["artifacts", "receipts", ".staging", ".received", "received-receipts", ".inputs"] {
       let directory = canonical.appendingPathComponent(name, isDirectory: true)
-      try FileSafety.checkTarget(directory, sources: protectedRoots)
+      try validateDirectory(directory)
       guard FileSafety.contains(canonical, directory) else { throw EditingError.unsafePath }
       try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     }

@@ -156,6 +156,7 @@ struct SequenceGridCell: View {
                     .accessibilityLabel("\(item.collapsed ? "展开" : "收起")序列：\(group.name)，当前段 \(item.segment.assets.count) 张")
                     .help("\(group.name) · \(group.kind)；仅折叠显示，不改变照片选择或序列成员。")
                     .contextMenu {
+                        Button("分组制作与成片…") { model.openGroupProcessing(group.id) }
                         Button("编辑拍摄组…") { model.editGroup(group.id) }.disabled(!model.canEditGroup(group.id))
                         if model.isTimelapseGroup(group) {
                             Button("合成延时视频…") { model.openTimelapse(groupID: group.id) }

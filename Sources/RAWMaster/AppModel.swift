@@ -3,6 +3,7 @@ import Combine
 import Foundation
 import RAWMasterCore
 import RAWMasterImaging
+import RAWMasterLibrary
 
 // Views are snapshots of LibraryStore, which remains the single authority for decisions.
 @MainActor
@@ -153,7 +154,32 @@ final class AppModel: ObservableObject {
     @Published private(set) var settingsRequestID = UUID()
     private var editingObservation: AnyCancellable?
     private var editingServicesObservation: AnyCancellable?
-    private var store: LibraryStore?
+    private var archivePreparation: Task<Void, Never>?
+    private(set) var store: LibraryStore?
+    let catalogGrid: LibraryGridDataSource<AssetRecord, ProjectSearchQuery>?
+    let gridPaint: CatalogGridPaintRecorder?
+    private let libraryIndexWorker = LibraryDiscoveryWorker()
+    private var libraryIndexTask: Task<Void,Never>?
+    private var libraryIndexDirty = false
+    private var gridObservation: AnyCancellable?
+    private(set) var catalogStartupPhases: [String:Double] = [:]
+    private var firstGridStart: UInt64?
+    private var previousGridKey: Data?
+    private var libraryAccess: OpenLibraryLocation?
+    private var fullSnapshotLoaded = false
+    var exportCatalogScope: CatalogFrozenSelection?
+    var exportCatalogAssets: [AssetRecord] = []
+    private(set) var frozenSelection: CatalogFrozenSelection?
+    private(set) var overview: LibraryOverview?
+    @Published var processingGroupID: String?
+    @Published var libraryPanel: CatalogPanel?
+    var activateLibrary: ((URL) throws -> Void)?
+    @Published var inspectionWorkIDs: [String] = []
+    @Published var sealDraft: CatalogSealDraft?
+    var isPagedGrid: Bool { catalogGrid != nil && mode == .grid && (scope == .all || scope == .project) }
+    var catalogActions: CatalogActions? { store?.catalogActions }
+    var canSwitchLibrary: Bool { !isBusy && !relocationIsRunning && editing?.saving != true && editing?.localWorkIsRunning != true }
+
     private var importer: ImportService?
     private var regroupService: AutomaticGroupingService?
     private var exporter: ExportService?
@@ -189,27 +215,39 @@ final class AppModel: ObservableObject {
     private let defaults: UserDefaults
 
     init(libraryURL overrideURL: URL? = nil, defaults: UserDefaults = .standard, postIngest: ImportPostIngestCallback? = nil,
-         regroupAnalyzer: AutomaticGroupingAnalyzer? = nil, editingPreviewBackend: (any EditingPreviewBackend)? = nil) {
+         regroupAnalyzer: AutomaticGroupingAnalyzer? = nil, editingPreviewBackend: (any EditingPreviewBackend)? = nil,
+         usesPagedLibrary: Bool = false, catalogPaint: ((CatalogGridPaintRecorder.Sample) -> Void)? = nil) {
+        let started = DispatchTime.now().uptimeNanoseconds
+        firstGridStart = started
+        gridPaint = catalogPaint.map { CatalogGridPaintRecorder(receive: $0) }
         self.defaults = defaults
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         let arguments = ProcessInfo.processInfo.arguments
         let explicitPath = arguments.firstIndex(of: "--library").flatMap { $0 + 1 < arguments.count ? arguments[$0 + 1] : nil } ?? ProcessInfo.processInfo.environment["RAWMASTER_LIBRARY_PATH"]
-        libraryURL = overrideURL ?? explicitPath.map { URL(fileURLWithPath: $0) } ?? support.appendingPathComponent("RAWMaster", isDirectory: true).appendingPathComponent("library.sqlite")
+        let defaultURL = support.appendingPathComponent("RAWMaster", isDirectory: true).appendingPathComponent("library.sqlite")
+        let explicitURL = overrideURL ?? explicitPath.map { URL(fileURLWithPath: $0) }
+        let location = Result { try LibraryLocation.resolve(defaultURL: defaultURL, defaults: defaults) }
+        if explicitURL == nil { libraryAccess = try? location.get() }
+        libraryURL = explicitURL ?? libraryAccess?.database ?? defaultURL
+        catalogGrid = usesPagedLibrary ? LibraryGridDataSource(database: libraryURL) : nil
         do {
+            if explicitURL == nil { _ = try location.get() }
+            if let grid = catalogGrid {
+                gridObservation = grid.$displayedRevision.dropFirst().sink { [weak self] _ in self?.applyCatalogPage() }
+            }
             try FileManager.default.createDirectory(at: libraryURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             let database = try LibraryStore(databaseURL: libraryURL)
             store = database
+            if catalogPaint != nil { catalogStartupPhases["catalogOpenMs"] = Double(DispatchTime.now().uptimeNanoseconds - started)/1e6 }
             let services = ApplicationEditingServices(store: database, libraryURL: libraryURL, defaults: defaults)
+            if catalogPaint != nil { catalogStartupPhases["editingServicesReadyMs"] = Double(DispatchTime.now().uptimeNanoseconds - started)/1e6 }
             editingServices = services
             editingServicesObservation = services.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
             services.requestSettings = { [weak self] page in self?.openApplicationSettings(page) }
             services.localWorkIsRunning = { [weak self] in self?.editing?.localWorkIsRunning == true }
-            do {
-                editing = try EditingController(store: database, libraryURL: libraryURL, defaults: defaults,
-                    previewBackend: editingPreviewBackend ?? SharedEditingPreviewBackend(), applicationServices: services)
-                editingObservation = editing?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+            if !usesPagedLibrary {
+                attachEditor(store: database, services: services, backend: editingPreviewBackend)
             }
-            catch { errorMessage = "制作档案尚不可用：\(error.localizedDescription)" }
             importer = ImportService(store: database, postIngest: postIngest ?? RuntimeAutomaticGroupingCoordinator.callback(store: database, libraryURL: libraryURL))
             let liveAnalyzer = RuntimeAutomaticGroupingAnalyzer(libraryURL: libraryURL)
             regroupService = AutomaticGroupingService(store: database, analyzer: regroupAnalyzer ?? { input, check, progress in
@@ -224,7 +262,10 @@ final class AppModel: ObservableObject {
             filter = Filter(rawValue: defaults.string(forKey: "browse.filter") ?? "all") ?? .all
             autoAdvance = defaults.bool(forKey: "browse.autoAdvance")
             searchQuery.decision = Self.decision(for: filter)
+            let readyToBrowse = DispatchTime.now().uptimeNanoseconds
+            if catalogPaint != nil { catalogStartupPhases["beforeNavigationMs"] = Double(readyToBrowse - started)/1e6 }
             reload()
+            if catalogPaint != nil { catalogStartupPhases["navigationLoadMs"] = Double(DispatchTime.now().uptimeNanoseconds - readyToBrowse)/1e6 }
             undoStack = colorLabelCommands.reversed().filter { !$0.restored }.map { .colors(commandID: $0.id) }
             undoCount = undoStack.count
             let scopeExists: Bool
@@ -246,8 +287,33 @@ final class AppModel: ObservableObject {
                 else { focusedID = browserAssets.first?.id; if let focusedID { selectedIDs = [focusedID] } }
             }
             if isCatalog || !scopeExists { mode = .grid; actualPixels = false; selectedIDs = []; focusedID = nil }
+            if usesPagedLibrary {
+                // Resolving protected source paths reads mounted volumes. Give browsing its own connection.
+                let url = libraryURL
+                archivePreparation = Task { [weak self] in
+                    let prepared = await Task.detached(priority: .utility) {
+                        try EditingController.openArchive(store: LibraryStore(databaseURL: url), libraryURL: url)
+                    }.result
+                    guard !Task.isCancelled, let self else { return }
+                    self.archivePreparation = nil
+                    switch prepared {
+                    case .success(let archive):
+                        self.attachEditor(store: database, services: services, backend: editingPreviewBackend, archive: archive)
+                    case .failure(let error):
+                        self.errorMessage = "制作档案尚不可用：\(error.localizedDescription)"
+                    }
+                }
+            }
             isRestoringReviewState = false
         } catch { isRestoringReviewState = false; errorMessage = "无法打开本地资料库：\(error.localizedDescription)" }
+    }
+
+    private func attachEditor(store: LibraryStore, services: ApplicationEditingServices, backend: (any EditingPreviewBackend)?, archive: EditingArchive? = nil) {
+        do {
+            editing = try EditingController(store: store, libraryURL: libraryURL, defaults: defaults,
+                previewBackend: backend ?? SharedEditingPreviewBackend(), applicationServices: services, preparedArchive: archive)
+            editingObservation = editing?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
+        } catch { errorMessage = "制作档案尚不可用：\(error.localizedDescription)" }
     }
 
     func openApplicationSettings(_ page: ApplicationSettingsPage) {
@@ -255,6 +321,7 @@ final class AppModel: ObservableObject {
     }
 
     var scopedAssets: [AssetRecord] {
+        if isPagedGrid { return assets }
         switch scope {
         case .imports, .sequences: return []
         case .all: return assets.filter { admittedIDCache.contains($0.id) }
@@ -269,6 +336,7 @@ final class AppModel: ObservableObject {
         }
     }
     var filteredAssets: [AssetRecord] {
+        if isPagedGrid { return assets }
         if supportsProjectSearch {
             if cachedSearchScope == searchScopeKey { return cachedSearchAssets }
             return computeSearchResults()
@@ -319,7 +387,10 @@ final class AppModel: ObservableObject {
         }
     }
     var isBusy: Bool { job != nil || qualityAnalysisRunning || timelapseIsRunning }
-    var keptCount: Int { scopedAssets.filter { $0.decision == .keep }.count }
+    var keptCount: Int {
+        if isPagedGrid, let overview { return scope == .project ? overview.projects.first { $0.project.id == scopeID }?.kept ?? 0 : overview.kept }
+        return scopedAssets.filter { $0.decision == .keep }.count
+    }
     func isSequenceOnly(_ id: String) -> Bool { sequenceOnlyIDCache.contains(id) }
     var canExport: Bool { !showTimelapse && !isTriageScope && !isHistoryScope && !scopedAssets.isEmpty && !isBusy }
     var selectedSize: Int64 { selectedAssets.reduce(0) { $0 + $1.fileSize } }
@@ -327,10 +398,21 @@ final class AppModel: ObservableObject {
     func reload() {
         snapshotEpoch &+= 1
         guard let store else { return }
+        scheduleLibraryIndexing()
+        if isPagedGrid {
+            do {
+                try refreshCatalogSidebar(store)
+                submitCatalogPage(force: true)
+            } catch { errorMessage = error.localizedDescription }
+            return
+        }
+        catalogGrid?.cancel()
+        previousGridKey = nil
         do { apply(try LibrarySnapshot.read(store: store, groupingSessionID: scope == .session ? scopeID : nil)) }
         catch { errorMessage = error.localizedDescription }
     }
     private func apply(_ snapshot: LibrarySnapshot) {
+        fullSnapshotLoaded = true
         projects = snapshot.projects; sessions = snapshot.sessions; workflows = snapshot.workflows
         admissions = snapshot.admissions
         admittedIDCache = Set(admissions.map(\.assetID))
@@ -364,6 +446,14 @@ final class AppModel: ObservableObject {
     /// One reader is allowed in flight. Later requests replace a dirty flag, not a task queue.
     func requestBackgroundRefresh(generation: UUID) {
         guard sessionTask?.id == generation, let store else { return }
+        if isPagedGrid {
+            do {
+                sessions = try store.loadSessions()
+                reconcilePendingImport()
+                if isPagedGrid { submitCatalogPage(force: true) }
+            } catch { errorMessage = error.localizedDescription }
+            return
+        }
         backgroundRefreshDirty = true
         guard backgroundRefreshTask == nil else { return }
         backgroundRefreshTask = Task { [weak self] in
@@ -439,6 +529,7 @@ final class AppModel: ObservableObject {
         closeSearchControls()
         selectedIDs.removeAll(); focusedID = nil
         self.scope = scope; scopeID = id; triageGroupID = nil; catalogReturnKind = nil
+        if catalogGrid != nil && (!isPagedGrid && !fullSnapshotLoaded || isPagedGrid && changingScope) { reload() }
         refreshAutomaticGroupingStatus()
         refreshTriageGroupNavigation()
         tagPreview = nil; showTagPreview = false
@@ -545,7 +636,9 @@ final class AppModel: ObservableObject {
             if !selectedIDs.contains(focusedID ?? "") { focusedID = eligible.first?.id }
         }
         if mode == .compare { showComparisonSidebar = false }
+        let previous = self.mode
         self.mode = mode
+        if catalogGrid != nil && previous != mode { reload() }
         if mode != .grid { closeSearchControls() }
         saveBrowse()
     }
@@ -571,11 +664,11 @@ final class AppModel: ObservableObject {
     func colorLabel(for assetID: String) -> PhotoColorLabel? { assetColorLabels[assetID] }
     func setColorLabel(_ label: PhotoColorLabel?, assetIDs: [String]) {
         guard !isCatalog, !isBusy, !isHistoryScope, let store else { return }
-        let allowed = Set(scopedAssets.map(\.id)), wanted = Set(assetIDs)
+        let allowed = Set(scopedAssets.map(\.id)).union(frozenSelection?.assetIDs ?? []), wanted = Set(assetIDs)
         guard !wanted.isEmpty, wanted.isSubset(of: allowed) else { return }
         let selection = selectedIDs, focus = focusedID
         do {
-            if let command = try store.setColorLabel(ids: Array(wanted), label: label) { undoStack.append(.colors(commandID: command.id)) }
+            if let command = try withCheckedSelection(store, ids: Array(wanted), { try store.setColorLabel(ids: Array(wanted), label: label) }) { undoStack.append(.colors(commandID: command.id)) }
             undoCount = undoStack.count
             reload(); selectedIDs = selection; focusedID = focus
             reconcileVisibleSelection(preserveFocus: true); errorMessage = nil; saveBrowse()
@@ -600,7 +693,8 @@ final class AppModel: ObservableObject {
         do {
             let shouldAdvance = autoAdvance && selectedIDs.count == 1
             let previousOrder = browserAssets.map(\.id), previousFocus = focusedID
-            let changes = try store.updateSelection(ids: actionAssetIDs, decision: decision, rating: rating, markReviewed: true)
+            let ids = actionAssetIDs
+            let changes = try withCheckedSelection(store) { try store.updateSelection(ids: ids, decision: decision, rating: rating, markReviewed: true) }
             if !changes.isEmpty { undoStack.append(.selection(changes)); undoCount = undoStack.count }
             reload()
             if shouldAdvance { advanceAfterMutation(previousOrder: previousOrder, previousFocus: previousFocus) }
@@ -736,7 +830,7 @@ final class AppModel: ObservableObject {
     func export(ids: [String], destination: String, formats: ExportFormats = .allOriginals, exactAssetIDs: [String]? = nil,
                 csvLayout: ExportCSVLayout = .legacy) {
         guard canExport, let exporter else { return }
-        let eligibleIDs = (supportsProjectSearch ? filteredAssets : scopedAssets).map(\.id)
+        let eligibleIDs = (isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : (supportsProjectSearch ? filteredAssets : scopedAssets)).map(\.id)
         let exact = exactAssetIDs.map(Set.init)
         let manifestIDs = eligibleIDs.filter { exact?.contains($0) ?? true }
         guard Set(ids).count <= Self.maximumWorkbenchExportCount, (exact?.count ?? manifestIDs.count) <= Self.maximumWorkbenchExportCount else {
@@ -746,6 +840,10 @@ final class AppModel: ObservableObject {
         if let exact, Set(manifestIDs) != exact {
             errorMessage = "导出选片范围已变化，请重新选择照片。"
             return
+        }
+        if isPagedGrid, let exportCatalogScope, let store {
+            do { _ = try store.catalogAssets(for: exportCatalogScope) }
+            catch { errorMessage = error.localizedDescription; return }
         }
         let allowedAssetIDs = manifestIDs
         showExport = false; errorMessage = nil
@@ -960,6 +1058,17 @@ final class AppModel: ObservableObject {
         }
         let characters = event.charactersIgnoringModifiers?.lowercased()
         if flags == .command, characters == "a" {
+            if isPagedGrid, let catalogGrid {
+                Task {
+                    do {
+                        let selection = try await catalogGrid.frozenSelection()
+                        frozenSelection = selection
+                        selectedIDs = Set(selection.assetIDs)
+                        saveBrowse()
+                    } catch { errorMessage = error.localizedDescription }
+                }
+                return true
+            }
             selectedIDs = Set(browserAssets.map(\.id))
             if focusedID == nil { focusedID = browserAssets.first?.id }
             saveBrowse()
@@ -1167,12 +1276,14 @@ extension AppModel {
         }
     }
     var scopeCaptureCount: Int {
+        if isPagedGrid, let overview { return scope == .project ? overview.projects.first { $0.project.id == scopeID }?.captures ?? 0 : overview.captures }
         var seen = Set<String>()
         for asset in scopedAssets { seen.insert(pair(for: asset.id)?.id ?? asset.id) }
         return seen.count
     }
     var actionAssetIDs: [String] {
         guard !isCatalog else { return [] }
+        if isPagedGrid, let frozenSelection, selectedIDs == Set(frozenSelection.assetIDs) { return frozenSelection.assetIDs }
         let eligible = supportsProjectSearch ? filteredAssets : scopedAssets
         let scopeIDs = Set(eligible.map(\.id))
         var ids = selectedIDs.intersection(scopeIDs)
@@ -1189,6 +1300,8 @@ extension AppModel {
     /// A collapsed combination may replace one selected file with its representative; multiple
     /// explicit file selections stay expanded so their operation scope remains visible.
     func reconcileVisibleSelection(preserveFocus: Bool = false) {
+        if isPagedGrid, catalogGrid?.isLoading == true { return }
+        if isPagedGrid, let frozenSelection, selectedIDs == Set(frozenSelection.assetIDs) { return }
         guard !assets.isEmpty else { selectedIDs = []; focusedID = nil; return }
         let eligibleIDs = Set(filteredAssets.map(\.id))
         selectedIDs.formIntersection(eligibleIDs)
@@ -1267,19 +1380,28 @@ extension AppModel {
     }
     func prepareCompletion() {
         guard isTriageScope, !isBusy, let store else { return }
-        do { completionPreview = try store.previewCompletion(sessionID: scopeID); showCompletion = true; errorMessage = nil }
+        do {
+            sealDraft = CatalogSealDraft(members: try store.completionMembers(sessionID: scopeID))
+            completionPreview = try store.previewCompletion(sessionID: scopeID)
+            showCompletion = true; errorMessage = nil
+        }
         catch { errorMessage = "无法完成初筛：\(error.localizedDescription)" }
     }
     func acknowledgeManualCompletion(_ value: Bool) {
         guard let preview = completionPreview, let store else { return }
-        do { completionPreview = try store.previewCompletion(sessionID: preview.sessionID, acknowledgeManualAnalysis: value) }
+        do { completionPreview = try store.previewCompletion(sessionID: preview.sessionID, acknowledgeManualAnalysis: value,
+            dispositions: sealDraft?.decisions ?? [:], confirmedFailures: sealDraft?.confirmedFailures ?? false) }
         catch { completionPreview = nil; errorMessage = "完成摘要已变化，请关闭后重新预览：\(error.localizedDescription)" }
+    }
+    func updateSealDraft(_ draft: CatalogSealDraft) {
+        sealDraft = draft
+        acknowledgeManualCompletion(completionPreview?.manualAnalysisAcknowledged ?? false)
     }
     @discardableResult func completeTriage() -> Bool {
         guard let preview = completionPreview, preview.canCommit, !isBusy, let store else { return false }
         do {
             let workflow = try store.commitCompletion(preview)
-            showCompletion = false; completionPreview = nil
+            showCompletion = false; completionPreview = nil; sealDraft = nil
             reload()
             undoStack.removeAll { if case .triage = $0 { return true }; return false }; undoCount = undoStack.count
             if projects.contains(where: { $0.id == workflow.projectID }) { selectScope(.project, id: workflow.projectID) }
@@ -1320,12 +1442,22 @@ extension AppModel {
         }
     }
     func confirmSelectedPair() {
-        guard canMaintainPairs, selectedIDs.count == 2, let store else { return }
+        guard canMaintainPairs, selectedIDs.count == 2 else { return }
         let selection = selectedAssets
         guard let raw = selection.first(where: { CaptureFileFormat.isRAW($0.filename) }), let jpeg = selection.first(where: { CaptureFileFormat.isJPEG($0.filename) }) else {
             errorMessage = "请明确选择一个 RAW 文件和一个 JPEG 文件。"; return
         }
-        do { let pair = try store.confirmCapturePair(rawAssetID: raw.id, jpegAssetID: jpeg.id); expandedPairIDs.insert(pair.id); reload(); errorMessage = nil }
+        confirmPair(rawID: raw.id, jpegID: jpeg.id)
+    }
+    func confirmsPairScope(_ pair: CapturePair) -> Bool {
+        if isPagedGrid {
+            return Set(pair.assetIDs).isSubset(of: admittedIDCache) && (scope == .all || sessions.contains { $0.id == pair.sessionID && $0.projectID == scopeID })
+        }
+        return Set(pair.assetIDs).isSubset(of: Set(scopedAssets.map(\.id)))
+    }
+    func confirmPair(rawID: String, jpegID: String) {
+        guard canMaintainPairs, let store else { return }
+        do { let pair = try store.confirmCapturePair(rawAssetID: rawID, jpegAssetID: jpegID); expandedPairIDs.insert(pair.id); reload(); errorMessage = nil }
         catch { errorMessage = "未建立关联：\(error.localizedDescription)" }
     }
     func unlinkPair(_ id: String) {
@@ -1341,7 +1473,7 @@ extension AppModel {
     func exportSelection(ids: [String], formats: ExportFormats, exactAssetIDs: [String]? = nil) -> ExportSelection? {
         guard !isCatalog, let store else { return nil }
         let exact = exactAssetIDs.map(Set.init)
-        let allowed = (supportsProjectSearch ? filteredAssets : scopedAssets).map(\.id).filter { exact?.contains($0) ?? true }
+        let allowed = (isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : (supportsProjectSearch ? filteredAssets : scopedAssets)).map(\.id).filter { exact?.contains($0) ?? true }
         return try? store.exportSelection(ids: ids, formats: formats, allowedAssetIDs: allowed)
     }
     func startQualityAnalysis(sessionID: String? = nil) {
@@ -1541,7 +1673,7 @@ extension AppModel {
         return supportsProjectSearch && !query.isEmpty
     }
     var hasSearchConditions: Bool { supportsProjectSearch && !effectiveSearchQuery.isEmpty }
-    var matchedCaptureCount: Int { Set(filteredAssets.map { pair(for: $0.id)?.id ?? $0.id }).count }
+    var matchedCaptureCount: Int { if isPagedGrid { return catalogGrid?.totalCaptures ?? 0 }; return Set(filteredAssets.map { pair(for: $0.id)?.id ?? $0.id }).count }
     var availableSearchCameras: [String] {
         var seen = Set<String>()
         var values: [String] = []
@@ -1577,6 +1709,7 @@ extension AppModel {
         return (try? AssetSearchEngine.filter(assets: scopedAssets, query: effectiveSearchQuery, tags: assetTags, reviewedIDs: reviewedIDCache, sort: sort, colorLabels: assetColorLabels)) ?? []
     }
     private func rebuildSearchResults() {
+        if isPagedGrid { submitCatalogPage(); return }
         cachedSearchScope = searchScopeKey
         cachedSearchAssets = supportsProjectSearch ? computeSearchResults() : []
     }
@@ -1607,7 +1740,7 @@ extension AppModel {
         guard !isRestoringReviewState else { return }
         tagPreview = nil; showTagPreview = false
         rebuildSearchResults()
-        reconcileVisibleSelection()
+        if !isPagedGrid { reconcileVisibleSelection() }
         saveBrowse()
     }
     func applyProjectSearch(_ query: ProjectSearchQuery, sort: ProjectReviewSort, targetProjectID: String? = nil, searchAllProjects: Bool = false) -> Bool {
@@ -1643,7 +1776,8 @@ extension AppModel {
         do {
             let previousOrder = browserAssets.map(\.id), previousFocus = focusedID
             let advance = autoAdvance && selectedIDs.count == 1
-            try store.markReviewed(ids: actionAssetIDs, reviewed: reviewed)
+            let ids = actionAssetIDs
+            try withCheckedSelection(store) { try store.markReviewed(ids: ids, reviewed: reviewed) }
             reload()
             if advance { advanceAfterMutation(previousOrder: previousOrder, previousFocus: previousFocus) }
             else { reconcileVisibleSelection() }
@@ -1652,7 +1786,9 @@ extension AppModel {
     }
     private func refreshProjectProgress() {
         guard scope == .project else { projectProgress = nil; return }
-        let members = Set(assets.filter { $0.projectID == scopeID && admittedIDCache.contains($0.id) }.map(\.id))
+        let members: Set<String>
+        if isPagedGrid, let store { members = (try? store.catalogProjectAssetIDs(scopeID)) ?? [] }
+        else { members = Set(assets.filter { $0.projectID == scopeID && admittedIDCache.contains($0.id) }.map(\.id)) }
         projectProgress = ReviewProgress.calculate(assetIDs: members, reviewedIDs: reviewedIDCache, pairs: capturePairs, sequenceOnlyIDs: sequenceOnlyIDCache)
     }
     private func makeProjectReviewState() -> ProjectReviewState? {
@@ -1776,7 +1912,7 @@ extension AppModel {
             errorMessage = "当前范围或所选文件已变化，请重新预览标签操作。"; return false
         }
         do {
-            let command = try store.commitTagMutation(preview)
+            let command = try withCheckedSelection(store, ids: preview.assetIDs) { try store.commitTagMutation(preview) }
             if !preview.changedAssetIDs.isEmpty { undoStack.append(.tags(commandID: command.id)); undoCount = undoStack.count }
             tagPreview = nil; showTagPreview = false
             reload(); reconcileVisibleSelection(); saveBrowse(); errorMessage = nil
@@ -1921,5 +2057,115 @@ extension AppModel {
     func openSessionProject(sessionID id: String) {
         guard canOpenSessionProject(sessionID: id), let session = sessions.first(where: { $0.id == id }) else { return }
         selectScope(.project, id: session.projectID)
+    }
+}
+
+
+extension AppModel {
+    func keepSelectedLibraryLocation() throws {
+        libraryAccess = try LibraryLocation.resolve(defaultURL: libraryURL, defaults: defaults)
+    }
+
+    func stopLibraryIndexing() {
+        archivePreparation?.cancel()
+        archivePreparation = nil
+        libraryIndexDirty = false
+        libraryIndexTask?.cancel()
+        libraryIndexTask = nil
+        let worker = libraryIndexWorker
+        Task { await worker.close() }
+    }
+
+    private func scheduleLibraryIndexing() {
+        guard catalogGrid != nil, let actions = catalogActions else { return }
+        libraryIndexDirty = true
+        guard libraryIndexTask == nil else { return }
+        let worker = libraryIndexWorker
+        libraryIndexTask = Task(priority:.utility) { [weak self] in
+            defer { self?.libraryIndexTask = nil }
+            do {
+                try await Task.sleep(for:.milliseconds(400))
+                while self?.libraryIndexDirty == true, !Task.isCancelled {
+                    self?.libraryIndexDirty = false
+                    let pending = try await actions.read("discovery",["op":.string("pending")])
+                    let due = !(pending["kinds"]?.arrayValue ?? []).isEmpty
+                    guard due || pending["queued"] == .boolean(true), await worker.available() else { continue }
+                    _ = try await worker.drain(actions: actions)
+                }
+            } catch is CancellationError {}
+            catch { if !Task.isCancelled { self?.errorMessage = "资料库索引：" + error.localizedDescription } }
+        }
+    }
+
+    private func refreshCatalogSidebar(_ store: LibraryStore) throws {
+        let summary = try LibraryEngine.shared().request("overview", at: libraryURL, payload: LibraryEmpty(), as: LibraryOverview.self)
+        overview = summary
+        projects = summary.projects.map(\.project)
+        try store.withReadSnapshot {
+            sessions = try store.loadSessions()
+            capturePairs = try store.loadCapturePairs()
+            pairByAsset.removeAll(keepingCapacity: true)
+            for pair in capturePairs { for id in pair.assetIDs { pairByAsset[id] = pair } }
+            groups = try store.loadGroups()
+            workflows = try store.loadWorkflows()
+            admissions = try store.loadAdmissions()
+            admittedIDCache = Set(admissions.map(\.assetID))
+            sequenceOnlyIDCache = Set(admissions.filter(\.sequenceOnly).map(\.assetID))
+            assetColorLabels = try store.loadColorLabels()
+            assetTags = try store.loadTags()
+            tagVocabulary = try store.tagVocabulary()
+            reviewRecords = try store.loadReviewRecords()
+            reviewedIDCache = Set(reviewRecords.filter(\.reviewed).map(\.assetID))
+            colorLabelCommands = try store.loadColorLabelCommands()
+        }
+    }
+
+    private func submitCatalogPage(force: Bool = false) {
+        guard isPagedGrid, let grid = catalogGrid else { return }
+        let request = CatalogGridRequest(query: effectiveSearchQuery, sort: reviewSort.rawValue,
+                                         projectID: scope == .project ? scopeID : nil)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .sortedKeys
+        let key = try? encoder.encode(request)
+        guard force || key != previousGridKey else { return }
+        previousGridKey = key
+        frozenSelection = nil
+        fullSnapshotLoaded = false
+        assets = []
+        grid.replace(with: request, startedAt: firstGridStart)
+        firstGridStart = nil
+    }
+
+    private func applyCatalogPage() {
+        guard isPagedGrid, let grid = catalogGrid else { return }
+        if let error = grid.errorDescription {
+            assets = []; selectedIDs = []; focusedID = nil; frozenSelection = nil
+            errorMessage = error
+            return
+        }
+        assets = grid.cards.map(\.asset)
+        if let id = focusedID, assetByID[id] != nil { return }
+        if let first = assets.first {
+            focusedID = first.id
+            if selectedIDs.isEmpty || frozenSelection == nil { selectedIDs = [first.id] }
+        } else { focusedID = nil; selectedIDs = [] }
+    }
+
+    private func withCheckedSelection<T>(_ store: LibraryStore, ids: [String]? = nil, _ body: () throws -> T) throws -> T {
+        guard isPagedGrid, let grid = catalogGrid else { return try body() }
+        let target = ids ?? actionAssetIDs
+        if let frozenSelection, Set(target) == Set(frozenSelection.assetIDs) {
+            return try store.withCatalogSelection(frozenSelection, body)
+        }
+        return try store.withCatalogSelection(grid.visibleSelection(target), body)
+    }
+    var scopeFileCount: Int {
+        if isPagedGrid, let overview { return scope == .project ? projectFileCount(scopeID) : overview.files }
+        return scopedAssets.count
+    }
+    var matchedFileCount: Int { isPagedGrid ? catalogGrid?.totalFiles ?? 0 : filteredAssets.count }
+    func projectFileCount(_ id: String) -> Int {
+        if isPagedGrid { return overview?.projects.first { $0.project.id == id }?.files ?? 0 }
+        return publishedAssets.filter { $0.projectID == id }.count
     }
 }

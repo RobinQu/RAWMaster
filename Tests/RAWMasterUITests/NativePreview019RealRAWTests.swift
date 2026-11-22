@@ -45,6 +45,7 @@ final class NativePreview019RealRAWTests: XCTestCase {
                     width: width, height: height, contentHash: hash, importState: .ready)))
                 hashes.append(hash)
             }
+            try store.completedDirectImport(session)
             let admissions = try store.loadAdmissions()
             guard admissions.count == 2, Set(admissions.map(\.assetID)) == Set(assets.map(\.id)),
                   admissions.allSatisfy({ $0.projectID == project.id }) else { throw EditingError.invalidSource }

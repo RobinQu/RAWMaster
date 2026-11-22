@@ -30,6 +30,7 @@ final class NativeControllerProgress019Tests: XCTestCase {
             try store.saveSession(session)
             let asset = try store.register(.init(sessionID: session.id, projectID: project.id, projectName: project.name,
                 sourcePath: reference.path, currentPath: source.path, fileSize: bytes, contentHash: originalHash, importState: .ready))
+            try store.completedDirectImport(session)
             let admission = try store.loadAdmissions()
             guard admission.count == 1, admission[0].assetID == asset.id, admission[0].projectID == project.id else { throw EditingError.invalidSource }
             return (store, asset, originalHash)

@@ -13,10 +13,10 @@ struct WorkbenchToolbarActions: View {
                 }
                 if model.canExport {
                     if model.canOpenNativeEditing {
-                        Button("导出成片…") { model.openRenderedPhotoExport() }
+                        Button("导出成片…") { model.openPhotoExport(.render) }
                             .disabled(model.focusedAsset == nil).accessibilityIdentifier("editing.export.render")
                     } else {
-                        Button("复制原文件…") { model.openPhotoExport() }
+                        Button("复制原文件…") { model.openPhotoExport(.original) }
                             .disabled(model.focusedAsset == nil).accessibilityIdentifier("editing.export.original")
                     }
                 }
@@ -54,7 +54,7 @@ struct WorkbenchToolbarActions: View {
             }
             if !model.isCatalog && model.mode == .single {
                 if model.canOpenNativeEditing {
-                    Button("复制原文件…") { model.openPhotoExport() }.disabled(!model.canExport || model.focusedAsset == nil)
+                    Button("复制原文件…") { model.openPhotoExport(.original) }.disabled(!model.canExport || model.focusedAsset == nil)
                         .accessibilityIdentifier("editing.export.original")
                 }
                 Menu(model.externalEditorPreparing ? "正在准备编辑副本…" : "外部编辑副本") {

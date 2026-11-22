@@ -1,0 +1,173 @@
+{
+  "checkedAtUTC": "2026-11-22T13:32:25.726865+00:00",
+  "scope": "Private research on official publisher downloads",
+  "runnerSHA256": "9457cc110d9463aa784643bafad77dcb1fb61bee8f78b5048e34a2c095fb3625",
+  "models": [
+    {
+      "id": "buffalo_l",
+      "release": "https://github.com/deepinsight/insightface/releases/tag/model-zoo",
+      "releaseID": 381991425,
+      "releaseAssetID": 542726161,
+      "officialDownload": "https://github.com/deepinsight/insightface/releases/download/model-zoo/buffalo_l.zip",
+      "publishedAt": "2026-09-03T12:13:46Z",
+      "releaseArchiveSHA256": "80ffe37d8a5940d59a7384c201a2a38d4741f2f3c51eef46ebb28218a7b0ca2f",
+      "publisherDigest": "sha256:80ffe37d8a5940d59a7384c201a2a38d4741f2f3c51eef46ebb28218a7b0ca2f",
+      "releaseAssetBytes": 288621354,
+      "encoderFile": "weights/w600k_r50.onnx",
+      "encoderSHA256": "4c06341c33c2ca1f86781dab0e829f88ad5b64be9fba56e56bc9ebdefc619e43",
+      "encoderBytes": 174383860,
+      "architecture": "ResNet50",
+      "trainingData": "WebFace600K",
+      "codeLicense": "MIT (InsightFace root README and model-zoo documentation).",
+      "publishedWeightGrant": "Non-commercial research only. The official model zoo applies these terms to manual downloads. Product use requires a separate commercial license.",
+      "trainingDataNote": "Publisher identifies WebFace600K as the training set of this distributed checkpoint.",
+      "releaseEligible": false,
+      "purpose": "Identity embeddings",
+      "input": "112x112 five-point aligned face, BGR-loaded PNG -> RGB NCHW float32, (x-127.5)/127.5. Both graphs start with Conv and lack embedded initial subtraction/multiplication.",
+      "output": "512 float32 L2-normalized, no flips",
+      "sources": [
+        "insight-zoo.md",
+        "insight-readme.md",
+        "arcface_onnx.py",
+        "insight-align.py"
+      ]
+    },
+    {
+      "id": "antelopev2",
+      "release": "https://github.com/deepinsight/insightface/releases/tag/model-zoo",
+      "releaseID": 381991425,
+      "releaseAssetID": 542724997,
+      "officialDownload": "https://github.com/deepinsight/insightface/releases/download/model-zoo/antelopev2.zip",
+      "publishedAt": "2026-09-03T12:12:47Z",
+      "releaseArchiveSHA256": "8e182f14fc6e80b3bfa375b33eb6cff7ee05d8ef7633e738d1c89021dcf0c5c5",
+      "publisherDigest": "sha256:8e182f14fc6e80b3bfa375b33eb6cff7ee05d8ef7633e738d1c89021dcf0c5c5",
+      "releaseAssetBytes": 360662982,
+      "encoderFile": "weights/glintr100.onnx",
+      "encoderSHA256": "4ab1d6435d639628a6f3e5008dd4f929edf4c4124b1a7169e1048f9fef534cdf",
+      "encoderBytes": 260665334,
+      "architecture": "ResNet100",
+      "trainingData": "Glint360K",
+      "codeLicense": "MIT (InsightFace root README and model-zoo documentation).",
+      "publishedWeightGrant": "Non-commercial research only. The official model zoo applies these terms to manual downloads. Product use requires a separate commercial license.",
+      "trainingDataNote": "Official Glint360K dataset terms explicitly cover both its data and resulting models.",
+      "releaseEligible": false,
+      "purpose": "Identity embeddings",
+      "input": "112x112 five-point aligned face, BGR-loaded PNG -> RGB NCHW float32, (x-127.5)/127.5. Both graphs start with Conv and lack embedded initial subtraction/multiplication.",
+      "output": "512 float32 L2-normalized, no flips",
+      "sources": [
+        "insight-zoo.md",
+        "insight-readme.md",
+        "arcface_onnx.py",
+        "insight-align.py",
+        "insight-glint.md"
+      ]
+    },
+    {
+      "id": "farl_ep64",
+      "release": "https://github.com/FacePerceiver/FaRL/releases/tag/pretrained_weights",
+      "releaseID": 107944101,
+      "releaseAssetID": 112001852,
+      "officialDownload": "https://github.com/FacePerceiver/FaRL/releases/download/pretrained_weights/FaRL-Base-Patch16-LAIONFace20M-ep64.pth",
+      "publishedAt": "2023-06-09T11:02:45Z",
+      "releaseArchiveSHA256": "ab3534c4c2377a853926b99456fc4a10140ea092213b9c8d32458e06ec0961b7",
+      "publisherDigest": null,
+      "releaseAssetBytes": 652173797,
+      "encoderFile": "weights/FaRL-ep64.pth",
+      "encoderSHA256": "ab3534c4c2377a853926b99456fc4a10140ea092213b9c8d32458e06ec0961b7",
+      "encoderBytes": 652173797,
+      "architecture": "ViT-B/16 FaceCLIP image encoder",
+      "trainingData": "LAION-Face 20M; 64 epochs, paired image/text contrastive learning and masked-image objectives.",
+      "codeLicense": "MIT, copyright Microsoft; the reused reference CLIP vision module is MIT.",
+      "publishedWeightGrant": "The official release description is empty. The repository MIT text covers software and associated documentation. A checkpoint-specific grant for commercial bundling was not established.",
+      "trainingDataNote": "LAION-Face's CC BY 4.0 notice explicitly covers its lists of image IDs; it does not document a grant for the underlying pictures or for this checkpoint.",
+      "releaseEligible": false,
+      "purpose": "Facial-analysis/vision-language global representation comparator",
+      "input": "Separate five-point aligned/upscaled and square context views. CLIP RGB, shortest edge to 224 bicubic, 224 center crop, OpenAI mean and standard deviation.",
+      "output": "Projected CLS, 512 float32 L2-normalized, no flips. Strict load of every vision-forward parameter including the 768x512 projection. Masked-image pretraining heads are excluded.",
+      "sources": [
+        "farl-readme.md",
+        "farl-license.txt",
+        "clip_model.py",
+        "clip-preprocess.py",
+        "laion-readme.md"
+      ],
+      "paper": "https://openaccess.thecvf.com/content/CVPR2022/papers/Zheng_General_Facial_Representation_Learning_in_a_Visual-Linguistic_Manner_CVPR_2022_paper.pdf"
+    }
+  ],
+  "sources": [
+    {
+      "file": "sources/insight-zoo.md",
+      "sha256": "f302285b82fb5b0b6ea473db1016244269afe1cc9e1af100fa0d98605bd5b192",
+      "commit": "c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52",
+      "permalink": "https://github.com/deepinsight/insightface/blob/c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52/python-package/docs/model_zoo.md"
+    },
+    {
+      "file": "sources/insight-align.py",
+      "sha256": "a8b34ddd06716f5ca7e7501415cbd3789ccbce18db9e557b35e537695290d922",
+      "commit": "c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52",
+      "permalink": "https://github.com/deepinsight/insightface/blob/c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52/python-package/insightface/utils/face_align.py"
+    },
+    {
+      "file": "sources/arcface_onnx.py",
+      "sha256": "2df3524243b8e807b0e4756d98bd3f8fd7456feaf6d04da7502a24a54d74e2bc",
+      "commit": "c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52",
+      "permalink": "https://github.com/deepinsight/insightface/blob/c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52/python-package/insightface/model_zoo/arcface_onnx.py"
+    },
+    {
+      "file": "sources/insight-glint.md",
+      "sha256": "d7827d5398777e2d3caa618c0ef8be53c02d536aadedfc9ba5242b344072478d",
+      "commit": "c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52",
+      "permalink": "https://github.com/deepinsight/insightface/blob/c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52/recognition/partial_fc/README.md"
+    },
+    {
+      "file": "sources/insight-readme.md",
+      "sha256": "1846967d19f2b19845b967e14715c162881e7598360e23ab6646a47c88667758",
+      "commit": "c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52",
+      "permalink": "https://github.com/deepinsight/insightface/blob/c6c3af7bd2d0a0bf4b78c78437357f3521aa5d52/README.md"
+    },
+    {
+      "file": "sources/farl-readme.md",
+      "sha256": "3fe0e915069c454196f1989e4d87087445d431a11b2bcd8b1240d97edb40b0b6",
+      "commit": "3fb46941cb4444183442eb09748c310114bcb846",
+      "permalink": "https://github.com/FacePerceiver/FaRL/blob/3fb46941cb4444183442eb09748c310114bcb846/README.md"
+    },
+    {
+      "file": "sources/farl-license.txt",
+      "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+      "commit": "3fb46941cb4444183442eb09748c310114bcb846",
+      "permalink": "https://github.com/FacePerceiver/FaRL/blob/3fb46941cb4444183442eb09748c310114bcb846/LICENSE"
+    },
+    {
+      "file": "sources/clip_model.py",
+      "sha256": "9902cbe5ee90a1da2aa3e6f043e8a23dc1f8831193b963785c9af03d5c7bef2c",
+      "commit": "d05afc436d78f1c48dc0dbf8e5980a9d471f35f6",
+      "permalink": "https://github.com/openai/CLIP/blob/d05afc436d78f1c48dc0dbf8e5980a9d471f35f6/clip/model.py"
+    },
+    {
+      "file": "sources/clip-preprocess.py",
+      "sha256": "9540f200fbf8145479fa655382a56dab048d238cc698b9cbd8df3b6d86d3f1b6",
+      "commit": "d05afc436d78f1c48dc0dbf8e5980a9d471f35f6",
+      "permalink": "https://github.com/openai/CLIP/blob/d05afc436d78f1c48dc0dbf8e5980a9d471f35f6/clip/clip.py"
+    },
+    {
+      "file": "sources/clip-license.txt",
+      "sha256": "987e63b32f6c89ff5160e429458a872ff048e6860b590a3912e938f9da8f14db",
+      "commit": "d05afc436d78f1c48dc0dbf8e5980a9d471f35f6",
+      "permalink": "https://github.com/openai/CLIP/blob/d05afc436d78f1c48dc0dbf8e5980a9d471f35f6/LICENSE"
+    },
+    {
+      "file": "sources/laion-readme.md",
+      "sha256": "7a2446cf62af3367e14accaf2fb12a759f2fd6257bea39ac97f5e99730af5636",
+      "commit": "2bf7eaa4ec70c9b8e3c4821cfa499f253a6a2839",
+      "permalink": "https://github.com/FacePerceiver/LAION-Face/blob/2bf7eaa4ec70c9b8e3c4821cfa499f253a6a2839/README.md"
+    }
+  ],
+  "reproductionRunnerSHA256": "f2994302868aa6f07c0af76ca9a70d081331dc0cffc63f082a3f7bf4a75c7f2a",
+  "faRLCrossRuntimeReproduction": {
+    "matchedFaces": 61,
+    "archivedTorchVersion": "2.5.1",
+    "portableRunnerTorchVersion": "2.8.0",
+    "minimumCosineSameCrop": 0.9999999999989433,
+    "largestPairwiseScoreDelta": 3.88e-07
+  }
+}

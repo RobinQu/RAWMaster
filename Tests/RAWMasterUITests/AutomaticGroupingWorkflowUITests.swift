@@ -167,7 +167,7 @@ final class AutomaticGroupingWorkflowUITests: XCTestCase {
         XCTAssertEqual(reopened.automaticGroupingRun?.commandID, run.commandID)
     }
 
-    @MainActor func testIntervalNecessaryMemberStillAppearsAsSequenceOnlyInWholeBatchCompletion() async throws {
+    @MainActor func testIntervalMemberRemainsExcludedUntilExplicitlyKeptForSequence() async throws {
         let f = try Fixture(); defer { f.clean() }
         let model = try await start(f, callback: f.callback(kind: .interval))
         let group = try XCTUnwrap(model.triageSessionGroups.first)
@@ -175,6 +175,12 @@ final class AutomaticGroupingWorkflowUITests: XCTestCase {
         let excluded = try XCTUnwrap(model.scopedAssets.first)
         model.select(excluded); model.setTriage(.excluded)
         model.prepareCompletion(); model.acknowledgeManualCompletion(true)
+        XCTAssertEqual(model.completionPreview?.admittedAssetIDs.count, 3)
+        XCTAssertEqual(model.completionPreview?.excludedAssetIDs, [excluded.id])
+        var draft = try XCTUnwrap(model.sealDraft)
+        let member = try XCTUnwrap(draft.members.first { $0.assetID == excluded.id })
+        draft.decide(.sequenceOnly, for:member)
+        model.updateSealDraft(draft)
         XCTAssertEqual(model.completionPreview?.admittedAssetIDs.count, 4)
         XCTAssertEqual(model.completionPreview?.sequenceOnlyAssetIDs, [excluded.id])
         XCTAssertTrue(model.completeTriage())
@@ -254,7 +260,7 @@ final class AutomaticGroupingWorkflowUITests: XCTestCase {
                     try f.store.statement("INSERT INTO assets(id,session_id,source_path,data) VALUES(?,?,?,?)",
                         [id, session.id, asset.sourcePath, try f.store.json(asset)])
                 }
-                let pair = CapturePair(id: "pair-\(index)", sessionID: session.id, rawAssetID: rawID, jpegAssetID: jpegID, isManual: false)
+                let pair = CapturePair(id: "pair-\(index)", sessionID: session.id, rawAssetID: rawID, jpegAssetID: jpegID, isManual: true)
                 try f.store.statement("INSERT INTO capture_pairs(id,data) VALUES(?,?)", [pair.id, try f.store.json(pair)])
                 pairs.append(pair)
             }

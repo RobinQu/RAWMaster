@@ -1,0 +1,1571 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "adapter": "BrowserWebGpu:  ( )",
+  "adapterInfo": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "rawSize": [
+    9504,
+    6336
+  ],
+  "rawOpenMs": 1143.105,
+  "protocol": "resident-photo-operators-stock-scheduler-v2",
+  "samples": 4,
+  "pixels": [
+    2400,
+    1600
+  ],
+  "cachePolicy": "stock viewer residency, demand compilation, released input, unobstructed photo",
+  "timing": "Sample ms is first changed viewerFrame entry to the final complete CPU-readable RGBA8 buffer, including subsequent scheduling. renderToFirstExactFinalMs ends at the earliest whole-buffer match with that final output. Per-frame ms measures one viewerFrame. actionToPixelsMs includes the initial animation frame. idleConfirmedMs ends at the first following tick with neither draw nor busy. Pixel verification follows all timed work.",
+  "verification": "Entire opaque sRGB RGBA8 SHA-256 must repeat separately per state and differ between A/B. On radial operations the interior must change while the far exterior repeats across both states. Final stock frame must be fullRes, non-interactive and non-provisional.",
+  "registeredLUTs": {
+    "lut-a01": {
+      "size": 2,
+      "dim": "3d",
+      "data": [
+        0.05999999865889549,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.05999999865889549,
+        1,
+        0,
+        1,
+        1,
+        0,
+        0.05999999865889549,
+        0,
+        0.8999999761581421,
+        1,
+        0,
+        0.8999999761581421,
+        0.05999999865889549,
+        1,
+        0.8999999761581421,
+        1,
+        1,
+        0.8999999761581421
+      ],
+      "domainMin": [
+        0,
+        0,
+        0
+      ],
+      "domainMax": [
+        1,
+        1,
+        1
+      ]
+    },
+    "lut-b02": {
+      "size": 2,
+      "dim": "3d",
+      "data": [
+        0,
+        0,
+        0,
+        0.2125999927520752,
+        0.2125999927520752,
+        0.2125999927520752,
+        0.7152000069618225,
+        0.7152000069618225,
+        0.7152000069618225,
+        0.9277999997138977,
+        0.9277999997138977,
+        0.9277999997138977,
+        0.0722000002861023,
+        0.0722000002861023,
+        0.0722000002861023,
+        0.2847999930381775,
+        0.2847999930381775,
+        0.2847999930381775,
+        0.7874000072479248,
+        0.7874000072479248,
+        0.7874000072479248,
+        1,
+        1,
+        1
+      ],
+      "domainMin": [
+        0,
+        0,
+        0
+      ],
+      "domainMax": [
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "radial": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": [
+      0.35,
+      0.3
+    ],
+    "feather": 0,
+    "opacity": 1,
+    "inverted": false,
+    "witnessGrid": [
+      96,
+      64
+    ],
+    "interiorMaximumRadius": 0.45,
+    "exteriorMinimumRadius": 1.5
+  },
+  "viewInputs": {
+    "photo": "fixture",
+    "compare": "off",
+    "side": "left-right",
+    "wipe": {
+      "compare": 0,
+      "split": 0.5,
+      "wipeStyle": 0,
+      "wipeInvert": false,
+      "beforeGeometry": null,
+      "beforeFit": null
+    },
+    "tool": "pointer",
+    "soloNode": null,
+    "bypassGrade": false,
+    "bypassBase": false,
+    "clipping": false,
+    "zoom": 0.25252525252525254,
+    "center": {
+      "x": 0.5,
+      "y": 0.5
+    },
+    "before": null,
+    "keepNode": null,
+    "matteFor": null,
+    "maskStyle": null,
+    "alt": null,
+    "zoneView": null,
+    "overlay": null,
+    "background": [
+      1,
+      0,
+      1
+    ],
+    "cw": 2400,
+    "ch": 1600,
+    "dpr": 1,
+    "legacy": false
+  },
+  "firstFrameInfo": {
+    "frames": [
+      {
+        "seq": 1,
+        "ms": 23.96,
+        "actionToPixelsMs": 24.18,
+        "frameStartAfterDispatchMs": 0.22,
+        "interactive": false,
+        "provisional": false,
+        "fullRes": true,
+        "ppu": 2376,
+        "detailPpu": 2400,
+        "need": 2400,
+        "rung": 0,
+        "renderedPx": 8187264,
+        "tiles": 1,
+        "digest": "9df268116f748242befaa2001c49654bef5d44d8924073c5b5216aa1dedc8b58",
+        "wholeRasterSHA256": "a6ab015de7e8ae701ebb548d34cfa30093cfd4f8b906b92d77dd0512891c2e9f"
+      }
+    ],
+    "schedulerTransitions": [
+      {
+        "atMs": 0.12,
+        "bits": 3
+      },
+      {
+        "atMs": 24.315,
+        "bits": 0
+      }
+    ],
+    "idleConfirmedMs": 24.325,
+    "renderToFinalMs": 23.96,
+    "renderToFirstExactFinalMs": 23.96
+  },
+  "operations": [
+    {
+      "id": "grading-lut-manage",
+      "values": [
+        "warm,mono",
+        "mono,warm"
+      ],
+      "fixed": {
+        "amounts": [
+          100,
+          100
+        ]
+      },
+      "samples": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 22.48,
+          "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+          "frames": [
+            {
+              "seq": 2,
+              "ms": 14.11,
+              "actionToPixelsMs": 14.285,
+              "frameStartAfterDispatchMs": 0.175,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4598272,
+              "tiles": 1,
+              "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+              "wholeRasterSHA256": "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+            },
+            {
+              "seq": 3,
+              "ms": 5.72,
+              "actionToPixelsMs": 22.655,
+              "frameStartAfterDispatchMs": 16.935,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 3763584,
+              "tiles": 0,
+              "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+              "wholeRasterSHA256": "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.16,
+              "bits": 3
+            },
+            {
+              "atMs": 33.6,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.63,
+          "renderToFinalMs": 22.48,
+          "renderToFirstExactFinalMs": 14.11,
+          "finalSameStateDelta": null,
+          "finalOtherStateDelta": null
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 20.795,
+          "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+          "frames": [
+            {
+              "seq": 4,
+              "ms": 7.4,
+              "actionToPixelsMs": 7.505,
+              "frameStartAfterDispatchMs": 0.105,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4598272,
+              "tiles": 1,
+              "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+              "wholeRasterSHA256": "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+            },
+            {
+              "seq": 5,
+              "ms": 5.845,
+              "actionToPixelsMs": 20.9,
+              "frameStartAfterDispatchMs": 15.055,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 3763584,
+              "tiles": 0,
+              "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+              "wholeRasterSHA256": "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.09,
+              "bits": 3
+            },
+            {
+              "atMs": 31.7,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 31.735,
+          "renderToFinalMs": 20.795,
+          "renderToFirstExactFinalMs": 7.4,
+          "finalSameStateDelta": null,
+          "finalOtherStateDelta": {
+            "mean": 6.859,
+            "max": 24,
+            "changedChannels": 17501
+          }
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 20.25,
+          "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+          "frames": [
+            {
+              "seq": 6,
+              "ms": 4.105,
+              "actionToPixelsMs": 4.195,
+              "frameStartAfterDispatchMs": 0.09,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+              "wholeRasterSHA256": "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+            },
+            {
+              "seq": 7,
+              "ms": 4.19,
+              "actionToPixelsMs": 20.34,
+              "frameStartAfterDispatchMs": 16.15,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+              "wholeRasterSHA256": "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.085,
+              "bits": 3
+            },
+            {
+              "atMs": 32.765,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 32.785,
+          "renderToFinalMs": 20.25,
+          "renderToFirstExactFinalMs": 4.105,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 6.859,
+            "max": 24,
+            "changedChannels": 17501
+          }
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 20.565,
+          "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+          "frames": [
+            {
+              "seq": 8,
+              "ms": 4.24,
+              "actionToPixelsMs": 4.36,
+              "frameStartAfterDispatchMs": 0.12,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+              "wholeRasterSHA256": "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+            },
+            {
+              "seq": 9,
+              "ms": 4.39,
+              "actionToPixelsMs": 20.685,
+              "frameStartAfterDispatchMs": 16.295,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+              "wholeRasterSHA256": "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.115,
+              "bits": 3
+            },
+            {
+              "atMs": 32.905,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 32.93,
+          "renderToFinalMs": 20.565,
+          "renderToFirstExactFinalMs": 4.24,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 6.859,
+            "max": 24,
+            "changedChannels": 17501
+          }
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 20.245,
+          "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+          "frames": [
+            {
+              "seq": 10,
+              "ms": 4.385,
+              "actionToPixelsMs": 4.47,
+              "frameStartAfterDispatchMs": 0.085,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+              "wholeRasterSHA256": "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+            },
+            {
+              "seq": 11,
+              "ms": 3.89,
+              "actionToPixelsMs": 20.33,
+              "frameStartAfterDispatchMs": 16.44,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "4eb2ecd26bb3a1300f5aa5de6a519a6fce68dbde0756a0c5eaddfebf82cb02a3",
+              "wholeRasterSHA256": "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.08,
+              "bits": 3
+            },
+            {
+              "atMs": 33.09,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.105,
+          "renderToFinalMs": 20.245,
+          "renderToFirstExactFinalMs": 4.385,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 6.859,
+            "max": 24,
+            "changedChannels": 17501
+          }
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 20.735,
+          "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+          "frames": [
+            {
+              "seq": 12,
+              "ms": 4.155,
+              "actionToPixelsMs": 4.255,
+              "frameStartAfterDispatchMs": 0.1,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+              "wholeRasterSHA256": "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+            },
+            {
+              "seq": 13,
+              "ms": 4.185,
+              "actionToPixelsMs": 20.835,
+              "frameStartAfterDispatchMs": 16.65,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "dd7d29242b070bba3872dda55d74668e3d1ec33f8d10c4530f2ecef380e84823",
+              "wholeRasterSHA256": "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.09,
+              "bits": 3
+            },
+            {
+              "atMs": 33.285,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.305,
+          "renderToFinalMs": 20.735,
+          "renderToFirstExactFinalMs": 4.155,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 6.859,
+            "max": 24,
+            "changedChannels": 17501
+          }
+        }
+      ],
+      "status": "measured",
+      "region": "global",
+      "unit": "CUBE layer order",
+      "stateDescriptions": [
+        {
+          "edit": {
+            "version": 1,
+            "source": {
+              "demosaic": "auto",
+              "highlightReconstruction": true,
+              "lensCorrections": true,
+              "assumeColorSpace": null
+            },
+            "retouch": [],
+            "base": {
+              "profile": "standard",
+              "profileAmount": 100,
+              "wbMode": "as-shot",
+              "temperature": 6329.555923644861,
+              "tint": 22.33365237452013,
+              "exposure": 0,
+              "contrast": 0,
+              "highlights": 0,
+              "shadows": 0,
+              "whites": 0,
+              "blacks": 0,
+              "vibrance": 0,
+              "saturation": 0
+            },
+            "grade": {
+              "nodes": [
+                {
+                  "id": "paired-0",
+                  "kind": "corrector",
+                  "enabled": true,
+                  "number": 1,
+                  "label": "",
+                  "color": null,
+                  "x": 1,
+                  "y": 0,
+                  "tools": {
+                    "effects": {
+                      "vignetteAmount": 0,
+                      "vignetteMidpoint": 50,
+                      "vignetteRoundness": 0,
+                      "vignetteFeather": 50,
+                      "vignetteHighlights": 0,
+                      "vignetteStyle": "highlight-priority",
+                      "grainAmount": 0,
+                      "grainSize": 25,
+                      "grainRoughness": 50,
+                      "bloom": 0,
+                      "bloomThreshold": 2,
+                      "halation": 0,
+                      "lut": {
+                        "asset": "lut-a01",
+                        "name": "warm",
+                        "strength": 100,
+                        "inputSpace": "srgb",
+                        "outputSpace": "srgb"
+                      }
+                    }
+                  },
+                  "mask": null,
+                  "opacity": 1
+                },
+                {
+                  "id": "paired-1",
+                  "kind": "corrector",
+                  "enabled": true,
+                  "number": 2,
+                  "label": "",
+                  "color": null,
+                  "x": 2,
+                  "y": 0,
+                  "tools": {
+                    "effects": {
+                      "vignetteAmount": 0,
+                      "vignetteMidpoint": 50,
+                      "vignetteRoundness": 0,
+                      "vignetteFeather": 50,
+                      "vignetteHighlights": 0,
+                      "vignetteStyle": "highlight-priority",
+                      "grainAmount": 0,
+                      "grainSize": 25,
+                      "grainRoughness": 50,
+                      "bloom": 0,
+                      "bloomThreshold": 2,
+                      "halation": 0,
+                      "lut": {
+                        "asset": "lut-b02",
+                        "name": "mono",
+                        "strength": 100,
+                        "inputSpace": "srgb",
+                        "outputSpace": "srgb"
+                      }
+                    }
+                  },
+                  "mask": null,
+                  "opacity": 1
+                }
+              ],
+              "edges": [
+                {
+                  "from": "@input",
+                  "to": "paired-0",
+                  "index": 0
+                },
+                {
+                  "from": "paired-0",
+                  "to": "paired-1",
+                  "index": 0
+                },
+                {
+                  "from": "paired-1",
+                  "to": "@output",
+                  "index": 0
+                }
+              ]
+            },
+            "geometry": {
+              "crop": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "angle": 0,
+              "quarterTurns": 0,
+              "flipH": false,
+              "flipV": false,
+              "aspect": null
+            }
+          },
+          "view": {}
+        },
+        {
+          "edit": {
+            "version": 1,
+            "source": {
+              "demosaic": "auto",
+              "highlightReconstruction": true,
+              "lensCorrections": true,
+              "assumeColorSpace": null
+            },
+            "retouch": [],
+            "base": {
+              "profile": "standard",
+              "profileAmount": 100,
+              "wbMode": "as-shot",
+              "temperature": 6329.555923644861,
+              "tint": 22.33365237452013,
+              "exposure": 0,
+              "contrast": 0,
+              "highlights": 0,
+              "shadows": 0,
+              "whites": 0,
+              "blacks": 0,
+              "vibrance": 0,
+              "saturation": 0
+            },
+            "grade": {
+              "nodes": [
+                {
+                  "id": "paired-0",
+                  "kind": "corrector",
+                  "enabled": true,
+                  "number": 1,
+                  "label": "",
+                  "color": null,
+                  "x": 1,
+                  "y": 0,
+                  "tools": {
+                    "effects": {
+                      "vignetteAmount": 0,
+                      "vignetteMidpoint": 50,
+                      "vignetteRoundness": 0,
+                      "vignetteFeather": 50,
+                      "vignetteHighlights": 0,
+                      "vignetteStyle": "highlight-priority",
+                      "grainAmount": 0,
+                      "grainSize": 25,
+                      "grainRoughness": 50,
+                      "bloom": 0,
+                      "bloomThreshold": 2,
+                      "halation": 0,
+                      "lut": {
+                        "asset": "lut-b02",
+                        "name": "mono",
+                        "strength": 100,
+                        "inputSpace": "srgb",
+                        "outputSpace": "srgb"
+                      }
+                    }
+                  },
+                  "mask": null,
+                  "opacity": 1
+                },
+                {
+                  "id": "paired-1",
+                  "kind": "corrector",
+                  "enabled": true,
+                  "number": 2,
+                  "label": "",
+                  "color": null,
+                  "x": 2,
+                  "y": 0,
+                  "tools": {
+                    "effects": {
+                      "vignetteAmount": 0,
+                      "vignetteMidpoint": 50,
+                      "vignetteRoundness": 0,
+                      "vignetteFeather": 50,
+                      "vignetteHighlights": 0,
+                      "vignetteStyle": "highlight-priority",
+                      "grainAmount": 0,
+                      "grainSize": 25,
+                      "grainRoughness": 50,
+                      "bloom": 0,
+                      "bloomThreshold": 2,
+                      "halation": 0,
+                      "lut": {
+                        "asset": "lut-a01",
+                        "name": "warm",
+                        "strength": 100,
+                        "inputSpace": "srgb",
+                        "outputSpace": "srgb"
+                      }
+                    }
+                  },
+                  "mask": null,
+                  "opacity": 1
+                }
+              ],
+              "edges": [
+                {
+                  "from": "@input",
+                  "to": "paired-0",
+                  "index": 0
+                },
+                {
+                  "from": "paired-0",
+                  "to": "paired-1",
+                  "index": 0
+                },
+                {
+                  "from": "paired-1",
+                  "to": "@output",
+                  "index": 0
+                }
+              ]
+            },
+            "geometry": {
+              "crop": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "angle": 0,
+              "quarterTurns": 0,
+              "flipH": false,
+              "flipV": false,
+              "aspect": null
+            }
+          },
+          "view": {}
+        }
+      ],
+      "firstFrameExactFinal": {
+        "all": 6,
+        "total": 6,
+        "warm": 4,
+        "warmTotal": 4
+      },
+      "finalWholeRasterDigestsByState": [
+        [
+          "e7197dbcde3636ce1840c3a59c027e2604bbc05e8d34c1ff0faef2f064378419"
+        ],
+        [
+          "16300008542dd28fb9e5e2ae6ca4af51fb3ad77caeb62c154b6b79ce0b70b2c0"
+        ]
+      ]
+    },
+    {
+      "id": "light-mask-exposure",
+      "values": [
+        0.25,
+        0.75
+      ],
+      "fixed": {},
+      "samples": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 21.4,
+          "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+          "frames": [
+            {
+              "seq": 14,
+              "ms": 14.63,
+              "actionToPixelsMs": 14.71,
+              "frameStartAfterDispatchMs": 0.08,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4598272,
+              "tiles": 1,
+              "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+              "wholeRasterSHA256": "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+            },
+            {
+              "seq": 15,
+              "ms": 6.665,
+              "actionToPixelsMs": 21.48,
+              "frameStartAfterDispatchMs": 14.815,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 3763584,
+              "tiles": 0,
+              "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+              "wholeRasterSHA256": "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.07,
+              "bits": 3
+            },
+            {
+              "atMs": 31.2,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 31.22,
+          "renderToFinalMs": 21.4,
+          "renderToFirstExactFinalMs": 14.63,
+          "finalSameStateDelta": null,
+          "finalOtherStateDelta": null,
+          "regions": {
+            "inside": "476be7e6ab35700296deceb487efe8a825578c51f171ea2f390b7bc10f8728a9",
+            "outside": "5be944aafb0e10de46015e572d0173ed40b3e93ba12811f07cec5b0a8b03013b",
+            "insideCount": 416,
+            "outsideCount": 1640
+          }
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 21.07,
+          "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+          "frames": [
+            {
+              "seq": 16,
+              "ms": 5.29,
+              "actionToPixelsMs": 5.38,
+              "frameStartAfterDispatchMs": 0.09,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4598272,
+              "tiles": 1,
+              "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+              "wholeRasterSHA256": "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+            },
+            {
+              "seq": 17,
+              "ms": 5.36,
+              "actionToPixelsMs": 21.16,
+              "frameStartAfterDispatchMs": 15.8,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 3763584,
+              "tiles": 0,
+              "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+              "wholeRasterSHA256": "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.09,
+              "bits": 3
+            },
+            {
+              "atMs": 32.42,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 32.445,
+          "renderToFinalMs": 21.07,
+          "renderToFirstExactFinalMs": 5.29,
+          "finalSameStateDelta": null,
+          "finalOtherStateDelta": {
+            "mean": 8.859,
+            "max": 32,
+            "changedChannels": 8995
+          },
+          "regions": {
+            "inside": "a4ed2623cc97c1b1437152cff0e0a7bec10c04a3dba4ca08556668ebba3c4e0a",
+            "outside": "5be944aafb0e10de46015e572d0173ed40b3e93ba12811f07cec5b0a8b03013b",
+            "insideCount": 416,
+            "outsideCount": 1640
+          }
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 20.835,
+          "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+          "frames": [
+            {
+              "seq": 18,
+              "ms": 4.475,
+              "actionToPixelsMs": 4.685,
+              "frameStartAfterDispatchMs": 0.21,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+              "wholeRasterSHA256": "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+            },
+            {
+              "seq": 19,
+              "ms": 4.12,
+              "actionToPixelsMs": 21.045,
+              "frameStartAfterDispatchMs": 16.925,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+              "wholeRasterSHA256": "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.195,
+              "bits": 3
+            },
+            {
+              "atMs": 33.53,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.55,
+          "renderToFinalMs": 20.835,
+          "renderToFirstExactFinalMs": 4.475,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 8.859,
+            "max": 32,
+            "changedChannels": 8995
+          },
+          "regions": {
+            "inside": "476be7e6ab35700296deceb487efe8a825578c51f171ea2f390b7bc10f8728a9",
+            "outside": "5be944aafb0e10de46015e572d0173ed40b3e93ba12811f07cec5b0a8b03013b",
+            "insideCount": 416,
+            "outsideCount": 1640
+          }
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 21.295,
+          "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+          "frames": [
+            {
+              "seq": 20,
+              "ms": 4.85,
+              "actionToPixelsMs": 4.95,
+              "frameStartAfterDispatchMs": 0.1,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+              "wholeRasterSHA256": "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+            },
+            {
+              "seq": 21,
+              "ms": 4.975,
+              "actionToPixelsMs": 21.395,
+              "frameStartAfterDispatchMs": 16.42,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+              "wholeRasterSHA256": "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.085,
+              "bits": 3
+            },
+            {
+              "atMs": 33.065,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.085,
+          "renderToFinalMs": 21.295,
+          "renderToFirstExactFinalMs": 4.85,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 8.859,
+            "max": 32,
+            "changedChannels": 8995
+          },
+          "regions": {
+            "inside": "a4ed2623cc97c1b1437152cff0e0a7bec10c04a3dba4ca08556668ebba3c4e0a",
+            "outside": "5be944aafb0e10de46015e572d0173ed40b3e93ba12811f07cec5b0a8b03013b",
+            "insideCount": 416,
+            "outsideCount": 1640
+          }
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 21.95,
+          "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+          "frames": [
+            {
+              "seq": 22,
+              "ms": 4.455,
+              "actionToPixelsMs": 4.615,
+              "frameStartAfterDispatchMs": 0.16,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+              "wholeRasterSHA256": "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+            },
+            {
+              "seq": 23,
+              "ms": 5.04,
+              "actionToPixelsMs": 22.11,
+              "frameStartAfterDispatchMs": 17.07,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "366a62a98e5a6c7d6f49b93f4de366573124952abd51cfa72bfab0c5e277db49",
+              "wholeRasterSHA256": "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.15,
+              "bits": 3
+            },
+            {
+              "atMs": 33.705,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.725,
+          "renderToFinalMs": 21.95,
+          "renderToFirstExactFinalMs": 4.455,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 8.859,
+            "max": 32,
+            "changedChannels": 8995
+          },
+          "regions": {
+            "inside": "476be7e6ab35700296deceb487efe8a825578c51f171ea2f390b7bc10f8728a9",
+            "outside": "5be944aafb0e10de46015e572d0173ed40b3e93ba12811f07cec5b0a8b03013b",
+            "insideCount": 416,
+            "outsideCount": 1640
+          }
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 21.415,
+          "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+          "frames": [
+            {
+              "seq": 24,
+              "ms": 5.15,
+              "actionToPixelsMs": 5.24,
+              "frameStartAfterDispatchMs": 0.09,
+              "interactive": true,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 512,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 4423680,
+              "tiles": 1,
+              "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+              "wholeRasterSHA256": "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+            },
+            {
+              "seq": 25,
+              "ms": 4.79,
+              "actionToPixelsMs": 21.505,
+              "frameStartAfterDispatchMs": 16.715,
+              "interactive": false,
+              "provisional": false,
+              "fullRes": true,
+              "ppu": 2376,
+              "detailPpu": 2400,
+              "need": 2400,
+              "rung": 0,
+              "renderedPx": 0,
+              "tiles": 0,
+              "digest": "b33f505137e97f8a7be36f38a34aa5561b9d5becd30e07386c7701a94ba831fa",
+              "wholeRasterSHA256": "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+            }
+          ],
+          "schedulerTransitions": [
+            {
+              "atMs": 0.08,
+              "bits": 3
+            },
+            {
+              "atMs": 33.355,
+              "bits": 0
+            }
+          ],
+          "idleConfirmedMs": 33.37,
+          "renderToFinalMs": 21.415,
+          "renderToFirstExactFinalMs": 5.15,
+          "finalSameStateDelta": {
+            "mean": 0,
+            "max": 0,
+            "changedChannels": 0
+          },
+          "finalOtherStateDelta": {
+            "mean": 8.859,
+            "max": 32,
+            "changedChannels": 8995
+          },
+          "regions": {
+            "inside": "a4ed2623cc97c1b1437152cff0e0a7bec10c04a3dba4ca08556668ebba3c4e0a",
+            "outside": "5be944aafb0e10de46015e572d0173ed40b3e93ba12811f07cec5b0a8b03013b",
+            "insideCount": 416,
+            "outsideCount": 1640
+          }
+        }
+      ],
+      "status": "measured",
+      "region": "radial",
+      "unit": "EV",
+      "stateDescriptions": [
+        {
+          "edit": {
+            "version": 1,
+            "source": {
+              "demosaic": "auto",
+              "highlightReconstruction": true,
+              "lensCorrections": true,
+              "assumeColorSpace": null
+            },
+            "retouch": [],
+            "base": {
+              "profile": "standard",
+              "profileAmount": 100,
+              "wbMode": "as-shot",
+              "temperature": 6329.555923644861,
+              "tint": 22.33365237452013,
+              "exposure": 0,
+              "contrast": 0,
+              "highlights": 0,
+              "shadows": 0,
+              "whites": 0,
+              "blacks": 0,
+              "vibrance": 0,
+              "saturation": 0
+            },
+            "grade": {
+              "nodes": [
+                {
+                  "id": "bench",
+                  "kind": "corrector",
+                  "enabled": true,
+                  "number": 1,
+                  "label": "",
+                  "color": null,
+                  "x": 1,
+                  "y": 0,
+                  "tools": {
+                    "basic": {
+                      "temperature": 0,
+                      "tint": 0,
+                      "exposure": 0.25,
+                      "contrast": 0,
+                      "highlights": 0,
+                      "shadows": 0,
+                      "whites": 0,
+                      "blacks": 0,
+                      "texture": 0,
+                      "clarity": 0,
+                      "dehaze": 0,
+                      "vibrance": 0,
+                      "saturation": 0
+                    }
+                  },
+                  "mask": {
+                    "invert": false,
+                    "refine": {
+                      "feather": 0,
+                      "expand": 0,
+                      "smooth": 0,
+                      "edgeRefine": 0,
+                      "hairRefine": false,
+                      "denoise": 0
+                    },
+                    "components": [
+                      {
+                        "id": "fixed-radial",
+                        "type": "radial",
+                        "op": "add",
+                        "enabled": true,
+                        "opacity": 1,
+                        "invert": false,
+                        "center": {
+                          "x": 0.5,
+                          "y": 0.5
+                        },
+                        "rx": 0.35,
+                        "ry": 0.3,
+                        "angle": 0,
+                        "feather": 0,
+                        "inside": true
+                      }
+                    ]
+                  },
+                  "opacity": 1
+                }
+              ],
+              "edges": [
+                {
+                  "from": "@input",
+                  "to": "bench",
+                  "index": 0
+                },
+                {
+                  "from": "bench",
+                  "to": "@output",
+                  "index": 0
+                }
+              ]
+            },
+            "geometry": {
+              "crop": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "angle": 0,
+              "quarterTurns": 0,
+              "flipH": false,
+              "flipV": false,
+              "aspect": null
+            }
+          },
+          "view": {}
+        },
+        {
+          "edit": {
+            "version": 1,
+            "source": {
+              "demosaic": "auto",
+              "highlightReconstruction": true,
+              "lensCorrections": true,
+              "assumeColorSpace": null
+            },
+            "retouch": [],
+            "base": {
+              "profile": "standard",
+              "profileAmount": 100,
+              "wbMode": "as-shot",
+              "temperature": 6329.555923644861,
+              "tint": 22.33365237452013,
+              "exposure": 0,
+              "contrast": 0,
+              "highlights": 0,
+              "shadows": 0,
+              "whites": 0,
+              "blacks": 0,
+              "vibrance": 0,
+              "saturation": 0
+            },
+            "grade": {
+              "nodes": [
+                {
+                  "id": "bench",
+                  "kind": "corrector",
+                  "enabled": true,
+                  "number": 1,
+                  "label": "",
+                  "color": null,
+                  "x": 1,
+                  "y": 0,
+                  "tools": {
+                    "basic": {
+                      "temperature": 0,
+                      "tint": 0,
+                      "exposure": 0.75,
+                      "contrast": 0,
+                      "highlights": 0,
+                      "shadows": 0,
+                      "whites": 0,
+                      "blacks": 0,
+                      "texture": 0,
+                      "clarity": 0,
+                      "dehaze": 0,
+                      "vibrance": 0,
+                      "saturation": 0
+                    }
+                  },
+                  "mask": {
+                    "invert": false,
+                    "refine": {
+                      "feather": 0,
+                      "expand": 0,
+                      "smooth": 0,
+                      "edgeRefine": 0,
+                      "hairRefine": false,
+                      "denoise": 0
+                    },
+                    "components": [
+                      {
+                        "id": "fixed-radial",
+                        "type": "radial",
+                        "op": "add",
+                        "enabled": true,
+                        "opacity": 1,
+                        "invert": false,
+                        "center": {
+                          "x": 0.5,
+                          "y": 0.5
+                        },
+                        "rx": 0.35,
+                        "ry": 0.3,
+                        "angle": 0,
+                        "feather": 0,
+                        "inside": true
+                      }
+                    ]
+                  },
+                  "opacity": 1
+                }
+              ],
+              "edges": [
+                {
+                  "from": "@input",
+                  "to": "bench",
+                  "index": 0
+                },
+                {
+                  "from": "bench",
+                  "to": "@output",
+                  "index": 0
+                }
+              ]
+            },
+            "geometry": {
+              "crop": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "angle": 0,
+              "quarterTurns": 0,
+              "flipH": false,
+              "flipV": false,
+              "aspect": null
+            }
+          },
+          "view": {}
+        }
+      ],
+      "firstFrameExactFinal": {
+        "all": 6,
+        "total": 6,
+        "warm": 4,
+        "warmTotal": 4
+      },
+      "finalWholeRasterDigestsByState": [
+        [
+          "8e7719fb147db5a7b2f597c1e1e34dae1d20fe6fa3c6fa868471e362250e2b9d"
+        ],
+        [
+          "943d38bf82d4f7938b63f30dd02f647ce7a3a45a703baf2e99c55521d9b67031"
+        ]
+      ]
+    }
+  ],
+  "parameterSHA256": "1ecab2311dfc3efc94d698aeff939708d5dd17c564a0e87c62712004c58ab4d4",
+  "photoOperatorAdapterSHA256": "654015efc3683250b6815ae5e67776f0e700c72cdb22887899f72d11662192d5",
+  "scheduleProbeSHA256": "00b6c7c3ebf9117723fe2e4330782d89fed1f4c24dcb2fb2da8ab154bf45a530",
+  "schemaVersion": 2,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T15:12:31.860993+00:00",
+  "engineSHA256": {
+    "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "browserBinary": "chrome-headless-shell",
+  "probeSHA256": "2f5242c64a1a586a9dd12270f424c1963877821160cf7248d1db64e2e8b2a13e",
+  "system": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "chip": "Apple M4 Max"
+  },
+  "boundary": "Changed resident recipe to complete CPU-accessible 2400 × 1600 sRGB RGBA8 display buffer; hash outside timer"
+}

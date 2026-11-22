@@ -1,0 +1,537 @@
+{
+  "schema": 1,
+  "machine": "local CPU, two intra-op threads",
+  "reference": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+  "shipModel": "siglip2-base-p16-224-75de2d55-f16w-v1",
+  "images": 24,
+  "events": 12,
+  "imageError": {
+    "fp32": {
+      "minCosine": 0.9999996423721313,
+      "maxAbs": 1.1213123798370361e-06
+    },
+    "q8": {
+      "minCosine": 0.5662665367126465,
+      "maxAbs": 0.2387201339006424
+    },
+    "f16w": {
+      "minCosine": 0.9999963641166687,
+      "maxAbs": 0.0004917755722999573
+    }
+  },
+  "textError": {
+    "fp32": {
+      "minCosine": 0.9999998807907104,
+      "maxAbs": 5.066394805908203e-07
+    },
+    "q8": {
+      "minCosine": 0.8732004165649414,
+      "maxAbs": 0.18596574664115906
+    },
+    "f16w": {
+      "minCosine": 0.9999996423721313,
+      "maxAbs": 0.0001640915870666504
+    }
+  },
+  "queries": [
+    {
+      "text": "从头顶往下看，河水形成一个紧凑的U形弯",
+      "relevant": [
+        "E02"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E02",
+          "score": 0.13309313356876373,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E02",
+          "score": 0.1330932080745697,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E21",
+          "score": 0.11015849560499191,
+          "relevantRanks": [
+            2
+          ]
+        },
+        "f16w": {
+          "top": "E02",
+          "score": 0.133061483502388,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "人在树林里由安全绳吊着",
+      "relevant": [
+        "E03"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E03",
+          "score": 0.10817907005548477,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E03",
+          "score": 0.10817908495664597,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E03",
+          "score": 0.0969829112291336,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "f16w": {
+          "top": "E03",
+          "score": 0.10822182148694992,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "几匹马站在树林里",
+      "relevant": [
+        "E07"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E07",
+          "score": 0.14352205395698547,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E07",
+          "score": 0.14352211356163025,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E20",
+          "score": 0.10539060831069946,
+          "relevantRanks": [
+            2
+          ]
+        },
+        "f16w": {
+          "top": "E07",
+          "score": 0.14350304007530212,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "打开的硬壳箱子里面有隔层",
+      "relevant": [
+        "E08"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E08",
+          "score": 0.0724295824766159,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E08",
+          "score": 0.07242968678474426,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E08",
+          "score": 0.13180100917816162,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "f16w": {
+          "top": "E08",
+          "score": 0.07248391211032867,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "抬头看木梁从中心向四周放射的圆形屋顶",
+      "relevant": [
+        "E12"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E12",
+          "score": 0.11153364926576614,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E12",
+          "score": 0.11153367906808853,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E12",
+          "score": 0.10373761504888535,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "f16w": {
+          "top": "E12",
+          "score": 0.1115628033876419,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "近处能看见鹿角的驯鹿",
+      "relevant": [
+        "E13",
+        "E14"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E13",
+          "score": 0.12676270306110382,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        },
+        "fp32": {
+          "top": "E13",
+          "score": 0.12676270306110382,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        },
+        "q8": {
+          "top": "E14",
+          "score": 0.09448111057281494,
+          "relevantRanks": [
+            1,
+            21
+          ]
+        },
+        "f16w": {
+          "top": "E13",
+          "score": 0.12672337889671326,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "text": "人用手给驯鹿喂食",
+      "relevant": [
+        "E13"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E13",
+          "score": 0.19272653758525848,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E13",
+          "score": 0.19272659718990326,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E14",
+          "score": 0.07822751253843307,
+          "relevantRanks": [
+            6
+          ]
+        },
+        "f16w": {
+          "top": "E13",
+          "score": 0.19265508651733398,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "黄昏天空中的云倒映在平静水面上",
+      "relevant": [
+        "E17",
+        "E18"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E18",
+          "score": 0.11701061576604843,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        },
+        "fp32": {
+          "top": "E18",
+          "score": 0.11701060086488724,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        },
+        "q8": {
+          "top": "E17",
+          "score": 0.11803929507732391,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        },
+        "f16w": {
+          "top": "E18",
+          "score": 0.11699481308460236,
+          "relevantRanks": [
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "text": "山坡旁停着一辆白色越野车",
+      "relevant": [
+        "E19"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E19",
+          "score": 0.12194471061229706,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "fp32": {
+          "top": "E19",
+          "score": 0.12194482237100601,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "q8": {
+          "top": "E19",
+          "score": 0.10924630612134933,
+          "relevantRanks": [
+            1
+          ]
+        },
+        "f16w": {
+          "top": "E19",
+          "score": 0.12193182110786438,
+          "relevantRanks": [
+            1
+          ]
+        }
+      }
+    },
+    {
+      "text": "红色落日在天际线上，前方有分汊的河流",
+      "relevant": [
+        "E23",
+        "E24"
+      ],
+      "rankings": {
+        "official": {
+          "top": "E24",
+          "score": 0.11843975633382797,
+          "relevantRanks": [
+            1,
+            3
+          ]
+        },
+        "fp32": {
+          "top": "E24",
+          "score": 0.11843959242105484,
+          "relevantRanks": [
+            1,
+            3
+          ]
+        },
+        "q8": {
+          "top": "E21",
+          "score": 0.0937284529209137,
+          "relevantRanks": [
+            6,
+            8
+          ]
+        },
+        "f16w": {
+          "top": "E24",
+          "score": 0.11846767365932465,
+          "relevantRanks": [
+            1,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "text": "有人打着红色雨伞",
+      "relevant": [],
+      "rankings": {
+        "official": {
+          "top": "E03",
+          "score": 0.029330290853977203,
+          "relevantRanks": []
+        },
+        "fp32": {
+          "top": "E03",
+          "score": 0.029330164194107056,
+          "relevantRanks": []
+        },
+        "q8": {
+          "top": "E11",
+          "score": 0.06924965977668762,
+          "relevantRanks": []
+        },
+        "f16w": {
+          "top": "E03",
+          "score": 0.029211390763521194,
+          "relevantRanks": []
+        }
+      }
+    },
+    {
+      "text": "暴雪中停着红色消防车",
+      "relevant": [],
+      "rankings": {
+        "official": {
+          "top": "E16",
+          "score": 0.0024478137493133545,
+          "relevantRanks": []
+        },
+        "fp32": {
+          "top": "E16",
+          "score": 0.0024478882551193237,
+          "relevantRanks": []
+        },
+        "q8": {
+          "top": "E19",
+          "score": 0.046176280826330185,
+          "relevantRanks": []
+        },
+        "f16w": {
+          "top": "E16",
+          "score": 0.0023927390575408936,
+          "relevantRanks": []
+        }
+      }
+    },
+    {
+      "text": "摆满书的室内图书馆",
+      "relevant": [],
+      "rankings": {
+        "official": {
+          "top": "E12",
+          "score": 0.07375960052013397,
+          "relevantRanks": []
+        },
+        "fp32": {
+          "top": "E12",
+          "score": 0.0737595185637474,
+          "relevantRanks": []
+        },
+        "q8": {
+          "top": "E08",
+          "score": 0.08099162578582764,
+          "relevantRanks": []
+        },
+        "f16w": {
+          "top": "E12",
+          "score": 0.07377950102090836,
+          "relevantRanks": []
+        }
+      }
+    }
+  ],
+  "timingsMs": {
+    "vision": {
+      "official": {
+        "first": 89.73895898088813,
+        "p50": 43.615125003270805,
+        "p95": 49.00062062952201
+      },
+      "fp32": {
+        "first": 177.7062090113759,
+        "p50": 169.93420801009052,
+        "p95": 172.1585668856278
+      },
+      "q8": {
+        "first": 61.27483298769221,
+        "p50": 57.54485400393605,
+        "p95": 58.1870723166503
+      },
+      "f16w": {
+        "first": 436.36970897205174,
+        "p50": 170.04787499899976,
+        "p95": 172.82154823478777
+      }
+    },
+    "text": {
+      "official": {
+        "first": 33.75179198337719,
+        "p50": 18.26570904813707,
+        "p95": 27.497041597962365
+      },
+      "fp32": {
+        "first": 53.829000040423125,
+        "p50": 53.829000040423125,
+        "p95": 54.0895169833675
+      },
+      "q8": {
+        "first": 17.303582979366183,
+        "p50": 17.42654200643301,
+        "p95": 17.85071638878435
+      },
+      "f16w": {
+        "first": 702.1067090099677,
+        "p50": 53.77966695232317,
+        "p95": 313.2627086015409
+      }
+    }
+  }
+}

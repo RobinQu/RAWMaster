@@ -1,0 +1,223 @@
+{
+  "platform": "macOS 27.0.1 arm64",
+  "build": "Swift 6.4 native SwiftPM debug",
+  "shared_library_store": true,
+  "filter": "full snapshot, admitted files, rating >=4, captured descending",
+  "start_interval": "80 ms delay after each completed read; exclude reads finishing after import",
+  "raw_files_per_import": [
+    6,
+    6,
+    6,
+    6
+  ],
+  "import_seconds": [
+    3.735,
+    3.044,
+    3.279,
+    3.871
+  ],
+  "per_trial_concurrent_samples": [
+    5,
+    4,
+    4,
+    5
+  ],
+  "observations": [
+    {
+      "duringImport": [
+        {
+          "matches": 1,
+          "ms": 616.9280000030994
+        },
+        {
+          "matches": 1,
+          "ms": 622.6856666617095
+        },
+        {
+          "matches": 1,
+          "ms": 626.6331249498762
+        },
+        {
+          "matches": 1,
+          "ms": 627.745124977082
+        },
+        {
+          "matches": 1,
+          "ms": 687.2697083745152
+        }
+      ],
+      "idle": [
+        {
+          "matches": 1,
+          "ms": 618.7871666625142
+        },
+        {
+          "matches": 1,
+          "ms": 614.2162916949019
+        },
+        {
+          "matches": 1,
+          "ms": 613.6262083309703
+        },
+        {
+          "matches": 1,
+          "ms": 618.2967083295807
+        },
+        {
+          "matches": 1,
+          "ms": 617.3777083749883
+        }
+      ],
+      "importSeconds": 3.734809583344031,
+      "importedFiles": 6
+    },
+    {
+      "duringImport": [
+        {
+          "matches": 1,
+          "ms": 626.4402500237338
+        },
+        {
+          "matches": 1,
+          "ms": 624.8871666612104
+        },
+        {
+          "matches": 1,
+          "ms": 638.6435416643508
+        },
+        {
+          "matches": 1,
+          "ms": 723.4585833502933
+        }
+      ],
+      "idle": [
+        {
+          "matches": 1,
+          "ms": 621.7384166666307
+        },
+        {
+          "matches": 1,
+          "ms": 617.1561250230297
+        },
+        {
+          "matches": 1,
+          "ms": 623.4052500221878
+        },
+        {
+          "matches": 1,
+          "ms": 623.2225833227858
+        },
+        {
+          "matches": 1,
+          "ms": 623.3422916848212
+        }
+      ],
+      "importSeconds": 3.0444692500168458,
+      "importedFiles": 6
+    },
+    {
+      "duringImport": [
+        {
+          "matches": 1,
+          "ms": 817.0554583193734
+        },
+        {
+          "matches": 1,
+          "ms": 623.370208311826
+        },
+        {
+          "matches": 1,
+          "ms": 626.6645416617393
+        },
+        {
+          "matches": 1,
+          "ms": 835.1550833322108
+        }
+      ],
+      "idle": [
+        {
+          "matches": 1,
+          "ms": 616.5041666827165
+        },
+        {
+          "matches": 1,
+          "ms": 643.5378332971595
+        },
+        {
+          "matches": 1,
+          "ms": 619.2739583202638
+        },
+        {
+          "matches": 1,
+          "ms": 621.17370829219
+        },
+        {
+          "matches": 1,
+          "ms": 622.3004999919794
+        }
+      ],
+      "importSeconds": 3.2790952083305456,
+      "importedFiles": 6
+    },
+    {
+      "duringImport": [
+        {
+          "matches": 1,
+          "ms": 667.9800000274554
+        },
+        {
+          "matches": 1,
+          "ms": 660.9855416463688
+        },
+        {
+          "matches": 1,
+          "ms": 636.0933749820106
+        },
+        {
+          "matches": 1,
+          "ms": 677.4124166695401
+        },
+        {
+          "matches": 1,
+          "ms": 684.1626666719094
+        }
+      ],
+      "idle": [
+        {
+          "matches": 1,
+          "ms": 685.4647916625254
+        },
+        {
+          "matches": 1,
+          "ms": 632.4085416854359
+        },
+        {
+          "matches": 1,
+          "ms": 623.7522083101794
+        },
+        {
+          "matches": 1,
+          "ms": 627.3259583394974
+        },
+        {
+          "matches": 1,
+          "ms": 628.5792083363049
+        }
+      ],
+      "importSeconds": 3.87085783330258,
+      "importedFiles": 6
+    }
+  ],
+  "idle": {
+    "n": 20,
+    "p50_ms": 622.019,
+    "p95_ms": 643.538,
+    "matched_files": 1
+  },
+  "duringImport": {
+    "n": 18,
+    "p50_ms": 637.368,
+    "p95_ms": 835.155,
+    "matched_files": 1
+  }
+}

@@ -1,0 +1,25 @@
+Intel face-reidentification-retail-0095
+
+Copyright (c) 2023–2024 Intel Corporation
+Distributed under the Apache License, Version 2.0. The full license is
+provided in Intel-Open-Model-Zoo.txt beside this notice.
+
+Intel Open Model Zoo identifies the FP32 network and weights and assigns
+this license in its model manifest:
+https://github.com/openvinotoolkit/open_model_zoo/blob/2c9b5c563ab3a202d085a42e2bbfc48f77961f4b/models/intel/face-reidentification-retail-0095/model.yml
+
+Upstream graph SHA-256
+6cf60c341452155e35c467510c6c50a96ade5b2bd8f88c5a90902e905d8a80c3
+Upstream FP32 weights SHA-256
+21319b95e54181857f99e22dc32ec89770eca2969a1432cfa1594bffc94edd62
+
+RAWMaster converted the published FP32 OpenVINO IR to ONNX opset 17.
+The converted model contains a 128-by-128 BGR input and a 256-dimensional
+embedding output. Model parameters have not been retrained.
+ONNX SHA-256
+53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373
+
+Intel's repository states that access to its materials is subject to its
+commitment against use in products contributing to violations of
+internationally recognised human rights.
+https://github.com/openvinotoolkit/open_model_zoo/tree/2c9b5c563ab3a202d085a42e2bbfc48f77961f4b

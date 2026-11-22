@@ -1,0 +1,1167 @@
+{
+  "platform": "macOS arm64, Release, native AppKit visible draw",
+  "dataset": {
+    "v7CatalogBytes": 51486720,
+    "registeredFiles": 6928,
+    "admittedFiles": 1408,
+    "projects": 7,
+    "sessions": 7,
+    "groups": 49,
+    "visibleCardsOnOpen": 12,
+    "pageSize": 60
+  },
+  "fourRealImports": [
+    6,
+    6,
+    6,
+    6
+  ],
+  "measurements": {
+    "idle": {
+      "maxMs": 95.906834,
+      "n": 24,
+      "p50ms": 78.397708,
+      "p95ms": 94.86675
+    },
+    "idlePhoto": {
+      "maxMs": 112.104459,
+      "n": 24,
+      "p50ms": 85.667833,
+      "p95ms": 111.376792
+    },
+    "import": {
+      "maxMs": 104.856333,
+      "n": 34,
+      "p50ms": 82.384458,
+      "p95ms": 99.528583
+    },
+    "importPhoto": {
+      "maxMs": 117.374417,
+      "n": 34,
+      "p50ms": 92.796458,
+      "p95ms": 112.602958
+    },
+    "open": {
+      "maxMs": 3244.7685,
+      "n": 4,
+      "p50ms": 3157.538208,
+      "p95ms": 3244.7685
+    },
+    "openPhoto": {
+      "maxMs": 3271.48075,
+      "n": 4,
+      "p50ms": 3169.653166,
+      "p95ms": 3271.48075
+    },
+    "reopen": {
+      "maxMs": 249.140666,
+      "n": 4,
+      "p50ms": 224.8585,
+      "p95ms": 249.140666
+    },
+    "reopenPhoto": {
+      "maxMs": 276.652791,
+      "n": 4,
+      "p50ms": 249.337625,
+      "p95ms": 276.652791
+    }
+  },
+  "indexBytesIncludingWALAndSHM": [
+    7589888,
+    7589888,
+    7589888,
+    7589888
+  ],
+  "peakProcessRSSBytes": 709935104,
+  "startupPhasesMs": [
+    {
+      "beforeNavigationMs": 2347.608375,
+      "catalogOpenMs": 2346.798625,
+      "editingServicesReadyMs": 2347.505458,
+      "navigationLoadMs": 61.5685
+    },
+    {
+      "beforeNavigationMs": 2464.64275,
+      "catalogOpenMs": 2463.912125,
+      "editingServicesReadyMs": 2464.530625,
+      "navigationLoadMs": 64.638459
+    },
+    {
+      "beforeNavigationMs": 2427.958792,
+      "catalogOpenMs": 2427.228209,
+      "editingServicesReadyMs": 2427.846667,
+      "navigationLoadMs": 63.972625
+    },
+    {
+      "beforeNavigationMs": 2319.540875,
+      "catalogOpenMs": 2318.827583,
+      "editingServicesReadyMs": 2319.43375,
+      "navigationLoadMs": 62.005208
+    }
+  ],
+  "reopenPhasesMs": [
+    {
+      "beforeNavigationMs": 5.391333,
+      "catalogOpenMs": 4.796167,
+      "editingServicesReadyMs": 5.294458,
+      "navigationLoadMs": 62.759625
+    },
+    {
+      "beforeNavigationMs": 5.628083,
+      "catalogOpenMs": 4.990958,
+      "editingServicesReadyMs": 5.517833,
+      "navigationLoadMs": 64.018292
+    },
+    {
+      "beforeNavigationMs": 5.391292,
+      "catalogOpenMs": 4.770459,
+      "editingServicesReadyMs": 5.289875,
+      "navigationLoadMs": 61.677542
+    },
+    {
+      "beforeNavigationMs": 5.69125,
+      "catalogOpenMs": 5.005708,
+      "editingServicesReadyMs": 5.570792,
+      "navigationLoadMs": 63.800792
+    }
+  ],
+  "samples": [
+    {
+      "workload": "open",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 3160.790083
+    },
+    {
+      "workload": "openPhoto",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 1,
+      "milliseconds": 3258.272875
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 84.261041
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 2,
+      "milliseconds": 90.008458
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 74.642375
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 79.034708
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 78.363458
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 6,
+      "milliseconds": 86.857416
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 69.805333
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 74.095917
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 78.150167
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 90.33775
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 68.181792
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 72.441167
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 81.207125
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 92.385333
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 79.156125
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 83.303208
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 97.360834
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 110.301209
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 73.628583
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 77.989958
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 89.223916
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 100.853375
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 70.768333
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 75.177625
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 84.365625
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 96.117
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 70.379709
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 74.764584
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 82.384458
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 94.487625
+    },
+    {
+      "workload": "reopenPhoto",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 8,
+      "milliseconds": 249.337625
+    },
+    {
+      "workload": "reopen",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 223.922417
+    },
+    {
+      "workload": "open",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 3244.7685
+    },
+    {
+      "workload": "openPhoto",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 3271.48075
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 94.86675
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 111.376792
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 77.709166
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 84.621416
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 89.079917
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 101.923209
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 81.170666
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 85.667833
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 90.566042
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 103.641542
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 76.658791
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 81.361458
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 95.706666
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 109.226791
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 92.161875
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 96.914292
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 104.856333
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 117.374417
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 79.71925
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 84.90925
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 93.526042
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 106.505875
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 81.727
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 86.556125
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 92.551917
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 105.885458
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 83.350458
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 87.935958
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 94.020125
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 107.308459
+    },
+    {
+      "workload": "reopenPhoto",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 276.652791
+    },
+    {
+      "workload": "reopen",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 249.140666
+    },
+    {
+      "workload": "open",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 3157.538208
+    },
+    {
+      "workload": "openPhoto",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 3169.653166
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 88.424167
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 102.827917
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 74.334167
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 81.439625
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 86.758792
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 98.459458
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 69.887209
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 73.76325
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 82.260708
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 93.745375
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 70.999584
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 75.450917
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 82.064125
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 94.378292
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 78.318084
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 82.484917
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 86.373334
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 98.295084
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 72.481959
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 76.842459
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 83.036667
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 95.009209
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 74.543208
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 78.7945
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 80.921833
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 92.796458
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 69.527333
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 73.750583
+    },
+    {
+      "workload": "reopenPhoto",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 248.373458
+    },
+    {
+      "workload": "reopen",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 224.8585
+    },
+    {
+      "workload": "open",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 3051.031125
+    },
+    {
+      "workload": "openPhoto",
+      "query": "existing-v7",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 3064.134542
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 95.906834
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 112.104459
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 77.92025
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 85.315167
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 89.726375
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 102.804875
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 79.246875
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 84.187417
+    },
+    {
+      "workload": "idle",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 87.950042
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 100.756417
+    },
+    {
+      "workload": "idle",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 78.397708
+    },
+    {
+      "workload": "idlePhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 82.940666
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 91.410959
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 103.895334
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 87.8285
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 92.631167
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 99.528583
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 112.602958
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 82.272667
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 87.159667
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 90.950417
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 104.161792
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 82.373042
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 87.75625
+    },
+    {
+      "workload": "import",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 91.371583
+    },
+    {
+      "workload": "importPhoto",
+      "query": "all",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 104.790625
+    },
+    {
+      "workload": "import",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 0,
+      "milliseconds": 78.556541
+    },
+    {
+      "workload": "importPhoto",
+      "query": "rating>=4",
+      "visibleCards": 1,
+      "visiblePhotos": 1,
+      "milliseconds": 83.489166
+    },
+    {
+      "workload": "reopenPhoto",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 12,
+      "milliseconds": 266.010666
+    },
+    {
+      "workload": "reopen",
+      "query": "v8-index-present",
+      "visibleCards": 12,
+      "visiblePhotos": 0,
+      "milliseconds": 240.527041
+    }
+  ],
+  "archive": [
+    {
+      "archivedFiles": [
+        "aj",
+        "b"
+      ],
+      "backupAndReadbackMs": 528.701334,
+      "distinctObjects": 2,
+      "objectsAfterExplicitRestore": 3,
+      "restoredFiles": 2,
+      "sealCounts": {
+        "admitted": 1,
+        "excluded": 2,
+        "failed": 1,
+        "sequenceOnly": 1
+      },
+      "sourceFiles": 5,
+      "swappedPair": false
+    },
+    {
+      "archivedFiles": [
+        "ar",
+        "b"
+      ],
+      "backupAndReadbackMs": 907.753542,
+      "distinctObjects": 2,
+      "objectsAfterExplicitRestore": 3,
+      "restoredFiles": 2,
+      "sealCounts": {
+        "admitted": 1,
+        "excluded": 2,
+        "failed": 1,
+        "sequenceOnly": 1
+      },
+      "sourceFiles": 5,
+      "swappedPair": true
+    }
+  ],
+  "packagedApplication": {
+    "signedApp": "ad-hoc strict verification passed",
+    "realWindowPoints": [
+      1480,
+      940
+    ],
+    "sourceSchema": 7,
+    "openedSchema": 8,
+    "originalAdmissionFileCount": 1408,
+    "searchSidecarOpened": true,
+    "packagedTextVectorElements": 768,
+    "l2Norm": 1.0,
+    "modelPackBytes": 1121494362
+  },
+  "nativePublishedGroups": [
+    {
+      "operation": "starTrail",
+      "inputCount": 24,
+      "engine": "rawmaster-group-render/1 opencv/4.12.0",
+      "format": "tiff32f",
+      "height": 5760,
+      "width": 8640,
+      "publishedWorks": 1,
+      "sourceRenderingPolicy": "originalLinearRAW"
+    },
+    {
+      "operation": "hdr",
+      "inputCount": 3,
+      "engine": "rawmaster-group-render/1 opencv/4.12.0",
+      "format": "tiff32f",
+      "height": 5760,
+      "width": 8640,
+      "publishedWorks": 1,
+      "sourceRenderingPolicy": "originalLinearRAW"
+    },
+    {
+      "operation": "panorama",
+      "inputCount": 3,
+      "engine": "rawmaster-group-render/1 opencv/4.12.0",
+      "format": "tiff32f",
+      "height": 5384,
+      "width": 11519,
+      "publishedWorks": 1,
+      "sourceRenderingPolicy": "originalLinearRAW"
+    }
+  ],
+  "testSuites": {
+    "worktreeBase": "e2b9c68a",
+    "releaseSwiftUI": {
+      "executedIncludingSkips": 119,
+      "skipped": 3,
+      "failed": 0
+    },
+    "releaseSwiftCore": {
+      "executedIncludingSkips": 355,
+      "skipped": 3,
+      "failed": 0
+    },
+    "nativeEditingSubset": {
+      "executed": 18,
+      "skipped": 0,
+      "failed": 0
+    },
+    "rustDefault": {
+      "passed": 48,
+      "ignoredResourceCases": 4,
+      "failed": 0
+    },
+    "resourceCasesRunSeparately": [
+      "real MP4 sample tables",
+      "five Lightroom catalogs",
+      "star trail, HDR and panorama publication",
+      "two complete-backup exclusion scenarios"
+    ]
+  }
+}

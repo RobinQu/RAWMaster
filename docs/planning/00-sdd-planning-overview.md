@@ -1,5 +1,9 @@
 # RAWMaster SDD 规划总览
 
+涉及 UI 的特性在规格阶段更新可操作的 HTML 原型，评审结果进入原生实现与验收记录。[摄影工作台](../ui/prototype/index.html) · [UI 研发流程](../ui/README.md) · [功能覆盖与评审路线](../ui/coverage.md)
+
+2026-11-22 已确认资料库的四阶段交付顺序。目录与导入先行，随后是管理与 Lightroom 迁移、分组制作与智能检索，最后验收 Server 存储及远程计算。下方较早的 W／M 顺序作为历史记录。[资料库生命周期规格](../../specs/033-library-lifecycle/spec.md)
+
 ## 最新下一批计划（2026-10-30）
 
 [20 原生制作工作台与可替换AI后端](20-native-ai-editing-next-batch.md)是结合本机实验后的最新提案：RAWMaster使用原生SwiftUI/AppKit界面，ComfyUI仅作为受管后台服务；按制作版本/任务底座、原生初修与AI候选、本地运行时、三家云编辑、成片导出/外部回流分段交付。复用已有工作台/外部副本/序列与延时功能，不按早期计划重复建设。具体证据见[18](18-comfyui-ai-backend-evaluation.md)，安装/供应商设计见[19](19-ai-runtime-and-cloud-providers.md)。

@@ -106,10 +106,10 @@ final class RelocationTests: XCTestCase {
   func file(_ name: String, _ text: String) throws {
     try Data(text.utf8).write(to: source.appendingPathComponent(name))
   }
-  func imported(_ mode: ImportMode = .reference) async throws -> ImportSession {
+  func imported(_ mode: ImportMode = .reference, initialScreening: Bool = false) async throws -> ImportSession {
     try await ImportService(store: store).importDirectory(
       source: source, destination: mode == .copy ? root.appendingPathComponent("work") : nil,
-      projectName: "Project", mode: mode, progress: { _ in })
+      projectName: "Project", mode: mode, initialScreening: initialScreening, progress: { _ in })
   }
   func movedSource() throws -> URL {
     let moved = root.appendingPathComponent("moved")
@@ -162,7 +162,7 @@ final class RelocationTests: XCTestCase {
   func testPartialRelocationNeverRedirectsUnmatchedAndResumeDoesNotDuplicate() async throws {
     try file("a.ARW", "first")
     try file("b.ARW", "second")
-    let s = try await imported()
+    let s = try await imported(initialScreening: true)
     let original = try store.loadAssets()
     let b = try XCTUnwrap(original.first(where: { $0.filename == "b.ARW" }))
     _ = try store.updateSelection(ids: [b.id], decision: .keep, rating: 5)
@@ -193,7 +193,7 @@ final class RelocationTests: XCTestCase {
   }
   func testSourceRoleInCopyModePreservesManagedBytesAndRootRoles() async throws {
     try file("a.ARW", "camera card")
-    let s = try await imported(.copy)
+    let s = try await imported(.copy, initialScreening: true)
     let old = try store.loadAssets()[0]
     let moved = try movedSource()
     let preview = try await scan(s, moved)
@@ -213,7 +213,7 @@ final class RelocationTests: XCTestCase {
   func testMixedRelativeAndRenamedMatchesResumeWithoutDuplicateDiscovery() async throws {
     try file("a.ARW", "first")
     try file("b.ARW", "second")
-    let s = try await imported()
+    let s = try await imported(initialScreening: true)
     let moved = try movedSource()
     try FileManager.default.moveItem(
       at: moved.appendingPathComponent("b.ARW"), to: moved.appendingPathComponent("renamed.ARW"))
@@ -246,7 +246,7 @@ final class RelocationTests: XCTestCase {
   }
   func testManagedContainerRelocationResumeAppendsSessionFolderOnlyOnce() async throws {
     try file("a.ARW", "first")
-    let s = try await imported(.copy)
+    let s = try await imported(.copy, initialScreening: true)
     let old = try store.loadAssets()[0]
     let moved = root.appendingPathComponent("new-work")
     try FileManager.default.moveItem(at: root.appendingPathComponent("work"), to: moved)
@@ -272,7 +272,7 @@ final class RelocationTests: XCTestCase {
   func testAmbiguityNoHashDifferentBytesAndOutsideSymlink() async throws {
     try file("a.ARW", "same")
     try file("b.ARW", "other")
-    let s = try await imported()
+    let s = try await imported(initialScreening: true)
     let a = try XCTUnwrap(store.loadAssets().first(where: { $0.filename == "a.ARW" }))
     let b = try XCTUnwrap(store.loadAssets().first(where: { $0.filename == "b.ARW" }))
     let moved = try movedSource()
@@ -346,17 +346,22 @@ final class RelocationTests: XCTestCase {
     XCTAssertEqual(restored.items[0].status, .stale)
     try FileManager.default.removeItem(at: source)
     let race = try await scan(s, moved)
+    let competing = root.appendingPathComponent("competing.RAW")
+    try FileManager.default.copyItem(at: moved.appendingPathComponent("a.ARW"), to: competing)
+    XCTAssertEqual(try FileSafety.hash(competing), old.contentHash)
     let safeStore = store!
     let raced = try await service.confirm(
       sessionID: race.id,
       progress: { p in
-        if p.isRunning {
-          var a = old
-          a.effectiveSourcePath = "/different/location"
-          try? safeStore.saveImportAsset(a)
-        }
+        guard p.isRunning else { return }
+        do {
+          if try safeStore.loadAssets(sessionID: s.id).first?.effectiveSourcePath != competing.path {
+            try safeStore.adoptDiscoveredSource(assetID: old.id, path: competing.path,
+              expectedFingerprint: LocationIdentity.fingerprint(old, role: .source))
+          }
+        } catch { XCTFail("Competing source relocation failed: " + error.localizedDescription) }
       })
     XCTAssertEqual(raced.items[0].status, .stale)
-    XCTAssertEqual(try store.loadAssets()[0].effectiveSourcePath, "/different/location")
+    XCTAssertEqual(try store.loadAssets()[0].effectiveSourcePath, competing.path)
   }
 }

@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 import XCTest
 @testable import RAWMasterCore
 
@@ -9,10 +10,13 @@ final class PairScanPerformanceTests: XCTestCase {
         return root
     }
     private func record(_ path: String, session: ImportSession, root: URL) -> AssetRecord {
-        AssetRecord(sessionID: session.id, projectID: session.projectID,
+        let bytes = Data(path.utf8)
+        let hash = SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
+        return AssetRecord(sessionID: session.id, projectID: session.projectID,
             sourcePath: root.appendingPathComponent(path).path, relativePath: path,
+            fileSize: Int64(bytes.count),
             capturedAt: Date(timeIntervalSince1970: 1_700_000_000), camera: "Camera",
-            width: 6000, height: 4000, importState: .ready)
+            width: 6000, height: 4000, contentHash: hash, importState: .ready)
     }
 
     func testAutomaticPairScanPreservesManualDismissedAmbiguousAndMetadataRules() throws {

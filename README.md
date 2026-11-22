@@ -50,6 +50,8 @@ git -C output/tools/exiftool checkout --detach 2200871d9cef988051d2a99d67df3bda6
 
 ## 验证与研发文档
 
+涉及界面变更时，先在[全功能 HTML 原型](docs/ui/prototype/index.html)中走查，再对照原生应用验收。浏览器可直接打开仓库内的入口。[UI 研发约定](AGENTS.md) · [设计与验收流程](docs/ui/README.md) · [功能与规格对应表](docs/ui/coverage.md)
+
 **当前交付入口：[023 效果一致性与版本闭环规格](specs/023-effects-delivery/spec.md)、[研发任务](specs/023-effects-delivery/tasks.md)、[实际验证记录](specs/023-effects-delivery/validation.md)。** 018 已实现原生制作、版本、AI 工程链路和成片导出；020 已安装基础影调、曲线与 Color Grading；021/022 为后续研究预览和效果修复。023 优先收口当前调整能力、操作完成性能、保存重放与安全安装，未通过的窗口或外部质量门必须明确保留。已有“交付精选”复制原文件与渲染导出是不同能力。
 
 本轮会话操作调整：[016 导入与初筛会话操作](specs/016-import-triage-actions/spec.md)、[验证记录](specs/016-import-triage-actions/validation.md)。

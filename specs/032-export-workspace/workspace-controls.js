@@ -297,4 +297,6 @@ byId('exchange-form').onsubmit=event=>{
 };
 byId('photo').addEventListener('load',drawPreview);
 new ResizeObserver(drawPreview).observe(byId('stage'));
-showPresets(); setLayout(layout); refresh();
+showPresets(); setLayout(layout);
+if (handoff?.mode==='original') { byId('preset').value='originals'; loadPreset(); }
+refresh();

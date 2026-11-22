@@ -1,0 +1,285 @@
+{
+  "dateLocal": "2026-11-22",
+  "checkoutBase": "25e88fc4db978c14bd5734a854cac5e4653ab23b",
+  "workingTree": "includes existing v8 library and other local changes",
+  "swiftVersion": "6.4",
+  "macOS": "27.0.1 (26A434)",
+  "macTests": {
+    "imageCPUandGPU": 5,
+    "editCanvasPerFixture": 1
+  },
+  "recipeSHA256": "82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366",
+  "frames": [
+    {
+      "fixture": "jpeg",
+      "canvasImage": "swift-jpeg-canvas.jpg",
+      "canvasOriginalSHA256": "ea680be1078e8bc9da027af79346243bd2a2f777225c4f5085f1bb6319cf5a6b",
+      "canvasReviewSHA256": "22f9eb8041c81ee3aebf870e099afdd2135e526bd18cabe71288583da622a10e",
+      "nativeHostTestSeconds": 1.86,
+      "worker": {
+        "catalogResource": "job:preview-503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442-82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366-c4dd3d1d32ba59b5dcee9e505958fd7f815622bb45b5ce2069ddedf73b3c2c9e",
+        "changedInsidePixels": 305295,
+        "cpuRGBA32FLESHA256": "7c38c197ab62e4cfe41ff54c2e14b3af86879e6d5eadcbb3d79d98eb1541e10d",
+        "decoder": "Core Image raster",
+        "graphSHA256": "82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366",
+        "inputCoverageSHA256": "871194dd42bfb76c4594eff1a71df700a8c04501b0bafc9cf054c0c1652fc34d",
+        "inputRGBASHA256": "b5848ea5bcde229465ef49d993ff48d63485a594545c24e873c25755a73cdb51",
+        "jobState": "done",
+        "maskSHA256": "c4dd3d1d32ba59b5dcee9e505958fd7f815622bb45b5ce2069ddedf73b3c2c9e",
+        "maxAbsCPUvsGPU": 1.1920928955078125e-07,
+        "maxOutsideBaseError": 0,
+        "modelSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+        "outputSHA256": "c8e1314614bed419640f5ec4275072223dbeb87c4fb420b3aafbe3573d064c41",
+        "renderExtent": [
+          1600,
+          1067
+        ],
+        "sourceExtent": [
+          1600,
+          1067
+        ],
+        "sourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442",
+        "zeroCoveragePixels": 1329457
+      }
+    },
+    {
+      "fixture": "raw",
+      "canvasImage": "swift-raw-canvas.jpg",
+      "canvasOriginalSHA256": "a3dce0cb32c527035d22edc1c8af80f526f797ebff22c5e323241c52763a4200",
+      "canvasReviewSHA256": "93d3062ae250c0d7481032e01cb67712b1df301914da952933065a8fabf805c7",
+      "nativeHostTestSeconds": 4.713,
+      "worker": {
+        "catalogResource": "job:preview-8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c-82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366-e5bb9ddcd54666ff9866b7b7060b12a10e0f2cef335a595c665f7659c33be117",
+        "changedInsidePixels": 1983873,
+        "cpuRGBA32FLESHA256": "afa08633102ab4d2762e1045007e197c76bed6d52b20287fa8f41328cf5a1762",
+        "decoder": "CIRAWFilter/8",
+        "graphSHA256": "82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366",
+        "inputCoverageSHA256": "53dab1f27e1f4dbe5424913a98811d64c5b99bbb133cfe42b63c490733618b0b",
+        "inputRGBASHA256": "97d957c832452cf7e6074c370a90b09573fb4b930eccec4713ac53ec3b5eb411",
+        "jobState": "done",
+        "maskSHA256": "e5bb9ddcd54666ff9866b7b7060b12a10e0f2cef335a595c665f7659c33be117",
+        "maxAbsCPUvsGPU": 1.7881393432617188e-07,
+        "maxOutsideBaseError": 0,
+        "modelSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+        "outputSHA256": "fa7521b401f142beb130c7f76b208d0ac564f1480cbc327c18c06b77582d984a",
+        "renderExtent": [
+          2400,
+          1600
+        ],
+        "sourceExtent": [
+          9504,
+          6336
+        ],
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "zeroCoveragePixels": 1773866
+      }
+    }
+  ],
+  "linux": {
+    "arch": "aarch64",
+    "dockerImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "rustc": "1.100.0",
+    "cxx": "GCC 12.2.0",
+    "cpuTests": 4,
+    "vulkanTests": 5,
+    "cpu": {
+      "backend": "cpu",
+      "cpu_render_validate": {
+        "p50_ms": 0.133042,
+        "p95_ms": 0.209042,
+        "samples_ms": [
+          0.133042,
+          0.15620900000000001,
+          0.132292,
+          0.12929200000000002,
+          0.209042
+        ]
+      },
+      "cpu_threads": 16,
+      "height": 131,
+      "ingress_validate_ms": 0.574002,
+      "pattern": "extended-premul-v1",
+      "reference_pixels": [
+        [
+          0.6249498724937439,
+          0.09321586787700653,
+          0.00038715178379788995,
+          0.66796875
+        ],
+        [
+          0.557036817073822,
+          0.07950155436992645,
+          0.0013537700287997723,
+          0.5
+        ],
+        [
+          2.4678921699523926,
+          0.32682090997695923,
+          0.005216361954808235,
+          1.0
+        ]
+      ],
+      "rounds": 5,
+      "width": 257
+    },
+    "softwareVulkan": {
+      "cpu_render_validate": {
+        "p50_ms": 0.122917,
+        "p95_ms": 0.143583,
+        "samples_ms": [
+          0.12141700000000001,
+          0.143583,
+          0.122917
+        ]
+      },
+      "cpu_threads": 16,
+      "gpu": {
+        "adapter": "llvmpipe (LLVM 15.0.6, 128 bits) / Vulkan / Cpu",
+        "fused": {
+          "bind_upload_render_read_validate": {
+            "p50_ms": 0.41846,
+            "p95_ms": 0.526627,
+            "samples_ms": [
+              0.526627,
+              0.403501,
+              0.41846
+            ]
+          },
+          "burst_frames": 8,
+          "compile_ms": 0.489335,
+          "dispatches": 1,
+          "max_abs_error": 0.0,
+          "resident_burst_ms_per_frame": {
+            "p50_ms": 0.21484450000000002,
+            "p95_ms": 0.21666212499999998,
+            "samples_ms": [
+              0.208656875,
+              0.21484450000000002,
+              0.21666212499999998
+            ]
+          },
+          "resident_update_fence": {
+            "p50_ms": 0.243417,
+            "p95_ms": 0.25912599999999997,
+            "samples_ms": [
+              0.243417,
+              0.25912599999999997,
+              0.237709
+            ]
+          },
+          "rgba_slots": 2
+        },
+        "measurement_order": [
+          "staged",
+          "fused"
+        ],
+        "open_ms": 13.882836000000001,
+        "staged": {
+          "bind_upload_render_read_validate": {
+            "p50_ms": 1.224545,
+            "p95_ms": 1.257296,
+            "samples_ms": [
+              1.257296,
+              1.224545,
+              0.9061279999999999
+            ]
+          },
+          "burst_frames": 8,
+          "compile_ms": 0.906544,
+          "dispatches": 4,
+          "max_abs_error": 0.0,
+          "resident_burst_ms_per_frame": {
+            "p50_ms": 0.813111875,
+            "p95_ms": 0.95558625,
+            "samples_ms": [
+              0.641486375,
+              0.813111875,
+              0.95558625
+            ]
+          },
+          "resident_update_fence": {
+            "p50_ms": 0.6210019999999999,
+            "p95_ms": 0.6255850000000001,
+            "samples_ms": [
+              0.6210019999999999,
+              0.6255850000000001,
+              0.526377
+            ]
+          },
+          "rgba_slots": 4
+        }
+      },
+      "height": 131,
+      "ingress_validate_ms": 0.9969200000000001,
+      "pattern": "extended-premul-v1",
+      "reference_pixels": [
+        [
+          0.6249498724937439,
+          0.09321586787700653,
+          0.00038715178379788995,
+          0.66796875
+        ],
+        [
+          0.557036817073822,
+          0.07950155436992645,
+          0.0013537700287997723,
+          0.5
+        ],
+        [
+          2.4678921699523926,
+          0.32682090997695923,
+          0.005216361954808235,
+          1.0
+        ]
+      ],
+      "rounds": 3,
+      "width": 257
+    },
+    "batch": {
+      "backend": "Rust/C++ CPU",
+      "compiled_plans": 1,
+      "graphSHA256": "82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366",
+      "items": [
+        {
+          "bytes": 27315200,
+          "extent": [
+            1600,
+            1067
+          ],
+          "item": 0,
+          "output": "item-0.rgba32fle",
+          "sha256": "7c38c197ab62e4cfe41ff54c2e14b3af86879e6d5eadcbb3d79d98eb1541e10d",
+          "sourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442"
+        },
+        {
+          "bytes": 61440000,
+          "extent": [
+            2400,
+            1600
+          ],
+          "item": 1,
+          "output": "item-1.rgba32fle",
+          "sha256": "afa08633102ab4d2762e1045007e197c76bed6d52b20287fa8f41328cf5a1762",
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        }
+      ]
+    },
+    "rawDirect": {
+      "decoder": "FlashRaw 0.3.1",
+      "roi": [
+        3500,
+        1800,
+        512,
+        384
+      ],
+      "orientation": 1,
+      "maxAbsErrorVs2x": 0,
+      "peakRGB": 0.420674235,
+      "floatBytes": 3145728,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "flashrawCommit": "2994e8c550bec70ab78a938ab28a74d7762124f4",
+      "flashrawArchiveSHA256": "0243cec068020465819ed2db41f20225235c2f182f010deefcebabd9c4361076",
+      "outputSHA256": "d45565a9a183f357dfaa0f76d33525f1c0d47d40dc198d14b21c1a09122615fc"
+    }
+  }
+}

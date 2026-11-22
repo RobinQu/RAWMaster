@@ -1,0 +1,15 @@
+{
+  "hardExcluded": 0,
+  "indexed": 4,
+  "completed": 8,
+  "coldTextAndCatalogMs": 1202.4530172348022,
+  "eligible": 4,
+  "failures": [],
+  "sourceCount": 4,
+  "faceCount": 1,
+  "first": "file:input0",
+  "offlineProxyLength": 192689,
+  "queueAndProxyInferenceMs": 2434.2589378356934,
+  "host": "macOS arm64, CPUExecutionProvider, two inference threads",
+  "stages": "fresh catalog, admit, claim, verified-source proxy, inference, receipt, Chinese query, filtering, offline proxy"
+}

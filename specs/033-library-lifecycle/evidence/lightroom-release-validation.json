@@ -1,0 +1,442 @@
+{
+  "fixture": "five locally available Lightroom Classic catalogs, anonymized in source order",
+  "aggregate": {
+    "works": 64394,
+    "candidate": 15494,
+    "decoded": 15472,
+    "revisionBound": 15335,
+    "virtualWorks": 123,
+    "virtualDecoded": 12,
+    "virtualRevisionBound": 10,
+    "scopeCount": 0
+  },
+  "sourceInputsUnchanged": true,
+  "catalogs": [
+    {
+      "catalog": 0,
+      "version": "1400000",
+      "works": 2342,
+      "candidate": 118,
+      "decoded": 118,
+      "revisionBound": 102,
+      "virtual": {
+        "works": 2,
+        "candidate": 0,
+        "decoded": 0,
+        "revisionBound": 0
+      },
+      "sourceCounts": {
+        "collectionStackMembers": 0,
+        "collections": 26,
+        "developRows": 2342,
+        "files": 2340,
+        "folderStackMembers": 76,
+        "folders": 29,
+        "images": 2342,
+        "keywordLinks": 0,
+        "members": 181,
+        "virtualCopies": 2,
+        "volumes": 3
+      },
+      "targetCounts": {
+        "volumes": 3,
+        "folders": 29,
+        "collections": 24,
+        "memberships": 182,
+        "stacks": 4,
+        "scopeCount": 0
+      },
+      "appearanceStates": {
+        "decodedRevisionUncertain": 16,
+        "noImageCandidate": 2224,
+        "revisionBound": 102
+      },
+      "sourceFingerprintMatchesCapture": true,
+      "inputFingerprintsUnchanged": true,
+      "reportItemCounts": {
+        "appearance": {
+          "archivedOnly": 2337,
+          "mapped": 102,
+          "missing": 2239,
+          "uncertain": 16
+        },
+        "metadata": {
+          "mapped": 22632,
+          "missing": 19524
+        },
+        "organization": {
+          "archivedOnly": 5,
+          "mapped": 4935,
+          "missing": 5,
+          "unsupported": 2
+        }
+      }
+    },
+    {
+      "catalog": 1,
+      "version": "1300000",
+      "works": 2465,
+      "candidate": 669,
+      "decoded": 669,
+      "revisionBound": 633,
+      "virtual": {
+        "works": 2,
+        "candidate": 1,
+        "decoded": 1,
+        "revisionBound": 1
+      },
+      "sourceCounts": {
+        "collectionStackMembers": 0,
+        "collections": 16,
+        "developRows": 2465,
+        "files": 2463,
+        "folderStackMembers": 76,
+        "folders": 28,
+        "images": 2465,
+        "keywordLinks": 0,
+        "members": 202,
+        "virtualCopies": 2,
+        "volumes": 3
+      },
+      "targetCounts": {
+        "volumes": 3,
+        "folders": 28,
+        "collections": 14,
+        "memberships": 203,
+        "stacks": 4,
+        "scopeCount": 0
+      },
+      "appearanceStates": {
+        "decodedRevisionUncertain": 36,
+        "noImageCandidate": 1796,
+        "revisionBound": 633
+      },
+      "sourceFingerprintMatchesCapture": true,
+      "inputFingerprintsUnchanged": true,
+      "reportItemCounts": {
+        "appearance": {
+          "archivedOnly": 2461,
+          "mapped": 633,
+          "missing": 1811,
+          "uncertain": 36
+        },
+        "metadata": {
+          "mapped": 23984,
+          "missing": 20386
+        },
+        "organization": {
+          "archivedOnly": 5,
+          "mapped": 5183,
+          "missing": 5,
+          "unsupported": 2
+        }
+      }
+    },
+    {
+      "catalog": 2,
+      "version": "1200001",
+      "works": 7154,
+      "candidate": 0,
+      "decoded": 0,
+      "revisionBound": 0,
+      "virtual": {
+        "works": 2,
+        "candidate": 0,
+        "decoded": 0,
+        "revisionBound": 0
+      },
+      "sourceCounts": {
+        "collectionStackMembers": 0,
+        "collections": 17,
+        "developRows": 7154,
+        "files": 7152,
+        "folderStackMembers": 84,
+        "folders": 72,
+        "images": 7154,
+        "keywordLinks": 0,
+        "members": 378,
+        "virtualCopies": 2,
+        "volumes": 4
+      },
+      "targetCounts": {
+        "volumes": 4,
+        "folders": 72,
+        "collections": 14,
+        "memberships": 222,
+        "stacks": 7,
+        "scopeCount": 0
+      },
+      "appearanceStates": {
+        "noPreviewIndex": 7154
+      },
+      "sourceFingerprintMatchesCapture": true,
+      "inputFingerprintsUnchanged": true,
+      "reportItemCounts": {
+        "appearance": {
+          "archivedOnly": 7151,
+          "missing": 7201,
+          "skipped": 1
+        },
+        "metadata": {
+          "mapped": 66457,
+          "missing": 62315
+        },
+        "organization": {
+          "archivedOnly": 162,
+          "mapped": 14627,
+          "missing": 5,
+          "unsupported": 3
+        }
+      }
+    },
+    {
+      "catalog": 3,
+      "version": "1300000",
+      "works": 9053,
+      "candidate": 0,
+      "decoded": 0,
+      "revisionBound": 0,
+      "virtual": {
+        "works": 3,
+        "candidate": 0,
+        "decoded": 0,
+        "revisionBound": 0
+      },
+      "sourceCounts": {
+        "collectionStackMembers": 0,
+        "collections": 17,
+        "developRows": 9053,
+        "files": 9050,
+        "folderStackMembers": 532,
+        "folders": 86,
+        "images": 9053,
+        "keywordLinks": 0,
+        "members": 380,
+        "virtualCopies": 3,
+        "volumes": 5
+      },
+      "targetCounts": {
+        "volumes": 5,
+        "folders": 86,
+        "collections": 14,
+        "memberships": 224,
+        "stacks": 32,
+        "scopeCount": 0
+      },
+      "appearanceStates": {
+        "noPreviewIndex": 9053
+      },
+      "sourceFingerprintMatchesCapture": true,
+      "inputFingerprintsUnchanged": true,
+      "reportItemCounts": {
+        "appearance": {
+          "archivedOnly": 9059,
+          "missing": 9100,
+          "skipped": 1
+        },
+        "metadata": {
+          "mapped": 84109,
+          "missing": 78845
+        },
+        "organization": {
+          "archivedOnly": 162,
+          "mapped": 18466,
+          "missing": 5,
+          "unsupported": 3
+        }
+      }
+    },
+    {
+      "catalog": 4,
+      "version": "1504001",
+      "works": 43380,
+      "candidate": 14707,
+      "decoded": 14685,
+      "revisionBound": 14600,
+      "virtual": {
+        "works": 114,
+        "candidate": 11,
+        "decoded": 11,
+        "revisionBound": 9
+      },
+      "sourceCounts": {
+        "collectionStackMembers": 2,
+        "collections": 95,
+        "developRows": 43380,
+        "files": 43266,
+        "folderStackMembers": 15923,
+        "folders": 220,
+        "images": 43380,
+        "keywordLinks": 73,
+        "members": 16966,
+        "virtualCopies": 114,
+        "volumes": 6
+      },
+      "targetCounts": {
+        "volumes": 6,
+        "folders": 220,
+        "collections": 92,
+        "memberships": 16810,
+        "stacks": 601,
+        "scopeCount": 0
+      },
+      "appearanceStates": {
+        "decodedRevisionUncertain": 85,
+        "noDecodableLevel": 22,
+        "noImageCandidate": 28673,
+        "revisionBound": 14600
+      },
+      "sourceFingerprintMatchesCapture": true,
+      "inputFingerprintsUnchanged": true,
+      "reportItemCounts": {
+        "appearance": {
+          "archivedOnly": 43263,
+          "mapped": 14600,
+          "missing": 28839,
+          "skipped": 1,
+          "uncertain": 85
+        },
+        "metadata": {
+          "mapped": 436279,
+          "missing": 344561
+        },
+        "organization": {
+          "archivedOnly": 166,
+          "mapped": 104382,
+          "missing": 9,
+          "unsupported": 3
+        }
+      }
+    }
+  ],
+  "independentSourceReconciliation": [
+    {
+      "catalog": 0,
+      "checked": {
+        "sourceFileIdentity": 2342,
+        "distinctWorkVersion": 2342,
+        "rating": 2342,
+        "flag": 2342,
+        "rawColorLabel": 2342,
+        "virtualMasterIdentity": 2,
+        "gpsPair": 665,
+        "collectionParent": 24,
+        "collectionMemberOrder": 16,
+        "literalSourceMembersCompared": 181,
+        "stackScopeCoverCollapse": 4,
+        "stackMemberOrder": 4,
+        "literalStackMembersCompared": 76
+      },
+      "differenceCount": 0
+    },
+    {
+      "catalog": 1,
+      "checked": {
+        "sourceFileIdentity": 2465,
+        "distinctWorkVersion": 2465,
+        "rating": 2465,
+        "flag": 2465,
+        "rawColorLabel": 2465,
+        "virtualMasterIdentity": 2,
+        "gpsPair": 736,
+        "collectionParent": 14,
+        "collectionMemberOrder": 6,
+        "literalSourceMembersCompared": 202,
+        "stackScopeCoverCollapse": 4,
+        "stackMemberOrder": 4,
+        "literalStackMembersCompared": 76
+      },
+      "differenceCount": 0
+    },
+    {
+      "catalog": 2,
+      "checked": {
+        "sourceFileIdentity": 7154,
+        "distinctWorkVersion": 7154,
+        "rating": 7154,
+        "flag": 7154,
+        "rawColorLabel": 7154,
+        "virtualMasterIdentity": 2,
+        "gpsPair": 734,
+        "collectionParent": 14,
+        "collectionMemberOrder": 6,
+        "literalSourceMembersCompared": 221,
+        "stackScopeCoverCollapse": 7,
+        "stackMemberOrder": 7,
+        "literalStackMembersCompared": 84
+      },
+      "differenceCount": 0
+    },
+    {
+      "catalog": 3,
+      "checked": {
+        "sourceFileIdentity": 9053,
+        "distinctWorkVersion": 9053,
+        "rating": 9053,
+        "flag": 9053,
+        "rawColorLabel": 9053,
+        "virtualMasterIdentity": 3,
+        "gpsPair": 731,
+        "collectionParent": 14,
+        "collectionMemberOrder": 6,
+        "literalSourceMembersCompared": 223,
+        "stackScopeCoverCollapse": 32,
+        "stackMemberOrder": 32,
+        "literalStackMembersCompared": 532
+      },
+      "differenceCount": 0
+    },
+    {
+      "catalog": 4,
+      "checked": {
+        "sourceFileIdentity": 43380,
+        "distinctWorkVersion": 43380,
+        "rating": 43380,
+        "flag": 43380,
+        "rawColorLabel": 43380,
+        "virtualMasterIdentity": 114,
+        "gpsPair": 10960,
+        "collectionParent": 92,
+        "collectionMemberOrder": 75,
+        "literalSourceMembersCompared": 16809,
+        "stackScopeCoverCollapse": 601,
+        "stackMemberOrder": 601,
+        "literalStackMembersCompared": 15925
+      },
+      "differenceCount": 0
+    }
+  ],
+  "restoredVirtualCopies": {
+    "exactCompanions": 11,
+    "exactDevelopRecords": 2,
+    "exactSourceXmp": 2,
+    "independentNativeEdit": true,
+    "scopeCount": 0,
+    "verifiedHistoricalLooks": 1,
+    "virtualWorks": 2
+  },
+  "reportItemsAllDomains": {
+    "appearance": {
+      "archivedOnly": 64271,
+      "mapped": 15335,
+      "missing": 49190,
+      "uncertain": 137,
+      "skipped": 3
+    },
+    "metadata": {
+      "mapped": 633461,
+      "missing": 525631
+    },
+    "organization": {
+      "archivedOnly": 500,
+      "mapped": 147593,
+      "missing": 29,
+      "unsupported": 13
+    }
+  },
+  "archivedSourcePayloads": {
+    "xmp": 64394,
+    "adobeDevelopRecords": 64126,
+    "companionLinks": 145
+  }
+}

@@ -1,8 +1,9 @@
 import CSQLite
 import Foundation
+import RAWMasterLibrary
 
 enum DatabaseSchema {
-  static let version = 7
+  static let version = 8
   static let columns: [String: Set<String>] = [
     "projects": ["id", "data"], "sessions": ["id", "data"],
     "assets": ["id", "session_id", "source_path", "data", "revision"],
@@ -36,9 +37,16 @@ enum DatabaseSchema {
     guard (0...version).contains(found) else {
       throw LibraryError.invalid("资料库版本 \(found) 高于本程序支持的版本 \(version)，未修改原库")
     }
+    let owned: Set<String>
+    if found == 8, let db {
+      struct CatalogObjects: Decodable { let valid: Bool; let objects: [String] }
+      let reply = try LibraryEngine.shared().transaction("validate", on: db, payload: LibraryEmpty(), as: CatalogObjects.self)
+      guard reply.valid else { throw LibraryError.invalid("无法验证资料库目录结构") }
+      owned = Set(reply.objects)
+    } else { owned = [] }
     let names = Set(
       try strings(
-        db, "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))
+        db, "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")).subtracting(owned)
     let userObjects = try strings(
       db, "SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite_%'")
     let unexpectedExecutableObjects = try strings(
@@ -49,7 +57,7 @@ enum DatabaseSchema {
       guard userObjects.isEmpty else { throw LibraryError.invalid("无法识别的非空资料库，未修改原库") }
       return 0
     }
-    guard unexpectedExecutableObjects.isEmpty else {
+    guard Set(unexpectedExecutableObjects).subtracting(owned).isEmpty else {
       throw LibraryError.invalid("资料库含未知视图或触发器，未修改原库")
     }
     var required = columns
@@ -90,9 +98,10 @@ enum DatabaseSchema {
       "processing_jobs_work": ("processing_jobs", ["work_id"]),
       "editing_exports_work": ("editing_exports", ["work_id"])
     ] : [:]
-    guard indexes.isSubset(of: Set(["membership_asset_id"]).union(editingIndexes.keys)),
-      Set(editingIndexes.keys).isSubset(of: indexes),
-      names == Set(required.keys), Set(userObjects) == Set(required.keys).union(indexes) else {
+    let legacyIndexes = indexes.subtracting(owned)
+    guard legacyIndexes.isSubset(of: Set(["membership_asset_id"]).union(editingIndexes.keys)),
+      Set(editingIndexes.keys).isSubset(of: legacyIndexes),
+      names == Set(required.keys), Set(userObjects).subtracting(owned) == Set(required.keys).union(legacyIndexes) else {
       throw LibraryError.invalid("资料库结构与版本不符，未修改原库")
     }
     if indexes.contains("membership_asset_id") {

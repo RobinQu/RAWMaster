@@ -1,0 +1,395 @@
+{
+  "protocol": "L08-native-relative-v2",
+  "inputs": [
+    {
+      "id": "day-1"
+    },
+    {
+      "id": "day-2"
+    },
+    {
+      "id": "day-3"
+    },
+    {
+      "id": "day-4"
+    },
+    {
+      "id": "day-5"
+    },
+    {
+      "id": "day-6"
+    },
+    {
+      "id": "eye-1"
+    },
+    {
+      "id": "eye-2"
+    },
+    {
+      "id": "eye-3"
+    },
+    {
+      "id": "eye-4"
+    },
+    {
+      "id": "eye-5"
+    },
+    {
+      "id": "eye-6"
+    },
+    {
+      "id": "night-1"
+    },
+    {
+      "id": "night-2"
+    },
+    {
+      "id": "night-3"
+    },
+    {
+      "id": "camera-1M2"
+    }
+  ],
+  "sourceSets": [
+    {
+      "ids": [
+        "day-1",
+        "day-2",
+        "day-3",
+        "day-4",
+        "day-5",
+        "day-6"
+      ],
+      "sha256": "7b62ab0e6362a16f8c89646d18b2928d39c7bf33c1e6ea910c3b3d553737ad18"
+    },
+    {
+      "ids": [
+        "eye-1",
+        "eye-2",
+        "eye-3",
+        "eye-4",
+        "eye-5",
+        "eye-6"
+      ],
+      "sha256": "41052400ef8f32c3971af6fa3b3fafc4a53fa43a70e1735018ac07554a4b463f"
+    },
+    {
+      "ids": [
+        "night-1",
+        "night-2",
+        "night-3"
+      ],
+      "sha256": "75521d287ef036e20647b43a2dc58b6b89f997cb1637de2f6ca6263d1cc49ea5"
+    },
+    {
+      "ids": [
+        "camera-1M2"
+      ],
+      "sha256": "1db2f73e7e82033a07d4490a6bbf7d5efaae4998bbfa6acd4b1c273d1b9cbbaa"
+    }
+  ],
+  "groups": [
+    {
+      "id": "cameraAF",
+      "basis": "cameraAF",
+      "frames": [
+        {
+          "id": "day-1"
+        },
+        {
+          "id": "day-2"
+        },
+        {
+          "id": "day-3"
+        },
+        {
+          "id": "day-4"
+        },
+        {
+          "id": "day-5"
+        },
+        {
+          "id": "day-6"
+        }
+      ]
+    },
+    {
+      "id": "dayTexture",
+      "basis": "manualSubject",
+      "frames": [
+        {
+          "id": "day-1",
+          "point": [
+            0.32,
+            0.6500000166535215
+          ]
+        },
+        {
+          "id": "day-2",
+          "point": [
+            0.320340049050071,
+            0.650543504327251
+          ]
+        },
+        {
+          "id": "day-3",
+          "point": [
+            0.32029565984552555,
+            0.6505338869185923
+          ]
+        },
+        {
+          "id": "day-4",
+          "point": [
+            0.32031039151278407,
+            0.6506112425258995
+          ]
+        },
+        {
+          "id": "day-5",
+          "point": [
+            0.1412366971102628,
+            0.6965216289275665
+          ]
+        },
+        {
+          "id": "day-6",
+          "point": [
+            0.1417769276012074,
+            0.6965167577725315
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dayRiver",
+      "basis": "manualSubject",
+      "frames": [
+        {
+          "id": "day-1",
+          "point": [
+            0.38,
+            0.6150000183188736
+          ]
+        },
+        {
+          "id": "day-2",
+          "point": [
+            0.38048104026100854,
+            0.6153740564114726
+          ]
+        },
+        {
+          "id": "day-3",
+          "point": [
+            0.3804097955877131,
+            0.6153797602425819
+          ]
+        },
+        {
+          "id": "day-4",
+          "point": [
+            0.38045515580610795,
+            0.6154432517932512
+          ]
+        },
+        {
+          "id": "day-5",
+          "point": [
+            0.2290778836337003,
+            0.6480675003863617
+          ]
+        },
+        {
+          "id": "day-6",
+          "point": [
+            0.22943720037286933,
+            0.6481030556547366
+          ]
+        }
+      ],
+      "manualReview": {
+        "id": "day-1",
+        "value": "suspectedBlur"
+      }
+    },
+    {
+      "id": "daySky",
+      "basis": "manualSubject",
+      "frames": [
+        {
+          "id": "day-1",
+          "point": [
+            0.3,
+            0.16
+          ]
+        },
+        {
+          "id": "day-2",
+          "point": [
+            0.3,
+            0.16
+          ]
+        },
+        {
+          "id": "day-3",
+          "point": [
+            0.3,
+            0.16
+          ]
+        },
+        {
+          "id": "day-4",
+          "point": [
+            0.3,
+            0.16
+          ]
+        },
+        {
+          "id": "day-5",
+          "point": [
+            0.3,
+            0.16
+          ]
+        },
+        {
+          "id": "day-6",
+          "point": [
+            0.3,
+            0.16
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eyeBurstA",
+      "basis": "manualEye",
+      "frames": [
+        {
+          "id": "eye-1",
+          "point": [
+            0.521103515625,
+            0.27096774193548384
+          ]
+        },
+        {
+          "id": "eye-2",
+          "point": [
+            0.521767578125,
+            0.26852394916911043
+          ]
+        },
+        {
+          "id": "eye-3",
+          "point": [
+            0.5279188368055555,
+            0.26438579341805146
+          ]
+        }
+      ]
+    },
+    {
+      "id": "eyeBurstB",
+      "basis": "manualEye",
+      "frames": [
+        {
+          "id": "eye-4",
+          "point": [
+            0.4904345703125,
+            0.29143043336591723
+          ]
+        },
+        {
+          "id": "eye-5",
+          "point": [
+            0.4841015625,
+            0.3013359400456175
+          ]
+        },
+        {
+          "id": "eye-6",
+          "point": [
+            0.4736328125,
+            0.30596285434995113
+          ]
+        }
+      ]
+    },
+    {
+      "id": "night",
+      "basis": "manualSubject",
+      "frames": [
+        {
+          "id": "night-1",
+          "point": [
+            0.2,
+            0.15
+          ]
+        },
+        {
+          "id": "night-2",
+          "point": [
+            0.2,
+            0.15
+          ]
+        },
+        {
+          "id": "night-3",
+          "point": [
+            0.2,
+            0.15
+          ]
+        }
+      ],
+      "manualReview": {
+        "id": "night-1",
+        "value": "unknown"
+      }
+    },
+    {
+      "id": "cameraEyeA",
+      "basis": "cameraAF",
+      "frames": [
+        {
+          "id": "eye-1"
+        },
+        {
+          "id": "eye-2"
+        },
+        {
+          "id": "eye-3"
+        }
+      ]
+    },
+    {
+      "id": "cameraEyeB",
+      "basis": "cameraAF",
+      "frames": [
+        {
+          "id": "eye-4"
+        },
+        {
+          "id": "eye-5"
+        },
+        {
+          "id": "eye-6"
+        }
+      ]
+    },
+    {
+      "id": "nightAF",
+      "basis": "cameraAF",
+      "frames": [
+        {
+          "id": "night-1"
+        },
+        {
+          "id": "night-2"
+        },
+        {
+          "id": "night-3"
+        }
+      ]
+    }
+  ]
+}

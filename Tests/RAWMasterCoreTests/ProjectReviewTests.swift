@@ -13,16 +13,22 @@ final class ProjectReviewTests: XCTestCase {
     store = try LibraryStore(databaseURL: database)
   }
   override func tearDownWithError() throws { store = nil; try? FileManager.default.removeItem(at: root) }
-  func batch(_ name: String = "Project", count: Int = 3, admitted: Bool = true) throws -> (ProjectRecord, [AssetRecord]) {
+  func batch(_ name: String = "Project", count: Int = 3, admitted: Bool = true, rawFirst: Bool = false) throws -> (ProjectRecord, [AssetRecord]) {
     let project = ProjectRecord(name: name)
     try store.saveProject(project)
     let session = ImportSession(projectID: project.id, projectName: name, sourcePath: root.appendingPathComponent(name).path, mode: .reference, status: "completed", discovered: count, completed: count, scanCompleted: true)
     try store.saveSession(session)
     if !admitted { try store.beginTriage(session, isNewProject: true) }
     let assets = try (0..<count).map { i in
-      try store.register(AssetRecord(sessionID: session.id, projectID: project.id, sourcePath: root.appendingPathComponent("\(session.id)/\(i).JPG").path,
-                                    filename: "Shot\(i).JPG", capturedAt: Date(timeIntervalSince1970: 1_700_000_000 + Double(i * 3600)), camera: "Camera A", importState: .ready))
+      let ext = rawFirst && i == 0 ? "DNG" : "JPG"
+      let url = root.appendingPathComponent("\(session.id)/\(i).\(ext)")
+      let data = Data("source-\(session.id)-\(i)".utf8)
+      try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+      try data.write(to:url)
+      return try store.register(AssetRecord(sessionID: session.id, projectID: project.id, sourcePath: url.path,
+                                    filename: "Shot\(i).\(ext)", fileSize: Int64(data.count), capturedAt: Date(timeIntervalSince1970: 1_700_000_000 + Double(i * 3600)), camera: "Camera A", contentHash: try FileSafety.hash(url), importState: .ready))
     }
+    if admitted { try store.completedDirectImport(session) }
     return (project, assets)
   }
   func testSearchCombinesEveryConditionAndNeverLeaksUnadmittedFiles() throws {
@@ -42,7 +48,7 @@ final class ProjectReviewTests: XCTestCase {
     XCTAssertThrowsError(try store.previewTagMutation(ids: [staging[0].id], tags: ["No"]))
   }
   func testMissingMetadataDoesNotMatchAndPairMembersCannotSharePredicates() throws {
-    let (_, assets) = try batch(count: 2)
+    let (_, assets) = try batch(count: 2, rawFirst: true)
     var raw = assets[0]; raw.filename = "Pair.DNG"; raw.rating = 5; raw.capturedAt = nil; raw.camera = nil
     try store.transaction { try store.changeAsset(raw, action: "fixture-metadata") }
     _ = try store.confirmCapturePair(rawAssetID: raw.id, jpegAssetID: assets[1].id)
@@ -102,7 +108,7 @@ final class ProjectReviewTests: XCTestCase {
     XCTAssertEqual(try store.loadAssets().first { $0.id == assets[0].id }?.rating, 5)
   }
   func testReviewProgressRequiresEveryPairMemberAndCountsSequenceRoleSeparately() throws {
-    let (project, assets) = try batch(count: 2)
+    let (project, assets) = try batch(count: 2, rawFirst: true)
     var raw = assets[0]; raw.filename = "Pair.DNG"; try store.transaction { try store.changeAsset(raw, action: "fixture-format") }
     _ = try store.confirmCapturePair(rawAssetID: raw.id, jpegAssetID: assets[1].id)
     try store.markReviewed(ids: [raw.id], reviewed: true)
@@ -208,7 +214,7 @@ final class ProjectReviewTests: XCTestCase {
     XCTAssertTrue(try store.loadReviewRecords().isEmpty)
     XCTAssertTrue(try store.loadTagCommands().isEmpty)
     XCTAssertEqual(try store.tagDomain(assets[0].id), TagDomain())
-    XCTAssertEqual(try DatabaseSchema.strings(store.db, "PRAGMA user_version"), ["7"])
+    XCTAssertEqual(try DatabaseSchema.strings(store.db, "PRAGMA user_version"), [String(DatabaseSchema.version)])
   }
   func testThirtyThousandMetadataSearchAndPairedProgressRemainBounded() throws {
     let count = 30_000
@@ -227,7 +233,7 @@ final class ProjectReviewTests: XCTestCase {
     print("007 metadata 30k files/15k pairs filter+progress: \(elapsed) seconds; no image IO")
   }
   func testAllowedExportFormatsCannotExpandToNonMatchingCompanionAndNilStaysCompatible() throws {
-    let (_, assets) = try batch(count: 2)
+    let (_, assets) = try batch(count: 2, rawFirst: true)
     var raw = assets[0]; raw.filename = "Pair.DNG"
     try store.transaction { try store.changeAsset(raw, action: "fixture-format") }
     _ = try store.confirmCapturePair(rawAssetID: raw.id, jpegAssetID: assets[1].id)
@@ -241,7 +247,7 @@ final class ProjectReviewTests: XCTestCase {
     XCTAssertThrowsError(try store.exportSelection(ids: [raw.id], formats: .both, allowedAssetIDs: [assets[1].id]))
   }
   func testAllowedExportRejectsManifestBypassAndClipsPersistedGroupContext() async throws {
-    let (_, assets) = try batch(count: 2)
+    let (_, assets) = try batch(count: 2, rawFirst: true)
     var raw = assets[0]; raw.filename = "Pair.DNG"
     try store.transaction { try store.changeAsset(raw, action: "fixture-format") }
     _ = try store.confirmCapturePair(rawAssetID: raw.id, jpegAssetID: assets[1].id)
@@ -251,8 +257,6 @@ final class ProjectReviewTests: XCTestCase {
       _ = try await ExportService(store: store).exportAssets(ids: [assets[1].id], destination: out, manifestIDs: assets.map(\.id), formats: .both, allowedAssetIDs: [assets[1].id], progress: { _ in })
       XCTFail("Nonmatching companion must not leak through the manifest")
     } catch { XCTAssertFalse(FileManager.default.fileExists(atPath: out.path)) }
-    try FileManager.default.createDirectory(at: assets[1].resolvedURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-    try Data("JPEG-original-bytes".utf8).write(to: assets[1].resolvedURL)
     let report = try await ExportService(store: store).exportAssets(ids: [assets[1].id], destination: out, manifestIDs: [assets[1].id], formats: .both, allowedAssetIDs: [assets[1].id], progress: { _ in })
     XCTAssertEqual(report.copied, 1); XCTAssertEqual(report.failed, 1)
     let decoder = JSONDecoder(); decoder.dateDecodingStrategy = .iso8601

@@ -26,9 +26,16 @@ extension LibraryStore {
       PRAGMA user_version=7;
       """)
   }
-  private func admission(assetID: String) throws -> ProjectAdmission {
-    guard let row = try rows("SELECT data FROM project_admissions WHERE asset_id=?", [assetID]).first else { throw EditingError.staleSource }
-    return try decode(row[0], ProjectAdmission.self)
+  private func editingAdmission(assetID: String, projectID: String, sha256: String, byteCount: Int64) throws -> String {
+    let sql = """
+      SELECT s.asset_id,s.project_id,s.kind,printf('%!.26g',t.admitted_at),session.origin,s.scope_id,s.operation_id
+      FROM lc_scopes s JOIN lc_scope_times t USING(scope_id)
+      JOIN lc_contents c USING(content_id) JOIN lc_sessions session ON session.session_id=s.session_id
+      WHERE s.asset_id=? AND s.project_id=? AND c.sha256=? AND c.byte_count=? AND session.state='sealed'
+      ORDER BY t.admitted_at,s.scope_id LIMIT 1
+      """
+    guard let row = try rows(sql, [assetID,projectID,sha256,String(byteCount)]).first else { throw EditingError.staleSource }
+    return try EditingFingerprint.of(ProjectAdmission(catalogRow: row))
   }
   /// Perform off-main. Hashes with bounded autorelease pools and checks inode/size/time before and after.
   public func captureEditingSourceSnapshot(assetID: String, cancel: () throws -> Void = {}) throws -> EditingSourceSnapshot {
@@ -48,18 +55,19 @@ extension LibraryStore {
   }
   public func editingSourceSnapshot(assetID: String, verifiedSHA256: String, verifiedByteCount: Int64) throws -> EditingSourceSnapshot {
     try locked {
-      let asset = try asset(assetID), admitted = try admission(assetID: assetID)
+      let asset = try asset(assetID)
+      let admitted = try editingAdmission(assetID: assetID, projectID: asset.projectID, sha256: verifiedSHA256, byteCount: verifiedByteCount)
       let source = EditingSourceSnapshot(projectID: asset.projectID, assetID: asset.id,
         contentSHA256: verifiedSHA256, byteCount: verifiedByteCount,
-        admissionFingerprint: try EditingFingerprint.of(admitted), sourceLocation: asset.resolvedURL,
+        admissionFingerprint: admitted, sourceLocation: asset.resolvedURL,
         catalogContentHash: asset.contentHash)
       try validateEditingSource(source)
       return source
     }
   }
   func validateAdmission(_ source: EditingSourceSnapshot) throws {
-    let admitted = try admission(assetID: source.assetID)
-    guard admitted.projectID == source.projectID, try EditingFingerprint.of(admitted) == source.admissionFingerprint else { throw EditingError.staleSource }
+    let current = try editingAdmission(assetID: source.assetID, projectID: source.projectID, sha256: source.contentSHA256, byteCount: source.byteCount)
+    guard current == source.admissionFingerprint else { throw EditingError.staleSource }
   }
   /// The caller must hash actual input bytes off-main immediately before input capture/render.
   /// This guard checks current catalogue content metadata and the actual persisted admission only.

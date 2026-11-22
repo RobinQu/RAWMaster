@@ -1,4 +1,5 @@
 import Foundation
+import RAWMasterLibrary
 import CryptoKit
 import Darwin
 
@@ -35,7 +36,7 @@ extension LibraryStore {
         try statement("INSERT INTO projects VALUES(?,?)", [project.id, try json(project)])
       }
       let workflows = try loadWorkflows()
-      let closed = Set(workflows.filter { $0.phase == .closed }.map(\.sessionID))
+      let closed = Set(try rows("SELECT session_id FROM lc_sessions WHERE state='sealed'").map { $0[0] })
       let activeTriage = Set(workflows.filter { $0.phase == .ingesting || $0.phase == .screening }.map(\.sessionID))
       let existing = try loadSessions().first { !closed.contains($0.id) && (!initialScreening || activeTriage.contains($0.id)) && $0.projectID == project.id && (FileSafety.canonical($0.sourceURL) == root || FileSafety.canonical($0.effectiveSourceURL) == root) }
       if let existing {
@@ -44,6 +45,7 @@ extension LibraryStore {
       }
       let session = ImportSession(projectID: project.id, projectName: project.name, sourcePath: root.path, destinationPath: destination.map { FileSafety.canonical($0).path }, mode: mode)
       try statement("INSERT INTO sessions VALUES(?,?)", [session.id, try json(session)])
+      _ = try catalogWrite("session.open", id: "import-open/" + session.id, fields: ["sessionID": .string(session.id), "projectID": .string(project.id)])
       if initialScreening { try writeWorkflow(SessionWorkflow(sessionID: session.id, projectID: project.id, isNewProject: projectID == nil)) }
       return session
     }
@@ -72,7 +74,8 @@ extension LibraryStore {
     return try decode(row[0], SessionWorkflow.self)
   }
   func assertSessionWritable(_ sessionID: String) throws {
-    if try workflow(sessionID)?.phase == .closed { throw LibraryError.invalid("初筛会话已关闭，请从导入历史恢复素材或开始新会话") }
+    let sealed = catalogInstalled ? try !rows("SELECT 1 FROM lc_sessions WHERE session_id=? AND state='sealed'", [sessionID]).isEmpty : false
+    if try sealed || workflow(sessionID)?.phase == .closed { throw LibraryError.invalid("初筛会话已关闭，请从导入历史恢复素材或开始新会话") }
   }
   func bumpWorkflow(_ sessionID: String) throws {
     if var w = try workflow(sessionID) { w.revision += 1; try writeWorkflow(w) }
@@ -98,7 +101,18 @@ extension LibraryStore {
     try locked { try rows("SELECT data FROM session_workflows ORDER BY rowid").map { try decode($0[0], SessionWorkflow.self) } }
   }
   public func loadAdmissions() throws -> [ProjectAdmission] {
-    try locked { try rows("SELECT data FROM project_admissions ORDER BY rowid").map { try decode($0[0], ProjectAdmission.self) } }
+    try locked {
+      if !catalogInstalled { return try rows("SELECT data FROM project_admissions ORDER BY rowid").map { try decode($0[0], ProjectAdmission.self) } }
+      // The legacy model has one representative per host asset. Rust pages include all project scopes.
+      return try rows("""
+        WITH chosen AS (
+          SELECT s.asset_id,s.project_id,s.kind,t.admitted_at,session.origin,s.scope_id,s.operation_id,
+          row_number() OVER(PARTITION BY s.asset_id ORDER BY (s.project_id=json_extract(a.data,'$.projectID')) DESC,s.project_id,t.admitted_at,s.scope_id) AS ord
+          FROM lc_scopes s JOIN assets a ON a.id=s.asset_id JOIN lc_scope_times t USING(scope_id)
+          JOIN lc_sessions session ON session.session_id=s.session_id AND session.state='sealed'
+        ) SELECT asset_id,project_id,kind,printf('%!.26g',admitted_at),origin,scope_id,operation_id FROM chosen WHERE ord=1 ORDER BY asset_id
+        """).map { try ProjectAdmission(catalogRow: $0) }
+    }
   }
   public func publishedProjects() throws -> [ProjectRecord] {
     try locked {
@@ -117,7 +131,67 @@ extension LibraryStore {
   }
   public func loadCapturePairs(sessionID: String? = nil) throws -> [CapturePair] {
     try locked {
-      try rows("SELECT data FROM capture_pairs ORDER BY rowid").map { try decode($0[0], CapturePair.self) }.filter { sessionID == nil || $0.sessionID == sessionID }
+      guard catalogInstalled else {
+        return try rows("SELECT data FROM capture_pairs ORDER BY rowid").map { try decode($0[0], CapturePair.self) }.filter { sessionID == nil || $0.sessionID == sessionID }
+      }
+      // Start from capture membership. Ordering two unbounded asset scans by rowid is quadratic on system SQLite.
+      // A legacy candidate may have a row even when the current capture identity is still unresolved.
+      let arguments = sessionID.map { [$0] } ?? []
+      let filter = sessionID == nil ? "" : " WHERE json_extract(data,'$.sessionID')=?"
+      let legacy = try rows("SELECT json_extract(data,'$.rawAssetID'),json_extract(data,'$.jpegAssetID'),id FROM capture_pairs" + filter + " ORDER BY rowid",arguments)
+      var legacyIDs = [String: [String: String]]()
+      for record in legacy where legacyIDs[record[0]]?[record[1]] == nil {
+        legacyIDs[record[0], default: [:]][record[1]] = record[2]
+      }
+      // Walk an indexed capture before reaching the other session's assets. Keep legacy IDs
+      // outside this join so two large paired collections never form a Cartesian scan.
+      let members: String
+      if sessionID != nil {
+        members = """
+          FROM assets a CROSS JOIN lc_asset_files r ON r.asset_id=a.id CROSS JOIN lc_files rf ON rf.file_id=r.file_id
+          CROSS JOIN lc_files jf INDEXED BY lc_files_capture ON jf.capture_id=rf.capture_id AND jf.role='jpeg'
+          """
+      } else {
+        members = """
+          FROM lc_files rf CROSS JOIN lc_files jf INDEXED BY lc_files_capture ON jf.capture_id=rf.capture_id AND jf.role='jpeg'
+          CROSS JOIN lc_asset_files r ON r.file_id=rf.file_id CROSS JOIN assets a ON a.id=r.asset_id
+          """
+      }
+      let sql = "SELECT a.session_id,r.asset_id,j.asset_id,rf.pair_locked " + members + " " + """
+        CROSS JOIN lc_asset_files j ON j.file_id=jf.file_id CROSS JOIN assets b ON b.id=j.asset_id AND b.session_id=a.session_id
+        WHERE rf.role='raw'
+        """ + (sessionID == nil ? "" : " AND a.session_id=?") + " ORDER BY a.rowid,b.rowid"
+      return try rows(sql, arguments).map { row in
+        let id = legacyIDs[row[1]]?[row[2]] ?? "capture-pair/" + row[1] + "/" + row[2]
+        return CapturePair(id:id,sessionID:row[0],rawAssetID:row[1],jpegAssetID:row[2],isManual:row[3]=="1")
+      }
+    }
+  }
+
+  public func capturePairCandidates(sessionID: String? = nil) throws -> [CapturePair] {
+    try locked {
+      guard catalogInstalled else { return [] }
+      let sql = """
+        WITH latest AS (SELECT max(rowid) id FROM lc_pair_events GROUP BY raw_file_id,jpeg_file_id)
+        SELECT e.event_id||'/'||r.asset_id||'/'||j.asset_id, a.session_id, r.asset_id, j.asset_id FROM latest x JOIN lc_pair_events e ON e.rowid=x.id
+        JOIN lc_files rf ON rf.file_id=e.raw_file_id JOIN lc_files jf ON jf.file_id=e.jpeg_file_id AND jf.capture_id<>rf.capture_id
+        JOIN lc_asset_files r ON r.file_id=rf.file_id JOIN assets a ON a.id=r.asset_id
+        JOIN lc_asset_files j ON j.file_id=jf.file_id JOIN assets b ON b.id=j.asset_id AND b.session_id=a.session_id
+        WHERE e.action='review' AND NOT EXISTS(SELECT 1 FROM pair_dismissals d WHERE d.id=
+          CASE WHEN r.asset_id<j.asset_id THEN r.asset_id||':'||j.asset_id ELSE j.asset_id||':'||r.asset_id END)
+        """ + (sessionID == nil ? "" : " AND a.session_id=?") + " ORDER BY a.rowid,b.rowid"
+      return try rows(sql, sessionID.map { [$0] } ?? []).map { CapturePair(id:$0[0], sessionID:$0[1], rawAssetID:$0[2], jpegAssetID:$0[3], isManual:false) }
+    }
+  }
+  public func dismissCapturePairCandidate(_ candidate: CapturePair) throws {
+    try transaction {
+      guard try capturePairCandidates(sessionID: candidate.sessionID).contains(where: { $0.id == candidate.id && $0.assetIDs == candidate.assetIDs }) else {
+        throw LibraryError.invalid("候选关联已变化，请刷新")
+      }
+      try assertPairMaintenanceAllowed(sessionID: candidate.sessionID, ids: candidate.assetIDs)
+      try statement("INSERT OR IGNORE INTO pair_dismissals VALUES(?,?)", [pairKey(candidate.rawAssetID,candidate.jpegAssetID),try json(candidate)])
+      try statement("DELETE FROM capture_pairs WHERE json_extract(data,'$.rawAssetID')=? AND json_extract(data,'$.jpegAssetID')=?", candidate.assetIDs)
+      try bumpWorkflow(candidate.sessionID)
     }
   }
   public func loadQualityEvidence(sessionID: String? = nil) throws -> [TriageQualityEvidence] {
@@ -203,18 +277,36 @@ extension LibraryStore {
   }
   func insertPair(raw: AssetRecord, jpeg: AssetRecord, manual: Bool) throws -> CapturePair {
     let pairs = try loadCapturePairs(sessionID: raw.sessionID)
-    if let exact = pairs.first(where: { $0.rawAssetID == raw.id && $0.jpegAssetID == jpeg.id }) { return exact }
-    guard pairs.allSatisfy({ Set($0.assetIDs).isDisjoint(with: [raw.id, jpeg.id]) }) else { throw LibraryError.invalid("文件已有配对，请先解除原关联") }
-    let pair = CapturePair(sessionID: raw.sessionID, rawAssetID: raw.id, jpegAssetID: jpeg.id, isManual: manual)
-    try statement("INSERT INTO capture_pairs VALUES(?,?)", [pair.id, try json(pair)])
-    if manual { try statement("DELETE FROM pair_dismissals WHERE id=?", [pairKey(raw.id, jpeg.id)]) }
+    let exact = pairs.first { $0.rawAssetID == raw.id && $0.jpegAssetID == jpeg.id }
+    if let exact, !manual || exact.isManual { return exact }
+    guard pairs.filter({ $0.id != exact?.id }).allSatisfy({ Set($0.assetIDs).isDisjoint(with: [raw.id, jpeg.id]) }) else {
+      throw LibraryError.invalid("文件已有配对，请先解除原关联")
+    }
+    let previous = try rows("SELECT id FROM capture_pairs WHERE json_extract(data,'$.rawAssetID')=? AND json_extract(data,'$.jpegAssetID')=? ORDER BY rowid LIMIT 1",[raw.id,jpeg.id]).first?.first
+    let pair = CapturePair(id: previous ?? exact?.id ?? UUID().uuidString, sessionID: raw.sessionID, rawAssetID: raw.id, jpegAssetID: jpeg.id, isManual: manual)
+    try statement("INSERT INTO capture_pairs(id,data) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data", [pair.id, try json(pair)])
+    if manual {
+      try statement("DELETE FROM pair_dismissals WHERE id=?", [pairKey(raw.id, jpeg.id)])
+      if catalogInstalled {
+        _ = try catalogTransaction("flushLegacy", LibraryEmpty())
+        try applyManualPair("capture.pair", pair)
+      }
+    }
     try bumpWorkflow(raw.sessionID)
     return pair
+  }
+  private func applyManualPair(_ action: String, _ pair: CapturePair) throws {
+    let ids = try rows("SELECT r.file_id,j.file_id FROM lc_asset_files r JOIN lc_asset_files j ON j.asset_id=? WHERE r.asset_id=?",
+                       [pair.jpegAssetID,pair.rawAssetID])
+    guard let files = ids.first else { throw LibraryError.invalid("文件缺少资料库身份") }
+    try catalogWrite(action, id: UUID().uuidString, fields: ["rawFileID": .string(files[0]),"jpegFileID": .string(files[1]),"manual": .boolean(true),
+                     "evidence": .object(["source": .string("userReview"),"pairID": .string(pair.id)])])
   }
   public func unlinkCapturePair(id: String) throws {
     try transaction {
       guard let pair = try loadCapturePairs().first(where: { $0.id == id }) else { throw LibraryError.invalid("配对不存在") }
       try assertPairMaintenanceAllowed(sessionID: pair.sessionID, ids: pair.assetIDs)
+      if catalogInstalled { try applyManualPair("capture.split", pair) }
       try statement("DELETE FROM capture_pairs WHERE id=?", [id])
       try statement("INSERT OR REPLACE INTO pair_dismissals VALUES(?,?)", [pairKey(pair.rawAssetID, pair.jpegAssetID), "{}"])
       try bumpWorkflow(pair.sessionID)
@@ -230,13 +322,14 @@ extension LibraryStore {
         return path.deletingPathExtension().path.precomposedStringWithCanonicalMapping
       }
       let dismissed = Set(try rows("SELECT id FROM pair_dismissals").map { $0[0] })
+      let existing = Set(try rows("SELECT json_extract(data,'$.rawAssetID'),json_extract(data,'$.jpegAssetID') FROM capture_pairs WHERE json_extract(data,'$.sessionID')=?",[sessionID]).map { pairKey($0[0],$0[1]) })
       var paired = Set(try loadCapturePairs(sessionID: sessionID).flatMap(\.assetIDs))
       for key in byKey.keys.sorted() {
         let candidates = byKey[key]!
         let raw = candidates.filter { CaptureFileFormat.isRAW($0.filename) }, jpeg = candidates.filter { CaptureFileFormat.isJPEG($0.filename) }
         guard raw.count == 1, jpeg.count == 1 else { continue }
         let r = raw[0], j = jpeg[0]
-        guard !paired.contains(r.id), !paired.contains(j.id), !dismissed.contains(pairKey(r.id, j.id)), r.importState == .ready, j.importState == .ready,
+        guard !paired.contains(r.id), !paired.contains(j.id), !dismissed.contains(pairKey(r.id, j.id)), !existing.contains(pairKey(r.id,j.id)), r.importState == .ready, j.importState == .ready,
           let rt = r.capturedAt, let jt = j.capturedAt, abs(rt.timeIntervalSince(jt)) < 0.001,
           let rc = r.camera?.trimmingCharacters(in: .whitespacesAndNewlines), let jc = j.camera?.trimmingCharacters(in: .whitespacesAndNewlines), !rc.isEmpty, rc == jc,
           r.width != nil, r.height != nil, r.width == j.width, r.height == j.height else { continue }
@@ -247,6 +340,7 @@ extension LibraryStore {
         try bumpWorkflow(sessionID)
         paired.formUnion([r.id, j.id])
       }
+      if catalogInstalled { _ = try catalogTransaction("flushLegacy", LibraryEmpty()) }
       return try loadCapturePairs(sessionID: sessionID)
     }
   }
@@ -273,29 +367,58 @@ extension LibraryStore {
     let ids = Set(assets.map(\.id))
     return Set(try loadGroups().filter { !["连拍", "普通", "相似", "burst", "similar"].contains($0.kind.lowercased()) }.flatMap(\.includedAssetIDs)).intersection(ids)
   }
-  public func previewCompletion(sessionID: String, acknowledgeManualAnalysis: Bool = false) throws -> CompletionPreview {
+  public func completionMembers(sessionID: String) throws -> [CatalogSealMember] {
     try locked {
-      guard let w = try workflow(sessionID), w.phase != .legacyHistory, let session = try loadSessions().first(where: { $0.id == sessionID }) else { throw LibraryError.invalid("请选择活动初筛会话") }
-      try assertSessionWritable(sessionID)
-      let assets = try loadAssets(sessionID: sessionID), records = Dictionary(uniqueKeysWithValues: try loadTriageRecords(sessionID: sessionID).map { ($0.assetID, $0) })
-      let protected = try necessarySequenceIDs(assets)
-      var admit: [String] = [], exclude: [String] = [], sequence: [String] = [], review: [String] = [], issues: [String] = []
-      if w.importActive || ["pending", "scanning", "importing"].contains(session.status) { issues.append("素材接入仍在进行，请完成或恢复接入") }
-      if session.scanCompleted != true { issues.append("来源扫描未完成，范围尚未封存") }
-      for a in assets {
-        let disposition = records[a.id]?.disposition ?? .pending
-        let required = protected.contains(a.id)
-        if disposition == .excluded && !required { exclude.append(a.id); continue }
-        if a.importState != .ready || a.availability != .available { issues.append("\(a.filename)：接入未完成或原片不可用，请重试或明确排除") }
-        admit.append(a.id)
-        if disposition == .review { review.append(a.id) }
-        if disposition == .excluded && required { sequence.append(a.id) }
+      let assets = Dictionary(uniqueKeysWithValues: try loadAssets(sessionID: sessionID).map { ($0.id,$0) })
+      let required = try necessarySequenceIDs(Array(assets.values))
+      let records = Dictionary(uniqueKeysWithValues: try loadTriageRecords(sessionID: sessionID).map { ($0.assetID,$0) })
+      return try rows("SELECT occurrence_id,asset_id,content_id FROM lc_occurrences WHERE session_id=? ORDER BY occurrence_id", [sessionID]).map { row in
+        guard let asset = assets[row[1]] else { throw LibraryError.invalid("导入文件与会话不一致") }
+        let content = row[2].isEmpty ? nil : row[2]
+        let disposition: CatalogImportDisposition = content == nil ? .failed : (records[asset.id]?.disposition == .excluded ? .excluded : .admitted)
+        return CatalogSealMember(occurrenceID: row[0], assetID: asset.id, filename: asset.filename, contentID: content,
+            available: asset.importState == .ready && asset.availability == .available,
+            requiredForSequence: required.contains(asset.id), disposition: disposition)
       }
-      let analysed = Set(try loadQualityEvidence(sessionID: sessionID).map(\.assetID))
-      let pairs = try loadCapturePairs(sessionID: sessionID)
+    }
+  }
+
+  public func previewCompletion(sessionID: String, acknowledgeManualAnalysis: Bool = false,
+                                dispositions: [String: CatalogImportDisposition] = [:],
+                                confirmedFailures: Bool = false) throws -> CompletionPreview {
+    try locked {
+      guard let w = try workflow(sessionID), w.phase != .legacyHistory,
+            let session = try loadSessions().first(where: { $0.id == sessionID }) else { throw LibraryError.invalid("请选择活动初筛会话") }
+      try assertSessionWritable(sessionID)
+      let members = try completionMembers(sessionID: sessionID)
+      guard Set(dispositions.keys).isSubset(of: Set(members.map(\.id))) else { throw LibraryError.invalid("处置包含其他会话的文件") }
+      var admit = [String](), exclude = [String](), sequence = [String](), failed = [String](), issues = [String]()
+      if w.importActive || ["pending","scanning","importing"].contains(session.status) { issues.append("素材接入仍在进行，请完成或恢复接入") }
+      if session.scanCompleted != true { issues.append("来源扫描未完成，范围尚未封存") }
+      let draft = CatalogSealDraft(members: members)
+      for member in members {
+        let decision = dispositions[member.id] ?? member.defaultDisposition
+        if !draft.choices(for: member).contains(decision) { issues.append(member.filename + "：请核对可用性并明确本次处置") }
+        switch decision {
+        case .admitted: admit.append(member.assetID)
+        case .sequenceOnly: admit.append(member.assetID); sequence.append(member.assetID)
+        case .excluded: exclude.append(member.assetID)
+        case .failed: failed.append(member.assetID)
+        }
+      }
       let admitted = Set(admit)
-      let pairCount = pairs.filter { Set($0.assetIDs).isSubset(of: admitted) }.count
-      return CompletionPreview(id: UUID().uuidString, sessionID: sessionID, projectID: w.projectID, fingerprint: try completionFingerprint(sessionID: sessionID), admittedAssetIDs: admit.sorted(), excludedAssetIDs: exclude.sorted(), sequenceOnlyAssetIDs: sequence.sorted(), reviewAssetIDs: review.sorted(), issues: issues, unanalysedCount: assets.filter { !analysed.contains($0.id) }.count, captureCount: admit.count - pairCount, manualAnalysisAcknowledged: acknowledgeManualAnalysis)
+      let review = try loadTriageRecords(sessionID: sessionID).filter { $0.disposition == .review && admitted.contains($0.assetID) }.map(\.assetID)
+      let analysed = Set(try loadQualityEvidence(sessionID: sessionID).map(\.assetID))
+      let captures = try rows("SELECT count(DISTINCT f.capture_id) FROM lc_asset_files a JOIN lc_files f USING(file_id) WHERE a.asset_id IN (SELECT value FROM json_each(?))",[try json(admit)]).first?.first
+      var result = CompletionPreview(id: UUID().uuidString, sessionID: sessionID, projectID: w.projectID,
+        fingerprint: try completionFingerprint(sessionID: sessionID), admittedAssetIDs: admit.sorted(), excludedAssetIDs: exclude.sorted(),
+        sequenceOnlyAssetIDs: sequence.sorted(), reviewAssetIDs: review.sorted(), issues: issues,
+        unanalysedCount: members.filter { !analysed.contains($0.assetID) }.count, captureCount: Int(captures ?? "") ?? 0,
+        manualAnalysisAcknowledged: acknowledgeManualAnalysis)
+      result.failedAssetIDs = failed.sorted()
+      result.explicitDispositions = dispositions
+      result.confirmedFailures = confirmedFailures
+      return result
     }
   }
   public func commitCompletion(_ preview: CompletionPreview) throws -> SessionWorkflow {
@@ -307,8 +430,23 @@ extension LibraryStore {
         guard try stableJSON(committed) == stableJSON(preview), let w = try workflow(preview.sessionID) else { throw LibraryError.invalid("重复请求与原完成摘要不一致") }
         return w
       }
-      let fresh = try previewCompletion(sessionID: preview.sessionID, acknowledgeManualAnalysis: preview.manualAnalysisAcknowledged)
-      guard preview.canCommit, fresh.canCommit, fresh.fingerprint == preview.fingerprint, fresh.projectID == preview.projectID, fresh.admittedAssetIDs == preview.admittedAssetIDs, fresh.excludedAssetIDs == preview.excludedAssetIDs, fresh.sequenceOnlyAssetIDs == preview.sequenceOnlyAssetIDs, fresh.reviewAssetIDs == preview.reviewAssetIDs, fresh.unanalysedCount == preview.unanalysedCount, fresh.captureCount == preview.captureCount else { throw LibraryError.invalid("完成摘要已过期或仍有异常，请刷新后再确认") }
+      let fresh = try previewCompletion(sessionID: preview.sessionID, acknowledgeManualAnalysis: preview.manualAnalysisAcknowledged, dispositions: preview.explicitDispositions ?? [:], confirmedFailures: preview.confirmedFailures == true)
+      guard preview.canCommit, fresh.canCommit, fresh.fingerprint == preview.fingerprint, fresh.projectID == preview.projectID, fresh.admittedAssetIDs == preview.admittedAssetIDs, fresh.excludedAssetIDs == preview.excludedAssetIDs, fresh.failedAssetIDs == preview.failedAssetIDs, fresh.sequenceOnlyAssetIDs == preview.sequenceOnlyAssetIDs, fresh.reviewAssetIDs == preview.reviewAssetIDs, fresh.unanalysedCount == preview.unanalysedCount, fresh.captureCount == preview.captureCount else { throw LibraryError.invalid("完成摘要已过期或仍有异常，请刷新后再确认") }
+      let members = try completionMembers(sessionID: preview.sessionID)
+      var sealItems = [CatalogJSON]()
+      for member in members {
+        let explicit = fresh.explicitDispositions?[member.id]
+        let decision = explicit ?? member.defaultDisposition
+        if member.defaultDisposition == .excluded && (explicit == .admitted || explicit == .sequenceOnly) {
+          // A user can change just this occurrence in the final review of a RAW+JPEG pair.
+          try statement("UPDATE triage_records SET data=json_set(data,'$.disposition','passed','$.revision',coalesce(json_extract(data,'$.revision'),0)+1) WHERE asset_id=?", [member.assetID])
+        }
+        var item: [String: CatalogJSON] = ["occurrenceID": .string(member.id), "disposition": .string(decision.rawValue)]
+        if let content = member.contentID { item["contentID"] = .string(content) }
+        sealItems.append(.object(item))
+      }
+      _ = try catalogWrite("session.seal", id: "import-seal/" + preview.id,
+                           fields: ["sessionID": .string(preview.sessionID),"items": .array(sealItems)])
       for id in fresh.admittedAssetIDs { try writeAdmission(ProjectAdmission(assetID: id, projectID: fresh.projectID, sequenceOnly: fresh.sequenceOnlyAssetIDs.contains(id))) }
       var w = try workflow(preview.sessionID)!
       w.phase = .closed; w.importActive = false; w.closedAt = Date(); w.manualAnalysisAcknowledged = preview.manualAnalysisAcknowledged; w.revision += 1
@@ -322,20 +460,23 @@ extension LibraryStore {
     try transaction {
       guard let w = try workflow(sessionID), w.phase == .closed || w.phase == .legacyHistory else { throw LibraryError.invalid("请先完成初筛，再从历史恢复") }
       let assets = try loadAssets(sessionID: sessionID), lookup = Dictionary(uniqueKeysWithValues: assets.map { ($0.id, $0) })
-      var requested = Set(assetIDs)
+      let requested = Set(assetIDs)
       guard requested.isSubset(of: Set(lookup.keys)) else { throw LibraryError.invalid("恢复范围不属于此会话") }
-      for pair in try loadCapturePairs(sessionID: sessionID) where !requested.isDisjoint(with: pair.assetIDs) { requested.formUnion(pair.assetIDs) }
-      let admitted = Set(try loadAdmissions().map(\.assetID)), needed = requested.subtracting(admitted)
-      for id in needed {
-        guard let a = lookup[id] else { throw LibraryError.invalid("恢复文件不存在") }
-        guard a.importState == .ready, a.contentHash != nil else {
-          throw LibraryError.invalid("该文件从未完成核验，请新建导入会话重新接入；旧历史记录保留")
+      var restored = [String]()
+      for id in requested.sorted() {
+        guard let asset = lookup[id], let hash = asset.contentHash else { throw LibraryError.invalid("旧历史记录保留。该文件尚未核验，请新建导入会话重新接入") }
+        guard let occurrence = try rows("SELECT occurrence_id FROM lc_occurrences WHERE session_id=? AND asset_id=?", [sessionID,id]).first?.first else {
+          throw LibraryError.invalid("找不到此文件的封存记录")
         }
-        guard a.availability == .available else { throw LibraryError.invalid("恢复文件尚未可用，请先找回原片") }
+        if try !rows("SELECT 1 FROM lc_scopes WHERE session_id=? AND occurrence_id=?", [sessionID,occurrence]).isEmpty { continue }
+        let receipt = try catalogWrite("admission.restore", id: UUID().uuidString, fields: ["sessionID":.string(sessionID),
+          "occurrenceID":.string(occurrence),"path":.string(asset.resolvedURL.path),"sha256":.string(hash),"byteCount":.integer(asset.fileSize)])
+        let target = receipt["assetID"]?.stringValue ?? id
+        try writeAdmission(ProjectAdmission(assetID: target, projectID: w.projectID))
+        restored.append(target)
       }
-      for id in needed { try writeAdmission(ProjectAdmission(assetID: id, projectID: w.projectID)) }
-      if !needed.isEmpty { try operation(entity: sessionID, action: "restoreTriageAssets", payload: try json(needed.sorted())) }
-      return needed.sorted()
+      if !restored.isEmpty { try operation(entity: sessionID, action: "restoreTriageAssets", payload: try json(restored)) }
+      return restored
     }
   }
   public func exportSelection(ids: [String], formats: ExportFormats = .allOriginals, allowedAssetIDs: [String]? = nil) throws -> ExportSelection {

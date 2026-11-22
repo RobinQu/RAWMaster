@@ -1,0 +1,25 @@
+{
+  "platform": "macOS arm64",
+  "reference_sql_counts": [
+    1408,
+    1
+  ],
+  "minimum_ratings": [
+    0,
+    4
+  ],
+  "cxx_counts": [
+    1408,
+    1
+  ],
+  "swift_counts": [
+    1408,
+    1
+  ],
+  "null_path_status": -1,
+  "invalid_rating_status": -1,
+  "missing_read_only_path_status": -2,
+  "no_database_created": true,
+  "sqlite_linkage": "system libsqlite3.dylib via rusqlite 0.40.1",
+  "rustc": "rustc 1.99.0-nightly (1a98b1e13 2026-08-07)"
+}

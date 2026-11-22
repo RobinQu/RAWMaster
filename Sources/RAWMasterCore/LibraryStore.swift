@@ -1,21 +1,30 @@
 import CSQLite
 import Foundation
+import RAWMasterLibrary
 
 /// One serialized connection: a state write and its operation record always commit together.
 public final class LibraryStore: @unchecked Sendable {
   var db: OpaquePointer?
   let lock = NSRecursiveLock()
+  public let databaseURL: URL
+  var catalogInstalled = false
+  private var writeDepth = 0
   let importLockDirectory: URL
   let encoder = JSONEncoder(), decoder = JSONDecoder()
   var deviceID = ""
   public private(set) var lastMigrationBackupURL: URL?
   public init(databaseURL: URL, migrationBackupDirectory: URL? = nil) throws {
     let canonicalDatabase = databaseURL.standardizedFileURL.resolvingSymlinksInPath()
+    self.databaseURL = canonicalDatabase
     importLockDirectory = canonicalDatabase.deletingLastPathComponent().appendingPathComponent("." + canonicalDatabase.lastPathComponent + ".imports", isDirectory: true)
     // Validate first, including active-WAL state. Unknown databases never enter a writer connection.
     let inspected = try DatabaseSchema.inspectAndBackup(
       databaseURL, directory: migrationBackupDirectory)
     lastMigrationBackupURL = inspected.1
+    let rehearsal: CatalogJSON?
+    if inspected.0 == 7, let snapshot = inspected.1 {
+      rehearsal = try LibraryEngine.shared().request("migrationPreview", at: snapshot, payload: LibraryEmpty(), as: CatalogJSON.self)
+    } else { rehearsal = nil }
     try FileManager.default.createDirectory(
       at: databaseURL.deletingLastPathComponent(), withIntermediateDirectories: true)
     guard
@@ -25,26 +34,56 @@ public final class LibraryStore: @unchecked Sendable {
     else { throw LibraryError.database("无法打开资料库") }
     sqlite3_busy_timeout(db, 5000)
     do {
-      try transaction {
-        let found = try DatabaseSchema.validate(db)
-        guard found == inspected.0 else { throw LibraryError.invalid("资料库在检查后被另一进程升级，请重新打开") }
-        if found == 0 { try createSchema() }
-        if found == 1 { try migrateVersionOne() }
-        if found == 1 || found == 2 { try createGroupCommandSchema() }
-        if found < 4 { try createTriageSchema() }
-        if found < 5 { try createProjectReviewSchema() }
-        if found < 6 { try createColorLabelSchema() }
-        if found < 7 { try createEditingSchema() }
+      try exec("PRAGMA foreign_keys=ON")
+      if inspected.0 == DatabaseSchema.version {
+        let needsReplay = try withReadSnapshot {
+          guard try DatabaseSchema.validate(db) == inspected.0 else { throw LibraryError.invalid("资料库版本已变化，请重新打开") }
+          return try rows("SELECT 1 WHERE EXISTS(SELECT 1 FROM lc_pair_dirty) OR EXISTS(SELECT 1 FROM lc_group_dirty)").isEmpty == false
+        }
+        catalogInstalled = true
+        if needsReplay { try transaction {} }
+      } else {
+        try transaction {
+          let found = try DatabaseSchema.validate(db)
+          guard found == inspected.0 else { throw LibraryError.invalid("资料库在检查后被另一进程升级，请重新打开") }
+          if let rehearsal { _ = try catalogTransaction("migrationCheck", rehearsal) }
+          if found == 0 { try createSchema() }
+          if found == 1 { try migrateVersionOne() }
+          if found == 1 || found == 2 { try createGroupCommandSchema() }
+          if found < 4 { try createTriageSchema() }
+          if found < 5 { try createProjectReviewSchema() }
+          if found < 6 { try createColorLabelSchema() }
+          if found < 7 { try createEditingSchema() }
+          if found < 8 {
+            _ = try catalogTransaction("install", LibraryEmpty())
+            try exec("PRAGMA user_version=8")
+            guard try DatabaseSchema.validate(db) == 8, try rows("PRAGMA foreign_key_check").isEmpty else {
+              throw LibraryError.database("资料库升级未通过一致性校验")
+            }
+            if let rehearsal {
+              try statement("INSERT OR REPLACE INTO metadata(key,value) VALUES('libraryMigration.v8',?)", [try json(rehearsal)])
+            }
+          }
+          catalogInstalled = true
+        }
       }
-      try exec("PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA synchronous=FULL;")
+      if try rows("PRAGMA journal_mode").first?.first != "wal" { try exec("PRAGMA journal_mode=WAL") }
+      try exec("PRAGMA synchronous=FULL")
       // The primary membership key starts with group_id. Asset edits and membership
       // projection also need the reverse lookup, including in existing catalogues.
-      try exec("CREATE INDEX IF NOT EXISTS membership_asset_id ON membership(asset_id)")
+      if try rows("SELECT 1 FROM sqlite_schema WHERE type='index' AND name='membership_asset_id'").isEmpty {
+        try exec("CREATE INDEX IF NOT EXISTS membership_asset_id ON membership(asset_id)")
+      }
       if let existing = try rows("SELECT value FROM metadata WHERE key='deviceID'").first?.first {
         deviceID = existing
       } else {
-        deviceID = UUID().uuidString
-        try statement("INSERT INTO metadata VALUES('deviceID',?)", [deviceID])
+        try transaction {
+          try statement("INSERT OR IGNORE INTO metadata VALUES('deviceID',?)", [UUID().uuidString])
+          guard let id = try rows("SELECT value FROM metadata WHERE key='deviceID'").first?.first else {
+            throw LibraryError.database("无法读取设备身份")
+          }
+          deviceID = id
+        }
       }
     } catch {
       sqlite3_close(db)
@@ -141,9 +180,27 @@ public final class LibraryStore: @unchecked Sendable {
   }
   func transaction<T>(_ body: () throws -> T) throws -> T {
     try locked {
+      if writeDepth > 0 {
+        let name = "rm_nested_" + String(writeDepth)
+        try exec("SAVEPOINT " + name)
+        writeDepth += 1
+        defer { writeDepth -= 1 }
+        do {
+          let value = try body()
+          try exec("RELEASE " + name)
+          return value
+        } catch {
+          try? exec("ROLLBACK TO " + name)
+          try? exec("RELEASE " + name)
+          throw error
+        }
+      }
       try exec("BEGIN IMMEDIATE")
+      writeDepth = 1
+      defer { writeDepth = 0 }
       do {
         let result = try body()
+        if catalogInstalled { _ = try catalogTransaction("flushLegacy", LibraryEmpty()) }
         try exec("COMMIT")
         return result
       } catch {
@@ -195,7 +252,7 @@ public final class LibraryStore: @unchecked Sendable {
   }
   public func loadSessions() throws -> [ImportSession] {
     try locked {
-      try rows("SELECT data FROM sessions ORDER BY rowid").map {
+      try rows(catalogInstalled ? "SELECT s.data FROM sessions s WHERE NOT EXISTS(SELECT 1 FROM lc_sessions x WHERE x.session_id=s.id AND x.origin='version-host') ORDER BY s.rowid" : "SELECT data FROM sessions ORDER BY rowid").map {
         try decode($0[0], ImportSession.self)
       }
     }
@@ -228,17 +285,17 @@ public final class LibraryStore: @unchecked Sendable {
   }
   public func loadGroups(projectID: String? = nil) throws -> [CaptureGroup] {
     try locked {
-      try rows(
-        "SELECT data FROM groups_data" + (projectID == nil ? "" : " WHERE project_id=?")
-          + " ORDER BY rowid", projectID.map { [$0] } ?? []
-      ).map { row in
-        var g = try decode(row[0], CaptureGroup.self)
-        let members = try rows(
-          "SELECT asset_id,included FROM membership WHERE group_id=? ORDER BY position,rowid",
-          [g.id])
-        g.assetIDs = members.map { $0[0] }
-        g.includedAssetIDs = members.filter { $0[1] == "1" }.map { $0[0] }
-        return g
+      let arguments = projectID.map { [$0] } ?? []
+      let condition = projectID == nil ? "" : " WHERE g.project_id=?"
+      let records = try rows("SELECT g.data FROM groups_data g" + condition + " ORDER BY g.rowid", arguments)
+      let membership = try rows("SELECT m.group_id,m.asset_id,m.included FROM membership m JOIN groups_data g ON g.id=m.group_id" + condition + " ORDER BY m.group_id,m.position,m.rowid", arguments)
+      let byGroup = Dictionary(grouping: membership, by: { $0[0] })
+      return try records.map { row in
+        var group = try decode(row[0], CaptureGroup.self)
+        let members = byGroup[group.id] ?? []
+        group.assetIDs = members.map { $0[1] }
+        group.includedAssetIDs = members.filter { $0[2] == "1" }.map { $0[1] }
+        return group
       }
     }
   }
@@ -436,6 +493,7 @@ public final class LibraryStore: @unchecked Sendable {
       a.importState = imported.importState
       a.error = imported.error
       try changeAsset(a, action: "importState")
+      try bindVerifiedImportOccurrence(a)
       if let session {
         guard session.id == a.sessionID else { throw LibraryError.invalid("导入进度与素材会话不一致") }
         try statement(

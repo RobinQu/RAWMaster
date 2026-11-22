@@ -28,8 +28,10 @@ final class EditingWorkflowTests: XCTestCase {
                 let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
                 CGImageDestinationAddImage(destination, context.makeImage()!, nil); XCTAssertTrue(CGImageDestinationFinalize(destination))
                 let bytes = try Data(contentsOf: url)
-                registered.append(try store.register(.init(sessionID: session.id, projectID: project.id, sourcePath: url.path, fileSize: Int64(bytes.count), importState: .ready)))
+                registered.append(try store.register(.init(sessionID: session.id, projectID: project.id, sourcePath: url.path,
+                    fileSize: Int64(bytes.count), contentHash: FileSafety.hash(url), importState: .ready)))
             }
+            try store.completedDirectImport(session)
             assets = registered; defaults = UserDefaults(suiteName: "NativeEditing-" + UUID().uuidString)!
         }
         func clean() { try? FileManager.default.removeItem(at: root) }

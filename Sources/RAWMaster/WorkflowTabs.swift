@@ -20,8 +20,13 @@ extension AppModel {
     }
 
     func activateWorkflow(_ workflow: WorkbenchWorkflow) {
-        if workflow != .export && exportWorkspacePresented {
+        let returningFromExport = workflow != .export && exportWorkspacePresented
+        if returningFromExport {
             workbenchExportContext = .project
+            exportCatalogScope = nil
+            exportCatalogAssets = []
+            requestedWorkbenchExportMode = nil
+            editing?.closeWorkbenchExport()
         }
         switch workflow {
         case .library:
@@ -29,22 +34,29 @@ extension AppModel {
             if isNativeEditing { returnFromNativeEditing() }
         case .edit:
             exportWorkspacePresented = false; showExport = false; editing?.showExport = false
-            if isNativeEditing { editing?.stage = .development }
+            if isNativeEditing {
+                if !returningFromExport { editing?.stage = .development }
+            }
             else {
                 if mode != .single { setMode(.single) }
                 if canOpenNativeEditing { openNativeEditing() }
             }
         case .export:
             guard canExport, !exportWorkspacePresented else { return }
-            if isNativeEditing { editing?.openExport(); editing?.showExport = false }
             if case .selection = workbenchExportContext {
                 // An explicit multi-selection is captured before opening the workspace.
             } else if isNativeEditing {
-                workbenchExportContext = actionAssetIDs.count>1 ? .selection(ids:actionAssetIDs):.photo(id:editing?.asset?.id ?? focusedID ?? "")
+                let selected = actionAssetIDs.filter { selectedIDs.contains($0) }
+                if selected.count > 1 { workbenchExportContext = .selection(ids: selected) }
+                else if let asset = focusedAsset { workbenchExportContext = .photo(id: asset.id) }
             } else if actionAssetIDs.count>1 { workbenchExportContext = .selection(ids:actionAssetIDs) }
             else if let only = actionAssetIDs.first { workbenchExportContext = .photo(id:only) }
             else if mode == .grid { workbenchExportContext = .project }
-            prepareLibraryExport(workbenchExportContext)
+            if isNativeEditing, requestedWorkbenchExportMode != .original {
+                openRenderedPhotoExport(context: workbenchExportContext)
+            } else {
+                prepareLibraryExport(workbenchExportContext)
+            }
         }
     }
 

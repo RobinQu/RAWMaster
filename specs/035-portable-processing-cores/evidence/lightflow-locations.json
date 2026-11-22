@@ -1,0 +1,265 @@
+{
+  "unit": "Offsets are zero-based file bytes in the release pinned in lightflow-release.json. Text is a short location anchor, not the implementation.",
+  "reaJavaScript": {
+    "operation": "analyze_javascript_application",
+    "parentEvidenceId": "ev_277fee2f250de556d651126cd12178ec20dd556f3f96cee5fbec7392affcad1b",
+    "summaryEvidenceId": "ev_5cb1632e830bc16f928cff75d595cac188197695d7e61ef57d7118e73119c85c",
+    "artifactSha256": "839cc57f015d24c2826aa835bfa5cf038feb78c911e0825e9d6341386367ed97",
+    "selected": [
+      "assets/worker-PmnZFHwu.js",
+      "assets/inpaintGpu-Cp3ARYYv.js",
+      "assets/jobs-BKGhUuG3.js"
+    ],
+    "parsed": 3,
+    "parseFailures": 0,
+    "otherRelevantFiles": 44,
+    "coverage": "partial; 1669 semantic unknowns. Graph editor, ORT worker and handoffs manually traced on the pinned bytes."
+  },
+  "reaWasm": {
+    "operation": "inspect_wasm_artifact",
+    "evidenceId": "ev_98537a6da8b58cc64210297977e11c33250bf6bb2a52f26a75ceadfdfa2049e1",
+    "provider": "wabt@1.0.42",
+    "sha256": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "validation": "valid",
+    "importCount": 390,
+    "exportCount": 134,
+    "debugNameMetadata": "not-present",
+    "watSha256": "14344f25416ed6ce19d15823eb688a3f4cb70eea28fc85b9cbeea155ed44ab72",
+    "exports": {
+      "pixelengine_compileDemanded": 10151,
+      "pixelengine_exportBegin": 11968,
+      "pixelengine_exportTile": 12295,
+      "pixelengine_installPlugs": 13188,
+      "pixelengine_openRawSensor": 11526,
+      "pixelengine_render": 11759,
+      "pixelengine_viewerFrame": 11199
+    },
+    "runtime": "not-performed"
+  },
+  "files": [
+    {
+      "path": "assets/index-zP4kU_H7.js",
+      "sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+      "anchors": {
+        "sortedInbound": {
+          "offset": 261912,
+          "text": "function zt("
+        },
+        "reachableTopologicalSort": {
+          "offset": 262047,
+          "text": "function RO("
+        },
+        "fromOutput": {
+          "offset": 262635,
+          "text": "function k5("
+        },
+        "parallelOrLayerFanIn": {
+          "offset": 265697,
+          "text": "function DO("
+        },
+        "orderedInputs": {
+          "offset": 268083,
+          "text": "function tg("
+        },
+        "rejectInvalidEdge": {
+          "offset": 268715,
+          "text": "function HO("
+        },
+        "nestedSingleIOGroup": {
+          "offset": 272360,
+          "text": "function _O("
+        }
+      }
+    },
+    {
+      "path": "assets/worker-PmnZFHwu.js",
+      "sha256": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+      "anchors": {
+        "decodeSensor": {
+          "offset": 107383,
+          "text": "async decodeSensor("
+        },
+        "openSource": {
+          "offset": 113966,
+          "text": "async decodeRaw("
+        },
+        "openRawSensor": {
+          "offset": 115378,
+          "text": "openRawSensor("
+        },
+        "onlyResendChangedEdit": {
+          "offset": 203977,
+          "text": "this.sentEdit!=="
+        },
+        "demandCompilation": {
+          "offset": 209888,
+          "text": "compileDemanded(4)"
+        },
+        "schedulerTick": {
+          "offset": 210047,
+          "text": "viewerTick(this.id"
+        },
+        "viewerSubmit": {
+          "offset": 213588,
+          "text": "viewerFrame(this.id"
+        },
+        "viewerFinish": {
+          "offset": 215256,
+          "text": "viewerDone(this.id"
+        },
+        "tileExportBegin": {
+          "offset": 188328,
+          "text": "exportBegin("
+        },
+        "tileRender": {
+          "offset": 189032,
+          "text": "exportTile("
+        },
+        "tileReadback": {
+          "offset": 189067,
+          "text": "readTicket("
+        },
+        "onFullBand": {
+          "offset": 189568,
+          "text": "onBand("
+        },
+        "ensureAssets": {
+          "offset": 244527,
+          "text": "async ensureAssets("
+        }
+      }
+    },
+    {
+      "path": "assets/inpaintGpu-Cp3ARYYv.js",
+      "sha256": "a42a2698c1c8c606f863fee77649ac329dcf6afd1a70061f7a1934da513f99a7",
+      "anchors": {
+        "plugVersionAndData": {
+          "offset": 257,
+          "text": "installPlugs("
+        },
+        "modelRoiAndMatte": {
+          "offset": 1078,
+          "text": "inpaintInput("
+        },
+        "pairedReadbacks": {
+          "offset": 1181,
+          "text": "Promise.all("
+        },
+        "retainCandidate": {
+          "offset": 1541,
+          "text": "setPatch("
+        }
+      }
+    },
+    {
+      "path": "assets/ortWorker-DaXiU2P4.js",
+      "sha256": "82cb8a8b22f6cf3278b583153bb8c5081fdf1edebdc87c9858b0f1dfc421980c",
+      "anchors": {
+        "releaseGpuSessions": {
+          "offset": 20376,
+          "text": "gpuLost(e){"
+        },
+        "onnxSession": {
+          "offset": 22841,
+          "text": "InferenceSession.create"
+        },
+        "foregroundBeforeBackground": {
+          "offset": 32510,
+          "text": "foreground.shift()"
+        },
+        "cancel": {
+          "offset": 32688,
+          "text": "if(\"cancelId\"in d)"
+        }
+      }
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+      "sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+      "anchors": {
+        "bitmapUpload": {
+          "offset": 7328,
+          "text": "bitmapBand(id"
+        },
+        "lineariseAndOrient": {
+          "offset": 8437,
+          "text": "bitmapFinish(id"
+        },
+        "fusedCompile": {
+          "offset": 10049,
+          "text": "compileDemanded(max)"
+        },
+        "renderStatistics": {
+          "offset": 36734,
+          "text": "render(id, edit_json"
+        },
+        "registerProviders": {
+          "offset": 23173,
+          "text": "installPlugs(mattes"
+        },
+        "profile": {
+          "offset": 31876,
+          "text": "profileStart(on)"
+        },
+        "memory": {
+          "offset": 24116,
+          "text": "memory()"
+        },
+        "exportTileType": {
+          "offset": 16414,
+          "text": "exportTile(job"
+        },
+        "dropFrameHandle": {
+          "offset": 34457,
+          "text": "release(handle)"
+        }
+      }
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm",
+      "sha256": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+      "anchors": {
+        "renderGraph": {
+          "offset": 5698901,
+          "text": "crates/lightflow-render/src/graph.rs"
+        },
+        "segmentBuilder": {
+          "offset": 5689226,
+          "text": "crates/lightflow-render/src/segments.rs"
+        },
+        "rendererCache": {
+          "offset": 5702591,
+          "text": "crates/lightflow-render/src/cache.rs"
+        },
+        "cycleDiagnostic": {
+          "offset": 6349931,
+          "text": "The node graph contains a cycle."
+        },
+        "workingPrimaries": {
+          "offset": 6337421,
+          "text": "Working ProPhoto"
+        },
+        "workingXyz": {
+          "offset": 6309673,
+          "text": "const WORKING_TO_XYZ"
+        },
+        "srgbTransfer": {
+          "offset": 6310084,
+          "text": "fn srgb_encode"
+        },
+        "fp16Storage": {
+          "offset": 5668711,
+          "text": "texture_storage_2d<rgba16float"
+        },
+        "fp32Storage": {
+          "offset": 5669354,
+          "text": "texture_storage_2d<rgba32float"
+        },
+        "maskBlend": {
+          "offset": 5673869,
+          "text": "mix(ni.rgb"
+        }
+      }
+    }
+  ]
+}

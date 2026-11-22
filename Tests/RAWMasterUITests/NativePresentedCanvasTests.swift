@@ -42,10 +42,12 @@ final class NativePresentedCanvasTests: XCTestCase {
               let props = CGImageSourceCopyPropertiesAtIndex(image, 0, nil) as? [String: Any],
               let width = props[kCGImagePropertyPixelWidth as String] as? Int,
               let height = props[kCGImagePropertyPixelHeight as String] as? Int else { throw Failure.invalid("RAW dimensions") }
-        return try store.register(.init(sessionID: imported.id, projectID: project.id, projectName: project.name,
+        let asset = try store.register(.init(sessionID: imported.id, projectID: project.id, projectName: project.name,
             sourcePath: source.path, currentPath: source.path, filename: source.lastPathComponent,
             fileSize: try FileSafety.stat(source).size, width: width, height: height,
             contentHash: try FileSafety.hash(source), importState: .ready))
+        try store.completedDirectImport(imported)
+        return asset
     }
 
     @MainActor private func findCanvas(_ view: NSView) -> ImageCanvas? {

@@ -4,7 +4,8 @@ import RAWMasterImaging
 
 @main
 struct RAWMasterApp: App {
-    @StateObject private var model = AppModel()
+    @StateObject private var librarySession = ApplicationLibrarySession()
+    private var model: AppModel { librarySession.model }
     @StateObject private var appearance = AppearanceController()
     @Environment(\.openWindow) private var openWindow
     @NSApplicationDelegateAdaptor(ApplicationDelegate.self) private var appDelegate
@@ -17,7 +18,7 @@ struct RAWMasterApp: App {
     }
     var body: some Scene {
         WindowGroup("RAWMaster") {
-            workbenchRoot
+            workbenchRoot.id(ObjectIdentifier(model))
                 .modifier(ApplicationSettingsRouting(model: model))
                 .preferredColorScheme(appearance.preference.preferredColorScheme)
                 .environment(\.resolvedAppAppearance, appearance.resolved)
@@ -38,6 +39,17 @@ struct RAWMasterApp: App {
                 Button("复制原文件…") { model.openExportWorkspace(.original) }.disabled(!model.canExport)
                 Button("合成延时视频…") { model.openTimelapse() }.disabled(model.isCatalog || !model.canComposeTimelapse())
             }
+            CommandMenu("资料库") {
+                Button("打开、备份与还原资料库…") { model.libraryPanel = .package }
+                Button("文件夹、集合与作品…") { model.libraryPanel = .organization }.disabled(model.store == nil)
+                Button("智能检索、地理围栏与人物…") { model.libraryPanel = .discovery }
+                    .keyboardShortcut("f", modifiers:[.command,.option]).disabled(model.store == nil)
+                Button("迁入 Lightroom Classic 目录…") { model.libraryPanel = .migration }.disabled(model.store == nil)
+                Button("分组制作与成片…") { if let id = model.activeGroup?.id { model.openGroupProcessing(id) } }
+                    .disabled(model.activeGroup == nil)
+                Button("检查照片与多图总览…") { model.inspectWorks() }.disabled(model.actionAssetIDs.isEmpty)
+                Button("移动或改名受管文件…") { model.libraryPanel = .managedFiles }.disabled(model.actionAssetIDs.isEmpty || model.isBusy)
+            }
             ProjectSearchCommands()
             WorkbenchUndoCommands()
             CommandMenu("编辑") {
@@ -56,7 +68,7 @@ struct RAWMasterApp: App {
                 ForEach(0..<6) { rating in Button("\(rating) 星") { model.decide(rating: rating) }.disabled(model.isCatalog || model.selectedIDs.isEmpty || model.isTriageScope || model.isHistoryScope) }
                 Divider()
                 Button(model.groupSelectionActionTitle) { model.performGroupSelectionAction() }.disabled(!model.canPerformGroupSelectionAction)
-                Toggle("决定后自动前进", isOn: $model.autoAdvance).onChange(of: model.autoAdvance) { model.saveBrowse() }.disabled(model.isCatalog)
+                Toggle("决定后自动前进", isOn: Binding(get: { model.autoAdvance }, set: { model.autoAdvance = $0 })).onChange(of: model.autoAdvance) { model.saveBrowse() }.disabled(model.isCatalog)
             }
             CommandMenu("浏览") {
                 Button("网格") { model.setMode(.grid) }.keyboardShortcut("g", modifiers: []).disabled(model.isCatalog)
@@ -142,6 +154,7 @@ func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.Termin
   // Even a failed photo-controller initialization may leave application services alive.
   // Always close the shared preview actor, including the no-library/no-editing branch.
   let shutdown: @MainActor () async -> Void = { [model, workbenchTeardown] in
+      model?.stopLibraryIndexing()
       await model?.editing?.shutdown(finishPreviews: false)
       var teardownResult: QAWorkbenchTeardown.Result?
       if let workbenchTeardown {
@@ -238,8 +251,9 @@ struct KeyboardMonitor: NSViewRepresentable {
                 }
                 if event.type != .keyDown {
                     if let window = self.view?.window, event.window === window, window.attachedSheet == nil {
-                        if MainActor.assumeIsolated({ TitlebarDoubleClickRouter.handle(event, in: window) }) { return nil }
+                        if MainActor.assumeIsolated({ TitlebarInputRouter.handle(event, in: window) }) { return nil }
                         MainActor.assumeIsolated {
+                            guard event.locationInWindow.y < window.contentLayoutRect.maxY else { return }
                             let inside = SearchInteractionRegions.contains(window: window, point: event.locationInWindow)
                             if !inside && (self.searchHasOwnership() || SearchInteractionRegions.containsResponder(in: window)) { window.makeFirstResponder(nil) }
                             self.searchOwnership(inside)
