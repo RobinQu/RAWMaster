@@ -1,0 +1,24 @@
+{
+  "mode": "offline, typed plans and supplied facts",
+  "case_count": 13,
+  "decisions": {
+    "strict-exposure": "draft-native-recipe",
+    "strict-cloud": "blocked-by-documentary-policy",
+    "strict-clone": "blocked-by-documentary-policy",
+    "strict-edited-parent": "require-clean-source",
+    "unknown-tool": "unsupported",
+    "missing-scope": "review-upload",
+    "changed-scope": "review-upload",
+    "changed-revision": "review-upload",
+    "approved-scope": "request-candidate",
+    "late-return": "retain-unapplied-stale-candidate",
+    "explicit-apply": "append-history",
+    "duplicate-apply": "previous-receipt",
+    "per-photo-routing": [
+      "draft-native-recipe",
+      "select-person",
+      "skip-no-person",
+      "draft-native-recipe"
+    ]
+  }
+}

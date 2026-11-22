@@ -1,0 +1,233 @@
+{
+  "archiveSHA256": "9095a9613c95586f1c7f2a327d454833d16e0f5e17e5f83d35027ffd315b48e2",
+  "cases": [
+    {
+      "case": "FudanPed00001",
+      "imageSize": [
+        559,
+        536
+      ],
+      "labeledPeople": 2,
+      "detections": 2,
+      "matchedAtBoxIoU50": 2,
+      "allPeople": {
+        "iou": 0.675,
+        "boundaryF1At2px": 0.7552
+      },
+      "boxTargetLabel": 2,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.9388,
+        "boundaryF1At2px": 0.913
+      }
+    },
+    {
+      "case": "FudanPed00009",
+      "imageSize": [
+        465,
+        441
+      ],
+      "labeledPeople": 2,
+      "detections": 7,
+      "matchedAtBoxIoU50": 2,
+      "allPeople": {
+        "iou": 0.7883,
+        "boundaryF1At2px": 0.7224
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.8868,
+        "boundaryF1At2px": 0.7942
+      }
+    },
+    {
+      "case": "FudanPed00020",
+      "imageSize": [
+        555,
+        417
+      ],
+      "labeledPeople": 1,
+      "detections": 1,
+      "matchedAtBoxIoU50": 1,
+      "allPeople": {
+        "iou": 0.9328,
+        "boundaryF1At2px": 0.9277
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.8734,
+        "boundaryF1At2px": 0.8755
+      }
+    },
+    {
+      "case": "FudanPed00035",
+      "imageSize": [
+        292,
+        349
+      ],
+      "labeledPeople": 1,
+      "detections": 2,
+      "matchedAtBoxIoU50": 1,
+      "allPeople": {
+        "iou": 0.7906,
+        "boundaryF1At2px": 0.6718
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.6443,
+        "boundaryF1At2px": 0.7161
+      }
+    },
+    {
+      "case": "FudanPed00050",
+      "imageSize": [
+        580,
+        516
+      ],
+      "labeledPeople": 2,
+      "detections": 2,
+      "matchedAtBoxIoU50": 2,
+      "allPeople": {
+        "iou": 0.9241,
+        "boundaryF1At2px": 0.877
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.9269,
+        "boundaryF1At2px": 0.837
+      }
+    },
+    {
+      "case": "FudanPed00065",
+      "imageSize": [
+        504,
+        411
+      ],
+      "labeledPeople": 5,
+      "detections": 7,
+      "matchedAtBoxIoU50": 5,
+      "allPeople": {
+        "iou": 0.8413,
+        "boundaryF1At2px": 0.8214
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.9001,
+        "boundaryF1At2px": 0.8272
+      }
+    },
+    {
+      "case": "PennPed00001",
+      "imageSize": [
+        612,
+        406
+      ],
+      "labeledPeople": 5,
+      "detections": 13,
+      "matchedAtBoxIoU50": 5,
+      "allPeople": {
+        "iou": 0.7465,
+        "boundaryF1At2px": 0.6341
+      },
+      "boxTargetLabel": 3,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.8148,
+        "boundaryF1At2px": 0.5834
+      }
+    },
+    {
+      "case": "PennPed00015",
+      "imageSize": [
+        906,
+        438
+      ],
+      "labeledPeople": 3,
+      "detections": 4,
+      "matchedAtBoxIoU50": 3,
+      "allPeople": {
+        "iou": 0.6513,
+        "boundaryF1At2px": 0.5971
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.9145,
+        "boundaryF1At2px": 0.9109
+      }
+    },
+    {
+      "case": "PennPed00030",
+      "imageSize": [
+        479,
+        354
+      ],
+      "labeledPeople": 3,
+      "detections": 8,
+      "matchedAtBoxIoU50": 3,
+      "allPeople": {
+        "iou": 0.7062,
+        "boundaryF1At2px": 0.6828
+      },
+      "boxTargetLabel": 3,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.8938,
+        "boundaryF1At2px": 0.7913
+      }
+    },
+    {
+      "case": "PennPed00050",
+      "imageSize": [
+        419,
+        315
+      ],
+      "labeledPeople": 1,
+      "detections": 5,
+      "matchedAtBoxIoU50": 1,
+      "allPeople": {
+        "iou": 0.6022,
+        "boundaryF1At2px": 0.5759
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.8021,
+        "boundaryF1At2px": 0.5852
+      }
+    },
+    {
+      "case": "PennPed00071",
+      "imageSize": [
+        767,
+        379
+      ],
+      "labeledPeople": 6,
+      "detections": 8,
+      "matchedAtBoxIoU50": 6,
+      "allPeople": {
+        "iou": 0.9138,
+        "boundaryF1At2px": 0.8497
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.9472,
+        "boundaryF1At2px": 0.9593
+      }
+    },
+    {
+      "case": "PennPed00090",
+      "imageSize": [
+        500,
+        370
+      ],
+      "labeledPeople": 3,
+      "detections": 3,
+      "matchedAtBoxIoU50": 3,
+      "allPeople": {
+        "iou": 0.7823,
+        "boundaryF1At2px": 0.589
+      },
+      "boxTargetLabel": 1,
+      "largestPersonWithGroundTruthBox": {
+        "iou": 0.5616,
+        "boundaryF1At2px": 0.3735
+      }
+    }
+  ]
+}

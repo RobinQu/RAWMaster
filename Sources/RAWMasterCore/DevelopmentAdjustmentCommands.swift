@@ -178,7 +178,12 @@ extension DevelopmentRecipe {
     case .setRawDetails(let mode):
       if mode != nil, context?.sourceCapability == .image { throw EditingError.invalidRecipe }
       payload.rawDetails = mode
-    case .setMasks(let masks): payload.masks = masks
+    case .setMasks(let masks):
+      if masks.contains(where: { $0.semanticSnapshot != nil }) {
+        guard let context else { throw DevelopmentAdjustmentCommandError.missingSourceContext }
+        try DevelopmentMaskLayerV3.validateSource(masks, expected: context.source)
+      }
+      payload.masks = masks
     case .appendLocal(let operation):
       guard let context else { throw DevelopmentAdjustmentCommandError.missingSourceContext }
       guard operation.sourceContentID == context.source.sourceContentID else { throw DevelopmentAdjustmentCommandError.mismatchedSource }

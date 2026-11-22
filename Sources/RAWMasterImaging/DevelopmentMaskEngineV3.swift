@@ -36,7 +36,7 @@ enum DevelopmentMaskEngineV3 {
   private static func maskInputs(_ layer: DevelopmentMaskLayerV3, image: CIImage, opacity: Double? = nil) throws -> (CIImage, [Any]) {
     let subject: CIImage
     if layer.kind == .subject {
-      guard let data = layer.subjectPNG, let decoded = CIImage(data: data), !decoded.extent.isEmpty else { throw DevelopmentError.unreadable }
+      guard let data = layer.subjectPNG, let decoded = CIImage(data: data, options: layer.semanticSnapshot == nil ? [:] : [.colorSpace: NSNull()]), !decoded.extent.isEmpty else { throw DevelopmentError.unreadable }
       subject = decoded.transformed(by: .init(translationX: -decoded.extent.minX, y: -decoded.extent.minY))
         .transformed(by: .init(scaleX: image.extent.width / decoded.extent.width, y: image.extent.height / decoded.extent.height))
     } else { subject = CIImage(color: .clear).cropped(to: CGRect(x: 0, y: 0, width: 1, height: 1)) }

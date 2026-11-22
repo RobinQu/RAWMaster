@@ -1,0 +1,32 @@
+{
+  "controlTIFFSHA256" : "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+  "export" : {
+    "bitsPerComponent" : 16,
+    "file" : "reopened-subject.tiff",
+    "height" : 80,
+    "sha256" : "569c6d1620ffa97cddf91cd20f1d837f99893e3426d9eac82154979030bd86af",
+    "width" : 120
+  },
+  "memoryAfterExport" : {
+    "processPeakResidentBytes" : 291176448,
+    "residentBytes" : 270434304
+  },
+  "pixelComparison" : {
+    "protectedMaximumRGBA16Difference" : 0,
+    "protectedPixels" : 9484,
+    "selectedBrighterPixels" : 112,
+    "selectedPixels" : 112,
+    "selectedRGBSumGain" : 3107304
+  },
+  "reopenedRecipeExportMs" : 12.203374999999999,
+  "sourceSHA256" : "a77908af83b27bd604ad0f96a57a8bcd40b97b5640cc0cd759e8624deaa61158",
+  "togglePixelComparison" : {
+    "protectedMaximumRGBA16Difference" : 2,
+    "protectedPixels" : 9484,
+    "selectedBrighterPixels" : 112,
+    "selectedPixels" : 112,
+    "selectedRGBSumGain" : 3107080
+  },
+  "toggleUsesSameRenderer" : false,
+  "zeroCoverageTIFFSHA256" : "b30176f320b855d605a5c97c9542c17f9a3fee85d79c64760df927176801b9c2"
+}

@@ -8,9 +8,9 @@ import XCTest
 
 /// Opt-in real RAW controller + native AppKit canvas timing. Programmatic input is not physical input.
 final class EditingInteractionPerformanceTests: XCTestCase {
-    private enum Failure: Error { case timedOut(String) }
+    private enum Failure: Error { case timedOut(String), conflictingMeasurements }
 
-    @MainActor private func wait(_ label: String, seconds: Double = 30, _ condition: () -> Bool) async throws {
+    @MainActor func wait(_ label: String, seconds: Double = 30, _ condition: @escaping @MainActor () -> Bool) async throws {
         let deadline = ContinuousClock.now + .seconds(seconds)
         while ContinuousClock.now < deadline {
             if condition() { return }
@@ -20,13 +20,70 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         throw Failure.timedOut(label)
     }
 
-    private func statistics(_ values: [Double]) -> [String: Any] {
+    func statistics(_ values: [Double]) -> [String: Any] {
         let sorted = values.sorted()
         guard !sorted.isEmpty else { return [:] }
         let median = sorted.count % 2 == 0 ? (sorted[sorted.count / 2 - 1] + sorted[sorted.count / 2]) / 2 : sorted[sorted.count / 2]
         return ["count": sorted.count, "medianMs": median,
             "p95Ms": sorted[min(sorted.count - 1, Int(ceil(Double(sorted.count) * 0.95)) - 1)],
             "maxMs": sorted[sorted.count - 1], "samplesMs": values]
+    }
+
+    @MainActor private func comparePresetWithManualExposure(
+        editing: EditingController, context: EditingInteractionContext
+    ) async throws -> [String: Any] {
+        let session = editing.developmentSession
+        let baseline = session.recipe
+        var samples = ["preset": [Double](), "manual": [Double]()]
+        var exposureValues: [Double] = []
+        for pair in 0...30 {
+            let target = 0.12 + Double(pair) * 0.005
+            exposureValues.append(target)
+            var patch = DevelopmentPresetPatch()
+            patch.exposure = target
+            let preset = DevelopmentPresetRecord(id: "qa-exposure", name: "曝光", group: "QA", kind: .user, patch: patch)
+            let order = pair.isMultiple(of: 2) ? ["preset", "manual"] : ["manual", "preset"]
+            var firstRecipe: DevelopmentRecipe?
+            for path in order {
+                XCTAssertEqual(session.recipe, baseline)
+                let started = DispatchTime.now().uptimeNanoseconds
+                if path == "preset" {
+                    try session.adoptPreset(preset, context: context, revision: session.revision)
+                } else {
+                    var light = session.parameters.light
+                    light.enabled = true
+                    light.exposure = target
+                    try session.apply(.setParameters(.light(light)), event: .init(context: context,
+                        control: .init(group: .light, name: "曝光"),
+                        nativeInput: .capture(control: "light.exposure", phase: "discrete", nativeEvent: true)))
+                }
+                try await wait("settled draw for " + path, seconds: 60) {
+                    editing.previews.primary.frameRecipe == session.recipe &&
+                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
+                }
+                samples[path, default: []].append(Double(DispatchTime.now().uptimeNanoseconds - started) / 1_000_000)
+                if let firstRecipe { XCTAssertEqual(session.recipe, firstRecipe) } else { firstRecipe = session.recipe }
+                try session.undo(context: context)
+                try await wait("restore matched baseline", seconds: 60) {
+                    session.recipe == baseline && editing.previews.primary.frameRecipe == baseline &&
+                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
+                }
+            }
+        }
+        var result: [String: Any] = ["order": "alternating AB/BA", "exposureValues": exposureValues,
+            "boundary": "discrete edit to accepted settled canvas draw return", "firstPair": "warm-up"]
+        var p95: [String: Double] = [:]
+        for path in ["preset", "manual"] {
+            let series = try XCTUnwrap(samples[path])
+            let warm = statistics(Array(series.dropFirst()))
+            result[path] = ["firstMs": try XCTUnwrap(series.first), "warm": warm] as [String: Any]
+            p95[path] = try XCTUnwrap(warm["p95Ms"] as? Double)
+        }
+        let presetP95 = try XCTUnwrap(p95["preset"])
+        let manualP95 = try XCTUnwrap(p95["manual"])
+        result["passes"] = presetP95 <= manualP95
+        XCTAssertLessThanOrEqual(presetP95, manualP95, "031 SC-02 same-source discrete exposure")
+        return result
     }
 
     @MainActor func testOptInRealRAWCompoundEditingCanvasPerformance() async throws {
@@ -45,9 +102,13 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let output = URL(fileURLWithPath: outputPath, isDirectory: true)
         try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
         let reportURL = output.appendingPathComponent("editing-interaction-performance.json")
-        XCTAssertFalse(FileManager.default.fileExists(atPath: reportURL.path), "Refuse to overwrite performance evidence")
         let run = output.appendingPathComponent("fixture", isDirectory: true)
-        try FileManager.default.createDirectory(at: run, withIntermediateDirectories: true)
+        let ownedURLs = [reportURL, run, output.appending(path: "reopened-subject.tiff"), output.appending(path: "disabled-layer-control.tiff"),
+                         output.appending(path: "same-renderer-zero-coverage.tiff")]
+        guard !ownedURLs.contains(where: { FileManager.default.fileExists(atPath: $0.path) }) else {
+            throw CocoaError(.fileWriteFileExists)
+        }
+        try FileManager.default.createDirectory(at: run, withIntermediateDirectories: false)
         let library = run.appendingPathComponent("fixture.sqlite")
         let prepared = try await Task.detached { () -> (LibraryStore, AssetRecord, String) in
             let store = try LibraryStore(databaseURL: library)
@@ -71,8 +132,13 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let store = prepared.0, asset = prepared.1
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "EditingPerformance-" + UUID().uuidString))
         let filterOnly = environment["RAWMASTER_EDITING_PERF_FILTER_ONLY"] == "1"
+        let pairedPreset = environment["RAWMASTER_EDITING_PERF_PRESET_PAIR"] == "1"
+        let measureMask = environment["RAWMASTER_EDITING_PERF_MASK_SUBJECT"] == "1"
+        if measureMask && (filterOnly || pairedPreset) {
+            throw Failure.conflictingMeasurements
+        }
         let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0,
-            rawBaseCacheBytes: filterOnly ? 1_073_741_824 : 0, interactiveEvaluation: .proxyV1))
+            rawBaseCacheBytes: filterOnly || pairedPreset || measureMask ? 1_073_741_824 : 0, interactiveEvaluation: .proxyV1))
         let backend = SharedEditingPreviewBackend(service: service)
         let editing = try EditingController(store: store, libraryURL: library, defaults: defaults, previewBackend: backend)
         let appModel = AppModel(libraryURL: library, defaults: defaults)
@@ -92,6 +158,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             "measurementBoundary": "programmatic recipe commit to accepted AppKit canvas draw return; not physical input or WindowServer presentation",
             "lightflowReference": try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: lightflowPath)))
         ]
+        var editorDidClose = false
         do {
             editing.isPresented = true
             editing.focus(asset)
@@ -143,7 +210,25 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                         .setParameters(.filter(.init(enabled: true, selection: .vivid, intensity: 50)))]
                 })
             ]
-            let cases = filterOnly ? filterCases : standardCases
+            if pairedPreset {
+                report["protocol"] = "031-discrete-preset-manual-settled-v1"
+                report["pairedExposure"] = try await comparePresetWithManualExposure(editing: editing, context: context)
+            }
+            var adoptedMask: DevelopmentMaskLayerV3?
+            if measureMask {
+                report["protocol"] = "027-editor-subject-and-frozen-export-v1"
+                report["measurementBoundary"] = "Mask request to a candidate ready for review. Adoption to settled AppKit draw return. Reopened recipe to TIFF writer return."
+                try await wait("initial settled draw before subject request", seconds: 90) {
+                    editing.previews.primary.frameRecipe == editing.recipe &&
+                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
+                }
+                let before = await service.statistics()
+                adoptedMask = try await measureSubjectMask(editing: editing, context: context, report: &report)
+                let after = await service.statistics()
+                report["previewRawBase"] = ["fillsBefore": before.rawBaseFills, "fillsAfter": after.rawBaseFills,
+                                            "hitsBefore": before.rawBaseHits, "hitsAfter": after.rawBaseHits]
+            }
+            let cases = pairedPreset || measureMask ? [] : (filterOnly ? filterCases : standardCases)
             var allInteractive: [Double] = [], coldInteractive: [Double] = [], warmInteractive: [Double] = []
             for (label, count, makeCommands) in cases {
                 var interactive: [Double] = [], settled: [Double] = []
@@ -193,8 +278,19 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             XCTAssertEqual(report["sourceSHA256After"] as? String, prepared.2)
             await editing.shutdown()
             await service.closeAll()
+            editorDidClose = true
+            if let adoptedMask {
+                report["memoryAfterEditorShutdown"] = try Self.maskProcessMemory()
+                try await Self.exportReopenedMask(library: library, workID: context.workID, layer: adoptedMask,
+                                                  output: output, report: &report)
+                let toggle = try XCTUnwrap(report["togglePixelComparison"] as? [String: Int])
+                XCTAssertEqual(toggle["protectedMaximumRGBA16Difference"], 0, "Protected pixels changed when toggling the layer, including legacy work")
+                let hashAfterExport = try await Task.detached { try FileSafety.hash(source) }.value
+                report["sourceSHA256AfterExport"] = hashAfterExport
+                XCTAssertEqual(hashAfterExport, prepared.2)
+            }
         } catch {
-            await editing.shutdown(); await service.closeAll()
+            if !editorDidClose { await editing.shutdown(); await service.closeAll() }
             report["failure"] = error.localizedDescription
             let data = try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys])
             try data.write(to: reportURL, options: .withoutOverwriting)

@@ -1,0 +1,103 @@
+{
+  "backend": "mlx",
+  "mlx_version": "0.32.4",
+  "bits": 8,
+  "text_bits": 8,
+  "quantization_profile": "q8",
+  "vae_dtype": "float16",
+  "vae_rows": 0,
+  "cache_limit_bytes": 536870912,
+  "dit_dtype": "float32",
+  "precision": "scaled",
+  "matmul": "quantized",
+  "kernel_mode": "fast",
+  "stream_text": true,
+  "mlx_enable_tf32": "0",
+  "arithmetic": {
+    "matrix": "scaled float16",
+    "conditioning": "float32",
+    "residuals": "float32",
+    "euler": "float32"
+  },
+  "device": {
+    "device_name": "Apple M4 Max",
+    "max_recommended_working_set_size": 115448725504,
+    "memory_size": 137438953472,
+    "architecture": "applegpu_g16s",
+    "max_buffer_length": 86586540032,
+    "resource_limit": 499000
+  },
+  "verification_seconds": 0.0024826250155456364,
+  "model_manifests_sha256": {
+    "q8": "4fde1966db8cc833e8848c4d07e1afe6202fa8e1c5e5959d779add4f8f3b51e8",
+    "vae-fp32": "371d81875a331328aaf1fc970fb05bf6fe33a2b5a1431b3eb35b12b25b4afab6",
+    "assets": "5b236ecdafe4c111ad6e6f5d4814c677924db5cea5aa9ababdeabd2d3a6b4438"
+  },
+  "token_ids_sha256": "927c66559b271c1568ed7ca3a923b93aef48288caf8888110c3de624b5ed9162",
+  "encode": {
+    "load_seconds": 0.0004409999819472432,
+    "compute_seconds": 0.3815757080446929
+  },
+  "references": {
+    "load_seconds": 0.013712999993003905,
+    "compute_seconds": 0.34986066701821983
+  },
+  "denoise": {
+    "load_seconds": 0.34043916600057855,
+    "conditioning_seconds": 0.29228679195512086,
+    "compute_seconds": 58.10316641803365,
+    "step_seconds": [
+      3.4627719999989495,
+      3.369097790971864,
+      3.3253090000362135,
+      3.347052542027086,
+      3.2349509579944424,
+      3.407633957976941,
+      3.540455749956891,
+      3.795223624969367,
+      4.055595999991056,
+      3.8517140420153737,
+      3.669706959044561,
+      3.6148937080288306,
+      3.717896334012039,
+      3.7898300000233576,
+      3.780063792015426,
+      3.8486831670161337
+    ]
+  },
+  "decode": {
+    "load_seconds": 0.029361957975197583,
+    "compute_seconds": 0.33773758402094245
+  },
+  "wall_seconds": 60.15699141699588,
+  "compute_seconds": 59.17234037711751,
+  "peak_mlx_active_bytes": 7253920524,
+  "memory_stages": {
+    "after_text": {
+      "active_bytes": 13107200,
+      "peak_bytes": 169553032
+    },
+    "transformer_loaded": {
+      "active_bytes": 6106863104,
+      "peak_bytes": 6106863104
+    },
+    "conditioning_prepared": {
+      "active_bytes": 5697096448,
+      "peak_bytes": 6949046824
+    },
+    "first_step": {
+      "active_bytes": 5827758860,
+      "peak_bytes": 7253920524
+    },
+    "after_denoise": {
+      "active_bytes": 524296,
+      "peak_bytes": 7253920524
+    },
+    "after_decode": {
+      "active_bytes": 786440,
+      "peak_bytes": 7253920524
+    }
+  },
+  "physical_footprint_bytes": 861832248,
+  "peak_physical_footprint_bytes": 8127255520
+}

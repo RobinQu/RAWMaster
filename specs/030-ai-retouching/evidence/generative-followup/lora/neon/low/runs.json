@@ -1,0 +1,32 @@
+{
+  "base": "stabilityai/stable-diffusion-xl-base-1.0",
+  "baseRevision": "462165984030d82259a11f4367a4eed129e94a7b",
+  "loraVersion": 153894,
+  "adapterSHA256": "f8876690194e1cd791568a279f8f23d769910942bd77730265de493fc36a12fe",
+  "sourceSHA256": "134fccc2f30694e69771acea4a7fa24c33e0266e7bd32805e8a04f0ca1635dc6",
+  "scheduler": "EulerDiscreteScheduler",
+  "prompt": "Liam Wong Style page, photograph of the same Shinjuku rainy night intersection, deep blue dusk shadows, restrained magenta and cyan light reflecting on the wet street, preserve every sign and character, all people, road markings, walls, railway bridge and framing",
+  "negativePrompt": "",
+  "seed": 31903,
+  "inferenceSteps": 20,
+  "img2imgStrength": 0.2,
+  "guidance": 5.0,
+  "size": [
+    768,
+    512
+  ],
+  "runs": {
+    "base": {
+      "adapterWeight": 0.0,
+      "pipelineSeconds": 4.49,
+      "outputSHA256": "4046aa6641d063c42f48ac17bfb31c4e3c07467854d494734f57cf33d1bd0b21",
+      "meanMaxMinusMinRGB8": 102.055
+    },
+    "with-lora": {
+      "adapterWeight": 0.7,
+      "pipelineSeconds": 3.945,
+      "outputSHA256": "8c92c10fbf1b8304a555f96a975cfc930df1b3bf3458f3ce310e81735a06775d",
+      "meanMaxMinusMinRGB8": 102.02
+    }
+  }
+}

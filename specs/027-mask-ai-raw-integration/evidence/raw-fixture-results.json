@@ -1,0 +1,147 @@
+{
+  "thresholdGray8": 128,
+  "modelsSHA256": {
+    "dfine-s-coco": "1929a508f43c2d60f62f32308506cec21b31c7e4518c5e0458ca75688d6faa8f",
+    "slimsam-encoder": "cce23c7b2e5d4f330932738fb67ba518e04b0d99ccdd1cccd22a7da4e01f2971",
+    "slimsam-decoder": "cb90b279f549d2cab7fd6e20c38522438c65d84bdcca3d2a764cff7d857fdce2",
+    "selfie-multiclass": "35ec1ecd9ee7f85073c99c00020b7f6751b69506eeacf683bc8665f6117f85b0",
+    "efficientvit-seg-b2-ade20k": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d"
+  },
+  "cases": [
+    {
+      "id": "person",
+      "source": {
+        "analysisHeight": 2400,
+        "analysisWidth": 1600,
+        "decoderVersion": "8",
+        "draftMode": false,
+        "exifOrientation": 8,
+        "nativeHeight": 6000,
+        "nativeWidth": 4000,
+        "sourceSHA256": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8"
+      },
+      "masks": {
+        "people-entirePerson": {
+          "size": [
+            1366,
+            2048
+          ],
+          "pixelsAtOrAbove128": 252438,
+          "fractionAtOrAbove128": 0.09023480394399708,
+          "meanAlpha": 0.09026951897042675,
+          "maxGray8": 255,
+          "modelIDs": [
+            "dfine-s-coco",
+            "slimsam-encoder",
+            "slimsam-decoder"
+          ]
+        },
+        "people-faceSkin": {
+          "size": [
+            1366,
+            2048
+          ],
+          "pixelsAtOrAbove128": 3540,
+          "fractionAtOrAbove128": 0.0012653847913616399,
+          "meanAlpha": 0.006599754767390119,
+          "maxGray8": 238,
+          "modelIDs": [
+            "dfine-s-coco",
+            "selfie-multiclass"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bright-snow",
+      "source": {
+        "analysisHeight": 1600,
+        "analysisWidth": 2400,
+        "decoderVersion": "7",
+        "draftMode": false,
+        "exifOrientation": 1,
+        "nativeHeight": 4000,
+        "nativeWidth": 6000,
+        "sourceSHA256": "cfda5046021eb92a24cd2a44757cbc53f67c998bc4cb5e5ffe0fae00641b3216"
+      },
+      "masks": {
+        "landscape-snow": {
+          "size": [
+            2048,
+            1366
+          ],
+          "pixelsAtOrAbove128": 148002,
+          "fractionAtOrAbove128": 0.052903807878843336,
+          "meanAlpha": 0.08819909040322756,
+          "maxGray8": 253,
+          "modelIDs": [
+            "efficientvit-seg-b2-ade20k"
+          ],
+          "otherExportMaxGray8Difference": 0,
+          "otherExportPixelsDifferent": 0
+        }
+      }
+    },
+    {
+      "id": "snow",
+      "source": {
+        "analysisHeight": 2400,
+        "analysisWidth": 1600,
+        "decoderVersion": "8",
+        "draftMode": false,
+        "exifOrientation": 8,
+        "nativeHeight": 6000,
+        "nativeWidth": 4000,
+        "sourceSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2"
+      },
+      "masks": {
+        "landscape-snow": {
+          "size": [
+            1366,
+            2048
+          ],
+          "pixelsAtOrAbove128": 0,
+          "fractionAtOrAbove128": 0.0,
+          "meanAlpha": 0.002105695894069561,
+          "maxGray8": 65,
+          "modelIDs": [
+            "efficientvit-seg-b2-ade20k"
+          ],
+          "otherExportMaxGray8Difference": 0,
+          "otherExportPixelsDifferent": 0
+        }
+      }
+    },
+    {
+      "id": "cottage",
+      "source": {
+        "analysisHeight": 2400,
+        "analysisWidth": 1600,
+        "decoderVersion": "8",
+        "draftMode": false,
+        "exifOrientation": 8,
+        "nativeHeight": 5568,
+        "nativeWidth": 3712,
+        "sourceSHA256": "720305c30636de42e262df6b1c9bf449457f740c7d6a49f36a8d740b54e05323"
+      },
+      "masks": {
+        "landscape-snow": {
+          "size": [
+            1366,
+            2048
+          ],
+          "pixelsAtOrAbove128": 0,
+          "fractionAtOrAbove128": 0.0,
+          "meanAlpha": 0.0026454518254959377,
+          "maxGray8": 70,
+          "modelIDs": [
+            "efficientvit-seg-b2-ade20k"
+          ],
+          "otherExportMaxGray8Difference": 0,
+          "otherExportPixelsDifferent": 0
+        }
+      }
+    }
+  ],
+  "otherSceneExportSHA256": "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+}

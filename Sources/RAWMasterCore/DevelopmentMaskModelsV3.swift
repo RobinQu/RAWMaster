@@ -102,11 +102,14 @@ public struct DevelopmentMaskLayerV3: Codable, Equatable, Sendable, Identifiable
   public var adjustments: DevelopmentMaskAdjustmentsV3
   /// A downsampled 8-bit Vision result. Replay never repeats subject inference.
   public var subjectPNG: Data?
+  public var semanticSnapshot: DevelopmentSemanticMaskSnapshot?
   public init(id: UUID = UUID(), name: String = "蒙版", enabled: Bool = true, kind: DevelopmentMaskKindV3,
               start: DevelopmentSourcePoint = .init(x:0.25,y:0.25), end: DevelopmentSourcePoint = .init(x:0.75,y:0.75),
               center: DevelopmentSourcePoint = .init(x:0.5,y:0.5), radiusX: Double = 0.3, radiusY: Double = 0.3,
               feather: Double = 0.2, opacity: Double = 1, rangeLower: Double = 0, rangeUpper: Double = 1,
-              inverted: Bool = false, adjustments: DevelopmentMaskAdjustmentsV3 = .init(), subjectPNG: Data? = nil) {
+              inverted: Bool = false, adjustments: DevelopmentMaskAdjustmentsV3 = .init(), subjectPNG: Data? = nil,
+              semanticSnapshot: DevelopmentSemanticMaskSnapshot? = nil) {
+    self.semanticSnapshot = semanticSnapshot
     self.id=id;self.name=name;self.enabled=enabled;self.kind=kind;self.start=start;self.end=end;self.center=center
     self.radiusX=radiusX;self.radiusY=radiusY;self.feather=feather;self.opacity=opacity
     self.rangeLower=rangeLower;self.rangeUpper=rangeUpper;self.inverted=inverted;self.adjustments=adjustments;self.subjectPNG=subjectPNG
@@ -117,7 +120,8 @@ public struct DevelopmentMaskLayerV3: Codable, Equatable, Sendable, Identifiable
       rangeLower.isFinite,rangeUpper.isFinite,(0...1).contains(rangeLower),(0...1).contains(rangeUpper),rangeLower<rangeUpper else { throw EditingError.invalidRecipe }
     try start.validate();try end.validate();try center.validate();try adjustments.validate()
     if kind == .subject { guard let subjectPNG,!subjectPNG.isEmpty,subjectPNG.count<=Self.maximumSubjectPNGBytes else { throw EditingError.invalidRecipe } }
-    else if subjectPNG != nil { throw EditingError.invalidRecipe }
+    else if subjectPNG != nil || semanticSnapshot != nil { throw EditingError.invalidRecipe }
+    if let semanticSnapshot, let subjectPNG { try semanticSnapshot.validate(png: subjectPNG) }
   }
   public static func validateLayers(_ layers:[Self]) throws {
     guard layers.count<=maximumLayers else { throw EditingError.invalidRecipe }

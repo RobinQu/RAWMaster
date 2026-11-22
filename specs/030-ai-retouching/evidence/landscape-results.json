@@ -1,0 +1,198 @@
+{
+  "archiveSHA256": "b58b6cc2be86322a94d1b7116ab8f7a8b01d88ea57ba286ce2cd85d247637db3",
+  "modelSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+  "cases": [
+    {
+      "case": "6000079",
+      "target": "sky",
+      "positive": true,
+      "iou": 0.5702,
+      "selectedFractionOfKnownPixels": 0.247034,
+      "labeledFractionOfKnownPixels": 0.142246
+    },
+    {
+      "case": "0007323",
+      "target": "sky",
+      "positive": true,
+      "iou": 0.8502,
+      "selectedFractionOfKnownPixels": 0.267662,
+      "labeledFractionOfKnownPixels": 0.235338
+    },
+    {
+      "case": "6000195",
+      "target": "sky",
+      "positive": true,
+      "iou": 0.9265,
+      "selectedFractionOfKnownPixels": 0.079382,
+      "labeledFractionOfKnownPixels": 0.08351
+    },
+    {
+      "case": "6000229",
+      "target": "sky",
+      "positive": true,
+      "iou": 0.9424,
+      "selectedFractionOfKnownPixels": 0.091992,
+      "labeledFractionOfKnownPixels": 0.096536
+    },
+    {
+      "case": "6000047",
+      "target": "sky",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "9004965",
+      "target": "sky",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "5000149",
+      "target": "sky",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "0002755",
+      "target": "sky",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "0007323",
+      "target": "water",
+      "positive": true,
+      "iou": 0.9397,
+      "selectedFractionOfKnownPixels": 0.323577,
+      "labeledFractionOfKnownPixels": 0.329213
+    },
+    {
+      "case": "8002274",
+      "target": "water",
+      "positive": true,
+      "iou": 0.9608,
+      "selectedFractionOfKnownPixels": 0.239063,
+      "labeledFractionOfKnownPixels": 0.232878
+    },
+    {
+      "case": "8006302",
+      "target": "water",
+      "positive": true,
+      "iou": 0.9586,
+      "selectedFractionOfKnownPixels": 0.324062,
+      "labeledFractionOfKnownPixels": 0.312565
+    },
+    {
+      "case": "5000137",
+      "target": "water",
+      "positive": true,
+      "iou": 0.9644,
+      "selectedFractionOfKnownPixels": 0.584072,
+      "labeledFractionOfKnownPixels": 0.581035
+    },
+    {
+      "case": "6000079",
+      "target": "water",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "6000047",
+      "target": "water",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "6000195",
+      "target": "water",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "6000229",
+      "target": "water",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "0007323",
+      "target": "mountains",
+      "positive": true,
+      "iou": 0.392,
+      "selectedFractionOfKnownPixels": 0.058259,
+      "labeledFractionOfKnownPixels": 0.024777
+    },
+    {
+      "case": "8002274",
+      "target": "mountains",
+      "positive": true,
+      "iou": 0.0,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.017188
+    },
+    {
+      "case": "8006302",
+      "target": "mountains",
+      "positive": true,
+      "iou": 0.0,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.012852
+    },
+    {
+      "case": "0102234",
+      "target": "mountains",
+      "positive": true,
+      "iou": 0.9812,
+      "selectedFractionOfKnownPixels": 0.355417,
+      "labeledFractionOfKnownPixels": 0.356563
+    },
+    {
+      "case": "6000079",
+      "target": "mountains",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "6000047",
+      "target": "mountains",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "6000195",
+      "target": "mountains",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    },
+    {
+      "case": "6000229",
+      "target": "mountains",
+      "positive": false,
+      "iou": null,
+      "selectedFractionOfKnownPixels": 0.0,
+      "labeledFractionOfKnownPixels": 0.0
+    }
+  ]
+}

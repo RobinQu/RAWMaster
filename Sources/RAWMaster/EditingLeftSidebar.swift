@@ -4,11 +4,11 @@ import RAWMasterCore
 /// Filters, named snapshots and linear history share one vertical tool stack.
 struct EditingLeftSidebar: View {
     @ObservedObject var editing: EditingController
+    var presetCatalog: DevelopmentPresetCatalog = .shared
     @State private var summaryExpanded = true
     @State private var filtersExpanded = true
     @State private var snapshotsExpanded = true
     @State private var historyExpanded = false
-    @State private var viewportHeight: CGFloat = 600
     @State private var lensName: String?
     @State private var renamingSnapshot: DevelopmentSnapshot?
     @State private var snapshotName = ""
@@ -46,15 +46,9 @@ struct EditingLeftSidebar: View {
                             rawSummary
                         }
                         Divider().opacity(0.65)
-                        LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: $filtersExpanded,
-                                        enabled: Binding(get: { session.parameters.filter.enabled }, set: { value in
-                                            updateFilter(.setEnabled(.filter, value), session: session, context: context)
-                                        }), enableDisabled: editing.availableDevelopmentFilters.count <= 1,
-                                        resetAction: { updateFilter(.reset(.filter), session: session, context: context) }) {
-                            PhotosFilterControls(editing: editing, session: session,
-                                owner: editing.developmentThumbnails, context: context, viewportHeight: viewportHeight)
-                                .padding(12)
-                                .accessibilityIdentifier("editing.leftRail.filters")
+                        LeftRailSection(title: "预设", symbol: "camera.filters", expanded: $filtersExpanded, headingIdentifier: "editing.leftRail.filters") {
+                            DevelopmentPresetBrowser(editing: editing, session: session, context: context, scroller: proxy, catalog: presetCatalog)
+                                .padding(.horizontal, 12).padding(.bottom, 12)
                         }
                         Divider().opacity(0.65)
                         LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
@@ -70,10 +64,6 @@ struct EditingLeftSidebar: View {
                     }
                 }
                 .coordinateSpace(name: "photos.inspector.scroll")
-                .background(GeometryReader { geometry in
-                    Color.clear.onAppear { viewportHeight = geometry.size.height }
-                        .onChange(of: geometry.size.height) { _, value in viewportHeight = value }
-                })
                 .onAppear { if historyExpanded { scrollToCurrent(session: session, proxy: proxy) } }
                 .onChange(of: historyExpanded) { _, expanded in
                     if expanded { scrollToCurrent(session: session, proxy: proxy) }
@@ -125,12 +115,6 @@ struct EditingLeftSidebar: View {
                 .lineLimit(2).truncationMode(.middle)
         }
         .font(.system(size: 10))
-    }
-
-    private func updateFilter(_ command: DevelopmentAdjustmentCommand, session: EditingDevelopmentSession,
-                              context: EditingInteractionContext) {
-        do { try session.apply(command, event: .init(context: context, control: .init(group: .filter, name: "滤镜"))) }
-        catch { editing.message = "滤镜状态未更新，请完成当前调整后重试。" }
     }
 
     @ViewBuilder private func snapshotList(session: EditingDevelopmentSession,
@@ -271,6 +255,7 @@ private struct LeftRailSection<Content: View>: View {
     let title: String
     let symbol: String
     @Binding var expanded: Bool
+    var headingIdentifier = ""
     var enabled: Binding<Bool>? = nil
     var enableDisabled = false
     var resetAction: (() -> Void)? = nil
@@ -295,6 +280,7 @@ private struct LeftRailSection<Content: View>: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(title)，\(expanded ? "收起" : "展开")")
+                .accessibilityIdentifier(headingIdentifier)
                 if let resetAction {
                     Button(action: resetAction) { Image(systemName: "arrow.uturn.backward").frame(width: 24, height: 26) }
                         .buttonStyle(.plain).help("复位滤镜").accessibilityLabel("复位滤镜")

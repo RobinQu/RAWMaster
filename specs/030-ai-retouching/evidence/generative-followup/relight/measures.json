@@ -1,0 +1,98 @@
+{
+  "model": "FLUX.3 Image Klein MLX Q8, q8-16",
+  "seed": 31903,
+  "originalSha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5",
+  "sphereSha256": "9ef5fd0f52872ba24369a3d7dba8868253655f4f4ddb2fb255b6bf521fa171a2",
+  "lightingPhotoSha256": "13710b88bfcb76a3351eefea5ee0680b6ef62ec9d86b9a1ef4dfe72eceb64c40",
+  "referenceOriginalSha256": "a8ca6d734765703b09728ab47fe59f473d93ae3967fc24c7c0288c3c7adb7130",
+  "cheekRegions": {
+    "viewerLeft": [
+      188,
+      113,
+      200,
+      125
+    ],
+    "viewerRight": [
+      236,
+      113,
+      248,
+      125
+    ]
+  },
+  "backgroundRegions": [
+    [
+      10,
+      12,
+      64,
+      58
+    ],
+    [
+      411,
+      15,
+      486,
+      55
+    ],
+    [
+      465,
+      164,
+      501,
+      205
+    ]
+  ],
+  "results": {
+    "source": {
+      "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5",
+      "linearCheeks": [
+        0.69178,
+        0.51847
+      ],
+      "rightOverLeftEV": -0.416,
+      "backgroundMeanAbsRGB8": 0.0
+    },
+    "preset": {
+      "sha256": "4ea1e3dc0031681cc9c8733f7bd9fedc086f1ba9aa4fc774714a350944757f43",
+      "linearCheeks": [
+        0.68449,
+        0.47407
+      ],
+      "rightOverLeftEV": -0.53,
+      "backgroundMeanAbsRGB8": 4.44,
+      "engineMetrics": {
+        "wall_seconds": 36.407882041996345,
+        "compute_seconds": 35.81733262591297,
+        "peak_mlx_active_bytes": 6948522536,
+        "peak_physical_footprint_bytes": 7617926160
+      }
+    },
+    "reference": {
+      "sha256": "4addc7a46141fe6d1cb52ee66b4b3d29e200fbff0b6e952e9b4e98a0caf3fb71",
+      "linearCheeks": [
+        0.63784,
+        0.45137
+      ],
+      "rightOverLeftEV": -0.499,
+      "backgroundMeanAbsRGB8": 5.73,
+      "engineMetrics": {
+        "wall_seconds": 60.15699141699588,
+        "compute_seconds": 59.17234037711751,
+        "peak_mlx_active_bytes": 7253920524,
+        "peak_physical_footprint_bytes": 8127255520
+      }
+    },
+    "photo": {
+      "sha256": "5ed071828b0ff22a399fea6166a89b43aa0b3d250053f1755322bd5f46a34ba4",
+      "linearCheeks": [
+        0.64857,
+        0.45688
+      ],
+      "rightOverLeftEV": -0.505,
+      "backgroundMeanAbsRGB8": 5.56,
+      "engineMetrics": {
+        "wall_seconds": 51.9561637500301,
+        "compute_seconds": 51.29798987408867,
+        "peak_mlx_active_bytes": 7400684072,
+        "peak_physical_footprint_bytes": 8130729024
+      }
+    }
+  }
+}

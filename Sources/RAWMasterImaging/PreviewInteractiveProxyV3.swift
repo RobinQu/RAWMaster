@@ -325,6 +325,7 @@ extension PreviewNativeSource {
     guard let descriptor=plan.descriptor,let geometry=plan.geometry,descriptor.captureID==captureID,
       descriptor.width==Int(nativeSize.width),descriptor.height==Int(nativeSize.height),descriptor.decoder==(p.aiDenoise?.model.rawValue ?? decoder) else{throw PreviewPresentationError.allocationProtocol}
     let binding=DevelopmentLocalEditSourceBinding(sourceContentID:descriptor.verifiedContentID,exifOrientation:originalEXIFOrientation,orientedWidth:descriptor.width,orientedHeight:descriptor.height)
+    try DevelopmentMaskLayerV3.validateSource(p.masks, expected:binding)
     try p.localEdits.validate(expectedSource:binding);try p.whiteBalance.resolvedState?.validate(expectedSource:binding)
     if p.advancedDetail.dehaze.enabled,p.advancedDetail.dehaze.amount != 0 {
       let context=try dehazeContext(source:binding,generation:descriptor.generation)

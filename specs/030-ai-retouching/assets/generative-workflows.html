@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RAWMaster · 生成式精修设计走查</title>
+<style>
+  :root{color-scheme:dark;--bg:#171a1c;--panel:#23272a;--ink:#f1f0ea;--muted:#b9bdbf;--line:#454b4c;--focus:#c4e1d2;--accent:#e5c896}
+  *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif}
+  header,nav,.bar,.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}header{padding:14px 24px;border-bottom:1px solid var(--line);justify-content:space-between}
+  header strong{font-size:20px;letter-spacing:.025em}header small,small,.hint{color:var(--muted)}nav{padding:12px 24px;border-bottom:1px solid var(--line)}
+  button{font:inherit;background:#2c3134;color:var(--ink);padding:7px 12px;border:1px solid #53595c;border-radius:6px;cursor:pointer}
+  button:hover{border-color:var(--focus)}button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  button[aria-pressed=true]{background:#35433e;border-color:#96beaa}button:disabled{opacity:.42;cursor:default}
+  main{display:grid;grid-template-columns:minmax(0,1fr) 320px;min-height:calc(100vh - 115px)}
+  article{min-width:0;padding:16px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:#151819}
+  .bar{justify-content:center}.stage{position:relative;width:min(100%,calc(64vh * var(--ratio)));aspect-ratio:var(--ratio);overflow:hidden;background:#111}
+  .stage img{width:100%;height:100%;object-fit:cover;display:block}.stage>div{position:absolute;inset:0}.stage.zoom .picture{transform:scale(2);transform-origin:var(--origin,50% 50%)}
+  .outline{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);border:3px solid var(--accent);border-radius:12px}
+  .protect{position:absolute;left:var(--px);top:var(--py);width:var(--pw);height:var(--ph);border:2px dashed #8bdec5;border-radius:4px}
+  .outline b,.protect b{position:absolute;left:0;top:0;font-size:12px;background:#202624ed;padding:1px 4px;color:white;white-space:nowrap}
+  .rule{position:absolute;top:0;bottom:0;width:2px;background:white;box-shadow:0 0 2px black;pointer-events:none}
+  .split{width:min(450px,80%);display:flex;align-items:center;gap:10px}.split input{flex:1;min-width:4em;accent-color:var(--accent)}
+  aside{background:var(--panel);border-left:1px solid var(--line);padding:23px 18px}h1{font-size:23px;margin:0 0 7px}h2{font-size:14px;font-weight:650;margin:0 0 9px}
+  aside section{border-top:1px solid var(--line);margin-top:17px;padding-top:15px}p{margin:5px 0 8px}.ref{display:flex;gap:12px;align-items:center}
+  .ref img{width:64px;height:64px;object-fit:cover;border-radius:4px}.action{width:100%;background:var(--focus);color:#16261e;font-weight:650;margin-top:10px}
+  .secondary{display:block;width:100%;margin-top:7px}a{color:#c4ddcf}.tag{font-size:13px;color:var(--accent)}[hidden]{display:none!important}
+  select{max-width:100%;padding:6px;background:#2c3134;color:var(--ink);font:inherit}summary{cursor:pointer}details{margin-top:10px}
+  #lightArrow{position:absolute;left:48%;top:6%;padding:2px 6px;color:#fff;background:#292925e8;font-size:14px}
+  @media(max-width:780px){main{grid-template-columns:minmax(0,1fr) 260px}aside{padding:14px}.stage{width:100%}}
+  @media(max-width:620px){main{display:block}header,nav{padding:10px 12px}article{padding:12px}.stage{max-width:450px}.bar{gap:5px}aside{border:0;border-top:1px solid var(--line)}}
+</style>
+<header><strong>RAWMaster <small>／ 显影</small></strong><small>设计走查 · 本地归档样片</small></header>
+<nav aria-label="选择走查任务"><button data-task="repair">去干扰</button><button data-task="light">人像重打光</button><button data-task="land">风光风格</button></nav>
+<main>
+  <article aria-label="照片对照">
+    <div class="bar"><button id="range" aria-pressed="false">显示范围</button><button id="zoom" aria-pressed="false">局部放大</button><button id="compare" aria-pressed="false">原图对照</button></div>
+    <div id="stage" class="stage">
+      <div class="picture"><img id="before" alt="目标原片"><div id="afterLayer" style="position:absolute;inset:0"><img id="after" alt="归档候选"></div>
+        <div id="outline" class="outline" hidden><b></b></div><div id="protect" class="protect" hidden><b>保留</b></div><span id="lightArrow" hidden>↙ 主光来自画面右上</span>
+      </div><i id="rule" class="rule" hidden></i>
+    </div>
+    <label class="split" id="splitBox" hidden>原片 <input id="split" type="range" min="0" max="100" value="50" aria-label="调整原片与候选分界"> 候选</label>
+    <small id="caption"></small>
+  </article>
+  <aside>
+    <div class="tag" id="entry"></div><h1 id="title"></h1><p id="taskHint" class="hint"></p>
+    <section id="ways" hidden><h2>用光来源</h2><div class="row"><button data-way="preset">灯位预设</button><button data-way="photo">参考照片</button></div></section>
+    <section id="scenes" hidden><label for="scene">场景与风格</label><br><select id="scene"><option value="land">湖泊 · 蓝调倒影</option><option value="neon">城市夜景 · 雨夜霓虹</option></select></section>
+    <section><h2>目标与保护</h2><p id="target"></p><small id="locked"></small></section>
+    <section id="refSection" hidden><h2>参考材料</h2><div class="ref"><img id="refImage" alt="输入的光照参考"><small id="refRole"></small></div></section>
+    <section><h2>候选审阅</h2><p id="check"></p><small id="provider"></small>
+      <details id="inputs"><summary>查看本例输入范围</summary><small id="scope"></small></details>
+      <button id="mark" class="secondary" hidden>先保存标记</button><button id="primary" class="action"></button><button id="discard" class="secondary" hidden>放弃候选</button><p id="status" aria-live="polite"></p></section>
+  </aside>
+</main>
+<script>
+  const root='../evidence/generative-followup/';
+  const tasks={
+    repair:{entry:'修复 ／ 去干扰',title:'移除水面标牌',hint:'在画布上确认补区与邻船，检查水纹能否接上。',target:'待移除 · 水面标牌及支架',locked:'保留 · 邻船、乘客和尾流',check:'观察补区边缘、重复水纹和近船。',provider:'北京 Seedream 5.5 · 已归档的局部补丁',src:'repair/marked-lake.jpg',result:'repair/adopted-patch.jpg',ratio:1,box:[71,71,16,14],keep:[9,65,25,17],origin:'78% 78%',caption:'同一机位 · 前次单图修复 PoC',label:'移除'},
+    light:{entry:'智能预设 ／ 人像',title:'右侧柔光箱',hint:'画面右侧主光。检查右脸是否真的更亮。',target:'待改变 · 人物受光、鼻影方向',locked:'保留 · 身份、制服文字和背景',check:'对照脸颊、鼻影及制服徽章。本例未达到指定光向。',provider:'本机 FLUX.3 Klein · 首张原始候选',src:'relight/source.png',result:'relight/preset.png',ratio:1,box:[33,9,23,26],keep:[55,66,12,15],origin:'44% 23%',caption:'NASA 人像 · 原始生成含保护区漂移，供拒收演练',label:'受光面'},
+    land:{entry:'智能预设 ／ 风光',title:'湖泊 · 蓝调倒影',hint:'同时检查色温、船的位置和用户点名的云。',target:'待改变 · 山体、水面与天空光色',locked:'保留 · 船客、山脊、右上白云',check:'右上角原有白云明显消退，切回原片复核。',provider:'本机 FLUX.3 Klein · 双图参考候选',src:'landscape/lake.png',result:'landscape/transferred.png',ref:'landscape/blue-hour-reference.png',role:'只取蓝调明暗。发射场中的物体不得进入成片。',ratio:1.5,box:[4,54,88,36],keep:[89,0,9,8],origin:'91% 8%',caption:'Pragser Wildsee · 同一张湖景与独立光色参考',label:'光色'}
+  };
+  tasks.neon={entry:'智能预设 ／ 风光',title:'城市 · 雨夜霓虹',hint:'先比桥上的列车与自行车，再看青蓝和品红是否符合意图。',target:'待改变 · 现有街灯的路面反光',locked:'保留 · 列车、骑车人和路面标记',check:'本例整图重绘改变了骑车人和列车。可放弃候选。',provider:'本机 SDXL 1.0 · 社区风格权重 0.7',src:'lora/neon/city-input.png',result:'lora/neon/with-lora.png',ratio:1.5,box:[4,64,90,33],keep:[61,48,12,26],origin:'66% 61%',caption:'Kznrhsd · 东京新宿 · 实际 LoRA 候选',label:'反光'};
+  const el=id=>document.getElementById(id);
+  let current='repair', way='preset', landscape='land', marked=false, phase='ready', showRange=false, zoom=false, comparing=false;
+  function text(id,value){el(id).textContent=value}
+  function update(){
+    const item=tasks[current==='land'?landscape:current], light=current==='light', photo=light&&way==='photo';
+    const has=phase==='review'||phase==='applied';
+    document.querySelectorAll('[data-task]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.task===current)));
+    document.querySelectorAll('[data-way]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.way===way)));
+    for(const key of ['entry','title','target','locked','check','provider','caption'])text(key,item[key]);
+    text('taskHint',photo?'目标片与参考人物分开。只取光向，检查目标人物是否仍相同。':item.hint);
+    if(photo)text('title','从照片取光');
+    el('before').src=root+item.src;el('after').src=root+(photo?'relight/photo.png':item.result);
+    const ref=photo?'relight/light-photo.png':item.ref;el('refSection').hidden=!ref;
+    if(ref){el('refImage').src=root+ref;text('refRole',photo?'只取用光 · 独立人物参考。脸、衣服和场景属于目标片。':item.role)}
+    el('ways').hidden=!light;el('scenes').hidden=current!=='land';el('scene').value=landscape;
+    el('lightArrow').hidden=!light||!showRange;el('mark').hidden=current!=='repair'||has;
+    text('mark',marked?'取消标记':'先保存标记');
+    text('scope',current==='repair'?'此归档来自北京 5.5 的 1024 × 1024 单图实验，发送了整张工作图，采用时限制在标牌范围内。':light?(photo?'本机读取两张 512 × 512 图。目标为宇航员，第二张仅提供光照。':'本机读取一张 512 × 512 目标图与灯位指令。'):landscape==='neon'?'本机读取一张 768 × 512 目标图与 SDXL 风格权重。':'本机读取两张 768 × 512 图。第二张仅提供蓝调光色。');
+    el('stage').style.setProperty('--ratio',item.ratio);el('stage').style.setProperty('--origin',item.origin);
+    ['x','y','w','h','px','py','pw','ph'].forEach((k,i)=>el('stage').style.setProperty('--'+k,[...item.box,...item.keep][i]+'%'));
+    el('outline').querySelector('b').textContent=item.label;el('outline').hidden=el('protect').hidden=!showRange;
+    el('stage').classList.toggle('zoom',zoom);el('zoom').setAttribute('aria-pressed',String(zoom));el('range').setAttribute('aria-pressed',String(showRange));
+    el('compare').disabled=!has;el('compare').setAttribute('aria-pressed',String(comparing&&has));el('afterLayer').hidden=!has;
+    const split=Number(el('split').value);
+    el('afterLayer').style.clipPath=comparing?'inset(0 0 0 '+split+'%)':'none';
+    el('rule').hidden=el('splitBox').hidden=!comparing||!has;el('rule').style.left=split+'%';
+    text('primary',phase==='ready'?'查看归档候选':phase==='review'?'应用到演练版本':'撤销采用');
+    el('discard').hidden=phase!=='review';
+    text('status',phase==='ready'?(current==='repair'&&marked?'已标记待处理 · 当前显示原片':'当前显示原片'):phase==='review'?'候选待审阅':'已采用 · 仅本页演练版本');
+  }
+  function reset(){phase='ready';showRange=false;zoom=false;comparing=false;el('inputs').open=false;el('split').value=50;update()}
+  document.querySelectorAll('[data-task]').forEach(b=>b.onclick=()=>{current=b.dataset.task;way='preset';reset()});
+  document.querySelectorAll('[data-way]').forEach(b=>b.onclick=()=>{way=b.dataset.way;reset()});
+  el('scene').onchange=()=>{landscape=el('scene').value;reset()};
+  el('mark').onclick=()=>{marked=!marked;showRange=marked;update()};
+  el('primary').onclick=()=>{phase=phase==='ready'?'review':phase==='review'?'applied':'ready';comparing=phase==='review';zoom=false;update()};
+  el('discard').onclick=reset;el('range').onclick=()=>{showRange=!showRange;update()};
+  el('zoom').onclick=()=>{zoom=!zoom;if(zoom)comparing=false;update()};el('compare').onclick=()=>{comparing=!comparing;if(comparing)zoom=false;update()};
+  el('split').oninput=update;document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(zoom||comparing){zoom=false;comparing=false;update()}else if(phase==='review')reset()}});
+  update();
+</script>
+</html>

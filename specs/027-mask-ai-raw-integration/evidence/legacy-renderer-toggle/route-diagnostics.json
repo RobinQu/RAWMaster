@@ -1,0 +1,36 @@
+{
+  "case": "120x80 synthetic legacy work, local exposure +0.4, 16-bit TIFF",
+  "units": "Stored uint16 channel codes, all RGBA channels",
+  "rasterReader": "tifffile + NumPy, direct decoded sample values",
+  "results": {
+    "shipped": {
+      "implementation": "Historical V1 on disable; existing V3 output context for the enabled layer.",
+      "protectedPixels": 9484,
+      "enabledVsDisabledProtectedMaximum": 2,
+      "sameRendererZeroCoverageProtectedMaximum": 0,
+      "disabledVsRepeatMaximum": 0,
+      "byteSHA256": {
+        "effect.tiff": "569c6d1620ffa97cddf91cd20f1d837f99893e3426d9eac82154979030bd86af",
+        "control.tiff": "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+        "zero-matte.tiff": "b30176f320b855d605a5c97c9542c17f9a3fee85d79c64760df927176801b9c2",
+        "control-repeat.tiff": "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+        "mask.png": "18e6fb9a035547efcd04c81cd9983c99c5c5fd4276be8e8b6cd08cc83dfbbf0e"
+      }
+    },
+    "contextOnlyExperiment": {
+      "implementation": "On a legacy-promoted work whose only new operation is a semantic mask, use the legacy-equivalent recipe without its semantic masks to choose PhotoRenderer.renderingContext. All other rendering code remains the same.",
+      "protectedPixels": 9484,
+      "enabledVsDisabledProtectedMaximum": 5,
+      "sameRendererZeroCoverageProtectedMaximum": 0,
+      "disabledVsRepeatMaximum": 0,
+      "byteSHA256": {
+        "effect.tiff": "6d25c683c24682183c18e0a5233e1408bcb0425c542953bb598b0b9ac53985ff",
+        "control.tiff": "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+        "zero-matte.tiff": "40e8c3b1766d454059dc9b73330fc930628dd3c450cd8d46b88fcd746e863e65",
+        "control-repeat.tiff": "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+        "mask.png": "18e6fb9a035547efcd04c81cd9983c99c5c5fd4276be8e8b6cd08cc83dfbbf0e"
+      }
+    }
+  },
+  "disposition": "Context-only experiment rejected. Compare the entire historical and current rendering prefixes on the aligned target."
+}

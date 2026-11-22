@@ -1,0 +1,36 @@
+{
+  "case": "portrait",
+  "options": {
+    "model": "doubao-seedream-5-5-261028",
+    "size": "1024x1024",
+    "output_format": "png",
+    "watermark": false,
+    "response_format": "b64_json",
+    "background": "opaque"
+  },
+  "referencesInRequestOrder": [
+    {
+      "file": "source.png",
+      "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5"
+    },
+    {
+      "file": "light-photo.png",
+      "sha256": "13710b88bfcb76a3351eefea5ee0680b6ef62ec9d86b9a1ef4dfe72eceb64c40"
+    }
+  ],
+  "prompt": "Edit only the lighting of the person in the FIRST image. Return the same original square NASA studio photograph with the same identity, expression, pose, eyes, hair, lettering on the suit, helmet, flags, spacecraft and camera framing. Preserve the studio background exactly and do not add or remove objects. Use natural-looking skin texture. Use the SECOND image only as a lighting reference. Transfer its key-light direction and soft contrast to the face, without copying the other person's identity, uniform, background or geometry of the reference. No change to the global exposure.",
+  "http": 200,
+  "requestId": "02179533390395716e38debc86f845189b93b52559f1b7899c282",
+  "httpSeconds": 10.792,
+  "modelReturned": "doubao-seedream-5-5-261028",
+  "usage": {
+    "input_images": 2,
+    "generated_images": 1,
+    "output_tokens": 4096,
+    "total_tokens": 4096
+  },
+  "mode": "RGB",
+  "sha256": "c252d4b6872cdcea8181c255436c6457256578a8e524ebdaeea5aea0ab291e51",
+  "status": "decoded",
+  "elapsedSeconds": 10.818
+}

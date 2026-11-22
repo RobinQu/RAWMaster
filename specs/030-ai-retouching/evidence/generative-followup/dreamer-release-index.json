@@ -1,0 +1,92 @@
+{
+  "release": "2.2.2",
+  "guideTitleVersion": "2.0.0",
+  "source": "https://github.com/2771096196/PSAI-Dreamer/releases/tag/v2.2.2-macos-arm64",
+  "inspection": "Local release files, compared with REA static JavaScript application analysis. Line references refer to readable distributed files.",
+  "files": [
+    {
+      "path": "manifest.json",
+      "sha256": "adb8a65838cfef8399d5998df3a29ced53c15daeddef973096638cafe2f858a3",
+      "lines": {
+        "\"version\": \"2.2.2\"": 4
+      }
+    },
+    {
+      "path": "commercial-release.json",
+      "sha256": "6f71e9442fc21d088360ae4e92ab33f72e4438bd393b1740aa6fb2fbb0265591",
+      "lines": {}
+    },
+    {
+      "path": "userGuide/index.html",
+      "sha256": "c10e36164c6c57386f8b578383bcc3861af0a3e56b62104a132ae7ade083edb9",
+      "lines": {
+        "id=\"topic-basic-flow\"": 1147,
+        "id=\"topic-images\"": 1173,
+        "id=\"topic-pasteback\"": 1196,
+        "id=\"topic-portrait\"": 1206,
+        "id=\"topic-scene\"": 1213,
+        "id=\"topic-align\"": 908,
+        "id=\"topic-lighting\"": 1251
+      }
+    },
+    {
+      "path": "userGuide/guide.html",
+      "sha256": "130415375c9adc5629fba164faed9299bd03c594fcb981cd500669018f16c5c6",
+      "lines": {}
+    },
+    {
+      "path": "panel/core/basic-mode-state.js",
+      "sha256": "6bec177933407ebce45a8c8dfde0be0f39efc1fc743de5a71067ffacd140428b",
+      "lines": {
+        "function compilePrompt(": 103
+      }
+    },
+    {
+      "path": "panel/core/reference-input-state.js",
+      "sha256": "21a6c54da6f36dc0171c7272b6ff91708b23f11b7a02804eff012c51db9a242c",
+      "lines": {
+        "const GRS_MAX_INPUT_IMAGES": 8,
+        "lighting:": 22
+      }
+    },
+    {
+      "path": "panel/core/selection-fast-flow.js",
+      "sha256": "0e2dd76996d0ff82d44d1a197dea2c606129502bb146ca38b5afa1168b4349f9",
+      "lines": {
+        "const DEFAULTS=": 8
+      }
+    },
+    {
+      "path": "panel/core/local-workflow-setup.js",
+      "sha256": "bc6482464687425deab6073099f39ec93cafa1de7f6c69f9b78967666bf7a3a6",
+      "lines": {
+        "/workflows/thick-paint/local/check": 55
+      }
+    },
+    {
+      "path": "host/ps-io.js",
+      "sha256": "140ae1045218c9836ace263dfc9026b0d114181e771cb43fab28e58f0614268a",
+      "lines": {
+        "function calculateMinimalSquareRegion(": 470,
+        "function encodeSelectionMaskRle(": 523,
+        "const LIGHT_ROLES": 567,
+        "const LIGHT_FIXTURE_TYPES": 575,
+        "function calculateDirectionalOutpaint(": 1130,
+        "function prepareDirectionalOutpaintCanvas(": 1586,
+        "function createGroupAndMask(": 3139,
+        "function applyReturnFeatherMaskToLayer(": 5168,
+        "function createLightGuides(": 5801,
+        "function readLightGuides(": 5854
+      }
+    },
+    {
+      "path": "host/agent-bridge.js",
+      "sha256": "9bf4199570ea8fe6c1d1ee82c3dbb4c90148c12ef35f52fdd486dcade5e716e5",
+      "lines": {
+        "case \"paste_back\"": 1569,
+        "case \"lighting_add_layer\"": 1633,
+        "case \"directional_outpaint_paste_back\"": 1699
+      }
+    }
+  ]
+}

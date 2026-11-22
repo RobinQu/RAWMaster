@@ -1,0 +1,2253 @@
+{
+  "schemaVersion": 1,
+  "manifestKind": "rawmaster-adaptive-and-user-preset-migration",
+  "sourceRoots": {
+    "systemCameraRawSettings": {
+      "kind": "absolutePath",
+      "path": "/Library/Application Support/Adobe/CameraRaw/Settings",
+      "readOnly": true
+    },
+    "userImportedSettings": {
+      "kind": "homeRelativePath",
+      "path": "Library/Application Support/Adobe/CameraRaw/ImportedSettings",
+      "readOnly": true
+    }
+  },
+  "destination": {
+    "kind": "rawMasterApplicationSupportContentStore",
+    "entryPathTemplate": "content/<sha256>.xmp",
+    "writePolicy": "atomicCopyVerifySHA256NeverModifySource"
+  },
+  "selectionPolicy": {
+    "builtinRule": "exactAuditedRelativePathsAndSHA256",
+    "userRule": "recursiveXMPFilesOnlyIgnoreNonXMP",
+    "excludeNonAdaptiveBuiltinXMP": true,
+    "excludeCameraProfilesDCP": true,
+    "excludeCubeResources": true,
+    "resolveExternalDependenciesByCopying": false
+  },
+  "summary": {
+    "fileCount": 78,
+    "totalBytes": 1881440,
+    "visibleItemCount": 72,
+    "hiddenInternalLookCount": 6,
+    "originCounts": {
+      "adobeBuiltinAdaptive": 53,
+      "userImportedSettings": 25
+    },
+    "capabilityCounts": {
+      "lensBlur": 13,
+      "semanticCorrection": 38,
+      "adaptiveProfile": 2,
+      "staticLook": 6,
+      "normalPreset": 19
+    },
+    "internalResolvedLookReferences": 12,
+    "externalMissingLookReferences": 1,
+    "rendererCameraProfileReferences": 6,
+    "derivedAnalysisRequirements": 53,
+    "excludedNonAdaptiveBuiltinXMP": 1022
+  },
+  "entries": [
+    {
+      "id": "sha256:d5f5cd2255ffe1c959f55db61b35485b2d534f93c96557ba68d8186c73c7bfac",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Bubble.xmp",
+      "destinationRelativePath": "content/d5f5cd2255ffe1c959f55db61b35485b2d534f93c96557ba68d8186c73c7bfac.xmp",
+      "name": "Adaptive Blur Background - Bubble",
+      "group": "Adaptive: Blur Background",
+      "uuid": "D4EB715E4D2D4C7D8EA7EDD619DB98B0",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1918,
+      "sha256": "d5f5cd2255ffe1c959f55db61b35485b2d534f93c96557ba68d8186c73c7bfac",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:65cc552d5d06e2afb004fbcd0fa9d12fadab853a0df1562ad9cd09cda34d752d",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Bubble Swirl.xmp",
+      "destinationRelativePath": "content/65cc552d5d06e2afb004fbcd0fa9d12fadab853a0df1562ad9cd09cda34d752d.xmp",
+      "name": "Adaptive Blur Background - Bubble Swirl",
+      "group": "Adaptive: Blur Background",
+      "uuid": "F8903D2EA0B547B3B1EF18469A098F4F",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "17.1",
+      "bytes": 1931,
+      "sha256": "65cc552d5d06e2afb004fbcd0fa9d12fadab853a0df1562ad9cd09cda34d752d",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:3cd10cd47965bfbc1af043163df658e39b74b31ac48b816a6b6d247b8df76d21",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Circle.xmp",
+      "destinationRelativePath": "content/3cd10cd47965bfbc1af043163df658e39b74b31ac48b816a6b6d247b8df76d21.xmp",
+      "name": "Adaptive Blur Background - Circle",
+      "group": "Adaptive: Blur Background",
+      "uuid": "2509AF0DC07C4F74ABB58645AFAC9714",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1917,
+      "sha256": "3cd10cd47965bfbc1af043163df658e39b74b31ac48b816a6b6d247b8df76d21",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:d0b585dcf5cd52644e52f80c92f159241d484e8dbedacf6d9ae49028b7b363d9",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Circle Swirl.xmp",
+      "destinationRelativePath": "content/d0b585dcf5cd52644e52f80c92f159241d484e8dbedacf6d9ae49028b7b363d9.xmp",
+      "name": "Adaptive Blur Background - Circle Swirl",
+      "group": "Adaptive: Blur Background",
+      "uuid": "B242E45A479D4975A224CE8F1B54EBA9",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "17.1",
+      "bytes": 1930,
+      "sha256": "d0b585dcf5cd52644e52f80c92f159241d484e8dbedacf6d9ae49028b7b363d9",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:66ac2de93160805c392bf8267c9a891f7694d1073402d4847a174f17e3194112",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Geometric.xmp",
+      "destinationRelativePath": "content/66ac2de93160805c392bf8267c9a891f7694d1073402d4847a174f17e3194112.xmp",
+      "name": "Adaptive Blur Background - Geometric",
+      "group": "Adaptive: Blur Background",
+      "uuid": "7F1D369180CF490AB929C9AAB7B4C13A",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1924,
+      "sha256": "66ac2de93160805c392bf8267c9a891f7694d1073402d4847a174f17e3194112",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:1809a20ed085315d6c2f209d801974e27df4f2648ce5e65be72ec1e51f1c6ef6",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Geometric Swirl.xmp",
+      "destinationRelativePath": "content/1809a20ed085315d6c2f209d801974e27df4f2648ce5e65be72ec1e51f1c6ef6.xmp",
+      "name": "Adaptive Blur Background - Geometric Swirl",
+      "group": "Adaptive: Blur Background",
+      "uuid": "DAC75F4E20304E92A2DBDF35EDAD9FAA",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "17.1",
+      "bytes": 1937,
+      "sha256": "1809a20ed085315d6c2f209d801974e27df4f2648ce5e65be72ec1e51f1c6ef6",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:b89e7dfd848771265be4bfbe33e01cef3c27dd4302fe1622e687f75cc1344d2d",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Oval.xmp",
+      "destinationRelativePath": "content/b89e7dfd848771265be4bfbe33e01cef3c27dd4302fe1622e687f75cc1344d2d.xmp",
+      "name": "Adaptive Blur Background - Oval",
+      "group": "Adaptive: Blur Background",
+      "uuid": "DA5B8A4998864BAEB9EF02D198BA4919",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "17.1",
+      "bytes": 1915,
+      "sha256": "b89e7dfd848771265be4bfbe33e01cef3c27dd4302fe1622e687f75cc1344d2d",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:4ecd1f628d876dff97d33f6d25d3317466a2693eff63fc77edebd50a2179cac2",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Oval Swirl.xmp",
+      "destinationRelativePath": "content/4ecd1f628d876dff97d33f6d25d3317466a2693eff63fc77edebd50a2179cac2.xmp",
+      "name": "Adaptive Blur Background - Oval Swirl",
+      "group": "Adaptive: Blur Background",
+      "uuid": "68CE63CB3D9344A9BE41FCAD93D9AD0C",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "17.1",
+      "bytes": 1929,
+      "sha256": "4ecd1f628d876dff97d33f6d25d3317466a2693eff63fc77edebd50a2179cac2",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:f91d4eb7d9a4d3f4e051e4e7c6608667bd63e8eec013a40a93c18a5cf55b0bcc",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Reset Blur.xmp",
+      "destinationRelativePath": "content/f91d4eb7d9a4d3f4e051e4e7c6608667bd63e8eec013a40a93c18a5cf55b0bcc.xmp",
+      "name": "Adaptive Blur Background - Reset Blur",
+      "group": "Adaptive: Blur Background",
+      "uuid": "D6F4CE51D0FC40819C9727CCD4E64DF7",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1928,
+      "sha256": "f91d4eb7d9a4d3f4e051e4e7c6608667bd63e8eec013a40a93c18a5cf55b0bcc",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:ab82a7f8ef0009f0a6c858ae3a318117cc038e24e318d5ede50c7c09cbea8982",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Ring.xmp",
+      "destinationRelativePath": "content/ab82a7f8ef0009f0a6c858ae3a318117cc038e24e318d5ede50c7c09cbea8982.xmp",
+      "name": "Adaptive Blur Background - Ring",
+      "group": "Adaptive: Blur Background",
+      "uuid": "00B7945C67F54992A5DEF9ED5B4C3568",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1914,
+      "sha256": "ab82a7f8ef0009f0a6c858ae3a318117cc038e24e318d5ede50c7c09cbea8982",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:a74ac8af55144af384de4d9a5b751b2a2de9426dd3a303ff8ba54cecd2877df2",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Ring Swirl.xmp",
+      "destinationRelativePath": "content/a74ac8af55144af384de4d9a5b751b2a2de9426dd3a303ff8ba54cecd2877df2.xmp",
+      "name": "Adaptive Blur Background - Ring Swirl",
+      "group": "Adaptive: Blur Background",
+      "uuid": "25682C059E7044559CF6A43C62BB34FC",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "17.1",
+      "bytes": 1927,
+      "sha256": "a74ac8af55144af384de4d9a5b751b2a2de9426dd3a303ff8ba54cecd2877df2",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:52c2f8a8c899ade63d98299a46f54969d907ae56ee3890e6f195815108554e7c",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Strong.xmp",
+      "destinationRelativePath": "content/52c2f8a8c899ade63d98299a46f54969d907ae56ee3890e6f195815108554e7c.xmp",
+      "name": "Adaptive Blur Background - Strong",
+      "group": "Adaptive: Blur Background",
+      "uuid": "6D622D2BB03041C092166FB54E9C1437",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1917,
+      "sha256": "52c2f8a8c899ade63d98299a46f54969d907ae56ee3890e6f195815108554e7c",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:7006d7992a047baf706ffcf30802f1e4c4d2806a8fe717c2e2bc4fdb3a3de56f",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Blur Background/Subtle.xmp",
+      "destinationRelativePath": "content/7006d7992a047baf706ffcf30802f1e4c4d2806a8fe717c2e2bc4fdb3a3de56f.xmp",
+      "name": "Adaptive Blur Background - Subtle",
+      "group": "Adaptive: Blur Background",
+      "uuid": "1E16715CAE0749948290BD4F9E79197B",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.3",
+      "bytes": 1917,
+      "sha256": "7006d7992a047baf706ffcf30802f1e4c4d2806a8fe717c2e2bc4fdb3a3de56f",
+      "capability": "lensBlur",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Blur Background"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "depthAndSubjectFocus",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:1f12e273666c17ee74fb647576411e183e5e0218642dcc1acd3d5d4b10698bcc",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Autumn01.xmp",
+      "destinationRelativePath": "content/1f12e273666c17ee74fb647576411e183e5e0218642dcc1acd3d5d4b10698bcc.xmp",
+      "name": "Autumn01",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 14675,
+      "sha256": "1f12e273666c17ee74fb647576411e183e5e0218642dcc1acd3d5d4b10698bcc",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:8d21c2d58ba05c0f3cbc7e80e14e12514434397c444a91cb4605ef5b0fa65828",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Autumn02.xmp",
+      "destinationRelativePath": "content/8d21c2d58ba05c0f3cbc7e80e14e12514434397c444a91cb4605ef5b0fa65828.xmp",
+      "name": "Autumn02",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 14902,
+      "sha256": "8d21c2d58ba05c0f3cbc7e80e14e12514434397c444a91cb4605ef5b0fa65828",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:c138ab11f9ddeb638484059b8b786376e281ce1f0bb4d7c645e9575ccac23d5e",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Spring01.xmp",
+      "destinationRelativePath": "content/c138ab11f9ddeb638484059b8b786376e281ce1f0bb4d7c645e9575ccac23d5e.xmp",
+      "name": "Spring01",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 14552,
+      "sha256": "c138ab11f9ddeb638484059b8b786376e281ce1f0bb4d7c645e9575ccac23d5e",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:add3e4105676f9b4084ea947d2eb98d2c660c16c24c0300da3994e0aa4c99610",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Spring02.xmp",
+      "destinationRelativePath": "content/add3e4105676f9b4084ea947d2eb98d2c660c16c24c0300da3994e0aa4c99610.xmp",
+      "name": "Spring02",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 14783,
+      "sha256": "add3e4105676f9b4084ea947d2eb98d2c660c16c24c0300da3994e0aa4c99610",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:d1e2ed30751118dde53aa6f78ed254ce7b59d43b82889c657f137a63b2449878",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Summer01.xmp",
+      "destinationRelativePath": "content/d1e2ed30751118dde53aa6f78ed254ce7b59d43b82889c657f137a63b2449878.xmp",
+      "name": "Summer01",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 13656,
+      "sha256": "d1e2ed30751118dde53aa6f78ed254ce7b59d43b82889c657f137a63b2449878",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:08c786e57d2886773885549e68509264a5f6969291ed819b8de63b4104838cd2",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Summer02.xmp",
+      "destinationRelativePath": "content/08c786e57d2886773885549e68509264a5f6969291ed819b8de63b4104838cd2.xmp",
+      "name": "Summer02",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 14402,
+      "sha256": "08c786e57d2886773885549e68509264a5f6969291ed819b8de63b4104838cd2",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:a386b0d626bb8f91ad8e41498cd9a581243fe63402be8c1432c1f8566efcb6ef",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Winter01.xmp",
+      "destinationRelativePath": "content/a386b0d626bb8f91ad8e41498cd9a581243fe63402be8c1432c1f8566efcb6ef.xmp",
+      "name": "Winter01",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 14735,
+      "sha256": "a386b0d626bb8f91ad8e41498cd9a581243fe63402be8c1432c1f8566efcb6ef",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:702a6145cb41f16cf55ccea03b8ae1c1abe86f3b2b746e82b9917a50de81d3e3",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Landscape/Winter02.xmp",
+      "destinationRelativePath": "content/702a6145cb41f16cf55ccea03b8ae1c1abe86f3b2b746e82b9917a50de81d3e3.xmp",
+      "name": "Winter02",
+      "group": "Premium/Adaptive - Landscape",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 15573,
+      "sha256": "702a6145cb41f16cf55ccea03b8ae1c1abe86f3b2b746e82b9917a50de81d3e3",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Landscape"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "landscapeSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:401bdfbb8e874fef590178f4b82eb2d0be2c4272817d5f2a149e7526430e08cc",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Polished Portrait.xmp",
+      "destinationRelativePath": "content/401bdfbb8e874fef590178f4b82eb2d0be2c4272817d5f2a149e7526430e08cc.xmp",
+      "name": "Adaptive - Polished Portrait",
+      "group": "Adaptive: Portrait",
+      "uuid": "3CF7CDFD75C946C39B52B00F1E3BFB5F",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "15.3",
+      "bytes": 16028,
+      "sha256": "401bdfbb8e874fef590178f4b82eb2d0be2c4272817d5f2a149e7526430e08cc",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:002023d47ac2d6175df5401024c85e8a8fb5b0e3686df7b3fecf4b967031af1d",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Darken Beard.xmp",
+      "destinationRelativePath": "content/002023d47ac2d6175df5401024c85e8a8fb5b0e3686df7b3fecf4b967031af1d.xmp",
+      "name": "Darken Beard",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 4816,
+      "sha256": "002023d47ac2d6175df5401024c85e8a8fb5b0e3686df7b3fecf4b967031af1d",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:9429f7161b1e1e52640da6abea5e15ae704dfd6381e577771a18f3ca2a978cc1",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Darken Eyebrows.xmp",
+      "destinationRelativePath": "content/9429f7161b1e1e52640da6abea5e15ae704dfd6381e577771a18f3ca2a978cc1.xmp",
+      "name": "Darken Eyebrows",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3182,
+      "sha256": "9429f7161b1e1e52640da6abea5e15ae704dfd6381e577771a18f3ca2a978cc1",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:fe27cc78a3f70179de5171583baaec91c993a74fb2908fec102886e989cc8355",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Enhance Clothes.xmp",
+      "destinationRelativePath": "content/fe27cc78a3f70179de5171583baaec91c993a74fb2908fec102886e989cc8355.xmp",
+      "name": "Enhance Clothes",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3145,
+      "sha256": "fe27cc78a3f70179de5171583baaec91c993a74fb2908fec102886e989cc8355",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:da29a18d2a1c73bfc8ff55134c60ef095f7fc48f90ec3f6f520a27c15aa34ecb",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Enhance Eyes.xmp",
+      "destinationRelativePath": "content/da29a18d2a1c73bfc8ff55134c60ef095f7fc48f90ec3f6f520a27c15aa34ecb.xmp",
+      "name": "Enhance Eyes",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3609,
+      "sha256": "da29a18d2a1c73bfc8ff55134c60ef095f7fc48f90ec3f6f520a27c15aa34ecb",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:2ee7ff00264962cae85ed8b8751495ae4e9d27fb0743c8f3bcdbd191b67f6b68",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Enhance Portrait.xmp",
+      "destinationRelativePath": "content/2ee7ff00264962cae85ed8b8751495ae4e9d27fb0743c8f3bcdbd191b67f6b68.xmp",
+      "name": "Enhance Portrait",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 7678,
+      "sha256": "2ee7ff00264962cae85ed8b8751495ae4e9d27fb0743c8f3bcdbd191b67f6b68",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:7b696ee666ff58611c02d9ad8be8a64d02ea7095b67e65f919c586286f95f443",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Glamour Portrait.xmp",
+      "destinationRelativePath": "content/7b696ee666ff58611c02d9ad8be8a64d02ea7095b67e65f919c586286f95f443.xmp",
+      "name": "Glamour Portrait",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 12234,
+      "sha256": "7b696ee666ff58611c02d9ad8be8a64d02ea7095b67e65f919c586286f95f443",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:f8e760e4c7c4bc3a6c9b6b066288f5211b61c5fef94af9fde8e40f4ce3556c9f",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Gritty Portrait.xmp",
+      "destinationRelativePath": "content/f8e760e4c7c4bc3a6c9b6b066288f5211b61c5fef94af9fde8e40f4ce3556c9f.xmp",
+      "name": "Gritty Portrait",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 7696,
+      "sha256": "f8e760e4c7c4bc3a6c9b6b066288f5211b61c5fef94af9fde8e40f4ce3556c9f",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:fe384d1f16a0046ec6f576acd28e44e44d73d4f547d85c6d8ef68e6969e9b6d1",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Smooth Face.xmp",
+      "destinationRelativePath": "content/fe384d1f16a0046ec6f576acd28e44e44d73d4f547d85c6d8ef68e6969e9b6d1.xmp",
+      "name": "Smooth Face",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3270,
+      "sha256": "fe384d1f16a0046ec6f576acd28e44e44d73d4f547d85c6d8ef68e6969e9b6d1",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:495bd6fd7994c5363262e84f4368231ba90bbae99dca973b68ee09594c16b0c5",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Smooth Hair.xmp",
+      "destinationRelativePath": "content/495bd6fd7994c5363262e84f4368231ba90bbae99dca973b68ee09594c16b0c5.xmp",
+      "name": "Smooth Hair",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3176,
+      "sha256": "495bd6fd7994c5363262e84f4368231ba90bbae99dca973b68ee09594c16b0c5",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:d1e6458b0c77ecda1641db6c5403ab9411a5939ef2a562a9b4951d5c9c288925",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Texture Hair.xmp",
+      "destinationRelativePath": "content/d1e6458b0c77ecda1641db6c5403ab9411a5939ef2a562a9b4951d5c9c288925.xmp",
+      "name": "Texture Hair",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3176,
+      "sha256": "d1e6458b0c77ecda1641db6c5403ab9411a5939ef2a562a9b4951d5c9c288925",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:7e1345ba7d56063dae096cfc0de10d2caca626100fd3be421286674f96010224",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Portrait/Whiten Teeth.xmp",
+      "destinationRelativePath": "content/7e1345ba7d56063dae096cfc0de10d2caca626100fd3be421286674f96010224.xmp",
+      "name": "Whiten Teeth",
+      "group": "Premium/Adaptive - Portrait",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3151,
+      "sha256": "7e1345ba7d56063dae096cfc0de10d2caca626100fd3be421286674f96010224",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Portrait"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "portraitSemanticMasks",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:cd976344cc6e913abb8a07f9f3aa319065d6a16a2161f068706057373e629c06",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Blue Drama.xmp",
+      "destinationRelativePath": "content/cd976344cc6e913abb8a07f9f3aa319065d6a16a2161f068706057373e629c06.xmp",
+      "name": "Blue Drama",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3107,
+      "sha256": "cd976344cc6e913abb8a07f9f3aa319065d6a16a2161f068706057373e629c06",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:16fe4d993b1af9e93ed4bf9c70b80e8d9346bc53eb9a7246f25611c3773ae42d",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Blue Hour.xmp",
+      "destinationRelativePath": "content/16fe4d993b1af9e93ed4bf9c70b80e8d9346bc53eb9a7246f25611c3773ae42d.xmp",
+      "name": "Blue Hour",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3385,
+      "sha256": "16fe4d993b1af9e93ed4bf9c70b80e8d9346bc53eb9a7246f25611c3773ae42d",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:2e92fda0216ab4f1f0b209322b233c6cf65f182cc725c53b1f5e7b0cc6e3821d",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Blue Pop.xmp",
+      "destinationRelativePath": "content/2e92fda0216ab4f1f0b209322b233c6cf65f182cc725c53b1f5e7b0cc6e3821d.xmp",
+      "name": "Blue Pop",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3568,
+      "sha256": "2e92fda0216ab4f1f0b209322b233c6cf65f182cc725c53b1f5e7b0cc6e3821d",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:8a65110a029d7077b46c4280595ea0ba1a45c05796535e112a5b66f5dcca31f1",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Dark Drama.xmp",
+      "destinationRelativePath": "content/8a65110a029d7077b46c4280595ea0ba1a45c05796535e112a5b66f5dcca31f1.xmp",
+      "name": "Dark Drama",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3116,
+      "sha256": "8a65110a029d7077b46c4280595ea0ba1a45c05796535e112a5b66f5dcca31f1",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:284481e23660c2c4efc52fb05c6efeb4412066f3bdf8e4191f37dcaa1483fb10",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Golden Hour.xmp",
+      "destinationRelativePath": "content/284481e23660c2c4efc52fb05c6efeb4412066f3bdf8e4191f37dcaa1483fb10.xmp",
+      "name": "Golden Hour",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3386,
+      "sha256": "284481e23660c2c4efc52fb05c6efeb4412066f3bdf8e4191f37dcaa1483fb10",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:f9604fabe179a6a66915c7affd063ac5b2e1589b4efe7321703a94eba6c1b573",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Neon Tropics.xmp",
+      "destinationRelativePath": "content/f9604fabe179a6a66915c7affd063ac5b2e1589b4efe7321703a94eba6c1b573.xmp",
+      "name": "Neon Tropics",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3135,
+      "sha256": "f9604fabe179a6a66915c7affd063ac5b2e1589b4efe7321703a94eba6c1b573",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:35a113fa38dcf79d6d477e49293f043fbb9d78dc94f8fafc3627e2b4277a9198",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Storm Clouds.xmp",
+      "destinationRelativePath": "content/35a113fa38dcf79d6d477e49293f043fbb9d78dc94f8fafc3627e2b4277a9198.xmp",
+      "name": "Storm Clouds",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3136,
+      "sha256": "35a113fa38dcf79d6d477e49293f043fbb9d78dc94f8fafc3627e2b4277a9198",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:055748f89e720487be706f9c501962b1dde87d9f5181c24f5bd4c07a6883bfcd",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Sunrise.xmp",
+      "destinationRelativePath": "content/055748f89e720487be706f9c501962b1dde87d9f5181c24f5bd4c07a6883bfcd.xmp",
+      "name": "Sunrise",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3098,
+      "sha256": "055748f89e720487be706f9c501962b1dde87d9f5181c24f5bd4c07a6883bfcd",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:750e7a04cabcd780a889472935d4ad57e6d6b78c619c3b5c45a7271c8508d4b2",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Sky/Sunset.xmp",
+      "destinationRelativePath": "content/750e7a04cabcd780a889472935d4ad57e6d6b78c619c3b5c45a7271c8508d4b2.xmp",
+      "name": "Sunset",
+      "group": "Premium/Adaptive - Sky",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3102,
+      "sha256": "750e7a04cabcd780a889472935d4ad57e6d6b78c619c3b5c45a7271c8508d4b2",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Sky"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "skyMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:d85a37ef3c33b2579485ff66332596cb0e2d55d7b56c8fc6efde3e29098ac286",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Balance Contrast.xmp",
+      "destinationRelativePath": "content/d85a37ef3c33b2579485ff66332596cb0e2d55d7b56c8fc6efde3e29098ac286.xmp",
+      "name": "Balance Contrast",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3242,
+      "sha256": "d85a37ef3c33b2579485ff66332596cb0e2d55d7b56c8fc6efde3e29098ac286",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:86446425e07afb6149628165f6404668a985eb3c3db2532dacea79be753520c2",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Cool Soft.xmp",
+      "destinationRelativePath": "content/86446425e07afb6149628165f6404668a985eb3c3db2532dacea79be753520c2.xmp",
+      "name": "Cool Soft",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3123,
+      "sha256": "86446425e07afb6149628165f6404668a985eb3c3db2532dacea79be753520c2",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:4ef39901859392fc719fe99a4e70378e6b9768d3bb7c0a2abc2c1cc4aa6b9756",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Glow.xmp",
+      "destinationRelativePath": "content/4ef39901859392fc719fe99a4e70378e6b9768d3bb7c0a2abc2c1cc4aa6b9756.xmp",
+      "name": "Glow",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3110,
+      "sha256": "4ef39901859392fc719fe99a4e70378e6b9768d3bb7c0a2abc2c1cc4aa6b9756",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:a1752c5e42640a20c9d47dc54ebf19b4248a5e0aadd76cd8978a623e88324ac4",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Light.xmp",
+      "destinationRelativePath": "content/a1752c5e42640a20c9d47dc54ebf19b4248a5e0aadd76cd8978a623e88324ac4.xmp",
+      "name": "Light",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3202,
+      "sha256": "a1752c5e42640a20c9d47dc54ebf19b4248a5e0aadd76cd8978a623e88324ac4",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:5ea9b0faecdde1afb7d53f5dfa20e56d7a60c7994c502f7f5c37e29343cc45ac",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Pop.xmp",
+      "destinationRelativePath": "content/5ea9b0faecdde1afb7d53f5dfa20e56d7a60c7994c502f7f5c37e29343cc45ac.xmp",
+      "name": "Pop",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3100,
+      "sha256": "5ea9b0faecdde1afb7d53f5dfa20e56d7a60c7994c502f7f5c37e29343cc45ac",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:c21d5229b88db9cce13c58c47fbe9f44980753a601a5f7897b91f3ce47eb7f6d",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Soft.xmp",
+      "destinationRelativePath": "content/c21d5229b88db9cce13c58c47fbe9f44980753a601a5f7897b91f3ce47eb7f6d.xmp",
+      "name": "Soft",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3092,
+      "sha256": "c21d5229b88db9cce13c58c47fbe9f44980753a601a5f7897b91f3ce47eb7f6d",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:1a61c1e845aa06c33409e58c8be13db0b5a8ad88a6636f36ae6fe79163613554",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Vibrant.xmp",
+      "destinationRelativePath": "content/1a61c1e845aa06c33409e58c8be13db0b5a8ad88a6636f36ae6fe79163613554.xmp",
+      "name": "Vibrant",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3107,
+      "sha256": "1a61c1e845aa06c33409e58c8be13db0b5a8ad88a6636f36ae6fe79163613554",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:90c2e59bb5105ab68c14292d849a757eee3782a6e2c73ee4b453dcad43e0ea15",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Warm Light.xmp",
+      "destinationRelativePath": "content/90c2e59bb5105ab68c14292d849a757eee3782a6e2c73ee4b453dcad43e0ea15.xmp",
+      "name": "Warm Light",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3220,
+      "sha256": "90c2e59bb5105ab68c14292d849a757eee3782a6e2c73ee4b453dcad43e0ea15",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:d7e065014d67595e2177bfd297c5c2b4fa309473fd0bf9ebf014fa809595c4ab",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Premium/Adaptive - Subject/Warm Pop.xmp",
+      "destinationRelativePath": "content/d7e065014d67595e2177bfd297c5c2b4fa309473fd0bf9ebf014fa809595c4ab.xmp",
+      "name": "Warm Pop",
+      "group": "Premium/Adaptive - Subject",
+      "uuid": null,
+      "presetType": null,
+      "processVersion": null,
+      "version": null,
+      "bytes": 3112,
+      "sha256": "d7e065014d67595e2177bfd297c5c2b4fa309473fd0bf9ebf014fa809595c4ab",
+      "capability": "semanticCorrection",
+      "display": {
+        "visible": true,
+        "section": "Presets/Adaptive: Subject"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "subjectMask",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:279673790e93e8a90f9cdf8754a824a1fb70ad54cdde4403baa07a659846aa37",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Adobe/Profiles/Adaptive/Adaptive B&W.xmp",
+      "destinationRelativePath": "content/279673790e93e8a90f9cdf8754a824a1fb70ad54cdde4403baa07a659846aa37.xmp",
+      "name": "Adaptive B&W",
+      "group": "Adaptive",
+      "uuid": "5763124DCEAF42459912C1BD2AAC8FE5",
+      "presetType": "Look",
+      "processVersion": "15.4",
+      "version": "18.0",
+      "bytes": 101460,
+      "sha256": "279673790e93e8a90f9cdf8754a824a1fb70ad54cdde4403baa07a659846aa37",
+      "capability": "adaptiveProfile",
+      "display": {
+        "visible": true,
+        "section": "Profiles/Adaptive"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "adaptiveProfileTablesSDRAndHDR",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:fa246ba2223904e053f3ca7bc25d6168c9c91da56937ddc70514998e9822ff4e",
+      "origin": "adobeBuiltinAdaptive",
+      "sourceRoot": "systemCameraRawSettings",
+      "sourceRelativePath": "Adobe/Profiles/Adaptive/Adaptive Color.xmp",
+      "destinationRelativePath": "content/fa246ba2223904e053f3ca7bc25d6168c9c91da56937ddc70514998e9822ff4e.xmp",
+      "name": "Adaptive Color",
+      "group": "Adaptive",
+      "uuid": "226E6263ED94405B973B41F5A6E67BE9",
+      "presetType": "Look",
+      "processVersion": "15.4",
+      "version": "18.0",
+      "bytes": 107981,
+      "sha256": "fa246ba2223904e053f3ca7bc25d6168c9c91da56937ddc70514998e9822ff4e",
+      "capability": "adaptiveProfile",
+      "display": {
+        "visible": true,
+        "section": "Profiles/Adaptive"
+      },
+      "dependencies": [
+        {
+          "type": "derivedAnalysis",
+          "analysis": "adaptiveProfileTablesSDRAndHDR",
+          "resolution": "generatePerPhoto",
+          "requiredForFullFidelity": true
+        }
+      ]
+    },
+    {
+      "id": "sha256:cd5590d8463bc5e048d77bcd81e9554cec4800a49e7f512a03a33cbd8701ed2f",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Ilford Delta 100 profile.xmp",
+      "destinationRelativePath": "content/cd5590d8463bc5e048d77bcd81e9554cec4800a49e7f512a03a33cbd8701ed2f.xmp",
+      "name": "Ilford Delta 100",
+      "group": "RNI FILMS 5 BW - Demo",
+      "uuid": "B86431AA2956403C896B576B29E6A590",
+      "presetType": "Look",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 218133,
+      "sha256": "cd5590d8463bc5e048d77bcd81e9554cec4800a49e7f512a03a33cbd8701ed2f",
+      "capability": "staticLook",
+      "display": {
+        "visible": false,
+        "section": "Internal/Looks/RNI FILMS 5 BW - Demo"
+      },
+      "dependencies": [],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:a9c501405f985d0a69fefcdae65862ef1f7c71c481bf7d2ccb5553db4f2a1a30",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Aerochrome 16 profile.xmp",
+      "destinationRelativePath": "content/a9c501405f985d0a69fefcdae65862ef1f7c71c481bf7d2ccb5553db4f2a1a30.xmp",
+      "name": "Aerochrome 16",
+      "group": "RNI FILMS 5 Infrared - Demo",
+      "uuid": "B9B15F7A5769474A99FD10DC0975CC86",
+      "presetType": "Look",
+      "processVersion": "11.0",
+      "version": "12.3",
+      "bytes": 222018,
+      "sha256": "a9c501405f985d0a69fefcdae65862ef1f7c71c481bf7d2ccb5553db4f2a1a30",
+      "capability": "staticLook",
+      "display": {
+        "visible": false,
+        "section": "Internal/Looks/RNI FILMS 5 Infrared - Demo"
+      },
+      "dependencies": [],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:186e59324b9cdf86947e7a4ab71d8ad82d4551c7d34ae42fb3f5b2993ab7657f",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Polaroid 690 muted profile.xmp",
+      "destinationRelativePath": "content/186e59324b9cdf86947e7a4ab71d8ad82d4551c7d34ae42fb3f5b2993ab7657f.xmp",
+      "name": "Polaroid 690 muted",
+      "group": "RNI FILMS 5 Instant - Demo",
+      "uuid": "372AADE7D490420CB6F842B3F2DCD02F",
+      "presetType": "Look",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 239929,
+      "sha256": "186e59324b9cdf86947e7a4ab71d8ad82d4551c7d34ae42fb3f5b2993ab7657f",
+      "capability": "staticLook",
+      "display": {
+        "visible": false,
+        "section": "Internal/Looks/RNI FILMS 5 Instant - Demo"
+      },
+      "dependencies": [],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:c8b37f3b13bb844f55e1e65f312c6915545dfe7ee3777a1e3e715388ab1ecbbd",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Kodak Portra 400 profile.xmp",
+      "destinationRelativePath": "content/c8b37f3b13bb844f55e1e65f312c6915545dfe7ee3777a1e3e715388ab1ecbbd.xmp",
+      "name": "Kodak Portra 400",
+      "group": "RNI FILMS 5 Negative - Demo",
+      "uuid": "96DECB4660B8460A81EFF9C6AC608660",
+      "presetType": "Look",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 233941,
+      "sha256": "c8b37f3b13bb844f55e1e65f312c6915545dfe7ee3777a1e3e715388ab1ecbbd",
+      "capability": "staticLook",
+      "display": {
+        "visible": false,
+        "section": "Internal/Looks/RNI FILMS 5 Negative - Demo"
+      },
+      "dependencies": [],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:dd514bf14f235a5c81424537b9b9fc0337969b7abf998a0cbcc33fb17fd273d0",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Kodak E 200 profile.xmp",
+      "destinationRelativePath": "content/dd514bf14f235a5c81424537b9b9fc0337969b7abf998a0cbcc33fb17fd273d0.xmp",
+      "name": "Kodak E 200",
+      "group": "RNI FILMS 5 Slide - Demo",
+      "uuid": "09BBE0AF8AE0427287FBFC5248156780",
+      "presetType": "Look",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 206904,
+      "sha256": "dd514bf14f235a5c81424537b9b9fc0337969b7abf998a0cbcc33fb17fd273d0",
+      "capability": "staticLook",
+      "display": {
+        "visible": false,
+        "section": "Internal/Looks/RNI FILMS 5 Slide - Demo"
+      },
+      "dependencies": [],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:480010cb33d6c1bd2eea2e711384cb3c6d072c4e01b2a00fe47d0dc8154ea2dc",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Agfacolor 40s profile.xmp",
+      "destinationRelativePath": "content/480010cb33d6c1bd2eea2e711384cb3c6d072c4e01b2a00fe47d0dc8154ea2dc.xmp",
+      "name": "Agfacolor 40s",
+      "group": "RNI FILMS 5 Vintage - Demo",
+      "uuid": "1A0A2F8D0C23426087901B7F86DB643E",
+      "presetType": "Look",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 225760,
+      "sha256": "480010cb33d6c1bd2eea2e711384cb3c6d072c4e01b2a00fe47d0dc8154ea2dc",
+      "capability": "staticLook",
+      "display": {
+        "visible": false,
+        "section": "Internal/Looks/RNI FILMS 5 Vintage - Demo"
+      },
+      "dependencies": [],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:d80a941aebcf482d3e2ff0b284162e13e30d6f2157af2aeecec61eaf0123e819",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "Alex Ruskman Kodachrome 64.xmp",
+      "destinationRelativePath": "content/d80a941aebcf482d3e2ff0b284162e13e30d6f2157af2aeecec61eaf0123e819.xmp",
+      "name": "Alex Ruskman Kodachrome 64 ",
+      "group": "",
+      "uuid": "D861D13AA22B40DDB48C48427755EC37",
+      "presetType": "Normal",
+      "processVersion": "6.7",
+      "version": "15.2",
+      "bytes": 4223,
+      "sha256": "d80a941aebcf482d3e2ff0b284162e13e30d6f2157af2aeecec61eaf0123e819",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported"
+      },
+      "dependencies": [
+        {
+          "type": "cameraProfile",
+          "name": "Camera Standard",
+          "resolution": "rendererBaseRequired",
+          "requiredForFullFidelity": true,
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:cce9e84e729c1277670f4284a692a1f14726bd6b708883043ff9a6d21da021b6",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "Leica Q3 (DF 2023 Adaptive).xmp",
+      "destinationRelativePath": "content/cce9e84e729c1277670f4284a692a1f14726bd6b708883043ff9a6d21da021b6.xmp",
+      "name": "Leica Q3 (DF 2023 Adaptive)",
+      "group": "",
+      "uuid": "6DF1CBE6B70D49E990F8406409DCE773",
+      "presetType": "Normal",
+      "processVersion": "15.4",
+      "version": "16.0",
+      "bytes": 5851,
+      "sha256": "cce9e84e729c1277670f4284a692a1f14726bd6b708883043ff9a6d21da021b6",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "B952C231111CD8E0ECCF14B86BAA7077",
+          "name": "Adobe Color",
+          "requiredForFullFidelity": true,
+          "resolution": "missingExternal",
+          "externalRelativePath": "Adobe/Profiles/Adobe Raw/Adobe Color.xmp",
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 2
+    },
+    {
+      "id": "sha256:2848bfbd61071e9aece1562212c438137edff5a4833279b66ce21e13038d6428",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "Fuji Pro 400H/Fuji Pro 400H Emulation 1.xmp",
+      "destinationRelativePath": "content/2848bfbd61071e9aece1562212c438137edff5a4833279b66ce21e13038d6428.xmp",
+      "name": "Fuji Pro 400H Emulation 1",
+      "group": "Alex Ruskman Fuji Pro 400H",
+      "uuid": "50E04192D6354EDDA90E98670FC3163E",
+      "presetType": "Normal",
+      "processVersion": "6.7",
+      "version": "15.2",
+      "bytes": 4474,
+      "sha256": "2848bfbd61071e9aece1562212c438137edff5a4833279b66ce21e13038d6428",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/Alex Ruskman Fuji Pro 400H"
+      },
+      "dependencies": [
+        {
+          "type": "cameraProfile",
+          "name": "Adobe Standard",
+          "resolution": "rendererBaseRequired",
+          "requiredForFullFidelity": true,
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:db5b1bc180b67dc2038845fe3658ababdd9e884ab845696ccc47981b204f089e",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "Fuji Pro 400H/Fuji Pro 400H Emulation 2.xmp",
+      "destinationRelativePath": "content/db5b1bc180b67dc2038845fe3658ababdd9e884ab845696ccc47981b204f089e.xmp",
+      "name": "Fuji Pro 400H Emulation 2",
+      "group": "Alex Ruskman Fuji Pro 400H",
+      "uuid": "36A9DD29037C4F4EB9D7B4309746663D",
+      "presetType": "Normal",
+      "processVersion": "6.7",
+      "version": "15.2",
+      "bytes": 4563,
+      "sha256": "db5b1bc180b67dc2038845fe3658ababdd9e884ab845696ccc47981b204f089e",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/Alex Ruskman Fuji Pro 400H"
+      },
+      "dependencies": [
+        {
+          "type": "cameraProfile",
+          "name": "Adobe Standard",
+          "resolution": "rendererBaseRequired",
+          "requiredForFullFidelity": true,
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:ea17186101f34fa9d2e51feeface1e055be03393f9b7f473ae307961e57467af",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "Fuji Pro 400H/Fuji Pro 400H Emulation 3.xmp",
+      "destinationRelativePath": "content/ea17186101f34fa9d2e51feeface1e055be03393f9b7f473ae307961e57467af.xmp",
+      "name": "Fuji Pro 400H Emulation 3",
+      "group": "Alex Ruskman Fuji Pro 400H",
+      "uuid": "B14EDBF9AA0E4FAC887E1237B7489398",
+      "presetType": "Normal",
+      "processVersion": "6.7",
+      "version": "15.2",
+      "bytes": 4506,
+      "sha256": "ea17186101f34fa9d2e51feeface1e055be03393f9b7f473ae307961e57467af",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/Alex Ruskman Fuji Pro 400H"
+      },
+      "dependencies": [
+        {
+          "type": "cameraProfile",
+          "name": "Adobe Standard",
+          "resolution": "rendererBaseRequired",
+          "requiredForFullFidelity": true,
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:c16927d5c1ca10dc6303ecf9119f701df9b82b1cdcb4873e9bae645cdc664b78",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "Fuji Pro 400H/Fuji Pro 400H Emulation 4.xmp",
+      "destinationRelativePath": "content/c16927d5c1ca10dc6303ecf9119f701df9b82b1cdcb4873e9bae645cdc664b78.xmp",
+      "name": "Fuji Pro 400H Emulation 4",
+      "group": "Alex Ruskman Fuji Pro 400H",
+      "uuid": "0BD94A31CAF340199AD402CFF4F624A0",
+      "presetType": "Normal",
+      "processVersion": "6.7",
+      "version": "15.2",
+      "bytes": 4507,
+      "sha256": "c16927d5c1ca10dc6303ecf9119f701df9b82b1cdcb4873e9bae645cdc664b78",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/Alex Ruskman Fuji Pro 400H"
+      },
+      "dependencies": [
+        {
+          "type": "cameraProfile",
+          "name": "Adobe Standard",
+          "resolution": "rendererBaseRequired",
+          "requiredForFullFidelity": true,
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:f7d78b8b4673cc54ebb85b1c9400e5f6c9730a2c2ebddc2320e79477980a9a5f",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Ilford Delta 100.xmp",
+      "destinationRelativePath": "content/f7d78b8b4673cc54ebb85b1c9400e5f6c9730a2c2ebddc2320e79477980a9a5f.xmp",
+      "name": "Ilford Delta 100",
+      "group": "RNI FILMS 5 BW - Demo",
+      "uuid": "999AD09B7A4C4566B07B8BEF9CC34710",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1714,
+      "sha256": "f7d78b8b4673cc54ebb85b1c9400e5f6c9730a2c2ebddc2320e79477980a9a5f",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 BW - Demo"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "B86431AA2956403C896B576B29E6A590",
+          "name": "Ilford Delta 100",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:cd5590d8463bc5e048d77bcd81e9554cec4800a49e7f512a03a33cbd8701ed2f"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:b060d396bf477e345caba2dfe6c454fa682b63f2e85ed8dcc3961fdb07194f59",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Ilford Delta 100 grainy.xmp",
+      "destinationRelativePath": "content/b060d396bf477e345caba2dfe6c454fa682b63f2e85ed8dcc3961fdb07194f59.xmp",
+      "name": "Ilford Delta 100 - grainy",
+      "group": "RNI FILMS 5 BW - Demo (grainy)",
+      "uuid": "25D73DDEDD0A4F1491B08769722FAEB8",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1805,
+      "sha256": "b060d396bf477e345caba2dfe6c454fa682b63f2e85ed8dcc3961fdb07194f59",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 BW - Demo (grainy)"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "B86431AA2956403C896B576B29E6A590",
+          "name": "Ilford Delta 100",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:cd5590d8463bc5e048d77bcd81e9554cec4800a49e7f512a03a33cbd8701ed2f"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:cd8c1da8d5e061211aabb8927ca901e58785da04fa4d98945074db2f3728d059",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Aerochrome 16.xmp",
+      "destinationRelativePath": "content/cd8c1da8d5e061211aabb8927ca901e58785da04fa4d98945074db2f3728d059.xmp",
+      "name": "Aerochrome 16",
+      "group": "RNI FILMS 5 Infrared - Demo",
+      "uuid": "91E0F816E6F44E709FDE8389D1335BBE",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1720,
+      "sha256": "cd8c1da8d5e061211aabb8927ca901e58785da04fa4d98945074db2f3728d059",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Infrared - Demo"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "B9B15F7A5769474A99FD10DC0975CC86",
+          "name": "Aerochrome 16",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:a9c501405f985d0a69fefcdae65862ef1f7c71c481bf7d2ccb5553db4f2a1a30"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:18d7fabfd4b88eaf6a8c6996579eb87840a3ef20d933e756880de944286d41f1",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Aerochrome 16 grainy.xmp",
+      "destinationRelativePath": "content/18d7fabfd4b88eaf6a8c6996579eb87840a3ef20d933e756880de944286d41f1.xmp",
+      "name": "Aerochrome 16 - grainy",
+      "group": "RNI FILMS 5 Infrared - Demo (grainy)",
+      "uuid": "C24D3578AF9C4E0DB162FF850C2A792B",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1811,
+      "sha256": "18d7fabfd4b88eaf6a8c6996579eb87840a3ef20d933e756880de944286d41f1",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Infrared - Demo (grainy)"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "B9B15F7A5769474A99FD10DC0975CC86",
+          "name": "Aerochrome 16",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:a9c501405f985d0a69fefcdae65862ef1f7c71c481bf7d2ccb5553db4f2a1a30"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:0a2950c49a77299ab35a77bba02d5ca7883e848d10af815fe8891c1e230248e0",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Polaroid 690 muted.xmp",
+      "destinationRelativePath": "content/0a2950c49a77299ab35a77bba02d5ca7883e848d10af815fe8891c1e230248e0.xmp",
+      "name": "Polaroid 690 muted",
+      "group": "RNI FILMS 5 Instant - Demo",
+      "uuid": "007ACB299CCD4B8184BED0B89C5B525D",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1728,
+      "sha256": "0a2950c49a77299ab35a77bba02d5ca7883e848d10af815fe8891c1e230248e0",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Instant - Demo"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "372AADE7D490420CB6F842B3F2DCD02F",
+          "name": "Polaroid 690 muted",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:186e59324b9cdf86947e7a4ab71d8ad82d4551c7d34ae42fb3f5b2993ab7657f"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:2bca0ebbe57e280566d6907101a698db44e9b140ff51e64d93a281029a5a23d3",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Polaroid 690 muted grainy.xmp",
+      "destinationRelativePath": "content/2bca0ebbe57e280566d6907101a698db44e9b140ff51e64d93a281029a5a23d3.xmp",
+      "name": "Polaroid 690 muted - grainy",
+      "group": "RNI FILMS 5 Instant - Demo (grainy)",
+      "uuid": "63F05D1B05824C818E56C6E6C812C660",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1819,
+      "sha256": "2bca0ebbe57e280566d6907101a698db44e9b140ff51e64d93a281029a5a23d3",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Instant - Demo (grainy)"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "372AADE7D490420CB6F842B3F2DCD02F",
+          "name": "Polaroid 690 muted",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:186e59324b9cdf86947e7a4ab71d8ad82d4551c7d34ae42fb3f5b2993ab7657f"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:2de2b9d8deb13a49ec126264e7bcd66364ab8d4bc57b2159df4651ad6f9df6bf",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Kodak Portra 400.xmp",
+      "destinationRelativePath": "content/2de2b9d8deb13a49ec126264e7bcd66364ab8d4bc57b2159df4651ad6f9df6bf.xmp",
+      "name": "Kodak Portra 400",
+      "group": "RNI FILMS 5 Negative - Demo",
+      "uuid": "8E6B761E466B4C35A15AE7FA62DF7249",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1726,
+      "sha256": "2de2b9d8deb13a49ec126264e7bcd66364ab8d4bc57b2159df4651ad6f9df6bf",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Negative - Demo"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "96DECB4660B8460A81EFF9C6AC608660",
+          "name": "Kodak Portra 400",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:c8b37f3b13bb844f55e1e65f312c6915545dfe7ee3777a1e3e715388ab1ecbbd"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:f3c181be31b945a4ae62c153c5c40ac87d1c70a578dfc1746764d752829eb932",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Kodak Portra 400 grainy.xmp",
+      "destinationRelativePath": "content/f3c181be31b945a4ae62c153c5c40ac87d1c70a578dfc1746764d752829eb932.xmp",
+      "name": "Kodak Portra 400 - grainy",
+      "group": "RNI FILMS 5 Negative - Demo (grainy)",
+      "uuid": "E50E58BD0E764E2E9B51668F95F0E0B4",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1817,
+      "sha256": "f3c181be31b945a4ae62c153c5c40ac87d1c70a578dfc1746764d752829eb932",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Negative - Demo (grainy)"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "96DECB4660B8460A81EFF9C6AC608660",
+          "name": "Kodak Portra 400",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:c8b37f3b13bb844f55e1e65f312c6915545dfe7ee3777a1e3e715388ab1ecbbd"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:dbb4727f75c8f2e7a851d780af75ebb867ca49de166c3c5922e3118dd4435d90",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Kodak E 200.xmp",
+      "destinationRelativePath": "content/dbb4727f75c8f2e7a851d780af75ebb867ca49de166c3c5922e3118dd4435d90.xmp",
+      "name": "Kodak E 200",
+      "group": "RNI FILMS 5 Slide - Demo",
+      "uuid": "09B4BB9C6443428386D96A3A9EE9910D",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1710,
+      "sha256": "dbb4727f75c8f2e7a851d780af75ebb867ca49de166c3c5922e3118dd4435d90",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Slide - Demo"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "09BBE0AF8AE0427287FBFC5248156780",
+          "name": "Kodak E 200",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:dd514bf14f235a5c81424537b9b9fc0337969b7abf998a0cbcc33fb17fd273d0"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:fcfac6620ccbb872a5bfb210b2eee92f4cd984fb5fc37db87ee6b7462b257281",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Kodak E 200 grainy.xmp",
+      "destinationRelativePath": "content/fcfac6620ccbb872a5bfb210b2eee92f4cd984fb5fc37db87ee6b7462b257281.xmp",
+      "name": "Kodak E 200 - grainy",
+      "group": "RNI FILMS 5 Slide - Demo (grainy)",
+      "uuid": "B2BC915A910C4490A93A67684A3E71CE",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1801,
+      "sha256": "fcfac6620ccbb872a5bfb210b2eee92f4cd984fb5fc37db87ee6b7462b257281",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Slide - Demo (grainy)"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "09BBE0AF8AE0427287FBFC5248156780",
+          "name": "Kodak E 200",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:dd514bf14f235a5c81424537b9b9fc0337969b7abf998a0cbcc33fb17fd273d0"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:9d872bc7b1dd34e608938c4d5d24954f62529799dfbddca879f6bdc19c631c7c",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Agfacolor 40s.xmp",
+      "destinationRelativePath": "content/9d872bc7b1dd34e608938c4d5d24954f62529799dfbddca879f6bdc19c631c7c.xmp",
+      "name": "Agfacolor 40s",
+      "group": "RNI FILMS 5 Vintage - Demo",
+      "uuid": "E8E39BC6273547048680E20E9429DF96",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1718,
+      "sha256": "9d872bc7b1dd34e608938c4d5d24954f62529799dfbddca879f6bdc19c631c7c",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Vintage - Demo"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "1A0A2F8D0C23426087901B7F86DB643E",
+          "name": "Agfacolor 40s",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:480010cb33d6c1bd2eea2e711384cb3c6d072c4e01b2a00fe47d0dc8154ea2dc"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:e6f1cdf810df822b2e745be3038318595fa9e2926e2b65fe61b3badeef269aca",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "RNI FILEMS 5/Agfacolor 40s grainy.xmp",
+      "destinationRelativePath": "content/e6f1cdf810df822b2e745be3038318595fa9e2926e2b65fe61b3badeef269aca.xmp",
+      "name": "Agfacolor 40s - grainy",
+      "group": "RNI FILMS 5 Vintage - Demo (grainy)",
+      "uuid": "9C9B4AB3DAA444358AD6AFB43B2097D1",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "11.3",
+      "bytes": 1809,
+      "sha256": "e6f1cdf810df822b2e745be3038318595fa9e2926e2b65fe61b3badeef269aca",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/RNI FILMS 5 Vintage - Demo (grainy)"
+      },
+      "dependencies": [
+        {
+          "type": "lookUUID",
+          "uuid": "1A0A2F8D0C23426087901B7F86DB643E",
+          "name": "Agfacolor 40s",
+          "requiredForFullFidelity": true,
+          "resolution": "internal",
+          "targetID": "sha256:480010cb33d6c1bd2eea2e711384cb3c6d072c4e01b2a00fe47d0dc8154ea2dc"
+        }
+      ],
+      "isoDependentCount": 0
+    },
+    {
+      "id": "sha256:5824d5e0c110af9011420f4a657d2b724af4f81b9fbada327b7d167ad264ba9b",
+      "origin": "userImportedSettings",
+      "sourceRoot": "userImportedSettings",
+      "sourceRelativePath": "M88-Fuji Classic Negative.xmp",
+      "destinationRelativePath": "content/5824d5e0c110af9011420f4a657d2b724af4f81b9fbada327b7d167ad264ba9b.xmp",
+      "name": "M88-Fuji Classic Negative（教程版）",
+      "group": "！聿铭原创预设包",
+      "uuid": "F263105DBDEA4DB9B0281F8043B49219",
+      "presetType": "Normal",
+      "processVersion": "11.0",
+      "version": "15.3",
+      "bytes": 5228,
+      "sha256": "5824d5e0c110af9011420f4a657d2b724af4f81b9fbada327b7d167ad264ba9b",
+      "capability": "normalPreset",
+      "display": {
+        "visible": true,
+        "section": "Presets/Imported/！聿铭原创预设包"
+      },
+      "dependencies": [
+        {
+          "type": "cameraProfile",
+          "name": "Adobe Standard",
+          "resolution": "rendererBaseRequired",
+          "requiredForFullFidelity": true,
+          "copyPolicy": "notMigrated"
+        }
+      ],
+      "isoDependentCount": 0
+    }
+  ]
+}

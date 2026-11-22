@@ -13,16 +13,14 @@ struct PhotosMaskControls:View{
     var body:some View{
         VStack(alignment:.leading,spacing:12){
             Label("蒙版",systemImage:"circle.lefthalf.filled").font(.system(size:13,weight:.semibold))
+            PhotosAIMaskControls(input:editing.developmentMaskInput,session:session,context:context,selected:selected)
             HStack(spacing:6){
-                Button{editing.createDevelopmentSubjectMask(context:context)}label:{Label("AI 主体",systemImage:"person.crop.rectangle")}
-                    .disabled(editing.developmentSubjectMaskInProgress).accessibilityIdentifier("photos.mask.subject")
                 Button{editing.developmentMaskInput.select(.linear,context:context)}label:{Label("线性",systemImage:"line.diagonal")}
                     .background(editing.developmentMaskInput.activeKind == .linear ? AppPalette.accent.opacity(0.2):Color.clear,in:RoundedRectangle(cornerRadius:5))
                 Button{editing.developmentMaskInput.select(.radial,context:context)}label:{Label("径向",systemImage:"circle.dashed")}
                     .background(editing.developmentMaskInput.activeKind == .radial ? AppPalette.accent.opacity(0.2):Color.clear,in:RoundedRectangle(cornerRadius:5))
                 Button{editing.addDevelopmentMask(.range,context:context)}label:{Label("范围",systemImage:"slider.horizontal.3")}
             }.buttonStyle(.borderless).font(.caption)
-            if editing.developmentSubjectMaskInProgress{ProgressView("正在识别主体…").controlSize(.mini)}
             if editing.developmentMaskInput.activeKind != nil{Text("在照片上拖动以确定选取范围，按 Escape 取消。").font(.caption).foregroundStyle(.secondary)}
             Divider()
             if layers.isEmpty{Text("新建一个蒙版后，可独立调整曝光、高光、阴影、饱和度和光晕数量。").font(.caption).foregroundStyle(.secondary)}
@@ -38,7 +36,7 @@ struct PhotosMaskControls:View{
             }
             if let layer=selected{
                 Divider()
-                Text(layer.kind.title).font(.system(size:11,weight:.semibold)).foregroundStyle(.secondary)
+                Text(layer.semanticSnapshot?.target.title ?? layer.kind.title).font(.system(size:11,weight:.semibold)).foregroundStyle(.secondary)
                 Toggle("反转蒙版",isOn:.init(get:{layer.inverted},set:{value in update(layer.id){$0.inverted=value}})).font(.caption)
                 row("不透明度",layer.id,0...1,layer.opacity){$0.opacity=$1}
                 if layer.kind != .subject{row("羽化",layer.id,0...1,layer.feather){$0.feather=$1}}

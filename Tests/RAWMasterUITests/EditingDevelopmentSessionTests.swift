@@ -2,6 +2,7 @@ import Foundation
 import Combine
 import XCTest
 import RAWMasterCore
+import RAWMasterImaging
 @testable import RAWMaster
 
 final class EditingDevelopmentSessionTests: XCTestCase {
@@ -701,4 +702,219 @@ extension EditingDevelopmentSessionTests {
         XCTAssertEqual(draft.publications, 0); XCTAssertEqual(draft.commitAttempts, 0)
         XCTAssertNil(session.context); XCTAssertFalse(session.canUndo)
     }
+}
+
+extension EditingDevelopmentSessionTests {
+    @MainActor func testDevelopmentPresetAdoptionAmountOriginalBaselineSingleGestureAndStaleRevisions() throws {
+        let before = DevelopmentRecipe(exposureEV: -1.2)
+        let (draft, session, context) = try make(before)
+        var patch = DevelopmentPresetPatch()
+        patch.exposure = 0.8
+        let record = DevelopmentPresetRecord(id: "native", name: "晴天", group: "个人", kind: .user, patch: patch)
+        let stale = session.revision
+        XCTAssertEqual(try session.previewPreset(record, context: context, revision: stale).adjustmentsV3?.light.exposure, 0.8)
+        XCTAssertEqual(draft.publications, 0)
+        XCTAssertTrue(try session.adoptPreset(record, context: context, revision: stale))
+        XCTAssertFalse(try session.adoptPreset(record, context: context, revision: session.revision))
+        XCTAssertThrowsError(try session.adoptPreset(record, context: context, revision: stale))
+        let full = draft.recipe, count = session.history.entryCount
+        let token = try session.beginGesture(.init(group: nil, name: EditingDevelopmentSession.presetAmountControl), context: context)
+        for amount in [0.5, 0, 0.8, 0.5] {
+            try session.adoptPreset(record, amount: amount, context: context, revision: session.revision, adjustingAmount: true, gesture: token)
+            if amount == 0 { XCTAssertEqual(draft.recipe, before) }
+        }
+        try session.endGesture(token, .commit)
+        XCTAssertEqual(session.history.entryCount, count + 1)
+        XCTAssertEqual(session.presetAdoptions.map(\.amount), [0.5])
+        XCTAssertEqual(session.presetAdoptions.first?.baselineFingerprint, try EditingFingerprint.of(before))
+        XCTAssertEqual(draft.recipe.adjustmentsV3?.light.exposure, 0.4)
+        XCTAssertEqual(session.presetAmountSession?.baseline, before)
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, full)
+        XCTAssertEqual(session.presetAdoptions.map(\.amount), [1])
+        XCTAssertNil(session.presetAmountSession)
+        XCTAssertThrowsError(try session.adoptPreset(record, amount: 0.5, context: context, revision: session.revision, adjustingAmount: true))
+        try session.redo(context: context)
+        XCTAssertEqual(draft.recipe.adjustmentsV3?.light.exposure, 0.4)
+        try session.undo(context: context)
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, before)
+        var imported = record
+        imported.kind = .imported
+        imported.metadata["supportsAmount"] = "false"
+        XCTAssertThrowsError(try session.adoptPreset(imported, amount: 0.5, context: context, revision: session.revision))
+    }
+
+    @MainActor func testDevelopmentPreset1075MetadataDirectorySearchStableReferencesAndHiddenRows() {
+        var rows: [DevelopmentPresetRecord] = []
+        for i in 0..<1075 {
+            let kind: DevelopmentPresetKind
+            switch i {
+            case 1074: kind = .look
+            case 1073: kind = .sidecar
+            case 1072: kind = .profile
+            default: kind = .imported
+            }
+            let name = i < 2 ? "同名" : "风格 " + String(i)
+            let group = i.isMultiple(of: 2) ? "城市" : "风光"
+            rows.append(DevelopmentPresetRecord(id: String(i), name: name, group: group, kind: kind, patch: DevelopmentPresetPatch()))
+        }
+        let all = DevelopmentPresetDirectory.folders(space: .presets, records: rows, favorites: ["0", "1", "1074"],
+            looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "")
+        XCTAssertEqual(all.first?.rows.map(\.id), ["classic.vivid", "0", "1"])
+        XCTAssertEqual(all.first(where: { $0.id == "classic" })?.rows.count, 10)
+        XCTAssertEqual(Set(all.flatMap { $0.rows.map(\.id) }).count, 1082)
+        let results = DevelopmentPresetDirectory.folders(space: .presets, records: Array(rows.reversed()), favorites: [],
+            looks: [], favoriteLooks: [], query: "同名")
+        XCTAssertEqual(Set(results.flatMap { $0.rows.map(\.id) }), ["0", "1"])
+        let profiles = DevelopmentPresetDirectory.folders(space: .profiles, records: rows, favorites: [],
+            looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "")
+        XCTAssertEqual(profiles.flatMap { $0.rows.map(\.id) }, ["1072"])
+    }
+}
+
+extension EditingDevelopmentSessionTests {
+    private func presetLayer(_ target: DevelopmentSemanticTarget, source: DevelopmentLocalEditSourceBinding, gray: UInt8,
+                             refined: Bool = false) throws -> DevelopmentMaskLayerV3 {
+        let png = try DevelopmentMaskBitmap(width: 2, height: 2, values: [gray, 0, gray, 255]).png()
+        return .init(name: target.title, kind: .subject, adjustments: .init(exposure: -0.2), subjectPNG: png,
+            semanticSnapshot: .init(source: source, target: target, generator: "fixture", width: 2, height: 2, png: png, wasRefined: refined))
+    }
+
+    @MainActor func testDevelopmentPresetCrossPhotoMaskIntentPrepareConfirmReplayAndAbsence() async throws {
+        var other = source
+        other.sourceContentID = String(repeating: "c", count: 64)
+        let old = try presetLayer(.sky, source: other, gray: 63)
+        var another = old
+        another.id = UUID()
+        another.name = "天空减量"
+        another.opacity = 0.5
+        another.inverted = true
+        let saved = DevelopmentRecipe(adjustmentsV3: .init(masks: [old, another]))
+        let patch = try DevelopmentPresetPatch(capturing: saved, fields: [], maskIDs: [old.id, another.id])
+        let json = String(decoding: try JSONEncoder().encode(patch), as: UTF8.self)
+        XCTAssertFalse(json.contains(old.subjectPNG!.base64EncodedString()))
+        XCTAssertFalse(json.contains(other.sourceContentID))
+        XCTAssertFalse(json.contains(old.semanticSnapshot!.pngSHA256))
+        XCTAssertThrowsError(try DevelopmentPresetMaskIntent(capturing: presetLayer(.sky, source: other, gray: 1, refined: true)))
+        XCTAssertThrowsError(try DevelopmentPresetMaskIntent(capturing: .init(kind: .subject, subjectPNG: Data([1]))))
+        let row = DevelopmentPresetRecord(id: "sky", name: "压天空", group: "风光", kind: .user, patch: patch)
+        let local = DevelopmentMaskLayerV3(kind: .linear)
+        let baseline = DevelopmentRecipe(adjustmentsV3: .init(masks: [local]))
+        let (draft, session, ctx) = try make(baseline)
+        let ticket = DevelopmentPresetMaskPreparation.Ticket(record: row, context: ctx, revision: session.revision)
+        let workflow = DevelopmentPresetMaskPreparation()
+        var calls: [DevelopmentSemanticTarget] = []
+        XCTAssertThrowsError(try session.previewPreset(row, context: ctx, revision: ticket.revision))
+        XCTAssertThrowsError(try session.adoptPreset(row, context: ctx, revision: ticket.revision))
+        XCTAssertTrue(calls.isEmpty)
+        workflow.start(ticket, source: source, existingLayerCount: 1, isCurrent: { true }) { target in
+            calls.append(target)
+            return try self.presetLayer(target, source: self.source, gray: 230)
+        }
+        for _ in 0..<200 where workflow.busy { try await Task.sleep(nanoseconds: 1_000_000) }
+        let candidates = try XCTUnwrap(workflow.layers(for: ticket))
+        XCTAssertEqual(calls, [.sky])
+        XCTAssertEqual(candidates.map(\.name), [old.name, another.name])
+        XCTAssertNotEqual(candidates[0].id, candidates[1].id)
+        XCTAssertEqual(candidates[1].opacity, 0.5)
+        XCTAssertTrue(candidates[1].inverted)
+        XCTAssertEqual(candidates[0].semanticSnapshot?.source, source)
+        XCTAssertNotEqual(candidates[0].subjectPNG, old.subjectPNG)
+        let preview = try session.previewPreset(row, context: ctx, revision: ticket.revision, preparedMasks: candidates)
+        XCTAssertEqual(preview.adjustmentsV3?.masks.first, local)
+        XCTAssertEqual(session.history.entryCount, 0)
+        XCTAssertThrowsError(try session.adoptPreset(row, context: ctx, revision: ticket.revision, preparedMasks: [old, another]))
+        try session.adoptPreset(row, context: ctx, revision: ticket.revision, preparedMasks: candidates)
+        XCTAssertEqual(draft.recipe, preview)
+        XCTAssertEqual(session.history.entryCount, 1)
+        XCTAssertThrowsError(try session.adoptPreset(row, context: ctx, revision: ticket.revision, preparedMasks: candidates))
+        let reopened = try DevelopmentRecipe.decodeJSON(JSONEncoder().encode(draft.recipe))
+        XCTAssertEqual(reopened, preview)
+        try session.undo(context: ctx)
+        XCTAssertEqual(draft.recipe, baseline)
+        try session.redo(context: ctx)
+        XCTAssertEqual(draft.recipe, reopened)
+        XCTAssertEqual(calls, [.sky])
+        let next = DevelopmentPresetMaskPreparation.Ticket(record: row, context: ctx, revision: session.revision)
+        workflow.start(next, source: source, existingLayerCount: 3, isCurrent: { true }) { _ in throw DevelopmentMaskError.absent }
+        for _ in 0..<200 where workflow.busy { try await Task.sleep(nanoseconds: 1_000_000) }
+        XCTAssertNil(workflow.layers(for: next))
+        XCTAssertTrue(workflow.status.contains("跳过"))
+        XCTAssertEqual(draft.recipe, reopened)
+        var current = true
+        workflow.start(next, source: source, existingLayerCount: 3, isCurrent: { current }) { target in
+            current = false
+            return try self.presetLayer(target, source: self.source, gray: 8)
+        }
+        for _ in 0..<200 where workflow.busy { try await Task.sleep(nanoseconds: 1_000_000) }
+        XCTAssertNil(workflow.ready)
+        XCTAssertFalse(workflow.busy)
+        workflow.start(next, source: source, existingLayerCount: 3, isCurrent: { true }) { target in
+            try await Task.sleep(nanoseconds: 1_000_000)
+            return try self.presetLayer(target, source: self.source, gray: 1)
+        }
+        workflow.cancel()
+        await Task.yield()
+        XCTAssertNil(workflow.ready)
+        XCTAssertEqual(session.history.entryCount, 1)
+    }
+    @MainActor func testDevelopmentPresetStrictNativeArchiveHydratesOnlyOnDemandAndValidatesBoundPNG() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let catalog = DevelopmentPresetCatalog(root: root)
+        let bound = try presetLayer(.sky, source: source, gray: 81)
+        let full = DevelopmentRecipe(adjustmentsV3: .init(masks: [bound]))
+        let saved = try catalog.create(name: "天空归档", group: "本张", patch: .init(fullRecipe: full, sourceID: source.sourceContentID))
+        let row = try XCTUnwrap(catalog.records().first)
+        let asset = try XCTUnwrap(row.patch.fullRecipeReference)
+        XCTAssertEqual(row, saved)
+        XCTAssertNil(row.patch.fullRecipe)
+        let index = try String(contentsOf: root.appendingPathComponent("index-v1.json"), encoding: .utf8)
+        XCTAssertFalse(index.contains("subjectPNG"))
+        let native = try catalog.nativeData(for: row)
+        let second = DevelopmentPresetCatalog(root: root.appendingPathComponent("second"))
+        let imported = try second.importNative(native)
+        let hydrated = try second.materialize(imported)
+        XCTAssertEqual(hydrated.patch.fullRecipe, full)
+        let (draft, session, ctx) = try make()
+        XCTAssertNotNil(row.reason(for: String(repeating: "c", count: 64)))
+        let revision = session.revision
+        XCTAssertThrowsError(try session.adoptPreset(row, context: ctx, revision: revision))
+        var rotated = source
+        rotated.exifOrientation = 1
+        var otherDimensions = source
+        otherDimensions.orientedWidth += 1
+        let initialRecipe = draft.recipe
+        for mismatch in [rotated, otherDimensions] {
+            let staleLayer = try presetLayer(.sky, source: mismatch, gray: 81)
+            let stale = DevelopmentRecipe(adjustmentsV3: .init(masks: [staleLayer]))
+            let reference = try catalog.create(name: "方向或尺寸已变", group: "本张",
+                patch: .init(fullRecipe: stale, sourceID: source.sourceContentID))
+            XCTAssertNotNil(reference.patch.fullRecipeReference)
+            let snapshot = try catalog.materialize(reference)
+            XCTAssertThrowsError(try session.previewPreset(snapshot, context: ctx, revision: revision)) {
+                XCTAssertEqual($0 as? DevelopmentAdjustmentCommandError, .mismatchedSource)
+            }
+            XCTAssertThrowsError(try session.adoptPreset(snapshot, context: ctx, revision: revision)) {
+                XCTAssertEqual($0 as? DevelopmentAdjustmentCommandError, .mismatchedSource)
+            }
+            XCTAssertEqual(draft.recipe, initialRecipe)
+            XCTAssertEqual(draft.commitAttempts, 0)
+            XCTAssertEqual(session.revision, revision)
+            XCTAssertEqual(session.history.entryCount, 0)
+            XCTAssertTrue(session.presetAdoptions.isEmpty)
+        }
+        XCTAssertEqual(try session.previewPreset(hydrated, context: ctx, revision: revision), full)
+        XCTAssertEqual(session.history.entryCount, 0)
+        XCTAssertTrue(try session.adoptPreset(hydrated, context: ctx, revision: revision))
+        XCTAssertEqual(draft.recipe, full)
+        XCTAssertEqual(session.presetAdoptions.first?.assetHashes, [bound.semanticSnapshot!.pngSHA256])
+        try Data([32]).write(to: root.appendingPathComponent("recipes/" + asset + ".json"))
+        XCTAssertThrowsError(try catalog.materialize(row))
+        var wrong = source
+        wrong.sourceContentID = String(repeating: "d", count: 64)
+        XCTAssertThrowsError(try DevelopmentPresetPatch(fullRecipe: full, sourceID: wrong.sourceContentID))
+    }
+
 }

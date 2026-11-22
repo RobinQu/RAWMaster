@@ -1,0 +1,175 @@
+{
+  "units": "8-bit RGB code values, interpreted as sRGB",
+  "cases": {
+    "lake": {
+      "assets_sha256": {
+        "input": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+        "truth": "9a13489c2216f8b769ababa5fc5eb8f54eea37250ca1b5b5fa1d9445e92ff1cb",
+        "baseline": "c22ab7237c486fb320ba538b4b700ef5fbea262fdd16b3129acf23af83c13c9d",
+        "matte": "d33c327dac84278955332816c5459e703c0b2b6cb4f841be48a6edc8393e6208"
+      },
+      "runs": {
+        "input": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 120.654,
+          "applied_target_mae": 120.654,
+          "raw_exterior_mae": 0.0,
+          "raw_exterior_max": 0,
+          "raw_exterior_any_channel_gt8_pixels": 0,
+          "raw_exterior_any_channel_gt8_pct": 0.0,
+          "raw_protected_crop_mae": 0.0,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.0,
+          "applied_pixels_sha256": "dcce44e146df7879d90c67e6eeee04e3c4d3fde4607e43230035017ba8739eaf"
+        },
+        "baseline": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 16.387,
+          "applied_target_mae": 16.387,
+          "raw_exterior_mae": 0.0,
+          "raw_exterior_max": 0,
+          "raw_exterior_any_channel_gt8_pixels": 0,
+          "raw_exterior_any_channel_gt8_pct": 0.0,
+          "raw_protected_crop_mae": 0.0,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 2.762,
+          "applied_pixels_sha256": "ec510459c6b239f8b344fbbb9b244cb21547f335b47314aee3c12b2e009dfef1"
+        },
+        "flux-lake": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 13.034,
+          "applied_target_mae": 13.034,
+          "raw_exterior_mae": 8.84,
+          "raw_exterior_max": 136,
+          "raw_exterior_any_channel_gt8_pixels": 767154,
+          "raw_exterior_any_channel_gt8_pct": 74.616,
+          "raw_protected_crop_mae": 9.935,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 1.378,
+          "applied_pixels_sha256": "4b7b2c4677ae1e094f4c9e6e42acd9fbd4d1fa268b2bdca6d8d2dea63a6371ff",
+          "candidate_sha256": "5fa655eeb742f0ced214e3e9947dea3522c0ff86102f594b58434a2489e2a602"
+        },
+        "flux-lake-repeat": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 13.204,
+          "applied_target_mae": 13.204,
+          "raw_exterior_mae": 9.53,
+          "raw_exterior_max": 192,
+          "raw_exterior_any_channel_gt8_pixels": 804403,
+          "raw_exterior_any_channel_gt8_pct": 78.239,
+          "raw_protected_crop_mae": 11.018,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 1.554,
+          "applied_pixels_sha256": "08dba5a00ffd56b5199bde168773c989a4a4dc0a9f17b5e20c361c87bb382ad9",
+          "candidate_sha256": "0a31b3482e566339f6f7846ebae47d6d5b05842e6e2181edfa878d490b23c94e"
+        },
+        "seedream-lake": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 10.359,
+          "applied_target_mae": 10.359,
+          "raw_exterior_mae": 0.668,
+          "raw_exterior_max": 3,
+          "raw_exterior_any_channel_gt8_pixels": 0,
+          "raw_exterior_any_channel_gt8_pct": 0.0,
+          "raw_protected_crop_mae": 0.7,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.081,
+          "applied_pixels_sha256": "29c1bf671ef2709043649683eb05af03b3c953bc81af9384b7a4ab29598265d8",
+          "candidate_sha256": "daad697e22a5a4786fade0742133d4c8eb27aa6c3347ea4467ecd0ffad019999"
+        },
+        "seedream-lake-repeat": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 10.174,
+          "applied_target_mae": 10.174,
+          "raw_exterior_mae": 0.667,
+          "raw_exterior_max": 4,
+          "raw_exterior_any_channel_gt8_pixels": 0,
+          "raw_exterior_any_channel_gt8_pct": 0.0,
+          "raw_protected_crop_mae": 0.684,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.096,
+          "applied_pixels_sha256": "004d362d901c7725776d7d9d7140a30a4fdfc16f6a9c163919c25991a3976b18",
+          "candidate_sha256": "ec402dae5646e222d29255ce36bc001b31804926f775babcf362a13a9bc8ceeb"
+        }
+      }
+    },
+    "portrait": {
+      "assets_sha256": {
+        "input": "60d1171bebc89e6170873b6815e9b510f3a304578a6dfb54a1596f49e6d7c3cc",
+        "truth": "09fc2049a0c52f366a3fa38cc6cf6e2494cdd934147fe3994192965d78d03bf5",
+        "baseline": "61a9a801762d2d7e49ea7bd9262f719133125c39d8eb55abef4816b378a0872f",
+        "matte": "e1e2a2b977948d54abe962fcf159e4f0eae7837adb79815a1e1909a46632d297"
+      },
+      "runs": {
+        "input": {
+          "target_pixels": 37039,
+          "exterior_pixels": 990821,
+          "raw_target_mae": 39.448,
+          "applied_target_mae": 39.448,
+          "raw_exterior_mae": 0.0,
+          "raw_exterior_max": 0,
+          "raw_exterior_any_channel_gt8_pixels": 0,
+          "raw_exterior_any_channel_gt8_pct": 0.0,
+          "raw_protected_crop_mae": 0.0,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.662,
+          "applied_pixels_sha256": "390ddcf9228f4e857726ce8c6b75737162885aaa5bbffa8c1ad66968ec3eea94",
+          "applied_face_ev_vs_truth": -0.908
+        },
+        "baseline": {
+          "target_pixels": 37039,
+          "exterior_pixels": 990821,
+          "raw_target_mae": 12.943,
+          "applied_target_mae": 12.943,
+          "raw_exterior_mae": 0.0,
+          "raw_exterior_max": 0,
+          "raw_exterior_any_channel_gt8_pixels": 0,
+          "raw_exterior_any_channel_gt8_pct": 0.0,
+          "raw_protected_crop_mae": 0.0,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.211,
+          "applied_pixels_sha256": "6fc1e698693409352a5ff724fea4de08d636232167be946bf22e725163bb7b1e",
+          "applied_face_ev_vs_truth": -0.273
+        },
+        "flux-portrait": {
+          "target_pixels": 37039,
+          "exterior_pixels": 990821,
+          "raw_target_mae": 25.17,
+          "applied_target_mae": 25.913,
+          "raw_exterior_mae": 6.266,
+          "raw_exterior_max": 143,
+          "raw_exterior_any_channel_gt8_pixels": 395835,
+          "raw_exterior_any_channel_gt8_pct": 39.95,
+          "raw_protected_crop_mae": 13.094,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.632,
+          "applied_pixels_sha256": "ee3db833f8ff692c6af5e5eac1d7a7f1175f0b11083c42a2fb1aa9f4853838ef",
+          "applied_face_ev_vs_truth": -0.564,
+          "candidate_sha256": "cbbb3aadf0a0cbc75f2958d7fa716afff59308396c68b82f679417090355d225"
+        },
+        "seedream-portrait": {
+          "target_pixels": 37039,
+          "exterior_pixels": 990821,
+          "raw_target_mae": 27.173,
+          "applied_target_mae": 28.092,
+          "raw_exterior_mae": 0.927,
+          "raw_exterior_max": 96,
+          "raw_exterior_any_channel_gt8_pixels": 15905,
+          "raw_exterior_any_channel_gt8_pct": 1.605,
+          "raw_protected_crop_mae": 5.476,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.657,
+          "applied_pixels_sha256": "29ec6c5a90c654aadc2b1a70c40770db29f0718d7eacac65140a4308967b9d33",
+          "applied_face_ev_vs_truth": -0.634,
+          "candidate_sha256": "602f58097d9a965604297e2afaf762f565305f557ab4d843a3b128adb90b3037"
+        }
+      }
+    }
+  }
+}
