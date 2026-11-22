@@ -1,79 +1,401 @@
 import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
 import RAWMasterCore
 import RAWMasterImaging
 
-struct ExportWorkspace:View{
-    @EnvironmentObject var model:AppModel
-    @State private var format=PhotoRenderFormat.jpeg8
-    @State private var preset=2048
-    @State private var customLongEdge=3000
-    @State private var quality=0.9
-    @State private var directory=FileManager.default.urls(for:.picturesDirectory,in:.userDomainMask)[0].appendingPathComponent("RAWMaster Exports",isDirectory:true)
-    @State private var naming="{name}-{index}"
-    @State private var running=false
-    @State private var completed=0
-    @State private var currentName=""
-    @State private var results:[URL]=[]
-    @State private var error:String?
-    @State private var task:Task<Void,Never>?
-    private var assets:[AssetRecord]{
-        let ids=model.workbenchExportContext.exactAssetIDs.map(Set.init)
-        return model.scopedAssets.filter{(ids?.contains($0.id) ?? true) && $0.availability == .available}
+struct ExportWorkspace: View {
+    @EnvironmentObject private var model: AppModel
+    @State private var values = ExportWorkspaceSettings()
+    @State private var basePreset = ExportWorkspacePresetChoice.builtins[0]
+    @State private var personal: [ExportWorkspacePresetChoice] = []
+    @State private var lastPreset: ExportWorkspacePresetChoice?
+    @State private var newPreset: PresetNameDraft?
+    @State private var transfer: ExportPresetTransfer?
+    @State private var pendingShare: PhotoExportPreset?
+    @State private var styleDraft: StyleDraft?
+    @State private var selection = ExportWorkspaceSelection()
+    @State private var preview: ExportPreviewPhoto?
+    @State private var previewProblem: String?
+    @State private var message: String?
+    @State private var running = false
+    @State private var completed = 0
+    @State private var total = 0
+    @State private var currentName = ""
+    @State private var results: [URL] = []
+    @State private var exportTask: Task<Void, Never>?
+    @AppStorage private var directoryPath: String
+    private let defaults: UserDefaults
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        let initialDirectory = FileManager.default.urls(for: .picturesDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("RAWMaster Exports", isDirectory: true)
+        _directoryPath = AppStorage(wrappedValue: initialDirectory.path, "rawmaster.export.workspace.destination.v1", store: defaults)
     }
-    var body:some View{
-        HStack(spacing:0){
-            VStack(alignment:.leading,spacing:0){
-                VStack(alignment:.leading,spacing:5){
-                    Text("导出工作台").font(.system(size:22,weight:.semibold))
-                    Text("\(assets.count) 张照片 · 使用各自当前调整").foregroundStyle(.secondary).font(.caption)
-                }.padding(22)
+
+    private var allPresets: [ExportWorkspacePresetChoice] { ExportWorkspacePresetChoice.builtins + personal }
+    private var modified: Bool { values != basePreset.settings }
+    private var checked: Set<String> { selection.checked }
+    private var directory: URL { URL(fileURLWithPath: directoryPath, isDirectory: true) }
+    private var currentPreview: ExportPreviewPhoto? {
+        guard let preview, preview.assetID == selection.focusedID, preview.original == (values.mode == "original") else { return nil }
+        return preview
+    }
+    private var previewMaximum: Int { min(1040, max(1, values.resolvedConfiguration.maximumLongEdge ?? 1040)) }
+
+    private struct PresetNameDraft: Identifiable {
+        let id = UUID()
+        let suggested: String
+        let settings: ExportWorkspaceSettings
+    }
+
+    private struct StyleDraft: Identifiable {
+        let id = UUID()
+        let layout: PhotoExportLayout
+    }
+
+    var body: some View {
+        let assets = model.workbenchExportCandidates
+        let inspected = assets.first { $0.id == selection.focusedID }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                ExportAssetChecklist(assets: assets, limit: AppModel.maximumWorkbenchExportCount,
+                                     checked: $selection.checked, focused: $selection.focusedID)
+                    .frame(minWidth: 195, idealWidth: 220, maxWidth: 250)
                 Divider()
-                List(assets){asset in
-                    HStack(spacing:10){Image(systemName:CaptureFileFormat.isRAW(asset.filename) ? "camera.aperture":"photo").foregroundStyle(.secondary)
-                        VStack(alignment:.leading){Text(asset.filename).lineLimit(1);Text(asset.projectName).font(.caption2).foregroundStyle(.secondary)}
-                    }
-                }.listStyle(.plain)
-            }.frame(minWidth:300,idealWidth:380,maxWidth:480)
+                VStack(alignment: .leading, spacing: 0) {
+                    presetsBar
+                    Divider()
+                    inspection(inspected)
+                }.frame(maxWidth: .infinity)
+                Divider()
+                ExportWorkspaceInspector(values: $values, photo: currentPreview,
+                                         firstAsset: assets.first(where: { checked.contains($0.id) }),
+                                         openStyles: editStyles)
+                    .frame(width: 250)
+            }.disabled(running)
             Divider()
-            ScrollView{
-                VStack(alignment:.leading,spacing:22){
-                    group("输出格式与尺寸"){
-                        Picker("格式",selection:$format){Text("JPEG").tag(PhotoRenderFormat.jpeg8);Text("TIFF 16 位").tag(PhotoRenderFormat.tiff16);Text("PNG 16 位").tag(PhotoRenderFormat.png16)}.pickerStyle(.segmented)
-                        Picker("分辨率预设",selection:$preset){Text("原始尺寸").tag(0);Text("社交媒体 · 1080").tag(1080);Text("网络分享 · 2048").tag(2048);Text("高质量 · 4096").tag(4096);Text("自定长边").tag(-1)}
-                        if preset == -1{Stepper("长边 \(customLongEdge) 像素",value:$customLongEdge,in:64...100000)}
-                        Text("仅缩小，不放大；保留原始宽高比与 sRGB ICC。").font(.caption).foregroundStyle(.secondary)
-                        if format == .jpeg8{
-                            HStack{Text("JPEG 质量");Slider(value:$quality,in:0.05...1);Text("\(Int((quality*100).rounded()))%").monospacedDigit().frame(width:42)}
-                        }
-                    }
-                    group("输出位置"){
-                        HStack{Text(directory.path).lineLimit(1).truncationMode(.middle).frame(maxWidth:.infinity,alignment:.leading);Button("选择…",action:chooseDirectory)}
-                    }
-                    group("文件命名"){
-                        TextField("命名模板",text:$naming).textFieldStyle(.roundedBorder)
-                        Text("支持 {name} 原文件名、{index} 序号、{date} 日期。同名文件自动追加序号，绝不覆盖。").font(.caption).foregroundStyle(.secondary)
-                    }
-                    if running{ProgressView(value:Double(completed),total:Double(max(1,assets.count))){Text("正在导出 \(completed)/\(assets.count)")};Text(currentName).font(.caption).foregroundStyle(.secondary)}
-                    if let error{Label(error,systemImage:"exclamationmark.triangle").foregroundStyle(AppPalette.warning).font(.caption).textSelection(.enabled)}
-                    if !results.isEmpty{Label("已完成 \(results.count) 张照片",systemImage:"checkmark.circle.fill").foregroundStyle(AppPalette.keep)
-                        Button("在 Finder 中显示"){NSWorkspace.shared.activateFileViewerSelecting(results)}}
-                    HStack{Spacer();if running{Button("取消"){task?.cancel()}}else{Button("导出 \(assets.count) 张照片",action:start).buttonStyle(.borderedProminent).disabled(assets.isEmpty).accessibilityIdentifier("export.workspace.confirm")}}
-                }.padding(30).frame(maxWidth:700).frame(maxWidth:.infinity)
-            }.background(AppPalette.canvas)
-        }.background(AppPalette.panel).onDisappear{if running{task?.cancel()}}
+            if let message {
+                HStack {
+                    Text(message).font(.caption).textSelection(.enabled)
+                    Spacer()
+                    Button { self.message = nil } label: { Image(systemName: "xmark") }
+                        .buttonStyle(.plain).accessibilityLabel("关闭提示")
+                }.padding(.horizontal, 16).padding(.vertical, 6)
+                Divider()
+            }
+            footer(assets)
+        }
+        .onAppear { loadPresets() }
+        .onChange(of: model.requestedWorkbenchExportMode, initial: true) { _, requested in
+            if let requested {
+                values.mode = requested.rawValue
+                model.requestedWorkbenchExportMode = nil
+            }
+        }
+        .onChange(of: assets.map(\.id), initial: true) { _, ids in selection.synchronize(ids) }
+        .task(id: PreviewKey(id: inspected?.id, path: inspected?.resolvedURL.path, mode: values.mode)) {
+            await loadPreview(inspected)
+        }
+        .sheet(item: $styleDraft) { draft in
+            if let preview = currentPreview, let inspected {
+                ExportWatermarkEditor(photo: preview, filename: inspected.filename, previewMaximum: previewMaximum,
+                                      layout: draft.layout) {
+                    values.configuration.layout = $0
+                }
+            }
+        }
+        .sheet(item: $newPreset) { draft in
+            ExportPresetNameEditor(suggested: draft.suggested, used: allPresets.map(\.name)) { name in
+                try save(draft.settings.portable(named: name))
+            }
+        }
+        .sheet(item: $transfer, onDismiss: {
+            if let pendingShare {
+                self.pendingShare = nil
+                writeSharedPreset(pendingShare)
+            }
+        }) { item in
+            ExportPresetTransferReview(transfer: item) {
+                if item.sharing { pendingShare = item.preset } else { acceptImport(item.preset) }
+            }
+        }
+        .onDisappear { if running { exportTask?.cancel() } }
     }
-    private func group<Content:View>(_ title:String,@ViewBuilder content:()->Content)->some View{VStack(alignment:.leading,spacing:12){Text(title).font(.headline);content()}}
-    private func chooseDirectory(){let panel=NSOpenPanel();panel.canChooseFiles=false;panel.canChooseDirectories=true;panel.canCreateDirectories=true;panel.directoryURL=directory;if panel.runModal() == .OK,let url=panel.url{directory=url}}
-    private func start(){
-        running=true;completed=0;results=[];error=nil
-        let configuration=PhotoBatchExportConfiguration(format:format,maximumLongEdge:preset == 0 ? nil:preset == -1 ? customLongEdge:preset,jpegQuality:quality)
-        let destination=directory,template=naming
-        task=Task{[model]in
-            do{results=try await model.exportWorkbenchPhotos(directory:destination,namingTemplate:template,configuration:configuration){done,total,name in
-                Task{@MainActor in completed=done;currentName=name}
-            }}catch{self.error=Task.isCancelled || error is CancellationError ? "导出已取消；已完成的文件保留。":"导出未完成：\(error.localizedDescription)"}
-            running=false;task=nil
+
+    private var presetsBar: some View {
+        VStack(alignment: .leading, spacing: 7) {
+            Text("导出预设").font(.headline)
+            HStack(spacing: 8) {
+                Menu {
+                    Button("上次设置") { if let lastPreset { apply(lastPreset) } }.disabled(lastPreset == nil)
+                    Divider()
+                    ForEach(ExportWorkspacePresetChoice.builtins) { preset in
+                        Button(preset.name) { apply(preset) }
+                    }
+                    if !personal.isEmpty {
+                        Divider()
+                        ForEach(personal) { preset in Button(preset.name) { apply(preset) } }
+                    }
+                } label: {
+                    Label(basePreset.name + (modified ? " · 已修改" : ""), systemImage: "slider.horizontal.3")
+                        .lineLimit(1)
+                }
+                .accessibilityLabel("切换导出预设").accessibilityIdentifier("export.workspace.presets")
+                Button {
+                    newPreset = PresetNameDraft(suggested: proposedName(basePreset.name + " 副本"), settings: values)
+                } label: { Label("新建预设", systemImage: "plus") }
+                    .accessibilityIdentifier("export.workspace.preset.new")
+                Menu {
+                    Button("导入预设文件…", action: importPreset)
+                    Button("分享当前设置为文件…", action: sharePreset)
+                } label: { Image(systemName: "square.and.arrow.up") }
+                    .fixedSize().accessibilityLabel("导入或分享预设")
+                Spacer(minLength: 0)
+            }
+        }.padding(.horizontal, 16).padding(.vertical, 12)
+    }
+
+    @ViewBuilder private func inspection(_ asset: AssetRecord?) -> some View {
+        if let asset {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(asset.filename).font(.headline).lineLimit(1).truncationMode(.middle)
+                    Spacer()
+                    Text(values.mode == "render" ? "成片预览" : "原件预览")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7).fill(Color(nsColor: .underPageBackgroundColor))
+                    if let preview = currentPreview {
+                        if values.mode == "render" {
+                            ExportStyledPhoto(photo: preview, layout: values.configuration.layout, maximum: previewMaximum)
+                                .padding(14)
+                        } else {
+                            Image(decorative: preview.image, scale: 1).resizable().scaledToFit().padding(14)
+                        }
+                    } else if let previewProblem {
+                        ContentUnavailableView("预览不可用", systemImage: "photo.badge.exclamationmark",
+                                               description: Text(previewProblem))
+                    } else {
+                        ProgressView("读取照片…").font(.caption)
+                    }
+                }
+                if values.mode == "render" {
+                    HStack {
+                        Label(values.configuration.layout.style.exportTitle, systemImage: "rectangle.inset.filled")
+                        Spacer()
+                        Button("编辑边框与水印…") { editStyles(values.configuration.layout) }.disabled(currentPreview == nil)
+                            .accessibilityIdentifier("export.workspace.watermark")
+                    }.font(.caption)
+                }
+            }.padding(15).frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            ContentUnavailableView("暂无照片", systemImage: "photo.on.rectangle.angled",
+                                   description: Text("从资料库选择要导出的照片。"))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    private func footer(_ assets: [AssetRecord]) -> some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text("输出目录").font(.caption).foregroundStyle(.secondary)
+                Button { chooseDirectory() } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "folder")
+                        Text(directory.path).font(.callout).lineLimit(1).truncationMode(.middle)
+                        Image(systemName: "chevron.down").font(.caption2)
+                    }
+                }.buttonStyle(.plain).disabled(running).help(directory.path)
+                    .accessibilityIdentifier("export.workspace.destination")
+            }
+            Spacer()
+            if running {
+                VStack(alignment: .trailing, spacing: 2) {
+                    ProgressView(value: Double(completed), total: Double(max(1, total))).frame(width: 120)
+                    Text("\(completed)/\(total) · \(currentName)").font(.caption2).lineLimit(1)
+                }
+                Button("取消导出") { exportTask?.cancel() }
+            } else {
+                if !results.isEmpty {
+                    Button("在 Finder 显示 \(results.count) 个文件") {
+                        NSWorkspace.shared.activateFileViewerSelecting(results)
+                    }.font(.caption).buttonStyle(.link)
+                }
+                if checked.count > AppModel.maximumWorkbenchExportCount {
+                    Text("超出单批上限").font(.caption).foregroundStyle(AppPalette.warning)
+                }
+                let original = values.mode == "original"
+                let label = original ? (values.copyMode == "manifest" ? "导出所选清单" : "交付原件") : "导出成片"
+                Button("\(label)（\(checked.count)）") { submit(assets) }
+                    .buttonStyle(.borderedProminent)
+                    .disabled(checked.isEmpty || checked.count > AppModel.maximumWorkbenchExportCount || model.isBusy)
+                    .accessibilityIdentifier("export.workspace.confirm")
+            }
+        }.padding(.horizontal, 16).padding(.vertical, 12)
+    }
+
+    private struct PreviewKey: Equatable { let id: String?; let path: String?; let mode: String }
+
+    private func loadPreview(_ asset: AssetRecord?) async {
+        preview = nil
+        previewProblem = nil
+        guard let asset else { return }
+        let original = values.mode == "original"
+        do {
+            let image: CGImage
+            let metadata: PhotoExportMetadata
+            if original {
+                let nsImage = try await ImagePipeline.shared.preview(at: asset.resolvedURL, maxPixel: 1040)
+                guard let cgImage = nsImage.cgImage(forProposedRect: nil, context: nil, hints: nil) else { throw DevelopmentError.unreadable }
+                image = cgImage
+                metadata = await Task.detached(priority: .utility) { PhotoExportMetadata.read(from: asset.resolvedURL) }.value
+            } else {
+                (image, metadata) = try await model.workbenchExportPreview(for: asset, maxPixel: 1040)
+            }
+            guard !Task.isCancelled else { return }
+            preview = ExportPreviewPhoto(assetID: asset.id, original: original, image: image, metadata: metadata)
+        } catch {
+            if !Task.isCancelled { previewProblem = error.localizedDescription }
+        }
+    }
+
+    private func apply(_ preset: ExportWorkspacePresetChoice) {
+        basePreset = preset
+        values = preset.settings
+        message = nil
+    }
+
+    private func editStyles(_ layout: PhotoExportLayout) {
+        styleDraft = StyleDraft(layout: layout)
+    }
+
+    private func loadPresets() {
+        do {
+            let records = try ExportWorkspacePresetLibrary.records(in: defaults)
+            personal = records.compactMap { try? $0.choice() }
+            lastPreset = try ExportWorkspacePresetLibrary.last(in: defaults)
+            if personal.count < records.count { message = "部分已存预设暂时无法读取。" }
+        } catch { message = error.localizedDescription }
+    }
+
+    private func proposedName(_ suggested: String) -> String {
+        ExportWorkspacePresetLibrary.availableName(suggested, among: allPresets)
+    }
+
+    private func save(_ preset: PhotoExportPreset, importedName: String? = nil) throws {
+        let choice = try ExportWorkspacePresetLibrary.append(preset, importedName: importedName, to: defaults)
+        personal.append(choice)
+        apply(choice)
+    }
+
+    private func importPreset() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.json]
+        panel.allowsMultipleSelection = false
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            let file = try FileHandle(forReadingFrom: url)
+            defer { try? file.close() }
+            let data = try file.read(upToCount: 2 * 1024 * 1024 + 1) ?? Data()
+            transfer = ExportPresetTransfer(preset: try PhotoExportPreset.read(data))
+        } catch { message = "导入预设失败。\(error.localizedDescription)" }
+    }
+
+    private func acceptImport(_ preset: PhotoExportPreset) {
+        do {
+            loadPresets()
+            if let existing = try ExportWorkspacePresetLibrary.matching(preset, among: allPresets) {
+                apply(existing)
+                message = "已使用现有同名预设。"
+                return
+            }
+            let name = proposedName(preset.name)
+            try save(ExportWorkspaceSettings(preset: preset).portable(named: name), importedName: preset.name)
+            message = "已导入「\(name)」。"
+        } catch { message = "导入预设失败。\(error.localizedDescription)" }
+    }
+
+    private func sharePreset() {
+        let preset = values.portable(named: basePreset.name)
+        do {
+            _ = try preset.fileData()
+            transfer = ExportPresetTransfer(preset: preset, sharing: true)
+        } catch { message = "分享预设失败。\(error.localizedDescription)" }
+    }
+
+    private func writeSharedPreset(_ preset: PhotoExportPreset) {
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.json]
+        panel.nameFieldStringValue = preset.name.replacingOccurrences(of: "/", with: "-") + ".rmexport.json"
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        do {
+            try preset.fileData().write(to: url, options: .atomic)
+            message = "预设已保存为 \(url.lastPathComponent)。"
+        }
+        catch { message = "分享预设失败。\(error.localizedDescription)" }
+    }
+
+    private func chooseDirectory() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = false
+        panel.canChooseDirectories = true
+        panel.canCreateDirectories = true
+        panel.directoryURL = directory
+        if panel.runModal() == .OK, let url = panel.url { directoryPath = url.path }
+    }
+
+    private func rememberSubmission() {
+        do {
+            try ExportWorkspacePresetLibrary.remember(values, in: defaults)
+            lastPreset = try ExportWorkspacePresetLibrary.last(in: defaults)
+        } catch {
+            message = "本次设置无法记为上次设置。\(error.localizedDescription)"
+        }
+    }
+
+    private func submit(_ assets: [AssetRecord]) {
+        let ids = assets.filter { checked.contains($0.id) }.map(\.id)
+        guard !running, !ids.isEmpty, ids.count <= AppModel.maximumWorkbenchExportCount else { return }
+        message = nil
+        results = []
+        if values.mode == "original" {
+            let copy = values.copyMode != "manifest"
+            if copy, model.exportSelection(ids: ids, formats: values.originalFormats, exactAssetIDs: ids)?.assetIDs.isEmpty != false {
+                message = "勾选的文件中没有符合交付格式的原件。"
+                return
+            }
+            rememberSubmission()
+            model.export(ids: copy ? ids : [], destination: directory.path, formats: values.originalFormats,
+                         exactAssetIDs: ids, csvLayout: .photoRows)
+            return
+        }
+        if let issue = ExportLayoutControls.issue(for: values.configuration.layout) {
+            message = issue
+            return
+        }
+        let configuration = values.resolvedConfiguration
+        let destination = directory, naming = values.namingTemplate, collision = values.collision
+        do { try configuration.validate() } catch { message = error.localizedDescription; return }
+        rememberSubmission()
+        running = true
+        completed = 0
+        total = ids.count
+        currentName = ""
+        exportTask = Task { @MainActor in
+            do {
+                results = try await model.exportWorkbenchPhotos(directory: destination, namingTemplate: naming,
+                    configuration: configuration, includedIDs: Set(ids), collision: collision) { done, count, name in
+                    Task { @MainActor in completed = done; total = count; currentName = name }
+                }
+                message = "已写入 \(results.count) 个文件。"
+            } catch {
+                message = Task.isCancelled || error is CancellationError ? "已取消导出，已写入的文件保存在输出目录。" : error.localizedDescription
+            }
+            running = false
+            exportTask = nil
         }
     }
 }

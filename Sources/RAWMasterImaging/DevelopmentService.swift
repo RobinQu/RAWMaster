@@ -127,7 +127,7 @@ enum RenderFiles {
       (attributes[.size] as? NSNumber)?.int64Value == source.byteCount,
       try hash(source.sourceLocation) == source.contentSHA256 else { throw EditingError.staleSource }
   }
-  static func capture(_ source: EditingSourceSnapshot) throws -> URL {
+  static func capture(_ source: EditingSourceSnapshot, synchronize: Bool = true) throws -> URL {
     let directory = FileManager.default.temporaryDirectory.appendingPathComponent("RAWMaster-render-" + UUID().uuidString)
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     let destination = directory.appendingPathComponent("source").appendingPathExtension(source.sourceLocation.pathExtension)
@@ -144,7 +144,8 @@ enum RenderFiles {
         }
         if length == 0 { break }; count += Int64(length)
       }
-      try output.synchronize(); try output.close()
+      if synchronize { try output.synchronize() }
+      try output.close()
       let hash = digest.finalize().map { String(format: "%02x", $0) }.joined()
       guard count == source.byteCount, hash == source.contentSHA256 else { throw EditingError.staleSource }
       return destination

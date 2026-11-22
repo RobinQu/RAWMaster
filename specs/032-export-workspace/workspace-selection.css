@@ -1,0 +1,36 @@
+.selection-panel {display:flex;flex-direction:column;gap:10px;min-width:0;min-height:0}
+.selection-panel .section-head {margin:0}
+.selection-controls {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:6px}
+.selection-controls input,.selection-controls select,.sample-size select {min-width:0;width:100%;font-size:12px}
+.selection-controls input {background:var(--input);border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.selection-actions {display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.selection-actions button:disabled {color:var(--sub)}
+.selection-summary {min-height:1.4em;font-variant-numeric:tabular-nums}
+.selection-panel #asset-list {
+  --row-height:56px;display:block;position:relative;flex:0 1 auto;
+  height:min(var(--results-height,168px),max(200px,55vh));min-height:0;
+  overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;overflow-anchor:none;
+}
+.selection-panel #asset-list:focus-visible {outline-offset:0}
+#asset-rows {position:relative;width:100%}
+#asset-rows .asset {
+  position:absolute;left:0;right:0;min-width:0;height:var(--row-height);margin:0;padding:3px;
+}
+#asset-rows .asset button {min-width:0}
+#asset-rows .asset input:focus-visible,#asset-rows .asset button:focus-visible {outline-offset:0}
+.selection-empty {padding:16px 0;color:var(--sub)}
+.selection-limit {padding:8px 9px;border:1px solid var(--warn);border-radius:6px;color:var(--warn);font-size:12px}
+.selection-limit button {margin-top:4px}
+.sample-size {margin-top:auto;display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px;color:var(--sub)}
+.sample-size select {max-width:180px;color:var(--text)}
+.selection-panel .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+#jobrows {max-height:47svh;overflow:auto;overscroll-behavior:contain}
+#job-pages {display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+#job-pages input {width:4.4em;padding:3px 5px;font-variant-numeric:tabular-nums}
+#job-range {margin-left:auto;font-variant-numeric:tabular-nums}
+@media (max-width:899px) {
+  .selection-panel {gap:6px}
+  .selection-panel #asset-list {height:min(var(--results-height),192px)}
+  .selection-controls {grid-template-columns:minmax(0,1fr) auto}
+  .sample-size {margin-top:1px}
+}

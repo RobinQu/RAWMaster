@@ -1,0 +1,1098 @@
+{
+  "capturedAtUTC": "2026-11-22T09:02:11.898399+00:00",
+  "lightflow": {
+    "origin": "https://lightflow.dev/",
+    "scope": "Public app shell, referenced entrypoints and known app/codec/runtime resources for export; excludes unrelated ML weights and entire third-party sites. Bytes are a fresh network download.",
+    "releaseBuild": "20261111155800-2d41ab1",
+    "routeManifest": "e2d6bcaa",
+    "downloadedFileCount": 61,
+    "downloadedBytes": 43353764,
+    "releaseAssets": [
+      {
+        "path": "index.html",
+        "url": "https://lightflow.dev/",
+        "bytes": 5200,
+        "sha256": "d18896b5386404ec12f2cc345f22057d03eded946a47fe0b2e14eb1540d2ecd8"
+      },
+      {
+        "path": "assets/codecWorker-Dt1VOinP.js",
+        "url": "https://lightflow.dev/assets/codecWorker-Dt1VOinP.js",
+        "bytes": 4957,
+        "sha256": "6ea14c9f2b5c8c5141597d9e28ea2fff807d50816c7c9c777706b43f895fbc4e"
+      },
+      {
+        "path": "assets/index-zP4kU_H7.js",
+        "url": "https://lightflow.dev/assets/index-zP4kU_H7.js",
+        "bytes": 1377818,
+        "sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e"
+      },
+      {
+        "path": "assets/jobs-BKGhUuG3.js",
+        "url": "https://lightflow.dev/assets/jobs-BKGhUuG3.js",
+        "bytes": 5255,
+        "sha256": "8608eaa7dfbf2a799a4b503dd2ebf0a162f37881e5f0a18d5edd35cc5cfad752"
+      },
+      {
+        "path": "assets/worker-PmnZFHwu.js",
+        "url": "https://lightflow.dev/assets/worker-PmnZFHwu.js",
+        "bytes": 255042,
+        "sha256": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc"
+      }
+    ],
+    "reaStaticEvidence": "ev_d96039602e62e70c07302c08ca9f309b67683ca52d6579eb2b34dada67a9d048",
+    "reaBrowserEvidence": "ev_de5c3a70166107a8a3c62facbd0715aaa23c83e79392fbd5ff3558fc54bedb91",
+    "offsetsInOriginalJS": [
+      {
+        "finding": "Default export settings",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "const ex=",
+        "byteOffset": 368810
+      },
+      {
+        "finding": "Nine built-in export recipes and format/bit/colour capabilities",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "const Rc=",
+        "byteOffset": 369875
+      },
+      {
+        "finding": "Validation of output compatibility and naming",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function xg(",
+        "byteOffset": 373888
+      },
+      {
+        "finding": "Submit job.export to the pixel backend and propagate cancellation",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "async function MB(",
+        "byteOffset": 379635
+      },
+      {
+        "finding": "Resolve naming tokens",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function v$(",
+        "byteOffset": 735859
+      },
+      {
+        "finding": "Restore stale queued/in-flight jobs as interrupted",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function ov(",
+        "byteOffset": 743050
+      },
+      {
+        "finding": "Deep-copy the settings, choose destination, schedule one job per selected photo and ZIP four or more by default",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "async function Ug(",
+        "byteOffset": 744105
+      },
+      {
+        "finding": "Cancel per job",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function j$(",
+        "byteOffset": 745445
+      },
+      {
+        "finding": "Drain queue sequentially",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function E$(",
+        "byteOffset": 747387
+      },
+      {
+        "finding": "Decode, render, encode, write; save per-item result or error; smaller tile retry",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "async function yq(",
+        "byteOffset": 748717
+      },
+      {
+        "finding": "Compute the target name and resolve disk collisions",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "async function xq(",
+        "byteOffset": 750362
+      },
+      {
+        "finding": "Eight settings groups shared by workspace and compact dialog",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function R$(",
+        "byteOffset": 755510
+      },
+      {
+        "finding": "Summary of actual selected count, expected dimensions, size estimate, errors and warnings",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function SR(",
+        "byteOffset": 1325201
+      },
+      {
+        "finding": "Built-in and user preset list and editing actions",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function jR(",
+        "byteOffset": 1328044
+      },
+      {
+        "finding": "Workspace including presets/settings/photos/queue and filmstrip",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function jie(",
+        "byteOffset": 1338657
+      },
+      {
+        "finding": "Compact dialog using same shared submit and settings components",
+        "asset": "assets/index-zP4kU_H7.js",
+        "needle": "function Cie(",
+        "byteOffset": 1338880
+      },
+      {
+        "finding": "Aspect-preserving size modes",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "function An(",
+        "byteOffset": 32840
+      },
+      {
+        "finding": "Quarter-turn and crop before sizing",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "function Ra(",
+        "byteOffset": 62393
+      },
+      {
+        "finding": "Metadata policy, creator/copyright, keywords, PPI/profile and optional edit XMP",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "async function Ca(",
+        "byteOffset": 63808
+      },
+      {
+        "finding": "Per-format codec options",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "function qf(",
+        "byteOffset": 64980
+      },
+      {
+        "finding": "Full-source decode, output planning, watermark, streaming pixel bands and codec sink",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "async function Ff(",
+        "byteOffset": 65565
+      },
+      {
+        "finding": "Alternative native exportFile backend with eligibility checks, returns null e.g. for HDR/watermark",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "function bw(",
+        "byteOffset": 249701
+      },
+      {
+        "finding": "Tiled native pixel producer to row bands",
+        "asset": "assets/worker-PmnZFHwu.js",
+        "needle": "function kw(",
+        "byteOffset": 253187
+      },
+      {
+        "finding": "Codec ExportSession, push row bands/overlay, finish, patches and resource cleanup",
+        "asset": "assets/codecWorker-Dt1VOinP.js",
+        "needle": "class S{",
+        "byteOffset": 795
+      },
+      {
+        "finding": "Single- or multi-threaded WASM codec module selection",
+        "asset": "assets/codecWorker-Dt1VOinP.js",
+        "needle": "async function T(",
+        "byteOffset": 2163
+      },
+      {
+        "finding": "WASM metadata preparation",
+        "asset": "assets/codecWorker-Dt1VOinP.js",
+        "needle": "case\"prepare\"",
+        "byteOffset": 3979
+      }
+    ],
+    "browser": "HeadlessChrome/157.0.8103.78",
+    "input": {
+      "name": "Export-probe.jpg",
+      "bytes": 367400,
+      "sha256": "c4536dbd0c92d7e2275ed137a0d79824e9e3b179752cd1016144ff66639bfb3f",
+      "format": "JPEG",
+      "dimensions": [
+        3000,
+        2000
+      ],
+      "mode": "RGB",
+      "iccBytes": 588,
+      "iccName": "sRGB built-in",
+      "hasGPS": true,
+      "artist": "RAWMaster Export Probe",
+      "copyright": "Export Probe",
+      "dpi": [
+        72.0,
+        72.0
+      ],
+      "tiffBitsPerSample": null,
+      "progressive": false
+    },
+    "exports": [
+      {
+        "preset": "builtin.web-2048",
+        "summary": [
+          "Export 1 photo",
+          "Web 2048 px sRGB",
+          "JPEG q82 8-bit · sRGB · Long edge 2048 px",
+          "Output",
+          "2048 × 1365 px",
+          "File size",
+          "≈ 865 KB",
+          "Export"
+        ],
+        "execution": "rust web-mt 12t",
+        "result": {
+          "name": "Export-probe.jpg",
+          "bytes": 99284,
+          "sha256": "49c8279167371e4b35b7da0a6de1bdad1433c5534dfb0075f442c20a01b554c9",
+          "format": "JPEG",
+          "dimensions": [
+            2048,
+            1365
+          ],
+          "mode": "RGB",
+          "iccBytes": 520,
+          "iccName": "sRGB",
+          "hasGPS": false,
+          "artist": "RAWMaster Export Probe",
+          "copyright": "Export Probe",
+          "dpi": [
+            300,
+            300
+          ],
+          "tiffBitsPerSample": null,
+          "progressive": 1
+        }
+      },
+      {
+        "preset": "builtin.print-tiff",
+        "summary": [
+          "Export 1 photo",
+          "Print TIFF 16-bit Adobe RGB",
+          "TIFF 16-bit · Adobe RGB (1998) · Original size",
+          "Output",
+          "3000 × 2000 px",
+          "File size",
+          "≈ 32 MB",
+          "Export"
+        ],
+        "execution": "rust web-mt 12t",
+        "result": {
+          "name": "Export-probe.tif",
+          "bytes": 2773410,
+          "sha256": "3ba1ad0ace61bc4da4a38ab033982b3d66b6f2ad6ec9c6de4ca7ca0823b67f13",
+          "format": "TIFF",
+          "dimensions": [
+            3000,
+            2000
+          ],
+          "mode": "RGB",
+          "iccBytes": 528,
+          "iccName": "Adobe RGB (1998)",
+          "hasGPS": true,
+          "artist": "RAWMaster Export Probe",
+          "copyright": "Export Probe",
+          "dpi": [
+            300.0,
+            300.0
+          ],
+          "tiffBitsPerSample": [
+            16,
+            16,
+            16
+          ]
+        }
+      },
+      {
+        "preset": "builtin.png16",
+        "summary": [
+          "Export 1 photo",
+          "PNG 16-bit",
+          "PNG 16-bit · sRGB · Original size",
+          "Output",
+          "3000 × 2000 px",
+          "File size",
+          "≈ 23 MB",
+          "Export"
+        ],
+        "execution": "rust web-mt 12t",
+        "result": {
+          "name": "Export-probe.png",
+          "bytes": 739791,
+          "sha256": "6261c9b3bb67c5002f15f447626a49a7b98f6815b0092a367b58cb1ed2a81ead",
+          "format": "PNG",
+          "dimensions": [
+            3000,
+            2000
+          ],
+          "mode": "RGB",
+          "iccBytes": 520,
+          "iccName": "sRGB",
+          "hasGPS": false,
+          "artist": "RAWMaster Export Probe",
+          "copyright": "Export Probe",
+          "dpi": [
+            299.9994,
+            299.9994
+          ],
+          "tiffBitsPerSample": null,
+          "pngIHDRBitDepth": 16
+        }
+      },
+      {
+        "preset": "builtin.webp-lossless",
+        "summary": [
+          "Export 1 photo",
+          "WebP lossless",
+          "WebP lossless 8-bit · sRGB · Long edge 2560 px",
+          "Output",
+          "2560 × 1707 px",
+          "File size",
+          "≈ 5.2 MB",
+          "Export"
+        ],
+        "execution": "rust web-mt 12t",
+        "result": {
+          "name": "Export-probe.webp",
+          "bytes": 1173072,
+          "sha256": "3c787d9d787cadb92ed045194003721ee246f9b81ecbbe74a282dff981e6378f",
+          "format": "WEBP",
+          "dimensions": [
+            2560,
+            1707
+          ],
+          "mode": "RGB",
+          "iccBytes": 520,
+          "iccName": "sRGB",
+          "hasGPS": false,
+          "artist": "RAWMaster Export Probe",
+          "copyright": "Export Probe",
+          "dpi": null,
+          "tiffBitsPerSample": null
+        }
+      },
+      {
+        "preset": "builtin.avif-hdr",
+        "summary": [
+          "Export 1 photo",
+          "AVIF HDR (PQ, Rec.2020)",
+          "AVIF q80 10-bit · Rec. 2020 PQ · Long edge 3840 px",
+          "Output",
+          "3000 × 2000 px",
+          "File size",
+          "≈ 964 KB",
+          "Export",
+          "HDR AVIF is described by CICP; no ICC profile is embedded."
+        ],
+        "execution": "rust web-mt 12t",
+        "result": {
+          "name": "Export-probe.avif",
+          "bytes": 17831,
+          "sha256": "0066f3388a5b9f2dee47821a2bb822bfb40edbd6e00a0f7b3fbb94ee1f1023bb",
+          "format": "AVIF",
+          "dimensions": [
+            3000,
+            2000
+          ],
+          "mode": "RGB",
+          "iccBytes": 0,
+          "iccName": null,
+          "hasGPS": false,
+          "artist": "RAWMaster Export Probe",
+          "copyright": "Export Probe",
+          "dpi": null,
+          "tiffBitsPerSample": null
+        }
+      }
+    ],
+    "avifTags": {
+      "codec_name": "av1",
+      "width": 3000,
+      "height": 2000,
+      "pix_fmt": "yuv444p10le",
+      "color_range": "pc",
+      "color_space": "smpte170m",
+      "color_transfer": "smpte2084",
+      "color_primaries": "bt2020"
+    },
+    "downloadsZip": {
+      "bytes": 108885,
+      "sha256": "b7649deb9ebdf437c1617677db499629ffc520254dd23a77e5ba5a2312bda6db",
+      "filename": "Web 2048 px sRGB 2026-11-22 (4 photos).zip",
+      "crcFailingEntry": null,
+      "members": [
+        {
+          "name": "Export-probe.jpg",
+          "dimensions": [
+            2048,
+            1365
+          ]
+        },
+        {
+          "name": "Probe-B.jpg",
+          "dimensions": [
+            600,
+            400
+          ]
+        },
+        {
+          "name": "Probe-C.jpg",
+          "dimensions": [
+            660,
+            440
+          ]
+        },
+        {
+          "name": "Probe-D.jpg",
+          "dimensions": [
+            720,
+            480
+          ]
+        }
+      ]
+    },
+    "cancelRetry": {
+      "beforeRetry": [
+        {
+          "photo": "Export-probe.jpg",
+          "status": "cancelled"
+        },
+        {
+          "photo": "Probe-B.jpg",
+          "status": "cancelled"
+        },
+        {
+          "photo": "Probe-C.jpg",
+          "status": "cancelled"
+        },
+        {
+          "photo": "Probe-D.jpg",
+          "status": "cancelled"
+        }
+      ],
+      "retried": {
+        "photoName": "Export-probe.jpg",
+        "status": "done",
+        "attempts": 2,
+        "outName": "Export-probe.webp"
+      },
+      "downloads": [
+        "Export-probe.webp"
+      ]
+    },
+    "watermark": {
+      "settings": {
+        "on": true,
+        "kind": "text",
+        "text": "© LightFlow",
+        "color": "#ffffff",
+        "shadow": true,
+        "image": null,
+        "imageName": "",
+        "anchor": "br",
+        "size": 18,
+        "opacity": 70,
+        "inset": 3
+      },
+      "outputDimensions": [
+        2048,
+        1365
+      ],
+      "outputSHA256": "5690c2c2b24dbc304de7e3370c4d6de9d9efabfab30413c81c22922d5102111f",
+      "differencePixelsNonzeroLuma": 24320,
+      "decodedRGBDifferenceBoundingBoxExclusive": [
+        1608,
+        1231,
+        2001,
+        1313
+      ]
+    },
+    "rawExposureProbe": {
+      "input": "CFA-export.dng",
+      "DNGTags": {
+        "IFD0:DNGVersion": "1.4.0.0",
+        "IFD0:DNGBackwardVersion": "1.1.0.0",
+        "IFD0:ImageWidth": 2400,
+        "IFD0:ImageHeight": 1600,
+        "IFD0:SamplesPerPixel": 1,
+        "IFD0:BitsPerSample": 16,
+        "IFD0:PhotometricInterpretation": "Color Filter Array",
+        "IFD0:CFARepeatPatternDim": "2 2",
+        "IFD0:CFAPattern2": "0 1 1 2",
+        "IFD0:CFALayout": "Rectangular",
+        "IFD0:CFAPlaneColor": "Red,Green,Blue",
+        "IFD0:ActiveArea": "0 0 1600 2400",
+        "IFD0:StripByteCounts": 7680000,
+        "IFD0:BlackLevel": 64,
+        "IFD0:WhiteLevel": 4095,
+        "IFD0:Orientation": "Horizontal (normal)",
+        "IFD0:Compression": "Uncompressed",
+        "IFD0:UniqueCameraModel": "RAWMaster ExportProbe RGGB"
+      },
+      "sourceBefore": "4221791c0c98c5fcdba379027cebbf24903d0ba5842f126ed26941eb84d264ef",
+      "sourceAfter": "4221791c0c98c5fcdba379027cebbf24903d0ba5842f126ed26941eb84d264ef",
+      "protocol": "Synthetic source on loopback; stock Web 2048 preset and Export buttons plus stock Develop numeric exposure control; isolated browser profile.",
+      "edit": {
+        "control": "Exposure value",
+        "baseExposureBefore": 0.0,
+        "baseExposureAfter": 1
+      },
+      "exports": {
+        "baseline": {
+          "file": {
+            "sha256": "0cf7e21edb668880865c05b490b132f6a709a342eb2487b4c0f78212ed3d09ed",
+            "bytes": 33504,
+            "format": "JPEG",
+            "dimensions": [
+              2048,
+              1365
+            ],
+            "iccBytes": 520,
+            "meanEncodedLuma": 211.08316449175825,
+            "sampleROI": [
+              504,
+              674,
+              520,
+              690
+            ],
+            "sampleMeanRGB": [
+              177.93359375,
+              195.03125,
+              201.79296875
+            ],
+            "iccName": "sRGB"
+          },
+          "status": "done",
+          "via": "rust web-mt 12t"
+        },
+        "plus-one": {
+          "file": {
+            "sha256": "e8652145a8d1b7b7d7381f64376f8b21280b4a7260d7f6f6f93ab6e406259a32",
+            "bytes": 26505,
+            "format": "JPEG",
+            "dimensions": [
+              2048,
+              1365
+            ],
+            "iccBytes": 520,
+            "meanEncodedLuma": 234.3715537717491,
+            "sampleROI": [
+              504,
+              674,
+              520,
+              690
+            ],
+            "sampleMeanRGB": [
+              228.63671875,
+              230.87890625,
+              228.70703125
+            ],
+            "iccName": "sRGB"
+          },
+          "status": "done",
+          "via": "rust web-mt 12t"
+        }
+      }
+    }
+  },
+  "alcedoStudio": {
+    "upstream": "https://github.com/zidage/AlcedoStudio",
+    "commit": "61d59bc98afad3be7b0d855bebdb86d7b9225e62",
+    "method": "Read QML, C++ and upstream test source in a pinned checkout.",
+    "selectionLimitReview": "specs/032-export-workspace/batch-limits.md"
+  },
+  "rawmaster": {
+    "head": "b89702e8",
+    "source": "Isolated copy of the 2026-11-22 working tree, including local changes.",
+    "nativeTests": {
+      "existingPassing": 11,
+      "observationsReproduced": 4,
+      "passedCases": [
+        "RAWMasterUITests.ExportWorkspaceTests testMultiSelectionUsesWorkspaceAndExportsEveryCurrentPhoto",
+        "RAWMasterUITests.LibraryAuditObservationTests testExportWorkspaceBrowserKeyUpdatesUnderlyingPhoto",
+        "RAWMasterUITests.LibraryAuditObservationTests testFilteredGridMenuRendersThreeFilesFromOneMatch",
+        "RAWMasterUITests.LibraryAuditObservationTests testSecondExportTabRetainsPreviousSelection",
+        "RAWMasterImagingTests.PhotoBatchRenderExporterTests testRealRecipeResizeQualityNamingAndNoOverwrite",
+        "RAWMasterCoreTests.RenderedExportTests testBackupPreservesReceiptsAndRestoreMarksMissingExternalBytesForVerification",
+        "RAWMasterCoreTests.RenderedExportTests testCancelledExportKeepsCancellationAcrossConflictAndLaterConflictRemoval",
+        "RAWMasterCoreTests.RenderedExportTests testCompletedExternallyDeletedTargetRequiresAttentionRatherThanRecreation",
+        "RAWMasterCoreTests.RenderedExportTests testExistingDifferentFileHasNoReceiptAndIsNeverClaimedOrReplaced",
+        "RAWMasterCoreTests.RenderedExportTests testLateCancelAfterPublicationPreservesSuccessAndEarlierCancelDoesNotPublishStage",
+        "RAWMasterCoreTests.RenderedExportTests testOriginalArchiveAndUnrecognizedStagesAreProtected",
+        "RAWMasterCoreTests.RenderedExportTests testPlanAndPreparationAreIdempotentAndConflictingCommandsReject",
+        "RAWMasterCoreTests.RenderedExportTests testPreparedStageOnlyRecoversWithoutRenderAndConflictingFinalStaysUntouched",
+        "RAWMasterCoreTests.RenderedExportTests testPublicationBeforeCompletionCrashReconcilesSameVersionAndNeverOverwrites",
+        "RAWMasterUITests.ExportPlanningObservationTests testDottedTemplatePublishesDifferentNameThanPreflightAndStopsFollowingItems"
+      ],
+      "status": "Historical baseline before the export-workspace revision."
+    },
+    "prototypeChecks": [
+      "initial counts and output",
+      "archive offline and reserved name",
+      "unavailable source variant",
+      "target-specific conflicts",
+      "explicit skip",
+      "dotted template",
+      "invalid template blocks admission",
+      "TIFF full size",
+      "PNG conditional settings",
+      "custom dimension validation",
+      "custom corrected dimension",
+      "named preset excludes destination",
+      "user preset survives reopening",
+      "GPS is opt-in and source-aware",
+      "missing source GPS",
+      "empty scope",
+      "byte copy on offline inputs",
+      "manifest-only action",
+      "cancel after first commit",
+      "previous restores last submitted options and directory",
+      "submitted output remains frozen",
+      "retry only unfinished",
+      "reconnect preserves ordinal",
+      "manifest result",
+      "layout at 1100w",
+      "layout at 760w",
+      "layout at 390w",
+      "dark appearance"
+    ],
+    "sourceSHA256": {
+      "Sources/RAWMaster/WorkflowTabs.swift": "cd6e399fb08684028e3d22785121b1873a0d2c5e334bb90e320ac4e43322f552",
+      "Sources/RAWMaster/WorkbenchActions.swift": "8b1a7e675d154fc4bd54e07d51e8a00777b246dd56850795b4e30099a3065181",
+      "Sources/RAWMaster/RAWMasterApp.swift": "6de0b758dd900654169b4b178cbcb90a67b3c87114f69cc8d37d4866baf84e96",
+      "Sources/RAWMaster/ExportWorkspace.swift": "8fcb85f71125f2b785f72894816e4f80327f3b69fe25fc513a4d18c9450ccea7",
+      "Sources/RAWMaster/EditingExportSheet.swift": "1f6672912888cb9915b9137863adcd36d93689b990a5ee07d72177b5cf0eb0f5",
+      "Sources/RAWMaster/EditingController.swift": "5a63e683db233beed2f8d4143ea5b4c17c0d85c4dce1006685a9fd4fda37b961",
+      "Sources/RAWMaster/AppModel.swift": "4ac476d9ad348299d395b6e94f4cc239db9dd3d07cb3949c10b69cf78a02ff38",
+      "Sources/RAWMasterImaging/PhotoBatchRenderExporter.swift": "9c37a609b298b121bb4ad3c3b5d75176beebbb9cac8bf7fa30812080949c20fc",
+      "Sources/RAWMasterImaging/RenderExportService.swift": "90590e4e854486eaaa0db7128310bf12decb5609fdfe633db1f67e54da291415",
+      "Sources/RAWMasterImaging/DevelopmentService.swift": "97d8242844ecfec16bd8ac61fd154705b080457d1bf76de0eabae49a6ff745a8",
+      "Sources/RAWMasterCore/LibraryStore+RenderedExports.swift": "eed2baa4d1699a6154b3492827d59a08d767dd37d88edc64ce378b59d92b1882",
+      "Sources/RAWMasterCore/ExportService.swift": "3e4218c49c33cc71099bc58c4d851d8d797d593e3c5961d27cdeb374f019fa6b"
+    },
+    "compositionAndPresetPrototype": {
+      "date": "2026-11-22",
+      "method": "Local file URL in two isolated Chromium profiles, real preset downloads and file input imports, resampled Canvas preview, per-photo test EXIF, simulated photo jobs. Pixel checks use generated test images.",
+      "suite": "output/research/export-panel/rawmaster/preset-roundtrip-check.py",
+      "checks": [
+        "portfolio selects paper, full settings and per-photo EXIF",
+        "changing just the look preserves encoding, names and metadata",
+        "social frame constrains final canvas and preserves the landscape crop",
+        "archive EXIF uses its own values and omits missing ISO",
+        "offline row stays a library thumbnail",
+        "portrait keeps its crop and missing data reserves the same footer",
+        "fill crops the frame and prevents upscaling a short panorama",
+        "opaque mat, text and original photo visibly occupy planned pixels",
+        "blur background and anchored logo produce different rendered pixels",
+        "logo import normalizes to a portable, alpha-preserving PNG",
+        "share preview discloses literal credit, embedded logo and GPS policy",
+        "real share file contains normalized logo and no selection, paths or captured values",
+        "clean look hides the studio logo while keeping the current identity in the draft",
+        "disabled watermarks exclude dormant logo and signature in the portable file",
+        "switching the look restores studio identity and keeps output settings",
+        "empty EXIF selection blocks an enabled caption",
+        "selecting just the capture date uses the focused portrait date",
+        "import preview is staged before the recipe is applied",
+        "cancelling import leaves selection and recipe intact",
+        "independent browser receives the exact recipe with its own directory and photos",
+        "repeat import is idempotent",
+        "same name with a different recipe preserves both",
+        "repeated name collision reuses the earlier variant",
+        "rejection preserves current state: later schema",
+        "rejection preserves current state: wrong preset kind",
+        "rejection preserves current state: invalid encoding",
+        "rejection preserves current state: corrupt logo digest",
+        "rejection preserves current state: foreign directory field",
+        "rejection preserves current state: out of range opacity",
+        "queue freezes the mat, logo, per-photo caption and geometry after switching preset",
+        "original file mode removes frame controls and rendered preview",
+        "old local presets without a layout reopen as clean images",
+        "imported file and logo persist across reopening",
+        "expanded controls fit at width 1100",
+        "expanded controls fit at width 760",
+        "expanded controls fit at width 390"
+      ],
+      "example": {
+        "file": "output/research/export-panel/rawmaster/legacy-workspace-pre-v2/portfolio.rmexport.json",
+        "sha256": "8452e8980801c31d8eeae35269b2b2511a231ffc34cd401b4581bd050167f173"
+      },
+      "status": "Historical 36-check v1 suite. Its inactive-watermark and destination semantics have been superseded. The prior download is retained as the actual v1 migration input."
+    },
+    "prototypeChecksStatus": "Historical 28 checks for the earlier single-pane v1 prototype. See interactiveWorkspaceV2 for the current assertions.",
+    "interactiveWorkspaceV2": {
+      "checkedAtUTC": "2026-11-22T13:07:35.329037+00:00",
+      "schemaVersion": 2,
+      "checksPassed": 131,
+      "method": "Chrome Headless Shell 157.0.8103.78 on macOS, separate temporary sender and receiver profiles with separate loopback HTTP origins for preset transfer. Workspace and virtualized selection suites also launch the local HTML file in fresh profiles. The browser writes real preset files, reads their bytes back, and dispatches pointer, keyboard and file-picker interactions. Pixel readbacks compare rasterized canvases.",
+      "scope": "The HTML prototype simulates photographic file delivery. Large-sample timings use three local fixtures and virtualized rows. The native application enforces 2,000 checked input IDs for rendered files, original copies and manifest-only delivery.",
+      "suites": {
+        "workspace": {
+          "checksPassed": 30,
+          "assertions": [
+            "initial counts and output",
+            "preset controls precede preview and destination sits beside task actions",
+            "archive offline and reserved name",
+            "unavailable source variant",
+            "target-specific conflicts",
+            "explicit skip",
+            "dotted template",
+            "invalid template blocks admission",
+            "TIFF full size",
+            "PNG conditional settings",
+            "custom dimension validation",
+            "custom corrected dimension",
+            "named preset excludes destination",
+            "user preset survives reopening",
+            "GPS is opt-in and source-aware",
+            "missing source GPS",
+            "empty scope",
+            "byte copy on offline inputs",
+            "manifest-only action",
+            "cancel after first commit",
+            "previous restores output settings while retaining the destination currently chosen",
+            "submitted output remains frozen",
+            "retry only unfinished",
+            "reconnect preserves ordinal",
+            "manifest result",
+            "previous reopens manifest handoff with current destination",
+            "layout at 1100w",
+            "layout at 760w",
+            "layout at 390w",
+            "dark appearance"
+          ],
+          "localDriver": "output/research/export-panel/rawmaster/prototype-check.py",
+          "driverSHA256": "53e636f799f085999d533330246fc2d776179faf2061c8121be6d57f12489e3a",
+          "localResult": "output/research/export-panel/rawmaster/prototype-check.json"
+        },
+        "compositionAndPortablePresets": {
+          "checksPassed": 59,
+          "assertions": [
+            "portfolio selects paper, full settings and per-photo EXIF",
+            "portable public sample is a v2 file downloaded by Chrome",
+            "pointer click on real thumbnail applies split",
+            "pointer click on real thumbnail applies mist",
+            "pointer click on real thumbnail applies sign",
+            "pointer click on real thumbnail applies date",
+            "pointer click on real thumbnail applies plain",
+            "pointer click on real thumbnail applies paper",
+            "six quick cards each paint distinct photo pixels in the main preview",
+            "six thumbnail canvases have six different pixel buffers",
+            "split draws two distinct text groups on the white footer and date draws only in the photo lower right",
+            "editing dialog paints its own preview and defers changes to the active recipe",
+            "Cancel discards draft signature, valid zero opacity, and preset switch",
+            "Escape closes studio and restores the previously committed appearance",
+            "Apply commits studio appearance only",
+            "changing just the look preserves encoding, names and metadata",
+            "social frame constrains final canvas and preserves the landscape crop",
+            "archive EXIF uses its own values and omits missing ISO",
+            "offline row stays a library thumbnail",
+            "portrait keeps its crop and missing data reserves the same footer",
+            "fill crops the frame and prevents upscaling a short panorama",
+            "opaque mat, text and original photo visibly occupy planned pixels",
+            "blur background and anchored logo produce different rendered pixels",
+            "logo import normalizes to a portable, alpha-preserving PNG",
+            "share preview discloses literal credit, embedded logo and GPS policy",
+            "real share file contains normalized logo and no selection, paths or captured values",
+            "clean look hides the studio logo while keeping the current identity in the draft",
+            "share explicitly discloses the stored credit and logo while the watermark is off",
+            "v2 includes the unchanged inactive logo and signature",
+            "dormant GPS option is preserved when copyright-only metadata is active",
+            "original-copy preview distinguishes unchanged source metadata from rendered privacy options and the manifest preset stores all settings",
+            "switching the look restores studio identity and keeps output settings",
+            "invalid EXIF draft disables Apply and preserves the committed layout",
+            "selecting just the capture date uses the focused portrait date",
+            "import preview is staged before the recipe is applied",
+            "cancelling import leaves selection and recipe intact",
+            "independent browser receives the exact recipe with its own selected version, directory and photos",
+            "repeat import is idempotent",
+            "same name with a different recipe preserves both",
+            "repeated name collision reuses the earlier variant",
+            "rejection preserves current state: later schema",
+            "rejection preserves current state: wrong preset kind",
+            "rejection preserves current state: invalid encoding",
+            "rejection preserves current state: corrupt logo digest",
+            "rejection preserves current state: foreign directory field",
+            "rejection preserves current state: out of range opacity",
+            "queue freezes the mat, logo, per-photo caption and geometry after switching preset",
+            "original file mode removes frame controls and rendered preview",
+            "receiving original preset discloses disabled signature/logo and its destination-independent copy options",
+            "independent receiving browser applies complete original-mode recipe while keeping photo, selection, and local directory",
+            "previous genuine original-mode submission preserves newly chosen destination",
+            "genuine previous v1 example golden digest matches the prior evidence",
+            "v1 download migrates as rendered paper with conservative copy defaults and preserved selection",
+            "re-sharing genuine v1 yields a full v2 envelope",
+            "old local presets without a layout reopen as clean images",
+            "imported file and logo persist across reopening",
+            "independent studio controls fit at width 1100",
+            "independent studio controls fit at width 760",
+            "independent studio controls fit at width 390"
+          ],
+          "localDriver": "output/research/export-panel/rawmaster/preset-roundtrip-check.py",
+          "driverSHA256": "02576cd63bc5abe54a5954d9fb12a44070f4109c15f25da040d699253b265e2d",
+          "localResult": "output/research/export-panel/rawmaster/preset-roundtrip-check.json"
+        },
+        "largeSelectionAndResults": {
+          "checksPassed": 42,
+          "assertions": [
+            "three initial sources and 2 renderable outputs",
+            "original archived sample and conflict name preserved",
+            "version change invalidates preflight",
+            "1200 selections mount viewport only",
+            "End jumps to index 1199 and maintains all selections",
+            "keyboard toggles one selected row",
+            "PageUp navigates within filtered order",
+            "Home reuses initial output",
+            "search preserves hidden selection and source order",
+            "clear applies only to the ten matching results",
+            "select matching leaves formerly unchecked hidden source excluded",
+            "filtered focus uses full selection ordinal",
+            "30 refreshes preserve rows, cached plan, and thumbnail source",
+            "zero matches retains batch",
+            "offline filter presents only offline sources",
+            "file type filter keeps all checked inputs",
+            "RAW filter includes both RAW sample extensions",
+            "oversized sample is retained and rejected intact",
+            "cannot programmatically submit oversized renderNone",
+            "2001 limit in renderNone",
+            "cannot programmatically submit oversized originalfiles",
+            "2001 limit in originalfiles",
+            "cannot programmatically submit oversized originalmanifest",
+            "2001 limit in originalmanifest",
+            "explicit first batch keeps original order, includes 2000th and excludes 2001st",
+            "exactly 2000-input manifest freezes all rows plus one system output",
+            "pending manifest navigation keeps ordered names",
+            "jump to final nine results including the generated manifest",
+            "render output first page has at most 24 nodes",
+            "hidden job keeps row nodes and frozen 2000-source plan while working",
+            "cancel preserves completed result and cancels remaining actionable rows",
+            "still-offline source waits until relinked",
+            "retry after shrinking sample uses captured item versions names and old source identities",
+            "individual deselection corrects oversize across categories",
+            "bulk correction restores admission without additional trim",
+            "checked filter counts precisely",
+            "mobile row count remains bounded and no horizontal overflow",
+            "zero selected rejects manifest",
+            "restoring 3 samples resets filters and output scope",
+            "shift checkbox range uses current filtered order",
+            "job state changes are independent from the view plan",
+            "old job source indexes remain available after sample switch"
+          ],
+          "localDriver": "output/research/export-panel/rawmaster/selection-scale-check.py",
+          "driverSHA256": "029514619c6cfd2384d92c4077ade7213910407cb62ceed19c92ea44eafb3bc5",
+          "localResult": "output/research/export-panel/rawmaster/selection-scale-check.json"
+        }
+      },
+      "largeSelectionMeasurements": {
+        "desktop1200": {
+          "rows": 11,
+          "visibleHeight": 418,
+          "contentHeight": 67200,
+          "firstPreflightMs": 3.7,
+          "warmRefresh30ms": {
+            "median": 0.2,
+            "p95": 0.51
+          }
+        },
+        "warmRefresh30ms": {
+          "median": 0.2,
+          "p95": 0.35
+        },
+        "desktop2001": {
+          "rows": 10,
+          "visibleHeight": 365,
+          "contentHeight": 112056
+        },
+        "largeJob": {
+          "inputCount": 2000,
+          "itemCount": 2001,
+          "pageSize": 24,
+          "pages": 84,
+          "lastPageRows": 9
+        },
+        "mobile2001": {
+          "rows": 7,
+          "visibleHeight": 192,
+          "contentHeight": 111440
+        }
+      },
+      "quickCardMainPreviewSHA256": {
+        "split": "0679752dd24b94fb89561cf2f0e42131ab6bab1ddd09c0661b8131aee06cb07a",
+        "mist": "db90e9bf0c0d104a38c54fcb3a4ae88c674e94fc176c0db942f76d43f15af048",
+        "sign": "0d5d4af88cf2b3924686b0b58f4b6c691b4960db6e1cb8066e4f8a321df810a3",
+        "date": "73092dc474c5300d0d522da6871446dfd5aa37f3abb9e47745029e68efaad668",
+        "plain": "970d5c7021df31ab8c97c3d545f8c264154a23bf1b54fad43a7f27d9dd1af427",
+        "paper": "710cddd8e9ce7dc7ec4de3f6b5ccf216567a89ef70e3f4c1aa7975ded6c0c509"
+      },
+      "verifiedArtifacts": {
+        "assets/workspace.png": {
+          "sha256": "e0568c1c2c2efbf23b3cf5b0ef9b280a30a60e0553b424cc012d8cbd04669182",
+          "bytes": 392705,
+          "width": 1360,
+          "height": 840
+        },
+        "assets/portfolio-workspace.png": {
+          "sha256": "c8d8937c791b1cbfa949401793e5a77e16133edb16b15e2fc36083228f052804",
+          "bytes": 402718,
+          "width": 1360,
+          "height": 840
+        },
+        "assets/watermark-studio.png": {
+          "sha256": "569390e03e28244d593fb0046803a6a7b152e692575f785a1ebb41c35a454f25",
+          "bytes": 331125,
+          "width": 1360,
+          "height": 840
+        },
+        "assets/selection-1200.png": {
+          "sha256": "8b3c5ddcf56075607c309416d2db34714ae858d911671c7449e569c74066356d",
+          "bytes": 333663,
+          "width": 1280,
+          "height": 760
+        },
+        "assets/portfolio.rmexport.json": {
+          "sha256": "984e2d3102da941e6e0c3769e4ae3dcb7cff5cd75c4d22f79458f312b9cf60ed",
+          "bytes": 963,
+          "schemaVersion": 2
+        }
+      },
+      "v1MigrationInputSHA256": "8452e8980801c31d8eeae35269b2b2511a231ffc34cd401b4581bd050167f173",
+      "prototypeFilesSHA256": {
+        "prototype.html": "d9eb276c7db6751bd4b23f8abb733321219ad6d8223f5309fabf9b316fb53c8d",
+        "export-layout.js": "d4126ae6ca05a18c6c928fe2f1a2e14495b2051842cba20c9ebf37c5c9d9d208",
+        "export-preset.js": "e28733ee55da0b9d7d3d4258ea48e22907ebd08e7b2e8e115659ee10639d0862",
+        "workspace-controls.js": "cadbf31af7062d195c477da01398c0fc554500316b1545575b03084e31b1e22e",
+        "workspace-selection.js": "0382eac3c83fca7b033369578eb83ea572c038fb478868ae4dfb231e0cbc3f37",
+        "workspace-selection.css": "38ea76f6ae06d6fc6b0c3589e29e2dd8bd30d00dfccb4044e70ef18fea55d948",
+        "workspace-studio.css": "aa6722a38be5907e0b060f3fa754e6cf854d812e8cdf7de5955e6b7d4bd67e21"
+      }
+    },
+    "nativeWorkspaceV2": {
+      "system": "macOS",
+      "inputLimit": 2000,
+      "nativeReadbacks": {
+        "cases": 6,
+        "metadataCases": 12,
+        "codecs": [
+          "JPEG 8",
+          "PNG 16",
+          "TIFF 16"
+        ],
+        "longestTestedTiledEdge": 16432,
+        "log": "output/research/export-panel/rawmaster/native-imaging-readback.log"
+      },
+      "photographicOutputs": {
+        "count": 12,
+        "cameras": [
+          "FC9313",
+          "ILCE-1M2"
+        ],
+        "styles": [
+          "date",
+          "mist",
+          "paper",
+          "plain",
+          "sign",
+          "split"
+        ],
+        "results": "output/research/export-panel/rawmaster/native-samples/results.json",
+        "examples": {
+          "native-paper.jpg": "15b91c644ea25fd134307d398dc73f8143b32ae046ef2f98a8618093234dba94",
+          "native-split.jpg": "4eace0a8a9550b34cb443ba30c179aaa7ca6444fa106b3ed40e382000530f7d7"
+        }
+      },
+      "swiftToChromiumToSwift": {
+        "browser": "HeadlessChrome/157.0.8103.78",
+        "nativeFileSHA256": "f6c6958742d1e8ab3c90cae889b0e469cc0b9224a2d79d00cb94b825ff4c4281",
+        "browserFileSHA256": "1a1c7a36b719460b5e8dc774c3493ed4d20575248078eac564847d80bdafdba5",
+        "logoSHA256": "94a24b83b436ce759327a49693ca582e4e4a8fc2f5b7e7a6173b41e47420b625",
+        "results": "output/research/export-panel/rawmaster/native-integration/cross-runtime.json"
+      },
+      "originalAndOfflineReadbacks": {
+        "results": [
+          "originals-results",
+          "external-archive",
+          "saved-development",
+          "persisted-live-original-parent",
+          "unarchived-live-adjustment"
+        ],
+        "directory": "output/research/export-panel/rawmaster/native-integration",
+        "method": "Real AppModel, real SQLite and on-disk originals, archived files, rendered JPEG or manifests."
+      },
+      "notMeasured": "Sustained throughput, peak memory and temporary storage for 2,000 distinct full-resolution RAW files.",
+      "integration": {
+        "environment": "actual checkout; no production-source overlays or substituted interfaces",
+        "platform": "27.0.1",
+        "testedOn": "2026-11-22T13:21:54.277528+00:00",
+        "tests": {
+          "total": 35,
+          "failures": 0,
+          "skipped": 0,
+          "perSuite": {
+            "CoreTests": 2,
+            "EditingWorkflowTests": 1,
+            "ExportWorkspaceInteractionTests": 4,
+            "ExportWorkspaceTests": 1,
+            "PhotoBatchRenderExporterTests": 1,
+            "PhotoExportLayoutTests": 5,
+            "PhotoExportPresetTests": 6,
+            "ProjectReviewTests": 1,
+            "ProjectReviewUITests": 1,
+            "RenderedExportTests": 9,
+            "TriageWorkflowUITests": 1,
+            "WorkbenchActionTests": 3
+          }
+        },
+        "results": "output/research/export-panel/rawmaster/native-integration/result.json",
+        "evidenceSHA256": "b9dc12d50e2eb9e154937738e662653ad1ec08bad74d3800551b4cbddd70879d"
+      },
+      "verifiedNativeSheet": {
+        "file": "assets/native-watermark.png",
+        "sha256": "549c67b991b6e12f73db5a06138779df32cb1bd633b855f81258344f7d34abc2"
+      },
+      "manifestBoundary": {
+        "uniqueInputIDs": 2000,
+        "CSVRows": 2000,
+        "JSONRows": 2000,
+        "IDSetSHA256": "b73f117b5ca18a2b1f081efbf1ff542f2944cbc7de4333871bab92656b85e132",
+        "copiedImages": 0,
+        "workspaceCSVBytes": 1106255,
+        "sameInputLegacyCSVBytes": 164988248,
+        "JSONBytes": 2518778,
+        "verifiedAt": "output/research/export-panel/rawmaster/native-integration/limit-2000-readback.json"
+      }
+    }
+  },
+  "reframe": {
+    "reviewDate": "2026-11-22",
+    "method": "Developer article and release notes, local REA inspection of the installed release, and measurement of official App Store screenshots 2 and 3.",
+    "sources": [
+      {
+        "url": "https://sspai.com/post/98900",
+        "author": "boringfei",
+        "published": "2025-05-04",
+        "observed": [
+          "Over-photo or border placement of EXIF, text, and logos",
+          "Blur backgrounds, adjustable outline and shadow",
+          "Standard frame proportions for mixed orientations"
+        ]
+      },
+      {
+        "url": "https://apps.apple.com/cn/app/reframe-%E7%9B%B8%E6%9C%BA%E6%B0%B4%E5%8D%B0/id6483865815",
+        "observed": [
+          "Saved custom templates and batch editing/export",
+          "Custom logos, fonts, and EXIF presets",
+          "Preserve entire image or fill the frame (1.2.5)",
+          "Retain chosen elements while changing templates and share resulting photos through the system (1.1.31)"
+        ]
+      }
+    ],
+    "rawmasterDesign": "Six independently implemented appearance presets use product-owned photo pixels, system typography, per-photo capture metadata and a portable export recipe.",
+    "installedRelease": {
+      "identifier": "com.boringseries.Reframe",
+      "executable": "Reframe",
+      "name": "Reframe",
+      "version": "88",
+      "short_version": "1.4.2",
+      "bundleManifestEvidence": "ev_7e4fd8aacdd3b58d6860034271d825d8f4b9335e95e69ae52b9c99c6924f0012",
+      "localizationEvidence": "ev_1eab25ce2aef26c6da40b5fbede1d45df135a51a14e5ae89a2421bb7d924c765",
+      "localizedKeys": 623,
+      "singleImageDemoFiles": 27,
+      "observationsFile": "output/research/export-panel/reframe/observations.json",
+      "sourceNotes": "specs/032-export-workspace/reframe-styles.md"
+    }
+  }
+}

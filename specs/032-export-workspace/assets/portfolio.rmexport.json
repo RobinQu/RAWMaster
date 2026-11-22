@@ -1,0 +1,46 @@
+{
+  "kind": "rawmaster.export-preset",
+  "schemaVersion": 2,
+  "name": "河谷作品集",
+  "settings": {
+    "mode": "render",
+    "copyMode": "files",
+    "originalFormat": "all",
+    "format": "jpeg",
+    "size": "2048",
+    "edge": "3000",
+    "quality": "95",
+    "color": "srgb",
+    "template": "{name}-{index}",
+    "collision": "rename",
+    "metadata": "rights",
+    "gps": false,
+    "layout": {
+      "builtin": "paper",
+      "frame": "solid",
+      "ratio": "3:2",
+      "fit": "contain",
+      "paper": "#f6f1e7",
+      "margin": 5,
+      "stroke": 1,
+      "strokeColor": "#575653",
+      "shadow": false,
+      "mark": "both",
+      "place": "footer",
+      "anchor": "bc",
+      "signature": "© 河谷影集",
+      "fields": [
+        "camera",
+        "focal",
+        "aperture",
+        "shutter",
+        "iso"
+      ],
+      "font": "serif",
+      "ink": "#282823",
+      "opacity": 95,
+      "scale": 100,
+      "logo": null
+    }
+  }
+}

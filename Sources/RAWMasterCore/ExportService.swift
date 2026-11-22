@@ -1,4 +1,12 @@
 import Foundation
+import RAWMasterPhotoExport
+
+public enum ExportCSVLayout: Sendable {
+  /// Existing entry points keep their self-contained rows.
+  case legacy
+  /// Each row refers to the sibling JSON manifest for batch-level details.
+  case photoRows
+}
 
 public struct ExportManifestItem: Codable, Sendable {
   public var asset: AssetRecord
@@ -49,6 +57,7 @@ public final class ExportService: @unchecked Sendable {
   public func cancel() { control.cancel() }
   public func exportAssets(
     ids: [String], destination: URL, manifestIDs: [String]? = nil, formats: ExportFormats = .allOriginals, allowedAssetIDs: [String]? = nil,
+    csvLayout: ExportCSVLayout = .legacy,
     progress: @escaping @Sendable (TaskProgress) -> Void
   ) async throws -> ExportReport {
     try control.begin()
@@ -59,7 +68,8 @@ public final class ExportService: @unchecked Sendable {
           try Task.checkCancellation()
           return try await Task.detached(priority: .userInitiated) { [self] in
             try run(
-              ids: ids, destination: destination, manifestIDs: manifestIDs, formats: formats, allowedAssetIDs: allowedAssetIDs, progress: progress)
+              ids: ids, destination: destination, manifestIDs: manifestIDs, formats: formats, allowedAssetIDs: allowedAssetIDs,
+              csvLayout: csvLayout, progress: progress)
           }.value
         } catch {
           progress(
@@ -69,7 +79,7 @@ public final class ExportService: @unchecked Sendable {
       }, onCancel: { self.control.cancel() })
   }
   private func run(
-    ids: [String], destination: URL, manifestIDs: [String]?, formats: ExportFormats, allowedAssetIDs: [String]?,
+    ids: [String], destination: URL, manifestIDs: [String]?, formats: ExportFormats, allowedAssetIDs: [String]?, csvLayout: ExportCSVLayout,
     progress: @escaping @Sendable (TaskProgress) -> Void
   ) throws -> ExportReport {
     let all = try store.loadAssets()
@@ -81,6 +91,10 @@ public final class ExportService: @unchecked Sendable {
     guard Set(manifestIDs ?? ids).isSubset(of: allowed) else { throw LibraryError.invalid("清单范围超出当前筛选范围") }
     let copyIDs = Set(selection.assetIDs)
     let scope = Set(manifestIDs ?? ids).union(copyIDs)
+    guard scope.count <= PhotoExportKernel.maximumBatchPhotos else {
+      throw LibraryError.invalid("每批最多可交付 \(PhotoExportKernel.maximumBatchPhotos) 张照片，请缩小选片范围。")
+    }
+    try PhotoExportKernel.validatePhotoCount(scope.count)
     guard copyIDs.isSubset(of: Set(all.map(\.id))), scope.isSubset(of: Set(all.map(\.id))) else {
       throw LibraryError.invalid("导出范围包含不存在的素材")
     }
@@ -171,9 +185,9 @@ public final class ExportService: @unchecked Sendable {
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
     encoder.dateEncodingStrategy = .iso8601
     try encoder.encode(manifest).write(to: jsonURL, options: .withoutOverwriting)
-    let headers = [
+    let photoColumns = [
       "assetID", "sessionID", "sourcePath", "currentPath", "relativePath", "decision", "rating",
-      "copyRequested", "status", "outputPath", "error", "sha256", "groupMembershipJSON", "requestedFormats", "requestedAssetIDsJSON", "missingFormatsJSON", "allowedAssetIDsJSON",
+      "copyRequested", "status", "outputPath", "error", "sha256", "groupMembershipJSON", "requestedFormats",
     ]
     func quote(_ s: String) -> String {
       "\"" + s.replacingOccurrences(of: "\"", with: "\"\"") + "\""
@@ -188,9 +202,22 @@ public final class ExportService: @unchecked Sendable {
       return String(
         decoding: (try? JSONEncoder().encode(membership)) ?? Data("[]".utf8), as: UTF8.self)
     }
-    let requestedJSON = String(decoding: try JSONEncoder().encode(Array(Set(ids)).sorted()), as: UTF8.self)
-    let missingJSON = String(decoding: try JSONEncoder().encode(selection.missingFormats), as: UTF8.self)
-    let allowedJSON = String(decoding: try JSONEncoder().encode(manifest.allowedAssetIDs), as: UTF8.self)
+    let headers: [String]
+    let scopeColumns: (ExportManifestItem) -> [String]
+    switch csvLayout {
+    case .legacy:
+      headers = photoColumns + ["requestedAssetIDsJSON", "missingFormatsJSON", "allowedAssetIDsJSON"]
+      let requested = String(decoding: try JSONEncoder().encode(manifest.requestedAssetIDs), as: UTF8.self)
+      let missing = String(decoding: try JSONEncoder().encode(selection.missingFormats), as: UTF8.self)
+      let allowed = String(decoding: try JSONEncoder().encode(manifest.allowedAssetIDs), as: UTF8.self)
+      scopeColumns = { _ in [requested, missing, allowed] }
+    case .photoRows:
+      headers = photoColumns + ["csvSchemaVersion", "explicitlyRequested", "inAllowedScope", "batchManifest"]
+      let requested = Set(ids)
+      scopeColumns = { item in
+        ["3", String(requested.contains(item.asset.id)), String(allowed.contains(item.asset.id)), jsonURL.lastPathComponent]
+      }
+    }
     let csv =
       ([headers]
       + items.map { i in
@@ -199,8 +226,7 @@ public final class ExportService: @unchecked Sendable {
           i.asset.relativePath, i.asset.decision.rawValue, String(i.asset.rating),
           String(i.copyRequested), i.status, i.outputPath ?? "", i.error ?? "",
           i.asset.contentHash ?? "", membershipJSON(i.asset.id), formats.rawValue,
-          requestedJSON, missingJSON, allowedJSON,
-        ]
+        ] + scopeColumns(i)
       }).map { $0.map(quote).joined(separator: ",") }.joined(separator: "\r\n") + "\r\n"
     try Data(csv.utf8).write(to: csvURL, options: .withoutOverwriting)
     report.manifestPath = jsonURL.path
