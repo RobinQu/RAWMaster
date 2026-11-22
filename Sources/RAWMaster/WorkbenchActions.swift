@@ -3,6 +3,8 @@ import Foundation
 import UniformTypeIdentifiers
 import RAWMasterCore
 
+enum WorkbenchExportMode: String { case render, original }
+
 /// Export intent captures the explicit selection before presenting the sheet.
 enum WorkbenchExportContext: Equatable {
     case project
@@ -53,11 +55,25 @@ extension AppModel {
         let wanted = Set(ids)
         return filteredAssets.filter { wanted.contains($0.id) }
     }
-    func openProjectExport() { guard canExport else { return }; workbenchExportContext = .project; exportWorkspacePresented = true }
-    func openSelectionExport() {
-        guard canExport, !actionAssetIDs.isEmpty else { return }
-        workbenchExportContext = .selection(ids: actionAssetIDs); exportWorkspacePresented = true
+    func openProjectExport() { prepareLibraryExport(.project) }
+
+    func openExportWorkspace(_ mode: WorkbenchExportMode) {
+        guard canExport else { return }
+        requestedWorkbenchExportMode = mode
+        activateWorkflow(.export)
     }
+
+    func openSelectionExport() {
+        guard !actionAssetIDs.isEmpty else { return }
+        prepareLibraryExport(.selection(ids: actionAssetIDs))
+    }
+
+    func prepareLibraryExport(_ context: WorkbenchExportContext) {
+        guard canExport else { return }
+        workbenchExportContext = context
+        exportWorkspacePresented = true
+    }
+
     func openPhotoExport() {
         guard canExport, let focusedAsset, filteredAssets.contains(where: { $0.id == focusedAsset.id }) else { return }
         workbenchExportContext = .photo(id: focusedAsset.id); showExport = true

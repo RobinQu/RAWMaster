@@ -33,9 +33,9 @@ struct RAWMasterApp: App {
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button("创建导入会话…") { model.openImport() }.keyboardShortcut("i", modifiers: .command).disabled(model.isBusy)
-                Button(model.canOpenNativeEditing ? "导出成片…" : "复制原文件…") {
-                    if model.canOpenNativeEditing { model.openRenderedPhotoExport() } else { model.openContextExport() }
-                }.keyboardShortcut("e", modifiers: [.command, .shift]).disabled(!model.canExport)
+                Button("导出成片…") { model.openExportWorkspace(.render) }
+                    .keyboardShortcut("e", modifiers: [.command, .shift]).disabled(!model.canExport)
+                Button("复制原文件…") { model.openExportWorkspace(.original) }.disabled(!model.canExport)
                 Button("合成延时视频…") { model.openTimelapse() }.disabled(model.isCatalog || !model.canComposeTimelapse())
             }
             ProjectSearchCommands()

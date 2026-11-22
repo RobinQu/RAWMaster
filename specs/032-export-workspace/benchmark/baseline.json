@@ -1,0 +1,840 @@
+{
+  "date": "2026-11-22",
+  "machine": "Mac16,5, Apple M4 Max, 16 CPU cores, 128 GiB RAM, internal APFS",
+  "macOS": "27.0.1",
+  "versions": {
+    "rawmaster": "main with LibraryCatalog paging, Swift Debug and Rust Release",
+    "alcedo": "AlcedoStudio 0.3.6 macOS arm64, headless host with Metal",
+    "lightflow": "LightFlow 20261111155800-2d41ab1, Chromium 157.0.8103.78 arm64 / Rust WASM 12 threads"
+  },
+  "inputManifestSHA256": "c66aa5b4d7728120b4d0102a08d6c7ee9ba02d0179017273ec92bd2050be5457",
+  "measurementCountPerScenarioAndTool": 3,
+  "target": "JPEG8, sRGB ICC, quality 90, maximum edge 2048 px, no descriptive metadata and no watermark",
+  "scope": "From submit through output files. The LightFlow download path gives one ZIP for multi-photo trials.",
+  "performanceCriteria": {
+    "maximumMedianWallRatioToFasterReference": 1.25,
+    "maximumMedianFirstDeliveryRatioToFasterReference": 1.5
+  },
+  "scenarios": {
+    "jpeg-source/1": {
+      "rawmaster": {
+        "medianWallSeconds": 0.075748958,
+        "medianFirstDeliverySeconds": 0.075682333,
+        "medianAbsoluteRSSMiB": 258.625,
+        "runs": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.073598,
+            "processMaxRSSKiB": 239440,
+            "seconds": 0.073661042
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.075682333,
+            "processMaxRSSKiB": 264832,
+            "seconds": 0.075748958
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.077632875,
+            "processMaxRSSKiB": 275856,
+            "seconds": 0.077708667
+          }
+        ]
+      },
+      "alcedo": {
+        "medianWallSeconds": 0.06130941701121628,
+        "medianFirstDeliverySeconds": 0.06002141704084352,
+        "medianAbsoluteRSSMiB": 1113.03125,
+        "runs": [
+          {
+            "seconds": 0.06176650000270456,
+            "firstPhotoSeconds": 0.05672225001035258,
+            "rssKiB": 1139744,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 277389,
+            "container": "files"
+          },
+          {
+            "seconds": 0.06104483304079622,
+            "firstPhotoSeconds": 0.06104483304079622,
+            "rssKiB": 1139744,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 277389,
+            "container": "files"
+          },
+          {
+            "seconds": 0.06130941701121628,
+            "firstPhotoSeconds": 0.06002141704084352,
+            "rssKiB": 1139728,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 277389,
+            "container": "files"
+          }
+        ]
+      },
+      "lightflow": {
+        "medianWallSeconds": 0.23362216702662408,
+        "medianFirstDeliverySeconds": 0.22272249998059124,
+        "medianAbsoluteRSSMiB": 1633.609375,
+        "runs": [
+          {
+            "seconds": 0.2228440420003608,
+            "firstPhotoSeconds": 0.22272249998059124,
+            "firstEncodedSeconds": 0.219,
+            "rssKiB": 1610496,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 329164,
+            "container": "files"
+          },
+          {
+            "seconds": 0.23400745901744813,
+            "firstPhotoSeconds": 0.21891400002641603,
+            "firstEncodedSeconds": 0.198,
+            "rssKiB": 1745408,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 329164,
+            "container": "files"
+          },
+          {
+            "seconds": 0.23362216702662408,
+            "firstPhotoSeconds": 0.23362216702662408,
+            "firstEncodedSeconds": 0.215,
+            "rssKiB": 1672816,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 329164,
+            "container": "files"
+          }
+        ]
+      }
+    },
+    "jpeg-source/20": {
+      "rawmaster": {
+        "medianWallSeconds": 0.502617416,
+        "medianFirstDeliverySeconds": 0.07756925,
+        "medianAbsoluteRSSMiB": 766.671875,
+        "runs": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.078692958,
+            "processMaxRSSKiB": 770704,
+            "seconds": 0.502617416
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.076973042,
+            "processMaxRSSKiB": 785072,
+            "seconds": 0.494818959
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.07756925,
+            "processMaxRSSKiB": 785072,
+            "seconds": 0.502617541
+          }
+        ]
+      },
+      "alcedo": {
+        "medianWallSeconds": 0.8061122500221245,
+        "medianFirstDeliverySeconds": 0.08763004204956815,
+        "medianAbsoluteRSSMiB": 1113.0625,
+        "runs": [
+          {
+            "seconds": 0.8144537500338629,
+            "firstPhotoSeconds": 0.10914554202463478,
+            "rssKiB": 1139760,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 8086613,
+            "container": "files"
+          },
+          {
+            "seconds": 0.8040058750193566,
+            "firstPhotoSeconds": 0.08630770799936727,
+            "rssKiB": 1139776,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 8086613,
+            "container": "files"
+          },
+          {
+            "seconds": 0.8061122500221245,
+            "firstPhotoSeconds": 0.08763004204956815,
+            "rssKiB": 1139792,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 8086613,
+            "container": "files"
+          }
+        ]
+      },
+      "lightflow": {
+        "medianWallSeconds": 4.081299041979946,
+        "medianFirstDeliverySeconds": 4.073926292010583,
+        "medianAbsoluteRSSMiB": 1897.59375,
+        "runs": [
+          {
+            "seconds": 4.059624040964991,
+            "firstPhotoSeconds": 4.059624040964991,
+            "firstEncodedSeconds": 0.159,
+            "rssKiB": 1934416,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 8989230,
+            "container": "ZIP"
+          },
+          {
+            "seconds": 4.081299041979946,
+            "firstPhotoSeconds": 4.073926292010583,
+            "firstEncodedSeconds": 0.159,
+            "rssKiB": 1943136,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 8989230,
+            "container": "ZIP"
+          },
+          {
+            "seconds": 4.09349216602277,
+            "firstPhotoSeconds": 4.083001208025962,
+            "firstEncodedSeconds": 0.158,
+            "rssKiB": 1985408,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 8989230,
+            "container": "ZIP"
+          }
+        ]
+      }
+    },
+    "jpeg-source/200": {
+      "rawmaster": {
+        "medianWallSeconds": 4.684429375,
+        "medianFirstDeliverySeconds": 0.078870042,
+        "medianAbsoluteRSSMiB": 797.796875,
+        "runs": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.078870042,
+            "processMaxRSSKiB": 816720,
+            "seconds": 4.671270167
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.07833975,
+            "processMaxRSSKiB": 816944,
+            "seconds": 4.801774333
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080139208,
+            "processMaxRSSKiB": 820032,
+            "seconds": 4.684429375
+          }
+        ]
+      },
+      "alcedo": {
+        "medianWallSeconds": 8.062812332995236,
+        "medianFirstDeliverySeconds": 0.30885999999009073,
+        "medianAbsoluteRSSMiB": 1085.609375,
+        "runs": [
+          {
+            "seconds": 8.045329416985624,
+            "firstPhotoSeconds": 0.30885999999009073,
+            "rssKiB": 1111664,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 82292849,
+            "container": "files"
+          },
+          {
+            "seconds": 8.062812332995236,
+            "firstPhotoSeconds": 0.31445229199016467,
+            "rssKiB": 1111696,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 82292849,
+            "container": "files"
+          },
+          {
+            "seconds": 9.06737358297687,
+            "firstPhotoSeconds": 0.2931189159862697,
+            "rssKiB": 1111664,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 82292849,
+            "container": "files"
+          }
+        ]
+      },
+      "lightflow": {
+        "medianWallSeconds": 50.542664624983445,
+        "medianFirstDeliverySeconds": 50.542664624983445,
+        "medianAbsoluteRSSMiB": 2574.203125,
+        "runs": [
+          {
+            "seconds": 46.85927112499485,
+            "firstPhotoSeconds": 46.84775283304043,
+            "firstEncodedSeconds": 0.194,
+            "rssKiB": 2424400,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 91324580,
+            "container": "ZIP"
+          },
+          {
+            "seconds": 50.542664624983445,
+            "firstPhotoSeconds": 50.542664624983445,
+            "firstEncodedSeconds": 0.21,
+            "rssKiB": 2635984,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 91324580,
+            "container": "ZIP"
+          },
+          {
+            "seconds": 53.61813012504717,
+            "firstPhotoSeconds": 53.6180044580251,
+            "firstEncodedSeconds": 0.223,
+            "rssKiB": 2909792,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 91324580,
+            "container": "ZIP"
+          }
+        ]
+      }
+    },
+    "raw-source/1": {
+      "rawmaster": {
+        "medianWallSeconds": 0.056703416,
+        "medianFirstDeliverySeconds": 0.056632458,
+        "medianAbsoluteRSSMiB": 800.8125,
+        "runs": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.056632458,
+            "processMaxRSSKiB": 820032,
+            "seconds": 0.056703416
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.057004042,
+            "processMaxRSSKiB": 820032,
+            "seconds": 0.057067875
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.055669417,
+            "processMaxRSSKiB": 820032,
+            "seconds": 0.05573375
+          }
+        ]
+      },
+      "alcedo": {
+        "medianWallSeconds": 0.046472957998048514,
+        "medianFirstDeliverySeconds": 0.046472957998048514,
+        "medianAbsoluteRSSMiB": 1127.640625,
+        "runs": [
+          {
+            "seconds": 0.044511750049423426,
+            "firstPhotoSeconds": 0.043691958009731025,
+            "rssKiB": 1154704,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1363,
+                true
+              ]
+            ],
+            "bytes": 95530,
+            "container": "files"
+          },
+          {
+            "seconds": 0.046472957998048514,
+            "firstPhotoSeconds": 0.046472957998048514,
+            "rssKiB": 1154704,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1363,
+                true
+              ]
+            ],
+            "bytes": 95530,
+            "container": "files"
+          },
+          {
+            "seconds": 0.051672875008080155,
+            "firstPhotoSeconds": 0.051672875008080155,
+            "rssKiB": 1154704,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1363,
+                true
+              ]
+            ],
+            "bytes": 95530,
+            "container": "files"
+          }
+        ]
+      },
+      "lightflow": {
+        "medianWallSeconds": 0.21840058302041143,
+        "medianFirstDeliverySeconds": 0.18529824999859557,
+        "medianAbsoluteRSSMiB": 2847.9375,
+        "runs": [
+          {
+            "seconds": 0.21817695803474635,
+            "firstPhotoSeconds": 0.17765312502160668,
+            "firstEncodedSeconds": 0.168,
+            "rssKiB": 2898512,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 84080,
+            "container": "files"
+          },
+          {
+            "seconds": 0.21840058302041143,
+            "firstPhotoSeconds": 0.18529824999859557,
+            "firstEncodedSeconds": 0.168,
+            "rssKiB": 2916288,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 84080,
+            "container": "files"
+          },
+          {
+            "seconds": 0.22383054200327024,
+            "firstPhotoSeconds": 0.18728995800483972,
+            "firstEncodedSeconds": 0.169,
+            "rssKiB": 2950896,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 84080,
+            "container": "files"
+          }
+        ]
+      }
+    },
+    "raw-source/20": {
+      "rawmaster": {
+        "medianWallSeconds": 0.356537459,
+        "medianFirstDeliverySeconds": 0.058117667,
+        "medianAbsoluteRSSMiB": 800.8125,
+        "runs": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.058117667,
+            "processMaxRSSKiB": 820032,
+            "seconds": 0.356537459
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.057394791,
+            "processMaxRSSKiB": 820032,
+            "seconds": 0.355200625
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.064042166,
+            "processMaxRSSKiB": 820032,
+            "seconds": 0.360685083
+          }
+        ]
+      },
+      "alcedo": {
+        "medianWallSeconds": 0.5638629159657285,
+        "medianFirstDeliverySeconds": 0.10610979201737791,
+        "medianAbsoluteRSSMiB": 1135.046875,
+        "runs": [
+          {
+            "seconds": 0.5638629159657285,
+            "firstPhotoSeconds": 0.10844908299623057,
+            "rssKiB": 1162256,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1363,
+                true
+              ]
+            ],
+            "bytes": 1910600,
+            "container": "files"
+          },
+          {
+            "seconds": 0.5657036670017987,
+            "firstPhotoSeconds": 0.08966170903295279,
+            "rssKiB": 1162288,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1363,
+                true
+              ]
+            ],
+            "bytes": 1910600,
+            "container": "files"
+          },
+          {
+            "seconds": 0.5519735420239158,
+            "firstPhotoSeconds": 0.10610979201737791,
+            "rssKiB": 1162304,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1363,
+                true
+              ]
+            ],
+            "bytes": 1910600,
+            "container": "files"
+          }
+        ]
+      },
+      "lightflow": {
+        "medianWallSeconds": 4.710791082994547,
+        "medianFirstDeliverySeconds": 4.691120833042078,
+        "medianAbsoluteRSSMiB": 3505.671875,
+        "runs": [
+          {
+            "seconds": 4.618271208018996,
+            "firstPhotoSeconds": 4.595306208007969,
+            "firstEncodedSeconds": 0.2,
+            "rssKiB": 3554240,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 1683462,
+            "container": "ZIP"
+          },
+          {
+            "seconds": 4.710791082994547,
+            "firstPhotoSeconds": 4.691120833042078,
+            "firstEncodedSeconds": 0.203,
+            "rssKiB": 3589808,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 1683462,
+            "container": "ZIP"
+          },
+          {
+            "seconds": 4.8230333749670535,
+            "firstPhotoSeconds": 4.819950582983438,
+            "firstEncodedSeconds": 0.208,
+            "rssKiB": 3642096,
+            "backends": [
+              "rust web-mt 12t"
+            ],
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "bytes": 1683462,
+            "container": "ZIP"
+          }
+        ]
+      }
+    }
+  }
+}

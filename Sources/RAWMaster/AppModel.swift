@@ -130,6 +130,7 @@ final class AppModel: ObservableObject {
     @Published var timelapseComposer: TimelapseComposer?
     @Published var timelapseIsRunning = false
     @Published var workbenchExportContext: WorkbenchExportContext = .project
+    @Published var requestedWorkbenchExportMode: WorkbenchExportMode?
     @Published var externalEditorPreparing = false
     @Published var showGroups = false
     @Published var groupEditingID: String?
@@ -730,67 +731,33 @@ final class AppModel: ObservableObject {
         if sessionTask != nil { sessionTask?.isCancelling = true }
         job?.cancel(); importer?.cancel(); exporter?.cancel(); relocator?.cancel(); cancelQualityAnalysis(); timelapseComposer?.cancel()
     }
-    func export(ids: [String], destination: String, formats: ExportFormats = .allOriginals, exactAssetIDs: [String]? = nil) {
+    var workbenchExportStore: LibraryStore? { store }
+
+    func export(ids: [String], destination: String, formats: ExportFormats = .allOriginals, exactAssetIDs: [String]? = nil,
+                csvLayout: ExportCSVLayout = .legacy) {
         guard canExport, let exporter else { return }
         let eligibleIDs = (supportsProjectSearch ? filteredAssets : scopedAssets).map(\.id)
         let exact = exactAssetIDs.map(Set.init)
         let manifestIDs = eligibleIDs.filter { exact?.contains($0) ?? true }
+        guard Set(ids).count <= Self.maximumWorkbenchExportCount, (exact?.count ?? manifestIDs.count) <= Self.maximumWorkbenchExportCount else {
+            errorMessage = "每批最多可交付 \(Self.maximumWorkbenchExportCount) 张照片，请缩小选片范围。"
+            return
+        }
+        if let exact, Set(manifestIDs) != exact {
+            errorMessage = "导出选片范围已变化，请重新选择照片。"
+            return
+        }
         let allowedAssetIDs = manifestIDs
         showExport = false; errorMessage = nil
         progress = TaskProgress(title: "交付精选原片", completed: 0, total: ids.count, message: "准备目标目录与清单…", isRunning: true)
         job = Task { [self] in
             do {
-                exportReport = try await exporter.exportAssets(ids: ids, destination: URL(fileURLWithPath: destination), manifestIDs: manifestIDs, formats: formats, allowedAssetIDs: allowedAssetIDs, progress: { [weak self] value in Task { @MainActor in self?.progress = value } })
+                exportReport = try await exporter.exportAssets(ids: ids, destination: URL(fileURLWithPath: destination), manifestIDs: manifestIDs, formats: formats, allowedAssetIDs: allowedAssetIDs, csvLayout: csvLayout, progress: { [weak self] value in Task { @MainActor in self?.progress = value } })
                 showExportReport = true
             } catch { errorMessage = "导出未完成：\(error.localizedDescription)" }
             job = nil
             if let p = progress, p.isRunning { progress = TaskProgress(title: p.title, completed: p.completed, total: p.total, message: "任务结束，请检查交付报告", isRunning: false) }
         }
-    }
-    func exportWorkbenchPhotos(directory: URL, namingTemplate: String,
-                               configuration: PhotoBatchExportConfiguration,
-                               progress: @Sendable (Int,Int,String)->Void) async throws->[URL] {
-        guard let store, let editing else { throw EditingError.missingWork }
-        let exact=workbenchExportContext.exactAssetIDs.map(Set.init)
-        let assets=scopedAssets.filter { (exact?.contains($0.id) ?? true) && $0.availability == .available }
-        guard !assets.isEmpty else { throw EditingError.missingWork }
-        try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true)
-        let protected=try await Task.detached { try store.editingProtectedRoots() }.value
-        let exporter = ImageEngines.makeBatchExporter()
-        let archive = editing.archive
-        let formatter=DateFormatter();formatter.dateFormat="yyyyMMdd"
-        var results:[URL]=[]
-        for (offset,asset) in assets.enumerated() {
-            try Task.checkCancellation();progress(offset,assets.count,asset.filename)
-            let snapshot=try await Task.detached { try store.captureEditingSourceSnapshot(assetID:asset.id) }.value
-            let existingWork=try await Task.detached { try store.loadPhotoWorks(assetID:asset.id).first }.value
-            var work=existingWork ?? PhotoWork(source:snapshot)
-            work.source.sourceLocation=asset.resolvedURL
-            let version:EditingVersion
-            if editing.asset?.id==asset.id,let live=editing.exportVersion {
-                var current=live;current.source=work.source;version=current
-            } else if let live=work.liveRecipe,let parentID=work.liveParentVersionID {
-                var current=try await Task.detached { try store.editingVersion(id:parentID) }.value
-                current.recipe=live;current.source=work.source;version=current
-            } else if existingWork != nil {
-                var current=try await Task.detached { try store.editingVersion(id:work.adoptedVersionID) }.value
-                current.source=work.source;version=current
-            } else {
-                version=EditingVersion(id:work.originalVersionID,workID:work.id,parentVersionID:nil,kind:.original,source:work.source)
-            }
-            let stem=URL(fileURLWithPath:asset.filename).deletingPathExtension().lastPathComponent
-            let base=namingTemplate.replacingOccurrences(of:"{name}",with:stem)
-                .replacingOccurrences(of:"{index}",with:String(format:"%04d",offset+1))
-                .replacingOccurrences(of:"{date}",with:formatter.string(from:Date()))
-            var filename=base.isEmpty ? stem:base
-            var suffix=2
-            while FileManager.default.fileExists(atPath:directory.appendingPathComponent(filename).appendingPathExtension(configuration.format.filenameExtension).path) {
-                filename=base+"-"+String(suffix);suffix+=1
-            }
-            let output=try await exporter.export(work:work,version:version,archive:archive,directory:directory,filename:filename,configuration:configuration,protectedURLs:protected)
-            results.append(output);progress(results.count,assets.count,asset.filename)
-        }
-        return results
     }
     var relocationImportSession: ImportSession? { sessions.first { $0.id == relocationTargetSessionID } }
     var relocationScopeCount: Int {

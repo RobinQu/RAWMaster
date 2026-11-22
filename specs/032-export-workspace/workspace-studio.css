@@ -1,0 +1,73 @@
+/* The preset bar governs both inspectors. The destination belongs to the batch footer. */
+.layout {grid-template-areas:"photos shelf shelf" "photos preview settings";grid-template-rows:auto minmax(0,1fr)}
+.layout>aside {grid-area:photos}
+.preview {grid-area:preview}
+.settings {grid-area:settings}
+#preset-bar {grid-area:shelf;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:13px clamp(14px,2.1vw,32px);background:var(--panel);border-bottom:1px solid var(--line)}
+.preset-choice,.preset-actions {display:flex;align-items:center;gap:8px;min-width:0}
+.preset-choice {flex:1}
+.preset-choice h2 {white-space:nowrap;margin-right:4px}
+.preset-choice label {font:inherit}
+#preset {min-width:0;max-width:300px;flex:1;font-weight:650;padding:7px 10px}
+.new-preset {border-color:var(--accent);color:var(--accent);font-weight:650;white-space:nowrap}
+#preset-status:not(:empty) {width:100%;color:var(--sub)}
+#preset-status.warn:not(:empty) {color:var(--warn)}
+.settings .modes {margin-bottom:16px}
+.settings .modes button {flex:1;white-space:nowrap}
+.settings .section-head {margin-bottom:8px}
+.look-section {gap:7px}
+.look-section h3,.studio-inspector h3 {font-size:13px;font-weight:630}
+.style-cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.style-tile {position:relative;min-width:0!important;display:flex!important;flex-direction:column;align-items:stretch;gap:0!important;cursor:pointer;border-radius:5px;border:1px solid var(--line);background:var(--bg);overflow:hidden}
+.style-tile input {position:absolute;width:1px;height:1px;opacity:0}
+.style-tile:has(input:checked) {border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--active)}
+.style-tile:has(input:focus-visible) {outline:2px solid var(--accent);outline-offset:2px}
+.style-tile:has(input:checked)::after {content:"✓";position:absolute;right:3px;top:3px;background:var(--accent);color:var(--button);font:bold 11px/14px system-ui;width:14px;height:14px;border-radius:50%;text-align:center}
+.style-tile canvas {display:block;width:100%;height:auto;background:#262827}
+.style-tile .style-name {padding:3px 2px;color:var(--text);font:550 11px/1.5 -apple-system,system-ui,sans-serif;text-align:center}
+.destination {margin-right:auto}
+.destination label {display:flex;gap:8px;align-items:center;color:var(--sub);white-space:nowrap}
+.destination select {max-width:100%;color:var(--text)}
+.foot {gap:16px;flex-wrap:wrap}
+.foot .actions {margin-left:0}
+#layout-dialog {max-width:1030px;width:calc(100vw - 42px);padding:0;overflow:hidden;max-height:92svh}
+.studio-shell {display:flex;flex-direction:column;min-height:0;max-height:91svh}
+.studio-head,.studio-foot {display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 17px}
+.studio-head {border-bottom:1px solid var(--line)}
+.studio-foot {border-top:1px solid var(--line)}
+.studio-body {min-height:0;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(255px,1fr);overflow:hidden}
+.studio-stage-column {padding:14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.studio-stage {position:relative;background:var(--well);min-height:235px;flex:1;display:grid;place-items:center;border-radius:5px;overflow:hidden}
+.studio-stage canvas {display:block;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+.studio-inspector {min-width:0;overflow:auto;max-height:67svh;min-height:360px;padding:14px;border-left:1px solid var(--line)}
+.studio-inspector h3 {margin-bottom:8px}
+.studio-inspector details {margin-top:14px;padding-top:9px;border-top:1px solid var(--line)}
+.studio-inspector details summary {margin-bottom:8px}
+#studio-caption {min-height:1.5em;overflow-wrap:anywhere}
+#jobrows {max-height:50vh;overflow:auto}
+@media(max-width:899px) {
+  .layout {grid-template-areas:"shelf shelf" "photos photos" "preview settings";grid-template-rows:auto auto minmax(0,1fr)}
+  #preset-bar {padding:10px 14px}
+  .style-cards {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .studio-inspector .style-cards {grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:600px) {
+  .layout {display:flex;flex-direction:column}
+  #preset-bar {order:-1;gap:5px 10px}
+  .preset-choice {flex-basis:100%}
+  .preset-choice h2 {font-size:14px}
+  #preset {padding:5px;max-width:none}
+  #preset-bar button {font-size:12px;padding:5px 7px}
+  .preset-actions {gap:12px}
+  .preset-actions button {border:0;background:none;color:var(--accent)}
+  .style-cards {grid-template-columns:repeat(3,minmax(0,1fr))}
+  .foot {gap:6px;padding:8px 12px}
+  .destination {flex-basis:100%}.destination select {flex:1}
+  .foot .actions {margin-left:auto}
+  #layout-dialog {width:calc(100vw - 12px);max-height:95svh}
+  .studio-shell {max-height:93svh}
+  .studio-body {display:flex;flex-direction:column;overflow:auto}
+  .studio-stage-column {padding:8px}.studio-stage {height:170px;min-height:170px;flex:none}
+  .studio-inspector {min-height:0;max-height:none;overflow:visible;border:0;padding:8px 12px}
+  .studio-head,.studio-foot {padding:9px 12px}
+}

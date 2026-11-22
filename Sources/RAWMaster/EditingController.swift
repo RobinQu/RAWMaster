@@ -482,7 +482,10 @@ import RAWMasterAI
                 if !sourceReady { stage = .versions; message = "原片当前不可用。已归档版本仍可查看、比较、采用和导出。" }
                 resolveCurrentLocation()
                 let persistedParent = loaded.0.liveParentVersionID.flatMap { id in loaded.1.contains(where: { $0.id == id }) ? id : nil }
-                selectedVersionID = persistedParent ?? loaded.0.adoptedVersionID
+                let viewableParent = persistedParent.flatMap { id in
+                    sourceReady || loaded.1.contains(where: { $0.id == id && $0.artifact != nil }) ? id : nil
+                }
+                selectedVersionID = viewableParent ?? loaded.0.adoptedVersionID
                 let rawBase = developmentBase(for: selectedVersion)
                 let base = loaded.0.liveRecipe ?? rawBase?.recipe ?? .init()
                 if let draft = drafts[newAsset.id], loaded.1.contains(where: { $0.id == draft.2 }) {

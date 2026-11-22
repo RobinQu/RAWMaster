@@ -20,6 +20,9 @@ extension AppModel {
     }
 
     func activateWorkflow(_ workflow: WorkbenchWorkflow) {
+        if workflow != .export && exportWorkspacePresented {
+            workbenchExportContext = .project
+        }
         switch workflow {
         case .library:
             exportWorkspacePresented = false; showExport = false; editing?.showExport = false
@@ -32,16 +35,16 @@ extension AppModel {
                 if canOpenNativeEditing { openNativeEditing() }
             }
         case .export:
-            guard canExport else { return }
+            guard canExport, !exportWorkspacePresented else { return }
             if isNativeEditing { editing?.openExport(); editing?.showExport = false }
             if case .selection = workbenchExportContext {
                 // An explicit multi-selection is captured before opening the workspace.
             } else if isNativeEditing {
                 workbenchExportContext = actionAssetIDs.count>1 ? .selection(ids:actionAssetIDs):.photo(id:editing?.asset?.id ?? focusedID ?? "")
             } else if actionAssetIDs.count>1 { workbenchExportContext = .selection(ids:actionAssetIDs) }
-            else if let focusedAsset { workbenchExportContext = .photo(id:focusedAsset.id) }
+            else if let only = actionAssetIDs.first { workbenchExportContext = .photo(id:only) }
             else if mode == .grid { workbenchExportContext = .project }
-            exportWorkspacePresented = true
+            prepareLibraryExport(workbenchExportContext)
         }
     }
 

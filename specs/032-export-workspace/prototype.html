@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RAWMaster · 照片导出工作台原型</title>
+  <style>
+    :root {
+      color-scheme: dark; --bg:#141617; --panel:#1c1e20; --well:#101112; --input:#26282a;
+      --text:#f0f2f2; --sub:#adb6b9; --line:#383c3e; --accent:#79d6ed; --active:#20363e;
+      --warn:#edb77c; --ok:#91d6aa; --button:#083441;
+      font:14px/1.5 -apple-system,BlinkMacSystemFont,"PingFang SC",system-ui,sans-serif;
+    }
+    @media (prefers-color-scheme:light) {
+      :root {color-scheme:light;--bg:#f0f1f1;--panel:#fafafa;--well:#242627;--input:#fff;--text:#1c2123;--sub:#596567;--line:#d0d5d6;--accent:#00637e;--active:#dceff4;--warn:#85501d;--ok:#21663c;--button:white}
+    }
+    * {box-sizing:border-box}
+    body {margin:0;background:var(--bg);color:var(--text)}
+    button,select,input {font:inherit;color:inherit}
+    button,select,input[type=text],input[type=number] {background:var(--input);border:1px solid var(--line);border-radius:6px;padding:6px 9px}
+    button:not(:disabled),select:not(:disabled),input[type=checkbox] {cursor:pointer}
+    button:disabled {opacity:.47;cursor:default}
+    :focus-visible {outline:2px solid var(--accent);outline-offset:2px}
+    h1,h2,h3,p,figure {margin:0}
+    h1 {font-size:23px;letter-spacing:-.03em}
+    h2 {font-size:16px}
+    .small,label,summary {font-size:12px}
+    .muted,.small {color:var(--sub)}
+    .num {font-variant-numeric:tabular-nums}
+    .app {min-height:100svh;display:flex;flex-direction:column}
+    header,.foot {display:flex;align-items:center;justify-content:space-between;gap:18px;padding:13px 23px;background:var(--panel)}
+    header {border-bottom:1px solid var(--line)}
+    header .title {display:flex;align-items:baseline;flex-wrap:wrap;gap:12px}
+    .modes {display:flex;gap:3px;background:var(--bg);padding:3px;border-radius:8px;border:1px solid var(--line)}
+    .modes button {border:0;background:transparent;color:var(--sub)}
+    .modes [aria-pressed=true] {background:var(--active);color:var(--accent);font-weight:650}
+    .layout {flex:1;display:grid;grid-template-columns:minmax(195px,22%) minmax(245px,1fr) minmax(258px,28%);min-height:0}
+    aside,.settings {background:var(--panel);padding:20px 16px}
+    aside {border-right:1px solid var(--line)}
+    .settings {border-left:1px solid var(--line)}
+    .section-head,.between {display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .section-head {margin-bottom:12px}
+    .asset {display:grid;grid-template-columns:16px minmax(0,1fr);align-items:center;gap:5px;border:1px solid transparent;border-radius:7px;padding:4px;margin:3px 0}
+    .asset.chosen {background:var(--active);border-color:var(--accent)}
+    .asset input {accent-color:var(--accent);width:14px;height:14px;margin:0}
+    .asset button {text-align:left;display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:0;padding:3px}
+    .asset img {width:41px;height:43px;object-fit:cover;border-radius:3px}
+    .asset .copy {min-width:0}
+    .asset strong,.asset small {display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+    .asset strong {font-size:12px;font-weight:620}
+    .asset small {font-size:11px;color:var(--sub)}
+    .warn,.asset .warn {color:var(--warn)}
+    .source-note {border-top:1px solid var(--line);padding-top:14px;margin:17px 2px 0}
+    .preview {min-width:0;display:flex;flex-direction:column;padding:21px clamp(14px,2.1vw,32px);gap:13px}
+    .preview-head {display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+    .preview-head strong {font-size:17px}
+    .stage {background:var(--well);flex:1;min-height:190px;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:5px;overflow:hidden}
+    .stage img {display:block;object-fit:contain;max-width:100%;max-height:49vh;width:auto;height:auto}
+    .fact-grid {margin:0;display:grid;grid-template-columns:65px 1fr;gap:4px 9px;align-items:baseline;font-size:13px}
+    .fact-grid dt {color:var(--sub)}
+    .fact-grid dd {margin:0;overflow-wrap:anywhere}
+    .file {font:600 14px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace}
+    .controls {display:grid;gap:10px}
+    .controls label,.field {color:var(--sub);display:grid;gap:4px}
+    .controls select,.controls input[type=text],.controls input[type=number] {width:100%;min-width:0;color:var(--text)}
+    .two {display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .control-line {display:flex;align-items:center;gap:8px}
+    .control-line input[type=range] {min-width:0;flex:1;accent-color:var(--accent)}
+    .control-line output {font-size:13px;color:var(--text)}
+    .controls details {border-top:1px solid var(--line);padding-top:9px}
+    .controls details[open] summary {margin-bottom:8px}
+    .link-button {background:transparent;border:0;padding:1px 0;color:var(--accent);font-size:12px}
+    summary {cursor:pointer;font-weight:600;color:var(--text)}
+    .controls .inline {display:flex;align-items:center;gap:7px}
+    input[type=checkbox] {accent-color:var(--accent)}
+    .foot {border-top:1px solid var(--line);position:sticky;bottom:0;z-index:1}
+    .actions {display:flex;align-items:center;gap:9px;flex-shrink:0}
+    .primary {background:var(--accent);color:var(--button);border-color:var(--accent);font-weight:680;padding:8px 17px}
+    .edition {color:var(--sub);font-size:11px}
+    dialog {background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;max-width:570px;width:calc(100vw - 36px);padding:20px}
+    dialog::backdrop {background:#0008}
+    #jobrows {list-style:none;padding:0;margin:15px 0}
+    #jobrows li {display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}
+    #jobrows small {display:block;color:var(--sub);font-size:12px}
+    #job-actions {display:flex;flex-wrap:wrap;gap:8px}
+    #save-form {display:grid;gap:12px}
+    #save-form label {display:grid;gap:4px}
+    .stage {position:relative}
+    .stage canvas {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:block}
+    .preset-tools {display:flex;gap:14px;flex-wrap:wrap;margin-top:2px}
+    .look-section {border-top:1px solid var(--line);padding-top:10px;display:grid;gap:7px}
+    .controls #layout-panel {border:0;padding:0}
+    .controls #layout-panel summary {font-weight:500;color:var(--accent)}
+    .settings input[type=color] {width:100%;padding:2px;background:var(--input);border:1px solid var(--line);border-radius:5px;height:30px}
+    .controls .checks {display:flex;gap:4px 10px;flex-wrap:wrap}
+    .checks label,.controls .inline {display:flex;align-items:center;gap:3px}
+    fieldset {border:0;padding:0;margin:0;min-width:0}
+    legend {font-size:12px;color:var(--sub);margin-bottom:3px}
+    .two>* {min-width:0}
+    .file-picker {display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .controls .file-picker label {cursor:pointer;color:var(--accent)}
+    .file-picker input {max-width:100%;font-size:12px}
+    .framed-fact {color:var(--sub);font-size:12px}
+    .form-grid {display:grid;gap:12px}.form-grid label {display:grid;gap:4px}
+    .form-grid .actions {justify-content:flex-end}
+    .exchange-summary {display:grid;grid-template-columns:62px 1fr;font-size:13px;gap:6px 10px;margin:0}
+    .exchange-summary dt {color:var(--sub)}.exchange-summary dd {margin:0;overflow-wrap:anywhere}
+    #exchange-logo {height:40px;max-width:128px;object-fit:contain;background:#7773;padding:3px;border-radius:3px}
+    #preset-status:empty,#validation:empty {display:none}
+    [hidden] {display:none!important}
+    @media(min-width:900px) and (min-height:580px) {
+      .app {height:100svh}.layout>aside,.layout>.settings,.layout>.preview {overflow:auto}
+    }
+    @media(max-width:899px) {
+      header,.foot {padding:12px 15px}.layout {grid-template-columns:minmax(0,1fr) minmax(235px,38%)}
+      aside {grid-column:1/-1;border:0;border-bottom:1px solid var(--line);padding:10px 14px}
+      aside .section-head {margin:0 0 5px}.source-note {display:none}#asset-list {display:flex;gap:5px;overflow:auto}
+      .asset {min-width:175px;flex:1}.stage {min-height:175px}
+    }
+    @media(max-width:600px) {
+      header .title {gap:2px;display:grid}header h1 {font-size:18px}.modes button {white-space:nowrap;font-size:12px;padding:6px}
+      .layout {display:block}.stage {height:180px;min-height:0}.stage img {max-height:158px}
+      .settings {border:0;border-top:1px solid var(--line);padding:16px}.foot {flex-wrap:wrap;gap:5px}.actions {margin-left:auto}
+    }
+  </style>
+  <link rel="stylesheet" href="workspace-selection.css">
+  <link rel="stylesheet" href="workspace-studio.css">
+</head>
+<body>
+<main class="app">
+  <header>
+    <div class="title"><h1>导出</h1><span class="small">河谷拍摄 / 资料库所选</span></div>
+
+  </header>
+  <div class="layout">
+    <aside class="selection-panel" aria-label="本次选片">
+      <div class="section-head"><h2>本次选片</h2><span class="small num" id="selected"></span></div>
+      <div class="selection-controls">
+        <input id="selection-search" type="search" placeholder="搜索文件名" aria-label="搜索文件名、场景或日期" autocomplete="off">
+        <select id="selection-filter" aria-label="选片筛选"><option value="all">全部照片</option><option value="checked">已勾选</option><option value="offline">原片离线</option><option value="raw">RAW</option><option value="jpeg">JPEG</option></select>
+      </div>
+      <div class="selection-actions"><button class="link-button" id="select-matches">全选筛选结果</button><button class="link-button" id="clear-matches" aria-label="清除筛选结果的勾选">清除勾选</button></div>
+      <p class="small selection-summary" id="selection-summary" role="status"></p>
+      <div class="selection-limit" id="selection-limit" role="status" hidden><p id="limit-count"></p><button class="link-button" id="limit-selection">保留前 200 张已选照片</button></div>
+      <p class="small selection-empty" id="empty-selection" hidden>没有符合条件的照片。</p>
+      <p class="sr-only" id="selection-keys">方向键切换预览，空格勾选，Home 和 End 跳至首尾。按住 Shift 点选勾选框可连续选择。</p>
+      <div id="asset-list" role="list" aria-label="选片列表" aria-describedby="selection-keys" tabindex="0"><div id="asset-rows" role="presentation"></div></div>
+      <label class="sample-size">原型样本<select id="sample-size"><option value="3">3 张</option><option value="1200">1,200 张</option><option value="201">201 张</option></select></label>
+    </aside>
+    <section id="preset-bar" aria-labelledby="preset-heading">
+      <div class="preset-choice"><h2 id="preset-heading"><label for="preset">导出预设</label></h2>
+        <select id="preset"><optgroup label="内置预设"><option value="web">网络分享</option><option value="portfolio">作品集 · 相纸展签</option><option value="social">社交竖幅 · 4∶5</option><option value="full">全尺寸 JPEG</option><option value="master">继续修图</option><option value="originals">原件与清单</option></optgroup><optgroup id="personal" label="我的预设" hidden></optgroup><option value="previous" disabled>上次导出设置</option><option value="custom">自定义</option></select>
+        <button id="save-preset" class="new-preset">＋ 新建预设</button>
+      </div>
+      <div class="preset-actions"><button id="import-preset">导入…</button><button id="share-preset">分享…</button></div>
+      <input id="preset-file" type="file" accept=".json,application/json" hidden>
+      <small id="preset-status" role="status"></small>
+    </section>
+    <section class="preview" aria-label="当前照片的输出预览">
+      <div class="preview-head"><strong id="focus-name"></strong><span class="small" id="preview-kind"></span></div>
+      <figure class="stage" id="stage"><img id="photo" alt=""><canvas id="composition" role="img" aria-label="成品构图预览" hidden></canvas></figure>
+      <dl class="fact-grid">
+        <dt>输入</dt><dd><select id="version" aria-label="导出版本"></select><span id="input-info"></span></dd>
+        <dt id="name-label">文件名</dt><dd class="file" id="out-name"></dd>
+        <dt>输出</dt><dd class="num" id="out-facts"></dd>
+        <dt id="imprint-label" hidden>画面印字</dt><dd class="framed-fact" id="imprint" hidden></dd>
+        <dt>元数据</dt><dd id="out-metadata"></dd>
+      </dl>
+      <div><button id="reconnect" hidden>模拟接回原片</button></div>
+    </section>
+    <section class="settings" aria-label="交付设置">
+      <div class="section-head"><h2 id="settings-title">成片设置</h2></div>
+      <div class="modes" aria-label="交付方式">
+      <button id="render" aria-pressed="true">导出成片</button><button id="original" aria-pressed="false">复制原文件</button>
+    </div>
+      <div class="controls">
+        <div class="controls" id="render-fields">
+          <div class="two">
+            <label>格式<select id="format"><option value="jpeg">JPEG · 8 位</option><option value="tiff">TIFF · 16 位</option><option value="png">PNG · 16 位</option></select></label>
+            <label>尺寸<select id="size"><option value="0">版本全尺寸</option><option value="1080">长边 1080</option><option value="1350">长边 1350</option><option value="2048" selected>长边 2048</option><option value="4096">长边 4096</option><option value="custom">自定长边</option></select></label>
+          </div>
+          <label id="edge-field" hidden>长边像素<input type="number" id="edge" min="64" max="100000" value="3000"></label>
+          <label id="quality-field">JPEG 质量<span class="control-line"><input type="range" id="quality" min="5" max="100" value="90"><output id="percent" for="quality">90%</output></span></label>
+          <span class="small" id="encoding-hint"></span>
+          <div class="look-section" id="watermark-shelf">
+            <div class="between"><h3>边框与水印</h3><button id="edit-layout" class="link-button">制作与调整…</button></div>
+            <div id="quick-styles" class="style-cards" role="radiogroup" aria-label="选择内置边框与水印"></div>
+            <small id="applied-look" class="muted" hidden></small>
+          </div>
+        </div>
+        <div class="controls" id="copy-fields" hidden>
+          <label>复制范围<select id="copy-mode"><option value="files">所选原文件与清单</option><option value="manifest">仅输出清单</option></select></label>
+          <label id="copy-filter">交付格式<select id="original-format"><option value="all">全部所选格式</option><option value="both">RAW 与 JPEG</option><option value="raw">仅 RAW</option><option value="jpeg">仅 JPEG</option></select></label>
+          <p class="small">保留源文件字节及其嵌入信息。CSV 和 JSON 存入所选目录下的「RAWMaster精选」。</p>
+        </div>
+
+        <details id="extra">
+          <summary>文件命名与元数据</summary>
+          <div class="controls">
+            <label>命名模板<input type="text" id="template" value="{name}-{index}" spellcheck="false"></label>
+            <small class="muted">{name} 原名　{index} 序号　{date} 导出日　{captureDate} 拍摄日</small>
+            <label>遇到重名<select id="collision"><option value="rename">保留两份</option><option value="skip">跳过</option></select></label>
+            <label>元数据<select id="metadata"><option value="rights">仅版权</option><option value="photo">拍摄信息与版权</option><option value="none">移除描述性元数据</option></select></label>
+            <label class="inline" id="gps-field" hidden><input id="gps" type="checkbox">包含已有 GPS 位置</label>
+          </div>
+        </details>
+        <span class="small warn" id="validation" role="status"></span>
+      </div>
+    </section>
+  </div>
+  <footer class="foot">
+    <div class="destination"><label>目标目录<select id="folder"><option value="pictures">图片 / RAWMaster Exports</option><option value="client">桌面 / 客户交付</option></select></label></div>
+    <div><strong id="count" class="num" aria-live="polite"></strong><div class="edition">RAWMaster 交互原型 · 照片写盘为模拟</div></div>
+    <div class="actions"><button id="show-job" disabled>任务详情</button><button class="primary" id="submit"></button></div>
+  </footer>
+</main>
+<dialog id="layout-dialog" aria-labelledby="studio-title">
+  <div class="studio-shell">
+    <div class="studio-head"><h2 id="studio-title">制作边框与水印</h2><span id="studio-source" class="small"></span></div>
+    <div class="studio-body">
+      <section class="studio-stage-column" aria-label="版式试排">
+        <div id="studio-stage" class="studio-stage"><canvas id="studio-image" role="img" aria-label="所选版式预览"></canvas></div>
+        <p class="small" id="studio-caption"></p>
+      </section>
+      <div class="studio-inspector">
+        <h3>内置样式</h3><div id="studio-styles" class="style-cards" role="radiogroup" aria-label="试用内置样式"></div>
+        <details id="layout-panel"><summary>调整边框与水印参数</summary>
+          <div class="controls">
+                <label>底板<select id="frame"><option value="none">无边框</option><option value="solid">纯色边框</option><option value="blur">照片模糊底板</option></select></label>
+                <div class="controls" id="frame-options">
+                  <div class="two"><label>画布比例<select id="ratio"><option value="source">随照片</option><option>1:1</option><option>4:5</option><option>3:2</option><option>16:9</option></select></label>
+                    <label>照片适配<select id="fit"><option value="contain">完整保留</option><option value="cover">居中填满</option></select></label></div>
+                  <small class="warn" id="cover-hint" hidden>居中填满会裁去超出照片区域的部分。</small>
+                  <div class="two"><label>边距（短边 %）<input id="margin" type="number" min="0" max="16"></label><label id="paper-field">底板颜色<input id="paper" type="color"></label></div>
+                  <div class="two"><label>细线（短边 ‰）<input id="stroke" type="number" min="0" max="5"></label><label id="stroke-field">细线颜色<input id="strokeColor" type="color"></label></div>
+                  <label class="inline"><input id="shadow" type="checkbox">照片投影</label>
+                </div>
+                <label>水印内容<select id="mark"><option value="off">关闭</option><option value="signature">署名文字</option><option value="exif">拍摄信息</option><option value="both">署名和拍摄信息</option><option value="logo">仅 Logo</option></select></label>
+                <div class="controls" id="mark-options">
+                  <div class="two"><label>水印位置<select id="place"><option value="photo">照片内</option><option value="footer">底部留白</option></select></label><label>对齐<select id="anchor"></select></label></div>
+                  <label id="signature-field">署名文字<input id="signature" type="text" maxlength="100" autocomplete="off"></label>
+                  <fieldset id="exif-field"><legend>逐张读取的拍摄字段</legend><div id="exif-checks" class="checks"></div></fieldset>
+                  <div class="file-picker"><button id="choose-logo">添加 Logo…</button><button class="link-button" id="remove-logo" hidden>移除 Logo</button><span class="small" id="logo-info">PNG / JPEG · 长边最多 512 px</span><input id="logo-file" type="file" accept="image/png,image/jpeg" hidden></div>
+                  <div class="two"><label>字体<select id="font"><option value="sans">无衬线</option><option value="serif">衬线</option><option value="mono">等宽</option></select></label><label>文字颜色<input id="ink" type="color"></label></div>
+                  <div class="two"><label>大小（%）<input id="scale" type="number" min="60" max="160"></label><label>不透明度（%）<input id="opacity" type="number" min="0" max="100"></label></div>
+                  <small class="muted">印在画面中的文字会随照片交付。文件里的 EXIF 和定位由元数据设置控制。</small>
+                </div>
+              </div>
+        </details>
+      </div>
+    </div>
+    <div class="studio-foot"><span id="studio-error" class="small warn" role="status"></span><div class="actions"><button id="cancel-layout">取消</button><button id="apply-layout" class="primary">应用版式</button></div></div>
+  </div>
+</dialog>
+<dialog id="job" aria-labelledby="job-title">
+  <div class="between"><h2 id="job-title">任务详情</h2><button id="close-job">返回面板</button></div>
+  <p class="small" id="job-note"></p><ul id="jobrows"></ul>
+  <nav id="job-pages" aria-label="任务结果翻页" hidden>
+    <button id="job-prev" aria-label="上一页任务">上一页</button>
+    <label>第 <input type="number" id="job-page" aria-label="跳至任务页" min="1" step="1"> / <span id="job-pages-total"></span> 页</label>
+    <button id="job-next" aria-label="下一页任务">下一页</button>
+    <span id="job-range" class="small"></span>
+  </nav>
+  <div id="job-actions"><button id="cancel-job">取消待办</button><button id="retry">重试可处理项</button></div>
+</dialog>
+<dialog id="save-dialog" aria-labelledby="save-title">
+  <form id="save-form"><h2 id="save-title">新建导出预设</h2>
+    <label>名称<input id="preset-name" type="text" required maxlength="70" autocomplete="off"></label>
+    <p class="small">保存交付方式、成片和原件参数、命名、元数据及完整版式。选片与目的地独立于预设。</p>
+    <p class="small warn" id="save-error" role="alert"></p>
+    <div class="actions"><button type="button" id="cancel-save">取消</button><button class="primary">存储</button></div>
+  </form>
+</dialog>
+<dialog id="exchange" aria-labelledby="exchange-title">
+  <form id="exchange-form" class="form-grid"><h2 id="exchange-title"></h2>
+    <label id="share-name-field">预设名称<input id="share-name" type="text" maxlength="70" autocomplete="off"></label>
+    <p id="import-name" hidden></p>
+    <dl class="exchange-summary" id="exchange-summary"></dl><div id="exchange-logo-slot" hidden></div>
+    <p class="small">文件只携带导出设置。应用后沿用接收方当前选片、版本与目标目录。</p>
+    <p class="small warn" id="exchange-error" role="alert"></p>
+    <div class="actions"><button type="button" id="cancel-exchange">取消</button><button class="primary" id="confirm-exchange"></button></div>
+  </form>
+</dialog>
+<script src="export-layout.js"></script>
+<script src="export-preset.js"></script>
+<script src="workspace-selection.js"></script>
+<script>
+  const byId = id => document.getElementById(id);
+  const root = '../../Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/';
+  const photos = [
+    {name:'DJI_0348.DNG', scene:'日落时的河道', image:'dji187-context376', date:'20261017', online:true, gps:true, rights:true, choice:0,
+      exif:{camera:'DJI Mavic 3',lens:'Hasselblad L2D-20c',focal:'24 mm 等效',aperture:'ƒ/2.8',shutter:'1/500 s',iso:'ISO 100',date:'2026-10-17'},
+      versions:[{label:'当前调整',w:6000,h:3375},{label:'采用版本 1',w:4000,h:2250}]},
+    {name:'DSC_0712.ARW', scene:'岸边的水鸟', image:'burst48-context72', date:'20261017', online:false, gps:false, rights:true, choice:0,
+      exif:{camera:'Sony α7 IV',focal:'400 mm',aperture:'ƒ/6.3',shutter:'1/1600 s',date:'2026-10-17'},
+      versions:[{label:'归档版本 2',w:3600,h:2400,archive:true},{label:'原始版本',w:6000,h:4000}]},
+    {name:'DSC_0713.JPG', scene:'秋日山坡', image:'burst193-context217', date:'20261018', online:false, gps:false, rights:false, choice:0,
+      exif:{date:'2026-10-18'},versions:[{label:'采用版本',w:2400,h:3600}]}
+  ];
+  const formats = {jpeg:['jpg',8],tiff:['tiff',16],png:['png',16]};
+  const folderNames = {pictures:'图片 / RAWMaster Exports',client:'桌面 / 客户交付'};
+  const selection = new WorkspaceSelection(photos, {
+    getFocus: () => focus, setFocus: index => { focus = index; }, refresh,
+    imageURL, status: statusText, available: photo => inputAvailable(photo,mode)
+  });
+  const included = selection.included;
+  const demoFiles = {pictures:new Set(['DSC_0712-0002.jpg']),client:new Set()};
+  const viewDate = new Date();
+  const exportDate = [viewDate.getFullYear(),String(viewDate.getMonth()+1).padStart(2,'0'),String(viewDate.getDate()).padStart(2,'0')].join('');
+  let focus = 0;
+  let mode = 'render';
+  let job = null;
+  let timer = null;
+  let layout = ExportLayout.style();
+  const reusableFields = ['format','size','edge','quality','template','collision','metadata'];
+  function readMemory() {
+    try {
+      const value=JSON.parse(localStorage.getItem('rawmaster.export.prototype.v1'));
+      return value && Array.isArray(value.presets) ? value : {presets:[]};
+    }
+    catch { return {presets:[]}; }
+  }
+  const memory = readMemory();
+  function showPresets() {
+    const group = byId('personal');
+    group.replaceChildren(...memory.presets.map(p=>new Option(p.name,p.id)));
+    group.hidden = !memory.presets.length;
+    byId('preset').querySelector('[value=previous]').disabled = !memory.previous;
+  }
+  function updateMemory() {
+    localStorage.setItem('rawmaster.export.prototype.v1',JSON.stringify(memory));
+    showPresets();
+  }
+  function currentSettings() {
+    const settings=Object.fromEntries(reusableFields.map(id=>[id,byId(id).value]));
+    if (settings.size!=='custom' && (!Number.isInteger(+settings.edge) || +settings.edge<64 || +settings.edge>100000)) settings.edge='3000';
+    return {...settings,mode,copyMode:byId('copy-mode').value,originalFormat:byId('original-format').value,
+      color:'srgb',gps:byId('gps').checked,layout:structuredClone(layout)};
+  }
+
+  function imageURL(photo) { return root + photo.image + '/files/asset0000.jpg'; }
+  function inputAvailable(photo, kind, version = photo.versions[photo.choice]) {
+    return photo.online || (kind === 'render' && version.archive === true);
+  }
+  function statusText(photo) {
+    if (mode === 'original') return photo.online ? '原文件在线' : '原文件离线';
+    const version = photo.versions[photo.choice];
+    if (version.archive && !photo.online) return '归档可用 · 原片离线';
+    return photo.online ? version.label : '原片离线';
+  }
+  function metadataSummary(photo, settings = planningSettings()) {
+    if (mode === 'original') return settings.copyMode === 'manifest' ? '交付清单字段' : '随原文件字节保留';
+    const policy = settings.metadata;
+    if (policy === 'none') return '仅保留成像所需信息';
+    const rights = photo.rights ? '版权' : '源中缺少版权';
+    if (policy === 'rights') return rights + ' · 去除定位';
+    const gps = !settings.gps ? '去除定位' : (photo.gps ? '含定位' : '源中没有定位');
+    return '拍摄信息 · ' + rights + ' · ' + gps;
+  }
+  function loadPreset() {
+    const id = byId('preset').value;
+    if (id === 'custom') return;
+    const saved = id === 'previous' ? memory.previous : memory.presets.find(p=>p.id===id);
+    const settings=saved ? ExportPreset.upgradeLocal(saved.settings) : ExportPreset.builtin(id);
+    mode=settings.mode; byId('copy-mode').value=settings.copyMode; byId('original-format').value=settings.originalFormat;
+    for (const field of reusableFields) byId(field).value=settings[field];
+    byId('gps').checked=settings.gps;
+    setLayout(settings.layout || ExportLayout.style());
+  }
+  function validateSettings() {
+    if (mode === 'original') return '';
+    const edge = Number(byId('edge').value);
+    if (byId('size').value === 'custom' && (!Number.isInteger(edge) || edge < 64 || edge > 100000)) return '长边需为 64 到 100000 之间的整数。';
+    const template = byId('template').value;
+    if (!ExportPreset.templateOK(template)) return '请检查文件名和模板中的字段。';
+    if (!ExportLayout.valid(layout)) return '请检查版式中边距、细线、大小或不透明度的取值。';
+    return ExportLayout.problem(layout);
+  }
+  function geometry(version, limit = Number(byId('size').value === 'custom' ? byId('edge').value : byId('size').value)) {
+    return ExportLayout.plan(version,limit,layout);
+  }
+  function itemSpec(photo, index, sequence, used, settings = planningSettings()) {
+    const cfgError = settings.error;
+    const version = photo.versions[photo.choice];
+    const ready = inputAvailable(photo,mode);
+    let name = photo.name;
+    let facts = '原始文件字节 · 保留原有元数据';
+    let state = ready ? '待执行' : '待找回';
+    let composition=null;
+    if (mode === 'render') {
+      const [ext,bits] = formats[settings.format];
+      const values = {name:photo.name.replace(/\.[^.]+$/,''),index:String(sequence).padStart(4,'0'),date:exportDate,captureDate:photo.date};
+      const stem = settings.template.replace(/\{(name|index|date|captureDate)\}/g,(_,key)=>values[key]).trim();
+      name = stem + '.' + ext;
+      if (used.has(name) && settings.collision === 'skip') state = '按重名策略跳过';
+      else {
+        const baseName = name;
+        let suffix = settings.suffixes.get(baseName) || 2;
+        while (used.has(name)) name = stem + '-' + suffix++ + '.' + ext;
+        settings.suffixes.set(baseName,suffix);
+        used.add(name);
+      }
+      if (!cfgError) {
+        const geo=settings.geometries.get(version) || geometry(version,settings.limit);
+        settings.geometries.set(version,geo);
+        composition={geometry:geo,lines:ExportLayout.lettering(layout,photo)};
+        facts=geo.width+' × '+geo.height+' px · '+bits+' 位 · sRGB';
+        if (layout.frame!=='none') facts+=' · 照片区域 '+geo.photo.w+' × '+geo.photo.h;
+      }
+    } else if (settings.copyMode === 'manifest') {
+      name = photo.name; facts = '仅列入 CSV / JSON'; state = '清单条目';
+    } else {
+      const raw = !/\.jpe?g$/i.test(photo.name);
+      const filter = settings.copyFilter;
+      if ((filter === 'raw' && !raw) || (filter === 'jpeg' && raw)) state = '不匹配交付格式';
+    }
+    return {index,name,facts,version,composition,metadata:metadataSummary(photo,settings),state:cfgError ? '设置待修正' : state};
+  }
+  function planningSettings() {
+    const size = byId('size').value;
+    return {
+      error:validateSettings(), format:byId('format').value, template:byId('template').value,
+      collision:byId('collision').value, limit:Number(size === 'custom' ? byId('edge').value : size),
+      metadata:byId('metadata').value, gps:byId('gps').checked, copyMode:byId('copy-mode').value,
+      copyFilter:byId('original-format').value, folder:byId('folder').value,
+      geometries:new Map(), suffixes:new Map()
+    };
+  }
+  let plannedKey = '', plannedRows = [], plannedByIndex = new Map();
+  let planCounts = {ready:0,missing:0,skipped:0};
+  function getPlan(forPreview = false) {
+    const settings = planningSettings();
+    const occupied = demoFiles[settings.folder];
+    const key = JSON.stringify([mode,selection.revision,occupied.size,settings,{...layout,logo:layout.logo?.sha256}]);
+    if (key !== plannedKey) {
+      const used = new Set(occupied);
+      plannedByIndex = new Map();
+      planCounts = {ready:0,missing:0,skipped:0};
+      plannedRows = selection.ordered.map((index,offset) => {
+        const row = itemSpec(photos[index],index,offset + 1,used,settings);
+        plannedByIndex.set(index,row);
+        if (row.state === '待执行') planCounts.ready++;
+        else if (row.state === '待找回') planCounts.missing++;
+        else if (row.state === '按重名策略跳过' || row.state === '不匹配交付格式') planCounts.skipped++;
+        return row;
+      });
+      plannedKey = key;
+    }
+    if (forPreview) return plannedRows;
+    if (selection.overLimit) return [];
+    // The job changes row states and can append a manifest. Keep the cached view plan independent.
+    return plannedRows.map(row => ({...row,version:{...row.version}}));
+  }
+  function drawList() {
+    selection.draw();
+  }
+  function refresh() {
+    const render = mode === 'render';
+    const manifest = !render && byId('copy-mode').value === 'manifest';
+    byId('render').setAttribute('aria-pressed',String(render)); byId('original').setAttribute('aria-pressed',String(!render));
+    byId('render-fields').hidden = !render; byId('copy-fields').hidden = render; byId('extra').hidden = !render;
+    byId('copy-filter').hidden = manifest;
+    byId('edge-field').hidden = byId('size').value !== 'custom';
+    byId('quality-field').hidden = byId('format').value !== 'jpeg';
+    byId('gps-field').hidden = byId('metadata').value !== 'photo';
+    byId('settings-title').textContent = render ? '成片设置' : '原件交付';
+    byId('encoding-hint').textContent = '嵌入 sRGB ICC · ' + (byId('format').value === 'jpeg' ? '透明处合成白色' : layout.frame==='none' ? '保留透明通道' : '底板覆盖成品画布');
+    byId('percent').value = byId('quality').value + '%';
+    byId('validation').textContent = validateSettings();
+    byId('save-preset').disabled = Boolean(validateSettings());
+    byId('share-preset').disabled = byId('save-preset').disabled;
+    const plan = getPlan(true);
+    const item = plannedByIndex.get(focus);
+    const photo = photos[focus];
+    if (byId('photo').getAttribute('src')!==imageURL(photo)) byId('photo').src=imageURL(photo);
+    byId('photo').alt=photo.scene+'的示例照片';
+    byId('selected').textContent = included.size.toLocaleString('zh-CN') + ' / ' + selection.total.toLocaleString('zh-CN');
+    byId('focus-name').textContent = photo.name;
+    byId('preview-kind').textContent = !render || !inputAvailable(photo,mode) ? '资料库缩略图'
+      : validateSettings() ? '资料库缩略图 · 设置待修正' : '成品构图预览';
+    const printVisible=render && layout.mark!=='off';
+    byId('imprint-label').hidden=byId('imprint').hidden=!printVisible;
+    byId('imprint').textContent=printVisible ? imprintSummary(layout,ExportLayout.lettering(layout,photo)) : '';
+    drawPreview();
+    const version = byId('version');
+    version.replaceChildren(...photo.versions.map((source,i)=>new Option(source.label,String(i))));
+    version.value = String(photo.choice); version.hidden = !render || photo.versions.length < 2;
+    byId('input-info').textContent = version.hidden ? statusText(photo) : (!photo.online ? ' · 原片离线' : '');
+    byId('name-label').textContent = manifest ? '清单项' : '文件名';
+    byId('out-metadata').textContent = item?.metadata ?? '—';
+    byId('out-name').textContent = item && !validateSettings() ? item.name : '—';
+    byId('out-facts').textContent = !item ? '未勾选' : validateSettings() ? '待修正设置'
+      : ['不匹配交付格式','按重名策略跳过'].includes(item.state) ? item.state : item.facts + (item.state === '待找回' ? ' · 待找回' : '');
+    byId('reconnect').hidden = photo.online || manifest;
+    const {ready,missing,skipped} = planCounts;
+    byId('count').textContent = manifest ? '清单覆盖 ' + plan.length + ' 张' : '可交付 ' + ready + ' 张' + (missing ? ' · 待找回 ' + missing + ' 张' : '') + (skipped ? ' · 跳过 ' + skipped + ' 张' : '');
+    const button = byId('submit');
+    button.textContent = manifest ? '输出清单' : (missing ? '先' : '') + (render ? '导出' : '复制') + (missing ? '可用的 ' : ' ') + ready + ' 张';
+    if (selection.overLimit) {
+      byId('count').textContent = '本批已勾选 ' + included.size.toLocaleString('zh-CN') + ' 张，单批上限 200 张';
+      button.textContent = '请先调整选片';
+    }
+    button.disabled = Boolean(selection.overLimit || validateSettings() || job?.running || (manifest ? !plan.length : !ready));
+    byId('show-job').disabled = !job;
+    drawList();
+  }
+  const jobPageSize = 24;
+  let jobPage = 0, drawnJob = null, drawnPage = -1;
+  let runnerJob = null, taskCursor = 0;
+  function showJob() {
+    if (!job || !byId('job').open) return;
+    const list = byId('jobrows');
+    if (drawnJob !== job) { drawnJob = job; jobPage = 0; drawnPage = -1; }
+    const pages = Math.max(1,Math.ceil(job.items.length / jobPageSize));
+    jobPage = Math.min(pages - 1,Math.max(0,jobPage));
+    const start = jobPage * jobPageSize;
+    const end = Math.min(job.items.length,start + jobPageSize);
+    byId('job-title').textContent = job.running ? '正在模拟交付' : '本批交付结果';
+    byId('job-note').textContent = job.directory + ' · ' + job.recipe + ' · 模拟任务';
+    if (drawnPage !== jobPage) {
+      const rows = document.createDocumentFragment();
+      for (const row of job.items.slice(start,end)) {
+        const li = document.createElement('li');
+        const group = document.createElement('span');
+        const name = document.createElement('strong'); name.textContent = row.name;
+        const info = document.createElement('small');
+        const imprint = row.composition && job.settings?.layout.mark !== 'off' ? imprintSummary(job.settings.layout,row.composition.lines) : null;
+        info.textContent = [job.mode === 'render' ? row.version?.label : null,row.facts,row.metadata,imprint].filter(Boolean).join(' · ');
+        group.append(name,info);
+        li.append(group,document.createElement('span'));
+        rows.append(li);
+      }
+      list.replaceChildren(rows);
+      list.scrollTop = 0;
+      byId('job-page').max = String(pages);
+      byId('job-page').value = String(jobPage + 1);
+      byId('job-pages-total').textContent = pages;
+      byId('job-range').textContent = (start + 1).toLocaleString('zh-CN') + '–' + end.toLocaleString('zh-CN') + ' / ' + job.items.length.toLocaleString('zh-CN') + ' 项';
+      byId('job-prev').disabled = jobPage === 0;
+      byId('job-next').disabled = jobPage === pages - 1;
+      byId('job-pages').hidden = pages === 1;
+      drawnPage = jobPage;
+    }
+    for (let index = start; index < end; index++) {
+      const value = job.items[index].state;
+      const state = list.children[index - start].lastElementChild;
+      if (state.textContent !== value) state.textContent = value;
+      state.classList.toggle('warn',value === '待找回');
+    }
+    byId('cancel-job').hidden = !job.running;
+    byId('retry').hidden = job.running || !job.items.some(canRetry);
+  }
+  function canRetry(row) {
+    return row.state === '已取消' || (row.state === '待找回' && inputAvailable(photos[row.index],job.mode,row.version));
+  }
+  function runNext() {
+    if (runnerJob !== job) { runnerJob = job; taskCursor = 0; }
+    while (taskCursor < job.items.length && job.items[taskCursor].state !== '待执行') taskCursor++;
+    const next = job.items[taskCursor++];
+    if (!next) { job.running = false; showJob(); refresh(); return; }
+    next.state = '处理中'; showJob();
+    timer = setTimeout(() => {
+      next.state = '已完成';
+      if (job.mode === 'render') demoFiles[job.folder].add(next.name);
+      runNext();
+    },950);
+  }
+  function submit() {
+    if (selection.overLimit || !included.size || byId('submit').disabled) return;
+    const items = getPlan();
+    const manifest = mode === 'original' && byId('copy-mode').value === 'manifest';
+    if (manifest) {
+      for (const row of items) row.state = '已列入清单';
+    }
+    if (mode === 'original') {
+      items.push({index:-1,name:'交付清单 · CSV 和 JSON',facts:items.length + ' 个选中条目',state:'待执行'});
+    }
+    const folder = byId('folder').value;
+    {
+      const selection = byId('preset').value;
+      const previous=memory.previous;
+      memory.previous = {settings:currentSettings()};
+      try { updateMemory(); } catch { memory.previous=previous; presetStatus('本机存储不可用，上次设置未保存。',true); }
+      byId('preset').value = selection;
+    }
+    job = {mode,folder,directory:folderNames[folder] + (mode === 'original' ? ' / RAWMaster精选' : ''),
+      recipe:mode === 'render' ? byId('format').selectedOptions[0].textContent+' · '+styleName(layout) : '原件清单',
+      settings:currentSettings(),items,running:true};
+    byId('job').showModal(); refresh(); runNext();
+  }
+  function switchMode(value) {
+    if (mode===value) return;
+    mode=value; byId('preset').value='custom'; presetStatus(''); refresh();
+  }
+  byId('render').onclick = () => switchMode('render');
+  byId('original').onclick = () => switchMode('original');
+  byId('preset').onchange = () => { presetStatus(''); loadPreset(); refresh(); };
+  byId('save-preset').onclick = () => { byId('preset-name').value = ''; byId('save-error').textContent=''; byId('save-dialog').showModal(); byId('preset-name').focus(); };
+  byId('cancel-save').onclick = () => byId('save-dialog').close();
+  byId('save-form').onsubmit = event => {
+    event.preventDefault();
+    const base = byId('preset-name').value.trim();
+    if (!base) { byId('preset-name').focus(); return; }
+    try {
+      const saved=storePreset(ExportPreset.envelope(base,currentSettings()));
+      byId('preset').value=saved.id; byId('save-dialog').close(); presetStatus('已保存「'+saved.name+'」。'); refresh();
+    } catch (error) { byId('save-error').textContent=error.message; }
+  };
+  for (const id of ['format','size','edge','quality','template','collision','metadata','gps']) {
+    byId(id).addEventListener('input',() => { byId('preset').value = 'custom'; refresh(); });
+  }
+  for (const id of ['copy-mode','original-format']) byId(id).onchange = () => { byId('preset').value='custom'; refresh(); };
+  byId('folder').onchange = () => {
+    try { localStorage.setItem('rawmaster.export.destination',byId('folder').value); } catch {}
+    refresh();
+  };
+  try {
+    const directory=localStorage.getItem('rawmaster.export.destination');
+    if (Object.hasOwn(folderNames,directory)) byId('folder').value=directory;
+  } catch {}
+  byId('version').onchange = () => { photos[focus].choice = Number(byId('version').value); selection.changed(); };
+  byId('reconnect').onclick = () => { photos[focus].online = true; selection.changed(); if (job) showJob(); };
+  byId('submit').onclick = submit;
+  byId('show-job').onclick = () => { byId('job').showModal(); showJob(); };
+  byId('job-prev').onclick = () => { jobPage--; showJob(); };
+  byId('job-next').onclick = () => { jobPage++; showJob(); };
+  function jumpToJobPage() {
+    if (byId('job-page').validity.valid && byId('job-page').value) jobPage = byId('job-page').valueAsNumber - 1;
+    showJob();
+    byId('job-page').value = String(jobPage + 1);
+  }
+  byId('job-page').onchange = jumpToJobPage;
+  byId('job-page').onkeydown = event => { if (event.key === 'Enter') jumpToJobPage(); };
+  byId('close-job').onclick = () => byId('job').close();
+  byId('cancel-job').onclick = () => {
+    clearTimeout(timer);
+    for (const row of job.items) if (['待执行','处理中'].includes(row.state)) row.state = '已取消';
+    job.running = false; showJob(); refresh();
+  };
+  byId('retry').onclick = () => {
+    for (const row of job.items) if (canRetry(row)) row.state = '待执行';
+    taskCursor = 0;
+    job.running = true; refresh(); runNext();
+  };
+</script>
+<script src="workspace-controls.js"></script>
+</body>
+</html>
