@@ -137,7 +137,7 @@ enum EditingDevelopmentTransaction {
         history.updateCurrentUI(summaryUI, current: expected)
         publishedAdoptions = adoptions
     }
-    var presetSourceIssue: ((DevelopmentPresetRecord, EditingInteractionContext) -> String?)?
+    var presetCapabilityIssue: ((DevelopmentPresetRecord, EditingInteractionContext) -> String?)?
     @Published private(set) var expandedGroups: Set<DevelopmentAdjustmentID> = [.light]
     @Published private(set) var expandedOptions: Set<DevelopmentAdjustmentID> = []
     @Published private(set) var cropConstraint = PhotosCropConstraint()
@@ -317,7 +317,7 @@ enum EditingDevelopmentTransaction {
 
     private func resolvePreset(_ record: DevelopmentPresetRecord, baseline: DevelopmentRecipe, amount: Double,
                                context expected: EditingInteractionContext, preparedMasks: [DevelopmentMaskLayerV3]?) throws -> DevelopmentRecipe {
-        guard record.reason(for: expected.sourceContentID) == nil, presetSourceIssue?(record, expected) == nil else { throw DevelopmentPresetError.unavailable }
+        guard record.reason(for: expected.sourceContentID) == nil, presetCapabilityIssue?(record, expected) == nil else { throw DevelopmentPresetError.unavailable }
         if amount != 1, !record.supportsAmount(from: baseline) { throw DevelopmentPresetError.unsupportedAmount }
         if let full = record.patch.fullRecipe {
             guard amount == 1, record.patch.boundSourceID == expected.sourceContentID else { throw DevelopmentPresetError.differentSource }
@@ -385,9 +385,12 @@ enum EditingDevelopmentTransaction {
         let beforeUI = summaryUI.validating(for: before)
         var afterUI = beforeUI.reconciling(to: after)
         afterUI.presetAdoptions = priorAdoptions
+        var resultFingerprint: String?
         if after != baseline {
-            afterUI.presetAdoptions.append(try .init(record: record, sourceID: expected.sourceContentID, amount: amount,
-                                                      baseline: baseline, result: after, masks: preparedMasks))
+            let adoption = try DevelopmentPresetAdoption(record:record, sourceID:expected.sourceContentID, amount:amount,
+                                                        baseline:baseline, result:after, masks:preparedMasks)
+            afterUI.presetAdoptions.append(adoption)
+            resultFingerprint = adoption.resultFingerprint
         }
         let omitted = record.metadata["confirmedOmissions"].map { " · 略过 " + String($0.prefix(160)) } ?? ""
         let action = record.metadata["semanticReconstruction"] == "true" ? "本张重建 · " : "预设 · "
@@ -399,8 +402,8 @@ enum EditingDevelopmentTransaction {
         summaryUI = afterUI
         if token != nil { gesture?.lastApplied = after }
         else {
-            history.record(before: before, after: after, title: title, beforeUI: beforeUI, afterUI: afterUI)
-            summaryUI = history.currentUI(current: after)
+            summaryUI = history.record(before: before, after: after, title: title, beforeUI: beforeUI,
+                                       afterUI: afterUI, afterFingerprint:resultFingerprint)
         }
         presetAmountSession = next
         publish(keepingPreset: true)

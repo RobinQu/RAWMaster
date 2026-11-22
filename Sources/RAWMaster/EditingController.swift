@@ -99,7 +99,9 @@ import RAWMasterAI
     private var developmentCropEntryConstraint: PhotosCropConstraint?
     @Published var cropOverlayStyle: PhotosCropOverlayStyle = .ruleOfThirds
     @Published var cropOverlayTurn = 0
-    @Published private(set) var recipe = DevelopmentRecipe()
+    @Published private(set) var recipe = DevelopmentRecipe() {
+        didSet { liveRecipeGeneration &+= 1 }
+    }
     @Published private(set) var savedRecipe = DevelopmentRecipe()
     @Published private(set) var draftParentID: String?
     @Published private(set) var preview: NSImage?
@@ -292,7 +294,17 @@ import RAWMasterAI
     private var unrecordedOutputs: [String: AIEditOutput] = [:]
     private var drafts: [String: (DevelopmentRecipe, DevelopmentRecipe, String?)] = [:]
     private var liveStateTasks: [String: Task<Void, Never>] = [:]
-    private var liveStateTokens: [String: UUID] = [:]
+    private var liveRecipeGeneration: UInt64 = 0
+    private final class QueuedLiveState {
+        let recipeGeneration: UInt64, parent: String, expectedRevision: Int
+        var adoptions: [DevelopmentPresetAdoption]?
+        var started = false
+        init(recipeGeneration:UInt64, parent:String, expectedRevision:Int, adoptions:[DevelopmentPresetAdoption]?) {
+            self.recipeGeneration = recipeGeneration; self.parent = parent
+            self.expectedRevision = expectedRevision; self.adoptions = adoptions
+        }
+    }
+    private var liveStateWrites: [String: QueuedLiveState] = [:]
     // Injection seams retain the real persistence/orchestration paths in controller tests.
     var providerOverride: (any AIEditingProvider)?
     var generationPreparationHook: (@Sendable () async throws -> Void)?
@@ -552,17 +564,27 @@ import RAWMasterAI
         let workID = current.id, assetID = current.source.assetID
         let frozen = recipe, expectedRevision = current.liveRevision ?? 0
         let adoptions = presetAdoptions(for: frozen, work: current, parent: parent)
+        // The recipe commits synchronously before the session publishes its adopted preset
+        // history. Both notifications belong to exactly the same pending database write.
+        if let queued = liveStateWrites[workID], !queued.started, queued.recipeGeneration == liveRecipeGeneration,
+           queued.parent == parent, queued.expectedRevision == expectedRevision {
+            queued.adoptions = adoptions
+            return
+        }
         liveStateTasks[workID]?.cancel()
-        let token = UUID(); liveStateTokens[workID] = token
+        let queued = QueuedLiveState(recipeGeneration:liveRecipeGeneration, parent:parent, expectedRevision:expectedRevision, adoptions:adoptions)
+        liveStateWrites[workID] = queued
         let database = store
         liveStateTasks[workID] = Task { @MainActor [weak self] in
             defer {
-                if let self, self.liveStateTokens[workID] == token {
-                    self.liveStateTokens[workID] = nil; self.liveStateTasks[workID] = nil
+                if let self, self.liveStateWrites[workID] === queued {
+                    self.liveStateWrites[workID] = nil; self.liveStateTasks[workID] = nil
                 }
             }
             do {
                 try await Task.sleep(nanoseconds: 180_000_000)
+                queued.started = true
+                let adoptions = queued.adoptions
                 var revision = expectedRevision, updated: PhotoWork?
                 for _ in 0..<3 {
                     do {
@@ -578,7 +600,7 @@ import RAWMasterAI
                     }
                 }
                 guard let updated else { throw EditingError.staleAdoption }
-                guard let self, self.liveStateTokens[workID] == token else { return }
+                guard let self, self.liveStateWrites[workID] === queued else { return }
                 if var memory = self.drafts[assetID] {
                     memory.1 = memory.0 == frozen ? frozen : memory.1
                     memory.2 = parent; self.drafts[assetID] = memory
@@ -594,7 +616,7 @@ import RAWMasterAI
                 // A superseded task may already have committed its frozen metadata. The newest task
                 // resolves the optimistic revision and remains the only publication to the UI.
             } catch {
-                guard let self, self.liveStateTokens[workID] == token, self.work?.id == workID else { return }
+                guard let self, self.liveStateWrites[workID] === queued, self.work?.id == workID else { return }
                 self.message = "调整已在当前会话生效，但自动保存失败；继续调整会重试。"
             }
         }
@@ -1495,7 +1517,7 @@ import RAWMasterAI
             self.previewInteractionChanged(control.name == "crop" ? "crop" : "photos." + control.name, active: active)
         }
         session.presetAdoptionsChanged = { [weak self] in self?.scheduleLiveStatePersistence() }
-        session.presetSourceIssue = { [weak self] row, context in self?.sourceIssueForPreset(row, context: context) }
+        session.presetCapabilityIssue = { [weak self] row, context in self?.capabilityIssueForPreset(row, context: context) }
         session.currentDehazeContext = { [weak self] context in try self?.admittedDevelopmentDehazeContext(context: context) }
         session.currentGrainSamplingVersions = { [weak self] context in
             guard let self else { throw EditingDevelopmentSessionError.inactive }
@@ -1925,7 +1947,9 @@ import RAWMasterAI
         previewPresetCandidate(candidate, id: "classic." + look.rawValue, look: look, context: context)
     }
     func sourceIssueForPreset(_ record: DevelopmentPresetRecord, context: EditingInteractionContext) -> String? {
-        if let reason = record.reason(for: context.sourceContentID) { return reason }
+        record.reason(for:context.sourceContentID) ?? capabilityIssueForPreset(record,context:context)
+    }
+    private func capabilityIssueForPreset(_ record: DevelopmentPresetRecord, context: EditingInteractionContext) -> String? {
         guard developmentContext == context, let facts = developmentSourceFacts,
               facts.sourceGeneration == context.sourceGeneration else { return "正在确认照片能力" }
         if let filter = record.patch.filter ?? record.patch.fullRecipe?.adjustmentsV3?.filter,

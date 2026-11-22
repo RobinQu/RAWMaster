@@ -142,8 +142,8 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             var firstRecipe: DevelopmentRecipe?
             for path in pair.isMultiple(of: 2) ? ["preset","manual"] : ["manual","preset"] {
                 guard session.recipe == baseline else { throw ProbeFailure("Paired baseline recipe changed") }
-                let before = await ImageEngines.previewLifecycle.statistics()
                 let baselineDraw = try await drawn(editing, recipe: baseline, quality: .settled, label: "matched baseline for " + path)
+                let before = await ImageEngines.previewLifecycle.statistics()
                 let started = DispatchTime.now().uptimeNanoseconds
                 if path == "preset" { try session.adoptPreset(preset, context: context, revision: session.revision) }
                 else {
@@ -152,10 +152,13 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                         control: .init(group: .light, name: "曝光"),
                         nativeInput: .capture(control: "light.exposure", phase: "discrete", nativeEvent: true)))
                 }
+                let committed = DispatchTime.now().uptimeNanoseconds
                 let settled = try await drawn(editing, recipe: session.recipe, quality: .settled, after: started,
                                               label: "settled draw for " + path)
                 samples[path, default: []].append(try settled.duration(since: started))
                 var row = settled.evidence(start: started)
+                row["committedNS"] = committed
+                row["synchronousCommandMs"] = Double(committed - started) / 1_000_000
                 row["pair"] = pair; row["path"] = path; row["baselineFrameID"] = baselineDraw.event.frameID.uuidString
                 row["baselineDrawNS"] = baselineDraw.event.drawReturnedUptimeNanoseconds
                 row["resultRecipeSHA256"] = try EditingFingerprint.of(session.recipe)

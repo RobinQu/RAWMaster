@@ -49,9 +49,9 @@ struct DevelopmentUndoHistory {
     private final class SummaryEndpoint {
         let ui: DevelopmentSummaryUIState
         let fingerprint: String
-        init?(ui: DevelopmentSummaryUIState, recipe: DevelopmentRecipe) {
+        init?(ui: DevelopmentSummaryUIState, recipe: DevelopmentRecipe, fingerprint: String? = nil) {
             let validated = ui.validating(for: recipe)
-            guard !validated.isEmpty, let fingerprint = try? EditingFingerprint.of(recipe) else { return nil }
+            guard !validated.isEmpty, let fingerprint = fingerprint ?? (try? EditingFingerprint.of(recipe)) else { return nil }
             self.ui = validated; self.fingerprint = fingerprint
         }
     }
@@ -117,10 +117,13 @@ struct DevelopmentUndoHistory {
         guard let key = activeKey else { return }
         branches[key] = Branch(access: clock)
     }
-    mutating func record(before: DevelopmentRecipe, after: DevelopmentRecipe, title: String,
-                         beforeUI: DevelopmentSummaryUIState = .init(), afterUI: DevelopmentSummaryUIState = .init()) {
-        guard before != after else { updateCurrentUI(afterUI, current: after); return }
-        guard let key = activeKey else { return }
+    /// A preset receipt can supply the SHA it has just computed for this exact immutable
+    /// after value. Return the retained UI after trimming, including the over-budget case.
+    @discardableResult mutating func record(before: DevelopmentRecipe, after: DevelopmentRecipe, title: String,
+                         beforeUI: DevelopmentSummaryUIState = .init(), afterUI: DevelopmentSummaryUIState = .init(),
+                         afterFingerprint: String? = nil) -> DevelopmentSummaryUIState {
+        guard before != after else { updateCurrentUI(afterUI, current: after); return currentUI(current:after) }
+        guard let key = activeKey else { return .init() }
         var branch = branches[key] ?? .init()
         if let expected = endpoint(branch), expected != before { branch = .init() }
         if branch.cursor < branch.entries.count {
@@ -131,7 +134,7 @@ struct DevelopmentUndoHistory {
                           title: String(title.prefix(128)),
                           cost: Self.metadataCost(before) + Self.metadataCost(after) + 1024 + DevelopmentSummaryUIState.conservativeCost + beforeUI.presetAuditBytes + afterUI.presetAuditBytes,
                           lutCosts: Self.lutCosts(before, after))
-        branch.summaryEndpoint = .init(ui: entry.afterUI, recipe: after)
+        branch.summaryEndpoint = .init(ui: entry.afterUI, recipe: after, fingerprint: afterFingerprint)
         // An oversized edit remains the current draft. It does not escape the history budget.
         if limits.entriesPerBranch == 0 || entry.cost > min(limits.bytesPerBranch, limits.totalBytes) {
             branch.entries = []; branch.cursor = 0; branch.cost = 0
@@ -143,6 +146,7 @@ struct DevelopmentUndoHistory {
         }
         if branch.endpointCost > limits.bytesPerBranch { branch.summaryEndpoint = nil }
         clock &+= 1; branch.access = clock; branches[key] = branch; trim()
+        return branches[key]?.summaryEndpoint?.ui ?? .init()
     }
     func currentUI(current: DevelopmentRecipe) -> DevelopmentSummaryUIState {
         guard let key = activeKey, let branch = branches[key],

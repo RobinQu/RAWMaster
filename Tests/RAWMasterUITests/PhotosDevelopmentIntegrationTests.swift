@@ -3813,8 +3813,16 @@ extension PhotosDevelopmentIntegrationTests {
         var patch = DevelopmentPresetPatch()
         patch.exposure = 0.5
         let row = try catalog.create(name: "低反差", group: "纪实", patch: patch)
+        let original = editing.recipe
         try editing.developmentSession.adoptPreset(row, context: ctx, revision: editing.developmentSession.revision)
         let baked = editing.recipe
+        let receipt = try XCTUnwrap(editing.developmentSession.presetAdoptions.first)
+        // All three synchronous writes occur inside one autosave debounce window.
+        try editing.developmentSession.undo(context:ctx)
+        XCTAssertEqual(editing.recipe,original)
+        XCTAssertTrue(editing.developmentSession.presetAdoptions.isEmpty)
+        try editing.developmentSession.redo(context:ctx)
+        XCTAssertEqual(editing.developmentSession.presetAdoptions,[receipt])
         var persisted = try fixture.store.photoWork(id: work.id)
         for _ in 0..<500 where persisted.livePresetAdoptions?.first?.presetID != row.id {
             try await Task.sleep(nanoseconds: 10_000_000)
@@ -3822,6 +3830,9 @@ extension PhotosDevelopmentIntegrationTests {
         }
         XCTAssertEqual(persisted.liveRecipe, baked)
         XCTAssertEqual(persisted.livePresetAdoptions?.first?.sourceID, ctx.sourceContentID)
+        XCTAssertEqual(persisted.livePresetAdoptions,[receipt])
+        XCTAssertEqual(receipt.baselineFingerprint,try EditingFingerprint.of(original))
+        XCTAssertEqual(receipt.resultFingerprint,try EditingFingerprint.of(baked))
         editing.saveDevelopment(context: ctx)
         for _ in 0..<500 where editing.saving { try await Task.sleep(nanoseconds: 10_000_000) }
         let version = try XCTUnwrap(editing.versions.last(where: { $0.kind == .development }))
