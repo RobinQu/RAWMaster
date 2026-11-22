@@ -33,6 +33,7 @@ struct EditingWorkspace: View {
             .padding(.horizontal, EditingLayout.outerPadding)
             .padding(.top, 12)
             .padding(.bottom, 12)
+            .disabled(editing.quickPromptAdopting)
         }
         .background(editing.darkroomBackground.color)
         .accessibilityIdentifier("editing.darkroom")

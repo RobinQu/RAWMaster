@@ -419,6 +419,7 @@ enum AnalysisFailureDiagnostic {
             case .unsafePath: return "EditingError.unsafePath"
             case .incompleteBackup: return "EditingError.incompleteBackup"
             case .outputAlreadyReceived: return "EditingError.outputAlreadyReceived"
+            case .strictDocumentary: return "EditingError.strictDocumentary"
             }
         }
         if let e = error as? DevelopmentGeometryMappingError {

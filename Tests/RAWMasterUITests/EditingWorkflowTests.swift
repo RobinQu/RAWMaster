@@ -94,6 +94,124 @@ final class EditingWorkflowTests: XCTestCase {
         XCTAssertEqual(controller.asset?.id, fixture.assets[1].id)
         await controller.shutdown()
     }
+
+    @MainActor func testQuickPromptLocalUsesLiveCompositionAndUndoesAdoption() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        let controller = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults)
+        controller.isPresented = true
+        controller.focus(fixture.assets[0]); try await wait { controller.sourceReady && !controller.profiles.isEmpty }
+        let original = try Data(contentsOf: fixture.assets[0].resolvedURL)
+        let provider = CandidateProvider(store: fixture.store); controller.providerOverride = provider
+        var profile = QuickPromptModel.flux.defaultProfile; profile.acceptedForUse = true
+        try fixture.store.saveProviderProfile(profile); await controller.reloadProfiles()
+        controller.setRecipe { $0.exposureEV = 0.3; $0.crop = .init(x: 0.1, y: 0.1, width: 0.8, height: 0.8) }
+        let frozen = controller.recipe
+        let work = try XCTUnwrap(controller.work)
+        controller.openQuickPrompt()
+        controller.quickPromptDraft.prompt = "Remove a small object."
+        controller.setQuickPromptScope(.rectangle(.init(x: 0.3, y: 0.3, width: 0.4, height: 0.4)))
+        controller.prepareQuickPrompt(); controller.prepareQuickPrompt()
+        try await wait { controller.quickPromptJob?.state == .succeeded && controller.versions.count == 2 }
+        let job = try XCTUnwrap(controller.quickPromptJob), snapshot = try XCTUnwrap(job.request.quickPrompt)
+        let version = try fixture.store.editingVersion(id: XCTUnwrap(job.resultVersionID))
+        XCTAssertEqual(job.request.recipe, frozen)
+        XCTAssertNotNil(snapshot.context); XCTAssertTrue(snapshot.basis.artifact.relativePath.hasPrefix(".inputs/"))
+        XCTAssertEqual(version.artifact?.encoding, UTType.tiff.identifier)
+        XCTAssertEqual(version.artifact?.pixelWidth, snapshot.basis.artifact.pixelWidth)
+        XCTAssertEqual(version.configuration["quickPromptRawOutputSHA256"], job.currentAttempt.receivedOutput?.artifact.sha256)
+        XCTAssertEqual(controller.work?.adoptedVersionID, work.originalVersionID)
+        let backupURL = fixture.root.appendingPathComponent("quick-backup")
+        _ = try fixture.store.backupEditingLibrary(to: backupURL)
+        let restored = try LibraryStore.restoreEditingLibrary(from: backupURL,
+            databaseURL: fixture.root.appendingPathComponent("restored/library.sqlite"),
+            archiveRoot: fixture.root.appendingPathComponent("restored/archive"))
+        let restoredJob = try restored.processingJob(id: job.id)
+        let restoredBasis = try XCTUnwrap(restoredJob.request.quickPrompt?.basis)
+        XCTAssertNotEqual(restoredBasis.url, snapshot.basis.url)
+        XCTAssertEqual(try Data(contentsOf: restoredBasis.url), try Data(contentsOf: snapshot.basis.url))
+        XCTAssertEqual(restoredJob.resultVersionID, version.id)
+        controller.reviewQuickPrompt(job); try await wait { controller.quickPromptReview != nil }
+        XCTAssertTrue(controller.canAdoptQuickPrompt)
+        controller.applyQuickPromptReview(); try await wait { controller.work?.adoptedVersionID == version.id && !controller.quickPromptPresented }
+        controller.undoQuickPrompt(); try await wait { controller.work?.adoptedVersionID == work.originalVersionID }
+        XCTAssertEqual(controller.recipe, frozen)
+        XCTAssertEqual(try Data(contentsOf: fixture.assets[0].resolvedURL), original)
+        let calls = await provider.calls, persistedIntent = await provider.sawPersistedIntent
+        XCTAssertEqual(calls, 1); XCTAssertTrue(persistedIntent)
+        await controller.shutdown()
+    }
+
+    @MainActor func testQuickPromptCloudPreflightAndRecoveryRespectPolicyAndStaleRecipe() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        let controller = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults)
+        controller.isPresented = true
+        controller.focus(fixture.assets[0]); try await wait { controller.sourceReady && !controller.profiles.isEmpty }
+        let provider = CandidateProvider(store: fixture.store); controller.providerOverride = provider
+        var profile = QuickPromptModel.seedream.defaultProfile; profile.acceptedForUse = true
+        try fixture.store.saveProviderProfile(profile); await controller.reloadProfiles()
+        controller.openQuickPrompt()
+        controller.quickPromptDraft.model = .seedream; controller.quickPromptDraft.prompt = "Make the light a little softer."
+        controller.prepareQuickPrompt(); try await wait { controller.quickPromptPending != nil }
+        XCTAssertTrue(try fixture.store.loadProcessingJobs().isEmpty)
+        controller.dismissQuickPromptConfirmation()
+        XCTAssertTrue(try fixture.store.loadProcessingJobs().isEmpty)
+        controller.prepareQuickPrompt(); try await wait { controller.quickPromptPending != nil }
+        controller.confirmQuickPrompt(); controller.cancelQuickPromptPreparation()
+        try await wait { !controller.quickPromptPreparing }
+        XCTAssertTrue(try fixture.store.loadProcessingJobs().isEmpty)
+        controller.archivePublicationHook = { kind in if kind == .ai { throw CocoaError(.fileWriteOutOfSpace) } }
+        controller.prepareQuickPrompt(); try await wait { controller.quickPromptPending != nil }
+        controller.confirmQuickPrompt()
+        try await wait { controller.quickPromptJob?.state == .outcomeUnknown }
+        let interrupted = try XCTUnwrap(controller.quickPromptJob)
+        XCTAssertNotNil(interrupted.currentAttempt.receivedOutput)
+        controller.archivePublicationHook = nil
+        controller.resumeSaving(interrupted)
+        try await wait { controller.quickPromptJob?.state == .succeeded && controller.versions.count == 2 }
+        let job = try XCTUnwrap(controller.quickPromptJob), work = try XCTUnwrap(controller.work)
+        let version = try XCTUnwrap(job.resultVersionID)
+        controller.setStrictDocumentary(true); try await wait { controller.work?.strictDocumentary == true }
+        XCTAssertThrowsError(try fixture.store.adoptEditingVersion(workID: work.id, versionID: version, expectedRevision: work.adoptionRevision)) {
+            XCTAssertEqual($0 as? EditingError, .strictDocumentary)
+        }
+        controller.setStrictDocumentary(false); try await wait { controller.work?.strictDocumentary == false }
+        controller.setRecipe { $0.exposureEV = 0.42 }
+        controller.adopt(try fixture.store.editingVersion(id: version))
+        let receivedRevision = job.request.quickPrompt?.liveRevision
+        try await wait { controller.work?.liveRevision != receivedRevision }
+        XCTAssertEqual(try fixture.store.photoWork(id: work.id).adoptedVersionID, work.originalVersionID)
+        controller.reviewQuickPrompt(job); try await wait { controller.quickPromptReview != nil }
+        XCTAssertFalse(controller.canAdoptQuickPrompt)
+        XCTAssertThrowsError(try fixture.store.adoptEditingVersion(workID: work.id, versionID: version, expectedRevision: work.adoptionRevision)) {
+            XCTAssertEqual($0 as? EditingError, .staleAdoption)
+        }
+        let calls = await provider.calls; XCTAssertEqual(calls, 1)
+        await controller.shutdown()
+    }
+
+    @MainActor func testQuickPromptRechecksAnUnownedAttemptAndRecoversItsExistingOutput() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        let controller = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults)
+        controller.isPresented = true
+        controller.focus(fixture.assets[0]); try await wait { controller.sourceReady && !controller.profiles.isEmpty }
+        let provider = RecoveringPromptProvider(); controller.providerOverride = provider
+        var profile = QuickPromptModel.seedream.defaultProfile; profile.acceptedForUse = true
+        try fixture.store.saveProviderProfile(profile); await controller.reloadProfiles()
+        controller.openQuickPrompt()
+        controller.quickPromptDraft.model = .seedream; controller.quickPromptDraft.prompt = "Make the light a little softer."
+        controller.prepareQuickPrompt(); try await wait { controller.quickPromptPending != nil }
+        controller.confirmQuickPrompt(); try await wait { controller.quickPromptJob?.state == .outcomeUnknown }
+        let job = try XCTUnwrap(controller.quickPromptJob)
+        controller.acknowledgeQuickPromptOutcome(job)
+        try await wait { controller.quickPromptJob?.currentAttempt.error?.contains("原尝试仍在运行") == true }
+        XCTAssertTrue(try fixture.store.processingJob(id: job.id).blocksQuickPromptSubmission)
+        controller.acknowledgeQuickPromptOutcome(try fixture.store.processingJob(id: job.id))
+        try await wait { controller.quickPromptJob?.state == .succeeded }
+        let resolved = try fixture.store.processingJob(id: job.id)
+        XCTAssertEqual(resolved.attempts.count, 1); XCTAssertNil(resolved.acknowledgedQuickPromptOutcomeAt)
+        let calls = await provider.calls; XCTAssertEqual(calls, 1)
+        await controller.shutdown()
+    }
     @MainActor func testUnknownProviderOutcomeRequiresExplicitRetryAndDoesNotSubmitAgain() async throws {
         let fixture = try Fixture(); defer { fixture.clean() }
         let controller = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults)
@@ -270,7 +388,9 @@ private actor CandidateProvider: AIEditingProvider {
         sawPersistedIntent = persisted?.state == .submitting && persisted?.currentAttempt.submissionIntentAt != nil
         progress(.init(state: .running, remoteID: "fixture-result"))
         try await Task.sleep(nanoseconds: 150_000_000)
-        return .init(fileURL: request.inputFileURL, artifact: request.inputArtifact, configuration: ["fixture": "true"], remoteID: "fixture-result")
+        var output = request.inputArtifact
+        if request.quickPrompt != nil { output.encoding = "image/png" }
+        return .init(fileURL: request.inputFileURL, artifact: output, configuration: ["fixture": "true"], remoteID: "fixture-result")
     }
     func cancel(attempt: ProcessingAttempt) async throws {}
     func reconcile(_ request: AIEditRequest, attempt: ProcessingAttempt) async throws -> AIReconciliationResult { .unknown }
@@ -280,6 +400,25 @@ private actor UnknownProvider: AIEditingProvider {
     func edit(_ request: AIEditRequest, attempt: ProcessingAttempt, progress: @escaping @Sendable (AIEditProgress) -> Void) async throws -> AIEditOutput { calls += 1; throw AIServiceError.outcomeUnknown }
     func cancel(attempt: ProcessingAttempt) async throws { throw AIServiceError.outcomeUnknown }
     func reconcile(_ request: AIEditRequest, attempt: ProcessingAttempt) async throws -> AIReconciliationResult { .unknown }
+}
+
+private actor RecoveringPromptProvider: AIEditingProvider {
+    private(set) var calls = 0
+    private var recoveryChecks = 0
+    private var durableCandidate: AIEditOutput?
+
+    func edit(_ request: AIEditRequest, attempt: ProcessingAttempt, progress: @escaping @Sendable (AIEditProgress) -> Void) async throws -> AIEditOutput {
+        calls += 1
+        var artifact = request.inputArtifact; artifact.encoding = "image/png"
+        durableCandidate = .init(fileURL: request.inputFileURL, artifact: artifact, remoteID: "original-attempt")
+        throw AIServiceError.outcomeUnknown
+    }
+    func cancel(attempt: ProcessingAttempt) async throws { throw AIServiceError.outcomeUnknown }
+    func reconcile(_ request: AIEditRequest, attempt: ProcessingAttempt) async throws -> AIReconciliationResult {
+        recoveryChecks += 1
+        if recoveryChecks == 1 { return .running(remoteID: "original-attempt") }
+        return durableCandidate.map(AIReconciliationResult.completed) ?? .unknown
+    }
 }
 
 private actor BlockingProvider: AIEditingProvider {

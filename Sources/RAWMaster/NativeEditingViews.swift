@@ -276,7 +276,7 @@ struct NativeEditingInspector: View {
             }
             if let version = editing.displayedSavedVersion {
                 if version.id != editing.work?.adoptedVersionID {
-                    Button("采用此版本") { editing.adopt(version) }.disabled(editing.saving)
+                    Button("采用此版本") { editing.adopt(version) }.disabled(editing.saving || !editing.canAdoptDisplayVersion(version))
                         .accessibilityIdentifier("editing.adopt")
                 } else {
                     Label(editing.isDisplayingDevelopmentDraft ? "草稿与当前采用版本一致" : "当前采用版本", systemImage: "checkmark.circle")
@@ -301,6 +301,17 @@ struct EditingJobSummary: View {
             }
             Text(job.request.profile.displayName + " · " + job.request.profile.model).font(.caption2).foregroundStyle(.secondary)
             Text("实际输入 \(job.request.inputArtifact.pixelWidth) × \(job.request.inputArtifact.pixelHeight) · \(job.request.inputArtifact.bitDepth) 位 · \(job.request.inputArtifact.colorSpace)").font(.caption2).foregroundStyle(.secondary)
+            if let quick = job.request.quickPrompt {
+                DisclosureGroup("快速 Prompt · \(quick.selection == nil ? "整张当前构图" : "局部范围")") {
+                    Text(job.request.prompt).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                    if let receipt = job.currentAttempt.receivedOutput?.configuration, let count = receipt["usage.generated_images"] {
+                        Text("方舟回执 · 生成 \(count) 张 · \(receipt["usage.output_tokens"] ?? "—") 输出 tokens")
+                            .foregroundStyle(.secondary)
+                    } else if job.request.profile.kind == .seedream {
+                        Text(job.currentAttempt.submissionIntentAt == nil ? "尚未提交方舟" : "方舟用量待核对").foregroundStyle(.secondary)
+                    }
+                }.font(.caption)
+            }
             if let text = editing.jobMessages[job.id]?.message { Text(text).font(.caption2).foregroundStyle(.secondary) }
             if let error = job.currentAttempt.error { Text(error).font(.caption2).foregroundStyle(AppPalette.warning).textSelection(.enabled) }
             HStack {
@@ -309,11 +320,14 @@ struct EditingJobSummary: View {
                     Text("不会重新提交生成").font(.caption2).foregroundStyle(.secondary)
                 } else if job.state == .outcomeUnknown {
                     Button("核对结果") { editing.reconcile(job) }
-                    if job.currentAttempt.workerJoined { Button("重新生成…") { editing.unknownRetryJobID = job.id } }
-                } else if (job.state == .failed || job.state == .cancelled) && job.currentAttempt.workerJoined {
+                    if job.currentAttempt.workerJoined && job.request.quickPrompt == nil { Button("重新生成…") { editing.unknownRetryJobID = job.id } }
+                } else if (job.state == .failed || job.state == .cancelled) && job.currentAttempt.workerJoined && job.request.quickPrompt == nil {
                     Button("重试") { editing.retry(job) }
                 } else if !job.state.isTerminal && job.state != .cancelRequested {
                     Button("取消") { editing.cancel(job) }
+                }
+                if job.request.quickPrompt != nil && job.request.workID == editing.work?.id {
+                    Button("回到本张 Prompt") { editing.reopenQuickPromptTask(job) }.disabled(!editing.canOpenQuickPrompt)
                 }
                 if job.resultVersionID != nil { Text("结果保留为候选").font(.caption2).foregroundStyle(.secondary) }
             }.font(.caption).buttonStyle(.borderless)

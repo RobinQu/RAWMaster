@@ -73,6 +73,10 @@ public enum QuickPromptImagePreparation {
                 selected = result.0
                 matte = result.1
             }
+            if selected != nil {
+                guard verified.iccProfileSHA256 == srgbProfile else { throw EditingError.invalidProfile }
+                try verifyCompositeBasis(file, width: frame.width, height: frame.height)
+            }
             let context = selected.map { expanded($0, in: frame) }
             let active = context ?? frame, roi = rect(active, height: frame.height), layout = ModelLayout(active)
             let modelImage = input.cropped(to: roi).transformed(by: layout.transform(from: roi), highQualityDownsample: true)
@@ -181,8 +185,9 @@ public enum QuickPromptImagePreparation {
     private static func checked(_ url: URL, expected: RenderArtifact) throws -> RenderArtifact {
         try expected.validate()
         let actual = try PhotoRenderer.inspect(url, sourceDepth: expected.sourceEffectiveBitDepth)
+        let expectedEncoding = expected.encoding == "image/png" ? UTType.png.identifier : expected.encoding
         guard actual.sha256 == expected.sha256, actual.byteCount == expected.byteCount, actual.pixelWidth == expected.pixelWidth,
-              actual.pixelHeight == expected.pixelHeight, actual.bitDepth == expected.bitDepth, actual.encoding == expected.encoding,
+              actual.pixelHeight == expected.pixelHeight, actual.bitDepth == expected.bitDepth, actual.encoding == expectedEncoding,
               let source = CGImageSourceCreateWithURL(url as CFURL, nil), CGImageSourceGetCount(source) == 1 else { throw EditingError.invalidArtifact }
         let properties = CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any]
         guard (properties?[kCGImagePropertyOrientation] as? NSNumber)?.intValue ?? 1 == 1 else { throw EditingError.invalidArtifact }
@@ -292,6 +297,17 @@ public enum QuickPromptImagePreparation {
 
     /// RAWMaster's frozen TIFF contains uncompressed, interleaved, top-first RGB16(A) strips.
     /// Rewriting only selected integers preserves even hidden RGB beneath transparent pixels.
+    private static func verifyCompositeBasis(_ url: URL, width: Int, height: Int) throws {
+        let file = try FileHandle(forReadingFrom: url)
+        defer { try? file.close() }
+        let length = try file.seekToEnd()
+        guard length > 8, length <= UInt64(Int.max),
+              let address = mmap(nil, Int(length), PROT_READ, MAP_PRIVATE, file.fileDescriptor, 0),
+              address != MAP_FAILED else { throw DevelopmentError.invalidEncoding }
+        defer { munmap(address, Int(length)) }
+        _ = try Strips(.init(start: address, count: Int(length)), width: width, height: height)
+    }
+
     private static func compositeTIFF(at url: URL, width: Int, height: Int, selection: Region, result: CIImage, matte: CIImage?) throws {
         let handle = try FileHandle(forUpdating: url)
         defer { try? handle.close() }

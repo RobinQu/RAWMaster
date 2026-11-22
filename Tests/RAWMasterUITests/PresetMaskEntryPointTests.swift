@@ -45,33 +45,6 @@ import RAWMasterCore
         _ = row.perform(action)
     }
 
-    private func choose(_ mode: EditingFilterBrowserMode, in window: NSWindow) throws {
-        let id = "editing.filters.browserMode." + mode.rawValue
-        let press = NSSelectorFromString("accessibilityPerformPress")
-        var nodes = [element("editing.filters.browserMode", in: window) ?? window]
-        var seen = Set<ObjectIdentifier>()
-        while let node = nodes.popLast() {
-            guard seen.insert(ObjectIdentifier(node)).inserted else { continue }
-            let matches = attribute(node, "accessibilityIdentifier") as? String == id
-                || ["accessibilityLabel","accessibilityTitle","accessibilityDescription"].contains { attribute(node, $0) as? String == mode.title }
-            if matches, node.responds(to: press) { _ = node.perform(press); return }
-            nodes += attribute(node, "accessibilityChildren") as? [NSObject] ?? []
-        }
-        // AppKit also exposes the segmented picker through its native target/action on some releases.
-        var views = [try XCTUnwrap(window.contentView)]
-        while let view = views.popLast() {
-            if let control = view as? NSSegmentedControl,
-               let index = (0..<control.segmentCount).first(where: { control.label(forSegment: $0) == mode.title }),
-               let action = control.action {
-                control.selectedSegment = index
-                XCTAssertTrue(control.sendAction(action, to: control.target))
-                return
-            }
-            views += view.subviews
-        }
-        XCTFail("Missing filter browser option " + mode.title)
-    }
-
     private func search(_ query: String, field: NSTextField, window: NSWindow) throws {
         XCTAssertTrue(window.makeFirstResponder(field))
         let editor = try XCTUnwrap(window.fieldEditor(false, for: field) as? NSTextView)
@@ -87,7 +60,6 @@ import RAWMasterCore
         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
         let fixture = try EditingWorkflowTests.Fixture()
         defer { fixture.clean() }
-        fixture.defaults.set(EditingFilterBrowserMode.catalog.rawValue, forKey: EditingFilterBrowserMode.defaultsKey)
         let backend = PhotosDevelopmentBackend()
         let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: backend)
         app.selectScope(.project, id: fixture.assets[0].projectID)
@@ -165,7 +137,7 @@ import RAWMasterCore
         XCTAssertFalse(requests.contains { $0.kind == .filters }, "Browsing, filtering and adopting must not request filter tiles")
     }
 
-    func testClassicAndCatalogSwitchInWindowRestoresPreferenceAndCancelsDrafts() async throws {
+    func testUnifiedDirectoryCancelsPreparationWhenCollapsedAndRestoresOnReopen() async throws {
         _ = NSApplication.shared
         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
         let old = NSApp.accessibilityAttributeValue(ax)
@@ -202,7 +174,6 @@ import RAWMasterCore
             }.frame(width: 780, height: 850))
             window.contentView = host; window.orderBack(nil); host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
         }
-        XCTAssertNil(fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey))
         let first = try await openEditor(), editing = first.editing
         let initial = editing.recipe, history = editing.developmentSession.history.entryCount
         let entered = expectation(description: "Semantic preparation entered")
@@ -213,25 +184,18 @@ import RAWMasterCore
             catch { if Task.isCancelled { cancelled.fulfill() }; throw error }
         })
         mount(editing, first.context)
-        try await eventually("First launch must mount classic filter controls") {
-            self.element("editing.filters.reset", in: window) != nil && self.element("editing.filter.favorite.vivid", in: window) != nil
+        try await eventually("The text directory and the right-hand masks appear together") {
+            self.element("editing.presets.search", in: window) != nil && self.element("editing.filter.favorite.vivid", in: window) != nil
+                && self.element("photos.mask.subject", in: window) != nil
         }
-        XCTAssertNil(element("editing.presets.search", in: window))
+        XCTAssertNil(element("editing.filters.browserMode", in: window))
+        XCTAssertNil(element("photos.filters.thumbnail.retry", in: window))
         try press("editing.filter.favorite.vivid", in: window)
         XCTAssertTrue(editing.favoriteDevelopmentFilters.contains(.vivid))
         editing.developmentMaskInput.select(.linear, context: first.context)
         XCTAssertEqual(editing.developmentMaskInput.activeKind, .linear)
         editing.previewDevelopmentFilter(.vivid, context: first.context)
         XCTAssertNotNil(editing.hoveredPresetID)
-        try choose(.catalog, in: window)
-        try await eventually("Catalog must replace the classic grid, clear its hover and retain the right-hand mask controls") {
-            self.element("editing.presets.search", in: window) != nil && self.element("editing.filters.reset", in: window) == nil
-                && self.element("photos.mask.subject", in: window) != nil && editing.hoveredPresetID == nil
-        }
-        XCTAssertEqual(fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey), EditingFilterBrowserMode.catalog.rawValue)
-        try await eventually("The catalog must load the previously favorited classic filter") { self.element("editing.filter.favorite.vivid", in: window) != nil }
-        try press("editing.filter.favorite.vivid", in: window)
-        XCTAssertFalse(editing.favoriteDevelopmentFilters.contains(.vivid))
         let host = try XCTUnwrap(window.contentView)
         let field = try XCTUnwrap(textField(in: host))
         try search(record.name, field: field, window: window)
@@ -242,29 +206,59 @@ import RAWMasterCore
         await fulfillment(of: [entered], timeout: 3)
         editing.previewDevelopmentPreset(hoverRecord, context: first.context)
         XCTAssertEqual(editing.hoveredPresetID, hoverRecord.id)
-        try choose(.classic, in: window)
+        try press("editing.leftRail.filters", in: window)
         await fulfillment(of: [cancelled], timeout: 3)
-        try await eventually("Classic entry restores its controls") {
-            self.element("editing.filters.reset", in: window) != nil && self.element("editing.presets.search", in: window) == nil
+        try await eventually("Collapsing removes the directory from the accessibility tree") {
+            self.element("editing.presets.search", in: window) == nil
         }
-        XCTAssertEqual(fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey), EditingFilterBrowserMode.classic.rawValue)
         XCTAssertEqual(editing.recipe, initial); XCTAssertEqual(editing.developmentSession.history.entryCount, history)
         XCTAssertNil(editing.hoveredPresetID)
         XCTAssertEqual(editing.developmentMaskInput.activeKind, .linear)
         XCTAssertTrue(editing.developmentSession.parameters.masks.isEmpty)
-        try choose(.catalog, in: window)
-        try await eventually("The selected directory preference must persist before closing") {
-            fixture.defaults.string(forKey: EditingFilterBrowserMode.defaultsKey) == EditingFilterBrowserMode.catalog.rawValue
-        }
         window.contentView = nil; await editing.shutdown(finishPreviews: false)
         let reopened = try await openEditor()
         mount(reopened.editing, reopened.context)
-        try await eventually("A fresh editor must open the explicitly selected catalog") {
-            self.element("editing.presets.search", in: window) != nil && self.element("editing.filters.reset", in: window) == nil
+        try await eventually("A fresh editor uses the same directory") {
+            self.element("editing.presets.search", in: window) != nil
         }
-        XCTAssertFalse(reopened.editing.favoriteDevelopmentFilters.contains(.vivid))
+        XCTAssertTrue(reopened.editing.favoriteDevelopmentFilters.contains(.vivid))
         XCTAssertEqual(reopened.editing.recipe, initial)
         XCTAssertNil(reopened.editing.hoveredPresetID)
         window.contentView = nil; await reopened.editing.shutdown(finishPreviews: false)
+    }
+
+    func testQuickPromptDockReplacesCanvasControlsInTheNativeWindow() async throws {
+        _ = NSApplication.shared
+        let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+        let old = NSApp.accessibilityAttributeValue(ax)
+        NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+        defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: PhotosDevelopmentBackend())
+        app.selectScope(.project, id: fixture.assets[0].projectID)
+        app.select(fixture.assets[0]); app.setMode(.single); app.openNativeEditing()
+        let editing = try XCTUnwrap(app.editing)
+        try await eventually("The normal editing work is ready") { editing.canOpenQuickPrompt }
+        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1100, height: 720),
+                              styleMask: [.titled], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.orderOut(nil); window.contentView = nil; window.close() }
+        let host = NSHostingView(rootView: EditingImageCanvas(editing: editing).environmentObject(app).frame(width: 1100, height: 720))
+        window.contentView = host; window.orderFront(nil); host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
+        try await eventually("Quick Prompt is reachable on the original dock") { self.element("editing.quickPrompt.open", in: window) != nil }
+        XCTAssertNotNil(element("editing.fit", in: window))
+        try press("editing.quickPrompt.open", in: window)
+        try await eventually("Expanded dock contains editing controls and removes the old ones") {
+            self.element("editing.quickPrompt.text", in: window) != nil && self.element("editing.fit", in: window) == nil
+        }
+        XCTAssertNotNil(element("editing.quickPrompt.scopeMenu", in: window))
+        XCTAssertNotNil(element("editing.quickPrompt.model", in: window))
+        XCTAssertTrue(editing.jobs.isEmpty)
+        XCTAssertEqual(editing.quickPromptDraft.selection, .whole)
+        try press("editing.quickPrompt.close", in: window)
+        try await eventually("Closing restores the existing canvas controls") {
+            self.element("editing.fit", in: window) != nil && self.element("editing.quickPrompt.text", in: window) == nil
+        }
+        await editing.shutdown(finishPreviews: false)
     }
 }

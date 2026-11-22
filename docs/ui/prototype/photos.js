@@ -137,9 +137,9 @@ const RMPhotos = (() => {
     return `brightness(${Math.pow(2, p.ev * 0.55)}) contrast(${1 + p.contrast * 0.006}) saturate(${p.mono ? 0 : 1 + p.sat * 0.01}) sepia(${Math.max(0, p.warmth) * 0.004}) hue-rotate(${Math.min(0, p.warmth) * 0.13}deg)`;
   }
   const filmStocks = {
-    daylight: { name: '日光负片', contrast: -16, sat: -19, warmth: 56 },
-    chrome: { name: '冷调反转', contrast: 30, sat: 28, warmth: -68 },
-    silver: { name: '银盐黑白', contrast: 26, sat: -100, warmth: 0 },
+    daylight: { name: 'Portra 400 / Endura', contrast: -16, sat: -19, warmth: 56 },
+    chrome: { name: 'Velvia 100', contrast: 30, sat: 28, warmth: -68 },
+    cinema: { name: 'VISION3 250D / 2383', contrast: 18, sat: -14, warmth: 23 },
   };
   function displayLook(r) {
     const film = Object.hasOwn(filmStocks, r.filmStock) ? filmStocks[r.filmStock] : null;

@@ -3,8 +3,6 @@ import SwiftUI
 import UniformTypeIdentifiers
 import RAWMasterCore
 
-enum DevelopmentPresetBrowseSpace: String, CaseIterable { case presets = "预设", profiles = "配置文件" }
-
 enum DevelopmentPresetBrowserItem: Identifiable {
     case classic(DevelopmentPhotoFilterV3), record(DevelopmentPresetRecord)
     var id: String {
@@ -26,7 +24,7 @@ struct DevelopmentPresetFolder: Identifiable {
 
 /// The directory consumes metadata only. Focus / pointer events on an individual row own the main-canvas preview.
 enum DevelopmentPresetDirectory {
-    static func folders(space: DevelopmentPresetBrowseSpace, records: [DevelopmentPresetRecord], favorites: Set<String>,
+    static func folders(records: [DevelopmentPresetRecord], favorites: Set<String>,
                         looks: [DevelopmentPhotoFilterV3], favoriteLooks: Set<DevelopmentPhotoFilterV3>,
                         query: String) -> [DevelopmentPresetFolder] {
         let term = query.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -39,17 +37,23 @@ enum DevelopmentPresetDirectory {
             let displayOrder = lhs.name.localizedStandardCompare(rhs.name)
             return displayOrder == .orderedSame ? lhs.id < rhs.id : displayOrder == .orderedAscending
         }
-        let classic = space == .presets ? looks.map(DevelopmentPresetBrowserItem.classic).filter { matches($0.name) || matches("经典滤镜 Classic Filters") } : []
+        let classic = looks.filter { !$0.isSpektrafilm }.map(DevelopmentPresetBrowserItem.classic)
+            .filter { matches($0.name) || matches("基础滤镜 Basic Filters") }
+        let films = looks.filter(\.isSpektrafilm).map(DevelopmentPresetBrowserItem.classic)
+            .filter { matches($0.name) || matches("胶片模拟 Spektrafilm") }
         let visible = records.filter {
-            $0.isBrowsable && ($0.kind == .profile) == (space == .profiles)
-                && (matches($0.name) || matches($0.group) || matches($0.metadata["sortName"] ?? $0.name))
+            $0.isBrowsable && (matches($0.name) || matches($0.group) || matches($0.metadata["sortName"] ?? $0.name)
+                || (isAdobeAdaptive($0) && matches("Adobe Adaptive")))
         }
-        let favoritesRows = classic.filter { if case .classic(let look) = $0 { return favoriteLooks.contains(look) }; return false }
+        let favoritesRows = (classic + films).filter { if case .classic(let look) = $0 { return favoriteLooks.contains(look) }; return false }
             + visible.filter { favorites.contains($0.id) }.map(DevelopmentPresetBrowserItem.record).sorted(by: sorted)
         var groups: [DevelopmentPresetFolder] = []
         if !favoritesRows.isEmpty { groups.append(.init(id: "favorites", name: "收藏", rows: favoritesRows)) }
-        if !classic.isEmpty { groups.append(.init(id: "classic", name: "经典滤镜", rows: classic)) }
-        let grouped = Dictionary(grouping: visible) { $0.kind.rawValue + "." + $0.group }
+        if !classic.isEmpty { groups.append(.init(id: "classic", name: "基础滤镜", rows: classic)) }
+        let adaptive = visible.filter(isAdobeAdaptive).map(DevelopmentPresetBrowserItem.record).sorted(by: sorted)
+        if !adaptive.isEmpty { groups.append(.init(id: "adobe-adaptive", name: "Adobe Adaptive", rows: adaptive)) }
+        if !films.isEmpty { groups.append(.init(id: "film", name: "胶片模拟", rows: films)) }
+        let grouped = Dictionary(grouping: visible.filter { !isAdobeAdaptive($0) }) { $0.kind.rawValue + "." + $0.group }
         let userFolders = grouped.map { id, rows in
             DevelopmentPresetFolder(id: id, name: rows[0].group, rows: rows.map(DevelopmentPresetBrowserItem.record).sorted(by: sorted))
         }.sorted {
@@ -59,6 +63,10 @@ enum DevelopmentPresetDirectory {
         groups += userFolders
         return groups
     }
+
+    private static func isAdobeAdaptive(_ record: DevelopmentPresetRecord) -> Bool {
+        record.metadata["origin"] == "adobeBuiltin"
+    }
 }
 
 struct DevelopmentPresetBrowser: View {
@@ -67,12 +75,11 @@ struct DevelopmentPresetBrowser: View {
     let context: EditingInteractionContext
     let scroller: ScrollViewProxy
     var catalog: DevelopmentPresetCatalog = .shared
-    @State private var space = DevelopmentPresetBrowseSpace.presets
     @State private var query = ""
     @State private var records: [DevelopmentPresetRecord] = []
     @State private var favoriteIDs: Set<String> = []
     @State private var folders: [DevelopmentPresetFolder] = []
-    @State private var expanded: Set<String> = ["favorites", "classic", "user.个人预设"]
+    @State private var expanded: Set<String> = ["favorites", "classic", "film", "user.个人预设"]
     @State private var searchCollapsed: Set<String> = []
     @State private var reload = 0
     @State private var selectedID: String?
@@ -109,7 +116,6 @@ struct DevelopmentPresetBrowser: View {
         .sheet(item: $editor) { request in
             DevelopmentPresetEditor(request: request, catalog: catalog) { saved in
                 selectedID = saved.id
-                space = .presets
                 expanded.insert(saved.kind.rawValue + "." + saved.group)
                 reload += 1
             }
@@ -129,7 +135,6 @@ struct DevelopmentPresetBrowser: View {
     private var monitored: some View {
         content
         .onChange(of: query) { _, _ in searchCollapsed = []; rebuild() }
-        .onChange(of: space) { _, _ in selectedID = nil; rebuild() }
         .onChange(of: editing.availableDevelopmentFilters) { _, _ in rebuild() }
         .onChange(of: editing.favoriteDevelopmentFilters) { _, _ in rebuild() }
         .onChange(of: session.revision) { _, new in
@@ -160,9 +165,6 @@ struct DevelopmentPresetBrowser: View {
     }
 
     @ViewBuilder private var toolbar: some View {
-        Picker("目录", selection: $space) {
-            ForEach(DevelopmentPresetBrowseSpace.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-        }.pickerStyle(.segmented).labelsHidden().accessibilityIdentifier("editing.presets.space")
         HStack(spacing: 5) {
             Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
             TextField("搜索名称或组", text: $query).textFieldStyle(.plain)
@@ -187,7 +189,7 @@ struct DevelopmentPresetBrowser: View {
 
     @ViewBuilder private func directory(_ renderedRevision: UUID) -> some View {
         if folders.isEmpty {
-            Text(query.isEmpty ? (space == .profiles ? "尚无配置文件" : "尚无预设") : "没有匹配的条目")
+            Text(query.isEmpty ? "尚无预设" : "没有匹配的条目")
                 .font(.caption).foregroundStyle(.secondary)
         }
         LazyVStack(alignment: .leading, spacing: 2) {
@@ -197,7 +199,7 @@ struct DevelopmentPresetBrowser: View {
                         ForEach(folder.rows) { item in
                             row(item, in: folder, revision: renderedRevision)
                         }
-                        if folder.id == "classic" { classicAmount }
+                        if folder.id == (selection.selection.isSpektrafilm ? "film" : "classic") { classicAmount }
                     }
                 }
             }
@@ -282,7 +284,7 @@ struct DevelopmentPresetBrowser: View {
     private func rebuild() {
         fullOperation?.cancel()
         editing.cancelPresetHover()
-        folders = DevelopmentPresetDirectory.folders(space: space, records: records, favorites: favoriteIDs,
+        folders = DevelopmentPresetDirectory.folders(records: records, favorites: favoriteIDs,
             looks: editing.availableDevelopmentFilters, favoriteLooks: editing.favoriteDevelopmentFilters, query: query)
         if let focusRow, !visibleRows.contains(where: { $0.key == focusRow }) { self.focusRow = nil }
     }
@@ -303,17 +305,18 @@ struct DevelopmentPresetBrowser: View {
                 }.contentShape(Rectangle())
             }.buttonStyle(.plain).accessibilityLabel(folder.name + "文件夹")
                 .accessibilityValue(isExpanded(folder.id) ? "已展开" : "已折叠")
-            if folder.id == "classic" {
+            if folder.id == (selection.selection.isSpektrafilm ? "film" : "classic") {
                 Toggle("启用滤镜", isOn: Binding(get: { selection.enabled }, set: { changeFilter(.setEnabled(.filter, $0)) }))
-                    .toggleStyle(.switch).controlSize(.mini).labelsHidden().accessibilityLabel("启用经典滤镜")
+                    .toggleStyle(.switch).controlSize(.mini).labelsHidden().accessibilityLabel("启用当前滤镜")
                     .disabled(editing.availableDevelopmentFilters.count <= 1)
                 Button { changeFilter(.reset(.filter)) } label: { Image(systemName: "arrow.counterclockwise") }
-                    .buttonStyle(.plain).help("复位经典滤镜").accessibilityLabel("复位经典滤镜")
+                    .buttonStyle(.plain).help("复位当前滤镜").accessibilityLabel("复位当前滤镜")
+                    .accessibilityIdentifier("editing.filters.reset")
             }
         }.font(.system(size: 11, weight: .semibold)).padding(.top, 5)
     }
     private var classicAmount: some View {
-        PhotosRecipeValueRow(session: session, context: context, title: "滤镜强度", control: "filter.intensity",
+        PhotosRecipeValueRow(session: session, context: context, title: selection.selection.isSpektrafilm ? "胶片强度" : "滤镜强度", control: "filter.intensity",
             value: selection.intensity, range: 0...100, step: 1, digits: 0, apply: { amount, token in
                 var filter = session.parameters.filter
                 filter.intensity = amount
@@ -526,7 +529,6 @@ struct DevelopmentPresetBrowser: View {
             do {
                 let row = try await Task.detached(priority: .userInitiated) { try store.importNative(DevelopmentPresetCatalog.data(at: url)) }.value
                 selectedID = row.id
-                space = .presets
                 expanded.insert(row.kind.rawValue + "." + row.group)
                 reload += 1
             } catch { report(error) }

@@ -11,11 +11,9 @@ struct PresetExchangeControls: View {
   let onApplySubset: (DevelopmentPresetRecord) -> Void
   let onPrepareSemantic: (DevelopmentPresetRecord) -> Void
 
-  private enum Page { case migration, loading, review, details, sourceFields, projection, original, undo, message }
-  @State private var page = Page.migration
+  private enum Page { case loading, review, details, sourceFields, projection, original, undo, message }
+  @State private var page = Page.loading
   @State private var open = false
-  @State private var system = true
-  @State private var user = true
   @State private var keepingConflicts = false
   @State private var stage: PresetExchangeStage?
   @State private var reviewed: DevelopmentPresetRecord?
@@ -38,8 +36,7 @@ struct PresetExchangeControls: View {
 
   var body: some View {
     Menu {
-      Button("导入 XMP 或 ZIP…") { chooseFiles() }
-      Button("从本机 Camera Raw 迁移…") { present(.migration) }
+      Button("导入 Lightroom / Camera Raw 预设…") { chooseFiles() }
       Button("撤销导入批次…") {
         do {
           let snapshot = try catalog.importHistory()
@@ -72,7 +69,6 @@ struct PresetExchangeControls: View {
     .sheet(isPresented: $open, onDismiss: cancel) {
       VStack(alignment: .leading, spacing: 12) {
         switch page {
-        case .migration: migration
         case .loading:
           HStack { ProgressView().controlSize(.small); Text(message) }
         case .review:
@@ -152,22 +148,6 @@ struct PresetExchangeControls: View {
       }
       .padding(20).frame(width: 540)
       .interactiveDismissDisabled(writing)
-    }
-  }
-
-  private var migration: some View {
-    Group {
-      Text("本机 Camera Raw 迁移").font(.headline)
-      Toggle("系统内置 · 核准的 53 个自适应 XMP", isOn: $system)
-      Text(DevelopmentPresetExchange.systemRoot.path).font(.caption).foregroundStyle(.secondary)
-      Toggle("个人预设 · 递归扫描 ImportedSettings 中的 XMP", isOn: $user)
-      Text(DevelopmentPresetExchange.userRoot.path).font(.caption).foregroundStyle(.secondary)
-      Button("预检选中来源") {
-        let a = system ? DevelopmentPresetExchange.systemRoot : nil
-        let b = user ? DevelopmentPresetExchange.userRoot : nil
-        let store = catalog
-        prepare { try DevelopmentPresetExchange.inspectAdobe(system: a, user: b, catalog: store) }
-      }.disabled(!system && !user)
     }
   }
 

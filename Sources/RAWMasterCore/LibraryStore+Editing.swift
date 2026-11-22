@@ -184,16 +184,50 @@ extension LibraryStore {
       let version = try editingVersion(id: versionID)
       guard version.workID == workID else { throw EditingError.invalidParent }
       guard work.adoptionRevision == expectedRevision else { throw EditingError.staleAdoption }
+      if work.strictDocumentary == true && version.kind == .ai { throw EditingError.strictDocumentary }
       try validateAdmission(work.source)
       if version.artifact == nil { try validateEditingSource(version.source) }
       else {
         let publication = try publicationForVersion(version.id)
         try editingArchive().validate(publication)
+        if let jobID = publication.jobID, let request = try processingJob(id: jobID).request.quickPrompt {
+          let job = try processingJob(id: jobID), parent = try editingVersion(id: job.request.inputVersionID)
+          guard job.attempts.contains(where: { $0.resultVersionID == versionID }),
+            try versionDisposition(versionID: versionID) != .discarded,
+            request.matches(work, parent: parent, recipe: job.request.recipe) else { throw EditingError.staleAdoption }
+        }
       }
       work.adoptedVersionID = versionID; work.adoptionRevision += 1
       try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
       try statement("UPDATE editing_dispositions SET disposition=? WHERE version_id=?", [VersionDisposition.retained.rawValue, versionID])
       try saveCommand(id: commandID, fingerprint: fingerprint, action: "adoptVersion", result: work)
+      return work
+    }
+  }
+
+  public func setStrictDocumentary(workID: String, enabled: Bool) throws -> PhotoWork {
+    try transaction {
+      var work = try photoWork(id: workID)
+      if enabled, try editingVersion(id: work.adoptedVersionID).kind == .ai { throw EditingError.strictDocumentary }
+      if enabled, try loadProcessingJobs(workID: workID).contains(where: {
+        !$0.state.isTerminal && $0.state != .outcomeUnknown && $0.currentAttempt.submissionIntentAt != nil
+      }) { throw EditingError.illegalTransition }
+      work.strictDocumentary = enabled
+      try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
+      return work
+    }
+  }
+
+  public func undoQuickPromptAdoption(workID: String, versionID: String, expectedRevision: Int) throws -> PhotoWork {
+    try transaction {
+      var work = try photoWork(id: workID)
+      guard work.adoptedVersionID == versionID, work.adoptionRevision == expectedRevision,
+            let jobID = try publicationForVersion(versionID).jobID else { throw EditingError.staleAdoption }
+      let job = try processingJob(id: jobID)
+      guard let previous = job.request.quickPrompt, previous.adoptionRevision == expectedRevision - 1,
+            try editingVersion(id: previous.adoptedVersionID).workID == workID else { throw EditingError.staleAdoption }
+      work.adoptedVersionID = previous.adoptedVersionID; work.adoptionRevision += 1
+      try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
       return work
     }
   }
@@ -250,7 +284,15 @@ extension LibraryStore {
       try request.recipe.validate(); try request.inputArtifact.validate()
       guard request.profile.acceptedForUse, request.inputFileURL.isFileURL else { throw EditingError.invalidProfile }
       let work = try photoWork(id: request.workID), input = try editingVersion(id: request.inputVersionID)
-      guard input.workID == work.id, request.source.hasSameIdentity(as: work.source), input.recipe == request.recipe else { throw EditingError.invalidParent }
+      guard input.workID == work.id, request.source.hasSameIdentity(as: work.source) else { throw EditingError.invalidParent }
+      if work.strictDocumentary == true { throw EditingError.strictDocumentary }
+      if let quick = request.quickPrompt {
+        try quick.validate(input: request.inputArtifact)
+        guard quick.matches(work, parent: input, recipe: request.recipe),
+          try loadProcessingJobs(workID: work.id).allSatisfy({ !$0.blocksQuickPromptSubmission }) else {
+          throw EditingError.staleAdoption
+        }
+      } else if input.recipe != request.recipe { throw EditingError.invalidParent }
       try validateEditingSource(request.source)
       if let limit = request.profile.capabilities.maxInputPixels {
         guard request.inputArtifact.pixelWidth <= limit / request.inputArtifact.pixelHeight else { throw EditingError.invalidArtifact }
@@ -259,6 +301,16 @@ extension LibraryStore {
       var frozenRequest = request
       frozenRequest.inputArtifact = try archive.freezeProcessingInput(fileURL: request.inputFileURL, artifact: request.inputArtifact, commandID: commandID, fingerprint: fingerprint)
       frozenRequest.inputFileURL = try archive.processingInputURL(frozenRequest.inputArtifact)
+      if var quick = request.quickPrompt {
+        func freeze(_ file: QuickPromptInputFile, role: String) throws -> QuickPromptInputFile {
+          let artifact = try archive.freezeProcessingInput(fileURL: file.url, artifact: file.artifact,
+            commandID: commandID + "." + role, fingerprint: fingerprint)
+          return try QuickPromptInputFile(artifact: artifact, url: archive.processingInputURL(artifact))
+        }
+        quick.basis = try freeze(quick.basis, role: "basis")
+        quick.matte = try quick.matte.map { try freeze($0, role: "matte") }
+        frozenRequest.quickPrompt = quick
+      }
       let job = ProcessingJob(commandID: commandID, requestFingerprint: fingerprint, request: frozenRequest)
       try statement("INSERT INTO processing_jobs VALUES(?,?,?,?)", [job.id, work.id, commandID, try json(job)])
       try saveCommand(id: commandID, fingerprint: fingerprint, action: "enqueueJob", result: job)
@@ -281,6 +333,18 @@ extension LibraryStore {
       let url = archiveRoot.appendingPathComponent(job.request.inputArtifact.relativePath)
       guard FileSafety.contains(archiveRoot, url) else { throw EditingError.unsafePath }
       job.request.inputFileURL = url
+      if var quick = job.request.quickPrompt {
+        func resolve(_ file: QuickPromptInputFile) throws -> QuickPromptInputFile {
+          let relative = file.artifact.relativePath
+          _ = try FileSafety.safeRelative(relative)
+          let url = archiveRoot.appendingPathComponent(relative)
+          guard relative.hasPrefix(".inputs/"), FileSafety.contains(archiveRoot, url) else { throw EditingError.unsafePath }
+          return QuickPromptInputFile(artifact: file.artifact, url: url)
+        }
+        quick.basis = try resolve(quick.basis)
+        quick.matte = try quick.matte.map(resolve)
+        job.request.quickPrompt = quick
+      }
     }
     return job
   }
@@ -289,6 +353,22 @@ extension LibraryStore {
   }
   private func writeJob(_ job: ProcessingJob) throws {
     try statement("UPDATE processing_jobs SET data=? WHERE id=?", [try json(job), job.id])
+  }
+  public func acknowledgeQuickPromptOutcome(id: String, attemptID: String) throws {
+    try locked {
+      let archive = try editingArchive()
+      for received in try archive.recoverReceivedOutputs() where received.jobID == id { try commitReceivedOutput(received) }
+      for publication in try archive.recoverPublications() where publication.jobID == id { _ = try commitArchivePublication(publication) }
+      try transaction {
+        var job = try processingJob(id: id)
+        let attempt = job.currentAttempt
+        guard job.request.quickPrompt != nil, attempt.id == attemptID, job.state == .outcomeUnknown,
+              attempt.workerJoined || job.request.profile.kind != .localComfy,
+              attempt.receivedOutput == nil, attempt.pendingReceivedOutput == nil else { throw EditingError.illegalTransition }
+        job.acknowledgedQuickPromptOutcomeAt = job.acknowledgedQuickPromptOutcomeAt ?? Date()
+        try writeJob(job)
+      }
+    }
   }
   public func transitionProcessingJob(id: String, attemptID: String, runID: String, to next: ProcessingJobState,
     remoteID: String? = nil, workerJoined: Bool = false, error: String? = nil) throws -> ProcessingJob {
@@ -316,8 +396,10 @@ extension LibraryStore {
       guard next != .succeeded, !attempt.state.isTerminal,
         next == attempt.state || legal[attempt.state, default: []].contains(next) else { throw EditingError.illegalTransition }
       if next == .submitting {
+        if try photoWork(id: job.request.workID).strictDocumentary == true { throw EditingError.strictDocumentary }
         try validateEditingSource(job.request.source)
         if attempt.submissionIntentAt == nil { attempt.submissionIntentAt = Date() }
+        if job.request.quickPrompt != nil && job.request.profile.kind != .localComfy { job.usageState = .pendingReconciliation }
       }
       if next == .running || next == .archiving { guard attempt.submissionIntentAt != nil else { throw EditingError.illegalTransition } }
       if next == .cancelled { guard workerJoined || attempt.workerJoined else { throw EditingError.workerNotJoined } }
@@ -338,7 +420,7 @@ extension LibraryStore {
       for publication in try archive.recoverPublications() where publication.jobID == id { _ = try commitArchivePublication(publication) }
       return try transaction {
         var job = try processingJob(id: id)
-        guard job.resultVersionID == nil else { throw EditingError.illegalTransition }
+        guard job.resultVersionID == nil, job.request.quickPrompt == nil else { throw EditingError.illegalTransition }
         let old = job.currentAttempt
         guard old.receivedOutput == nil, old.pendingReceivedOutput == nil else { throw EditingError.outputAlreadyReceived }
         guard old.state == .failed || old.state == .cancelled || old.state == .outcomeUnknown else { throw EditingError.illegalTransition }
@@ -426,6 +508,9 @@ extension LibraryStore {
       }
       job.attempts[index].receivedOutput = received
       job.attempts[index].pendingReceivedOutput = nil
+      if job.request.quickPrompt != nil && job.request.profile.kind != .localComfy {
+        job.usageState = received.configuration["usage"] == "reported" ? .confirmed : .unknown
+      }
       // Receiving a completed file is independent of cancellation intent and confirms the provider call returned.
       // Preserve completed-result state; otherwise the only remaining action is local archiving.
       if job.attempts[index].resultVersionID == nil { job.attempts[index].state = .archiving }
@@ -473,7 +558,20 @@ extension LibraryStore {
           version.kind == .ai, version.recipe == job.request.recipe, let index = job.attempts.firstIndex(where: { $0.id == receipt.attemptID && $0.runID == receipt.runID }),
           job.attempts[index].submissionIntentAt != nil else { throw EditingError.staleAttempt }
         guard job.attempts[index].resultVersionID == nil else { throw EditingError.staleAttempt }
-        if let received = job.attempts[index].receivedOutput {
+        if let quick = job.request.quickPrompt {
+          guard let received = job.attempts[index].receivedOutput, let artifact = version.artifact,
+            version.configuration["quickPromptRawOutputSHA256"] == received.artifact.sha256,
+            version.configuration["quickPromptBasisSHA256"] == quick.basis.artifact.sha256,
+            ["public.png", "image/png"].contains(received.artifact.encoding), received.artifact.bitDepth == 8,
+            received.artifact.pixelWidth == job.request.inputArtifact.pixelWidth,
+            received.artifact.pixelHeight == job.request.inputArtifact.pixelHeight else { throw EditingError.archiveMismatch }
+          if quick.selection == nil {
+            guard artifact.sha256 == received.artifact.sha256, artifact.byteCount == received.artifact.byteCount else { throw EditingError.archiveMismatch }
+          } else {
+            guard artifact.pixelWidth == quick.basis.artifact.pixelWidth, artifact.pixelHeight == quick.basis.artifact.pixelHeight,
+              artifact.bitDepth == 16, artifact.encoding == "public.tiff" else { throw EditingError.archiveMismatch }
+          }
+        } else if let received = job.attempts[index].receivedOutput {
           guard let artifact = version.artifact, artifact.sha256 == received.artifact.sha256,
             artifact.byteCount == received.artifact.byteCount else { throw EditingError.archiveMismatch }
         }

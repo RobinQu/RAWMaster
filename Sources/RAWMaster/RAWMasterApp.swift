@@ -46,7 +46,7 @@ struct RAWMasterApp: App {
                     .disabled(model.isCatalog || model.isNativeEditing || !model.canOpenNativeEditing)
                 Button("完成编辑") { model.editing?.leaveBrowsingContext() }
                     .keyboardShortcut(.return, modifiers: .command)
-                    .disabled(!model.isNativeEditing || model.editing?.saving == true)
+                    .disabled(!model.isNativeEditing || model.editing?.saving == true || model.editing?.quickPromptPresented == true)
             }
             CommandMenu("选片") {
                 Button("保留 P") { model.decide(.keep) }.disabled(model.isCatalog || model.selectedIDs.isEmpty)

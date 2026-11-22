@@ -644,12 +644,5 @@ struct PhotosFilterSelectionControls: View {
                 nativeInput: .capture(control: "photos.filter", phase: "discrete", nativeEvent: true)))
         } catch { onError(error) }
     }
-    private func title(_ selection: DevelopmentPhotoFilterV3) -> String {
-        switch selection {
-        case .original: return "原片"
-        case .vivid: return "鲜明"; case .vividWarm: return "鲜明暖色"; case .vividCool: return "鲜明冷色"
-        case .dramatic: return "反差色"; case .dramaticWarm: return "反差暖色"; case .dramaticCool: return "反差冷色"
-        case .mono: return "单色"; case .silvertone: return "银色调"; case .noir: return "黑白"
-        }
-    }
+    private func title(_ selection: DevelopmentPhotoFilterV3) -> String { selection.photosName }
 }

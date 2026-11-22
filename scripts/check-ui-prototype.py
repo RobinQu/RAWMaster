@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Exercise RAWMaster's HTML workbench through its DOM in an isolated Chrome session."""
+from argparse import ArgumentParser
 from contextlib import suppress
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -21,6 +22,9 @@ class QuietHandler(SimpleHTTPRequestHandler):
 
 
 def main():
+    parser = ArgumentParser(description=__doc__)
+    parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
+    editing_only = parser.parse_args().editing_only
     cli = shutil.which("agent-browser")
     if not cli:
         raise SystemExit("This browser check uses agent-browser. Manual review routes are in docs/ui/coverage.md.")
@@ -50,6 +54,11 @@ def main():
     """
 
     def scenario(title, js):
+        if editing_only and "快速 Prompt" not in title and title not in {
+            "双击入口与本地照片", "标题栏与资料库侧栏开关", "搜索、筛选、多选比较与批量标签",
+            "导入、续接、分组、初筛封存与历史恢复", "暗房布局、智能预设与胶片采用", "浮动工具条、邻片、裁切与参考对比",
+        }:
+            return
         try:
             output = browser("eval", "(async()=>{" + helpers + js + ";return 'PASS';})()")
         except RuntimeError as error:
@@ -132,14 +141,17 @@ def main():
               assert(all('[name=matchReference] option',modal()).length===3,'scope contains just this group');set('[name=matchReference]','d2',modal());
               assert(!el('[name=matchTarget][value=d2]',modal()),'reference protected');act('close',null,modal());
               const neutral=el('.developed').style.filter;
-              let film=el('[data-act=film-stock][data-val=silver]');film.focus();assert(el('.developed').style.filter!==neutral,'keyboard film preview');
+              assert(all('.preset-folder summary').map(x=>x.textContent).join('|').includes('基础滤镜|Adobe Adaptive|胶片模拟')&&!el('.preset-folder img'),'three text folders without thumbnails');
+              act('preset-manage');assert(all('[name=presetOperation] option',modal()).some(x=>x.value.includes('Lightroom'))&&!modal().textContent.includes('迁移'),'XMP import without migration UI');act('close',null,modal());
+              act('adaptive-preset','subject');act('adaptive-mask-preview','subject',modal());assert(el('.adaptive-mask-proof .subject'),'current-photo mask review');act('close',null,modal());
+              let film=el('[data-act=film-stock][data-val=cinema]');film.focus();assert(el('.developed').style.filter!==neutral,'keyboard film preview');
               key(film,'Escape');assert(el('.developed').style.filter===neutral&&el('.look-preview').hidden,'Escape restores applied image');
-              key(film,'ArrowLeft');assert(document.activeElement.dataset.val==='chrome','film keys stay in the gallery');
+              key(film,'ArrowUp');assert(document.activeElement.dataset.val==='chrome','film keys stay in the folder');
               document.activeElement.blur();assert(el('.developed').style.filter===neutral&&all('.edit-history li').length===1,'preview reversible');
               film.dispatchEvent(new PointerEvent('pointerover',{bubbles:true}));assert(el('.developed').style.filter!==neutral,'hover preview');
               film.dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));assert(el('.developed').style.filter===neutral,'hover exit');
-              act('film-stock','silver');assert(el('.developed').style.filter.includes('saturate(0)'),'applied black and white');
-              set('[data-key=filmAmount]','45');const blend=el('.developed').style.filter;assert(blend!==neutral&&!blend.includes('saturate(0)'),'strength preview');
+              act('film-stock','cinema');const fullLook=el('.developed').style.filter;assert(fullLook!==neutral,'applied film');
+              set('[data-key=filmAmount]','45');const blend=el('.developed').style.filter;assert(blend!==neutral&&blend!==fullLook,'strength preview');
               act('snapshot');act('save-snap',null,modal());act('edit-step','undo');assert(el('[data-key=filmAmount]').value==='100','one step');
               act('restore-snap','0');assert(el('.developed').style.filter===blend,'snapshot restore');
               act('edit-tool','basic',el('.inspector-rail'));await page('[data-key=ev]');const basic=el('.rail-tool[data-val=basic]');
@@ -270,11 +282,11 @@ def main():
               withPhoto('r1');await hash('edit/development');await page('.canvas-dock');
               act('canvas-menu','compare');set('[name=compareMode]','wipeVertical');
               const normal = el('.canvas-dock').getBoundingClientRect();
-              act('quick-open');const dock=el('#quick-prompt'), morph=dock.getAnimations()[0];
-              assert(morph,'surface animates');morph.pause();morph.currentTime=125;
+              act('quick-open');const dock=el('#quick-prompt'), morph=dock.getAnimations().find(a=>a.effect.getKeyframes().some(frame=>frame.width&&frame.height));
+              assert(morph,'surface animates');morph.pause();await morph.ready;morph.currentTime=morph.effect.getTiming().duration/2;
               const middle=dock.getBoundingClientRect();morph.finish();await wait(()=>!dock.classList.contains('quick-morphing'));
               const expanded=dock.getBoundingClientRect();
-              assert(normal.width<middle.width&&middle.width<expanded.width&&normal.height<middle.height&&middle.height<expanded.height,'width and height both morph');
+              assert(normal.width<middle.width&&middle.width<expanded.width&&normal.height<middle.height&&middle.height<expanded.height,`width and height both morph ${normal.width}×${normal.height} → ${middle.width}×${middle.height} → ${expanded.width}×${expanded.height}`);
               assert(Math.abs(expanded.bottom-normal.bottom)<1&&Math.abs(middle.bottom-normal.bottom)<1,'bottom edge stays anchored');
               const prompt=()=>el('[name=quickPrompt]');
               assert(!el('.canvas-dock [data-act=canvas-nav]')&&document.activeElement===prompt(),'replace controls and focus text');

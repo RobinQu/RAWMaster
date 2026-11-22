@@ -100,20 +100,24 @@ function adjustments(key, fields) {
 function rangeRow(key, label, low = -100, high = 100, step = 1, v = 0) {
   return `<label class="range"><span>${h(label)}<output>${Number(v).toFixed(step < 1 ? 2 : 0)}</output></span><input aria-label="${h(label)}" type="range" name="adjust" data-key="${key}" data-label="${h(label)}" min="${low}" max="${high}" step="${step}" value="${v}"></label>`;
 }
-function filmGallery(id, recipe) {
+const adaptivePresets = [
+  { name: '主体柔光', value: 'subject', target: '主体', values: { ev: 0.22, contrast: -8 } },
+  { name: '日出天空', value: 'sky', target: '天空', values: { ev: -0.18, warmth: 36 } },
+];
+function filmGallery(recipe) {
   const selected = RMPhotos.filmStocks[recipe.filmStock];
-  return `<div class="filter-gallery"><h3>滤镜预览</h3><div class="film-kind"><span>胶片模拟</span><small>Adaptive Filter</small></div>
-    <div class="film-choices" role="group" aria-label="胶片模拟">${Object.entries(RMPhotos.filmStocks)
-      .map(([key, stock]) => {
-        const look = RMPhotos.displayLook({ ...recipe, filmStock: key, filmAmount: 100 });
-        return `<button type="button" data-act="film-stock" data-val="${key}" aria-label="胶片模拟 · ${stock.name}" aria-pressed="${recipe.filmStock === key}">
-        ${pic(id, '', 'style="filter:' + RMPhotos.filter(look) + '"')}<span>${stock.name}</span></button>`;
-      })
+  const stocks = Object.entries(RMPhotos.filmStocks).filter(([key, stock]) =>
+    (!S.favoriteOnly || Studio.data.favorites.includes(`film.${key}`)) && stock.name.toLowerCase().includes((S.presetQuery || '').toLowerCase()));
+  if (!stocks.length) return '';
+  return `<details class="preset-folder filter-gallery" open><summary>胶片模拟</summary>
+    <div class="film-choices" role="group" aria-label="胶片模拟">${stocks
+      .map(([key, stock]) => `<div class="preset-item"><button type="button" data-act="film-stock" data-val="${key}" aria-pressed="${recipe.filmStock === key}">${stock.name}</button>
+      ${btn('收藏 ' + stock.name, 'favorite', `film.${key}`, { icon: 'star', only: true, pressed: Studio.data.favorites.includes(`film.${key}`), cls: 'icon-btn' })}</div>`)
       .join('')}</div>${
       selected
         ? `<div class="film-strength">${rangeRow('filmAmount', '胶片强度', 0, 100, 1, recipe.filmAmount ?? 100)}${btn('移除胶片模拟', 'remove-film', '', { cls: 'link' })}</div>`
         : ''
-    }</div>`;
+    }</details>`;
 }
 function presetList() {
   const e = currentEdit(),
@@ -121,14 +125,17 @@ function presetList() {
   const list = data.presets.filter(
     (p) => (!S.favoriteOnly || data.favorites.includes(p.name)) && p.name.includes(S.presetQuery || ''),
   );
+  const folders = Object.groupBy(list, (p) => ['导入组', '我的预设'].includes(p.group) ? p.group : '基础滤镜');
+  const adaptive = adaptivePresets.filter((p) =>
+    (!S.favoriteOnly || data.favorites.includes(p.name)) && p.name.includes(S.presetQuery || ''));
   return `<aside class="edit-left" aria-label="照片工具"${S.tool === 'versions' ? ' inert' : ''}>
     <section aria-labelledby="preset-heading"><div class="row between"><h2 id="preset-heading">预设</h2>
       ${btn('预设管理', 'preset-manage', '', { only: true, icon: 'plus', cls: 'icon-btn' })}</div>
       <div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="查找预设" name="presetQuery" placeholder="查找预设" value="${h(S.presetQuery)}"></label>
       ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
-      ${list.map((p) => `<div class="preset-item"><button data-act="apply-preset" data-val="${h(p.name)}" class="${e.recipe.preset === p.name ? 'current' : ''}">${h(p.name)}</button>${btn('收藏 ' + p.name, 'favorite', p.name, { icon: 'star', only: true, pressed: data.favorites.includes(p.name), cls: 'icon-btn' })}</div>`).join('') || '<p class="muted">没有匹配的预设。</p>'}
-      ${select('显影配置', 'editProfile', ['相机中性', '相机鲜艳'], e.recipe.profile)}
-      ${filmGallery(data.work, e.recipe)}</section>
+      ${Object.entries(folders).map(([group, rows]) => `<details class="preset-folder" open><summary>${h(group)}</summary>${rows.map((p) => `<div class="preset-item"><button data-act="apply-preset" data-val="${h(p.name)}" class="${e.recipe.preset === p.name ? 'current' : ''}">${h(p.name)}</button>${btn('收藏 ' + p.name, 'favorite', p.name, { icon: 'star', only: true, pressed: data.favorites.includes(p.name), cls: 'icon-btn' })}</div>`).join('')}</details>`).join('')}
+      ${adaptive.length ? `<details class="preset-folder" open><summary>Adobe Adaptive</summary>${adaptive.map((p) => `<div class="preset-item">${btn(p.name, 'adaptive-preset', p.value)}${btn('收藏 ' + p.name, 'favorite', p.name, { icon: 'star', only: true, pressed: data.favorites.includes(p.name), cls: 'icon-btn' })}</div>`).join('')}</details>` : ''}
+      ${filmGallery(e.recipe)}</section>
     <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2>${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}</div>
       ${e.snapshots.map((x, i) => `<div class="list-row">${btn(x.name, 'restore-snap', i)}${btn('删除', 'delete-snap', i, { cls: 'link' })}</div>`).join('') || '<p class="muted">尚无快照</p>'}</section>
     <section aria-labelledby="history-heading"><div class="row between"><h2 id="history-heading">历史</h2><div class="row">
@@ -541,7 +548,22 @@ actions['apply-preset'] = (name) => {
   const p = Studio.data.presets.find((p) => p.name === name);
   adjustments('套用 ' + name, { ...p.values, preset: name });
 };
-changes.editProfile = (el) => adjustments('选择显影配置', { profile: el.value });
+actions['adaptive-preset'] = (key) => {
+  const p = adaptivePresets.find((item) => item.value === key);
+  dialog(p.name, `<p>在当前照片上生成${p.target}蒙版。确认覆盖范围后再采用。</p>`,
+    btn('取消', 'close') + btn('生成预览', 'adaptive-mask-preview', key, { cls: 'primary' }));
+};
+actions['adaptive-mask-preview'] = (key) => {
+  const p = adaptivePresets.find((item) => item.value === key);
+  dialog(p.name, `<figure class="adaptive-mask-proof">${pic(Studio.data.work, '')}<span aria-hidden="true" class="${key}"></span></figure><p>已重建${p.target}蒙版 · ${p.name}</p>`,
+    btn('取消', 'close') + btn('采用蒙版', 'adaptive-mask-apply', key, { cls: 'primary' }));
+};
+actions['adaptive-mask-apply'] = (key) => {
+  const p = adaptivePresets.find((item) => item.value === key);
+  const masks = currentEdit().recipe.masks;
+  closeSheet();
+  adjustments('套用 ' + p.name, { masks: [...masks, { name: p.target, kind: p.target, values: p.values }] });
+};
 actions['film-stock'] = (key) => {
   if (!Object.hasOwn(RMPhotos.filmStocks, key) || currentEdit().recipe.filmStock === key) return;
   adjustments('胶片模拟 · ' + RMPhotos.filmStocks[key].name, { filmStock: key, filmAmount: 100 });
@@ -617,7 +639,7 @@ document.addEventListener('keydown', (event) => {
   }
   const el = event.target.closest(previewSelector);
   if (!el || event.metaKey || event.ctrlKey || event.altKey) return;
-  const keys = el.dataset.act === 'film-stock' ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown'];
+  const keys = ['ArrowUp', 'ArrowDown'];
   if (!keys.includes(event.key)) return;
   event.preventDefault();
   const rows = $$('.edit-left [data-act="' + el.dataset.act + '"]'),
@@ -631,7 +653,7 @@ actions['preset-manage'] = () =>
       select(
         '操作',
         'presetOperation',
-        ['保存当前调整', '导入示例 XMP', '预检 Camera Raw 迁移', '导出原生预设'],
+        ['保存当前调整', '导入 Lightroom / Camera Raw 预设', '导出原生预设'],
         '保存当前调整',
       ) +
       '<p id="preset-detail" class="muted">保存可跨片复用的调整字段。</p>',
@@ -639,8 +661,7 @@ actions['preset-manage'] = () =>
   );
 changes.presetOperation = (el) => {
   $('#preset-detail').textContent = {
-    '预检 Camera Raw 迁移': '示例命中 1 项，另 1 项缺少 Adobe Color 基底。仅就绪项可导入。',
-    '导入示例 XMP': '示例 XMP 含曝光与对比度。',
+    '导入 Lightroom / Camera Raw 预设': '选择 .xmp 或 .zip 后先查看支持的字段与缺失依赖。',
     导出原生预设: '可查看和下载本次选择的示例参数。',
     保存当前调整: '保存可跨片复用的调整字段。',
   }[el.value];

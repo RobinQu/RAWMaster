@@ -235,6 +235,7 @@ public struct PhotoWork: Codable, Equatable, Sendable, Identifiable {
   public var liveParentVersionID: String?
   public var liveRevision: Int?
   public var livePresetAdoptions: [DevelopmentPresetAdoption]?
+  public var strictDocumentary: Bool?
   public var createdAt: Date
   public init(id: String = UUID().uuidString, source: EditingSourceSnapshot, originalVersionID: String = UUID().uuidString, createdAt: Date = Date()) {
     self.id = id; self.source = source; self.originalVersionID = originalVersionID
@@ -289,11 +290,13 @@ public struct AIEditRequest: Codable, Equatable, Sendable {
   public var profile: AIProviderProfile
   public var prompt: String
   public var configuration: [String: String]
+  public var quickPrompt: QuickPromptEditSnapshot?
   public init(workID: String, inputVersionID: String, source: EditingSourceSnapshot, inputFileURL: URL,
               inputArtifact: RenderArtifact, recipe: DevelopmentRecipe, profile: AIProviderProfile, prompt: String,
-              configuration: [String: String] = [:]) {
+              configuration: [String: String] = [:], quickPrompt: QuickPromptEditSnapshot? = nil) {
     self.workID = workID; self.inputVersionID = inputVersionID; self.source = source; self.inputFileURL = inputFileURL
-    self.inputArtifact = inputArtifact; self.recipe = recipe; self.profile = profile; self.prompt = prompt; self.configuration = configuration
+    self.inputArtifact = inputArtifact; self.recipe = recipe; self.profile = profile; self.prompt = prompt
+    self.configuration = configuration; self.quickPrompt = quickPrompt
   }
   public var fingerprint: String { get throws { try EditingFingerprint.of(self) } }
 }
@@ -329,9 +332,13 @@ public struct ProcessingJob: Codable, Equatable, Sendable, Identifiable {
   public var attempts: [ProcessingAttempt]
   public var resultVersionID: String?
   public var usageState: ProcessingUsageState
+  public var acknowledgedQuickPromptOutcomeAt: Date?
   public var createdAt: Date
   public var currentAttempt: ProcessingAttempt { attempts[attempts.count - 1] }
   public var state: ProcessingJobState { currentAttempt.state }
+  public var blocksQuickPromptSubmission: Bool {
+    request.quickPrompt != nil && !state.isTerminal && !(state == .outcomeUnknown && acknowledgedQuickPromptOutcomeAt != nil)
+  }
   public init(id: String = UUID().uuidString, commandID: String, requestFingerprint: String, request: AIEditRequest, createdAt: Date = Date()) {
     self.id = id; self.commandID = commandID; self.requestFingerprint = requestFingerprint; self.request = request
     self.attempts = [.init(createdAt: createdAt)]; self.resultVersionID = nil
@@ -366,7 +373,7 @@ public protocol AIEditingProvider: Sendable {
 public enum EditingError: Error, Equatable, Sendable {
   case invalidRecipe, invalidArtifact, invalidProfile, invalidSource, staleSource, staleAdoption, invalidParent
   case commandConflict, staleAttempt, illegalTransition, outcomeUnknown, workerNotJoined, missingWork, missingVersion, missingJob
-  case archiveNotConfigured, archiveMismatch, unsafePath, incompleteBackup, outputAlreadyReceived
+  case archiveNotConfigured, archiveMismatch, unsafePath, incompleteBackup, outputAlreadyReceived, strictDocumentary
 }
 public struct ArchivePublicationReceipt: Codable, Equatable, Sendable, Identifiable {
   public var id: String

@@ -19,6 +19,15 @@ struct EditingImageCanvas: View {
     @State private var transform = ImageTransform()
     @State private var navigationPreviewOffset: Int?
     @State private var beforeAfterSplit = 0.5
+    @State private var canvasWidth: CGFloat = 1100
+    @State private var quickPromptShowCandidate = true
+    @State private var quickPromptReviewTransform = ImageTransform()
+    @State private var quickPromptDetail: QuickPromptDetail?
+    @State private var quickPromptDetailLoading = false
+    private struct QuickPromptDetail {
+        let jobID: String
+        let before, after: CGImage
+    }
     private struct PickerPresentationSnapshot {
         let context: EditingInteractionContext
         let transform: ImageTransform
@@ -31,12 +40,18 @@ struct EditingImageCanvas: View {
     var body: some View {
         currentPane
         .background(editing.darkroomBackground.color)
+        .onGeometryChange(for: CGFloat.self) { geometry in geometry.size.width } action: { canvasWidth = $0 }
         .overlay(alignment: .bottom) {
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-                canvasControls.fixedSize(horizontal: true, vertical: true)
-                Spacer(minLength: 0)
-            }.padding(.bottom, 18)
+            let width = min(672, max(280, canvasWidth - 2 * (EditingLayout.sidebarWidth + 2 * EditingLayout.outerPadding) - 24))
+            QuickPromptDock(editing: editing, width: width, canvasControls: { canvasControls },
+                showCandidate: $quickPromptShowCandidate, inspectPixels: inspectQuickPromptEdge)
+                .overlay(alignment: .top) {
+                    if !editing.quickPromptPresented { navigationPreview.offset(y: -48) }
+                }
+                .padding(.bottom, 18)
+        }
+        .onChange(of: editing.quickPromptReview?.job.id) { _, _ in
+            quickPromptDetail = nil; quickPromptReviewTransform = .init()
         }
         .onChange(of: editing.selectedVersionID) { _, _ in fit() }
         .onChange(of: editing.previews.primary.frame?.id) { _, _ in editing.colorReadout.refresh(editing.previews.primary.frame) }
@@ -163,14 +178,6 @@ struct EditingImageCanvas: View {
             .accessibilityLabel("暗房背景颜色")
             .accessibilityIdentifier("editing.darkroom.background")
         }
-        .buttonStyle(.plain)
-        .controlSize(.small)
-        .padding(.horizontal, 9).padding(.vertical, 7)
-        .floatingSelectionSurface()
-        .overlay(alignment: .bottom) { navigationPreview.offset(y: -48) }
-        .accessibilityElement(children: .contain)
-        .accessibilityLabel("照片查看工具")
-        .accessibilityIdentifier("editing.canvasToolbar")
     }
 
     private func comparisonModeButton(_ mode: EditingComparisonMode) -> some View {
@@ -391,7 +398,19 @@ struct EditingImageCanvas: View {
     private var currentPane: some View {
         VStack(spacing: 0) {
             ZStack {
-                if editing.comparing || editing.developmentShowingOriginal {
+                if let review = editing.quickPromptReview, editing.quickPromptPresented {
+                    quickPromptReviewCanvas(review)
+                } else if editing.quickPromptPresented {
+                    comparisonCanvas.overlay {
+                        if let frame = editing.previews.primary.frame {
+                            GeometryReader { geometry in
+                                let available = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: geometry.size,
+                                    transform: transform, backingScale: backingScale, fitInsets: EditingLayout.fitInsets)
+                                QuickPromptAreaOverlay(editing: editing, viewport: available)
+                            }
+                        }
+                    }
+                } else if editing.comparing || editing.developmentShowingOriginal {
                     comparisonCanvas
                 } else if let picker = editing.developmentPicker,
                    let frame = editing.developmentPickerFrame(for: picker), let image = editing.preview {
@@ -424,7 +443,9 @@ struct EditingImageCanvas: View {
                         }
                 }
                 beforeAfterOverlay
-                if let error = editing.previews.primary.error {
+                if editing.quickPromptReview != nil {
+                    if quickPromptDetailLoading { ProgressView("读取原尺寸边缘…").controlSize(.small) }
+                } else if let error = editing.previews.primary.error {
                     VStack(spacing: 8) {
                         Text(error).font(.caption).foregroundStyle(AppPalette.warning)
                         if !editing.sourceNeedsRevalidation { Button("重试预览") { editing.retryPreview() } }
@@ -445,6 +466,53 @@ struct EditingImageCanvas: View {
                         .padding(12).background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 8))
                 }
             }.frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    private func quickPromptReviewCanvas(_ review: QuickPromptReview) -> some View {
+        let detail = quickPromptDetail.flatMap { $0.jobID == review.job.id ? $0 : nil }
+        let pixels = quickPromptShowCandidate ? (detail?.after ?? review.after) : (detail?.before ?? review.before)
+        let image = NSImage(cgImage: pixels, size: NSSize(width: pixels.width, height: pixels.height))
+        return ZoomableImageView(image: image, actualPixels: detail != nil, transform: $quickPromptReviewTransform,
+            backgroundColor: editing.darkroomBackground.nsColor)
+            .fitting(around: EditingLayout.fitInsets)
+            .accessibilityLabel(quickPromptShowCandidate ? "候选" : "生成前")
+            .overlay {
+                if detail == nil, let snapshot = review.job.request.quickPrompt, let region = snapshot.selection {
+                    GeometryReader { geometry in
+                        let rect = ImageViewportGeometry.imageRect(pixelSize: CGSize(width: pixels.width, height: pixels.height),
+                            viewport: geometry.size, transform: quickPromptReviewTransform, backingScale: backingScale, fitInsets: EditingLayout.fitInsets)
+                        let w = rect.width / CGFloat(snapshot.basis.artifact.pixelWidth), h = rect.height / CGFloat(snapshot.basis.artifact.pixelHeight)
+                        Rectangle().strokeBorder(.white.opacity(0.9), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                            .frame(width: CGFloat(region.width) * w, height: CGFloat(region.height) * h)
+                            .position(x: rect.minX + (CGFloat(region.x) + CGFloat(region.width) / 2) * w,
+                                      y: rect.minY + (CGFloat(region.y) + CGFloat(region.height) / 2) * h)
+                    }.allowsHitTesting(false).accessibilityHidden(true)
+                }
+            }
+    }
+
+    private func inspectQuickPromptEdge() {
+        if quickPromptDetail != nil { quickPromptDetail = nil; quickPromptReviewTransform = .init(); return }
+        guard !quickPromptDetailLoading, let review = editing.quickPromptReview, let snapshot = review.job.request.quickPrompt,
+              let region = snapshot.selection, let artifact = review.version.artifact,
+              let url = try? editing.archive.artifactURL(artifact) else { return }
+        let w = snapshot.basis.artifact.pixelWidth, h = snapshot.basis.artifact.pixelHeight
+        let boxW = min(w, 850), boxH = min(h, 620)
+        let crop = CGRect(x: min(w - boxW, max(0, region.x + region.width / 2 - boxW / 2)),
+                          y: min(h - boxH, max(0, region.y - boxH / 2)), width: boxW, height: boxH)
+        let jobID = review.job.id, basisURL = snapshot.basis.url
+        quickPromptDetailLoading = true
+        Task {
+            defer { quickPromptDetailLoading = false }
+            do {
+                let detail = try await Task.detached {
+                    try QuickPromptDetail(jobID: jobID, before: QuickPromptReview.crop(basisURL, to: crop),
+                                          after: QuickPromptReview.crop(url, to: crop))
+                }.value
+                guard editing.quickPromptReview?.job.id == jobID else { return }
+                quickPromptDetail = detail; quickPromptReviewTransform = .init(physicalMagnification: 1)
+            } catch { editing.quickPromptNotice = "无法读取原尺寸边缘。" }
         }
     }
 }

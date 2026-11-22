@@ -759,17 +759,16 @@ extension EditingDevelopmentSessionTests {
             let group = i.isMultiple(of: 2) ? "城市" : "风光"
             rows.append(DevelopmentPresetRecord(id: String(i), name: name, group: group, kind: kind, patch: DevelopmentPresetPatch()))
         }
-        let all = DevelopmentPresetDirectory.folders(space: .presets, records: rows, favorites: ["0", "1", "1074"],
+        let all = DevelopmentPresetDirectory.folders(records: rows, favorites: ["0", "1", "1074"],
             looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "")
         XCTAssertEqual(all.first?.rows.map(\.id), ["classic.vivid", "0", "1"])
         XCTAssertEqual(all.first(where: { $0.id == "classic" })?.rows.count, 10)
-        XCTAssertEqual(Set(all.flatMap { $0.rows.map(\.id) }).count, 1082)
-        let results = DevelopmentPresetDirectory.folders(space: .presets, records: Array(rows.reversed()), favorites: [],
+        XCTAssertEqual(Set(all.flatMap { $0.rows.map(\.id) }).count, 1086)
+        let results = DevelopmentPresetDirectory.folders(records: Array(rows.reversed()), favorites: [],
             looks: [], favoriteLooks: [], query: "同名")
         XCTAssertEqual(Set(results.flatMap { $0.rows.map(\.id) }), ["0", "1"])
-        let profiles = DevelopmentPresetDirectory.folders(space: .profiles, records: rows, favorites: [],
-            looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "")
-        XCTAssertEqual(profiles.flatMap { $0.rows.map(\.id) }, ["1072"])
+        XCTAssertTrue(all.flatMap(\.rows).contains { $0.id == "1072" })
+        XCTAssertEqual(all.first(where: { $0.id == "film" })?.rows.count, 3)
     }
 }
 

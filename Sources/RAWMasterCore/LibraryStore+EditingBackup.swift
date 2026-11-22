@@ -43,6 +43,12 @@ extension LibraryStore {
           guard job.request.inputArtifact.relativePath.hasPrefix(".inputs/") else { throw EditingError.incompleteBackup }
           _ = try archive.processingInputURL(job.request.inputArtifact)
           initialFiles.insert(job.request.inputArtifact.relativePath)
+          if let quick = job.request.quickPrompt {
+            for file in [quick.basis, quick.matte].compactMap({ $0 }) {
+              _ = try archive.processingInputURL(file.artifact)
+              initialFiles.insert(file.artifact.relativePath)
+            }
+          }
         }
         let backupArchiveRoot = directory.appendingPathComponent("archive")
         let backupArchive = try EditingArchive(root: backupArchiveRoot, protectedRoots: protected)
@@ -128,6 +134,11 @@ extension LibraryStore {
     }
     for job in try loadProcessingJobs() {
       _ = try archive.processingInputURL(job.request.inputArtifact)
+      if let quick = job.request.quickPrompt {
+        try quick.validate(input: job.request.inputArtifact)
+        _ = try archive.processingInputURL(quick.basis.artifact)
+        if let matte = quick.matte { _ = try archive.processingInputURL(matte.artifact) }
+      }
       for attempt in job.attempts {
         guard attempt.pendingReceivedOutput == nil else { throw EditingError.incompleteBackup }
         if let received = attempt.receivedOutput {

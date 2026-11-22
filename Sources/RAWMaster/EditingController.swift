@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import Network
 import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
@@ -221,6 +222,21 @@ import RAWMasterAI
     }
     @Published var message: String?
     @Published var prompt = "自然增强照片，保留主体、构图与真实细节。"
+    @Published var quickPromptDraft = QuickPromptDraft()
+    @Published private(set) var quickPromptPresented = false
+    @Published var quickPromptSelecting = false
+    @Published private(set) var quickPromptPreparing = false
+    @Published private(set) var quickPromptPending: QuickPromptPrepared?
+    @Published private(set) var quickPromptReview: QuickPromptReview?
+    @Published var quickPromptNotice: String?
+    @Published private(set) var quickPromptCloudOnline: Bool?
+    private var quickPromptDrafts: [String: QuickPromptDraft] = [:]
+    private var quickPromptPriorComparison: EditingComparisonState?
+    private let quickPromptNetwork = NWPathMonitor()
+    private var quickPromptEnqueueOperation: UUID?
+    private var pendingQuickPromptCommands = Set<String>()
+    private var quickPromptReviewToken: UUID?
+    @Published private(set) var quickPromptAdopting = false
     @Published var selectedProfileID: String?
     var profiles: [AIProviderProfile] { applicationServices.profiles }
     @Published private(set) var jobs: [ProcessingJob] = []
@@ -254,13 +270,13 @@ import RAWMasterAI
     let applicationServices: ApplicationEditingServices
     var repository: ProviderProfileRepository { applicationServices.repository }
     private var localProvider: LocalComfyProvider
+    private let fluxProvider: LocalFluxProvider
     private var runtime: ManagedRuntimeService { applicationServices.runtime }
     private let ownsApplicationServices: Bool
     private var servicesObservation: AnyCancellable?
     private var profileObservation: AnyCancellable?
     private let outputRoot: URL
     private let defaults: UserDefaults
-    var filterBrowserDefaults: UserDefaults { defaults }
     let developmentLensProfileDefaults: DevelopmentLensProfileDefaultsStore
     private var pendingExportAssetID: String?
     private var focusedAdmissionFingerprint: String?
@@ -289,6 +305,7 @@ import RAWMasterAI
     private var tasks: [String: Task<Void, Never>] = [:]
     private var operations: [UUID: Task<Void, Never>] = [:]
     private var pendingRetryJobs = Set<String>()
+    private var reconcilingJobs = Set<String>()
     private var exportOperations: [UUID: Task<RenderedPhoto, Error>] = [:]
     private var exportTasks: [String: Task<RenderedPhoto, Error>] = [:]
     private var providers: [String: any AIEditingProvider] = [:]
@@ -350,6 +367,12 @@ import RAWMasterAI
         let temporaryRoot = base.appendingPathComponent("Editing Temporary", isDirectory: true)
         outputRoot = temporaryRoot
         localProvider = LocalComfyProvider(runtime: services.runtime, outputDirectory: temporaryRoot)
+        fluxProvider = LocalFluxProvider(outputDirectory: temporaryRoot)
+        quickPromptNetwork.pathUpdateHandler = { [weak self] path in
+            let reachable = path.status != .unsatisfied
+            Task { @MainActor in self?.quickPromptCloudOnline = reachable }
+        }
+        quickPromptNetwork.start(queue: DispatchQueue(label: "RAWMaster.QuickPrompt.Network"))
         servicesObservation = services.objectWillChange.sink { [weak self] _ in
             self?.objectWillChange.send()
         }
@@ -423,7 +446,8 @@ import RAWMasterAI
     var runningJobCount: Int { tasks.count }
     var localWorkIsRunning: Bool { jobs.contains { $0.request.profile.kind == .localComfy && tasks[$0.id] != nil } }
     var canGenerate: Bool {
-        guard !shuttingDown, sourceReady, work != nil, !isDirty, !saving, let profile = selectedProfile else { return false }
+        guard !shuttingDown, sourceReady, work != nil, work?.strictDocumentary != true, !isDirty, !saving,
+              generationPreparationTask == nil, !quickPromptPreparing, let profile = selectedProfile else { return false }
         if profile.kind == .localComfy && (modelDownloading || runtimeBusy) { return false }
         if profile.kind != .localComfy && jobs.contains(where: { $0.request.workID == work?.id && $0.request.profile.id == profile.id && $0.state == .outcomeUnknown }) { return false }
         return profile.acceptedForUse && (profile.kind == .localComfy || profile.credentialReference != nil) && !prompt.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -431,6 +455,7 @@ import RAWMasterAI
     func focus(_ newAsset: AssetRecord?, admissionFingerprint: String? = nil) {
         guard !shuttingDown else { return }
         guard asset?.id != newAsset?.id || asset?.resolvedURL != newAsset?.resolvedURL || asset?.availability != newAsset?.availability || focusedAdmissionFingerprint != admissionFingerprint else { return }
+        closeQuickPrompt(restoreComparison: false)
         suspendDevelopmentInteraction()
         rememberDevelopmentBranch()
         if pendingExportAssetID != newAsset?.id { pendingExportAssetID = nil }
@@ -477,6 +502,7 @@ import RAWMasterAI
                 let loaded = try await withTaskCancellationHandler(operation: { try await worker.value }, onCancel: { worker.cancel() })
                 guard generation == focusGeneration else { return }
                 work = loaded.0; versions = loaded.1; dispositions = loaded.2; sourceReady = loaded.3
+                quickPromptDraft = quickPromptDrafts[loaded.0.id] ?? .init()
                 savedWorkAssetIDs.insert(newAsset.id)
                 savedAdmissionFingerprints[newAsset.id, default: []].insert(loaded.0.source.admissionFingerprint)
                 if !sourceReady { stage = .versions; message = "原片当前不可用。已归档版本仍可查看、比较、采用和导出。" }
@@ -485,7 +511,10 @@ import RAWMasterAI
                 let viewableParent = persistedParent.flatMap { id in
                     sourceReady || loaded.1.contains(where: { $0.id == id && $0.artifact != nil }) ? id : nil
                 }
-                selectedVersionID = viewableParent ?? loaded.0.adoptedVersionID
+                if let adopted = loaded.1.first(where: { $0.id == loaded.0.adoptedVersionID }),
+                   adopted.configuration["quickPromptRawOutputSHA256"] != nil {
+                    stage = .versions; selectedVersionID = adopted.id
+                } else { selectedVersionID = viewableParent ?? loaded.0.adoptedVersionID }
                 let rawBase = developmentBase(for: selectedVersion)
                 let base = loaded.0.liveRecipe ?? rawBase?.recipe ?? .init()
                 if let draft = drafts[newAsset.id], loaded.1.contains(where: { $0.id == draft.2 }) {
@@ -509,7 +538,7 @@ import RAWMasterAI
     }
     func setRecipe(control: String = "adjustment", nativeEvent: Bool = false, input suppliedInput: EditingPreviewInput? = nil,
                    _ mutation: (inout DevelopmentRecipe) -> Void) {
-        guard !shuttingDown else { return }
+        guard !shuttingDown, !quickPromptAdopting else { return }
         var candidate = recipe
         mutation(&candidate)
         do { try candidate.validate() } catch { message = "调整数值无效，请检查范围。"; return }
@@ -1020,6 +1049,11 @@ import RAWMasterAI
     }
     func adopt(_ version: EditingVersion) {
         guard !shuttingDown, let current = work else { return }
+        if version.configuration["quickPromptRawOutputSHA256"] != nil {
+            if let job = quickPromptJob(for: version) { adoptQuickPromptVersion(version, job: job, fromReview: false) }
+            else { message = "生成记录尚未就绪，请稍后核对。" }
+            return
+        }
         startOperation { [self] in
             do {
                 try Task.checkCancellation()
@@ -1174,8 +1208,341 @@ import RAWMasterAI
     func removeCredential(_ profile: AIProviderProfile) async throws {
         try await applicationServices.removeCredential(profile)
     }
+
+    var quickPromptModelProfile: AIProviderProfile? {
+        let model = quickPromptDraft.model
+        return profiles.first { model.matches($0) && $0.acceptedForUse }
+    }
+    var quickPromptJob: ProcessingJob? { jobs.first { $0.request.workID == work?.id && $0.request.quickPrompt != nil } }
+    var quickPromptUndoVersion: EditingVersion? {
+        guard let work, let version = versions.first(where: { $0.id == work.adoptedVersionID }),
+              let job = jobs.first(where: { $0.attempts.contains(where: { $0.resultVersionID == version.id }) }),
+              let snapshot = job.request.quickPrompt, work.adoptionRevision == snapshot.adoptionRevision + 1 else { return nil }
+        return version
+    }
+    var canOpenQuickPrompt: Bool {
+        !shuttingDown && !saving && work != nil && sourceReady && selectedVersion != nil && !cropEditing &&
+        developmentLocalInput.tool == nil && !developmentMaskInput.isActive && developmentPicker == nil &&
+        !developmentShowingOriginal && developmentSessionStorage?.activeGesture == nil
+    }
+    var quickPromptAvailableMasks: [DevelopmentMaskLayerV3] {
+        guard isDisplayingDevelopmentDraft else { return [] }
+        return (recipe.adjustmentsV3?.masks ?? []).filter { $0.enabled && $0.opacity > 0 }
+    }
+    private func quickPromptScopeBinding(_ scope: QuickPromptSelection) -> QuickPromptScopeBinding? {
+        guard scope != .whole, let work else { return nil }
+        let parent = isDisplayingDevelopmentDraft ? draftParentID : selectedVersionID
+        let frozen = isDisplayingDevelopmentDraft ? recipe : (selectedVersion?.recipe ?? recipe)
+        return QuickPromptScopeBinding(workID: work.id, parentVersionID: parent, recipe: frozen, selection: scope)
+    }
+    func setQuickPromptScope(_ scope: QuickPromptSelection) {
+        var draft = quickPromptDraft
+        draft.selection = scope; draft.selectionBinding = quickPromptScopeBinding(scope)
+        quickPromptDraft = draft; quickPromptSelecting = false
+    }
+    var quickPromptSubmissionIssue: String? {
+        if work?.strictDocumentary == true { return "此作品标记为严格纪实。仍可使用原片调整和蒙版。" }
+        guard sourceReady, selectedVersion != nil, !cropEditing else { return "请完成当前画布操作并确认原片可用。" }
+        if quickPromptSelecting { return "拖出一个有效选区，或恢复整张照片。" }
+        if let issue = quickPromptDraft.textIssue { return issue }
+        if quickPromptDraft.model == .seedream && quickPromptCloudOnline == false { return "当前离线。连接网络后可准备 Seedream 请求。" }
+        if case .mask(let maskID) = quickPromptDraft.selection,
+           !quickPromptAvailableMasks.contains(where: { $0.id.uuidString == maskID }) { return "此蒙版已更改，请重新指定范围。" }
+        if quickPromptDraft.selectionBinding != quickPromptScopeBinding(quickPromptDraft.selection) {
+            return "构图或蒙版已变更，请重新确认范围。"
+        }
+        if let job = quickPromptJob, job.state == .outcomeUnknown && job.blocksQuickPromptSubmission { return "上一尝试的结果待核对。" }
+        guard let profile = quickPromptModelProfile else { return "请先配置所选模型。" }
+        if quickPromptDraft.model == .flux {
+            if providerOverride == nil { do { try LocalFluxProvider.validateConfiguration(profile) } catch { return error.localizedDescription } }
+        } else if profile.credentialReference == nil && providerOverride == nil { return "请配置北京方舟的凭证。" }
+        return nil
+    }
+
+    func openQuickPrompt() {
+        guard canOpenQuickPrompt, !quickPromptPresented else { return }
+        finishDevelopmentNumberInput()
+        cancelDevelopmentFilterHover(); cancelDevelopmentSharpeningMaskPreview(); cancelDevelopmentLensBlurDepthPreview()
+        quickPromptNotice = nil
+        quickPromptPriorComparison = comparing ? comparison : nil
+        stopComparing(requestPreview: false)
+        quickPromptPresented = true
+    }
+
+    func closeQuickPrompt(restoreComparison: Bool = true) {
+        if let work { quickPromptDrafts[work.id] = quickPromptDraft }
+        quickPromptPresented = false; quickPromptSelecting = false; leaveQuickPromptReview()
+        dismissQuickPromptConfirmation()
+        if quickPromptPreparing { generationPreparationTask?.cancel() }
+        if restoreComparison, let prior = quickPromptPriorComparison {
+            comparison = prior; requestPreview()
+        }
+        quickPromptPriorComparison = nil
+    }
+
+    func dismissQuickPromptConfirmation() {
+        quickPromptPending?.cleanUp(); quickPromptPending = nil
+    }
+
+    func cancelQuickPromptPreparation() {
+        guard quickPromptPreparing else { return }
+        generationPreparationTask?.cancel()
+        if let id = quickPromptEnqueueOperation { operations[id]?.cancel() }
+    }
+
+    func prepareQuickPrompt() {
+        guard quickPromptPresented, !quickPromptPreparing, generationPreparationTask == nil, !saving, quickPromptPending == nil,
+              quickPromptReview == nil, quickPromptJob?.blocksQuickPromptSubmission != true,
+              quickPromptSubmissionIssue == nil, let current = work, let profile = quickPromptModelProfile else { return }
+        finishDevelopmentNumberInput()
+        let usesLiveDraft = isDisplayingDevelopmentDraft
+        let parentID = usesLiveDraft ? draftParentID : selectedVersionID
+        guard let parent = versions.first(where: { $0.id == parentID }) else { return }
+        let draft = quickPromptDraft, frozenRecipe = usesLiveDraft ? recipe : parent.recipe
+        let focusID = focusGeneration, recipeGeneration = liveRecipeGeneration
+        let liveWrite = liveStateWrites[current.id].flatMap { liveStateTasks[ObjectIdentifier($0)] }
+        let photoName = asset?.filename ?? "当前照片"
+        let preparationID = UUID(); generationPreparationID = preparationID
+        quickPromptPreparing = true; quickPromptNotice = nil
+        generationPreparationTask = Task {
+            let directory = outputRoot.appendingPathComponent("quick-prompt-" + preparationID.uuidString, isDirectory: true)
+            var retained = false
+            defer {
+                if !retained { try? FileManager.default.removeItem(at: directory) }
+                if generationPreparationID == preparationID {
+                    generationPreparationID = nil; generationPreparationTask = nil; quickPromptPreparing = false
+                }
+            }
+            do {
+                await liveWrite?.value
+                let database = store
+                let (storedWork, protected) = try await Task.detached {
+                    (try database.photoWork(id: current.id), try database.editingProtectedRoots())
+                }.value
+                try Task.checkCancellation()
+                guard quickPromptPresented, current.id == work?.id, focusGeneration == focusID,
+                      liveRecipeGeneration == recipeGeneration, quickPromptDraft == draft,
+                      storedWork.adoptionRevision == current.adoptionRevision else { throw EditingError.staleAdoption }
+                let basisURL = directory.appendingPathComponent("basis.tiff")
+                let basis: RenderedPhoto
+                if !usesLiveDraft && parent.artifact != nil {
+                    basis = try await exportService.export(work: current, version: parent, archive: archive,
+                        destination: basisURL, format: .tiff16, protectedURLs: protected, preparePublication: nil)
+                } else {
+                    basis = try await renderer.render(source: current.source, recipe: frozenRecipe, format: .tiff16,
+                        destination: basisURL, protectedURLs: protected + [archive.root], preparePublication: nil)
+                }
+                let pixels = try await QuickPromptImagePreparation.prepare(basis: basis, selection: draft.selection,
+                    source: current.source, recipe: frozenRecipe, directory: directory)
+                let thumbnail = try await QuickPromptImagePreparation.confirmationThumbnail(pixels, maxPixel: 800)
+                try Task.checkCancellation()
+                guard quickPromptPresented, focusGeneration == focusID, liveRecipeGeneration == recipeGeneration,
+                      (usesLiveDraft ? draftParentID : selectedVersionID) == parentID, quickPromptDraft == draft,
+                      work?.adoptionRevision == current.adoptionRevision else { throw EditingError.staleAdoption }
+                let maskID: String? = { if case .mask(let id) = draft.selection { return id }; return nil }()
+                let snapshot = QuickPromptEditSnapshot(basis: .init(artifact: basis.artifact, url: basis.fileURL),
+                    matte: pixels.matte.map { .init(artifact: $0.artifact, url: $0.fileURL) }, selection: pixels.selection,
+                    context: pixels.context, maskID: maskID, work: storedWork, usesLiveDraft: usesLiveDraft)
+                let size = "\(pixels.input.artifact.pixelWidth)x\(pixels.input.artifact.pixelHeight)"
+                let request = AIEditRequest(workID: current.id, inputVersionID: parent.id, source: current.source,
+                    inputFileURL: pixels.input.fileURL, inputArtifact: pixels.input.artifact, recipe: frozenRecipe,
+                    profile: profile, prompt: draft.trimmed, configuration: ["size": size, "seed": "8521",
+                        "watermark": "false", "templateIDs": draft.templateIDs.joined(separator: ","), "templateVersion": "1"], quickPrompt: snapshot)
+                let prepared = QuickPromptPrepared(request: request, directory: directory, photoName: photoName,
+                    draft: draft, focusID: focusID, thumbnail: thumbnail)
+                if draft.model == .seedream { quickPromptPending = prepared; retained = true }
+                else { try await enqueueQuickPrompt(prepared) }
+            } catch {
+                if focusGeneration == focusID && quickPromptPresented {
+                    quickPromptNotice = error is CancellationError ? "已停止准备。" : "无法准备输入。请检查照片、构图及选区。"
+                }
+            }
+        }
+    }
+
+    func confirmQuickPrompt() {
+        guard let prepared = quickPromptPending, let snapshot = prepared.request.quickPrompt,
+              prepared.focusID == focusGeneration, prepared.draft == quickPromptDraft,
+              quickPromptCloudOnline != false,
+              work?.liveRevision == snapshot.liveRevision, work?.adoptionRevision == snapshot.adoptionRevision,
+              work?.strictDocumentary != true, !snapshot.usesLiveDraft || prepared.request.recipe == recipe,
+              (snapshot.usesLiveDraft ? draftParentID : selectedVersionID) == prepared.request.inputVersionID else {
+            dismissQuickPromptConfirmation(); quickPromptNotice = "输入已变更，请重新核对。"; return
+        }
+        quickPromptPending = nil
+        quickPromptPreparing = true
+        let operation = startOperation { [self] in
+            defer { prepared.cleanUp(); quickPromptPreparing = false; quickPromptEnqueueOperation = nil }
+            do { try await enqueueQuickPrompt(prepared) }
+            catch is CancellationError { quickPromptNotice = "已停止准备，尚未提交。" }
+            catch { quickPromptNotice = "未提交。请检查作品状态并重新核对。" }
+        }
+        quickPromptEnqueueOperation = operation
+        if operation == nil { prepared.cleanUp(); quickPromptPreparing = false }
+    }
+
+    private func enqueueQuickPrompt(_ prepared: QuickPromptPrepared) async throws {
+        try Task.checkCancellation()
+        guard !shuttingDown else { throw CancellationError() }
+        let database = store, command = prepared.id.uuidString, request = prepared.request
+        pendingQuickPromptCommands.insert(command)
+        defer { pendingQuickPromptCommands.remove(command) }
+        let job = try await Task.detached { try database.enqueueProcessingJob(commandID: command, request: request) }.value
+        if shuttingDown || Task.isCancelled { await cancelUnsubmitted(job); return }
+        await refreshJobs()
+        if shuttingDown || Task.isCancelled { await cancelUnsubmitted(job); return }
+        pendingQuickPromptCommands.remove(command)
+        run(job)
+    }
+
+    func setStrictDocumentary(_ enabled: Bool) {
+        guard let work else { return }
+        startOperation { [self] in
+            do {
+                let database = store
+                _ = try await Task.detached { try database.setStrictDocumentary(workID: work.id, enabled: enabled) }.value
+                if self.work?.id == work.id { dismissQuickPromptConfirmation(); await refreshWork() }
+            } catch EditingError.illegalTransition {
+                quickPromptNotice = "请等待本张任务结束，或先停止任务。"
+            } catch { quickPromptNotice = "无法更改纪实策略。请先恢复到原片或初修版本。" }
+        }
+    }
+
+    func acknowledgeQuickPromptOutcome(_ job: ProcessingJob) {
+        guard job.request.workID == work?.id else { return }
+        reconcile(job, allowDistinctQuickPrompt: true)
+    }
+
+    func reopenQuickPromptTask(_ job: ProcessingJob) {
+        guard canOpenQuickPrompt, let snapshot = job.request.quickPrompt, job.request.workID == work?.id else { return }
+        var draft = QuickPromptDraft()
+        draft.prompt = job.request.prompt
+        draft.model = Seedream55Adapter.matches(job.request.profile) ? .seedream : .flux
+        draft.templateIDs = job.request.configuration["templateIDs"]?.split(separator: ",").map(String.init) ?? []
+        if let id = snapshot.maskID { draft.selection = .mask(id) }
+        else if let r = snapshot.selection {
+            let w = Double(snapshot.basis.artifact.pixelWidth), h = Double(snapshot.basis.artifact.pixelHeight)
+            draft.selection = .rectangle(.init(x: Double(r.x) / w, y: Double(r.y) / h, width: Double(r.width) / w, height: Double(r.height) / h))
+        }
+        if draft.selection != .whole {
+            draft.selectionBinding = QuickPromptScopeBinding(workID: job.request.workID, parentVersionID: job.request.inputVersionID,
+                recipe: job.request.recipe, selection: draft.selection)
+        }
+        showJobs = false; openQuickPrompt(); quickPromptDraft = draft
+        if job.resultVersionID != nil { reviewQuickPrompt(job) }
+    }
+
+    func reviewQuickPrompt(_ job: ProcessingJob) {
+        guard quickPromptPresented, job.request.workID == work?.id, let snapshot = job.request.quickPrompt,
+              let version = versions.first(where: { $0.id == job.resultVersionID }), let artifact = version.artifact,
+              dispositions[version.id] != .discarded, let resultURL = try? archive.artifactURL(artifact) else { return }
+        let focus = focusGeneration
+        let ticket = UUID(); quickPromptReviewToken = ticket
+        startOperation { [self] in
+            do {
+                let images = try await Task.detached {
+                    (try QuickPromptReview.thumbnail(snapshot.basis.url), try QuickPromptReview.thumbnail(resultURL))
+                }.value
+                guard quickPromptPresented, focusGeneration == focus, quickPromptReviewToken == ticket else { return }
+                quickPromptNotice = nil
+                quickPromptReview = .init(job: job, version: version, before: images.0, after: images.1)
+            } catch { quickPromptNotice = "候选或冻结基线无法读取。请在制作任务中核对。" }
+        }
+    }
+
+    func leaveQuickPromptReview() { quickPromptReviewToken = nil; quickPromptReview = nil }
+    var canAdoptQuickPrompt: Bool {
+        guard let review = quickPromptReview else { return false }
+        return matchesQuickPromptBaseline(review.job, candidate: review.version)
+    }
+    func canAdoptDisplayVersion(_ version: EditingVersion) -> Bool {
+        guard version.configuration["quickPromptRawOutputSHA256"] != nil else { return true }
+        guard let job = quickPromptJob(for: version) else { return false }
+        return matchesQuickPromptBaseline(job, candidate: version)
+    }
+    private func quickPromptJob(for version: EditingVersion) -> ProcessingJob? {
+        jobs.first { $0.request.quickPrompt != nil && $0.attempts.contains { $0.resultVersionID == version.id } }
+    }
+    private func matchesQuickPromptBaseline(_ job: ProcessingJob, candidate: EditingVersion) -> Bool {
+        guard let snapshot = job.request.quickPrompt,
+              let work, work.id == job.request.workID, work.strictDocumentary != true, sourceReady,
+              work.adoptionRevision == snapshot.adoptionRevision, work.liveRevision == snapshot.liveRevision,
+              work.adoptedVersionID == snapshot.adoptedVersionID, dispositions[candidate.id] != .discarded else { return false }
+        if snapshot.usesLiveDraft { return job.request.recipe == recipe && job.request.inputVersionID == draftParentID }
+        return job.request.inputVersionID == selectedVersionID || (stage == .versions && selectedVersionID == candidate.id)
+    }
+
+    func applyQuickPromptReview() {
+        guard let review = quickPromptReview else { return }
+        adoptQuickPromptVersion(review.version, job: review.job, fromReview: true)
+    }
+    private func adoptQuickPromptVersion(_ version: EditingVersion, job: ProcessingJob, fromReview: Bool) {
+        guard !shuttingDown, !saving, let work else { return }
+        finishDevelopmentNumberInput()
+        guard matchesQuickPromptBaseline(job, candidate: version), developmentSessionStorage?.activeGesture == nil else {
+            quickPromptNotice = "采用未完成，请核对原版本及草稿。"
+            message = quickPromptNotice
+            return
+        }
+        saving = true; quickPromptAdopting = true
+        let focus = focusGeneration
+        let pendingWrite = liveStateWrites[work.id].flatMap { liveStateTasks[ObjectIdentifier($0)] }
+        let operation = startOperation { [self] in
+            defer { saving = false; quickPromptAdopting = false }
+            do {
+                await pendingWrite?.value
+                try Task.checkCancellation()
+                guard focusGeneration == focus, matchesQuickPromptBaseline(job, candidate: version) else { throw EditingError.staleAdoption }
+                let database = store
+                _ = try await Task.detached {
+                    try database.adoptEditingVersion(workID: work.id, versionID: version.id, expectedRevision: work.adoptionRevision)
+                }.value
+                guard focusGeneration == focus else { return }
+                await refreshWork()
+                guard focusGeneration == focus else { return }
+                if fromReview { closeQuickPrompt(restoreComparison: false) }
+                stage = .versions; selectedVersionID = version.id; requestPreview()
+                message = "已应用创作版本。可撤销版本采用。"
+            } catch {
+                if focusGeneration == focus {
+                    await refreshWork(); quickPromptNotice = "采用未完成，请核对原版本及草稿。"; message = quickPromptNotice
+                }
+            }
+        }
+        if operation == nil { saving = false; quickPromptAdopting = false }
+    }
+
+    func discardQuickPromptReview() {
+        guard let review = quickPromptReview else { return }
+        disposition(review.version, .discarded); leaveQuickPromptReview()
+    }
+
+    func undoQuickPrompt() {
+        guard let version = quickPromptUndoVersion, let work else { return }
+        let focus = focusGeneration
+        startOperation { [self] in
+            do {
+                let database = store
+                let restored = try await Task.detached {
+                    try database.undoQuickPromptAdoption(workID: work.id, versionID: version.id, expectedRevision: work.adoptionRevision)
+                }.value
+                guard focusGeneration == focus else { return }
+                await refreshWork()
+                guard focusGeneration == focus else { return }
+                if versions.first(where: { $0.id == restored.adoptedVersionID })?.kind == .ai {
+                    stage = .versions; selectedVersionID = restored.adoptedVersionID; requestPreview()
+                } else {
+                    stage = .development; selectedVersionID = draftParentID ?? restored.adoptedVersionID
+                    beginDevelopmentInterface(); requestPreview()
+                }
+                message = "已撤销快速 Prompt 版本采用。"
+            } catch { message = "当前采用版本已变更，请在版本列表核对。" }
+        }
+    }
+
     private func provider(for profile: AIProviderProfile) -> any AIEditingProvider {
         if let providerOverride { return providerOverride }
+        if LocalFluxProvider.matches(profile) { return fluxProvider }
         if profile.kind == .localComfy { return localProvider }
         return CloudImageProvider(outputDirectory: outputRoot)
     }
@@ -1229,7 +1596,7 @@ import RAWMasterAI
         await refreshJobs(); return result
     }
     private func run(_ job: ProcessingJob) {
-        guard !shuttingDown, !pendingRetryJobs.contains(job.id), tasks[job.id] == nil else { return }
+        guard !shuttingDown, !pendingRetryJobs.contains(job.id), !pendingQuickPromptCommands.contains(job.commandID), tasks[job.id] == nil else { return }
         if job.request.profile.kind == .localComfy && jobs.contains(where: { $0.request.profile.kind == .localComfy && tasks[$0.id] != nil }) { return }
         let provider = provider(for: job.request.profile)
         providers[job.id] = provider
@@ -1267,7 +1634,8 @@ import RAWMasterAI
                 if let current, current.currentAttempt.id == job.currentAttempt.id, !current.state.isTerminal, current.state != .cancelRequested {
                     var joined = current.request.profile.kind != .localComfy
                     var unknown = returnedBytes || current.currentAttempt.receivedOutput != nil || current.currentAttempt.pendingReceivedOutput != nil || (error as? AIServiceError) == .outcomeUnknown || (error as? EditingError) == .outcomeUnknown
-                    if current.request.profile.kind == .localComfy {
+                    if LocalFluxProvider.matches(current.request.profile) { joined = true }
+                    else if current.request.profile.kind == .localComfy {
                         do { try await runtime.stop(); joined = true } catch { unknown = true }
                     } else if error is CancellationError { unknown = current.currentAttempt.submissionIntentAt != nil }
                     _ = try? await transition(current, to: unknown ? .outcomeUnknown : .failed, joined: joined, error: Self.safeError(error))
@@ -1344,9 +1712,21 @@ import RAWMasterAI
         guard !shuttingDown else { throw CancellationError() }
         guard inspected.sha256 == output.artifact.sha256, inspected.pixelWidth == output.artifact.pixelWidth,
               inspected.pixelHeight == output.artifact.pixelHeight else { throw EditingError.invalidArtifact }
+        var material = RenderedPhoto(fileURL: output.fileURL, artifact: inspected)
+        var configuration = output.configuration.merging(["model": job.request.profile.model, "provider": job.request.profile.kind.rawValue, "prompt": job.request.prompt]) { old, _ in old }
+        var temporaryComposite: URL?
+        defer { if let temporaryComposite { try? FileManager.default.removeItem(at: temporaryComposite) } }
+        if let snapshot = job.request.quickPrompt {
+            configuration["quickPromptRawOutputSHA256"] = inspected.sha256
+            configuration["quickPromptBasisSHA256"] = snapshot.basis.artifact.sha256
+            if snapshot.selection != nil {
+                let destination = try temporaryURL("tiff"); temporaryComposite = destination
+                material = try await QuickPromptImagePreparation.compose(snapshot: snapshot, output: output, destination: destination)
+            }
+        }
         let version = EditingVersion(workID: job.request.workID, parentVersionID: job.request.inputVersionID, kind: .ai,
-            source: job.request.source, recipe: job.request.recipe, artifact: inspected, configuration: output.configuration.merging(["model": job.request.profile.model, "provider": job.request.profile.kind.rawValue, "prompt": job.request.prompt]) { old, _ in old })
-        _ = try await publish(file: output.fileURL, version: version, job: job)
+            source: job.request.source, recipe: job.request.recipe, artifact: material.artifact, configuration: configuration)
+        _ = try await publish(file: material.fileURL, version: version, job: job)
         message = "生成结果已保存为候选，请检查后采用。"
     }
     nonisolated private static func safeError(_ error: Error) -> String {
@@ -1363,7 +1743,9 @@ import RAWMasterAI
             var cancellationFailed = false
             do {
                 requested = try await transition(job, to: .cancelRequested)
-                if let requested { try await provider.cancel(attempt: requested.currentAttempt) }
+                if let requested, requested.currentAttempt.submissionIntentAt != nil {
+                    try await provider.cancel(attempt: requested.currentAttempt)
+                }
             } catch { cancellationFailed = true }
             let worker = tasks[job.id]; worker?.cancel()
             await worker?.value
@@ -1378,6 +1760,7 @@ import RAWMasterAI
     func retry(_ job: ProcessingJob, allowUnknown: Bool = false) {
         guard !shuttingDown, !pendingRetryJobs.contains(job.id) else { return }
         guard !canResumeSaving(job) else { resumeSaving(job); return }
+        if job.request.quickPrompt != nil { message = "请从该照片的 Prompt 工具条重新提交并核对输入。"; return }
         pendingRetryJobs.insert(job.id)
         startOperation { [self] in
             defer { pendingRetryJobs.remove(job.id) }
@@ -1408,9 +1791,12 @@ import RAWMasterAI
               current.state == .queued || current.state == .preparing else { return }
         _ = try? await transition(current, to: .cancelled, joined: true, error: "退出前尚未提交")
     }
-    func reconcile(_ job: ProcessingJob) {
-        guard !shuttingDown else { return }
+    func reconcile(_ job: ProcessingJob, allowDistinctQuickPrompt: Bool = false) {
+        guard !shuttingDown, !reconcilingJobs.contains(job.id) else { return }
+        if canResumeSaving(job) { resumeSaving(job); return }
+        reconcilingJobs.insert(job.id)
         startOperation { [self] in
+            defer { reconcilingJobs.remove(job.id) }
             do {
                 try Task.checkCancellation()
                 guard !shuttingDown else { return }
@@ -1427,12 +1813,22 @@ import RAWMasterAI
                     _ = try await transition(current, to: .archiving, joined: true); try await archiveOutput(owned, job: current)
                 case .running(let remote):
                     try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
-                    _ = try await transition(current, to: .running, remoteID: remote)
+                    if current.request.quickPrompt != nil && tasks[job.id] == nil {
+                        _ = try await transition(current, to: .outcomeUnknown, remoteID: remote, error: "原尝试仍在运行，可稍后再次核对")
+                    } else { _ = try await transition(current, to: .running, remoteID: remote) }
                 case .noResult:
                     try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
                     _ = try await transition(current, to: .failed, joined: true, error: "服务确认无结果")
                 case .unknown:
-                    _ = try await transition(current, to: .outcomeUnknown, joined: current.request.profile.kind != .localComfy, error: "服务无法确认结果")
+                    let unresolved = try await transition(current, to: .outcomeUnknown,
+                        joined: current.request.profile.kind != .localComfy, error: "服务无法确认结果")
+                    if allowDistinctQuickPrompt {
+                        let database = store
+                        try await Task.detached {
+                            try database.acknowledgeQuickPromptOutcome(id: unresolved.id, attemptID: unresolved.currentAttempt.id)
+                        }.value
+                        if job.request.workID == work?.id { quickPromptNotice = "原尝试仍待核对。可单独准备下一张候选。" }
+                    }
                 }
             } catch { _ = try? await transition(job, to: .outcomeUnknown, error: "暂时无法核对") }
             await refreshJobs(); await refreshWork()
@@ -1478,6 +1874,8 @@ import RAWMasterAI
     /// Photo work stops before the application owner closes preparation and its runtime.
     func shutdown(finishPreviews: Bool = true) async {
         shuttingDown = true; pendingExportAssetID = nil
+        quickPromptNetwork.cancel()
+        closeQuickPrompt(restoreComparison: false)
         let estimatingDepth = sceneDepthTask
         cancelSceneDepth()
         cancelDevelopmentSharpeningMaskPreview(); cancelDevelopmentLensBlurDepthPreview()
@@ -3345,8 +3743,17 @@ import RAWMasterAI
         if responder is NSTextView || responder is NSTextField { return false }
         let flags = event.modifierFlags
         let key = event.charactersIgnoringModifiers?.lowercased()
+        if quickPromptPresented {
+            if event.keyCode == 53 {
+                if quickPromptSelecting { quickPromptSelecting = false }
+                else { closeQuickPrompt() }
+                return true
+            }
+            return false
+        }
         if flags.contains(.command), key == "z" {
-            if let context = developmentContext { undoDevelopment(context: context, redo: flags.contains(.shift)) }
+            if !flags.contains(.shift), quickPromptUndoVersion != nil, stage != .development { undoQuickPrompt() }
+            else if let context = developmentContext { undoDevelopment(context: context, redo: flags.contains(.shift)) }
             return true
         }
         if flags.contains(.command), key == "s" { return true }

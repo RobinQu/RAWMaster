@@ -26,7 +26,7 @@
 | [编辑暗房](prototype/index.html#edit/development) | 从底部浮动工具条前后翻片、预览邻片、缩放、FIT 或更换背景。裁切与拉直在画布右上方打开。可选择原片或已有版本，擦除、混合、差值、棋盘格或并排对比 | [暗房布局与走查](../../specs/025-editing-workspace/prototype-review.md) · [原生画布](../../Sources/RAWMaster/EditingImageCanvas.swift) · [编辑体验](../../specs/019-editing-experience/spec.md) |
 | 右栏图标列 → [基础](prototype/index.html#edit/basic)、曲线、混色、细节、光学、效果、分级 | 用图标切换相邻详情面板，键盘上下键切换工具。可调 RGB 直方图、曝光、曲线及分级，查看颜色示波器 | [原生编辑](../../specs/018-native-editing/spec.md) · [显影控制](../../specs/020-development-controls/spec.md) · [照片调整](../../specs/021-photos-editor/spec.md) |
 | 右栏图标列 → [蒙版](prototype/index.html#edit/masks)、修复、细节 | 添加和定位选区，调整组合、反转、羽化、不透明度、图层曝光、排序与启停。修复可标点，仿制另选取样点。RAW 细节、降噪和超分可发起示例任务 | [蒙版模块](../../specs/026-mask-ai-native/spec.md) · [RAW 集成](../../specs/027-mask-ai-raw-integration/spec.md) · [修复](../../specs/029-repair-tools/spec.md) |
-| 左栏 → 预设、快照、历史 | 三块垂直排列。可按名称查找、收藏、套用、保存、预检迁移与交换预设。在滤镜预览里试看三种胶片模拟 Adaptive Filter，采用后调强度，用快照恢复，或在历史里撤销和重做 | [滤镜体验](../../specs/028-filter-experience/spec.md) · [预设目录与交换](../../specs/031-preset-browser/spec.md) |
+| 左栏 → 预设、快照、历史 | 基础滤镜、Adobe Adaptive 与三款胶片模拟使用同一文字目录。悬停在主画布预览，点击采用，可收藏、搜索和导入 Lightroom／Camera Raw 预设。Adaptive 蒙版先确认覆盖范围。可调整胶片强度并用快照和历史恢复 | [滤镜体验](../../specs/028-filter-experience/spec.md) · [预设目录与交换](../../specs/031-preset-browser/spec.md) |
 | [智能编辑 → 智能预设](prototype/index.html#edit/smart) | 新进暗房默认显示此面板。人像、风光、纪实共七种意图，核对作用范围或组照参考张后明确采用 | [场景卡](../../specs/030-ai-retouching/scene-presets.md) · [界面规格](../../specs/030-ai-retouching/ux-design.md) |
 | [底部「Prompt」](prototype/index.html#edit/development) · 设计预演 | 试浮条形变、套用提示词、整张／拖框／现有蒙版、选择两种模型、云端发送复核、候选对比和撤销。离开可从本张或任务返回 | [034 规格](../../specs/034-quick-prompt-editing/spec.md) · [走查](../../specs/034-quick-prompt-editing/prototype-review.md) |
 | 智能预设 → 交互式创作 → [Agent 对话](prototype/index.html#edit/agent) | 发送要求、补充意图、审阅本张对话及执行位置，再发起模拟任务。可回到智能预设，也可换片后回来续写。严格纪实限制内容改写 | [AI 摄影工作流](../../specs/008-ai-photography-workflow/spec.md) · [场景精修与研发阶段](../../specs/030-ai-retouching/spec.md) |
@@ -53,4 +53,4 @@
 
 ## 验证口径
 
-工作台使用仓库内授权的低分辨率 JPEG，文件名、拍摄参数、目录、决定和作业为演示数据。直方图取自样片 RGB 分布。浏览器的色调、裁切和选区演示用于比较操作与版式，RAW 像素、光学校正、降噪、AI 推理和序列编码效果需回原生引擎验证。XMP、目录迁移、备份、云提交和 Server 走查使用本机示例。导出专项已有可读写的导出预设文件。模拟交付详情可检查文件名和状态。[浏览器回归脚本](../../scripts/check-ui-prototype.py) · [离线样片](../fixtures/offline-regression.md)
+工作台使用仓库内授权的低分辨率 JPEG，文件名、拍摄参数、目录、决定和作业为演示数据。直方图取自样片 RGB 分布。浏览器的色调、裁切和选区演示用于比较操作与版式，RAW 像素、光学校正、降噪、AI 推理和序列编码效果需回原生引擎验证。XMP 导入、备份、云提交和 Server 走查使用本机示例。导出专项已有可读写的导出预设文件。模拟交付详情可检查文件名和状态。[浏览器回归脚本](../../scripts/check-ui-prototype.py) · [离线样片](../fixtures/offline-regression.md)

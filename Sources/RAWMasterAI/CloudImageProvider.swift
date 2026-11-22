@@ -281,6 +281,13 @@ public actor CloudImageProvider: AIEditingProvider {
     throw AIServiceError.outcomeUnknown
   }
   public func reconcile(_ request: AIEditRequest, attempt: ProcessingAttempt) async throws -> AIReconciliationResult {
+    var owner: ProviderAttemptLease?
+    if Seedream55Adapter.matches(request.profile), FileManager.default.fileExists(atPath: outputDirectory.path) {
+      let path = outputDirectory.appendingPathComponent(AIImageBytes.hash(Data(attempt.runID.utf8)) + ".seedream-owner.lock")
+      guard let lease = try ProviderAttemptLease.acquire(path) else { return .running(remoteID: attempt.remoteID) }
+      owner = lease
+    }
+    defer { owner?.close() }
     if let output = try Self.recover(request, attempt: attempt, directory: outputDirectory) { return .completed(output) }
     return .unknown
   }

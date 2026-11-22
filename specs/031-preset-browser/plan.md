@@ -2,13 +2,13 @@
 
 2026-11-22 · 设计基线，独立实现及覆盖见[开发交付记录](feature-validation.md) · Swift 6、macOS 15+、SwiftUI/AppKit、Core Image/Metal · [产品目标](spec.md) · [执行任务](tasks.md)
 
-集成候选在同一左栏保留「经典滤镜」与「预设目录」。首次打开显示经典滤镜，显式切换后按编辑器偏好 `editing.filterBrowserMode.v1` 记忆。两个视图互斥挂载，原有收藏共用；离开目录会取消尚未采用的准备任务。启用目录与切回经典滤镜都可以在当前照片完成。[实测与发布条件](integration-validation.md)
+左栏统一挂载文字目录。基础滤镜与胶片模拟复用原有收藏 ID、滤镜选择和主图临时呈现。Adobe Adaptive 复用导入条目的标识与来源。离开目录取消尚未采用的准备任务。[目录交付](directory-delivery.md) · [此前集成实测](integration-validation.md)
 
 ## 按当前工作树修正设计
 
 | 实际接点 | 本次设计决策 |
 | --- | --- |
-| 左栏现有 `PhotosFilterControls` 注册 `.filters` 缩略图可见性。控制器已有独立 hover consumer、token 和偏好键 `editing.filterFavorites.v1` | 在原栏目挂元数据树，移除目录的这一项注册，复用同一主图临时呈现逻辑。目录标题不再提供可重置整个配方的总开关。Classic Filters 内保留原滤镜的启停、强度和复位。其他栏目的缩略图按原调用工作。[左栏](../../Sources/RAWMaster/EditingLeftSidebar.swift) · [缩略图视图](../../Sources/RAWMaster/PhotosThumbnailViews.swift) · [编辑控制器](../../Sources/RAWMaster/EditingController.swift) |
+| 主图提供独立的悬停预览，收藏由 `editing.filterFavorites.v1` 保存 | 目录仅消费条目元数据，全部滤镜行共用主图临时呈现。当前采用的滤镜在所属组提供启停、强度及复位。[左栏](../../Sources/RAWMaster/EditingLeftSidebar.swift) · [目录](../../Sources/RAWMaster/DevelopmentPresetBrowser.swift) · [编辑控制器](../../Sources/RAWMaster/EditingController.swift) |
 | 新配方的 Selective Color 已有八个色槽，解码器接受旧六槽。已有按画面取色的 H/S/L 拖动 | 优先做八色字段、旧六槽升级行为和范围转换的金样对照。Orange/Purple 缺省时保留旧片值，修改这两槽时做显式兼容扩展。原生点色样本与 Adobe 八色字段分开映射。[色槽与解码](../../Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift) · [目标颜色调整](../../Sources/RAWMasterCore/DevelopmentTargetedColorAdjustmentV3.swift) |
 | 主工程有线性、径向、亮度范围和合并的 Vision 主体，局部模型已包含冷暖、色相、曲线、纹理、去雾、锐化等字段 | 工时优先给语义描述、逐图快照、组合、单位和顺序对拍。复用已验证的局部算子。现有主体 PNG、旧调整及已有笔划走旧配方回放。[蒙版模型](../../Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift) · [027 独立服务](../027-mask-ai-raw-integration/service-validation.md) |
 | 已有程序焦平面、ImageIO 设备深度/视差、主体焦点、五种散景、猫眼/高光增强和修正笔划 | 13 项 Lens Blur 的第一步是辨认真实输入、对应字段和核。没有设备深度的普通 RAW 另验本地单目深度，Swirl 单独立项。术语相同还需要端点、散景轮廓、遮挡和成片对照。[配方](../../Sources/RAWMasterCore/DevelopmentLensBlurV3.swift) · [渲染器](../../Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift) · [主体焦点](../../Sources/RAWMasterImaging/DevelopmentLensBlurSubjectFocusV1.swift) |
@@ -34,7 +34,7 @@ V3 的相关渲染顺序为 Global、Glow、Photo Filter、Lens Blur，随后经
 
 ## 从预览到保存
 
-1. **解析。** 用户手工选 XMP/ZIP 或开启本机迁移。检查容器大小、展开上限、条目数和根内相对路径，解析 RDF 属性、结构、数组和本地化名称。保留原始字节，按实际内容区分 Preset、Profile、内部 Look、sidecar。忽略非 XMP 并记录拒绝原因。未知内容仅作数据保存。
+1. **解析。** 用户手选 XMP／ZIP，工程诊断命令读取冻结清单。检查容器大小、展开上限、条目数和根内路径，解析 RDF 属性、结构、数组和本地化名称。保留原始字节，按内容区分 Preset、Profile、内部 Look 及 sidecar。记录非 XMP 或拒绝原因，未知内容按数据保留。
 2. **编译。** 按字段连同父结构、Process Version、源限制、Profile/Look/ISO 节点编译。编译缓存用内容 SHA 和映射器版本，已解析依赖版本进入渲染指纹。Exposure 的目标单位/范围、旧色槽和曲线顺序逐项验证。超出当前范围显示具体值。任何缺少必要项、范围溢出或无可用字段的情况都不会被静默截断后计作完整应用。
 3. **预览。** 从当前已提交的基线计算稀疏差量。临时 consumer 绑定 token、source generation、base revision、presentation ID，只有最新请求可发布。取消后回到当时有效的已提交显示。仅可预览当前已验证的路径，部分应用先由用户明确选择子集。普通 hover 与手调共用原生算子。语义 hover 读取 ready 快照，尚未准备时停在已提交帧。用户准备同一张照片的多个目标时，按依赖合并在途任务并限制并发，共享场景分析的成本记在该照片上。[预览协调器](../../Sources/RAWMaster/EditingPreviewCoordinator.swift)
 4. **采用与强度。** 点击时重新检查源、当前修订、纪实策略与资产。原子采用整体，或采用已经确认的部分。Amount 始终从同一基线重算，固定滤镜保留自身强度算法。离散字段仅经验证才允许端点切换。混合字段找不到共同强度规则时隐藏连续滑杆。拖动中不重复推理，手动编辑后结束旧强度会话。
@@ -42,7 +42,7 @@ V3 的相关渲染顺序为 Global、Glow、Photo Filter、Lens Blur，随后经
 
 ## 本地迁移与恢复
 
-系统源根为 `/Library/Application Support/Adobe/CameraRaw/Settings`。只尝试 manifest 中 53 个相对路径，逐一核对长度和 SHA。缺失或 SHA 已变的条目报告为缺失/版本待审核。用户根为 `~/Library/Application Support/Adobe/CameraRaw/ImportedSettings`，当次按用户选择递归枚举 XMP。25 是这份快照的观测数。目录不可访问时允许手工选文件，依赖缺失时保留解析报告。[固定输入与两条选择规则](contracts/migration-manifest-v1.json)
+系统源根为 `/Library/Application Support/Adobe/CameraRaw/Settings`，用户源根为 `~/Library/Application Support/Adobe/CameraRaw/ImportedSettings`。命令按同一完整清单对 53 + 25 个冻结相对路径验证长度和 SHA。出现缺失、变化或 UUID 冲突时整批停下并出预检报告，常规选文件导入仍可独立执行。[固定输入](contracts/migration-manifest-v1.json)
 
 执行时以暂存事务 ID 标记本批文件，逐个验证后原子提交索引。中断时只清理未被引用的暂存内容，重跑同源去重。两次同时导入用 SHA 和版本校验合并。取消迁移或撤销批次以该批引用为单位处理，保留其他来源和照片历史所持有的共享内容。安装包仅携带映射规则和自有测试数据。
 
