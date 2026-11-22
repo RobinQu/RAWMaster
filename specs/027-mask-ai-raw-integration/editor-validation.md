@@ -37,6 +37,8 @@
 | 同一 V3 渲染器、相同局部曝光，使用全零覆盖作为对照 | 0 | 112/112 像素变亮。[采用成片](evidence/legacy-renderer-toggle/reopened-subject.tiff) · [零覆盖对照](evidence/legacy-renderer-toggle/same-renderer-zero-coverage.tiff) |
 | 自然关闭该图层，旧作品从 V3 返回历史渲染器 | 2 / 65,535 | 112/112 像素变亮。重复导出关闭状态自身的差为 0。[关闭图层对照](evidence/legacy-renderer-toggle/disabled-layer-control.tiff) |
 
+逐通道读取 TIFF 原始样本复算，重复导出关闭状态自身的最大差为 0。另做了一次试验，仅让开启蒙版的旧作品沿用历史 CIContext，保护区最大差增至 5/65,535，因此交付版保留原有上下文选择。基础引擎集成时将同时追踪旧/新显影前缀和写出量化，并复测有旧色调配方的作品及 RAW。[两次路线试验](evidence/legacy-renderer-toggle/route-diagnostics.json)
+
 此差异归入基础引擎集成时的旧作品回归。联合 Release 探针同时检查自然开关图层的保护区零差及局部增亮。开发版蒙版已补充具体请求的画布所有权。真实窗口验证了旧画布 A 延迟退出时，同一照片上的新请求 B 继续运行，退出当前 B 会取消。真实 Vision 服务同时核对了冷生成、精确命中、画笔、取消与失败的计数。[联合检查和运行命令](../031-preset-browser/integration-validation.md)
 
 ## 复跑
