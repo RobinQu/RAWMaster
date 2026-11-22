@@ -52,6 +52,7 @@ struct DevelopmentCurveEditor: View {
     @ObservedObject var editing: EditingController
     @State private var channel: DevelopmentCurveChannel = .rgb
     @State private var selectedPoint = 0
+    @State private var selectionActive = true
     private var curve: DevelopmentCurve { editing.developmentColor.curves[keyPath: channel.path] }
     private var selected: Int { min(max(0, selectedPoint), curve.points.count - 1) }
     var body: some View {
@@ -59,25 +60,27 @@ struct DevelopmentCurveEditor: View {
             Picker("曲线通道", selection: $channel) {
                 ForEach(DevelopmentCurveChannel.allCases) { Text($0.rawValue).tag($0) }
             }.pickerStyle(.segmented).accessibilityIdentifier("editing.curves.channel")
-                .onChange(of: channel) { _, _ in editing.endPreviewInteractions(prefix: "curve."); selectedPoint = 0 }
+                .onChange(of: channel) { _, _ in editing.endPreviewInteractions(prefix: "curve."); selectedPoint = 0; selectionActive = true }
             DevelopmentCurveCanvas(curve: curve, channel: channel, selected: Binding(get: { selected }, set: { selectedPoint = $0 }),
+                selectionActive: Binding(get: { selectionActive }, set: { selectionActive = $0 }),
                 onChange: { editing.setCurve(channel, curve: $0, nativeEvent: true) },
-                interaction: { editing.previewInteractionChanged("curve." + channel.rawValue, active: $0, nativeEvent: $1) })
+                interaction: { editing.previewInteractionChanged("curve." + channel.rawValue, active: $0, nativeEvent: $1) },
+                onChannelChange: { channel = $0 })
                 .frame(height: 180).accessibilityIdentifier("editing.curves.canvas")
             HStack {
                 Text("输入 → 输出").font(.caption2).foregroundStyle(.secondary)
                 Spacer()
-                Picker("选择控制点", selection: Binding(get: { selected }, set: { selectedPoint = $0 })) {
+                Picker("选择控制点", selection: Binding(get: { selected }, set: { selectedPoint = $0; selectionActive = true })) {
                     ForEach(curve.points.indices, id: \.self) { Text("点 \($0 + 1) / \(curve.points.count)").tag($0) }
                 }.labelsHidden().frame(maxWidth: 118).accessibilityLabel("选择曲线控制点").accessibilityIdentifier("editing.curves.point")
             }
             pointNumber("输入 %", coordinate: true)
             pointNumber("输出 %", coordinate: false)
             HStack {
-                Button("添加点") { if let (next, index) = DevelopmentCurveInteraction.midpoint(curve) { selectedPoint = index; editing.setCurve(channel, curve: next, nativeEvent: true) } }
+                Button("添加点") { if let (next, index) = DevelopmentCurveInteraction.midpoint(curve) { selectedPoint = index; selectionActive = true; editing.setCurve(channel, curve: next, nativeEvent: true) } }
                     .disabled(curve.points.count >= 16).accessibilityIdentifier("editing.curves.add")
-                Button("删除点") { if let next = DevelopmentCurveInteraction.deleting(curve, index: selected) { selectedPoint = max(0, selected - 1); editing.setCurve(channel, curve: next, nativeEvent: true) } }
-                    .disabled(selected == 0 || selected == curve.points.count - 1).accessibilityIdentifier("editing.curves.delete")
+                Button("删除点") { if let next = DevelopmentCurveInteraction.deleting(curve, index: selected) { selectedPoint = max(0, selected - 1); selectionActive = true; editing.setCurve(channel, curve: next, nativeEvent: true) } }
+                    .disabled(!selectionActive || selected == 0 || selected == curve.points.count - 1).accessibilityIdentifier("editing.curves.delete")
                 Spacer(minLength: 0)
                 Button("复位此通道") { editing.resetCurve(channel, nativeEvent: true) }.accessibilityIdentifier("editing.curves.resetChannel")
             }.buttonStyle(.borderless).font(.caption)
@@ -93,7 +96,7 @@ struct DevelopmentCurveEditor: View {
                     editing.setCurve(channel, curve: next, nativeEvent: true)
                 }
             }), range: coordinate ? limits.lowerBound * 100...limits.upperBound * 100 : 0...100, fractionDigits: 3,
-                disabled: coordinate && (selected == 0 || selected == curve.points.count - 1))
+                disabled: !selectionActive || (coordinate && (selected == 0 || selected == curve.points.count - 1)))
                 .frame(width: 94).accessibilityIdentifier(coordinate ? "editing.curves.input" : "editing.curves.output")
         }
     }
@@ -103,13 +106,16 @@ private struct DevelopmentCurveCanvas: NSViewRepresentable {
     let curve: DevelopmentCurve
     let channel: DevelopmentCurveChannel
     @Binding var selected: Int
+    @Binding var selectionActive: Bool
     let onChange: (DevelopmentCurve) -> Void
     let interaction: (Bool, Bool) -> Void
+    var onChannelChange: ((DevelopmentCurveChannel) -> Void)? = nil
     func makeNSView(context: Context) -> DevelopmentCurveControl { DevelopmentCurveControl(frame: .zero) }
     func updateNSView(_ view: DevelopmentCurveControl, context: Context) {
         if view.channel != channel { view.cancelTracking() }
-        view.curve = curve; view.channel = channel; view.selected = selected
-        view.onChange = onChange; view.onSelect = { selected = $0 }; view.interaction = interaction
+        view.curve = curve; view.channel = channel; view.selected = selected; view.selectionActive = selectionActive
+        view.onChange = onChange; view.onSelect = { selected = $0; selectionActive = true };view.onDeselect = { selectionActive = false }
+        view.onChannelChange = onChannelChange; view.interaction = interaction
         view.setAccessibilityLabel(channel.title + "编辑器")
         view.setAccessibilityValue("点 \(selected + 1)，输入 \((curve.points[selected].x * 100).formatted())%，输出 \((curve.points[selected].y * 100).formatted())%")
         view.needsDisplay = true
@@ -129,11 +135,14 @@ final class DevelopmentCurveControl: DevelopmentEditingControl {
     }
     var channel: DevelopmentCurveChannel = .rgb
     var selected = 0
+    var selectionActive = true
     var onChange: ((DevelopmentCurve) -> Void)?
     var onSelect: ((Int) -> Void)?
+    var onDeselect: (() -> Void)?
+    var onChannelChange: ((DevelopmentCurveChannel) -> Void)?
     private var trackingPoint = false
     private var plot: CGRect { bounds.insetBy(dx: 13, dy: 13) }
-    override init(frame: NSRect) { super.init(frame: frame); setAccessibilityElement(true); setAccessibilityRole(.group); setAccessibilityHelp("选择控制点后用上下键调整输出，左右键选择点；数值字段可精确编辑。") }
+    override init(frame: NSRect) { super.init(frame: frame); setAccessibilityElement(true); setAccessibilityRole(.group); setAccessibilityHelp("方向键调整输入输出；Shift 大步进；括号选点；1–4 切换通道；D 取消选择。") }
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
     private func pixel(_ point: DevelopmentCurvePoint) -> CGPoint { CGPoint(x: plot.minX + point.x * plot.width, y: plot.minY + point.y * plot.height) }
     private func normalized(_ event: NSEvent) -> DevelopmentCurvePoint {
@@ -166,9 +175,10 @@ final class DevelopmentCurveControl: DevelopmentEditingControl {
             path.stroke(); NSGraphicsContext.restoreGraphicsState()
         } else { path.stroke() }
         for (index, point) in curve.points.enumerated() {
-            let p = pixel(point), radius: CGFloat = index == selected ? 5 : 3.5
+            let active = selectionActive && index == selected
+            let p = pixel(point), radius: CGFloat = active ? 5 : 3.5
             let dot = NSBezierPath(ovalIn: .init(x: p.x - radius, y: p.y - radius, width: radius * 2, height: radius * 2))
-            (index == selected ? NSColor.controlAccentColor : channel.color).setFill(); dot.fill(); NSColor.controlBackgroundColor.setStroke(); dot.lineWidth = 1; dot.stroke()
+            (active ? NSColor.controlAccentColor : channel.color).setFill(); dot.fill(); NSColor.controlBackgroundColor.setStroke(); dot.lineWidth = 1; dot.stroke()
         }
         drawEditingFocus()
     }
@@ -177,11 +187,11 @@ final class DevelopmentCurveControl: DevelopmentEditingControl {
         let p = convert(event.locationInWindow, from: nil)
         if let index = curve.points.indices.min(by: { hypot(pixel(curve.points[$0]).x - p.x, pixel(curve.points[$0]).y - p.y) < hypot(pixel(curve.points[$1]).x - p.x, pixel(curve.points[$1]).y - p.y) }),
            hypot(pixel(curve.points[index]).x - p.x, pixel(curve.points[index]).y - p.y) <= 12 {
-            selected = index; onSelect?(index); trackingPoint = true; needsDisplay = true
+            selected = index; selectionActive = true; onSelect?(index); trackingPoint = true; needsDisplay = true
         } else {
             let point = normalized(event)
             if let (next, index) = DevelopmentCurveInteraction.adding(curve, x: point.x, y: point.y) {
-                beginInteraction(); selected = index; curve = next; onSelect?(index); onChange?(next); trackingPoint = true; needsDisplay = true
+                beginInteraction(); selected = index; selectionActive = true; curve = next; onSelect?(index); onChange?(next); trackingPoint = true; needsDisplay = true
             }
         }
     }
@@ -197,14 +207,24 @@ final class DevelopmentCurveControl: DevelopmentEditingControl {
     override func keyDown(with event: NSEvent) {
         if consumesUndo(event) { routeEditingUndo(event); return }
         if event.modifierFlags.contains(.command) || event.modifierFlags.contains(.control) { return }
-        guard curve.points.indices.contains(selected) else { return }
+        let text=event.charactersIgnoringModifiers?.lowercased() ?? ""
+        if text == "d" { selectionActive=false;onDeselect?();needsDisplay=true;return }
+        if let digit=Int(text),(1...DevelopmentCurveChannel.allCases.count).contains(digit) {
+            channel=DevelopmentCurveChannel.allCases[digit-1];selected=0;selectionActive=true;onSelect?(0);onChannelChange?(channel);needsDisplay=true;return
+        }
+        if text == "[" || text == "]" {
+            selected=min(curve.points.count-1,max(0,selected+(text == "[" ? -1:1)));selectionActive=true;onSelect?(selected);needsDisplay=true;return
+        }
+        guard curve.points.indices.contains(selected),selectionActive else { return }
         let step = event.modifierFlags.contains(.shift) ? 0.05 : 0.005
+        let point=curve.points[selected]
         switch event.keyCode {
-        case 123, 124: selected = min(curve.points.count - 1, max(0, selected + (event.keyCode == 123 ? -1 : 1))); onSelect?(selected)
+        case 123, 124:
+            if let next=DevelopmentCurveInteraction.moving(curve,index:selected,x:point.x+(event.keyCode == 123 ? -step:step),y:point.y) { curve=next;onChange?(next) }
         case 125, 126:
-            if let next = DevelopmentCurveInteraction.moving(curve, index: selected, x: curve.points[selected].x, y: curve.points[selected].y + (event.keyCode == 125 ? -step : step)) { curve = next; onChange?(next) }
+            if let next = DevelopmentCurveInteraction.moving(curve, index: selected, x: point.x, y: point.y + (event.keyCode == 125 ? -step : step)) { curve = next; onChange?(next) }
         case 51, 117:
-            if let next = DevelopmentCurveInteraction.deleting(curve, index: selected) { curve = next; selected = max(0, selected - 1); onSelect?(selected); onChange?(next) }
+            if let next = DevelopmentCurveInteraction.deleting(curve, index: selected) { curve = next; selected = max(0, selected - 1); selectionActive=true;onSelect?(selected); onChange?(next) }
         default: super.keyDown(with: event)
         }
         needsDisplay = true

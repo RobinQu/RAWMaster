@@ -10,14 +10,20 @@ private let panelColor = AppPalette.panel
 struct WorkbenchView: View {
     @EnvironmentObject var model: AppModel
     @State private var sidebarBeforeEditing: Bool?
+    @State private var appearanceBeforeEditing: NSAppearance?
     private var workbenchSurface: some View {
         VStack(spacing: 0) {
-            HSplitView {
-                if model.showSidebar { SidebarView().frame(minWidth: 185, idealWidth: 215, maxWidth: 280) }
-                browserColumn
-                rightSidebar
-            }
-            if !model.isNativeEditing {
+            if model.exportWorkspacePresented {
+                ExportWorkspace()
+            } else if model.isNativeEditing, let editing = model.editing {
+                EditingWorkspace(editing: editing)
+                    .environment(\.colorScheme, .dark)
+            } else {
+                HSplitView {
+                    if model.showSidebar { SidebarView().frame(minWidth: 185, idealWidth: 215, maxWidth: 280) }
+                    browserColumn
+                    rightSidebar
+                }
                 Divider()
                 statusBar
             }
@@ -49,8 +55,13 @@ struct WorkbenchView: View {
             if model.isCatalog {
                 LibraryCatalogView().id(model.catalogKind?.rawValue ?? "catalog")
             } else if model.isNativeEditing, let editing = model.editing {
-                BrowserView()
-                    .overlay(alignment: .top) { ImmersiveEditingHeader(editing: editing) }
+                VStack(spacing: 0) {
+                    BrowserView()
+                        .overlay(alignment: .top) { ImmersiveEditingHeader(editing: editing) }
+                    Divider()
+                    FilmstripView()
+                        .accessibilityIdentifier("editing.filmstrip")
+                }
             } else {
                 VStack(spacing: 0) {
                     browserHeader
@@ -81,24 +92,29 @@ struct WorkbenchView: View {
         workbenchSurface
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                Button { model.showSidebar.toggle() } label: { Image(systemName: "sidebar.left") }.help("显示或收起项目栏")
+                HStack(spacing: 10) {
+                    HStack(spacing: 7) {
+                        BrandIconView(size: 19)
+                        Text("RAWMaster").font(.system(size: 12, weight: .semibold))
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("RAWMaster")
+                    if !model.isNativeEditing {
+                        Button { model.showSidebar.toggle() } label: { Image(systemName: "sidebar.left") }.help("显示或收起项目栏")
+                    }
+                }
             }
             ToolbarItem(id: TitlebarDoubleClickRouter.brandItemID, placement: .principal) {
-                HStack(spacing: 8) {
-                    BrandIconView(size: 24)
-                    Text("RAWMaster").font(.headline)
-                    Text("LOCAL CULLING").font(.system(size: 9, weight: .medium, design: .monospaced)).foregroundStyle(.secondary)
-                }
-                // This is decorative window chrome. Leave dragging and double
-                // clicks to AppKit, just like the empty title-bar regions.
-                .allowsHitTesting(false)
+                WorkflowTabs()
             }
-            ToolbarItemGroup(placement: .primaryAction) { WorkbenchToolbarActions() }
         }
         .navigationTitle("RAWMaster")
         .navigationSubtitle(model.windowContextTitle)
-        .toolbarVisibility(model.isNativeEditing ? .hidden : .visible, for: .windowToolbar)
-        .background(WorkbenchWindowTitleSynchronizer(contextTitle: model.windowContextTitle))
+        .toolbarColorScheme(model.isNativeEditing ? .dark : nil, for: .windowToolbar)
+        .toolbarBackground(model.isNativeEditing ? AppPalette.panel : Color(nsColor: .windowBackgroundColor), for: .windowToolbar)
+        .toolbarBackgroundVisibility(.visible, for: .windowToolbar)
+        .toolbarVisibility(.visible, for: .windowToolbar)
+        .background(WorkbenchWindowTitleSynchronizer(contextTitle: model.windowContextTitle, darkEditing: model.isNativeEditing))
     }
     private var workflowSheets: some View {
         toolbarSurface
@@ -121,6 +137,7 @@ struct WorkbenchView: View {
     }
     var body: some View {
         workflowSheets
+        .preferredColorScheme(model.isNativeEditing ? .dark : nil)
         .onDrop(of: [UTType.fileURL], isTargeted: nil) { providers in
             guard !model.isBusy, let provider = providers.first else { return false }
             provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
@@ -136,9 +153,15 @@ struct WorkbenchView: View {
             if editing {
                 if sidebarBeforeEditing == nil { sidebarBeforeEditing = model.showSidebar }
                 model.showSidebar = false
-            } else if let previous = sidebarBeforeEditing {
-                model.showSidebar = previous
-                sidebarBeforeEditing = nil
+                if appearanceBeforeEditing == nil { appearanceBeforeEditing = NSApp.appearance }
+                NSApp.appearance = NSAppearance(named: .darkAqua)
+            } else {
+                if let previous = sidebarBeforeEditing {
+                    model.showSidebar = previous
+                    sidebarBeforeEditing = nil
+                }
+                NSApp.appearance = appearanceBeforeEditing
+                appearanceBeforeEditing = nil
             }
         }
         .onExitCommand {
@@ -511,7 +534,7 @@ struct ThumbnailView: View {
             else { ProgressView().controlSize(.small) }
         }.task(id: asset.currentPath + asset.importState.rawValue + asset.availability.rawValue) {
             failed = false
-            do { let loaded = try await ImagePipeline.shared.preview(for: asset, maxPixel: 600); guard !Task.isCancelled else { return }; image = loaded }
+            do { let loaded = try await ImageEngines.browsing.preview(for: asset, maxPixel: 600); guard !Task.isCancelled else { return }; image = loaded }
             catch { if !Task.isCancelled { failed = true } }
         }
     }
@@ -596,6 +619,7 @@ struct ImagePanel: View {
 struct FilmstripView: View {
     @EnvironmentObject var model: AppModel
     @State private var collapsedGroupIDs = Set<String>()
+    var floating = false
     var body: some View {
         let layout = model.sequenceBrowserLayout
         ScrollViewReader { proxy in
@@ -616,12 +640,14 @@ struct FilmstripView: View {
                             .frame(height: 100)
                     }
                 }.padding(.horizontal, 14).padding(.vertical, 8)
-            }.frame(height: 160).background(AppPalette.canvas)
+            }.frame(height: floating ? 126 : 160).background(floating ? Color.clear : AppPalette.canvas)
                 .onChange(of: model.navigationReveal) { if let id = model.navigationReveal?.assetID { reveal(id, layout: layout, proxy: proxy) } }
                 .onChange(of: model.focusedID) {
                     if let id = model.focusedID, let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
                 }
                 .onAppear { if let id = model.focusedID { reveal(id, layout: layout, proxy: proxy) } }
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier(floating ? "editing.filmstrip" : "browser.filmstrip")
         }
     }
     private func reveal(_ id: String, layout: BrowserSequenceLayout, proxy: ScrollViewProxy) {
@@ -758,17 +784,33 @@ struct InspectorView: View {
 /// that would otherwise present navigationSubtitle.
 struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
     let contextTitle: String
+    var darkEditing = false
 
-    static func apply(to window: NSWindow?, contextTitle: String) {
-        window?.title = contextTitle.isEmpty ? "RAWMaster" : "RAWMaster – " + contextTitle
+    static func apply(to window: NSWindow?, contextTitle: String, darkEditing: Bool = false) {
+        guard let window else { return }
+        window.title = contextTitle.isEmpty ? "RAWMaster" : "RAWMaster – " + contextTitle
+        window.isMovable = true
+        window.styleMask.insert(.resizable)
+        window.standardWindowButton(.zoomButton)?.isEnabled = true
+        window.minSize = CGSize(width: 1100, height: 720)
+        window.appearance = darkEditing ? NSAppearance(named: .darkAqua) : nil
+        // The unified title/toolbar surface can retain windowBackgroundColor even after its
+        // SwiftUI color scheme changes. Make the editing chrome transparent over a dark window.
+        window.titlebarAppearsTransparent = darkEditing
+        window.backgroundColor = darkEditing ? AppPalette.panelNSColor : .windowBackgroundColor
     }
 
     func makeNSView(context: Context) -> NSView { NSView(frame: .zero) }
 
     func updateNSView(_ view: NSView, context: Context) {
-        DispatchQueue.main.async { [weak view] in
-            guard let view else { return }
-            Self.apply(to: view.window, contextTitle: contextTitle)
+        // Apply AppKit appearance before the next toolbar render; deferring this to a later
+        // async cycle leaves the system title bar visibly light after entering the darkroom.
+        Self.apply(to: view.window, contextTitle: contextTitle, darkEditing: darkEditing)
+        if view.window == nil {
+            DispatchQueue.main.async { [weak view] in
+                guard let view else { return }
+                Self.apply(to: view.window, contextTitle: contextTitle, darkEditing: darkEditing)
+            }
         }
     }
 }

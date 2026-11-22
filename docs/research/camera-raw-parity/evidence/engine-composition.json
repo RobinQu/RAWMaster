@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "configuration": "SwiftPM Release, Apple M4 Max, macOS 27.0.1",
+  "appExecutableSHA256": "639ed016c807e260a1921b8a37209c33012c3fb586107d254f0cf81ba0e157c5",
+  "buildCompleted": true,
+  "counts": {
+    "passed": 31,
+    "failed": 0,
+    "skipped": 0
+  },
+  "ownership": {
+    "process": "Editing, resource statistics, monitor and shutdown use the same preview actor. Grid and panel reuse the same independently bounded catalog browsing pipeline.",
+    "controller": "One independently releasable development renderer and one version exporter per controller.",
+    "batch": "A fresh exporter per workbench export invocation. All photos in that invocation share that exporter.",
+    "shutdown": "Controller work joins before optional workbench unmount, application services and preview sessions join, the preview lifecycle closes all resources, then opt-in diagnostics read the final counters."
+  },
+  "selectors": [
+    {
+      "module": "RAWMasterImagingTests",
+      "selector": "ImageEngineCompositionTests",
+      "executableSHA256": "0e9fb73b34574c2280716f85e20cf6a1c9bfcaafc9e010f7c97b09b9487bf6fd",
+      "startedAt": "2026-11-22T10:26:39.297254+00:00",
+      "wallSeconds": 0.598442,
+      "tests": 2,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "54311edb7fcdbf9774a1b3df49f7ffa8c6e84c7a6dbce65763b72d69411f86d7",
+      "cases": [
+        {
+          "name": "testControllersAndBatchesReceiveIndependentReleasableWorkers",
+          "seconds": 0.001
+        },
+        {
+          "name": "testPreviewLifecycleAndDiagnosticsObserveTheEditingOwner",
+          "seconds": 0.002
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "ShutdownCacheSummaryGateTests",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:26:39.928226+00:00",
+      "wallSeconds": 0.684663,
+      "tests": 3,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "f8f422967f322a4ec7da5927b5b732f4d5b8adb29f637a7707c3e67aa2d01a10",
+      "cases": [
+        {
+          "name": "testNativeProfileStatisticsTraceUsesFixedNumericSchemaWithoutFallbackPayloadOrDecodeSubstitution",
+          "seconds": 0.001
+        },
+        {
+          "name": "testReentrantClaimsBeforeAwaitStillAllowExactlyOneEmit",
+          "seconds": 0.0
+        },
+        {
+          "name": "testTraceOffClaimsNothingAndCannotEmit",
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "ApplicationTerminationOwnerTests",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:26:40.640219+00:00",
+      "wallSeconds": 0.080052,
+      "tests": 3,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "caee74cc1286e69633620217db67d805984d2c47cbd9c33930677a81f31f973f",
+      "cases": [
+        {
+          "name": "testNoOwnerAndNoEditingRetainsImmediateTerminationBranch",
+          "seconds": 0.001
+        },
+        {
+          "name": "testSecondExitCannotReplyWhileOwnerStatisticsIsSuspended",
+          "seconds": 0.0
+        },
+        {
+          "name": "testTraceOffHasNoStatisticsReadAndStillOnlyOneShutdownReply",
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterImagingTests",
+      "selector": "ImagePipelineTests",
+      "executableSHA256": "0e9fb73b34574c2280716f85e20cf6a1c9bfcaafc9e010f7c97b09b9487bf6fd",
+      "startedAt": "2026-11-22T10:31:49.303879+00:00",
+      "wallSeconds": 0.175482,
+      "tests": 13,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "a3c57316b6f4429cb9bc5a2f23a3409c27d6a7eb26d831b40f4301a29110a792",
+      "cases": [
+        {
+          "name": "testAlreadyCancelledRequestDoesNotProduceImageAndPipelineRemainsUsable",
+          "seconds": 0.011
+        },
+        {
+          "name": "testCacheClearDoesNotRetainPreviousBitmap",
+          "seconds": 0.042
+        },
+        {
+          "name": "testCacheEvictsByByteBudgetAndOversizedFramesAreNotRetained",
+          "seconds": 0.002
+        },
+        {
+          "name": "testCancelledQueuedRequestNeverReachesDecoder",
+          "seconds": 0.002
+        },
+        {
+          "name": "testCancellingAllWaitersDoesNotCacheLateResultOrLeakPermit",
+          "seconds": 0.001
+        },
+        {
+          "name": "testChangedFileInvalidatesCachedPreview",
+          "seconds": 0.01
+        },
+        {
+          "name": "testConcurrentIdenticalPreviewRequestsShareResult",
+          "seconds": 0.022
+        },
+        {
+          "name": "testNativeDetailDecodeConcurrencyIsBoundedAtOne",
+          "seconds": 0.002
+        },
+        {
+          "name": "testOneCancelledCoalescedWaiterDoesNotCancelOtherWaiters",
+          "seconds": 0.001
+        },
+        {
+          "name": "testOrdinaryGridPreviewRequestsNeverStartDetailDecoder",
+          "seconds": 0.005
+        },
+        {
+          "name": "testPreviewDecodeConcurrencyIsBoundedAtTwo",
+          "seconds": 0.003
+        },
+        {
+          "name": "testPreviewIsBoundedAndWarmCacheReusesBitmap",
+          "seconds": 0.008
+        },
+        {
+          "name": "testRAWPreviewNeverFallsBackToFullImageDecode",
+          "seconds": 0.005
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterImagingTests",
+      "selector": "PhotoBatchRenderExporterTests",
+      "executableSHA256": "0e9fb73b34574c2280716f85e20cf6a1c9bfcaafc9e010f7c97b09b9487bf6fd",
+      "startedAt": "2026-11-22T10:31:49.494128+00:00",
+      "wallSeconds": 0.144431,
+      "tests": 1,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "9d09831458c696088fcb82f078415b0160443836090033ff6b17023d4bddcc24",
+      "cases": [
+        {
+          "name": "testRealRecipeResizeQualityNamingAndNoOverwrite",
+          "seconds": 0.085
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "EditingThumbnailShutdownTests",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:31:49.660081+00:00",
+      "wallSeconds": 1.237419,
+      "tests": 3,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "ff1fa8e9b16d1c31865df3d4e80ec17524b1ea2814122ad8df6a8c76241d736d",
+      "cases": [
+        {
+          "name": "testEscapedNSImageStaysChargedAfterOwnerShutdownUntilActualLastRelease",
+          "seconds": 0.403
+        },
+        {
+          "name": "testInflightShutdownJoinsRealWorkerAndRejectsLateActualReadyLease",
+          "seconds": 0.494
+        },
+        {
+          "name": "testReadyOwnerShutdownReleasesActualFiveImagesBeforeServiceCloseAll",
+          "seconds": 0.267
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "EditingWorkflowTests/testArchivedVersionCanBeOpenedAndExportedWhenOriginalIsOffline",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:31:50.923899+00:00",
+      "wallSeconds": 0.298566,
+      "tests": 1,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "a6b98f210eb239f518dc0d2cbd31b42dec0eb7d6b9dbcf609d106c2ce8fd600d",
+      "cases": [
+        {
+          "name": "testArchivedVersionCanBeOpenedAndExportedWhenOriginalIsOffline",
+          "seconds": 0.23
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "EditingWorkflowTests/testRenderedExportAssociationPersistsAndMissingTargetDoesNotRerender",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:31:51.244237+00:00",
+      "wallSeconds": 0.308846,
+      "tests": 1,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "ed7fa0b4c3901ba6e72fe700bce6e5273307f10f16a88c41393ffbd823886b3c",
+      "cases": [
+        {
+          "name": "testRenderedExportAssociationPersistsAndMissingTargetDoesNotRerender",
+          "seconds": 0.235
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "UIClickPerformanceTests/testOrdinaryGridSelectionDoesNotRequestRAWDetail",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:31:51.575515+00:00",
+      "wallSeconds": 0.341164,
+      "tests": 1,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "1d0c5a9c31d58ced3cc79305cf4e6c7c42bdfde20e01449fc662251ce5bae34d",
+      "cases": [
+        {
+          "name": "testOrdinaryGridSelectionDoesNotRequestRAWDetail",
+          "seconds": 0.269
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "UIClickPerformanceTests/testLateCancelledPreviewCannotReplaceNewFocusedImage",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:31:51.947774+00:00",
+      "wallSeconds": 0.279274,
+      "tests": 1,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "a1e91819ccbf0b948ce811b60a16eda1c53e0fe790e77a923ebe82cdc7949226",
+      "cases": [
+        {
+          "name": "testLateCancelledPreviewCannotReplaceNewFocusedImage",
+          "seconds": 0.202
+        }
+      ]
+    },
+    {
+      "module": "RAWMasterUITests",
+      "selector": "PerformanceMonitorWorkflowTests",
+      "executableSHA256": "9bcd5e3bf3d2a97cf9f4160112e460c2a2241510a442b868b29ea4ba87d30676",
+      "startedAt": "2026-11-22T10:31:52.255796+00:00",
+      "wallSeconds": 0.485294,
+      "tests": 2,
+      "failures": 0,
+      "exitCode": 0,
+      "logSHA256": "da5fa66e848489bffe858edbd4837a542431b817518a7195a1dcbaf7d80e604a",
+      "cases": [
+        {
+          "name": "testExportFromMonitorIsReadableByReleaseChecker",
+          "seconds": 0.07
+        },
+        {
+          "name": "testMonitorPausesClearsLiveHistoryExportsAndReopens",
+          "seconds": 0.336
+        }
+      ]
+    }
+  ]
+}

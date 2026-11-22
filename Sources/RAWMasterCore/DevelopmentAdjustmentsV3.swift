@@ -3,7 +3,7 @@ import Foundation
 /// V3 uses its own units and operator identities; these values do not relabel legacy V2 math.
 public enum DevelopmentAdjustmentID: String, Codable, CaseIterable, Sendable {
   case light, color, blackAndWhite, retouch, redEye, whiteBalance, curves, levels
-  case definition, selectiveColor, noiseReduction, sharpen, vignette, filter
+  case definition, selectiveColor, noiseReduction, sharpen, vignette, filter, optics
   case texture, clarity, dehaze
 }
 
@@ -78,6 +78,12 @@ public enum DevelopmentBrillianceVersion: String, Codable, Hashable, Sendable {
   case adaptiveLocalV1
 }
 
+public enum DevelopmentLightAutoFieldV3: String, Codable, CaseIterable, Sendable {
+  case brilliance, exposure, highlights, shadows, whites, blackPoint, brightness, contrast
+}
+
+public enum DevelopmentClippingPreviewV3: String, Codable, Sendable { case shadows, highlights, both }
+
 public struct DevelopmentLightV3: Codable, Equatable, Sendable {
   public var enabled: Bool
   public var brilliance: Double
@@ -88,14 +94,17 @@ public struct DevelopmentLightV3: Codable, Equatable, Sendable {
   public var brightness: Double
   public var contrast: Double
   public var blackPoint: Double
-  public init(enabled: Bool = false, brilliance: Double = 0, brillianceVersion: DevelopmentBrillianceVersion? = nil, exposure: Double = 0, highlights: Double = 0, shadows: Double = 0, brightness: Double = 0, contrast: Double = 0, blackPoint: Double = 0) {
-    self.enabled = enabled; self.brilliance = brilliance; self.brillianceVersion = brillianceVersion; self.exposure = exposure; self.highlights = highlights; self.shadows = shadows; self.brightness = brightness; self.contrast = contrast; self.blackPoint = blackPoint
+  public var whites: Double
+  /// Ephemeral preview-only mode; the Controller never commits it to the draft.
+  public var clippingPreview: DevelopmentClippingPreviewV3?
+  public init(enabled: Bool = false, brilliance: Double = 0, brillianceVersion: DevelopmentBrillianceVersion? = nil, exposure: Double = 0, highlights: Double = 0, shadows: Double = 0, brightness: Double = 0, contrast: Double = 0, blackPoint: Double = 0, whites: Double = 0, clippingPreview: DevelopmentClippingPreviewV3? = nil) {
+    self.enabled = enabled; self.brilliance = brilliance; self.brillianceVersion = brillianceVersion; self.exposure = exposure; self.highlights = highlights; self.shadows = shadows; self.brightness = brightness; self.contrast = contrast; self.blackPoint = blackPoint; self.whites = whites;self.clippingPreview = clippingPreview
   }
   public func validate() throws {
     try DevelopmentV3Validation.range([brilliance],-2...2)
     if enabled, brillianceVersion == .publicTiledJointFixed050V1, brilliance != 0 {
       guard brilliance == 0.5, exposure == 0, highlights == 0, shadows == 0,
-        brightness == 0, contrast == 0, blackPoint == 0 else { throw EditingError.invalidRecipe }
+        brightness == 0, contrast == 0, blackPoint == 0, whites == 0 else { throw EditingError.invalidRecipe }
     }
     try DevelopmentV3Validation.range([exposure],-2...2)
     try DevelopmentV3Validation.range([highlights],-1...1)
@@ -103,12 +112,13 @@ public struct DevelopmentLightV3: Codable, Equatable, Sendable {
     try DevelopmentV3Validation.range([brightness],-2...2)
     try DevelopmentV3Validation.range([contrast],-1...2)
     try DevelopmentV3Validation.range([blackPoint],-2...2)
+    try DevelopmentV3Validation.range([whites],-1...1)
   }
-  private enum CodingKeys: String, CodingKey { case enabled, brilliance, brillianceVersion, exposure, highlights, shadows, brightness, contrast, blackPoint }
+  private enum CodingKeys: String, CodingKey { case enabled, brilliance, brillianceVersion, exposure, highlights, shadows, brightness, contrast, blackPoint, whites, clippingPreview }
   public init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy:CodingKeys.self)
     try RecipeCoding.requireKeys(decoder,["enabled","brilliance","exposure","highlights","shadows","brightness","contrast","blackPoint"] +
-      (c.contains(.brillianceVersion) ? ["brillianceVersion"]:[]))
+      (c.contains(.brillianceVersion) ? ["brillianceVersion"]:[]) + (c.contains(.whites) ? ["whites"]:[]) + (c.contains(.clippingPreview) ? ["clippingPreview"]:[]))
     enabled = try c.decode(Bool.self,forKey:.enabled)
     brilliance = try c.decode(Double.self,forKey:.brilliance)
     brillianceVersion = c.contains(.brillianceVersion) ? try c.decode(DevelopmentBrillianceVersion.self,forKey:.brillianceVersion):nil
@@ -118,6 +128,8 @@ public struct DevelopmentLightV3: Codable, Equatable, Sendable {
     brightness = try c.decode(Double.self,forKey:.brightness)
     contrast = try c.decode(Double.self,forKey:.contrast)
     blackPoint = try c.decode(Double.self,forKey:.blackPoint)
+    whites = c.contains(.whites) ? try c.decode(Double.self,forKey:.whites):0
+    clippingPreview = c.contains(.clippingPreview) ? try c.decode(DevelopmentClippingPreviewV3.self,forKey:.clippingPreview):nil
     try validate()
   }
   public func encode(to encoder: Encoder) throws {
@@ -131,6 +143,8 @@ public struct DevelopmentLightV3: Codable, Equatable, Sendable {
     try c.encode(brightness,forKey:.brightness)
     try c.encode(contrast,forKey:.contrast)
     try c.encode(blackPoint,forKey:.blackPoint)
+    if whites != 0 { try c.encode(whites,forKey:.whites) }
+    try c.encodeIfPresent(clippingPreview,forKey:.clippingPreview)
   }
 }
 
@@ -171,6 +185,17 @@ public enum DevelopmentGrainSamplingVersion: String, Codable, Hashable, Sendable
   case sourceNativeLatticeV1 = "source-native-lattice-v1"
 }
 
+public struct DevelopmentBlackAndWhiteMixerV3: Codable, Equatable, Sendable {
+  /// Red, orange, yellow, green, cyan, blue, purple, magenta; recipe domain -1...1.
+  public var values: [Double]
+  public init(values: [Double] = Array(repeating:0,count:8)) { self.values = values }
+  public var isActive: Bool { values.contains { $0 != 0 } }
+  public func validate() throws {
+    guard values.count == DevelopmentSelectiveColorSlotV3.allCases.count else { throw EditingError.invalidRecipe }
+    try DevelopmentV3Validation.range(values,-1...1)
+  }
+}
+
 public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
   public var enabled: Bool
   public var intensity: Double
@@ -179,27 +204,33 @@ public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
   public var grain: Double
   /// Missing/omitted is the original v3.2 interpretation; no automatic migration on decode.
   public var grainSamplingVersion: DevelopmentGrainSamplingVersion?
+  /// Optional storage preserves every pre-B&W-Mixer recipe and its frozen fingerprint.
+  public var mixer: DevelopmentBlackAndWhiteMixerV3?
   public var requiresLegacyGrainCanonicalInput: Bool { grain != 0 && grainSamplingVersion == nil }
-  public init(enabled: Bool = false, intensity: Double = 0.5, neutrals: Double = 0, tone: Double = 0, grain: Double = 0, grainSamplingVersion: DevelopmentGrainSamplingVersion? = nil) {
-    self.enabled = enabled; self.intensity = intensity; self.neutrals = neutrals; self.tone = tone; self.grain = grain; self.grainSamplingVersion = grainSamplingVersion
+  public init(enabled: Bool = false, intensity: Double = 0.5, neutrals: Double = 0, tone: Double = 0, grain: Double = 0,
+              grainSamplingVersion: DevelopmentGrainSamplingVersion? = nil, mixer: DevelopmentBlackAndWhiteMixerV3? = nil) {
+    self.enabled = enabled; self.intensity = intensity; self.neutrals = neutrals; self.tone = tone; self.grain = grain
+    self.grainSamplingVersion = grainSamplingVersion; self.mixer = mixer
   }
   public func validate() throws {
     try DevelopmentV3Validation.range([intensity],0...1)
     try DevelopmentV3Validation.range([neutrals],-1...1)
     try DevelopmentV3Validation.range([tone],-1...1)
     try DevelopmentV3Validation.range([grain],0...1)
+    try mixer?.validate()
     guard grainSamplingVersion == nil || grain != 0 else { throw EditingError.invalidRecipe }
   }
-  private enum CodingKeys: String, CodingKey { case enabled, intensity, neutrals, tone, grain, grainSamplingVersion }
+  private enum CodingKeys: String, CodingKey { case enabled, intensity, neutrals, tone, grain, grainSamplingVersion, mixer }
   public init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy:CodingKeys.self)
-    try RecipeCoding.requireKeys(decoder,["enabled","intensity","neutrals","tone","grain"] + (c.contains(.grainSamplingVersion) ? ["grainSamplingVersion"]:[]))
+    try RecipeCoding.requireKeys(decoder,["enabled","intensity","neutrals","tone","grain"] + (c.contains(.grainSamplingVersion) ? ["grainSamplingVersion"]:[]) + (c.contains(.mixer) ? ["mixer"]:[]))
     enabled = try c.decode(Bool.self,forKey:.enabled)
     intensity = try c.decode(Double.self,forKey:.intensity)
     neutrals = try c.decode(Double.self,forKey:.neutrals)
     tone = try c.decode(Double.self,forKey:.tone)
     grain = try c.decode(Double.self,forKey:.grain)
     grainSamplingVersion = c.contains(.grainSamplingVersion) ? try c.decode(DevelopmentGrainSamplingVersion.self,forKey:.grainSamplingVersion):nil
+    mixer = try c.decodeIfPresent(DevelopmentBlackAndWhiteMixerV3.self,forKey:.mixer)
     try validate()
   }
   public func encode(to encoder: Encoder) throws {
@@ -210,6 +241,7 @@ public struct DevelopmentBlackAndWhiteV3: Codable, Equatable, Sendable {
     try c.encode(tone,forKey:.tone)
     try c.encode(grain,forKey:.grain)
     try c.encodeIfPresent(grainSamplingVersion,forKey:.grainSamplingVersion)
+    try c.encodeIfPresent(mixer,forKey:.mixer)
   }
 }
 
@@ -245,11 +277,15 @@ public struct DevelopmentNoiseReductionV3: Codable, Equatable, Sendable {
   public var luminanceNoise, colorNoise, detail: Double
   /// Ordinary rendered-image Amount, measured 0...5. It is not RAW luminance noise.
   public var nonRawAmount: Double
+  /// Optional image-domain detail controls, independent of the native decoder's shared Detail key.
+  public var luminanceContrast, colorDetail: Double?
   public var nativeMappingVersion: Int
   public init(enabled: Bool = false, sourceCapability: DevelopmentNoiseReductionSourceCapability = .raw,
-              luminanceNoise: Double = 0, colorNoise: Double = 0, detail: Double = 0, nonRawAmount: Double = 0, nativeMappingVersion: Int = 1) {
+              luminanceNoise: Double = 0, colorNoise: Double = 0, detail: Double = 0, nonRawAmount: Double = 0,
+              luminanceContrast: Double? = nil, colorDetail: Double? = nil, nativeMappingVersion: Int = 1) {
     self.enabled = enabled; self.sourceCapability = sourceCapability; self.luminanceNoise = luminanceNoise
-    self.colorNoise = colorNoise; self.detail = detail; self.nonRawAmount = nonRawAmount; self.nativeMappingVersion = nativeMappingVersion
+    self.colorNoise = colorNoise; self.detail = detail; self.nonRawAmount = nonRawAmount
+    self.luminanceContrast = luminanceContrast; self.colorDetail = colorDetail; self.nativeMappingVersion = nativeMappingVersion
   }
   public func validate() throws {
     // Remembered inactive-domain parameters are validated too; no silent clamping or reinterpretation.
@@ -258,6 +294,8 @@ public struct DevelopmentNoiseReductionV3: Codable, Equatable, Sendable {
     try DevelopmentV3Validation.range([colorNoise],-1...1)
     try DevelopmentV3Validation.range([detail],0...3)
     try DevelopmentV3Validation.range([nonRawAmount],0...5)
+    if let luminanceContrast { try DevelopmentV3Validation.range([luminanceContrast],0...1) }
+    if let colorDetail { try DevelopmentV3Validation.range([colorDetail],0...1) }
   }
   /// Must be called with actual decoder/source facts before applying an enabled NR operator.
   /// A disabled group can retain another domain's values, but they must still pass full validation.
@@ -265,20 +303,22 @@ public struct DevelopmentNoiseReductionV3: Codable, Equatable, Sendable {
     try validate()
     guard !enabled || sourceCapability == actualSourceCapability else { throw EditingError.invalidRecipe }
   }
-  private enum CodingKeys: String, CodingKey { case enabled, sourceCapability, luminanceNoise, colorNoise, detail, nonRawAmount, nativeMappingVersion }
+  private enum CodingKeys: String, CodingKey { case enabled, sourceCapability, luminanceNoise, colorNoise, detail, nonRawAmount, luminanceContrast, colorDetail, nativeMappingVersion }
   public init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy:CodingKeys.self)
-    try RecipeCoding.requireKeys(decoder,["enabled","sourceCapability","luminanceNoise","colorNoise","detail","nonRawAmount"]+(c.contains(.nativeMappingVersion) ? ["nativeMappingVersion"]:[]))
+    try RecipeCoding.requireKeys(decoder,["enabled","sourceCapability","luminanceNoise","colorNoise","detail","nonRawAmount"]+(c.contains(.luminanceContrast) ? ["luminanceContrast"]:[])+(c.contains(.colorDetail) ? ["colorDetail"]:[])+(c.contains(.nativeMappingVersion) ? ["nativeMappingVersion"]:[]))
     nativeMappingVersion = c.contains(.nativeMappingVersion) ? try c.decode(Int.self,forKey:.nativeMappingVersion):1
     enabled = try c.decode(Bool.self,forKey:.enabled); sourceCapability = try c.decode(DevelopmentNoiseReductionSourceCapability.self,forKey:.sourceCapability)
     luminanceNoise = try c.decode(Double.self,forKey:.luminanceNoise); colorNoise = try c.decode(Double.self,forKey:.colorNoise)
-    detail = try c.decode(Double.self,forKey:.detail); nonRawAmount = try c.decode(Double.self,forKey:.nonRawAmount); try validate()
+    detail = try c.decode(Double.self,forKey:.detail); nonRawAmount = try c.decode(Double.self,forKey:.nonRawAmount)
+    luminanceContrast = try c.decodeIfPresent(Double.self,forKey:.luminanceContrast); colorDetail = try c.decodeIfPresent(Double.self,forKey:.colorDetail); try validate()
   }
   public func encode(to encoder: Encoder) throws {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self)
     try c.encode(enabled,forKey:.enabled); try c.encode(sourceCapability,forKey:.sourceCapability)
     try c.encode(luminanceNoise,forKey:.luminanceNoise); try c.encode(colorNoise,forKey:.colorNoise)
     try c.encode(detail,forKey:.detail); try c.encode(nonRawAmount,forKey:.nonRawAmount)
+    try c.encodeIfPresent(luminanceContrast,forKey:.luminanceContrast); try c.encodeIfPresent(colorDetail,forKey:.colorDetail)
     if sourceCapability == .raw && enabled && (luminanceNoise != 0 || colorNoise != 0 || detail != 0) { try c.encode(nativeMappingVersion,forKey:.nativeMappingVersion) }
   }
 }
@@ -288,22 +328,37 @@ public struct DevelopmentSharpenV3: Codable, Equatable, Sendable {
   public var intensity: Double
   public var edges: Double
   public var falloff: Double
-  public init(enabled: Bool = false, intensity: Double = 0, edges: Double = 0.22, falloff: Double = 0.69) {
+  /// Explicit Camera Raw-style controls. Nil preserves the original Photos-oriented recipe and math.
+  public var radius: Double?
+  public var detail: Double?
+  public var masking: Double?
+  /// Ephemeral preview intent; nil is absent from every legacy recipe.
+  public var visualiseMasking: Bool?
+  public init(enabled: Bool = false, intensity: Double = 0, edges: Double = 0.22, falloff: Double = 0.69,
+              radius: Double? = nil, detail: Double? = nil, masking: Double? = nil, visualiseMasking: Bool? = nil) {
     self.enabled = enabled; self.intensity = intensity; self.edges = edges; self.falloff = falloff
+    self.radius = radius; self.detail = detail; self.masking = masking; self.visualiseMasking = visualiseMasking
   }
   public func validate() throws {
     try DevelopmentV3Validation.range([intensity],0...1)
     try DevelopmentV3Validation.range([edges],0...1)
     try DevelopmentV3Validation.range([falloff],0...1)
+    if let radius { try DevelopmentV3Validation.range([radius],0.5...3) }
+    if let detail { try DevelopmentV3Validation.range([detail],0...1) }
+    if let masking { try DevelopmentV3Validation.range([masking],0...1) }
   }
-  private enum CodingKeys: String, CodingKey { case enabled, intensity, edges, falloff }
+  private enum CodingKeys: String, CodingKey { case enabled, intensity, edges, falloff, radius, detail, masking, visualiseMasking }
   public init(from decoder: Decoder) throws {
-    try RecipeCoding.requireKeys(decoder,["enabled","intensity","edges","falloff"])
     let c = try decoder.container(keyedBy:CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder,["enabled","intensity","edges","falloff"] + (c.contains(.radius) ? ["radius"]:[]) + (c.contains(.detail) ? ["detail"]:[]) + (c.contains(.masking) ? ["masking"]:[]) + (c.contains(.visualiseMasking) ? ["visualiseMasking"]:[]))
     enabled = try c.decode(Bool.self,forKey:.enabled)
     intensity = try c.decode(Double.self,forKey:.intensity)
     edges = try c.decode(Double.self,forKey:.edges)
     falloff = try c.decode(Double.self,forKey:.falloff)
+    radius = try c.decodeIfPresent(Double.self,forKey:.radius)
+    detail = try c.decodeIfPresent(Double.self,forKey:.detail)
+    masking = try c.decodeIfPresent(Double.self,forKey:.masking)
+    visualiseMasking = try c.decodeIfPresent(Bool.self,forKey:.visualiseMasking)
     try validate()
   }
   public func encode(to encoder: Encoder) throws {
@@ -312,6 +367,10 @@ public struct DevelopmentSharpenV3: Codable, Equatable, Sendable {
     try c.encode(intensity,forKey:.intensity)
     try c.encode(edges,forKey:.edges)
     try c.encode(falloff,forKey:.falloff)
+    try c.encodeIfPresent(radius,forKey:.radius)
+    try c.encodeIfPresent(detail,forKey:.detail)
+    try c.encodeIfPresent(masking,forKey:.masking)
+    try c.encodeIfPresent(visualiseMasking,forKey:.visualiseMasking)
   }
 }
 
@@ -358,7 +417,7 @@ public enum DevelopmentWhiteBalanceAdjustmentV3: Codable, Equatable, Sendable {
     case .asShot: break
     case .neutralGray(let warmth), .skinTone(let warmth): try DevelopmentV3Validation.range([warmth],-0.5...0.5)
     case let .temperatureTint(temperature,tint):
-      try DevelopmentV3Validation.range([temperature],2000...20000); try DevelopmentV3Validation.range([tint],-150...150)
+      try DevelopmentV3Validation.range([temperature],2000...50000); try DevelopmentV3Validation.range([tint],-150...150)
     }
   }
   private enum CodingKeys: String, CodingKey { case mode, warmth, temperature, tint }
@@ -434,22 +493,33 @@ public struct DevelopmentCurvesV3: Codable, Equatable, Sendable {
   public var algorithm: DevelopmentCurvesAlgorithmV3
   public var enabled: Bool
   public var rgb, red, green, blue: DevelopmentCurveChannelV3
-  public init(enabled: Bool = false, rgb: DevelopmentCurveChannelV3 = .init(), red: DevelopmentCurveChannelV3 = .init(), green: DevelopmentCurveChannelV3 = .init(), blue: DevelopmentCurveChannelV3 = .init(), algorithm: DevelopmentCurvesAlgorithmV3 = .legacyPCHIPV1) {
+  public var parametric: DevelopmentParametricCurveV3?
+  /// Optional point-curve saturation refinement, stored in display units -100...100.
+  public var refineSaturation: Double?
+  public init(enabled: Bool = false, rgb: DevelopmentCurveChannelV3 = .init(), red: DevelopmentCurveChannelV3 = .init(), green: DevelopmentCurveChannelV3 = .init(), blue: DevelopmentCurveChannelV3 = .init(), algorithm: DevelopmentCurvesAlgorithmV3 = .legacyPCHIPV1, parametric: DevelopmentParametricCurveV3? = nil, refineSaturation: Double? = nil) {
     self.algorithm = algorithm; self.enabled = enabled; self.rgb = rgb; self.red = red; self.green = green; self.blue = blue
+    self.parametric = parametric; self.refineSaturation = refineSaturation
   }
-  public func validate() throws { try rgb.validate(); try red.validate(); try green.validate(); try blue.validate() }
-  private enum CodingKeys: String, CodingKey { case enabled, rgb, red, green, blue, algorithm }
+  public func validate() throws {
+    try rgb.validate(); try red.validate(); try green.validate(); try blue.validate(); try parametric?.validate()
+    if let refineSaturation { try DevelopmentV3Validation.range([refineSaturation],-100...100) }
+  }
+  private enum CodingKeys: String, CodingKey { case enabled, rgb, red, green, blue, algorithm, parametric, refineSaturation }
   public init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy:CodingKeys.self)
-    try RecipeCoding.requireKeys(decoder,["enabled","rgb","red","green","blue"]+(c.contains(.algorithm) ? ["algorithm"]:[]))
+    try RecipeCoding.requireKeys(decoder,["enabled","rgb","red","green","blue"]+(c.contains(.algorithm) ? ["algorithm"]:[])+(c.contains(.parametric) ? ["parametric"]:[])+(c.contains(.refineSaturation) ? ["refineSaturation"]:[]))
     algorithm = c.contains(.algorithm) ? try c.decode(DevelopmentCurvesAlgorithmV3.self,forKey:.algorithm):.legacyPCHIPV1
     enabled = try c.decode(Bool.self,forKey:.enabled); rgb = try c.decode(DevelopmentCurveChannelV3.self,forKey:.rgb); red = try c.decode(DevelopmentCurveChannelV3.self,forKey:.red)
-    green = try c.decode(DevelopmentCurveChannelV3.self,forKey:.green); blue = try c.decode(DevelopmentCurveChannelV3.self,forKey:.blue); try validate()
+    green = try c.decode(DevelopmentCurveChannelV3.self,forKey:.green); blue = try c.decode(DevelopmentCurveChannelV3.self,forKey:.blue)
+    parametric = try c.decodeIfPresent(DevelopmentParametricCurveV3.self,forKey:.parametric)
+    refineSaturation = try c.decodeIfPresent(Double.self,forKey:.refineSaturation); try validate()
   }
   public func encode(to encoder: Encoder) throws {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self)
     if algorithm != .legacyPCHIPV1 { try c.encode(algorithm,forKey:.algorithm) }
     try c.encode(enabled,forKey:.enabled); try c.encode(rgb,forKey:.rgb); try c.encode(red,forKey:.red); try c.encode(green,forKey:.green); try c.encode(blue,forKey:.blue)
+    if let parametric { try c.encode(parametric,forKey:.parametric) }
+    try c.encodeIfPresent(refineSaturation,forKey:.refineSaturation)
   }
 }
 
@@ -513,7 +583,7 @@ public struct DevelopmentLevelsV3: Codable, Equatable, Sendable {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self); try c.encode(enabled,forKey:.enabled); try c.encode(luminance,forKey:.luminance); try c.encode(rgb,forKey:.rgb); try c.encode(red,forKey:.red); try c.encode(green,forKey:.green); try c.encode(blue,forKey:.blue)
   }
 }
-public enum DevelopmentSelectiveColorSlotV3: String, Codable, CaseIterable, Sendable { case red, yellow, green, cyan, blue, magenta }
+public enum DevelopmentSelectiveColorSlotV3: String, Codable, CaseIterable, Sendable { case red, orange, yellow, green, cyan, blue, purple, magenta }
 /// Picker output in the canonical extended-linear-sRGB working space, never the display's RGB.
 public struct DevelopmentSampledColorV3: Codable, Equatable, Sendable {
   public var red, green, blue: Double
@@ -535,43 +605,95 @@ public struct DevelopmentSelectiveColorAdjustmentV3: Codable, Equatable, Sendabl
   public var slot: DevelopmentSelectiveColorSlotV3
   public var sampledColor: DevelopmentSampledColorV3?
   public var hue, saturation, luminance, range: Double
-  public init(slot: DevelopmentSelectiveColorSlotV3, sampledColor: DevelopmentSampledColorV3? = nil, hue: Double = 0, saturation: Double = 0, luminance: Double = 0, range: Double = 1) {
-    self.slot = slot; self.sampledColor = sampledColor; self.hue = hue; self.saturation = saturation; self.luminance = luminance; self.range = range
+  /// Optional -100...100 convergence/divergence from the sampled color; absent preserves legacy wire bytes.
+  public var variance: Double?
+  public init(slot: DevelopmentSelectiveColorSlotV3, sampledColor: DevelopmentSampledColorV3? = nil, hue: Double = 0,
+              saturation: Double = 0, luminance: Double = 0, range: Double = 1, variance: Double? = nil) {
+    self.slot = slot; self.sampledColor = sampledColor; self.hue = hue; self.saturation = saturation
+    self.luminance = luminance; self.range = range; self.variance = variance
   }
   public func validate() throws {
     try sampledColor?.validate(); try DevelopmentV3Validation.range([hue],-60...60); try DevelopmentV3Validation.range([saturation],-100...100)
     try DevelopmentV3Validation.range([luminance],-70...70); try DevelopmentV3Validation.range([range],0...2)
+    if let variance { try DevelopmentV3Validation.range([variance],-100...100) }
   }
-  private enum CodingKeys: String, CodingKey { case slot, sampledColor, hue, saturation, luminance, range }
+  private enum CodingKeys: String, CodingKey { case slot, sampledColor, hue, saturation, luminance, range, variance }
   public init(from decoder: Decoder) throws {
-    try RecipeCoding.requireKeys(decoder,["slot","sampledColor","hue","saturation","luminance","range"]); let c = try decoder.container(keyedBy:CodingKeys.self)
+    let c = try decoder.container(keyedBy:CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder,["slot","sampledColor","hue","saturation","luminance","range"]+(c.contains(.variance) ? ["variance"]:[]))
     slot = try c.decode(DevelopmentSelectiveColorSlotV3.self,forKey:.slot); sampledColor = try c.decodeIfPresent(DevelopmentSampledColorV3.self,forKey:.sampledColor)
-    hue = try c.decode(Double.self,forKey:.hue); saturation = try c.decode(Double.self,forKey:.saturation); luminance = try c.decode(Double.self,forKey:.luminance); range = try c.decode(Double.self,forKey:.range); try validate()
+    hue = try c.decode(Double.self,forKey:.hue); saturation = try c.decode(Double.self,forKey:.saturation); luminance = try c.decode(Double.self,forKey:.luminance); range = try c.decode(Double.self,forKey:.range)
+    variance = try c.decodeIfPresent(Double.self,forKey:.variance); try validate()
   }
   public func encode(to encoder: Encoder) throws {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self); try c.encode(slot,forKey:.slot); try c.encode(sampledColor,forKey:.sampledColor)
     try c.encode(hue,forKey:.hue); try c.encode(saturation,forKey:.saturation); try c.encode(luminance,forKey:.luminance); try c.encode(range,forKey:.range)
+    try c.encodeIfPresent(variance,forKey:.variance)
   }
 }
+public struct DevelopmentPointColorSampleV3: Codable, Equatable, Sendable, Identifiable {
+  public var id: UUID
+  public var sampledColor: DevelopmentSampledColorV3
+  public var hue,saturation,luminance,range: Double
+  public var variance: Double?
+  public init(id:UUID=UUID(),sampledColor:DevelopmentSampledColorV3,hue:Double=0,saturation:Double=0,
+              luminance:Double=0,range:Double=1,variance:Double?=nil) {
+    self.id=id;self.sampledColor=sampledColor;self.hue=hue;self.saturation=saturation
+    self.luminance=luminance;self.range=range;self.variance=variance
+  }
+  public var isActive:Bool{hue != 0 || saturation != 0 || luminance != 0 || (variance ?? 0) != 0}
+  public func validate()throws{
+    try sampledColor.validate();try DevelopmentV3Validation.range([hue],-60...60)
+    try DevelopmentV3Validation.range([saturation],-100...100);try DevelopmentV3Validation.range([luminance],-70...70)
+    try DevelopmentV3Validation.range([range],0...2)
+    if let variance{try DevelopmentV3Validation.range([variance],-100...100)}
+  }
+}
+
 public struct DevelopmentSelectiveColorV3: Codable, Equatable, Sendable {
   public var enabled: Bool
   public var colors: [DevelopmentSelectiveColorAdjustmentV3]
-  public init(enabled: Bool = false, colors: [DevelopmentSelectiveColorAdjustmentV3] = DevelopmentSelectiveColorSlotV3.allCases.map { .init(slot:$0) }) { self.enabled = enabled; self.colors = colors }
-  public func validate() throws {
-    guard colors.count == 6, Set(colors.map(\.slot)).count == 6 else { throw EditingError.invalidRecipe }
-    for color in colors { try color.validate() }
+  /// Transient preview-only slot. Controller never commits it to the user's draft.
+  public var visualiseRange: DevelopmentSelectiveColorSlotV3?
+  /// Independent hue-isolation preview; active hue stays colored and all others become achromatic.
+  public var visualiseIsolation: DevelopmentSelectiveColorSlotV3?
+  /// Independent UUID-based samples, distinct from the fixed HSL slots. Nil preserves old wire bytes.
+  public var pointColors: [DevelopmentPointColorSampleV3]?
+  public static let legacySlots: [DevelopmentSelectiveColorSlotV3] = [.red,.yellow,.green,.cyan,.blue,.magenta]
+  public init(enabled: Bool = false, colors: [DevelopmentSelectiveColorAdjustmentV3] = DevelopmentSelectiveColorSlotV3.allCases.map { .init(slot:$0) },
+              visualiseRange: DevelopmentSelectiveColorSlotV3? = nil, pointColors: [DevelopmentPointColorSampleV3]? = nil,
+              visualiseIsolation: DevelopmentSelectiveColorSlotV3? = nil) {
+    self.enabled = enabled; self.colors = colors; self.visualiseRange = visualiseRange; self.pointColors = pointColors;self.visualiseIsolation = visualiseIsolation
   }
-  private enum CodingKeys: String, CodingKey { case enabled, colors }
+  public func validate() throws {
+    let slots = Set(colors.map(\.slot))
+    let legacy = colors.count == 6 && slots == Set(Self.legacySlots)
+    let current = colors.count == 8 && slots == Set(DevelopmentSelectiveColorSlotV3.allCases)
+    guard (legacy || current), slots.count == colors.count else { throw EditingError.invalidRecipe }
+    if let visualiseRange { guard slots.contains(visualiseRange) else { throw EditingError.invalidRecipe } }
+    if let visualiseIsolation { guard slots.contains(visualiseIsolation) else { throw EditingError.invalidRecipe } }
+    for color in colors { try color.validate() }
+    if let pointColors {
+      guard pointColors.count<=8,Set(pointColors.map(\.id)).count==pointColors.count else{throw EditingError.invalidRecipe}
+      for sample in pointColors{try sample.validate()}
+    }
+  }
+  private enum CodingKeys: String, CodingKey { case enabled, colors, visualiseRange, visualiseIsolation, pointColors }
   public init(from decoder: Decoder) throws {
-    try RecipeCoding.requireKeys(decoder,["enabled","colors"]); let c = try decoder.container(keyedBy:CodingKeys.self)
+    let c = try decoder.container(keyedBy:CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder,["enabled","colors"]+(c.contains(.visualiseRange) ? ["visualiseRange"]:[])+(c.contains(.visualiseIsolation) ? ["visualiseIsolation"]:[])+(c.contains(.pointColors) ? ["pointColors"]:[]))
     enabled = try c.decode(Bool.self,forKey:.enabled); var a = try c.nestedUnkeyedContainer(forKey:.colors)
-    if let count = a.count, count != 6 { throw EditingError.invalidRecipe }
-    colors = []; colors.reserveCapacity(6)
-    while !a.isAtEnd { guard colors.count < 6 else { throw EditingError.invalidRecipe }; colors.append(try a.decode(DevelopmentSelectiveColorAdjustmentV3.self)) }
+    if let count = a.count, count != 6 && count != 8 { throw EditingError.invalidRecipe }
+    colors = []; colors.reserveCapacity(a.count ?? 8)
+    while !a.isAtEnd { guard colors.count < 8 else { throw EditingError.invalidRecipe }; colors.append(try a.decode(DevelopmentSelectiveColorAdjustmentV3.self)) }
+    visualiseRange = try c.decodeIfPresent(DevelopmentSelectiveColorSlotV3.self,forKey:.visualiseRange)
+    visualiseIsolation = try c.decodeIfPresent(DevelopmentSelectiveColorSlotV3.self,forKey:.visualiseIsolation)
+    pointColors = try c.decodeIfPresent([DevelopmentPointColorSampleV3].self,forKey:.pointColors)
     try validate()
   }
   public func encode(to encoder: Encoder) throws {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self); try c.encode(enabled,forKey:.enabled); try c.encode(colors,forKey:.colors)
+    try c.encodeIfPresent(visualiseRange,forKey:.visualiseRange);try c.encodeIfPresent(visualiseIsolation,forKey:.visualiseIsolation);try c.encodeIfPresent(pointColors,forKey:.pointColors)
   }
 }
 public enum DevelopmentPhotoFilterV3: String, Codable, CaseIterable, Sendable {
@@ -595,7 +717,76 @@ public struct DevelopmentFilterV3: Codable, Equatable, Sendable {
   }
 }
 
+public struct DevelopmentEffectsV3: Codable, Equatable, Sendable {
+  public var enabled: Bool
+  public var grain: Double
+  /// Nil preserves the original lattice operator. Non-nil opts into sized/roughness sampling.
+  public var grainSize: Double?
+  public var grainRoughness: Double?
+  public var glow: DevelopmentGlowV3?
+  public var postCropVignette: DevelopmentPostCropVignetteV3?
+  public var lensBlur: DevelopmentLensBlurV3?
+  public init(enabled: Bool = false, grain: Double = 0, grainSize: Double? = nil, grainRoughness: Double? = nil,
+              glow: DevelopmentGlowV3? = nil, postCropVignette: DevelopmentPostCropVignetteV3? = nil,
+              lensBlur: DevelopmentLensBlurV3? = nil) {
+    self.enabled = enabled; self.grain = grain; self.grainSize = grainSize; self.grainRoughness = grainRoughness
+    self.glow = glow; self.postCropVignette = postCropVignette; self.lensBlur = lensBlur
+  }
+  public var usesSizeRoughnessSampling: Bool { grainSize != nil || grainRoughness != nil }
+  public func validate() throws {
+    try DevelopmentV3Validation.range([grain],0...1)
+    if let grainSize { try DevelopmentV3Validation.range([grainSize],0...1) }
+    if let grainRoughness { try DevelopmentV3Validation.range([grainRoughness],0...1) }
+    try glow?.validate(); try postCropVignette?.validate(); try lensBlur?.validate()
+  }
+  private enum CodingKeys: String, CodingKey { case enabled, grain, grainSize, grainRoughness, glow, postCropVignette, lensBlur }
+  public init(from decoder: Decoder) throws {
+    let c = try decoder.container(keyedBy:CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder,["enabled","grain"]+(c.contains(.grainSize) ? ["grainSize"]:[])+(c.contains(.grainRoughness) ? ["grainRoughness"]:[])+(c.contains(.glow) ? ["glow"]:[])+(c.contains(.postCropVignette) ? ["postCropVignette"]:[])+(c.contains(.lensBlur) ? ["lensBlur"]:[]))
+    enabled = try c.decode(Bool.self,forKey:.enabled); grain = try c.decode(Double.self,forKey:.grain)
+    grainSize = try c.decodeIfPresent(Double.self,forKey:.grainSize); grainRoughness = try c.decodeIfPresent(Double.self,forKey:.grainRoughness)
+    glow = try c.decodeIfPresent(DevelopmentGlowV3.self,forKey:.glow)
+    postCropVignette = try c.decodeIfPresent(DevelopmentPostCropVignetteV3.self,forKey:.postCropVignette)
+    lensBlur = try c.decodeIfPresent(DevelopmentLensBlurV3.self,forKey:.lensBlur)
+    try validate()
+  }
+  public func encode(to encoder: Encoder) throws {
+    try validate(); var c = encoder.container(keyedBy:CodingKeys.self)
+    try c.encode(enabled,forKey:.enabled); try c.encode(grain,forKey:.grain)
+    if let grainSize { try c.encode(grainSize,forKey:.grainSize) }
+    if let grainRoughness { try c.encode(grainRoughness,forKey:.grainRoughness) }
+    if let glow { try c.encode(glow,forKey:.glow) }
+    if let postCropVignette { try c.encode(postCropVignette,forKey:.postCropVignette) }
+    if let lensBlur { try c.encode(lensBlur,forKey:.lensBlur) }
+  }
+}
+
+/// Requested high-quality, source-resolution demosaic. Raw values pin the replay algorithm and library version.
+public enum DevelopmentSuperResolutionV1: String, Codable, Sendable {
+  case photoUpconv7 = "waifu2x-upconv7-photo-2x-deb2c288-post-geometry-linear-v1"
+}
+
+public enum DevelopmentRawDetails: String, Codable, Sendable, CaseIterable {
+  case bayerAHD = "flashraw-0.3.1-bayer-ahd-v1"
+  case xTransEdgeAware = "flashraw-0.3.1-xtrans-edge-aware-v1"
+  public var title: String { self == .bayerAHD ? "Bayer · AHD" : "X-Trans · 边缘感知" }
+}
+
+public enum DevelopmentRAWDecoder: String, Codable, Sendable {
+  case flashRaw031 = "flashraw-0.3.1-linear-srgb-bilinear"
+}
+
 public struct DevelopmentAdjustmentsV3: Codable, Equatable, Sendable {
+  /// Missing in recipes persisted with the Core Image decoder.
+  public var rawDecoder: DevelopmentRAWDecoder?
+  public var rawDetails: DevelopmentRawDetails?
+  public var superResolution: DevelopmentSuperResolutionV1?
+  public var aiDenoise: DevelopmentAIDenoiseV1?
+  public var neutralForSameSource: Self {
+    var neutral = Self()
+    neutral.rawDecoder = rawDecoder
+    return neutral
+  }
   public var legacyBasis: DevelopmentLegacyBasis?
   public var light: DevelopmentLightV3
   public var color: DevelopmentColorV3
@@ -609,12 +800,17 @@ public struct DevelopmentAdjustmentsV3: Codable, Equatable, Sendable {
   public var sharpen: DevelopmentSharpenV3
   public var vignette: DevelopmentVignetteV3
   public var filter: DevelopmentFilterV3
+  public var gradingLUTs: DevelopmentLUTStack?
   public var geometry: DevelopmentGeometryV3
   public var localEdits: DevelopmentLocalEditsV3
   public var advancedDetail: DevelopmentAdvancedDetailV3
-  public init(legacyBasis: DevelopmentLegacyBasis? = nil, light: DevelopmentLightV3 = .init(), color: DevelopmentColorV3 = .init(), blackAndWhite: DevelopmentBlackAndWhiteV3 = .init(), whiteBalance: DevelopmentWhiteBalanceV3 = .init(), curves: DevelopmentCurvesV3 = .init(), levels: DevelopmentLevelsV3 = .init(), definition: DevelopmentDefinitionV3 = .init(), selectiveColor: DevelopmentSelectiveColorV3 = .init(), noiseReduction: DevelopmentNoiseReductionV3 = .init(), sharpen: DevelopmentSharpenV3 = .init(), vignette: DevelopmentVignetteV3 = .init(), filter: DevelopmentFilterV3 = .init(), geometry: DevelopmentGeometryV3 = .init(), localEdits: DevelopmentLocalEditsV3 = .init(), advancedDetail: DevelopmentAdvancedDetailV3 = .init()) {
+  public var effects: DevelopmentEffectsV3?
+  public var masks: [DevelopmentMaskLayerV3]
+  public var optics: DevelopmentOpticsV3?
+  public init(legacyBasis: DevelopmentLegacyBasis? = nil, light: DevelopmentLightV3 = .init(), color: DevelopmentColorV3 = .init(), blackAndWhite: DevelopmentBlackAndWhiteV3 = .init(), whiteBalance: DevelopmentWhiteBalanceV3 = .init(), curves: DevelopmentCurvesV3 = .init(), levels: DevelopmentLevelsV3 = .init(), definition: DevelopmentDefinitionV3 = .init(), selectiveColor: DevelopmentSelectiveColorV3 = .init(), noiseReduction: DevelopmentNoiseReductionV3 = .init(), sharpen: DevelopmentSharpenV3 = .init(), vignette: DevelopmentVignetteV3 = .init(), filter: DevelopmentFilterV3 = .init(), geometry: DevelopmentGeometryV3 = .init(), localEdits: DevelopmentLocalEditsV3 = .init(), advancedDetail: DevelopmentAdvancedDetailV3 = .init(), effects: DevelopmentEffectsV3? = nil, masks: [DevelopmentMaskLayerV3] = [], optics: DevelopmentOpticsV3? = nil, gradingLUTs: DevelopmentLUTStack? = nil) {
+    self.gradingLUTs = gradingLUTs
     self.legacyBasis = legacyBasis; self.light = light; self.color = color; self.blackAndWhite = blackAndWhite; self.whiteBalance = whiteBalance; self.curves = curves; self.levels = levels; self.definition = definition; self.selectiveColor = selectiveColor; self.noiseReduction = noiseReduction; self.sharpen = sharpen; self.vignette = vignette; self.filter = filter; self.geometry = geometry; self.localEdits = localEdits
-    self.advancedDetail = advancedDetail
+    self.advancedDetail = advancedDetail; self.effects = effects; self.masks = masks; self.optics = optics
   }
   public func validate() throws {
     try legacyBasis?.validate()
@@ -630,15 +826,31 @@ public struct DevelopmentAdjustmentsV3: Codable, Equatable, Sendable {
     try sharpen.validate()
     try vignette.validate()
     try filter.validate()
+    try gradingLUTs?.validate()
+    // These legacy grain recipes explicitly depend on the original Core Image decoder.
+    try aiDenoise?.validate()
+    guard aiDenoise == nil || (rawDetails == nil && !blackAndWhite.requiresLegacyGrainCanonicalInput) else { throw EditingError.invalidRecipe }
+    guard rawDetails == nil || !blackAndWhite.requiresLegacyGrainCanonicalInput else { throw EditingError.invalidRecipe }
     try geometry.validate()
     try localEdits.validate()
     try advancedDetail.validate()
+    try effects?.validate()
+    try DevelopmentMaskLayerV3.validateLayers(masks)
+    try optics?.validate()
   }
-  private enum CodingKeys: String, CodingKey { case legacyBasis, light, color, blackAndWhite, whiteBalance, curves, levels, definition, selectiveColor, noiseReduction, sharpen, vignette, filter, geometry, localEdits, advancedDetail }
+  private enum CodingKeys: String, CodingKey { case rawDecoder, rawDetails, aiDenoise, superResolution, legacyBasis, light, color, blackAndWhite, whiteBalance, curves, levels, definition, selectiveColor, noiseReduction, sharpen, vignette, filter, geometry, localEdits, advancedDetail, effects, masks, optics, gradingLUTs }
   public init(from decoder: Decoder) throws {
     let c = try decoder.container(keyedBy:CodingKeys.self)
-    try RecipeCoding.requireKeys(decoder,["legacyBasis","light","color","blackAndWhite","whiteBalance","curves","levels","definition","selectiveColor","noiseReduction","sharpen","vignette","filter","geometry","localEdits"]+(c.contains(.advancedDetail) ? ["advancedDetail"]:[]))
+    try RecipeCoding.requireKeys(decoder,["legacyBasis","light","color","blackAndWhite","whiteBalance","curves","levels","definition","selectiveColor","noiseReduction","sharpen","vignette","filter","geometry","localEdits"]+(c.contains(.advancedDetail) ? ["advancedDetail"]:[])+(c.contains(.effects) ? ["effects"]:[])+(c.contains(.masks) ? ["masks"]:[])+(c.contains(.optics) ? ["optics"]:[])+(c.contains(.rawDecoder) ? ["rawDecoder"]:[])+(c.contains(.gradingLUTs) ? ["gradingLUTs"]:[])+(c.contains(.rawDetails) ? ["rawDetails"]:[])+(c.contains(.aiDenoise) ? ["aiDenoise"]:[])+(c.contains(.superResolution) ? ["superResolution"]:[]))
+    superResolution = try c.decodeIfPresent(DevelopmentSuperResolutionV1.self, forKey: .superResolution)
+    aiDenoise = try c.decodeIfPresent(DevelopmentAIDenoiseV1.self, forKey: .aiDenoise)
+    rawDetails = try c.decodeIfPresent(DevelopmentRawDetails.self, forKey: .rawDetails)
+    gradingLUTs = try c.decodeIfPresent(DevelopmentLUTStack.self, forKey: .gradingLUTs)
+    rawDecoder = try c.decodeIfPresent(DevelopmentRAWDecoder.self,forKey:.rawDecoder)
     advancedDetail = c.contains(.advancedDetail) ? try c.decode(DevelopmentAdvancedDetailV3.self,forKey:.advancedDetail):.init()
+    effects = c.contains(.effects) ? try c.decode(DevelopmentEffectsV3.self,forKey:.effects):nil
+    masks = c.contains(.masks) ? try c.decode([DevelopmentMaskLayerV3].self,forKey:.masks):[]
+    optics = try c.decodeIfPresent(DevelopmentOpticsV3.self,forKey:.optics)
     legacyBasis = try c.decodeIfPresent(DevelopmentLegacyBasis.self,forKey:.legacyBasis)
     light = try c.decode(DevelopmentLightV3.self,forKey:.light)
     color = try c.decode(DevelopmentColorV3.self,forKey:.color)
@@ -658,6 +870,10 @@ public struct DevelopmentAdjustmentsV3: Codable, Equatable, Sendable {
   }
   public func encode(to encoder: Encoder) throws {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self)
+    try c.encodeIfPresent(rawDecoder,forKey:.rawDecoder)
+    try c.encodeIfPresent(rawDetails, forKey: .rawDetails)
+    try c.encodeIfPresent(superResolution, forKey: .superResolution)
+    try c.encodeIfPresent(aiDenoise, forKey: .aiDenoise)
     try c.encode(legacyBasis,forKey:.legacyBasis)
     try c.encode(light,forKey:.light)
     try c.encode(color,forKey:.color)
@@ -671,8 +887,12 @@ public struct DevelopmentAdjustmentsV3: Codable, Equatable, Sendable {
     try c.encode(sharpen,forKey:.sharpen)
     try c.encode(vignette,forKey:.vignette)
     try c.encode(filter,forKey:.filter)
+    try c.encodeIfPresent(gradingLUTs, forKey: .gradingLUTs)
     try c.encode(geometry,forKey:.geometry)
     try c.encode(localEdits,forKey:.localEdits)
     if advancedDetail != .init() { try c.encode(advancedDetail,forKey:.advancedDetail) }
+    if effects != nil && effects != .init() { try c.encode(effects,forKey:.effects) }
+    if !masks.isEmpty { try c.encode(masks,forKey:.masks) }
+    try c.encodeIfPresent(optics,forKey:.optics)
   }
 }

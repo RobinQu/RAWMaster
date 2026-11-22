@@ -1,0 +1,148 @@
+{
+  "caveats" : [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive proxy is bounded to 2400px and settled\/save\/export remain canonical",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderVersion" : "8",
+  "measurements" : [
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.21725,
+      "interactiveMilliseconds" : [
+        733.09058300000004,
+        9.8670419999999996,
+        11.21725
+      ],
+      "label" : "neutral",
+      "maximumChannelError" : 16,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 2527.181458,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.076499999999999,
+      "interactiveMilliseconds" : [
+        673.88416600000005,
+        11.076499999999999,
+        10.063499999999999
+      ],
+      "label" : "exposure-color",
+      "maximumChannelError" : 5,
+      "p99ChannelError" : 0,
+      "settledMilliseconds" : 2690.3206660000001,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 30.361332999999998,
+      "interactiveMilliseconds" : [
+        713.53579100000002,
+        29.315958999999999,
+        30.361332999999998
+      ],
+      "label" : "adaptive-brilliance",
+      "maximumChannelError" : 15,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 12515.936750000001,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 18.616917000000001,
+      "interactiveMilliseconds" : [
+        28.262333000000002,
+        18.616917000000001,
+        12.8665
+      ],
+      "label" : "texture",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 4107.9780000000001,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 19.106874999999999,
+      "interactiveMilliseconds" : [
+        24.260290999999999,
+        18.157042000000001,
+        19.106874999999999
+      ],
+      "label" : "clarity",
+      "maximumChannelError" : 2,
+      "p99ChannelError" : 0,
+      "settledMilliseconds" : 4485.2844169999998,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 22.175000000000001,
+      "interactiveMilliseconds" : [
+        28.631333000000001,
+        20.305792,
+        22.175000000000001
+      ],
+      "label" : "dehaze-v1",
+      "maximumChannelError" : 6,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 6807.8082910000003,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 24.628582999999999,
+      "interactiveMilliseconds" : [
+        34.910041999999997,
+        22.894708000000001,
+        24.628582999999999
+      ],
+      "label" : "dehaze-v2",
+      "maximumChannelError" : 18,
+      "p99ChannelError" : 2,
+      "settledMilliseconds" : 7627.0388750000002,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1337,
+      "interactiveMedianMilliseconds" : 8.8175410000000003,
+      "interactiveMilliseconds" : [
+        15.437250000000001,
+        8.7912499999999998,
+        8.8175410000000003
+      ],
+      "label" : "geometry",
+      "maximumChannelError" : -1,
+      "p99ChannelError" : -1,
+      "settledMilliseconds" : 2602.0257499999998,
+      "width" : 1973
+    },
+    {
+      "approximate" : true,
+      "height" : 1337,
+      "interactiveMedianMilliseconds" : 12.981,
+      "interactiveMilliseconds" : [
+        106.833,
+        11.569583,
+        12.981
+      ],
+      "label" : "post-crop-vignette",
+      "maximumChannelError" : -1,
+      "p99ChannelError" : -1,
+      "settledMilliseconds" : 2531.2994159999998,
+      "width" : 1973
+    }
+  ],
+  "policy" : "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=0",
+  "proxyVersion" : "actual-parameters-linear-proxy-v3-flashraw-neutral\/integral-noise-snap-v1\/filter-global-v1",
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

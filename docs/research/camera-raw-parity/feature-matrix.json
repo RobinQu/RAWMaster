@@ -1,0 +1,4006 @@
+{
+  "schemaVersion": 1,
+  "meta": {
+    "title": "Camera Raw × RawMaster 图像调整功能一致性清单",
+    "reportDate": "2026-11-22",
+    "cameraRawBaseline": "Camera Raw 19.0（2026-11 公开文档）",
+    "rawMasterSnapshot": "b89702e8714fd0fd23c809474e0fe581c613cb3b + 当前工作区改动",
+    "method": "Adobe 官方手册与发布说明、RawMaster 当前源码及各功能条目列出的回归记录",
+    "scope": "Light、Color、Effects、Curve、Color Mixer、Color Grading、Detail、Optics、Lens Blur；仅纳入与这些面板直接相关的蒙版/增强能力。",
+    "caveat": "“已具备”表示界面、配方或渲染链路存在，不代表像素结果、数值范围或算法与 Adobe 等价。"
+  },
+  "statuses": {
+    "aligned": "已具备",
+    "partial": "部分一致",
+    "different": "有差异",
+    "missing": "缺失"
+  },
+  "priorities": {
+    "P0": "基础校正/完整编辑链路",
+    "P1": "重要创作能力",
+    "P2": "交互、可视化或增强效率"
+  },
+  "sources": {
+    "tone": {
+      "title": "Make color and tonal adjustments in Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/using/make-color-tonal-adjustments-camera.html",
+      "updated": "2026-09-29"
+    },
+    "effects": {
+      "title": "Glow, Vignette, Grain, and Dehaze effects in Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/edit-and-enhance-images/tone-and-color/vignette-grain-effects-camera-raw.html",
+      "updated": "2026-11-10"
+    },
+    "curveIntro": {
+      "title": "Introduction to Camera Raw files for Photoshop CC",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/get-started/overview-and-setup/introduction-camera-raw.html",
+      "updated": "2026-11-20"
+    },
+    "detail": {
+      "title": "Sharpening and noise reduction in Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/using/sharpening-noise-reduction-camera-raw.html",
+      "updated": "2023-11-03"
+    },
+    "optics": {
+      "title": "Correct lens distortions in Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/using/correct-lens-distortions-camera-raw.html",
+      "updated": "2025-11-18"
+    },
+    "blur": {
+      "title": "Lens Blur in Adobe Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/edit-and-enhance-images/sharpening-and-noise/lens-blur.html",
+      "updated": "2024-12-12"
+    },
+    "release": {
+      "title": "Camera Raw 19.0 release notes",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/whats-new/release-notes.html",
+      "updated": "2026-11-10"
+    },
+    "lut": {
+      "title": "Apply LUTs to photos in Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/edit-and-enhance-images/tone-and-color/apply-luts-to-photos-in-camera-raw.html",
+      "updated": "2026-11-10"
+    },
+    "shortcuts": {
+      "title": "Default keyboard shortcuts — Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/get-started/overview-and-setup/default-keyboard-shortcuts.html",
+      "updated": "2026-11-10"
+    },
+    "enhance": {
+      "title": "Improve image quality using Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/edit-and-enhance-images/sharpening-and-noise/enhance.html",
+      "updated": "2026-11-10"
+    },
+    "masking": {
+      "title": "Apply Masking for local adjustments in Camera Raw",
+      "url": "https://helpx.adobe.com/camera-raw/desktop/edit-and-enhance-images/masking-and-local-adjustments/masking.html",
+      "updated": "2026-06-18"
+    }
+  },
+  "panels": [
+    {
+      "id": "light",
+      "title": "Light",
+      "zh": "光效",
+      "icon": "☀",
+      "image": "assets/acr-histogram.avif",
+      "caption": "Camera Raw 的 Ribbon Histogram；官方手册同时说明色调、直方图与 clipping 反馈。",
+      "sources": [
+        "tone"
+      ]
+    },
+    {
+      "id": "color",
+      "title": "Color",
+      "zh": "颜色",
+      "icon": "◐",
+      "image": "assets/acr-vectorscope.avif",
+      "caption": "Camera Raw Vectorscope、肤色指示与颜色分布；属于颜色调整的观察能力。",
+      "sources": [
+        "tone"
+      ]
+    },
+    {
+      "id": "effects",
+      "title": "Effects",
+      "zh": "效果",
+      "icon": "✦",
+      "image": "assets/acr-glow.jpg",
+      "caption": "Camera Raw 19.0 的 Glow；Motion 与 Streak 为 19.0 新增风格。",
+      "sources": [
+        "effects",
+        "release"
+      ]
+    },
+    {
+      "id": "curve",
+      "title": "Curve",
+      "zh": "曲线",
+      "icon": "⌁",
+      "image": "assets/acr-targeted-adjustment.avif",
+      "caption": "Camera Raw Curve 与 Targeted Adjustment 的官方手册配图。",
+      "sources": [
+        "tone",
+        "shortcuts"
+      ]
+    },
+    {
+      "id": "mixer",
+      "title": "Color Mixer",
+      "zh": "混色器",
+      "icon": "◉",
+      "image": "assets/acr-point-color.avif",
+      "caption": "Point Color 对取样颜色进行 Hue、Saturation、Luminance、Variance 与 Range 调整。",
+      "sources": [
+        "tone"
+      ]
+    },
+    {
+      "id": "grading",
+      "title": "Color Grading",
+      "zh": "颜色分级",
+      "icon": "◌",
+      "image": "assets/acr-color-grading.avif",
+      "caption": "Camera Raw Color Grading 色轮；19.0 另加入可排序的 LUT 堆栈。",
+      "sources": [
+        "tone",
+        "lut"
+      ]
+    },
+    {
+      "id": "detail",
+      "title": "Detail",
+      "zh": "细节",
+      "icon": "△",
+      "image": "assets/acr-detail-noise.avif",
+      "caption": "Camera Raw Detail 降噪官方示例；实际验收应在 100% 或更高缩放检查。",
+      "sources": [
+        "detail",
+        "enhance"
+      ]
+    },
+    {
+      "id": "optics",
+      "title": "Optics",
+      "zh": "光学",
+      "icon": "◎",
+      "image": "assets/acr-optics-chromatic.avif",
+      "caption": "Camera Raw 色差校正前后对比；创作晕影与镜头校正必须分别验收。",
+      "sources": [
+        "optics"
+      ]
+    },
+    {
+      "id": "blur",
+      "title": "Lens Blur",
+      "zh": "镜头模糊",
+      "icon": "◍",
+      "image": "assets/acr-lens-blur.avif",
+      "caption": "Camera Raw Lens Blur 面板，含 Blur、Bokeh 与焦距/深度控制。",
+      "sources": [
+        "blur"
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "light-exposure",
+      "panel": "light",
+      "group": "Tone",
+      "name": "Exposure",
+      "cameraRaw": "以 EV/光圈档位调整整体亮度。",
+      "status": "aligned",
+      "rawMaster": "光效中有曝光，范围 −2…2。",
+      "difference": "核心控件存在；范围与算法是 RawMaster 自有单位，未宣称与 ACR 数值等价。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Exposure”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-contrast",
+      "panel": "light",
+      "group": "Tone",
+      "name": "Contrast",
+      "cameraRaw": "主要调整中间调对比。",
+      "status": "aligned",
+      "rawMaster": "光效中有对比度，范围 −1…2。",
+      "difference": "名称和用途对应；数值域与像素响应未做 Adobe 等价认证。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Contrast”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-highlights",
+      "panel": "light",
+      "group": "Tone",
+      "name": "Highlights",
+      "cameraRaw": "调整亮部并尽量恢复高光细节。",
+      "status": "aligned",
+      "rawMaster": "光效中有高光，并接入空间光效渲染。",
+      "difference": "功能入口存在；高光恢复程度需图像测试另行验收。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Highlights”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-shadows",
+      "panel": "light",
+      "group": "Tone",
+      "name": "Shadows",
+      "cameraRaw": "调整暗部并尽量恢复阴影细节。",
+      "status": "aligned",
+      "rawMaster": "光效中有阴影，并接入空间光效渲染。",
+      "difference": "功能入口存在；阴影恢复程度需图像测试另行验收。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Shadows”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-whites",
+      "panel": "light",
+      "group": "Tone",
+      "name": "Whites",
+      "cameraRaw": "调整白色剪切点。",
+      "status": "aligned",
+      "rawMaster": "光效中有白色。",
+      "difference": "控件存在；剪切行为需图像测试。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Whites”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-blacks",
+      "panel": "light",
+      "group": "Tone",
+      "name": "Blacks",
+      "cameraRaw": "调整黑色剪切点。",
+      "status": "aligned",
+      "rawMaster": "光效中以 blackPoint/黑点实现。",
+      "difference": "命名不同但用途对应；剪切行为需图像测试。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Blacks”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-auto",
+      "panel": "light",
+      "group": "Automation",
+      "name": "Auto tone",
+      "cameraRaw": "分析图像并自动调整色调控件。",
+      "status": "aligned",
+      "rawMaster": "Light 的 Auto 按实际源能力执行整组色调分析；全局 Auto 另有 Light＋Color 命令，单控件 Shift+双击保持独立字段投影。",
+      "difference": "入口、整组色调和单控件路径均已明确；使用 RawMaster 自有分析，不宣称 Adobe 自动结果等价。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentAnalysis.swift:500-553",
+        "Sources/RAWMaster/EditingController.swift:1726-1729",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:250-275",
+        "Tests/RAWMasterCoreTests/DevelopmentAdjustmentCommandsTests.swift:1-90",
+        "Tests/RAWMasterImagingTests/DevelopmentB2GlobalTests.swift:199-224"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-analysis-and-transaction-tests",
+      "acceptance": "整组 Light、Light＋Color 全局命令、逐字段 Auto、源／分支／手势围栏和撤销持久化回归通过；算法与 Adobe 自动结果不作等价声明。"
+    },
+    {
+      "id": "light-auto-single",
+      "panel": "light",
+      "group": "Automation",
+      "name": "单控件 Auto",
+      "cameraRaw": "Shift + 双击单独自动调整 Exposure、Contrast 等；双击复位。",
+      "status": "aligned",
+      "rawMaster": "Light 数值行支持 Shift＋双击单独 Auto；普通双击仍复位。",
+      "difference": "已补齐逐控件自动投影。分析复用同一源，仅目标字段被修改；真实分析与事务测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentAnalysis.swift:17-20",
+        "Sources/RAWMasterImaging/DevelopmentAnalysis.swift:500-518",
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:273-355",
+        "Sources/RAWMaster/EditingController.swift:1690-1702",
+        "Tests/RAWMasterImagingTests/DevelopmentB2GlobalTests.swift:199-220"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“单控件 Auto”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-histogram-drag",
+      "panel": "light",
+      "group": "Histogram",
+      "name": "直方图五区拖动",
+      "cameraRaw": "拖动 Blacks、Shadows、Exposure、Highlights、Whites 对应区域。",
+      "status": "aligned",
+      "rawMaster": "RGB 直方图支持五区 hover 与拖动。",
+      "difference": "核心交互已具备；分区边界与数值映射为自有实现。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:404-510"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“直方图五区拖动”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-clipping-indicators",
+      "panel": "light",
+      "group": "Histogram",
+      "name": "Shadows / Highlights clipping 指示",
+      "cameraRaw": "直方图两角显示剪切状态，点击后在照片上叠加蓝色/红色区域。",
+      "status": "aligned",
+      "rawMaster": "直方图两角按端点采样显示阴影／高光状态；点击切换独立蓝色／红色照片叠加，也可同时启用两者。",
+      "difference": "使用调整后显示亮度与 RawMaster 自有阈值／混合强度；预览为临时状态，不写入草稿。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-150",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:122-133",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:236-260",
+        "Sources/RAWMaster/EditingController.swift:1932-1990",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:447-570",
+        "Tests/RAWMasterImagingTests/DevelopmentClippingPreviewV3Tests.swift:1-36",
+        "Tests/RAWMasterUITests/PhotosClippingPreviewWorkflowTests.swift:1-39"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "端点状态、双端切换、红／蓝叠加、中间调、Alpha、代理一致性和草稿隔离通过；49 操作真实 RAW 门禁通过，阴影 11.46 ms、高光 10.77 ms，p99 均 2/255。"
+    },
+    {
+      "id": "light-clipping-modifier",
+      "panel": "light",
+      "group": "Histogram",
+      "name": "Alt/Option 拖动剪切预览",
+      "cameraRaw": "拖动色调滑杆时按 Alt/Option 查看高光或阴影剪切。",
+      "status": "aligned",
+      "rawMaster": "Option 拖动 Light 滑杆、名称或直方图区域时显示对应剪切；阴影／黑点为蓝色，高光／白色为红色，中间调为两者，结束后移除临时预览。",
+      "difference": "修饰键映射使用 RawMaster 自有字段分区；手动直方图叠加与 Option 临时预览共用同一 GPU 算子。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:258-365",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:516-570",
+        "Sources/RAWMaster/EditingController.swift:1932-1990",
+        "Tests/RAWMasterUITests/PhotosClippingPreviewWorkflowTests.swift:1-39",
+        "Tests/RAWMasterImagingTests/DevelopmentClippingPreviewV3Tests.swift:1-36"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "Option 手势映射、持续刷新、结束取消、配方不写入和两种真实 RAW 渲染路径通过；复用 49 操作性能门禁。"
+    },
+    {
+      "id": "light-numeric-reset",
+      "panel": "light",
+      "group": "Interaction",
+      "name": "数值输入与双击复位",
+      "cameraRaw": "可键入数值、方向键微调，双击滑杆复位。",
+      "status": "aligned",
+      "rawMaster": "支持数值输入、名称横向 scrub、双击名称复位。",
+      "difference": "主要交互等价；具体快捷键和步进规则不同。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“数值输入与双击复位”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-wb-as-shot",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "As Shot",
+      "cameraRaw": "使用相机记录的白平衡。",
+      "status": "aligned",
+      "rawMaster": "保留拍摄白平衡/原图白平衡状态。",
+      "difference": "核心状态存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“As Shot”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-wb-auto",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "Auto",
+      "cameraRaw": "根据图像数据计算白平衡并更新 Temp/Tint。",
+      "status": "aligned",
+      "rawMaster": "白平衡面板的“自动白平衡”从整张照片选择样本并更新色温和色调。RAW 保存原生温度和色调，已显影图像保存工作温度及对应滑杆位置。",
+      "difference": "RawMaster 自行选择参考像素，同时保留按中性灰或肤色自动寻找样本的入口。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:109-140",
+        "Sources/RAWMasterImaging/DevelopmentAnalysis.swift:558-645",
+        "Tests/RAWMasterUITests/PhotosWhiteBalancePresetTests.swift:7-44"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "native-preview-persistence-export",
+      "acceptance": "原生工作流已验证自动计算、色温位置、撤销／重做、保存重开和 PNG 导出像素。"
+    },
+    {
+      "id": "color-wb-presets",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "Daylight / Cloudy / Shade / Tungsten / Fluorescent / Flash",
+      "cameraRaw": "RAW/DNG 提供六种相机白平衡预设。",
+      "status": "aligned",
+      "rawMaster": "RAW 提供日光、阴天、阴影、白炽灯、荧光灯、闪光灯六种预设，写入现有 Temp/Tint 命令事务。",
+      "difference": "已补齐六种 RAW 预设及非 RAW 拒绝；命令与真实 RAW Flash 渲染通过。映射为 RawMaster 固定近似，不是 Adobe 相机私有表。暖样本中位数 8.62 ms，首个冷样本 676.75 ms，冷路径待优化。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:10-28",
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:45-52",
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:120-128",
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:170-180",
+        "Tests/RAWMasterUITests/PhotosWhiteBalancePresetTests.swift:12-31"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Daylight / Cloudy / Shade / Tungsten / Fluorescent / Flash”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-temp-raw",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "Temperature — RAW/DNG",
+      "cameraRaw": "真实 Kelvin 色温，文档范围 2,000–50,000 K。",
+      "status": "aligned",
+      "rawMaster": "RAW 色温已扩展为 2,000–50,000 K，模型、UI 与初始值均同步。",
+      "difference": "已修复 RAW 色温上限；通过范围、命令和旧配方测试。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:354-366"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Temperature — RAW/DNG”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-temp-rendered",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "Temperature — JPEG/TIFF",
+      "cameraRaw": "非 RAW 使用 −100…100 近似色温，而非真实 Kelvin。",
+      "status": "aligned",
+      "rawMaster": "图像源使用 −100…100 近似色温偏移；配方保留实际工作中立值与可选偏移。",
+      "difference": "已修复非 RAW 单位语义；偏移到工作中立值采用 RawMaster 自有映射，不宣称与 ACR 数值等价。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Temperature — JPEG/TIFF”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-tint",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "Tint",
+      "cameraRaw": "在绿色与品红之间补偿色偏。",
+      "status": "aligned",
+      "rawMaster": "有色调控件，范围 −150…150，带绿—品红轨道。",
+      "difference": "控件与方向对应；色彩转换算法需独立测试。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Tint”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-wb-picker",
+      "panel": "color",
+      "group": "White Balance",
+      "name": "White Balance Selector",
+      "cameraRaw": "在照片中性区域取样并更新 Temp/Tint。",
+      "status": "aligned",
+      "rawMaster": "支持中性灰取样；另提供肤色取样。",
+      "difference": "核心取样存在，RawMaster 增加肤色模式。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“White Balance Selector”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-vibrance",
+      "panel": "color",
+      "group": "Saturation",
+      "name": "Vibrance",
+      "cameraRaw": "优先调整低饱和颜色并保护肤色，标准显示域 −100…100。",
+      "status": "aligned",
+      "rawMaster": "自然饱和度使用 −1…2，自有单位。",
+      "difference": "已修复显示范围：UI 使用 −100…100，并通过显式映射保留旧配方内部单位；映射与复位测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Vibrance”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-saturation",
+      "panel": "color",
+      "group": "Saturation",
+      "name": "Saturation",
+      "cameraRaw": "统一调整所有颜色，标准显示域 −100…100。",
+      "status": "aligned",
+      "rawMaster": "饱和度使用 −1…2，自有单位。",
+      "difference": "已修复显示范围：UI 使用 −100…100，并通过显式映射保留旧配方内部单位；映射与复位测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Saturation”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-bw-treatment",
+      "panel": "color",
+      "group": "Treatment",
+      "name": "B&W / 黑白处理",
+      "cameraRaw": "切换黑白处理，并联动 B&W Mixer。",
+      "status": "aligned",
+      "rawMaster": "黑白 Treatment 开关与八色 B&W Mixer 联动，保留强度、中性色、色调和颗粒。",
+      "difference": "已补齐黑白处理与原色域灰度混合联动；八色响应、灰度输出和配方兼容测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:275-288",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:181-211"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“B&W / 黑白处理”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-vectorscope",
+      "panel": "color",
+      "group": "Scopes",
+      "name": "Vectorscope",
+      "cameraRaw": "以角度/距中心距离显示色相与饱和度分布。",
+      "status": "aligned",
+      "rawMaster": "矢量示波器可显示整张工作图像或指定的线性、径向、亮度范围及主体蒙版。角度和半径表示色相与饱和度，亮度表示采样密度。",
+      "difference": "默认采用 Rec.709 色差坐标，也可将红色旋转到三点钟位置。蒙版使用图层输入计算选区，再读取所有编辑完成后的颜色。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentDisplayHistogramV1.swift:117-143",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:25-51",
+        "Sources/RAWMaster/PhotosColorScopes.swift:41-89",
+        "Tests/RAWMasterImagingTests/DevelopmentDisplayHistogramV1Tests.swift:64-114",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:6-16"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "Release 验证四类蒙版、反相、亮度范围在曝光校正后的颜色、不同蒙版的同配方缓存、透明像素及两种色差坐标方向。"
+    },
+    {
+      "id": "color-skin-indicator",
+      "panel": "color",
+      "group": "Scopes",
+      "name": "Skin Tone Indicator",
+      "cameraRaw": "在 Vectorscope 上显示肤色参考线。",
+      "status": "aligned",
+      "rawMaster": "矢量示波器默认显示可隐藏的肤色参考线。",
+      "difference": "参考角来自 RawMaster 白平衡模块的肤色样本，视觉基准为应用自有定义。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosColorScopes.swift:31-45",
+        "Sources/RAWMaster/PhotosColorScopes.swift:64-117",
+        "Sources/RAWMasterCore/DevelopmentSkinToneLocusV3.swift:8-13"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "production-ui-and-shared-data",
+      "acceptance": "肤色参考线与示波器使用同一色相坐标，开关保存为应用偏好。"
+    },
+    {
+      "id": "color-lab-readouts",
+      "panel": "color",
+      "group": "Scopes",
+      "name": "Lab Color Readouts",
+      "cameraRaw": "在 Histogram/Vectorscope 显示 Lab 读数。",
+      "status": "aligned",
+      "rawMaster": "直方图和矢量示波器可切换至 D50 Lab 显示指针位置的 L*、a*、b*。",
+      "difference": "当前读数从带有色彩配置的预览像素转换至 sRGB 后，经 ColorSync 转为 D50 Lab。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosColorReadout.swift:34-59",
+        "Sources/RAWMasterImaging/DevelopmentDisplayPixel.swift:6-42",
+        "Tests/RAWMasterImagingTests/DevelopmentDisplayPixelTests.swift:7-26"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "已验证 sRGB 红色的 D50 Lab 数值、通道、方向与透明性。"
+    },
+    {
+      "id": "color-floating-scopes",
+      "panel": "color",
+      "group": "Scopes",
+      "name": "可拆离浮动示波器",
+      "cameraRaw": "Histogram/Vectorscope 可拖出为可缩放浮动面板并记住位置。",
+      "status": "aligned",
+      "rawMaster": "从示波器打开可调整尺寸的独立浮动窗口，检查器提供停靠操作。窗口和检查器跟随当前照片及同一份示波数据。",
+      "difference": "通过按钮拆离和停靠；窗口使用 macOS 标准的关闭和调整尺寸操作。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosColorScopes.swift:5-59",
+        "Sources/RAWMaster/RAWMasterApp.swift:86-97"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "production-ui-and-shared-data",
+      "acceptance": "原生窗口复用直方图、矢量示波器和像素读数视图。窗口位置由 macOS 管理。"
+    },
+    {
+      "id": "color-rgb-readout",
+      "panel": "color",
+      "group": "Scopes",
+      "name": "指针 RGB 值",
+      "cameraRaw": "在直方图下显示指针像素的 RGB 值。",
+      "status": "aligned",
+      "rawMaster": "基础面板示波器下方实时显示指针所在预览像素的 sRGB 读数，单位为 0–255。",
+      "difference": "读数来自当前预览分辨率；透明像素和画布外位置留空。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosColorReadout.swift:6-59",
+        "Sources/RAWMasterImaging/DevelopmentDisplayPixel.swift:6-42",
+        "Tests/RAWMasterImagingTests/DevelopmentDisplayPixelTests.swift:5-26"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "已用固定色块校验左上坐标、边界和透明像素。观察控件独立于导出配方。"
+    },
+    {
+      "id": "color-samplers",
+      "panel": "color",
+      "group": "Scopes",
+      "name": "最多 9 个颜色采样器",
+      "cameraRaw": "在预览中放置最多 9 个 RGB sampler，并可移除。",
+      "status": "aligned",
+      "rawMaster": "可在照片上放置、重新定位和移除最多九个编号采样器，并实时读取当前预览的 RGB。",
+      "difference": "采样点按作品和原片内容身份保存在本机；固定在源图坐标，随裁切和变换重新投影。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosColorSamplers.swift:5-112",
+        "Sources/RAWMaster/EditingController.swift:2378-2384",
+        "Tests/RAWMasterUITests/PhotosColorSamplerTests.swift:7-48"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "原生工作区回归验证了九点上限、重取样、移除、重开和源隔离，观察点不会写进导出配方。"
+    },
+    {
+      "id": "effects-glow-amount",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Apply / Glow Amount",
+      "cameraRaw": "启用 Glow 并控制整体强度；Eye 可比较开关效果。",
+      "status": "aligned",
+      "rawMaster": "全局光晕可独立开启，强度范围为 0 到 100。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Apply / Glow Amount”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-styles",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Bloom / Diffusion / Halation / Motion / Streak",
+      "cameraRaw": "五种光晕风格；Motion 单向、Streak 双向。",
+      "status": "aligned",
+      "rawMaster": "全局光晕提供 Bloom、Diffusion、Halation、Motion 和 Streak 五种风格。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Bloom / Diffusion / Halation / Motion / Streak”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-range",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Range",
+      "cameraRaw": "控制 Glow 从最亮高光到更宽色调范围的作用区域。",
+      "status": "aligned",
+      "rawMaster": "范围滑杆以 0 到 100 控制参与光晕的亮度范围。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Range”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-spread",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Spread",
+      "cameraRaw": "控制光从亮部扩散的距离与柔和程度。",
+      "status": "aligned",
+      "rawMaster": "扩散滑杆以 0 到 100 调整光晕的空间范围。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Spread”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-warmth",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Warmth",
+      "cameraRaw": "调整光晕冷暖；Halation 使用黄—红范围。",
+      "status": "aligned",
+      "rawMaster": "色温滑杆以 −100 到 100 调整光晕颜色。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Warmth”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-direction",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Direction",
+      "cameraRaw": "Motion/Streak 的拖尾方向。",
+      "status": "aligned",
+      "rawMaster": "Motion 和 Streak 风格支持 0 到 360° 的拖尾方向，360° 回到 0°。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Direction”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-softness",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "Softness",
+      "cameraRaw": "Motion/Streak 的拖尾边缘柔和度。",
+      "status": "aligned",
+      "rawMaster": "Motion 和 Streak 风格提供 0 到 100 的拖尾柔和度。",
+      "difference": "五种光晕风格使用 RAWMaster 的 GPU 实现。蒙版可单独设置强度，风格及其余参数取自全局配方。",
+      "sources": [
+        "effects",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:654-670",
+        "Sources/RAWMasterCore/DevelopmentGlowV3.swift:3-25",
+        "Sources/RAWMasterImaging/DevelopmentGlowEngineV3.swift:19-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Softness”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-glow-mask",
+      "panel": "effects",
+      "group": "Glow",
+      "name": "蒙版内 Glow 与共享设置",
+      "cameraRaw": "蒙版可独立设置 Glow Amount；Style/Range/Spread/Warmth 全局共享。",
+      "status": "aligned",
+      "rawMaster": "每个蒙版新增独立 Glow Amount；Style、Range、Spread、Warmth、Direction、Softness 使用全局共享配置。",
+      "difference": "已补齐局部 GPU 合成与共享参数契约。融合算子通过蒙版边界、代理一致性和旧配方测试；真实 RAW 交互中位数 58.92 ms，p99 通道差 0，仍未达到统一性能门禁。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-25",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:22-65",
+        "Sources/RAWMaster/PhotosMaskControls.swift:49-55",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskEngineV3Tests.swift:71-92",
+        "docs/research/camera-raw-parity/evidence/history/local-glow-fused-real-raw-20261121.json:253-272"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“蒙版内 Glow 与共享设置”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-grain-amount",
+      "panel": "effects",
+      "group": "Grain",
+      "name": "Amount",
+      "cameraRaw": "控制颗粒强度，0 关闭。",
+      "status": "aligned",
+      "rawMaster": "Effects 有启用开关与颗粒数量。",
+      "difference": "核心强度存在；采样与颗粒外观为自有算法。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:554-585"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Amount”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-grain-size",
+      "panel": "effects",
+      "group": "Grain",
+      "name": "Size",
+      "cameraRaw": "控制颗粒粒径。",
+      "status": "aligned",
+      "rawMaster": "新增颗粒尺寸控制；非空字段进入版本化 GPU 粒径采样。",
+      "difference": "已补齐。CPU 参考与 Metal 逐像素对照、参数响应和旧配方兼容测试通过。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:554-585",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:609-697"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Size”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-grain-roughness",
+      "panel": "effects",
+      "group": "Grain",
+      "name": "Roughness",
+      "cameraRaw": "控制颗粒规则/不均匀程度。",
+      "status": "aligned",
+      "rawMaster": "新增颗粒粗糙度控制；非空字段进入版本化 GPU 不均匀度采样。",
+      "difference": "已补齐。CPU 参考与 Metal 逐像素对照、参数响应和旧配方兼容测试通过。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:554-585",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:609-697"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Roughness”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-pcv-style",
+      "panel": "effects",
+      "group": "Post Crop Vignetting",
+      "name": "Highlight Priority / Color Priority / Paint Overlay",
+      "cameraRaw": "三种裁切后晕影混合风格。",
+      "status": "aligned",
+      "rawMaster": "Effects 提供高光优先、颜色优先、绘画叠加三种 Style，由独立 Metal 核处理。",
+      "difference": "已补齐全局裁切后晕影。三样式 GPU 响应、alpha、配方往返及真实 RAW 显影通过；算法为 RawMaster 自有实现，不宣称 Adobe 数值等价。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:583-598",
+        "Sources/RAWMasterImaging/DevelopmentPostCropVignetteEngineV3.swift:14-57",
+        "Tests/RAWMasterImagingTests/DevelopmentPostCropVignetteEngineV3Tests.swift:31-50"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Highlight Priority / Color Priority / Paint Overlay”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-pcv-amount",
+      "panel": "effects",
+      "group": "Post Crop Vignetting",
+      "name": "Amount",
+      "cameraRaw": "在裁切后画面上加亮或压暗边角。",
+      "status": "aligned",
+      "rawMaster": "Effects 新增 −100…100 Amount，在最终几何画布上加亮或压暗边角。",
+      "difference": "已补齐独立裁切后语义；canonical、交互代理和原生命中点路径共用 GPU 算子。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:583-598",
+        "Sources/RAWMasterImaging/DevelopmentRendererV3.swift:400-420"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Amount”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-pcv-midpoint",
+      "panel": "effects",
+      "group": "Post Crop Vignetting",
+      "name": "Midpoint",
+      "cameraRaw": "控制效果向中心或边角延伸。",
+      "status": "aligned",
+      "rawMaster": "Effects 新增 0…100 Midpoint，独立控制晕影覆盖起点。",
+      "difference": "已补齐参数响应和配方验证；数学映射为 RawMaster 自有实现。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:592-598",
+        "Sources/RAWMasterCore/DevelopmentPostCropVignetteV3.swift:8-34"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Midpoint”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-pcv-roundness",
+      "panel": "effects",
+      "group": "Post Crop Vignetting",
+      "name": "Roundness",
+      "cameraRaw": "在椭圆与圆形之间调整晕影形状。",
+      "status": "aligned",
+      "rawMaster": "Effects 新增 −100…100 Roundness，控制椭圆、圆形及纵向延伸。",
+      "difference": "已补齐 GPU 形状响应与参数范围验证。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:592-598",
+        "Sources/RAWMasterImaging/DevelopmentPostCropVignetteEngineV3.swift:34-43"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Roundness”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-pcv-feather",
+      "panel": "effects",
+      "group": "Post Crop Vignetting",
+      "name": "Feather",
+      "cameraRaw": "控制晕影过渡柔和度。",
+      "status": "aligned",
+      "rawMaster": "Effects 新增 0…100 Feather，在裁切后坐标中控制过渡宽度。",
+      "difference": "已补齐裁切后羽化及 GPU 响应测试。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:592-598",
+        "Sources/RAWMasterImaging/DevelopmentPostCropVignetteEngineV3.swift:40-47"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Feather”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-pcv-highlights",
+      "panel": "effects",
+      "group": "Post Crop Vignetting",
+      "name": "Highlights",
+      "cameraRaw": "负 Amount 时控制高光对比保留，适用于前两种 Style。",
+      "status": "aligned",
+      "rawMaster": "负 Amount 且非绘画叠加时提供 0…100 Highlights 高光保护。",
+      "difference": "已补齐条件 UI 与 GPU 高光保护；使用明亮边缘样本验证了实际响应。真实 RAW 交互中位数 12.98 ms，canonical 2531.30 ms（三次暖样本，非三方同边界认证）。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:592-598",
+        "Tests/RAWMasterImagingTests/DevelopmentPostCropVignetteEngineV3Tests.swift:7-45",
+        "docs/research/camera-raw-parity/evidence/history/post-crop-vignette-real-raw-20261121.json:130-142"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Highlights”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "effects-texture",
+      "panel": "effects",
+      "group": "Presence",
+      "name": "Texture",
+      "cameraRaw": "平滑或增强纹理细节，不改变整体色调。",
+      "status": "aligned",
+      "rawMaster": "Texture 使用既有 GPU 算子，控件、启停与重置现位于 Effects；Basic 不再重复提供。",
+      "difference": "面板归属已对齐；数量范围和算法仍为 RawMaster 自有实现，不宣称 ACR 等价。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdvancedDetailControls.swift:42-77",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:73-83",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:582-600",
+        "Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:3005-3009"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "面板归属契约、真实 Inspector 挂载、既有手势／重置／分支隔离流程及 44 操作真实 RAW 门禁通过。"
+    },
+    {
+      "id": "effects-clarity",
+      "panel": "effects",
+      "group": "Presence",
+      "name": "Clarity",
+      "cameraRaw": "通过局部对比增强中间调深度。",
+      "status": "aligned",
+      "rawMaster": "Clarity 使用既有 GPU 算子，控件、启停与重置现位于 Effects；Definition 继续作为独立控件留在 Basic。",
+      "difference": "名称、位置及与 Definition 的边界已明确；算法并非 ACR 等价声明。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdvancedDetailControls.swift:42-77",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:73-83",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:582-600",
+        "Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:3005-3009"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "面板归属与 Definition 隔离、真实 Inspector 挂载、既有手势／重置／分支隔离流程及 44 操作真实 RAW 门禁通过。"
+    },
+    {
+      "id": "effects-dehaze",
+      "panel": "effects",
+      "group": "Presence",
+      "name": "Dehaze",
+      "cameraRaw": "负值增加雾感，正值去雾；支持局部调整。",
+      "status": "aligned",
+      "rawMaster": "全局 Dehaze 位于 Effects；蒙版提供独立正负 Dehaze，GPU 以低频颜色／亮度估计局部空气光，并复用大气传输公式进行区域融合。",
+      "difference": "全局与局部能力均已具备；局部路径不复用全局空气光准备，采用 RawMaster 自有局部估计，不宣称 ACR 算法或像素等价。",
+      "sources": [
+        "effects"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDehazeControls.swift:11-53",
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-85",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:8-325",
+        "Sources/RAWMaster/PhotosMaskControls.swift:89-95",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskDehazeV3Tests.swift:1-48",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:28-58"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "全局准备／取消／导出及局部正负响应、区域隔离、Alpha、代理一致性、配方兼容、撤销／重做与持久化通过；45 操作真实 RAW 门禁通过，局部交互 18.58 ms、settled 2738.55 ms、p99 2/255。"
+    },
+    {
+      "id": "curve-parametric",
+      "panel": "curve",
+      "group": "Parametric Curve",
+      "name": "Parametric 模式",
+      "cameraRaw": "以四个色调区域调整曲线。",
+      "status": "aligned",
+      "rawMaster": "曲线面板可切换到参数曲线，以四个色调区域和三个分隔点编辑同一条曲线。",
+      "difference": "已补齐参数曲线模式、区域控制与分隔点；配方兼容、GPU 响应和点曲线组合测试通过。",
+      "sources": [
+        "tone",
+        "curveIntro"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:446-468",
+        "Sources/RAWMasterCore/DevelopmentParametricCurveV3.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentParametricCurveEngineV3.swift:15-55"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Parametric 模式”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-param-highlights",
+      "panel": "curve",
+      "group": "Parametric Curve",
+      "name": "Highlights",
+      "cameraRaw": "调整参数曲线高光区域。",
+      "status": "aligned",
+      "rawMaster": "参数曲线提供独立的高光滑杆，范围为 −100 到 100。",
+      "difference": "已补齐参数曲线模式、区域控制与分隔点；配方兼容、GPU 响应和点曲线组合测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:446-468",
+        "Sources/RAWMasterCore/DevelopmentParametricCurveV3.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentParametricCurveEngineV3.swift:15-55"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Highlights”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-param-lights",
+      "panel": "curve",
+      "group": "Parametric Curve",
+      "name": "Lights",
+      "cameraRaw": "调整参数曲线亮部/中间偏亮区域。",
+      "status": "aligned",
+      "rawMaster": "参数曲线提供独立的亮部滑杆，范围为 −100 到 100。",
+      "difference": "已补齐参数曲线模式、区域控制与分隔点；配方兼容、GPU 响应和点曲线组合测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:446-468",
+        "Sources/RAWMasterCore/DevelopmentParametricCurveV3.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentParametricCurveEngineV3.swift:15-55"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Lights”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-param-darks",
+      "panel": "curve",
+      "group": "Parametric Curve",
+      "name": "Darks",
+      "cameraRaw": "调整参数曲线暗部/中间偏暗区域。",
+      "status": "aligned",
+      "rawMaster": "参数曲线提供独立的暗部滑杆，范围为 −100 到 100。",
+      "difference": "已补齐参数曲线模式、区域控制与分隔点；配方兼容、GPU 响应和点曲线组合测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:446-468",
+        "Sources/RAWMasterCore/DevelopmentParametricCurveV3.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentParametricCurveEngineV3.swift:15-55"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Darks”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-param-shadows",
+      "panel": "curve",
+      "group": "Parametric Curve",
+      "name": "Shadows",
+      "cameraRaw": "调整参数曲线阴影区域。",
+      "status": "aligned",
+      "rawMaster": "参数曲线提供独立的阴影滑杆，范围为 −100 到 100。",
+      "difference": "已补齐参数曲线模式、区域控制与分隔点；配方兼容、GPU 响应和点曲线组合测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:446-468",
+        "Sources/RAWMasterCore/DevelopmentParametricCurveV3.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentParametricCurveEngineV3.swift:15-55"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Shadows”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-param-splits",
+      "panel": "curve",
+      "group": "Parametric Curve",
+      "name": "三个区域分隔点",
+      "cameraRaw": "拖动横轴分隔点扩大/收缩参数区域。",
+      "status": "aligned",
+      "rawMaster": "三个可调分隔点控制阴影、暗部、亮部和高光区域的边界。",
+      "difference": "已补齐参数曲线模式、区域控制与分隔点；配方兼容、GPU 响应和点曲线组合测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:446-468",
+        "Sources/RAWMasterCore/DevelopmentParametricCurveV3.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentParametricCurveEngineV3.swift:15-55"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“三个区域分隔点”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-point",
+      "panel": "curve",
+      "group": "Point Curve",
+      "name": "Point Curve",
+      "cameraRaw": "在曲线上添加并拖动控制点。",
+      "status": "aligned",
+      "rawMaster": "支持点击添加、拖动、删除，2–16 点。",
+      "difference": "核心点曲线存在；点数和插值算法为自有约束。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:178-341",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:419-458"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Point Curve”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-channels",
+      "panel": "curve",
+      "group": "Point Curve",
+      "name": "RGB / Red / Green / Blue",
+      "cameraRaw": "总曲线及三个独立颜色通道。",
+      "status": "aligned",
+      "rawMaster": "四通道均已实现并有通道选择。",
+      "difference": "核心结构对应。",
+      "sources": [
+        "curveIntro",
+        "shortcuts"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:178-341",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:419-458"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“RGB / Red / Green / Blue”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-input-output",
+      "panel": "curve",
+      "group": "Point Curve",
+      "name": "Input / Output 数值",
+      "cameraRaw": "显示并编辑选中点输入/输出。",
+      "status": "aligned",
+      "rawMaster": "有点选择及输入/输出数值字段。",
+      "difference": "核心交互对应；RawMaster 使用归一化值。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:178-341"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Input / Output 数值”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-reset-channel",
+      "panel": "curve",
+      "group": "Point Curve",
+      "name": "Reset Channel",
+      "cameraRaw": "将当前通道恢复为线性。",
+      "status": "aligned",
+      "rawMaster": "Point Curve 提供“复位当前通道”，仅将当前 RGB／R／G／B 通道恢复为线性。",
+      "difference": "主界面单通道入口已补齐。其他通道、Parametric、Refine Saturation、算法与启用状态均保留；专项测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:300-314",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:322-329",
+        "Tests/RAWMasterUITests/PhotosCurveResetChannelTests.swift:7-24"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Reset Channel”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-refine-saturation",
+      "panel": "curve",
+      "group": "Point Curve",
+      "name": "Refine Saturation",
+      "cameraRaw": "在点曲线调整后细调饱和度。",
+      "status": "aligned",
+      "rawMaster": "Point Curve 新增 −100…100 Refine Saturation，在曲线与色阶后执行独立 GPU 调整。",
+      "difference": "已补齐曲线后饱和度细化；正负响应、alpha、参数曲线单次执行和旧配方指纹测试通过。真实 RAW 暖中位数 14.60 ms，首个冷样本 1366.99 ms，冷路径未达门禁。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:455-493",
+        "Sources/RAWMasterImaging/DevelopmentRefineSaturationEngineV3.swift:7-35",
+        "Sources/RAWMasterImaging/DevelopmentColorEngineV3.swift:71-82",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:268-279",
+        "Tests/RAWMasterImagingTests/DevelopmentRefineSaturationEngineV3Tests.swift:24-41"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Refine Saturation”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "curve-tat-parametric",
+      "panel": "curve",
+      "group": "Targeted Adjustment",
+      "name": "Parametric 照片拖动",
+      "cameraRaw": "在照片上拖动以调整对应参数曲线区域。",
+      "status": "aligned",
+      "rawMaster": "参数曲线工具从已显示的图像像素读取初始影调，用当前三个分隔值选中区域。向上或向右拖动增加该区域，向下或向左拖动减少。",
+      "difference": "拖动保持起始配方和选定区域，点曲线通道独立保留。区域选择使用显影预览的编码 sRGB 亮度。",
+      "sources": [
+        "tone",
+        "shortcuts"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentTargetedCurveAdjustmentV3.swift:8-52",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:108-141",
+        "Sources/RAWMaster/EditingController.swift:2385-2394",
+        "Tests/RAWMasterUITests/PhotosCurveTargetedWorkflowTests.swift:8-64"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "区域边界、无位移、取消和撤销／重做已有回归。应用的原生预览与 PNG 导出验证了保存配方对像素的影响。"
+    },
+    {
+      "id": "curve-tat-point",
+      "panel": "curve",
+      "group": "Targeted Adjustment",
+      "name": "Point Curve 照片取样/拖动",
+      "cameraRaw": "通过 Targeted Adjustment 在照片中确定并调整曲线点。",
+      "status": "aligned",
+      "rawMaster": "Point Curve Targeted 入口在当前通道取样并确定控制点；随后左右拖动调整输入、上下拖动调整输出，取样与拖动共用一个手势。",
+      "difference": "保留黑点／中间调／白点离散取样；连续双轴拖动使用稳定基线与既有邻点约束，不宣称 Adobe 操作细节等价。",
+      "sources": [
+        "tone",
+        "shortcuts"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentTargetedCurveAdjustmentV3.swift:1-32",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:6-142",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:279-320",
+        "Sources/RAWMaster/EditingController.swift:2395-2470",
+        "Tests/RAWMasterCoreTests/DevelopmentTargetedCurveAdjustmentV3Tests.swift:1-16",
+        "Tests/RAWMasterUITests/PhotosCurveTargetedWorkflowTests.swift:1-42"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "目标点识别、双轴稳定基线、通道隔离、端点约束、单手手势撤销／重做与持久化通过；50 操作真实 RAW 门禁通过，交互 13.37 ms、settled 1064.81 ms、p99 2/255。"
+    },
+    {
+      "id": "curve-keyboard",
+      "panel": "curve",
+      "group": "Interaction",
+      "name": "曲线点键盘导航",
+      "cameraRaw": "切换通道/点，方向键调整输入输出，Shift 大步进，D 取消选择。",
+      "status": "aligned",
+      "rawMaster": "方向键调整输入／输出，Shift 大步进；[／] 切换控制点，1–4 切换 RGB／R／G／B 通道，D 取消选择，Delete 与既有 Undo／Redo 保留。",
+      "difference": "键盘编辑能力已补齐；点选择使用括号键，通道使用数字键，属于明确的自有快捷键映射。",
+      "sources": [
+        "shortcuts"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/DevelopmentCurveEditor.swift:51-232",
+        "Tests/RAWMasterUITests/DevelopmentCurveInteractionTests.swift:31-107"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-control-tests",
+      "acceptance": "输入／输出方向键、Shift 大步进、括号选点、数字通道、D 后禁止编辑、Delete 与既有 Undo／Redo 隔离测试通过。"
+    },
+    {
+      "id": "mixer-hsl-mode",
+      "panel": "mixer",
+      "group": "HSL / Color",
+      "name": "HSL 组织模式",
+      "cameraRaw": "按 Hue、Saturation、Luminance 分组查看各色域。",
+      "status": "aligned",
+      "rawMaster": "提供 Color／Hue／Saturation／Luminance 四种组织方式；后三种按属性显示全部八色域，并写入既有 Selective Color 配方。",
+      "difference": "组织视图已对齐；切换仅改变控件编排，不改变图像算法或既有数值范围。",
+      "sources": [
+        "tone",
+        "curveIntro"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:103-195",
+        "Tests/RAWMasterUITests/PhotosMixerOrganizationTests.swift:1-19"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-existing-real-raw-sequence",
+      "acceptance": "四种模式、八色域、H/S/L 数值和范围映射测试通过；现有 Selective Color 编辑回归及 45 操作真实 RAW 基线保持有效。"
+    },
+    {
+      "id": "mixer-color-mode",
+      "panel": "mixer",
+      "group": "HSL / Color",
+      "name": "Color 组织模式",
+      "cameraRaw": "按色域选择并调整 Hue、Saturation、Luminance。",
+      "status": "aligned",
+      "rawMaster": "以色样按钮选择色域，再调整 H/S/L。",
+      "difference": "核心交互对应。",
+      "sources": [
+        "tone",
+        "curveIntro"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Color 组织模式”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-eight-colors",
+      "panel": "mixer",
+      "group": "HSL / Color",
+      "name": "8 个标准色域",
+      "cameraRaw": "Red、Orange、Yellow、Green、Aqua、Blue、Purple、Magenta。",
+      "status": "aligned",
+      "rawMaster": "支持红、橙、黄、绿、青、蓝、紫、洋红 8 色；旧 6 色配方保持原集合，新编辑可显式扩展。",
+      "difference": "已补齐 Orange 与 Purple；Aqua 对应现有青/Cyan。6/8 色模型往返、GPU 响应与乱序确定性测试通过。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:520-579"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“8 个标准色域”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-hue",
+      "panel": "mixer",
+      "group": "HSL / Color",
+      "name": "Hue",
+      "cameraRaw": "改变目标色域色相。",
+      "status": "aligned",
+      "rawMaster": "每色域有色相滑杆。",
+      "difference": "控件存在；RawMaster 范围 −60…60。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:520-579"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Hue”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-saturation",
+      "panel": "mixer",
+      "group": "HSL / Color",
+      "name": "Saturation",
+      "cameraRaw": "改变目标色域饱和度。",
+      "status": "aligned",
+      "rawMaster": "每色域有饱和度滑杆。",
+      "difference": "控件存在；色彩选择算法需独立验收。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Saturation”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-luminance",
+      "panel": "mixer",
+      "group": "HSL / Color",
+      "name": "Luminance",
+      "cameraRaw": "改变目标色域明暗。",
+      "status": "aligned",
+      "rawMaster": "每色域有明度滑杆。",
+      "difference": "控件存在；RawMaster 范围 −70…70。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:520-579"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Luminance”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-tat",
+      "panel": "mixer",
+      "group": "Targeted Adjustment",
+      "name": "HSL Targeted Adjustment",
+      "cameraRaw": "在照片上拖动调整 Hue/Saturation/Luminance，可影响多个色域。",
+      "status": "aligned",
+      "rawMaster": "Targeted 菜单选择 Hue／Saturation／Luminance；取样后在照片上连续拖动，按色相距离同时调整多个相邻色域。",
+      "difference": "初始取样与后续拖动共用一个手势和稳定基线；权重为 RawMaster 自有确定性实现，不宣称 Adobe 数值等价。",
+      "sources": [
+        "tone",
+        "shortcuts"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentTargetedColorAdjustmentV3.swift:1-50",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:6-132",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:116-175",
+        "Sources/RAWMaster/EditingController.swift:2292-2340",
+        "Tests/RAWMasterCoreTests/DevelopmentTargetedColorAdjustmentV3Tests.swift:1-22",
+        "Tests/RAWMasterUITests/PhotosTargetedColorWorkflowTests.swift:1-43"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "多色域权重、稳定基线、交互帧画布、失败回滚、单手手势撤销／重做与持久化通过；46 操作真实 RAW 门禁通过，交互 13.80 ms、settled 985.42 ms、p99 2/255。"
+    },
+    {
+      "id": "mixer-isolate-hue",
+      "panel": "mixer",
+      "group": "Targeted Adjustment",
+      "name": "Alt/Option 色域可视化",
+      "cameraRaw": "调整时保留活动色相为彩色，其余显示灰度。",
+      "status": "aligned",
+      "rawMaster": "Option+“显示颜色范围”启用独立 GPU 色域隔离：活动色相保持彩色，其余区域按亮度转为灰度；滑杆手势期间持续刷新。",
+      "difference": "使用独立临时配方字段和帧消费者，不进入用户草稿；隔离范围沿用 RawMaster 的色域宽度与饱和度权重。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:647-693",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:14-277",
+        "Sources/RAWMaster/EditingController.swift:1892-1930",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:166-175",
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:309-318",
+        "Tests/RAWMasterImagingTests/DevelopmentHueIsolationV3Tests.swift:1-34",
+        "Tests/RAWMasterUITests/PhotosHueIsolationWorkflowTests.swift:1-35"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "活动色相、灰度转换、Alpha、代理一致性、手势刷新、取消和草稿隔离测试通过；47 操作真实 RAW 门禁通过，交互 12.36 ms、settled 971.67 ms；p99 22/255 已如实记录。"
+    },
+    {
+      "id": "mixer-bw-mixer",
+      "panel": "mixer",
+      "group": "B&W Mixer",
+      "name": "B&W Mixer",
+      "cameraRaw": "黑白模式下按原色域调整灰度明暗。",
+      "status": "aligned",
+      "rawMaster": "黑白面板提供红、橙、黄、绿、青、蓝、紫、洋红八通道 −100…100 灰度混合。",
+      "difference": "已补齐独立 GPU 预处理与黑白转换链路；八色响应、中性灰、alpha、旧配方和原生预览防丢弃测试通过。真实 RAW 暖样本中位数 11.57 ms，p99 通道差 0；不宣称 Adobe 数值等价。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:178-236",
+        "Sources/RAWMasterImaging/DevelopmentBlackAndWhiteMixerEngineV3.swift:8-49",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:181-211",
+        "Tests/RAWMasterImagingTests/DevelopmentBlackAndWhiteMixerEngineV3Tests.swift:31-59"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“B&W Mixer”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-picker",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Point Color 取样器",
+      "cameraRaw": "从照片选取精确颜色并建立色样。",
+      "status": "aligned",
+      "rawMaster": "除固定 HSL 取样外，可用“添加色样”从照片建立独立 UUID Point Color 样本。",
+      "difference": "已补齐独立取样；真实源像素、坐标映射、命令与 UUID 保存回归通过，不再绑定固定色域。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentAnalysis.swift:298-310",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:7-27",
+        "Sources/RAWMaster/PhotosPointColorControls.swift:8-37"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Point Color 取样器”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-swatches",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "最多 8 个独立色样",
+      "cameraRaw": "保存并切换最多 8 个取样色样。",
+      "status": "aligned",
+      "rawMaster": "最多保存、切换和删除 8 个独立色样；每个样本有独立 H/S/L、Variance 与 Range。",
+      "difference": "已补齐独立样本数组、16 项点云 GPU 核和列表 UI；GPU 响应、乱序确定性、上限、ID 唯一性及真实取样通过。真实 RAW 中位数 11.14 ms，p99 通道差 17，仍需精度复核。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:601-667",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:41-83",
+        "Sources/RAWMaster/PhotosPointColorControls.swift:8-65",
+        "Tests/RAWMasterImagingTests/DevelopmentPointColorSamplesV3Tests.swift:8-32"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“最多 8 个独立色样”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-hue",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Hue Shift",
+      "cameraRaw": "调整样本色域的色相。",
+      "status": "aligned",
+      "rawMaster": "取样后有 Hue 调整。",
+      "difference": "核心调整存在，但作用色域模型不同。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Hue Shift”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-saturation",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Saturation Shift",
+      "cameraRaw": "调整样本色域的饱和度。",
+      "status": "aligned",
+      "rawMaster": "取样后有 Saturation 调整。",
+      "difference": "核心调整存在，但作用色域模型不同。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Saturation Shift”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-luminance",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Luminance Shift",
+      "cameraRaw": "调整样本色域的明度。",
+      "status": "aligned",
+      "rawMaster": "取样后有 Luminance 调整。",
+      "difference": "核心调整存在，但作用色域模型不同。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Luminance Shift”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-variance",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Variance",
+      "cameraRaw": "将范围内颜色向样本聚拢或推离。",
+      "status": "aligned",
+      "rawMaster": "取样颜色新增 −100…100 Variance；正值向样本 Hue/S/V 聚拢，负值推离，Range 独立控制权重。",
+      "difference": "已补齐 Variance 独立 GPU 路径；无 Variance 配方继续使用原核和原参数纹理。正负方向、配方兼容及 14 项全局颜色回归通过。真实 RAW 中位数 12.91 ms；不宣称 Adobe 数值等价。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:559-591",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:40-67",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:126-163",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:134-174",
+        "Tests/RAWMasterImagingTests/DevelopmentSelectiveVarianceV3Tests.swift:23-40"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Variance”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-range",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Range",
+      "cameraRaw": "控制受影响颜色范围。",
+      "status": "aligned",
+      "rawMaster": "有 Range 滑杆。",
+      "difference": "控件存在；Range 的实际色相/饱和度/明度权重需验收。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:520-579"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Range”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-visualize-range",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "Visualise Range",
+      "cameraRaw": "只显示当前颜色选择影响区域。",
+      "status": "aligned",
+      "rawMaster": "Color Mixer 提供当前色样的范围可视化开关，以灰度权重显示选中区域。",
+      "difference": "已补齐临时预览与独立 GPU 范围核；正式编辑退出可视化，用户草稿不提交临时字段。15 项颜色回归通过。真实 RAW 中位数 10.86 ms；代理边界近似 p99 通道差 252，只用于诊断预览。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:583-620",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:40-77",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:165-173",
+        "Sources/RAWMaster/EditingController.swift:1816-1847",
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-151",
+        "Tests/RAWMasterImagingTests/DevelopmentSelectiveVarianceV3Tests.swift:41-58"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Visualise Range”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "mixer-point-mask",
+      "panel": "mixer",
+      "group": "Point Color",
+      "name": "蒙版内 Point Color",
+      "cameraRaw": "在局部蒙版中使用 Point Color。",
+      "status": "aligned",
+      "rawMaster": "每个蒙版可持有独立 Point Color 色样，支持局部 H/S/L、Range、Variance，并可从全局独立色样复制；选色、局部色调与 Glow 在 GPU 链中组合。",
+      "difference": "核心能力已对齐；局部色样与全局调整独立存储，不联动应用。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-28",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:23-91",
+        "Sources/RAWMaster/PhotosMaskControls.swift:56-76",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskPointColorV3Tests.swift:16-45"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-performance",
+      "acceptance": "验收蒙版内外互不影响、H/S/L/Range/Variance 与 Tone/Glow 组合、配方编解码及代理一致性；真实 RAW 性能样本随性能报告持续回归。"
+    },
+    {
+      "id": "grading-shadows",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "Shadows 色轮",
+      "cameraRaw": "为阴影选择色相与饱和度。",
+      "status": "aligned",
+      "rawMaster": "有阴影色轮、数值和复位。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Shadows 色轮”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-midtones",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "Midtones 色轮",
+      "cameraRaw": "为中间调选择色相与饱和度。",
+      "status": "aligned",
+      "rawMaster": "有中间调色轮、数值和复位。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Midtones 色轮”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-highlights",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "Highlights 色轮",
+      "cameraRaw": "为高光选择色相与饱和度。",
+      "status": "aligned",
+      "rawMaster": "有高光彩轮、数值和复位。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Highlights 色轮”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-global",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "Global 色轮",
+      "cameraRaw": "对全图统一施加颜色分级。",
+      "status": "aligned",
+      "rawMaster": "有全局色轮。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Global 色轮”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-luminance",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "每轮 Luminance",
+      "cameraRaw": "独立调整各色调区域亮度。",
+      "status": "aligned",
+      "rawMaster": "每个区域均有亮度数值。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“每轮 Luminance”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-blending",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "Blending",
+      "cameraRaw": "控制阴影、中间调、高光区域重叠。",
+      "status": "aligned",
+      "rawMaster": "有分级混合，范围 0…100。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Blending”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-balance",
+      "panel": "grading",
+      "group": "Color Wheels",
+      "name": "Balance",
+      "cameraRaw": "负值偏阴影，正值偏高光。",
+      "status": "aligned",
+      "rawMaster": "有分级平衡，范围 −100…100。",
+      "difference": "核心能力存在。",
+      "sources": [
+        "tone"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentInspector.swift:587-683",
+        "Sources/RAWMasterCore/DevelopmentColorModels.swift:78-128"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Balance”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "grading-lut-select",
+      "panel": "grading",
+      "group": "Apply LUT",
+      "name": "Color LUT / B&W LUT 选择",
+      "cameraRaw": "在 Color Grading 中选择颜色或黑白 LUT。",
+      "status": "aligned",
+      "rawMaster": "Color Grading 可选内置暖色与黑白三维 LUT，也可选择用户导入的 LUT。",
+      "difference": "内置 LUT 采用 RAWMaster 的配色；Adobe 预设目录与逐像素匹配仍待比对。",
+      "sources": [
+        "lut",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosGradingLUTControls.swift:96-115",
+        "Sources/RAWMasterCore/DevelopmentColorLUT.swift:105-138",
+        "Tests/RAWMasterImagingTests/DevelopmentGradingLUTTests.swift:35-67"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "原生控制器可保存、恢复和替换颜色表。Release 验证三线性采样、通道顺序和透明度。"
+    },
+    {
+      "id": "grading-lut-amount",
+      "panel": "grading",
+      "group": "Apply LUT",
+      "name": "每个 LUT 的 Amount",
+      "cameraRaw": "独立控制 LUT 强度。",
+      "status": "aligned",
+      "rawMaster": "每层 LUT 各自保存 0–100 的强度；工作色域中的混合由 GPU 完成。",
+      "difference": "0 完全保留输入，100 应用该层的完整颜色变换。",
+      "sources": [
+        "lut"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosGradingLUTControls.swift:60-74",
+        "Sources/RAWMasterImaging/DevelopmentGradingLUTEngine.swift:17-38",
+        "Tests/RAWMasterImagingTests/DevelopmentGradingLUTTests.swift:35-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "Release 验证零强度、中间强度、非对称通道、半透明像素与输出 Alpha。"
+    },
+    {
+      "id": "grading-lut-stack",
+      "panel": "grading",
+      "group": "Apply LUT",
+      "name": "全片最多 3 个顺序 LUT",
+      "cameraRaw": "最多叠加 3 个 LUT，前一个输出作为后一个输入。",
+      "status": "aligned",
+      "rawMaster": "全局配方按界面顺序保存最多三个 LUT，前一层的输出传给后一层。",
+      "difference": "每个作品版本都保存重放所需的颜色表。",
+      "sources": [
+        "lut",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentColorLUT.swift:190-210",
+        "Sources/RAWMasterImaging/DevelopmentGradingLUTEngine.swift:20-36",
+        "Tests/RAWMasterImagingTests/DevelopmentGradingLUTTests.swift:52-67"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "验证层数上限、两种顺序的输出差异、配方往返和 16 位导出。"
+    },
+    {
+      "id": "grading-lut-manage",
+      "panel": "grading",
+      "group": "Apply LUT",
+      "name": "Reorder / Replace / Remove / Preview",
+      "cameraRaw": "拖动排序、替换、移除并用 Eye 比较。",
+      "status": "aligned",
+      "rawMaster": "支持拖动或用按钮调整层次、替换与删除 LUT；眼睛按钮可切换整个 LUT 堆栈。",
+      "difference": "原生拖放已接入，真实鼠标拖动到画面更新的延迟待测。",
+      "sources": [
+        "lut"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosGradingLUTControls.swift:33-93",
+        "Tests/RAWMasterUITests/EditingDevelopmentSessionTests.swift:68-82",
+        "Tests/RAWMasterImagingTests/DevelopmentGradingLUTTests.swift:52-67"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "有序渲染、停用、替换和撤销重做由 Release 回归覆盖。"
+    },
+    {
+      "id": "grading-lut-mask",
+      "panel": "grading",
+      "group": "Apply LUT",
+      "name": "每个蒙版 1 个 LUT",
+      "cameraRaw": "在蒙版 Color Grading 中应用一个 LUT 并调 Amount。",
+      "status": "aligned",
+      "rawMaster": "每个蒙版独立选择一个 LUT，并在蒙版范围内按该层的强度混合。",
+      "difference": "选择、强度及颜色表随蒙版配方保存。",
+      "sources": [
+        "lut",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosMaskControls.swift:88",
+        "Sources/RAWMaster/PhotosGradingLUTControls.swift:145-165",
+        "Tests/RAWMasterImagingTests/DevelopmentGradingLUTTests.swift:69-116"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "Release 验证蒙版内外像素、FIT 预览一致性及保存后导出。"
+    },
+    {
+      "id": "grading-lut-import",
+      "panel": "grading",
+      "group": "Apply LUT",
+      "name": "导入 CUBE / ZIP",
+      "cameraRaw": "导入单个 CUBE 或含多个 CUBE 的 ZIP；CUBE 最多 64 divisions。",
+      "status": "aligned",
+      "rawMaster": "可导入单个 UTF-8 三维 CUBE 或含多个 CUBE 的 ZIP，接受每轴 2–64 个格点，可从目录和嵌套目录读取。",
+      "difference": "一维 LUT 与 shaper 表目前不在导入范围内。",
+      "sources": [
+        "lut"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLUTLibrary.swift:4-58",
+        "Sources/RAWMasterCore/DevelopmentLUTLibrary.swift:93-129",
+        "Tests/RAWMasterCoreTests/DevelopmentColorLUTTests.swift:65-104"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "source-and-native-regression",
+      "acceptance": "验证真实 64³ 表、ZIP、目录重开、文件校验以及移除原始文件和库后的配方重放。"
+    },
+    {
+      "id": "detail-sharpen-amount",
+      "panel": "detail",
+      "group": "Sharpening",
+      "name": "Amount",
+      "cameraRaw": "控制锐化强度，0 关闭。",
+      "status": "aligned",
+      "rawMaster": "有锐化强度。",
+      "difference": "核心入口存在；算法与显示范围不同。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:244-320"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Amount”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "detail-sharpen-radius",
+      "panel": "detail",
+      "group": "Sharpening",
+      "name": "Radius",
+      "cameraRaw": "控制参与锐化的细节半径。",
+      "status": "aligned",
+      "rawMaster": "Detail 面板新增 0.5–3.0 原生像素 Radius，直接控制 GPU 高斯细节支撑。",
+      "difference": "独立半径已补齐；nil 可选字段继续执行旧 Falloff 映射，不重解释旧配方。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosSharpeningControls.swift:4-55",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:312-357",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:89-98",
+        "Tests/RAWMasterImagingTests/DevelopmentSharpeningDetailV3Tests.swift:23-51"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test",
+      "acceptance": "不同半径的实际 GPU 输出、配方往返、保存/撤销/重做及旧配方位级兼容已自动化验证；纳入真实 RAW 性能回归。"
+    },
+    {
+      "id": "detail-sharpen-detail",
+      "panel": "detail",
+      "group": "Sharpening",
+      "name": "Detail",
+      "cameraRaw": "控制高频信息与边缘锐化倾向。",
+      "status": "aligned",
+      "rawMaster": "新增独立 Detail 0–100，通过 GPU 阈值映射控制细亮度过渡参与锐化的程度。",
+      "difference": "不再以 Edges 近似代替；这是 RawMaster 自有算法语义，不宣称 Adobe 像素等价。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosSharpeningControls.swift:4-55",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:200-213",
+        "Tests/RAWMasterImagingTests/DevelopmentSharpeningDetailV3Tests.swift:40-51",
+        "Tests/RAWMasterUITests/PhotosSharpeningWorkflowTests.swift:5-31"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test",
+      "acceptance": "Detail 独立图像响应、有限值、配方兼容及保存/撤销/重做已验证；后续发版保持图像与性能回归。"
+    },
+    {
+      "id": "detail-sharpen-masking",
+      "panel": "detail",
+      "group": "Sharpening",
+      "name": "Masking",
+      "cameraRaw": "以边缘蒙版限制锐化区域。",
+      "status": "aligned",
+      "rawMaster": "新增 Masking 0–100，在 GPU 锐化核中按局部亮度边缘强度抑制非边缘区域。",
+      "difference": "锐化区域限制已具备；Option 黑白蒙版可视化仍是独立待补项。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosSharpeningControls.swift:4-55",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:200-213",
+        "Tests/RAWMasterImagingTests/DevelopmentSharpeningDetailV3Tests.swift:40-51",
+        "Tests/RAWMasterUITests/PhotosSharpeningWorkflowTests.swift:5-31"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test",
+      "acceptance": "Masking 独立图像响应、Alpha 保留、配方兼容及保存/撤销/重做已验证；蒙版预览按独立功能 ID 验收。"
+    },
+    {
+      "id": "detail-mask-preview",
+      "panel": "detail",
+      "group": "Sharpening",
+      "name": "Alt/Option Masking 预览",
+      "cameraRaw": "拖动 Masking 时以白色显示锐化区、黑色显示蒙版区。",
+      "status": "aligned",
+      "rawMaster": "按住 Option 拖动 Masking 显示 GPU 黑白边缘图；使用独立临时任务，松开或离开面板即恢复。",
+      "difference": "交互与预览链路已补齐；预览不进入撤销历史或保存配方，代理与 canonical 的蒙版边缘允许分辨率差异。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosSharpeningControls.swift:37-59",
+        "Sources/RAWMaster/EditingController.swift:1863-1902",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:115-128",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:230-244",
+        "Tests/RAWMasterUITests/PhotosSharpeningMaskPreviewTests.swift:5-37",
+        "Tests/RAWMasterImagingTests/DevelopmentSharpeningDetailV3Tests.swift:51-68"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "黑白输出、Alpha、参数更新、无预览历史写入及持久化隔离均已自动化验证；31 操作真实 RAW 发版序列通过，预览交互 25.73 ms。"
+    },
+    {
+      "id": "detail-nr-luminance",
+      "panel": "detail",
+      "group": "Noise Reduction",
+      "name": "Luminance",
+      "cameraRaw": "降低亮度噪点。",
+      "status": "aligned",
+      "rawMaster": "FlashRaw 作品在源线性图像上用 Metal 对亮度降噪，原有 CIRAW 作品按相机默认值设置亮度降噪参数。",
+      "difference": "亮度和色度独立处理。GPU 边缘权重随局部亮度变化。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/FlashRawNoiseReduction.swift:6-54",
+        "Sources/RAWMasterCore/DevelopmentNativeNoiseReductionV3.swift:15-30",
+        "Tests/RAWMasterImagingTests/FlashRawNoiseReductionTests.swift:7-41",
+        "docs/research/camera-raw-parity/evidence/engine-control-fixes.json:171"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test",
+      "acceptance": "实际 Sony ARW 上两个亮度状态得到稳定且不同的画面。合成输入验证了亮度噪声降低、色差信号与透明度保持。"
+    },
+    {
+      "id": "detail-nr-lum-detail",
+      "panel": "detail",
+      "group": "Noise Reduction",
+      "name": "Luminance Detail",
+      "cameraRaw": "控制亮度降噪阈值与细节保留。",
+      "status": "aligned",
+      "rawMaster": "FlashRaw 作品可在亮度降噪时恢复高频细节。原有 CIRAW 作品继续将亮度细节映射为 CIRAWFilter 的 detailAmount。",
+      "difference": "FlashRaw 的源空间算子决定亮度细节保留量，图像域 Color Detail 仍作为独立控件。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/FlashRawNoiseReduction.swift:6-54",
+        "Sources/RAWMasterCore/DevelopmentNativeNoiseReductionV3.swift:15-30",
+        "Tests/RAWMasterImagingTests/FlashRawNoiseReductionTests.swift:7-41",
+        "docs/research/camera-raw-parity/evidence/engine-control-fixes.json:327"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test",
+      "acceptance": "已验证亮度降噪后提高细节保留量能增加局部亮度差异，颜色控件与透明度保持独立。真实 Sony ARW 的两个细节状态得到不同画面。"
+    },
+    {
+      "id": "detail-nr-lum-contrast",
+      "panel": "detail",
+      "group": "Noise Reduction",
+      "name": "Luminance Contrast",
+      "cameraRaw": "控制亮度降噪后的局部对比保留。",
+      "status": "aligned",
+      "rawMaster": "新增亮度对比度 0–100，在 GPU 图像域增强降噪后的局部亮度差异，RAW 与非 RAW 共用。",
+      "difference": "独立参数和处理链路已补齐；自有局部对比算法不宣称与 Adobe 像素等价。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosNoiseReductionDetailControls.swift:4-49",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:268-318",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:89-95",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:207-215",
+        "Tests/RAWMasterImagingTests/DevelopmentNoiseReductionDetailV3Tests.swift:27-47"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "独立 GPU 响应、Alpha、旧配方与原生解码映射、保存/撤销/重做已验证；30 操作真实 RAW 序列无全透明帧。"
+    },
+    {
+      "id": "detail-nr-color",
+      "panel": "detail",
+      "group": "Noise Reduction",
+      "name": "Color",
+      "cameraRaw": "降低颜色噪点。",
+      "status": "aligned",
+      "rawMaster": "FlashRaw 作品在源线性图像上独立平滑色度，原有 CIRAW 作品继续使用相机原生颜色降噪参数。",
+      "difference": "色度调节保留线性亮度，调节时复用已解码图像。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/FlashRawNoiseReduction.swift:6-54",
+        "Sources/RAWMasterCore/DevelopmentNativeNoiseReductionV3.swift:15-30",
+        "Tests/RAWMasterImagingTests/FlashRawNoiseReductionTests.swift:7-41",
+        "docs/research/camera-raw-parity/evidence/engine-control-fixes.json:249"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test",
+      "acceptance": "实际 Sony ARW 上两个色度状态得到稳定且不同的画面。合成输入验证了色度噪声降低及亮度保持。"
+    },
+    {
+      "id": "detail-nr-color-detail",
+      "panel": "detail",
+      "group": "Noise Reduction",
+      "name": "Color Detail",
+      "cameraRaw": "保护细致彩色边缘，减少彩色斑点或颜色渗出。",
+      "status": "aligned",
+      "rawMaster": "新增颜色细节 0–100，在 GPU 中分离亮度与色度并保留局部色度差异，独立于原生 Detail。",
+      "difference": "彩色边缘保护参数已补齐；RAW 解码 Detail 与图像域 Color Detail 不再混用。",
+      "sources": [
+        "detail"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosNoiseReductionDetailControls.swift:4-49",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:268-318",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:89-95",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:207-215",
+        "Tests/RAWMasterUITests/PhotosNoiseReductionDetailWorkflowTests.swift:5-31"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "独立色度响应、配方兼容、保存/撤销/重做已验证；真实 RAW 组合交互 14.71 ms、settled 1371.98 ms、p99 3/255。"
+    },
+    {
+      "id": "detail-denoise",
+      "panel": "detail",
+      "group": "AI Denoise",
+      "name": "Denoise checkbox + Amount",
+      "cameraRaw": "AI 降噪；非 RAW Amount 为 0…100，启用时颜色噪点始终完全降低。",
+      "status": "partial",
+      "rawMaster": "支持的马赛克 RAW 可启用 Apple RAW 9 神经去马赛克与降噪。新建照片或输出参照 DNG 配方启用摄影 VGG7 后始终保留模型的完整色度降噪，0–100 仅改变亮度降噪。旧配方按原始 RGB 强度重开。支持撤销、重做、预览和 TIFF16 导出。",
+      "difference": "十种已显影输入验证了强度语义。Apple RAW 9 与摄影 VGG7 的支持范围及模型与 Adobe 有别。其他 RAW 类别及相同原片的 Adobe 增强质量仍待验证。RAWMaster 还允许在同一配方中串行使用照片降噪与超分辨率。",
+      "sources": [
+        "enhance",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAIDenoiseControls.swift:12-51",
+        "Sources/RAWMasterImaging/DevelopmentNeuralRaw9.swift:18-58",
+        "Tests/RAWMasterImagingTests/DevelopmentNeuralRaw9Tests.swift:29-104",
+        "Tests/RAWMasterUITests/EditingDevelopmentSessionTests.swift:34-55",
+        "docs/research/camera-raw-parity/evidence/raw9-denoise.json:1-58",
+        "Sources/RAWMasterCore/DevelopmentAIDenoiseV1.swift:5-23",
+        "Sources/RAWMasterImaging/DevelopmentPhotoDenoise.swift:59-122",
+        "Sources/RAWMasterImaging/PreviewPhotographicPrediction.swift:5-29",
+        "Tests/RAWMasterImagingTests/PhotoDenoiseComponentWitness.swift:7-42",
+        "docs/research/camera-raw-parity/evidence/photo-denoise.json:1-35",
+        "docs/research/camera-raw-parity/evidence/output-referred-dng.json:1-32",
+        "docs/research/camera-raw-parity/evidence/adobe-enhance-baseline.json:1-24"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "native-preview-persistence-export",
+      "acceptance": "十类输入分别核验 49,152 个原生 RGB8 网格位置。Amount 0 的亮度相对源、50 的亮度相对两端中点、0/50 的色差相对完整模型三项 P95 均低于 1 码值。十类旧配方 0/35/100 的重放摘要与升级前的版本完全一致，全部按原生尺寸导出 TIFF16。"
+    },
+    {
+      "id": "detail-denoise-formats",
+      "panel": "detail",
+      "group": "AI Denoise",
+      "name": "扩展非 RAW Denoise",
+      "cameraRaw": "支持 JPEG、HEIF/HEIC、TIFF、PNG、AVIF、JPEG XL、WebP、PSD/PSB、output-referred DNG 等。",
+      "status": "aligned",
+      "rawMaster": "相机 JPEG、TIFF、PNG、HEIC、AVIF、WebP、JPEG XL、PSD、PSB 和输出参考 DNG 均可导入、保存降噪强度、预览及导出 16 位 TIFF。DNG 读取 ColorimetricReference；标记为输出参考的线性 RGB 进入摄影降噪，场景参考控制样本由其自身 RAW 路径处理。",
+      "difference": "已按容器和源类型验证操作可用性。Adobe 与 RAWMaster 使用不同降噪模型，其成像效果在独立的 Denoise 项记录。",
+      "sources": [
+        "enhance",
+        "release"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentPhotoDenoise.swift:61-79",
+        "Tests/RAWMasterImagingTests/DevelopmentPhotoDenoiseTests.swift:33-100",
+        "docs/research/camera-raw-parity/evidence/photo-denoise.json:1-65",
+        "Sources/RAWMasterImaging/Resources/PhotoDenoise/NOTICE.txt:1-9",
+        "docs/research/camera-raw-parity/evidence/output-referred-dng.json:1-22"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "native-import-preview-persistence-export-ten-formats",
+      "acceptance": "十类文件通过真实解码、保留配方、恢复原图和 TIFF16 输出。由同一实拍 JPEG 制作的两份 16 位 LinearRaw DNG 仅色度参考标记不同，同时验证正常目录导入、源域、37 次交互与逐像素采样。"
+    },
+    {
+      "id": "detail-raw-details",
+      "panel": "detail",
+      "group": "Enhance",
+      "name": "Raw Details",
+      "cameraRaw": "改善 Bayer/X-Trans RAW 的细节、边缘与颜色，分辨率不变。",
+      "status": "partial",
+      "rawMaster": "“细节”面板可为 Bayer RAW 选择 AHD，为 X-Trans RAW 选择边缘感知去马赛克。配方固定 FlashRaw 算法版本。两台相机均在原尺寸导出 16 位 TIFF。",
+      "difference": "Adobe 增强模型对应的视觉质量及精细像素一致性仍待参照图验证。",
+      "sources": [
+        "enhance"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosRawDetailsControl.swift:10-37",
+        "Sources/RAWMasterImaging/FlashRawSource.swift:140-155",
+        "Tests/RAWMasterImagingTests/DevelopmentRawDetailsImageTests.swift:21-100",
+        "docs/research/camera-raw-parity/evidence/raw-details.md:3-38"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "native-preview-persistence-export",
+      "acceptance": "Sony A7R V ARW 与 Fujifilm X-T1 RAF 已验证增强、关闭复原、配方重开、中心线性 RGB 变化以及原尺寸 16 位 TIFF。仍需同图 Adobe 参考输出。"
+    },
+    {
+      "id": "detail-super-resolution",
+      "panel": "detail",
+      "group": "Enhance",
+      "name": "Super Resolution",
+      "cameraRaw": "宽度与高度各翻倍，总像素数变为 4 倍。",
+      "status": "partial",
+      "rawMaster": "“细节”中的超分辨率将裁剪后的宽和高各放大 2 倍。冻结的 MIT 摄影模型在原生线性网格上推理 4 个子像素。已验证配方重开、撤销和重做，以及 JPEG8、PNG16、TIFF16。真实 Sony 9504×6336 正常导出 19008×12672 sRGB TIFF16；独立浮点参考与正式 TIFF 的 722,608,128 个颜色通道比较，P95 线性误差不超过 0.0000542。",
+      "difference": "RAWMaster 在现有编辑、裁剪和暗角以后增强。Adobe 对应模型的处理顺序、局部纹理和成像风格仍需同片逐项验证。",
+      "sources": [
+        "enhance"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosSuperResolutionControl.swift:4-24",
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:765-773",
+        "Sources/RAWMasterImaging/DevelopmentSuperResolution.swift:8-72",
+        "Tests/RAWMasterImagingTests/DevelopmentSuperResolutionTests.swift:26-100",
+        "Tests/RAWMasterUITests/EditingDevelopmentSessionTests.swift:34-54",
+        "docs/research/camera-raw-parity/evidence/super-resolution-native.json:1-28",
+        "docs/research/camera-raw-parity/evidence/super-resolution-output-pixels.json:1-24"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "real-full-raw-native-2x-export-all-pixels-independent-fp16-ui-undo-release",
+      "acceptance": "在 RawMaster 中完成“Super Resolution”的可预览、可保存、可撤销与导出验证。补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "optics-profile-enable",
+      "panel": "optics",
+      "group": "Profile Corrections",
+      "name": "Enable Lens Profile Corrections",
+      "cameraRaw": "根据镜头配置启用畸变和晕影校正。",
+      "status": "aligned",
+      "rawMaster": "Optics 提供独立启用开关，配置畸变与晕影经 Metal/Core Image GPU 核执行。",
+      "difference": "功能链路已补齐；内置自有近似配置不宣称与 Adobe 标定系数或像素输出一致。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosOpticsControls.swift:14-29",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:19-39",
+        "Tests/RAWMasterUITests/PhotosOpticsWorkflowTests.swift:6-20"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "已覆盖配方往返、保存、撤销与重做，并在真实 ARW 上记录交互及稳定帧性能；后续发版保持回归。"
+    },
+    {
+      "id": "optics-profile-match",
+      "panel": "optics",
+      "group": "Profile Corrections",
+      "name": "EXIF 自动匹配配置",
+      "cameraRaw": "根据相机/镜头元数据自动寻找适用配置。",
+      "status": "aligned",
+      "rawMaster": "读取 ImageIO 相机与镜头元数据，按 EXIF LensModel 精确匹配；未知镜头不伪造匹配。",
+      "difference": "匹配链路已具备，当前为小型自有目录；覆盖范围尚不等同 Adobe 完整镜头库。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:4-42",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:18-21",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:44-72"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "精确匹配、未知镜头拒绝及真实 SONY ARW 元数据诊断均已自动化；新增配置须附来源和维护记录。"
+    },
+    {
+      "id": "optics-profile-select",
+      "panel": "optics",
+      "group": "Profile Corrections",
+      "name": "Make / Model / Profile",
+      "cameraRaw": "自动匹配失败时手动选择制造商、型号和配置。",
+      "status": "aligned",
+      "rawMaster": "Optics 提供 Make、Model、Profile 三级选择，并在选中后启用校正。",
+      "difference": "手动选择能力已具备；目录规模和标定精度仍需独立扩充，不代表 Adobe 算法等价。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosOpticsControls.swift:63-79",
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:15-42",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:44-66"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "目录查询、配方持久化及图像效果已有自动化覆盖；后续增加目录项时保持旧配方兼容。"
+    },
+    {
+      "id": "optics-profile-distortion",
+      "panel": "optics",
+      "group": "Profile Corrections",
+      "name": "Distortion Amount",
+      "cameraRaw": "调整配置畸变校正强度，默认 100，可高于或低于 100。",
+      "status": "aligned",
+      "rawMaster": "配置畸变强度支持 0–200%，默认 100%，与手动 Distortion 分开存储并进入 GPU 径向校正。",
+      "difference": "控制语义与配方链路已补齐；近似配置系数与 Camera Raw 不作像素级等同声明。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosOpticsControls.swift:23-25",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:80-85",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:32-39",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:50-66"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "强度、代理、旧配方兼容和真实 RAW 性能已验证；后续发版继续执行图像效果与性能回归。"
+    },
+    {
+      "id": "optics-profile-vignetting",
+      "panel": "optics",
+      "group": "Profile Corrections",
+      "name": "Vignetting Amount",
+      "cameraRaw": "调整配置镜头晕影校正强度，默认 100。",
+      "status": "aligned",
+      "rawMaster": "配置晕影强度支持 0–200%，默认 100%，独立于创作型 Vignette 与手动镜头晕影。",
+      "difference": "配置校正语义已补齐；自有近似系数不宣称与 Adobe 标定输出一致。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosOpticsControls.swift:23-25",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:80-85",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:32-39",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:50-66"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "强度、代理、旧配方兼容、保存/撤销/重做和真实 RAW 性能已验证；后续发版保持回归。"
+    },
+    {
+      "id": "optics-profile-defaults",
+      "panel": "optics",
+      "group": "Profile Corrections",
+      "name": "Save New Lens Profile Defaults",
+      "cameraRaw": "将当前配置修正保存为新的默认。",
+      "status": "aligned",
+      "rawMaster": "可按 Profile ID 保存启用状态及畸变／晕影强度；自动匹配和手动选择均应用，支持恢复内置默认值。",
+      "difference": "默认管理已补齐；偏好存储独立于配方和图像引擎，不改变旧照片参数。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosLensProfileDefaults.swift:6-58",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:24-31",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:85-98",
+        "Tests/RAWMasterUITests/PhotosLensProfileDefaultsTests.swift:5-48"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test",
+      "acceptance": "按配置隔离、重开恢复、重置、选择应用、保存、撤销／重做及照片持久化均已自动化验证。"
+    },
+    {
+      "id": "optics-remove-ca",
+      "panel": "optics",
+      "group": "Chromatic Aberration",
+      "name": "Remove Chromatic Aberration",
+      "cameraRaw": "自动移除横向色差/红绿与蓝黄边。",
+      "status": "aligned",
+      "rawMaster": "Optics 提供 Remove CA 开关，以自动色度边缘检测降低横向色差；使用 RawMaster 自有近似模型，不冒充 Adobe 算法。",
+      "difference": "核心能力已对齐；完整 27 操作真实 RAW 序列通过，CA/Distortion 组合 p99=7/255，并保留算法差异说明。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:25-37",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:7-64",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:29-33",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:10-20",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:20-44",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:195-202",
+        "Tests/RAWMasterUITests/PhotosOpticsWorkflowTests.swift:1-26"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收自动色度边缘校正、配方兼容、代理一致性、保存／撤销／重做与持续真实 RAW 回归。"
+    },
+    {
+      "id": "optics-manual-distortion",
+      "panel": "optics",
+      "group": "Manual",
+      "name": "Distortion Amount",
+      "cameraRaw": "手动校正桶形或枕形畸变。",
+      "status": "aligned",
+      "rawMaster": "Optics 提供 -100…100 手动 Distortion，使用源图径向 GPU 采样，并保持在后续裁切之前。",
+      "difference": "核心能力已对齐；完整 27 操作真实 RAW 序列通过，CA/Distortion 组合 p99=7/255，代理缩放采样差持续记录。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:25-37",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:7-64",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:29-33",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:10-20",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:20-44",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:195-202",
+        "Tests/RAWMasterUITests/PhotosOpticsWorkflowTests.swift:1-26"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收双向径向畸变、配方兼容、代理一致性、保存／撤销／重做与持续真实 RAW 回归。"
+    },
+    {
+      "id": "optics-defringe-picker",
+      "panel": "optics",
+      "group": "Defringe",
+      "name": "紫色/绿色取样器",
+      "cameraRaw": "从照片中选取紫/绿色边并自动设置 Defringe。",
+      "status": "aligned",
+      "rawMaster": "Optics 提供紫色边与绿色边取样器，使用实际源像素设置对应 Hue Range，并在零强度时赋予 60 初始强度。",
+      "difference": "已补齐真实源取样、坐标映射、分析命令与源绑定；两种色带管线回归通过。取样只生成 RawMaster 参数，不宣称 Adobe 自动识别等价。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentAnalysis.swift:284-311",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:7-25",
+        "Sources/RAWMaster/EditingController.swift:2073-2084",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:10-25",
+        "Tests/RAWMasterImagingTests/DevelopmentB2GlobalTests.swift:194-218"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“紫色/绿色取样器”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "optics-purple-amount",
+      "panel": "optics",
+      "group": "Defringe",
+      "name": "Purple Amount",
+      "cameraRaw": "控制紫色边去除强度。",
+      "status": "aligned",
+      "rawMaster": "新增 Purple Amount 0…100，控制紫色边缘去除强度。",
+      "difference": "已补齐紫色强度。GPU 响应、范围旁路、alpha、配方命令和真实 RAW 测试通过；模型为 RawMaster 自有近似，不宣称 Adobe 数值等价。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:1-27",
+        "Sources/RAWMasterImaging/DevelopmentDefringeEngineV3.swift:7-44",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:8-42",
+        "Tests/RAWMasterImagingTests/DevelopmentDefringeEngineV3Tests.swift:20-42"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Purple Amount”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "optics-purple-hue",
+      "panel": "optics",
+      "group": "Defringe",
+      "name": "Purple Hue 双端范围",
+      "cameraRaw": "调整紫色作用色相范围，可拖端点或整体移动。",
+      "status": "aligned",
+      "rawMaster": "新增紫色起止端点及保持宽度的整体移动。",
+      "difference": "已补齐紫色双端色相范围。GPU 响应、范围旁路、alpha、配方命令和真实 RAW 测试通过；模型为 RawMaster 自有近似，不宣称 Adobe 数值等价。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:1-27",
+        "Sources/RAWMasterImaging/DevelopmentDefringeEngineV3.swift:7-44",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:8-42",
+        "Tests/RAWMasterImagingTests/DevelopmentDefringeEngineV3Tests.swift:20-42"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Purple Hue 双端范围”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "optics-green-amount",
+      "panel": "optics",
+      "group": "Defringe",
+      "name": "Green Amount",
+      "cameraRaw": "控制绿色边去除强度。",
+      "status": "aligned",
+      "rawMaster": "新增 Green Amount 0…100，控制绿色边缘去除强度。",
+      "difference": "已补齐绿色强度。GPU 响应、范围旁路、alpha、配方命令和真实 RAW 测试通过；模型为 RawMaster 自有近似，不宣称 Adobe 数值等价。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:1-27",
+        "Sources/RAWMasterImaging/DevelopmentDefringeEngineV3.swift:7-44",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:8-42",
+        "Tests/RAWMasterImagingTests/DevelopmentDefringeEngineV3Tests.swift:20-42"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Green Amount”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "optics-green-hue",
+      "panel": "optics",
+      "group": "Defringe",
+      "name": "Green Hue 双端范围",
+      "cameraRaw": "调整绿色作用色相范围，可拖端点或整体移动。",
+      "status": "aligned",
+      "rawMaster": "新增绿色起止端点及保持宽度的整体移动。",
+      "difference": "已补齐绿色双端色相范围。GPU 响应、范围旁路、alpha、配方命令和真实 RAW 测试通过；模型为 RawMaster 自有近似，不宣称 Adobe 数值等价。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:1-27",
+        "Sources/RAWMasterImaging/DevelopmentDefringeEngineV3.swift:7-44",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:8-42",
+        "Tests/RAWMasterImagingTests/DevelopmentDefringeEngineV3Tests.swift:20-42"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 中完成“Green Hue 双端范围”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "optics-lens-vignette-amount",
+      "panel": "optics",
+      "group": "Lens Vignetting",
+      "name": "Amount",
+      "cameraRaw": "校正镜头造成的暗角，而非仅添加艺术晕影。",
+      "status": "aligned",
+      "rawMaster": "Optics 新增独立镜头晕影校正量 0–200%，与配置晕影和创作型 Vignette 分离。",
+      "difference": "原有语义差异已修复，手动镜头校正进入独立 GPU 处理阶段。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:65-94",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:30-40",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:19-39",
+        "Tests/RAWMasterUITests/PhotosOpticsWorkflowTests.swift:6-20"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "图像效果、旧配方兼容、保存/撤销/重做及真实 ARW 交互和稳定帧性能已验证；后续发版保持回归。"
+    },
+    {
+      "id": "optics-lens-vignette-midpoint",
+      "panel": "optics",
+      "group": "Lens Vignetting",
+      "name": "Midpoint",
+      "cameraRaw": "控制镜头晕影校正向中心/边角延伸。",
+      "status": "aligned",
+      "rawMaster": "镜头晕影中点支持 0–100%，默认 50%，直接控制 GPU 径向校正衰减。",
+      "difference": "已从创作型半径参考升级为独立镜头校正参数，语义与持久化链路完整。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentOpticsV3.swift:65-94",
+        "Sources/RAWMaster/PhotosOpticsControls.swift:30-40",
+        "Sources/RAWMasterImaging/DevelopmentOpticsEngineV3.swift:32-39",
+        "Tests/RAWMasterImagingTests/DevelopmentOpticsEngineV3Tests.swift:50-66"
+      ],
+      "priority": "P0",
+      "evidenceLevel": "automated-test+real-raw",
+      "acceptance": "中点图像效果、配方兼容、保存/撤销/重做和真实 ARW 性能已验证；后续发版保持回归。"
+    },
+    {
+      "id": "optics-local-defringe",
+      "panel": "optics",
+      "group": "Defringe",
+      "name": "局部 Defringe / 保护",
+      "cameraRaw": "笔刷或渐变可局部去边，−100 可保护区域不受全局 Defringe 影响。",
+      "status": "aligned",
+      "rawMaster": "蒙版新增 −100…100 去边／保护；正值复用 GPU 色带去边，负值按覆盖率恢复真实未去边像素。",
+      "difference": "双向局部语义已补齐；仅激活局部 Defringe 时延迟全局去边，既有无局部配方保持原处理路径。",
+      "sources": [
+        "optics"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:35-82",
+        "Sources/RAWMaster/PhotosMaskControls.swift:92-100",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:26-88",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:137-143",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskDetailV3Tests.swift:50-84",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:38-55"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "共享算子、蒙版内外恢复、代理一致性、旧配方、保存／撤销／重做均通过；32 操作真实 RAW 序列通过，局部组合交互 20.76 ms、p99 2/255。"
+    },
+    {
+      "id": "blur-apply",
+      "panel": "blur",
+      "group": "Lens Blur",
+      "name": "Apply / 面板入口",
+      "cameraRaw": "生成深度图并启用 Lens Blur。",
+      "status": "aligned",
+      "rawMaster": "首次开启 Lens Blur 时，若照片没有选定的深度图，使用 Depth Anything V2 Small FP16 从当前照片估计相对深度，将图与原片哈希写入配方。也可使用嵌入式设备深度或视差。",
+      "difference": "估计图描述相对远近，Adobe 的模型输出与焦外效果仍需同图比较。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:24-54",
+        "Sources/RAWMaster/EditingController.swift:2328-2351",
+        "Sources/RAWMasterImaging/DevelopmentSceneDepth.swift:23-43",
+        "Tests/RAWMasterImagingTests/DevelopmentSceneDepthTests.swift:36-83",
+        "docs/research/camera-raw-parity/evidence/scene-depth.json:1-24"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "native-preview-persistence-export",
+      "acceptance": "Sony A7R V 原片实测生成 256×194 视差图。重开配方后的预览有 42356 个 RGB 像素改变，导出为 9504×6336。模型首次准备和推断 3303 ms，五次热态 89–101 ms。"
+    },
+    {
+      "id": "blur-amount",
+      "panel": "blur",
+      "group": "Lens Blur",
+      "name": "Blur Amount",
+      "cameraRaw": "控制模糊强度，官方默认 50。",
+      "status": "aligned",
+      "rawMaster": "Lens Blur 提供 0–100 模糊量，默认 50，控制两级 GPU 高斯模糊半径。",
+      "difference": "强度控件与渲染链路已具备；当前是自有程序化焦外算法，不宣称 Camera Raw 光斑等价。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:7-46",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-31",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:29-52"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "强度响应、零值旁路、配方持久化和撤销／重做通过；真实 RAW 交互 14.96 ms、settled 1160.32 ms、p99 1/255。"
+    },
+    {
+      "id": "blur-bokeh",
+      "panel": "blur",
+      "group": "Bokeh",
+      "name": "Circle / Bubble / 5-blade / Ring / Anamorphic",
+      "cameraRaw": "五种焦外光斑模型。",
+      "status": "aligned",
+      "rawMaster": "提供全部五种模型；Circle 复用高斯路径，Bubble、五叶片、Ring、Anamorphic 使用独立 GPU 权重／轮廓采样。",
+      "difference": "五种入口与真实图像响应已具备；样式为 RawMaster 自有实现，不宣称与 Camera Raw 光学模型像素等价。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurV3.swift:3-22",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:20-27",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-42",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:66-88",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:63-76",
+        "Tests/RAWMasterCoreTests/DevelopmentLensBlurV3Tests.swift:4-17"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "五样式差异、焦内、Alpha 与配方往返通过；38 操作真实 RAW 序列通过，自定义样式交互 14.29–16.88 ms、p99 均为 1/255。"
+    },
+    {
+      "id": "blur-cat-eye",
+      "panel": "blur",
+      "group": "Bokeh",
+      "name": "Cat Eye",
+      "cameraRaw": "让边缘和角落形成旋转、月牙形模糊。",
+      "status": "aligned",
+      "rawMaster": "新增 0–100 Cat Eye，按画面边缘位置旋转焦外采样并调整月牙权重。",
+      "difference": "边缘形变控制已具备；使用 RawMaster 自有近似，不宣称还原 Camera Raw 光学标定。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurV3.swift:12-28",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-16",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:67-91",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:77-91"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "边缘响应、焦内保护、Alpha 和配方验证通过；40 操作序列通过，Cat Eye 交互 13.99 ms、p99 1/255。"
+    },
+    {
+      "id": "blur-boost",
+      "panel": "blur",
+      "group": "Bokeh",
+      "name": "Bokeh Boost",
+      "cameraRaw": "调整失焦光源亮度。",
+      "status": "aligned",
+      "rawMaster": "新增 0–100 失焦高亮增益，只提高焦外高亮样本贡献，不改变焦内或执行全图曝光提升。",
+      "difference": "高亮增益链路已具备；采用自有亮度阈值和权重，不宣称与 Camera Raw 输出等价。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurV3.swift:12-28",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-16",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:82-88",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:77-91",
+        "Tests/RAWMasterCoreTests/DevelopmentLensBlurV3Tests.swift:5-20"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "增益响应、焦内保护、Alpha 和配方验证通过；40 操作序列通过，Boost 交互 18.06 ms、p99 1/255。"
+    },
+    {
+      "id": "blur-focus-range",
+      "panel": "blur",
+      "group": "Focus",
+      "name": "Focus Range",
+      "cameraRaw": "调整处于焦内的深度值范围。",
+      "status": "aligned",
+      "rawMaster": "焦内范围 0–100 控制程序化深度从清晰到失焦的阈值，100 时全图保持清晰。",
+      "difference": "焦内范围作用于当前设备或估计深度图。两者都缺失时按焦点距离计算。不同模型的焦内范围与 Adobe 仍需同图校准。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:7-46",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:36-43",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:37-47"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "范围变化、焦点清晰、全焦边界、配方与代理一致性通过。纳入 33 操作真实 RAW 发版回归。"
+    },
+    {
+      "id": "blur-subject-focus",
+      "panel": "blur",
+      "group": "Focus",
+      "name": "Subject Focus",
+      "cameraRaw": "用 AI 主体检测自动设置焦距范围。",
+      "status": "aligned",
+      "rawMaster": "主体对焦复用 Vision 前景主体结果，按真实蒙版像素计算加权中心与覆盖范围，一次性写入 Lens Blur 配方。",
+      "difference": "Vision 提供主体位置，渲染器随后读取该位置的设备或估计深度。主体检测与场景深度使用独立的模型。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentLensBlurSubjectFocusV1.swift:5-40",
+        "Sources/RAWMasterImaging/DevelopmentSubjectMaskGeneratorV1.swift:5-20",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:26-38",
+        "Sources/RAWMaster/EditingController.swift:2123-2146",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurSubjectFocusV1Tests.swift:6-26",
+        "Tests/RAWMasterUITests/PhotosLensBlurSubjectFocusTests.swift:6-29"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test",
+      "acceptance": "蒙版中心／范围、空主体拒绝、生产 Vision 调用链、保存、撤销／重做和重开持久化通过。后续渲染复用 Lens Blur 回归。"
+    },
+    {
+      "id": "blur-point-focus",
+      "panel": "blur",
+      "group": "Focus",
+      "name": "Point Focus",
+      "cameraRaw": "点击照片手动设置焦点。",
+      "status": "aligned",
+      "rawMaster": "Lens Blur 提供“点选焦点”，复用真实画布输出到源坐标映射并直接更新配方，无需图像分析请求。",
+      "difference": "点选位置在当前设备或估计深度图中确定焦点深度。两类深度图都缺失时使用位置焦平面。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:6-31",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:18-28",
+        "Sources/RAWMaster/EditingController.swift:2171-2197",
+        "Tests/RAWMasterUITests/PhotosLensBlurFocusPreviewTests.swift:5-43"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "实际取样画布、坐标映射、焦点持久化、历史和后续渲染已验证。34 操作真实 RAW 发版序列通过。"
+    },
+    {
+      "id": "blur-area-focus",
+      "panel": "blur",
+      "group": "Focus",
+      "name": "Area Focus",
+      "cameraRaw": "在照片上拖动以设置区域焦点。",
+      "status": "aligned",
+      "rawMaster": "Lens Blur 提供区域对焦。拖动显示选区，中心写为焦点，选区半径按源图短边写为焦内范围。",
+      "difference": "区域手势设置中心和覆盖范围。渲染器从现有深度图读取焦点深度。选区内容识别与 Adobe 的差异仍需验证。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:45-103",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:25-32",
+        "Sources/RAWMaster/EditingController.swift:2208-2224",
+        "Tests/RAWMasterUITests/PhotosLensBlurAreaFocusTests.swift:5-33"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test",
+      "acceptance": "拖动反馈、双端点源映射、中心／半径计算、撤销／重做和重开持久化通过。渲染复用已验收 Lens Blur 链路。"
+    },
+    {
+      "id": "blur-visualize-depth",
+      "panel": "blur",
+      "group": "Depth",
+      "name": "Visualize Depth",
+      "cameraRaw": "显示深度图和焦内范围；近/远/焦内使用不同颜色。",
+      "status": "aligned",
+      "rawMaster": "独立临时预览随焦点和范围实时更新。设备 Depth／Disparity 路径以绿色、橙色、蓝色区分焦内、近端与远端，且不写入历史或保存结果。",
+      "difference": "已选的设备与估计深度图提供相对焦点的近、中、远信息。两类图都缺失时，程序化焦平面支持焦内与焦外。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:24-60",
+        "Sources/RAWMaster/EditingController.swift:1915-1950",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:57-66",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:115-130",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:52-63",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:92-113",
+        "Tests/RAWMasterUITests/PhotosLensBlurFocusPreviewTests.swift:25-43"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "设备 Depth 的焦点采样、焦内绿色、近端橙色、远端蓝色及 Alpha 像素断言通过。临时状态隔离和既有真实 RAW 程序化路径回归通过。"
+    },
+    {
+      "id": "blur-refine-focus",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Focus 笔刷",
+      "cameraRaw": "将模糊区域刷回焦内。",
+      "status": "aligned",
+      "rawMaster": "Focus 笔刷以源归一化坐标记录刷涂，GPU 稀疏累积负向精修并降低局部失焦；支持程序化与设备深度路径。",
+      "difference": "能力已具备；采用 RawMaster 自有深度精修算法，不宣称 Adobe 私有算法或像素等价。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "焦点外区域恢复焦内、Alpha、设备深度与可视化像素断言通过；43 操作真实 RAW 门禁通过，Focus 交互 23.32 ms、settled 1365.69 ms、p99 1/255。"
+    },
+    {
+      "id": "blur-refine-blur",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Blur 笔刷",
+      "cameraRaw": "将焦内区域刷成模糊或增强局部模糊。",
+      "status": "aligned",
+      "rawMaster": "Blur 笔刷以源归一化坐标记录刷涂，GPU 稀疏累积正向精修并增强局部失焦；焦内也可刷成模糊。",
+      "difference": "能力已具备；采用 RawMaster 自有深度精修算法，不宣称 Adobe 私有算法或像素等价。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "焦内增强模糊、Alpha、设备深度与可视化像素断言通过；43 操作真实 RAW 门禁通过，Blur 交互 23.25 ms、settled 1368.82 ms、p99 1/255。"
+    },
+    {
+      "id": "blur-refine-amount",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Amount",
+      "cameraRaw": "控制深度精修笔刷强度。",
+      "status": "aligned",
+      "rawMaster": "0–100 Amount 写入每笔独立 strength，限制该笔最大精修覆盖率；修改当前参数不会改写历史笔刷。",
+      "difference": "Amount 与 Flow 语义独立，均为 RawMaster 自有确定性实现。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "Amount 独立像素响应、笔刷参数快照、配方验证、撤销／重做与持久化通过。"
+    },
+    {
+      "id": "blur-brush-size",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Brush Size",
+      "cameraRaw": "控制精修笔刷尺寸。",
+      "status": "aligned",
+      "rawMaster": "0–100 Size 映射为源图短边归一化半径；同一配方在代理与全分辨率保持相同相对笔刷尺寸。",
+      "difference": "使用源短边圆形笔刷，与现有局部编辑坐标契约一致。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "Size 独立像素响应、源坐标映射、dab 上限和真实 RAW 代理／canonical 回归通过。"
+    },
+    {
+      "id": "blur-feather",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Feather",
+      "cameraRaw": "控制精修笔刷边缘过渡。",
+      "status": "aligned",
+      "rawMaster": "0–100 Feather 控制 GPU 笔刷边缘 smoothstep 过渡；0 为硬边，非零值扩大渐变过渡。",
+      "difference": "羽化曲线为 RawMaster 自有实现，不宣称与 Camera Raw 数值曲线相同。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "Feather 独立像素响应、参数快照、配方验证与真实 RAW 输出回归通过。"
+    },
+    {
+      "id": "blur-flow",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Flow",
+      "cameraRaw": "控制精修笔刷流量。",
+      "status": "aligned",
+      "rawMaster": "0–100 Flow 控制同一笔内 dab 的累积速率，Amount 仍限制该笔最大覆盖率；压力参与每次 dab 权重。",
+      "difference": "Flow 使用确定性乘积累积，不依赖帧率或事件时间。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "Flow 独立像素响应、确定性采样、参数快照和持久化通过。"
+    },
+    {
+      "id": "blur-auto-mask",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Auto Mask",
+      "cameraRaw": "刷涂时自动检测边缘。",
+      "status": "aligned",
+      "rawMaster": "Auto Mask 在 GPU 上比较当前像素与各 dab 刷涂点的颜色，以确定性相似度约束笔刷覆盖；开关和每笔快照均可持久化。",
+      "difference": "使用当前已调整图像的线性颜色边缘约束，不执行 AI 推断；阈值为 RawMaster 自有实现，不宣称与 Camera Raw 私有边缘算法等价。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:7-44",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:19-137",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:61-138",
+        "Sources/RAWMaster/EditingController.swift:2294-2303",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:72-92",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:15-37"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "跨越红／绿硬边时仅相似颜色区域恢复焦内，非 Auto Mask 对照与 Alpha 均通过；开关快照、撤销／重做和持久化通过；44 操作真实 RAW 门禁通过，交互 23.47 ms、settled 1289.70 ms、p99 1/255。"
+    },
+    {
+      "id": "blur-reset-refinement",
+      "panel": "blur",
+      "group": "Refinement",
+      "name": "Reset Refinements",
+      "cameraRaw": "清除已应用的深度精修。",
+      "status": "aligned",
+      "rawMaster": "重置精修清除全部 Focus／Blur 笔刷，保留当前笔刷参数、焦点和设备深度图。",
+      "difference": "完整重置入口已具备，并纳入普通配方撤销历史。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentLensBlurRefinementV3.swift:1-41",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurRefinementEngineV3.swift:1-124",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-150",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:9-127",
+        "Sources/RAWMaster/EditingController.swift:2286-2330",
+        "Sources/RAWMaster/PhotosDevelopmentPicker.swift:13-120",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurRefinementEngineV3Tests.swift:1-71",
+        "Tests/RAWMasterUITests/PhotosLensBlurRefinementWorkflowTests.swift:1-51"
+      ],
+      "priority": "P2",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "两笔混合精修后重置、撤销恢复、持久化及真实 RAW 回归通过。"
+    },
+    {
+      "id": "blur-device-depth",
+      "panel": "blur",
+      "group": "Depth",
+      "name": "Device Depth",
+      "cameraRaw": "支持 HEIC 等图像中已有的设备深度图。",
+      "status": "aligned",
+      "rawMaster": "ImageIO／AVDepthData 读取并定向真实 Depth／Disparity，归一化为最大 512 像素的 Float32 配方负载。Lens Blur 实际采样焦点与当前像素深度计算失焦，面板支持异步使用与移除。",
+      "difference": "设备深度可驱动圆形与自定义光斑，缺少设备数据的 RAW 可生成独立的相对场景深度图。",
+      "sources": [
+        "blur"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterImaging/DevelopmentDeviceDepthV1.swift:6-79",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-66",
+        "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:73-113",
+        "Sources/RAWMaster/EditingController.swift:2149-2180",
+        "Sources/RAWMaster/PhotosLensBlurControls.swift:39-60",
+        "Tests/RAWMasterImagingTests/DevelopmentDeviceDepthV1Tests.swift:10-55",
+        "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:92-112",
+        "Tests/RAWMasterUITests/PhotosDeviceDepthWorkflowTests.swift:5-30"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-real-heic-and-pixels",
+      "acceptance": "真实 HEIC 写入／读取、方向、归一化、缩放与无深度拒绝通过。Circle／Ring 实际失焦、焦点保护、Alpha、加载／移除、撤销／重做及持久化测试通过。"
+    },
+    {
+      "id": "light-mask-exposure",
+      "panel": "light",
+      "group": "Masking",
+      "name": "局部 Exposure",
+      "cameraRaw": "蒙版内调整局部曝光。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持曝光。",
+      "difference": "局部曝光存在；范围和响应为自有实现。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-56"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 蒙版中完成“局部 Exposure”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-mask-contrast",
+      "panel": "light",
+      "group": "Masking",
+      "name": "局部 Contrast",
+      "cameraRaw": "蒙版内调整局部对比度。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持独立对比度，GPU 算子复用全局 Contrast 的 pivot/power 算法并按覆盖率缩放。",
+      "difference": "核心能力已对齐；完整 19 操作真实 RAW 序列通过，局部 Light 组合 p99=2/255，连续 Point Color 后的透明帧已通过定点缓存回收修复。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-34",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:53-91",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:109-163",
+        "Sources/RAWMaster/PhotosMaskControls.swift:49-55",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskLightV3Tests.swift:16-57",
+        "Sources/RAWMasterImaging/PreviewInteractiveProxyV3.swift:348-390",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:163-225"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test",
+      "acceptance": "验收局部 Contrast 的预览、配方编解码、代理一致性与旧配方兼容；真实 RAW 性能纳入统一回归。"
+    },
+    {
+      "id": "light-mask-highlights",
+      "panel": "light",
+      "group": "Masking",
+      "name": "局部 Highlights",
+      "cameraRaw": "蒙版内调整局部高光。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持高光。",
+      "difference": "局部高光存在；恢复能力需图像验收。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-56"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 蒙版中完成“局部 Highlights”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-mask-shadows",
+      "panel": "light",
+      "group": "Masking",
+      "name": "局部 Shadows",
+      "cameraRaw": "蒙版内调整局部阴影。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持阴影。",
+      "difference": "局部阴影存在；恢复能力需图像验收。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-56"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 蒙版中完成“局部 Shadows”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "light-mask-whites",
+      "panel": "light",
+      "group": "Masking",
+      "name": "局部 Whites",
+      "cameraRaw": "蒙版内调整局部白点。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持独立 Whites，使用高亮权重调整上部色阶且不移动黑点。",
+      "difference": "核心能力已对齐；完整 19 操作真实 RAW 序列通过，局部 Light 组合 p99=2/255，连续 Point Color 后的透明帧已通过定点缓存回收修复。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-34",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:109-163",
+        "Sources/RAWMaster/PhotosMaskControls.swift:49-55",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskLightV3Tests.swift:16-57",
+        "Sources/RAWMasterImaging/PreviewInteractiveProxyV3.swift:348-390",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:163-225"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test",
+      "acceptance": "验收局部 Whites 的预览、配方编解码、代理一致性与旧配方兼容；真实 RAW 性能纳入统一回归。"
+    },
+    {
+      "id": "light-mask-blacks",
+      "panel": "light",
+      "group": "Masking",
+      "name": "局部 Blacks",
+      "cameraRaw": "蒙版内调整局部黑点。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持独立 Blacks，在局部 Light GPU 通道中调整黑端映射。",
+      "difference": "核心能力已对齐；完整 19 操作真实 RAW 序列通过，局部 Light 组合 p99=2/255，连续 Point Color 后的透明帧已通过定点缓存回收修复。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-34",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:109-163",
+        "Sources/RAWMaster/PhotosMaskControls.swift:49-55",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskLightV3Tests.swift:16-57",
+        "Sources/RAWMasterImaging/PreviewInteractiveProxyV3.swift:348-390",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:163-225"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test",
+      "acceptance": "验收局部 Blacks 的预览、配方编解码、代理一致性与旧配方兼容；真实 RAW 性能纳入统一回归。"
+    },
+    {
+      "id": "color-mask-temp",
+      "panel": "color",
+      "group": "Masking",
+      "name": "局部 Temp",
+      "cameraRaw": "蒙版内调整局部色温。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持独立 Temp，以 6500K 图像工作参考执行 GPU 色温变换并按覆盖率合成。",
+      "difference": "核心能力已对齐；完整 20 操作真实 RAW 序列通过，Temp/Tint 组合 p99=2/255。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-40",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:54-77",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:121-128",
+        "Sources/RAWMaster/PhotosMaskControls.swift:49-58",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskColorV3Tests.swift:17-51",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:163-171"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收局部 Temp 的预览、配方兼容、代理一致性与组合顺序；持续跟踪真实 RAW 性能和透明帧门禁。"
+    },
+    {
+      "id": "color-mask-tint",
+      "panel": "color",
+      "group": "Masking",
+      "name": "局部 Tint",
+      "cameraRaw": "蒙版内补偿绿色/品红色偏。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持独立 Tint，与 Temp 共用 6500K 工作参考的 GPU 变换和蒙版合成。",
+      "difference": "核心能力已对齐；完整 20 操作真实 RAW 序列通过，Temp/Tint 组合 p99=2/255。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-40",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:54-77",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:121-128",
+        "Sources/RAWMaster/PhotosMaskControls.swift:49-58",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskColorV3Tests.swift:17-51",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:163-171"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收局部 Tint 的预览、配方兼容、代理一致性与组合顺序；持续跟踪真实 RAW 性能和透明帧门禁。"
+    },
+    {
+      "id": "color-mask-hue",
+      "panel": "color",
+      "group": "Masking",
+      "name": "局部 Hue / Fine Adjustment",
+      "cameraRaw": "蒙版内调整色相，可使用精细调整。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持 GPU 色相旋转；Fine Adjustment 提供 0.1× 精细范围，并融合进普通、Point Color 和 Glow 路径。",
+      "difference": "核心能力已对齐；完整 21 操作真实 RAW 序列通过，Hue/Colorize 组合 p99=2/255。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-52",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:55-64",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:131-196",
+        "Sources/RAWMaster/PhotosMaskControls.swift:56-77",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskColorV3Tests.swift:51-61",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:167-175"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收 Hue 与 Fine Adjustment 的响应差异、配方兼容、代理一致性及持续真实 RAW 回归。"
+    },
+    {
+      "id": "color-mask-saturation",
+      "panel": "color",
+      "group": "Masking",
+      "name": "局部 Saturation",
+      "cameraRaw": "蒙版内调整局部饱和度。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持饱和度。",
+      "difference": "局部饱和度存在；色彩响应需图像验收。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-56"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "static-code",
+      "acceptance": "在 RawMaster 蒙版中完成“局部 Saturation”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+    },
+    {
+      "id": "color-mask-colorize",
+      "panel": "color",
+      "group": "Masking",
+      "name": "局部 Colorize",
+      "cameraRaw": "用色样给蒙版区域着色，转黑白后仍保留颜色效果。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持线性 sRGB 色样和强度；Colorize 位于黑白转换之后，保留局部颜色效果。",
+      "difference": "核心能力已对齐；完整 21 操作真实 RAW 序列通过，Hue/Colorize 组合 p99=2/255。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-52",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:131-196",
+        "Sources/RAWMaster/PhotosMaskControls.swift:62-77",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskColorV3Tests.swift:62-73",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:167-175",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:1-28"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收色样、强度、黑白后着色、配方兼容、持久化与撤销，并持续执行真实 RAW 回归。"
+    },
+    {
+      "id": "effects-mask-texture",
+      "panel": "effects",
+      "group": "Masking",
+      "name": "局部 Texture",
+      "cameraRaw": "蒙版内平滑或增强纹理。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持双向 Texture，直接复用共享 GPU 对数频带算子后按覆盖率合成。",
+      "difference": "核心能力已对齐；全覆盖与共享算子一致，完整 22 操作序列 p99=2/255；Texture/Clarity 组合 31.41 ms，仍需性能优化。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-58",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:64-91",
+        "Sources/RAWMasterImaging/DevelopmentAdvancedDetailEngineV3.swift:82-88",
+        "Sources/RAWMaster/PhotosMaskControls.swift:77-80",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskEffectsV3Tests.swift:16-49",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:171-179"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收双向 Texture、共享算子一致性、配方兼容和代理一致；持续降低组合频带延迟。"
+    },
+    {
+      "id": "effects-mask-clarity",
+      "panel": "effects",
+      "group": "Masking",
+      "name": "局部 Clarity",
+      "cameraRaw": "蒙版内增加局部对比。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持双向 Clarity，复用共享 GPU 对数频带和当前尺寸半径，并保留竖图方向处理。",
+      "difference": "核心能力已对齐；全覆盖与共享算子一致，完整 22 操作序列 p99=2/255；Texture/Clarity 组合 31.41 ms，仍需性能优化。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-58",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:64-91",
+        "Sources/RAWMasterImaging/DevelopmentAdvancedDetailEngineV3.swift:82-88",
+        "Sources/RAWMaster/PhotosMaskControls.swift:77-80",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskEffectsV3Tests.swift:16-49",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:171-179"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收双向 Clarity、共享算子一致性、配方兼容和代理一致；持续降低组合频带延迟。"
+    },
+    {
+      "id": "effects-mask-grain",
+      "panel": "effects",
+      "group": "Masking",
+      "name": "局部 Grain",
+      "cameraRaw": "蒙版内添加颗粒。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持 Grain Amount、Size、Roughness，复用源生确定性 GPU lattice 并在编码域按亮度调制。",
+      "difference": "核心能力已对齐；完整 23 操作真实 RAW 序列通过，Grain p99=4/255，重复渲染确定。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-60",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:89-99",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:153-164",
+        "Sources/RAWMasterImaging/DevelopmentGrainSamplingEngineV1.swift:70-86",
+        "Sources/RAWMaster/PhotosMaskControls.swift:78-83",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskEffectsV3Tests.swift:50-69",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:176-183"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收颗粒数量、大小、粗糙度、确定性、蒙版边界、配方兼容和持久化撤销；持续执行真实 RAW 回归。"
+    },
+    {
+      "id": "curve-mask-curve",
+      "panel": "curve",
+      "group": "Masking",
+      "name": "局部 Curves",
+      "cameraRaw": "蒙版内使用曲线控制局部色调。",
+      "status": "aligned",
+      "rawMaster": "每蒙版拥有独立 RGB/R/G/B 曲线编辑器，支持控制点、输入黑白端、通道复位；完整曲线引擎输出经 GPU 蒙版合成。",
+      "difference": "核心能力已对齐；全覆盖与全局曲线引擎一致，完整 24 操作真实 RAW 序列 p99=2/255。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-68",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:96-106",
+        "Sources/RAWMaster/PhotosMaskCurveEditor.swift:1-107",
+        "Sources/RAWMaster/PhotosMaskControls.swift:77-83",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskCurvesV3Tests.swift:15-45",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:180-188",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:1-51"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收通道、控制点、输入端、配方兼容、代理一致性、保存／撤销／重做及真实 RAW 持续回归。"
+    },
+    {
+      "id": "grading-mask-wheels",
+      "panel": "grading",
+      "group": "Masking",
+      "name": "蒙版内三色轮 Color Grading",
+      "cameraRaw": "在蒙版中用 Shadows/Midtones/Highlights 三色轮进行局部颜色分级。",
+      "status": "aligned",
+      "rawMaster": "每蒙版独立支持 Shadows/Midtones/Highlights/Global 色轮、H/S/L、Blending、Balance 与区域复位，复用全局 GPU 算法后合成。",
+      "difference": "全覆盖蒙版与全局色轮引擎一致，真实 RAW 的完整 25 操作序列 p99 为 2/255。Camera Raw 19 已写回蒙版内的阴影、中间调和高光色轮；本机对中央径向蒙版的中间调饱和度做了独立的 Adobe A/B 像素实测。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-70",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:103-112",
+        "Sources/RAWMaster/PhotosMaskGradingEditor.swift:1-51",
+        "Sources/RAWMaster/PhotosMaskControls.swift:83-90",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskGradingV3Tests.swift:15-43",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:184-196",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:1-54",
+        "docs/research/camera-raw-parity/evidence/camera-raw-grading-candidates.json:1-36",
+        "docs/research/camera-raw-parity/evidence/camera-raw-grading-mask.json:1-36"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收四区域色轮、H/S/L、Blending/Balance、配方兼容、代理一致性、保存／撤销／重做及真实 RAW 持续回归。"
+    },
+    {
+      "id": "detail-mask-sharpness",
+      "panel": "detail",
+      "group": "Masking",
+      "name": "局部 Sharpness",
+      "cameraRaw": "蒙版内增强边缘；负值模糊细节。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持双向 Sharpness；正值复用全局边缘锐化，负值使用受控高斯细节模糊。",
+      "difference": "核心能力已对齐；完整 26 操作真实 RAW 序列 p99=2/255；Detail 组合 27.87 ms，仍需性能优化。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-75",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:109-139",
+        "Sources/RAWMaster/PhotosMaskControls.swift:92-97",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskDetailV3Tests.swift:23-58",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:189-199",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:1-55"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收正负 Sharpness、共享算子一致性、配方兼容、保存撤销及持续性能回归。"
+    },
+    {
+      "id": "detail-mask-noise",
+      "panel": "detail",
+      "group": "Masking",
+      "name": "局部 Noise Reduction",
+      "cameraRaw": "蒙版内降低亮度噪点。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持图像域 Noise Reduction，与正向 Sharpness 共用一次全局子图和一次蒙版合成。",
+      "difference": "核心能力已对齐；完整 26 操作真实 RAW 序列 p99=2/255；Detail 组合 27.87 ms，仍需性能优化。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-75",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:109-118",
+        "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift:83-87",
+        "Sources/RAWMaster/PhotosMaskControls.swift:92-97",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskDetailV3Tests.swift:23-58",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:189-199",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:1-55"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收局部降噪、共享算子一致性、配方兼容、保存撤销及持续性能回归。"
+    },
+    {
+      "id": "detail-mask-moire",
+      "panel": "detail",
+      "group": "Masking",
+      "name": "局部 Moiré Reduction",
+      "cameraRaw": "蒙版内减少摩尔纹或颜色混叠。",
+      "status": "aligned",
+      "rawMaster": "蒙版支持 Moiré Amount，使用保留原始亮度的 GPU 色度平滑，而非模糊全部细节。",
+      "difference": "核心能力已对齐；完整 26 操作真实 RAW 序列 p99=2/255；Detail 组合 27.87 ms，仍需性能优化。",
+      "sources": [
+        "masking"
+      ],
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-75",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:125-133",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:197-208",
+        "Sources/RAWMaster/PhotosMaskControls.swift:92-97",
+        "Tests/RAWMasterImagingTests/DevelopmentMaskDetailV3Tests.swift:23-58",
+        "Tests/RAWMasterImagingTests/EditingInteractivePerformanceTests.swift:189-199",
+        "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:1-55"
+      ],
+      "priority": "P1",
+      "evidenceLevel": "automated-test-and-real-raw-sequence",
+      "acceptance": "验收色度平滑、原始亮度保留、蒙版边界、配方兼容、保存撤销及持续性能回归。"
+    }
+  ],
+  "rawMasterExtras": [
+    {
+      "panel": "light",
+      "name": "Brilliance / 鲜明度",
+      "detail": "RawMaster 自有的自适应局部光效；不是 Camera Raw 19.0 对照项。",
+      "codeRefs": [
+        "Sources/RAWMasterCore/DevelopmentAdjustmentsV3.swift:81-170"
+      ]
+    },
+    {
+      "panel": "light",
+      "name": "Brightness / 亮度",
+      "detail": "RawMaster 保留的自有光效控件；ACR 手册把 Brightness 描述为旧 Process Version 控件。",
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188"
+      ]
+    },
+    {
+      "panel": "light",
+      "name": "Levels / 色阶",
+      "detail": "RawMaster 在 Curve 目的地中另提供多通道 Levels 与输出黑/白点。",
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:344-389"
+      ]
+    },
+    {
+      "panel": "color",
+      "name": "肤色白平衡与 Cast / 色偏",
+      "detail": "RawMaster 自有扩展，不计入 Camera Raw 对齐率。",
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132",
+        "Sources/RAWMaster/PhotosAdjustmentSection.swift:151-188"
+      ]
+    },
+    {
+      "panel": "curve",
+      "name": "曲线 Input Black / Input White",
+      "detail": "RawMaster 为每个点曲线通道提供输入黑/白点；属于自有扩展。",
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:178-341"
+      ]
+    },
+    {
+      "panel": "mixer",
+      "name": "固定色域 Range",
+      "detail": "RawMaster 将 Range 加入 6 色固定混色；ACR 的 Point Color Range 属独立样本模型。",
+      "codeRefs": [
+        "Sources/RAWMaster/PhotosTypedAdjustmentControls.swift:101-173"
+      ]
+    }
+  ],
+  "verificationBacklog": [
+    {
+      "id": "verify-detail-smoothness",
+      "panel": "detail",
+      "item": "Color Smoothness",
+      "reason": "部分 Lightroom/第三方资料包含此控件，但当前 Camera Raw 官方 Detail 手册正文未明确列出。",
+      "action": "在 ACR 19.0 实机分别以 RAW 与非 RAW 打开照片，截取 Detail 全面板后再决定是否纳入确定基线。"
+    },
+    {
+      "id": "verify-curve-presets",
+      "panel": "curve",
+      "item": "Linear / Medium Contrast / Strong Contrast 预设",
+      "reason": "Lightroom 文档明确出现这些 Point Curve 选项，当前 Camera Raw 手册未同等明确列出。",
+      "action": "实机检查 Point Curve 菜单；不要从 Lightroom 直接迁移为 ACR 确定缺口。"
+    },
+    {
+      "id": "verify-light-profile",
+      "panel": "light",
+      "item": "Profile Browser 与 Profile Amount",
+      "reason": "现代 Adobe 编辑界面常见，但本轮 Camera Raw 面板手册未形成足够明确的当前版本证据。",
+      "action": "在 ACR 19.0 的 Light 面板实机确认入口、Amount 可用条件和 RawMaster 对应关系。"
+    },
+    {
+      "id": "verify-grading-views",
+      "panel": "grading",
+      "item": "单轮/三轮视图与色轮细节交互",
+      "reason": "官方手册确认色轮功能，但未完整枚举当前版本的视图切换和全部手势。",
+      "action": "截取 Color Grading 全部视图并补充交互验收，不影响当前已确认的 LUT 缺口。"
+    },
+    {
+      "id": "verify-pixel-parity",
+      "panel": "all",
+      "item": "像素与数值等价",
+      "reason": "本轮证据是官方手册和 RawMaster 静态代码，不是同图同参数的 Adobe 对照渲染。",
+      "action": "若目标包含视觉一致性，建立固定 RAW/JPEG 样本、导出参考图、容差和 100% 局部检查；在此之前 aligned 仅表示能力存在。"
+    }
+  ],
+  "developmentPlan": {
+    "target": "功能完整可用：界面、配方、预览、保存/重开、撤销/重做、导出、源类型回退和自动化测试齐全；采用 RawMaster 自有、可解释且版本化的算法，不宣称 Adobe 私有算法或像素结果等价。",
+    "estimate": {
+      "personWeeks": [
+        122,
+        182
+      ],
+      "recommendedTeam": "2 名图像/渲染研发 + 1 名 macOS/UI 研发 + 0.5 名 QA；AI 与镜头配置领域专家按需参与。",
+      "calendar": "12–16 个月（工作流并行，包含集成与硬化）；单研发约 30–42 个月。",
+      "confidence": "中低：现有代码结构可评估，但 AI 模型、镜头配置授权/覆盖和视觉效果验收尚未完成技术验证。",
+      "excluded": "Adobe 像素级或数值级复刻不在该区间内；它需要独立参考样本、色彩管理与容差研究，且不能保证闭源算法完全可复现。"
+    },
+    "workstreams": [
+      {
+        "id": "WP0",
+        "name": "共用基础与技术验证",
+        "weeks": [
+          8,
+          12
+        ],
+        "depends": "无",
+        "scope": "扩展配方 schema/迁移、能力探测、渲染阶段契约、源类型矩阵、固定图像与性能基线；完成 5 个待实机复核项，以及 AI Denoise、镜头配置、Lens Blur 深度模型三项 spike。",
+        "exit": "所有后续功能有稳定 ID、坐标/色彩空间/阶段归属和测试模板；三项高风险 spike 均有 go/no-go 结论。"
+      },
+      {
+        "id": "WP1",
+        "name": "Light + Color 全局能力",
+        "weeks": [
+          10,
+          14
+        ],
+        "depends": "WP0",
+        "scope": "RAW/非 RAW 白平衡语义与预设、饱和度和黑白处理、Auto、clipping 反馈、Vectorscope、Lab/RGB 读数、采样器与浮动 Scopes。",
+        "exit": "源类型单位正确，观察工具与照片联动，全局 Light/Color 对照项关闭。"
+      },
+      {
+        "id": "WP2",
+        "name": "Curve + Color Mixer 全局能力",
+        "weeks": [
+          12,
+          18
+        ],
+        "depends": "WP0",
+        "scope": "Parametric Curve 与区域分隔、Refine Saturation、Targeted Adjustment、8 色 HSL、B&W Mixer、独立 Point Color 样本、Variance 与范围可视化。",
+        "exit": "全局曲线/混色模型统一，连续取样与拖动可撤销，旧点曲线配方无损迁移。"
+      },
+      {
+        "id": "WP3",
+        "name": "Effects + Color Grading 全局能力",
+        "weeks": [
+          12,
+          18
+        ],
+        "depends": "WP0；LUT 色彩空间契约与 WP2 协同",
+        "scope": "完整 Grain、Post Crop Vignetting、Glow 五风格与条件参数、LUT 导入/校验/有序堆栈/管理；整理 Texture、Clarity、Dehaze 面板归属。",
+        "exit": "效果顺序明确，LUT 跨设备确定性验证通过，效果在预览与导出中一致。"
+      },
+      {
+        "id": "WP4",
+        "name": "Detail 与画质增强",
+        "weeks": [
+          18,
+          28
+        ],
+        "depends": "WP0；AI 部分依赖模型 spike",
+        "scope": "锐化 Radius/Detail/Masking 与可视化、完整亮度/颜色降噪、局部画质参数、AI Denoise、Raw Details、Super Resolution。",
+        "exit": "RAW/非 RAW 能力矩阵、100% 细节检查、全分辨率有限值/内存/取消测试通过；不支持格式有明确回退。"
+      },
+      {
+        "id": "WP5",
+        "name": "Optics 镜头校正",
+        "weeks": [
+          16,
+          24
+        ],
+        "depends": "WP0；镜头数据与几何阶段 spike",
+        "scope": "镜头配置匹配与手选、配置强度、默认管理、手动畸变、横向色差、紫/绿 Defringe 与双端范围、镜头晕影和局部保护。",
+        "exit": "配置来源与授权清晰，校正坐标/裁切顺序稳定，配置缺失时行为可解释；平台解码器能力只作为可选加速，不冒充完整对等。"
+      },
+      {
+        "id": "WP6",
+        "name": "Lens Blur 深度成像",
+        "weeks": [
+          24,
+          36
+        ],
+        "depends": "WP0 深度模型 spike；蒙版/笔刷基础设施与 WP7 协同",
+        "scope": "深度生成与 Device Depth、Focus Range、Subject/Point/Area Focus、五类 Bokeh、Cat Eye、Bokeh Boost、深度可视化、Focus/Blur 精修和 Auto Mask。",
+        "exit": "深度/精修结果内容寻址并可确定重放，原始图像变化时正确失效；边缘、透明、近远焦与全分辨率导出通过专项测试。"
+      },
+      {
+        "id": "WP7",
+        "name": "局部调整可组合架构",
+        "weeks": [
+          12,
+          18
+        ],
+        "depends": "WP0；与各面板算子负责人协同",
+        "scope": "将当前四参数蒙版合成核重构为有序、可组合局部算子；覆盖 Light、Color、Curves、Color Grading、Texture/Clarity/Dehaze/Grain、Point Color、Detail、Defringe 与局部 LUT。",
+        "exit": "同一算子在全局/局部共享语义，蒙版顺序和混合规则明确，旧蒙版配方保持像素兼容。"
+      },
+      {
+        "id": "WP8",
+        "name": "性能、兼容性与发布硬化",
+        "weeks": [
+          10,
+          14
+        ],
+        "depends": "贯穿 WP1–WP7，末期集中",
+        "scope": "RAW/JPEG/TIFF/HEIC 等源矩阵、旧配方迁移、预览/导出一致性、GPU/CPU 回退、内存与取消、报告门禁、文档和回归样本。",
+        "exit": "161 项均有状态与验收记录；现有测试无回归，新增算子有 golden/property/UI/export 测试，性能门槛基于 WP0 实测制定。"
+      }
+    ],
+    "phases": [
+      {
+        "id": "R0",
+        "name": "基础与技术去风险",
+        "duration": "第 1–6 周",
+        "contents": "WP0；AI、镜头配置、深度模型 spike；冻结坐标、色彩空间、配方迁移与验收模板。",
+        "gate": "三项高风险方向均有可运行原型和成本/授权结论；未通过则调整方案，不进入大规模 UI 开发。"
+      },
+      {
+        "id": "R1",
+        "name": "核心色调与颜色",
+        "duration": "约第 2–5 个月",
+        "contents": "WP1 + WP2 全局能力；同步建立 WP7 的局部算子协议。",
+        "gate": "Light/Color/Curve/Mixer 全局功能完成，旧配方迁移和 targeted 交互测试通过。"
+      },
+      {
+        "id": "R2",
+        "name": "创作效果与 LUT",
+        "duration": "约第 4–8 个月",
+        "contents": "WP3 + 第一批 WP7 局部能力；统一全局/局部效果顺序。",
+        "gate": "Effects/Grading 及首批局部能力完成，LUT 与 Post Crop 坐标测试通过。"
+      },
+      {
+        "id": "R3",
+        "name": "镜头与传统画质",
+        "duration": "约第 6–11 个月",
+        "contents": "WP5 + WP4 的传统锐化/降噪；继续 WP7。",
+        "gate": "Optics 全链路与传统 Detail 完成；镜头数据覆盖和性能达到实测门槛。"
+      },
+      {
+        "id": "R4",
+        "name": "AI 画质与 Lens Blur",
+        "duration": "约第 9–15 个月",
+        "contents": "WP4 的 AI/Enhance + WP6；模型版本、缓存、失效和设备回退。",
+        "gate": "AI Denoise、Raw Details、Super Resolution、Lens Blur 全部通过源矩阵、确定性和全分辨率验收。"
+      },
+      {
+        "id": "R5",
+        "name": "全量一致性与发布",
+        "duration": "约第 14–16 个月",
+        "contents": "WP8 集中硬化；关闭剩余局部项、复核所有状态并冻结发布基线。",
+        "gate": "3 个未完全具备项全部有关闭证据。报告 --check、完整测试、导出与迁移门禁全部通过。"
+      }
+    ],
+    "risks": [
+      {
+        "risk": "AI 模型质量、授权、包体与设备覆盖",
+        "response": "R0 用固定样本比较候选 Core ML/本地方案；模型与配方版本绑定，保留不支持回退，不以云端生成替代确定性编辑。"
+      },
+      {
+        "risk": "镜头配置数据授权和覆盖不足",
+        "response": "先确认数据来源与再分发权；平台 CIRAWFilter 镜头校正可做对照/加速，但无法覆盖的机型必须显式降级。"
+      },
+      {
+        "risk": "新算子破坏旧配方或渲染顺序",
+        "response": "所有新阶段有版本化 ID 和顺序契约；旧配方只读不隐式升级，使用双向迁移与 golden 回归。"
+      },
+      {
+        "risk": "原生 F32、多尺度与深度图导致内存/交互性能失控",
+        "response": "WP0 建立实测预算；共享代理、缓存和有限值检查，不在未测量前承诺固定毫秒数。"
+      },
+      {
+        "risk": "全局与局部算法分叉",
+        "response": "WP7 使用共享算子协议和局部合成器；禁止为蒙版复制一套语义不同的简化实现。"
+      },
+      {
+        "risk": "Camera Raw 新版本持续改变基线",
+        "response": "版本化报告并保留 stable feature ID；新版先进 verificationBacklog，再进入已确认范围和排期。"
+      },
+      {
+        "risk": "把“同名控件”误认为视觉一致",
+        "response": "功能关闭只声明自有实现完整；Adobe 参考图、数值映射和容差另立像素一致性项目。"
+      }
+    ],
+    "gates": [
+      "每个功能 ID：UI + 配方 + 渲染 + 导出 + 测试同时完成，不能只出现滑杆。",
+      "每个配方：严格校验、旧版本只读、保存/重开、Undo/Redo、快照与缩略图一致。",
+      "每个源类型：RAW、JPEG/TIFF、HEIC/含 Device Depth、生成版本按能力矩阵验收并安全回退。",
+      "每个空间算子：原生尺寸、横竖图、裁切前后、100% 局部、有限值、内存、取消与 GPU/CPU 路径验收。",
+      "每个 AI/深度产物：模型/内容哈希、确定性重放、缓存失效、原始图变化后的重新准备。",
+      "每次发布：更新 feature-matrix.json，运行构建器 --check，并附实际测试记录；像素级对照单独签字。"
+    ]
+  }
+}

@@ -1,0 +1,177 @@
+{
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "binarySHA256": "1ea626a2d66fa7f61fcebab63aa2317635fa5fcfc8330f6b36346256a22359b8",
+  "status": "inconclusive",
+  "attempts": [
+    {
+      "scope": "14-operation initial run",
+      "operation": {
+        "boundary": "prepared real RAW chroma distribution to original SwiftUI scope rendered as a 256\u00d7168 sRGB bitmap",
+        "id": "color-skin-indicator",
+        "input": "toggle skin-tone reference off/on over same real RAW distribution",
+        "reason": "Output did not repeat within each state or distinguish the two requested states",
+        "samples": [
+          {
+            "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+            "ms": 11.437292,
+            "phase": "first",
+            "state": 0
+          },
+          {
+            "digest": "dc9e37c677ec31cb03c424a465830e4cc050fc6f2c3000ef71e54a841d381ecb",
+            "ms": 3.376125,
+            "phase": "first",
+            "state": 1
+          },
+          {
+            "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+            "ms": 1.71225,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "dc9e37c677ec31cb03c424a465830e4cc050fc6f2c3000ef71e54a841d381ecb",
+            "ms": 2.895125,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+            "ms": 1.834125,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "dc9e37c677ec31cb03c424a465830e4cc050fc6f2c3000ef71e54a841d381ecb",
+            "ms": 1.917875,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+            "ms": 1.4085,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "dc9e37c677ec31cb03c424a465830e4cc050fc6f2c3000ef71e54a841d381ecb",
+            "ms": 1.347792,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "69386d257d0865b0dde9e62a624881ad839e1ab5bf5484107c58ebf23c3ba091",
+            "ms": 2.327333,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "29475f8b77723b3a2d86e213cb47b31731c43d865d29e205e649ca7139872fdd",
+            "ms": 1.167209,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "69386d257d0865b0dde9e62a624881ad839e1ab5bf5484107c58ebf23c3ba091",
+            "ms": 1.385291,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "29475f8b77723b3a2d86e213cb47b31731c43d865d29e205e649ca7139872fdd",
+            "ms": 2.164208,
+            "phase": "warm",
+            "state": 1
+          }
+        ],
+        "status": "inconclusive",
+        "verification": "two stable different result digests"
+      }
+    },
+    {
+      "scope": "skin-only second run",
+      "operation": {
+        "boundary": "prepared real RAW chroma distribution to original SwiftUI scope rendered as a 256\u00d7168 sRGB bitmap",
+        "id": "color-skin-indicator",
+        "input": "toggle skin-tone reference off/on over same real RAW distribution",
+        "reason": "Output did not repeat within each state or distinguish the two requested states",
+        "samples": [
+          {
+            "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+            "ms": 16.099417,
+            "phase": "first",
+            "state": 0
+          },
+          {
+            "digest": "dc9e37c677ec31cb03c424a465830e4cc050fc6f2c3000ef71e54a841d381ecb",
+            "ms": 2.276041,
+            "phase": "first",
+            "state": 1
+          },
+          {
+            "digest": "ee5498de0a344d0f2f2f026fb500af000c53b27fb7278828a7f1cff13b7b40ce",
+            "ms": 1.178292,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "d93d009467bef6c5d54a94990c1a0cb06f379e384b38ac835e4f5d76a7d9b5f0",
+            "ms": 1.132417,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "ee5498de0a344d0f2f2f026fb500af000c53b27fb7278828a7f1cff13b7b40ce",
+            "ms": 1.032458,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "d93d009467bef6c5d54a94990c1a0cb06f379e384b38ac835e4f5d76a7d9b5f0",
+            "ms": 1.187625,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "ee5498de0a344d0f2f2f026fb500af000c53b27fb7278828a7f1cff13b7b40ce",
+            "ms": 0.955833,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "d93d009467bef6c5d54a94990c1a0cb06f379e384b38ac835e4f5d76a7d9b5f0",
+            "ms": 1.320417,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "ee5498de0a344d0f2f2f026fb500af000c53b27fb7278828a7f1cff13b7b40ce",
+            "ms": 1.010625,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "d93d009467bef6c5d54a94990c1a0cb06f379e384b38ac835e4f5d76a7d9b5f0",
+            "ms": 0.840958,
+            "phase": "warm",
+            "state": 1
+          },
+          {
+            "digest": "ee5498de0a344d0f2f2f026fb500af000c53b27fb7278828a7f1cff13b7b40ce",
+            "ms": 0.862833,
+            "phase": "warm",
+            "state": 0
+          },
+          {
+            "digest": "d93d009467bef6c5d54a94990c1a0cb06f379e384b38ac835e4f5d76a7d9b5f0",
+            "ms": 0.941917,
+            "phase": "warm",
+            "state": 1
+          }
+        ],
+        "status": "inconclusive",
+        "verification": "two stable different result digests"
+      }
+    }
+  ]
+}

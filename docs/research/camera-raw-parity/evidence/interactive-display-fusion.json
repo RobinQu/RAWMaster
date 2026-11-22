@@ -1,0 +1,464 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-22",
+  "operation": "Combine joined RGBA32F whole-frame finite/alpha validation and unpremultiplied linear-sRGB transfer/8-bit premultiplication into one Metal dispatch. The shipping branch re-renders any partial alpha through the original Core Image transfer before exposing bytes.",
+  "nativeInput": "Sony ILCE-7RM5 ARW 9504\u00d76336",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "output": [
+    2400,
+    1600
+  ],
+  "condition": "Identical executable per pair, RAWMASTER_PROXY_FUSED_DISPLAY=0/1; warm changed edits, bitmap cache disabled; times are public frame returns.",
+  "runs": {
+    "fused-bench-0-a": {
+      "file": "output/performance/camera-raw-engine-20261122/fused-bench-0-a/controls.json",
+      "binarySHA256": "740e7dff79e3ea3b587ada3706010f6bb35f05213c6be2af67a6ba19b51a258a",
+      "gpu": "Apple M4 Max",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "verifiedSourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "operations": {
+        "light-exposure": {
+          "samplesMs": [
+            3.47025,
+            4.879875,
+            3.15075,
+            5.138125,
+            3.483292,
+            4.963958,
+            3.18825,
+            5.538333,
+            4.001666,
+            5.543167,
+            3.622875,
+            5.491875,
+            3.077,
+            5.189875,
+            3.320917,
+            5.246375,
+            3.232,
+            5.0995,
+            3.123083,
+            5.196375
+          ],
+          "medianMs": 4.4407705,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "light-contrast": {
+          "samplesMs": [
+            4.134792,
+            8.021792,
+            3.236917,
+            5.989542,
+            3.329791,
+            5.006958,
+            3.14825,
+            5.261875,
+            3.229833,
+            5.167792,
+            3.201083,
+            5.584958,
+            3.220875,
+            5.321417,
+            3.265333,
+            5.273,
+            3.1865,
+            5.486125,
+            3.779667,
+            5.803333
+          ],
+          "medianMs": 4.570875,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "color-saturation": {
+          "samplesMs": [
+            3.378791,
+            5.475125,
+            3.104291,
+            5.25475,
+            3.354334,
+            5.362875,
+            4.035959,
+            5.021792,
+            3.274584,
+            5.339708,
+            3.164084,
+            5.701083,
+            3.624458,
+            4.924083,
+            3.2515,
+            5.646458,
+            3.068709,
+            5.003041,
+            3.011667,
+            5.179542
+          ],
+          "medianMs": 4.480021000000001,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "color-vibrance": {
+          "samplesMs": [
+            3.252542,
+            5.162333,
+            3.16625,
+            5.12575,
+            3.333792,
+            5.232875,
+            3.654208,
+            5.359,
+            6.054292,
+            5.051417,
+            3.093125,
+            5.624833,
+            3.199834,
+            5.463542,
+            3.572041,
+            5.578167,
+            3.248209,
+            5.494583,
+            3.194708,
+            5.298958
+          ],
+          "medianMs": 5.0885835,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "curve-param-highlights": {
+          "samplesMs": [
+            5.718291,
+            7.198375,
+            3.29225,
+            6.863041,
+            3.274208,
+            7.0045,
+            5.16875,
+            7.048708,
+            2.959625,
+            6.645917,
+            3.35075,
+            7.083292,
+            5.702375,
+            6.884209,
+            3.262333,
+            6.432,
+            3.224791,
+            7.258542,
+            3.234583,
+            6.493125
+          ],
+          "medianMs": 6.0751455,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "detail-nr-luminance": {
+          "samplesMs": [
+            3.53675,
+            10.893125,
+            3.173708,
+            7.528208,
+            3.398916,
+            7.268708,
+            4.794333,
+            7.833292,
+            2.992667,
+            7.95225,
+            3.729625,
+            7.500875,
+            3.175791,
+            8.9265,
+            7.360625,
+            10.833375,
+            5.966792,
+            12.755708,
+            6.018084,
+            10.711667
+          ],
+          "medianMs": 7.3146664999999995,
+          "output": [
+            2400,
+            1600
+          ]
+        }
+      }
+    },
+    "fused-bench-1-a": {
+      "file": "output/performance/camera-raw-engine-20261122/fused-bench-1-a/controls.json",
+      "binarySHA256": "740e7dff79e3ea3b587ada3706010f6bb35f05213c6be2af67a6ba19b51a258a",
+      "gpu": "Apple M4 Max",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "verifiedSourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "operations": {
+        "light-exposure": {
+          "samplesMs": [
+            2.241708,
+            4.514417,
+            2.524917,
+            3.75975,
+            2.348458,
+            5.150209,
+            2.518542,
+            5.825625,
+            2.554625,
+            6.044916,
+            2.867583,
+            5.02425,
+            2.792792,
+            5.598958,
+            2.511417,
+            4.130833,
+            3.758833,
+            5.302375,
+            2.676542,
+            3.638333
+          ],
+          "medianMs": 3.698583,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "light-contrast": {
+          "samplesMs": [
+            2.788375,
+            4.124292,
+            3.675792,
+            5.545541,
+            2.594125,
+            5.796375,
+            2.366292,
+            6.578666,
+            2.38175,
+            5.034333,
+            2.581833,
+            6.506334,
+            2.534083,
+            5.680166,
+            2.259625,
+            6.36975,
+            2.431041,
+            4.173791,
+            3.623417,
+            5.836834
+          ],
+          "medianMs": 3.900042,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "color-saturation": {
+          "samplesMs": [
+            3.098292,
+            5.973666,
+            2.698375,
+            4.582708,
+            2.784458,
+            6.517417,
+            2.868917,
+            5.297541,
+            2.811292,
+            5.817292,
+            2.898042,
+            4.526833,
+            2.824416,
+            5.809458,
+            2.891875,
+            4.5365,
+            2.55975,
+            6.39275,
+            2.583833,
+            4.425458
+          ],
+          "medianMs": 3.761875,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "color-vibrance": {
+          "samplesMs": [
+            2.645959,
+            4.532791,
+            2.82625,
+            7.171959,
+            2.747875,
+            4.750541,
+            2.435917,
+            5.348083,
+            2.707542,
+            5.48625,
+            2.668333,
+            6.680833,
+            2.788167,
+            4.089833,
+            2.336125,
+            6.553042,
+            2.678792,
+            4.258292,
+            3.36975,
+            6.651875
+          ],
+          "medianMs": 3.7297914999999997,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "curve-param-highlights": {
+          "samplesMs": [
+            2.703583,
+            5.647583,
+            2.476334,
+            5.955,
+            2.496,
+            5.94425,
+            2.353208,
+            6.100417,
+            2.462291,
+            5.616542,
+            2.828208,
+            5.397208,
+            2.434958,
+            6.342875,
+            2.832166,
+            6.089,
+            2.726417,
+            7.404416,
+            5.884042,
+            5.631333
+          ],
+          "medianMs": 5.506875,
+          "output": [
+            2400,
+            1600
+          ]
+        },
+        "detail-nr-luminance": {
+          "samplesMs": [
+            2.561584,
+            6.376875,
+            2.582333,
+            6.55225,
+            6.034709,
+            7.922292,
+            2.692833,
+            7.596333,
+            7.013291,
+            6.707041,
+            2.601417,
+            6.462125,
+            2.906583,
+            6.976666,
+            3.579417,
+            6.947292,
+            4.334458,
+            9.335667,
+            2.849792,
+            7.227291
+          ],
+          "medianMs": 6.4195,
+          "output": [
+            2400,
+            1600
+          ]
+        }
+      }
+    }
+  },
+  "pixelPairs": {
+    "a": {
+      "exposure-color-interactive.png": {
+        "rgbaBytes": 15360000,
+        "nonmatchingBytes": 61,
+        "p99": 0,
+        "maximum": 1,
+        "originalPixelSHA256": "94fe48990b0ccdb892c793d8a5048eaff335ecef7591e2bfda364415b0750c6a",
+        "fusedPixelSHA256": "72f6c6a4cf6f02546323fbb9cef873e8535fb10687a39e6f0f0a30e9e4c0b397",
+        "originalPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-0-a/exposure-color-interactive.png",
+        "fusedPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-1-a/exposure-color-interactive.png"
+      },
+      "exposure-color-settled.png": {
+        "rgbaBytes": 15360000,
+        "nonmatchingBytes": 0,
+        "p99": 0,
+        "maximum": 0,
+        "originalPixelSHA256": "459e8968279d4a672d97a290ff23c641a841ca5b8b3dfc3f37de55335eeba1c6",
+        "fusedPixelSHA256": "459e8968279d4a672d97a290ff23c641a841ca5b8b3dfc3f37de55335eeba1c6",
+        "originalPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-0-a/exposure-color-settled.png",
+        "fusedPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-1-a/exposure-color-settled.png"
+      },
+      "neutral-interactive.png": {
+        "rgbaBytes": 15360000,
+        "nonmatchingBytes": 67,
+        "p99": 0,
+        "maximum": 1,
+        "originalPixelSHA256": "b2bfaa40981ab3e43afecc26035508496d4e6f7ace1e889dc91e6a0a3eab6854",
+        "fusedPixelSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "originalPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-0-a/neutral-interactive.png",
+        "fusedPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-1-a/neutral-interactive.png"
+      },
+      "neutral-settled.png": {
+        "rgbaBytes": 15360000,
+        "nonmatchingBytes": 0,
+        "p99": 0,
+        "maximum": 0,
+        "originalPixelSHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+        "fusedPixelSHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+        "originalPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-0-a/neutral-settled.png",
+        "fusedPNG": "output/performance/camera-raw-engine-20261122/fused-pixels-1-a/neutral-settled.png"
+      }
+    }
+  },
+  "grayRamp": {
+    "display-convert-corrected.txt": [
+      "all-bytes 262144 mismatched 0 p99 0 maximum 0",
+      "row 0 alpha 255 255 mismatched 0 p99 0 max 0",
+      "row 1 alpha 0 0 mismatched 0 p99 0 max 0",
+      "row 2 alpha 4 4 mismatched 0 p99 0 max 0",
+      "row 16 alpha 62 62 mismatched 0 p99 0 max 0",
+      "row 32 alpha 128 128 mismatched 0 p99 0 max 0",
+      "row 63 alpha 255 255 mismatched 0 p99 0 max 0"
+    ],
+    "display-convert-final-524288.txt": [
+      "all-bytes 524288 mismatched 3 p99 0 maximum 1",
+      "row 0 alpha 255 255 mismatched 0 p99 0 max 0",
+      "row 1 alpha 0 0 mismatched 0 p99 0 max 0",
+      "row 2 alpha 4 4 mismatched 0 p99 0 max 0",
+      "row 16 alpha 62 62 mismatched 0 p99 0 max 0",
+      "row 32 alpha 128 128 mismatched 0 p99 0 max 0",
+      "row 63 alpha 255 255 mismatched 0 p99 0 max 0"
+    ],
+    "display-convert.txt": [
+      "row 0 alpha 255 255 mismatched 0 p99 0 max 0",
+      "row 1 alpha 0 0 mismatched 0 p99 0 max 0",
+      "row 2 alpha 4 4 mismatched 111 p99 1 max 1",
+      "row 16 alpha 62 62 mismatched 411 p99 8 max 9",
+      "row 32 alpha 128 128 mismatched 432 p99 17 max 20",
+      "row 63 alpha 255 255 mismatched 0 p99 0 max 0"
+    ]
+  },
+  "defaultEnablementValidation": {
+    "binarySHA256": "4e14cbb77a0d41df4acb3776e6013fb501e5d82d069d08213ec3a8555d6f5f93",
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "coveredControls": 124,
+    "measuredControls": 124,
+    "warmPerControl": 20,
+    "fullControlReport": "output/performance/release-background-20261122/controls-production.json",
+    "operatorSequence": "release-operator-production.json",
+    "historicalGate": "release-operator-production-regression.json",
+    "qualificationLog": "output/performance/camera-raw-engine-20261122/qualification/final-mask-alpha.log",
+    "fallback": "If any valid pixel is translucent, render that complete output with the original Core Image sRGB transform before publishing."
+  }
+}

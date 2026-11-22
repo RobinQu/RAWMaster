@@ -1,0 +1,108 @@
+{
+  "inference" : "MPSCNN Metal, native valid convolutions with seven input pixels of context",
+  "model" : "waifu2x-vgg7-photo-noise2-cc385f97-f32-v1",
+  "results" : [
+    {
+      "exportBits" : 16,
+      "exportMs" : 223.638417,
+      "exportSHA256" : "6ba2c4ad0e92c84af68149cea234609f1f6e991fd038ffe7fb50eb593018d3c4",
+      "nativePixels" : [
+        1616,
+        1080
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 55.895457999999998,
+          "sampleRGBASHA256" : "2008fbb86e21936b7261cdf64662c9ba5ab856728b5b53a6d726258f7e3a2573",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 16.872709,
+          "sampleRGBASHA256" : "2008fbb86e21936b7261cdf64662c9ba5ab856728b5b53a6d726258f7e3a2573",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 135.10508300000001,
+          "sampleRGBASHA256" : "f91add861e00514005517cbb46e1d5e10314cda1be9b4c335d3ce9f3fc8b682b",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 93.985292000000001,
+          "sampleRGBASHA256" : "09a0bfb025d3b2e1d7a9285a99d38e037a971fdf1eae65cf176ac3f58292da14",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 8.3932500000000001,
+          "sampleRGBASHA256" : "f91add861e00514005517cbb46e1d5e10314cda1be9b4c335d3ce9f3fc8b682b",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 23.233416999999999,
+          "sampleRGBASHA256" : "2008fbb86e21936b7261cdf64662c9ba5ab856728b5b53a6d726258f7e3a2573",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 216.05237500000001,
+          "sampleRGBASHA256" : "443bbf7969107ca1814b33c0d9bfbcea4573e5f0617fd70714f848afb02dce01",
+          "state" : "full-settled"
+        }
+      ],
+      "source" : "sony-preview.jpg",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb"
+    },
+    {
+      "exportBits" : 16,
+      "exportMs" : 226.35566700000001,
+      "exportSHA256" : "b5f75e098fe72988d97a7ad6492e0dfe99eef8756b25a6e2edda2fa83fee7622",
+      "nativePixels" : [
+        1616,
+        1080
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 94.200000000000003,
+          "sampleRGBASHA256" : "7ce3cf783762d8a1497aa429ec58bfd160a58fcd13afa4eeb1f183f8835f7cb8",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 49.160625000000003,
+          "sampleRGBASHA256" : "7ce3cf783762d8a1497aa429ec58bfd160a58fcd13afa4eeb1f183f8835f7cb8",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 118.590791,
+          "sampleRGBASHA256" : "0a6cae42b56af05df77b1a9b57bd19ecfaa84d1233298102dcc58d9e465bfc30",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 108.45699999999999,
+          "sampleRGBASHA256" : "e7b90cd2420cf5207cf44f482f98c75fb5a34c9ad62dd2e3d44472c87f3078be",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 11.907999999999999,
+          "sampleRGBASHA256" : "0a6cae42b56af05df77b1a9b57bd19ecfaa84d1233298102dcc58d9e465bfc30",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 27.09675,
+          "sampleRGBASHA256" : "7ce3cf783762d8a1497aa429ec58bfd160a58fcd13afa4eeb1f183f8835f7cb8",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 468.178833,
+          "sampleRGBASHA256" : "cbf57aa4c775b7efefdde43655917ed3f5efdbeb6552c6660b73a193916379d1",
+          "state" : "full-settled"
+        }
+      ],
+      "source" : "camera-p3-16.tiff",
+      "sourceBits" : 16,
+      "sourceICC" : "kCGColorSpaceDisplayP3",
+      "sourceSHA256" : "144a78e86d9a238e1c6bf76b141fbf36922ff9327e5fa5e7f561d7fee683d4f4"
+    }
+  ],
+  "sourceOrigin" : "Camera JPEG; a tagged 16-bit Display P3 TIFF derived from the same JPEG",
+  "weightsSHA256" : "5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5"
+}

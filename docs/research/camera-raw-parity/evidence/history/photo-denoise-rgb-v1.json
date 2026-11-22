@@ -1,0 +1,1366 @@
+{
+  "binarySHA256" : "df38108551772619621587114830252e1b864f8a3639b489398542c7becf2b32",
+  "build" : "release",
+  "cameraJPEGSHA256" : "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "gpu" : "Apple M4 Max",
+  "importedFilenames" : [
+    "camera-p3-16.tiff",
+    "camera.avif",
+    "camera.heic",
+    "camera.jxl",
+    "camera.png",
+    "camera.psb",
+    "camera.psd",
+    "camera.webp",
+    "sony-preview.jpg"
+  ],
+  "inference" : "MPSCNN Metal, native valid convolutions with seven input pixels of context",
+  "model" : "waifu2x-vgg7-photo-noise2-cc385f97-f32-v1",
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "results" : [
+    {
+      "container" : "public.jpeg",
+      "exportBits" : 16,
+      "exportMs" : 184.02141700000001,
+      "exportSHA256" : "6ba2c4ad0e92c84af68149cea234609f1f6e991fd038ffe7fb50eb593018d3c4",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 1.3563368055555555e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        1616,
+        1080
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 40.390582999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "4e7717ebd146270aae61e278e96d0d29f97c3414992173062543f943acc19ae7",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 11.394333,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "4e7717ebd146270aae61e278e96d0d29f97c3414992173062543f943acc19ae7",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 97.758583000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "93fdf916f5af7a7db7fa8588a23e8460c14698eec9fbdf9c8b73ef0d8dd98c98",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 83.755791000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "b40dce36261055bccfc5c87f016d8a47d97d817af5dc6fb2b9df392b891c8c3a",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 4.3185000000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "93fdf916f5af7a7db7fa8588a23e8460c14698eec9fbdf9c8b73ef0d8dd98c98",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 9.6014999999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "4e7717ebd146270aae61e278e96d0d29f97c3414992173062543f943acc19ae7",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 176.32537500000001,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "dfcc646e509802e05b4597cdb383cb54ab8953cd6e9d11430f70a42beade11f0",
+          "state" : "full-settled"
+        },
+        {
+          "elapsedMs" : 85.177542000000003,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "abf004ac8ec972cbb00dce7fc443be7b3c47efc0c2fad35ef49d0c3a680ac33d",
+          "state" : "new-11"
+        },
+        {
+          "elapsedMs" : 84.974165999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "93fdf916f5af7a7db7fa8588a23e8460c14698eec9fbdf9c8b73ef0d8dd98c98",
+          "state" : "switch-11"
+        },
+        {
+          "elapsedMs" : 4.1493330000000004,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "abf004ac8ec972cbb00dce7fc443be7b3c47efc0c2fad35ef49d0c3a680ac33d",
+          "state" : "replay-11"
+        },
+        {
+          "elapsedMs" : 86.84975,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a3882f884d2d37b2c5505960e2a103bfff8d6d1af975edd533fd384a1ca6acea",
+          "state" : "new-17"
+        },
+        {
+          "elapsedMs" : 4.3907499999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "abf004ac8ec972cbb00dce7fc443be7b3c47efc0c2fad35ef49d0c3a680ac33d",
+          "state" : "switch-17"
+        },
+        {
+          "elapsedMs" : 6.4575420000000001,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a3882f884d2d37b2c5505960e2a103bfff8d6d1af975edd533fd384a1ca6acea",
+          "state" : "replay-17"
+        },
+        {
+          "elapsedMs" : 87.010707999999994,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "93e93f70a10e3883dd3f918b726abb08c15b4ed2fb529adb391890d2ccc2f189",
+          "state" : "new-23"
+        },
+        {
+          "elapsedMs" : 10.058458,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a3882f884d2d37b2c5505960e2a103bfff8d6d1af975edd533fd384a1ca6acea",
+          "state" : "switch-23"
+        },
+        {
+          "elapsedMs" : 10.912625,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "93e93f70a10e3883dd3f918b726abb08c15b4ed2fb529adb391890d2ccc2f189",
+          "state" : "replay-23"
+        },
+        {
+          "elapsedMs" : 87.623833000000005,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a51ea7d38612a76bda68a059906315bee3712ae1f55f4d6b058f2bd875585917",
+          "state" : "new-29"
+        },
+        {
+          "elapsedMs" : 5.0768750000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "93e93f70a10e3883dd3f918b726abb08c15b4ed2fb529adb391890d2ccc2f189",
+          "state" : "switch-29"
+        },
+        {
+          "elapsedMs" : 4.1757090000000003,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a51ea7d38612a76bda68a059906315bee3712ae1f55f4d6b058f2bd875585917",
+          "state" : "replay-29"
+        },
+        {
+          "elapsedMs" : 85.145666000000006,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8239773d227998f3df65f1714b2bbea0ed49b014df9eedfb499539a3f59283c4",
+          "state" : "new-41"
+        },
+        {
+          "elapsedMs" : 5.1913330000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a51ea7d38612a76bda68a059906315bee3712ae1f55f4d6b058f2bd875585917",
+          "state" : "switch-41"
+        },
+        {
+          "elapsedMs" : 4.3036659999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8239773d227998f3df65f1714b2bbea0ed49b014df9eedfb499539a3f59283c4",
+          "state" : "replay-41"
+        },
+        {
+          "elapsedMs" : 88.591708999999994,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "107467e74eb643346757ec9d94a2f7e0a1aaadbaa0c99acd8a269a37ec77bc1a",
+          "state" : "new-47"
+        },
+        {
+          "elapsedMs" : 4.3668339999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8239773d227998f3df65f1714b2bbea0ed49b014df9eedfb499539a3f59283c4",
+          "state" : "switch-47"
+        },
+        {
+          "elapsedMs" : 4.2567079999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "107467e74eb643346757ec9d94a2f7e0a1aaadbaa0c99acd8a269a37ec77bc1a",
+          "state" : "replay-47"
+        },
+        {
+          "elapsedMs" : 83.794957999999994,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "5d76fd109dd319b75393bdbf089de2e6e9b7fcf668745fb842b20fed0e66ad2c",
+          "state" : "new-53"
+        },
+        {
+          "elapsedMs" : 4.595917,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "107467e74eb643346757ec9d94a2f7e0a1aaadbaa0c99acd8a269a37ec77bc1a",
+          "state" : "switch-53"
+        },
+        {
+          "elapsedMs" : 4.1416250000000003,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "5d76fd109dd319b75393bdbf089de2e6e9b7fcf668745fb842b20fed0e66ad2c",
+          "state" : "replay-53"
+        },
+        {
+          "elapsedMs" : 85.271040999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "5792e0da606f65d40b3e539be6173879bcf26c0345da0742991939386050be04",
+          "state" : "new-59"
+        },
+        {
+          "elapsedMs" : 4.8913339999999996,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "5d76fd109dd319b75393bdbf089de2e6e9b7fcf668745fb842b20fed0e66ad2c",
+          "state" : "switch-59"
+        },
+        {
+          "elapsedMs" : 6.4109999999999996,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "5792e0da606f65d40b3e539be6173879bcf26c0345da0742991939386050be04",
+          "state" : "replay-59"
+        },
+        {
+          "elapsedMs" : 84.854457999999994,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8056621cc4f0e4a238f7390cad94c3af84ff5cee4e516d6865faa4fa74fd3fd2",
+          "state" : "new-67"
+        },
+        {
+          "elapsedMs" : 4.5335000000000001,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "5792e0da606f65d40b3e539be6173879bcf26c0345da0742991939386050be04",
+          "state" : "switch-67"
+        },
+        {
+          "elapsedMs" : 4.2192499999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8056621cc4f0e4a238f7390cad94c3af84ff5cee4e516d6865faa4fa74fd3fd2",
+          "state" : "replay-67"
+        },
+        {
+          "elapsedMs" : 84.760582999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "ff1cfae80c07a8e539640818e4c0ad36871c4a88ce583b41298b6c9dd673005d",
+          "state" : "new-73"
+        },
+        {
+          "elapsedMs" : 6.9231249999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8056621cc4f0e4a238f7390cad94c3af84ff5cee4e516d6865faa4fa74fd3fd2",
+          "state" : "switch-73"
+        },
+        {
+          "elapsedMs" : 4.1926670000000001,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "ff1cfae80c07a8e539640818e4c0ad36871c4a88ce583b41298b6c9dd673005d",
+          "state" : "replay-73"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "sony-preview.jpg",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb"
+    },
+    {
+      "container" : "public.tiff",
+      "exportBits" : 16,
+      "exportMs" : 195.56549999999999,
+      "exportSHA256" : "5d2f6b36557fc6e41dd31bf5085dd483ce6d10dcef2f60a7eba8298fa7775832",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 2.0345052083333332e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        1616,
+        1080
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 21.348875,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "6f3da7378d999e06e2bfba50526daaaa000069b96b30d13c47d8071a723b1cfc",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 19.487124999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "6f3da7378d999e06e2bfba50526daaaa000069b96b30d13c47d8071a723b1cfc",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 89.369416999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "53b53f032983e4f27e7a8c20fe3981b2e61364827b9b034efa9f0d85a8ce6035",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 93.831790999999996,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "73f6d54ae689cfd6568c53a42edbb776f1509f803e7a4e4a20ed24ef9b8fd057",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 4.4095829999999996,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "53b53f032983e4f27e7a8c20fe3981b2e61364827b9b034efa9f0d85a8ce6035",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 12.685084,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "6f3da7378d999e06e2bfba50526daaaa000069b96b30d13c47d8071a723b1cfc",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 180.36966699999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "39aaf127798a9192cd3574e4b6538a27067b6903ccf2a9d0b1f2f118008cd1cf",
+          "state" : "full-settled"
+        },
+        {
+          "elapsedMs" : 88.289457999999996,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "1b382d3059fcf20ef3aeeb9a20cf399a4357e528a4f5aa9af105feea2844c834",
+          "state" : "new-11"
+        },
+        {
+          "elapsedMs" : 91.129208000000006,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "53b53f032983e4f27e7a8c20fe3981b2e61364827b9b034efa9f0d85a8ce6035",
+          "state" : "switch-11"
+        },
+        {
+          "elapsedMs" : 4.3210829999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "1b382d3059fcf20ef3aeeb9a20cf399a4357e528a4f5aa9af105feea2844c834",
+          "state" : "replay-11"
+        },
+        {
+          "elapsedMs" : 86.095249999999993,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "39f0728b892005ac24cde50cc249fb172f6f4cd4bc4c316f37bd0c5c3d6f8fcb",
+          "state" : "new-17"
+        },
+        {
+          "elapsedMs" : 4.100333,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "1b382d3059fcf20ef3aeeb9a20cf399a4357e528a4f5aa9af105feea2844c834",
+          "state" : "switch-17"
+        },
+        {
+          "elapsedMs" : 6.9400839999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "39f0728b892005ac24cde50cc249fb172f6f4cd4bc4c316f37bd0c5c3d6f8fcb",
+          "state" : "replay-17"
+        },
+        {
+          "elapsedMs" : 89.806959000000006,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a9c0e691224d4e65fc96a397693a907609b5cc4c658853e830f28813362c5967",
+          "state" : "new-23"
+        },
+        {
+          "elapsedMs" : 4.1689579999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "39f0728b892005ac24cde50cc249fb172f6f4cd4bc4c316f37bd0c5c3d6f8fcb",
+          "state" : "switch-23"
+        },
+        {
+          "elapsedMs" : 4.2499169999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a9c0e691224d4e65fc96a397693a907609b5cc4c658853e830f28813362c5967",
+          "state" : "replay-23"
+        },
+        {
+          "elapsedMs" : 86.082999999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "1cf71f6cb3a0d08b11f88b3a20798fff38b65b78a52d908fe9da54f269a0dfa7",
+          "state" : "new-29"
+        },
+        {
+          "elapsedMs" : 4.0928329999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "a9c0e691224d4e65fc96a397693a907609b5cc4c658853e830f28813362c5967",
+          "state" : "switch-29"
+        },
+        {
+          "elapsedMs" : 4.3750840000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "1cf71f6cb3a0d08b11f88b3a20798fff38b65b78a52d908fe9da54f269a0dfa7",
+          "state" : "replay-29"
+        },
+        {
+          "elapsedMs" : 86.638707999999994,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "334a53201036737fc7cd5de8117563728b86773826d89a0a9078f4c3a6db09f9",
+          "state" : "new-41"
+        },
+        {
+          "elapsedMs" : 4.2166249999999996,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "1cf71f6cb3a0d08b11f88b3a20798fff38b65b78a52d908fe9da54f269a0dfa7",
+          "state" : "switch-41"
+        },
+        {
+          "elapsedMs" : 4.3537910000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "334a53201036737fc7cd5de8117563728b86773826d89a0a9078f4c3a6db09f9",
+          "state" : "replay-41"
+        },
+        {
+          "elapsedMs" : 89.679958999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "946569b311a21f7240ef0d993692f742a0ac3b30437fbdf327201ed2461f07ea",
+          "state" : "new-47"
+        },
+        {
+          "elapsedMs" : 4.6612090000000004,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "334a53201036737fc7cd5de8117563728b86773826d89a0a9078f4c3a6db09f9",
+          "state" : "switch-47"
+        },
+        {
+          "elapsedMs" : 6.1225420000000002,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "946569b311a21f7240ef0d993692f742a0ac3b30437fbdf327201ed2461f07ea",
+          "state" : "replay-47"
+        },
+        {
+          "elapsedMs" : 86.218500000000006,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "75fc9f4b194e1dbb49a089993a87e6d4a2af21c8a436d1c8c00f0bb986350b12",
+          "state" : "new-53"
+        },
+        {
+          "elapsedMs" : 4.1113330000000001,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "946569b311a21f7240ef0d993692f742a0ac3b30437fbdf327201ed2461f07ea",
+          "state" : "switch-53"
+        },
+        {
+          "elapsedMs" : 4.2702499999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "75fc9f4b194e1dbb49a089993a87e6d4a2af21c8a436d1c8c00f0bb986350b12",
+          "state" : "replay-53"
+        },
+        {
+          "elapsedMs" : 89.328749999999999,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8d0343e6b3cfc0553bb242541395aa1c1beb264ef9cb334744e50f44eb6d5279",
+          "state" : "new-59"
+        },
+        {
+          "elapsedMs" : 6.3686249999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "75fc9f4b194e1dbb49a089993a87e6d4a2af21c8a436d1c8c00f0bb986350b12",
+          "state" : "switch-59"
+        },
+        {
+          "elapsedMs" : 5.8250409999999997,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8d0343e6b3cfc0553bb242541395aa1c1beb264ef9cb334744e50f44eb6d5279",
+          "state" : "replay-59"
+        },
+        {
+          "elapsedMs" : 91.202875000000006,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "220d1d5c599ea4aab8b2d5c4b6ea4da1c4b9831dd4f76a924dde43dbef94e42f",
+          "state" : "new-67"
+        },
+        {
+          "elapsedMs" : 5.4705000000000004,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "8d0343e6b3cfc0553bb242541395aa1c1beb264ef9cb334744e50f44eb6d5279",
+          "state" : "switch-67"
+        },
+        {
+          "elapsedMs" : 4.4835409999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "220d1d5c599ea4aab8b2d5c4b6ea4da1c4b9831dd4f76a924dde43dbef94e42f",
+          "state" : "replay-67"
+        },
+        {
+          "elapsedMs" : 87.307500000000005,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "b1a5d8d82ef3fb90023660c00cd28489bf21fb9dc724a64c8ccc731f739e8778",
+          "state" : "new-73"
+        },
+        {
+          "elapsedMs" : 4.6286670000000001,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "220d1d5c599ea4aab8b2d5c4b6ea4da1c4b9831dd4f76a924dde43dbef94e42f",
+          "state" : "switch-73"
+        },
+        {
+          "elapsedMs" : 4.8624999999999998,
+          "presentedPixels" : [
+            1616,
+            1080
+          ],
+          "sampleRGBASHA256" : "b1a5d8d82ef3fb90023660c00cd28489bf21fb9dc724a64c8ccc731f739e8778",
+          "state" : "replay-73"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera-p3-16.tiff",
+      "sourceBits" : 16,
+      "sourceICC" : "kCGColorSpaceDisplayP3",
+      "sourceSHA256" : "ca2af78c3c86b525819ab781631f0168175b91fef441acd9a7d9217bc296bb26"
+    },
+    {
+      "container" : "public.png",
+      "exportBits" : 16,
+      "exportMs" : 19.258042,
+      "exportSHA256" : "9d69808712491af8c7d4d0f0dffd8b0c3e3c2fe2f9a4d8944c3ee2a2b851168e",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 2.0345052083333332e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 10.341084,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 4.5899999999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 17.616958,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "1d009b621a2675b279a694c1eba53b6236281de43966ae004dee74d39a0f0bf5",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 9.4788329999999998,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "16a29d1df7e350e8feed6933c78cfe15295dcc863b4ea3008bde78171bf9ade2",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 4.7864589999999998,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "1d009b621a2675b279a694c1eba53b6236281de43966ae004dee74d39a0f0bf5",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 4.891,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 19.526916,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "aba71d3c836491e059809f379345b9eb44c9873051ad4a2c09dca450a1b8e4a4",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.png",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "254e66c9ad15d79507c9b44962cb2ad0c82a4b8de0808d2228a9c4409c0222e9"
+    },
+    {
+      "container" : "public.heic",
+      "exportBits" : 16,
+      "exportMs" : 19.056750000000001,
+      "exportSHA256" : "211a29deaa1cd7d666ba02f613463202514816463ba0493556cf3348a7fe3f28",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 1.3563368055555555e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 11.424916,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "de84f6fe9116c40210a81e2bd1d9ef013a1562dd55439865e876b0e7c40dff4a",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 6.6399169999999996,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "de84f6fe9116c40210a81e2bd1d9ef013a1562dd55439865e876b0e7c40dff4a",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 9.9781250000000004,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "6f405c9dc9bc62e56e1a3fb11d5ced9b8d171b86acb14edc025ef4d6bf2b5951",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 10.689875000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "5d610c6876ab21965585ae89ce4f4e79b64be02a11ac154635e1e57096919503",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 1.89975,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "6f405c9dc9bc62e56e1a3fb11d5ced9b8d171b86acb14edc025ef4d6bf2b5951",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 6.0201669999999998,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "de84f6fe9116c40210a81e2bd1d9ef013a1562dd55439865e876b0e7c40dff4a",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 18.834208,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "9223e89e26c48d851344a7d5a9b8dcc8b7f25c1e5e642aaeaa85fea2177149ab",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.heic",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "4f365e4e2b9665e3cc2a4af6f5ec3b9db6ff5dfdbb8105d462449a50866fa081"
+    },
+    {
+      "container" : "public.avif",
+      "exportBits" : 16,
+      "exportMs" : 23.197707999999999,
+      "exportSHA256" : "25b4695ea2a8506e0d2f6ea3e68c480e7574f3c4899cb8f0e9357228e0a56a48",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 1.3563368055555555e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 13.509,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "7184b08eee143f614f5041e492a7314a635118191c7996784d62ad2d29f1ba3d",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 9.299417,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "7184b08eee143f614f5041e492a7314a635118191c7996784d62ad2d29f1ba3d",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 12.187208,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "2617fad96afeed2c9542fb1de8cf23e1a64265ec5f0dd2743133a52fc13667bc",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 15.480582999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "d4bbe4b7da5bd9970724c96d1bb2df2eb53b3faa84b4b1a7307c96c127d4e7b4",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 3.8984169999999998,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "2617fad96afeed2c9542fb1de8cf23e1a64265ec5f0dd2743133a52fc13667bc",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 6.4388329999999998,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "7184b08eee143f614f5041e492a7314a635118191c7996784d62ad2d29f1ba3d",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 21.873875000000002,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "d4112efba23918d924604a45da58c0f44607573837609d1df93cccf6cf029c3c",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.avif",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "80296d4d47d226f41370b29543316a6f13159732092b3fc947c95fdd3ef15f1e"
+    },
+    {
+      "container" : "org.webmproject.webp",
+      "exportBits" : 16,
+      "exportMs" : 18.666708,
+      "exportSHA256" : "1fff938a1cc7bb428ca4f65f5e1a51283f839f05d21768bdc8a9693cd813e3f8",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 2.0345052083333332e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 10.831208999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "0b3f4714323d509e6fd154d5190e4a0aeb64797c8910a717ed1658866674d73e",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 4.1202920000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "0b3f4714323d509e6fd154d5190e4a0aeb64797c8910a717ed1658866674d73e",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 15.193709,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "8796eb3d98feac0c093db5c25b6feb231f6323ed015a3fdff8fb8dc3da6d3784",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 9.2612500000000004,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "afd09523a2ae7d5d139d5b4aa6475c7c39c7fff4e7abda3de49bd182b932c50e",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 1.853917,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "8796eb3d98feac0c093db5c25b6feb231f6323ed015a3fdff8fb8dc3da6d3784",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 6.0114169999999998,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "0b3f4714323d509e6fd154d5190e4a0aeb64797c8910a717ed1658866674d73e",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 20.085125000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "b93b9ff2495c6ffc41fd06fac10319575627f58da5094a353c377985455b24ed",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.webp",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "9928c0cdf24fc511a1d053eb67ac6d43f5cb3059fed002e691d99fe5c3e690eb"
+    },
+    {
+      "container" : "public.jpeg-xl",
+      "exportBits" : 16,
+      "exportMs" : 31.089209,
+      "exportSHA256" : "ffa7fc381175aadfef5d828c3b48290dd16452e94a8aa051f53db31954fdce28",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 2.0345052083333332e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 19.009,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "d360721341d6be8315f07918e4f5146c33fa14f39babb67b4158c06be8aae2db",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 16.113291,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "d360721341d6be8315f07918e4f5146c33fa14f39babb67b4158c06be8aae2db",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 18.970791999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "cf54c5e937c9ecc5493aa8040b8d174c1460b9346454000308427b2b84e22a76",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 23.817333000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "d82439352ce15d82f10bbb7029221fc5a6647da00c379c0959ba8abc90f5a37c",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 1.8169999999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "cf54c5e937c9ecc5493aa8040b8d174c1460b9346454000308427b2b84e22a76",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 13.499833000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "d360721341d6be8315f07918e4f5146c33fa14f39babb67b4158c06be8aae2db",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 34.468291000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "c10b2aab2025ce771173d439d52b031d6b11554dd9e587ed3068e56616ae76a4",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.jxl",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "5f2a310cd1ca5ccc038752d6d30868fd3a262b270fb08fed57595bb1c00efb43"
+    },
+    {
+      "container" : "com.adobe.photoshop-image",
+      "exportBits" : 16,
+      "exportMs" : 19.239291999999999,
+      "exportSHA256" : "9d69808712491af8c7d4d0f0dffd8b0c3e3c2fe2f9a4d8944c3ee2a2b851168e",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 2.0345052083333332e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 9.3053329999999992,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 3.4182079999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 19.288833,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "1d009b621a2675b279a694c1eba53b6236281de43966ae004dee74d39a0f0bf5",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 11.726709,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "16a29d1df7e350e8feed6933c78cfe15295dcc863b4ea3008bde78171bf9ade2",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 1.8657919999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "1d009b621a2675b279a694c1eba53b6236281de43966ae004dee74d39a0f0bf5",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 3.8584589999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 19.025957999999999,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "aba71d3c836491e059809f379345b9eb44c9873051ad4a2c09dca450a1b8e4a4",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.psd",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "5893cc945a5364b6ff927da8d55b1870b076226ac1cf70991be4e3422618c560"
+    },
+    {
+      "container" : "com.adobe.photoshop-image",
+      "exportBits" : 16,
+      "exportMs" : 19.944917,
+      "exportSHA256" : "9d69808712491af8c7d4d0f0dffd8b0c3e3c2fe2f9a4d8944c3ee2a2b851168e",
+      "interactiveVsSettled" : {
+        "maxRGB8" : 1,
+        "meanRGB8" : 2.0345052083333332e-05,
+        "p95RGB8" : 0
+      },
+      "nativePixels" : [
+        384,
+        256
+      ],
+      "requests" : [
+        {
+          "elapsedMs" : 10.979417,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "original"
+        },
+        {
+          "elapsedMs" : 3.7530000000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "zero"
+        },
+        {
+          "elapsedMs" : 13.838167,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "1d009b621a2675b279a694c1eba53b6236281de43966ae004dee74d39a0f0bf5",
+          "state" : "full"
+        },
+        {
+          "elapsedMs" : 9.4420409999999997,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "16a29d1df7e350e8feed6933c78cfe15295dcc863b4ea3008bde78171bf9ade2",
+          "state" : "fresh35"
+        },
+        {
+          "elapsedMs" : 1.9156660000000001,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "1d009b621a2675b279a694c1eba53b6236281de43966ae004dee74d39a0f0bf5",
+          "state" : "replay100"
+        },
+        {
+          "elapsedMs" : 7.9678750000000003,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "57169adcf1feee173f8fc8b2e189d278f8354fa47fbc470de39ea20bd1d0d56e",
+          "state" : "disabled"
+        },
+        {
+          "elapsedMs" : 24.451667,
+          "presentedPixels" : [
+            384,
+            256
+          ],
+          "sampleRGBASHA256" : "aba71d3c836491e059809f379345b9eb44c9873051ad4a2c09dca450a1b8e4a4",
+          "state" : "full-settled"
+        }
+      ],
+      "settledVsTIFF16" : {
+        "maxRGB8" : 0,
+        "meanRGB8" : 0,
+        "p95RGB8" : 0
+      },
+      "source" : "camera.psb",
+      "sourceBits" : 8,
+      "sourceICC" : "kCGColorSpaceSRGB",
+      "sourceSHA256" : "6631da62cb917e697fe4bb5335033a350db50b774c8768656758691b801f7230"
+    }
+  ],
+  "sampleMethod" : "Native sRGB8 pixels at a regular grid of 256 by 192 centers",
+  "sourceOrigin" : "Camera JPEG, tagged 16-bit Display P3 TIFF and optional smaller derived codec fixtures",
+  "weightsSHA256" : "5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5"
+}

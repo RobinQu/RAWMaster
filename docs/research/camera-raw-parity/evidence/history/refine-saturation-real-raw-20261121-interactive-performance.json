@@ -1,0 +1,392 @@
+{
+  "caveats" : [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive proxy is bounded to 2400px and settled\/save\/export remain canonical",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderVersion" : "8",
+  "engineStages" : [
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2942.0110840000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2647.9763750000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2568.1216669999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2496.7779169999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2460.2802499999998,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 5345.1760000000004,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1981.880167,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 35.214458,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 37.608333000000002,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 31.923583000000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 1921.2283749999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 41343623,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 1911.4872499999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 41343623,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 6511.0444170000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 5696.7099170000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 4189.8684999999996,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 4062.701208,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 11333.55825,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2265.359833,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 2180.3859170000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    }
+  ],
+  "measurements" : [
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 9.6752920000000007,
+      "interactiveMilliseconds" : [
+        698.53370800000005,
+        9.3178330000000003,
+        9.6752920000000007
+      ],
+      "label" : "neutral",
+      "maximumChannelError" : 16,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 2478.9470000000001,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.100584,
+      "interactiveMilliseconds" : [
+        677.94462499999997,
+        9.3591660000000001,
+        11.100584
+      ],
+      "label" : "exposure-color",
+      "maximumChannelError" : 5,
+      "p99ChannelError" : 0,
+      "settledMilliseconds" : 2616.7595000000001,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 38.401874999999997,
+      "interactiveMilliseconds" : [
+        722.58808299999998,
+        38.401874999999997,
+        31.872333000000001
+      ],
+      "label" : "adaptive-brilliance",
+      "maximumChannelError" : 15,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 12251.491959000001,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 24.306249999999999,
+      "interactiveMilliseconds" : [
+        24.490292,
+        24.306249999999999,
+        18.867958999999999
+      ],
+      "label" : "texture",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 4099.8332499999997,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 15.714292,
+      "interactiveMilliseconds" : [
+        22.569165999999999,
+        14.828583,
+        15.714292
+      ],
+      "label" : "clarity",
+      "maximumChannelError" : 2,
+      "p99ChannelError" : 0,
+      "settledMilliseconds" : 4215.3047079999997,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 19.649291999999999,
+      "interactiveMilliseconds" : [
+        25.707459,
+        19.649291999999999,
+        15.847167000000001
+      ],
+      "label" : "dehaze-v1",
+      "maximumChannelError" : 6,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 6325.069958,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 20.975791999999998,
+      "interactiveMilliseconds" : [
+        31.900165999999999,
+        19.474917000000001,
+        20.975791999999998
+      ],
+      "label" : "dehaze-v2",
+      "maximumChannelError" : 18,
+      "p99ChannelError" : 2,
+      "settledMilliseconds" : 7086.5650409999998,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1337,
+      "interactiveMedianMilliseconds" : 9.7097920000000002,
+      "interactiveMilliseconds" : [
+        13.463917,
+        9.7097920000000002,
+        8.5319590000000005
+      ],
+      "label" : "geometry",
+      "maximumChannelError" : -1,
+      "p99ChannelError" : -1,
+      "settledMilliseconds" : 2150.4490000000001,
+      "width" : 1973
+    },
+    {
+      "approximate" : true,
+      "height" : 1337,
+      "interactiveMedianMilliseconds" : 11.382332999999999,
+      "interactiveMilliseconds" : [
+        37.012,
+        10.579667000000001,
+        11.382332999999999
+      ],
+      "label" : "post-crop-vignette",
+      "maximumChannelError" : -1,
+      "p99ChannelError" : -1,
+      "settledMilliseconds" : 2206.686792,
+      "width" : 1973
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 59.554583000000001,
+      "interactiveMilliseconds" : [
+        73.901332999999994,
+        59.554583000000001,
+        55.151665999999999
+      ],
+      "label" : "local-glow",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 0,
+      "settledMilliseconds" : 5943.9965410000004,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 13.141792000000001,
+      "interactiveMilliseconds" : [
+        43.402540999999999,
+        13.141792000000001,
+        11.713792
+      ],
+      "label" : "bw-mixer",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 0,
+      "settledMilliseconds" : 2912.2185410000002,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 10.053666,
+      "interactiveMilliseconds" : [
+        16.840792,
+        9.0516249999999996,
+        10.053666
+      ],
+      "label" : "point-variance",
+      "maximumChannelError" : 30,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 2900.0878750000002,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 9.5028330000000008,
+      "interactiveMilliseconds" : [
+        17.314416999999999,
+        9.5028330000000008,
+        9.3382919999999991
+      ],
+      "label" : "visualise-range",
+      "maximumChannelError" : 255,
+      "p99ChannelError" : 252,
+      "settledMilliseconds" : 2992.5006669999998,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 10.940125,
+      "interactiveMilliseconds" : [
+        702.24874999999997,
+        9.8319170000000007,
+        10.940125
+      ],
+      "label" : "wb-flash-preset",
+      "maximumChannelError" : 16,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 3115.3942080000002,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 14.601208,
+      "interactiveMilliseconds" : [
+        1366.9860839999999,
+        14.601208,
+        14.353458
+      ],
+      "label" : "refine-saturation",
+      "maximumChannelError" : 9,
+      "p99ChannelError" : 1,
+      "settledMilliseconds" : 3359.6321250000001,
+      "width" : 2400
+    }
+  ],
+  "policy" : "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=0",
+  "proxyVersion" : "actual-parameters-linear-proxy-v3-flashraw-neutral\/integral-noise-snap-v1\/filter-global-v1",
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

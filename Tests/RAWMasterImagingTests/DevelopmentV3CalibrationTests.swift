@@ -1,5 +1,6 @@
 import XCTest
 import CoreImage
+import Metal
 import RAWMasterCore
 @testable import RAWMasterImaging
 
@@ -109,6 +110,46 @@ final class DevelopmentV3CalibrationTests: XCTestCase {
         logLuminance:log2(y),brilliance:brilliance,shadows:shadows,highlights:highlights)
       for c in 0..<3 { XCTAssertEqual(Double(actual[c]),Double(source[c])*pow(2,ev),accuracy:3e-5) }
     }
+  }
+  func testCachedLogGuidePreservesRealShadowAndHighlightResponse() throws {
+    let width=96,height=64,context=DevelopmentColorEngineV3.makeContext()
+    let pixels=(0..<(width*height)).map { i -> SIMD4<Float> in
+      let x=Float(i%width)/Float(width-1),y=Float(i/width)/Float(height-1),a:Float=i%17==0 ? 0.4:1
+      return .init((x*1.9-0.04)*a,(x*y+0.01)*a,(y*0.7+0.02)*a,a)
+    }
+    let source=image(pixels,width:width,height:height),radius=2.4
+    let guide=try DevelopmentSpatialEngineV3.materializeScalar(DevelopmentSpatialEngineV3.meanLogLuminance(source,radius:radius),
+        context:context,device:XCTUnwrap(MTLCreateSystemDefaultDevice()),check:{})
+    for (s,h) in [(0.8,-0.4),(-0.5,0.7),(0.0,0.75)] {
+      let p=DevelopmentLightV3(enabled:true,highlights:h,shadows:s)
+      let direct=try DevelopmentSpatialEngineV3.applyLight(p,to:source,proxyRadius:radius)
+      let cached=try DevelopmentSpatialEngineV3.applyLight(p,to:source,proxyRadius:radius,preparedGuide:{_,_ in guide})
+      let reference=materialize(direct),actual=materialize(cached)
+      XCTAssertLessThan(zip(actual,reference).map{abs($0-$1)}.max() ?? 1,1e-4)
+    }
+  }
+  func testCachedDetailBandsPreserveSignedHDRAndPartialAlpha() throws {
+    let width=96,height=64,context=DevelopmentColorEngineV3.makeContext(),device=try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let pixels=(0..<(width*height)).map { i -> SIMD4<Float> in
+      let x=Float(i%width)/Float(width-1),y=Float(i/width)/Float(height-1)
+      let alpha:Float=i%13==0 ? 0 : (i%5==0 ? 0.37 : 1)
+      return .init((x*1.8-0.03)*alpha,(y*y+0.02)*alpha,(x*y*1.3+0.01)*alpha,alpha)
+    }
+    let source=image(pixels,width:width,height:height),radius=2.3
+    let scalar=try DevelopmentSpatialEngineV3.materializeScalar(DevelopmentAdvancedDetailEngineV3.bandFactor(source,radius:radius),context:context,device:device,check:{})
+    for band in [DevelopmentAdvancedDetailEngineV3.Band.texture,.clarity] {
+      for amount in [-65.0,80.0] {
+        let direct=try DevelopmentAdvancedDetailEngineV3.applyBand(band,amount:amount,to:source,radius:radius)
+        let cached=try DevelopmentAdvancedDetailEngineV3.applyBand(band,amount:amount,to:source,factor:scalar)
+        XCTAssertLessThan(zip(materialize(direct),materialize(cached)).map{abs($0-$1)}.max() ?? 1,1e-4)
+      }
+    }
+    let mean=try DevelopmentSpatialEngineV3.materializeScalar(DevelopmentGlobalEngineV3.sharpeningMean(source,radius:radius),context:context,device:device,check:{})
+    var recipe=DevelopmentAdjustmentsV3()
+    recipe.sharpen = .init(enabled:true,intensity:0.85,radius:radius,detail:0.7,masking:0.35)
+    let direct=try DevelopmentGlobalEngineV3.apply(recipe,to:source,sourceIsRAW:true)
+    let cached=try DevelopmentGlobalEngineV3.apply(recipe,to:source,sourceIsRAW:true,preparedSharpMean:mean)
+    XCTAssertLessThan(zip(materialize(direct),materialize(cached)).map{abs($0-$1)}.max() ?? 1,1e-4)
   }
   func testLightSummaryRemainsSourceDependentBoundedAndNeutralAtZero() throws {
     func stats(_ values: [Float]) throws -> DevelopmentAnalysisScalars {

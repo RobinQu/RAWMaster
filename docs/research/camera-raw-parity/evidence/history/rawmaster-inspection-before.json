@@ -1,0 +1,3451 @@
+{
+  "application": "RAWMaster",
+  "binarySHA256": "1ea626a2d66fa7f61fcebab63aa2317635fa5fcfc8330f6b36346256a22359b8",
+  "build": "release",
+  "clock": "DispatchTime.uptimeNanoseconds; result verification/hash and JSON outside timed interval",
+  "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "gpu": "Apple M4 Max",
+  "inspectionFramePixels": [
+    2400,
+    1600
+  ],
+  "operations": [
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "light-auto",
+      "input": "full source Auto; two starting recipes",
+      "samples": [
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 392.444791,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 69.514,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 63.268583,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 64.044,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 65.03425,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 65.332791,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 64.857292,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 66.226875,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 68.953708,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 63.741125,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 68.015541,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        },
+        {
+          "digest": "eacb8a8e9d5408d3fe9c6034983871418c404c79abc7055a9cccba162fe8fa07",
+          "ms": 65.331041,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "each automatic result changes the input; repeatable per state"
+    },
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "light-auto-single",
+      "input": "full source Auto; two starting recipes",
+      "samples": [
+        {
+          "digest": "b0c4b924adf92ff15234c1212b00801d9a0abbc05b18548e7e2de91886e7cef6",
+          "ms": 429.937375,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0.4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "fb2c1e6565b2a503ae8f41a44cc7affaf0f0610dd1f6cef228ec43e53502da88",
+          "ms": 466.548958,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0.3306611115550704,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "b0c4b924adf92ff15234c1212b00801d9a0abbc05b18548e7e2de91886e7cef6",
+          "ms": 433.7705,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "fb2c1e6565b2a503ae8f41a44cc7affaf0f0610dd1f6cef228ec43e53502da88",
+          "ms": 434.308791,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.3306611115550704,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "b0c4b924adf92ff15234c1212b00801d9a0abbc05b18548e7e2de91886e7cef6",
+          "ms": 444.373417,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "fb2c1e6565b2a503ae8f41a44cc7affaf0f0610dd1f6cef228ec43e53502da88",
+          "ms": 422.940375,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.3306611115550704,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "b0c4b924adf92ff15234c1212b00801d9a0abbc05b18548e7e2de91886e7cef6",
+          "ms": 426.344042,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "fb2c1e6565b2a503ae8f41a44cc7affaf0f0610dd1f6cef228ec43e53502da88",
+          "ms": 424.611458,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.3306611115550704,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "b0c4b924adf92ff15234c1212b00801d9a0abbc05b18548e7e2de91886e7cef6",
+          "ms": 430.331958,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "fb2c1e6565b2a503ae8f41a44cc7affaf0f0610dd1f6cef228ec43e53502da88",
+          "ms": 457.140209,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.3306611115550704,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "b0c4b924adf92ff15234c1212b00801d9a0abbc05b18548e7e2de91886e7cef6",
+          "ms": 428.840375,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.4,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "fb2c1e6565b2a503ae8f41a44cc7affaf0f0610dd1f6cef228ec43e53502da88",
+          "ms": 435.960792,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.3306611115550704,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "each automatic result changes the input; repeatable per state"
+    },
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "color-wb-auto",
+      "input": "full source Auto; two starting recipes",
+      "samples": [
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 466.580375,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 415.922292,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 394.455292,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 401.3405,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 388.701166,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 400.080041,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 407.575666,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 433.253,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 403.640959,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 418.767833,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 415.465667,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        },
+        {
+          "digest": "4f7154413590f7b2d3a948a1b934c4ac9fa7cc6a6ecdd0b21e6dd15b51b6f990",
+          "ms": 409.862292,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            4080.0380859375,
+            -4.968778133392334
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "each automatic result changes the input; repeatable per state"
+    },
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "color-wb-picker",
+      "input": "alternating source-top-left coordinates A/B",
+      "samples": [
+        {
+          "digest": "878afc301733bdb3e4f07bc59bc584d852e9d44e7b49073b83c5f4be4fa8b5c0",
+          "ms": 71.811667,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            9488.7470703125,
+            24.954877853393555
+          ]
+        },
+        {
+          "digest": "c29219e20e08496d7e8f2324a8b22d9b0d97c700620bd62186205e0e2172de9f",
+          "ms": 69.201917,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            3535.40478515625,
+            7.6785149574279785
+          ]
+        },
+        {
+          "digest": "878afc301733bdb3e4f07bc59bc584d852e9d44e7b49073b83c5f4be4fa8b5c0",
+          "ms": 70.586125,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            9488.7470703125,
+            24.954877853393555
+          ]
+        },
+        {
+          "digest": "c29219e20e08496d7e8f2324a8b22d9b0d97c700620bd62186205e0e2172de9f",
+          "ms": 69.696042,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            3535.40478515625,
+            7.6785149574279785
+          ]
+        },
+        {
+          "digest": "878afc301733bdb3e4f07bc59bc584d852e9d44e7b49073b83c5f4be4fa8b5c0",
+          "ms": 68.656,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            9488.7470703125,
+            24.954877853393555
+          ]
+        },
+        {
+          "digest": "c29219e20e08496d7e8f2324a8b22d9b0d97c700620bd62186205e0e2172de9f",
+          "ms": 68.603916,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            3535.40478515625,
+            7.6785149574279785
+          ]
+        },
+        {
+          "digest": "878afc301733bdb3e4f07bc59bc584d852e9d44e7b49073b83c5f4be4fa8b5c0",
+          "ms": 69.06675,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            9488.7470703125,
+            24.954877853393555
+          ]
+        },
+        {
+          "digest": "c29219e20e08496d7e8f2324a8b22d9b0d97c700620bd62186205e0e2172de9f",
+          "ms": 70.298959,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            3535.40478515625,
+            7.6785149574279785
+          ]
+        },
+        {
+          "digest": "878afc301733bdb3e4f07bc59bc584d852e9d44e7b49073b83c5f4be4fa8b5c0",
+          "ms": 71.317417,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            9488.7470703125,
+            24.954877853393555
+          ]
+        },
+        {
+          "digest": "c29219e20e08496d7e8f2324a8b22d9b0d97c700620bd62186205e0e2172de9f",
+          "ms": 69.075209,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            3535.40478515625,
+            7.6785149574279785
+          ]
+        },
+        {
+          "digest": "878afc301733bdb3e4f07bc59bc584d852e9d44e7b49073b83c5f4be4fa8b5c0",
+          "ms": 71.492291,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            9488.7470703125,
+            24.954877853393555
+          ]
+        },
+        {
+          "digest": "c29219e20e08496d7e8f2324a8b22d9b0d97c700620bd62186205e0e2172de9f",
+          "ms": 70.806625,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            3535.40478515625,
+            7.6785149574279785
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "mixer-point-picker",
+      "input": "alternating source-top-left coordinates A/B",
+      "samples": [
+        {
+          "digest": "5fd764004d9c857c5523fc40eac21a6f476872da27cea56fff3635b4d0f56694",
+          "ms": 353.376541,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "9000b2164a1df8c9d9df727492b44da675cf400d040243ffb371d84d2f7afa8d",
+          "ms": 341.869,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "5fd764004d9c857c5523fc40eac21a6f476872da27cea56fff3635b4d0f56694",
+          "ms": 351.537375,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "9000b2164a1df8c9d9df727492b44da675cf400d040243ffb371d84d2f7afa8d",
+          "ms": 368.186875,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "5fd764004d9c857c5523fc40eac21a6f476872da27cea56fff3635b4d0f56694",
+          "ms": 360.652792,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "9000b2164a1df8c9d9df727492b44da675cf400d040243ffb371d84d2f7afa8d",
+          "ms": 374.251208,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "5fd764004d9c857c5523fc40eac21a6f476872da27cea56fff3635b4d0f56694",
+          "ms": 361.675917,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "9000b2164a1df8c9d9df727492b44da675cf400d040243ffb371d84d2f7afa8d",
+          "ms": 368.350833,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "5fd764004d9c857c5523fc40eac21a6f476872da27cea56fff3635b4d0f56694",
+          "ms": 376.404583,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "9000b2164a1df8c9d9df727492b44da675cf400d040243ffb371d84d2f7afa8d",
+          "ms": 395.493708,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "5fd764004d9c857c5523fc40eac21a6f476872da27cea56fff3635b4d0f56694",
+          "ms": 394.916041,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "9000b2164a1df8c9d9df727492b44da675cf400d040243ffb371d84d2f7afa8d",
+          "ms": 397.0645,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "optics-defringe-picker",
+      "input": "alternating source-top-left coordinates A/B",
+      "samples": [
+        {
+          "digest": "fe862d8afb0d9780c04995e2813288e7a45ed331ad751d5c9a0d602a887e6f08",
+          "ms": 395.307166,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            186.39946974689255,
+            246.39946974689255,
+            60
+          ]
+        },
+        {
+          "digest": "41afa690a4a8eca8bcad7110d3912a4ed76a219af6a3b18b163de1bdddc98dbf",
+          "ms": 408.308625,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            2.4809219635147386,
+            62.48092196351474,
+            60
+          ]
+        },
+        {
+          "digest": "fe862d8afb0d9780c04995e2813288e7a45ed331ad751d5c9a0d602a887e6f08",
+          "ms": 418.936209,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            186.39946974689255,
+            246.39946974689255,
+            60
+          ]
+        },
+        {
+          "digest": "41afa690a4a8eca8bcad7110d3912a4ed76a219af6a3b18b163de1bdddc98dbf",
+          "ms": 416.768916,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            2.4809219635147386,
+            62.48092196351474,
+            60
+          ]
+        },
+        {
+          "digest": "fe862d8afb0d9780c04995e2813288e7a45ed331ad751d5c9a0d602a887e6f08",
+          "ms": 427.655208,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            186.39946974689255,
+            246.39946974689255,
+            60
+          ]
+        },
+        {
+          "digest": "41afa690a4a8eca8bcad7110d3912a4ed76a219af6a3b18b163de1bdddc98dbf",
+          "ms": 429.188584,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            2.4809219635147386,
+            62.48092196351474,
+            60
+          ]
+        },
+        {
+          "digest": "fe862d8afb0d9780c04995e2813288e7a45ed331ad751d5c9a0d602a887e6f08",
+          "ms": 435.289083,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            186.39946974689255,
+            246.39946974689255,
+            60
+          ]
+        },
+        {
+          "digest": "41afa690a4a8eca8bcad7110d3912a4ed76a219af6a3b18b163de1bdddc98dbf",
+          "ms": 444.995667,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            2.4809219635147386,
+            62.48092196351474,
+            60
+          ]
+        },
+        {
+          "digest": "fe862d8afb0d9780c04995e2813288e7a45ed331ad751d5c9a0d602a887e6f08",
+          "ms": 466.067166,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            186.39946974689255,
+            246.39946974689255,
+            60
+          ]
+        },
+        {
+          "digest": "41afa690a4a8eca8bcad7110d3912a4ed76a219af6a3b18b163de1bdddc98dbf",
+          "ms": 451.73675,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            2.4809219635147386,
+            62.48092196351474,
+            60
+          ]
+        },
+        {
+          "digest": "fe862d8afb0d9780c04995e2813288e7a45ed331ad751d5c9a0d602a887e6f08",
+          "ms": 460.577292,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            186.39946974689255,
+            246.39946974689255,
+            60
+          ]
+        },
+        {
+          "digest": "41afa690a4a8eca8bcad7110d3912a4ed76a219af6a3b18b163de1bdddc98dbf",
+          "ms": 468.048459,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            2.4809219635147386,
+            62.48092196351474,
+            60
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "raw.analysis · sample through first nonzero targeted drag and validated parameters",
+      "id": "mixer-tat",
+      "input": "alternating source-top-left coordinates A/B",
+      "samples": [
+        {
+          "digest": "189708380ff2dd825339817c90cb294ea48b89482ee0e87be5729f8376a90523",
+          "ms": 589.696792,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0.27395970605413505,
+            10.640803123756617,
+            30,
+            4.907116288351652,
+            0
+          ]
+        },
+        {
+          "digest": "2604b0a6c2f76acdb1104860d5d496638158e022bb0fbdd4d6d22fd4852308e0",
+          "ms": 534.43275,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            12.253497548767706,
+            22.234419512282454,
+            3.9074455244442023,
+            0,
+            0,
+            30,
+            0,
+            0.5804715366059554
+          ]
+        },
+        {
+          "digest": "189708380ff2dd825339817c90cb294ea48b89482ee0e87be5729f8376a90523",
+          "ms": 512.540875,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0.27395970605413505,
+            10.640803123756617,
+            30,
+            4.907116288351652,
+            0
+          ]
+        },
+        {
+          "digest": "2604b0a6c2f76acdb1104860d5d496638158e022bb0fbdd4d6d22fd4852308e0",
+          "ms": 556.092541,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            12.253497548767706,
+            22.234419512282454,
+            3.9074455244442023,
+            0,
+            0,
+            30,
+            0,
+            0.5804715366059554
+          ]
+        },
+        {
+          "digest": "189708380ff2dd825339817c90cb294ea48b89482ee0e87be5729f8376a90523",
+          "ms": 566.571875,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0.27395970605413505,
+            10.640803123756617,
+            30,
+            4.907116288351652,
+            0
+          ]
+        },
+        {
+          "digest": "2604b0a6c2f76acdb1104860d5d496638158e022bb0fbdd4d6d22fd4852308e0",
+          "ms": 568.697334,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            12.253497548767706,
+            22.234419512282454,
+            3.9074455244442023,
+            0,
+            0,
+            30,
+            0,
+            0.5804715366059554
+          ]
+        },
+        {
+          "digest": "189708380ff2dd825339817c90cb294ea48b89482ee0e87be5729f8376a90523",
+          "ms": 623.268875,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0.27395970605413505,
+            10.640803123756617,
+            30,
+            4.907116288351652,
+            0
+          ]
+        },
+        {
+          "digest": "2604b0a6c2f76acdb1104860d5d496638158e022bb0fbdd4d6d22fd4852308e0",
+          "ms": 644.977958,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            12.253497548767706,
+            22.234419512282454,
+            3.9074455244442023,
+            0,
+            0,
+            30,
+            0,
+            0.5804715366059554
+          ]
+        },
+        {
+          "digest": "189708380ff2dd825339817c90cb294ea48b89482ee0e87be5729f8376a90523",
+          "ms": 652.428959,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0.27395970605413505,
+            10.640803123756617,
+            30,
+            4.907116288351652,
+            0
+          ]
+        },
+        {
+          "digest": "2604b0a6c2f76acdb1104860d5d496638158e022bb0fbdd4d6d22fd4852308e0",
+          "ms": 614.943,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            12.253497548767706,
+            22.234419512282454,
+            3.9074455244442023,
+            0,
+            0,
+            30,
+            0,
+            0.5804715366059554
+          ]
+        },
+        {
+          "digest": "189708380ff2dd825339817c90cb294ea48b89482ee0e87be5729f8376a90523",
+          "ms": 720.57925,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0,
+            0.27395970605413505,
+            10.640803123756617,
+            30,
+            4.907116288351652,
+            0
+          ]
+        },
+        {
+          "digest": "2604b0a6c2f76acdb1104860d5d496638158e022bb0fbdd4d6d22fd4852308e0",
+          "ms": 763.338834,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            12.253497548767706,
+            22.234419512282454,
+            3.9074455244442023,
+            0,
+            0,
+            30,
+            0,
+            0.5804715366059554
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "raw.analysis · sample through first nonzero targeted drag and validated parameters",
+      "id": "curve-tat-point",
+      "input": "alternating source-top-left coordinates A/B",
+      "samples": [
+        {
+          "digest": "61c510a0fad5b3263c34ce25b693050c739b9f6ee30365b0c27274ccd0837040",
+          "ms": 735.88025,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0.3573685253583715,
+            0.4873685253583715,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "2c4af3d37daa4a5fb6b1bbe88e7b5b48d541edf27dd3449eeb64fa76953e491e",
+          "ms": 832.558834,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0,
+            0,
+            0.1414603677905888,
+            0.2714603677905888,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "61c510a0fad5b3263c34ce25b693050c739b9f6ee30365b0c27274ccd0837040",
+          "ms": 664.211833,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0.3573685253583715,
+            0.4873685253583715,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "2c4af3d37daa4a5fb6b1bbe88e7b5b48d541edf27dd3449eeb64fa76953e491e",
+          "ms": 741.42825,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0,
+            0,
+            0.1414603677905888,
+            0.2714603677905888,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "61c510a0fad5b3263c34ce25b693050c739b9f6ee30365b0c27274ccd0837040",
+          "ms": 755.025167,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0.3573685253583715,
+            0.4873685253583715,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "2c4af3d37daa4a5fb6b1bbe88e7b5b48d541edf27dd3449eeb64fa76953e491e",
+          "ms": 842.5425,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0,
+            0,
+            0.1414603677905888,
+            0.2714603677905888,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "61c510a0fad5b3263c34ce25b693050c739b9f6ee30365b0c27274ccd0837040",
+          "ms": 860.633917,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0.3573685253583715,
+            0.4873685253583715,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "2c4af3d37daa4a5fb6b1bbe88e7b5b48d541edf27dd3449eeb64fa76953e491e",
+          "ms": 874.971333,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0,
+            0,
+            0.1414603677905888,
+            0.2714603677905888,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "61c510a0fad5b3263c34ce25b693050c739b9f6ee30365b0c27274ccd0837040",
+          "ms": 951.871417,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0.3573685253583715,
+            0.4873685253583715,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "2c4af3d37daa4a5fb6b1bbe88e7b5b48d541edf27dd3449eeb64fa76953e491e",
+          "ms": 730.572958,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0,
+            0,
+            0.1414603677905888,
+            0.2714603677905888,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "61c510a0fad5b3263c34ce25b693050c739b9f6ee30365b0c27274ccd0837040",
+          "ms": 729.927417,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0,
+            0,
+            0.3573685253583715,
+            0.4873685253583715,
+            1,
+            1
+          ]
+        },
+        {
+          "digest": "2c4af3d37daa4a5fb6b1bbe88e7b5b48d541edf27dd3449eeb64fa76953e491e",
+          "ms": 853.785167,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0,
+            0,
+            0.1414603677905888,
+            0.2714603677905888,
+            1,
+            1
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "resident preview · canvas hover event to formatted inspector text",
+      "id": "color-rgb-readout",
+      "input": "alternate pointer positions A/B",
+      "samples": [
+        {
+          "digest": "6765f1da80221052f5d91db4d5a9f95a37a4cbafe56d2fb06457f706b6bdf964",
+          "ms": 0.876417,
+          "phase": "first",
+          "state": 0,
+          "text": "R 78   G 93   B 111",
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883
+          ]
+        },
+        {
+          "digest": "a91a2d97a4558492c2e42bf622a51201554b9e2b7d54efc716665a0a4847aba0",
+          "ms": 0.046208,
+          "phase": "first",
+          "state": 1,
+          "text": "R 56   G 45   B 25",
+          "values": [
+            0.2196078431372549,
+            0.17647058823529413,
+            0.09803921568627451
+          ]
+        },
+        {
+          "digest": "6765f1da80221052f5d91db4d5a9f95a37a4cbafe56d2fb06457f706b6bdf964",
+          "ms": 0.024083,
+          "phase": "warm",
+          "state": 0,
+          "text": "R 78   G 93   B 111",
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883
+          ]
+        },
+        {
+          "digest": "a91a2d97a4558492c2e42bf622a51201554b9e2b7d54efc716665a0a4847aba0",
+          "ms": 0.020083,
+          "phase": "warm",
+          "state": 1,
+          "text": "R 56   G 45   B 25",
+          "values": [
+            0.2196078431372549,
+            0.17647058823529413,
+            0.09803921568627451
+          ]
+        },
+        {
+          "digest": "6765f1da80221052f5d91db4d5a9f95a37a4cbafe56d2fb06457f706b6bdf964",
+          "ms": 0.021167,
+          "phase": "warm",
+          "state": 0,
+          "text": "R 78   G 93   B 111",
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883
+          ]
+        },
+        {
+          "digest": "a91a2d97a4558492c2e42bf622a51201554b9e2b7d54efc716665a0a4847aba0",
+          "ms": 0.019,
+          "phase": "warm",
+          "state": 1,
+          "text": "R 56   G 45   B 25",
+          "values": [
+            0.2196078431372549,
+            0.17647058823529413,
+            0.09803921568627451
+          ]
+        },
+        {
+          "digest": "6765f1da80221052f5d91db4d5a9f95a37a4cbafe56d2fb06457f706b6bdf964",
+          "ms": 0.015917,
+          "phase": "warm",
+          "state": 0,
+          "text": "R 78   G 93   B 111",
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883
+          ]
+        },
+        {
+          "digest": "a91a2d97a4558492c2e42bf622a51201554b9e2b7d54efc716665a0a4847aba0",
+          "ms": 0.016166,
+          "phase": "warm",
+          "state": 1,
+          "text": "R 56   G 45   B 25",
+          "values": [
+            0.2196078431372549,
+            0.17647058823529413,
+            0.09803921568627451
+          ]
+        },
+        {
+          "digest": "6765f1da80221052f5d91db4d5a9f95a37a4cbafe56d2fb06457f706b6bdf964",
+          "ms": 0.018084,
+          "phase": "warm",
+          "state": 0,
+          "text": "R 78   G 93   B 111",
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883
+          ]
+        },
+        {
+          "digest": "a91a2d97a4558492c2e42bf622a51201554b9e2b7d54efc716665a0a4847aba0",
+          "ms": 0.015833,
+          "phase": "warm",
+          "state": 1,
+          "text": "R 56   G 45   B 25",
+          "values": [
+            0.2196078431372549,
+            0.17647058823529413,
+            0.09803921568627451
+          ]
+        },
+        {
+          "digest": "6765f1da80221052f5d91db4d5a9f95a37a4cbafe56d2fb06457f706b6bdf964",
+          "ms": 0.015167,
+          "phase": "warm",
+          "state": 0,
+          "text": "R 78   G 93   B 111",
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883
+          ]
+        },
+        {
+          "digest": "a91a2d97a4558492c2e42bf622a51201554b9e2b7d54efc716665a0a4847aba0",
+          "ms": 0.01675,
+          "phase": "warm",
+          "state": 1,
+          "text": "R 56   G 45   B 25",
+          "values": [
+            0.2196078431372549,
+            0.17647058823529413,
+            0.09803921568627451
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "resident preview · canvas hover event to formatted inspector text",
+      "id": "color-lab-readouts",
+      "input": "alternate pointer positions A/B",
+      "samples": [
+        {
+          "digest": "e4ed54ca8f04df8b76fd3ba1aa94bf061c8a4041fa55c7714437c6c603136455",
+          "ms": 0.036084,
+          "phase": "first",
+          "state": 0,
+          "text": "L* 38.7   a* -2.5   b* -12.4",
+          "values": [
+            38.735321044921875,
+            -2.5067825317382812,
+            -12.352378845214844
+          ]
+        },
+        {
+          "digest": "2f1629d3d9b9e8f3552786b5188bcadcb13cf12f5af17c803a4173d67cac2167",
+          "ms": 0.019375,
+          "phase": "first",
+          "state": 1,
+          "text": "L* 19.3   a* 2.8   b* 14.9",
+          "values": [
+            19.30820083618164,
+            2.8483123779296875,
+            14.933380126953125
+          ]
+        },
+        {
+          "digest": "e4ed54ca8f04df8b76fd3ba1aa94bf061c8a4041fa55c7714437c6c603136455",
+          "ms": 0.01825,
+          "phase": "warm",
+          "state": 0,
+          "text": "L* 38.7   a* -2.5   b* -12.4",
+          "values": [
+            38.735321044921875,
+            -2.5067825317382812,
+            -12.352378845214844
+          ]
+        },
+        {
+          "digest": "2f1629d3d9b9e8f3552786b5188bcadcb13cf12f5af17c803a4173d67cac2167",
+          "ms": 0.023833,
+          "phase": "warm",
+          "state": 1,
+          "text": "L* 19.3   a* 2.8   b* 14.9",
+          "values": [
+            19.30820083618164,
+            2.8483123779296875,
+            14.933380126953125
+          ]
+        },
+        {
+          "digest": "e4ed54ca8f04df8b76fd3ba1aa94bf061c8a4041fa55c7714437c6c603136455",
+          "ms": 0.01775,
+          "phase": "warm",
+          "state": 0,
+          "text": "L* 38.7   a* -2.5   b* -12.4",
+          "values": [
+            38.735321044921875,
+            -2.5067825317382812,
+            -12.352378845214844
+          ]
+        },
+        {
+          "digest": "2f1629d3d9b9e8f3552786b5188bcadcb13cf12f5af17c803a4173d67cac2167",
+          "ms": 0.016583,
+          "phase": "warm",
+          "state": 1,
+          "text": "L* 19.3   a* 2.8   b* 14.9",
+          "values": [
+            19.30820083618164,
+            2.8483123779296875,
+            14.933380126953125
+          ]
+        },
+        {
+          "digest": "e4ed54ca8f04df8b76fd3ba1aa94bf061c8a4041fa55c7714437c6c603136455",
+          "ms": 0.070417,
+          "phase": "warm",
+          "state": 0,
+          "text": "L* 38.7   a* -2.5   b* -12.4",
+          "values": [
+            38.735321044921875,
+            -2.5067825317382812,
+            -12.352378845214844
+          ]
+        },
+        {
+          "digest": "2f1629d3d9b9e8f3552786b5188bcadcb13cf12f5af17c803a4173d67cac2167",
+          "ms": 0.06225,
+          "phase": "warm",
+          "state": 1,
+          "text": "L* 19.3   a* 2.8   b* 14.9",
+          "values": [
+            19.30820083618164,
+            2.8483123779296875,
+            14.933380126953125
+          ]
+        },
+        {
+          "digest": "e4ed54ca8f04df8b76fd3ba1aa94bf061c8a4041fa55c7714437c6c603136455",
+          "ms": 0.02475,
+          "phase": "warm",
+          "state": 0,
+          "text": "L* 38.7   a* -2.5   b* -12.4",
+          "values": [
+            38.735321044921875,
+            -2.5067825317382812,
+            -12.352378845214844
+          ]
+        },
+        {
+          "digest": "2f1629d3d9b9e8f3552786b5188bcadcb13cf12f5af17c803a4173d67cac2167",
+          "ms": 0.021084,
+          "phase": "warm",
+          "state": 1,
+          "text": "L* 19.3   a* 2.8   b* 14.9",
+          "values": [
+            19.30820083618164,
+            2.8483123779296875,
+            14.933380126953125
+          ]
+        },
+        {
+          "digest": "e4ed54ca8f04df8b76fd3ba1aa94bf061c8a4041fa55c7714437c6c603136455",
+          "ms": 0.018208,
+          "phase": "warm",
+          "state": 0,
+          "text": "L* 38.7   a* -2.5   b* -12.4",
+          "values": [
+            38.735321044921875,
+            -2.5067825317382812,
+            -12.352378845214844
+          ]
+        },
+        {
+          "digest": "2f1629d3d9b9e8f3552786b5188bcadcb13cf12f5af17c803a4173d67cac2167",
+          "ms": 0.021417,
+          "phase": "warm",
+          "state": 1,
+          "text": "L* 19.3   a* 2.8   b* 14.9",
+          "values": [
+            19.30820083618164,
+            2.8483123779296875,
+            14.933380126953125
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "resident preview · place/replace persisted source annotation and recalculate nine displayed samples",
+      "id": "color-samplers",
+      "input": "replace annotation 1 at A/B; eight fixed existing annotations",
+      "samples": [
+        {
+          "digest": "6c648772f45f91c6dec5578c23a0c17f4bfa0c3693d0d71ec28a39cbc4d7a588",
+          "ms": 0.360583,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "ea716acfd505270c564690bd70e3407b210778f11140b970a6f8ecb7f4b30c88",
+          "ms": 0.158792,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0.15294117647058825,
+            0.11764705882352941,
+            0.08235294117647059,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "6c648772f45f91c6dec5578c23a0c17f4bfa0c3693d0d71ec28a39cbc4d7a588",
+          "ms": 0.202125,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "ea716acfd505270c564690bd70e3407b210778f11140b970a6f8ecb7f4b30c88",
+          "ms": 0.173583,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.15294117647058825,
+            0.11764705882352941,
+            0.08235294117647059,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "6c648772f45f91c6dec5578c23a0c17f4bfa0c3693d0d71ec28a39cbc4d7a588",
+          "ms": 0.220583,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "ea716acfd505270c564690bd70e3407b210778f11140b970a6f8ecb7f4b30c88",
+          "ms": 0.213083,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.15294117647058825,
+            0.11764705882352941,
+            0.08235294117647059,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "6c648772f45f91c6dec5578c23a0c17f4bfa0c3693d0d71ec28a39cbc4d7a588",
+          "ms": 0.181125,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "ea716acfd505270c564690bd70e3407b210778f11140b970a6f8ecb7f4b30c88",
+          "ms": 0.1525,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.15294117647058825,
+            0.11764705882352941,
+            0.08235294117647059,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "6c648772f45f91c6dec5578c23a0c17f4bfa0c3693d0d71ec28a39cbc4d7a588",
+          "ms": 0.142292,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "ea716acfd505270c564690bd70e3407b210778f11140b970a6f8ecb7f4b30c88",
+          "ms": 0.1835,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.15294117647058825,
+            0.11764705882352941,
+            0.08235294117647059,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "6c648772f45f91c6dec5578c23a0c17f4bfa0c3693d0d71ec28a39cbc4d7a588",
+          "ms": 0.284125,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.3058823529411765,
+            0.36470588235294116,
+            0.43529411764705883,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        },
+        {
+          "digest": "ea716acfd505270c564690bd70e3407b210778f11140b970a6f8ecb7f4b30c88",
+          "ms": 0.214666,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.15294117647058825,
+            0.11764705882352941,
+            0.08235294117647059,
+            0.45098039215686275,
+            0.4392156862745098,
+            0.3803921568627451,
+            0.5254901960784314,
+            0.48627450980392156,
+            0.4196078431372549,
+            0.6,
+            0.5490196078431373,
+            0.45098039215686275,
+            0.7176470588235294,
+            0.6274509803921569,
+            0.4666666666666667,
+            0.9568627450980393,
+            0.7647058823529411,
+            0.49019607843137253,
+            1,
+            1,
+            0.6784313725490196,
+            0.7529411764705882,
+            0.6,
+            0.396078431372549,
+            0.615686274509804,
+            0.4980392156862745,
+            0.35294117647058826
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "resident preview · oriented pixel pick, tonal-region selection, first nonzero drag and validated parameters",
+      "id": "curve-tat-parametric",
+      "input": "select pixel A/B; apply +0.1 / -0.15 vertical drag",
+      "samples": [
+        {
+          "digest": "dfd64b4b0dd3399cdd75d6b2d91012cfd79ae9da6815f2322b69d9f0e3f4c3b2",
+          "ms": 0.048042,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0.35729647058823527,
+            0,
+            20,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "6747a5fe1a43f6dfefb92044cef4fbded7222b09a7e5a2f4c52686595e09993b",
+          "ms": 0.039875,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0.17997882352941177,
+            -30,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "dfd64b4b0dd3399cdd75d6b2d91012cfd79ae9da6815f2322b69d9f0e3f4c3b2",
+          "ms": 0.018625,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.35729647058823527,
+            0,
+            20,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "6747a5fe1a43f6dfefb92044cef4fbded7222b09a7e5a2f4c52686595e09993b",
+          "ms": 0.013875,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.17997882352941177,
+            -30,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "dfd64b4b0dd3399cdd75d6b2d91012cfd79ae9da6815f2322b69d9f0e3f4c3b2",
+          "ms": 0.012375,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.35729647058823527,
+            0,
+            20,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "6747a5fe1a43f6dfefb92044cef4fbded7222b09a7e5a2f4c52686595e09993b",
+          "ms": 0.011791,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.17997882352941177,
+            -30,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "dfd64b4b0dd3399cdd75d6b2d91012cfd79ae9da6815f2322b69d9f0e3f4c3b2",
+          "ms": 0.01125,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.35729647058823527,
+            0,
+            20,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "6747a5fe1a43f6dfefb92044cef4fbded7222b09a7e5a2f4c52686595e09993b",
+          "ms": 0.010833,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.17997882352941177,
+            -30,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "dfd64b4b0dd3399cdd75d6b2d91012cfd79ae9da6815f2322b69d9f0e3f4c3b2",
+          "ms": 0.010333,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.35729647058823527,
+            0,
+            20,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "6747a5fe1a43f6dfefb92044cef4fbded7222b09a7e5a2f4c52686595e09993b",
+          "ms": 0.010167,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.17997882352941177,
+            -30,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "dfd64b4b0dd3399cdd75d6b2d91012cfd79ae9da6815f2322b69d9f0e3f4c3b2",
+          "ms": 0.01025,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.35729647058823527,
+            0,
+            20,
+            0,
+            0
+          ]
+        },
+        {
+          "digest": "6747a5fe1a43f6dfefb92044cef4fbded7222b09a7e5a2f4c52686595e09993b",
+          "ms": 0.010041,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.17997882352941177,
+            -30,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "prepared real RAW chroma distribution to original SwiftUI scope rendered as a 256×168 sRGB bitmap",
+      "id": "color-vectorscope",
+      "input": "same source under saturation 0 / +0.69; no skin guide",
+      "samples": [
+        {
+          "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+          "ms": 19.54475,
+          "phase": "first",
+          "state": 0
+        },
+        {
+          "digest": "dc0f1d1a644b023beec61a2556612a53eed3884d8095ea93e35f4b25a29f19b3",
+          "ms": 2.189834,
+          "phase": "first",
+          "state": 1
+        },
+        {
+          "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+          "ms": 1.399375,
+          "phase": "warm",
+          "state": 0
+        },
+        {
+          "digest": "dc0f1d1a644b023beec61a2556612a53eed3884d8095ea93e35f4b25a29f19b3",
+          "ms": 1.61375,
+          "phase": "warm",
+          "state": 1
+        },
+        {
+          "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+          "ms": 2.169209,
+          "phase": "warm",
+          "state": 0
+        },
+        {
+          "digest": "dc0f1d1a644b023beec61a2556612a53eed3884d8095ea93e35f4b25a29f19b3",
+          "ms": 1.509333,
+          "phase": "warm",
+          "state": 1
+        },
+        {
+          "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+          "ms": 1.655125,
+          "phase": "warm",
+          "state": 0
+        },
+        {
+          "digest": "dc0f1d1a644b023beec61a2556612a53eed3884d8095ea93e35f4b25a29f19b3",
+          "ms": 2.420333,
+          "phase": "warm",
+          "state": 1
+        },
+        {
+          "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+          "ms": 1.398417,
+          "phase": "warm",
+          "state": 0
+        },
+        {
+          "digest": "dc0f1d1a644b023beec61a2556612a53eed3884d8095ea93e35f4b25a29f19b3",
+          "ms": 1.591458,
+          "phase": "warm",
+          "state": 1
+        },
+        {
+          "digest": "5c73090e0b8c1c4a1fe80d0d0ca7f835e680863d48bb074927f58eafb45850ca",
+          "ms": 1.258375,
+          "phase": "warm",
+          "state": 0
+        },
+        {
+          "digest": "dc0f1d1a644b023beec61a2556612a53eed3884d8095ea93e35f4b25a29f19b3",
+          "ms": 1.84075,
+          "phase": "warm",
+          "state": 1
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests"
+    },
+    {
+      "boundary": "prepared real RAW chroma distribution to original SwiftUI scope raster and skin-ray readout",
+      "id": "color-skin-indicator",
+      "input": "toggle the reference over identical RAW bins; compare observed pixels only on its calibrated dashed ray",
+      "samples": [
+        {
+          "digest": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+          "ms": 1.071833,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              0
+            ],
+            "guidePixelLumaRGB8": [
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              78.0154,
+              113.80279999999999,
+              92.4486,
+              24.4934,
+              92.5076,
+              189.73680000000002,
+              109.9288,
+              129.5678,
+              135.56259999999997,
+              161.1282,
+              201.691,
+              174.5586,
+              207.19639999999998,
+              204.2778,
+              215.43139999999997,
+              215.24120000000002
+            ]
+          }
+        },
+        {
+          "digest": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+          "ms": 0.846208,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            1
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              1
+            ],
+            "guidePixelLumaRGB8": [
+              130,
+              156.99999999999997,
+              88,
+              180,
+              154,
+              134,
+              114.99999999999999,
+              168,
+              164,
+              108,
+              141,
+              148,
+              163,
+              79.99999999999999,
+              163,
+              123,
+              163,
+              46,
+              54,
+              177.99999999999997,
+              94.99999999999999,
+              163,
+              70,
+              183,
+              118.24119999999998,
+              193.5484,
+              148.10879999999997,
+              180.2126,
+              120.6612,
+              219.72140000000002,
+              176.10479999999998,
+              206.32659999999998,
+              168.6572,
+              213.8922,
+              229.2412,
+              206.09159999999997,
+              237.5392,
+              230.03259999999997,
+              242.69279999999998,
+              242.98680000000002
+            ]
+          }
+        },
+        {
+          "digest": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+          "ms": 0.765667,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              0
+            ],
+            "guidePixelLumaRGB8": [
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              78.0154,
+              113.80279999999999,
+              92.4486,
+              24.4934,
+              92.5076,
+              189.73680000000002,
+              109.9288,
+              129.5678,
+              135.56259999999997,
+              161.1282,
+              201.691,
+              174.5586,
+              207.19639999999998,
+              204.2778,
+              215.43139999999997,
+              215.24120000000002
+            ]
+          }
+        },
+        {
+          "digest": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+          "ms": 0.854209,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            1
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              1
+            ],
+            "guidePixelLumaRGB8": [
+              130,
+              156.99999999999997,
+              88,
+              180,
+              154,
+              134,
+              114.99999999999999,
+              168,
+              164,
+              108,
+              141,
+              148,
+              163,
+              79.99999999999999,
+              163,
+              123,
+              163,
+              46,
+              54,
+              177.99999999999997,
+              94.99999999999999,
+              163,
+              70,
+              183,
+              118.24119999999998,
+              193.5484,
+              148.10879999999997,
+              180.2126,
+              120.6612,
+              219.72140000000002,
+              176.10479999999998,
+              206.32659999999998,
+              168.6572,
+              213.8922,
+              229.2412,
+              206.09159999999997,
+              237.5392,
+              230.03259999999997,
+              242.69279999999998,
+              242.98680000000002
+            ]
+          }
+        },
+        {
+          "digest": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+          "ms": 1.045916,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              0
+            ],
+            "guidePixelLumaRGB8": [
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              78.0154,
+              113.80279999999999,
+              92.4486,
+              24.4934,
+              92.5076,
+              189.73680000000002,
+              109.9288,
+              129.5678,
+              135.56259999999997,
+              161.1282,
+              201.691,
+              174.5586,
+              207.19639999999998,
+              204.2778,
+              215.43139999999997,
+              215.24120000000002
+            ]
+          }
+        },
+        {
+          "digest": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+          "ms": 1.007875,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            1
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              1
+            ],
+            "guidePixelLumaRGB8": [
+              130,
+              156.99999999999997,
+              88,
+              180,
+              154,
+              134,
+              114.99999999999999,
+              168,
+              164,
+              108,
+              141,
+              148,
+              163,
+              79.99999999999999,
+              163,
+              123,
+              163,
+              46,
+              54,
+              177.99999999999997,
+              94.99999999999999,
+              163,
+              70,
+              183,
+              118.24119999999998,
+              193.5484,
+              148.10879999999997,
+              180.2126,
+              120.6612,
+              219.72140000000002,
+              176.10479999999998,
+              206.32659999999998,
+              168.6572,
+              213.8922,
+              229.2412,
+              206.09159999999997,
+              237.5392,
+              230.03259999999997,
+              242.69279999999998,
+              242.98680000000002
+            ]
+          }
+        },
+        {
+          "digest": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+          "ms": 0.869375,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              0
+            ],
+            "guidePixelLumaRGB8": [
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              78.0154,
+              113.80279999999999,
+              92.4486,
+              24.4934,
+              92.5076,
+              189.73680000000002,
+              109.9288,
+              129.5678,
+              135.56259999999997,
+              161.1282,
+              201.691,
+              174.5586,
+              207.19639999999998,
+              204.2778,
+              215.43139999999997,
+              215.24120000000002
+            ]
+          }
+        },
+        {
+          "digest": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+          "ms": 0.884417,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            1
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              1
+            ],
+            "guidePixelLumaRGB8": [
+              130,
+              156.99999999999997,
+              88,
+              180,
+              154,
+              134,
+              114.99999999999999,
+              168,
+              164,
+              108,
+              141,
+              148,
+              163,
+              79.99999999999999,
+              163,
+              123,
+              163,
+              46,
+              54,
+              177.99999999999997,
+              94.99999999999999,
+              163,
+              70,
+              183,
+              118.24119999999998,
+              193.5484,
+              148.10879999999997,
+              180.2126,
+              120.6612,
+              219.72140000000002,
+              176.10479999999998,
+              206.32659999999998,
+              168.6572,
+              213.8922,
+              229.2412,
+              206.09159999999997,
+              237.5392,
+              230.03259999999997,
+              242.69279999999998,
+              242.98680000000002
+            ]
+          }
+        },
+        {
+          "digest": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+          "ms": 0.850833,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              0
+            ],
+            "guidePixelLumaRGB8": [
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              78.0154,
+              113.80279999999999,
+              92.4486,
+              24.4934,
+              92.5076,
+              189.73680000000002,
+              109.9288,
+              129.5678,
+              135.56259999999997,
+              161.1282,
+              201.691,
+              174.5586,
+              207.19639999999998,
+              204.2778,
+              215.43139999999997,
+              215.24120000000002
+            ]
+          }
+        },
+        {
+          "digest": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+          "ms": 0.926208,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            1
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              1
+            ],
+            "guidePixelLumaRGB8": [
+              130,
+              156.99999999999997,
+              88,
+              180,
+              154,
+              134,
+              114.99999999999999,
+              168,
+              164,
+              108,
+              141,
+              148,
+              163,
+              79.99999999999999,
+              163,
+              123,
+              163,
+              46,
+              54,
+              177.99999999999997,
+              94.99999999999999,
+              163,
+              70,
+              183,
+              118.24119999999998,
+              193.5484,
+              148.10879999999997,
+              180.2126,
+              120.6612,
+              219.72140000000002,
+              176.10479999999998,
+              206.32659999999998,
+              168.6572,
+              213.8922,
+              229.2412,
+              206.09159999999997,
+              237.5392,
+              230.03259999999997,
+              242.69279999999998,
+              242.98680000000002
+            ]
+          }
+        },
+        {
+          "digest": "d0bca111f8628137adc4c16f123496dcdd1d590d06cb5d9acd68b39fe656fb97",
+          "ms": 0.866458,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              0
+            ],
+            "guidePixelLumaRGB8": [
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              13.999999999999998,
+              78.0154,
+              113.80279999999999,
+              92.4486,
+              24.4934,
+              92.5076,
+              189.73680000000002,
+              109.9288,
+              129.5678,
+              135.56259999999997,
+              161.1282,
+              201.691,
+              174.5586,
+              207.19639999999998,
+              204.2778,
+              215.43139999999997,
+              215.24120000000002
+            ]
+          }
+        },
+        {
+          "digest": "080a9ed428559ef602668b4c00f114f1a11c3f6b02a435f0bdc154578e4d7f22",
+          "ms": 0.933,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            1
+          ],
+          "witness": {
+            "fractionAboveGuideMidpoint": [
+              1
+            ],
+            "guidePixelLumaRGB8": [
+              130,
+              156.99999999999997,
+              88,
+              180,
+              154,
+              134,
+              114.99999999999999,
+              168,
+              164,
+              108,
+              141,
+              148,
+              163,
+              79.99999999999999,
+              163,
+              123,
+              163,
+              46,
+              54,
+              177.99999999999997,
+              94.99999999999999,
+              163,
+              70,
+              183,
+              118.24119999999998,
+              193.5484,
+              148.10879999999997,
+              180.2126,
+              120.6612,
+              219.72140000000002,
+              176.10479999999998,
+              206.32659999999998,
+              168.6572,
+              213.8922,
+              229.2412,
+              206.09159999999997,
+              237.5392,
+              230.03259999999997,
+              242.69279999999998,
+              242.98680000000002
+            ]
+          }
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests",
+      "binarySHA256": "ba0af35d4a456725c2ae8ed118def0d46af32cce6c19b093f1d1ee3d837535d0",
+      "recordedAt": "2026-11-22T07:57:38Z"
+    }
+  ],
+  "os": "Version 27.0.1 (Build 26A434)",
+  "positionA": [
+    0.29,
+    0.31
+  ],
+  "positionB": [
+    0.73,
+    0.69
+  ],
+  "protocol": "rawmaster-analysis-and-inspection-v1",
+  "recordedAt": "2026-11-22T07:47:18Z",
+  "repeats": 10,
+  "schemaVersion": 1,
+  "scopeInputs": [
+    {
+      "occupiedChromaBins": 369,
+      "sampledHeight": 85,
+      "sampledWidth": 128,
+      "visibleSamples": 10880
+    },
+    {
+      "occupiedChromaBins": 501,
+      "sampledHeight": 85,
+      "sampledWidth": 128,
+      "visibleSamples": 10880
+    }
+  ],
+  "scopeRasterPixels": [
+    256,
+    168
+  ],
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "supplementaryOperations": [
+    {
+      "boundary": "raw.analysis · service submission through source-bound resolved recipe and numeric value",
+      "id": "global-auto-light-and-color",
+      "input": "full source Auto; two starting recipes",
+      "samples": [
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 378.608125,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 68.412625,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 64.094167,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 62.263958,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 64.283333,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 64.336291,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 66.575125,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 65.763125,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 67.731084,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 65.934292,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 66.8865,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        },
+        {
+          "digest": "b29b5a4c18740c4dfa7c9671c349f4986fd5bc96db1f6e231bfa6494ffe52fdf",
+          "ms": 66.921042,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            0.09037971672933012,
+            0.1623921568627451,
+            -0.16972549019607844,
+            0.7270588235294119,
+            0,
+            0.07058823529411765,
+            0.6490730325986842,
+            0.49938202173245616
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "each automatic result changes the input; repeatable per state"
+    }
+  ],
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "osBuild": "26A434",
+  "fixtureName": "acr-benchmark.ARW",
+  "testHost": "macOS Release XCTest, no application window",
+  "nativeWB": "RAW target inference uses CIRAWFilter.neutralLocation; FlashRaw supplies the editing preview.",
+  "priorSkinAttempts": [
+    {
+      "protocol": "full 256x168 raster hash",
+      "status": "inconclusive",
+      "source": "history/rawmaster-skin-whole-raster.json"
+    }
+  ],
+  "skinGuideCalibration": {
+    "height": 168,
+    "minimumAgreement": 0.9,
+    "minimumRGB8Brightening": 24,
+    "referencePixelsXYOffOnLuma": [
+      [
+        86,
+        30,
+        13.999999999999998,
+        130
+      ],
+      [
+        86,
+        31,
+        13.999999999999998,
+        156.99999999999997
+      ],
+      [
+        87,
+        31,
+        13.999999999999998,
+        88
+      ],
+      [
+        87,
+        32,
+        13.999999999999998,
+        180
+      ],
+      [
+        89,
+        34,
+        13.999999999999998,
+        154
+      ],
+      [
+        89,
+        35,
+        13.999999999999998,
+        134
+      ],
+      [
+        90,
+        35,
+        13.999999999999998,
+        114.99999999999999
+      ],
+      [
+        90,
+        36,
+        13.999999999999998,
+        168
+      ],
+      [
+        92,
+        38,
+        13.999999999999998,
+        164
+      ],
+      [
+        92,
+        39,
+        13.999999999999998,
+        108
+      ],
+      [
+        93,
+        39,
+        13.999999999999998,
+        141
+      ],
+      [
+        93,
+        40,
+        13.999999999999998,
+        148
+      ],
+      [
+        95,
+        42,
+        13.999999999999998,
+        163
+      ],
+      [
+        95,
+        43,
+        13.999999999999998,
+        79.99999999999999
+      ],
+      [
+        96,
+        43,
+        13.999999999999998,
+        163
+      ],
+      [
+        96,
+        44,
+        13.999999999999998,
+        123
+      ],
+      [
+        98,
+        46,
+        13.999999999999998,
+        163
+      ],
+      [
+        99,
+        46,
+        13.999999999999998,
+        46
+      ],
+      [
+        98,
+        47,
+        13.999999999999998,
+        54
+      ],
+      [
+        99,
+        47,
+        13.999999999999998,
+        177.99999999999997
+      ],
+      [
+        99,
+        48,
+        13.999999999999998,
+        94.99999999999999
+      ],
+      [
+        101,
+        50,
+        13.999999999999998,
+        163
+      ],
+      [
+        102,
+        50,
+        13.999999999999998,
+        70
+      ],
+      [
+        102,
+        51,
+        13.999999999999998,
+        183
+      ],
+      [
+        102,
+        52,
+        78.0154,
+        118.24119999999998
+      ],
+      [
+        104,
+        54,
+        113.80279999999999,
+        193.5484
+      ],
+      [
+        105,
+        54,
+        92.4486,
+        148.10879999999997
+      ],
+      [
+        105,
+        55,
+        24.4934,
+        180.2126
+      ],
+      [
+        106,
+        55,
+        92.5076,
+        120.6612
+      ],
+      [
+        107,
+        58,
+        189.73680000000002,
+        219.72140000000002
+      ],
+      [
+        108,
+        58,
+        109.9288,
+        176.10479999999998
+      ],
+      [
+        108,
+        59,
+        129.5678,
+        206.32659999999998
+      ],
+      [
+        109,
+        59,
+        135.56259999999997,
+        168.6572
+      ],
+      [
+        111,
+        62,
+        161.1282,
+        213.8922
+      ],
+      [
+        111,
+        63,
+        201.691,
+        229.2412
+      ],
+      [
+        112,
+        63,
+        174.5586,
+        206.09159999999997
+      ],
+      [
+        114,
+        66,
+        207.19639999999998,
+        237.5392
+      ],
+      [
+        115,
+        67,
+        204.2778,
+        230.03259999999997
+      ],
+      [
+        117,
+        70,
+        215.43139999999997,
+        242.69279999999998
+      ],
+      [
+        120,
+        74,
+        215.4538,
+        242.98680000000002
+      ]
+    ],
+    "verticalSign": -1,
+    "width": 256
+  }
+}

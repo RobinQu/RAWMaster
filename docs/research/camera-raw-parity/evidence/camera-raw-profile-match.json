@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-11-22T10:45:26.615613+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "cameraRaw": "19.0 (2794)",
+  "os": "27.0.1",
+  "hardware": "Mac16,5",
+  "protocol": "acr-xmp-document-open-v1",
+  "planned": [
+    "optics-profile-match"
+  ],
+  "repeats": 3,
+  "boundary": "CameraRAWOpenOptions SELECTEDIMAGE to Photoshop document return; 8-bit sRGB; native BMP and returned document XMP outside the timer.",
+  "spatialWitness": "native-size uncompressed topologically identical BGR24 BMP raster",
+  "operations": {
+    "optics-profile-match": {
+      "settings": {
+        "control": {
+          "LensProfileSetup": "Custom",
+          "LensProfileEnable": 1,
+          "LensProfileDistortionScale": 100,
+          "LensProfileVignettingScale": 100,
+          "LensProfileName": "Adobe (Sony FE 20mm F1.8 G)",
+          "LensProfileFilename": "SONY (Sony FE 20mm F1.8 G) - RAW.lcp"
+        },
+        "edit": {
+          "LensProfileSetup": "Auto",
+          "LensProfileEnable": 1,
+          "LensProfileDistortionScale": 100,
+          "LensProfileVignettingScale": 100
+        }
+      },
+      "samples": [
+        {
+          "openMs": 839.021,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "c7b94cc120f6e451f6ea3ae5338686e490d93d62343adc6e60a77bf7803930a0",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 0,
+          "state": "control",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Custom",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 20mm F1.8 G)",
+            "crs:LensProfileFilename": "SONY (Sony FE 20mm F1.8 G) - RAW.lcp",
+            "crs:LensProfileDigest": "B0269FDFBEE4C87BEB91E3A0BBDE6836",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "01-wrong.input.xmp",
+          "inputXMPSHA256": "aed1b460e647373a807cd81708387d94eaa06a178ce7e259c153b5c88ef0fe6a",
+          "returnedXMP": "01-wrong.returned.xmp",
+          "returnedXMPSHA256": "27c4d54504c4ed046ff7b9c5eaf53d7c20178edd508d9b6f0a01e1cfabec1642"
+        },
+        {
+          "openMs": 888.488,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 0,
+          "state": "edit",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Auto",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+            "crs:LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+            "crs:LensProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "02-auto.input.xmp",
+          "inputXMPSHA256": "58204d648af86eccc17f08b9060adac1c77e5941e07732582c8fba4f05641a3d",
+          "returnedXMP": "02-auto.returned.xmp",
+          "returnedXMPSHA256": "2d3e8ea524ed02d56eb1acb80baf2d7e4ad554b9bcdbdf1e8699206da36536e8"
+        },
+        {
+          "openMs": 912.137,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "c7b94cc120f6e451f6ea3ae5338686e490d93d62343adc6e60a77bf7803930a0",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 1,
+          "state": "control",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Custom",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 20mm F1.8 G)",
+            "crs:LensProfileFilename": "SONY (Sony FE 20mm F1.8 G) - RAW.lcp",
+            "crs:LensProfileDigest": "B0269FDFBEE4C87BEB91E3A0BBDE6836",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "03-wrong.input.xmp",
+          "inputXMPSHA256": "aed1b460e647373a807cd81708387d94eaa06a178ce7e259c153b5c88ef0fe6a",
+          "returnedXMP": "03-wrong.returned.xmp",
+          "returnedXMPSHA256": "2896ac131970adcb09d016bd06fa7c7235434ffd2cf281315b1d538edc067496"
+        },
+        {
+          "openMs": 1070.263,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 1,
+          "state": "edit",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Auto",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+            "crs:LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+            "crs:LensProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "04-auto.input.xmp",
+          "inputXMPSHA256": "58204d648af86eccc17f08b9060adac1c77e5941e07732582c8fba4f05641a3d",
+          "returnedXMP": "04-auto.returned.xmp",
+          "returnedXMPSHA256": "fd68685d0229fd8a2d483db340ce0027b629e2ee1ca3fdfa737d13153128f6f2"
+        },
+        {
+          "openMs": 1350.846,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "c7b94cc120f6e451f6ea3ae5338686e490d93d62343adc6e60a77bf7803930a0",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 2,
+          "state": "control",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Custom",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 20mm F1.8 G)",
+            "crs:LensProfileFilename": "SONY (Sony FE 20mm F1.8 G) - RAW.lcp",
+            "crs:LensProfileDigest": "B0269FDFBEE4C87BEB91E3A0BBDE6836",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "05-wrong.input.xmp",
+          "inputXMPSHA256": "aed1b460e647373a807cd81708387d94eaa06a178ce7e259c153b5c88ef0fe6a",
+          "returnedXMP": "05-wrong.returned.xmp",
+          "returnedXMPSHA256": "739ed8edff1f8bcb24f27e58316d01389d35cbd8bd69d04aa3af4aa3ae54f1f7"
+        },
+        {
+          "openMs": 968.255,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 2,
+          "state": "edit",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Auto",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+            "crs:LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+            "crs:LensProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "06-auto.input.xmp",
+          "inputXMPSHA256": "58204d648af86eccc17f08b9060adac1c77e5941e07732582c8fba4f05641a3d",
+          "returnedXMP": "06-auto.returned.xmp",
+          "returnedXMPSHA256": "96b996bb7e049e07a95ada8a1f7afa5a4e16366687f587a1d9b18ee50e857f54"
+        },
+        {
+          "openMs": 1408.512,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "c7b94cc120f6e451f6ea3ae5338686e490d93d62343adc6e60a77bf7803930a0",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 3,
+          "state": "control",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Custom",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 20mm F1.8 G)",
+            "crs:LensProfileFilename": "SONY (Sony FE 20mm F1.8 G) - RAW.lcp",
+            "crs:LensProfileDigest": "B0269FDFBEE4C87BEB91E3A0BBDE6836",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "07-wrong.input.xmp",
+          "inputXMPSHA256": "aed1b460e647373a807cd81708387d94eaa06a178ce7e259c153b5c88ef0fe6a",
+          "returnedXMP": "07-wrong.returned.xmp",
+          "returnedXMPSHA256": "39c112e1fb6e020c104536e3b5eaa83dfe25f8e35e61493298d0165a7c3a04a4"
+        },
+        {
+          "openMs": 1163.56,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+          "spatialPixels": [
+            9504,
+            6336
+          ],
+          "iteration": 3,
+          "state": "edit",
+          "returnedLensProfile": {
+            "crs:LensProfileSetup": "Auto",
+            "crs:LensProfileEnable": "1",
+            "crs:LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+            "crs:LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+            "crs:LensProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9",
+            "crs:LensProfileDistortionScale": "100",
+            "crs:LensProfileVignettingScale": "100",
+            "aux:Lens": "FE 14mm F1.8 GM",
+            "exifEX:LensModel": "FE 14mm F1.8 GM"
+          },
+          "inputXMP": "08-auto.input.xmp",
+          "inputXMPSHA256": "58204d648af86eccc17f08b9060adac1c77e5941e07732582c8fba4f05641a3d",
+          "returnedXMP": "08-auto.returned.xmp",
+          "returnedXMPSHA256": "4233cf59d1806c10a2e5ec72058f7aec0553a9c82e3b903146d7b195822a7d5a"
+        }
+      ],
+      "status": "measured",
+      "profileMatchVerification": {
+        "wrong": {
+          "nativeRGB8SHA256": "c7b94cc120f6e451f6ea3ae5338686e490d93d62343adc6e60a77bf7803930a0",
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "adobeProfileDigest": "B0269FDFBEE4C87BEB91E3A0BBDE6836"
+        },
+        "auto": {
+          "nativeRGB8SHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "adobeProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9"
+        },
+        "correct": {
+          "nativeRGB8SHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "adobeProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9"
+        }
+      },
+      "nativePixelComparison": {
+        "pixelsPerImage": 60217344,
+        "rasterBytesPerImage": 180652032,
+        "correctVsAuto": {
+          "differingPixels": 0,
+          "differingChannelsRGB": [
+            0,
+            0,
+            0
+          ],
+          "meanAbsoluteDifferenceRGB8": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maxRGB8Difference": 0
+        },
+        "wrongVsAuto": {
+          "differingPixels": 56027352,
+          "differingChannelsRGB": [
+            50196057,
+            49918212,
+            49485768
+          ],
+          "meanAbsoluteDifferenceRGB8": [
+            4.412303887066158,
+            3.56437814660175,
+            2.8132587514985716
+          ],
+          "maxRGB8Difference": 225
+        }
+      }
+    }
+  },
+  "manualCorrectSettings": {
+    "LensProfileSetup": "Custom",
+    "LensProfileEnable": 1,
+    "LensProfileDistortionScale": 100,
+    "LensProfileVignettingScale": 100,
+    "LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+    "LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp"
+  },
+  "manualCorrectAnchors": [
+    {
+      "openMs": 809.086,
+      "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+      "outputPixels": [
+        9504,
+        6336
+      ],
+      "photoshop": "28.0.0",
+      "spatialRGBSHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+      "spatialPixels": [
+        9504,
+        6336
+      ],
+      "iteration": -1,
+      "state": "anchor-before",
+      "returnedLensProfile": {
+        "crs:LensProfileSetup": "Custom",
+        "crs:LensProfileEnable": "1",
+        "crs:LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+        "crs:LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+        "crs:LensProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9",
+        "crs:LensProfileDistortionScale": "100",
+        "crs:LensProfileVignettingScale": "100",
+        "aux:Lens": "FE 14mm F1.8 GM",
+        "exifEX:LensModel": "FE 14mm F1.8 GM"
+      },
+      "inputXMP": "00-correct.input.xmp",
+      "inputXMPSHA256": "4d176bc71f7e4b15bfbd4d627dd1f25019d79941fb7835e9122e9916feecc7b4",
+      "returnedXMP": "00-correct.returned.xmp",
+      "returnedXMPSHA256": "1a696b118c62370a2e3d4149d91f64f3d29f736c484e4c8431cd49a8f51be843"
+    },
+    {
+      "openMs": 1092.072,
+      "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+      "outputPixels": [
+        9504,
+        6336
+      ],
+      "photoshop": "28.0.0",
+      "spatialRGBSHA256": "b684db918e621edcc5a8afcfc906e99082ed1871e6bdf83ffd126c93c8aa7bc7",
+      "spatialPixels": [
+        9504,
+        6336
+      ],
+      "iteration": 4,
+      "state": "anchor-after",
+      "returnedLensProfile": {
+        "crs:LensProfileSetup": "Custom",
+        "crs:LensProfileEnable": "1",
+        "crs:LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)",
+        "crs:LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+        "crs:LensProfileDigest": "47F1362D8D03D0E441E092BC4C754CE9",
+        "crs:LensProfileDistortionScale": "100",
+        "crs:LensProfileVignettingScale": "100",
+        "aux:Lens": "FE 14mm F1.8 GM",
+        "exifEX:LensModel": "FE 14mm F1.8 GM"
+      },
+      "inputXMP": "09-correct.input.xmp",
+      "inputXMPSHA256": "4d176bc71f7e4b15bfbd4d627dd1f25019d79941fb7835e9122e9916feecc7b4",
+      "returnedXMP": "09-correct.returned.xmp",
+      "returnedXMPSHA256": "6a9a94734728938e959f194e2d38966b3a5c626c31f7b1cdce13e4c9b9ecad51"
+    }
+  ],
+  "installedLCPFileSHA256": {
+    "Sony FE 20mm F1.8 G": "028300be0321b76d8940420308f712bac0378b5fc5ca2d44b6c9d104efe917f8",
+    "Sony FE 14mm F1.8 GM": "c7638ee6f111f3fa319c98d0b030a8c6c5cb25eb72ca0690f4586b57e8bc8f2d"
+  },
+  "verification": "Auto request supplies no lens name, filename or digest. Match the exact EXIF lens, returned Auto enum, digest and every image byte to independently forced 14 mm. Distinguish the 20 mm negative control in returned metadata, raster and histograms.",
+  "foregroundUnchanged": true,
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "workCopySHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "finishedAt": "2026-11-22T10:45:48.742297+00:00",
+  "metadataArchive": {
+    "file": "camera-raw-profile-match-xmp.zip",
+    "sha256": "72f620c1fce97b50113353f9aa6b01ab49b19065061f691097fbe9346e57339a"
+  }
+}

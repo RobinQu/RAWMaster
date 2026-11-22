@@ -1,0 +1,6364 @@
+{
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "protocol": "headless-compositor-photo-response-v1",
+  "driver": "Host send of trusted Return in the original numeric UI field to first recorded compositor swap crossing the photo threshold",
+  "build": "2d41ab1",
+  "uiSHA256": {
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+    "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+    "_b/20261111155800-2d41ab1/flashraw/browser.js": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+    "_b/20261111155800-2d41ab1/flashraw/core.js": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+    "_b/20261111155800-2d41ab1/flashraw/errors.js": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen_threads.js": "c4803f3d27d9ae36e6dfb0de2ea3f83ff59b4e670d4f428d9da3bfd2747073b2",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd_threads.wasm": "bd70ec98d095602a326780b3dfc13afcccc76a8fe0b887fbc290d3377c49d3eb",
+    "_b/20261111155800-2d41ab1/flashraw/thread-worker.browser.js": "016cd62f67eb77e431b8cf8290886ed03eeb54dd4a84aaf8774677ddd01124d1",
+    "_b/20261111155800-2d41ab1/flashraw/threads.js": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+    "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+    "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+    "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+    "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+    "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+    "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+    "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+    "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+    "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/ortWorker-DaXiU2P4.js": "82cb8a8b22f6cf3278b583153bb8c5081fdf1edebdc87c9858b0f1dfc421980c",
+    "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+    "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+  },
+  "browser": "HeadlessChrome/157.0.8103.78",
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T07:35:34.161313+00:00",
+  "os": "27.0.1",
+  "hardware": "Apple M4 Max",
+  "viewportPixels": [
+    3200,
+    2000
+  ],
+  "transportPixels": [
+    960,
+    600
+  ],
+  "photoRectPixels": [
+    370,
+    168,
+    2368,
+    1579
+  ],
+  "roiPixels": [
+    843.1000000000001,
+    483.39999999999986,
+    1420.8,
+    947.2
+  ],
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": "every available Chromium compositor swap",
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120,
+    "capture": "Page.screencastFrame, lossless PNG, everyNthFrame=1, transport downsample after compositor rendering"
+  },
+  "measurementSurface": "windowless Chromium compositor; no WindowServer, display scanout or physical input",
+  "operations": {
+    "light-exposure": {
+      "separationRGB8": 17.80023871527778,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "459386eea280ec5035bf0456e7f6969dee03ecef41dc1d5764d19017c26a6593"
+      ],
+      "trials": [
+        {
+          "sentNs": 501386939467958,
+          "dispatchResponseHostNs": 501386942278791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.173604,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.508772,
+              17.80024
+            ],
+            [
+              31.173604,
+              0.0
+            ],
+            [
+              47.841764,
+              0.0
+            ],
+            [
+              81.174756,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501387639992708,
+          "dispatchResponseHostNs": 501387643300583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.647062,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.979926,
+              17.80024
+            ],
+            [
+              30.647062,
+              0.0
+            ],
+            [
+              47.313942,
+              0.0
+            ],
+            [
+              97.313046,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501388322589291,
+          "dispatchResponseHostNs": 501388325455291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.378479,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.711599,
+              17.80024
+            ],
+            [
+              31.378479,
+              0.0
+            ],
+            [
+              48.044335,
+              0.0
+            ],
+            [
+              98.044463,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501389006442041,
+          "dispatchResponseHostNs": 501389009234958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.853729,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.187617,
+              17.80024
+            ],
+            [
+              30.853729,
+              0.0
+            ],
+            [
+              47.520609,
+              0.0
+            ],
+            [
+              80.853857,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501389705584791,
+          "dispatchResponseHostNs": 501389708491125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.704835,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.037187,
+              17.80024
+            ],
+            [
+              31.704835,
+              0.0
+            ],
+            [
+              48.371971,
+              0.0
+            ],
+            [
+              81.704963,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501390406307500,
+          "dispatchResponseHostNs": 501390409336875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.97419,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.308334,
+              17.80024
+            ],
+            [
+              30.97419,
+              0.0
+            ],
+            [
+              47.641326,
+              0.0
+            ],
+            [
+              80.974318,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501391089110000,
+          "dispatchResponseHostNs": 501391092078208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.497642,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.830762,
+              17.80024
+            ],
+            [
+              31.497642,
+              0.0
+            ],
+            [
+              48.163754,
+              0.0
+            ],
+            [
+              98.162858,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501391772769416,
+          "dispatchResponseHostNs": 501391775854750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.162386,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.49653,
+              17.80024
+            ],
+            [
+              31.162386,
+              0.0
+            ],
+            [
+              47.829266,
+              0.0
+            ],
+            [
+              97.828114,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501392455821583,
+          "dispatchResponseHostNs": 501392458985958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.434379,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.768011,
+              17.80024
+            ],
+            [
+              31.434379,
+              0.0
+            ],
+            [
+              48.101259,
+              0.0
+            ],
+            [
+              98.099339,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501393155862125,
+          "dispatchResponseHostNs": 501393158749833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.381549,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.716717,
+              17.80024
+            ],
+            [
+              31.381549,
+              0.0
+            ],
+            [
+              48.048685,
+              0.0
+            ],
+            [
+              81.382445,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        0.5
+      ],
+      "displayLabel": "Exposure value",
+      "calibration": [
+        {
+          "sentNs": 501385555926208,
+          "dispatchResponseHostNs": 501385558942541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501386239511625,
+          "dispatchResponseHostNs": 501386242573583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        68.823,
+        54.006,
+        89.935,
+        124.821,
+        143.314,
+        53.692,
+        90.326,
+        126.818,
+        146.999,
+        55.508,
+        90.392,
+        125.691,
+        143.856,
+        53.393,
+        89.199,
+        125.577,
+        128.666,
+        55.748,
+        91.759,
+        127.265,
+        129.826,
+        52.772,
+        88.782,
+        124.76,
+        144.659,
+        53.34,
+        88.402,
+        123.867,
+        142.569,
+        54.696,
+        94.055,
+        132.309,
+        153.305,
+        56.928,
+        94.653,
+        130.461,
+        131.875,
+        55.808,
+        93.391,
+        131.255,
+        134.941,
+        54.184,
+        89.597,
+        126.196,
+        128.168,
+        54.188,
+        90.897,
+        128.402,
+        149.132
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549517904230,
+        "bracketNs": 41
+      },
+      "endClockDriftNs": 289521
+    },
+    "light-contrast": {
+      "separationRGB8": 7.314019097222222,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "4c6cd6738aea56cc43c37df8545bb616032f4e94e6c908d77bea54ff8854de4f"
+      ],
+      "trials": [
+        {
+          "sentNs": 501397423017541,
+          "dispatchResponseHostNs": 501397426160500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.50946,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.844372,
+              7.31402
+            ],
+            [
+              30.50946,
+              0.0
+            ],
+            [
+              47.177364,
+              0.0
+            ],
+            [
+              80.510612,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501398106232708,
+          "dispatchResponseHostNs": 501398109442416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.614101,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.948245,
+              7.31402
+            ],
+            [
+              30.614101,
+              0.0
+            ],
+            [
+              47.280213,
+              0.0
+            ],
+            [
+              97.279061,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501398806188250,
+          "dispatchResponseHostNs": 501398809464750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.643711,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.977855,
+              7.31402
+            ],
+            [
+              30.643711,
+              0.0
+            ],
+            [
+              47.309567,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501399489282291,
+          "dispatchResponseHostNs": 501399492511916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.867686,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.201574,
+              7.31402
+            ],
+            [
+              30.867686,
+              0.0
+            ],
+            [
+              47.533798,
+              0.0
+            ],
+            [
+              97.531622,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501400174492125,
+          "dispatchResponseHostNs": 501400177704041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 28.974844,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.307708,
+              7.31402
+            ],
+            [
+              28.974844,
+              0.0
+            ],
+            [
+              45.639932,
+              0.0
+            ],
+            [
+              95.639804,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501400856347541,
+          "dispatchResponseHostNs": 501400859319416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.43642,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.769284,
+              7.31402
+            ],
+            [
+              30.43642,
+              0.0
+            ],
+            [
+              47.102276,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501401539145500,
+          "dispatchResponseHostNs": 501401542058958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.954429,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.287293,
+              7.31402
+            ],
+            [
+              30.954429,
+              0.0
+            ],
+            [
+              47.620541,
+              0.0
+            ],
+            [
+              97.619389,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501402221903625,
+          "dispatchResponseHostNs": 501402225098875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.512272,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.846416,
+              7.31402
+            ],
+            [
+              31.512272,
+              0.0
+            ],
+            [
+              48.17736,
+              0.0
+            ],
+            [
+              98.177232,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501402922713333,
+          "dispatchResponseHostNs": 501402925829333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.684644,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.017764,
+              7.31402
+            ],
+            [
+              30.684644,
+              0.0
+            ],
+            [
+              47.3505,
+              0.0
+            ],
+            [
+              97.34858,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501403605782875,
+          "dispatchResponseHostNs": 501403608593333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.93107,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.26419,
+              7.31402
+            ],
+            [
+              30.93107,
+              0.0
+            ],
+            [
+              47.596926,
+              0.0
+            ],
+            [
+              97.595006,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Contrast value",
+      "calibration": [
+        {
+          "sentNs": 501396022420625,
+          "dispatchResponseHostNs": 501396025402666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501396722757583,
+          "dispatchResponseHostNs": 501396725526250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 47,
+      "swapDeliveryMs": [
+        67.437,
+        52.876,
+        88.58,
+        124.514,
+        143.26,
+        54.812,
+        92.019,
+        127.121,
+        145.317,
+        55.386,
+        92.557,
+        129.356,
+        149.462,
+        58.418,
+        102.247,
+        385.884,
+        499.835,
+        73.102,
+        264.459,
+        408.488,
+        66.937,
+        187.75,
+        299.338,
+        368.085,
+        70.779,
+        121.955,
+        165.891,
+        176.381,
+        74.564,
+        116.742,
+        161.842,
+        56.779,
+        95.215,
+        133.103,
+        136.387,
+        60.332,
+        97.806,
+        135.774,
+        139.563,
+        57.827,
+        96.929,
+        133.786,
+        135.742,
+        56.225,
+        92.115,
+        131.662,
+        134.868
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518209063,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 155167
+    },
+    "light-highlights": {
+      "separationRGB8": 3.0817057291666665,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "f2e340388a39a69651d4b1708ed38067a32cd65c77ad0779e5bfa3ae469cf6c7"
+      ],
+      "trials": [
+        {
+          "sentNs": 501407822415500,
+          "dispatchResponseHostNs": 501407825239708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.681725,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.014845,
+              3.08171
+            ],
+            [
+              30.681725,
+              0.0
+            ],
+            [
+              47.347581,
+              0.0
+            ],
+            [
+              97.346429,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501408504874833,
+          "dispatchResponseHostNs": 501408507840333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.536312,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.869176,
+              3.08171
+            ],
+            [
+              31.536312,
+              0.0
+            ],
+            [
+              48.202424,
+              0.0
+            ],
+            [
+              81.534392,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501409205692916,
+          "dispatchResponseHostNs": 501409208471083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.696213,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.030101,
+              3.08171
+            ],
+            [
+              30.696213,
+              0.0
+            ],
+            [
+              47.363349,
+              0.0
+            ],
+            [
+              80.695061,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501409889270583,
+          "dispatchResponseHostNs": 501409892766041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.431698,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.76533,
+              3.08171
+            ],
+            [
+              30.431698,
+              0.0
+            ],
+            [
+              47.097554,
+              0.0
+            ],
+            [
+              97.095634,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501410572268541,
+          "dispatchResponseHostNs": 501410575423416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.746636,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.080524,
+              3.08171
+            ],
+            [
+              30.746636,
+              0.0
+            ],
+            [
+              47.412492,
+              0.0
+            ],
+            [
+              80.743692,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501411271520083,
+          "dispatchResponseHostNs": 501411274412416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.473078,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.806966,
+              3.08171
+            ],
+            [
+              31.473078,
+              0.0
+            ],
+            [
+              48.138166,
+              0.0
+            ],
+            [
+              81.471158,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501411971603041,
+          "dispatchResponseHostNs": 501411974681916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.368104,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.701224,
+              3.08171
+            ],
+            [
+              31.368104,
+              0.0
+            ],
+            [
+              48.03396,
+              0.0
+            ],
+            [
+              98.03204,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501412654861750,
+          "dispatchResponseHostNs": 501412658053541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.420243,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.754387,
+              3.08171
+            ],
+            [
+              31.420243,
+              0.0
+            ],
+            [
+              48.086611,
+              0.0
+            ],
+            [
+              81.419347,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501413338961375,
+          "dispatchResponseHostNs": 501413342367333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.631722,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.966634,
+              3.08171
+            ],
+            [
+              30.631722,
+              0.0
+            ],
+            [
+              47.298858,
+              0.0
+            ],
+            [
+              80.63057,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501414021308500,
+          "dispatchResponseHostNs": 501414024402083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.596725,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.930613,
+              3.08171
+            ],
+            [
+              31.596725,
+              0.0
+            ],
+            [
+              48.262581,
+              0.0
+            ],
+            [
+              81.594549,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Highlights value",
+      "calibration": [
+        {
+          "sentNs": 501406439027416,
+          "dispatchResponseHostNs": 501406442138666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501407122318791,
+          "dispatchResponseHostNs": 501407125017833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        66.015,
+        53.383,
+        88.902,
+        123.77,
+        125.998,
+        53.384,
+        88.672,
+        123.934,
+        142.378,
+        54.708,
+        89.62,
+        124.794,
+        126.697,
+        53.372,
+        88.002,
+        123.921,
+        143.611,
+        52.709,
+        88.424,
+        149.122,
+        195.627,
+        54.754,
+        91.653,
+        128.0,
+        131.971,
+        52.567,
+        87.634,
+        122.275,
+        142.737,
+        52.374,
+        87.723,
+        122.563,
+        140.637,
+        59.144,
+        94.217,
+        129.319,
+        131.342,
+        53.178,
+        89.413,
+        125.963,
+        144.421,
+        52.728,
+        87.408,
+        122.678,
+        140.701,
+        53.775,
+        89.132,
+        123.982,
+        142.376
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518372855,
+        "bracketNs": 41
+      },
+      "endClockDriftNs": 87917
+    },
+    "light-shadows": {
+      "separationRGB8": 4.210503472222222,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "bb810e4bc88b0ecf414b47c535fbae83d5fc7b32b0037ec4d160f3fe376dbf6b"
+      ],
+      "trials": [
+        {
+          "sentNs": 501418288084625,
+          "dispatchResponseHostNs": 501418290872541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.254302,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.58819,
+              4.2105
+            ],
+            [
+              31.254302,
+              0.0
+            ],
+            [
+              47.920158,
+              0.0
+            ],
+            [
+              81.252126,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501418988266416,
+          "dispatchResponseHostNs": 501418991524833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.047679,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.382591,
+              4.2105
+            ],
+            [
+              31.047679,
+              0.0
+            ],
+            [
+              47.714559,
+              0.0
+            ],
+            [
+              97.713407,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501419688114083,
+          "dispatchResponseHostNs": 501419691077166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.17774,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.51086,
+              4.2105
+            ],
+            [
+              31.17774,
+              0.0
+            ],
+            [
+              47.842828,
+              0.0
+            ],
+            [
+              81.17582,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501420388495583,
+          "dispatchResponseHostNs": 501420391696875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.772176,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.105296,
+              4.2105
+            ],
+            [
+              30.772176,
+              0.0
+            ],
+            [
+              47.437264,
+              0.0
+            ],
+            [
+              80.769232,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501421088113291,
+          "dispatchResponseHostNs": 501421091047000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.129636,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.463524,
+              4.2105
+            ],
+            [
+              31.129636,
+              0.0
+            ],
+            [
+              47.796772,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501421772421541,
+          "dispatchResponseHostNs": 501421775722375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.13121,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.465354,
+              4.2105
+            ],
+            [
+              30.13121,
+              0.0
+            ],
+            [
+              46.797322,
+              0.0
+            ],
+            [
+              96.79617,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501422471624625,
+          "dispatchResponseHostNs": 501422474814791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.904318,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.237438,
+              4.2105
+            ],
+            [
+              30.904318,
+              0.0
+            ],
+            [
+              47.570174,
+              0.0
+            ],
+            [
+              97.568254,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501423154912583,
+          "dispatchResponseHostNs": 501423158152083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.925416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.259304,
+              4.2105
+            ],
+            [
+              30.925416,
+              0.0
+            ],
+            [
+              47.592296,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501423839650625,
+          "dispatchResponseHostNs": 501423842691750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.49515,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.830318,
+              4.2105
+            ],
+            [
+              29.49515,
+              0.0
+            ],
+            [
+              46.16331,
+              0.0
+            ],
+            [
+              96.16139,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501424521658166,
+          "dispatchResponseHostNs": 501424525153833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.797689,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.131833,
+              4.2105
+            ],
+            [
+              30.797689,
+              0.0
+            ],
+            [
+              47.464825,
+              0.0
+            ],
+            [
+              97.462905,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Shadows value",
+      "calibration": [
+        {
+          "sentNs": 501416888278291,
+          "dispatchResponseHostNs": 501416891469166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501417588292500,
+          "dispatchResponseHostNs": 501417591333875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 47,
+      "swapDeliveryMs": [
+        68.104,
+        54.339,
+        90.345,
+        125.61,
+        127.764,
+        54.587,
+        91.562,
+        128.334,
+        130.941,
+        52.854,
+        87.827,
+        122.451,
+        140.576,
+        55.079,
+        91.233,
+        127.915,
+        130.62,
+        53.969,
+        88.856,
+        124.211,
+        141.862,
+        53.46,
+        89.794,
+        125.705,
+        145.813,
+        85.468,
+        124.417,
+        159.982,
+        56.354,
+        203.502,
+        330.071,
+        420.556,
+        61.412,
+        216.497,
+        412.406,
+        531.63,
+        74.194,
+        212.624,
+        274.858,
+        65.392,
+        102.12,
+        138.199,
+        152.502,
+        65.382,
+        106.645,
+        146.772,
+        158.285
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518465105,
+        "bracketNs": 41
+      },
+      "endClockDriftNs": 53875
+    },
+    "light-whites": {
+      "separationRGB8": 6.060167100694445,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "2e3e9d3709e99fe5c2ba76055585d3afd41805da4ca92fb2ebac9d11894709c1"
+      ],
+      "trials": [
+        {
+          "sentNs": 501428721715708,
+          "dispatchResponseHostNs": 501428724498083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.534572,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.868716,
+              6.06017
+            ],
+            [
+              30.534572,
+              0.0
+            ],
+            [
+              47.200428,
+              0.0
+            ],
+            [
+              97.198508,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501429421548625,
+          "dispatchResponseHostNs": 501429424615166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.676567,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.010711,
+              6.06017
+            ],
+            [
+              30.676567,
+              0.0
+            ],
+            [
+              47.341655,
+              0.0
+            ],
+            [
+              80.674647,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501430104987875,
+          "dispatchResponseHostNs": 501430108044166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.546629,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.879493,
+              6.06017
+            ],
+            [
+              30.546629,
+              0.0
+            ],
+            [
+              47.211461,
+              0.0
+            ],
+            [
+              97.210565,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501430805197208,
+          "dispatchResponseHostNs": 501430808345166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.310928,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.645072,
+              6.06017
+            ],
+            [
+              30.310928,
+              0.0
+            ],
+            [
+              46.977296,
+              0.0
+            ],
+            [
+              80.310032,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501431505107375,
+          "dispatchResponseHostNs": 501431508113500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.375929,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.709817,
+              6.06017
+            ],
+            [
+              30.375929,
+              0.0
+            ],
+            [
+              47.040761,
+              0.0
+            ],
+            [
+              80.374009,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501432204775916,
+          "dispatchResponseHostNs": 501432207979833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.681276,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.016444,
+              6.06017
+            ],
+            [
+              30.681276,
+              0.0
+            ],
+            [
+              47.348412,
+              0.0
+            ],
+            [
+              80.68038,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501432904896333,
+          "dispatchResponseHostNs": 501432907676208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.536027,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.869147,
+              6.06017
+            ],
+            [
+              30.536027,
+              0.0
+            ],
+            [
+              47.201883,
+              0.0
+            ],
+            [
+              80.534107,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501433604328541,
+          "dispatchResponseHostNs": 501433607136708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.078731,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.412875,
+              6.06017
+            ],
+            [
+              31.078731,
+              0.0
+            ],
+            [
+              47.743819,
+              0.0
+            ],
+            [
+              81.076811,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501434304501250,
+          "dispatchResponseHostNs": 501434307397375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.879142,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.214054,
+              6.06017
+            ],
+            [
+              30.879142,
+              0.0
+            ],
+            [
+              47.546022,
+              0.0
+            ],
+            [
+              80.878246,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501435004470000,
+          "dispatchResponseHostNs": 501435007388666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.885304,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.219192,
+              6.06017
+            ],
+            [
+              30.885304,
+              0.0
+            ],
+            [
+              47.551416,
+              0.0
+            ],
+            [
+              80.883128,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Whites value",
+      "calibration": [
+        {
+          "sentNs": 501427354965625,
+          "dispatchResponseHostNs": 501427358002583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501428038234208,
+          "dispatchResponseHostNs": 501428041511833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        68.365,
+        57.843,
+        96.446,
+        132.2,
+        135.757,
+        53.339,
+        90.194,
+        126.305,
+        145.674,
+        57.624,
+        93.044,
+        129.256,
+        130.301,
+        55.793,
+        93.622,
+        129.574,
+        149.068,
+        56.31,
+        92.091,
+        127.497,
+        130.157,
+        54.221,
+        90.36,
+        125.831,
+        145.438,
+        53.661,
+        90.899,
+        126.054,
+        143.79,
+        52.364,
+        88.188,
+        123.557,
+        142.477,
+        53.29,
+        88.182,
+        123.049,
+        141.756,
+        53.166,
+        90.077,
+        126.833,
+        146.18,
+        53.443,
+        88.31,
+        123.435,
+        141.541,
+        53.437,
+        90.123,
+        125.404,
+        144.16
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518521688,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 35875
+    },
+    "light-blacks": {
+      "separationRGB8": 3.9444986979166665,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "9a85e05495ff2bfafe36d568b066d9ec5948c0a6e82a618f7f4a2a868b680991"
+      ],
+      "trials": [
+        {
+          "sentNs": 501439237861500,
+          "dispatchResponseHostNs": 501439240923916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.632517,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.966405,
+              3.9445
+            ],
+            [
+              30.632517,
+              0.0
+            ],
+            [
+              47.298373,
+              0.0
+            ],
+            [
+              80.630597,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501439937856541,
+          "dispatchResponseHostNs": 501439940664583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.611364,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.945252,
+              3.9445
+            ],
+            [
+              30.611364,
+              0.0
+            ],
+            [
+              47.277476,
+              0.0
+            ],
+            [
+              80.610212,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501440638164833,
+          "dispatchResponseHostNs": 501440640930333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.27696,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.611104,
+              3.9445
+            ],
+            [
+              30.27696,
+              0.0
+            ],
+            [
+              46.943328,
+              0.0
+            ],
+            [
+              80.274016,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501441321170875,
+          "dispatchResponseHostNs": 501441324127416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.579206,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.912838,
+              3.9445
+            ],
+            [
+              30.579206,
+              0.0
+            ],
+            [
+              47.245062,
+              0.0
+            ],
+            [
+              80.578054,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501442004324208,
+          "dispatchResponseHostNs": 501442007268750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.732625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.067793,
+              3.9445
+            ],
+            [
+              30.732625,
+              0.0
+            ],
+            [
+              47.399505,
+              0.0
+            ],
+            [
+              97.397585,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501442687881250,
+          "dispatchResponseHostNs": 501442690688416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.483615,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.818527,
+              3.9445
+            ],
+            [
+              30.483615,
+              0.0
+            ],
+            [
+              47.150751,
+              0.0
+            ],
+            [
+              80.481695,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501443387746916,
+          "dispatchResponseHostNs": 501443390677666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.592861,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.927005,
+              3.9445
+            ],
+            [
+              30.592861,
+              0.0
+            ],
+            [
+              47.257949,
+              0.0
+            ],
+            [
+              80.590941,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501444070630250,
+          "dispatchResponseHostNs": 501444073606375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.016791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.351703,
+              3.9445
+            ],
+            [
+              31.016791,
+              0.0
+            ],
+            [
+              47.681623,
+              0.0
+            ],
+            [
+              81.015639,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501444770728958,
+          "dispatchResponseHostNs": 501444773513833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.891971,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.226883,
+              3.9445
+            ],
+            [
+              30.891971,
+              0.0
+            ],
+            [
+              47.558083,
+              0.0
+            ],
+            [
+              80.889795,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501445454429416,
+          "dispatchResponseHostNs": 501445457505833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.500569,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.833689,
+              3.9445
+            ],
+            [
+              30.500569,
+              0.0
+            ],
+            [
+              47.165401,
+              0.0
+            ],
+            [
+              80.497625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Blacks value",
+      "calibration": [
+        {
+          "sentNs": 501437871150208,
+          "dispatchResponseHostNs": 501437874175125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501438554355208,
+          "dispatchResponseHostNs": 501438557301458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        66.431,
+        53.058,
+        88.459,
+        123.707,
+        141.893,
+        52.771,
+        88.825,
+        123.963,
+        142.704,
+        54.256,
+        89.481,
+        124.773,
+        143.212,
+        52.43,
+        88.684,
+        123.908,
+        143.096,
+        54.229,
+        89.735,
+        124.458,
+        143.302,
+        54.098,
+        89.877,
+        124.96,
+        144.618,
+        54.123,
+        89.428,
+        124.915,
+        127.329,
+        53.051,
+        88.146,
+        123.542,
+        142.442,
+        53.211,
+        88.631,
+        124.246,
+        142.448,
+        52.913,
+        88.58,
+        123.884,
+        141.998,
+        52.104,
+        86.653,
+        120.922,
+        139.436,
+        53.091,
+        87.759,
+        122.854,
+        141.661
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518560063,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 25958
+    },
+    "color-temp-raw": {
+      "separationRGB8": 5.992024739583333,
+      "referenceDigests": [
+        "26f813d6e0bbb2c463b77ecf8ce71a0e76d3005e9464e331717468bd9d75e2fc",
+        "69174a39aa3a9ff197ff880669f9901de14b66d7d817b2f2273653822bdbee67"
+      ],
+      "trials": [
+        {
+          "sentNs": 501449687037666,
+          "dispatchResponseHostNs": 501449688411000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.03846,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.372348,
+              5.99202
+            ],
+            [
+              31.03846,
+              0.0
+            ],
+            [
+              47.703548,
+              0.0
+            ],
+            [
+              81.03654,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501450386758083,
+          "dispatchResponseHostNs": 501450388174125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.289883,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.625051,
+              5.99202
+            ],
+            [
+              31.289883,
+              0.0
+            ],
+            [
+              47.957019,
+              0.0
+            ],
+            [
+              81.290011,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501451087550916,
+          "dispatchResponseHostNs": 501451089060416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.471194,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.806106,
+              5.99202
+            ],
+            [
+              30.471194,
+              0.0
+            ],
+            [
+              47.136282,
+              0.0
+            ],
+            [
+              80.470298,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501451770498291,
+          "dispatchResponseHostNs": 501451771787875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.832875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.165739,
+              5.99202
+            ],
+            [
+              30.832875,
+              0.0
+            ],
+            [
+              47.498731,
+              0.0
+            ],
+            [
+              80.829675,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501452470722958,
+          "dispatchResponseHostNs": 501452472070666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.580048,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.915216,
+              5.99202
+            ],
+            [
+              30.580048,
+              0.0
+            ],
+            [
+              47.246928,
+              0.0
+            ],
+            [
+              80.579152,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501453153415291,
+          "dispatchResponseHostNs": 501453154757416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.195747,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.529635,
+              5.99202
+            ],
+            [
+              31.195747,
+              0.0
+            ],
+            [
+              47.860579,
+              0.0
+            ],
+            [
+              81.194595,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501453853865916,
+          "dispatchResponseHostNs": 501453855282750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.71901,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.05213,
+              5.99202
+            ],
+            [
+              30.71901,
+              0.0
+            ],
+            [
+              47.385122,
+              0.0
+            ],
+            [
+              80.71709,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501454554159458,
+          "dispatchResponseHostNs": 501454555636208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.398588,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.733756,
+              5.99202
+            ],
+            [
+              30.398588,
+              0.0
+            ],
+            [
+              47.065468,
+              0.0
+            ],
+            [
+              80.396412,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501455237097208,
+          "dispatchResponseHostNs": 501455238536250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.76887,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.102758,
+              5.99202
+            ],
+            [
+              30.76887,
+              0.0
+            ],
+            [
+              47.434726,
+              0.0
+            ],
+            [
+              80.76695,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501455920474833,
+          "dispatchResponseHostNs": 501455921955041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.697997,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.033165,
+              5.99202
+            ],
+            [
+              30.697997,
+              0.0
+            ],
+            [
+              47.364365,
+              0.0
+            ],
+            [
+              80.697101,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        5500,
+        6500
+      ],
+      "displayLabel": "Temp value",
+      "calibration": [
+        {
+          "sentNs": 501448320627416,
+          "dispatchResponseHostNs": 501448322131125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501449004357875,
+          "dispatchResponseHostNs": 501449005734833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        67.107,
+        52.308,
+        87.491,
+        122.17,
+        141.856,
+        52.799,
+        86.948,
+        123.941,
+        142.367,
+        52.27,
+        87.389,
+        122.584,
+        141.329,
+        51.592,
+        87.694,
+        123.041,
+        140.64,
+        52.134,
+        86.077,
+        120.969,
+        138.612,
+        52.066,
+        86.581,
+        121.567,
+        139.126,
+        51.653,
+        86.348,
+        120.78,
+        139.551,
+        51.988,
+        86.003,
+        121.721,
+        141.029,
+        52.447,
+        87.772,
+        122.601,
+        141.996,
+        53.105,
+        87.291,
+        122.047,
+        140.801,
+        51.996,
+        86.815,
+        122.026,
+        140.006,
+        54.015,
+        88.609,
+        123.554,
+        141.606
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518587938,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 22375
+    },
+    "color-tint": {
+      "separationRGB8": 4.027180989583333,
+      "referenceDigests": [
+        "fb5fad180bed862db8888626779c1b0c00c197172dc0f69aecd7be1b59f3d7a2",
+        "b01cc26776848a93962a0511405b0c12e30d4011398f84c3e4086ea08ee76c3f"
+      ],
+      "trials": [
+        {
+          "sentNs": 501460153819083,
+          "dispatchResponseHostNs": 501460155422166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.50362,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.838532,
+              4.02718
+            ],
+            [
+              30.50362,
+              0.0
+            ],
+            [
+              47.169476,
+              0.0
+            ],
+            [
+              80.5017,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501460836147208,
+          "dispatchResponseHostNs": 501460837425291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.483271,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.817415,
+              4.02718
+            ],
+            [
+              31.483271,
+              0.0
+            ],
+            [
+              48.149639,
+              0.0
+            ],
+            [
+              81.481351,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501461520288333,
+          "dispatchResponseHostNs": 501461521758083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.64813,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.982274,
+              4.02718
+            ],
+            [
+              30.64813,
+              0.0
+            ],
+            [
+              47.315266,
+              0.0
+            ],
+            [
+              80.647234,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501462202748750,
+          "dispatchResponseHostNs": 501462204192458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.497025,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.830913,
+              4.02718
+            ],
+            [
+              31.497025,
+              0.0
+            ],
+            [
+              48.162881,
+              0.0
+            ],
+            [
+              81.494849,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501462886182625,
+          "dispatchResponseHostNs": 501462887783291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.369134,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.704046,
+              4.02718
+            ],
+            [
+              31.369134,
+              0.0
+            ],
+            [
+              48.036014,
+              0.0
+            ],
+            [
+              81.367982,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501463586647708,
+          "dispatchResponseHostNs": 501463588044250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.878963,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.212083,
+              4.02718
+            ],
+            [
+              30.878963,
+              0.0
+            ],
+            [
+              47.544051,
+              0.0
+            ],
+            [
+              80.877043,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501464287005083,
+          "dispatchResponseHostNs": 501464288398875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.494708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.828596,
+              4.02718
+            ],
+            [
+              30.494708,
+              0.0
+            ],
+            [
+              47.160564,
+              0.0
+            ],
+            [
+              80.492788,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501464969664041,
+          "dispatchResponseHostNs": 501464971172916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.142758,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.475878,
+              4.02718
+            ],
+            [
+              31.142758,
+              0.0
+            ],
+            [
+              47.808614,
+              0.0
+            ],
+            [
+              81.140582,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501465654858541,
+          "dispatchResponseHostNs": 501465656900416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.25501,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.590178,
+              4.02718
+            ],
+            [
+              29.25501,
+              0.0
+            ],
+            [
+              45.922146,
+              0.0
+            ],
+            [
+              79.254114,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501466336732458,
+          "dispatchResponseHostNs": 501466338406458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.689381,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.023013,
+              4.02718
+            ],
+            [
+              30.689381,
+              0.0
+            ],
+            [
+              47.355237,
+              0.0
+            ],
+            [
+              80.686181,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        16,
+        40
+      ],
+      "displayLabel": "Tint value",
+      "calibration": [
+        {
+          "sentNs": 501458770376458,
+          "dispatchResponseHostNs": 501458771965416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501459453064125,
+          "dispatchResponseHostNs": 501459454542291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        66.417,
+        51.851,
+        86.589,
+        121.611,
+        139.734,
+        52.525,
+        88.035,
+        122.959,
+        141.511,
+        51.341,
+        85.711,
+        120.793,
+        139.271,
+        52.518,
+        87.242,
+        122.811,
+        141.424,
+        51.688,
+        87.099,
+        121.567,
+        140.754,
+        50.616,
+        85.793,
+        121.377,
+        139.58,
+        52.565,
+        87.467,
+        122.056,
+        140.09,
+        52.286,
+        87.043,
+        122.548,
+        140.969,
+        51.981,
+        86.561,
+        133.192,
+        158.336,
+        54.267,
+        90.401,
+        130.297,
+        150.646,
+        51.723,
+        84.856,
+        118.543,
+        139.451,
+        50.787,
+        85.233,
+        121.175,
+        139.942
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518611313,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 19813
+    },
+    "color-vibrance": {
+      "separationRGB8": 4.517198350694445,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "dd7304a375f46bbea8109e56be7bfabea399806a2f30b9b4a76f02b53e4e92de"
+      ],
+      "trials": [
+        {
+          "sentNs": 501470636657125,
+          "dispatchResponseHostNs": 501470639619625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.579928,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.913048,
+              4.5172
+            ],
+            [
+              30.579928,
+              0.0
+            ],
+            [
+              47.246296,
+              0.0
+            ],
+            [
+              80.57724,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501471319811791,
+          "dispatchResponseHostNs": 501471323101083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.731246,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.066414,
+              4.5172
+            ],
+            [
+              30.731246,
+              0.0
+            ],
+            [
+              47.398382,
+              0.0
+            ],
+            [
+              80.73035,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501472019813541,
+          "dispatchResponseHostNs": 501472022707333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.702616,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.037784,
+              4.5172
+            ],
+            [
+              30.702616,
+              0.0
+            ],
+            [
+              47.369496,
+              0.0
+            ],
+            [
+              97.367576,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501472719876125,
+          "dispatchResponseHostNs": 501472722785750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.6152,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.948064,
+              4.5172
+            ],
+            [
+              30.6152,
+              0.0
+            ],
+            [
+              47.280032,
+              0.0
+            ],
+            [
+              80.61328,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501473403198666,
+          "dispatchResponseHostNs": 501473406119250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.599411,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.933555,
+              4.5172
+            ],
+            [
+              30.599411,
+              0.0
+            ],
+            [
+              47.265523,
+              0.0
+            ],
+            [
+              80.597491,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501474102501000,
+          "dispatchResponseHostNs": 501474105478250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.270197,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.604085,
+              4.5172
+            ],
+            [
+              31.270197,
+              0.0
+            ],
+            [
+              47.936309,
+              0.0
+            ],
+            [
+              81.267253,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501474803103541,
+          "dispatchResponseHostNs": 501474805849250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.641544,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.974664,
+              4.5172
+            ],
+            [
+              30.641544,
+              0.0
+            ],
+            [
+              47.306888,
+              0.0
+            ],
+            [
+              80.6386,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501475503223541,
+          "dispatchResponseHostNs": 501475506325500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.49364,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.827784,
+              4.5172
+            ],
+            [
+              30.49364,
+              0.0
+            ],
+            [
+              47.16052,
+              0.0
+            ],
+            [
+              80.49172,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501476186361666,
+          "dispatchResponseHostNs": 501476189260458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.663547,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.997435,
+              4.5172
+            ],
+            [
+              30.663547,
+              0.0
+            ],
+            [
+              47.329659,
+              0.0
+            ],
+            [
+              80.661627,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501476869658000,
+          "dispatchResponseHostNs": 501476872601833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.674221,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.008109,
+              4.5172
+            ],
+            [
+              30.674221,
+              0.0
+            ],
+            [
+              47.340333,
+              0.0
+            ],
+            [
+              80.672045,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Vibrance value",
+      "calibration": [
+        {
+          "sentNs": 501469252554083,
+          "dispatchResponseHostNs": 501469255964041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501469936717166,
+          "dispatchResponseHostNs": 501469940048791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        67.487,
+        55.192,
+        92.571,
+        130.247,
+        150.376,
+        61.611,
+        102.781,
+        138.221,
+        145.858,
+        52.98,
+        88.042,
+        122.767,
+        141.006,
+        52.394,
+        86.611,
+        139.058,
+        156.326,
+        58.46,
+        93.199,
+        127.855,
+        129.281,
+        52.306,
+        86.317,
+        120.144,
+        138.248,
+        52.212,
+        87.05,
+        122.098,
+        140.137,
+        52.148,
+        86.348,
+        120.322,
+        137.826,
+        53.205,
+        89.283,
+        124.105,
+        142.496,
+        52.426,
+        86.245,
+        120.188,
+        138.574,
+        54.071,
+        87.987,
+        123.476,
+        141.646,
+        54.967,
+        88.961,
+        123.438,
+        142.315
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518632771,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 18042
+    },
+    "color-saturation": {
+      "separationRGB8": 3.55322265625,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "6285d4fe7799878bc47f614e35aaf818367a90bc11a07a0b4e14f91487d70e98"
+      ],
+      "trials": [
+        {
+          "sentNs": 501481086192041,
+          "dispatchResponseHostNs": 501481089194083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.626979,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.960867,
+              3.55322
+            ],
+            [
+              30.626979,
+              0.0
+            ],
+            [
+              47.292835,
+              0.0
+            ],
+            [
+              80.623779,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501481769010458,
+          "dispatchResponseHostNs": 501481771893666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.11557,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.449458,
+              3.55322
+            ],
+            [
+              31.11557,
+              0.0
+            ],
+            [
+              47.781426,
+              0.0
+            ],
+            [
+              81.114418,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501482469670875,
+          "dispatchResponseHostNs": 501482472522208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.428017,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.761905,
+              3.55322
+            ],
+            [
+              30.428017,
+              0.0
+            ],
+            [
+              47.094129,
+              0.0
+            ],
+            [
+              80.426097,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501483152439875,
+          "dispatchResponseHostNs": 501483155475000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.967049,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.301193,
+              3.55322
+            ],
+            [
+              30.967049,
+              0.0
+            ],
+            [
+              47.632905,
+              0.0
+            ],
+            [
+              80.963849,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501483835524500,
+          "dispatchResponseHostNs": 501483838615083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.189432,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.52332,
+              3.55322
+            ],
+            [
+              31.189432,
+              0.0
+            ],
+            [
+              47.855288,
+              0.0
+            ],
+            [
+              81.187512,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501484519411583,
+          "dispatchResponseHostNs": 501484522344458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.609101,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.943245,
+              3.55322
+            ],
+            [
+              30.609101,
+              0.0
+            ],
+            [
+              47.275469,
+              0.0
+            ],
+            [
+              80.608205,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501485202538291,
+          "dispatchResponseHostNs": 501485205960625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.789657,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.123545,
+              3.55322
+            ],
+            [
+              30.789657,
+              0.0
+            ],
+            [
+              47.455513,
+              0.0
+            ],
+            [
+              80.788761,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501485901827291,
+          "dispatchResponseHostNs": 501485905003250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.473521,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.808689,
+              3.55322
+            ],
+            [
+              31.473521,
+              0.0
+            ],
+            [
+              48.140657,
+              0.0
+            ],
+            [
+              81.472625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501486585202458,
+          "dispatchResponseHostNs": 501486587891708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.406642,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.740274,
+              3.55322
+            ],
+            [
+              31.406642,
+              0.0
+            ],
+            [
+              48.072498,
+              0.0
+            ],
+            [
+              81.404466,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501487268961416,
+          "dispatchResponseHostNs": 501487272267625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.954436,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.28858,
+              3.55322
+            ],
+            [
+              30.954436,
+              0.0
+            ],
+            [
+              47.621572,
+              0.0
+            ],
+            [
+              80.95354,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Saturation value",
+      "calibration": [
+        {
+          "sentNs": 501479719517583,
+          "dispatchResponseHostNs": 501479722792875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501480402603708,
+          "dispatchResponseHostNs": 501480405641125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        69.167,
+        53.533,
+        87.932,
+        122.528,
+        126.376,
+        52.388,
+        89.131,
+        127.532,
+        148.668,
+        54.452,
+        89.891,
+        125.116,
+        142.975,
+        52.042,
+        89.315,
+        126.043,
+        148.087,
+        54.522,
+        91.067,
+        128.174,
+        148.201,
+        53.544,
+        90.8,
+        127.017,
+        146.696,
+        53.939,
+        88.546,
+        123.552,
+        144.31,
+        54.278,
+        91.797,
+        128.169,
+        147.69,
+        53.922,
+        90.192,
+        126.719,
+        147.199,
+        52.454,
+        89.242,
+        126.291,
+        146.604,
+        53.642,
+        88.531,
+        123.746,
+        142.199,
+        52.957,
+        89.954,
+        128.007,
+        148.464
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518652084,
+        "bracketNs": 83
+      },
+      "endClockDriftNs": 18396
+    },
+    "effects-texture": {
+      "separationRGB8": 0.66064453125,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "6419ff60381c8316c41de5911de2d3a0176a4c188885f8defcb892bd4b2e939b"
+      ],
+      "trials": [
+        {
+          "sentNs": 501491501608583,
+          "dispatchResponseHostNs": 501491504185791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.459383,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.793527,
+              0.66064
+            ],
+            [
+              31.459383,
+              0.0
+            ],
+            [
+              48.125495,
+              0.0
+            ],
+            [
+              81.457463,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501492202298875,
+          "dispatchResponseHostNs": 501492205147583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.742211,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.076355,
+              0.66064
+            ],
+            [
+              30.742211,
+              0.0
+            ],
+            [
+              47.408067,
+              0.0
+            ],
+            [
+              80.740291,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501492885633875,
+          "dispatchResponseHostNs": 501492888166666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.714987,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.048107,
+              0.66064
+            ],
+            [
+              30.714987,
+              0.0
+            ],
+            [
+              47.381355,
+              0.0
+            ],
+            [
+              80.712299,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501493569196041,
+          "dispatchResponseHostNs": 501493572214833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.460085,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.793973,
+              0.66064
+            ],
+            [
+              30.460085,
+              0.0
+            ],
+            [
+              47.125941,
+              0.0
+            ],
+            [
+              80.457909,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501494252194625,
+          "dispatchResponseHostNs": 501494255553750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.768509,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.101373,
+              0.66064
+            ],
+            [
+              30.768509,
+              0.0
+            ],
+            [
+              47.433341,
+              0.0
+            ],
+            [
+              97.432445,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501494935570041,
+          "dispatchResponseHostNs": 501494938353750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.700101,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.035013,
+              0.66064
+            ],
+            [
+              30.700101,
+              0.0
+            ],
+            [
+              47.365957,
+              0.0
+            ],
+            [
+              80.697925,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501495634684291,
+          "dispatchResponseHostNs": 501495637408166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.558715,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.892603,
+              0.66064
+            ],
+            [
+              31.558715,
+              0.0
+            ],
+            [
+              48.224827,
+              0.0
+            ],
+            [
+              81.556795,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501496318917083,
+          "dispatchResponseHostNs": 501496321792208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.633955,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.967075,
+              0.66064
+            ],
+            [
+              30.633955,
+              0.0
+            ],
+            [
+              47.298787,
+              0.0
+            ],
+            [
+              80.632035,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501497001318625,
+          "dispatchResponseHostNs": 501497004119625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.539421,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.873309,
+              0.66064
+            ],
+            [
+              31.539421,
+              0.0
+            ],
+            [
+              48.205533,
+              0.0
+            ],
+            [
+              98.204381,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501497684612625,
+          "dispatchResponseHostNs": 501497687867583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.552429,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.886317,
+              0.66064
+            ],
+            [
+              31.552429,
+              0.0
+            ],
+            [
+              48.218541,
+              0.0
+            ],
+            [
+              81.550509,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 501490119057875,
+          "dispatchResponseHostNs": 501490122243333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501490802291250,
+          "dispatchResponseHostNs": 501490804960916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        69.097,
+        54.704,
+        89.881,
+        125.601,
+        144.296,
+        53.969,
+        89.346,
+        126.653,
+        147.491,
+        53.781,
+        89.053,
+        125.057,
+        143.408,
+        54.316,
+        90.909,
+        128.203,
+        148.657,
+        56.265,
+        91.816,
+        127.361,
+        145.185,
+        53.539,
+        89.693,
+        126.84,
+        148.14,
+        56.298,
+        92.725,
+        128.231,
+        129.639,
+        52.129,
+        87.816,
+        124.586,
+        144.049,
+        53.411,
+        89.143,
+        124.475,
+        143.037,
+        52.61,
+        88.736,
+        125.313,
+        145.886,
+        54.643,
+        89.601,
+        123.973,
+        125.512,
+        50.651,
+        86.541,
+        124.025,
+        143.413
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518671938,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 16896
+    },
+    "effects-clarity": {
+      "separationRGB8": 0.8391384548611112,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "d3a0b82d4e6cea8b5848f7ed91ca63c7d019037f0b88c53d54c8da078a3770e0"
+      ],
+      "trials": [
+        {
+          "sentNs": 501502034556000,
+          "dispatchResponseHostNs": 501502037171041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.42483,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.758974,
+              0.83914
+            ],
+            [
+              31.42483,
+              0.0
+            ],
+            [
+              48.090686,
+              0.0
+            ],
+            [
+              81.42291,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501502717793458,
+          "dispatchResponseHostNs": 501502720733375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.49438,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.828524,
+              0.83914
+            ],
+            [
+              31.49438,
+              0.0
+            ],
+            [
+              48.160236,
+              0.0
+            ],
+            [
+              81.493228,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501503417885375,
+          "dispatchResponseHostNs": 501503420556833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.376607,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.709471,
+              0.83914
+            ],
+            [
+              31.376607,
+              0.0
+            ],
+            [
+              48.042463,
+              0.0
+            ],
+            [
+              81.372383,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501504101913458,
+          "dispatchResponseHostNs": 501504104485750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.655276,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.988396,
+              0.83914
+            ],
+            [
+              30.655276,
+              0.0
+            ],
+            [
+              47.321388,
+              0.0
+            ],
+            [
+              80.652332,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501504785146875,
+          "dispatchResponseHostNs": 501504787866708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.729123,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.061987,
+              0.83914
+            ],
+            [
+              30.729123,
+              0.0
+            ],
+            [
+              47.394979,
+              0.0
+            ],
+            [
+              97.393059,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501505467849666,
+          "dispatchResponseHostNs": 501505470455083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.33334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.667228,
+              0.83914
+            ],
+            [
+              31.33334,
+              0.0
+            ],
+            [
+              47.999196,
+              0.0
+            ],
+            [
+              81.33014,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501506151759291,
+          "dispatchResponseHostNs": 501506154704791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.730467,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.065635,
+              0.83914
+            ],
+            [
+              30.730467,
+              0.0
+            ],
+            [
+              47.396579,
+              0.0
+            ],
+            [
+              80.728547,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501506851285291,
+          "dispatchResponseHostNs": 501506854075000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.178611,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.512755,
+              0.83914
+            ],
+            [
+              31.178611,
+              0.0
+            ],
+            [
+              47.843699,
+              0.0
+            ],
+            [
+              81.176691,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501507551878333,
+          "dispatchResponseHostNs": 501507554879958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.557409,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.891553,
+              0.83914
+            ],
+            [
+              30.557409,
+              0.0
+            ],
+            [
+              47.224545,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501508234570416,
+          "dispatchResponseHostNs": 501508237225583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.173614,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.507246,
+              0.83914
+            ],
+            [
+              31.173614,
+              0.0
+            ],
+            [
+              47.83947,
+              0.0
+            ],
+            [
+              81.171438,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 501500641147833,
+          "dispatchResponseHostNs": 501500649172958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501501351276958,
+          "dispatchResponseHostNs": 501501354234541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 48,
+      "swapDeliveryMs": [
+        88.674,
+        76.39,
+        115.038,
+        153.946,
+        152.708,
+        56.676,
+        92.097,
+        146.439,
+        161.519,
+        53.479,
+        88.709,
+        123.767,
+        141.274,
+        51.636,
+        87.341,
+        123.262,
+        142.776,
+        53.372,
+        87.761,
+        122.721,
+        141.753,
+        51.641,
+        87.468,
+        124.297,
+        143.988,
+        63.353,
+        98.259,
+        132.096,
+        134.124,
+        52.089,
+        88.114,
+        122.908,
+        141.291,
+        53.694,
+        87.901,
+        122.882,
+        140.585,
+        51.308,
+        87.304,
+        122.529,
+        141.33,
+        72.549,
+        114.335,
+        163.145,
+        51.497,
+        87.014,
+        122.534,
+        141.931
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518690146,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 17875
+    },
+    "effects-dehaze": {
+      "separationRGB8": 4.751519097222222,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "71311722cab549b3ebb444e97a40199019106ccc235f715f4dc34ad93c5afd5b"
+      ],
+      "trials": [
+        {
+          "sentNs": 501512468101000,
+          "dispatchResponseHostNs": 501512471005708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.794911,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.129823,
+              4.75152
+            ],
+            [
+              30.794911,
+              0.0
+            ],
+            [
+              47.461791,
+              0.0
+            ],
+            [
+              80.793759,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501513167594750,
+          "dispatchResponseHostNs": 501513170386291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.275049,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.607145,
+              4.75152
+            ],
+            [
+              31.275049,
+              0.0
+            ],
+            [
+              47.941161,
+              0.0
+            ],
+            [
+              81.272873,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501513851248666,
+          "dispatchResponseHostNs": 501513853907166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.928141,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.262029,
+              4.75152
+            ],
+            [
+              30.928141,
+              0.0
+            ],
+            [
+              47.593229,
+              0.0
+            ],
+            [
+              80.926221,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501514551390791,
+          "dispatchResponseHostNs": 501514554381500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.75888,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.093024,
+              4.75152
+            ],
+            [
+              30.75888,
+              0.0
+            ],
+            [
+              47.424992,
+              0.0
+            ],
+            [
+              80.75696,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501515251292666,
+          "dispatchResponseHostNs": 501515254007625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.830125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.164269,
+              4.75152
+            ],
+            [
+              30.830125,
+              0.0
+            ],
+            [
+              47.495981,
+              0.0
+            ],
+            [
+              80.829229,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501515934132666,
+          "dispatchResponseHostNs": 501515936719166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.297133,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.632045,
+              4.75152
+            ],
+            [
+              31.297133,
+              0.0
+            ],
+            [
+              47.964269,
+              0.0
+            ],
+            [
+              81.294189,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501516634195041,
+          "dispatchResponseHostNs": 501516636794625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.208902,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.54279,
+              4.75152
+            ],
+            [
+              31.208902,
+              0.0
+            ],
+            [
+              47.874758,
+              0.0
+            ],
+            [
+              81.206726,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501517317411166,
+          "dispatchResponseHostNs": 501517320122625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.300553,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.634697,
+              4.75152
+            ],
+            [
+              31.300553,
+              0.0
+            ],
+            [
+              47.965641,
+              0.0
+            ],
+            [
+              81.297609,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501518000593541,
+          "dispatchResponseHostNs": 501518003391541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.424162,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.759074,
+              4.75152
+            ],
+            [
+              31.424162,
+              0.0
+            ],
+            [
+              48.091298,
+              0.0
+            ],
+            [
+              81.422242,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501518684618416,
+          "dispatchResponseHostNs": 501518687538708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.707319,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.041463,
+              4.75152
+            ],
+            [
+              30.707319,
+              0.0
+            ],
+            [
+              47.372407,
+              0.0
+            ],
+            [
+              80.705399,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 501511067326083,
+          "dispatchResponseHostNs": 501511070048666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501511767896208,
+          "dispatchResponseHostNs": 501511770781000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        66.949,
+        51.824,
+        85.551,
+        119.453,
+        136.877,
+        52.797,
+        88.494,
+        129.146,
+        147.798,
+        52.373,
+        87.463,
+        122.779,
+        140.742,
+        51.439,
+        87.077,
+        122.541,
+        141.29,
+        52.078,
+        85.883,
+        120.47,
+        138.449,
+        51.956,
+        88.045,
+        124.104,
+        143.308,
+        53.323,
+        87.37,
+        121.816,
+        139.275,
+        50.928,
+        87.289,
+        121.959,
+        141.734,
+        53.728,
+        89.402,
+        123.68,
+        141.105,
+        52.13,
+        88.278,
+        124.278,
+        144.175,
+        52.691,
+        86.947,
+        121.917,
+        139.948,
+        52.596,
+        88.378,
+        124.744,
+        143.377
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518709209,
+        "bracketNs": 83
+      },
+      "endClockDriftNs": 17000
+    },
+    "effects-pcv-amount": {
+      "separationRGB8": 2.1743706597222223,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "02a75cbae5098825bb7a04dd7d8c73b9d4757149e66fec6c451084372ded48b9"
+      ],
+      "trials": [
+        {
+          "sentNs": 501522884183958,
+          "dispatchResponseHostNs": 501522887238583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.962691,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.296835,
+              2.17437
+            ],
+            [
+              30.962691,
+              0.0
+            ],
+            [
+              47.628803,
+              0.0
+            ],
+            [
+              80.960771,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501523567481000,
+          "dispatchResponseHostNs": 501523570774833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.972913,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.306545,
+              2.17437
+            ],
+            [
+              30.972913,
+              0.0
+            ],
+            [
+              47.639793,
+              0.0
+            ],
+            [
+              80.970737,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501524250809833,
+          "dispatchResponseHostNs": 501524253863583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.951856,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.286,
+              2.17437
+            ],
+            [
+              30.951856,
+              0.0
+            ],
+            [
+              47.616944,
+              0.0
+            ],
+            [
+              80.949936,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501524934056875,
+          "dispatchResponseHostNs": 501524937150416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.010798,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.34571,
+              2.17437
+            ],
+            [
+              31.010798,
+              0.0
+            ],
+            [
+              47.677934,
+              0.0
+            ],
+            [
+              81.008878,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501525634065625,
+          "dispatchResponseHostNs": 501525637207166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.974144,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.309312,
+              2.17437
+            ],
+            [
+              30.974144,
+              0.0
+            ],
+            [
+              47.642048,
+              0.0
+            ],
+            [
+              80.974016,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501526317518208,
+          "dispatchResponseHostNs": 501526320448166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.830361,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.164505,
+              2.17437
+            ],
+            [
+              30.830361,
+              0.0
+            ],
+            [
+              47.497497,
+              0.0
+            ],
+            [
+              80.828441,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501527000895083,
+          "dispatchResponseHostNs": 501527004042541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.761774,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.094638,
+              2.17437
+            ],
+            [
+              30.761774,
+              0.0
+            ],
+            [
+              47.426606,
+              0.0
+            ],
+            [
+              80.758574,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501527700717541,
+          "dispatchResponseHostNs": 501527703471916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.91218,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.2453,
+              2.17437
+            ],
+            [
+              30.91218,
+              0.0
+            ],
+            [
+              47.576244,
+              0.0
+            ],
+            [
+              80.909236,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501528384604166,
+          "dispatchResponseHostNs": 501528387735416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.332563,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.666451,
+              2.17437
+            ],
+            [
+              30.332563,
+              0.0
+            ],
+            [
+              46.998675,
+              0.0
+            ],
+            [
+              80.330387,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501529084056041,
+          "dispatchResponseHostNs": 501529087205666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.853552,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.186672,
+              2.17437
+            ],
+            [
+              30.853552,
+              0.0
+            ],
+            [
+              47.51864,
+              0.0
+            ],
+            [
+              80.851632,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        -50
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 501521517420375,
+          "dispatchResponseHostNs": 501521520619750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501522200629291,
+          "dispatchResponseHostNs": 501522203810000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        63.326,
+        49.242,
+        83.89,
+        118.96,
+        136.741,
+        53.441,
+        84.529,
+        116.491,
+        130.839,
+        49.232,
+        83.872,
+        117.98,
+        135.216,
+        52.056,
+        83.686,
+        115.363,
+        130.48,
+        48.569,
+        84.027,
+        118.324,
+        136.029,
+        51.622,
+        82.688,
+        114.313,
+        129.18,
+        49.412,
+        84.186,
+        118.238,
+        135.599,
+        53.034,
+        84.127,
+        115.239,
+        130.539,
+        48.751,
+        83.041,
+        117.438,
+        134.753,
+        53.986,
+        84.14,
+        115.125,
+        129.229,
+        48.28,
+        82.682,
+        117.809,
+        135.063,
+        51.854,
+        83.263,
+        114.323,
+        128.305
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518727271,
+        "bracketNs": 42
+      },
+      "endClockDriftNs": 17375
+    },
+    "effects-grain-amount": {
+      "separationRGB8": 1.7921549479166667,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "4ed068ee73d2b42293375dfc0ad316400400ea6e7d1bbd27b62eef9b945180de"
+      ],
+      "trials": [
+        {
+          "sentNs": 501533300419500,
+          "dispatchResponseHostNs": 501533303080541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.976701,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.310845,
+              1.79215
+            ],
+            [
+              30.976701,
+              0.0
+            ],
+            [
+              47.643581,
+              0.0
+            ],
+            [
+              97.640637,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501533984051625,
+          "dispatchResponseHostNs": 501533986880291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.652608,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.985728,
+              1.79215
+            ],
+            [
+              30.652608,
+              0.0
+            ],
+            [
+              47.31872,
+              0.0
+            ],
+            [
+              80.650432,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501534683907583,
+          "dispatchResponseHostNs": 501534686799916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.76977,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.103658,
+              1.79215
+            ],
+            [
+              30.76977,
+              0.0
+            ],
+            [
+              47.435626,
+              0.0
+            ],
+            [
+              97.433706,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501535366937125,
+          "dispatchResponseHostNs": 501535369624208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.04698,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.381124,
+              1.79215
+            ],
+            [
+              31.04698,
+              0.0
+            ],
+            [
+              47.713348,
+              0.0
+            ],
+            [
+              81.04506,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501536050407791,
+          "dispatchResponseHostNs": 501536053064791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.883578,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.216442,
+              1.79215
+            ],
+            [
+              30.883578,
+              0.0
+            ],
+            [
+              47.550458,
+              0.0
+            ],
+            [
+              97.548538,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501536732968916,
+          "dispatchResponseHostNs": 501536735617000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.629461,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.964373,
+              1.79215
+            ],
+            [
+              31.629461,
+              0.0
+            ],
+            [
+              48.294293,
+              0.0
+            ],
+            [
+              81.627285,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501537417507916,
+          "dispatchResponseHostNs": 501537420670916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.397213,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.730333,
+              1.79215
+            ],
+            [
+              30.397213,
+              0.0
+            ],
+            [
+              47.063325,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501538100482833,
+          "dispatchResponseHostNs": 501538103498500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.730584,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.064216,
+              1.79215
+            ],
+            [
+              30.730584,
+              0.0
+            ],
+            [
+              47.39644,
+              0.0
+            ],
+            [
+              80.728408,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501538783769916,
+          "dispatchResponseHostNs": 501538786421791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.750253,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.084397,
+              1.79215
+            ],
+            [
+              30.750253,
+              0.0
+            ],
+            [
+              47.416365,
+              0.0
+            ],
+            [
+              97.414445,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501539467019916,
+          "dispatchResponseHostNs": 501539469734458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.808285,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.141405,
+              1.79215
+            ],
+            [
+              30.808285,
+              0.0
+            ],
+            [
+              47.474397,
+              0.0
+            ],
+            [
+              80.806365,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        50
+      ],
+      "displayLabel": "Amount value",
+      "calibration": [
+        {
+          "sentNs": 501531934233583,
+          "dispatchResponseHostNs": 501531937302625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501532617499625,
+          "dispatchResponseHostNs": 501532620156958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 48,
+      "swapDeliveryMs": [
+        79.706,
+        64.94,
+        99.789,
+        134.667,
+        136.26,
+        51.798,
+        97.112,
+        143.22,
+        170.976,
+        64.84,
+        99.821,
+        134.079,
+        135.268,
+        51.562,
+        96.411,
+        140.989,
+        169.532,
+        65.629,
+        99.749,
+        133.441,
+        134.067,
+        52.912,
+        97.542,
+        142.389,
+        170.518,
+        63.792,
+        97.907,
+        132.231,
+        134.006,
+        51.302,
+        96.051,
+        140.963,
+        169.968,
+        74.071,
+        109.945,
+        144.165,
+        53.46,
+        98.029,
+        143.019,
+        171.623,
+        64.765,
+        99.164,
+        134.03,
+        135.063,
+        52.036,
+        96.811,
+        141.958,
+        169.831
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518745751,
+        "bracketNs": 83
+      },
+      "endClockDriftNs": 17979
+    },
+    "effects-glow-amount": {
+      "separationRGB8": 6.01318359375,
+      "referenceDigests": [
+        "668e52bd6b5e33b71a4b2a2108e6393b0e8244756f41d44665d379b6d78a92f8",
+        "9d4da33cb6cab92467e8a48689dcb2167b4df0255518e136083d79a151698974"
+      ],
+      "trials": [
+        {
+          "sentNs": 501543683693125,
+          "dispatchResponseHostNs": 501543686592250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.620935,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.954823,
+              6.01318
+            ],
+            [
+              30.620935,
+              0.0
+            ],
+            [
+              47.285767,
+              0.0
+            ],
+            [
+              80.619015,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501544366413958,
+          "dispatchResponseHostNs": 501544369323000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.206854,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.540998,
+              6.01318
+            ],
+            [
+              31.206854,
+              0.0
+            ],
+            [
+              47.873222,
+              0.0
+            ],
+            [
+              81.204934,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501545050253291,
+          "dispatchResponseHostNs": 501545053032833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.673761,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.008673,
+              6.01318
+            ],
+            [
+              30.673761,
+              0.0
+            ],
+            [
+              47.340641,
+              0.0
+            ],
+            [
+              80.673889,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501545750226500,
+          "dispatchResponseHostNs": 501545752918375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.675464,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.009352,
+              6.01318
+            ],
+            [
+              30.675464,
+              0.0
+            ],
+            [
+              47.339528,
+              0.0
+            ],
+            [
+              80.673544,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501546450236708,
+          "dispatchResponseHostNs": 501546453110666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.638376,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.970216,
+              6.01318
+            ],
+            [
+              30.638376,
+              0.0
+            ],
+            [
+              47.304232,
+              0.0
+            ],
+            [
+              80.636456,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501547149659500,
+          "dispatchResponseHostNs": 501547152363375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.188704,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.522336,
+              6.01318
+            ],
+            [
+              31.188704,
+              0.0
+            ],
+            [
+              47.85456,
+              0.0
+            ],
+            [
+              81.186528,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501547833387750,
+          "dispatchResponseHostNs": 501547836210541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.76823,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.10135,
+              6.01318
+            ],
+            [
+              30.76823,
+              0.0
+            ],
+            [
+              47.434086,
+              0.0
+            ],
+            [
+              80.765286,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501548516595041,
+          "dispatchResponseHostNs": 501548519442500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.866923,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.201067,
+              6.01318
+            ],
+            [
+              30.866923,
+              0.0
+            ],
+            [
+              47.534059,
+              0.0
+            ],
+            [
+              80.866027,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501549216816750,
+          "dispatchResponseHostNs": 501549219587000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.619358,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.953246,
+              6.01318
+            ],
+            [
+              30.619358,
+              0.0
+            ],
+            [
+              47.28419,
+              0.0
+            ],
+            [
+              80.616414,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 501549898997666,
+          "dispatchResponseHostNs": 501549901947791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.745194,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.079338,
+              6.01318
+            ],
+            [
+              31.745194,
+              0.0
+            ],
+            [
+              48.411306,
+              0.0
+            ],
+            [
+              98.409386,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        65
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 501542316404875,
+          "dispatchResponseHostNs": 501542319114250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 501543000196500,
+          "dispatchResponseHostNs": 501543002857625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "swapCount": 49,
+      "swapDeliveryMs": [
+        65.68,
+        50.323,
+        86.394,
+        120.873,
+        138.537,
+        51.131,
+        84.876,
+        118.917,
+        136.483,
+        51.652,
+        87.251,
+        122.664,
+        140.026,
+        52.302,
+        85.666,
+        118.918,
+        137.009,
+        50.919,
+        85.627,
+        120.378,
+        137.616,
+        52.006,
+        86.168,
+        119.945,
+        136.586,
+        50.971,
+        84.925,
+        119.325,
+        137.881,
+        50.716,
+        83.839,
+        117.427,
+        134.376,
+        51.057,
+        85.665,
+        120.364,
+        137.731,
+        52.529,
+        86.149,
+        120.421,
+        137.19,
+        50.624,
+        84.674,
+        118.679,
+        135.676,
+        61.309,
+        94.97,
+        129.232,
+        129.569
+      ],
+      "clockAnchor": {
+        "realtimeMinusMonotonicNs": 1794831549518764980,
+        "bracketNs": 41
+      },
+      "endClockDriftNs": 16416
+    }
+  },
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "finalSessionInspection": {
+    "viewportPixels": [
+      3200,
+      2000
+    ],
+    "photoRectPixels": [
+      370,
+      168,
+      2368,
+      1579
+    ],
+    "roiPixels": [
+      843.1000000000001,
+      483.39999999999986,
+      1420.8,
+      947.2
+    ],
+    "sourcePixels": [
+      9504,
+      6336
+    ],
+    "canvasPixels": [
+      2609,
+      1778
+    ],
+    "sourceFullResolution": true,
+    "devicePixelRatio": 1,
+    "webGPUAdapterAvailableToEditor": {
+      "vendor": "apple",
+      "architecture": "metal-3",
+      "device": "",
+      "description": "",
+      "isFallbackAdapter": false
+    },
+    "osBuild": "26A434"
+  }
+}

@@ -1,0 +1,227 @@
+{
+  "build" : "release",
+  "gpu" : "Apple M4 Max",
+  "maxMeanError" : 7.152557373046875e-06,
+  "maxSubpixelDetail" : 0.0024384409189224243,
+  "metalBoundary" : "Per-process MTLDevice.currentAllocatedSize every 50 ms, excluding separate system services",
+  "model" : "waifu2x-upconv7-photo-2x-deb2c288-post-geometry-linear-v1",
+  "native" : [
+    9504,
+    6336
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "pixelSpots" : [
+    {
+      "meanError" : 5.2247196435928345e-07,
+      "native" : [
+        916,
+        760
+      ],
+      "subpixelDetail" : 0.0014546439051628113
+    },
+    {
+      "meanError" : 8.5122883319854736e-07,
+      "native" : [
+        1373,
+        1139
+      ],
+      "subpixelDetail" : 0.00066365394741296768
+    },
+    {
+      "meanError" : 3.0454248189926147e-07,
+      "native" : [
+        1830,
+        1518
+      ],
+      "subpixelDetail" : 0.00019066641107201576
+    },
+    {
+      "meanError" : 2.0116567611694336e-07,
+      "native" : [
+        2287,
+        1897
+      ],
+      "subpixelDetail" : 0.00051219109445810318
+    },
+    {
+      "meanError" : 6.6123902797698975e-07,
+      "native" : [
+        2744,
+        2276
+      ],
+      "subpixelDetail" : 0.00036020297557115555
+    },
+    {
+      "meanError" : 6.8545341491699219e-07,
+      "native" : [
+        3201,
+        2655
+      ],
+      "subpixelDetail" : 0.00063593499362468719
+    },
+    {
+      "meanError" : 6.7055225372314453e-07,
+      "native" : [
+        3658,
+        3034
+      ],
+      "subpixelDetail" : 0.0014369785785675049
+    },
+    {
+      "meanError" : 1.5050172805786133e-06,
+      "native" : [
+        4115,
+        3413
+      ],
+      "subpixelDetail" : 0.0021122992038726807
+    },
+    {
+      "meanError" : 7.152557373046875e-06,
+      "native" : [
+        4572,
+        3792
+      ],
+      "subpixelDetail" : 0.0024384409189224243
+    },
+    {
+      "meanError" : 3.7252902984619141e-06,
+      "native" : [
+        5029,
+        4171
+      ],
+      "subpixelDetail" : 0.0014783591032028198
+    },
+    {
+      "meanError" : 2.3990869522094727e-06,
+      "native" : [
+        5486,
+        4550
+      ],
+      "subpixelDetail" : 0.001859128475189209
+    },
+    {
+      "meanError" : 2.0265579223632812e-06,
+      "native" : [
+        5943,
+        4929
+      ],
+      "subpixelDetail" : 0.0019495934247970581
+    },
+    {
+      "meanError" : 2.0638108253479004e-06,
+      "native" : [
+        6400,
+        5308
+      ],
+      "subpixelDetail" : 0.0018930882215499878
+    },
+    {
+      "meanError" : 1.0803341865539551e-06,
+      "native" : [
+        6857,
+        5687
+      ],
+      "subpixelDetail" : 0.00081422179937362671
+    },
+    {
+      "meanError" : 1.5646219253540039e-06,
+      "native" : [
+        7314,
+        6066
+      ],
+      "subpixelDetail" : 0.00049471855163574219
+    },
+    {
+      "meanError" : 7.7299773693084717e-07,
+      "native" : [
+        7771,
+        113
+      ],
+      "subpixelDetail" : 0.00010215863585472107
+    },
+    {
+      "meanError" : 3.9581209421157837e-07,
+      "native" : [
+        8228,
+        492
+      ],
+      "subpixelDetail" : 0.00051486212760210037
+    }
+  ],
+  "preview" : [
+    {
+      "displayed" : [
+        2400,
+        1600
+      ],
+      "displaySHA256" : "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+      "height" : 6336,
+      "renderMs" : 314.76091600000001,
+      "state" : "original",
+      "width" : 9504
+    },
+    {
+      "displayed" : [
+        2400,
+        1600
+      ],
+      "displaySHA256" : "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+      "height" : 12672,
+      "renderMs" : 273.27058299999999,
+      "state" : "2x",
+      "width" : 19008
+    },
+    {
+      "displayed" : [
+        2400,
+        1600
+      ],
+      "displaySHA256" : "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b",
+      "height" : 6336,
+      "renderMs" : 180.06483399999999,
+      "state" : "disabled",
+      "width" : 9504
+    }
+  ],
+  "previewSampling" : "Native 2x2 learned area mean before below-native FIT; native detail and output use the learned four-sample cells.",
+  "processMaxRSSBytes" : 7347077120,
+  "rawSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sampledMemoryByPhase" : {
+    "independentTIFFReopen" : {
+      "metalBytes" : 3219914752,
+      "physicalFootprintBytes" : 6408902416,
+      "residentBytes" : 7305691136
+    },
+    "normalTIFF16Export" : {
+      "metalBytes" : 2858614784,
+      "physicalFootprintBytes" : 3535620208,
+      "residentBytes" : 1537441792
+    },
+    "preview" : {
+      "metalBytes" : 1544323072,
+      "physicalFootprintBytes" : 2310932472,
+      "residentBytes" : 1526317056
+    },
+    "setup" : {
+      "metalBytes" : 475136,
+      "physicalFootprintBytes" : 175244320,
+      "residentBytes" : 67633152
+    }
+  },
+  "sampledMetalPeakBytes" : 3219914752,
+  "source" : "acr-benchmark.ARW",
+  "sourceWeightsSHA256" : "deb2c288f635bed4a0ffc0be9ca8f6a735233b530ad5b2c392c5b2e6c5fe30ad",
+  "tiff16" : {
+    "bits" : 16,
+    "byteCount" : 1926958614,
+    "colorSpace" : "sRGB IEC61966-2.1",
+    "elapsedMs" : 12848.689542,
+    "iccSHA256" : "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+    "sampleFormat" : "unsigned",
+    "sha256" : "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+    "size" : [
+      19008,
+      12672
+    ]
+  }
+}

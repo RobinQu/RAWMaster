@@ -1,9 +1,11 @@
 import AppKit
+import Accelerate
 import CoreImage
 import CoreVideo
 import IOSurface
 import Metal
 import Darwin
+import ObjectiveC
 
 struct PreviewSharedSurfaceLayout: Equatable {
   let width: Int, height: Int, rowBytes: Int, allocationBytes: Int
@@ -30,6 +32,40 @@ protocol PreviewSharedImageBacking: AnyObject {
 enum PreviewSharedImageBridge {
   static let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
   static let bitmapInfo = CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue))
+  private final class CanvasRaster {
+    let image: CGImage
+    let backing: (any PreviewSharedImageBacking)?
+    init(_ image: CGImage, backing: (any PreviewSharedImageBacking)?) { self.image = image; self.backing = backing }
+  }
+  private final class RasterKey {}
+  private static let key = RasterKey()
+  private static var rasterKey: UnsafeRawPointer { UnsafeRawPointer(Unmanaged.passUnretained(key).toOpaque()) }
+  static func presentationImage(_ cg: CGImage, backing: (any PreviewSharedImageBacking)? = nil) -> NSImage {
+    let image = NSImage(cgImage: cg,size:NSSize(width:cg.width,height:cg.height))
+    // The provider retains the read-locked IOSurface. Keep that original immutable raster
+    // available for canvas draws without requesting an AppKit representation at each zoom.
+    objc_setAssociatedObject(image,rasterKey,CanvasRaster(cg,backing:backing),.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    return image
+  }
+  static func canvasRaster(for image: NSImage) -> CGImage? {
+    (objc_getAssociatedObject(image,rasterKey) as? CanvasRaster)?.image
+  }
+  /// The provider keeps its already joined sRGB surface read-locked throughout the copy.
+  static func copyRGBA8(from image: NSImage, into target: UnsafeMutableRawBufferPointer) throws -> Bool {
+    guard let raster = objc_getAssociatedObject(image,rasterKey) as? CanvasRaster, let backing = raster.backing else { return false }
+    let layout = backing.sharedImageLayout
+    guard target.count == layout.width*layout.height*4, let destination = target.baseAddress else { throw PreviewPresentationError.invalidLayout }
+    return try withExtendedLifetime(raster) {
+      var source = vImage_Buffer(data:UnsafeMutableRawPointer(mutating:backing.sharedImageBaseAddress),
+          height:vImagePixelCount(layout.height),width:vImagePixelCount(layout.width),rowBytes:layout.rowBytes)
+      var output = vImage_Buffer(data:destination,height:source.height,width:source.width,rowBytes:layout.width*4)
+      let indices: [UInt8] = [2,1,0,3]
+      guard vImagePermuteChannels_ARGB8888(&source,&output,indices,vImage_Flags(kvImageNoFlags)) == kvImageNoError else {
+        throw PreviewPresentationError.invalidLayout
+      }
+      return true
+    }
+  }
   private final class ReleaseBox {
     private let lock = NSLock()
     private var backing: (any PreviewSharedImageBacking)?
@@ -143,8 +179,7 @@ final class PreviewSharedSurfaceStorage: PreviewSharedImageBacking {
       owner.lock.lock()
       guard owner.phase == .readLocked else { owner.lock.unlock(); throw PreviewPresentationError.imageCreationFailed }
       owner.phase = .providerOwned; owner.lock.unlock()
-      let size = NSSize(width: owner.sharedImageLayout.width, height: owner.sharedImageLayout.height)
-      let image = NSImage(cgImage: cg, size: size)
+      let image = PreviewSharedImageBridge.presentationImage(cg,backing:owner)
       try Task.checkCancellation(); try owner.reservation.requireOpenAdmission()
       return .init(image: image, cgImage: cg, layout: owner.sharedImageLayout,
                    allocationID: owner.reservation.id, actualAllocationBytes: owner.actualAllocationBytes, gpuJoined: true)

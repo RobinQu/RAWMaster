@@ -1,0 +1,185 @@
+{
+  "allInteractive" : {
+    "count" : 22,
+    "maxMs" : 723.73004200000003,
+    "medianMs" : 28.359833000000002,
+    "p95Ms" : 714.39441699999998,
+    "samplesMs" : [
+      723.73004200000003,
+      27.996915999999999,
+      27.367334,
+      26.074166999999999,
+      24.601959000000001,
+      34.061374999999998,
+      33.009,
+      25.9375,
+      28.722750000000001,
+      26.608875000000001,
+      25.059291999999999,
+      29.853999999999999,
+      25.099958000000001,
+      22.894583000000001,
+      23.857417000000002,
+      26.0565,
+      714.39441699999998,
+      32.658959000000003,
+      31.100999999999999,
+      31.134125000000001,
+      30.556415999999999,
+      29.588875000000002
+    ]
+  },
+  "build" : "release",
+  "coldInteractiveFirstPerCase" : {
+    "count" : 3,
+    "maxMs" : 723.73004200000003,
+    "medianMs" : 714.39441699999998,
+    "p95Ms" : 723.73004200000003,
+    "samplesMs" : [
+      723.73004200000003,
+      28.722750000000001,
+      714.39441699999998
+    ]
+  },
+  "filterCompound" : {
+    "interactive" : {
+      "count" : 6,
+      "maxMs" : 714.39441699999998,
+      "medianMs" : 31.117562499999998,
+      "p95Ms" : 714.39441699999998,
+      "samplesMs" : [
+        714.39441699999998,
+        32.658959000000003,
+        31.100999999999999,
+        31.134125000000001,
+        30.556415999999999,
+        29.588875000000002
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterIntensity" : {
+    "interactive" : {
+      "count" : 8,
+      "maxMs" : 29.853999999999999,
+      "medianMs" : 25.578229,
+      "p95Ms" : 29.853999999999999,
+      "samplesMs" : [
+        28.722750000000001,
+        26.608875000000001,
+        25.059291999999999,
+        29.853999999999999,
+        25.099958000000001,
+        22.894583000000001,
+        23.857417000000002,
+        26.0565
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterLook" : {
+    "interactive" : {
+      "count" : 8,
+      "maxMs" : 723.73004200000003,
+      "medianMs" : 27.682124999999999,
+      "p95Ms" : 723.73004200000003,
+      "samplesMs" : [
+        723.73004200000003,
+        27.996915999999999,
+        27.367334,
+        26.074166999999999,
+        24.601959000000001,
+        34.061374999999998,
+        33.009,
+        25.9375
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterOnly" : true,
+  "lightflowReference" : {
+    "canvas" : [
+      2400,
+      1600
+    ],
+    "measurements" : [
+      {
+        "frameMs" : 6.0350000000000001,
+        "operation" : "exposure-0.25-first"
+      },
+      {
+        "frameMs" : 15.545,
+        "operation" : "exposure-0.25-second"
+      },
+      {
+        "frameMs" : 17.41,
+        "operation" : "exposure-0.50"
+      },
+      {
+        "frameMs" : 14.925000000000001,
+        "operation" : "texture-25"
+      },
+      {
+        "frameMs" : 12.785,
+        "operation" : "texture-30"
+      },
+      {
+        "frameMs" : 9.875,
+        "operation" : "clarity-25"
+      },
+      {
+        "frameMs" : 10.140000000000001,
+        "operation" : "clarity-30"
+      },
+      {
+        "frameMs" : 6.6050000000000004,
+        "operation" : "dehaze-25"
+      },
+      {
+        "frameMs" : 12.295,
+        "operation" : "dehaze-30"
+      }
+    ],
+    "method" : "Programmatic edit state; frame event follows GPU idle; not physical input-to-photon",
+    "target" : "LightFlow build 2d41ab1"
+  },
+  "measurementBoundary" : "programmatic recipe commit to accepted AppKit canvas draw return; not physical input or WindowServer presentation",
+  "protocol" : "filter-canvas-burst-v1",
+  "sourcePixelHeight" : 6336,
+  "sourcePixelWidth" : 9504,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "warmInteractiveAfterFirstPerCase" : {
+    "count" : 19,
+    "maxMs" : 34.061374999999998,
+    "medianMs" : 27.367334,
+    "p95Ms" : 34.061374999999998,
+    "samplesMs" : [
+      27.996915999999999,
+      27.367334,
+      26.074166999999999,
+      24.601959000000001,
+      34.061374999999998,
+      33.009,
+      25.9375,
+      26.608875000000001,
+      25.059291999999999,
+      29.853999999999999,
+      25.099958000000001,
+      22.894583000000001,
+      23.857417000000002,
+      26.0565,
+      32.658959000000003,
+      31.100999999999999,
+      31.134125000000001,
+      30.556415999999999,
+      29.588875000000002
+    ]
+  }
+}

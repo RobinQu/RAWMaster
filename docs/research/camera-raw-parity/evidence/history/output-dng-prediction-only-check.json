@@ -1,0 +1,21 @@
+{
+  "model": "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+  "warm": {
+    "new": {
+      "n": 10,
+      "medianMs": 13.867291999999999,
+      "p95Ms": 20.919917
+    },
+    "replay": {
+      "n": 10,
+      "medianMs": 13.162021,
+      "p95Ms": 15.2085
+    }
+  },
+  "failures": [
+    "replay/medianMs 2.25 -> 13.16 ms",
+    "replay/p95Ms 2.53 -> 15.21 ms"
+  ],
+  "baselineModel": "waifu2x-vgg7-photo-noise2-cc385f97-output-dng-v1",
+  "legacyReplayedSources": 1
+}

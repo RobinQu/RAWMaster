@@ -1,0 +1,540 @@
+{
+  "schemaVersion": 1,
+  "method": "Separate macOS Release processes, actual full native Sony ILCE-7RM5 FlashRaw 0.3.1 linear sensor decode. Compute the same native response and nonlinear threshold, then reduce with the original Core Image affine transform and fill and validate all float pixels before conversion to 2400x1600 sRGB output. Both modes retain the pure-sharpen CI context. A pilot is listed separately from the subsequent A/B/B/A series. A 4-threshold series also compared independently produced output images.",
+  "reference": "history/release-operators-d5f0c602-regression.json",
+  "related": "interactive-native-mask-context.json",
+  "defaultFlag": "RAWMASTER_PROXY_SCALAR_NATIVE_MASK",
+  "disableValue": "0",
+  "GPU": "Apple M4 Max",
+  "releaseSourceShader": "5f10be31355ec061ffae5b01b2000159547367cc0ad6623ab2a56d2671be5483",
+  "shaderBytes": 8153,
+  "sourceAndSettledShaderByteIdenticalToD5": true,
+  "baselineInteractionMedianMs": 30.234458,
+  "historicalMaxInteractionMedianMs": 33.2579038,
+  "trialABBA": [
+    35.605875,
+    19.608416,
+    19.44,
+    31.471083
+  ],
+  "perProcess": [
+    {
+      "kind": "timing",
+      "replicate": "pilot",
+      "scalar": true,
+      "recordedAt": "2026-11-22T09:22:45Z",
+      "reportSHA256": "9276f3fc29def5c1885a223b23ae50668406af06301d1da4163638155318f288",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 21.923417,
+          "interactiveMilliseconds": [
+            469.112166,
+            19.996167,
+            21.923417
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 482.414334,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "timing",
+      "replicate": "pilot",
+      "scalar": false,
+      "recordedAt": "2026-11-22T09:22:47Z",
+      "reportSHA256": "e1600329c6dda1e42eafd80f4ae39cd5f014a009804812beaf5008df9aa4ea4b",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 30.31425,
+          "interactiveMilliseconds": [
+            312.211125,
+            30.31425,
+            29.99875
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 473.802042,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "timing",
+      "replicate": "a",
+      "scalar": false,
+      "recordedAt": "2026-11-22T09:22:59Z",
+      "reportSHA256": "90a18362c0e423a1fcd0b570f376b6685d76e14d678f49bc46d1ead5de84cf67",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 35.605875,
+          "interactiveMilliseconds": [
+            443.789041,
+            35.605875,
+            34.157542
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 574.395542,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "timing",
+      "replicate": "a",
+      "scalar": true,
+      "recordedAt": "2026-11-22T09:23:01Z",
+      "reportSHA256": "25bd0603167660bfc7eceebf8caddc23500203edfdaad30719cd90dbb249ab63",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 19.608416,
+          "interactiveMilliseconds": [
+            315.009834,
+            19.608416,
+            19.511291
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 459.865459,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "timing",
+      "replicate": "b",
+      "scalar": true,
+      "recordedAt": "2026-11-22T09:23:02Z",
+      "reportSHA256": "0792ec7687963e4fece5320cfd62d687d1ade08302143608d62d287c8d2664ff",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 19.44,
+          "interactiveMilliseconds": [
+            307.188292,
+            18.400542,
+            19.44
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 474.27925,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "timing",
+      "replicate": "b",
+      "scalar": false,
+      "recordedAt": "2026-11-22T09:23:04Z",
+      "reportSHA256": "ef36beabfc01b93232b9a4334c7d7a90ab2efd52e4e0198f35c07816c4692304",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 31.471083,
+          "interactiveMilliseconds": [
+            312.299583,
+            30.364458,
+            31.471083
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 467.6365,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "pixels",
+      "replicate": "a",
+      "scalar": false,
+      "recordedAt": "2026-11-22T09:23:08Z",
+      "reportSHA256": "f577ff48ff41870feaad4014a5b7c3b4c208998c2ec60a085ca2d7d6114985fe",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 33.613625,
+          "interactiveMilliseconds": [
+            347.810083,
+            33.613625,
+            32.574834
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 528.718417,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 34.304459,
+          "interactiveMilliseconds": [
+            34.304459,
+            32.329167,
+            34.508208
+          ],
+          "label": "native-sharpen-mask-15",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 491.2265,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 32.18425,
+          "interactiveMilliseconds": [
+            32.762708,
+            31.416,
+            32.18425
+          ],
+          "label": "native-sharpen-mask-60",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 486.815625,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 31.83875,
+          "interactiveMilliseconds": [
+            32.038459,
+            31.695084,
+            31.83875
+          ],
+          "label": "native-sharpen-mask-90",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 483.817459,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    },
+    {
+      "kind": "pixels",
+      "replicate": "a",
+      "scalar": true,
+      "recordedAt": "2026-11-22T09:23:12Z",
+      "reportSHA256": "92b845b7a5011112dc896ef9c82749124e4d72788ad26e031085f7428e09d267",
+      "binarySHA256": "a61784750f14820b56c88b748c457ca7829213a5b237bfe729cacfe7adafc6f4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "blankFrames": [],
+      "measured": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 20.269417,
+          "interactiveMilliseconds": [
+            332.350417,
+            19.904416,
+            20.269417
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 534.540041,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 20.254166,
+          "interactiveMilliseconds": [
+            20.736042,
+            20.254166,
+            20.137292
+          ],
+          "label": "native-sharpen-mask-15",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 534.713083,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 17.299667,
+          "interactiveMilliseconds": [
+            21.042417,
+            17.049625,
+            17.299667
+          ],
+          "label": "native-sharpen-mask-60",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 566.978458,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 19.673583,
+          "interactiveMilliseconds": [
+            20.569916,
+            19.673583,
+            19.591292
+          ],
+          "label": "native-sharpen-mask-90",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 504.876792,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ]
+    }
+  ],
+  "comparedBytes": 122880000,
+  "perFrame": [
+    {
+      "frame": "global-sharpen-mask-preview-interactive",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "e5e744a17a6678a2929708b4ba7e770b7a972e3d056de2f2562a510e07d0fb7c",
+      "rgbaB": "b0ad3ecc75dbe327563d98b38904c2502c841317df9f08ef60781134c5986ff3",
+      "differentChannels": 41034,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 1
+    },
+    {
+      "frame": "global-sharpen-mask-preview-settled",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "78e24c7d02e1fd43b56eb71d164852dff5ae6d436177c3cc39d12c5a6b3e0480",
+      "rgbaB": "78e24c7d02e1fd43b56eb71d164852dff5ae6d436177c3cc39d12c5a6b3e0480",
+      "differentChannels": 0,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 0
+    },
+    {
+      "frame": "native-sharpen-mask-15-interactive",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "152823b50eb67cb4de4f619798eac123cff971f0f874c5122b351c7c18764b6e",
+      "rgbaB": "dc7a37edf1d2dfbd00ada105d18e24dfaf77f96f1cd0562726dfb0c601d48327",
+      "differentChannels": 47682,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 1
+    },
+    {
+      "frame": "native-sharpen-mask-15-settled",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "577365f28f6a827c3510bada05d69921324c7612951c44ce82e62993b039d613",
+      "rgbaB": "577365f28f6a827c3510bada05d69921324c7612951c44ce82e62993b039d613",
+      "differentChannels": 0,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 0
+    },
+    {
+      "frame": "native-sharpen-mask-60-interactive",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "9059a21944b099e7cf375c509f08db72dd0ca91a7b80e0d94fd3be7298605088",
+      "rgbaB": "5d36d2c80e9c25d0e7b79d03c6557940fba9101702d9b5885c4de4a3755a379f",
+      "differentChannels": 32727,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 1
+    },
+    {
+      "frame": "native-sharpen-mask-60-settled",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "31fcec63fb2dd81d64229c0fdb6d709298e11bb53317883f66533d57780db886",
+      "rgbaB": "31fcec63fb2dd81d64229c0fdb6d709298e11bb53317883f66533d57780db886",
+      "differentChannels": 0,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 0
+    },
+    {
+      "frame": "native-sharpen-mask-90-interactive",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "dcfe39856af66fb30934e08f7ae80b0da67cb2a5dd2d017ea26407ff7ac2e10e",
+      "rgbaB": "994d69c17f1ae32db1279d2a81a6e721127ff4dc8f58eb4121f089d2d831b5d9",
+      "differentChannels": 15357,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 1
+    },
+    {
+      "frame": "native-sharpen-mask-90-settled",
+      "size": [
+        2400,
+        1600
+      ],
+      "comparedChannels": 15360000,
+      "rgbaA": "292388e56b9e3e73e79d83d2fb975df5c403c2f723c503bcde89185964664872",
+      "rgbaB": "292388e56b9e3e73e79d83d2fb975df5c403c2f723c503bcde89185964664872",
+      "differentChannels": 0,
+      "alphaMaxDifference": 0,
+      "p99": 0,
+      "maxChannelError": 0
+    }
+  ],
+  "upstreamEffect": "The scalar native R32F representation evaluates the identical selected edge curve on every native input pixel, writes one float per pixel and expands red to grayscale RGB after the normal affine reduction. Core Image owns tile memory and its command buffers. The original shader remains available on an unsupported device or encoding failure. No new CPU synchronization or higher cache size.",
+  "qualified": true,
+  "shippingUnitTests": {
+    "count": 5,
+    "failed": 0,
+    "f32ThresholdsAndROI": true,
+    "shippingBinarySHA256": "2199f18ff6c3387fdd9a1ff4f6944589a7ad619e7d59a757011b3e6f270a7f47"
+  },
+  "shippingSupplementalSequence": "interactive-native-mask-release.json"
+}

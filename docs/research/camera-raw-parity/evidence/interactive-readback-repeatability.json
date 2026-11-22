@@ -1,0 +1,2886 @@
+{
+  "schemaVersion": 1,
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "RAWMasterBinarySHA256": "127a7d8a8b0fa6c3b05ea4c659d3b956271ade7390f2bb0575e5997ccd90fc53",
+  "reference": "lightflow-display-readback.json",
+  "method": "The first run is the published single-run snapshot. Two additional whole uninstrumented processes were predeclared after the first high-lights sweep fell outside the tolerance band. Each has both 20 repeated inputs and 20 one-time distinct inputs for every control. The pool retains all three whole processes, 60 samples per control per phase. LightFlow has its original 20 samples per control and phase. Both use nearest-rank p95.",
+  "runs": [
+    {
+      "run": 1,
+      "reportedAt": "2026-11-22T08:37:04Z",
+      "path": "history/rawmaster-display-readback-release-replicate-1.json",
+      "evidenceSHA256": "a2082bfbd7d9294f0c4afa82a10e71621054f8c3a4bacf980111e37f0e9abb48",
+      "gateSummary": {
+        "repeated": {
+          "within": 8,
+          "failures": []
+        },
+        "newValues": {
+          "within": 7,
+          "failures": [
+            "light-highlights"
+          ]
+        }
+      },
+      "operations": {
+        "repeated": {
+          "light-exposure": {
+            "values": [
+              0,
+              0.5
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6325,
+              "p95Ms": 4.84,
+              "maxMs": 5.135
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.3277920000000005,
+              "p95Ms": 4.70325,
+              "maxMs": 4.840833
+            },
+            "medianLimit": 5.6325,
+            "p95Limit": 6.84,
+            "within": true
+          },
+          "light-contrast": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 5.02,
+              "maxMs": 5.035
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.420771,
+              "p95Ms": 4.926417,
+              "maxMs": 4.989083
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 7.02,
+            "within": true
+          },
+          "light-highlights": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.2754375,
+              "p95Ms": 4.959833,
+              "maxMs": 5.0035
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": true
+          },
+          "light-shadows": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.587021,
+              "p95Ms": 5.263625,
+              "maxMs": 5.673291
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": true
+          },
+          "light-whites": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.345,
+              "maxMs": 5.835
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.288271,
+              "p95Ms": 4.893334,
+              "maxMs": 5.036333
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.345,
+            "within": true
+          },
+          "light-blacks": {
+            "values": [
+              0,
+              -30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.0625,
+              "p95Ms": 5.83,
+              "maxMs": 6.34
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.323479000000001,
+              "p95Ms": 5.054416,
+              "maxMs": 5.722917
+            },
+            "medianLimit": 6.0625,
+            "p95Limit": 7.83,
+            "within": true
+          },
+          "color-saturation": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.0600000000000005,
+              "p95Ms": 5.315,
+              "maxMs": 5.965
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.0841875000000005,
+              "p95Ms": 4.91025,
+              "maxMs": 6.831958
+            },
+            "medianLimit": 6.0600000000000005,
+            "p95Limit": 7.315,
+            "within": true
+          },
+          "color-vibrance": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.1325,
+              "p95Ms": 6.265,
+              "maxMs": 6.385
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.343125000000001,
+              "p95Ms": 7.328166,
+              "maxMs": 8.813083
+            },
+            "medianLimit": 6.1325,
+            "p95Limit": 8.265,
+            "within": true
+          }
+        },
+        "newValues": {
+          "light-exposure": {
+            "values": [
+              0,
+              0.5
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 6.4,
+              "maxMs": 6.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.2156044999999995,
+              "p95Ms": 7.415625,
+              "maxMs": 9.594834
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 8.4,
+            "within": true
+          },
+          "light-contrast": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.9225,
+              "p95Ms": 5.11,
+              "maxMs": 5.15
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.997521000000001,
+              "p95Ms": 6.6355,
+              "maxMs": 7.127459
+            },
+            "medianLimit": 5.9225,
+            "p95Limit": 7.11,
+            "within": true
+          },
+          "light-highlights": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 7.623146,
+              "p95Ms": 10.589958,
+              "maxMs": 11.429417
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": false
+          },
+          "light-shadows": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.952021,
+              "p95Ms": 6.630375,
+              "maxMs": 6.971167
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": true
+          },
+          "light-whites": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.3275,
+              "p95Ms": 7.735,
+              "maxMs": 9.45
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.980562,
+              "p95Ms": 8.661459,
+              "maxMs": 9.131625
+            },
+            "medianLimit": 7.3275,
+            "p95Limit": 9.735,
+            "within": true
+          },
+          "light-blacks": {
+            "values": [
+              0,
+              -30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.23,
+              "p95Ms": 7.7,
+              "maxMs": 8.025
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.7612915000000005,
+              "p95Ms": 6.698041,
+              "maxMs": 6.976583
+            },
+            "medianLimit": 7.23,
+            "p95Limit": 9.7,
+            "within": true
+          },
+          "color-saturation": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.5175,
+              "p95Ms": 6.1,
+              "maxMs": 6.915
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.709583,
+              "p95Ms": 7.4535,
+              "maxMs": 13.495459
+            },
+            "medianLimit": 6.5175,
+            "p95Limit": 8.1,
+            "within": true
+          },
+          "color-vibrance": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.862500000000001,
+              "p95Ms": 7.7,
+              "maxMs": 8.395
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.9326455,
+              "p95Ms": 7.559541,
+              "maxMs": 7.919
+            },
+            "medianLimit": 7.862500000000001,
+            "p95Limit": 9.7,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "run": 2,
+      "reportedAt": "2026-11-22T08:42:45Z",
+      "path": "history/rawmaster-display-readback-release-replicate-2.json",
+      "evidenceSHA256": "3633dc5a21fc022dd40824ba4f1c2d9548dd50ccc0e8227e48f88f50446e72fe",
+      "gateSummary": {
+        "repeated": {
+          "within": 3,
+          "failures": [
+            "light-contrast",
+            "light-highlights",
+            "light-whites",
+            "color-saturation",
+            "color-vibrance"
+          ]
+        },
+        "newValues": {
+          "within": 5,
+          "failures": [
+            "light-exposure",
+            "light-contrast",
+            "color-saturation"
+          ]
+        }
+      },
+      "operations": {
+        "repeated": {
+          "light-exposure": {
+            "values": [
+              0,
+              0.5
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6325,
+              "p95Ms": 4.84,
+              "maxMs": 5.135
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.343771,
+              "p95Ms": 4.911208,
+              "maxMs": 5.634
+            },
+            "medianLimit": 5.6325,
+            "p95Limit": 6.84,
+            "within": true
+          },
+          "light-contrast": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 5.02,
+              "maxMs": 5.035
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.5009999999999994,
+              "p95Ms": 7.105083,
+              "maxMs": 7.423375
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 7.02,
+            "within": false
+          },
+          "light-highlights": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.8061875,
+              "p95Ms": 8.761375,
+              "maxMs": 8.921833
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": false
+          },
+          "light-shadows": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.8825215,
+              "p95Ms": 6.646125,
+              "maxMs": 6.963916
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": true
+          },
+          "light-whites": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.345,
+              "maxMs": 5.835
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.490854499999999,
+              "p95Ms": 8.533792,
+              "maxMs": 11.769833
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.345,
+            "within": false
+          },
+          "light-blacks": {
+            "values": [
+              0,
+              -30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.0625,
+              "p95Ms": 5.83,
+              "maxMs": 6.34
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.775312,
+              "p95Ms": 6.062875,
+              "maxMs": 8.552375
+            },
+            "medianLimit": 6.0625,
+            "p95Limit": 7.83,
+            "within": true
+          },
+          "color-saturation": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.0600000000000005,
+              "p95Ms": 5.315,
+              "maxMs": 5.965
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.5188334999999995,
+              "p95Ms": 11.664917,
+              "maxMs": 37.121417
+            },
+            "medianLimit": 6.0600000000000005,
+            "p95Limit": 7.315,
+            "within": false
+          },
+          "color-vibrance": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.1325,
+              "p95Ms": 6.265,
+              "maxMs": 6.385
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.3253129999999995,
+              "p95Ms": 15.035375,
+              "maxMs": 23.764625
+            },
+            "medianLimit": 6.1325,
+            "p95Limit": 8.265,
+            "within": false
+          }
+        },
+        "newValues": {
+          "light-exposure": {
+            "values": [
+              0,
+              0.5
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 6.4,
+              "maxMs": 6.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 6.030583,
+              "p95Ms": 9.084958,
+              "maxMs": 9.29475
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 8.4,
+            "within": false
+          },
+          "light-contrast": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.9225,
+              "p95Ms": 5.11,
+              "maxMs": 5.15
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.532437,
+              "p95Ms": 8.268,
+              "maxMs": 9.690958
+            },
+            "medianLimit": 5.9225,
+            "p95Limit": 7.11,
+            "within": false
+          },
+          "light-highlights": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.808521000000001,
+              "p95Ms": 8.457458,
+              "maxMs": 8.972375
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": true
+          },
+          "light-shadows": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.208187000000001,
+              "p95Ms": 8.71175,
+              "maxMs": 14.351708
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": true
+          },
+          "light-whites": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.3275,
+              "p95Ms": 7.735,
+              "maxMs": 9.45
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.152396,
+              "p95Ms": 8.83175,
+              "maxMs": 9.138
+            },
+            "medianLimit": 7.3275,
+            "p95Limit": 9.735,
+            "within": true
+          },
+          "light-blacks": {
+            "values": [
+              0,
+              -30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.23,
+              "p95Ms": 7.7,
+              "maxMs": 8.025
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.456229,
+              "p95Ms": 9.026333,
+              "maxMs": 10.018417
+            },
+            "medianLimit": 7.23,
+            "p95Limit": 9.7,
+            "within": true
+          },
+          "color-saturation": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.5175,
+              "p95Ms": 6.1,
+              "maxMs": 6.915
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.179625,
+              "p95Ms": 8.133625,
+              "maxMs": 8.389167
+            },
+            "medianLimit": 6.5175,
+            "p95Limit": 8.1,
+            "within": false
+          },
+          "color-vibrance": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.862500000000001,
+              "p95Ms": 7.7,
+              "maxMs": 8.395
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.7316035,
+              "p95Ms": 8.936417,
+              "maxMs": 9.255042
+            },
+            "medianLimit": 7.862500000000001,
+            "p95Limit": 9.7,
+            "within": true
+          }
+        }
+      }
+    },
+    {
+      "run": 3,
+      "reportedAt": "2026-11-22T08:42:47Z",
+      "path": "history/rawmaster-display-readback-release-replicate-3.json",
+      "evidenceSHA256": "f1859afa703203d1cc395a345dde88d5a06ac4f294621c7bea97984760f074a2",
+      "gateSummary": {
+        "repeated": {
+          "within": 4,
+          "failures": [
+            "light-exposure",
+            "light-contrast",
+            "light-highlights",
+            "color-saturation"
+          ]
+        },
+        "newValues": {
+          "within": 5,
+          "failures": [
+            "light-exposure",
+            "light-contrast",
+            "color-saturation"
+          ]
+        }
+      },
+      "operations": {
+        "repeated": {
+          "light-exposure": {
+            "values": [
+              0,
+              0.5
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.6325,
+              "p95Ms": 4.84,
+              "maxMs": 5.135
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.054646,
+              "p95Ms": 9.31225,
+              "maxMs": 9.602583
+            },
+            "medianLimit": 5.6325,
+            "p95Limit": 6.84,
+            "within": false
+          },
+          "light-contrast": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.7075,
+              "p95Ms": 5.02,
+              "maxMs": 5.035
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.9978745,
+              "p95Ms": 7.225875,
+              "maxMs": 7.442417
+            },
+            "medianLimit": 5.7075,
+            "p95Limit": 7.02,
+            "within": false
+          },
+          "light-highlights": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.6138125,
+              "p95Ms": 12.007708,
+              "maxMs": 26.683209
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": false
+          },
+          "light-shadows": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.718354,
+              "p95Ms": 7.045958,
+              "maxMs": 9.358042
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": true
+          },
+          "light-whites": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.345,
+              "maxMs": 5.835
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.610917,
+              "p95Ms": 5.270042,
+              "maxMs": 5.302458
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.345,
+            "within": true
+          },
+          "light-blacks": {
+            "values": [
+              0,
+              -30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.0625,
+              "p95Ms": 5.83,
+              "maxMs": 6.34
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.6839165000000005,
+              "p95Ms": 6.9515,
+              "maxMs": 7.341041
+            },
+            "medianLimit": 6.0625,
+            "p95Limit": 7.83,
+            "within": true
+          },
+          "color-saturation": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.0600000000000005,
+              "p95Ms": 5.315,
+              "maxMs": 5.965
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.7833335,
+              "p95Ms": 7.322708,
+              "maxMs": 7.792875
+            },
+            "medianLimit": 6.0600000000000005,
+            "p95Limit": 7.315,
+            "within": false
+          },
+          "color-vibrance": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.1325,
+              "p95Ms": 6.265,
+              "maxMs": 6.385
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.6572914999999995,
+              "p95Ms": 6.0185,
+              "maxMs": 10.025333
+            },
+            "medianLimit": 6.1325,
+            "p95Limit": 8.265,
+            "within": true
+          }
+        },
+        "newValues": {
+          "light-exposure": {
+            "values": [
+              0,
+              0.5
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 6.4,
+              "maxMs": 6.495
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 6.120604,
+              "p95Ms": 9.323458,
+              "maxMs": 9.551042
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 8.4,
+            "within": false
+          },
+          "light-contrast": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.9225,
+              "p95Ms": 5.11,
+              "maxMs": 5.15
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.430833,
+              "p95Ms": 8.250833,
+              "maxMs": 9.335083
+            },
+            "medianLimit": 5.9225,
+            "p95Limit": 7.11,
+            "within": false
+          },
+          "light-highlights": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.6996875,
+              "p95Ms": 8.623666,
+              "maxMs": 9.313458
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": true
+          },
+          "light-shadows": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.6583125,
+              "p95Ms": 8.914792,
+              "maxMs": 9.999333
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": true
+          },
+          "light-whites": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.3275,
+              "p95Ms": 7.735,
+              "maxMs": 9.45
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.641125000000001,
+              "p95Ms": 8.847208,
+              "maxMs": 8.913375
+            },
+            "medianLimit": 7.3275,
+            "p95Limit": 9.735,
+            "within": true
+          },
+          "light-blacks": {
+            "values": [
+              0,
+              -30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.23,
+              "p95Ms": 7.7,
+              "maxMs": 8.025
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.3012084999999995,
+              "p95Ms": 7.342625,
+              "maxMs": 7.819667
+            },
+            "medianLimit": 7.23,
+            "p95Limit": 9.7,
+            "within": true
+          },
+          "color-saturation": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.5175,
+              "p95Ms": 6.1,
+              "maxMs": 6.915
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.8745835,
+              "p95Ms": 8.383375,
+              "maxMs": 9.207125
+            },
+            "medianLimit": 6.5175,
+            "p95Limit": 8.1,
+            "within": false
+          },
+          "color-vibrance": {
+            "values": [
+              0,
+              30
+            ],
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 6.862500000000001,
+              "p95Ms": 7.7,
+              "maxMs": 8.395
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.577667,
+              "p95Ms": 8.493042,
+              "maxMs": 8.996583
+            },
+            "medianLimit": 7.862500000000001,
+            "p95Limit": 9.7,
+            "within": true
+          }
+        }
+      }
+    }
+  ],
+  "pooled": {
+    "repeated": {
+      "light-exposure": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 4.6325,
+          "p95Ms": 4.84,
+          "maxMs": 5.135
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.422313,
+          "p95Ms": 8.847625,
+          "maxMs": 9.602583
+        },
+        "medianLimit": 5.6325,
+        "p95Limit": 6.84,
+        "within": false
+      },
+      "light-contrast": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 4.7075,
+          "p95Ms": 5.02,
+          "maxMs": 5.035
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.611437499999999,
+          "p95Ms": 7.105083,
+          "maxMs": 7.442417
+        },
+        "medianLimit": 5.7075,
+        "p95Limit": 7.02,
+        "within": false
+      },
+      "light-highlights": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 4.8774999999999995,
+          "p95Ms": 5.32,
+          "maxMs": 6.01
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.738875,
+          "p95Ms": 8.921833,
+          "maxMs": 26.683209
+        },
+        "medianLimit": 5.8774999999999995,
+        "p95Limit": 7.32,
+        "within": false
+      },
+      "light-shadows": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 4.89,
+          "p95Ms": 5.63,
+          "maxMs": 6.11
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.7232705,
+          "p95Ms": 6.646125,
+          "maxMs": 9.358042
+        },
+        "medianLimit": 5.89,
+        "p95Limit": 7.63,
+        "within": true
+      },
+      "light-whites": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 4.89,
+          "p95Ms": 5.345,
+          "maxMs": 5.835
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.4291455,
+          "p95Ms": 7.421709,
+          "maxMs": 11.769833
+        },
+        "medianLimit": 5.89,
+        "p95Limit": 7.345,
+        "within": false
+      },
+      "light-blacks": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.0625,
+          "p95Ms": 5.83,
+          "maxMs": 6.34
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.5651875,
+          "p95Ms": 6.404041,
+          "maxMs": 8.552375
+        },
+        "medianLimit": 6.0625,
+        "p95Limit": 7.83,
+        "within": true
+      },
+      "color-saturation": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.0600000000000005,
+          "p95Ms": 5.315,
+          "maxMs": 5.965
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.3924795,
+          "p95Ms": 7.792875,
+          "maxMs": 37.121417
+        },
+        "medianLimit": 6.0600000000000005,
+        "p95Limit": 7.315,
+        "within": false
+      },
+      "color-vibrance": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.1325,
+          "p95Ms": 6.265,
+          "maxMs": 6.385
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 4.609812,
+          "p95Ms": 10.025333,
+          "maxMs": 23.764625
+        },
+        "medianLimit": 6.1325,
+        "p95Limit": 8.265,
+        "within": false
+      }
+    },
+    "newValues": {
+      "light-exposure": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.984999999999999,
+          "p95Ms": 6.4,
+          "maxMs": 6.495
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.5480205,
+          "p95Ms": 9.29475,
+          "maxMs": 9.594834
+        },
+        "medianLimit": 6.984999999999999,
+        "p95Limit": 8.4,
+        "within": false
+      },
+      "light-contrast": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 4.9225,
+          "p95Ms": 5.11,
+          "maxMs": 5.15
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.250833500000001,
+          "p95Ms": 8.250833,
+          "maxMs": 9.690958
+        },
+        "medianLimit": 5.9225,
+        "p95Limit": 7.11,
+        "within": false
+      },
+      "light-highlights": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.87,
+          "p95Ms": 6.995,
+          "maxMs": 7.04
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.973520499999999,
+          "p95Ms": 8.989916,
+          "maxMs": 11.429417
+        },
+        "medianLimit": 6.87,
+        "p95Limit": 8.995000000000001,
+        "within": true
+      },
+      "light-shadows": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.984999999999999,
+          "p95Ms": 7.71,
+          "maxMs": 7.91
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.211271,
+          "p95Ms": 8.71175,
+          "maxMs": 14.351708
+        },
+        "medianLimit": 6.984999999999999,
+        "p95Limit": 9.71,
+        "within": true
+      },
+      "light-whites": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 6.3275,
+          "p95Ms": 7.735,
+          "maxMs": 9.45
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.2898125,
+          "p95Ms": 8.847208,
+          "maxMs": 9.138
+        },
+        "medianLimit": 7.3275,
+        "p95Limit": 9.735,
+        "within": true
+      },
+      "light-blacks": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 6.23,
+          "p95Ms": 7.7,
+          "maxMs": 8.025
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.1080205,
+          "p95Ms": 7.956042,
+          "maxMs": 10.018417
+        },
+        "medianLimit": 7.23,
+        "p95Limit": 9.7,
+        "within": true
+      },
+      "color-saturation": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 5.5175,
+          "p95Ms": 6.1,
+          "maxMs": 6.915
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.171104,
+          "p95Ms": 8.383375,
+          "maxMs": 13.495459
+        },
+        "medianLimit": 6.5175,
+        "p95Limit": 8.1,
+        "within": false
+      },
+      "color-vibrance": {
+        "LightFlow": {
+          "n": 20,
+          "medianMs": 6.862500000000001,
+          "p95Ms": 7.7,
+          "maxMs": 8.395
+        },
+        "RAWMaster": {
+          "n": 60,
+          "medianMs": 5.501021,
+          "p95Ms": 8.582417,
+          "maxMs": 9.255042
+        },
+        "medianLimit": 7.862500000000001,
+        "p95Limit": 9.7,
+        "within": true
+      }
+    }
+  },
+  "instrumentedDiagnostic": {
+    "actualBundleSHA256": "dea17401c68c423b418b10f4a600959c17af1fd371ab170ed7854b0bfdcc919f",
+    "actualOS": "Version 27.0.1 (Build 26A434)",
+    "rawTimingReport": "output/performance/release-background-20261122/engine-final/guide-trace/paired.json",
+    "timingReportSHA256": "c01a71efb87d567ac1a31a5690f64942a13901f12ee229e2fd1506111b6ab196",
+    "traceLog": "output/performance/release-background-20261122/engine-final/guide-trace/paired.log",
+    "traceLogSHA256": "f7ec54e9aa3a4c954fcc1317faa3941dd3259c340724a3b2e25e5adb143b1da9",
+    "flag": "RAWMASTER_INTERACTIVE_TIMING=1",
+    "method": "For every unique slider input, join the host acquisition time (fingerprint, pool lock and actual acquire, including GPU wait only on fill) to its measured complete RGBA8 readback. The general timing trace writes to stderr. These instrumented values are not pooled with release measurements.",
+    "controls": {
+      "light-highlights": {
+        "first30AndRepeated": [
+          {
+            "disposition": "fill",
+            "lookupMs": 6.927458
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.064166
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.076
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.069083
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.060958
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.06525
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.0675
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.063917
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.062041
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.0685
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.070541
+          }
+        ],
+        "newValues": [
+          {
+            "input": 1,
+            "disposition": "hit",
+            "lookupMs": 0.065125,
+            "visibleReadbackMs": 6.785625,
+            "transferMs": 0.390292,
+            "digest": "b9aac836bdbc11811840b3fe4b4a133910ffa99cb89971f95ff27fd75c4dd0f6"
+          },
+          {
+            "input": 2,
+            "disposition": "hit",
+            "lookupMs": 0.071042,
+            "visibleReadbackMs": 5.509375,
+            "transferMs": 0.417833,
+            "digest": "650e0e91322da997d7611d2ca4f6c8ea66260fc7e7ca6efb57b038e9f0b66e55"
+          },
+          {
+            "input": 3,
+            "disposition": "hit",
+            "lookupMs": 0.064834,
+            "visibleReadbackMs": 5.003625,
+            "transferMs": 0.387792,
+            "digest": "c9e823f54d62cae6633933ae2bca45442b7aa5d9ce3cf2f96fe0d35d45f0ee3a"
+          },
+          {
+            "input": 4,
+            "disposition": "hit",
+            "lookupMs": 0.061959,
+            "visibleReadbackMs": 5.210083,
+            "transferMs": 0.396542,
+            "digest": "682edb8e8686928ec94b05e6f6344a395c0ccf6c85905c4a8fb73156cc16edbe"
+          },
+          {
+            "input": 5,
+            "disposition": "hit",
+            "lookupMs": 0.062125,
+            "visibleReadbackMs": 4.953167,
+            "transferMs": 0.367625,
+            "digest": "3f5f8c4df6bc32a5c14103d8e246c98fb18450ae380230caaa9add4cee075d1e"
+          },
+          {
+            "input": 6,
+            "disposition": "hit",
+            "lookupMs": 0.063125,
+            "visibleReadbackMs": 4.861542,
+            "transferMs": 0.387667,
+            "digest": "8a6bc2bd16f960c35501d22932e262a2ce109ce5dcc365b49725261367f99dc1"
+          },
+          {
+            "input": 7,
+            "disposition": "hit",
+            "lookupMs": 0.068125,
+            "visibleReadbackMs": 6.739833,
+            "transferMs": 0.363792,
+            "digest": "c692016b35363c692412bde41ae9d704610f7b900f502257274440708b0ec84d"
+          },
+          {
+            "input": 8,
+            "disposition": "hit",
+            "lookupMs": 0.065417,
+            "visibleReadbackMs": 7.972958,
+            "transferMs": 0.411292,
+            "digest": "acb1d2b2f17b01cdc4dd8d061a4aa7f7138c27d6c9c0a13d5ec2349da4b62066"
+          },
+          {
+            "input": 9,
+            "disposition": "hit",
+            "lookupMs": 0.065125,
+            "visibleReadbackMs": 5.340166,
+            "transferMs": 0.343958,
+            "digest": "bef0b239066940a1857af05bac7eb952de825e9c77ce7ddf49c5c08a765799df"
+          },
+          {
+            "input": 10,
+            "disposition": "hit",
+            "lookupMs": 0.061542,
+            "visibleReadbackMs": 5.099666,
+            "transferMs": 0.343375,
+            "digest": "9a751266e40014ef1c3902300fafc6a85c966dc9eff1ad3cfa0c4113dc409988"
+          },
+          {
+            "input": 11,
+            "disposition": "hit",
+            "lookupMs": 0.068,
+            "visibleReadbackMs": 9.109042,
+            "transferMs": 0.39175,
+            "digest": "7623eb17a7c138cc1974317bb87d53e330e05a26e5175481480c62e01e253c26"
+          },
+          {
+            "input": 12,
+            "disposition": "hit",
+            "lookupMs": 0.069875,
+            "visibleReadbackMs": 5.910666,
+            "transferMs": 0.42175,
+            "digest": "3f98dd10b3c2d46d6b930f87b26dc38a0e2b82d26b8c269787785b32b3020858"
+          },
+          {
+            "input": 13,
+            "disposition": "hit",
+            "lookupMs": 0.061834,
+            "visibleReadbackMs": 4.63525,
+            "transferMs": 0.371209,
+            "digest": "c89d5e67a7e2fb9d2d74091b692ce9cb1d1d412d5a721369cb2395288ed4978a"
+          },
+          {
+            "input": 14,
+            "disposition": "hit",
+            "lookupMs": 0.061834,
+            "visibleReadbackMs": 4.853542,
+            "transferMs": 0.401459,
+            "digest": "68e74d0a0c169fe1640658c511cf8b35bbd2fa34ebf8c49c91f1cf9339f542d9"
+          },
+          {
+            "input": 15,
+            "disposition": "hit",
+            "lookupMs": 0.067541,
+            "visibleReadbackMs": 5.871291,
+            "transferMs": 0.365833,
+            "digest": "e590dd806ee67c5971b08b79e6bb99c2df18188625e90ae4d663a317784083b6"
+          },
+          {
+            "input": 16,
+            "disposition": "hit",
+            "lookupMs": 0.069459,
+            "visibleReadbackMs": 8.060791,
+            "transferMs": 0.393875,
+            "digest": "e869e47dc6f5ddcc07ca17b687af243d4533e30da27cd23ccbc951b330ebb550"
+          },
+          {
+            "input": 17,
+            "disposition": "hit",
+            "lookupMs": 0.069416,
+            "visibleReadbackMs": 7.757292,
+            "transferMs": 0.357167,
+            "digest": "5cb6356c6e20766c6ed6ccbf368ae02acd7d719affbba3ae90b48b030017dcdf"
+          },
+          {
+            "input": 18,
+            "disposition": "hit",
+            "lookupMs": 0.064375,
+            "visibleReadbackMs": 5.884792,
+            "transferMs": 0.331917,
+            "digest": "594290bee2488b20f8c6fbaa23aeaeb2ace4402cd4ab8a524f599a328747c7de"
+          },
+          {
+            "input": 19,
+            "disposition": "hit",
+            "lookupMs": 0.061209,
+            "visibleReadbackMs": 4.850375,
+            "transferMs": 0.375542,
+            "digest": "8548b8311d0f4e75d31a1f4a5ee1580f905039e9567a3be0ec6fa46ae51a57a7"
+          },
+          {
+            "input": 20,
+            "disposition": "hit",
+            "lookupMs": 0.065625,
+            "visibleReadbackMs": 6.352208,
+            "transferMs": 0.39775,
+            "digest": "a24adeb6b033da57130e289d96f76a7f4f5206a06d890d70c0436c2eb285d582"
+          }
+        ],
+        "newValueGuideHits": 20,
+        "newValueHitCostMs": {
+          "n": 20,
+          "medianMs": 0.065125,
+          "p95Ms": 0.069875,
+          "maxMs": 0.071042
+        }
+      },
+      "light-shadows": {
+        "first30AndRepeated": [
+          {
+            "disposition": "hit",
+            "lookupMs": 0.063334
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.066875
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.064
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.065833
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.068542
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.077958
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.0635
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.067917
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.069042
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.066042
+          },
+          {
+            "disposition": "hit",
+            "lookupMs": 0.061542
+          }
+        ],
+        "newValues": [
+          {
+            "input": 1,
+            "disposition": "hit",
+            "lookupMs": 0.065875,
+            "visibleReadbackMs": 5.118584,
+            "transferMs": 0.365459,
+            "digest": "40ee73fa8b27e5196f18f309dc046063338fd62c3e979cbb9f046dd4c0cff4c6"
+          },
+          {
+            "input": 2,
+            "disposition": "hit",
+            "lookupMs": 0.066708,
+            "visibleReadbackMs": 8.132334,
+            "transferMs": 0.359042,
+            "digest": "60d618111f66ef38e021e005a99481f7d15b7fe77d9e42536600647bf79a2d1e"
+          },
+          {
+            "input": 3,
+            "disposition": "hit",
+            "lookupMs": 0.068625,
+            "visibleReadbackMs": 8.148,
+            "transferMs": 0.339,
+            "digest": "ef1adbe705f43cb2e0f8422a583c56c60f42cc622f4640d9a40d416eb4af1026"
+          },
+          {
+            "input": 4,
+            "disposition": "hit",
+            "lookupMs": 0.066042,
+            "visibleReadbackMs": 5.976125,
+            "transferMs": 0.392542,
+            "digest": "566ceb057dd9bfd94256f165950c7ee3aedc51076ae9feffdb349bff44015fe6"
+          },
+          {
+            "input": 5,
+            "disposition": "hit",
+            "lookupMs": 0.065959,
+            "visibleReadbackMs": 5.226958,
+            "transferMs": 0.370708,
+            "digest": "a349f23031412dcc234b0134a3cb5c597362ccd41c4c47c7917df144faf59a6d"
+          },
+          {
+            "input": 6,
+            "disposition": "hit",
+            "lookupMs": 0.068125,
+            "visibleReadbackMs": 9.625542,
+            "transferMs": 0.39375,
+            "digest": "679e22767e3a708f56832068240acf9dea29179489e978389e1e90ff950bda79"
+          },
+          {
+            "input": 7,
+            "disposition": "hit",
+            "lookupMs": 0.072667,
+            "visibleReadbackMs": 4.940625,
+            "transferMs": 0.395125,
+            "digest": "cbf3c86e081deafbd587b3944b22357c564de5e13938729b529f91f8afa85d26"
+          },
+          {
+            "input": 8,
+            "disposition": "hit",
+            "lookupMs": 0.064583,
+            "visibleReadbackMs": 5.925584,
+            "transferMs": 0.341,
+            "digest": "768774465da3023e6e06fa728be84e95f28d5e7c4b37d81b4906a87de04a3d6d"
+          },
+          {
+            "input": 9,
+            "disposition": "hit",
+            "lookupMs": 0.067209,
+            "visibleReadbackMs": 4.994875,
+            "transferMs": 0.385167,
+            "digest": "a2ab93bfa61596993016edf44588217f39d7d6385e0f7afe8a7ed46dbe8d3fdd"
+          },
+          {
+            "input": 10,
+            "disposition": "hit",
+            "lookupMs": 0.062125,
+            "visibleReadbackMs": 5.115458,
+            "transferMs": 0.384625,
+            "digest": "2f8151d73856bc1ec813e14ba9bfd4be16a6f60040ccc52c63d0f7cf327ddb30"
+          },
+          {
+            "input": 11,
+            "disposition": "hit",
+            "lookupMs": 0.064125,
+            "visibleReadbackMs": 5.125375,
+            "transferMs": 0.414209,
+            "digest": "8d8a03442250d61895e730feb212a243c31e59fbd3a31ae5dd913ca9f5d354d5"
+          },
+          {
+            "input": 12,
+            "disposition": "hit",
+            "lookupMs": 0.062291,
+            "visibleReadbackMs": 4.961916,
+            "transferMs": 0.398083,
+            "digest": "374981248d5fd99f9773a7d9685c9eb62ec1e1fdf88b94d6bf21a45ebfc411c9"
+          },
+          {
+            "input": 13,
+            "disposition": "hit",
+            "lookupMs": 0.066041,
+            "visibleReadbackMs": 7.908625,
+            "transferMs": 0.381833,
+            "digest": "e533f5d90253c7b5112b68ef375ca2e280220fdb6e436333bb3ec5762bf795f9"
+          },
+          {
+            "input": 14,
+            "disposition": "hit",
+            "lookupMs": 0.060833,
+            "visibleReadbackMs": 4.841417,
+            "transferMs": 0.361917,
+            "digest": "2e97c87a1ec1f757731dc1079e0d4bc9dab0903772384583ef3a4c11090efe80"
+          },
+          {
+            "input": 15,
+            "disposition": "hit",
+            "lookupMs": 0.064917,
+            "visibleReadbackMs": 8.88325,
+            "transferMs": 0.356959,
+            "digest": "f989779bc718ce3183587198231b44fa756028a2983a4e862a8db0c466194c89"
+          },
+          {
+            "input": 16,
+            "disposition": "hit",
+            "lookupMs": 0.071125,
+            "visibleReadbackMs": 8.516333,
+            "transferMs": 0.37825,
+            "digest": "9c6ea1d2d614e09727e63f21ab2c856a8cddad95b98ae93c629970cd3ef19299"
+          },
+          {
+            "input": 17,
+            "disposition": "hit",
+            "lookupMs": 0.069,
+            "visibleReadbackMs": 7.8295,
+            "transferMs": 0.391,
+            "digest": "3de0a40488c44e0b8896d20df9fd8dd5f19d4ac2da30fce5373886fca9a5fb86"
+          },
+          {
+            "input": 18,
+            "disposition": "hit",
+            "lookupMs": 0.066709,
+            "visibleReadbackMs": 5.91375,
+            "transferMs": 0.362208,
+            "digest": "0e40f8d8c91025711972de10b428acbfedff541710e6c7d07b5e357288d836cb"
+          },
+          {
+            "input": 19,
+            "disposition": "hit",
+            "lookupMs": 0.063583,
+            "visibleReadbackMs": 5.29275,
+            "transferMs": 0.391167,
+            "digest": "777bc9fd00a53644c219ba226dc2e8cd8be1e91e2cc5ee9c4aa1e97d1e4926e0"
+          },
+          {
+            "input": 20,
+            "disposition": "hit",
+            "lookupMs": 0.065834,
+            "visibleReadbackMs": 5.462125,
+            "transferMs": 0.367291,
+            "digest": "27dd55a2c0e632a7bb8a6bf7a1f3d7bcb2d621d312425e008d157bd8b76bc82b"
+          }
+        ],
+        "newValueGuideHits": 20,
+        "newValueHitCostMs": {
+          "n": 20,
+          "medianMs": 0.066,
+          "p95Ms": 0.071125,
+          "maxMs": 0.072667
+        }
+      }
+    },
+    "perNewValueEngineStages": {
+      "light-exposure": {
+        "base-ready": {
+          "medianMs": 0.8035005,
+          "p95Ms": 3.037791,
+          "ms": [
+            1.8725,
+            1.246709,
+            0.205417,
+            1.895,
+            0.751292,
+            0.272042,
+            1.47975,
+            1.122417,
+            0.332,
+            1.254791,
+            0.855709,
+            0.296375,
+            0.293458,
+            0.229084,
+            0.402917,
+            3.037791,
+            1.33575,
+            0.3185,
+            0.368917,
+            3.917458
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.1603125,
+          "p95Ms": 2.275833,
+          "ms": [
+            2.186708,
+            2.155875,
+            1.983417,
+            2.0845,
+            2.103917,
+            2.0135,
+            2.275833,
+            2.132375,
+            2.229125,
+            2.172334,
+            2.121375,
+            2.043834,
+            2.342667,
+            2.112791,
+            2.16475,
+            2.219209,
+            2.1065,
+            2.273333,
+            2.231416,
+            2.199417
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.061479,
+          "p95Ms": 0.07425,
+          "ms": [
+            0.075375,
+            0.04575,
+            0.069666,
+            0.059791,
+            0.067833,
+            0.039041,
+            0.066708,
+            0.045667,
+            0.069417,
+            0.059416,
+            0.044791,
+            0.032875,
+            0.061417,
+            0.073584,
+            0.061541,
+            0.064291,
+            0.05325,
+            0.07425,
+            0.052292,
+            0.066417
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.0930209999999998,
+          "p95Ms": 1.149125,
+          "ms": [
+            1.150375,
+            0.948666,
+            1.079625,
+            1.147,
+            1.10975,
+            0.972,
+            1.147375,
+            1.011083,
+            1.109375,
+            1.096542,
+            1.008042,
+            0.915291,
+            1.107,
+            1.149125,
+            1.075292,
+            1.0895,
+            1.009833,
+            1.042375,
+            1.124833,
+            1.101291
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.013084,
+          "p95Ms": 0.028875,
+          "ms": [
+            0.015083,
+            0.009542,
+            0.009042,
+            0.013709,
+            0.007917,
+            0.00875,
+            0.012459,
+            0.00825,
+            0.018292,
+            0.019208,
+            0.028875,
+            0.0075,
+            0.0315,
+            0.026458,
+            0.016458,
+            0.009917,
+            0.014375,
+            0.009875,
+            0.024875,
+            0.012292
+          ]
+        }
+      },
+      "light-contrast": {
+        "base-ready": {
+          "medianMs": 1.503854,
+          "p95Ms": 4.870541,
+          "ms": [
+            0.265917,
+            7.582334,
+            0.25175,
+            3.8755,
+            1.499333,
+            0.312542,
+            1.884125,
+            1.323083,
+            0.263042,
+            0.294417,
+            2.77875,
+            4.870541,
+            1.508375,
+            0.304917,
+            0.276833,
+            3.145666,
+            4.286958,
+            2.830875,
+            1.553958,
+            0.400375
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.138292,
+          "p95Ms": 2.387125,
+          "ms": [
+            2.269167,
+            2.2085,
+            2.188208,
+            2.06875,
+            2.079167,
+            2.132416,
+            2.194542,
+            2.40975,
+            2.037958,
+            2.125792,
+            2.133334,
+            2.295625,
+            2.387125,
+            2.090542,
+            2.066417,
+            2.298084,
+            2.14325,
+            2.1315,
+            2.034459,
+            2.162875
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.06302050000000001,
+          "p95Ms": 0.087583,
+          "ms": [
+            0.065416,
+            0.063791,
+            0.057875,
+            0.068166,
+            0.076958,
+            0.059959,
+            0.087583,
+            0.058709,
+            0.060834,
+            0.06225,
+            0.088208,
+            0.086125,
+            0.049167,
+            0.068083,
+            0.059083,
+            0.075416,
+            0.0595,
+            0.065541,
+            0.058833,
+            0.046708
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.0761045,
+          "p95Ms": 1.167667,
+          "ms": [
+            1.051,
+            1.003959,
+            1.071042,
+            1.073959,
+            1.14925,
+            1.046041,
+            1.123333,
+            1.097041,
+            1.084375,
+            1.060375,
+            1.169958,
+            1.167667,
+            1.07825,
+            1.082917,
+            1.066875,
+            1.122209,
+            1.048125,
+            1.165125,
+            1.067333,
+            1.021917
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.019229,
+          "p95Ms": 0.028666,
+          "ms": [
+            0.015875,
+            0.010958,
+            0.019042,
+            0.014833,
+            0.008708,
+            0.016042,
+            0.027959,
+            0.021,
+            0.028666,
+            0.028125,
+            0.023625,
+            0.02125,
+            0.014416,
+            0.019416,
+            0.022667,
+            0.015666,
+            0.014375,
+            0.033667,
+            0.017459,
+            0.020042
+          ]
+        }
+      },
+      "light-highlights": {
+        "base-ready": {
+          "medianMs": 0.9141045,
+          "p95Ms": 3.297792,
+          "ms": [
+            2.2555,
+            0.784167,
+            0.268083,
+            0.533625,
+            0.754834,
+            0.266458,
+            2.165542,
+            3.057959,
+            0.882834,
+            0.261166,
+            4.504916,
+            0.945375,
+            0.266958,
+            0.266542,
+            1.1625,
+            3.297792,
+            2.964334,
+            1.560625,
+            0.226208,
+            1.615625
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.2337290000000003,
+          "p95Ms": 2.469333,
+          "ms": [
+            2.148417,
+            2.295333,
+            2.342709,
+            2.195625,
+            2.109083,
+            2.167958,
+            2.23875,
+            2.228708,
+            2.145333,
+            2.492875,
+            2.260375,
+            2.469333,
+            2.156459,
+            2.156875,
+            2.338167,
+            2.270917,
+            2.306333,
+            2.204375,
+            2.150375,
+            2.290916
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.061062000000000005,
+          "p95Ms": 0.076042,
+          "ms": [
+            0.076042,
+            0.048167,
+            0.050875,
+            0.053875,
+            0.021792,
+            0.063375,
+            0.055708,
+            0.071125,
+            0.049458,
+            0.064667,
+            0.071167,
+            0.041667,
+            0.058791,
+            0.072,
+            0.0495,
+            0.070583,
+            0.063333,
+            0.037166,
+            0.097542,
+            0.066292
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.0938750000000002,
+          "p95Ms": 1.205583,
+          "ms": [
+            1.13525,
+            1.09725,
+            1.050166,
+            1.163625,
+            0.924458,
+            1.091459,
+            1.095625,
+            1.321208,
+            1.039125,
+            1.0905,
+            1.092125,
+            1.0745,
+            1.009542,
+            1.101292,
+            1.088875,
+            1.205583,
+            1.112542,
+            0.978834,
+            1.175875,
+            1.142083
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.0201455,
+          "p95Ms": 0.025875,
+          "ms": [
+            0.0145,
+            0.025291,
+            0.024542,
+            0.023208,
+            0.005292,
+            0.022583,
+            0.0145,
+            0.023459,
+            0.010375,
+            0.024375,
+            0.018875,
+            0.007041,
+            0.008375,
+            0.02125,
+            0.021291,
+            0.025875,
+            0.031708,
+            0.006958,
+            0.019041,
+            0.018334
+          ]
+        }
+      },
+      "light-shadows": {
+        "base-ready": {
+          "medianMs": 0.9522085,
+          "p95Ms": 4.197167,
+          "ms": [
+            0.360459,
+            3.6,
+            3.57075,
+            1.5065,
+            0.396666,
+            4.786833,
+            0.341459,
+            1.080459,
+            0.304709,
+            0.241875,
+            0.5655,
+            0.332958,
+            3.170208,
+            0.246917,
+            4.197167,
+            3.865667,
+            3.044333,
+            1.43525,
+            0.29275,
+            0.823958
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.2828749999999998,
+          "p95Ms": 2.598292,
+          "ms": [
+            2.271,
+            2.232792,
+            2.218916,
+            2.187875,
+            2.54275,
+            2.286334,
+            2.315541,
+            2.615958,
+            2.279416,
+            2.342334,
+            2.207167,
+            2.181708,
+            2.286375,
+            2.364208,
+            2.295125,
+            2.212292,
+            2.311209,
+            2.169375,
+            2.598292,
+            2.275375
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.06347900000000001,
+          "p95Ms": 0.08075,
+          "ms": [
+            0.08075,
+            0.055958,
+            0.072209,
+            0.053583,
+            0.056167,
+            0.042291,
+            0.053125,
+            0.078167,
+            0.05875,
+            0.08675,
+            0.044625,
+            0.06625,
+            0.06675,
+            0.040417,
+            0.076833,
+            0.07075,
+            0.060708,
+            0.042792,
+            0.07375,
+            0.067209
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.0834375,
+          "p95Ms": 1.196125,
+          "ms": [
+            1.145208,
+            1.031584,
+            1.061958,
+            1.077959,
+            1.041167,
+            1.236167,
+            1.044167,
+            1.043916,
+            1.157209,
+            1.196125,
+            1.031292,
+            1.106334,
+            1.131708,
+            1.024958,
+            1.101917,
+            1.074375,
+            1.108917,
+            1.040375,
+            1.150042,
+            1.088916
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.0142705,
+          "p95Ms": 0.031666,
+          "ms": [
+            0.02275,
+            0.028041,
+            0.008083,
+            0.008416,
+            0.014166,
+            0.04775,
+            0.012333,
+            0.008417,
+            0.031666,
+            0.010541,
+            0.0245,
+            0.023291,
+            0.024792,
+            0.01325,
+            0.014375,
+            0.011,
+            0.023333,
+            0.010917,
+            0.021625,
+            0.009542
+          ]
+        }
+      },
+      "light-whites": {
+        "base-ready": {
+          "medianMs": 1.2451664999999998,
+          "p95Ms": 4.700166,
+          "ms": [
+            1.773,
+            3.188209,
+            1.033833,
+            0.255709,
+            0.28225,
+            4.60875,
+            3.759375,
+            0.619291,
+            0.389667,
+            4.700166,
+            0.33,
+            2.982334,
+            1.653042,
+            0.267375,
+            0.963583,
+            1.4565,
+            0.39525,
+            5.140333,
+            0.284458,
+            2.329458
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.1628955,
+          "p95Ms": 2.421375,
+          "ms": [
+            2.212458,
+            2.187416,
+            2.108292,
+            2.400458,
+            2.065875,
+            2.209916,
+            2.138375,
+            2.054125,
+            2.465666,
+            2.128917,
+            2.125292,
+            2.093416,
+            2.227875,
+            2.359833,
+            2.205292,
+            2.010875,
+            2.121,
+            2.421375,
+            2.25425,
+            2.089125
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.060479,
+          "p95Ms": 0.076792,
+          "ms": [
+            0.072333,
+            0.074959,
+            0.078,
+            0.050458,
+            0.051708,
+            0.067584,
+            0.05625,
+            0.068042,
+            0.051959,
+            0.044375,
+            0.045583,
+            0.058334,
+            0.064,
+            0.070167,
+            0.060625,
+            0.038417,
+            0.06475,
+            0.076792,
+            0.060333,
+            0.052292
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.1016875000000002,
+          "p95Ms": 1.227584,
+          "ms": [
+            1.227584,
+            1.08275,
+            1.157792,
+            1.010125,
+            0.986917,
+            1.164583,
+            1.386791,
+            1.129375,
+            1.066833,
+            1.16225,
+            1.026375,
+            1.081083,
+            1.075833,
+            1.173958,
+            1.120625,
+            1.006583,
+            1.023958,
+            1.183583,
+            1.15575,
+            1.054333
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.0219165,
+          "p95Ms": 0.029667,
+          "ms": [
+            0.010833,
+            0.017625,
+            0.008833,
+            0.009209,
+            0.007708,
+            0.023583,
+            0.021875,
+            0.02275,
+            0.026125,
+            0.029667,
+            0.024667,
+            0.021958,
+            0.01275,
+            0.03275,
+            0.009208,
+            0.008917,
+            0.009042,
+            0.025459,
+            0.024542,
+            0.028458
+          ]
+        }
+      },
+      "light-blacks": {
+        "base-ready": {
+          "medianMs": 1.76875,
+          "p95Ms": 3.683916,
+          "ms": [
+            0.638166,
+            1.494875,
+            0.362042,
+            3.36375,
+            1.87875,
+            0.869334,
+            0.319333,
+            1.793292,
+            3.124416,
+            3.357667,
+            1.678333,
+            0.308666,
+            0.263416,
+            4.754208,
+            2.540042,
+            3.683916,
+            1.744208,
+            0.334791,
+            2.089667,
+            2.6285
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.1022499999999997,
+          "p95Ms": 2.3425,
+          "ms": [
+            2.016459,
+            2.091792,
+            2.032083,
+            2.12075,
+            2.09625,
+            2.016416,
+            2.146417,
+            2.152958,
+            2.160834,
+            2.011125,
+            2.047292,
+            2.549167,
+            2.3425,
+            2.274083,
+            2.10525,
+            2.09925,
+            2.028375,
+            2.082209,
+            2.196792,
+            2.106084
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.0620625,
+          "p95Ms": 0.07275,
+          "ms": [
+            0.044375,
+            0.051667,
+            0.056917,
+            0.063709,
+            0.075834,
+            0.051042,
+            0.061875,
+            0.054,
+            0.026583,
+            0.0455,
+            0.054125,
+            0.071333,
+            0.065209,
+            0.070542,
+            0.06225,
+            0.07275,
+            0.060375,
+            0.06475,
+            0.066791,
+            0.068666
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.0971039999999999,
+          "p95Ms": 1.170916,
+          "ms": [
+            1.021208,
+            0.973833,
+            1.103333,
+            1.110541,
+            1.170916,
+            1.073042,
+            1.078208,
+            1.162333,
+            0.996125,
+            0.987166,
+            1.000417,
+            1.146625,
+            1.1575,
+            1.228417,
+            1.090875,
+            1.110959,
+            1.074625,
+            1.082791,
+            1.158625,
+            1.146292
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.018208000000000002,
+          "p95Ms": 0.028167,
+          "ms": [
+            0.010417,
+            0.012125,
+            0.012833,
+            0.028167,
+            0.023375,
+            0.018291,
+            0.022292,
+            0.023959,
+            0.026542,
+            0.012417,
+            0.006708,
+            0.026834,
+            0.032125,
+            0.009958,
+            0.012041,
+            0.017083,
+            0.020209,
+            0.018125,
+            0.008417,
+            0.026167
+          ]
+        }
+      },
+      "color-saturation": {
+        "base-ready": {
+          "medianMs": 0.892833,
+          "p95Ms": 7.139666,
+          "ms": [
+            0.237875,
+            2.667959,
+            0.242708,
+            0.350166,
+            2.211417,
+            0.463583,
+            0.237209,
+            4.449166,
+            0.254125,
+            4.340625,
+            9.195666,
+            0.341667,
+            6.126625,
+            0.331583,
+            2.281167,
+            3.827375,
+            1.322083,
+            0.24675,
+            0.413666,
+            7.139666
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.1467295,
+          "p95Ms": 2.357084,
+          "ms": [
+            2.019416,
+            2.308416,
+            2.046458,
+            2.357084,
+            1.999125,
+            2.01625,
+            1.961958,
+            2.151042,
+            2.200791,
+            2.107792,
+            2.155875,
+            2.339208,
+            2.502792,
+            2.097375,
+            2.202791,
+            2.15325,
+            2.125167,
+            2.135917,
+            2.142417,
+            2.173917
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.057625,
+          "p95Ms": 0.074167,
+          "ms": [
+            0.074167,
+            0.051375,
+            0.072709,
+            0.032375,
+            0.039708,
+            0.039792,
+            0.057583,
+            0.054625,
+            0.063542,
+            0.063,
+            0.055709,
+            0.032625,
+            0.050333,
+            0.074542,
+            0.072292,
+            0.063541,
+            0.063083,
+            0.051666,
+            0.057667,
+            0.0585
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.0534789999999998,
+          "p95Ms": 1.15325,
+          "ms": [
+            1.213292,
+            1.04,
+            1.127583,
+            0.96325,
+            0.961375,
+            0.959958,
+            1.018167,
+            1.067875,
+            1.095958,
+            1.066375,
+            1.03875,
+            0.928917,
+            1.020167,
+            1.081042,
+            1.09,
+            1.15325,
+            1.058458,
+            1.0485,
+            1.065791,
+            1.02525
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.0121665,
+          "p95Ms": 0.02675,
+          "ms": [
+            0.022958,
+            0.012125,
+            0.0205,
+            0.006333,
+            0.013542,
+            0.007958,
+            0.007458,
+            0.017417,
+            0.017542,
+            0.016208,
+            0.01125,
+            0.006083,
+            0.008458,
+            0.012208,
+            0.020458,
+            0.008375,
+            0.011375,
+            0.032584,
+            0.02675,
+            0.009958
+          ]
+        }
+      },
+      "color-vibrance": {
+        "base-ready": {
+          "medianMs": 1.2879580000000002,
+          "p95Ms": 4.631958,
+          "ms": [
+            0.264208,
+            4.395833,
+            1.419375,
+            0.30975,
+            0.328917,
+            4.4805,
+            3.809542,
+            0.880959,
+            0.358958,
+            1.336583,
+            3.310958,
+            4.631958,
+            1.239333,
+            0.249042,
+            0.328334,
+            3.550959,
+            6.334542,
+            0.235458,
+            3.542041,
+            0.2125
+          ]
+        },
+        "suffix-rendered-once": {
+          "medianMs": 2.1510005000000003,
+          "p95Ms": 2.356084,
+          "ms": [
+            2.356084,
+            2.116584,
+            2.016208,
+            2.423375,
+            2.082791,
+            2.148584,
+            2.222958,
+            2.10025,
+            2.043958,
+            2.172917,
+            2.113875,
+            2.189042,
+            2.271417,
+            2.114583,
+            2.261583,
+            2.241125,
+            2.1375,
+            2.237833,
+            2.153417,
+            1.9495
+          ]
+        },
+        "suffix-joined": {
+          "medianMs": 0.06,
+          "p95Ms": 0.078833,
+          "ms": [
+            0.045541,
+            0.0285,
+            0.059625,
+            0.046916,
+            0.0715,
+            0.065625,
+            0.044209,
+            0.059333,
+            0.042459,
+            0.069083,
+            0.081292,
+            0.0645,
+            0.060375,
+            0.053417,
+            0.078833,
+            0.064958,
+            0.0665,
+            0.054417,
+            0.075,
+            0.028792
+          ]
+        },
+        "joined-validation-and-output": {
+          "medianMs": 1.083375,
+          "p95Ms": 1.224167,
+          "ms": [
+            1.141917,
+            0.984541,
+            1.077,
+            0.96875,
+            1.128167,
+            1.450458,
+            1.120791,
+            1.039792,
+            0.97725,
+            1.14675,
+            1.09525,
+            1.224167,
+            1.08975,
+            1.055291,
+            1.092625,
+            1.0685,
+            1.103417,
+            1.028,
+            1.018208,
+            0.950292
+          ]
+        },
+        "output-materialized": {
+          "medianMs": 0.0187915,
+          "p95Ms": 0.036084,
+          "ms": [
+            0.021458,
+            0.025584,
+            0.015583,
+            0.036084,
+            0.030917,
+            0.018917,
+            0.006959,
+            0.012708,
+            0.011041,
+            0.013333,
+            0.018125,
+            0.01175,
+            0.021875,
+            0.020875,
+            0.009625,
+            0.008333,
+            0.018666,
+            0.021833,
+            0.03625,
+            0.022958
+          ]
+        }
+      }
+    }
+  }
+}

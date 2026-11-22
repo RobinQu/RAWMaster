@@ -1,0 +1,874 @@
+{
+  "analysisCache" : {
+    "retainedRawTextureBytes" : 0,
+    "scalarHistoryEntries" : 0,
+    "scalarHistoryHits" : 0,
+    "workingImageBuilds" : 0,
+    "workingImageHits" : 0
+  },
+  "application" : "RAWMaster",
+  "binarySHA256" : "4116fe08d4dd360979318b722bd7c2bf1310c372f518036b6c571f3ecfba1e1f",
+  "build" : "release",
+  "clock" : "DispatchTime.uptimeNanoseconds; result verification\/hash and JSON outside timed interval",
+  "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "gpu" : "Apple M4 Max",
+  "inspectionFramePixels" : [
+    2400,
+    1600
+  ],
+  "operations" : [
+    {
+      "boundary" : "source-bound focus selection through 2400px rendered lens blur and sampled RGB",
+      "id" : "blur-point-focus",
+      "input" : "alternate two points or two rectangles on the real inferred depth map",
+      "samples" : [
+        {
+          "digest" : "50299a72f8d2838d38d098857feda006787549353e3e6cb8417f335482d10cb1",
+          "ms" : 20.643584000000001,
+          "phase" : "first",
+          "state" : 0,
+          "values" : [
+            0.28999999999999998,
+            0.31,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              52,
+              188,
+              19,
+              171,
+              231,
+              17
+            ]
+          }
+        },
+        {
+          "digest" : "77853668bcc37c6b4dd35ca334a14db745ef0187fa02c22d2c6c2bab91a15d0d",
+          "ms" : 15.347333000000001,
+          "phase" : "first",
+          "state" : 1,
+          "values" : [
+            0.72999999999999998,
+            0.68999999999999984,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              233,
+              166,
+              81,
+              122,
+              190,
+              186
+            ]
+          }
+        },
+        {
+          "digest" : "50299a72f8d2838d38d098857feda006787549353e3e6cb8417f335482d10cb1",
+          "ms" : 15.183083,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.28999999999999998,
+            0.31,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              52,
+              188,
+              19,
+              171,
+              231,
+              17
+            ]
+          }
+        },
+        {
+          "digest" : "77853668bcc37c6b4dd35ca334a14db745ef0187fa02c22d2c6c2bab91a15d0d",
+          "ms" : 16.116792,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.72999999999999998,
+            0.68999999999999984,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              233,
+              166,
+              81,
+              122,
+              190,
+              186
+            ]
+          }
+        },
+        {
+          "digest" : "50299a72f8d2838d38d098857feda006787549353e3e6cb8417f335482d10cb1",
+          "ms" : 16.648125,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.28999999999999998,
+            0.31,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              52,
+              188,
+              19,
+              171,
+              231,
+              17
+            ]
+          }
+        },
+        {
+          "digest" : "77853668bcc37c6b4dd35ca334a14db745ef0187fa02c22d2c6c2bab91a15d0d",
+          "ms" : 16.974416999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.72999999999999998,
+            0.68999999999999984,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              233,
+              166,
+              81,
+              122,
+              190,
+              186
+            ]
+          }
+        },
+        {
+          "digest" : "50299a72f8d2838d38d098857feda006787549353e3e6cb8417f335482d10cb1",
+          "ms" : 16.418042,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.28999999999999998,
+            0.31,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              52,
+              188,
+              19,
+              171,
+              231,
+              17
+            ]
+          }
+        },
+        {
+          "digest" : "77853668bcc37c6b4dd35ca334a14db745ef0187fa02c22d2c6c2bab91a15d0d",
+          "ms" : 16.797457999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.72999999999999998,
+            0.68999999999999984,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              233,
+              166,
+              81,
+              122,
+              190,
+              186
+            ]
+          }
+        },
+        {
+          "digest" : "50299a72f8d2838d38d098857feda006787549353e3e6cb8417f335482d10cb1",
+          "ms" : 16.770499999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.28999999999999998,
+            0.31,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              52,
+              188,
+              19,
+              171,
+              231,
+              17
+            ]
+          }
+        },
+        {
+          "digest" : "77853668bcc37c6b4dd35ca334a14db745ef0187fa02c22d2c6c2bab91a15d0d",
+          "ms" : 16.739208000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.72999999999999998,
+            0.68999999999999984,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              233,
+              166,
+              81,
+              122,
+              190,
+              186
+            ]
+          }
+        },
+        {
+          "digest" : "50299a72f8d2838d38d098857feda006787549353e3e6cb8417f335482d10cb1",
+          "ms" : 17.14875,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.28999999999999998,
+            0.31,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              52,
+              188,
+              19,
+              171,
+              231,
+              17
+            ]
+          }
+        },
+        {
+          "digest" : "77853668bcc37c6b4dd35ca334a14db745ef0187fa02c22d2c6c2bab91a15d0d",
+          "ms" : 16.405583,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.72999999999999998,
+            0.68999999999999984,
+            0.070000000000000007
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              233,
+              166,
+              81,
+              122,
+              190,
+              186
+            ]
+          }
+        }
+      ],
+      "status" : "measured",
+      "verification" : "two stable different result digests"
+    },
+    {
+      "boundary" : "source-bound focus selection through 2400px rendered lens blur and sampled RGB",
+      "id" : "blur-area-focus",
+      "input" : "alternate two points or two rectangles on the real inferred depth map",
+      "samples" : [
+        {
+          "digest" : "8e0bd2bbd289c3b0d671f1754ebba72ea7eabf503ffb4d390a725003b98afd3a",
+          "ms" : 15.475291,
+          "phase" : "first",
+          "state" : 0,
+          "values" : [
+            0.34999999999999998,
+            0.35999999999999999,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              24,
+              28,
+              241,
+              164,
+              190,
+              99
+            ]
+          }
+        },
+        {
+          "digest" : "1f9abaf3e53a095b4fded108df2757c8eb3682a4ba742ea29c619240e59c3b56",
+          "ms" : 16.010583,
+          "phase" : "first",
+          "state" : 1,
+          "values" : [
+            0.79000000000000004,
+            0.73999999999999988,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              135,
+              105,
+              74,
+              58,
+              2,
+              104
+            ]
+          }
+        },
+        {
+          "digest" : "8e0bd2bbd289c3b0d671f1754ebba72ea7eabf503ffb4d390a725003b98afd3a",
+          "ms" : 16.848042,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.34999999999999998,
+            0.35999999999999999,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              24,
+              28,
+              241,
+              164,
+              190,
+              99
+            ]
+          }
+        },
+        {
+          "digest" : "1f9abaf3e53a095b4fded108df2757c8eb3682a4ba742ea29c619240e59c3b56",
+          "ms" : 17.777125000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.79000000000000004,
+            0.73999999999999988,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              135,
+              105,
+              74,
+              58,
+              2,
+              104
+            ]
+          }
+        },
+        {
+          "digest" : "8e0bd2bbd289c3b0d671f1754ebba72ea7eabf503ffb4d390a725003b98afd3a",
+          "ms" : 16.868207999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.34999999999999998,
+            0.35999999999999999,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              24,
+              28,
+              241,
+              164,
+              190,
+              99
+            ]
+          }
+        },
+        {
+          "digest" : "1f9abaf3e53a095b4fded108df2757c8eb3682a4ba742ea29c619240e59c3b56",
+          "ms" : 16.744665999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.79000000000000004,
+            0.73999999999999988,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              135,
+              105,
+              74,
+              58,
+              2,
+              104
+            ]
+          }
+        },
+        {
+          "digest" : "8e0bd2bbd289c3b0d671f1754ebba72ea7eabf503ffb4d390a725003b98afd3a",
+          "ms" : 16.878875000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.34999999999999998,
+            0.35999999999999999,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              24,
+              28,
+              241,
+              164,
+              190,
+              99
+            ]
+          }
+        },
+        {
+          "digest" : "1f9abaf3e53a095b4fded108df2757c8eb3682a4ba742ea29c619240e59c3b56",
+          "ms" : 16.964375,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.79000000000000004,
+            0.73999999999999988,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              135,
+              105,
+              74,
+              58,
+              2,
+              104
+            ]
+          }
+        },
+        {
+          "digest" : "8e0bd2bbd289c3b0d671f1754ebba72ea7eabf503ffb4d390a725003b98afd3a",
+          "ms" : 16.815625000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.34999999999999998,
+            0.35999999999999999,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              24,
+              28,
+              241,
+              164,
+              190,
+              99
+            ]
+          }
+        },
+        {
+          "digest" : "1f9abaf3e53a095b4fded108df2757c8eb3682a4ba742ea29c619240e59c3b56",
+          "ms" : 16.759291999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.79000000000000004,
+            0.73999999999999988,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              135,
+              105,
+              74,
+              58,
+              2,
+              104
+            ]
+          }
+        },
+        {
+          "digest" : "8e0bd2bbd289c3b0d671f1754ebba72ea7eabf503ffb4d390a725003b98afd3a",
+          "ms" : 16.882916999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            0.34999999999999998,
+            0.35999999999999999,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              24,
+              28,
+              241,
+              164,
+              190,
+              99
+            ]
+          }
+        },
+        {
+          "digest" : "1f9abaf3e53a095b4fded108df2757c8eb3682a4ba742ea29c619240e59c3b56",
+          "ms" : 16.286417,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            0.79000000000000004,
+            0.73999999999999988,
+            0.20591260281974005
+          ],
+          "witness" : {
+            "sampleRGB8SHA256Prefix" : [
+              135,
+              105,
+              74,
+              58,
+              2,
+              104
+            ]
+          }
+        }
+      ],
+      "status" : "measured",
+      "verification" : "two stable different result digests"
+    },
+    {
+      "boundary" : "source-bound focus selection through 2400px rendered lens blur and sampled RGB",
+      "id" : "blur-subject-focus",
+      "input" : "repeat Vision subject selection from two displaced focus points",
+      "reason" : "无法解码图像",
+      "samples" : [
+
+      ],
+      "status" : "inconclusive",
+      "verification" : "each automatic result changes the input; repeatable per state"
+    },
+    {
+      "boundary" : "real RAW open · import CUBE to new on-disk library, load the persisted LUT and return its rendered photo",
+      "id" : "grading-lut-import",
+      "input" : "alternate warm and monochrome 17³ CUBE files with a new library per trial",
+      "samples" : [
+        {
+          "digest" : "c33cd4f36ff947ff6b7934ba0decd9608a9f8385d492443e8d530025ff172770",
+          "ms" : 24.026250000000001,
+          "phase" : "first",
+          "state" : 0,
+          "text" : "d753b6611ce8ca2acec240f77c58e90731d1ed72bf837a60be3d317beae94395"
+        },
+        {
+          "digest" : "dd4950e15bb377db611d9e18eb1c4b7cb67f0a07461e4994dd942ad581f258e8",
+          "ms" : 10.002917,
+          "phase" : "first",
+          "state" : 1,
+          "text" : "2be5c2fa69f3d4b6909fadd823818cea010fe0bd354dc0db92a41c0993d4c651"
+        },
+        {
+          "digest" : "c33cd4f36ff947ff6b7934ba0decd9608a9f8385d492443e8d530025ff172770",
+          "ms" : 10.1495,
+          "phase" : "warm",
+          "state" : 0,
+          "text" : "d753b6611ce8ca2acec240f77c58e90731d1ed72bf837a60be3d317beae94395"
+        },
+        {
+          "digest" : "dd4950e15bb377db611d9e18eb1c4b7cb67f0a07461e4994dd942ad581f258e8",
+          "ms" : 7.9546669999999997,
+          "phase" : "warm",
+          "state" : 1,
+          "text" : "2be5c2fa69f3d4b6909fadd823818cea010fe0bd354dc0db92a41c0993d4c651"
+        },
+        {
+          "digest" : "c33cd4f36ff947ff6b7934ba0decd9608a9f8385d492443e8d530025ff172770",
+          "ms" : 13.771709,
+          "phase" : "warm",
+          "state" : 0,
+          "text" : "d753b6611ce8ca2acec240f77c58e90731d1ed72bf837a60be3d317beae94395"
+        },
+        {
+          "digest" : "dd4950e15bb377db611d9e18eb1c4b7cb67f0a07461e4994dd942ad581f258e8",
+          "ms" : 12.797167,
+          "phase" : "warm",
+          "state" : 1,
+          "text" : "2be5c2fa69f3d4b6909fadd823818cea010fe0bd354dc0db92a41c0993d4c651"
+        },
+        {
+          "digest" : "c33cd4f36ff947ff6b7934ba0decd9608a9f8385d492443e8d530025ff172770",
+          "ms" : 13.172499999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "text" : "d753b6611ce8ca2acec240f77c58e90731d1ed72bf837a60be3d317beae94395"
+        },
+        {
+          "digest" : "dd4950e15bb377db611d9e18eb1c4b7cb67f0a07461e4994dd942ad581f258e8",
+          "ms" : 10.351292000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "text" : "2be5c2fa69f3d4b6909fadd823818cea010fe0bd354dc0db92a41c0993d4c651"
+        },
+        {
+          "digest" : "c33cd4f36ff947ff6b7934ba0decd9608a9f8385d492443e8d530025ff172770",
+          "ms" : 9.9265840000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "text" : "d753b6611ce8ca2acec240f77c58e90731d1ed72bf837a60be3d317beae94395"
+        },
+        {
+          "digest" : "dd4950e15bb377db611d9e18eb1c4b7cb67f0a07461e4994dd942ad581f258e8",
+          "ms" : 12.124290999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "text" : "2be5c2fa69f3d4b6909fadd823818cea010fe0bd354dc0db92a41c0993d4c651"
+        },
+        {
+          "digest" : "c33cd4f36ff947ff6b7934ba0decd9608a9f8385d492443e8d530025ff172770",
+          "ms" : 10.248042,
+          "phase" : "warm",
+          "state" : 0,
+          "text" : "d753b6611ce8ca2acec240f77c58e90731d1ed72bf837a60be3d317beae94395"
+        },
+        {
+          "digest" : "dd4950e15bb377db611d9e18eb1c4b7cb67f0a07461e4994dd942ad581f258e8",
+          "ms" : 11.027583,
+          "phase" : "warm",
+          "state" : 1,
+          "text" : "2be5c2fa69f3d4b6909fadd823818cea010fe0bd354dc0db92a41c0993d4c651"
+        }
+      ],
+      "status" : "measured",
+      "verification" : "two stable different result digests"
+    },
+    {
+      "boundary" : "detached scope · create and size a hidden native panel through first raster of the real photo vectorscope",
+      "id" : "color-floating-scopes",
+      "input" : "same photo histogram, render floating content at 360×280 \/ 480×360 points",
+      "samples" : [
+        {
+          "digest" : "7e7e6d94d42d4e7544649e2665d6ca5dd1c1d61ea40cf6f37b33f67e1fb1c2a4",
+          "ms" : 98.231166999999999,
+          "phase" : "first",
+          "state" : 0,
+          "values" : [
+            720,
+            560,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              202
+            ]
+          }
+        },
+        {
+          "digest" : "fcbb49691d0fdffb28093e389ae3b9069b328816b210f3d50f01f9ce9d927d73",
+          "ms" : 45.301833999999999,
+          "phase" : "first",
+          "state" : 1,
+          "values" : [
+            960,
+            720,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              497
+            ]
+          }
+        },
+        {
+          "digest" : "7e7e6d94d42d4e7544649e2665d6ca5dd1c1d61ea40cf6f37b33f67e1fb1c2a4",
+          "ms" : 32.654333000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            720,
+            560,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              202
+            ]
+          }
+        },
+        {
+          "digest" : "fcbb49691d0fdffb28093e389ae3b9069b328816b210f3d50f01f9ce9d927d73",
+          "ms" : 41.630249999999997,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            960,
+            720,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              497
+            ]
+          }
+        },
+        {
+          "digest" : "7e7e6d94d42d4e7544649e2665d6ca5dd1c1d61ea40cf6f37b33f67e1fb1c2a4",
+          "ms" : 36.874042000000003,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            720,
+            560,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              202
+            ]
+          }
+        },
+        {
+          "digest" : "fcbb49691d0fdffb28093e389ae3b9069b328816b210f3d50f01f9ce9d927d73",
+          "ms" : 44.801084000000003,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            960,
+            720,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              497
+            ]
+          }
+        },
+        {
+          "digest" : "7e7e6d94d42d4e7544649e2665d6ca5dd1c1d61ea40cf6f37b33f67e1fb1c2a4",
+          "ms" : 37.773583000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            720,
+            560,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              202
+            ]
+          }
+        },
+        {
+          "digest" : "fcbb49691d0fdffb28093e389ae3b9069b328816b210f3d50f01f9ce9d927d73",
+          "ms" : 41.981957999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            960,
+            720,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              497
+            ]
+          }
+        },
+        {
+          "digest" : "7e7e6d94d42d4e7544649e2665d6ca5dd1c1d61ea40cf6f37b33f67e1fb1c2a4",
+          "ms" : 46.420625000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            720,
+            560,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              202
+            ]
+          }
+        },
+        {
+          "digest" : "fcbb49691d0fdffb28093e389ae3b9069b328816b210f3d50f01f9ce9d927d73",
+          "ms" : 37.338292000000003,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            960,
+            720,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              497
+            ]
+          }
+        },
+        {
+          "digest" : "7e7e6d94d42d4e7544649e2665d6ca5dd1c1d61ea40cf6f37b33f67e1fb1c2a4",
+          "ms" : 33.134583999999997,
+          "phase" : "warm",
+          "state" : 0,
+          "values" : [
+            720,
+            560,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              202
+            ]
+          }
+        },
+        {
+          "digest" : "fcbb49691d0fdffb28093e389ae3b9069b328816b210f3d50f01f9ce9d927d73",
+          "ms" : 56.950583000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "values" : [
+            960,
+            720,
+            10880
+          ],
+          "witness" : {
+            "chromaticPlotPixels" : [
+              497
+            ]
+          }
+        }
+      ],
+      "status" : "measured",
+      "verification" : "two stable different result digests"
+    }
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "positionA" : [
+    0.28999999999999998,
+    0.31
+  ],
+  "positionB" : [
+    0.72999999999999998,
+    0.68999999999999995
+  ],
+  "protocol" : "rawmaster-analysis-and-inspection-v1",
+  "recordedAt" : "2026-11-22T08:33:11Z",
+  "repeats" : 10,
+  "schemaVersion" : 1,
+  "scopeRasterPixels" : [
+    256,
+    168
+  ],
+  "sourcePixels" : [
+    9504,
+    6336
+  ],
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "supplementaryOperations" : [
+
+  ]
+}

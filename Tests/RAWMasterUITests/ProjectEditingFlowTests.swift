@@ -67,11 +67,11 @@ final class ProjectEditingFlowTests: XCTestCase {
         model.selectScope(.project, id: f.assets[0].projectID); model.setMode(.single); model.select(f.assets[0]); model.openNativeEditing()
         let editing = try XCTUnwrap(model.editing); try await wait { editing.work != nil }
         editing.setRecipe { $0.exposureEV = 0.4 }; model.openRenderedPhotoExport()
-        XCTAssertTrue(editing.showDraftExportChoice)
+        XCTAssertFalse(editing.showDraftExportChoice); XCTAssertFalse(editing.showExport); XCTAssertTrue(model.exportWorkspacePresented)
+        XCTAssertEqual(editing.exportVersion?.recipe.exposureEV, 0.4)
         model.admissions.removeAll { $0.assetID == f.assets[0].id }
         XCTAssertFalse(model.canOpenNativeEditing); XCTAssertFalse(editing.isPresented)
         XCTAssertFalse(editing.showDraftExportChoice); XCTAssertNil(editing.asset)
-        editing.saveDraftForExport()
         XCTAssertFalse(editing.showExport); XCTAssertFalse(editing.saving)
         await editing.shutdown()
     }
@@ -106,7 +106,7 @@ final class ProjectEditingFlowTests: XCTestCase {
         XCTAssertTrue(editing.isPresented)
         await editing.shutdown()
     }
-    @MainActor func testDraftExportRequiresExplicitSavedDraftOrAdoptedTargetAndNeverAutoAdopts() async throws {
+    @MainActor func testLiveExportUsesCurrentRecipeWithoutSavingOrAdoptingACandidate() async throws {
         let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
         let model = AppModel(libraryURL: f.library, defaults: f.defaults)
         model.selectScope(.project, id: f.assets[0].projectID); model.setMode(.single); model.select(f.assets[0]); model.openNativeEditing()
@@ -114,17 +114,12 @@ final class ProjectEditingFlowTests: XCTestCase {
         let original = try XCTUnwrap(editing.work?.originalVersionID)
         editing.setRecipe { $0.exposureEV = 0.5 }
         model.openRenderedPhotoExport()
-        XCTAssertTrue(editing.showDraftExportChoice); XCTAssertFalse(editing.showExport)
-        editing.exportAdoptedInsteadOfDraft()
-        XCTAssertEqual(editing.exportVersionID, original); XCTAssertTrue(editing.showExport)
+        XCTAssertFalse(editing.showDraftExportChoice); XCTAssertFalse(editing.showExport); XCTAssertTrue(model.exportWorkspacePresented)
+        XCTAssertEqual(editing.exportVersionID, original)
+        XCTAssertEqual(editing.exportVersion?.recipe.exposureEV, 0.5)
         XCTAssertEqual(editing.versions.count, 1)
-        editing.showExport = false
-        model.openRenderedPhotoExport(); editing.saveDraftForExport()
-        try await wait { !editing.saving && editing.showExport }
-        let saved = try XCTUnwrap(editing.versions.first { $0.id == editing.exportVersionID })
-        XCTAssertEqual(saved.kind, .development); XCTAssertEqual(saved.recipe.exposureEV, 0.5)
         XCTAssertEqual(editing.work?.adoptedVersionID, original)
-        XCTAssertNotEqual(saved.id, original)
+        XCTAssertFalse(editing.saving)
         await editing.shutdown()
     }
     @MainActor func testLeavingProjectKeepsAlreadySubmittedAIJobAndUnadoptedResult() async throws {

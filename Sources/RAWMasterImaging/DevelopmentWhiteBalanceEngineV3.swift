@@ -19,6 +19,7 @@ extern "C" { namespace coreimage {
 """#)
     guard let result = all.first(where: { $0.name == "rmAbsoluteWB" }) else { throw DevelopmentError.unsupportedEngine }; return result
   }
+  static func prewarm(){_ = try? kernel.get()}
   static func initialState(source: DevelopmentLocalEditSourceBinding, rawDefault: DevelopmentAsShotWhiteBalance?) throws -> DevelopmentResolvedWhiteBalanceV3 {
     let result: DevelopmentResolvedWhiteBalanceV3
     if let rawDefault {
@@ -26,7 +27,7 @@ extern "C" { namespace coreimage {
       let pick = DevelopmentRawWhiteBalancePickV3(baseline:tt,usesSourceDefaultAtZero:true)
       // Inactive manual-mode seed is within its UI domain; original/as-shot diagnostics and
       // default-derived pick baselines retain their actual values and are never assigned here.
-      let manual = DevelopmentNativeWhiteBalanceV3(temperature:min(20000,max(2000,tt.temperature)),tint:tt.tint)
+      let manual = DevelopmentNativeWhiteBalanceV3(temperature:min(50000,max(2000,tt.temperature)),tint:tt.tint)
       result = .raw(source:source,state:.init(defaultTTDiagnostic:tt,temperatureTint:manual,gray:pick,skin:pick))
     } else {
       let neutral = DevelopmentImageWhiteBalancePickV3(baseline:.identity,sampledLinearRGB:.init(red:1,green:1,blue:1))
@@ -47,6 +48,18 @@ extern "C" { namespace coreimage {
     case let .temperatureTint(t,v):return .temperatureTint(temperature:t,tint:v)
     default:throw DevelopmentV3Error.unsupportedAdjustment(.whiteBalance)
     }
+  }
+  /// Shared linear-sRGB FlashRaw prefix. The base remains neutral; WB/EV are GPU operations on it.
+  static func applyFlashRaw(_ p:DevelopmentAdjustmentsV3,to image:CIImage,asShotWhiteBalance:DevelopmentAsShotWhiteBalance?)throws->CIImage {
+    var image=image
+    if let basis=p.legacyBasis,basis.exposureEV != 0 { image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:basis.exposureEV]) }
+    let requested=try nativeTarget(p.whiteBalance) ?? p.legacyBasis?.whiteBalance ?? .asShot
+    if case let .temperatureTint(t,v)=requested {
+      guard let original=asShotWhiteBalance else{throw DevelopmentV3Error.unsupportedNativeParameters}
+      image=image.applyingFilter("CITemperatureAndTint",parameters:["inputNeutral":CIVector(x:CGFloat(original.temperature),y:CGFloat(original.tint)),"inputTargetNeutral":CIVector(x:t,y:v)])
+    }
+    if p.light.enabled,p.light.exposure != 0 { image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:2*p.light.exposure]) }
+    return image
   }
   static func applyImage(_ p: DevelopmentWhiteBalanceV3, to image: CIImage, context: CIContext, checkCancellation: (() throws -> Void)? = nil) throws -> CIImage {
     guard p.enabled else { return image }

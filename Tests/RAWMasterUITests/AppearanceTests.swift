@@ -134,6 +134,28 @@ final class AppearanceTests: XCTestCase {
         XCTAssertFalse(monitor.ownsWindowEvent(release, keyWindow: settings, isActive: true))
         XCTAssertFalse(monitor.ownsWindowEvent(release, keyWindow: workbench, isActive: false))
     }
+    @MainActor func testKeyboardMonitorAttachmentSynchronizesCurrentWindowFocus() async throws {
+        _ = NSApplication.shared
+        let window = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 320, height: 220),
+            styleMask: [.titled, .resizable], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        defer { window.close() }
+        let anchor = WorkbenchKeyAnchor(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        window.contentView?.addSubview(anchor)
+        window.orderFront(nil)
+        let synchronized = expectation(description: "current focus synchronized on monitor attachment")
+        var values: [Bool] = []
+        let monitor = KeyboardMonitor.Coordinator(handler: { _ in false }, focusChanged: { focused in
+            values.append(focused)
+            if values.count == 1 { synchronized.fulfill() }
+        })
+        monitor.view = anchor
+        monitor.install()
+        defer { monitor.remove() }
+        await fulfillment(of: [synchronized], timeout: 2)
+        XCTAssertEqual(values.first, window.isKeyWindow)
+    }
+
     @MainActor final class EditorWithUndo: NSTextView {
         let localUndo = UndoManager()
         override var undoManager: UndoManager? { localUndo }

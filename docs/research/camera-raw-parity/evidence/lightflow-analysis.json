@@ -1,0 +1,965 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "adapter": "BrowserWebGpu:  ( )",
+  "adapterInfo": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "rawSize": [
+    9504,
+    6336
+  ],
+  "rawOpenMs": 1135.07,
+  "protocol": "lightflow-auto-analysis-v1",
+  "samples": 20,
+  "sample": {
+    "width": 384,
+    "height": 256,
+    "format": "linear RGBA32F",
+    "sha256": "35daa5c620e8f831ab829a41b49d0ebbd2e13233a879fca75fda8f5dceba0bb2",
+    "opaque": 98304,
+    "minimumRGB": 0.0023174285888671875,
+    "maximumRGB": 2.857421875,
+    "sampleReadyMs": 5.25
+  },
+  "operations": [
+    {
+      "id": "light-auto",
+      "featureIds": [
+        "light-auto"
+      ],
+      "options": {
+        "whiteBalance": false
+      },
+      "fields": [
+        "exposure",
+        "contrast",
+        "highlights",
+        "shadows",
+        "whites",
+        "blacks"
+      ],
+      "startingEdits": [
+        {
+          "exposure": -1.25,
+          "contrast": 20
+        },
+        {
+          "exposure": 1.75,
+          "contrast": -25
+        }
+      ],
+      "status": "measured",
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 7.819999992847443,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 3.1600000262260437,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 3.005000054836273,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.9649999737739563,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.8449999690055847,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.8199999928474426,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.850000023841858,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.775000035762787,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.8050000071525574,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.800000011920929,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.7699999809265137,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.784999966621399,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.815000057220459,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.7549999952316284,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.790000021457672,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.7800000309944153,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.774999976158142,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.7949999570846558,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.7949999570846558,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.759999990463257,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 2.814999997615814,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 2.9700000286102295,
+          "digest": "f53a109a985b9bb2f67ddf058ebc79d80f2ddd5505e6b2a15f1e61f1eb8cd8a6",
+          "values": {
+            "blacks": -40,
+            "contrast": 5,
+            "exposure": 0.30000000000000004,
+            "highlights": -40,
+            "shadows": 12,
+            "whites": -40
+          },
+          "changed": [
+            "exposure",
+            "contrast",
+            "highlights",
+            "shadows",
+            "whites",
+            "blacks"
+          ],
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "color-wb-auto",
+      "featureIds": [
+        "color-wb-auto"
+      ],
+      "options": {
+        "tone": false
+      },
+      "fields": [
+        "temperature",
+        "tint"
+      ],
+      "startingEdits": [
+        {
+          "wbMode": "tungsten",
+          "temperature": 2850,
+          "tint": 0
+        },
+        {
+          "wbMode": "daylight",
+          "temperature": 5500,
+          "tint": 10
+        }
+      ],
+      "status": "measured",
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 12.539999961853027,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 9.360000014305115,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 9.23499995470047,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 9.009999990463257,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.960000038146973,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.825000047683716,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.875,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.805000007152557,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.894999980926514,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.865000009536743,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.824999988079071,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.825000047683716,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.689999997615814,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.699999988079071,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 9.155000030994415,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 9.114999949932098,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.985000014305115,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.960000038146973,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.945000052452087,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.860000014305115,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 8.790000021457672,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 8.715000033378601,
+          "digest": "01933139649d5ca544886dffbf2bc63087a32d1906768129dff724cb3a0fa14c",
+          "values": {
+            "temperature": 8326,
+            "tint": 27,
+            "wbMode": "auto"
+          },
+          "changed": [
+            "temperature",
+            "tint"
+          ],
+          "verified": true
+        }
+      ]
+    }
+  ],
+  "analysisProbeSHA256": "a6a5f705e5b89f71b5e253890f4c1e50c4d597546dd6ea6299f7248c0147258e",
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T08:29:30.522321+00:00",
+  "engineSHA256": {
+    "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "browserBinary": "chrome-headless-shell",
+  "probeSHA256": "6abc7a8bf7a59a28dc901338c22e0139ee9114682b31c94dd2e5cb4585da140d",
+  "system": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "chip": "Apple M4 Max"
+  },
+  "boundary": "A prepared 384px worker analysis sample and the changed starting recipe to Rust analysisAuto's returned numeric targets"
+}

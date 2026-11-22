@@ -1,0 +1,517 @@
+{
+  "schemaVersion": 1,
+  "source": "Sony ILCE-7RM5 ARW, 9504×6336 native sensor / 2400×1600 sRGB display",
+  "scope": "Standalone sensor-resolution nonlinear sharpening mask. Pre-warmed production FlashRaw source. A fresh actual interactive request returns a joined image, followed by a separate settled request. No display bitmap memoization was provided by the harness.",
+  "gpu": "Apple M4 Max",
+  "policy": "For consecutive pure visualized sharpening only, keep the Core Image context until its next operation or mode change. In both variants the source, amplification curve, interpolation, all-frame float/alpha validation, settled pass and output quantization are identical.",
+  "optOut": "RAWMASTER_PROXY_KEEP_NATIVE_MASK_CONTEXT=0",
+  "abOrder": "cleared,retained,retained,cleared in separate processes using the same Release binary",
+  "baseline": "history/release-operators-d5f0c602-regression.json",
+  "priorFullSequence": {
+    "operation": "global-sharpen-mask-preview",
+    "current": {
+      "interactive": {
+        "count": 3,
+        "medianMs": 58.700583,
+        "p95Ms": 114.66648269999999,
+        "maxMs": 120.884916,
+        "samplesMs": [
+          120.884916,
+          58.700583,
+          54.588875
+        ]
+      },
+      "settled": {
+        "count": 1,
+        "medianMs": 1359.262625,
+        "p95Ms": 1359.262625,
+        "maxMs": 1359.262625,
+        "samplesMs": [
+          1359.262625
+        ]
+      },
+      "outputPixels": [
+        2400,
+        1600
+      ],
+      "p99ChannelError": 0,
+      "maximumChannelError": 1
+    },
+    "baseline": {
+      "interactive": {
+        "count": 3,
+        "medianMs": 30.234458,
+        "p95Ms": 31.5161336,
+        "maxMs": 31.658542,
+        "samplesMs": [
+          30.234458,
+          31.658542,
+          29.449417
+        ]
+      },
+      "settled": {
+        "count": 1,
+        "medianMs": 2043.61375,
+        "p95Ms": 2043.61375,
+        "maxMs": 2043.61375,
+        "samplesMs": [
+          2043.61375
+        ]
+      },
+      "outputPixels": [
+        2400,
+        1600
+      ],
+      "p99ChannelError": 209,
+      "maximumChannelError": 255
+    },
+    "p99ChannelErrorChange": -209,
+    "interactiveMedianChangePercent": 94.15126608189901,
+    "settledMedianChangePercent": -33.48730282324631
+  },
+  "raw": [
+    {
+      "kind": "timing",
+      "retainsContext": false,
+      "reportSHA256": "901a1fc557be1c774d39606be1af776b1cc59a88ea1f2c74828a07c47ed458f4",
+      "measuredAt": "2026-11-22T09:17:09Z",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "binarySHA256": "37eb6a857223973bc637137dc1158cd60f1b20ed580137fb4fb96fb2e4d15324",
+      "sourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "frames": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 36.732291,
+          "interactiveMilliseconds": [
+            325.281416,
+            36.732291,
+            35.508541
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 464.532958,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ],
+      "blankFrames": []
+    },
+    {
+      "kind": "timing",
+      "retainsContext": true,
+      "reportSHA256": "c6f642cc525994320e575f38a442ff0f82beae057699f38940102ec8ab6a1bab",
+      "measuredAt": "2026-11-22T09:17:11Z",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "binarySHA256": "37eb6a857223973bc637137dc1158cd60f1b20ed580137fb4fb96fb2e4d15324",
+      "sourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "frames": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 31.450458,
+          "interactiveMilliseconds": [
+            312.043875,
+            31.450458,
+            30.563416
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 443.847208,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ],
+      "blankFrames": []
+    },
+    {
+      "kind": "timing",
+      "retainsContext": true,
+      "reportSHA256": "0e019fdf2615ad1443503b5b7c8623802c4b7458f3b2831b8c405e5201681553",
+      "measuredAt": "2026-11-22T09:17:12Z",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "binarySHA256": "37eb6a857223973bc637137dc1158cd60f1b20ed580137fb4fb96fb2e4d15324",
+      "sourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "frames": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 29.696708,
+          "interactiveMilliseconds": [
+            326.636375,
+            29.339041,
+            29.696708
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 458.331042,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ],
+      "blankFrames": []
+    },
+    {
+      "kind": "timing",
+      "retainsContext": false,
+      "reportSHA256": "42621ece07b57f26dfd6c96df3e7eae79eef57625e8457c7c863eee9ed6ee90b",
+      "measuredAt": "2026-11-22T09:17:14Z",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "binarySHA256": "37eb6a857223973bc637137dc1158cd60f1b20ed580137fb4fb96fb2e4d15324",
+      "sourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "frames": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 34.814292,
+          "interactiveMilliseconds": [
+            352.568084,
+            34.814292,
+            34.127375
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 461.004125,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ],
+      "blankFrames": []
+    },
+    {
+      "kind": "pixels",
+      "retainsContext": false,
+      "reportSHA256": "53d8bcbda669a63df6b16359f54a365c35d063ff964a4492cea58558fd525b61",
+      "measuredAt": "2026-11-22T09:17:18Z",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "binarySHA256": "37eb6a857223973bc637137dc1158cd60f1b20ed580137fb4fb96fb2e4d15324",
+      "sourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "frames": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 34.730125,
+          "interactiveMilliseconds": [
+            313.774083,
+            34.730125,
+            33.730625
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 456.569084,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 32.743833,
+          "interactiveMilliseconds": [
+            32.743833,
+            32.853792,
+            32.73575
+          ],
+          "label": "native-sharpen-mask-15",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 466.431875,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 33.046834,
+          "interactiveMilliseconds": [
+            33.184791,
+            33.046834,
+            31.807792
+          ],
+          "label": "native-sharpen-mask-60",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 500.763875,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 34.653958,
+          "interactiveMilliseconds": [
+            34.653958,
+            33.763125,
+            38.006625
+          ],
+          "label": "native-sharpen-mask-90",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 502.780291,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ],
+      "blankFrames": []
+    },
+    {
+      "kind": "pixels",
+      "retainsContext": true,
+      "reportSHA256": "ed6e49a92861558003eff59aeba81c2377756dd51f17823a2ba61921c120922b",
+      "measuredAt": "2026-11-22T09:17:21Z",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "binarySHA256": "37eb6a857223973bc637137dc1158cd60f1b20ed580137fb4fb96fb2e4d15324",
+      "sourceAfter": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "override": false,
+      "prewarming": true,
+      "frames": [
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 29.577958,
+          "interactiveMilliseconds": [
+            299.360292,
+            28.397167,
+            29.577958
+          ],
+          "label": "global-sharpen-mask-preview",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 457.986791,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 31.106959,
+          "interactiveMilliseconds": [
+            31.319084,
+            31.106959,
+            29.813292
+          ],
+          "label": "native-sharpen-mask-15",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 463.812916,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 29.841,
+          "interactiveMilliseconds": [
+            30.845209,
+            29.841,
+            29.358708
+          ],
+          "label": "native-sharpen-mask-60",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 467.0325,
+          "settledWidth": 2400,
+          "width": 2400
+        },
+        {
+          "approximate": true,
+          "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "height": 1600,
+          "interactiveMedianMilliseconds": 30.398167,
+          "interactiveMilliseconds": [
+            30.398167,
+            29.009833,
+            30.882542
+          ],
+          "label": "native-sharpen-mask-90",
+          "maximumChannelError": 1,
+          "p99ChannelError": 0,
+          "qualityComparison": "matched-pixels",
+          "settledHeight": 1600,
+          "settledMilliseconds": 490.870084,
+          "settledWidth": 2400,
+          "width": 2400
+        }
+      ],
+      "blankFrames": []
+    }
+  ],
+  "wholeRGBA": [
+    {
+      "frame": "global-sharpen-mask-preview-interactive",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "e5e744a17a6678a2929708b4ba7e770b7a972e3d056de2f2562a510e07d0fb7c",
+      "retainedRGBA": "e5e744a17a6678a2929708b4ba7e770b7a972e3d056de2f2562a510e07d0fb7c",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "global-sharpen-mask-preview-settled",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "78e24c7d02e1fd43b56eb71d164852dff5ae6d436177c3cc39d12c5a6b3e0480",
+      "retainedRGBA": "78e24c7d02e1fd43b56eb71d164852dff5ae6d436177c3cc39d12c5a6b3e0480",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "native-sharpen-mask-15-interactive",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "152823b50eb67cb4de4f619798eac123cff971f0f874c5122b351c7c18764b6e",
+      "retainedRGBA": "152823b50eb67cb4de4f619798eac123cff971f0f874c5122b351c7c18764b6e",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "native-sharpen-mask-15-settled",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "577365f28f6a827c3510bada05d69921324c7612951c44ce82e62993b039d613",
+      "retainedRGBA": "577365f28f6a827c3510bada05d69921324c7612951c44ce82e62993b039d613",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "native-sharpen-mask-60-interactive",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "9059a21944b099e7cf375c509f08db72dd0ca91a7b80e0d94fd3be7298605088",
+      "retainedRGBA": "9059a21944b099e7cf375c509f08db72dd0ca91a7b80e0d94fd3be7298605088",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "native-sharpen-mask-60-settled",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "31fcec63fb2dd81d64229c0fdb6d709298e11bb53317883f66533d57780db886",
+      "retainedRGBA": "31fcec63fb2dd81d64229c0fdb6d709298e11bb53317883f66533d57780db886",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "native-sharpen-mask-90-interactive",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "dcfe39856af66fb30934e08f7ae80b0da67cb2a5dd2d017ea26407ff7ac2e10e",
+      "retainedRGBA": "dcfe39856af66fb30934e08f7ae80b0da67cb2a5dd2d017ea26407ff7ac2e10e",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    },
+    {
+      "frame": "native-sharpen-mask-90-settled",
+      "dimensions": [
+        2400,
+        1600
+      ],
+      "rgbaBytes": 15360000,
+      "clearedRGBA": "292388e56b9e3e73e79d83d2fb975df5c403c2f723c503bcde89185964664872",
+      "retainedRGBA": "292388e56b9e3e73e79d83d2fb975df5c403c2f723c503bcde89185964664872",
+      "changedChannels": 0,
+      "alphaSampleRange": [
+        255,
+        255
+      ]
+    }
+  ],
+  "totalComparedBytes": 122880000,
+  "allFramesByteIdentical": true,
+  "historicalTargetMs": 33.2579038
+}

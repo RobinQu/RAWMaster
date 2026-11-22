@@ -1,0 +1,667 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-11-22T08:00:52.339311+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "cameraRaw": "19.0 (2794)",
+  "os": "27.0.1",
+  "hardware": "Mac16,5",
+  "boundary": "CameraRAWOpenOptions selected-image app.open to Photoshop document return on warm app; real RAW reopen; 8-bit sRGB; histogram outside timer",
+  "protocol": "acr-xmp-document-open-v1",
+  "repeats": 3,
+  "operations": {
+    "mixer-point-hue": {
+      "settings": {
+        "control": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.000000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        },
+        "edit": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.450000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 704.676,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 673.309,
+          "histogramSHA256": "7036246abecca4e6753aac6a479d960783e51d69570f5cce78b32b0039f11587",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 603.012,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 702.203,
+          "histogramSHA256": "7036246abecca4e6753aac6a479d960783e51d69570f5cce78b32b0039f11587",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 645.19,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 755.692,
+          "histogramSHA256": "7036246abecca4e6753aac6a479d960783e51d69570f5cce78b32b0039f11587",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 593.151,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 656.916,
+          "histogramSHA256": "7036246abecca4e6753aac6a479d960783e51d69570f5cce78b32b0039f11587",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        }
+      ],
+      "status": "measured"
+    },
+    "mixer-point-saturation": {
+      "settings": {
+        "control": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.000000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        },
+        "edit": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.000000, 0.450000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 568.645,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 779.007,
+          "histogramSHA256": "201a4f00479e8f3feb5d37e208773e66aaac651e745170280a7e2b9087ccd82c",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 569.101,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 653.905,
+          "histogramSHA256": "201a4f00479e8f3feb5d37e208773e66aaac651e745170280a7e2b9087ccd82c",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 546.876,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 808.716,
+          "histogramSHA256": "201a4f00479e8f3feb5d37e208773e66aaac651e745170280a7e2b9087ccd82c",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 582.173,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 665.375,
+          "histogramSHA256": "201a4f00479e8f3feb5d37e208773e66aaac651e745170280a7e2b9087ccd82c",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        }
+      ],
+      "status": "measured"
+    },
+    "mixer-point-luminance": {
+      "settings": {
+        "control": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.000000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        },
+        "edit": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.000000, 0.000000, 0.450000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 586.59,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 648.011,
+          "histogramSHA256": "5a236338c15677af59a7514705b9c85d8abc5336ce99f15ebcb801a65ac556b2",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 723.99,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 627.833,
+          "histogramSHA256": "5a236338c15677af59a7514705b9c85d8abc5336ce99f15ebcb801a65ac556b2",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 555.265,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 678.636,
+          "histogramSHA256": "5a236338c15677af59a7514705b9c85d8abc5336ce99f15ebcb801a65ac556b2",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 601.95,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 695.767,
+          "histogramSHA256": "5a236338c15677af59a7514705b9c85d8abc5336ce99f15ebcb801a65ac556b2",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        }
+      ],
+      "status": "measured"
+    },
+    "mixer-point-range": {
+      "settings": {
+        "control": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.450000, 0.000000, 0.000000, 0.200000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        },
+        "edit": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.450000, 0.000000, 0.000000, 0.850000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 2462.173,
+          "histogramSHA256": "0f97fd7269d74083ea2ff73ebe9db3fceed1bfc7b6bba5db4cd8c0d11d64d4b1",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 4056.523,
+          "histogramSHA256": "b366d11b8102bb0dafdc6c4291a66ec99ac77000d9c5047585c1ca7f5cec5a39",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 4125.623,
+          "histogramSHA256": "0f97fd7269d74083ea2ff73ebe9db3fceed1bfc7b6bba5db4cd8c0d11d64d4b1",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 4130.29,
+          "histogramSHA256": "b366d11b8102bb0dafdc6c4291a66ec99ac77000d9c5047585c1ca7f5cec5a39",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 4801.032,
+          "histogramSHA256": "0f97fd7269d74083ea2ff73ebe9db3fceed1bfc7b6bba5db4cd8c0d11d64d4b1",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 4572.634,
+          "histogramSHA256": "b366d11b8102bb0dafdc6c4291a66ec99ac77000d9c5047585c1ca7f5cec5a39",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 4298.903,
+          "histogramSHA256": "0f97fd7269d74083ea2ff73ebe9db3fceed1bfc7b6bba5db4cd8c0d11d64d4b1",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 4008.642,
+          "histogramSHA256": "b366d11b8102bb0dafdc6c4291a66ec99ac77000d9c5047585c1ca7f5cec5a39",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        }
+      ],
+      "status": "measured"
+    },
+    "mixer-point-variance": {
+      "settings": {
+        "control": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.200000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ],
+          "ColorVariance": [
+            "0.000000"
+          ]
+        },
+        "edit": {
+          "PointColors": [
+            "0.520000, 0.450000, 0.600000, 0.200000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ],
+          "ColorVariance": [
+            "0.550000"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 839.045,
+          "histogramSHA256": "9dabf39dda6334bbf11da1db8968e8122c9027d1a01d635b0ba68a6c90d0cf24",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 1187.421,
+          "histogramSHA256": "162464e716c16d3f08af1375f9a85153da049b1de4c0ed1b4c07a0f83294757f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 4080.271,
+          "histogramSHA256": "9dabf39dda6334bbf11da1db8968e8122c9027d1a01d635b0ba68a6c90d0cf24",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 4429.171,
+          "histogramSHA256": "162464e716c16d3f08af1375f9a85153da049b1de4c0ed1b4c07a0f83294757f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 3937.268,
+          "histogramSHA256": "9dabf39dda6334bbf11da1db8968e8122c9027d1a01d635b0ba68a6c90d0cf24",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 4199.002,
+          "histogramSHA256": "162464e716c16d3f08af1375f9a85153da049b1de4c0ed1b4c07a0f83294757f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 4624.279,
+          "histogramSHA256": "9dabf39dda6334bbf11da1db8968e8122c9027d1a01d635b0ba68a6c90d0cf24",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 739.861,
+          "histogramSHA256": "162464e716c16d3f08af1375f9a85153da049b1de4c0ed1b4c07a0f83294757f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        }
+      ],
+      "status": "measured"
+    },
+    "mixer-point-mask": {
+      "settings": {
+        "control": {
+          "LocalPointColors": [
+            "0.520000, 0.450000, 0.600000, 0.000000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        },
+        "edit": {
+          "LocalPointColors": [
+            "0.520000, 0.450000, 0.600000, 0.450000, 0.000000, 0.000000, 0.500000, 0.000000, 0.300000, 0.700000, 1.000000, 0.000000, 0.200000, 0.700000, 1.000000, 0.000000, 0.300000, 0.800000, 1.000000"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 593.994,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 630.791,
+          "histogramSHA256": "cf14d5805b1de116b414dd24a5210c95ee074c5924be2ee3be32a5769d6d256e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 694.571,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 879.499,
+          "histogramSHA256": "cf14d5805b1de116b414dd24a5210c95ee074c5924be2ee3be32a5769d6d256e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 690.702,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 695.382,
+          "histogramSHA256": "cf14d5805b1de116b414dd24a5210c95ee074c5924be2ee3be32a5769d6d256e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 736.447,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 831.167,
+          "histogramSHA256": "cf14d5805b1de116b414dd24a5210c95ee074c5924be2ee3be32a5769d6d256e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0"
+        }
+      ],
+      "status": "measured"
+    }
+  },
+  "planned": [
+    "mixer-point-hue",
+    "mixer-point-saturation",
+    "mixer-point-luminance",
+    "mixer-point-range",
+    "mixer-point-variance",
+    "mixer-point-mask"
+  ],
+  "sessions": [
+    {
+      "startedAt": "2026-11-22T08:00:52.343051+00:00",
+      "driverSHA256": "a1faed379bd73b458094927efb47a194834d8edff5ab27f69a688cee5a025ab6",
+      "jsxSHA256": "4c738a11d291986b57e852dffaf78b6b2445df0cb4a5c9dc632043e3a1692432"
+    }
+  ],
+  "workCopySHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "finishedAt": "2026-11-22T08:02:27.304652+00:00"
+}

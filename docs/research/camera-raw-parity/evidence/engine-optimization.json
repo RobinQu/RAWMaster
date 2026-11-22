@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 1,
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceDimensions": [
+    9504,
+    6336
+  ],
+  "viewport": [
+    2400,
+    1600
+  ],
+  "host": {
+    "macOS": "27.0.1",
+    "chip": "Apple M4 Max"
+  },
+  "measurementBoundary": "Wall time from DevelopmentPreviewService.render call through its returned frame. Pixel comparison is after this boundary.",
+  "runOrder": [
+    "before-2",
+    "after-2",
+    "after-3",
+    "before-3",
+    "before-4",
+    "after-4"
+  ],
+  "trials": "Each process prewarms shaders, opens the same ARW, uses a shared canonical texture and disables the bitmap cache. Each operation has three consecutive interactive calls and one settled call. Neutral is the first operation. Each before/after pair uses the same PNG capture settings. The before-1 compilation smoke run is excluded.",
+  "test": "RAWMasterImagingTests.EditingInteractivePerformanceTests/testOptInRealRAWInteractivePerformanceAndSettledError",
+  "binarySHA256": {
+    "before": "33255ca76e0873fb8e71511d24d04762ffba526120b68ff76264d90a4c52c17b",
+    "after": "660fb07b598be60a351d22321d4cf508bfa5cdd64baefab968f6882b447f68a3"
+  },
+  "caseNames": [
+    "neutral",
+    "local-texture-clarity",
+    "local-detail"
+  ],
+  "metrics": {
+    "neutral": {
+      "before": {
+        "interactiveTrialsMs": [
+          [
+            208.707833,
+            12.159125,
+            10.344209
+          ],
+          [
+            201.256667,
+            15.522083,
+            15.40225
+          ],
+          [
+            172.126208,
+            9.200875,
+            10.5845
+          ]
+        ],
+        "settledTrialsMs": [
+          473.165916,
+          497.958875,
+          423.9835
+        ],
+        "proxyToSettledP99Errors": [
+          2,
+          2,
+          2
+        ]
+      },
+      "after": {
+        "interactiveTrialsMs": [
+          [
+            278.132334,
+            9.953875,
+            13.240875
+          ],
+          [
+            168.725791,
+            9.428792,
+            9.823
+          ],
+          [
+            161.188958,
+            11.755375,
+            8.530458
+          ]
+        ],
+        "settledTrialsMs": [
+          241.945625,
+          266.563,
+          237.589291
+        ],
+        "proxyToSettledP99Errors": [
+          2,
+          2,
+          2
+        ]
+      },
+      "settledBeforeMedianMs": 473.165916,
+      "settledAfterMedianMs": 241.945625,
+      "settledTimeChangePercent": -48.866641315728245,
+      "interactivePixelComparison": {
+        "width": 2400,
+        "height": 1600,
+        "p99RGBErrorOf255": 0,
+        "maximumRGBErrorOf255": 0,
+        "differentRGBChannels": 0,
+        "differentAlphaPixels": 0,
+        "beforePixelSHA256": "b2bfaa40981ab3e43afecc26035508496d4e6f7ace1e889dc91e6a0a3eab6854",
+        "afterPixelSHA256": "b2bfaa40981ab3e43afecc26035508496d4e6f7ace1e889dc91e6a0a3eab6854"
+      },
+      "settledPixelComparison": {
+        "width": 2400,
+        "height": 1600,
+        "p99RGBErrorOf255": 0,
+        "maximumRGBErrorOf255": 1,
+        "differentRGBChannels": 48126,
+        "differentAlphaPixels": 0,
+        "beforePixelSHA256": "40dd70366a20ba3b6ed366abeba858c4081f5baa1de1a4a104edf05c581f47f5",
+        "afterPixelSHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+      }
+    },
+    "local-texture-clarity": {
+      "before": {
+        "interactiveTrialsMs": [
+          [
+            37.382792,
+            31.414084,
+            29.0585
+          ],
+          [
+            47.377875,
+            29.324125,
+            31.773541
+          ],
+          [
+            36.649584,
+            26.516709,
+            27.524375
+          ]
+        ],
+        "settledTrialsMs": [
+          3523.972125,
+          3786.799375,
+          3619.497292
+        ],
+        "proxyToSettledP99Errors": [
+          2,
+          2,
+          2
+        ]
+      },
+      "after": {
+        "interactiveTrialsMs": [
+          [
+            38.907875,
+            30.336667,
+            30.5605
+          ],
+          [
+            36.579458,
+            28.927334,
+            31.506125
+          ],
+          [
+            33.032959,
+            27.806917,
+            27.129041
+          ]
+        ],
+        "settledTrialsMs": [
+          1891.838333,
+          1930.762167,
+          1729.747084
+        ],
+        "proxyToSettledP99Errors": [
+          2,
+          2,
+          2
+        ]
+      },
+      "settledBeforeMedianMs": 3619.497292,
+      "settledAfterMedianMs": 1891.838333,
+      "settledTimeChangePercent": -47.732014134077716,
+      "interactivePixelComparison": {
+        "width": 2400,
+        "height": 1600,
+        "p99RGBErrorOf255": 0,
+        "maximumRGBErrorOf255": 0,
+        "differentRGBChannels": 0,
+        "differentAlphaPixels": 0,
+        "beforePixelSHA256": "75bf913a5c77a6a52c7df5c0db4f7d32c05eb3a32a07cddaf6199643191b1043",
+        "afterPixelSHA256": "75bf913a5c77a6a52c7df5c0db4f7d32c05eb3a32a07cddaf6199643191b1043"
+      },
+      "settledPixelComparison": {
+        "width": 2400,
+        "height": 1600,
+        "p99RGBErrorOf255": 0,
+        "maximumRGBErrorOf255": 0,
+        "differentRGBChannels": 0,
+        "differentAlphaPixels": 0,
+        "beforePixelSHA256": "87ec102d104cef0decce45f66bc76b1f4632fb21e94fe411e2ca862930eca2c9",
+        "afterPixelSHA256": "87ec102d104cef0decce45f66bc76b1f4632fb21e94fe411e2ca862930eca2c9"
+      }
+    },
+    "local-detail": {
+      "before": {
+        "interactiveTrialsMs": [
+          [
+            39.475084,
+            36.187583,
+            34.343708
+          ],
+          [
+            40.494,
+            30.766625,
+            30.061875
+          ],
+          [
+            33.372792,
+            35.804875,
+            30.807625
+          ]
+        ],
+        "settledTrialsMs": [
+          1609.622292,
+          1705.034709,
+          1794.395042
+        ],
+        "proxyToSettledP99Errors": [
+          2,
+          2,
+          2
+        ]
+      },
+      "after": {
+        "interactiveTrialsMs": [
+          [
+            34.556958,
+            30.911875,
+            33.5665
+          ],
+          [
+            35.661416,
+            27.185166,
+            30.47225
+          ],
+          [
+            38.614084,
+            27.48375,
+            28.205417
+          ]
+        ],
+        "settledTrialsMs": [
+          1054.409625,
+          1173.340625,
+          976.38225
+        ],
+        "proxyToSettledP99Errors": [
+          2,
+          2,
+          2
+        ]
+      },
+      "settledBeforeMedianMs": 1705.034709,
+      "settledAfterMedianMs": 1054.409625,
+      "settledTimeChangePercent": -38.15905216273225,
+      "interactivePixelComparison": {
+        "width": 2400,
+        "height": 1600,
+        "p99RGBErrorOf255": 0,
+        "maximumRGBErrorOf255": 0,
+        "differentRGBChannels": 0,
+        "differentAlphaPixels": 0,
+        "beforePixelSHA256": "1b8a5b7f5070ab87f5130bd636d5fb0a0fe0a50aa1be1541f7485714b03b3295",
+        "afterPixelSHA256": "1b8a5b7f5070ab87f5130bd636d5fb0a0fe0a50aa1be1541f7485714b03b3295"
+      },
+      "settledPixelComparison": {
+        "width": 2400,
+        "height": 1600,
+        "p99RGBErrorOf255": 0,
+        "maximumRGBErrorOf255": 0,
+        "differentRGBChannels": 0,
+        "differentAlphaPixels": 0,
+        "beforePixelSHA256": "06a78efa279dabfa15184f1f12a199ef8ca17eb0c4f9111aff8e3ccc4547c74a",
+        "afterPixelSHA256": "06a78efa279dabfa15184f1f12a199ef8ca17eb0c4f9111aff8e3ccc4547c74a"
+      }
+    }
+  }
+}

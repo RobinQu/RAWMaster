@@ -1,0 +1,101 @@
+{
+  "application" : "RAWMaster",
+  "boundary" : "Release DevelopmentLUTLibrary.importFile from empty chooser on local disk, table parse and publish; verification outside timer",
+  "fixture" : "Deterministic 33³ and 64³ text CUBE files and their ZIP. Import is independent of an open photograph.",
+  "hardware" : "Apple M4 Max",
+  "metric" : "file-to-persisted-chooser-ms",
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "rows" : [
+    {
+      "bytes" : 1103497,
+      "cubeSHA256" : [
+        "1df3f358d4fbc654d68c820621f98997e6cc7f7ecb0611d4e6ddbe1856f6d9ca"
+      ],
+      "dimensions" : [
+        33
+      ],
+      "featureId" : "grading-lut-import",
+      "file" : "mono-33.cube",
+      "firstMs" : 5.5928339999999999,
+      "nodes" : 35937,
+      "nodesPerSecondP50" : 7341136.614758959,
+      "p50Ms" : 4.8952910000000003,
+      "p95Ms" : 5.0929169999999999,
+      "samplesMs" : [
+        4.9456249999999997,
+        4.7404169999999999,
+        4.7478749999999996,
+        4.9206659999999998,
+        4.9546669999999997,
+        4.9400000000000004,
+        4.8699159999999999,
+        4.5984579999999999,
+        5.0929169999999999,
+        4.6993749999999999
+      ],
+      "sha256" : "764becb704c1f3c25a6297c44217c1c9ef4fbe3ae30479991e47ea5c9bf98309"
+    },
+    {
+      "bytes" : 7983132,
+      "cubeSHA256" : [
+        "e6ef9d38024779d5cc67ae64c4ac39117cdec0fdebc4a167c6254abf0431f91f"
+      ],
+      "dimensions" : [
+        64
+      ],
+      "featureId" : "grading-lut-import",
+      "file" : "warm-64.cube",
+      "firstMs" : 29.676083999999999,
+      "nodes" : 262144,
+      "nodesPerSecondP50" : 8990073.8602141328,
+      "p50Ms" : 29.159270999999997,
+      "p95Ms" : 29.301874999999999,
+      "samplesMs" : [
+        29.192291999999998,
+        29.195,
+        29.245125000000002,
+        28.688375000000001,
+        29.215250000000001,
+        29.301874999999999,
+        28.852542,
+        29.126249999999999,
+        28.728708000000001,
+        28.605958000000001
+      ],
+      "sha256" : "02ccb8270eaaf17e15cacdfa656efdcf10e13c5c87653bb2ee266df3519080ad"
+    },
+    {
+      "bytes" : 1055530,
+      "cubeSHA256" : [
+        "e6ef9d38024779d5cc67ae64c4ac39117cdec0fdebc4a167c6254abf0431f91f",
+        "1df3f358d4fbc654d68c820621f98997e6cc7f7ecb0611d4e6ddbe1856f6d9ca"
+      ],
+      "dimensions" : [
+        64,
+        33
+      ],
+      "featureId" : "grading-lut-import",
+      "file" : "both.zip",
+      "firstMs" : 67.739041999999998,
+      "nodes" : 298081,
+      "nodesPerSecondP50" : 4359753.7747804215,
+      "p50Ms" : 68.371062999999992,
+      "p95Ms" : 72.425207999999998,
+      "samplesMs" : [
+        72.425207999999998,
+        71.922415999999998,
+        68.771416000000002,
+        68.333792000000003,
+        68.408333999999996,
+        67.135791999999995,
+        68.161292000000003,
+        67.826916999999995,
+        68.431042000000005,
+        67.656458000000001
+      ],
+      "sha256" : "2c9a5a065ac0564aee8bde28e207bd82f1b5e3f7d9073a51afb0997cae0ab52c"
+    }
+  ],
+  "schemaVersion" : 1,
+  "timestamp" : "2026-11-22T07:08:43Z"
+}

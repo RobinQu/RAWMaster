@@ -1,0 +1,140 @@
+{
+  "capturedAt" : "2026-11-22T07:49:40Z",
+  "closedNeutralResidentBytes" : 0,
+  "competingPaneReservation" : {
+    "afterResidentBytes" : 61440000,
+    "beforeResidentBytes" : 122880000,
+    "requestedBytes" : 100000000
+  },
+  "export" : {
+    "amount" : 100,
+    "bitDepth" : 16,
+    "byteCount" : 481792806,
+    "elapsedMs" : 9332.6826249999995,
+    "height" : 6336,
+    "sha256" : "74f76d8da1e6b654860d90552b46e33b1e5a82bf1a606af5595fc705d5e87a53",
+    "width" : 9504
+  },
+  "featureId" : "detail-denoise",
+  "maxPixel" : 2400,
+  "midpointLinearLightApproximation" : {
+    "channels" : 1281600,
+    "channelsAboveOneCode" : 0,
+    "maxRGB8" : 1,
+    "meanRGB8" : 0.12476903870162297,
+    "sampleHeight" : 534,
+    "sampleWidth" : 800
+  },
+  "model" : "apple-core-image-raw9-v1",
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "processPeakRSSBytes" : 2214510592,
+  "proxyKeys" : [
+    "3d886dd8d6c093a3ded53f2f2c54188d659faad41fec9f0d84f14d06a57997d9",
+    "463c914014d51b5ac8109340dfe0ea26282d38270b5f4854513d66b760d72589",
+    "8ae1f8e1394ba69137569f0c8c6ba2a5339d489f3665e15b5cc2f5a4ee24834f",
+    "0cc5df517ea99119e5a8be89ea1fb45704ddd00718e49c3e2966aa91c34b03b1"
+  ],
+  "requests" : [
+    {
+      "input" : "original",
+      "neutralBaseFills" : 1,
+      "neutralBaseHits" : 0,
+      "neutralResidentBytes" : 61440000,
+      "previewMs" : 182.388125,
+      "processPeakRSSBytes" : 1607696384,
+      "sampledSRGBSHA256" : "3e3fc69e90701964c858fdf6f2a1f8e485618adbca7922d91fcc5336590fb101",
+      "sharedGPUBytesAfterReturn" : 76808192
+    },
+    {
+      "input" : "amount0",
+      "neutralBaseFills" : 1,
+      "neutralBaseHits" : 0,
+      "neutralResidentBytes" : 61440000,
+      "previewMs" : 3060.5514589999998,
+      "processPeakRSSBytes" : 1611792384,
+      "sampledSRGBSHA256" : "2f2bc06f5fe0d0963ba8984a25e1906a864336f74105e8073f467229dec004ca",
+      "sharedGPUBytesAfterReturn" : 76808192
+    },
+    {
+      "input" : "amount100",
+      "neutralBaseFills" : 1,
+      "neutralBaseHits" : 0,
+      "neutralResidentBytes" : 122880000,
+      "previewMs" : 3073.5712910000002,
+      "processPeakRSSBytes" : 1611792384,
+      "sampledSRGBSHA256" : "46139e5e1f4d35f2d3bce0905ac215636bbe027165164049988ee73da146c4fc",
+      "sharedGPUBytesAfterReturn" : 138248192
+    },
+    {
+      "input" : "amount0-replay",
+      "neutralBaseFills" : 0,
+      "neutralBaseHits" : 1,
+      "neutralResidentBytes" : 122880000,
+      "previewMs" : 8.1332920000000009,
+      "processPeakRSSBytes" : 1611792384,
+      "sampledSRGBSHA256" : "2f2bc06f5fe0d0963ba8984a25e1906a864336f74105e8073f467229dec004ca",
+      "sharedGPUBytesAfterReturn" : 138248192
+    },
+    {
+      "input" : "amount50-first",
+      "neutralBaseFills" : 1,
+      "neutralBaseHits" : 0,
+      "neutralResidentBytes" : 122880000,
+      "previewMs" : 3116.2854170000001,
+      "processPeakRSSBytes" : 1611792384,
+      "sampledSRGBSHA256" : "2d39e6d3967f1a441a3b5c92fc65923e359e50b4fa75095b935a65dc9fb868c9",
+      "sharedGPUBytesAfterReturn" : 138248192
+    },
+    {
+      "input" : "amount0-secondReplay",
+      "neutralBaseFills" : 0,
+      "neutralBaseHits" : 1,
+      "neutralResidentBytes" : 122880000,
+      "previewMs" : 7.9309159999999999,
+      "processPeakRSSBytes" : 1611792384,
+      "sampledSRGBSHA256" : "2f2bc06f5fe0d0963ba8984a25e1906a864336f74105e8073f467229dec004ca",
+      "sharedGPUBytesAfterReturn" : 138248192
+    },
+    {
+      "input" : "amount50-replay",
+      "neutralBaseFills" : 0,
+      "neutralBaseHits" : 1,
+      "neutralResidentBytes" : 122880000,
+      "previewMs" : 8.6071249999999999,
+      "processPeakRSSBytes" : 1611792384,
+      "sampledSRGBSHA256" : "2d39e6d3967f1a441a3b5c92fc65923e359e50b4fa75095b935a65dc9fb868c9",
+      "sharedGPUBytesAfterReturn" : 138248192
+    },
+    {
+      "input" : "disabled",
+      "neutralBaseFills" : 1,
+      "neutralBaseHits" : 0,
+      "neutralResidentBytes" : 61440000,
+      "previewMs" : 94.940083999999999,
+      "processPeakRSSBytes" : 1835302912,
+      "sampledSRGBSHA256" : "3e3fc69e90701964c858fdf6f2a1f8e485618adbca7922d91fcc5336590fb101",
+      "sharedGPUBytesAfterReturn" : 76808192
+    },
+    {
+      "input" : "amount100-settled",
+      "neutralBaseFills" : 0,
+      "neutralBaseHits" : 0,
+      "neutralResidentBytes" : 61440000,
+      "previewMs" : 9880.4948330000007,
+      "processPeakRSSBytes" : 1835302912,
+      "sampledSRGBSHA256" : "a101c401d29f7dac11b276d933e43b90f11754fa0b0090b5f8754111c7b8e395",
+      "sharedGPUBytesAfterReturn" : 61440000
+    }
+  ],
+  "resourcePrepareMs" : 69.232832999999999,
+  "sha256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "source" : "acr-benchmark.ARW",
+  "sourceBytes" : 69488640,
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "thumbnailKeys" : [
+    "ff3a9a012e8eabab2f37144aa718e78580083456a23f693685ef351b63ef4809",
+    "ef811e1966e5a719cde4b59eba53999547cc52cb6f1e060f1362e4d1c51f1129",
+    "74acbd787c364df687541095deff86aa35f35bbf141dd6c69dacc557295c6548",
+    "08f2d484d05fa60eb1c25f2fc9ee6296e25840275e3dfa50a2463cba7fdfa54f"
+  ]
+}

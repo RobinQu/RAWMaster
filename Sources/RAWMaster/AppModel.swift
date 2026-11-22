@@ -125,6 +125,7 @@ final class AppModel: ObservableObject {
     @Published var autoAdvance = false
     @Published var showImport = false
     @Published var showExport = false
+    @Published var exportWorkspacePresented = false
     @Published var showTimelapse = false
     @Published var timelapseComposer: TimelapseComposer?
     @Published var timelapseIsRunning = false
@@ -187,7 +188,7 @@ final class AppModel: ObservableObject {
     private let defaults: UserDefaults
 
     init(libraryURL overrideURL: URL? = nil, defaults: UserDefaults = .standard, postIngest: ImportPostIngestCallback? = nil,
-         regroupAnalyzer: AutomaticGroupingAnalyzer? = nil) {
+         regroupAnalyzer: AutomaticGroupingAnalyzer? = nil, editingPreviewBackend: (any EditingPreviewBackend)? = nil) {
         self.defaults = defaults
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
         let arguments = ProcessInfo.processInfo.arguments
@@ -203,7 +204,8 @@ final class AppModel: ObservableObject {
             services.requestSettings = { [weak self] page in self?.openApplicationSettings(page) }
             services.localWorkIsRunning = { [weak self] in self?.editing?.localWorkIsRunning == true }
             do {
-                editing = try EditingController(store: database, libraryURL: libraryURL, defaults: defaults, applicationServices: services)
+                editing = try EditingController(store: database, libraryURL: libraryURL, defaults: defaults,
+                    previewBackend: editingPreviewBackend ?? SharedEditingPreviewBackend(), applicationServices: services)
                 editingObservation = editing?.objectWillChange.sink { [weak self] _ in self?.objectWillChange.send() }
             }
             catch { errorMessage = "制作档案尚不可用：\(error.localizedDescription)" }
@@ -745,6 +747,51 @@ final class AppModel: ObservableObject {
             if let p = progress, p.isRunning { progress = TaskProgress(title: p.title, completed: p.completed, total: p.total, message: "任务结束，请检查交付报告", isRunning: false) }
         }
     }
+    func exportWorkbenchPhotos(directory: URL, namingTemplate: String,
+                               configuration: PhotoBatchExportConfiguration,
+                               progress: @Sendable (Int,Int,String)->Void) async throws->[URL] {
+        guard let store, let editing else { throw EditingError.missingWork }
+        let exact=workbenchExportContext.exactAssetIDs.map(Set.init)
+        let assets=scopedAssets.filter { (exact?.contains($0.id) ?? true) && $0.availability == .available }
+        guard !assets.isEmpty else { throw EditingError.missingWork }
+        try FileManager.default.createDirectory(at:directory,withIntermediateDirectories:true)
+        let protected=try await Task.detached { try store.editingProtectedRoots() }.value
+        let exporter = ImageEngines.makeBatchExporter()
+        let archive = editing.archive
+        let formatter=DateFormatter();formatter.dateFormat="yyyyMMdd"
+        var results:[URL]=[]
+        for (offset,asset) in assets.enumerated() {
+            try Task.checkCancellation();progress(offset,assets.count,asset.filename)
+            let snapshot=try await Task.detached { try store.captureEditingSourceSnapshot(assetID:asset.id) }.value
+            let existingWork=try await Task.detached { try store.loadPhotoWorks(assetID:asset.id).first }.value
+            var work=existingWork ?? PhotoWork(source:snapshot)
+            work.source.sourceLocation=asset.resolvedURL
+            let version:EditingVersion
+            if editing.asset?.id==asset.id,let live=editing.exportVersion {
+                var current=live;current.source=work.source;version=current
+            } else if let live=work.liveRecipe,let parentID=work.liveParentVersionID {
+                var current=try await Task.detached { try store.editingVersion(id:parentID) }.value
+                current.recipe=live;current.source=work.source;version=current
+            } else if existingWork != nil {
+                var current=try await Task.detached { try store.editingVersion(id:work.adoptedVersionID) }.value
+                current.source=work.source;version=current
+            } else {
+                version=EditingVersion(id:work.originalVersionID,workID:work.id,parentVersionID:nil,kind:.original,source:work.source)
+            }
+            let stem=URL(fileURLWithPath:asset.filename).deletingPathExtension().lastPathComponent
+            let base=namingTemplate.replacingOccurrences(of:"{name}",with:stem)
+                .replacingOccurrences(of:"{index}",with:String(format:"%04d",offset+1))
+                .replacingOccurrences(of:"{date}",with:formatter.string(from:Date()))
+            var filename=base.isEmpty ? stem:base
+            var suffix=2
+            while FileManager.default.fileExists(atPath:directory.appendingPathComponent(filename).appendingPathExtension(configuration.format.filenameExtension).path) {
+                filename=base+"-"+String(suffix);suffix+=1
+            }
+            let output=try await exporter.export(work:work,version:version,archive:archive,directory:directory,filename:filename,configuration:configuration,protectedURLs:protected)
+            results.append(output);progress(results.count,assets.count,asset.filename)
+        }
+        return results
+    }
     var relocationImportSession: ImportSession? { sessions.first { $0.id == relocationTargetSessionID } }
     var relocationScopeCount: Int {
         assets.filter { $0.sessionID == relocationTargetSessionID && (relocationAssetIDs == nil || relocationAssetIDs!.contains($0.id)) }.count
@@ -923,9 +970,13 @@ final class AppModel: ObservableObject {
     }
     func reveal(_ path: String) { NSWorkspace.shared.activateFileViewerSelecting([URL(fileURLWithPath: path)]) }
     func handleKey(_ event: NSEvent) -> Bool {
-        guard !isCatalog else { return false }
         guard editing?.showJobs != true, editing?.showSettings != true, editing?.showExport != true, editing?.unknownRetryJobID == nil, editing?.showDraftExportChoice != true else { return false }
         guard !showImport, !showExport, !showTimelapse, !showGroups, !showGroupReview, !showGroupHistory, !showRelocation, !showCompletion, !showQualityReview, !showPairReview, !showTagPreview, !showTagHistory else { return false }
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if event.keyCode == 48, !flags.contains(.command), !flags.contains(.control), !flags.contains(.option) {
+            cycleWorkflow(reverse: flags.contains(.shift)); return true
+        }
+        guard !isCatalog else { return false }
         if searchControlsOwnKeyboard {
             if event.keyCode == 53 {
                 if showSearchFilters { hideSearchFilters() } else { hideSearchField() }
@@ -933,9 +984,13 @@ final class AppModel: ObservableObject {
             }
             return false
         }
-        // The editor owns this scope even when a key is unhandled or its history is empty.
-        if isNativeEditing { return editing?.handleDevelopmentKey(event) ?? false }
-        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if isNativeEditing {
+            if [123, 124].contains(Int(event.keyCode)), !flags.contains(.command), !flags.contains(.control), !flags.contains(.option), !flags.contains(.shift) {
+                move(event.keyCode == 123 ? -1 : 1); return true
+            }
+            // The editor owns remaining keys even when its history is empty.
+            return editing?.handleDevelopmentKey(event) ?? false
+        }
         let characters = event.charactersIgnoringModifiers?.lowercased()
         if flags == .command, characters == "a" {
             selectedIDs = Set(browserAssets.map(\.id))

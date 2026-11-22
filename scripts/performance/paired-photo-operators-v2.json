@@ -1,0 +1,471 @@
+{
+  "schemaVersion": 2,
+  "protocol": "resident-photo-operators-v2",
+  "pixels": [
+    2400,
+    1600
+  ],
+  "radial": {
+    "center": [
+      0.5,
+      0.5
+    ],
+    "radius": [
+      0.35,
+      0.3
+    ],
+    "feather": 0,
+    "opacity": 1,
+    "inverted": false,
+    "witnessGrid": [
+      96,
+      64
+    ],
+    "interiorMaximumRadius": 0.45,
+    "exteriorMinimumRadius": 1.5
+  },
+  "luts": {
+    "warm": "TITLE \"warm\"\nLUT_3D_SIZE 2\nDOMAIN_MIN 0 0 0\nDOMAIN_MAX 1 1 1\n0.0600 0.0000 0.0000\n1.0000 0.0000 0.0000\n0.0600 1.0000 0.0000\n1.0000 1.0000 0.0000\n0.0600 0.0000 0.9000\n1.0000 0.0000 0.9000\n0.0600 1.0000 0.9000\n1.0000 1.0000 0.9000\n",
+    "mono": "TITLE \"mono\"\nLUT_3D_SIZE 2\nDOMAIN_MIN 0 0 0\nDOMAIN_MAX 1 1 1\n0.0000 0.0000 0.0000\n0.2126 0.2126 0.2126\n0.7152 0.7152 0.7152\n0.9278 0.9278 0.9278\n0.0722 0.0722 0.0722\n0.2848 0.2848 0.2848\n0.7874 0.7874 0.7874\n1.0000 1.0000 1.0000\n"
+  },
+  "controls": {
+    "color-wb-presets": {
+      "values": [
+        "daylight",
+        "tungsten"
+      ],
+      "fixed": {
+        "daylight": [
+          5500,
+          10
+        ],
+        "tungsten": [
+          2850,
+          0
+        ]
+      },
+      "region": "global",
+      "unit": "preset"
+    },
+    "color-wb-as-shot": {
+      "values": [
+        "tungsten",
+        "as-shot"
+      ],
+      "fixed": {
+        "tungsten": [
+          2850,
+          0
+        ]
+      },
+      "region": "global",
+      "unit": "source-bound preset"
+    },
+    "color-bw-treatment": {
+      "values": [
+        "color",
+        "monochrome"
+      ],
+      "fixed": {},
+      "region": "global",
+      "unit": "treatment"
+    },
+    "effects-pcv-style": {
+      "values": [
+        "highlight-priority",
+        "paint-overlay"
+      ],
+      "fixed": {
+        "amount": -70,
+        "midpoint": 50,
+        "roundness": 0,
+        "feather": 50,
+        "highlights": 80
+      },
+      "region": "global",
+      "unit": "vignette rendering style"
+    },
+    "effects-dehaze": {
+      "values": [
+        15,
+        45
+      ],
+      "fixed": {},
+      "region": "global",
+      "unit": "signed slider percent"
+    },
+    "curve-point": {
+      "values": [
+        0.58,
+        0.72
+      ],
+      "fixed": {
+        "input": 0.5,
+        "channel": "master",
+        "domain": [
+          0,
+          1
+        ]
+      },
+      "region": "global",
+      "unit": "point output"
+    },
+    "curve-channels": {
+      "values": [
+        0.58,
+        0.72
+      ],
+      "fixed": {
+        "input": 0.5,
+        "channel": "red",
+        "domain": [
+          0,
+          1
+        ]
+      },
+      "region": "global",
+      "unit": "point output"
+    },
+    "curve-mask-curve": {
+      "values": [
+        0.58,
+        0.72
+      ],
+      "fixed": {
+        "input": 0.5,
+        "channel": "master",
+        "domain": [
+          0,
+          1
+        ]
+      },
+      "region": "radial",
+      "unit": "point output"
+    },
+    "grading-luminance": {
+      "values": [
+        0,
+        40
+      ],
+      "fixed": {
+        "shadowsHue": 25,
+        "shadowsSaturation": 50,
+        "highlightsHue": 220,
+        "highlightsSaturation": 55,
+        "blending": 50,
+        "balance": 0,
+        "wheel": "shadows"
+      },
+      "region": "global",
+      "unit": "grading slider"
+    },
+    "grading-blending": {
+      "values": [
+        25,
+        85
+      ],
+      "fixed": {
+        "shadowsHue": 25,
+        "shadowsSaturation": 50,
+        "highlightsHue": 220,
+        "highlightsSaturation": 55,
+        "balance": 0
+      },
+      "region": "global",
+      "unit": "grading slider"
+    },
+    "grading-balance": {
+      "values": [
+        0,
+        60
+      ],
+      "fixed": {
+        "shadowsHue": 25,
+        "shadowsSaturation": 50,
+        "highlightsHue": 220,
+        "highlightsSaturation": 55,
+        "blending": 50
+      },
+      "region": "global",
+      "unit": "grading slider"
+    },
+    "detail-nr-lum-contrast": {
+      "values": [
+        10,
+        70
+      ],
+      "fixed": {
+        "luminanceNoise": 70,
+        "luminanceDetail": 50,
+        "colorNoise": 0
+      },
+      "region": "global",
+      "unit": "percent"
+    },
+    "detail-nr-color-detail": {
+      "values": [
+        10,
+        70
+      ],
+      "fixed": {
+        "colorNoise": 70,
+        "luminanceNoise": 0,
+        "colorSmoothness": 50
+      },
+      "region": "global",
+      "unit": "percent"
+    },
+    "grading-lut-select": {
+      "values": [
+        "warm",
+        "mono"
+      ],
+      "fixed": {
+        "amount": 100
+      },
+      "region": "global",
+      "unit": "CUBE table"
+    },
+    "grading-lut-amount": {
+      "values": [
+        25,
+        85
+      ],
+      "fixed": {
+        "cube": "mono"
+      },
+      "region": "global",
+      "unit": "percent"
+    },
+    "grading-lut-stack": {
+      "values": [
+        "warm,mono",
+        "warm,mono,warm"
+      ],
+      "fixed": {
+        "amounts": [
+          100,
+          100,
+          65
+        ]
+      },
+      "region": "global",
+      "unit": "CUBE layer list"
+    },
+    "grading-lut-manage": {
+      "values": [
+        "warm,mono",
+        "mono,warm"
+      ],
+      "fixed": {
+        "amounts": [
+          100,
+          100
+        ]
+      },
+      "region": "global",
+      "unit": "CUBE layer order"
+    },
+    "grading-lut-mask": {
+      "values": [
+        25,
+        85
+      ],
+      "fixed": {
+        "cube": "mono"
+      },
+      "region": "radial",
+      "unit": "percent"
+    },
+    "light-mask-exposure": {
+      "values": [
+        0.25,
+        0.75
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "EV"
+    },
+    "light-mask-contrast": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "light-mask-highlights": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "light-mask-shadows": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "light-mask-whites": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "light-mask-blacks": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "color-mask-temp": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "color-mask-tint": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "color-mask-hue": {
+      "values": [
+        0.15,
+        0.45
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "fraction of positive Hue dial range"
+    },
+    "color-mask-saturation": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "signed slider percent"
+    },
+    "effects-mask-texture": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "percent"
+    },
+    "effects-mask-clarity": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "percent"
+    },
+    "effects-mask-grain": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {
+        "size": 25,
+        "roughness": 50
+      },
+      "region": "radial",
+      "unit": "percent"
+    },
+    "grading-mask-wheels": {
+      "values": [
+        20,
+        60
+      ],
+      "fixed": {
+        "wheel": "midtones",
+        "hue": 220,
+        "blending": 50,
+        "balance": 0
+      },
+      "region": "radial",
+      "unit": "saturation percent"
+    },
+    "detail-mask-sharpness": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "positive local sharpening percent"
+    },
+    "detail-mask-noise": {
+      "values": [
+        15,
+        55
+      ],
+      "fixed": {},
+      "region": "radial",
+      "unit": "positive local noise-reduction percent"
+    },
+    "light-clipping-indicators": {
+      "values": [
+        false,
+        true
+      ],
+      "fixed": {
+        "exposure": 1.5,
+        "preview": "both"
+      },
+      "region": "global",
+      "unit": "warning overlay"
+    },
+    "light-clipping-modifier": {
+      "values": [
+        false,
+        true
+      ],
+      "fixed": {
+        "exposure": 1.5,
+        "preview": "highlights"
+      },
+      "region": "global",
+      "unit": "temporary highlight clipping preview"
+    },
+    "detail-mask-preview": {
+      "values": [
+        false,
+        true
+      ],
+      "fixed": {
+        "sharpenAmount": 75,
+        "sharpenRadius": 1,
+        "sharpenDetail": 25,
+        "masking": 60
+      },
+      "region": "global",
+      "unit": "edge-mask preview"
+    }
+  }
+}

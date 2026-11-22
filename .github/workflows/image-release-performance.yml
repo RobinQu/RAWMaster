@@ -1,0 +1,77 @@
+name: Release image performance
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rawmaster-metal-release
+  cancel-in-progress: false
+
+jobs:
+  measure-and-package:
+    runs-on: [self-hosted, macOS, ARM64, rawmaster-performance]
+    timeout-minutes: 60
+    env:
+      RAWMASTER_BUILD_VERSION: ${{ github.run_number }}
+      RAW_CORPUS: ${{ vars.RAWMASTER_PERF_CORPUS }}
+      OPERATOR_RAW: ${{ vars.RAWMASTER_PERF_OPERATOR_RAW }}
+      RAWMASTER_PERF_NEURAL_RAW: ${{ vars.RAWMASTER_PERF_OPERATOR_RAW }}
+      RAWMASTER_PERF_XTRANS_RAW: ${{ vars.RAWMASTER_PERF_XTRANS_RAW }}
+      RAWMASTER_PERF_CAMERA_JPEG: ${{ vars.RAWMASTER_PERF_CAMERA_JPEG }}
+      RAWMASTER_PERF_RENDERED_FORMATS: ${{ vars.RAWMASTER_PERF_RENDERED_FORMATS }}
+      RAWMASTER_PERF_OUTPUT_DNG: ${{ vars.RAWMASTER_PERF_OUTPUT_DNG }}
+      RAWMASTER_PERF_SCENE_DNG: ${{ vars.RAWMASTER_PERF_SCENE_DNG }}
+      RAWMASTER_PERF_LIGHTFLOW_REFERENCE: ${{ vars.RAWMASTER_PERF_LIGHTFLOW_REFERENCE || 'docs/research/camera-raw-parity/evidence' }}
+      PERF_BASELINE: ${{ vars.RAWMASTER_PERF_BASELINE }}
+      RAWMASTER_RUNTIME_ARTIFACTS_DIR: ${{ vars.RAWMASTER_RUNTIME_ARTIFACTS_DIR }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify baseline, fixtures and generated reports
+        run: |
+          test -d "$RAW_CORPUS"
+          test -f "$OPERATOR_RAW"
+          test -f "$RAWMASTER_PERF_XTRANS_RAW"
+          test -f "$RAWMASTER_PERF_CAMERA_JPEG"
+          test -f "$RAWMASTER_PERF_OUTPUT_DNG"
+          test -f "$RAWMASTER_PERF_SCENE_DNG"
+          test -f "$PERF_BASELINE/output-referred-dng.json"
+          test -f "$PERF_BASELINE/display-readback.json"
+          test -f "$PERF_BASELINE/panel-readback.json"
+          test -f "$PERF_BASELINE/panel-schedule.json"
+          test -f "$PERF_BASELINE/photo-operators-v2.json"
+          test -f "$PERF_BASELINE/inspection.json"
+          test -f "$PERF_BASELINE/controls.json"
+          test -f "$PERF_BASELINE/super-resolution.json"
+          test -f "$PERF_BASELINE/photo-denoise.json"
+          test -f "$PERF_BASELINE/raw9-denoise.json"
+          test -f "$PERF_BASELINE/interactive/interactive-performance.json"
+          test -f "$PERF_BASELINE/image.json"
+          test -f "$PERF_BASELINE/ui.json"
+          python3 docs/research/camera-raw-parity/build_report.py --check
+          python3 docs/research/camera-raw-parity/build_performance_report.py --check
+      - name: Build pinned FlashRaw and the Release test bundles
+        run: |
+          scripts/build-flashraw.sh
+          swift build -c release --build-tests -Xswiftc -enable-testing --jobs 4
+      - name: Run real RAW and hosted UI regression
+        run: |
+          scripts/test-image-performance.sh --source "$RAW_CORPUS" --operator-source "$OPERATOR_RAW" \
+            --baseline-dir "$PERF_BASELINE" --output "$RUNNER_TEMP/rawmaster-result-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT"
+      - name: Preserve measurement evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: image-performance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            ${{ runner.temp }}/rawmaster-result-${{ github.run_id }}-${{ github.run_attempt }}/*.json
+            ${{ runner.temp }}/rawmaster-result-${{ github.run_id }}-${{ github.run_attempt }}/interactive/*.json
+          if-no-files-found: warn
+      - name: Verify closed external measurements before packaging
+        run: python3 docs/research/camera-raw-parity/build_performance_report.py --check --require-complete
+      - name: Build the release application
+        run: scripts/build-app.sh release

@@ -32,14 +32,14 @@ public enum DevelopmentAdjustmentParametersV3: Equatable, Sendable {
   case light(DevelopmentLightV3), color(DevelopmentColorV3), blackAndWhite(DevelopmentBlackAndWhiteV3)
   case whiteBalance(DevelopmentWhiteBalanceV3), curves(DevelopmentCurvesV3), levels(DevelopmentLevelsV3)
   case definition(DevelopmentDefinitionV3), selectiveColor(DevelopmentSelectiveColorV3), noiseReduction(DevelopmentNoiseReductionV3)
-  case sharpen(DevelopmentSharpenV3), vignette(DevelopmentVignetteV3), filter(DevelopmentFilterV3)
+  case sharpen(DevelopmentSharpenV3), vignette(DevelopmentVignetteV3), filter(DevelopmentFilterV3), optics(DevelopmentOpticsV3)
   case texture(DevelopmentDetailAmountV3), clarity(DevelopmentDetailAmountV3), dehaze(DevelopmentDetailAmountV3)
   public var id: DevelopmentAdjustmentID {
     switch self {
     case .light: return .light; case .color: return .color; case .blackAndWhite: return .blackAndWhite
     case .whiteBalance: return .whiteBalance; case .curves: return .curves; case .levels: return .levels
     case .definition: return .definition; case .selectiveColor: return .selectiveColor; case .noiseReduction: return .noiseReduction
-    case .sharpen: return .sharpen; case .vignette: return .vignette; case .filter: return .filter
+    case .sharpen: return .sharpen; case .vignette: return .vignette; case .filter: return .filter; case .optics:return .optics
     case .texture:return .texture; case .clarity:return .clarity; case .dehaze:return .dehaze
     }
   }
@@ -47,7 +47,7 @@ public enum DevelopmentAdjustmentParametersV3: Equatable, Sendable {
 public enum DevelopmentAnalysisPurpose: Equatable, Sendable {
   /// nil means one resolved global transaction; nonnil restricts the result to that one group.
   case automatic(DevelopmentAdjustmentID?)
-  case whiteBalancePicker, curvesPicker, selectiveColorPicker
+  case whiteBalancePicker, curvesPicker, selectiveColorPicker, defringePicker, pointColorPicker
   case summary(DevelopmentAdjustmentID, amount: Double)
 }
 /// An ephemeral resolved command, not a persisted CIFilter or a request to run Auto during rendering.
@@ -69,6 +69,12 @@ public enum DevelopmentAdjustmentCommand: Equatable, Sendable {
   case resetAll
   case setLegacyBasis(DevelopmentLegacyBasis?)
   case setGeometry(DevelopmentGeometryV3)
+  case setEffects(DevelopmentEffectsV3)
+  case setGradingLUTs(DevelopmentLUTStack?)
+  case setRawDetails(DevelopmentRawDetails?)
+  case setSuperResolution(DevelopmentSuperResolutionV1?)
+  case setAIDenoise(DevelopmentAIDenoiseV1?)
+  case setMasks([DevelopmentMaskLayerV3])
   case appendLocal(DevelopmentLocalEdit)
   case appendResolvedLocalBatch(DevelopmentResolvedLocalBatch)
   case applyPreparedDehaze(DevelopmentResolvedDehazeV1, wantedAmount: Double)
@@ -86,6 +92,7 @@ extension DevelopmentAdjustmentsV3 {
     case .definition: definition.enabled = enabled; case .selectiveColor: selectiveColor.enabled = enabled
     case .noiseReduction: noiseReduction.enabled = enabled; case .sharpen: sharpen.enabled = enabled
     case .vignette: vignette.enabled = enabled; case .filter: filter.enabled = enabled
+    case .optics: var value=optics ?? .init();value.defringe.enabled=enabled;optics=value
     case .texture:advancedDetail.texture.enabled = enabled; case .clarity:advancedDetail.clarity.enabled = enabled; case .dehaze:advancedDetail.dehaze.enabled = enabled
     }
   }
@@ -96,7 +103,7 @@ extension DevelopmentAdjustmentsV3 {
     case .whiteBalance: return whiteBalance.enabled; case .curves: return curves.enabled; case .levels: return levels.enabled
     case .definition: return definition.enabled; case .selectiveColor: return selectiveColor.enabled
     case .noiseReduction: return noiseReduction.enabled; case .sharpen: return sharpen.enabled
-    case .vignette: return vignette.enabled; case .filter: return filter.enabled
+    case .vignette: return vignette.enabled; case .filter: return filter.enabled; case .optics:return optics?.defringe.enabled == true
     case .texture:return advancedDetail.texture.enabled; case .clarity:return advancedDetail.clarity.enabled; case .dehaze:return advancedDetail.dehaze.enabled
     }
   }
@@ -105,7 +112,7 @@ extension DevelopmentAdjustmentsV3 {
     case .light: light = .init(); case .color: color = .init(); case .blackAndWhite: blackAndWhite = .init()
     case .whiteBalance: whiteBalance = .init(); case .curves: curves = .init(); case .levels: levels = .init()
     case .definition: definition = .init(); case .selectiveColor: selectiveColor = .init(); case .noiseReduction: noiseReduction = .init()
-    case .sharpen: sharpen = .init(); case .vignette: vignette = .init(); case .filter: filter = .init()
+    case .sharpen: sharpen = .init(); case .vignette: vignette = .init(); case .filter: filter = .init(); case .optics:optics=nil
     case .texture:advancedDetail.texture = .init(); case .clarity:advancedDetail.clarity = .init(); case .dehaze:advancedDetail.dehaze = .init();advancedDetail.preparedDehaze=nil;advancedDetail.dehazeAlgorithmVersion=nil
     case .retouch, .redEye:
       let tool: DevelopmentLocalTool = id == .retouch ? .retouch : .redEye
@@ -118,7 +125,7 @@ extension DevelopmentAdjustmentsV3 {
     case .light(let p): light = p; case .color(let p): color = p; case .blackAndWhite(let p): blackAndWhite = p
     case .whiteBalance(let p): whiteBalance = p; case .curves(let p): curves = p; case .levels(let p): levels = p
     case .definition(let p): definition = p; case .selectiveColor(let p): selectiveColor = p; case .noiseReduction(let p): noiseReduction = p
-    case .sharpen(let p): sharpen = p; case .vignette(let p): vignette = p; case .filter(let p): filter = p
+    case .sharpen(let p): sharpen = p; case .vignette(let p): vignette = p; case .filter(let p): filter = p; case .optics(let p):optics = p
     case .texture(let p):advancedDetail.texture = p; case .clarity(let p):advancedDetail.clarity = p; case .dehaze(let p):advancedDetail.dehaze = p
     }
   }
@@ -157,9 +164,21 @@ extension DevelopmentRecipe {
       payload.blackAndWhite.enabled = true // Preserve the existing manual scalar control behavior.
     case let .setEnabled(id,value): payload.setEnabled(value,for:id)
     case .reset(let id): payload.reset(group:id)
-    case .resetAll: payload = .init()
+    case .resetAll: payload = payload.neutralForSameSource
     case .setLegacyBasis(let basis): payload.legacyBasis = basis
     case .setGeometry(let geometry): payload.geometry = geometry
+    case .setEffects(let effects): payload.effects = effects
+    case .setGradingLUTs(let stack): payload.gradingLUTs = stack
+    case .setSuperResolution(let model):
+      payload.superResolution = model
+    case .setAIDenoise(let settings):
+      if let settings, let capability = context?.sourceCapability,
+         settings.model.usesRAWInput != (capability == .raw) { throw EditingError.invalidRecipe }
+      payload.aiDenoise = settings
+    case .setRawDetails(let mode):
+      if mode != nil, context?.sourceCapability == .image { throw EditingError.invalidRecipe }
+      payload.rawDetails = mode
+    case .setMasks(let masks): payload.masks = masks
     case .appendLocal(let operation):
       guard let context else { throw DevelopmentAdjustmentCommandError.missingSourceContext }
       guard operation.sourceContentID == context.source.sourceContentID else { throw DevelopmentAdjustmentCommandError.mismatchedSource }
@@ -200,6 +219,8 @@ extension DevelopmentRecipe {
       case .whiteBalancePicker: guard ids == [.whiteBalance] else { throw DevelopmentAdjustmentCommandError.invalidAnalysisResult }
       case .curvesPicker: guard ids == [.curves] else { throw DevelopmentAdjustmentCommandError.invalidAnalysisResult }
       case .selectiveColorPicker: guard ids == [.selectiveColor] else { throw DevelopmentAdjustmentCommandError.invalidAnalysisResult }
+      case .defringePicker: guard ids == [.optics] else { throw DevelopmentAdjustmentCommandError.invalidAnalysisResult }
+      case .pointColorPicker: guard ids == [.selectiveColor] else { throw DevelopmentAdjustmentCommandError.invalidAnalysisResult }
       }
       for parameters in result.parameters { payload.set(parameters) }
     }

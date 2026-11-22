@@ -1,0 +1,1221 @@
+{
+  "schemaVersion": 1,
+  "application": "RAWMaster",
+  "releaseBinarySHA256": "a012c4859e59cbb5cd1ce8308d6c88b758c1ad29697a0dc0fba3e906a7072e31",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "pixels": [
+    2400,
+    1600
+  ],
+  "gpu": "Apple M4 Max",
+  "os": "Version 27.0.1 (Build 26A434)",
+  "parameterSHA256": "2e7cc1b77bf59e97a5f91054d6b76006f47d3e343cacc4b91deb753570fed036",
+  "reference": "lightflow-panel-readback.json",
+  "flag": "RAWMASTER_PROXY_DETAIL_GUIDES",
+  "method": "A/B/B/A independent whole processes, twenty matched state alternations per operator after the first two requests. Timed through complete, CPU-readable 2400×1600 sRGB RGBA8. Separate fresh A/B processes wrote whole RGBA8 frames after the timer. Per-control p95 uses nearest rank.",
+  "runs": [
+    {
+      "enabled": false,
+      "report": "output/performance/camera-raw-engine-20261122/panel-detail-0-timing-a/report.json",
+      "reportSHA256": "e295c703bc84bafcab68a82be6ade14bb8400ea42abf26410e2b5ad61edac244",
+      "recordedAt": "2026-11-22T08:59:50Z",
+      "operations": {
+        "effects-texture": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.404375,
+            "p95Ms": 15.39725,
+            "maxMs": 15.467791
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6875,
+            "p95Ms": 5.03,
+            "maxMs": 5.06
+          },
+          "sourceTrialMs": [
+            2.743458,
+            15.39725,
+            2.355125,
+            10.065292,
+            2.628666,
+            13.553833,
+            2.470292,
+            13.443667,
+            2.334917,
+            11.145375,
+            2.655084,
+            10.645125,
+            2.353541,
+            14.229833,
+            2.603833,
+            11.980333,
+            2.472292,
+            15.467791,
+            2.527708,
+            11.585375
+          ],
+          "firstMilliseconds": [
+            158.237542,
+            406.346334
+          ],
+          "within": false
+        },
+        "effects-clarity": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.923354,
+            "p95Ms": 12.750042,
+            "maxMs": 12.890542
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6225000000000005,
+            "p95Ms": 4.985,
+            "maxMs": 5.9
+          },
+          "sourceTrialMs": [
+            2.708416,
+            11.406125,
+            3.046291,
+            12.720291,
+            2.673584,
+            12.890542,
+            2.540542,
+            11.663666,
+            2.514875,
+            11.170833,
+            2.632333,
+            10.800417,
+            2.820542,
+            12.750042,
+            2.418375,
+            11.88625,
+            2.1845,
+            11.936292,
+            2.602875,
+            10.914541
+          ],
+          "firstMilliseconds": [
+            2.512584,
+            11.772042
+          ],
+          "within": false
+        },
+        "detail-sharpen-amount": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 5.3875415,
+            "p95Ms": 7.377958,
+            "maxMs": 7.615292
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.045,
+            "p95Ms": 5.85,
+            "maxMs": 6.175
+          },
+          "sourceTrialMs": [
+            2.6265,
+            7.258041,
+            4.0185,
+            7.615292,
+            4.155,
+            7.377958,
+            4.385542,
+            6.530375,
+            4.668083,
+            7.276958,
+            4.477583,
+            7.374542,
+            4.478416,
+            7.287417,
+            4.223417,
+            6.107,
+            4.263292,
+            7.069291,
+            4.196291,
+            6.11
+          ],
+          "firstMilliseconds": [
+            3.464917,
+            8.902292
+          ],
+          "within": true
+        },
+        "detail-sharpen-radius": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 9.5779375,
+            "p95Ms": 13.702041,
+            "maxMs": 14.040416
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.9350000000000005,
+            "p95Ms": 5.945,
+            "maxMs": 6.255
+          },
+          "sourceTrialMs": [
+            7.653042,
+            9.299291,
+            8.826833,
+            10.056459,
+            9.20625,
+            9.682333,
+            8.009416,
+            10.594709,
+            9.340875,
+            9.878209,
+            9.581417,
+            9.418209,
+            9.574458,
+            9.642708,
+            9.770958,
+            13.702041,
+            7.499417,
+            9.686166,
+            8.658417,
+            14.040416
+          ],
+          "firstMilliseconds": [
+            8.680708,
+            8.553042
+          ],
+          "within": false
+        },
+        "detail-sharpen-detail": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 9.579667,
+            "p95Ms": 12.717125,
+            "maxMs": 13.096125
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.887499999999999,
+            "p95Ms": 5.865,
+            "maxMs": 6.03
+          },
+          "sourceTrialMs": [
+            9.820625,
+            10.657208,
+            7.610292,
+            8.600875,
+            9.96475,
+            8.858583,
+            8.475917,
+            9.725417,
+            11.4615,
+            7.511417,
+            9.324333,
+            9.469417,
+            8.253917,
+            9.689917,
+            9.431334,
+            13.096125,
+            7.201375,
+            12.717125,
+            10.93625,
+            10.751875
+          ],
+          "firstMilliseconds": [
+            8.686792,
+            6.621875
+          ],
+          "within": false
+        },
+        "detail-sharpen-masking": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 9.301875500000001,
+            "p95Ms": 12.324167,
+            "maxMs": 12.665834
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.782500000000001,
+            "p95Ms": 5.095,
+            "maxMs": 5.415
+          },
+          "sourceTrialMs": [
+            7.357,
+            9.281584,
+            9.336083,
+            9.322167,
+            9.391833,
+            8.526916,
+            8.540958,
+            11.005125,
+            11.216834,
+            7.309875,
+            12.208958,
+            7.77025,
+            7.912375,
+            8.600084,
+            9.754625,
+            12.324167,
+            7.666542,
+            12.665834,
+            7.874375,
+            9.920083
+          ],
+          "firstMilliseconds": [
+            6.4945,
+            11.338292
+          ],
+          "within": false
+        }
+      }
+    },
+    {
+      "enabled": true,
+      "report": "output/performance/camera-raw-engine-20261122/panel-detail-1-timing-a/report.json",
+      "reportSHA256": "e93dc67d8f0e16701dd94726aaf4ffbfba8556d056ae4ce15b52a748f3486682",
+      "recordedAt": "2026-11-22T08:59:52Z",
+      "operations": {
+        "effects-texture": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 3.4880415,
+            "p95Ms": 4.630583,
+            "maxMs": 4.64825
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6875,
+            "p95Ms": 5.03,
+            "maxMs": 5.06
+          },
+          "sourceTrialMs": [
+            3.00125,
+            4.630583,
+            2.496208,
+            4.604333,
+            2.600417,
+            4.290042,
+            2.620083,
+            4.332875,
+            2.47725,
+            3.989583,
+            2.322666,
+            4.125541,
+            2.1845,
+            4.126125,
+            2.616375,
+            4.64825,
+            2.473042,
+            4.003042,
+            2.516916,
+            3.974833
+          ],
+          "firstMilliseconds": [
+            144.076125,
+            66.371458
+          ],
+          "within": true
+        },
+        "effects-clarity": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 3.289833,
+            "p95Ms": 4.393709,
+            "maxMs": 4.493042
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6225000000000005,
+            "p95Ms": 4.985,
+            "maxMs": 5.9
+          },
+          "sourceTrialMs": [
+            2.669166,
+            4.493042,
+            2.503875,
+            3.997625,
+            2.550458,
+            4.210666,
+            2.387167,
+            3.9105,
+            2.383708,
+            3.939208,
+            2.652416,
+            4.3065,
+            2.593875,
+            4.393709,
+            2.431334,
+            4.064625,
+            2.654875,
+            4.017958,
+            2.579791,
+            4.048958
+          ],
+          "firstMilliseconds": [
+            2.876875,
+            11.068792
+          ],
+          "within": true
+        },
+        "detail-sharpen-amount": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.560145500000001,
+            "p95Ms": 4.955042,
+            "maxMs": 5.014167
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.045,
+            "p95Ms": 5.85,
+            "maxMs": 6.175
+          },
+          "sourceTrialMs": [
+            2.596459,
+            4.4735,
+            4.914792,
+            4.594042,
+            4.618459,
+            4.482417,
+            4.530916,
+            4.76325,
+            4.459416,
+            4.441208,
+            4.149875,
+            4.716333,
+            4.492458,
+            5.014167,
+            4.697209,
+            4.615042,
+            4.402042,
+            4.484167,
+            4.955042,
+            4.589375
+          ],
+          "firstMilliseconds": [
+            2.486459,
+            9.463792
+          ],
+          "within": true
+        },
+        "detail-sharpen-radius": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.936104,
+            "p95Ms": 7.273958,
+            "maxMs": 7.315208
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.9350000000000005,
+            "p95Ms": 5.945,
+            "maxMs": 6.255
+          },
+          "sourceTrialMs": [
+            4.829166,
+            6.779042,
+            6.944541,
+            7.088667,
+            7.315208,
+            6.877083,
+            7.037875,
+            6.603708,
+            6.800416,
+            6.899584,
+            7.273958,
+            7.024166,
+            7.16675,
+            7.2505,
+            6.746083,
+            6.934708,
+            6.9375,
+            7.242083,
+            6.871959,
+            6.547084
+          ],
+          "firstMilliseconds": [
+            10.706083,
+            9.861167
+          ],
+          "within": false
+        },
+        "detail-sharpen-detail": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.775999499999999,
+            "p95Ms": 10.241708,
+            "maxMs": 11.521084
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.887499999999999,
+            "p95Ms": 5.865,
+            "maxMs": 6.03
+          },
+          "sourceTrialMs": [
+            5.230791,
+            6.557333,
+            6.736834,
+            9.745667,
+            5.1435,
+            7.411291,
+            6.896458,
+            6.54575,
+            7.190541,
+            8.258375,
+            7.438584,
+            11.521084,
+            6.006208,
+            10.241708,
+            5.122583,
+            6.193458,
+            6.788333,
+            6.763666,
+            7.033166,
+            6.75575
+          ],
+          "firstMilliseconds": [
+            10.57525,
+            4.949125
+          ],
+          "within": false
+        },
+        "detail-sharpen-masking": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.765375000000001,
+            "p95Ms": 7.077792,
+            "maxMs": 7.106
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.782500000000001,
+            "p95Ms": 5.095,
+            "maxMs": 5.415
+          },
+          "sourceTrialMs": [
+            5.325334,
+            6.657042,
+            7.055459,
+            6.935375,
+            7.077792,
+            6.822292,
+            6.751208,
+            6.727,
+            6.779542,
+            6.660375,
+            6.80775,
+            6.717083,
+            6.879791,
+            6.660709,
+            6.826125,
+            6.866375,
+            6.298375,
+            6.461208,
+            7.106,
+            6.551709
+          ],
+          "firstMilliseconds": [
+            6.576792,
+            4.751792
+          ],
+          "within": false
+        }
+      }
+    },
+    {
+      "enabled": true,
+      "report": "output/performance/camera-raw-engine-20261122/panel-detail-1-timing-b/report.json",
+      "reportSHA256": "3c0caf9f5a118c6a4286eb1499090b9e33a5125956c225e483c290ef6a98d4b9",
+      "recordedAt": "2026-11-22T08:59:54Z",
+      "operations": {
+        "effects-texture": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 3.4232294999999997,
+            "p95Ms": 4.384167,
+            "maxMs": 4.434291
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6875,
+            "p95Ms": 5.03,
+            "maxMs": 5.06
+          },
+          "sourceTrialMs": [
+            2.626541,
+            4.384167,
+            2.504292,
+            4.346708,
+            2.453708,
+            3.799959,
+            2.26875,
+            4.179959,
+            2.669792,
+            4.347209,
+            2.53225,
+            3.925125,
+            2.656166,
+            4.0895,
+            3.0465,
+            4.239625,
+            2.811791,
+            4.434291,
+            2.648375,
+            4.227
+          ],
+          "firstMilliseconds": [
+            160.255709,
+            16.3405
+          ],
+          "within": true
+        },
+        "effects-clarity": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 3.3538125,
+            "p95Ms": 4.534667,
+            "maxMs": 4.70925
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6225000000000005,
+            "p95Ms": 4.985,
+            "maxMs": 5.9
+          },
+          "sourceTrialMs": [
+            2.634875,
+            4.373291,
+            2.616084,
+            4.508333,
+            2.922958,
+            4.344917,
+            2.269291,
+            3.784667,
+            2.640792,
+            4.067417,
+            2.441625,
+            4.534667,
+            2.432042,
+            4.419375,
+            2.657458,
+            4.70925,
+            2.718625,
+            4.310208,
+            2.651,
+            3.912959
+          ],
+          "firstMilliseconds": [
+            2.234375,
+            11.51225
+          ],
+          "within": true
+        },
+        "detail-sharpen-amount": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.6072705,
+            "p95Ms": 5.002584,
+            "maxMs": 5.072041
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.045,
+            "p95Ms": 5.85,
+            "maxMs": 6.175
+          },
+          "sourceTrialMs": [
+            2.5555,
+            4.560792,
+            4.446583,
+            5.072041,
+            4.062792,
+            4.734,
+            4.786208,
+            4.778333,
+            4.352417,
+            4.611708,
+            5.002584,
+            4.329375,
+            4.667417,
+            4.602833,
+            4.309292,
+            4.65525,
+            4.799917,
+            4.550625,
+            4.540209,
+            4.815416
+          ],
+          "firstMilliseconds": [
+            2.528167,
+            9.034541
+          ],
+          "within": true
+        },
+        "detail-sharpen-radius": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 7.218646,
+            "p95Ms": 17.07925,
+            "maxMs": 20.795583
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.9350000000000005,
+            "p95Ms": 5.945,
+            "maxMs": 6.255
+          },
+          "sourceTrialMs": [
+            6.554541,
+            7.186042,
+            6.861542,
+            7.150917,
+            6.692666,
+            6.655792,
+            7.589667,
+            7.414958,
+            7.856708,
+            11.993,
+            17.07925,
+            7.25125,
+            8.000208,
+            20.795583,
+            13.995458,
+            6.96875,
+            6.997167,
+            7.04,
+            6.859959,
+            12.407292
+          ],
+          "firstMilliseconds": [
+            10.554,
+            9.292375
+          ],
+          "within": false
+        },
+        "detail-sharpen-detail": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.822646000000001,
+            "p95Ms": 9.999,
+            "maxMs": 10.098834
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.887499999999999,
+            "p95Ms": 5.865,
+            "maxMs": 6.03
+          },
+          "sourceTrialMs": [
+            5.520916,
+            6.561708,
+            10.098834,
+            5.566583,
+            7.146667,
+            6.878708,
+            9.999,
+            7.773458,
+            7.598625,
+            7.048917,
+            7.061167,
+            6.566625,
+            6.504416,
+            6.480958,
+            6.513,
+            7.048417,
+            6.75425,
+            6.609542,
+            6.795917,
+            6.849375
+          ],
+          "firstMilliseconds": [
+            10.656958,
+            4.803625
+          ],
+          "within": false
+        },
+        "detail-sharpen-masking": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.7231245,
+            "p95Ms": 7.06575,
+            "maxMs": 9.81325
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.782500000000001,
+            "p95Ms": 5.095,
+            "maxMs": 5.415
+          },
+          "sourceTrialMs": [
+            4.841959,
+            6.887375,
+            6.806208,
+            6.549708,
+            6.876833,
+            6.882542,
+            6.808958,
+            7.06575,
+            9.81325,
+            4.8135,
+            6.902334,
+            6.512042,
+            6.520167,
+            6.40425,
+            6.83875,
+            6.521583,
+            6.327375,
+            6.691916,
+            6.754333,
+            6.606084
+          ],
+          "firstMilliseconds": [
+            6.287417,
+            4.847792
+          ],
+          "within": false
+        }
+      }
+    },
+    {
+      "enabled": false,
+      "report": "output/performance/camera-raw-engine-20261122/panel-detail-0-timing-b/report.json",
+      "reportSHA256": "5478d6dfbe789a38b7f568fefb5776388746d068c5b75fe7536e1137847430db",
+      "recordedAt": "2026-11-22T08:59:56Z",
+      "operations": {
+        "effects-texture": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.7015415,
+            "p95Ms": 16.172333,
+            "maxMs": 19.048
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6875,
+            "p95Ms": 5.03,
+            "maxMs": 5.06
+          },
+          "sourceTrialMs": [
+            2.723333,
+            16.172333,
+            2.712417,
+            11.050833,
+            2.639083,
+            13.513583,
+            2.425,
+            14.603042,
+            2.864958,
+            13.069,
+            2.675875,
+            11.84475,
+            2.756458,
+            19.048,
+            2.817167,
+            10.538125,
+            2.744291,
+            12.596417,
+            2.82,
+            12.907958
+          ],
+          "firstMilliseconds": [
+            152.256458,
+            25.489458
+          ],
+          "within": false
+        },
+        "effects-clarity": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 6.4112290000000005,
+            "p95Ms": 12.669667,
+            "maxMs": 15.276125
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6225000000000005,
+            "p95Ms": 4.985,
+            "maxMs": 5.9
+          },
+          "sourceTrialMs": [
+            2.554458,
+            15.276125,
+            2.675834,
+            12.203416,
+            2.816,
+            10.757166,
+            2.495084,
+            12.669667,
+            2.644791,
+            10.006458,
+            2.598041,
+            12.555834,
+            2.548916,
+            10.616083,
+            2.755792,
+            11.406333,
+            2.769792,
+            11.366,
+            2.724125,
+            10.160208
+          ],
+          "firstMilliseconds": [
+            2.445958,
+            10.841041
+          ],
+          "within": false
+        },
+        "detail-sharpen-amount": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 5.6770835,
+            "p95Ms": 7.768708,
+            "maxMs": 10.512833
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.045,
+            "p95Ms": 5.85,
+            "maxMs": 6.175
+          },
+          "sourceTrialMs": [
+            2.739959,
+            10.512833,
+            2.925625,
+            6.698042,
+            4.422167,
+            7.486209,
+            4.402709,
+            7.456375,
+            4.416791,
+            6.592542,
+            4.615292,
+            7.49575,
+            4.254541,
+            7.768708,
+            4.761625,
+            7.569167,
+            4.234458,
+            7.337125,
+            4.406417,
+            7.766958
+          ],
+          "firstMilliseconds": [
+            2.628708,
+            7.976
+          ],
+          "within": true
+        },
+        "detail-sharpen-radius": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 9.8894585,
+            "p95Ms": 11.702791,
+            "maxMs": 12.427417
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.9350000000000005,
+            "p95Ms": 5.945,
+            "maxMs": 6.255
+          },
+          "sourceTrialMs": [
+            7.053084,
+            10.276417,
+            9.778958,
+            9.816583,
+            9.911459,
+            10.4575,
+            9.336916,
+            12.427417,
+            8.015917,
+            10.552125,
+            9.780708,
+            10.1725,
+            9.867458,
+            10.587125,
+            11.702791,
+            8.652292,
+            8.428333,
+            10.46875,
+            9.584459,
+            10.769042
+          ],
+          "firstMilliseconds": [
+            7.968792,
+            8.233
+          ],
+          "within": false
+        },
+        "detail-sharpen-detail": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 9.0243125,
+            "p95Ms": 12.816042,
+            "maxMs": 12.892584
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.887499999999999,
+            "p95Ms": 5.865,
+            "maxMs": 6.03
+          },
+          "sourceTrialMs": [
+            7.874167,
+            12.892584,
+            6.751375,
+            11.115958,
+            10.509667,
+            6.619708,
+            8.158958,
+            9.157083,
+            9.51675,
+            9.783167,
+            9.62325,
+            8.521792,
+            12.816042,
+            7.661709,
+            9.834875,
+            8.210875,
+            8.891542,
+            8.346042,
+            8.737416,
+            9.623167
+          ],
+          "firstMilliseconds": [
+            9.622167,
+            6.582834
+          ],
+          "within": false
+        },
+        "detail-sharpen-masking": {
+          "status": "measured",
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 9.487313,
+            "p95Ms": 13.140042,
+            "maxMs": 13.222834
+          },
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.782500000000001,
+            "p95Ms": 5.095,
+            "maxMs": 5.415
+          },
+          "sourceTrialMs": [
+            10.908625,
+            7.922125,
+            10.160375,
+            13.140042,
+            7.015666,
+            9.491917,
+            8.826958,
+            9.355583,
+            9.482709,
+            8.589042,
+            8.744292,
+            9.631041,
+            7.806583,
+            9.690667,
+            8.895625,
+            9.355,
+            9.969209,
+            13.222834,
+            10.050416,
+            12.291708
+          ],
+          "firstMilliseconds": [
+            9.265584,
+            8.010791
+          ],
+          "within": false
+        }
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "name": "detail-sharpen-amount-0.rgba8",
+      "baselineSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+      "candidateSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-amount-1.rgba8",
+      "baselineSHA256": "280cdbcfac11a58e5795e61cff6a49b8e3f7ec129e99dcd76b4f6deb88fa6b06",
+      "candidateSHA256": "280cdbcfac11a58e5795e61cff6a49b8e3f7ec129e99dcd76b4f6deb88fa6b06",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-detail-0.rgba8",
+      "baselineSHA256": "ee99f4c5ebf1119e909ae3e088d856fbc22808bb71661423d010e7148c8a6b4e",
+      "candidateSHA256": "ee99f4c5ebf1119e909ae3e088d856fbc22808bb71661423d010e7148c8a6b4e",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-detail-1.rgba8",
+      "baselineSHA256": "23b7e3b73820ea557e47251c9d8f9f525765e54445f7ffc20b7873e2599442fa",
+      "candidateSHA256": "23b7e3b73820ea557e47251c9d8f9f525765e54445f7ffc20b7873e2599442fa",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-masking-0.rgba8",
+      "baselineSHA256": "608f3768063ea70a49afc8915f5082c90c9de96b70487e20e87955236fca04c3",
+      "candidateSHA256": "608f3768063ea70a49afc8915f5082c90c9de96b70487e20e87955236fca04c3",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-masking-1.rgba8",
+      "baselineSHA256": "eb998213b7acdc719c787771d45d2f0695d4f4d4e98d8fa371943e6a394b09cc",
+      "candidateSHA256": "eb998213b7acdc719c787771d45d2f0695d4f4d4e98d8fa371943e6a394b09cc",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-radius-0.rgba8",
+      "baselineSHA256": "24482223402f8c020e10914c9d09cb913a343796fb7578aa9fe91022e67a500b",
+      "candidateSHA256": "24482223402f8c020e10914c9d09cb913a343796fb7578aa9fe91022e67a500b",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "detail-sharpen-radius-1.rgba8",
+      "baselineSHA256": "16a13ddeac6e2fc78e31d164f81bedde8a1b3dcd4cd46463f3889c33478ee591",
+      "candidateSHA256": "16a13ddeac6e2fc78e31d164f81bedde8a1b3dcd4cd46463f3889c33478ee591",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "effects-clarity-0.rgba8",
+      "baselineSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+      "candidateSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "effects-clarity-1.rgba8",
+      "baselineSHA256": "ace2e70af4c8749303476403d11ce8ac72c28786ab464c4df607df37d1d7a1d5",
+      "candidateSHA256": "ace2e70af4c8749303476403d11ce8ac72c28786ab464c4df607df37d1d7a1d5",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "effects-texture-0.rgba8",
+      "baselineSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+      "candidateSHA256": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "name": "effects-texture-1.rgba8",
+      "baselineSHA256": "865cf20cf4cba98b84a5d19de6e7ed8b24057cf9065ac6a86091a1ea348c2030",
+      "candidateSHA256": "865cf20cf4cba98b84a5d19de6e7ed8b24057cf9065ac6a86091a1ea348c2030",
+      "rgbChannelCount": 11520000,
+      "changedRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    }
+  ],
+  "canonicalAdvancedDetailShader": {
+    "sourceByteIdenticalToHead": true,
+    "SHA256": "31baf1e18d0376962c215ad2203b7d3064dd6e308a9a656c94341a6de407f9c4",
+    "scope": "Full-resolution and export retain the versioned original Metal shader source. The new R32F factor and restore shaders are isolated to the validated pure proxy recipe."
+  },
+  "syntheticQualification": {
+    "checked": [
+      "cached versus original nonlinear bands, signed/HDR/transparent inputs and multiple sharpen controls",
+      "post-crop styles, refinements and zero bypass",
+      "all joined F32 pixels including invalid and transparent outputs"
+    ],
+    "log": "output/performance/camera-raw-engine-20261122/panel-detail-qualification.log",
+    "logSHA256": "8ddb4ca9b0828fd278748d27ac2e028a315c15ad893eed5052a4a7f131954a8b",
+    "tests": 5,
+    "failures": 0
+  }
+}

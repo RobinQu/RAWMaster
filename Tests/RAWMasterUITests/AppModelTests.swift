@@ -31,7 +31,78 @@ final class AppModelTests: XCTestCase {
         func clean() { try? FileManager.default.removeItem(at: root) }
     }
 
-    @MainActor func testNativeEditingKeepsSinglePhotoWindowTitleAndHiddenToolbarTitle() async throws {
+    @MainActor func testWorkflowTabsKeepStableSelectionAndTransitionsAcrossBrowsingEditingAndExport() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        _ = try await fixture.populate(count: 1)
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.setMode(.single)
+        model.select(try XCTUnwrap(model.assets.first))
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .library)
+        model.activateWorkflow(.edit)
+        try await Task.sleep(nanoseconds: 20_000_000)
+        XCTAssertTrue(model.isNativeEditing)
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .edit)
+        model.activateWorkflow(.export)
+        XCTAssertTrue(model.exportWorkspacePresented)
+        XCTAssertFalse(model.editing?.showExport == true || model.editing?.showDraftExportChoice == true)
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .export)
+        model.activateWorkflow(.edit)
+        XCTAssertFalse(model.exportWorkspacePresented)
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .edit)
+        model.activateWorkflow(.library)
+        XCTAssertFalse(model.isNativeEditing)
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .library)
+        await model.editing?.shutdown()
+    }
+
+    @MainActor func testTabCyclesWorkflowsAndArrowKeysNavigateEditingPhotos() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        _ = try await fixture.populate(count: 2)
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.setMode(.single)
+        model.select(try XCTUnwrap(model.browserAssets.first))
+        func key(_ code: UInt16, _ characters: String, _ modifiers: NSEvent.ModifierFlags = []) -> NSEvent {
+            try! XCTUnwrap(NSEvent.keyEvent(with: .keyDown, location: .zero, modifierFlags: modifiers,
+                timestamp: 0, windowNumber: 0, context: nil, characters: characters,
+                charactersIgnoringModifiers: characters, isARepeat: false, keyCode: code))
+        }
+        XCTAssertTrue(model.handleKey(key(48, "\t")))
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .edit)
+        try await Task.sleep(nanoseconds: 20_000_000)
+        XCTAssertTrue(model.isNativeEditing)
+        model.editing?.setActualPixels(true)
+        XCTAssertTrue(model.editing?.actualPixels == true)
+
+        XCTAssertTrue(model.handleKey(key(124, "")))
+        XCTAssertEqual(model.focusedID, model.browserAssets[1].id)
+        XCTAssertFalse(model.editing?.actualPixels == true)
+        XCTAssertTrue(model.handleKey(key(123, "")))
+        XCTAssertEqual(model.focusedID, model.browserAssets[0].id)
+
+        XCTAssertTrue(model.handleKey(key(48, "\t")))
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .export)
+        XCTAssertTrue(model.handleKey(key(48, "\t")))
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .library)
+        XCTAssertTrue(model.handleKey(key(48, "\t", .shift)))
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .export)
+        await model.editing?.shutdown()
+    }
+
+    @MainActor func testWorkflowEditFromGridSwitchesToSingleAndOpensFocusedPhoto() async throws {
+        let fixture = try Fixture(); defer { fixture.clean() }
+        _ = try await fixture.populate(count: 1)
+        let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
+        model.setMode(.grid)
+        model.select(try XCTUnwrap(model.assets.first))
+        XCTAssertFalse(model.canOpenNativeEditing)
+        model.activateWorkflow(.edit)
+        XCTAssertEqual(model.mode, .single)
+        XCTAssertTrue(model.isNativeEditing)
+        XCTAssertEqual(model.activeWorkbenchWorkflow, .edit)
+        await model.editing?.shutdown()
+    }
+
+    @MainActor func testNativeEditingKeepsSinglePhotoWindowTitleAndVisibleWorkflowTitlebar() async throws {
         let fixture = try Fixture(); defer { fixture.clean() }
         _ = try await fixture.populate(count: 1)
         let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
@@ -45,8 +116,15 @@ final class AppModelTests: XCTestCase {
             styleMask: [.titled, .resizable], backing: .buffered, defer: false)
         window.isReleasedWhenClosed = false
         defer { window.close() }
-        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle)
+        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, darkEditing: true)
         XCTAssertEqual(window.title, "RAWMaster – " + browsingTitle)
+        XCTAssertEqual(window.appearance?.name, .darkAqua)
+        XCTAssertTrue(window.isMovable)
+        XCTAssertTrue(window.styleMask.contains(.resizable))
+        XCTAssertEqual(window.minSize, CGSize(width: 1100, height: 720))
+        XCTAssertEqual(window.standardWindowButton(.zoomButton)?.isEnabled, true)
+        WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, darkEditing: false)
+        XCTAssertNil(window.appearance)
     }
 
     @MainActor func testShiftSelectionAndManualGroupPreserveShotOrder() async throws {

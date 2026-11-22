@@ -1,0 +1,3795 @@
+{
+  "schemaVersion": 1,
+  "protocol": "screen-photo-response-v1",
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "uiSHA256": {
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+    "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+    "_b/20261111155800-2d41ab1/flashraw/browser.js": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+    "_b/20261111155800-2d41ab1/flashraw/core.js": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+    "_b/20261111155800-2d41ab1/flashraw/errors.js": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+    "_b/20261111155800-2d41ab1/flashraw/threads.js": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+    "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+    "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+    "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+    "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+    "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+    "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+    "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+    "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+    "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+    "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+  },
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "browser": "Chrome/146.0.7680.188",
+  "browserBinarySHA256": "5e925bf7d5c832c643d3fb141bd960250635304f512625050a8942ca539154db",
+  "windowBundle": "org.rawmaster.benchmark.lightflow-chromium",
+  "driver": "Trusted Return on prepared LightFlow numeric control through local Chrome DevTools; reads committed slider value",
+  "startedAt": "2026-11-22T10:26:36.339978+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "window": {
+    "frame": [
+      2,
+      41,
+      1780,
+      1090
+    ],
+    "scale": 2,
+    "id": 35878,
+    "title": "LightFlow RAW benchmark e6ff524d"
+  },
+  "photoRectPixels": [
+    503,
+    215,
+    2368,
+    1579
+  ],
+  "roi": [
+    0.27432584269662924,
+    0.24330275229357798,
+    0.3991011235955056,
+    0.4344954128440367
+  ],
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": 60,
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120
+  },
+  "operations": {
+    "light-exposure": {
+      "separationRGB8": 17.79031032986111,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "30ad331bc19dd180e14a34679b13b112396c87ff6aafc24c226c14930c4b0583"
+      ],
+      "trials": [
+        {
+          "sentNs": 511648759923083,
+          "dispatchResponseHostNs": 511648768583291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 38.00725,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              38.00725,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511649351353416,
+          "dispatchResponseHostNs": 511649357921458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.024875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.024875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511649935010125,
+          "dispatchResponseHostNs": 511649940355458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 28.106916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.106916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511650517397916,
+          "dispatchResponseHostNs": 511650522940208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 14.327875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.327875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511651100038583,
+          "dispatchResponseHostNs": 511651103539750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.578208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.578208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511651683792125,
+          "dispatchResponseHostNs": 511651692075625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 23.284291,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.284291,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511652290515625,
+          "dispatchResponseHostNs": 511652294473583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.78975,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.78975,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511652880924083,
+          "dispatchResponseHostNs": 511652885218000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 60.203083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              60.203083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511653472227666,
+          "dispatchResponseHostNs": 511653476323708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 24.891667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.891667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511654049150291,
+          "dispatchResponseHostNs": 511654052656250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 34.059125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              34.059125,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        0.5
+      ],
+      "displayLabel": "Exposure value",
+      "calibration": [
+        {
+          "sentNs": 511647587965208,
+          "dispatchResponseHostNs": 511647593039083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511648172860916,
+          "dispatchResponseHostNs": 511648178772791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0.5,
+          "actual": 0.5,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "8515d8b40f58500b9f1ef1cde6ed7a69a85558a30fbd9f686e84c4ce166938e8"
+    },
+    "light-contrast": {
+      "separationRGB8": 7.278157552083333,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "8ce56b4d129af62ac0d35a038aa54d8cf57ebeb58696568706e0b460f1920661"
+      ],
+      "trials": [
+        {
+          "sentNs": 511657171385333,
+          "dispatchResponseHostNs": 511657175189875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.929875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.929875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511657750627250,
+          "dispatchResponseHostNs": 511657754893875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 16.784458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.784458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511658329489958,
+          "dispatchResponseHostNs": 511658333388625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 23.294208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.294208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511658919611958,
+          "dispatchResponseHostNs": 511658927491541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 27.569,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.569,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511659518439000,
+          "dispatchResponseHostNs": 511659525427791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 40.373916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              40.373916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511660111456958,
+          "dispatchResponseHostNs": 511660115862083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.399125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.399125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511660701056750,
+          "dispatchResponseHostNs": 511660705300458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 16.03275,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.03275,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511661276686833,
+          "dispatchResponseHostNs": 511661280540333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 13.932458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.932458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511661855546166,
+          "dispatchResponseHostNs": 511661860222166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.78,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.78,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511662438076375,
+          "dispatchResponseHostNs": 511662442476166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.955166,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.955166,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Contrast value",
+      "calibration": [
+        {
+          "sentNs": 511656015978333,
+          "dispatchResponseHostNs": 511656019388333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511656592829541,
+          "dispatchResponseHostNs": 511656596552625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "867e93295dc44b70db475e17e9611954781ef617394192c6821b664d9549252d"
+    },
+    "light-highlights": {
+      "separationRGB8": 3.067111545138889,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "c6613ebf4e1bb2981911ca965ec552839d80d760b74f983aeecaa1ea3b0a4021"
+      ],
+      "trials": [
+        {
+          "sentNs": 511665974972708,
+          "dispatchResponseHostNs": 511665978746625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 20.570333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.570333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511666551658666,
+          "dispatchResponseHostNs": 511666556629583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 26.424,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.424,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511667149712708,
+          "dispatchResponseHostNs": 511667156389875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 33.758375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.758375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511667737813166,
+          "dispatchResponseHostNs": 511667741736250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 32.359542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.359542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511668312299250,
+          "dispatchResponseHostNs": 511668315815500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 25.617041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.617041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511668887475333,
+          "dispatchResponseHostNs": 511668891150041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 24.683333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.683333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511669465879875,
+          "dispatchResponseHostNs": 511669470199458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 16.361416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.361416,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511670062603541,
+          "dispatchResponseHostNs": 511670068723291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.153875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.153875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511670651665000,
+          "dispatchResponseHostNs": 511670658783458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 33.539375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.539375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511671247642083,
+          "dispatchResponseHostNs": 511671254437708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 38.081292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              38.081292,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Highlights value",
+      "calibration": [
+        {
+          "sentNs": 511664816644750,
+          "dispatchResponseHostNs": 511664820656333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511665404364375,
+          "dispatchResponseHostNs": 511665410202000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "d968e94d5d5ac0ff713d00e3b72d1419f88a8d766c76098a9decc1080c94f211"
+    },
+    "light-shadows": {
+      "separationRGB8": 4.226128472222222,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "6da5e8b1f1ec2e78107d7011bb0bf8372159d1f8de04c8e9e374a1bef6a79da1"
+      ],
+      "trials": [
+        {
+          "sentNs": 511674427984291,
+          "dispatchResponseHostNs": 511674436402708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 37.701167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              37.701167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511675016510208,
+          "dispatchResponseHostNs": 511675019910666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 22.707708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.707708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511675597251375,
+          "dispatchResponseHostNs": 511675603320416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.590833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.590833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511676179399833,
+          "dispatchResponseHostNs": 511676186192625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 21.585292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.585292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511676772529458,
+          "dispatchResponseHostNs": 511676779407875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 26.139958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.139958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511677368439041,
+          "dispatchResponseHostNs": 511677374316583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 29.935084,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.935084,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511677956896375,
+          "dispatchResponseHostNs": 511677964261541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 24.533375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.533375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511678547393833,
+          "dispatchResponseHostNs": 511678553681125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 23.704208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.704208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511679145940625,
+          "dispatchResponseHostNs": 511679151585333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.823916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.823916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511679718191041,
+          "dispatchResponseHostNs": 511679723450708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 21.939167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.939167,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Shadows value",
+      "calibration": [
+        {
+          "sentNs": 511673266160666,
+          "dispatchResponseHostNs": 511673269317041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511673844804000,
+          "dispatchResponseHostNs": 511673849983166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "e59272ea51451993184a3e566ef897d3edf122667d89e4ba42de32137c30ec2f"
+    },
+    "light-whites": {
+      "separationRGB8": 6.099392361111111,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "47eb33484ac631d2bf3a9297df70ea6d1310d2b373b08e2031d4f02a6622920f"
+      ],
+      "trials": [
+        {
+          "sentNs": 511682871444291,
+          "dispatchResponseHostNs": 511682878060208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 23.48775,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.48775,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511683455690916,
+          "dispatchResponseHostNs": 511683462628000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 20.892959,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.892959,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511684055522833,
+          "dispatchResponseHostNs": 511684061693583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 33.334417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.334417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511684636810041,
+          "dispatchResponseHostNs": 511684641854791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 26.824417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.824417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511685211580916,
+          "dispatchResponseHostNs": 511685215499958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 33.16875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.16875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511685804854166,
+          "dispatchResponseHostNs": 511685809359333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 25.713334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.713334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511686382085250,
+          "dispatchResponseHostNs": 511686386944125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.463416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.463416,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511686969715375,
+          "dispatchResponseHostNs": 511686976499541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.392875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.392875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511687571458666,
+          "dispatchResponseHostNs": 511687578938791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.728625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.728625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511688180356125,
+          "dispatchResponseHostNs": 511688189689333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 37.085833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              37.085833,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Whites value",
+      "calibration": [
+        {
+          "sentNs": 511681707962250,
+          "dispatchResponseHostNs": 511681711044375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511682295770916,
+          "dispatchResponseHostNs": 511682300554458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "b9a9c6440894299a4211092fdfc093ea1ecb3f74fa82b2937e3f7185923b9fba"
+    },
+    "light-blacks": {
+      "separationRGB8": 3.9291449652777777,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "bf4ed115aeb99d8cc210e015a5ada69dc6fcf3bfae8c82ea967c1f6c7f4caff1"
+      ],
+      "trials": [
+        {
+          "sentNs": 511691381284875,
+          "dispatchResponseHostNs": 511691387761041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 21.132625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.132625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511691964177166,
+          "dispatchResponseHostNs": 511691967705500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 28.793125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.793125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511692545281625,
+          "dispatchResponseHostNs": 511692552367875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 21.489916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.489916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511693145594083,
+          "dispatchResponseHostNs": 511693153963125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 21.844958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.844958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511693746131041,
+          "dispatchResponseHostNs": 511693750491125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 28.934417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.934417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511694330053750,
+          "dispatchResponseHostNs": 511694335364083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 33.427708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.427708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511694931232041,
+          "dispatchResponseHostNs": 511694936436291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.6445,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.6445,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511695518914208,
+          "dispatchResponseHostNs": 511695525985166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 40.359708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              40.359708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511696111208250,
+          "dispatchResponseHostNs": 511696117718791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 37.685791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              37.685791,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511696704030583,
+          "dispatchResponseHostNs": 511696711199750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 23.041667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.041667,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Blacks value",
+      "calibration": [
+        {
+          "sentNs": 511690206058875,
+          "dispatchResponseHostNs": 511690209359125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511690788772458,
+          "dispatchResponseHostNs": 511690795448750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "dd0e7d1558561b36aa17152f2b7cbde36d751dc76a3d16b3af3ea8ae083506a1"
+    },
+    "color-temp-raw": {
+      "separationRGB8": 5.305338541666667,
+      "referenceDigests": [
+        "d78da873088bb02cc505c9ea0ec95bda585307ec68dc96fa1e27f45e5e4dd68d",
+        "95e502c2020e463127d64288857ec91b677aef14b7c4a2a85bd9c348ab1d27c3"
+      ],
+      "trials": [
+        {
+          "sentNs": 511699867654958,
+          "dispatchResponseHostNs": 511699870438041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 15.501458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.501458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511700450778291,
+          "dispatchResponseHostNs": 511700453835625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 27.185417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.185417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511701039871416,
+          "dispatchResponseHostNs": 511701043073125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 22.656417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.656417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511701616783541,
+          "dispatchResponseHostNs": 511701619832833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.054875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.054875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511702199983791,
+          "dispatchResponseHostNs": 511702201678083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.751959,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.751959,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511702779800083,
+          "dispatchResponseHostNs": 511702782966458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 29.511667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.511667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511703357519208,
+          "dispatchResponseHostNs": 511703361226625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 23.030917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.030917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511703945769500,
+          "dispatchResponseHostNs": 511703948982125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 37.60875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              37.60875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511704527031916,
+          "dispatchResponseHostNs": 511704530256541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 25.275042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.275042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511705113871833,
+          "dispatchResponseHostNs": 511705116977208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 32.897625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.897625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        5500,
+        6500
+      ],
+      "displayLabel": "Temp value",
+      "calibration": [
+        {
+          "sentNs": 511698683260250,
+          "dispatchResponseHostNs": 511698684665791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 5500,
+          "actual": 5500,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511699285295250,
+          "dispatchResponseHostNs": 511699287824750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 6500,
+          "actual": 6500,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "0776104c95d6ea9a0a39a4be4c9a5f460cf2ec740b28ecde12cc70d5dc165f67"
+    },
+    "color-tint": {
+      "separationRGB8": 3.3388671875,
+      "referenceDigests": [
+        "28a854093289d1df2f5e830e821811bf651dc4bff56b70ab7c716fa0ca921ec4",
+        "6216f60ae45783bdf5ca91899123361f0aa38d4b8a9e3426b2f57482d40098a9"
+      ],
+      "trials": [
+        {
+          "sentNs": 511708262660250,
+          "dispatchResponseHostNs": 511708266310083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 21.988958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.988958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511708848076166,
+          "dispatchResponseHostNs": 511708849917666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 35.599792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              35.599792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511709432684375,
+          "dispatchResponseHostNs": 511709436692041,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 34.306375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              34.306375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511710019432541,
+          "dispatchResponseHostNs": 511710022756458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 23.990167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.990167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511710603266791,
+          "dispatchResponseHostNs": 511710605824791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 33.208375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.208375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511711176027000,
+          "dispatchResponseHostNs": 511711177647375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 26.105416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.105416,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511711751739041,
+          "dispatchResponseHostNs": 511711755322500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.192625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.192625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511712325260250,
+          "dispatchResponseHostNs": 511712326877375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 28.604541,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.604541,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511712897165500,
+          "dispatchResponseHostNs": 511712900246583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.166208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.166208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511713481975416,
+          "dispatchResponseHostNs": 511713484485958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 17.5585,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.5585,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        16,
+        40
+      ],
+      "displayLabel": "Tint value",
+      "calibration": [
+        {
+          "sentNs": 511707114218041,
+          "dispatchResponseHostNs": 511707115693833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 16,
+          "actual": 16,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511707683430708,
+          "dispatchResponseHostNs": 511707684986750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 40,
+          "actual": 40,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "d39d841f1be430e4f9b357d2d9e1c24ff1c3930815180fccec452249f380533f"
+    },
+    "color-vibrance": {
+      "separationRGB8": 4.389268663194445,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "0bdc0d98829b36562566e954996591edc0080e2af68862feb9d5a5b29a9ec0a6"
+      ],
+      "trials": [
+        {
+          "sentNs": 511716643653333,
+          "dispatchResponseHostNs": 511716650328583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 33.350833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.350833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511717239289958,
+          "dispatchResponseHostNs": 511717246735916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 19.304958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.304958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511717836270250,
+          "dispatchResponseHostNs": 511717843643333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.065166,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.065166,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511718438745625,
+          "dispatchResponseHostNs": 511718446811250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.555166,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.555166,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511719030217208,
+          "dispatchResponseHostNs": 511719033344625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 26.757417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.757417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511719620162666,
+          "dispatchResponseHostNs": 511719626543291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 29.914,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.914,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511720211845125,
+          "dispatchResponseHostNs": 511720218932291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 34.716166,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              34.716166,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511720797349458,
+          "dispatchResponseHostNs": 511720801281750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 28.57225,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.57225,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511721382452875,
+          "dispatchResponseHostNs": 511721390069166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.168583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.168583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511721969037625,
+          "dispatchResponseHostNs": 511721973767125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 25.128166,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.128166,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Vibrance value",
+      "calibration": [
+        {
+          "sentNs": 511715468299458,
+          "dispatchResponseHostNs": 511715471614166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511716049931958,
+          "dispatchResponseHostNs": 511716053712625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "b69d4fa5cd5d0bb550d1167ca9fe124efe6c38b179ce9f538d11bfa00b5b0f96"
+    },
+    "color-saturation": {
+      "separationRGB8": 2.9737413194444446,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "41bac4456d55d3ff9c294fe6899b6cc3ad0b64d37fa6512baf1ee63be93318de"
+      ],
+      "trials": [
+        {
+          "sentNs": 511725114620041,
+          "dispatchResponseHostNs": 511725120893541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.361459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.361459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511725705462916,
+          "dispatchResponseHostNs": 511725712327666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 38.529292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              38.529292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511726303884083,
+          "dispatchResponseHostNs": 511726308997083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 19.474458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.474458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511726887155250,
+          "dispatchResponseHostNs": 511726892919541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 36.3125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              36.3125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511727485717000,
+          "dispatchResponseHostNs": 511727491364333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 25.03375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.03375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511728066610458,
+          "dispatchResponseHostNs": 511728072381416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 25.365917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.365917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511728650390666,
+          "dispatchResponseHostNs": 511728656136958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.741167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.741167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511729246197791,
+          "dispatchResponseHostNs": 511729253684208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.988917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.988917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511729837321708,
+          "dispatchResponseHostNs": 511729841873500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.035208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.035208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511730431036875,
+          "dispatchResponseHostNs": 511730439487916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 28.853583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.853583,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Saturation value",
+      "calibration": [
+        {
+          "sentNs": 511723957676125,
+          "dispatchResponseHostNs": 511723961558416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511724532473208,
+          "dispatchResponseHostNs": 511724537060833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "0f986111898eefda6289130330fb85529e347cfb1bd16374a0ade61d85adfeaf"
+    },
+    "effects-texture": {
+      "separationRGB8": 0.7332356770833334,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "c85dcaacab12db053e3c521b691845002da3cff126f8555747b1ead88b166c90"
+      ],
+      "trials": [
+        {
+          "sentNs": 511733589184875,
+          "dispatchResponseHostNs": 511733597063125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 42.356916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              42.356916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511734182314833,
+          "dispatchResponseHostNs": 511734189397000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 26.703667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.703667,
+              0.47618
+            ],
+            [
+              42.917625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511734773355833,
+          "dispatchResponseHostNs": 511734780414291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 37.767333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              37.767333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511735371089875,
+          "dispatchResponseHostNs": 511735378189958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 24.352125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.352125,
+              0.47618
+            ],
+            [
+              40.224041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511735964102958,
+          "dispatchResponseHostNs": 511735968899000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.117875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.117875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511736550084291,
+          "dispatchResponseHostNs": 511736556777708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 40.235917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              40.235917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511737121971125,
+          "dispatchResponseHostNs": 511737125941791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 22.653708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.653708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511737708426041,
+          "dispatchResponseHostNs": 511737714958208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 24.591334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.591334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511738291993541,
+          "dispatchResponseHostNs": 511738298594125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 24.729792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.729792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511738874179458,
+          "dispatchResponseHostNs": 511738880727416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 37.863833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              37.863833,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 511732405587708,
+          "dispatchResponseHostNs": 511732408916833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511732997197250,
+          "dispatchResponseHostNs": 511733002741791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "1fcb6f31e494b118f621b3affd875c4eb2bc472d77f922012f109491798cda5f"
+    },
+    "effects-clarity": {
+      "separationRGB8": 0.8611653645833334,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "27db6f5a4d685468e3f16c25bab75bf4268ac3cdffa767ecf6273608099123d9"
+      ],
+      "trials": [
+        {
+          "sentNs": 512456883780125,
+          "dispatchResponseHostNs": 512456888214375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 41.68725,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              41.68725,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512458122136250,
+          "dispatchResponseHostNs": 512458127853583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 15.785958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.785958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512459373372875,
+          "dispatchResponseHostNs": 512459377555625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 26.748625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.748625,
+              0.0
+            ],
+            [
+              1058.219416,
+              0.4279
+            ],
+            [
+              1109.81525,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512460603097416,
+          "dispatchResponseHostNs": 512460606581708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.258917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.258917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512461847419000,
+          "dispatchResponseHostNs": 512461854673833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 20.912333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.912333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512463099294791,
+          "dispatchResponseHostNs": 512463105378125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 40.526875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              40.526875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512464352469833,
+          "dispatchResponseHostNs": 512464357788208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 23.426667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.426667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512465572991041,
+          "dispatchResponseHostNs": 512465576495625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 28.6505,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.6505,
+              0.0
+            ],
+            [
+              1060.886125,
+              0.42258
+            ],
+            [
+              1094.871834,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512466805083541,
+          "dispatchResponseHostNs": 512466809149208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 36.483042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              36.483042,
+              0.0
+            ],
+            [
+              1061.55525,
+              0.4279
+            ],
+            [
+              1097.685292,
+              0.40815
+            ],
+            [
+              1113.588459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 512468025416708,
+          "dispatchResponseHostNs": 512468029108875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 15.581042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.581042,
+              0.0
+            ],
+            [
+              1056.343958,
+              0.42258
+            ],
+            [
+              1106.880542,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 512454417636625,
+          "dispatchResponseHostNs": 512454421786958,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 512455652270625,
+          "dispatchResponseHostNs": 512455658390208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-clarity.zip",
+      "framesSHA256": "80924aa1149edf33ec6552ecd11abd195c7c3e9acc270c155057fe813026fdb3"
+    },
+    "effects-dehaze": {
+      "separationRGB8": 4.661892361111111,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "b5540d08525e73fe19be60a2b813e895ee4e7848417f8bf1526203b57228a8cb"
+      ],
+      "trials": [
+        {
+          "sentNs": 511750525615625,
+          "dispatchResponseHostNs": 511750531774125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 26.365958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.365958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511751115480750,
+          "dispatchResponseHostNs": 511751122614750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 30.846125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.846125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511751700653625,
+          "dispatchResponseHostNs": 511751704496125,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.899125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.899125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511752274696791,
+          "dispatchResponseHostNs": 511752280357500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 24.568,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.568,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511752873651583,
+          "dispatchResponseHostNs": 511752879274208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.079208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.079208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511753458164000,
+          "dispatchResponseHostNs": 511753462071083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 32.233583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.233583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511754046720208,
+          "dispatchResponseHostNs": 511754053893708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.643375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.643375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511754645791625,
+          "dispatchResponseHostNs": 511754653674250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 20.69425,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.69425,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511755243905500,
+          "dispatchResponseHostNs": 511755250152375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 22.791583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.791583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511755833050958,
+          "dispatchResponseHostNs": 511755838044291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.152708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.152708,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 511749354631041,
+          "dispatchResponseHostNs": 511749366036416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511749941418875,
+          "dispatchResponseHostNs": 511749945106291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 30,
+          "actual": 30,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "d8d8fd40f508bc71e9df150e0331c8334e6499e074152f835674db132b87e2ce"
+    },
+    "effects-pcv-amount": {
+      "separationRGB8": 2.180392795138889,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "236272239845843567027f28b3b1bc0eb19de94a6db4072dcd141c70e8ef05ac"
+      ],
+      "trials": [
+        {
+          "sentNs": 511759010142250,
+          "dispatchResponseHostNs": 511759014748250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 26.071875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.071875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511759582647958,
+          "dispatchResponseHostNs": 511759587455500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 25.739667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.739667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511760163668250,
+          "dispatchResponseHostNs": 511760167739875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.751541,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.751541,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511760739925250,
+          "dispatchResponseHostNs": 511760744328166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 24.283291,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.283291,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511761330002250,
+          "dispatchResponseHostNs": 511761333757250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.333791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.333791,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511761907067041,
+          "dispatchResponseHostNs": 511761910690166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 25.461292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.461292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511762502955000,
+          "dispatchResponseHostNs": 511762510024500,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 35.899916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              35.899916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511763094946333,
+          "dispatchResponseHostNs": 511763098939291,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 21.878625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.878625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511763671462833,
+          "dispatchResponseHostNs": 511763675609166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 29.318458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.318458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511764250841500,
+          "dispatchResponseHostNs": 511764255202250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 23.739416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.739416,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        -50
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 511757858936916,
+          "dispatchResponseHostNs": 511757862447458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511758438260500,
+          "dispatchResponseHostNs": 511758441664666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": -50,
+          "actual": -50,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "e7e36dd74a24f1803d47019c5b61669f86684f5bd9ec190b1a411b8cfb8d31e4"
+    },
+    "effects-grain-amount": {
+      "separationRGB8": 3.6162109375,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "61dd6a325b709d13e43c1946d86dc6664a1dfa6421372a06729526e8cb013932"
+      ],
+      "trials": [
+        {
+          "sentNs": 511767382691458,
+          "dispatchResponseHostNs": 511767387901208,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 31.343375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.343375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511767955772875,
+          "dispatchResponseHostNs": 511767959252250,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 22.903833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.903833,
+              2.35921
+            ],
+            [
+              41.246083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511768523239000,
+          "dispatchResponseHostNs": 511768526352375,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 27.329041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.329041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511769104713916,
+          "dispatchResponseHostNs": 511769109145916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 16.45725,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.45725,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511769687278125,
+          "dispatchResponseHostNs": 511769692708791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 22.125666,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.125666,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511770271659916,
+          "dispatchResponseHostNs": 511770276538416,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 20.695209,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.695209,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511770855136958,
+          "dispatchResponseHostNs": 511770859495708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 19.918167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.918167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511771433262791,
+          "dispatchResponseHostNs": 511771436886541,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 24.802459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.802459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511772007540500,
+          "dispatchResponseHostNs": 511772010916625,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 22.796041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.796041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511772584103291,
+          "dispatchResponseHostNs": 511772587473458,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 31.374709,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              31.374709,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        50
+      ],
+      "displayLabel": "Amount value",
+      "calibration": [
+        {
+          "sentNs": 511766217514541,
+          "dispatchResponseHostNs": 511766220765583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511766796585708,
+          "dispatchResponseHostNs": 511766800503666,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 50,
+          "actual": 50,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "6ef1d5047f3b7588ddf14dc19fc2af764bef36f1c36bff5b272b9349ee374ed8"
+    },
+    "effects-glow-amount": {
+      "separationRGB8": 6.010362413194445,
+      "referenceDigests": [
+        "883a5edef2886d29e20092ad05dd97a88f9b974b2e0e609d597774935a992064",
+        "a7d0fff54300db35be44c762628348ed42a2a025f5a9b6a71a165ba7042e65f4"
+      ],
+      "trials": [
+        {
+          "sentNs": 511775725479416,
+          "dispatchResponseHostNs": 511775728898875,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.8815,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.8815,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511776300642500,
+          "dispatchResponseHostNs": 511776304073833,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 27.096833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.096833,
+              0.39345
+            ],
+            [
+              44.7345,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511776885330000,
+          "dispatchResponseHostNs": 511776891543083,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 26.761375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.761375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511777471731250,
+          "dispatchResponseHostNs": 511777476892791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 26.038458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.038458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511778059010791,
+          "dispatchResponseHostNs": 511778062359750,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 24.162834,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.162834,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511778631724500,
+          "dispatchResponseHostNs": 511778636498166,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 32.553333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.553333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511779221378375,
+          "dispatchResponseHostNs": 511779226963333,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 22.406,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.406,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511779797522166,
+          "dispatchResponseHostNs": 511779801533708,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 29.672375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.672375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511780375205833,
+          "dispatchResponseHostNs": 511780378482000,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0,
+          "firstMs": 30.829083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.829083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 511780946628708,
+          "dispatchResponseHostNs": 511780949806791,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1,
+          "firstMs": 25.077083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.077083,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        65
+      ],
+      "displayLabel": "Value",
+      "calibration": [
+        {
+          "sentNs": 511774562450916,
+          "dispatchResponseHostNs": 511774565574583,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 0,
+          "actual": 0,
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 511775151046750,
+          "dispatchResponseHostNs": 511775156003916,
+          "boundary": "host send of trusted Return on prepared numeric control to captured frame",
+          "value": 65,
+          "actual": 65,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo",
+      "archive": "lightflow-screen-frames.zip",
+      "framesSHA256": "8724f4c5a7396c94e91de714b95472c55b398953a651de66082ed86c30c525d3"
+    }
+  },
+  "viewport": {
+    "canvasCSS": {
+      "x": 249,
+      "y": 68,
+      "width": 1189,
+      "height": 868
+    },
+    "dpr": 2,
+    "inner": [
+      1780,
+      1090
+    ],
+    "outer": [
+      1780,
+      1090
+    ],
+    "screen": [
+      2,
+      41
+    ],
+    "frame": {
+      "viewport": "v1",
+      "photo": "p26963361",
+      "editRev": 0,
+      "frameW": 9504,
+      "frameH": 6336,
+      "affine": [
+        0.0004222972972972973,
+        0,
+        0,
+        0.0006334459459459459,
+        -0.0021114864864865135,
+        -0.04983108108108103
+      ],
+      "width": 2378,
+      "height": 1736,
+      "fullRes": true,
+      "busy": true,
+      "frames": 4,
+      "at": 1795343196011.9,
+      "presentedAt": 1374.0000976920128,
+      "photoId": "p26963361"
+    },
+    "metrics": {
+      "scale": 0.24915824915824916,
+      "fitScale": 0.2401094276094276,
+      "view": [
+        0.0004222972972972973,
+        0,
+        0,
+        0.0006334459459459459,
+        -0.0021114864864865135,
+        -0.04983108108108103
+      ],
+      "geometry": [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "frameW": 9504,
+      "frameH": 6336,
+      "canvasW": 2378,
+      "canvasH": 1736,
+      "viewH": 1736,
+      "dpr": 2,
+      "sourceW": 9504,
+      "sourceH": 6336,
+      "lastRenderMs": 0.800000011920929,
+      "fullRes": true,
+      "extent": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "seq": 4,
+      "at": 1795343196005.3
+    },
+    "availableInputs": [
+      "Amount value",
+      "Value",
+      "Value",
+      "Exposure value",
+      "Contrast value",
+      "Highlights value",
+      "Shadows value",
+      "Whites value",
+      "Blacks value",
+      "Value",
+      "Value",
+      "Value",
+      "Value",
+      "Value"
+    ]
+  },
+  "finishedAt": "2026-11-22T10:40:20.116075+00:00",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sessions": [
+    {
+      "electron": {
+        "id": 35878,
+        "bounds": {
+          "x": 2,
+          "y": 41,
+          "width": 1780,
+          "height": 1090
+        },
+        "chrome": "146.0.7680.188",
+        "electron": "41.3.0"
+      },
+      "windowBundle": "org.rawmaster.benchmark.lightflow-chromium",
+      "browserBinarySHA256": "5e925bf7d5c832c643d3fb141bd960250635304f512625050a8942ca539154db",
+      "recorderSHA256": "43140cdda6d24f7680f069cbc390da425bbf5577e70c2433004b2f97943032ca",
+      "settleSeconds": 0.55,
+      "measuredInputs": 10,
+      "windowLevel": "kCGDesktopIconWindowLevel + 1",
+      "activationPolicy": "prohibited",
+      "electronDistributionSHA256": "7a98f47f4c4f49399d3a838e9150b8828d2f5bf8aa7db769657ae82fab21f9d0",
+      "archive": "lightflow-screen-frames.zip",
+      "archiveSHA256": "3b8ffd925cfa31f153bec2e6c22408c59919677aaa38f706c2d980b09d67e938",
+      "startedAt": "2026-11-22T10:26:36.339978+00:00",
+      "finishedAt": "2026-11-22T10:28:51.720889+00:00",
+      "outcomes": {
+        "light-exposure": "measured",
+        "light-contrast": "measured",
+        "light-highlights": "measured",
+        "light-shadows": "measured",
+        "light-whites": "measured",
+        "light-blacks": "measured",
+        "color-temp-raw": "measured",
+        "color-tint": "measured",
+        "color-vibrance": "measured",
+        "color-saturation": "measured",
+        "effects-texture": "measured",
+        "effects-clarity": "inconclusive",
+        "effects-dehaze": "measured",
+        "effects-pcv-amount": "measured",
+        "effects-grain-amount": "measured",
+        "effects-glow-amount": "measured"
+      }
+    },
+    {
+      "electron": {
+        "id": 36282,
+        "bounds": {
+          "x": 2,
+          "y": 41,
+          "width": 1780,
+          "height": 1090
+        },
+        "chrome": "146.0.7680.188",
+        "electron": "41.3.0"
+      },
+      "windowBundle": "org.rawmaster.benchmark.lightflow-chromium",
+      "browserBinarySHA256": "5e925bf7d5c832c643d3fb141bd960250635304f512625050a8942ca539154db",
+      "recorderSHA256": "43140cdda6d24f7680f069cbc390da425bbf5577e70c2433004b2f97943032ca",
+      "settleSeconds": 1.2,
+      "measuredInputs": 10,
+      "windowLevel": "kCGDesktopIconWindowLevel + 1",
+      "activationPolicy": "prohibited",
+      "archive": "lightflow-screen-clarity.zip",
+      "archiveSHA256": "7bec7857845e156b3e7f1ce282b0c56a6dd52309f3a87ecf33fa11e328e66811",
+      "startedAt": "2026-11-22T10:40:02.580017+00:00",
+      "finishedAt": "2026-11-22T10:40:20.116075+00:00",
+      "outcomes": {
+        "effects-clarity": "measured"
+      }
+    }
+  ]
+}

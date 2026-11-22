@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "binarySHA256": "2199f18ff6c3387fdd9a1ff4f6944589a7ad619e7d59a757011b3e6f270a7f47",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceOverlay": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1/scalar-mask-r32f-v2",
+  "defaultDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "decoderOverride": false,
+  "formalSequence": "history/release-operators-2199f18f.json",
+  "scope": "Shipping defaults, complete 50-operation sequence on the same RAW. This supplementary sequence overlapped the separate release candidate 099e258e for 49.833 seconds and Adobe for 7.057 seconds, so neither paired run qualifies as an exclusive performance sample. The raw measurements and historical quality and latency checks are retained.",
+  "recordedAt": "2026-11-22T09:30:07Z",
+  "manifest": {
+    "action": "operators",
+    "binarySHA256": "2199f18ff6c3387fdd9a1ff4f6944589a7ad619e7d59a757011b3e6f270a7f47",
+    "pinnedBundle": ".slim/deepwork/camera-raw-before/engine-scalar-shipping/RAWMasterImagingTests.xctest",
+    "report": "output/performance/release-background-20261122/engine-final/scalar-shipping/operators/interactive-performance.json",
+    "reportSHA256": "c9ade00a750cacc26d99ec45a2c40b68a4eb72f677329c2c3215126a08912f28",
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "wallSeconds": 53.899,
+    "environment": {
+      "RAWMASTER_FLASHRAW_LIBRARY": "output/tools/flashraw-target/release/libflashraw_capi.dylib",
+      "RAWMASTER_REQUIRE_FLASHRAW": "1",
+      "RAWMASTER_INTERACTIVE_PERF": "1",
+      "RAWMASTER_INTERACTIVE_PREWARM": "1",
+      "RAWMASTER_INTERACTIVE_RAW_BASE_CACHE": "1",
+      "RAWMASTER_INTERACTIVE_PERF_SOURCE": "output/performance/acr-benchmark.ARW",
+      "RAWMASTER_INTERACTIVE_PERF_OUTPUT": "output/performance/release-background-20261122/engine-final/scalar-shipping/operators"
+    }
+  },
+  "methods": "The fixed historical release gate permits +10% interactive median, +20% settled median, at most +1 in the proxy vs settled p99 error (excluding unavailable historical errors), and 50 ms absolute interactive median.",
+  "gates": {
+    "absolute": {
+      "passed": true,
+      "passedOperations": 50,
+      "failedOperations": [],
+      "failures": [],
+      "dataPath": "history/release-operators-2199f18f-absolute.json",
+      "sourceBaseline": null
+    },
+    "historical": {
+      "passed": false,
+      "passedOperations": 46,
+      "failedOperations": [
+        "dehaze-v1",
+        "dehaze-v2",
+        "lens-blur-depth-preview",
+        "lens-blur-procedural"
+      ],
+      "failures": [
+        "dehaze-v1: settled median regressed 20.40%",
+        "dehaze-v2: settled median regressed 24.46%",
+        "lens-blur-procedural: interactive median regressed 41.70%",
+        "lens-blur-depth-preview: settled median regressed 21.26%"
+      ],
+      "dataPath": "history/release-operators-2199f18f-historical.json",
+      "sourceBaseline": "history/point-curve-targeted-release-gate-repeat-20261122-interactive-performance.json"
+    },
+    "previous": {
+      "passed": false,
+      "passedOperations": 24,
+      "failedOperations": [
+        "clarity",
+        "clipping-highlights",
+        "clipping-shadows",
+        "dehaze-v1",
+        "dehaze-v2",
+        "global-noise-detail",
+        "global-sharpen-detail",
+        "lens-blur-bokeh-anamorphic",
+        "lens-blur-bokeh-boost",
+        "lens-blur-bokeh-bubble",
+        "lens-blur-bokeh-five-blade",
+        "lens-blur-bokeh-ring",
+        "lens-blur-cat-eye",
+        "lens-blur-depth-preview",
+        "lens-blur-procedural",
+        "lens-blur-refine-blur",
+        "local-detail",
+        "local-glow",
+        "local-grain",
+        "local-hue-colorize",
+        "optics-lens-profile",
+        "point-color-samples",
+        "point-variance",
+        "refine-saturation",
+        "targeted-hsl",
+        "wb-flash-preset"
+      ],
+      "failures": [
+        "clarity: interactive median regressed 27.28%",
+        "dehaze-v1: interactive median regressed 16.33%",
+        "dehaze-v2: settled median regressed 20.71%",
+        "lens-blur-procedural: interactive median regressed 140.21%",
+        "lens-blur-procedural: settled median regressed 70.63%",
+        "lens-blur-refine-blur: interactive median regressed 13.25%",
+        "lens-blur-bokeh-bubble: settled median regressed 52.56%",
+        "lens-blur-bokeh-five-blade: interactive median regressed 49.77%",
+        "lens-blur-bokeh-five-blade: settled median regressed 76.04%",
+        "lens-blur-bokeh-ring: interactive median regressed 23.31%",
+        "lens-blur-bokeh-ring: settled median regressed 85.46%",
+        "lens-blur-bokeh-anamorphic: interactive median regressed 22.16%",
+        "lens-blur-bokeh-anamorphic: settled median regressed 71.37%",
+        "lens-blur-cat-eye: interactive median regressed 95.39%",
+        "lens-blur-cat-eye: settled median regressed 48.54%",
+        "lens-blur-bokeh-boost: interactive median regressed 28.26%",
+        "lens-blur-bokeh-boost: settled median regressed 69.77%",
+        "lens-blur-depth-preview: interactive median regressed 22.08%",
+        "lens-blur-depth-preview: settled median regressed 49.80%",
+        "local-glow: interactive median regressed 62.09%",
+        "point-variance: interactive median regressed 27.17%",
+        "targeted-hsl: interactive median regressed 12.01%",
+        "clipping-shadows: settled median regressed 29.49%",
+        "clipping-highlights: interactive median regressed 103.07%",
+        "wb-flash-preset: interactive median regressed 14.84%",
+        "refine-saturation: interactive median regressed 15.46%",
+        "point-color-samples: interactive median regressed 85.64%",
+        "local-hue-colorize: settled median regressed 26.80%",
+        "local-grain: settled median regressed 120.14%",
+        "local-detail: interactive median regressed 10.15%",
+        "global-sharpen-detail: interactive median regressed 27.57%",
+        "global-sharpen-detail: settled median regressed 23.14%",
+        "global-noise-detail: interactive median regressed 11.41%",
+        "optics-lens-profile: interactive median regressed 14.41%"
+      ],
+      "dataPath": "history/release-operators-2199f18f-previous.json",
+      "sourceBaseline": "history/release-operators-d5f0c602.json"
+    }
+  },
+  "quality": {
+    "comparable": 48,
+    "regressions": []
+  },
+  "transparentFrames": [],
+  "target": {
+    "approximate": true,
+    "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+    "height": 1600,
+    "interactiveMedianMilliseconds": 19.964083,
+    "interactiveMilliseconds": [
+      123.757333,
+      19.964083,
+      18.534708
+    ],
+    "label": "global-sharpen-mask-preview",
+    "maximumChannelError": 1,
+    "p99ChannelError": 0,
+    "qualityComparison": "matched-pixels",
+    "settledHeight": 1600,
+    "settledMilliseconds": 1434.614917,
+    "settledWidth": 2400,
+    "width": 2400
+  },
+  "standalone": "interactive-native-mask-scalar.json",
+  "unitTests": {
+    "tests": 5,
+    "failed": 0,
+    "logSHA256": "c16426c42008fdceb592a5a20fc638ea2ddc6441b0e4bc2d9b1c3dcb7254721a",
+    "selected": "DevelopmentSharpeningDetailV3Tests including translated crop and 0.37 affine scale, three nonlinear thresholds, finite F32 RGB and opaque alpha"
+  },
+  "sourceBenchmarkSHA256": "c9ade00a750cacc26d99ec45a2c40b68a4eb72f677329c2c3215126a08912f28",
+  "concurrency": {
+    "timezone": "Asia/Shanghai",
+    "source": "Independent XCTest log timestamps and Camera Raw automated reopen session",
+    "xctest2199": [
+      "2026-11-22 17:29:13.625",
+      "2026-11-22 17:30:07.382"
+    ],
+    "simultaneousRelease099e": [
+      "2026-11-22 17:29:17.549",
+      "2026-11-22 17:30:09.198"
+    ],
+    "release099eOverlapSeconds": 49.833,
+    "CameraRaw": [
+      "2026-11-22 17:28:44.336",
+      "2026-11-22 17:29:20.682"
+    ],
+    "CameraRawOverlapSeconds": 7.057
+  }
+}

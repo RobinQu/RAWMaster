@@ -1,0 +1,1456 @@
+{
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "uiSHA256": {
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+    "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+    "_b/20261111155800-2d41ab1/flashraw/browser.js": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+    "_b/20261111155800-2d41ab1/flashraw/core.js": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+    "_b/20261111155800-2d41ab1/flashraw/errors.js": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen_threads.js": "c4803f3d27d9ae36e6dfb0de2ea3f83ff59b4e670d4f428d9da3bfd2747073b2",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd_threads.wasm": "bd70ec98d095602a326780b3dfc13afcccc76a8fe0b887fbc290d3377c49d3eb",
+    "_b/20261111155800-2d41ab1/flashraw/thread-worker.browser.js": "016cd62f67eb77e431b8cf8290886ed03eeb54dd4a84aaf8774677ddd01124d1",
+    "_b/20261111155800-2d41ab1/flashraw/threads.js": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+    "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+    "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+    "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+    "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+    "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+    "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+    "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+    "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+    "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+    "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "protocol": "lightflow-ui-gesture-value-v1",
+  "recordedAt": "2026-11-22T08:35:03.949725+00:00",
+  "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "viewportPixels": [
+    3200,
+    2000
+  ],
+  "photoRectPixels": [
+    370,
+    168,
+    2368,
+    1579
+  ],
+  "devicePixelRatio": 1,
+  "samples": 10,
+  "operations": [
+    {
+      "id": "light-numeric-reset",
+      "featureIds": [
+        "light-numeric-reset"
+      ],
+      "input": "Double-click the original Exposure label from +1.25 / −1.75 EV",
+      "status": "measured",
+      "trials": [
+        {
+          "start": 14433.105000019073,
+          "end": 14456.42000001669,
+          "ms": 23.314999997615814,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "first",
+          "state": 0,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14498.22000002861,
+          "end": 14517.47000002861,
+          "ms": 19.25,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "first",
+          "state": 1,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14562.865000009537,
+          "end": 14581.180000007153,
+          "ms": 18.314999997615814,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14628.69000005722,
+          "end": 14646.415000021458,
+          "ms": 17.724999964237213,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14694.860000014305,
+          "end": 14713.615000009537,
+          "ms": 18.75499999523163,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14761.350000023842,
+          "end": 14778.710000038147,
+          "ms": 17.360000014305115,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14828.680000007153,
+          "end": 14847.100000023842,
+          "ms": 18.4200000166893,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14894.780000030994,
+          "end": 14912.425000011921,
+          "ms": 17.644999980926514,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 14961.94000005722,
+          "end": 14980.020000040531,
+          "ms": 18.0799999833107,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 15028.72000002861,
+          "end": 15046.645000040531,
+          "ms": 17.92500001192093,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 15094.885000050068,
+          "end": 15112.125,
+          "ms": 17.2399999499321,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        },
+        {
+          "start": 15161.960000038147,
+          "end": 15179.465000033379,
+          "ms": 17.50499999523163,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "b670afd0d0ba44f5b914d8e6b70b6b0f8d831a5958e66746496bf5fba743dae8",
+          "verified": true
+        }
+      ],
+      "recordedAt": "2026-11-22T08:35:03.949725+00:00"
+    },
+    {
+      "id": "light-auto-single",
+      "featureIds": [
+        "light-auto-single"
+      ],
+      "input": "Shift-double-click the original Exposure label from +1.25 / −1.75 EV",
+      "status": "measured",
+      "trials": [
+        {
+          "start": 15228.905000030994,
+          "end": 15255.205000042915,
+          "ms": 26.30000001192093,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "first",
+          "state": 0,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15297.805000007153,
+          "end": 15333.840000033379,
+          "ms": 36.035000026226044,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "first",
+          "state": 1,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15381.550000011921,
+          "end": 15417.775000035763,
+          "ms": 36.22500002384186,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15464.760000050068,
+          "end": 15500.81500005722,
+          "ms": 36.05500000715256,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15547.465000033379,
+          "end": 15570.530000030994,
+          "ms": 23.064999997615814,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15614.855000019073,
+          "end": 15651.5,
+          "ms": 36.644999980926514,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15698.225000023842,
+          "end": 15733.570000052452,
+          "ms": 35.34500002861023,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15782.840000033379,
+          "end": 15817.475000023842,
+          "ms": 34.63499999046326,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15866.06500005722,
+          "end": 15900.810000002384,
+          "ms": 34.74499994516373,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 15947.915000021458,
+          "end": 15970.710000038147,
+          "ms": 22.7950000166893,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 16015.055000007153,
+          "end": 16050.555000007153,
+          "ms": 35.5,
+          "before": {
+            "exposure": 1.25
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": 1.25
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        },
+        {
+          "start": 16097.895000040531,
+          "end": 16133.615000009537,
+          "ms": 35.719999969005585,
+          "before": {
+            "exposure": -1.75
+          },
+          "after": {
+            "exposure": 0.5
+          },
+          "initial": {
+            "exposure": -1.75
+          },
+          "first": {
+            "x": 2937,
+            "y": 545.3828125
+          },
+          "releaseCount": 2,
+          "committed": {
+            "exposure": 0.5
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "8e26ecb4ee19f8af4d5c120dfdd3d1ad4f10cae00593812c439835fb8c4c9a59",
+          "verified": true
+        }
+      ],
+      "recordedAt": "2026-11-22T08:35:03.949725+00:00"
+    },
+    {
+      "id": "light-histogram-drag",
+      "featureIds": [
+        "light-histogram-drag"
+      ],
+      "input": "Drag the center histogram exposure zone +24 / −24 CSS pixels from zero exposure",
+      "status": "measured",
+      "trials": [
+        {
+          "start": 16183.580000042915,
+          "end": 16200.930000007153,
+          "ms": 17.349999964237213,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": 0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": 0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "first",
+          "state": 0,
+          "digest": "576f30fd903a5e239616ea092e5a37e740d12455bd1ec57a65abcf59e96a0cfd",
+          "verified": true
+        },
+        {
+          "start": 16246.020000040531,
+          "end": 16266.8900000453,
+          "ms": 20.87000000476837,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": -0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": -0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "first",
+          "state": 1,
+          "digest": "ea2f22b928dfc61a7cf3d35fa8603653f8cdd26ba40c107efbf06c92b53734ba",
+          "verified": true
+        },
+        {
+          "start": 16312.680000007153,
+          "end": 16332.975000023842,
+          "ms": 20.2950000166893,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": 0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": 0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "576f30fd903a5e239616ea092e5a37e740d12455bd1ec57a65abcf59e96a0cfd",
+          "verified": true
+        },
+        {
+          "start": 16378.31500005722,
+          "end": 16399.5150000453,
+          "ms": 21.19999998807907,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": -0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": -0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "ea2f22b928dfc61a7cf3d35fa8603653f8cdd26ba40c107efbf06c92b53734ba",
+          "verified": true
+        },
+        {
+          "start": 16445.460000038147,
+          "end": 16466.275000035763,
+          "ms": 20.814999997615814,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": 0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": 0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "576f30fd903a5e239616ea092e5a37e740d12455bd1ec57a65abcf59e96a0cfd",
+          "verified": true
+        },
+        {
+          "start": 16512.155000030994,
+          "end": 16533.59500002861,
+          "ms": 21.439999997615814,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": -0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": -0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "ea2f22b928dfc61a7cf3d35fa8603653f8cdd26ba40c107efbf06c92b53734ba",
+          "verified": true
+        },
+        {
+          "start": 16578.205000042915,
+          "end": 16600.025000035763,
+          "ms": 21.819999992847443,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": 0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": 0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "576f30fd903a5e239616ea092e5a37e740d12455bd1ec57a65abcf59e96a0cfd",
+          "verified": true
+        },
+        {
+          "start": 16645.31500005722,
+          "end": 16666.205000042915,
+          "ms": 20.889999985694885,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": -0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": -0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "ea2f22b928dfc61a7cf3d35fa8603653f8cdd26ba40c107efbf06c92b53734ba",
+          "verified": true
+        },
+        {
+          "start": 16712.185000002384,
+          "end": 16732.875,
+          "ms": 20.689999997615814,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": 0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": 0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "576f30fd903a5e239616ea092e5a37e740d12455bd1ec57a65abcf59e96a0cfd",
+          "verified": true
+        },
+        {
+          "start": 16778.945000052452,
+          "end": 16800.24500000477,
+          "ms": 21.299999952316284,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": -0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": -0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "ea2f22b928dfc61a7cf3d35fa8603653f8cdd26ba40c107efbf06c92b53734ba",
+          "verified": true
+        },
+        {
+          "start": 16845.455000042915,
+          "end": 16866.945000052452,
+          "ms": 21.490000009536743,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": 0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": 0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 0,
+          "digest": "576f30fd903a5e239616ea092e5a37e740d12455bd1ec57a65abcf59e96a0cfd",
+          "verified": true
+        },
+        {
+          "start": 16911.555000007153,
+          "end": 16932.97000002861,
+          "ms": 21.415000021457672,
+          "before": {
+            "exposure": 0
+          },
+          "after": {
+            "exposure": -0.36
+          },
+          "initial": {
+            "exposure": 0
+          },
+          "first": {
+            "x": 3048,
+            "y": 86
+          },
+          "releaseCount": 1,
+          "committed": {
+            "exposure": -0.36
+          },
+          "wbMode": "as-shot",
+          "phase": "warm",
+          "state": 1,
+          "digest": "ea2f22b928dfc61a7cf3d35fa8603653f8cdd26ba40c107efbf06c92b53734ba",
+          "verified": true
+        }
+      ],
+      "recordedAt": "2026-11-22T08:35:03.949725+00:00"
+    },
+    {
+      "id": "color-wb-picker",
+      "featureIds": [
+        "color-wb-picker"
+      ],
+      "input": "Use the W tool at source coordinates (0.29,0.31) / (0.73,0.69) from 5500 K and +16 tint",
+      "status": "measured",
+      "trials": [
+        {
+          "start": 42449.40000003576,
+          "end": 42643.34000003338,
+          "ms": 193.9399999976158,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 1056.719970703125,
+            "y": 657.489990234375
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "wbMode": "custom",
+          "phase": "first",
+          "state": 0,
+          "digest": "a1675b64db2a20ddd05e5a9ad818a1c05df2b4fe290902abbcf0ed7deb2f1336",
+          "verified": true
+        },
+        {
+          "start": 42731.07000005245,
+          "end": 42750.67500001192,
+          "ms": 19.60499995946884,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 2098.639892578125,
+            "y": 1257.510009765625
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "wbMode": "custom",
+          "phase": "first",
+          "state": 1,
+          "digest": "db4f8bedb27bf97b68977cc78649b198bf3325d2eff8a8fa8a7e0181b8081738",
+          "verified": true
+        },
+        {
+          "start": 42828.77000004053,
+          "end": 42851.155000030994,
+          "ms": 22.384999990463257,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 1056.719970703125,
+            "y": 657.489990234375
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 0,
+          "digest": "a1675b64db2a20ddd05e5a9ad818a1c05df2b4fe290902abbcf0ed7deb2f1336",
+          "verified": true
+        },
+        {
+          "start": 42929.05500000715,
+          "end": 42950.90000003576,
+          "ms": 21.84500002861023,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 2098.639892578125,
+            "y": 1257.510009765625
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 1,
+          "digest": "db4f8bedb27bf97b68977cc78649b198bf3325d2eff8a8fa8a7e0181b8081738",
+          "verified": true
+        },
+        {
+          "start": 43028.905000030994,
+          "end": 43050.64500004053,
+          "ms": 21.740000009536743,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 1056.719970703125,
+            "y": 657.489990234375
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 0,
+          "digest": "a1675b64db2a20ddd05e5a9ad818a1c05df2b4fe290902abbcf0ed7deb2f1336",
+          "verified": true
+        },
+        {
+          "start": 43129.04500001669,
+          "end": 43150.685000002384,
+          "ms": 21.639999985694885,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 2098.639892578125,
+            "y": 1257.510009765625
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 1,
+          "digest": "db4f8bedb27bf97b68977cc78649b198bf3325d2eff8a8fa8a7e0181b8081738",
+          "verified": true
+        },
+        {
+          "start": 43228.99000000954,
+          "end": 43250.65000003576,
+          "ms": 21.660000026226044,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 1056.719970703125,
+            "y": 657.489990234375
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 0,
+          "digest": "a1675b64db2a20ddd05e5a9ad818a1c05df2b4fe290902abbcf0ed7deb2f1336",
+          "verified": true
+        },
+        {
+          "start": 43350.86500000954,
+          "end": 43368.16500002146,
+          "ms": 17.30000001192093,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 2098.639892578125,
+            "y": 1257.510009765625
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 1,
+          "digest": "db4f8bedb27bf97b68977cc78649b198bf3325d2eff8a8fa8a7e0181b8081738",
+          "verified": true
+        },
+        {
+          "start": 43445.7650000453,
+          "end": 43467.52000004053,
+          "ms": 21.75499999523163,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 1056.719970703125,
+            "y": 657.489990234375
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 0,
+          "digest": "a1675b64db2a20ddd05e5a9ad818a1c05df2b4fe290902abbcf0ed7deb2f1336",
+          "verified": true
+        },
+        {
+          "start": 43545.79500001669,
+          "end": 43567.67000001669,
+          "ms": 21.875,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 2098.639892578125,
+            "y": 1257.510009765625
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 1,
+          "digest": "db4f8bedb27bf97b68977cc78649b198bf3325d2eff8a8fa8a7e0181b8081738",
+          "verified": true
+        },
+        {
+          "start": 43645.7650000453,
+          "end": 43667.825000047684,
+          "ms": 22.060000002384186,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 1056.719970703125,
+            "y": 657.489990234375
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 10630,
+            "tint": 27
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 0,
+          "digest": "a1675b64db2a20ddd05e5a9ad818a1c05df2b4fe290902abbcf0ed7deb2f1336",
+          "verified": true
+        },
+        {
+          "start": 43745.64500004053,
+          "end": 43767.55000001192,
+          "ms": 21.90499997138977,
+          "before": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "after": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "initial": {
+            "temperature": 5500,
+            "tint": 16
+          },
+          "first": {
+            "x": 2098.639892578125,
+            "y": 1257.510009765625
+          },
+          "releaseCount": 1,
+          "committed": {
+            "temperature": 4080,
+            "tint": -2
+          },
+          "wbMode": "custom",
+          "phase": "warm",
+          "state": 1,
+          "digest": "db4f8bedb27bf97b68977cc78649b198bf3325d2eff8a8fa8a7e0181b8081738",
+          "verified": true
+        }
+      ],
+      "recordedAt": "2026-11-22T08:35:31.928455+00:00"
+    }
+  ],
+  "boundary": "Trusted first pointerdown capture to released gesture and changed visible control values matching the original editor recipe, page performance.now().",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "initialPickerObservation": {
+    "source": "history/lightflow-gesture-picker-first.json",
+    "observation": "The stock temperature field did not accept the attempted explicit initialization. Both picker states were repeated using 5500 K and +16 tint as verified initial values."
+  },
+  "comparison": "Reports the original HTML controls and app recipe after a trusted gesture. Numeric reset and single Auto intentionally converge to a common target when starting from two different exposures.",
+  "clock": "Chromium performance.now(), timestamps in milliseconds on the same page throughout each operation"
+}

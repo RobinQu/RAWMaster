@@ -44,7 +44,8 @@ enum DevelopmentPhotoFilterEngineV3 {
     return operatorVersion+"/catalog:"+version
   }
   static func apply(_ filter:DevelopmentFilterV3,to image:CIImage,resources:DevelopmentPhotoFilterResourceStore = .shared,
-                    resourceLease:((DevelopmentPhotoFilterResourceStore.Pair)throws->Void)? = nil)throws->CIImage {
+                    resourceLease:((DevelopmentPhotoFilterResourceStore.Pair)throws->Void)? = nil,
+                    repairRAWTransportAlpha:Bool = false)throws->CIImage {
     try filter.validate() // Even malformed disabled/zero parameters must never bypass validation.
     guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return image}
     try resources.validate(filter)
@@ -57,9 +58,10 @@ enum DevelopmentPhotoFilterEngineV3 {
     // Endpoint flag follows actual Double100, not a rounded Floatt just below100.
     let hdrFlag:CGFloat=monochrome ? (filter.intensity==100 ? 2:1):0
     let params=CIVector(x:CGFloat(pair.weight),y:pair.zeroLower ? 1:0,z:hdrFlag,w:CGFloat(filter.normalizedIntensity))
+    let transport=CIVector(x:repairRAWTransportAlpha ? 1:0,y:0,z:0,w:0)
     let atlas=CGRect(x:0,y:0,width:512,height:512)
     guard let graph=kernel.apply(extent:extent,roiCallback:{index,rect in index==0 ? rect.intersection(extent):atlas},
-      arguments:[image.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params]) else{throw DevelopmentPhotoFilterError.invalidGraph}
+      arguments:[image.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params,transport]) else{throw DevelopmentPhotoFilterError.invalidGraph}
     // CI graph/texture aliases keep their actual MTLBuffer and its charge alive after pair dies.
     // No actual task is launched here; canonical callers keep their existing checked finite/join.
     return graph
@@ -129,9 +131,14 @@ float3 rmFilterCubeV1(sampler table,int3 cell,float3 f){
  float3 d=mix(rmFilterNodeV1(table,cell+int3(0,1,1)),rmFilterNodeV1(table,cell+int3(1,1,1)),f.x);
  return mix(mix(a,b,f.y),mix(c,d,f.y),f.z);
 }
-[[stitchable]] float4 rmPhotoFilterV1(sampler source,sampler lower,sampler upper,float4 params,destination dest){
+[[stitchable]] float4 rmPhotoFilterV1(sampler source,sampler lower,sampler upper,float4 params,float4 transport,destination dest){
  float4 p=source.sample(source.transform(dest.coord()));
- if(!all(isfinite(p))||p.a<0||p.a>1)return float4(as_type<float>(0x7fc00000u));
+ if(!all(isfinite(p))||p.a<0)return float4(as_type<float>(0x7fc00000u));
+ if(p.a>1){
+  uint bits=as_type<uint>(p.a);
+  if(transport.x>.5&&bits>=0x3f800001u&&bits<=0x3f800003u)p.a=1;
+  else return float4(as_type<float>(0x7fc00000u));
+ }
  if(p.a<1.0/65535.0)return p;
  float3 u=p.rgb/p.a;if(!all(isfinite(u)))return float4(as_type<float>(0x7fc00000u));
  float3 bounded=clamp(u,0.0,1.0);

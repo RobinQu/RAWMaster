@@ -37,6 +37,18 @@ final class PreviewSharedSurfaceTests: XCTestCase {
     deinit { sharedImageProviderDidRelease() }
   }
 
+  func testReadbackCopiesDisplayRGBAWithPaddedRowsAndPremultipliedAlpha() throws {
+    let releases = Counter()
+    let backing = try CPUFixture(ledger:PreviewPresentationLedger(),releases:releases)
+    let cg = try PreviewSharedImageBridge.makeCGImage(backing:backing)
+    let image = PreviewSharedImageBridge.presentationImage(cg,backing:backing)
+    var pixels = [UInt8](repeating:0,count:24)
+    XCTAssertTrue(try pixels.withUnsafeMutableBytes { try PreviewSharedImageBridge.copyRGBA8(from:image,into:$0) })
+    XCTAssertEqual(pixels, [0,0,0,0, 11,7,3,128, 0,0,255,255, 0,255,0,255, 255,0,0,255, 127,127,127,127])
+    var short = [UInt8](repeating:0,count:23)
+    XCTAssertThrowsError(try short.withUnsafeMutableBytes { try PreviewSharedImageBridge.copyRGBA8(from:image,into:$0) })
+  }
+
   func testLayoutPaddingAndCPUFallbackUnionNeverBypassesCapacity() throws {
     let layout = try PreviewSharedSurfaceLayout.make(width: 3, height: 2)
     XCTAssertGreaterThanOrEqual(layout.rowBytes, 12)

@@ -1,0 +1,491 @@
+{
+  "cases" : [
+    {
+      "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "exifOrientation" : 1,
+      "flashRawOrientation" : 1,
+      "flashRawSensorSize" : [
+        8640,
+        5760
+      ],
+      "format" : "arw",
+      "model" : "ILCE-1M2",
+      "outputSizes" : [
+        [
+          384,
+          256
+        ],
+        [
+          384,
+          256
+        ]
+      ],
+      "probeStatistics" : {
+        "availableThreads" : 16,
+        "decoderBackend" : "CPU NEON x16 threads",
+        "inputBytes" : 66781184,
+        "nativeWallMilliseconds" : 2.4341250000000034,
+        "outputBytes" : 2400,
+        "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+        "stages" : [
+          {
+            "milliseconds" : 0.058292000000001565,
+            "name" : "containerParse"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "metadata"
+          },
+          {
+            "milliseconds" : 1.8092919999999992,
+            "name" : "entropyDecode"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "unpack"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "predictor"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "calibration"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "postprocess"
+          },
+          {
+            "milliseconds" : 0.0006659999999989452,
+            "name" : "gpuUpload"
+          },
+          {
+            "milliseconds" : 0.34883400000000009,
+            "name" : "gpuCompute"
+          },
+          {
+            "milliseconds" : 0.007417000000000229,
+            "name" : "gpuDownload"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "preview"
+          }
+        ]
+      },
+      "proxySettledRGBP99" : 5,
+      "sourceSHA256" : "42102e63d66ffc70beb13cc673c148d16526a8c9138f696ae00c9173a3af68f5",
+      "uprightSize" : [
+        8640,
+        5760
+      ]
+    },
+    {
+      "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "exifOrientation" : 1,
+      "flashRawOrientation" : 1,
+      "flashRawSensorSize" : [
+        8192,
+        4608
+      ],
+      "format" : "dng",
+      "model" : "FC9313",
+      "outputSizes" : [
+        [
+          384,
+          216
+        ],
+        [
+          384,
+          216
+        ]
+      ],
+      "probeStatistics" : {
+        "availableThreads" : 16,
+        "decoderBackend" : "CPU NEON x16 threads",
+        "inputBytes" : 50359808,
+        "nativeWallMilliseconds" : 37.144957999999974,
+        "outputBytes" : 6144,
+        "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+        "stages" : [
+          {
+            "milliseconds" : 0.049125000000003638,
+            "name" : "containerParse"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "metadata"
+          },
+          {
+            "milliseconds" : 36.294582999999989,
+            "name" : "entropyDecode"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "unpack"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "predictor"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "calibration"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "postprocess"
+          },
+          {
+            "milliseconds" : 0.00041699999997035775,
+            "name" : "gpuUpload"
+          },
+          {
+            "milliseconds" : 0.6064169999999649,
+            "name" : "gpuCompute"
+          },
+          {
+            "milliseconds" : 0.008666000000062013,
+            "name" : "gpuDownload"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "preview"
+          }
+        ]
+      },
+      "proxySettledRGBP99" : 10,
+      "sourceSHA256" : "ad5ea1c6902baedc481819f97fcfb9e2fac9581e604d44e0d68638a4f8f94c40",
+      "uprightSize" : [
+        8192,
+        4608
+      ]
+    },
+    {
+      "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "exifOrientation" : 1,
+      "flashRawOrientation" : 1,
+      "flashRawSensorSize" : [
+        9504,
+        6336
+      ],
+      "format" : "arw",
+      "model" : "ILCE-7RM5",
+      "outputSizes" : [
+        [
+          384,
+          256
+        ],
+        [
+          384,
+          256
+        ]
+      ],
+      "probeStatistics" : {
+        "availableThreads" : 16,
+        "decoderBackend" : "CPU NEON x16 threads",
+        "inputBytes" : 82075648,
+        "nativeWallMilliseconds" : 2.6811250000000655,
+        "outputBytes" : 6144,
+        "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated), kernel 0.05 ms",
+        "stages" : [
+          {
+            "milliseconds" : 0.052124999999932697,
+            "name" : "containerParse"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "metadata"
+          },
+          {
+            "milliseconds" : 1.2703749999998308,
+            "name" : "entropyDecode"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "unpack"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "predictor"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "calibration"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "postprocess"
+          },
+          {
+            "milliseconds" : 0.0005840000001171575,
+            "name" : "gpuUpload"
+          },
+          {
+            "milliseconds" : 1.2080410000000938,
+            "name" : "gpuCompute"
+          },
+          {
+            "milliseconds" : 0.007791999999881227,
+            "name" : "gpuDownload"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "preview"
+          }
+        ]
+      },
+      "proxySettledRGBP99" : 9,
+      "sourceSHA256" : "6d95672f76ee5117d67cafdcea23cb47d57590014949be250b3113e8b6dcf28a",
+      "uprightSize" : [
+        9504,
+        6336
+      ]
+    },
+    {
+      "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "exifOrientation" : 8,
+      "flashRawOrientation" : 8,
+      "flashRawSensorSize" : [
+        9504,
+        6336
+      ],
+      "format" : "arw",
+      "model" : "ILCE-7RM5",
+      "outputSizes" : [
+        [
+          256,
+          384
+        ],
+        [
+          256,
+          384
+        ]
+      ],
+      "probeStatistics" : {
+        "availableThreads" : 16,
+        "decoderBackend" : "CPU NEON x16 threads",
+        "inputBytes" : 77160448,
+        "nativeWallMilliseconds" : 2.1057910000001812,
+        "outputBytes" : 6144,
+        "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+        "stages" : [
+          {
+            "milliseconds" : 0.050083000000313405,
+            "name" : "containerParse"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "metadata"
+          },
+          {
+            "milliseconds" : 1.3672500000002401,
+            "name" : "entropyDecode"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "unpack"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "predictor"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "calibration"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "postprocess"
+          },
+          {
+            "milliseconds" : 0.00037500000007639755,
+            "name" : "gpuUpload"
+          },
+          {
+            "milliseconds" : 0.55349999999998545,
+            "name" : "gpuCompute"
+          },
+          {
+            "milliseconds" : 0.005499999999983629,
+            "name" : "gpuDownload"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "preview"
+          }
+        ]
+      },
+      "proxySettledRGBP99" : 11,
+      "sourceSHA256" : "5654d93af69d5048f64b5392ea2b836be6b5f7664366e173e6f6c2d4085e6747",
+      "uprightSize" : [
+        6336,
+        9504
+      ]
+    },
+    {
+      "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "exifOrientation" : 1,
+      "flashRawOrientation" : 1,
+      "flashRawSensorSize" : [
+        9520,
+        6336
+      ],
+      "format" : "dng",
+      "model" : "LEICA Q3 43",
+      "outputSizes" : [
+        [
+          384,
+          256
+        ],
+        [
+          384,
+          256
+        ]
+      ],
+      "probeStatistics" : {
+        "availableThreads" : 16,
+        "decoderBackend" : "CPU NEON x16 threads",
+        "inputBytes" : 91762688,
+        "nativeWallMilliseconds" : 25.61870799999906,
+        "outputBytes" : 4704,
+        "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+        "stages" : [
+          {
+            "milliseconds" : 0.03662499999973079,
+            "name" : "containerParse"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "metadata"
+          },
+          {
+            "milliseconds" : 24.743957999999111,
+            "name" : "entropyDecode"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "unpack"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "predictor"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "calibration"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "postprocess"
+          },
+          {
+            "milliseconds" : 0.0004580000004352769,
+            "name" : "gpuUpload"
+          },
+          {
+            "milliseconds" : 0.63537499999893043,
+            "name" : "gpuCompute"
+          },
+          {
+            "milliseconds" : 0.009041999998771644,
+            "name" : "gpuDownload"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "preview"
+          }
+        ]
+      },
+      "proxySettledRGBP99" : 20,
+      "sourceSHA256" : "01ae4d11eb1d57c3775cf226bde64614fa95fd18888d60780bdb44a3e0119dd3",
+      "uprightSize" : [
+        9520,
+        6336
+      ]
+    },
+    {
+      "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "exifOrientation" : 8,
+      "flashRawOrientation" : 8,
+      "flashRawSensorSize" : [
+        9520,
+        6336
+      ],
+      "format" : "dng",
+      "model" : "LEICA Q3 43",
+      "outputSizes" : [
+        [
+          256,
+          384
+        ],
+        [
+          256,
+          384
+        ]
+      ],
+      "probeStatistics" : {
+        "availableThreads" : 16,
+        "decoderBackend" : "CPU NEON x16 threads",
+        "inputBytes" : 50269184,
+        "nativeWallMilliseconds" : 23.219249999999192,
+        "outputBytes" : 4704,
+        "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+        "stages" : [
+          {
+            "milliseconds" : 0.033542000000124972,
+            "name" : "containerParse"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "metadata"
+          },
+          {
+            "milliseconds" : 22.580124999999498,
+            "name" : "entropyDecode"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "unpack"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "predictor"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "calibration"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "postprocess"
+          },
+          {
+            "milliseconds" : 0.0004999999991923687,
+            "name" : "gpuUpload"
+          },
+          {
+            "milliseconds" : 0.4148750000013024,
+            "name" : "gpuCompute"
+          },
+          {
+            "milliseconds" : 0.006666999999652035,
+            "name" : "gpuDownload"
+          },
+          {
+            "milliseconds" : 0,
+            "name" : "preview"
+          }
+        ]
+      },
+      "proxySettledRGBP99" : 4,
+      "sourceSHA256" : "3a1ef35c6dbaa92fcf390b91089c95df53917b14009d1e188065e263c5469d23",
+      "uprightSize" : [
+        6336,
+        9520
+      ]
+    }
+  ],
+  "schemaVersion" : 1
+}

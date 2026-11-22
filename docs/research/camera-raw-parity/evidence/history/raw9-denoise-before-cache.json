@@ -1,0 +1,62 @@
+{
+  "capturedAt" : "2026-11-22T07:39:17Z",
+  "export" : {
+    "amount" : 100,
+    "bitDepth" : 16,
+    "byteCount" : 481792806,
+    "elapsedMs" : 9153.8463749999992,
+    "height" : 6336,
+    "sha256" : "74f76d8da1e6b654860d90552b46e33b1e5a82bf1a606af5595fc705d5e87a53",
+    "width" : 9504
+  },
+  "featureId" : "detail-denoise",
+  "maxPixel" : 2400,
+  "model" : "apple-core-image-raw9-v1",
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "proxyKeys" : [
+    "23205904757996653b6db2d3f03b8d29ce2037afecc4241176e90d7aff60619a",
+    "788947f5c80af93f2e720d59424d2273e1f249396ac3e4fb360d32e5f0cd81b6",
+    "7e5ba60a96dc7285ca1aca596b6d8b142a7f71f8d0b68d2640340002f804520e"
+  ],
+  "requests" : [
+    {
+      "input" : "original",
+      "previewMs" : 172.88200000000001,
+      "sampledSRGBSHA256" : "3e3fc69e90701964c858fdf6f2a1f8e485618adbca7922d91fcc5336590fb101"
+    },
+    {
+      "input" : "amount0",
+      "previewMs" : 5140.0962499999996,
+      "sampledSRGBSHA256" : "2f2bc06f5fe0d0963ba8984a25e1906a864336f74105e8073f467229dec004ca"
+    },
+    {
+      "input" : "amount100",
+      "previewMs" : 3088.5576249999999,
+      "sampledSRGBSHA256" : "46139e5e1f4d35f2d3bce0905ac215636bbe027165164049988ee73da146c4fc"
+    },
+    {
+      "input" : "amount0-replay",
+      "previewMs" : 3037.7009159999998,
+      "sampledSRGBSHA256" : "2f2bc06f5fe0d0963ba8984a25e1906a864336f74105e8073f467229dec004ca"
+    },
+    {
+      "input" : "disabled",
+      "previewMs" : 87.616416000000001,
+      "sampledSRGBSHA256" : "3e3fc69e90701964c858fdf6f2a1f8e485618adbca7922d91fcc5336590fb101"
+    },
+    {
+      "input" : "amount100-settled",
+      "previewMs" : 9600.4618339999997,
+      "sampledSRGBSHA256" : "a101c401d29f7dac11b276d933e43b90f11754fa0b0090b5f8754111c7b8e395"
+    }
+  ],
+  "resourcePrepareMs" : 66.162000000000006,
+  "sha256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "source" : "acr-benchmark.ARW",
+  "sourceBytes" : 69488640,
+  "thumbnailKeys" : [
+    "ff3a9a012e8eabab2f37144aa718e78580083456a23f693685ef351b63ef4809",
+    "ef811e1966e5a719cde4b59eba53999547cc52cb6f1e060f1362e4d1c51f1129",
+    "74acbd787c364df687541095deff86aa35f35bbf141dd6c69dacc557295c6548"
+  ]
+}

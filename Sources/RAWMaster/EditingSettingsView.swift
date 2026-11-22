@@ -139,12 +139,12 @@ private struct EditingPerformanceSettings: View {
                     LabeledContent("临时预览文件", value: bytes(statistics.sourceSnapshotDiskBytes))
                     LabeledContent("预览任务（处理中/等待）", value: "\(statistics.activeNativeRenders) / \(statistics.pendingRequests)")
                 } else { Text("尚未读取资源状态。").foregroundStyle(.secondary) }
-                Button("刷新资源状态") { Task { statistics = await DevelopmentPreviewService.shared.statistics() } }
+                Button("刷新资源状态") { Task { statistics = await ImageEngines.previewLifecycle.statistics() } }
                 Text("这里显示当前应用的预览占用。打开照片前，缓存和任务数可能为零。")
                     .font(.caption).foregroundStyle(.secondary)
             }
         }.formStyle(.grouped)
-            .task { statistics = await DevelopmentPreviewService.shared.statistics() }
+            .task { statistics = await ImageEngines.previewLifecycle.statistics() }
     }
     private func bytes(_ value: Int64) -> String { ByteCountFormatter.string(fromByteCount: value, countStyle: .file) }
 }

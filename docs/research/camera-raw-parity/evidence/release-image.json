@@ -1,0 +1,2484 @@
+{
+  "boundaries" : [
+    "Monotonic in-process request start to decoded NSImage return; includes actor queue, stat, image decoding and materialization.",
+    "Cold means cleared application image caches and Core Image context caches. Filesystem cache and OS RAW resources are uncontrolled; not disk-cold.",
+    "Warm means a populated application cache. No UI frame presentation or pointer-to-visible latency is measured here.",
+    "Canvas metrics are synchronous offscreen bitmap raster draws after state update, not window-server presentation.",
+    "Real RAW samples are read-only. Reports contain basenames and metadata, not source directory paths. Setup\/fixture enumeration excluded."
+  ],
+  "build" : "release",
+  "cancellation" : {
+    "cancelled" : 23,
+    "completed" : 1,
+    "requested" : 24
+  },
+  "cpu" : "Apple M4 Max",
+  "failure" : "Error Domain=ImagePerformance Code=4 \"canvas_2_fit: p95=14.4425ms, max=36.014958ms exceeded declared limits\" UserInfo={NSLocalizedDescription=canvas_2_fit: p95=14.4425ms, max=36.014958ms exceeded declared limits}",
+  "fixtures" : [
+    {
+      "bytes" : 74194944,
+      "filename" : "DSC05694.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 72806400,
+      "filename" : "DSC05695.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 73768960,
+      "filename" : "DSC05696.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 73412608,
+      "filename" : "DSC05697.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 74989568,
+      "filename" : "DSC05698.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 75812864,
+      "filename" : "DSC05699.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 74539008,
+      "filename" : "DSC05700.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 75104256,
+      "filename" : "DSC05701.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 69414912,
+      "filename" : "DSC05702.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 69615616,
+      "filename" : "DSC05703.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 68243456,
+      "filename" : "DSC05704.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 76804096,
+      "filename" : "DSC05705.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 73994240,
+      "filename" : "DSC05706.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 68431872,
+      "filename" : "DSC05707.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    },
+    {
+      "bytes" : 75988992,
+      "filename" : "DSC05708.ARW",
+      "metadataHeight" : 6336,
+      "metadataWidth" : 9504,
+      "orientation" : 1
+    }
+  ],
+  "gates" : [
+    {
+      "baselineP95Milliseconds" : 19.346542,
+      "maxLimitMilliseconds" : 250,
+      "metric" : "embedded_preview_app_cache_cold",
+      "p95LimitMilliseconds" : 100,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 50
+    },
+    {
+      "baselineP95Milliseconds" : 181.343292,
+      "maxLimitMilliseconds" : 3750,
+      "metric" : "true_raw_app_cache_cold",
+      "p95LimitMilliseconds" : 1500,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 1000
+    },
+    {
+      "baselineP95Milliseconds" : 0.008625,
+      "maxLimitMilliseconds" : 12.5,
+      "metric" : "embedded_preview_warm_cache",
+      "p95LimitMilliseconds" : 5,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 1
+    },
+    {
+      "baselineP95Milliseconds" : 0.009083,
+      "maxLimitMilliseconds" : 12.5,
+      "metric" : "true_raw_warm_cache",
+      "p95LimitMilliseconds" : 5,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 1
+    },
+    {
+      "baselineP95Milliseconds" : 331.661375,
+      "maxLimitMilliseconds" : 7500,
+      "metric" : "compare_2_native_raw",
+      "p95LimitMilliseconds" : 3000,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 1500
+    },
+    {
+      "baselineP95Milliseconds" : 496.089542,
+      "maxLimitMilliseconds" : 11250,
+      "metric" : "compare_3_native_raw",
+      "p95LimitMilliseconds" : 4500,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 2250
+    },
+    {
+      "baselineP95Milliseconds" : 660.354416,
+      "maxLimitMilliseconds" : 15000,
+      "metric" : "compare_4_native_raw",
+      "p95LimitMilliseconds" : 6000,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 3000
+    },
+    {
+      "baselineP95Milliseconds" : 13.71425,
+      "maxLimitMilliseconds" : 250,
+      "metric" : "sequential_preview_navigation",
+      "p95LimitMilliseconds" : 100,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 50
+    },
+    {
+      "baselineP95Milliseconds" : 25.380625,
+      "maxLimitMilliseconds" : 2500,
+      "metric" : "rapid_navigation_cancel_burst",
+      "p95LimitMilliseconds" : 1000,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 100
+    },
+    {
+      "baselineP95Milliseconds" : 3.85775,
+      "maxLimitMilliseconds" : 100,
+      "metric" : "canvas_1_fit",
+      "p95LimitMilliseconds" : 33.333,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 8
+    },
+    {
+      "baselineP95Milliseconds" : 5.339458,
+      "maxLimitMilliseconds" : 100,
+      "metric" : "canvas_1_zoom-pan",
+      "p95LimitMilliseconds" : 33.333,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 8.009186999999999
+    },
+    {
+      "baselineP95Milliseconds" : 0.382125,
+      "maxLimitMilliseconds" : 100,
+      "metric" : "canvas_2_fit",
+      "p95LimitMilliseconds" : 33.333,
+      "passed" : false,
+      "relativeP95LimitMilliseconds" : 8
+    },
+    {
+      "baselineP95Milliseconds" : 6.942166,
+      "maxLimitMilliseconds" : 100,
+      "metric" : "canvas_2_zoom-pan",
+      "p95LimitMilliseconds" : 33.333,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 10.413249
+    },
+    {
+      "baselineP95Milliseconds" : 4.122375,
+      "maxLimitMilliseconds" : 100,
+      "metric" : "canvas_4_fit",
+      "p95LimitMilliseconds" : 33.333,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 8
+    },
+    {
+      "baselineP95Milliseconds" : 11.238667,
+      "maxLimitMilliseconds" : 100,
+      "metric" : "canvas_4_zoom-pan",
+      "p95LimitMilliseconds" : 33.333,
+      "passed" : true,
+      "relativeP95LimitMilliseconds" : 16.8580005
+    }
+  ],
+  "hardwareModel" : "Mac16,5",
+  "metrics" : [
+    {
+      "boundary" : "request→decoded preview bitmap",
+      "cache" : "application-cold; filesystem-uncontrolled",
+      "count" : 30,
+      "maxMilliseconds" : 18.012125,
+      "name" : "embedded_preview_app_cache_cold",
+      "p50Milliseconds" : 14.3725,
+      "p95Milliseconds" : 16.7655,
+      "samples" : [
+        {
+          "fixture" : "DSC05694.ARW",
+          "height" : 401,
+          "milliseconds" : 16.7655,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05695.ARW",
+          "height" : 401,
+          "milliseconds" : 13.335292,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05696.ARW",
+          "height" : 401,
+          "milliseconds" : 14.3725,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05697.ARW",
+          "height" : 401,
+          "milliseconds" : 16.105042,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05698.ARW",
+          "height" : 401,
+          "milliseconds" : 14.318125,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05699.ARW",
+          "height" : 401,
+          "milliseconds" : 14.087959,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05700.ARW",
+          "height" : 401,
+          "milliseconds" : 14.308666,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05701.ARW",
+          "height" : 401,
+          "milliseconds" : 14.3755,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05702.ARW",
+          "height" : 401,
+          "milliseconds" : 14.062167,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05703.ARW",
+          "height" : 401,
+          "milliseconds" : 14.337084,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05704.ARW",
+          "height" : 401,
+          "milliseconds" : 13.873667,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05705.ARW",
+          "height" : 401,
+          "milliseconds" : 14.182125,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05706.ARW",
+          "height" : 401,
+          "milliseconds" : 14.379875,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05707.ARW",
+          "height" : 401,
+          "milliseconds" : 18.012125,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05708.ARW",
+          "height" : 401,
+          "milliseconds" : 14.276792,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "height" : 401,
+          "milliseconds" : 15.002833,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05695.ARW",
+          "height" : 401,
+          "milliseconds" : 14.9325,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05696.ARW",
+          "height" : 401,
+          "milliseconds" : 14.820709,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05697.ARW",
+          "height" : 401,
+          "milliseconds" : 14.75,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05698.ARW",
+          "height" : 401,
+          "milliseconds" : 15.057208,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05699.ARW",
+          "height" : 401,
+          "milliseconds" : 15.625042,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05700.ARW",
+          "height" : 401,
+          "milliseconds" : 14.267375,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05701.ARW",
+          "height" : 401,
+          "milliseconds" : 16.287209,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05702.ARW",
+          "height" : 401,
+          "milliseconds" : 14.066917,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05703.ARW",
+          "height" : 401,
+          "milliseconds" : 14.244333,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05704.ARW",
+          "height" : 401,
+          "milliseconds" : 14.211209,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05705.ARW",
+          "height" : 401,
+          "milliseconds" : 14.524917,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05706.ARW",
+          "height" : 401,
+          "milliseconds" : 14.74575,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05707.ARW",
+          "height" : 401,
+          "milliseconds" : 14.009084,
+          "result" : "decoded",
+          "width" : 600
+        },
+        {
+          "fixture" : "DSC05708.ARW",
+          "height" : 401,
+          "milliseconds" : 14.484333,
+          "result" : "decoded",
+          "width" : 600
+        }
+      ]
+    },
+    {
+      "boundary" : "request→materialized native RAW bitmap",
+      "cache" : "application-cold; filesystem-uncontrolled",
+      "count" : 30,
+      "maxMilliseconds" : 250.67375,
+      "name" : "true_raw_app_cache_cold",
+      "p50Milliseconds" : 155.424667,
+      "p95Milliseconds" : 162.825875,
+      "samples" : [
+        {
+          "fixture" : "DSC05694.ARW",
+          "height" : 6336,
+          "milliseconds" : 250.67375,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05695.ARW",
+          "height" : 6336,
+          "milliseconds" : 157.795125,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05696.ARW",
+          "height" : 6336,
+          "milliseconds" : 154.22475,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05697.ARW",
+          "height" : 6336,
+          "milliseconds" : 162.8085,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05698.ARW",
+          "height" : 6336,
+          "milliseconds" : 158.613833,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05699.ARW",
+          "height" : 6336,
+          "milliseconds" : 148.867917,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05700.ARW",
+          "height" : 6336,
+          "milliseconds" : 149.1875,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05701.ARW",
+          "height" : 6336,
+          "milliseconds" : 160.911125,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05702.ARW",
+          "height" : 6336,
+          "milliseconds" : 156.471708,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05703.ARW",
+          "height" : 6336,
+          "milliseconds" : 152.277167,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05704.ARW",
+          "height" : 6336,
+          "milliseconds" : 150.850875,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05705.ARW",
+          "height" : 6336,
+          "milliseconds" : 154.949458,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05706.ARW",
+          "height" : 6336,
+          "milliseconds" : 162.825875,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05707.ARW",
+          "height" : 6336,
+          "milliseconds" : 157.556708,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05708.ARW",
+          "height" : 6336,
+          "milliseconds" : 151.043667,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "height" : 6336,
+          "milliseconds" : 156.560833,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05695.ARW",
+          "height" : 6336,
+          "milliseconds" : 157.509875,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05696.ARW",
+          "height" : 6336,
+          "milliseconds" : 155.424667,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05697.ARW",
+          "height" : 6336,
+          "milliseconds" : 159.644458,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05698.ARW",
+          "height" : 6336,
+          "milliseconds" : 152.2055,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05699.ARW",
+          "height" : 6336,
+          "milliseconds" : 153.2495,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05700.ARW",
+          "height" : 6336,
+          "milliseconds" : 154.031791,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05701.ARW",
+          "height" : 6336,
+          "milliseconds" : 152.51325,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05702.ARW",
+          "height" : 6336,
+          "milliseconds" : 152.134083,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05703.ARW",
+          "height" : 6336,
+          "milliseconds" : 157.405,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05704.ARW",
+          "height" : 6336,
+          "milliseconds" : 150.701959,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05705.ARW",
+          "height" : 6336,
+          "milliseconds" : 153.329833,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05706.ARW",
+          "height" : 6336,
+          "milliseconds" : 156.550375,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05707.ARW",
+          "height" : 6336,
+          "milliseconds" : 158.925834,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        },
+        {
+          "fixture" : "DSC05708.ARW",
+          "height" : 6336,
+          "milliseconds" : 159.504,
+          "result" : "decoded-native-raw",
+          "width" : 9504
+        }
+      ]
+    },
+    {
+      "boundary" : "request→same cached preview bitmap",
+      "cache" : "application-warm",
+      "count" : 100,
+      "maxMilliseconds" : 0.041166,
+      "name" : "embedded_preview_warm_cache",
+      "p50Milliseconds" : 0.006209,
+      "p95Milliseconds" : 0.007292,
+      "samples" : [
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.041166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.011667,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.008792,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.007834,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.007292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006959,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.007,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006792,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006959,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006792,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006667,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006458,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006417,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006458,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006458,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006291,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006417,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006416,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006291,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006209,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006334,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.010416,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006708,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006416,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006416,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006209,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006291,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006209,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006209,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006041,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006084,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006209,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006084,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006209,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006041,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006042,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.007042,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006125,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006084,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006042,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006042,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006084,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006166,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006083,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006042,
+          "result" : "cache-hit"
+        }
+      ]
+    },
+    {
+      "boundary" : "request→same cached native RAW bitmap",
+      "cache" : "application-warm",
+      "count" : 50,
+      "maxMilliseconds" : 0.062667,
+      "name" : "true_raw_warm_cache",
+      "p50Milliseconds" : 0.006375,
+      "p95Milliseconds" : 0.010791,
+      "samples" : [
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.062667,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.010791,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.012292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.008,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.007375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.007167,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006875,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006708,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006666,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006542,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.0065,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006458,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006417,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006334,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006334,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006459,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006459,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006334,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006458,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006417,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.0065,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006334,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006334,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006792,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006417,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006333,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006292,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006208,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006375,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006291,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.00625,
+          "result" : "cache-hit"
+        },
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 0.006208,
+          "result" : "cache-hit"
+        }
+      ]
+    },
+    {
+      "boundary" : "parallel requests→all native RAW results (detail decoder serialized)",
+      "cache" : "application-cold; filesystem-uncontrolled",
+      "count" : 3,
+      "maxMilliseconds" : 318.940417,
+      "name" : "compare_2_native_raw",
+      "p50Milliseconds" : 316.501875,
+      "p95Milliseconds" : 318.940417,
+      "samples" : [
+        {
+          "milliseconds" : 318.940417,
+          "result" : "2-panes-decoded"
+        },
+        {
+          "milliseconds" : 315.147125,
+          "result" : "2-panes-decoded"
+        },
+        {
+          "milliseconds" : 316.501875,
+          "result" : "2-panes-decoded"
+        }
+      ]
+    },
+    {
+      "boundary" : "parallel requests→all native RAW results (detail decoder serialized)",
+      "cache" : "application-cold; filesystem-uncontrolled",
+      "count" : 3,
+      "maxMilliseconds" : 516.976833,
+      "name" : "compare_3_native_raw",
+      "p50Milliseconds" : 512.520667,
+      "p95Milliseconds" : 516.976833,
+      "samples" : [
+        {
+          "milliseconds" : 512.520667,
+          "result" : "3-panes-decoded"
+        },
+        {
+          "milliseconds" : 516.976833,
+          "result" : "3-panes-decoded"
+        },
+        {
+          "milliseconds" : 483.884083,
+          "result" : "3-panes-decoded"
+        }
+      ]
+    },
+    {
+      "boundary" : "parallel requests→all native RAW results (detail decoder serialized)",
+      "cache" : "application-cold; filesystem-uncontrolled",
+      "count" : 3,
+      "maxMilliseconds" : 637.185708,
+      "name" : "compare_4_native_raw",
+      "p50Milliseconds" : 633.123917,
+      "p95Milliseconds" : 637.185708,
+      "samples" : [
+        {
+          "milliseconds" : 637.185708,
+          "result" : "4-panes-decoded"
+        },
+        {
+          "milliseconds" : 633.123917,
+          "result" : "4-panes-decoded"
+        },
+        {
+          "milliseconds" : 626.543459,
+          "result" : "4-panes-decoded"
+        }
+      ]
+    },
+    {
+      "boundary" : "request→decoded preview per next distinct asset",
+      "cache" : "application-cold at start of sequence",
+      "count" : 15,
+      "maxMilliseconds" : 14.426708,
+      "name" : "sequential_preview_navigation",
+      "p50Milliseconds" : 10.431584,
+      "p95Milliseconds" : 14.426708,
+      "samples" : [
+        {
+          "fixture" : "DSC05694.ARW",
+          "milliseconds" : 12.761291,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05695.ARW",
+          "milliseconds" : 14.426708,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05696.ARW",
+          "milliseconds" : 10.408042,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05697.ARW",
+          "milliseconds" : 10.435208,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05698.ARW",
+          "milliseconds" : 10.706166,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05699.ARW",
+          "milliseconds" : 10.3685,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05700.ARW",
+          "milliseconds" : 10.12725,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05701.ARW",
+          "milliseconds" : 11.070875,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05702.ARW",
+          "milliseconds" : 10.220834,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05703.ARW",
+          "milliseconds" : 9.864916,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05704.ARW",
+          "milliseconds" : 12.062,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05705.ARW",
+          "milliseconds" : 10.049833,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05706.ARW",
+          "milliseconds" : 10.028,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05707.ARW",
+          "milliseconds" : 10.431584,
+          "result" : "decoded"
+        },
+        {
+          "fixture" : "DSC05708.ARW",
+          "milliseconds" : 10.63875,
+          "result" : "decoded"
+        }
+      ]
+    },
+    {
+      "boundary" : "24 request enqueue→all returns, cancel first23 after5ms",
+      "cache" : "application-cold; filesystem-uncontrolled",
+      "count" : 1,
+      "maxMilliseconds" : 25.476166,
+      "name" : "rapid_navigation_cancel_burst",
+      "p50Milliseconds" : 25.476166,
+      "p95Milliseconds" : 25.476166,
+      "samples" : [
+        {
+          "milliseconds" : 25.476166,
+          "result" : "latest-completed"
+        }
+      ]
+    },
+    {
+      "boundary" : "state update→completed offscreen bitmap raster drawing (not onscreen presentation)",
+      "cache" : "decoded native RAW supplied; no decoding",
+      "count" : 30,
+      "maxMilliseconds" : 39.942875,
+      "name" : "canvas_1_fit",
+      "p50Milliseconds" : 0.238792,
+      "p95Milliseconds" : 3.212792,
+      "samples" : [
+        {
+          "milliseconds" : 39.942875,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.319875,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.258625,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.251875,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.254166,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.233375,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.268917,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.277875,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.240084,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.258458,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 1.248542,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.265917,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.249042,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.238792,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.237542,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.212792,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.236667,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.247416,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.230834,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.224042,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.227875,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.227167,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.222458,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.212334,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.219333,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.244417,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.2305,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.225459,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.2195,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.227166,
+          "result" : "1-panes-rasterized"
+        }
+      ]
+    },
+    {
+      "boundary" : "state update→completed offscreen bitmap raster drawing (not onscreen presentation)",
+      "cache" : "decoded native RAW supplied; no decoding",
+      "count" : 30,
+      "maxMilliseconds" : 4.832708,
+      "name" : "canvas_1_zoom-pan",
+      "p50Milliseconds" : 3.394833,
+      "p95Milliseconds" : 3.856125,
+      "samples" : [
+        {
+          "milliseconds" : 0.438917,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.293375,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.6775,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.446542,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.330208,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.394833,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.513,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.422,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.256,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.856125,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.655042,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.502792,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.370541,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.391042,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.469375,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.415292,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.265667,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.363666,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.524625,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.4175,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.327958,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.330042,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 4.832708,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.494917,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.361958,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.453125,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.45475,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.316125,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.273166,
+          "result" : "1-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.312417,
+          "result" : "1-panes-rasterized"
+        }
+      ]
+    },
+    {
+      "boundary" : "state update→completed offscreen bitmap raster drawing (not onscreen presentation)",
+      "cache" : "decoded native RAW supplied; no decoding",
+      "count" : 30,
+      "maxMilliseconds" : 36.014958,
+      "name" : "canvas_2_fit",
+      "p50Milliseconds" : 0.701625,
+      "p95Milliseconds" : 14.4425,
+      "samples" : [
+        {
+          "milliseconds" : 36.014958,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.689125,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.908,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.718625,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 14.4425,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.337084,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.342208,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.419916,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.69525,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.850083,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.701625,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.66325,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.6465,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.696042,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.727708,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.726917,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.722917,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.74075,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.72875,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.778375,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.697917,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.72425,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.704,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.730333,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.6805,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.721083,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.694042,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.698416,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.691542,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.402583,
+          "result" : "2-panes-rasterized"
+        }
+      ]
+    },
+    {
+      "boundary" : "state update→completed offscreen bitmap raster drawing (not onscreen presentation)",
+      "cache" : "decoded native RAW supplied; no decoding",
+      "count" : 30,
+      "maxMilliseconds" : 7.805333,
+      "name" : "canvas_2_zoom-pan",
+      "p50Milliseconds" : 3.496125,
+      "p95Milliseconds" : 5.433417,
+      "samples" : [
+        {
+          "milliseconds" : 0.563667,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.404792,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 4.008709,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.805333,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.531625,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.563375,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.586208,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.496125,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.383917,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.432375,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.649,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.59275,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.38,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 4.48075,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 5.433417,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.526083,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.442334,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.519459,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.623208,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.440333,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.413917,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.435459,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.77025,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.557292,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.389541,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.636667,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 5.169,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.485958,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.419458,
+          "result" : "2-panes-rasterized"
+        },
+        {
+          "milliseconds" : 3.394625,
+          "result" : "2-panes-rasterized"
+        }
+      ]
+    },
+    {
+      "boundary" : "state update→completed offscreen bitmap raster drawing (not onscreen presentation)",
+      "cache" : "decoded native RAW supplied; no decoding",
+      "count" : 30,
+      "maxMilliseconds" : 1.542958,
+      "name" : "canvas_4_fit",
+      "p50Milliseconds" : 0.611875,
+      "p95Milliseconds" : 1.012959,
+      "samples" : [
+        {
+          "milliseconds" : 1.012959,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.6255,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.6085,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.614292,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.629375,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.612625,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.60625,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.628208,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.609292,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.599542,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.613458,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.610333,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.606584,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.61425,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.619625,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.610666,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.647958,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.606041,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.604333,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.596625,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.607958,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.604916,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.621375,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.623,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.60775,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.611875,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.606959,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.620208,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 1.542958,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.656167,
+          "result" : "4-panes-rasterized"
+        }
+      ]
+    },
+    {
+      "boundary" : "state update→completed offscreen bitmap raster drawing (not onscreen presentation)",
+      "cache" : "decoded native RAW supplied; no decoding",
+      "count" : 30,
+      "maxMilliseconds" : 12.938792,
+      "name" : "canvas_4_zoom-pan",
+      "p50Milliseconds" : 7.086625,
+      "p95Milliseconds" : 10.276292,
+      "samples" : [
+        {
+          "milliseconds" : 0.867875,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 8.8675,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.600584,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.086625,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.889584,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.158417,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 9.177833,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 6.891625,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.762042,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 6.814542,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.21275,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 9.889917,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.793709,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.025292,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 8.8945,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.599125,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 1.84475,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 9.66475,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.282333,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.077458,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.882167,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 6.8285,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 10.276292,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.142583,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.7845,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.089542,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 7.237416,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 12.938792,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 0.805583,
+          "result" : "4-panes-rasterized"
+        },
+        {
+          "milliseconds" : 6.987084,
+          "result" : "4-panes-rasterized"
+        }
+      ]
+    }
+  ],
+  "nativeDetailStages" : [
+    {
+      "boundary" : "API 返回",
+      "cancelledCount" : 0,
+      "failureCount" : 0,
+      "id" : "ImagePipeline.detail|FlashRaw → sRGB 位图|原尺寸浏览|API 返回",
+      "lastMilliseconds" : 21.723375,
+      "maximumMilliseconds" : 35.624209,
+      "meanMilliseconds" : 22.12702586206897,
+      "minimumMilliseconds" : 20.774459,
+      "operation" : "ImagePipeline.detail",
+      "queue" : "原尺寸浏览",
+      "recentTiming" : {
+        "count" : 58,
+        "medianMilliseconds" : 21.786875000000002,
+        "p95Milliseconds" : 23.583417
+      },
+      "sampleCount" : 58,
+      "stage" : "FlashRaw → sRGB 位图"
+    },
+    {
+      "boundary" : "RAW 解码",
+      "cancelledCount" : 0,
+      "failureCount" : 0,
+      "id" : "ImagePipeline.detail|FlashRaw 原尺寸解码|原尺寸浏览|RAW 解码",
+      "lastMilliseconds" : 78.696584,
+      "maximumMilliseconds" : 121.269333,
+      "meanMilliseconds" : 85.12922703448277,
+      "minimumMilliseconds" : 76.380041,
+      "operation" : "ImagePipeline.detail",
+      "queue" : "原尺寸浏览",
+      "recentTiming" : {
+        "count" : 58,
+        "medianMilliseconds" : 84.22825,
+        "p95Milliseconds" : 94.825042
+      },
+      "sampleCount" : 58,
+      "stage" : "FlashRaw 原尺寸解码"
+    }
+  ],
+  "operatingSystem" : "Version 27.0.1 (Build 26A434)",
+  "phase" : "regression",
+  "physicalMemory" : 137438953472,
+  "processors" : 16,
+  "schemaVersion" : 1,
+  "sourceSHA256After" : [
+    "280b79743de69862c22068a1f063492ebd06d18ca63faeb8829b9c9d18bec6a2",
+    "ecdbf97046d9330b78913268f3d664b11ebe966055835ffb350c219619f6b7c8",
+    "2a52211ac468dd668561c78a8032a7951a6fa2e660ac2046f6337946961fa9be",
+    "1fc792a3b0ff4de48ae4081235550d9cd6afb152f7bc532ca9983238ecd1d4f2",
+    "f0cf522efebf4cb412e5ec70ab49dcbb00839a7b9289a4ae1eb936d866f35efa",
+    "0d5acc01a1855c91d2460bf85a19ffb6b33894320c6826881c60aff3c844f60c",
+    "7061cb95b089c7d4c6a638464bc8f5956df79d10eafb6bc616c85bb68b94b8b8",
+    "1aa9c1033095c2d7edd7cc51ab1d7666cbe03de1beaa8c367ec784b16db09857",
+    "a5b1b86601772334eb1136f01c3f9c6e80e8b029abc50c88e64cbaec15ecfc3d",
+    "f2f39fd6978538ae49738b6113ce47943ff7f0d82d6c5efdb801a9270003de91",
+    "136fed777dad807c7c1ce5d73b0d4025cc104436193211c6c5ce16002bf1a58b",
+    "75eee7ae1d859b661d587da58456a649e390bbe8945abb2656c4b3b988030ccd",
+    "6c6dd131a039c62fcd0754a77631095da1560d2ee6fc1fc20f2c22d9d9242106",
+    "91a0f5622cfdb8ebd0a95f2a75515bb34a1b6be808819c9fd885cef23fde6082",
+    "8e574ef742fb8828fbeca99c1b78956be3020179f616cfa493199dcb9e663be0"
+  ],
+  "status" : "failed",
+  "timestamp" : "2026-11-22T11:04:25Z",
+  "timingGatesEnabled" : true
+}

@@ -1,0 +1,375 @@
+{
+  "binarySHA256" : "e58e1e40b16e7c55dd8e635cc624c6a714bbc6ccab97b21883aeb642d119b180",
+  "cameraJPEGSHA256" : "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "controlDNGColorimetricReference" : 0,
+  "gpu" : "Apple M4 Max",
+  "importedFilenames" : [
+    "preview-reference-0.dng",
+    "preview-reference-1.dng"
+  ],
+  "inputDNGColorimetricReference" : 1,
+  "model" : "waifu2x-vgg7-photo-noise2-cc385f97-output-dng-v1",
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "result" : {
+    "container" : "com.adobe.raw-image",
+    "exportBits" : 16,
+    "exportMs" : 65.332374999999999,
+    "exportSHA256" : "4f3813cab550733ad9926dfd105190dc2903d35f9a3f163249b9fc515247532f",
+    "interactiveVsSettled" : {
+      "maxRGB8" : 1,
+      "meanRGB8" : 2.0345052083333332e-05,
+      "p95RGB8" : 0
+    },
+    "nativePixels" : [
+      480,
+      320
+    ],
+    "requests" : [
+      {
+        "elapsedMs" : 57.926333999999997,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a5c7c5132b76feb4f1b98e7f246174bef192e2449f8c81a3b58c1657b3a53f69",
+        "state" : "original"
+      },
+      {
+        "elapsedMs" : 20.626249999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a5c7c5132b76feb4f1b98e7f246174bef192e2449f8c81a3b58c1657b3a53f69",
+        "state" : "zero"
+      },
+      {
+        "elapsedMs" : 51.064250000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "full"
+      },
+      {
+        "elapsedMs" : 25.142125,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "b44f9dccc428bca46b33d7111fdbd0652de4156f57635ad9d4bac5999cd17000",
+        "state" : "fresh35"
+      },
+      {
+        "elapsedMs" : 2.2920829999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "replay100"
+      },
+      {
+        "elapsedMs" : 14.625375,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a5c7c5132b76feb4f1b98e7f246174bef192e2449f8c81a3b58c1657b3a53f69",
+        "state" : "disabled"
+      },
+      {
+        "elapsedMs" : 47.415416999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "533fc09cd6179bd465c842991098c6507a47c2d733f7577d5996e2e2ae5ecb86",
+        "state" : "full-settled"
+      },
+      {
+        "elapsedMs" : 24.481249999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5e48b6ccf223349b7e244cbc39ec2a3bcffe1867fdf47f2eb495fee0074ff355",
+        "state" : "new-11"
+      },
+      {
+        "elapsedMs" : 24.246708000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "switch-11"
+      },
+      {
+        "elapsedMs" : 2.2898339999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5e48b6ccf223349b7e244cbc39ec2a3bcffe1867fdf47f2eb495fee0074ff355",
+        "state" : "replay-11"
+      },
+      {
+        "elapsedMs" : 24.235125,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "9aa1e5f992ffc8214db821e284bcbfec982938e4ba5337bbd6a3fd8cb7c080b9",
+        "state" : "new-17"
+      },
+      {
+        "elapsedMs" : 2.2770410000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5e48b6ccf223349b7e244cbc39ec2a3bcffe1867fdf47f2eb495fee0074ff355",
+        "state" : "switch-17"
+      },
+      {
+        "elapsedMs" : 2.0034580000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "9aa1e5f992ffc8214db821e284bcbfec982938e4ba5337bbd6a3fd8cb7c080b9",
+        "state" : "replay-17"
+      },
+      {
+        "elapsedMs" : 24.399166999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "cb3ff57ba144bd7baebac51ccb5ae53e38ae10cc4d81a346758a63061ed15d56",
+        "state" : "new-23"
+      },
+      {
+        "elapsedMs" : 2.1810420000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "9aa1e5f992ffc8214db821e284bcbfec982938e4ba5337bbd6a3fd8cb7c080b9",
+        "state" : "switch-23"
+      },
+      {
+        "elapsedMs" : 1.9995419999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "cb3ff57ba144bd7baebac51ccb5ae53e38ae10cc4d81a346758a63061ed15d56",
+        "state" : "replay-23"
+      },
+      {
+        "elapsedMs" : 24.999334000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "3ffb722fa168ee7eb75f592b4339f880403882702d489044ef9c77c246eb1799",
+        "state" : "new-29"
+      },
+      {
+        "elapsedMs" : 2.8156669999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "cb3ff57ba144bd7baebac51ccb5ae53e38ae10cc4d81a346758a63061ed15d56",
+        "state" : "switch-29"
+      },
+      {
+        "elapsedMs" : 2.206334,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "3ffb722fa168ee7eb75f592b4339f880403882702d489044ef9c77c246eb1799",
+        "state" : "replay-29"
+      },
+      {
+        "elapsedMs" : 24.333290999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "86407ba9317169637e17d4b0d1c31d7731ddcaf15af67a500c9acac833630071",
+        "state" : "new-41"
+      },
+      {
+        "elapsedMs" : 1.861542,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "3ffb722fa168ee7eb75f592b4339f880403882702d489044ef9c77c246eb1799",
+        "state" : "switch-41"
+      },
+      {
+        "elapsedMs" : 2.3238750000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "86407ba9317169637e17d4b0d1c31d7731ddcaf15af67a500c9acac833630071",
+        "state" : "replay-41"
+      },
+      {
+        "elapsedMs" : 24.241083,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "6d6b5235123bf5afd0fea9ed80a2a8627c835a408a104100a4f7d564488666cc",
+        "state" : "new-47"
+      },
+      {
+        "elapsedMs" : 2.2499579999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "86407ba9317169637e17d4b0d1c31d7731ddcaf15af67a500c9acac833630071",
+        "state" : "switch-47"
+      },
+      {
+        "elapsedMs" : 2.202375,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "6d6b5235123bf5afd0fea9ed80a2a8627c835a408a104100a4f7d564488666cc",
+        "state" : "replay-47"
+      },
+      {
+        "elapsedMs" : 23.758291,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "8baa422c90eeabca63a8e684d3d3918456b4c6a9df7ace0d8f18dfe6f6ed8bf1",
+        "state" : "new-53"
+      },
+      {
+        "elapsedMs" : 2.4109590000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "6d6b5235123bf5afd0fea9ed80a2a8627c835a408a104100a4f7d564488666cc",
+        "state" : "switch-53"
+      },
+      {
+        "elapsedMs" : 2.1523750000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "8baa422c90eeabca63a8e684d3d3918456b4c6a9df7ace0d8f18dfe6f6ed8bf1",
+        "state" : "replay-53"
+      },
+      {
+        "elapsedMs" : 25.2485,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5d426efe373f8f7f1665d98d86431baf9d8a0791901cc5642dce9dde8936930b",
+        "state" : "new-59"
+      },
+      {
+        "elapsedMs" : 2.2152500000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "8baa422c90eeabca63a8e684d3d3918456b4c6a9df7ace0d8f18dfe6f6ed8bf1",
+        "state" : "switch-59"
+      },
+      {
+        "elapsedMs" : 2.0615420000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5d426efe373f8f7f1665d98d86431baf9d8a0791901cc5642dce9dde8936930b",
+        "state" : "replay-59"
+      },
+      {
+        "elapsedMs" : 26.357832999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "20d1b2ab03125bbefc58a4362ab80cbe544bdfa6f4c4b26b6164d3c5eb03c9db",
+        "state" : "new-67"
+      },
+      {
+        "elapsedMs" : 2.1250830000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5d426efe373f8f7f1665d98d86431baf9d8a0791901cc5642dce9dde8936930b",
+        "state" : "switch-67"
+      },
+      {
+        "elapsedMs" : 1.9316249999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "20d1b2ab03125bbefc58a4362ab80cbe544bdfa6f4c4b26b6164d3c5eb03c9db",
+        "state" : "replay-67"
+      },
+      {
+        "elapsedMs" : 32.227665999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "8de6a59aa3b61717e871cbba84d7fd4cb47750019caa305cbb4127d991cb6a68",
+        "state" : "new-73"
+      },
+      {
+        "elapsedMs" : 2.7463329999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "20d1b2ab03125bbefc58a4362ab80cbe544bdfa6f4c4b26b6164d3c5eb03c9db",
+        "state" : "switch-73"
+      },
+      {
+        "elapsedMs" : 2.1122079999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "8de6a59aa3b61717e871cbba84d7fd4cb47750019caa305cbb4127d991cb6a68",
+        "state" : "replay-73"
+      }
+    ],
+    "settledVsTIFF16" : {
+      "maxRGB8" : 0,
+      "meanRGB8" : 0,
+      "p95RGB8" : 0
+    },
+    "source" : "preview-reference-1.dng",
+    "sourceBits" : 16,
+    "sourceICC" : "kCGColorSpaceDisplayP3",
+    "sourceSHA256" : "b75cbb064b7a9a19c029b52665486d797eb02c0c8938568428b5db7e53794202"
+  },
+  "sceneControlSHA256" : "332449054cd8499268a8fbc7c4fe80426bbfa32ee6226ca633f8e055b355d0af",
+  "sourceOrigin" : "Output-referred LinearRaw DNG and matching scene-referred control. Full-resolution raw SubIFD, embedded small RGB preview.",
+  "weightsSHA256" : "5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5"
+}

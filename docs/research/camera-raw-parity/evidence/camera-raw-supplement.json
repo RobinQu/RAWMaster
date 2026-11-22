@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-11-22T08:23:04.565135+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "cameraRaw": "19.0 (2794)",
+  "os": "27.0.1",
+  "hardware": "Mac16,5",
+  "boundary": "CameraRAWOpenOptions selected-image app.open to Photoshop document return on warm app; real RAW reopen; 8-bit sRGB; histogram outside timer",
+  "protocol": "acr-xmp-document-open-v1",
+  "repeats": 3,
+  "operations": {
+    "color-wb-as-shot": {
+      "settings": {
+        "control": {
+          "WhiteBalance": "Tungsten"
+        },
+        "edit": {
+          "WhiteBalance": "As Shot"
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 4747.795,
+          "histogramSHA256": "8165c9d512b3a1c3706a99c2b5c7c38d797d71eea8179d1c249c37c3c071090e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "e8276e41a494beb5e3ce0a9b2fdc423ae11018293a57da7426b0a9043a88c77b",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 1018.971,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 896.043,
+          "histogramSHA256": "8165c9d512b3a1c3706a99c2b5c7c38d797d71eea8179d1c249c37c3c071090e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "e8276e41a494beb5e3ce0a9b2fdc423ae11018293a57da7426b0a9043a88c77b",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 1142.287,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 888.249,
+          "histogramSHA256": "8165c9d512b3a1c3706a99c2b5c7c38d797d71eea8179d1c249c37c3c071090e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "e8276e41a494beb5e3ce0a9b2fdc423ae11018293a57da7426b0a9043a88c77b",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 804.732,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 1010.509,
+          "histogramSHA256": "8165c9d512b3a1c3706a99c2b5c7c38d797d71eea8179d1c249c37c3c071090e",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "e8276e41a494beb5e3ce0a9b2fdc423ae11018293a57da7426b0a9043a88c77b",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 796.812,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        }
+      ],
+      "status": "measured"
+    },
+    "light-auto": {
+      "settings": {
+        "control": {
+          "AutoTone": "False"
+        },
+        "edit": {
+          "AutoTone": "True"
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 967.599,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 1142.92,
+          "histogramSHA256": "c8f0917c086d0177eee9219b3e47923b2a49ec2cec6403192591fac321fe84c4",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "0674c5a96a9ea3140dbf4fc04cc957c36d514a98655233e04a9bdca07b95a6e5",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 643.99,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 1151.2,
+          "histogramSHA256": "c8f0917c086d0177eee9219b3e47923b2a49ec2cec6403192591fac321fe84c4",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "0674c5a96a9ea3140dbf4fc04cc957c36d514a98655233e04a9bdca07b95a6e5",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 634.726,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 1288.342,
+          "histogramSHA256": "c8f0917c086d0177eee9219b3e47923b2a49ec2cec6403192591fac321fe84c4",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "0674c5a96a9ea3140dbf4fc04cc957c36d514a98655233e04a9bdca07b95a6e5",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 847.52,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 1463.473,
+          "histogramSHA256": "c8f0917c086d0177eee9219b3e47923b2a49ec2cec6403192591fac321fe84c4",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "0674c5a96a9ea3140dbf4fc04cc957c36d514a98655233e04a9bdca07b95a6e5",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        }
+      ],
+      "status": "measured"
+    },
+    "curve-mask-curve": {
+      "settings": {
+        "control": {
+          "Correction.MainCurve": [
+            "0, 0",
+            "255, 255"
+          ]
+        },
+        "edit": {
+          "Correction.MainCurve": [
+            "0, 0",
+            "100, 145",
+            "255, 255"
+          ]
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 959.865,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 720.394,
+          "histogramSHA256": "f3c9c6ff0ae66376c2d0b02d22a987c84a8c93c93e4523d30601ee63254ae553",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "d5ec2d6651a0889099c97169351203e31c85e2b7ce3e3ec4a3fb75732cb3a552",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 819.047,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 4063.855,
+          "histogramSHA256": "f3c9c6ff0ae66376c2d0b02d22a987c84a8c93c93e4523d30601ee63254ae553",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "d5ec2d6651a0889099c97169351203e31c85e2b7ce3e3ec4a3fb75732cb3a552",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 4282.459,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 5308.739,
+          "histogramSHA256": "f3c9c6ff0ae66376c2d0b02d22a987c84a8c93c93e4523d30601ee63254ae553",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "d5ec2d6651a0889099c97169351203e31c85e2b7ce3e3ec4a3fb75732cb3a552",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 4816.412,
+          "histogramSHA256": "a10c6849ac27b13c37f2b67cdeacaae3ed8dab8bc90b5383a1e827961b0111f5",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "6c9cbde099245c9b8af2dffa5b5f9dcbb511dd274541a1e6e8194011ba807801",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 4642.356,
+          "histogramSHA256": "f3c9c6ff0ae66376c2d0b02d22a987c84a8c93c93e4523d30601ee63254ae553",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "d5ec2d6651a0889099c97169351203e31c85e2b7ce3e3ec4a3fb75732cb3a552",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        }
+      ],
+      "status": "measured"
+    },
+    "optics-profile-select": {
+      "settings": {
+        "control": {
+          "LensProfileSetup": "Custom",
+          "LensProfileEnable": 1,
+          "LensProfileFilename": "SONY (Sony FE 20mm F1.8 G) - RAW.lcp",
+          "LensProfileName": "Adobe (Sony FE 20mm F1.8 G)"
+        },
+        "edit": {
+          "LensProfileSetup": "Custom",
+          "LensProfileEnable": 1,
+          "LensProfileFilename": "SONY (Sony FE 14mm F1.8 GM) - RAW.lcp",
+          "LensProfileName": "Adobe (Sony FE 14mm F1.8 GM)"
+        }
+      },
+      "samples": [
+        {
+          "state": "control",
+          "iteration": 0,
+          "openMs": 5335.999,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "f612ffdef644b5f17fea3c4c6bc940f0f0d172ba81d704a7108e26f0a9555bea",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 0,
+          "openMs": 6297.935,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "a09504d6795184337c34943ed64411fcd5fe64f495c7f1bd6229bbdcf92fff39",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 1,
+          "openMs": 8599.699,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "f612ffdef644b5f17fea3c4c6bc940f0f0d172ba81d704a7108e26f0a9555bea",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 1,
+          "openMs": 6453.051,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "a09504d6795184337c34943ed64411fcd5fe64f495c7f1bd6229bbdcf92fff39",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 2,
+          "openMs": 1272.91,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "f612ffdef644b5f17fea3c4c6bc940f0f0d172ba81d704a7108e26f0a9555bea",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 2,
+          "openMs": 1272.608,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "a09504d6795184337c34943ed64411fcd5fe64f495c7f1bd6229bbdcf92fff39",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "control",
+          "iteration": 3,
+          "openMs": 1337.966,
+          "histogramSHA256": "96e10da7eec49a1ac3ae652bc95d4751eb30643fe680b6fb02f7553c48ad128f",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "f612ffdef644b5f17fea3c4c6bc940f0f0d172ba81d704a7108e26f0a9555bea",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        },
+        {
+          "state": "edit",
+          "iteration": 3,
+          "openMs": 1383.346,
+          "histogramSHA256": "e7728ee0ea2223826bd43bc50c6a285f3ee1f151b706ded2398ea4fd49688afb",
+          "outputPixels": [
+            9504,
+            6336
+          ],
+          "photoshop": "28.0.0",
+          "spatialRGBSHA256": "a09504d6795184337c34943ed64411fcd5fe64f495c7f1bd6229bbdcf92fff39",
+          "spatialPixels": [
+            1024,
+            683
+          ]
+        }
+      ],
+      "status": "measured"
+    }
+  },
+  "planned": [
+    "color-wb-as-shot",
+    "light-auto",
+    "curve-mask-curve",
+    "optics-profile-select"
+  ],
+  "spatialWitness": "1024 px bicubic sRGB BGR24 bitmap from the disposable full document after the timed open",
+  "sessions": [
+    {
+      "startedAt": "2026-11-22T08:23:04.574455+00:00",
+      "driverSHA256": "40f54ae8ca97a3c555694bb099dc44976c2e4a36d696e8cafad6a4d9efde6295",
+      "jsxSHA256": "1903784738e20cd51929415d567d1f983326dbcbad8a8f94b936459b3514f4e0"
+    }
+  ],
+  "workCopySHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "finishedAt": "2026-11-22T08:24:56.323667+00:00"
+}

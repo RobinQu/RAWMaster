@@ -18,7 +18,7 @@ public enum DevelopmentNaturalCurvePickerV1 {
     guard p.curves.algorithm == .naturalCubicGamma512LumaV1,
       !DevelopmentColorEngineV3.levelsActive(p.levels),
       !(p.definition.enabled && p.definition.amount != 0),
-      !(p.selectiveColor.enabled && p.selectiveColor.colors.contains { $0.hue != 0 || $0.saturation != 0 || $0.luminance != 0 }),
+      !(p.selectiveColor.enabled && (p.selectiveColor.colors.contains { $0.hue != 0 || $0.saturation != 0 || $0.luminance != 0 || ($0.variance ?? 0) != 0 } || p.selectiveColor.pointColors?.contains(where:\.isActive) == true)),
       !(!sourceIsRAW && p.noiseReduction.enabled && p.noiseReduction.nonRawAmount != 0),
       !(p.sharpen.enabled && p.sharpen.intensity != 0),
       !(p.vignette.enabled && p.vignette.strength != 0),

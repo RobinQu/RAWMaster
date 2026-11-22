@@ -1,0 +1,3177 @@
+{
+  "passed": false,
+  "schemaVersion": 1,
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "proxyVersion": "actual-parameters-linear-proxy-v3-flashraw-neutral/integral-noise-snap-v1/filter-global-v1/point-cache-retract-v1/sharpen-noise-detail-v1",
+  "operationCount": 50,
+  "baseline": "output/performance/point-curve-targeted-release-gate-repeat-20261122/interactive-performance.json",
+  "current": "output/performance/release-background-20261122/engine-final/merged/operators/interactive-performance.json",
+  "measureOnly": false,
+  "policy": {
+    "requiredOperations": [
+      "neutral",
+      "exposure-color",
+      "adaptive-brilliance",
+      "texture",
+      "clarity",
+      "dehaze-v1",
+      "dehaze-v2",
+      "geometry",
+      "post-crop-vignette",
+      "lens-blur-procedural",
+      "lens-blur-device-depth",
+      "lens-blur-refine-focus",
+      "lens-blur-refine-blur",
+      "lens-blur-refine-auto-mask",
+      "lens-blur-bokeh-bubble",
+      "lens-blur-bokeh-five-blade",
+      "lens-blur-bokeh-ring",
+      "lens-blur-bokeh-anamorphic",
+      "lens-blur-cat-eye",
+      "lens-blur-bokeh-boost",
+      "lens-blur-depth-preview",
+      "local-glow",
+      "bw-mixer",
+      "point-variance",
+      "targeted-hsl",
+      "visualise-range",
+      "hue-isolation",
+      "clipping-shadows",
+      "clipping-highlights",
+      "wb-flash-preset",
+      "refine-saturation",
+      "point-curve-targeted",
+      "defringe",
+      "point-color-samples",
+      "local-point-color",
+      "local-light-extended",
+      "local-wb",
+      "local-hue-colorize",
+      "local-texture-clarity",
+      "local-dehaze",
+      "local-grain",
+      "local-curves",
+      "local-grading",
+      "local-detail",
+      "local-defringe",
+      "global-sharpen-detail",
+      "global-sharpen-mask-preview",
+      "global-noise-detail",
+      "optics-ca-distortion",
+      "optics-lens-profile"
+    ],
+    "interactiveSamplesPerOperation": 3,
+    "maximumInteractiveMedianMs": 50,
+    "maximumInteractiveRegressionPercent": 10.0,
+    "maximumSettledRegressionPercent": 20.0,
+    "maximumP99ChannelErrorIncrease": 1,
+    "transparentFramesAllowed": false,
+    "crossApplicationParityClaimed": false
+  },
+  "failures": [
+    "global-sharpen-mask-preview: interactive median exceeds 50 ms",
+    "global-sharpen-mask-preview: interactive median regressed 94.15%"
+  ],
+  "operations": [
+    {
+      "operation": "neutral",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 2.214,
+          "p95Ms": 190.9287369,
+          "maxMs": 211.897041,
+          "samplesMs": [
+            211.897041,
+            2.214,
+            2.095834
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 338.214375,
+          "p95Ms": 338.214375,
+          "maxMs": 338.214375,
+          "samplesMs": [
+            338.214375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 9.399125,
+          "p95Ms": 145.87276249999996,
+          "maxMs": 161.0365,
+          "samplesMs": [
+            161.0365,
+            9.399125,
+            8.964917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 383.975166,
+          "p95Ms": 383.975166,
+          "maxMs": 383.975166,
+          "samplesMs": [
+            383.975166
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -76.44461585519929,
+      "settledMedianChangePercent": -11.91764339259378
+    },
+    {
+      "operation": "exposure-color",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.679,
+          "p95Ms": 7.5712375,
+          "maxMs": 7.670375,
+          "samplesMs": [
+            7.670375,
+            6.679,
+            5.647833
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 398.614708,
+          "p95Ms": 398.614708,
+          "maxMs": 398.614708,
+          "samplesMs": [
+            398.614708
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 26
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.11675,
+          "p95Ms": 13.4078756,
+          "maxMs": 13.551334,
+          "samplesMs": [
+            12.11675,
+            11.594042,
+            13.551334
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 450.925,
+          "p95Ms": 450.925,
+          "maxMs": 450.925,
+          "samplesMs": [
+            450.925
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 26
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -44.87795819836177,
+      "settledMedianChangePercent": -11.60066352497644
+    },
+    {
+      "operation": "adaptive-brilliance",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 25.188958,
+          "p95Ms": 36.5232583,
+          "maxMs": 37.782625,
+          "samplesMs": [
+            37.782625,
+            24.346167,
+            25.188958
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 4212.574083,
+          "p95Ms": 4212.574083,
+          "maxMs": 4212.574083,
+          "samplesMs": [
+            4212.574083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 25
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 28.871916,
+          "p95Ms": 40.0961913,
+          "maxMs": 41.343333,
+          "samplesMs": [
+            41.343333,
+            28.449375,
+            28.871916
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 4490.765959,
+          "p95Ms": 4490.765959,
+          "maxMs": 4490.765959,
+          "samplesMs": [
+            4490.765959
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 25
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -12.75619532835992,
+      "settledMedianChangePercent": -6.194753379264217
+    },
+    {
+      "operation": "texture",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.658667,
+          "p95Ms": 20.910491699999998,
+          "maxMs": 22.71625,
+          "samplesMs": [
+            22.71625,
+            4.658667,
+            4.419417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 813.182667,
+          "p95Ms": 813.182667,
+          "maxMs": 813.182667,
+          "samplesMs": [
+            813.182667
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.767041,
+          "p95Ms": 25.4525288,
+          "maxMs": 26.417583,
+          "samplesMs": [
+            26.417583,
+            16.719709,
+            16.767041
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1411.265042,
+          "p95Ms": 1411.265042,
+          "maxMs": 1411.265042,
+          "samplesMs": [
+            1411.265042
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -72.21533006330694,
+      "settledMedianChangePercent": -42.379167427857254
+    },
+    {
+      "operation": "clarity",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.481542,
+          "p95Ms": 13.2146911,
+          "maxMs": 14.185041,
+          "samplesMs": [
+            14.185041,
+            4.332625,
+            4.481542
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 744.891167,
+          "p95Ms": 744.891167,
+          "maxMs": 744.891167,
+          "samplesMs": [
+            744.891167
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 22.749209,
+          "p95Ms": 25.719058699999998,
+          "maxMs": 26.049042,
+          "samplesMs": [
+            22.749209,
+            18.468375,
+            26.049042
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1277.810042,
+          "p95Ms": 1277.810042,
+          "maxMs": 1277.810042,
+          "samplesMs": [
+            1277.810042
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -80.3002293398421,
+      "settledMedianChangePercent": -41.70564148689012
+    },
+    {
+      "operation": "dehaze-v1",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.438042,
+          "p95Ms": 20.3275914,
+          "maxMs": 21.204208,
+          "samplesMs": [
+            21.204208,
+            12.142541,
+            12.438042
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2004.485875,
+          "p95Ms": 2004.485875,
+          "maxMs": 2004.485875,
+          "samplesMs": [
+            2004.485875
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 19.274833,
+          "p95Ms": 25.011245799999998,
+          "maxMs": 25.648625,
+          "samplesMs": [
+            25.648625,
+            19.274833,
+            17.530208
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1843.306416,
+          "p95Ms": 1843.306416,
+          "maxMs": 1843.306416,
+          "samplesMs": [
+            1843.306416
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -35.47004012953057,
+      "settledMedianChangePercent": 8.744040469937818
+    },
+    {
+      "operation": "dehaze-v2",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 14.682,
+          "p95Ms": 17.5200375,
+          "maxMs": 17.835375,
+          "samplesMs": [
+            17.835375,
+            14.682,
+            14.106917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2467.109875,
+          "p95Ms": 2467.109875,
+          "maxMs": 2467.109875,
+          "samplesMs": [
+            2467.109875
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 34
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 21.308625,
+          "p95Ms": 21.9955122,
+          "maxMs": 22.071833,
+          "samplesMs": [
+            22.071833,
+            21.308625,
+            20.981417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2392.778333,
+          "p95Ms": 2392.778333,
+          "maxMs": 2392.778333,
+          "samplesMs": [
+            2392.778333
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 34
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -31.098322862221284,
+      "settledMedianChangePercent": 3.106495113853902
+    },
+    {
+      "operation": "geometry",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 7.663791,
+          "p95Ms": 10.9619544,
+          "maxMs": 11.328417,
+          "samplesMs": [
+            11.328417,
+            7.663791,
+            7.175167
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 368.899166,
+          "p95Ms": 368.899166,
+          "maxMs": 368.899166,
+          "samplesMs": [
+            368.899166
+          ]
+        },
+        "outputPixels": [
+          1973,
+          1337
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 211
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 9.024458,
+          "p95Ms": 13.808145199999998,
+          "maxMs": 14.339666,
+          "samplesMs": [
+            14.339666,
+            9.024458,
+            8.920167
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 325.956916,
+          "p95Ms": 325.956916,
+          "maxMs": 325.956916,
+          "samplesMs": [
+            325.956916
+          ]
+        },
+        "outputPixels": [
+          1973,
+          1337
+        ],
+        "p99ChannelError": -1,
+        "maximumChannelError": -1
+      },
+      "p99ChannelErrorChange": null,
+      "interactiveMedianChangePercent": -15.07754814748985,
+      "settledMedianChangePercent": 13.17421042233693
+    },
+    {
+      "operation": "post-crop-vignette",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.760583,
+          "p95Ms": 11.0377083,
+          "maxMs": 11.0685,
+          "samplesMs": [
+            11.0685,
+            9.169166,
+            10.760583
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 379.259458,
+          "p95Ms": 379.259458,
+          "maxMs": 379.259458,
+          "samplesMs": [
+            379.259458
+          ]
+        },
+        "outputPixels": [
+          1973,
+          1337
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 211
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.227458,
+          "p95Ms": 14.2181086,
+          "maxMs": 14.439292,
+          "samplesMs": [
+            12.227458,
+            14.439292,
+            10.027208
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 361.666791,
+          "p95Ms": 361.666791,
+          "maxMs": 361.666791,
+          "samplesMs": [
+            361.666791
+          ]
+        },
+        "outputPixels": [
+          1973,
+          1337
+        ],
+        "p99ChannelError": -1,
+        "maximumChannelError": -1
+      },
+      "p99ChannelErrorChange": null,
+      "interactiveMedianChangePercent": -11.996565434941587,
+      "settledMedianChangePercent": 4.864330217147317
+    },
+    {
+      "operation": "lens-blur-procedural",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.664166,
+          "p95Ms": 15.641816899999998,
+          "maxMs": 15.972667,
+          "samplesMs": [
+            15.972667,
+            11.757667,
+            12.664166
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 655.786875,
+          "p95Ms": 655.786875,
+          "maxMs": 655.786875,
+          "samplesMs": [
+            655.786875
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 21.468375,
+          "p95Ms": 23.8647753,
+          "maxMs": 24.131042,
+          "samplesMs": [
+            24.131042,
+            18.295166,
+            21.468375
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1182.954625,
+          "p95Ms": 1182.954625,
+          "maxMs": 1182.954625,
+          "samplesMs": [
+            1182.954625
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -41.01013234583428,
+      "settledMedianChangePercent": -44.563649260849715
+    },
+    {
+      "operation": "lens-blur-device-depth",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 13.635458,
+          "p95Ms": 13.9077836,
+          "maxMs": 13.938042,
+          "samplesMs": [
+            13.635458,
+            13.554667,
+            13.938042
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 669.910875,
+          "p95Ms": 669.910875,
+          "maxMs": 669.910875,
+          "samplesMs": [
+            669.910875
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 18
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 20.753584,
+          "p95Ms": 20.9969584,
+          "maxMs": 21.024,
+          "samplesMs": [
+            21.024,
+            20.753584,
+            19.107208
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1211.913208,
+          "p95Ms": 1211.913208,
+          "maxMs": 1211.913208,
+          "samplesMs": [
+            1211.913208
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 18
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -34.298297585612204,
+      "settledMedianChangePercent": -44.7228670685467
+    },
+    {
+      "operation": "lens-blur-refine-focus",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.937667,
+          "p95Ms": 17.7678045,
+          "maxMs": 17.860042,
+          "samplesMs": [
+            17.860042,
+            15.7635,
+            16.937667
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 759.707125,
+          "p95Ms": 759.707125,
+          "maxMs": 759.707125,
+          "samplesMs": [
+            759.707125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 22.705041,
+          "p95Ms": 23.8693035,
+          "maxMs": 23.998666,
+          "samplesMs": [
+            22.705041,
+            23.998666,
+            21.430416
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1309.852125,
+          "p95Ms": 1309.852125,
+          "maxMs": 1309.852125,
+          "samplesMs": [
+            1309.852125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -25.40129304324974,
+      "settledMedianChangePercent": -42.00054261850359
+    },
+    {
+      "operation": "lens-blur-refine-blur",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 15.624916,
+          "p95Ms": 15.831953799999999,
+          "maxMs": 15.854958,
+          "samplesMs": [
+            15.854958,
+            15.624916,
+            15.615791
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 763.596083,
+          "p95Ms": 763.596083,
+          "maxMs": 763.596083,
+          "samplesMs": [
+            763.596083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 17
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 24.106042,
+          "p95Ms": 26.2258417,
+          "maxMs": 26.461375,
+          "samplesMs": [
+            26.461375,
+            24.106042,
+            20.224375
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1270.729125,
+          "p95Ms": 1270.729125,
+          "maxMs": 1270.729125,
+          "samplesMs": [
+            1270.729125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 17
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -35.18257372985577,
+      "settledMedianChangePercent": -39.90882336941793
+    },
+    {
+      "operation": "lens-blur-refine-auto-mask",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 17.731709,
+          "p95Ms": 18.088033399999997,
+          "maxMs": 18.127625,
+          "samplesMs": [
+            17.731709,
+            15.720958,
+            18.127625
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 783.47175,
+          "p95Ms": 783.47175,
+          "maxMs": 783.47175,
+          "samplesMs": [
+            783.47175
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 24.649792,
+          "p95Ms": 24.9298036,
+          "maxMs": 24.960916,
+          "samplesMs": [
+            24.960916,
+            24.649792,
+            24.585209
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1314.466291,
+          "p95Ms": 1314.466291,
+          "maxMs": 1314.466291,
+          "samplesMs": [
+            1314.466291
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -28.065482256402007,
+      "settledMedianChangePercent": -40.39620830413519
+    },
+    {
+      "operation": "lens-blur-bokeh-bubble",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 14.53825,
+          "p95Ms": 14.8391875,
+          "maxMs": 14.872625,
+          "samplesMs": [
+            14.872625,
+            14.53825,
+            11.169542
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 391.430083,
+          "p95Ms": 391.430083,
+          "maxMs": 391.430083,
+          "samplesMs": [
+            391.430083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 23.443333,
+          "p95Ms": 24.6030586,
+          "maxMs": 24.731917,
+          "samplesMs": [
+            24.731917,
+            23.443333,
+            16.504209
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 698.880917,
+          "p95Ms": 698.880917,
+          "maxMs": 698.880917,
+          "samplesMs": [
+            698.880917
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -37.98556715463624,
+      "settledMedianChangePercent": -43.99187708826795
+    },
+    {
+      "operation": "lens-blur-bokeh-five-blade",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.155375,
+          "p95Ms": 6.7864253,
+          "maxMs": 6.856542,
+          "samplesMs": [
+            6.856542,
+            6.155375,
+            5.925792
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 341.593667,
+          "p95Ms": 341.593667,
+          "maxMs": 341.593667,
+          "samplesMs": [
+            341.593667
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.011917,
+          "p95Ms": 16.596467,
+          "maxMs": 16.661417,
+          "samplesMs": [
+            14.810792,
+            16.011917,
+            16.661417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 662.002708,
+          "p95Ms": 662.002708,
+          "maxMs": 662.002708,
+          "samplesMs": [
+            662.002708
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -61.557538675725084,
+      "settledMedianChangePercent": -48.39995926421498
+    },
+    {
+      "operation": "lens-blur-bokeh-ring",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.067916,
+          "p95Ms": 6.2718785,
+          "maxMs": 6.294541,
+          "samplesMs": [
+            6.294541,
+            6.031,
+            6.067916
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 331.152459,
+          "p95Ms": 331.152459,
+          "maxMs": 331.152459,
+          "samplesMs": [
+            331.152459
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.595666,
+          "p95Ms": 16.9585919,
+          "maxMs": 16.998917,
+          "samplesMs": [
+            14.960583,
+            16.595666,
+            16.998917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 740.094542,
+          "p95Ms": 740.094542,
+          "maxMs": 740.094542,
+          "samplesMs": [
+            740.094542
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -63.436743062917756,
+      "settledMedianChangePercent": -55.25538425062456
+    },
+    {
+      "operation": "lens-blur-bokeh-anamorphic",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.114458,
+          "p95Ms": 6.1788836,
+          "maxMs": 6.186042,
+          "samplesMs": [
+            6.186042,
+            5.69825,
+            6.114458
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 357.865167,
+          "p95Ms": 357.865167,
+          "maxMs": 357.865167,
+          "samplesMs": [
+            357.865167
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 17.054125,
+          "p95Ms": 17.1226375,
+          "maxMs": 17.13025,
+          "samplesMs": [
+            15.211458,
+            17.13025,
+            17.054125
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 783.267333,
+          "p95Ms": 783.267333,
+          "maxMs": 783.267333,
+          "samplesMs": [
+            783.267333
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -64.14675041961988,
+      "settledMedianChangePercent": -54.31123552295523
+    },
+    {
+      "operation": "lens-blur-cat-eye",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.172166,
+          "p95Ms": 6.259354399999999,
+          "maxMs": 6.269042,
+          "samplesMs": [
+            6.269042,
+            5.976292,
+            6.172166
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 380.750208,
+          "p95Ms": 380.750208,
+          "maxMs": 380.750208,
+          "samplesMs": [
+            380.750208
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.0585,
+          "p95Ms": 17.1255625,
+          "maxMs": 17.244125,
+          "samplesMs": [
+            15.949291,
+            17.244125,
+            16.0585
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 802.576708,
+          "p95Ms": 802.576708,
+          "maxMs": 802.576708,
+          "samplesMs": [
+            802.576708
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -61.56449232493695,
+      "settledMedianChangePercent": -52.55902592179389
+    },
+    {
+      "operation": "lens-blur-bokeh-boost",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 5.752959,
+          "p95Ms": 6.1922337,
+          "maxMs": 6.241042,
+          "samplesMs": [
+            6.241042,
+            5.658375,
+            5.752959
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 349.63,
+          "p95Ms": 349.63,
+          "maxMs": 349.63,
+          "samplesMs": [
+            349.63
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 39
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.799,
+          "p95Ms": 16.8773378,
+          "maxMs": 16.886042,
+          "samplesMs": [
+            16.886042,
+            16.799,
+            15.691958
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 860.240416,
+          "p95Ms": 860.240416,
+          "maxMs": 860.240416,
+          "samplesMs": [
+            860.240416
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 39
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -65.75415798559439,
+      "settledMedianChangePercent": -59.35671081048115
+    },
+    {
+      "operation": "lens-blur-depth-preview",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.555375,
+          "p95Ms": 4.9097878,
+          "maxMs": 4.949167,
+          "samplesMs": [
+            4.949167,
+            4.555375,
+            4.400708
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 539.564709,
+          "p95Ms": 539.564709,
+          "maxMs": 539.564709,
+          "samplesMs": [
+            539.564709
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 120
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 17.85425,
+          "p95Ms": 17.9927375,
+          "maxMs": 18.008125,
+          "samplesMs": [
+            17.85425,
+            18.008125,
+            16.800166
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 666.552083,
+          "p95Ms": 666.552083,
+          "maxMs": 666.552083,
+          "samplesMs": [
+            666.552083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 120
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -74.48576669420446,
+      "settledMedianChangePercent": -19.051380565560404
+    },
+    {
+      "operation": "local-glow",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.086208,
+          "p95Ms": 10.2315589,
+          "maxMs": 10.247709,
+          "samplesMs": [
+            9.452042,
+            10.247709,
+            10.086208
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 768.384583,
+          "p95Ms": 768.384583,
+          "maxMs": 768.384583,
+          "samplesMs": [
+            768.384583
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.659833,
+          "p95Ms": 19.2831458,
+          "maxMs": 19.574625,
+          "samplesMs": [
+            19.574625,
+            15.899208,
+            16.659833
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1481.950834,
+          "p95Ms": 1481.950834,
+          "maxMs": 1481.950834,
+          "samplesMs": [
+            1481.950834
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -39.45792853985991,
+      "settledMedianChangePercent": -48.150467250926354
+    },
+    {
+      "operation": "bw-mixer",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 5.772709,
+          "p95Ms": 5.863870899999999,
+          "maxMs": 5.874,
+          "samplesMs": [
+            5.772709,
+            5.874,
+            5.391083
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 346.60125,
+          "p95Ms": 346.60125,
+          "maxMs": 346.60125,
+          "samplesMs": [
+            346.60125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 19
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.366292,
+          "p95Ms": 14.2493161,
+          "maxMs": 14.458541,
+          "samplesMs": [
+            14.458541,
+            12.181584,
+            12.366292
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 841.256792,
+          "p95Ms": 841.256792,
+          "maxMs": 841.256792,
+          "samplesMs": [
+            841.256792
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 19
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -53.318998128137366,
+      "settledMedianChangePercent": -58.79958969769602
+    },
+    {
+      "operation": "point-variance",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.861375,
+          "p95Ms": 6.1208503,
+          "maxMs": 6.260792,
+          "samplesMs": [
+            6.260792,
+            4.861375,
+            4.688583
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 365.507375,
+          "p95Ms": 365.507375,
+          "maxMs": 365.507375,
+          "samplesMs": [
+            365.507375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 12,
+        "maximumChannelError": 36
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 22.514,
+          "p95Ms": 23.8704125,
+          "maxMs": 24.021125,
+          "samplesMs": [
+            12.28025,
+            24.021125,
+            22.514
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 845.117084,
+          "p95Ms": 845.117084,
+          "maxMs": 845.117084,
+          "samplesMs": [
+            845.117084
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 12,
+        "maximumChannelError": 36
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -78.40732433152705,
+      "settledMedianChangePercent": -56.75068201555844
+    },
+    {
+      "operation": "targeted-hsl",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 5.161958,
+          "p95Ms": 5.619120199999999,
+          "maxMs": 5.669916,
+          "samplesMs": [
+            5.669916,
+            5.161958,
+            5.1185
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 377.083125,
+          "p95Ms": 377.083125,
+          "maxMs": 377.083125,
+          "samplesMs": [
+            377.083125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 22
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.289958,
+          "p95Ms": 12.2967089,
+          "maxMs": 12.297459,
+          "samplesMs": [
+            12.256583,
+            12.297459,
+            12.289958
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 880.912917,
+          "p95Ms": 880.912917,
+          "maxMs": 880.912917,
+          "samplesMs": [
+            880.912917
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 22
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -57.99857086574258,
+      "settledMedianChangePercent": -57.194052020013686
+    },
+    {
+      "operation": "visualise-range",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.538916,
+          "p95Ms": 15.373303799999999,
+          "maxMs": 15.910458,
+          "samplesMs": [
+            15.910458,
+            10.538916,
+            10.323375
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 316.265583,
+          "p95Ms": 316.265583,
+          "maxMs": 316.265583,
+          "samplesMs": [
+            316.265583
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 1
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.0985,
+          "p95Ms": 12.4907497,
+          "maxMs": 12.534333,
+          "samplesMs": [
+            12.0985,
+            10.843417,
+            12.534333
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 879.013542,
+          "p95Ms": 879.013542,
+          "maxMs": 879.013542,
+          "samplesMs": [
+            879.013542
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 237,
+        "maximumChannelError": 255
+      },
+      "p99ChannelErrorChange": -237,
+      "interactiveMedianChangePercent": -12.890721990329368,
+      "settledMedianChangePercent": -64.02039696903783
+    },
+    {
+      "operation": "hue-isolation",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.901833,
+          "p95Ms": 12.002946099999999,
+          "maxMs": 12.125292,
+          "samplesMs": [
+            12.125292,
+            10.901833,
+            10.552416
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 306.144042,
+          "p95Ms": 306.144042,
+          "maxMs": 306.144042,
+          "samplesMs": [
+            306.144042
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 1
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.326375,
+          "p95Ms": 12.656737799999998,
+          "maxMs": 12.915667,
+          "samplesMs": [
+            10.326375,
+            10.023417,
+            12.915667
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 895.505375,
+          "p95Ms": 895.505375,
+          "maxMs": 895.505375,
+          "samplesMs": [
+            895.505375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 22,
+        "maximumChannelError": 128
+      },
+      "p99ChannelErrorChange": -22,
+      "interactiveMedianChangePercent": 5.572700972025513,
+      "settledMedianChangePercent": -65.81326583327319
+    },
+    {
+      "operation": "clipping-shadows",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.027542,
+          "p95Ms": 5.0682417,
+          "maxMs": 5.183875,
+          "samplesMs": [
+            5.183875,
+            4.010708,
+            4.027542
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 583.920292,
+          "p95Ms": 583.920292,
+          "maxMs": 583.920292,
+          "samplesMs": [
+            583.920292
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 53
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 11.1425,
+          "p95Ms": 12.2211878,
+          "maxMs": 12.341042,
+          "samplesMs": [
+            12.341042,
+            11.1425,
+            9.788542
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 862.306167,
+          "p95Ms": 862.306167,
+          "maxMs": 862.306167,
+          "samplesMs": [
+            862.306167
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 53
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -63.85423378954454,
+      "settledMedianChangePercent": -32.28387847074274
+    },
+    {
+      "operation": "clipping-highlights",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.366792,
+          "p95Ms": 4.627454500000001,
+          "maxMs": 4.656417,
+          "samplesMs": [
+            4.656417,
+            4.366792,
+            4.223917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 666.313083,
+          "p95Ms": 666.313083,
+          "maxMs": 666.313083,
+          "samplesMs": [
+            666.313083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 69
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 11.455458,
+          "p95Ms": 13.6519458,
+          "maxMs": 13.896,
+          "samplesMs": [
+            11.455458,
+            13.896,
+            10.841
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 886.404917,
+          "p95Ms": 886.404917,
+          "maxMs": 886.404917,
+          "samplesMs": [
+            886.404917
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 69
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -61.880249571863466,
+      "settledMedianChangePercent": -24.829717184432088
+    },
+    {
+      "operation": "wb-flash-preset",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.231833,
+          "p95Ms": 6.2404458,
+          "maxMs": 6.463625,
+          "samplesMs": [
+            6.463625,
+            4.163834,
+            4.231833
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 469.781542,
+          "p95Ms": 469.781542,
+          "maxMs": 469.781542,
+          "samplesMs": [
+            469.781542
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.106333,
+          "p95Ms": 13.0120714,
+          "maxMs": 13.112709,
+          "samplesMs": [
+            13.112709,
+            10.566333,
+            12.106333
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1094.828125,
+          "p95Ms": 1094.828125,
+          "maxMs": 1094.828125,
+          "samplesMs": [
+            1094.828125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -65.04446887426604,
+      "settledMedianChangePercent": -57.09084090253893
+    },
+    {
+      "operation": "refine-saturation",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.417833,
+          "p95Ms": 6.9094589,
+          "maxMs": 6.964084,
+          "samplesMs": [
+            6.964084,
+            6.417833,
+            5.957125
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 413.050417,
+          "p95Ms": 413.050417,
+          "maxMs": 413.050417,
+          "samplesMs": [
+            413.050417
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 25
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 15.178542,
+          "p95Ms": 16.0569411,
+          "maxMs": 16.154541,
+          "samplesMs": [
+            16.154541,
+            15.178542,
+            13.239167
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1073.314625,
+          "p95Ms": 1073.314625,
+          "maxMs": 1073.314625,
+          "samplesMs": [
+            1073.314625
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 25
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -57.71772413977574,
+      "settledMedianChangePercent": -61.51637111997799
+    },
+    {
+      "operation": "point-curve-targeted",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.788875,
+          "p95Ms": 5.887062200000001,
+          "maxMs": 6.009083,
+          "samplesMs": [
+            6.009083,
+            4.788875,
+            4.449708
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 467.810958,
+          "p95Ms": 467.810958,
+          "maxMs": 467.810958,
+          "samplesMs": [
+            467.810958
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 13.368292,
+          "p95Ms": 13.6533292,
+          "maxMs": 13.685,
+          "samplesMs": [
+            13.685,
+            11.479958,
+            13.368292
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1064.807042,
+          "p95Ms": 1064.807042,
+          "maxMs": 1064.807042,
+          "samplesMs": [
+            1064.807042
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -64.17736087751524,
+      "settledMedianChangePercent": -56.06612845823008
+    },
+    {
+      "operation": "defringe",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.598917,
+          "p95Ms": 5.6389795,
+          "maxMs": 5.754542,
+          "samplesMs": [
+            5.754542,
+            4.598917,
+            4.508584
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 394.443958,
+          "p95Ms": 394.443958,
+          "maxMs": 394.443958,
+          "samplesMs": [
+            394.443958
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 13.1955,
+          "p95Ms": 13.370962200000001,
+          "maxMs": 13.390458,
+          "samplesMs": [
+            13.1955,
+            13.390458,
+            11.319916
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1094.866792,
+          "p95Ms": 1094.866792,
+          "maxMs": 1094.866792,
+          "samplesMs": [
+            1094.866792
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -65.1478382782009,
+      "settledMedianChangePercent": -63.97333804604058
+    },
+    {
+      "operation": "point-color-samples",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.719875,
+          "p95Ms": 5.3063375,
+          "maxMs": 5.3715,
+          "samplesMs": [
+            5.3715,
+            4.719875,
+            4.630417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 410.659875,
+          "p95Ms": 410.659875,
+          "maxMs": 410.659875,
+          "samplesMs": [
+            410.659875
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 18,
+        "maximumChannelError": 25
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 11.41425,
+          "p95Ms": 12.933449999999999,
+          "maxMs": 13.10225,
+          "samplesMs": [
+            13.10225,
+            11.41425,
+            11.035083
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1134.007792,
+          "p95Ms": 1134.007792,
+          "maxMs": 1134.007792,
+          "samplesMs": [
+            1134.007792
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 17,
+        "maximumChannelError": 24
+      },
+      "p99ChannelErrorChange": 1,
+      "interactiveMedianChangePercent": -58.64927612414306,
+      "settledMedianChangePercent": -63.786855972502885
+    },
+    {
+      "operation": "local-point-color",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 5.766833,
+          "p95Ms": 9.561870200000001,
+          "maxMs": 9.983541,
+          "samplesMs": [
+            9.983541,
+            5.766833,
+            5.728916
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 833.90675,
+          "p95Ms": 833.90675,
+          "maxMs": 833.90675,
+          "samplesMs": [
+            833.90675
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 21
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 20.782667,
+          "p95Ms": 21.6992792,
+          "maxMs": 21.801125,
+          "samplesMs": [
+            15.007792,
+            21.801125,
+            20.782667
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1788.645125,
+          "p95Ms": 1788.645125,
+          "maxMs": 1788.645125,
+          "samplesMs": [
+            1788.645125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 21
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -72.2517182226901,
+      "settledMedianChangePercent": -53.3777417138573
+    },
+    {
+      "operation": "local-light-extended",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.894666,
+          "p95Ms": 4.9579297,
+          "maxMs": 4.964959,
+          "samplesMs": [
+            4.894666,
+            4.964959,
+            4.680917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 820.884041,
+          "p95Ms": 820.884041,
+          "maxMs": 820.884041,
+          "samplesMs": [
+            820.884041
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 13.56275,
+          "p95Ms": 21.1799756,
+          "maxMs": 22.026334,
+          "samplesMs": [
+            22.026334,
+            13.56275,
+            10.722292
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1806.895,
+          "p95Ms": 1806.895,
+          "maxMs": 1806.895,
+          "samplesMs": [
+            1806.895
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -63.91096200991686,
+      "settledMedianChangePercent": -54.56935566261459
+    },
+    {
+      "operation": "local-wb",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 7.905958,
+          "p95Ms": 8.333158300000001,
+          "maxMs": 8.380625,
+          "samplesMs": [
+            7.905958,
+            7.401167,
+            8.380625
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 852.5015,
+          "p95Ms": 852.5015,
+          "maxMs": 852.5015,
+          "samplesMs": [
+            852.5015
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 13.61725,
+          "p95Ms": 17.0521378,
+          "maxMs": 17.433792,
+          "samplesMs": [
+            17.433792,
+            13.61725,
+            12.979958
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2286.495042,
+          "p95Ms": 2286.495042,
+          "maxMs": 2286.495042,
+          "samplesMs": [
+            2286.495042
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -41.94159613725238,
+      "settledMedianChangePercent": -62.71579494638589
+    },
+    {
+      "operation": "local-hue-colorize",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.356,
+          "p95Ms": 4.6328625,
+          "maxMs": 4.663625,
+          "samplesMs": [
+            4.663625,
+            4.245708,
+            4.356
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 776.102292,
+          "p95Ms": 776.102292,
+          "maxMs": 776.102292,
+          "samplesMs": [
+            776.102292
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 11.08,
+          "p95Ms": 12.8492506,
+          "maxMs": 13.045834,
+          "samplesMs": [
+            13.045834,
+            11.08,
+            10.797875
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2222.248625,
+          "p95Ms": 2222.248625,
+          "maxMs": 2222.248625,
+          "samplesMs": [
+            2222.248625
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -60.685920577617324,
+      "settledMedianChangePercent": -65.07581180301102
+    },
+    {
+      "operation": "local-texture-clarity",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 22.008958,
+          "p95Ms": 26.963383299999997,
+          "maxMs": 27.513875,
+          "samplesMs": [
+            27.513875,
+            21.648667,
+            22.008958
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2287.402042,
+          "p95Ms": 2287.402042,
+          "maxMs": 2287.402042,
+          "samplesMs": [
+            2287.402042
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 29.402417,
+          "p95Ms": 37.019004499999994,
+          "maxMs": 37.865292,
+          "samplesMs": [
+            37.865292,
+            29.402417,
+            27.596041
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 4686.360041,
+          "p95Ms": 4686.360041,
+          "maxMs": 4686.360041,
+          "samplesMs": [
+            4686.360041
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -25.145752473342586,
+      "settledMedianChangePercent": -51.19021965901061
+    },
+    {
+      "operation": "local-dehaze",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 14.4995,
+          "p95Ms": 28.620537799999997,
+          "maxMs": 30.189542,
+          "samplesMs": [
+            30.189542,
+            13.2585,
+            14.4995
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1239.615709,
+          "p95Ms": 1239.615709,
+          "maxMs": 1239.615709,
+          "samplesMs": [
+            1239.615709
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 44
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 18.856917,
+          "p95Ms": 30.5912664,
+          "maxMs": 31.895083,
+          "samplesMs": [
+            31.895083,
+            17.044625,
+            18.856917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2764.273083,
+          "p95Ms": 2764.273083,
+          "maxMs": 2764.273083,
+          "samplesMs": [
+            2764.273083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 44
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -23.107791162256277,
+      "settledMedianChangePercent": -55.15581594946204
+    },
+    {
+      "operation": "local-grain",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.755,
+          "p95Ms": 10.3601253,
+          "maxMs": 10.982917,
+          "samplesMs": [
+            10.982917,
+            4.401416,
+            4.755
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1045.314208,
+          "p95Ms": 1045.314208,
+          "maxMs": 1045.314208,
+          "samplesMs": [
+            1045.314208
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 14.59975,
+          "p95Ms": 16.560174999999997,
+          "maxMs": 16.778,
+          "samplesMs": [
+            16.778,
+            14.59975,
+            13.345083
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2441.370333,
+          "p95Ms": 2441.370333,
+          "maxMs": 2441.370333,
+          "samplesMs": [
+            2441.370333
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 69,
+        "maximumChannelError": 147
+      },
+      "p99ChannelErrorChange": -67,
+      "interactiveMedianChangePercent": -67.43094916008836,
+      "settledMedianChangePercent": -57.18330013802129
+    },
+    {
+      "operation": "local-curves",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 8.398916,
+          "p95Ms": 9.274053499999999,
+          "maxMs": 9.371291,
+          "samplesMs": [
+            9.371291,
+            8.398916,
+            8.170125
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1050.446458,
+          "p95Ms": 1050.446458,
+          "maxMs": 1050.446458,
+          "samplesMs": [
+            1050.446458
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.479334,
+          "p95Ms": 17.0659081,
+          "maxMs": 17.131083,
+          "samplesMs": [
+            17.131083,
+            15.497417,
+            16.479334
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2564.829125,
+          "p95Ms": 2564.829125,
+          "maxMs": 2564.829125,
+          "samplesMs": [
+            2564.829125
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 21
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -49.03364419945613,
+      "settledMedianChangePercent": -59.04419332418491
+    },
+    {
+      "operation": "local-grading",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 7.55475,
+          "p95Ms": 8.1111372,
+          "maxMs": 8.172958,
+          "samplesMs": [
+            8.172958,
+            7.519125,
+            7.55475
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1137.827083,
+          "p95Ms": 1137.827083,
+          "maxMs": 1137.827083,
+          "samplesMs": [
+            1137.827083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 14.806,
+          "p95Ms": 15.9121,
+          "maxMs": 16.035,
+          "samplesMs": [
+            16.035,
+            13.111,
+            14.806
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2637.318167,
+          "p95Ms": 2637.318167,
+          "maxMs": 2637.318167,
+          "samplesMs": [
+            2637.318167
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -48.97507767121437,
+      "settledMedianChangePercent": -56.85666230046487
+    },
+    {
+      "operation": "local-detail",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 28.965916,
+          "p95Ms": 32.9711041,
+          "maxMs": 33.416125,
+          "samplesMs": [
+            33.416125,
+            28.965916,
+            28.684667
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1681.354084,
+          "p95Ms": 1681.354084,
+          "maxMs": 1681.354084,
+          "samplesMs": [
+            1681.354084
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 91
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 48.156708,
+          "p95Ms": 54.79192019999999,
+          "maxMs": 55.529166,
+          "samplesMs": [
+            35.16125,
+            55.529166,
+            48.156708
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 4028.838625,
+          "p95Ms": 4028.838625,
+          "maxMs": 4028.838625,
+          "samplesMs": [
+            4028.838625
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 91
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -39.85071404797853,
+      "settledMedianChangePercent": -58.26702828038937
+    },
+    {
+      "operation": "local-defringe",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 11.841875,
+          "p95Ms": 12.6990503,
+          "maxMs": 12.794292,
+          "samplesMs": [
+            12.794292,
+            10.312542,
+            11.841875
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1369.053708,
+          "p95Ms": 1369.053708,
+          "maxMs": 1369.053708,
+          "samplesMs": [
+            1369.053708
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 19.424208,
+          "p95Ms": 33.3537339,
+          "maxMs": 34.901459,
+          "samplesMs": [
+            34.901459,
+            19.424208,
+            18.890542
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 3448.131333,
+          "p95Ms": 3448.131333,
+          "maxMs": 3448.131333,
+          "samplesMs": [
+            3448.131333
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 2,
+        "maximumChannelError": 20
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -39.03548088035301,
+      "settledMedianChangePercent": -60.29577832788424
+    },
+    {
+      "operation": "global-sharpen-detail",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.626292,
+          "p95Ms": 10.7504545,
+          "maxMs": 11.430917,
+          "samplesMs": [
+            11.430917,
+            4.626292,
+            4.297333
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 825.543,
+          "p95Ms": 825.543,
+          "maxMs": 825.543,
+          "samplesMs": [
+            825.543
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 13,
+        "maximumChannelError": 163
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 30.581708,
+          "p95Ms": 35.3459705,
+          "maxMs": 35.875333,
+          "samplesMs": [
+            24.365584,
+            30.581708,
+            35.875333
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2118.408291,
+          "p95Ms": 2118.408291,
+          "maxMs": 2118.408291,
+          "samplesMs": [
+            2118.408291
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 13,
+        "maximumChannelError": 163
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -84.87235572323168,
+      "settledMedianChangePercent": -61.03003356306256
+    },
+    {
+      "operation": "global-sharpen-mask-preview",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 58.700583,
+          "p95Ms": 114.66648269999999,
+          "maxMs": 120.884916,
+          "samplesMs": [
+            120.884916,
+            58.700583,
+            54.588875
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1359.262625,
+          "p95Ms": 1359.262625,
+          "maxMs": 1359.262625,
+          "samplesMs": [
+            1359.262625
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 1
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 30.234458,
+          "p95Ms": 31.5161336,
+          "maxMs": 31.658542,
+          "samplesMs": [
+            30.234458,
+            31.658542,
+            29.449417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2043.61375,
+          "p95Ms": 2043.61375,
+          "maxMs": 2043.61375,
+          "samplesMs": [
+            2043.61375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 209,
+        "maximumChannelError": 255
+      },
+      "p99ChannelErrorChange": -209,
+      "interactiveMedianChangePercent": 94.15126608189901,
+      "settledMedianChangePercent": -33.48730282324631
+    },
+    {
+      "operation": "global-noise-detail",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 9.7425,
+          "p95Ms": 10.8698256,
+          "maxMs": 10.995084,
+          "samplesMs": [
+            10.995084,
+            9.7425,
+            9.438
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 823.60375,
+          "p95Ms": 823.60375,
+          "maxMs": 823.60375,
+          "samplesMs": [
+            823.60375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 25
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.720167,
+          "p95Ms": 31.7175789,
+          "maxMs": 33.383958,
+          "samplesMs": [
+            33.383958,
+            16.117542,
+            16.720167
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2361.4355,
+          "p95Ms": 2361.4355,
+          "maxMs": 2361.4355,
+          "samplesMs": [
+            2361.4355
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 25
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -41.73204131274526,
+      "settledMedianChangePercent": -65.12275054728363
+    },
+    {
+      "operation": "optics-ca-distortion",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.463,
+          "p95Ms": 7.1700994,
+          "maxMs": 7.248666,
+          "samplesMs": [
+            7.248666,
+            6.463,
+            6.285167
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 784.131917,
+          "p95Ms": 784.131917,
+          "maxMs": 784.131917,
+          "samplesMs": [
+            784.131917
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 7,
+        "maximumChannelError": 125
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 15.464042,
+          "p95Ms": 16.3211786,
+          "maxMs": 16.416416,
+          "samplesMs": [
+            16.416416,
+            13.237667,
+            15.464042
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2143.402417,
+          "p95Ms": 2143.402417,
+          "maxMs": 2143.402417,
+          "samplesMs": [
+            2143.402417
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 7,
+        "maximumChannelError": 125
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -58.206269744999396,
+      "settledMedianChangePercent": -63.41648629390343
+    },
+    {
+      "operation": "optics-lens-profile",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 4.359542,
+          "p95Ms": 4.8129539,
+          "maxMs": 4.863333,
+          "samplesMs": [
+            4.863333,
+            4.079959,
+            4.359542
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 842.30925,
+          "p95Ms": 842.30925,
+          "maxMs": 842.30925,
+          "samplesMs": [
+            842.30925
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 51
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 11.53825,
+          "p95Ms": 13.540524999999999,
+          "maxMs": 13.763,
+          "samplesMs": [
+            13.763,
+            11.53825,
+            11.384917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1990.740541,
+          "p95Ms": 1990.740541,
+          "maxMs": 1990.740541,
+          "samplesMs": [
+            1990.740541
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 51
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -62.2166099711828,
+      "settledMedianChangePercent": -57.68864738260233
+    }
+  ]
+}

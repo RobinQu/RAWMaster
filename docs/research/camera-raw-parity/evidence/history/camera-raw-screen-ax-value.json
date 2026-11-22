@@ -1,0 +1,496 @@
+{
+  "schemaVersion": 1,
+  "protocol": "screen-photo-response-v1",
+  "driver": "AXValue set; committed value read back",
+  "startedAt": "2026-11-22T09:39:50.383512+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "window": {
+    "title": "Camera Raw 19.0",
+    "frame": [
+      39,
+      79,
+      1511,
+      1095
+    ],
+    "scale": 2,
+    "id": 35156
+  },
+  "os": "27.0.1",
+  "hardware": "Mac16,5",
+  "photoRectPixels": [
+    16,
+    272,
+    2368,
+    1579
+  ],
+  "roi": [
+    0.16201191264063536,
+    0.2684018264840182,
+    0.4701522170747849,
+    0.43260273972602736
+  ],
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": 60,
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120
+  },
+  "operations": {
+    "light-exposure": {
+      "separationRGB8": 0.3395182291666667,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "8ebc6b16e26ba0467b261ca85089e5ab29d8bc100049e888c60e44bfbb341880"
+      ],
+      "trials": [
+        {
+          "sentNs": 508844496415083,
+          "old": "0.5",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "position": [
+            1434,
+            418
+          ],
+          "accepted": true,
+          "state": 0,
+          "firstMs": 18.101,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.101,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "0.5",
+          "sentNs": 508845404849916,
+          "old": "0",
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3395182291666667,
+          "changesMsAndTargetError": []
+        },
+        {
+          "old": "0.5",
+          "sentNs": 508846187652708,
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            418
+          ],
+          "accepted": true,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0.5",
+          "sentNs": 508846973399875,
+          "old": "0",
+          "position": [
+            1434,
+            418
+          ],
+          "accepted": true,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3395182291666667,
+          "changesMsAndTargetError": []
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508847754022458,
+          "actual": "0",
+          "position": [
+            1434,
+            418
+          ],
+          "old": "0.5",
+          "accepted": true,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "old": "0",
+          "actual": "0.5",
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508848516949250,
+          "accepted": true,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3395182291666667,
+          "changesMsAndTargetError": []
+        },
+        {
+          "old": "0.5",
+          "actual": "0",
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508849285290416,
+          "accepted": true,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "sentNs": 508850051583083,
+          "position": [
+            1434,
+            418
+          ],
+          "old": "0",
+          "actual": "0.5",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3395182291666667,
+          "changesMsAndTargetError": []
+        },
+        {
+          "sentNs": 508850814922000,
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "old": "0.5",
+          "accepted": true,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "sentNs": 508851586120708,
+          "old": "0",
+          "actual": "0.5",
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3395182291666667,
+          "changesMsAndTargetError": []
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        0,
+        0.5
+      ],
+      "displayLabel": "Exposure",
+      "ocrLabels": [
+        "Exposure"
+      ],
+      "calibration": [
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            418
+          ],
+          "sentNs": 508842492555000,
+          "size": [
+            40,
+            16
+          ],
+          "old": "0.00",
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "0.5",
+          "position": [
+            1434,
+            418
+          ],
+          "sentNs": 508843290426625,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-contrast": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Contrast",
+      "ocrLabels": [
+        "Contrast"
+      ],
+      "calibration": [
+        {
+          "old": "0",
+          "sentNs": 508854092071541,
+          "actual": "0",
+          "position": [
+            1434,
+            449
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "position": [
+            1434,
+            449
+          ],
+          "actual": "30",
+          "sentNs": 508854876268208,
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-highlights": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Highlights",
+      "ocrLabels": [
+        "Highlights"
+      ],
+      "calibration": [
+        {
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508865159487416,
+          "actual": "0",
+          "position": [
+            1434,
+            480
+          ],
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 508865947715041,
+          "position": [
+            1434,
+            480
+          ],
+          "old": "0",
+          "actual": "30",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-shadows": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Shadows",
+      "ocrLabels": [
+        "Shadows"
+      ],
+      "calibration": [
+        {
+          "old": "0",
+          "actual": "0",
+          "sentNs": 508876407664333,
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            511
+          ],
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "actual": "30",
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "position": [
+            1434,
+            511
+          ],
+          "sentNs": 508877190226291,
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-whites": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Whites",
+      "ocrLabels": [
+        "Whites"
+      ],
+      "calibration": [
+        {
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508887656758833,
+          "old": "0",
+          "actual": "0",
+          "accepted": true,
+          "state": 0
+        },
+        {
+          "sentNs": 508888442970625,
+          "actual": "30",
+          "old": "0",
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    }
+  }
+}

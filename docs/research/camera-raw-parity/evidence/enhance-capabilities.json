@@ -1,0 +1,34 @@
+{
+  "chromaSupported": false,
+  "configurations": {
+    "512x512@2": false,
+    "512x512@4": true,
+    "1920x1080@2": false,
+    "1920x1080@4": true,
+    "9504x6336@2": false,
+    "9504x6336@4": false
+  },
+  "defaultVersion": "8",
+  "detailSupported": false,
+  "luminanceSupported": true,
+  "nativeSize": [
+    9504,
+    6336
+  ],
+  "neuralVersion": "9",
+  "superResolutionScaleFactors": [
+    4
+  ],
+  "superResolutionSupported": true,
+  "supportedVersions": [
+    "7",
+    "8",
+    "9"
+  ],
+  "source": "Sony ILCE-7RM5 ARW",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "osBuild": "26A434",
+  "scope": "Public Core Image RAW decoder capability and VideoToolbox revision 1 single-image configuration. Configuration creation only."
+}

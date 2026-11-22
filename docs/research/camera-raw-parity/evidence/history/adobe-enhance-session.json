@@ -1,0 +1,38 @@
+{
+  "source": "/Users/robinqu/Workspace/github/robinqu/RAWMaster/output/performance/acr-benchmark.ARW",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "native": [
+    9504,
+    6336
+  ],
+  "states": {
+    "baseline": {
+      "raw": "baseline.arw",
+      "expectedPixels": [
+        9504,
+        6336
+      ]
+    },
+    "denoise-50": {
+      "raw": "denoise-50.arw",
+      "expectedPixels": [
+        9504,
+        6336
+      ]
+    },
+    "raw-details": {
+      "raw": "raw-details.arw",
+      "expectedPixels": [
+        9504,
+        6336
+      ]
+    },
+    "super-resolution": {
+      "raw": "super-resolution.arw",
+      "expectedPixels": [
+        19008,
+        12672
+      ]
+    }
+  }
+}

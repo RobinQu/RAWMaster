@@ -1,0 +1,212 @@
+{
+  "archiveSHA256" : "7d655a96388a1defed7aa075dcb5e3abd0fdd96bbf1725faa21faa54eb57fda7",
+  "binarySHA256" : "74363318a6f440f69ef1d7bba1eec627dd4a8a7d8fd9d1e8b8574dd92f071f1d",
+  "operations" : [
+    {
+      "digest" : "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        }
+      ],
+      "generation" : 1,
+      "id" : "light-mask-exposure",
+      "source" : 0,
+      "state" : 0,
+      "step" : 0
+    },
+    {
+      "digest" : "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        }
+      ],
+      "generation" : 2,
+      "id" : "light-mask-exposure",
+      "source" : 1,
+      "state" : 0,
+      "step" : 0
+    },
+    {
+      "digest" : "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        }
+      ],
+      "generation" : 1,
+      "id" : "light-mask-exposure",
+      "source" : 0,
+      "state" : 1,
+      "step" : 1
+    },
+    {
+      "digest" : "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        }
+      ],
+      "generation" : 2,
+      "id" : "light-mask-exposure",
+      "source" : 1,
+      "state" : 1,
+      "step" : 1
+    },
+    {
+      "digest" : "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        }
+      ],
+      "generation" : 1,
+      "id" : "grading-lut-amount",
+      "source" : 0,
+      "state" : 0,
+      "step" : 2
+    },
+    {
+      "digest" : "63f5a1148d7bdf6c50f4f2ec8fc81765b6b36a22ba7a7a794142f64566ac49da",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        }
+      ],
+      "generation" : 2,
+      "id" : "grading-lut-amount",
+      "source" : 1,
+      "state" : 0,
+      "step" : 2
+    },
+    {
+      "digest" : "ed78c1380cba50b67f3190f152de9a35a083914c296a8a2b2f95e36e7f91752a",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        }
+      ],
+      "generation" : 1,
+      "id" : "grading-mask-wheels",
+      "source" : 0,
+      "state" : 0,
+      "step" : 3
+    },
+    {
+      "digest" : "1cb799b342c198ed7ef690ffe1d623bb1ed075a992ce415aefa09d1dda5ec570",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        }
+      ],
+      "generation" : 2,
+      "id" : "grading-mask-wheels",
+      "source" : 1,
+      "state" : 0,
+      "step" : 3
+    },
+    {
+      "digest" : "2b70b02dd5befdffec6c77b1a9a5089dbc80010ced30af425359f4567abf0725",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 60217344
+        }
+      ],
+      "generation" : 3,
+      "id" : "grading-mask-wheels",
+      "source" : 0,
+      "state" : 1,
+      "step" : 4
+    },
+    {
+      "digest" : "5900586a84362cbdd045f83e6d6aaee0c49bf624fd333d4b63abd3f2f5fb9d05",
+      "events" : [
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        },
+        {
+          "boundary" : "GPU 完成",
+          "operation" : "显影有限值检查",
+          "pixels" : 49766400
+        }
+      ],
+      "generation" : 2,
+      "id" : "grading-mask-wheels",
+      "source" : 1,
+      "state" : 1,
+      "step" : 4
+    }
+  ],
+  "pixels" : [
+    2400,
+    1600
+  ],
+  "protocol" : "interleaved-two-source-global-finiteness-v1",
+  "recordedAt" : "2026-11-22T10:52:34Z",
+  "rescanResidentGlobalOverride" : true,
+  "schemaVersion" : 1,
+  "sourceSHA256" : [
+    "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+  ],
+  "sourceSHA256After" : [
+    "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+  ]
+}

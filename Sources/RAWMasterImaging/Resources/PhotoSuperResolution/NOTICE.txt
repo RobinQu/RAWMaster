@@ -1,0 +1,7 @@
+PhotoUpconv7 is the trained photographic scale2.0x model by nagadomi.
+RAWMaster converted the six convolutions and the final learned stride-2 transposed convolution to FP32 Core ML.
+Source revision cc385f97a9debfe611316aabfd5d8bb30ba2dbeb
+Original model https://github.com/nagadomi/waifu2x/blob/cc385f97a9debfe611316aabfd5d8bb30ba2dbeb/models/upconv_7/photo/scale2.0x_model.json
+Author’s confirmation of the MIT license for weights https://github.com/nagadomi/waifu2x/issues/478#issuecomment-5003816684
+Original JSON SHA-256 deb2c288f635bed4a0ffc0be9ca8f6a735233b530ad5b2c392c5b2e6c5fe30ad
+See LICENSE.txt for the copyright and distribution terms.

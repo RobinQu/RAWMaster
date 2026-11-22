@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T08:35:03.949725+00:00",
+  "operation": {
+    "id": "color-wb-picker",
+    "featureIds": [
+      "color-wb-picker"
+    ],
+    "input": "Use the W tool at source coordinates (0.29,0.31) / (0.73,0.69) from 6330 K and +22 tint",
+    "status": "inconclusive",
+    "trials": [],
+    "reason": "Original field rejected its starting state"
+  }
+}

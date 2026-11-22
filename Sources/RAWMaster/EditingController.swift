@@ -22,13 +22,82 @@ import RAWMasterAI
     @Published private(set) var versions: [EditingVersion] = []
     @Published private(set) var dispositions: [String: VersionDisposition] = [:]
     @Published var selectedVersionID: String?
-    @Published var comparisonVersionID: String?
-    @Published var comparing = false { willSet { if newValue { cancelCurrentDevelopmentCropAutomatic(); developmentPicker = nil; cancelDevelopmentLocalInput(); developmentDehazeInput.cancel(); developmentThumbnails.pause() } } }
+    @Published private(set) var comparison = EditingComparisonState() {
+        willSet {
+            if newValue.isActive, !comparison.isActive {
+                cancelCurrentDevelopmentCropAutomatic(); developmentPicker = nil; cancelDevelopmentLocalInput()
+                developmentDehazeInput.cancel(); developmentThumbnails.pause()
+            }
+        }
+    }
+    private var comparisonAdmission: EditingComparisonAdmission?
+    var comparing: Bool { comparison.isActive }
+    var comparisonMode: EditingComparisonMode { comparison.mode }
+    var comparisonVersionID: String? { comparison.reference.resolve(work: work, versions: versions)?.id }
+    var comparisonPreviewFrame: EditingPreviewBitmap? {
+        guard comparing, comparisonAdmission?.matches(focusID: focusGeneration, workID: work?.id,
+            frame: previews.comparison.frame, frameSourceKey: previews.comparison.frameSourceKey,
+            framePresentationID: previews.comparison.framePresentationID) == true else { return nil }
+        return previews.comparison.frame
+    }
+    var comparisonReferenceTitle: String {
+        guard let version = comparison.reference.resolve(work: work, versions: versions) else { return "参考" }
+        return comparison.reference == .original ? "原片" : version.editingTitle
+    }
     @Published var actualPixels = false
+    @Published private(set) var canvasCommand: EditingCanvasCommand?
+    func requestCanvasCommand(_ action: EditingCanvasCommand.Action) {
+        guard !shuttingDown, isPresented else { return }
+        canvasCommand = EditingCanvasCommand(action: action)
+    }
+    func toggleBeforeAfter() {
+        guard !cropEditing else { return }
+        setComparisonMode(comparing ? .off : .wipeHorizontal)
+    }
+    func setComparisonMode(_ mode: EditingComparisonMode) {
+        guard !shuttingDown, isPresented, work != nil else { return }
+        if mode != .off { guard comparison.reference.resolve(work: work, versions: versions) != nil else { return } }
+        guard comparison.mode != mode else { return }
+        comparison.mode = mode
+        if !mode.supportsInversion { comparison.inverted = false }
+        requestPreview()
+    }
+    func stopComparing(requestPreview: Bool = true) {
+        guard comparison.mode != .off else { return }
+        comparison.mode = .off; comparison.inverted = false
+        comparisonAdmission = nil
+        if requestPreview { self.requestPreview() }
+    }
+    func setComparisonReference(_ reference: EditingComparisonReference) {
+        guard !shuttingDown, isPresented, !cropEditing,
+              reference.resolve(work: work, versions: versions) != nil else { return }
+        let activating = comparison.mode == .off
+        let changed = comparison.reference != reference
+        guard activating || changed else { return }
+        if activating { comparison.mode = .wipeHorizontal }
+        if changed {
+            comparison.reference = reference
+            // Admission changes synchronously; old pixels become ineligible before the new render begins.
+            comparisonAdmission = nil
+        }
+        requestPreview()
+    }
+    func setComparisonInverted(_ value: Bool) {
+        guard comparison.mode.supportsInversion, comparison.inverted != value else { return }
+        comparison.inverted = value
+    }
+    @Published var darkroomBackground: DarkroomBackground {
+        didSet { defaults.set(darkroomBackground.rawValue, forKey: "editing.darkroomBackground") }
+    }
     /// Latch only the source-native detail request. Zoom presentation may change actualPixels
     /// without asking for another full RAW render on every gesture event.
     private var detailPreviewRequested = false
-    @Published var cropEditing = false { willSet { if newValue { developmentPicker = nil; cancelDevelopmentLocalInput(clearTool: true); developmentDehazeInput.cancel(); developmentThumbnails.pause() } } }
+    @Published var cropEditing = false { willSet { if newValue { developmentPicker = nil; cancelDevelopmentLocalInput(clearTool: true); developmentDehazeInput.cancel() } } }
+    private var developmentCropReturnPage: EditingDevelopmentPage = .adjust
+    private var developmentCropEntryRecipe: DevelopmentRecipe?
+    private var developmentCropEntryConstraint: PhotosCropConstraint?
+    @Published var cropOverlayStyle: PhotosCropOverlayStyle = .ruleOfThirds
+    @Published var cropOverlayTurn = 0
     @Published private(set) var recipe = DevelopmentRecipe()
     @Published private(set) var savedRecipe = DevelopmentRecipe()
     @Published private(set) var draftParentID: String?
@@ -47,16 +116,47 @@ import RAWMasterAI
     private var developmentSavePreviewSuspended = false
     private var developmentThumbnailOperationID: UUID?
     @Published private(set) var developmentHistogram: DevelopmentDisplayHistogramV1?
+    @Published private(set) var developmentScopeMaskID: UUID?
+    var visibleScopeMaskID: UUID? {
+        recipe.adjustmentsV3?.masks.first { $0.id == developmentScopeMaskID }?.id
+    }
+    func selectDevelopmentScopeMask(_ id: UUID?) {
+        guard id != developmentScopeMaskID, id == nil || recipe.adjustmentsV3?.masks.contains(where: { $0.id == id }) == true else { return }
+        developmentScopeMaskID = id
+        developmentHistogramTask?.cancel()
+        developmentHistogram = nil
+        developmentHistogramRevision = nil
+        requestDevelopmentHistogramIfNeeded()
+    }
+    let colorReadout = PhotosColorReadout()
+    @Published var scopesDetached = false
+    private(set) lazy var colorSamplers = PhotosColorSamplers(defaults: defaults)
+    var presentedSamplerMapping: DevelopmentGeometryMappingV3? {
+        guard !colorSamplers.points.isEmpty, let frame = previews.primary.frame, let source = developmentSession.source,
+              frame.generation == developmentContext?.sourceGeneration,
+              let presented = previews.primary.frameRecipe,
+              let recipe = try? presented.promotingToV3(), let geometry = recipe.adjustmentsV3?.geometry else { return nil }
+        return try? geometry.mapping(sourceSize: source.sourceSize)
+    }
     @Published private(set) var developmentAnalysisBusy = false
+    @Published private(set) var developmentSubjectMaskInProgress = false
+    @Published private(set) var developmentLensBlurSubjectFocusInProgress = false
+    @Published private(set) var developmentDeviceDepthInProgress = false
+    @Published private(set) var enablingSceneDepth: EditingInteractionContext?
+    private var sceneDepthTask: Task<Void,Never>?
+    private var sceneDepthRequest: UUID?
     var developmentSummaryAmounts: [DevelopmentAdjustmentID: Double] { developmentSessionStorage?.summaryAmounts ?? [:] }
     @Published private(set) var developmentShowingOriginal = false
     @Published private(set) var developmentSourceFacts: DevelopmentSourceFacts?
     @Published private(set) var developmentPicker: EditingDevelopmentPicker?
     lazy var developmentThumbnails = EditingThumbnailPresentation(editing: self)
     lazy var developmentLocalInput = EditingLocalInputSession(editing: self)
+    lazy var developmentMaskInput = EditingMaskInputSession(editing: self)
     lazy var developmentDehazeInput = EditingDehazeInputSession(editing: self)
     private var writingDevelopmentDehaze = false
     private var developmentSessionStorage: EditingDevelopmentSession?
+    /// Presentation-only snapshot: suspended contexts remain unable to write or start analysis.
+    private var suspendedDevelopmentContext: EditingInteractionContext?
     private var developmentSessionObservation: AnyCancellable?
     private var developmentBranchID = EditingDraftBranchID()
     private var rememberedDevelopmentBranches: [String: EditingDraftBranchID] = [:]
@@ -78,6 +178,27 @@ import RAWMasterAI
     private var developmentHistogramOperationID: UUID?
     private var developmentHistogramRevision: UInt64?
     private var developmentSummaryEnding: EditingGestureToken?
+    private var writingDevelopmentTargeted = false
+    private struct TargetedPending { let picker:EditingDevelopmentPicker;let gesture:EditingGestureToken }
+    private struct TargetedActive {
+        let picker:EditingDevelopmentPicker;let gesture:EditingGestureToken
+        let initial:DevelopmentSelectiveColorV3;let sample:DevelopmentSampledColorV3
+    }
+    private var developmentTargetedColor:TargetedActive?
+    @Published private(set) var developmentTargetedColorReady=false
+    private struct TargetedCurvePending {let picker:EditingDevelopmentPicker;let gesture:EditingGestureToken;let baseline:DevelopmentCurvesV3}
+    private enum CurveDragTarget {
+        case point(DevelopmentCurveChannelV3ID, Int)
+        case parametric(DevelopmentTargetedCurveAdjustmentV3.Region)
+    }
+    private struct TargetedCurveActive {
+        let picker: EditingDevelopmentPicker
+        let gesture: EditingGestureToken
+        let initial: DevelopmentCurvesV3
+        let target: CurveDragTarget
+    }
+    private var developmentTargetedCurve:TargetedCurveActive?
+    @Published private(set) var developmentTargetedCurveReady=false
     private struct NaturalCurvePickerFence {
         let frame: EditingDevelopmentPickerFrame
         let presentationID: String
@@ -92,6 +213,8 @@ import RAWMasterAI
         let dehazeInputV1: DevelopmentDehazeInputV1?
         let geometryTicket: EditingGeometryAnalysisTicket?
         let naturalPickerFence: NaturalCurvePickerFence?
+        let targeted: TargetedPending?
+        let curveTargeted: TargetedCurvePending?
     }
     @Published var message: String?
     @Published var prompt = "自然增强照片，保留主体、构图与真实细节。"
@@ -122,9 +245,9 @@ import RAWMasterAI
     @Published var exportVersionID: String?
     let store: LibraryStore
     let archive: EditingArchive
-    let renderer = DevelopmentService()
+    let renderer: any ImageDevelopmentRendering
     let previews: EditingPreviewCoordinator
-    let exportService = RenderExportService()
+    let exportService: any ImageVersionExporting
     let applicationServices: ApplicationEditingServices
     var repository: ProviderProfileRepository { applicationServices.repository }
     private var localProvider: LocalComfyProvider
@@ -134,6 +257,7 @@ import RAWMasterAI
     private var profileObservation: AnyCancellable?
     private let outputRoot: URL
     private let defaults: UserDefaults
+    let developmentLensProfileDefaults: DevelopmentLensProfileDefaultsStore
     private var pendingExportAssetID: String?
     private var focusedAdmissionFingerprint: String?
     private var savedAdmissionFingerprints: [String: Set<String>] = [:]
@@ -152,6 +276,7 @@ import RAWMasterAI
     private var previewControls = Set<String>()
     private var previewGestureID: UUID?
     private var lastPreviewAdjustmentInput: EditingPreviewInput?
+    private var settledPreviewTask: Task<Void, Never>?
     private var sourceRevalidationTask: Task<Void, Never>?
     private var focusTask: Task<Void, Never>?
     private var startupTask: Task<Void, Never>?
@@ -165,11 +290,17 @@ import RAWMasterAI
     private var providers: [String: any AIEditingProvider] = [:]
     private var unrecordedOutputs: [String: AIEditOutput] = [:]
     private var drafts: [String: (DevelopmentRecipe, DevelopmentRecipe, String?)] = [:]
+    private var liveStateTasks: [String: Task<Void, Never>] = [:]
+    private var liveStateTokens: [String: UUID] = [:]
     // Injection seams retain the real persistence/orchestration paths in controller tests.
     var providerOverride: (any AIEditingProvider)?
     var generationPreparationHook: (@Sendable () async throws -> Void)?
     var developmentSaveRenderWillBeginHook: (@Sendable () async throws -> Void)?
     var retryAdmissionHook: (@Sendable () async throws -> Void)?
+    var subjectAnalysis: any ImageSubjectAnalyzing = ImageEngines.subjectAnalysis
+    var developmentDeviceDepthProvider: ((URL) throws -> DevelopmentLensBlurDepthPayloadV1)?
+    var neuralDenoiseEngine: any ImageNeuralDenoisePreparing = ImageEngines.neuralDenoise
+    var sceneDepthEngine: any ImageSceneDepthEstimating = ImageEngines.sceneDepth
     var runtimeActionOverride: (@Sendable () async throws -> Void)? {
         get { applicationServices.runtimeActionOverride }
         set { applicationServices.runtimeActionOverride = newValue }
@@ -179,9 +310,22 @@ import RAWMasterAI
 
     init(store: LibraryStore, libraryURL: URL, defaults: UserDefaults = .standard,
          previewBackend: any EditingPreviewBackend = SharedEditingPreviewBackend(),
+         renderer: any ImageDevelopmentRendering = ImageEngines.makeDevelopmentRenderer(),
+         exportService: any ImageVersionExporting = ImageEngines.makeVersionExporter(),
          applicationServices: ApplicationEditingServices? = nil,
          promptCanonicalDispatch: Bool = EditingPreviewPromptDispatch.enabled()) throws {
         self.store = store; self.defaults = defaults
+        self.renderer = renderer
+        self.exportService = exportService
+        developmentLensProfileDefaults = DevelopmentLensProfileDefaultsStore(defaults: defaults)
+        darkroomBackground = DarkroomBackground(rawValue: defaults.string(forKey: "editing.darkroomBackground") ?? "") ?? .darkGray
+        let storedFavorites = defaults.stringArray(forKey: "editing.filterFavorites.v1")
+        let cleanedFavorites = Set((storedFavorites ?? []).compactMap { DevelopmentPhotoFilterV3(rawValue: $0) }
+            .filter { $0 != .original }).map(\.rawValue).sorted()
+        favoriteDevelopmentFilters = Set(cleanedFavorites.compactMap { DevelopmentPhotoFilterV3(rawValue: $0) })
+        if let storedFavorites, storedFavorites != cleanedFavorites {
+            defaults.set(cleanedFavorites, forKey: "editing.filterFavorites.v1")
+        }
         let services = applicationServices ?? ApplicationEditingServices(store: store, libraryURL: libraryURL, defaults: defaults)
         self.applicationServices = services; ownsApplicationServices = applicationServices == nil
         previews = EditingPreviewCoordinator(backend: previewBackend, promptCanonicalDispatch: promptCanonicalDispatch)
@@ -245,6 +389,15 @@ import RAWMasterAI
         return selectedVersion
     }
 
+    var exportVersion: EditingVersion? {
+        guard var version = versions.first(where: { $0.id == exportVersionID }) else { return nil }
+        if isDisplayingDevelopmentDraft, version.id == draftParentID { version.recipe = recipe }
+        return version
+    }
+    var exportUsesLiveState: Bool {
+        isDisplayingDevelopmentDraft && exportVersionID != nil && exportVersionID == draftParentID
+    }
+
     var selectedVersion: EditingVersion? { versions.first { $0.id == selectedVersionID } }
     var selectedProfile: AIProviderProfile? { profiles.first { $0.id == selectedProfileID } }
     var runtimeStateTitle: String {
@@ -273,7 +426,8 @@ import RAWMasterAI
         sourceRevalidationTask?.cancel(); previews.reset(); previewControls = []; previewInteracting = false; previewGestureID = nil; lastPreviewAdjustmentInput = nil
         focusedAdmissionFingerprint = admissionFingerprint
         asset = newAsset; work = nil; versions = []; dispositions = [:]; selectedVersionID = nil
-        preview = nil; previewDimensions = ""; comparing = false; message = nil; sourceReady = false
+        preview = nil; previewDimensions = ""; comparison = .init(); comparisonAdmission = nil; message = nil; sourceReady = false
+        actualPixels = false; detailPreviewRequested = false; canvasCommand = .init(action: .fit)
         sourceNeedsRevalidation = false; revalidatingSource = false
         recipe = .init(); savedRecipe = .init(); draftParentID = nil
         guard let newAsset else { loading = false; return }
@@ -288,7 +442,15 @@ import RAWMasterAI
                     try Task.checkCancellation()
                     if let admissionFingerprint, let source, source.admissionFingerprint != admissionFingerprint { throw EditingError.staleSource }
                     let work: PhotoWork
-                    if let source { work = try existing.first(where: { $0.source.hasSameIdentity(as: source) }) ?? database.createPhotoWork(source: source) }
+                    if let source {
+                        if let saved = existing.first(where: { $0.source.hasSameIdentity(as: source) }) {
+                            work = saved
+                        } else {
+                            let decoder = try DevelopmentRAWSourcePolicy.decoderForNewWork(at: source.sourceLocation)
+                            try Task.checkCancellation()
+                            work = try database.createPhotoWork(source: source, rawDecoder: decoder)
+                        }
+                    }
                     else if let saved = existing.max(by: { $0.createdAt < $1.createdAt }) { work = saved }
                     else { throw EditingError.invalidSource }
                     let versions = try database.loadEditingVersions(workID: work.id)
@@ -303,12 +465,16 @@ import RAWMasterAI
                 savedAdmissionFingerprints[newAsset.id, default: []].insert(loaded.0.source.admissionFingerprint)
                 if !sourceReady { stage = .versions; message = "原片当前不可用。已归档版本仍可查看、比较、采用和导出。" }
                 resolveCurrentLocation()
-                selectedVersionID = loaded.0.adoptedVersionID; comparisonVersionID = loaded.0.originalVersionID
+                let persistedParent = loaded.0.liveParentVersionID.flatMap { id in loaded.1.contains(where: { $0.id == id }) ? id : nil }
+                selectedVersionID = persistedParent ?? loaded.0.adoptedVersionID
                 let rawBase = developmentBase(for: selectedVersion)
-                let base = rawBase?.recipe ?? .init()
+                let base = loaded.0.liveRecipe ?? rawBase?.recipe ?? .init()
                 if let draft = drafts[newAsset.id], loaded.1.contains(where: { $0.id == draft.2 }) {
                     recipe = draft.0; savedRecipe = draft.1; draftParentID = draft.2
-                } else { recipe = base; savedRecipe = base; draftParentID = rawBase?.id ?? loaded.0.originalVersionID }
+                } else {
+                    recipe = base; savedRecipe = base
+                    draftParentID = persistedParent ?? rawBase?.id ?? loaded.0.originalVersionID
+                }
                 developmentBranchID = rememberedDevelopmentBranches[loaded.0.id] ?? .init()
                 loading = false; requestPreview()
                 if pendingExportAssetID == newAsset.id { pendingExportAssetID = nil; openExport() }
@@ -338,8 +504,10 @@ import RAWMasterAI
         let before = recipe
         developmentDehazeInput.recipeWillChange(preservingTracking: writingDevelopmentDehaze)
         developmentLocalInput.recipeWillChange()
-        developmentPicker = nil
+        developmentMaskInput.cancel()
+        if !writingDevelopmentTargeted { developmentPicker = nil }
         developmentThumbnails.recipeChanged()
+        if visualisedDevelopmentSlot != nil { cancelDevelopmentFilterHover() }
         recipe = candidate
         if before.adjustmentsV3?.advancedDetail.preparedDehaze != nil,
            candidate.adjustmentsV3?.advancedDetail.preparedDehaze == nil,
@@ -358,11 +526,68 @@ import RAWMasterAI
             catch { try? session.invalidate(context: context, reason: .sourceInvalidated) }
         }
         if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID) }
+        scheduleLiveStatePersistence()
         let input = suppliedInput ?? EditingPreviewInput.capture(control: control, phase: previewInteracting ? "change" : "discrete", nativeEvent: nativeEvent, gestureID: previewGestureID)
         if previewInteracting { lastPreviewAdjustmentInput = input }
         InteractionTrace.shared.preview("preview.parameter", input: input, role: .primary, revision: previews.primary.currentRevision)
         requestPreview(input: input)
     }
+
+    /// Coalesce slider traffic into small metadata writes. No image rendering or immutable version
+    /// creation is involved; in-flight writes retain their frozen recipe across photo navigation.
+    private func scheduleLiveStatePersistence() {
+        guard !shuttingDown, sourceReady, stage == .development,
+              let current = work, let parent = draftParentID else { return }
+        let workID = current.id, assetID = current.source.assetID
+        let frozen = recipe, expectedRevision = current.liveRevision ?? 0
+        liveStateTasks[workID]?.cancel()
+        let token = UUID(); liveStateTokens[workID] = token
+        let database = store
+        liveStateTasks[workID] = Task { @MainActor [weak self] in
+            defer {
+                if let self, self.liveStateTokens[workID] == token {
+                    self.liveStateTokens[workID] = nil; self.liveStateTasks[workID] = nil
+                }
+            }
+            do {
+                try await Task.sleep(nanoseconds: 180_000_000)
+                var revision = expectedRevision, updated: PhotoWork?
+                for _ in 0..<3 {
+                    do {
+                        updated = try await Task.detached(priority: .utility) {
+                            try database.saveLiveDevelopmentState(workID: workID, recipe: frozen,
+                                parentVersionID: parent, expectedRevision: revision)
+                        }.value
+                        break
+                    } catch EditingError.staleAdoption {
+                        revision = try await Task.detached(priority: .utility) {
+                            try database.photoWork(id: workID).liveRevision ?? 0
+                        }.value
+                    }
+                }
+                guard let updated else { throw EditingError.staleAdoption }
+                guard let self, self.liveStateTokens[workID] == token else { return }
+                if var memory = self.drafts[assetID] {
+                    memory.1 = memory.0 == frozen ? frozen : memory.1
+                    memory.2 = parent; self.drafts[assetID] = memory
+                }
+                if self.work?.id == workID {
+                    self.work = updated
+                    if self.recipe == frozen {
+                        self.savedRecipe = frozen
+                        self.drafts[assetID] = (frozen, frozen, parent)
+                    }
+                }
+            } catch is CancellationError {
+                // A superseded task may already have committed its frozen metadata. The newest task
+                // resolves the optimistic revision and remains the only publication to the UI.
+            } catch {
+                guard let self, self.liveStateTokens[workID] == token, self.work?.id == workID else { return }
+                self.message = "调整已在当前会话生效，但自动保存失败；继续调整会重试。"
+            }
+        }
+    }
+
     func previewInteractionChanged(_ control: String, active: Bool, nativeEvent: Bool = false) {
         guard !shuttingDown else { return }
         if active && previewControls.isEmpty { previewGestureID = UUID(); lastPreviewAdjustmentInput = nil }
@@ -372,7 +597,7 @@ import RAWMasterAI
         InteractionTrace.shared.preview("preview.interaction", input: input, role: .primary, revision: previews.primary.currentRevision)
         if !active {
             // The settled publication belongs to the latest parameter operation; never sample a later NSApp.currentEvent for it.
-            requestPreview(input: (lastPreviewAdjustmentInput ?? input).settling(after: input))
+            requestSettledPreview(input: (lastPreviewAdjustmentInput ?? input).settling(after: input))
             if !previewInteracting {
                 previewGestureID = nil; lastPreviewAdjustmentInput = nil
                 // An early canonical frame plus an unchanged end request has no new onChange.
@@ -382,6 +607,23 @@ import RAWMasterAI
                     developmentThumbnails.refresh()
                 }
             }
+        }
+    }
+    private func requestSettledPreview(input: EditingPreviewInput) {
+        settledPreviewTask?.cancel()
+        guard stage == .development, sourceReady, !actualPixels, !cropEditing, !comparing,
+              previews.primary.frame?.quality == .interactive, let work else {
+            requestPreview(input: input); return
+        }
+        let focus = focusGeneration, branch = developmentBranchID, expectedRecipe = recipe, workID = work.id
+        // Coalesce a burst of completed controls before starting expensive canonical work.
+        // Interactive pixels remain visible; Save/Export still invoke their own canonical render.
+        settledPreviewTask = Task { @MainActor [weak self] in
+            do { try await Task.sleep(nanoseconds: 180_000_000) } catch { return }
+            guard let self, !Task.isCancelled, self.focusGeneration == focus,
+                  self.developmentBranchID == branch, self.work?.id == workID,
+                  self.recipe == expectedRecipe, !self.previewInteracting else { return }
+            self.requestPreview(input: input)
         }
     }
     func endPreviewInteractions(prefix: String) {
@@ -449,6 +691,7 @@ import RAWMasterAI
         if continueEditing || stage == .development {
             recipe = version.recipe; savedRecipe = version.recipe; draftParentID = version.id
             if let id = asset?.id { drafts[id] = (recipe, savedRecipe, draftParentID) }
+            scheduleLiveStatePersistence()
         }
         requestPreview()
         prepareDevelopmentSessionIfNeeded()
@@ -468,12 +711,29 @@ import RAWMasterAI
         stage = .development; selectVersion(version, continueEditing: true)
     }
     func requestPreview(input: EditingPreviewInput? = nil) {
+        let isolated=isolatedDevelopmentSlot,clipping=developmentClippingPreview
+        if filterHoverToken != nil { cancelDevelopmentFilterHover() }
+        if let slot=isolated,let context=developmentContext { updateDevelopmentHueIsolation(slot,context:context) }
+        if let mode=clipping,let context=developmentContext { updateDevelopmentClippingPreview(mode,context:context) }
+        if developmentSharpeningMaskPreviewActive {
+            if let context = developmentContext, stage == .development, sourceReady, !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal {
+                updateDevelopmentSharpeningMaskPreview(context: context)
+            } else { cancelDevelopmentSharpeningMaskPreview() }
+        }
+        if developmentLensBlurDepthPreviewActive {
+            if let context = developmentContext, stage == .development, sourceReady, !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal {
+                updateDevelopmentLensBlurDepthPreview(context: context)
+            } else { cancelDevelopmentLensBlurDepthPreview() }
+        }
+        settledPreviewTask?.cancel(); settledPreviewTask = nil
         guard !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
         if !actualPixels { detailPreviewRequested = false }
         let input = input ?? .capture(control: "view", phase: "discrete")
         let editingDraft = stage == .development && sourceReady
         var currentRecipe = editingDraft ? recipe : (selectedVersion?.recipe ?? recipe)
-        if editingDraft && developmentShowingOriginal { currentRecipe = .init() }
+        if editingDraft && developmentShowingOriginal {
+            currentRecipe = versions.first(where: { $0.id == work.originalVersionID })?.recipe ?? .init()
+        }
         if editingDraft && cropEditing {
             if currentRecipe.schemaVersion == 3 { currentRecipe.adjustmentsV3?.geometry.crop = .init() }
             else { currentRecipe.crop = .init() }
@@ -490,23 +750,39 @@ import RAWMasterAI
                 let source = DevelopmentPreviewSource.artifact(fileURL: try archive.artifactURL(artifact), artifact: artifact)
                 previews.primary.submit(try .init(source: source, recipe: .init(), quality: quality, presentationID: presentationID), input: input)
             } else if sourceReady {
-                previews.primary.submit(try .init(source: .raw(work.source), recipe: currentRecipe, quality: quality,
-                    draftPresentation: draftPresentation, presentationID: presentationID), input: input,
-                    duplicateReason: cropEditing && ["crop", "crop-number", "crop-aspect"].contains(input.control) ? "overlay-only" : nil,
-                    allowCanonicalGesture: editingDraft && !actualPixels && !cropEditing && !comparing)
+                let intent = try EditingPreviewIntent(source: .raw(work.source), recipe: currentRecipe, quality: quality,
+                    draftPresentation: draftPresentation, presentationID: presentationID)
+                if !previews.primary.reuseForPresentation(intent, input: input) {
+                    previews.primary.submit(intent, input: input,
+                        duplicateReason: cropEditing && ["crop", "crop-number", "crop-aspect"].contains(input.control) ? "overlay-only" : nil,
+                        allowCanonicalGesture: editingDraft && !actualPixels && !cropEditing && !comparing)
+                }
             }
-            if comparing, let baseline = versions.first(where: { $0.id == comparisonVersionID }) {
+            if comparing, let baseline = comparison.reference.resolve(work: work, versions: versions) {
                 let source: DevelopmentPreviewSource
                 let baselineRecipe: DevelopmentRecipe
                 if let artifact = baseline.artifact {
                     source = .artifact(fileURL: try archive.artifactURL(artifact), artifact: artifact); baselineRecipe = .init()
                 } else {
-                    guard sourceReady else { return }; source = .raw(baseline.source); baselineRecipe = baseline.recipe
+                    guard sourceReady else {
+                        comparisonAdmission = nil; previews.comparison.clearIfNeeded(); return
+                    }
+                    source = .raw(baseline.source)
+                    baselineRecipe = try EditingComparisonGeometry.align(reference: baseline.recipe, current: currentRecipe)
                 }
-                previews.comparison.submit(try .init(source: source, recipe: baselineRecipe, quality: actualPixels ? .detail : .settled,
-                    presentationID: "baseline:" + baseline.id), input: input)
-            } else { previews.comparison.clearIfNeeded() }
-        } catch { message = "无法准备预览：\(error.localizedDescription)" }
+                let baselinePresentation = "baseline:\(focusGeneration.uuidString):\(work.id):\(baseline.id)"
+                let intent = try EditingPreviewIntent(source: source, recipe: baselineRecipe,
+                    quality: actualPixels ? .detail : .settled, presentationID: baselinePresentation)
+                comparisonAdmission = .init(focusID: focusGeneration, workID: work.id, referenceID: baseline.id,
+                    sourceKey: intent.sourceKey, presentationID: baselinePresentation)
+                previews.comparison.submit(intent, input: input)
+            } else {
+                comparisonAdmission = nil; previews.comparison.clearIfNeeded()
+            }
+        } catch {
+            comparisonAdmission = nil; previews.comparison.clearIfNeeded()
+            message = "无法准备预览：\(error.localizedDescription)"
+        }
     }
     func retryPreview() {
         guard !sourceNeedsRevalidation else { return }
@@ -642,7 +918,8 @@ import RAWMasterAI
         guard !shuttingDown else { throw CancellationError() }
         try await developmentSaveRenderWillBeginHook?()
         try Task.checkCancellation()
-        let rendered = try await renderer.render(source: work.source, recipe: recipe, format: .png16, destination: url, protectedURLs: protected + [work.source.sourceLocation])
+        let rendered = try await renderer.render(source: work.source, recipe: recipe, format: .png16,
+            destination: url, protectedURLs: protected + [work.source.sourceLocation], preparePublication: nil)
         let candidate = EditingVersion(workID: work.id, parentVersionID: parent, kind: .development, source: work.source, recipe: recipe, artifact: rendered.artifact, configuration: ["engine": recipe.engineVersion])
         return try await publish(file: url, version: candidate)
     }
@@ -706,7 +983,7 @@ import RAWMasterAI
             defer { saving = false }
             do {
                 try Task.checkCancellation()
-                let artifact = try await renderer.inspect(fileURL: url)
+                let artifact = try await renderer.inspect(fileURL: url, sourceEffectiveBitDepth: nil)
                 let version = EditingVersion(workID: work.id, parentVersionID: parent, kind: .external, source: work.source, artifact: artifact, configuration: ["filename": url.lastPathComponent])
                 let saved = try await publish(file: url, version: version)
                 await refreshWork(); if self.work?.id == work.id { selectedVersionID = saved.id; stage = .versions; requestPreview() }
@@ -724,12 +1001,13 @@ import RAWMasterAI
         finishDevelopmentNumberInput()
         guard focusGeneration == originalFocus, work?.id == originalWork,
               developmentBranchID == originalBranch, !shuttingDown, let work else { return }
-        if isDisplayingDevelopmentDraft && displayedSavedVersion == nil {
+        if isDisplayingDevelopmentDraft {
             guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else {
-                message = "请等待这笔调整完成后再保存并导出草稿。"; return
+                message = "请等待这笔调整完成后再导出。"; return
             }
-            draftExportIntent = .init(work: work, recipe: recipe, parentID: draftParentID ?? work.originalVersionID, focusGeneration: focusGeneration)
-            showDraftExportChoice = true; return
+            exportVersionID = draftParentID ?? selectedVersionID ?? work.originalVersionID
+            showExport = exportVersionID != nil
+            return
         }
         exportVersionID = displayedSavedVersion?.id ?? selectedVersionID ?? work.adoptedVersionID
         showExport = exportVersionID != nil
@@ -840,7 +1118,9 @@ import RAWMasterAI
         return CloudImageProvider(outputDirectory: outputRoot)
     }
     func generate() {
-        guard canGenerate, generationPreparationTask == nil, let current = work, let selected = selectedVersion, let profile = selectedProfile else { return }
+        guard canGenerate, generationPreparationTask == nil, let current = work, let selectedBase = selectedVersion, let profile = selectedProfile else { return }
+        var selected = selectedBase
+        if current.liveParentVersionID == selected.id, let live = current.liveRecipe { selected.recipe = live }
         let frozenPrompt = prompt; saving = true
         let preparationID = UUID(); generationPreparationID = preparationID
         generationPreparationTask = Task {
@@ -997,7 +1277,7 @@ import RAWMasterAI
     private func archiveOutput(_ output: AIEditOutput, job: ProcessingJob) async throws {
         try Task.checkCancellation()
         guard !shuttingDown else { throw CancellationError() }
-        let inspected = try await renderer.inspect(fileURL: output.fileURL)
+        let inspected = try await renderer.inspect(fileURL: output.fileURL, sourceEffectiveBitDepth: nil)
         try Task.checkCancellation()
         guard !shuttingDown else { throw CancellationError() }
         guard inspected.sha256 == output.artifact.sha256, inspected.pixelWidth == output.artifact.pixelWidth,
@@ -1136,21 +1416,29 @@ import RAWMasterAI
     /// Photo work stops before the application owner closes preparation and its runtime.
     func shutdown(finishPreviews: Bool = true) async {
         shuttingDown = true; pendingExportAssetID = nil
+        let estimatingDepth = sceneDepthTask
+        cancelSceneDepth()
+        cancelDevelopmentSharpeningMaskPreview(); cancelDevelopmentLensBlurDepthPreview()
         let startup = startupTask; startup?.cancel()
         focusTask?.cancel(); sourceRevalidationTask?.cancel()
         let preparingInput = generationPreparationTask; preparingInput?.cancel()
         previewControls = []; previewInteracting = false
         let actions = Array(operations.values), exportEntries = Array(exportOperations.values)
         let pending = Array(tasks.values), exports = Array(exportTasks.values), exportIDs = Array(exportTasks.keys)
+        let liveStates = Array(liveStateTasks.values)
         for action in actions { action.cancel() }
         for entry in exportEntries { entry.cancel() }
         for task in pending { task.cancel() }
         for task in exports { task.cancel() }
         await preparingInput?.value
+        await estimatingDepth?.value
         for action in actions { await action.value }
         for entry in exportEntries { _ = try? await entry.value }
         for task in pending { await task.value }
         for task in exports { _ = try? await task.value }
+        // Live metadata writes are deliberately not cancelled: the last accepted adjustment must
+        // survive termination just as it survives switching photos or leaving the editor.
+        for task in liveStates { await task.value }
         let database = store
         for id in exportIDs { _ = try? await Task.detached { try database.cancelRenderedExport(id: id) }.value }
         await focusTask?.value
@@ -1202,6 +1490,8 @@ import RAWMasterAI
         return session
     }
     var developmentContext: EditingInteractionContext? { developmentSessionStorage?.context }
+    var developmentPresentationContext: EditingInteractionContext? { developmentContext ?? suspendedDevelopmentContext }
+    var developmentToolsPaused: Bool { !developmentInterfaceActive && !shuttingDown }
     var developmentPreviewPresentationID: String {
         let base = stage.rawValue + ":" + (selectedVersionID ?? "none") + (cropEditing ? ":crop" : ":image")
             + (developmentShowingOriginal ? ":original" : ":draft")
@@ -1210,7 +1500,7 @@ import RAWMasterAI
     }
     var availablePhotosGroups: [DevelopmentAdjustmentID] {
         let connected: Set<DevelopmentAdjustmentID> = [.light, .color, .blackAndWhite, .whiteBalance, .curves, .levels,
-            .definition, .selectiveColor, .noiseReduction, .sharpen, .vignette, .retouch, .redEye]
+            .definition, .selectiveColor, .noiseReduction, .sharpen, .vignette, .retouch, .redEye, .optics]
         return DevelopmentAdjustmentID.allCases.filter { group in
             guard connected.contains(group), developmentSourceFacts?.implementedAdjustments.contains(group) == true else { return false }
             if group == .noiseReduction { return !developmentNoiseReductionFieldIDs.isEmpty }
@@ -1404,18 +1694,24 @@ import RAWMasterAI
         }
         developmentNumberInputOwner.finishCurrentEdit()
     }
-    private func suspendDevelopmentInteraction(disposition: EditingGestureDisposition = .commit) {
+    private func suspendDevelopmentInteraction(disposition: EditingGestureDisposition = .commit,
+                                               preserveThumbnails: Bool = false) {
+        suspendedDevelopmentContext = developmentSessionStorage?.context
+        settledPreviewTask?.cancel(); settledPreviewTask = nil
         switch disposition {
         case .commit: finishDevelopmentNumberInput()
         case .cancel: developmentNumberInputOwner.cancelCurrentEdit()
         }
-        // Metadata may still be awaiting its first facts before a session exists.
-        defer { cancelDevelopmentBackgroundWork() }
+        // Metadata may still be awaiting its first facts before a session exists. A focus-only
+        // suspension retains immutable thumbnail images; source/branch teardown still revokes them.
+        defer { cancelDevelopmentBackgroundWork(preserveThumbnails: preserveThumbnails) }
         guard let session = developmentSessionStorage, let context = session.context else { return }
         do { try session.suspend(context: context, disposition: disposition) }
         catch { message = "此前调整已结束，请检查当前草稿。" }
     }
     private func invalidateDevelopmentInteraction(reason: EditingInteractionInvalidationReason) {
+        suspendedDevelopmentContext = nil
+        settledPreviewTask?.cancel(); settledPreviewTask = nil
         developmentNumberInputOwner.cancelCurrentEdit()
         revokingDevelopmentInteraction = true
         defer { revokingDevelopmentInteraction = false }
@@ -1423,23 +1719,38 @@ import RAWMasterAI
         previewControls = []; previewInteracting = false; previewGestureID = nil; lastPreviewAdjustmentInput = nil
         cancelDevelopmentBackgroundWork()
     }
-    private func cancelDevelopmentBackgroundWork() {
+    private func cancelDevelopmentBackgroundWork(preserveThumbnails: Bool = false) {
+        cancelSceneDepth()
         cancelCurrentDevelopmentCropAutomatic()
-        developmentThumbnails.invalidate()
+        if !preserveThumbnails { developmentThumbnails.invalidate() }
         developmentDehazeInput.cancel()
         developmentLocalInput.cancel(clearTool: true)
         developmentPicker = nil
+        developmentTargetedColor=nil;developmentTargetedColorReady=false
+        developmentTargetedCurve=nil;developmentTargetedCurveReady=false
         developmentPendingAnalysis = nil; developmentUserTask?.cancel(); developmentHistogramTask?.cancel()
         if let id = developmentMetadataOperationID { operations[id]?.cancel() }
         developmentMetadataRequestID = nil; developmentMetadataOperationID = nil
         developmentSummaryEnding = nil
-        developmentHistogram = nil; developmentHistogramRevision = nil; developmentShowingOriginal = false
+        developmentHistogram = nil; developmentHistogramRevision = nil; developmentScopeMaskID = nil; developmentShowingOriginal = false
         developmentSourceFacts = nil
     }
     func prepareDevelopmentSessionIfNeeded() {
         guard developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, let current = work,
               developmentSessionStorage?.context == nil, developmentMetadataRequestID == nil else { return }
         guard previews.primary.canInspectDevelopmentSource else { return }
+        if let facts = developmentSourceFacts, facts.sourceGeneration == previews.primary.currentSourceGeneration,
+           facts.sourceBinding.sourceContentID == current.source.contentSHA256 {
+            do {
+                _ = try developmentSession.activate(workID: current.id, admissionFingerprint: current.source.admissionFingerprint,
+                    source: facts.sourceBinding, sourceGeneration: facts.sourceGeneration, branchID: developmentBranchID,
+                    noiseReduction: facts.noiseReduction.sourceCapability)
+                colorSamplers.bind(workID: current.id, sourceID: facts.sourceBinding.sourceContentID)
+                suspendedDevelopmentContext = nil
+                rememberDevelopmentBranch(); requestPreview(); requestDevelopmentHistogramIfNeeded()
+                return
+            } catch { developmentSourceFacts = nil }
+        }
         let requestID = UUID(), focus = focusGeneration, branch = developmentBranchID
         developmentMetadataRequestID = requestID
         developmentMetadataOperationID = startOperation { [self] in
@@ -1455,6 +1766,8 @@ import RAWMasterAI
                 _ = try developmentSession.activate(workID: current.id, admissionFingerprint: current.source.admissionFingerprint,
                     source: facts.binding, sourceGeneration: facts.lease.generation, branchID: branch,
                     noiseReduction: facts.noiseReduction)
+                colorSamplers.bind(workID: current.id, sourceID: facts.binding.sourceContentID)
+                suspendedDevelopmentContext = nil
                 developmentSourceFacts = facts.facts
                 rememberDevelopmentBranch(); requestPreview(); requestDevelopmentHistogramIfNeeded()
             } catch {
@@ -1473,6 +1786,10 @@ import RAWMasterAI
         guard group.map({ supportsDevelopmentAutomatic($0) })
             ?? (supportsDevelopmentAutomatic(.light) && supportsDevelopmentAutomatic(.color)) else { return }
         requestDevelopmentAnalysis(.automatic(group), title: group.map { "自动" + $0.photosTitle } ?? "自动增强", context: context, nativeEvent: nativeEvent)
+    }
+    func requestDevelopmentAutomaticLight(_ field: DevelopmentLightAutoFieldV3, context: EditingInteractionContext) {
+        guard supportsDevelopmentAutomatic(.light) else { return }
+        requestDevelopmentAnalysis(.automaticLight(field), title: "自动调整" + field.rawValue, context: context, nativeEvent: true)
     }
     func requestDevelopmentWhiteBalanceAutomatic(_ mode: PhotosWhiteBalanceMode, context: EditingInteractionContext) {
         guard supportsDevelopmentAutomatic(.whiteBalance) else { return }
@@ -1522,6 +1839,15 @@ import RAWMasterAI
             throw error
         }
     }
+    func developmentThumbnailContentKey(_ request: DevelopmentThumbnailRequest,
+                                        context: EditingInteractionContext) throws -> String {
+        if request.kind == .filters {
+            guard let source = developmentSession.source else { throw DevelopmentThumbnailError.staleSource }
+            return try DevelopmentThumbnailContentKeyV1.filters(request, source: source,
+                sourceIsRAW: developmentSourceFacts?.sourceKind == .raw)
+        }
+        return EditingThumbnailPresentation.cacheKey(request, context: context)
+    }
     func developmentThumbnailCanonicalWitness() -> EditingThumbnailCanonicalWitness? {
         guard developmentInterfaceActive, isPresented, sourceReady, !shuttingDown, !developmentSavePreviewSuspended, stage == .development,
               !previewInteracting, !developmentAnalysisBusy, developmentSession.activeGesture == nil,
@@ -1529,13 +1855,274 @@ import RAWMasterAI
               context.sourceGeneration == developmentSourceFacts?.sourceGeneration else { return nil }
         return previews.primary.thumbnailCanonicalWitness(recipe: recipe, presentationID: developmentPreviewPresentationID)
     }
+    @Published private(set) var favoriteDevelopmentFilters: Set<DevelopmentPhotoFilterV3> = []
+    @Published private(set) var hoveredDevelopmentFilter: DevelopmentPhotoFilterV3?
+    @Published private(set) var visualisedDevelopmentSlot: DevelopmentSelectiveColorSlotV3?
+    @Published private(set) var isolatedDevelopmentSlot: DevelopmentSelectiveColorSlotV3?
+    @Published private(set) var developmentClippingPreview: DevelopmentClippingPreviewV3?
+    @Published private(set) var filterHoverFrame: EditingPreviewBitmap?
+    @Published private(set) var sharpeningMaskPreviewFrame: EditingPreviewBitmap?
+    @Published private(set) var developmentSharpeningMaskPreviewActive = false
+    private var sharpeningMaskPreviewTask: Task<Void, Never>?
+    private var sharpeningMaskPreviewToken: UUID?
+    private let sharpeningMaskPreviewConsumer = PreviewConsumerID()
+    private var sharpeningMaskPreviewRevision: UInt64 = 0
+    @Published private(set) var lensBlurDepthPreviewFrame: EditingPreviewBitmap?
+    @Published private(set) var developmentLensBlurDepthPreviewActive = false
+    private var lensBlurDepthPreviewTask: Task<Void, Never>?
+    private var lensBlurDepthPreviewToken: UUID?
+    private let lensBlurDepthPreviewConsumer = PreviewConsumerID()
+    private var lensBlurDepthPreviewRevision: UInt64 = 0
+    private var filterHoverTask: Task<Void, Never>?
+    private var filterHoverToken: UUID?
+    private let filterHoverConsumer = PreviewConsumerID()
+    private var filterHoverRevision: UInt64 = 0
     var availableDevelopmentFilters: [DevelopmentPhotoFilterV3] {
         guard let facts = developmentSourceFacts, facts.implementedAdjustments.contains(.filter), facts.photoFilterResourceVersion != nil else { return [.original] }
         return DevelopmentPhotoFilterV3.allCases.filter { facts.supportedPhotoFilters.contains($0) }
     }
+    var displayDevelopmentFilters: [DevelopmentPhotoFilterV3] {
+        let available = availableDevelopmentFilters
+        return available.filter { favoriteDevelopmentFilters.contains($0) }
+            + available.filter { !favoriteDevelopmentFilters.contains($0) }
+    }
+    func toggleDevelopmentFilterFavorite(_ look: DevelopmentPhotoFilterV3) {
+        guard look != .original, availableDevelopmentFilters.contains(look) else { return }
+        if favoriteDevelopmentFilters.contains(look) { favoriteDevelopmentFilters.remove(look) }
+        else { favoriteDevelopmentFilters.insert(look) }
+        defaults.set(favoriteDevelopmentFilters.map(\.rawValue).sorted(), forKey: "editing.filterFavorites.v1")
+    }
+    func previewDevelopmentFilter(_ look: DevelopmentPhotoFilterV3, context: EditingInteractionContext) {
+        guard availableDevelopmentFilters.contains(look), developmentContext == context,
+              developmentInterfaceActive, isPresented, sourceReady, stage == .development,
+              !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal,
+              !previewInteracting, developmentSession.activeGesture == nil else { return }
+        cancelDevelopmentFilterHover()
+        let token = UUID(), baseRecipe = recipe, baseRevision = previews.primary.currentRevision
+        let basePresentation = developmentPreviewPresentationID
+        guard var hovered = try? baseRecipe.promotingToV3() else { return }
+        let intensity = look == .original ? 0 : (baseRecipe.adjustmentsV3?.filter.intensity ?? 100)
+        hovered.adjustmentsV3?.filter = .init(enabled: look != .original, selection: look,
+            intensity: look == .original ? 0 : (intensity > 0 ? intensity : 100))
+        filterHoverToken = token; hoveredDevelopmentFilter = look
+        filterHoverRevision &+= 1
+        let revision = filterHoverRevision, consumer = filterHoverConsumer
+        filterHoverTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let frame = try await self.previews.primary.renderDevelopmentFilterHover(recipe: hovered,
+                    consumerID: consumer, revision: revision)
+                guard !Task.isCancelled, self.filterHoverToken == token,
+                      self.developmentContext == context, self.recipe == baseRecipe,
+                      self.previews.primary.currentRevision == baseRevision,
+                      self.developmentPreviewPresentationID == basePresentation,
+                      self.developmentInterfaceActive, self.isPresented, self.sourceReady, !self.shuttingDown,
+                      self.stage == .development, !self.actualPixels, !self.comparing, !self.cropEditing,
+                      !self.developmentShowingOriginal, !self.previewInteracting,
+                      self.developmentSession.activeGesture == nil else { return }
+                self.filterHoverFrame = frame
+            } catch { /* Latest hover or committed state wins. */ }
+        }
+    }
+    func previewDevelopmentVisualiseRange(_ slot: DevelopmentSelectiveColorSlotV3, context: EditingInteractionContext) {
+        if visualisedDevelopmentSlot == slot { cancelDevelopmentFilterHover(); return }
+        guard developmentContext == context, developmentInterfaceActive, isPresented, sourceReady,
+              stage == .development, !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal,
+              !previewInteracting, developmentSession.activeGesture == nil else { return }
+        cancelDevelopmentFilterHover()
+        let token = UUID(), baseRecipe = recipe, baseRevision = previews.primary.currentRevision
+        let basePresentation = developmentPreviewPresentationID
+        guard var hovered = try? baseRecipe.promotingToV3() else { return }
+        hovered.adjustmentsV3?.selectiveColor.enabled = true
+        hovered.adjustmentsV3?.selectiveColor.visualiseRange = slot
+        filterHoverToken = token; visualisedDevelopmentSlot = slot
+        filterHoverRevision &+= 1
+        let revision = filterHoverRevision, consumer = filterHoverConsumer
+        filterHoverTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let frame = try await self.previews.primary.renderDevelopmentFilterHover(recipe: hovered,
+                    consumerID: consumer, revision: revision)
+                guard !Task.isCancelled, self.filterHoverToken == token, self.visualisedDevelopmentSlot == slot,
+                      self.developmentContext == context, self.recipe == baseRecipe,
+                      self.previews.primary.currentRevision == baseRevision,
+                      self.developmentPreviewPresentationID == basePresentation,
+                      self.developmentInterfaceActive, self.isPresented, self.sourceReady, !self.shuttingDown,
+                      self.stage == .development, !self.actualPixels, !self.comparing, !self.cropEditing,
+                      !self.developmentShowingOriginal, !self.previewInteracting,
+                      self.developmentSession.activeGesture == nil else { return }
+                self.filterHoverFrame = frame
+            } catch { /* Latest visualisation or committed state wins. */ }
+        }
+    }
+    func previewDevelopmentHueIsolation(_ slot:DevelopmentSelectiveColorSlotV3,context:EditingInteractionContext) {
+        if isolatedDevelopmentSlot == slot { cancelDevelopmentFilterHover();return }
+        cancelDevelopmentFilterHover();isolatedDevelopmentSlot=slot
+        updateDevelopmentHueIsolation(slot,context:context)
+    }
+    /// Re-render on each recipe publication, including the active Selective Color gesture.
+    func updateDevelopmentHueIsolation(_ slot:DevelopmentSelectiveColorSlotV3,context:EditingInteractionContext) {
+        guard developmentContext == context,developmentInterfaceActive,isPresented,sourceReady,
+          stage == .development,!actualPixels,!comparing,!cropEditing,!developmentShowingOriginal,
+          developmentSession.activeGesture == nil || developmentSession.activeControl?.group == .selectiveColor else {
+            if isolatedDevelopmentSlot == slot{cancelDevelopmentFilterHover()};return
+        }
+        let token=UUID(),baseRecipe=recipe
+        let basePresentation=developmentPreviewPresentationID
+        guard var hovered=try? baseRecipe.promotingToV3() else{return}
+        hovered.adjustmentsV3?.selectiveColor.enabled=true
+        hovered.adjustmentsV3?.selectiveColor.visualiseRange=nil
+        hovered.adjustmentsV3?.selectiveColor.visualiseIsolation=slot
+        filterHoverTask?.cancel();filterHoverToken=token;filterHoverFrame=nil;isolatedDevelopmentSlot=slot
+        filterHoverRevision &+= 1
+        let revision=filterHoverRevision,consumer=filterHoverConsumer
+        filterHoverTask=Task{[weak self] in
+          guard let self else{return}
+          do{
+            let frame=try await self.previews.primary.renderDevelopmentFilterHover(recipe:hovered,consumerID:consumer,revision:revision)
+            let gesture=self.developmentSession.activeGesture
+            guard !Task.isCancelled,self.filterHoverToken == token,self.isolatedDevelopmentSlot == slot,
+              self.developmentContext == context,self.recipe == baseRecipe,
+              self.developmentPreviewPresentationID == basePresentation,
+              self.developmentInterfaceActive,self.isPresented,self.sourceReady,!self.shuttingDown,
+              self.stage == .development,!self.actualPixels,!self.comparing,!self.cropEditing,
+              !self.developmentShowingOriginal,
+              gesture == nil || self.developmentSession.activeControl?.group == .selectiveColor else{return}
+            self.filterHoverFrame=frame
+          }catch{/* A newer recipe or cancellation owns the frame. */}
+        }
+    }
+    func previewDevelopmentClipping(_ mode:DevelopmentClippingPreviewV3,context:EditingInteractionContext) {
+        let current=developmentClippingPreview
+        let next:DevelopmentClippingPreviewV3?
+        switch (current,mode) {
+        case (nil,_):next=mode
+        case (.both,.shadows):next = .highlights
+        case (.both,.highlights):next = .shadows
+        case (.shadows,.highlights),(.highlights,.shadows):next = .both
+        case (.some(let old),_) where old == mode:next=nil
+        default:next=mode
+        }
+        setDevelopmentClippingPreview(next,context:context)
+    }
+    func setDevelopmentClippingPreview(_ mode:DevelopmentClippingPreviewV3?,context:EditingInteractionContext) {
+        guard let mode else{cancelDevelopmentFilterHover();return}
+        if developmentClippingPreview != mode { cancelDevelopmentFilterHover();developmentClippingPreview=mode }
+        updateDevelopmentClippingPreview(mode,context:context)
+    }
+    func updateDevelopmentClippingPreview(_ mode:DevelopmentClippingPreviewV3,context:EditingInteractionContext) {
+        guard developmentContext == context,developmentInterfaceActive,isPresented,sourceReady,
+          stage == .development,!actualPixels,!comparing,!cropEditing,!developmentShowingOriginal,
+          developmentSession.activeGesture == nil || developmentSession.activeControl?.group == .light else {
+            if developmentClippingPreview == mode{cancelDevelopmentFilterHover()};return
+        }
+        let token=UUID(),baseRecipe=recipe,basePresentation=developmentPreviewPresentationID
+        guard var hovered=try? baseRecipe.promotingToV3() else{return}
+        hovered.adjustmentsV3?.light.clippingPreview=mode
+        filterHoverTask?.cancel();filterHoverToken=token;filterHoverFrame=nil;developmentClippingPreview=mode
+        filterHoverRevision &+= 1
+        let revision=filterHoverRevision,consumer=filterHoverConsumer
+        filterHoverTask=Task{[weak self] in
+          guard let self else{return}
+          do{
+            let frame=try await self.previews.primary.renderDevelopmentFilterHover(recipe:hovered,consumerID:consumer,revision:revision)
+            let gesture=self.developmentSession.activeGesture
+            guard !Task.isCancelled,self.filterHoverToken == token,self.developmentClippingPreview == mode,
+              self.developmentContext == context,self.recipe == baseRecipe,
+              self.developmentPreviewPresentationID == basePresentation,
+              self.developmentInterfaceActive,self.isPresented,self.sourceReady,!self.shuttingDown,
+              self.stage == .development,!self.actualPixels,!self.comparing,!self.cropEditing,
+              !self.developmentShowingOriginal,
+              gesture == nil || self.developmentSession.activeControl?.group == .light else{return}
+            self.filterHoverFrame=frame
+          }catch{/* A newer recipe or cancellation owns the frame. */}
+        }
+    }
+    func setDevelopmentSharpeningMaskPreview(_ active: Bool, context: EditingInteractionContext) {
+        guard active else { cancelDevelopmentSharpeningMaskPreview(); return }
+        guard developmentContext == context, developmentInterfaceActive, isPresented, sourceReady,
+              stage == .development, !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal else { return }
+        developmentSharpeningMaskPreviewActive = true
+        updateDevelopmentSharpeningMaskPreview(context: context)
+    }
+    /// Called again by the ordinary recipe publication path, so a drag never reuses stale mask pixels.
+    func updateDevelopmentSharpeningMaskPreview(context: EditingInteractionContext) {
+        guard developmentSharpeningMaskPreviewActive, developmentContext == context,
+              developmentInterfaceActive, isPresented, sourceReady, !shuttingDown,
+              stage == .development, !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal,
+              var hovered = try? recipe.promotingToV3() else { return }
+        hovered.adjustmentsV3?.sharpen.enabled = true
+        hovered.adjustmentsV3?.sharpen.visualiseMasking = true
+        sharpeningMaskPreviewTask?.cancel()
+        let token = UUID(); sharpeningMaskPreviewToken = token
+        sharpeningMaskPreviewRevision &+= 1
+        let revision = sharpeningMaskPreviewRevision, consumer = sharpeningMaskPreviewConsumer
+        sharpeningMaskPreviewTask = Task { [weak self] in
+            guard let self else { return }
+            do {
+                let frame = try await self.previews.primary.renderDevelopmentFilterHover(recipe: hovered,
+                    consumerID: consumer, revision: revision)
+                guard !Task.isCancelled, self.sharpeningMaskPreviewToken == token,
+                      self.developmentSharpeningMaskPreviewActive, self.developmentContext == context,
+                      self.developmentInterfaceActive, self.isPresented, self.sourceReady, !self.shuttingDown,
+                      self.stage == .development, !self.actualPixels, !self.comparing, !self.cropEditing,
+                      !self.developmentShowingOriginal else { return }
+                self.sharpeningMaskPreviewFrame = frame
+            } catch { /* A newer mask or the ordinary committed frame wins. */ }
+        }
+    }
+    func cancelDevelopmentSharpeningMaskPreview() {
+        sharpeningMaskPreviewTask?.cancel(); sharpeningMaskPreviewTask = nil; sharpeningMaskPreviewToken = nil
+        developmentSharpeningMaskPreviewActive = false; sharpeningMaskPreviewFrame = nil
+        let consumer = sharpeningMaskPreviewConsumer
+        Task { await previews.primary.cancelDevelopmentFilterHover(consumer) }
+    }
+    func setDevelopmentLensBlurDepthPreview(_ active:Bool,context:EditingInteractionContext) {
+        guard active else{cancelDevelopmentLensBlurDepthPreview();return}
+        guard developmentContext == context,developmentInterfaceActive,isPresented,sourceReady,
+          stage == .development,!actualPixels,!comparing,!cropEditing,!developmentShowingOriginal else{return}
+        developmentLensBlurDepthPreviewActive = true
+        updateDevelopmentLensBlurDepthPreview(context:context)
+    }
+    func updateDevelopmentLensBlurDepthPreview(context:EditingInteractionContext) {
+        guard developmentLensBlurDepthPreviewActive,developmentContext == context,
+          developmentInterfaceActive,isPresented,sourceReady,!shuttingDown,stage == .development,
+          !actualPixels,!comparing,!cropEditing,!developmentShowingOriginal,
+          var hovered=try? recipe.promotingToV3() else{return}
+        if hovered.adjustmentsV3?.effects == nil{hovered.adjustmentsV3?.effects = .init()}
+        if hovered.adjustmentsV3?.effects?.lensBlur == nil{hovered.adjustmentsV3?.effects?.lensBlur = .init()}
+        hovered.adjustmentsV3?.effects?.lensBlur?.enabled = true
+        hovered.adjustmentsV3?.effects?.lensBlur?.visualiseDepth = true
+        lensBlurDepthPreviewTask?.cancel()
+        let token=UUID();lensBlurDepthPreviewToken=token;lensBlurDepthPreviewRevision &+= 1
+        let revision=lensBlurDepthPreviewRevision,consumer=lensBlurDepthPreviewConsumer
+        lensBlurDepthPreviewTask=Task{[weak self] in
+          guard let self else{return}
+          do{
+            let frame=try await self.previews.primary.renderDevelopmentFilterHover(recipe:hovered,consumerID:consumer,revision:revision)
+            guard !Task.isCancelled,self.lensBlurDepthPreviewToken == token,self.developmentLensBlurDepthPreviewActive,
+              self.developmentContext == context,self.developmentInterfaceActive,self.isPresented,self.sourceReady,!self.shuttingDown,
+              self.stage == .development,!self.actualPixels,!self.comparing,!self.cropEditing,!self.developmentShowingOriginal else{return}
+            self.lensBlurDepthPreviewFrame=frame
+          }catch{/* Latest depth preview or committed frame wins.*/}
+        }
+    }
+    func cancelDevelopmentLensBlurDepthPreview() {
+        lensBlurDepthPreviewTask?.cancel();lensBlurDepthPreviewTask=nil;lensBlurDepthPreviewToken=nil
+        developmentLensBlurDepthPreviewActive=false;lensBlurDepthPreviewFrame=nil
+        let consumer=lensBlurDepthPreviewConsumer
+        Task{await previews.primary.cancelDevelopmentFilterHover(consumer)}
+    }
+    func cancelDevelopmentFilterHover() {
+        filterHoverTask?.cancel(); filterHoverTask = nil; filterHoverToken = nil
+        hoveredDevelopmentFilter = nil; visualisedDevelopmentSlot = nil; isolatedDevelopmentSlot = nil; developmentClippingPreview = nil; filterHoverFrame = nil
+        let consumer = filterHoverConsumer
+        Task { await previews.primary.cancelDevelopmentFilterHover(consumer) }
+    }
     func changeDevelopmentFilter(_ look: DevelopmentPhotoFilterV3, context: EditingInteractionContext) throws {
         try developmentSession.validateInteraction(context)
         guard availableDevelopmentFilters.contains(look) else { throw DevelopmentThumbnailError.unsupportedGraph }
+        cancelDevelopmentFilterHover()
         let command: DevelopmentAdjustmentCommand
         if look == .original { command = .setEnabled(.filter, false) }
         else {
@@ -1640,7 +2227,7 @@ import RAWMasterAI
               let decoder = developmentSourceFacts?.localDecoderContractFingerprint,
               developmentSourceFacts?.localCapabilities.contains(tool == .retouch ? .manualRetouch : .manualRedEye) == true else { return }
         let operation: DevelopmentAnalysisOperation
-        if tool == .retouch { operation = .retouchSource(stroke: stroke, explicitDonor: donor) }
+        if tool == .retouch { operation = .retouch(stroke: stroke, explicitDonor: donor, mode: developmentLocalInput.retouchMode) }
         else {
             guard let point = stroke.points.first else { return }
             operation = .redEyeAt(sourcePoint: point.position, radiusInShortEdge: stroke.radiusInShortEdge,
@@ -1664,6 +2251,158 @@ import RAWMasterAI
             try developmentSession.apply(.removeLocal(id), event: .init(context: context, control: .init(group: nil, name: "删除局部调整")))
         } catch { message = "未能删除这笔调整，请重试。" }
     }
+    func addDevelopmentMask(_ kind: DevelopmentMaskKindV3, start: DevelopmentSourcePoint = .init(x:0.25,y:0.25),
+                            end: DevelopmentSourcePoint = .init(x:0.75,y:0.75), context: EditingInteractionContext) {
+        guard developmentContext == context, work?.source != nil else { return }
+        var layer = DevelopmentMaskLayerV3(name: kind.title + " \(developmentSession.parameters.masks.count+1)", kind: kind,
+            start: start, end: end, adjustments: .init(exposure:0.25))
+        if kind == .radial {
+            layer.center = start; layer.radiusX = max(0.01,abs(end.x-start.x)); layer.radiusY = max(0.01,abs(end.y-start.y))
+        }
+        do {
+            var masks = developmentSession.parameters.masks; masks.append(layer)
+            try developmentSession.apply(.setMasks(masks), event: .init(context: context,
+                control: .init(group: nil, name: "新建" + kind.title), nativeInput: .capture(control: "mask.add", phase: "discrete", nativeEvent: true)))
+        } catch { message = "未能新建蒙版，请重试。" }
+    }
+    func createDevelopmentSubjectMask(context: EditingInteractionContext) {
+        guard developmentContext == context, !developmentSubjectMaskInProgress, let source = work?.source else { return }
+        developmentSubjectMaskInProgress = true
+        Task { [weak self] in
+            guard let self else { return }
+            defer { self.developmentSubjectMaskInProgress = false }
+            do {
+                let data = try await self.subjectAnalysis.mask(for: source)
+                guard self.developmentContext == context, self.work?.source == source else { return }
+                var layer = DevelopmentMaskLayerV3(name: "AI 主体 \(self.developmentSession.parameters.masks.count+1)", kind: .subject,
+                    adjustments: .init(exposure:0.25), subjectPNG:data)
+                try layer.validate()
+                var masks = self.developmentSession.parameters.masks; masks.append(layer)
+                try self.developmentSession.apply(.setMasks(masks), event: .init(context: context,
+                    control: .init(group:nil,name:"AI 主体蒙版"), nativeInput:.capture(control:"mask.subject",phase:"discrete",nativeEvent:true)))
+            } catch { if self.developmentContext == context { self.message = "未能识别照片主体，请重试或使用手动蒙版。" } }
+        }
+    }
+    func focusDevelopmentLensBlurSubject(context:EditingInteractionContext) {
+        guard developmentContext == context,developmentInterfaceActive,isPresented,sourceReady,!shuttingDown,
+          stage == .development,!developmentShowingOriginal,!comparing,!cropEditing,
+          !developmentLensBlurSubjectFocusInProgress,let source=work?.source else{return}
+        developmentLensBlurSubjectFocusInProgress=true
+        Task{[weak self] in
+          guard let self else{return}
+          defer{self.developmentLensBlurSubjectFocusInProgress=false}
+          do{
+            let estimate = try await self.subjectAnalysis.focus(for: source)
+            guard self.developmentContext == context, self.work?.source == source else{return}
+            var effects=self.developmentSession.parameters.effects ?? .init(),blur=effects.lensBlur ?? .init()
+            blur.enabled=true;blur.focusX=estimate.focusX;blur.focusY=estimate.focusY;blur.focusRange=estimate.focusRange
+            try blur.validate();effects.lensBlur=blur;try effects.validate()
+            try self.developmentSession.apply(.setEffects(effects),event:.init(context:context,
+              control:.init(group:nil,name:"Lens Blur · 主体对焦"),nativeInput:.capture(control:"effects.lensBlur.subject",phase:"discrete",nativeEvent:true)))
+          }catch{if self.developmentContext == context{self.message="未能识别主体焦点，请改用手动点选或区域对焦。"}}
+        }
+    }
+    func prepareDevelopmentAIDenoise(_ model: DevelopmentAIDenoiseV1.Model, context: EditingInteractionContext) async throws {
+        guard developmentContext == context, let source = work?.source,
+              model.isSupported(by: developmentSourceFacts?.aiDenoiseCapability) else { throw EditingError.staleSource }
+        try await neuralDenoiseEngine.prepare(for: source, model: model)
+        try Task.checkCancellation()
+        guard developmentContext == context, work?.source == source,
+              model.isSupported(by: developmentSourceFacts?.aiDenoiseCapability) else { throw EditingError.staleSource }
+    }
+
+    var supportsSceneDepth: Bool { sceneDepthEngine.isAvailable }
+    func cancelEnablingSceneDepth(context: EditingInteractionContext) {
+        guard enablingSceneDepth == context else { return }
+        cancelSceneDepth()
+    }
+    private func cancelSceneDepth() {
+        guard sceneDepthRequest != nil else { return }
+        sceneDepthTask?.cancel()
+        sceneDepthTask = nil
+        sceneDepthRequest = nil
+        enablingSceneDepth = nil
+        developmentDeviceDepthInProgress = false
+    }
+
+    func useDevelopmentSceneDepth(context: EditingInteractionContext, enabling: Bool = false) {
+        let initial = developmentSession.parameters.effects?.lensBlur ?? .init()
+        guard developmentContext == context, developmentInterfaceActive, isPresented, sourceReady, !shuttingDown,
+              stage == .development, !developmentShowingOriginal, !comparing, !cropEditing, !developmentDeviceDepthInProgress,
+              supportsSceneDepth, let source = work?.source, initial.enabled == !enabling,
+              initial.deviceDepth == nil, initial.sceneDepth == nil else { return }
+        let request = UUID()
+        sceneDepthRequest = request
+        if enabling { enablingSceneDepth = context }
+        developmentDeviceDepthInProgress = true
+        sceneDepthTask = Task { [weak self] in
+            guard let self else { return }
+            defer {
+                if self.sceneDepthRequest == request {
+                    self.sceneDepthTask = nil
+                    self.sceneDepthRequest = nil
+                    self.enablingSceneDepth = nil
+                    self.developmentDeviceDepthInProgress = false
+                }
+            }
+            let scene: DevelopmentSceneDepthV1?
+            do { scene = try await self.sceneDepthEngine.estimate(source) }
+            catch {
+                guard !Task.isCancelled, self.developmentContext == context else { return }
+                self.message = "场景深度估计失败。\(error.localizedDescription)"
+                guard enabling else { return }
+                scene = nil
+            }
+            guard !Task.isCancelled, self.sceneDepthRequest == request, self.developmentContext == context,
+                  self.work?.source == source, !self.shuttingDown, self.developmentInterfaceActive, self.isPresented,
+                  self.stage == .development, !self.developmentShowingOriginal, !self.comparing, !self.cropEditing else { return }
+            var effects = self.developmentSession.parameters.effects ?? .init()
+            var blur = effects.lensBlur ?? .init()
+            guard blur.enabled == initial.enabled, blur.deviceDepth == nil, blur.sceneDepth == nil else { return }
+            blur.enabled = true
+            blur.sceneDepth = scene
+            effects.lensBlur = blur
+            do {
+                try self.developmentSession.apply(.setEffects(effects), event:.init(context:context,
+                    control:.init(group:nil, name:"Lens Blur · 场景深度"),
+                    nativeInput:.capture(control:"effects.lensBlur.sceneDepth", phase:"discrete", nativeEvent:true)))
+            } catch { self.message = error.localizedDescription }
+        }
+    }
+
+    func useDevelopmentDeviceDepth(context:EditingInteractionContext) {
+        let provider=developmentDeviceDepthProvider
+        guard developmentContext == context,developmentInterfaceActive,isPresented,sourceReady,!shuttingDown,
+          stage == .development,!developmentShowingOriginal,!comparing,!cropEditing,!developmentDeviceDepthInProgress,
+          provider != nil || developmentSourceFacts?.deviceDepthAvailable == true,
+          let source=work?.source.sourceLocation else{return}
+        developmentDeviceDepthInProgress=true
+        Task{[weak self] in
+          guard let self else{return}
+          defer{self.developmentDeviceDepthInProgress=false}
+          do{
+            let payload=try await Task.detached{()throws->DevelopmentLensBlurDepthPayloadV1 in
+              if let provider{return try provider(source)}
+              return try ImageEngines.deviceDepth(at: source)
+            }.value
+            guard self.developmentContext == context else{return}
+            try payload.validate()
+            var effects=self.developmentSession.parameters.effects ?? .init(),blur=effects.lensBlur ?? .init()
+            blur.enabled=true;blur.deviceDepth=payload;effects.lensBlur=blur;try effects.validate()
+            try self.developmentSession.apply(.setEffects(effects),event:.init(context:context,
+              control:.init(group:nil,name:"Lens Blur · 使用设备深度"),nativeInput:.capture(control:"effects.lensBlur.deviceDepth",phase:"discrete",nativeEvent:true)))
+          }catch{if self.developmentContext == context{self.message="未能读取设备深度图，请使用程序化焦平面。"}}
+        }
+    }
+    func clearDevelopmentDeviceDepth(context:EditingInteractionContext) {
+        guard developmentContext == context else{return}
+        do{
+          var effects=developmentSession.parameters.effects ?? .init(),blur=effects.lensBlur ?? .init()
+          blur.deviceDepth=nil;effects.lensBlur=blur;try effects.validate()
+          try developmentSession.apply(.setEffects(effects),event:.init(context:context,
+            control:.init(group:nil,name:"Lens Blur · 移除设备深度"),nativeInput:.capture(control:"effects.lensBlur.deviceDepth",phase:"discrete",nativeEvent:true)))
+        }catch{message="未能移除设备深度，请重试。"}
+    }
     func developmentLocalNoResultMessage(_ reason: DevelopmentLocalNoResult, operation: DevelopmentAnalysisOperation? = nil) -> String {
         if operation == .redEyeAutomatic {
             switch reason {
@@ -1680,12 +2419,14 @@ import RAWMasterAI
     }
     func beginDevelopmentPicker(_ kind: EditingDevelopmentPicker.Kind, context: EditingInteractionContext) {
         guard developmentInterfaceActive, isPresented, !shuttingDown, sourceReady, stage == .development,
-              developmentContext == context, availablePhotosGroups.contains(kind.group), !developmentAnalysisBusy,
+              developmentContext == context, (kind.isLensBlur || availablePhotosGroups.contains(kind.group)), !developmentAnalysisBusy,
               !developmentShowingOriginal, !comparing, !cropEditing, developmentSession.page == .adjust else { return }
-        if case .curve = kind, !supportsDevelopmentCurvePicker { return }
+        if kind.group == .curves, kind != .parametricCurveTargeted, !supportsDevelopmentCurvePicker { return }
         do {
             cancelDevelopmentLocalInput(clearTool: true)
             if let gesture = developmentSession.activeGesture { try developmentSession.endGesture(gesture, .commit) }
+            developmentTargetedColor=nil;developmentTargetedColorReady=false
+            developmentTargetedCurve=nil;developmentTargetedCurveReady=false
             let picker = EditingDevelopmentPicker(id: UUID(), context: context, recipeFingerprint: try EditingFingerprint.of(recipe), kind: kind)
             guard developmentPickerFrame(for: picker) != nil else { message = "请等待当前预览完成后再取样。"; return }
             developmentPicker = picker
@@ -1693,22 +2434,27 @@ import RAWMasterAI
     }
     func cancelDevelopmentPicker(context: EditingInteractionContext) {
         guard developmentContext == context, developmentPicker?.context == context else { return }
-        developmentPicker = nil
+        let gesture=developmentTargetedColor?.gesture ?? developmentTargetedCurve?.gesture ?? developmentCurrentAnalysis?.targeted?.gesture ?? developmentCurrentAnalysis?.curveTargeted?.gesture ?? developmentPendingAnalysis?.targeted?.gesture ?? developmentPendingAnalysis?.curveTargeted?.gesture
+        if let gesture { try? developmentSession.endGesture(gesture,.cancel) }
+        developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentTargetedCurve=nil;developmentTargetedCurveReady=false;developmentPicker = nil
     }
     func cancelDevelopmentToolAnalysis(context: EditingInteractionContext) {
         guard developmentContext == context else { return }
-        developmentPicker = nil
+        cancelDevelopmentPicker(context: context)
         try? developmentSession.cancelAnalysis(context: context)
         developmentPendingAnalysis = nil; developmentUserTask?.cancel()
     }
     func developmentPickerFrame(for picker: EditingDevelopmentPicker) -> EditingDevelopmentPickerFrame? {
+        let targetedActive=developmentTargetedColor?.picker.id == picker.id || developmentTargetedCurve?.picker.id == picker.id
         guard developmentInterfaceActive, isPresented, !shuttingDown, stage == .development, sourceReady,
               !developmentShowingOriginal, !comparing, !cropEditing, developmentContext == picker.context,
               developmentSession.page == .adjust, developmentSourceFacts?.sourceBinding == developmentSession.source,
-              picker.recipeFingerprint == (try? EditingFingerprint.of(recipe)),
-              let frame = previews.primary.frame, frame.revision == previews.primary.currentRevision,
-              frame.generation == picker.context.sourceGeneration, !frame.approximate, frame.quality != .interactive,
-              previews.primary.frameRecipe == recipe, previews.primary.framePresentationID == developmentPreviewPresentationID,
+              targetedActive || picker.recipeFingerprint == (try? EditingFingerprint.of(recipe)),
+              let frame = previews.primary.frame, targetedActive || frame.revision == previews.primary.currentRevision,
+              frame.generation == picker.context.sourceGeneration, targetedActive || !frame.approximate,
+              targetedActive || frame.quality != .interactive,
+              targetedActive || previews.primary.frameRecipe == recipe,
+              previews.primary.framePresentationID == developmentPreviewPresentationID,
               let source = developmentSession.source,
               let mapping = try? developmentGeometry.mapping(sourceSize: source.sourceSize),
               frame.nativeSize == CGSize(width: mapping.outputSize.width, height: mapping.outputSize.height) else { return nil }
@@ -1720,6 +2466,45 @@ import RAWMasterAI
         do {
             // Core rejects transparent/outside-source areas. Never clamp a miss to an edge sample.
             let sourcePoint = try frame.mapping.sourcePoint(fromOutput: outputPoint)
+            if case .colorSampler(let index) = frame.picker.kind {
+                guard let image = previews.primary.frame?.image, DevelopmentDisplayPixel.sample(image, at: outputPoint) != nil,
+                      colorSamplers.place(sourcePoint, replacing: index) else { return }
+                developmentPicker = nil
+                return
+            }
+            if frame.picker.kind == .parametricCurveTargeted {
+                guard developmentTargetedCurve == nil, let image = previews.primary.frame?.image,
+                      let pixel = DevelopmentDisplayPixel.sample(image, at: outputPoint) else { return }
+                let initial = developmentSession.parameters.curves
+                let region = try DevelopmentTargetedCurveAdjustmentV3.region(tone: pixel.tone, curve: initial.parametric ?? .init())
+                let gesture = try developmentSession.beginGesture(.init(group: .curves, name: "参数曲线定向调整"), context: frame.picker.context)
+                developmentTargetedCurve = .init(picker: frame.picker, gesture: gesture, initial: initial, target: .parametric(region))
+                developmentTargetedCurveReady = true
+                return
+            }
+            if case .lensBlurFocus = frame.picker.kind {
+                var effects = developmentSession.parameters.effects ?? .init()
+                var blur = effects.lensBlur ?? .init()
+                try blur.focus(at: sourcePoint)
+                effects.lensBlur = blur; try effects.validate()
+                developmentPicker = nil
+                try developmentSession.apply(.setEffects(effects), event: .init(context: frame.picker.context,
+                    control: .init(group: nil, name: "Lens Blur · 点选焦点"), nativeInput: .capture(control: "effects.lensBlur.focus", phase: "discrete", nativeEvent: true)))
+                return
+            }
+            if case .selectiveColorTargeted(let slot, _) = frame.picker.kind {
+                let gesture=try developmentSession.beginGesture(.init(group:.selectiveColor,name:"HSL Targeted Adjustment"),context:frame.picker.context)
+                requestDevelopmentAnalysis(.selectiveColorPicker(slot:slot,sourcePoint:sourcePoint),title:"HSL Targeted Adjustment",
+                  context:frame.picker.context,gesture:gesture,nativeEvent:true,targeted:.init(picker:frame.picker,gesture:gesture))
+                return
+            }
+            if case .curveTargeted(let channel) = frame.picker.kind {
+                let gesture=try developmentSession.beginGesture(.init(group:.curves,name:"Point Curve Targeted Adjustment"),context:frame.picker.context)
+                requestDevelopmentAnalysis(.curvePicker(channel:channel,point:.addPoint,sourcePoint:sourcePoint),title:"Point Curve Targeted Adjustment",
+                  context:frame.picker.context,gesture:gesture,nativeEvent:true,
+                  curveTargeted:.init(picker:frame.picker,gesture:gesture,baseline:developmentSession.parameters.curves))
+                return
+            }
             let operation: DevelopmentAnalysisOperation
             switch frame.picker.kind {
             case .whiteBalance(let mode):
@@ -1727,7 +2512,12 @@ import RAWMasterAI
                 operation = .whiteBalancePicker(sourcePoint: sourcePoint,
                     mode: mode == .skinTone ? .skinTone(warmth: 0) : .neutralGray(warmth: 0))
             case .selectiveColor(let slot): operation = .selectiveColorPicker(slot: slot, sourcePoint: sourcePoint)
+            case .selectiveColorTargeted:return
+            case .defringe(let band): operation = .defringePicker(band: band, sourcePoint: sourcePoint)
+            case .pointColor(let id): operation = .pointColorPicker(id: id, sourcePoint: sourcePoint)
             case .curve(let channel, let point): operation = .curvePicker(channel: channel, point: point, sourcePoint: sourcePoint)
+            case .curveTargeted,.parametricCurveTargeted,.colorSampler:return
+            case .lensBlurFocus,.lensBlurArea,.lensBlurRefineFocus,.lensBlurRefineBlur:return
             }
             let naturalFence: NaturalCurvePickerFence?
             if case .curve = frame.picker.kind,developmentSession.parameters.curves.algorithm == .naturalCubicGamma512LumaV1 {
@@ -1737,6 +2527,146 @@ import RAWMasterAI
             developmentPicker = nil
             requestDevelopmentAnalysis(operation, title: frame.picker.kind.group.photosTitle + "取样", context: frame.picker.context, nativeEvent: true,naturalPickerFence:naturalFence)
         } catch { message = "此位置不在有效图像内，请重新取样。" }
+    }
+    private func continueDevelopmentTargeted(_ pending:PendingDevelopmentAnalysis)throws {
+        guard let targeted=pending.targeted,developmentSession.activeGesture == targeted.gesture,
+          developmentContext == targeted.picker.context,
+          case .selectiveColorTargeted(let slot, _) = targeted.picker.kind,
+          case .selectiveColorPicker(let operationSlot, _) = pending.operation,operationSlot == slot,
+          let sample=developmentSession.parameters.selectiveColor.colors.first(where:{$0.slot == slot})?.sampledColor else {
+            throw EditingDevelopmentSessionError.staleInteraction
+        }
+        try sample.validate()
+        let picker=EditingDevelopmentPicker(id:targeted.picker.id,context:targeted.picker.context,
+          recipeFingerprint:try EditingFingerprint.of(recipe),kind:targeted.picker.kind)
+        developmentTargetedColor = .init(picker:picker,gesture:targeted.gesture,
+          initial:developmentSession.parameters.selectiveColor,sample:sample)
+        developmentTargetedColorReady=true;developmentPicker=picker
+    }
+    private func curve(_ value:DevelopmentCurvesV3,channel:DevelopmentCurveChannelV3ID)->DevelopmentCurveChannelV3 {
+        switch channel {case .rgb:value.rgb;case .red:value.red;case .green:value.green;case .blue:value.blue}
+    }
+    private func continueDevelopmentTargetedCurve(_ pending:PendingDevelopmentAnalysis)throws {
+        guard let targeted=pending.curveTargeted,developmentSession.activeGesture == targeted.gesture,
+          developmentContext == targeted.picker.context,
+          case .curveTargeted(let channel) = targeted.picker.kind,
+          case .curvePicker(let operationChannel,let operationPoint, _) = pending.operation,
+          operationChannel == channel,operationPoint == .addPoint else{throw EditingDevelopmentSessionError.staleInteraction}
+        let before=curve(targeted.baseline,channel:channel).curve,after=curve(developmentSession.parameters.curves,channel:channel).curve
+        let index:Int?
+        if after.points.count>before.points.count {
+            index=after.points.firstIndex{!before.points.contains($0)}
+        } else if after.points.count == before.points.count {
+            index=after.points.indices.first{after.points[$0] != before.points[$0]}
+        } else{index=nil}
+        guard let index else{throw EditingDevelopmentSessionError.staleInteraction}
+        let picker=EditingDevelopmentPicker(id:targeted.picker.id,context:targeted.picker.context,
+          recipeFingerprint:try EditingFingerprint.of(recipe),kind:targeted.picker.kind)
+        developmentTargetedCurve = .init(picker:picker,gesture:targeted.gesture,
+          initial:developmentSession.parameters.curves,target:.point(channel,index))
+        developmentTargetedCurveReady=true;developmentPicker=picker
+    }
+    func dragDevelopmentTargetedCurve(_ translation:SIMD2<Double>,ended:Bool=false) {
+        guard let active=developmentTargetedCurve,developmentContext == active.picker.context,
+          developmentSession.activeGesture == active.gesture else{return}
+        do {
+          let next: DevelopmentCurvesV3
+          let name: String, control: String
+          switch active.target {
+          case .point(let channel, let index):
+            next = try DevelopmentTargetedCurveAdjustmentV3.applyPoint(initial: active.initial, channel: channel, pointIndex: index, translation: translation)
+            name = "Point Curve Targeted Adjustment"; control = "photos.curves.targeted"
+          case .parametric(let region):
+            next = try DevelopmentTargetedCurveAdjustmentV3.applyParametric(initial: active.initial, region: region, translation: translation)
+            name = "参数曲线定向调整"; control = "photos.curves.parametric.targeted"
+          }
+          writingDevelopmentTargeted=true;defer{writingDevelopmentTargeted=false}
+          let restoreOriginal: Bool
+          if case .parametric = active.target { restoreOriginal = ended && next == active.initial }
+          else { restoreOriginal = false }
+          if !restoreOriginal, next != developmentSession.parameters.curves {
+            try developmentSession.apply(.setParameters(.curves(next)),event:.init(context:active.picker.context,
+              control:.init(group:.curves,name:name),
+              nativeInput:.capture(control:control,phase:ended ? "end":"change",nativeEvent:true,gestureID:active.gesture.id)),gesture:active.gesture)
+          }
+          if ended {
+            try developmentSession.endGesture(active.gesture, restoreOriginal ? .cancel : .commit)
+            developmentTargetedCurve=nil;developmentTargetedCurveReady=false;developmentPicker=nil
+          }
+        } catch {
+          try? developmentSession.endGesture(active.gesture,.cancel)
+          developmentTargetedCurve=nil;developmentTargetedCurveReady=false;developmentPicker=nil
+          message="曲线 Targeted Adjustment 未应用，请重新取样。"
+        }
+    }
+    func dragDevelopmentTargetedColor(_ drag:Double,ended:Bool=false) {
+        guard let active=developmentTargetedColor,developmentContext == active.picker.context,
+          developmentSession.activeGesture == active.gesture,
+          case .selectiveColorTargeted(_, let attribute) = active.picker.kind else{return}
+        do {
+          let next=try DevelopmentTargetedColorAdjustmentV3.apply(initial:active.initial,sample:active.sample,mode:attribute,drag:drag)
+          writingDevelopmentTargeted=true;defer{writingDevelopmentTargeted=false}
+          try developmentSession.apply(.setParameters(.selectiveColor(next)),event:.init(context:active.picker.context,
+            control:.init(group:.selectiveColor,name:"HSL Targeted Adjustment"),
+            nativeInput:.capture(control:"photos.selectiveColor.targeted",phase:ended ? "end":"change",nativeEvent:true,gestureID:active.gesture.id)),gesture:active.gesture)
+          if ended {
+            try developmentSession.endGesture(active.gesture,.commit)
+            developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentPicker=nil
+          }
+        } catch {
+          if ended { try? developmentSession.endGesture(active.gesture,.cancel) }
+          developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentPicker=nil
+          message="Targeted Adjustment 未应用，请重新取样。"
+        }
+    }
+    func pickDevelopmentArea(_ outputStart:DevelopmentSourcePoint,end outputEnd:DevelopmentSourcePoint,frame:EditingDevelopmentPickerFrame) {
+        guard developmentPicker == frame.picker,frame.picker.kind == .lensBlurArea,
+          let current=developmentPickerFrame(for:frame.picker),current.frameID == frame.frameID,
+          current.sourceGeneration == frame.sourceGeneration,current.mapping == frame.mapping,
+          let source=developmentSession.source else{return}
+        do {
+            let start=try frame.mapping.sourcePoint(fromOutput:outputStart),end=try frame.mapping.sourcePoint(fromOutput:outputEnd)
+            var effects=developmentSession.parameters.effects ?? .init(),blur=effects.lensBlur ?? .init()
+            try blur.focus(from: start, to: end, sourceSize: source.sourceSize)
+            effects.lensBlur=blur;try effects.validate()
+            developmentPicker=nil
+            try developmentSession.apply(.setEffects(effects),event:.init(context:frame.picker.context,
+              control:.init(group:nil,name:"Lens Blur · 区域对焦"),nativeInput:.capture(control:"effects.lensBlur.area",phase:"discrete",nativeEvent:true)))
+        }catch{message="所选区域不在有效图像内，请重新拖动。"}
+    }
+    func pickDevelopmentLensBlurRefinement(_ outputPoints:[DevelopmentStrokePoint],frame:EditingDevelopmentPickerFrame) {
+        let mode:DevelopmentLensBlurRefinementModeV3
+        switch frame.picker.kind {case .lensBlurRefineFocus:mode = .focus;case .lensBlurRefineBlur:mode = .blur;default:return}
+        guard developmentPicker == frame.picker,!outputPoints.isEmpty,
+          let current=developmentPickerFrame(for:frame.picker),current.frameID == frame.frameID,
+          current.sourceGeneration == frame.sourceGeneration,current.mapping == frame.mapping,
+          let source=developmentSession.source else{return}
+        do {
+          let points=try outputPoints.map{DevelopmentStrokePoint(position:try frame.mapping.sourcePoint(fromOutput:$0.position),pressure:$0.pressure)}
+          var effects=developmentSession.parameters.effects ?? .init(),blur=effects.lensBlur ?? .init()
+          let brush=blur.refinementBrush ?? .init()
+          let stroke=DevelopmentStroke(points:points,radiusInShortEdge:brush.size,strength:brush.amount)
+          _ = try stroke.dabCount(sourceSize:source.sourceSize)
+          let item=DevelopmentLensBlurRefinementStrokeV3(mode:mode,stroke:stroke,feather:brush.feather,flow:brush.flow,autoMask:brush.autoMask)
+          var strokes=blur.refinementStrokes ?? [];strokes.append(item)
+          try DevelopmentLensBlurRefinementStrokeV3.validateStrokes(strokes)
+          blur.enabled=true;blur.refinementBrush=brush;blur.refinementStrokes=strokes
+          try blur.validate();effects.lensBlur=blur;try effects.validate()
+          developmentPicker=nil
+          try developmentSession.apply(.setEffects(effects),event:.init(context:frame.picker.context,
+            control:.init(group:nil,name:mode == .focus ? "Lens Blur · Focus 笔刷":"Lens Blur · Blur 笔刷"),
+            nativeInput:.capture(control:"effects.lensBlur.refinement",phase:"discrete",nativeEvent:true)))
+        }catch{message="这笔精修超出图像或笔刷记录上限，请重新刷涂。"}
+    }
+    func resetDevelopmentLensBlurRefinements(context:EditingInteractionContext) {
+        guard developmentContext == context else{return}
+        do {
+          var effects=developmentSession.parameters.effects ?? .init(),blur=effects.lensBlur ?? .init()
+          blur.refinementStrokes=[];try blur.validate();effects.lensBlur=blur;try effects.validate()
+          developmentPicker=nil
+          try developmentSession.apply(.setEffects(effects),event:.init(context:context,
+            control:.init(group:nil,name:"Lens Blur · 重置深度精修"),nativeInput:.capture(control:"effects.lensBlur.resetRefinements",phase:"discrete",nativeEvent:true)))
+        }catch{message="未能重置 Lens Blur 精修，请重试。"}
     }
     static func summarySampling(operation: DevelopmentAnalysisOperation, sourceIsRAW: Bool,
                                 bundleIdentifier: String?, environment: [String: String]) -> DevelopmentAnalysisSampling {
@@ -1754,8 +2684,12 @@ import RAWMasterAI
                                             context: EditingInteractionContext, gesture: EditingGestureToken? = nil,
                                             summary: (DevelopmentAdjustmentID, Double)? = nil, nativeEvent: Bool = false,
                                             localInputV1: DevelopmentLocalInputV1? = nil, localGestureID: UUID? = nil,
-                                            dehazeInputV1: DevelopmentDehazeInputV1? = nil, operationID: UUID? = nil, naturalPickerFence: NaturalCurvePickerFence? = nil) {
-        guard developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, developmentSession.context == context else { return }
+                                            dehazeInputV1: DevelopmentDehazeInputV1? = nil, operationID: UUID? = nil, naturalPickerFence: NaturalCurvePickerFence? = nil,
+                                            targeted: TargetedPending? = nil, curveTargeted: TargetedCurvePending? = nil) {
+        guard developmentInterfaceActive, isPresented, !shuttingDown, !developmentSavePreviewSuspended, sourceReady, stage == .development, developmentSession.context == context else {
+            if let targeted { try? developmentSession.endGesture(targeted.gesture,.cancel) }
+            if let curveTargeted { try? developmentSession.endGesture(curveTargeted.gesture,.cancel) };return
+        }
         developmentPicker = nil
         if dehazeInputV1 == nil { developmentDehazeInput.cancel() }
         if localInputV1 == nil { developmentLocalInput.cancel(clearTool: true) }
@@ -1781,7 +2715,7 @@ import RAWMasterAI
                 geometryTicket = nil
                 ticket = try developmentSession.admitAnalysis(context: context, operationID: id, gesture: gesture, input: input, stage: analysisStage)
             }
-            developmentPendingAnalysis = .init(ticket: ticket, operation: operation, title: title, summary: summary, localInputV1: localInputV1, dehazeInputV1: dehazeInputV1, geometryTicket: geometryTicket,naturalPickerFence:naturalPickerFence)
+            developmentPendingAnalysis = .init(ticket: ticket, operation: operation, title: title, summary: summary, localInputV1: localInputV1, dehazeInputV1: dehazeInputV1, geometryTicket: geometryTicket,naturalPickerFence:naturalPickerFence,targeted:targeted,curveTargeted:curveTargeted)
             developmentUserTask?.cancel(); developmentAnalysisBusy = true
             guard developmentUserOperationID == nil else { return }
             developmentUserOperationID = startOperation { [self] in
@@ -1893,7 +2827,7 @@ import RAWMasterAI
                                       DevelopmentNaturalCurvePickerV1.acceptsCommand(command,request:request),
                                       previews.primary.isCurrentDevelopmentAnalysisRequest(request),
                                       developmentInterfaceActive,!developmentShowingOriginal,!comparing,
-                                      developmentSession.page == .adjust,developmentSession.activeGesture == nil,
+                                      developmentSession.page == .adjust,(developmentSession.activeGesture == nil || pending.curveTargeted != nil),
                                       result.sessionID == request.preview.sessionID,result.consumerID == request.preview.consumerID,
                                       result.revision == request.preview.revision,result.role == request.preview.role,
                                       result.quality == request.preview.quality,result.clientCorrelation == request.preview.clientCorrelation,
@@ -1907,13 +2841,32 @@ import RAWMasterAI
                                     continue
                                 }
                             }
+                            if case .selectiveColorPicker = pending.operation {
+                                guard command.purpose == .selectiveColorPicker,command.parameters.map(\.id) == [.selectiveColor] else{throw EditingDevelopmentSessionError.staleAnalysis}
+                            }
+                            if case .curvePicker = pending.operation {
+                                guard command.purpose == .curvesPicker,command.parameters.map(\.id) == [.curves] else{throw EditingDevelopmentSessionError.staleAnalysis}
+                            }
+                            writingDevelopmentTargeted = pending.targeted != nil || pending.curveTargeted != nil
                             try developmentSession.acceptAnalysis(command, ticket: pending.ticket, title: pending.title)
+                            writingDevelopmentTargeted = false
+                            if pending.targeted != nil { try continueDevelopmentTargeted(pending) }
+                            if pending.curveTargeted != nil { try continueDevelopmentTargetedCurve(pending) }
                             if request.sampling == .blackAndWhiteSummaryStripes32V2 {
                                 InteractionTrace.shared.recordAcceptedBWSummaryV2(result, parameters: developmentSession.parameters.blackAndWhite)
                             }
                         }
                     } catch {
                         if let request = analysisRequestToJoin { await previews.primary.joinDevelopmentAnalysis(request) }
+                        writingDevelopmentTargeted=false
+                        if let targeted=pending.targeted {
+                            try? developmentSession.endGesture(targeted.gesture,.cancel)
+                            developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentPicker=nil
+                        }
+                        if let targeted=pending.curveTargeted {
+                            try? developmentSession.endGesture(targeted.gesture,.cancel)
+                            developmentTargetedCurve=nil;developmentTargetedCurveReady=false;developmentPicker=nil
+                        }
                         InteractionTrace.shared.recordAnalysisFailure(stage: failureStage, error: error)
                         if !Task.isCancelled, !shuttingDown, developmentSession.context == pending.ticket.context,
                            developmentCurrentAnalysis?.ticket.operationID == pending.ticket.operationID,
@@ -1931,6 +2884,9 @@ import RAWMasterAI
             }
         } catch {
             InteractionTrace.shared.recordAnalysisFailure(stage: .admissionRequest, error: error)
+            if let targeted { try? developmentSession.endGesture(targeted.gesture,.cancel) }
+            if let curveTargeted { try? developmentSession.endGesture(curveTargeted.gesture,.cancel) }
+            developmentTargetedColor=nil;developmentTargetedColorReady=false;developmentTargetedCurve=nil;developmentTargetedCurveReady=false
             if let operationID, dehazeInputV1 != nil { developmentDehazeInput.analysisRevoked(operationID) }
             message = localInputV1 == nil && dehazeInputV1 == nil && operation != .cropAutomatic ? "未开始\(title)：\(error.localizedDescription)"
                 : developmentAnalysisFailureMessage(error, operation: operation, title: title)
@@ -1954,22 +2910,21 @@ import RAWMasterAI
               frame.quality != .interactive, developmentHistogramRevision != frame.revision,
               developmentHistogramOperationID == nil else { return }
         developmentHistogramRevision = frame.revision
-        let expectedRecipe = recipe, operationID = UUID()
+        let expectedRecipe = recipe, operationID = UUID(), maskID = visibleScopeMaskID
         developmentHistogramOperationID = startOperation { [self] in
             defer { developmentHistogramTask = nil; developmentHistogramOperationID = nil; requestDevelopmentHistogramIfNeeded() }
             do {
                 let fingerprint = try EditingFingerprint.of(expectedRecipe)
                 let request = try previews.primary.developmentAnalysisRequest(operationID: operationID,
                     recipe: expectedRecipe, expectedFingerprint: fingerprint, presentedFingerprint: fingerprint,
-                    stage: .workingImageBeforeGeometry, operation: .displayHistogram)
+                    stage: .workingImageBeforeGeometry, operation: maskID.map(DevelopmentAnalysisOperation.displayMaskHistogram) ?? .displayHistogram)
                 let child = Task { try await previews.primary.analyzeDevelopment(request) }
                 developmentHistogramTask = child
                 let result = try await withTaskCancellationHandler(operation: { try await child.value }, onCancel: { child.cancel() })
                 try Task.checkCancellation()
-                guard !shuttingDown, developmentContext == context, recipe == expectedRecipe,
+                guard !shuttingDown, developmentContext == context, recipe == expectedRecipe, visibleScopeMaskID == maskID,
                       result.sourceBinding == developmentSession.source, result.operationID == operationID else { return }
-                guard (result.samplingVersion == DevelopmentDisplayHistogramV1.samplingVersion ||
-                       result.samplingVersion.hasPrefix(DevelopmentDisplayHistogramV1.samplingVersion + "/photo-filter:")),
+                guard try request.matchesSamplingVersion(result.samplingVersion),
                       result.operationID == operationID, result.revision == request.preview.revision,
                       result.binding.sourceGeneration == request.preview.sourceGeneration,
                       result.binding.expectedRecipeFingerprint == fingerprint else { return }
@@ -1987,15 +2942,22 @@ import RAWMasterAI
         catch { /* Old keyboard callbacks stay consumed by the editing owner. */ }
     }
     func beginDevelopmentInterface() {
-        developmentInterfaceActive = true; requestPreview(); prepareDevelopmentSessionIfNeeded()
+        let resumed = !developmentInterfaceActive
+        developmentInterfaceActive = true
+        if resumed { requestPreview() }
+        prepareDevelopmentSessionIfNeeded()
     }
     func suspendDevelopmentFocus() {
         finishDevelopmentNumberInput()
         developmentInterfaceActive = false
+        let facts = developmentSourceFacts
         // The native pointer owner also cancels on resign. Use the same policy regardless of
         // observer order; session.suspend revokes unconditionally even when restoration fails.
         let cancel = developmentSessionStorage?.page == .crop || developmentSessionStorage?.activeControl?.name.hasPrefix("legacy.grading.") == true
-        suspendDevelopmentInteraction(disposition: cancel ? .cancel : .commit)
+        suspendDevelopmentInteraction(disposition: cancel ? .cancel : .commit, preserveThumbnails: true)
+        // Retain only immutable capability metadata for a disabled presentation and fast resume.
+        // The interaction context itself has been revoked and cannot accept writes.
+        developmentSourceFacts = facts
     }
     func endDevelopmentInterface() {
         developmentInterfaceActive = false
@@ -2173,12 +3135,13 @@ import RAWMasterAI
         try setDevelopmentGeometry(next, context: context, nativeEvent: true)
         try developmentSession.setCropConstraint(value, context: context)
     }
-    func rotateDevelopmentCrop(context: EditingInteractionContext) throws {
+    func rotateDevelopmentCrop(context: EditingInteractionContext, counterclockwise: Bool = false) throws {
         try endDevelopmentCropGesture(context: context)
-        let next = try developmentGeometry.applyingLateOperation(.rotateClockwise)
+        var next = developmentGeometry
+        for _ in 0..<(counterclockwise ? 3 : 1) { next = try next.applyingLateOperation(.rotateClockwise) }
         var constraint = developmentSession.cropConstraint
         constraint.orientation = constraint.orientation == .landscape ? .portrait : .landscape
-        try setDevelopmentGeometry(next, context: context, control: "crop.rotate", nativeEvent: true)
+        try setDevelopmentGeometry(next, context: context, control: counterclockwise ? "crop.rotate.left" : "crop.rotate", nativeEvent: true)
         try developmentSession.setCropConstraint(constraint, context: context)
     }
     func flipDevelopmentCrop(vertical: Bool, context: EditingInteractionContext) throws {
@@ -2194,6 +3157,28 @@ import RAWMasterAI
         let portrait = developmentSession.source.map { $0.orientedWidth < $0.orientedHeight } ?? false
         try developmentSession.setCropConstraint(.init(orientation: portrait ? .portrait : .landscape), context: context)
     }
+    func toggleDevelopmentCropAspectLock(context: EditingInteractionContext) throws {
+        var constraint = developmentSession.cropConstraint
+        if constraint.aspect == .freeform {
+            let plane = try developmentCropPlane(context: context)
+            let crop = developmentGeometry.crop
+            let ratio = crop.width * plane.rect.width / max(0.000001, crop.height * plane.rect.height)
+            guard ratio.isFinite, ratio > 0 else { throw EditingError.invalidRecipe }
+            constraint.customWidth = ratio; constraint.customHeight = 1; constraint.aspect = .custom
+        } else { constraint.aspect = .freeform }
+        try setDevelopmentCropConstraint(constraint, context: context)
+    }
+    func swapDevelopmentCropOrientation(context: EditingInteractionContext) throws {
+        var constraint = developmentSession.cropConstraint
+        constraint.orientation = constraint.orientation == .landscape ? .portrait : .landscape
+        try setDevelopmentCropConstraint(constraint, context: context)
+    }
+    func cycleDevelopmentCropOverlay() {
+        let styles = PhotosCropOverlayStyle.allCases
+        let index = styles.firstIndex(of: cropOverlayStyle) ?? 0
+        cropOverlayStyle = styles[(index + 1) % styles.count]
+    }
+    func turnDevelopmentCropOverlay() { cropOverlayTurn = (cropOverlayTurn + 1) % 4 }
     func developmentCropFrame(context: EditingInteractionContext) -> EditingDevelopmentCropFrame? {
         guard developmentInterfaceActive, isPresented, sourceReady, !shuttingDown, stage == .development, cropEditing,
               !developmentShowingOriginal, !comparing, developmentContext == context, developmentSession.page == .crop,
@@ -2211,14 +3196,46 @@ import RAWMasterAI
     }
     func changeDevelopmentPage(_ page: EditingDevelopmentPage, context: EditingInteractionContext) {
         guard developmentContext == context else { return }
-        if developmentSession.page != page { developmentThumbnails.invalidate() }
+        let enteringCrop = page == .crop && !cropEditing
+        let leavingCrop = page != .crop && cropEditing
+        if enteringCrop {
+            developmentCropReturnPage = developmentSession.page == .crop ? .adjust : developmentSession.page
+            developmentCropEntryRecipe = recipe
+            developmentCropEntryConstraint = developmentSession.cropConstraint
+            if comparing { stopComparing(requestPreview: false) }
+        }
         do {
             _ = try developmentSession.changePage(page, context: context)
             developmentPicker = nil
             cropEditing = page == .crop; developmentShowingOriginal = false
             if cropEditing { setActualPixels(false) }
+            if leavingCrop {
+                developmentCropEntryRecipe = nil; developmentCropEntryConstraint = nil
+            }
             previewContextChanged()
         } catch { message = "无法切换调整工具，请重试。" }
+    }
+    func toggleDevelopmentCrop(context: EditingInteractionContext) {
+        if cropEditing { completeDevelopmentCrop(context: context) }
+        else { changeDevelopmentPage(.crop, context: context) }
+    }
+    func completeDevelopmentCrop(context: EditingInteractionContext) {
+        guard cropEditing, developmentContext == context else { return }
+        changeDevelopmentPage(developmentCropReturnPage, context: context)
+    }
+    func cancelDevelopmentCrop(context: EditingInteractionContext) {
+        guard cropEditing, developmentContext == context else { return }
+        if developmentCropAutomaticInProgress { cancelDevelopmentCropAutomatic(context: context) }
+        do {
+            if let entry = developmentCropEntryRecipe {
+                try developmentSession.restoreHistory(recipe: entry, context: context,
+                    input: .capture(control: "photos.crop.cancel", phase: "discrete", nativeEvent: true))
+            }
+            if let constraint = developmentCropEntryConstraint {
+                try developmentSession.setCropConstraint(constraint, context: context)
+            }
+            changeDevelopmentPage(developmentCropReturnPage, context: context)
+        } catch { message = "取消裁切未完成，请检查当前编辑状态。" }
     }
     func handleDevelopmentKey(_ event: NSEvent) -> Bool {
         guard isPresented else { return false }
@@ -2230,15 +3247,25 @@ import RAWMasterAI
             if let context = developmentContext { undoDevelopment(context: context, redo: flags.contains(.shift)) }
             return true
         }
-        if flags.contains(.command), key == "s" { if stage == .development && !developmentAnalysisBusy { saveDevelopment() }; return true }
-        if flags == .command, event.keyCode == 36 { completeDevelopment(); return true }
+        if flags.contains(.command), key == "s" { return true }
+        if flags == .command, event.keyCode == 36 { leaveBrowsingContext(); return true }
+        if flags == .command, key == "0" { requestCanvasCommand(.fit); return true }
+        if flags == [.command, .option], key == "r", cropEditing, let context = developmentContext {
+            do { try resetDevelopmentCrop(context: context) }
+            catch { message = "复位裁切未完成，请检查当前编辑状态。" }
+            return true
+        }
         if flags.contains(.command) || flags.contains(.control) || flags.contains(.option) { return false }
+        if event.keyCode == 36, cropEditing, let context = developmentContext {
+            completeDevelopmentCrop(context: context); return true
+        }
         if event.keyCode == 49, stage == .development, developmentLocalInput.tool != nil {
             setDevelopmentLocalPanHeld(true); return true
         }
         if event.keyCode == 53 {
             if developmentCropAutomaticInProgress, let context = developmentContext { cancelDevelopmentCropAutomatic(context: context); return true }
             if developmentDehazeInput.hasPendingInput { developmentDehazeInput.cancel(); return true }
+            if developmentMaskInput.activeKind != nil { developmentMaskInput.cancel(); return true }
             if developmentLocalInput.collecting || developmentCurrentAnalysis?.localInputV1 != nil || developmentPendingAnalysis?.localInputV1 != nil {
                 cancelDevelopmentLocalInput(); return true
             }
@@ -2247,14 +3274,45 @@ import RAWMasterAI
             if let token = developmentSessionStorage?.activeGesture {
                 developmentUserTask?.cancel(); developmentPendingAnalysis = nil; developmentSummaryEnding = nil
                 try? developmentSessionStorage?.endGesture(token, .cancel)
-            } else if cropEditing, let context = developmentContext { changeDevelopmentPage(.adjust, context: context) }
+            } else if cropEditing, let context = developmentContext { cancelDevelopmentCrop(context: context) }
             else { leaveBrowsingContext() }
             return true
         }
         switch key {
-        case "z": if developmentPicker == nil { setActualPixels(!actualPixels, nativeEvent: true) }
-        case "a": if let context = developmentContext { changeDevelopmentPage(.adjust, context: context) }
-        case "c": if let context = developmentContext { changeDevelopmentPage(.crop, context: context) }
+        case "z":
+            if developmentPicker == nil {
+                if actualPixels { requestCanvasCommand(.fit) } else { setActualPixels(true, nativeEvent: true) }
+            }
+        case "0": requestCanvasCommand(.fit)
+        case "1": if developmentPicker == nil { setActualPixels(true, nativeEvent: true) }
+        case "+", "=": requestCanvasCommand(.zoomIn)
+        case "-": requestCanvasCommand(.zoomOut)
+        case "a":
+            if let context = developmentContext {
+                if cropEditing {
+                    do { try toggleDevelopmentCropAspectLock(context: context) }
+                    catch { message = "无法切换裁切比例锁定。" }
+                } else { changeDevelopmentPage(.adjust, context: context) }
+            }
+        case "c":
+            if let context = developmentContext { toggleDevelopmentCrop(context: context) }
+        case "x":
+            guard cropEditing, let context = developmentContext else { return false }
+            do { try swapDevelopmentCropOrientation(context: context) }
+            catch { message = "无法交换裁切方向。" }
+        case "o":
+            guard cropEditing else { return false }
+            if flags.contains(.shift) { turnDevelopmentCropOverlay() } else { cycleDevelopmentCropOverlay() }
+        case "r":
+            if let context = developmentContext, supportsDevelopmentGeometry(.adjustV3) {
+                do { try rotateDevelopmentCrop(context: context, counterclockwise: flags.contains(.shift)); requestCanvasCommand(.fit) }
+                catch { message = "旋转未应用，请检查当前照片。" }
+            }
+        case "b":
+            let backgrounds = DarkroomBackground.allCases
+            let index = backgrounds.firstIndex(of: darkroomBackground) ?? 0
+            darkroomBackground = backgrounds[(index + 1) % backgrounds.count]
+        case "v": toggleBeforeAfter()
         case "m": setDevelopmentOriginalHeld(true)
         default: return false
         }

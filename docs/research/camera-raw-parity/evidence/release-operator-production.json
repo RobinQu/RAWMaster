@@ -1,0 +1,5901 @@
+{
+  "build" : "release",
+  "canonicalFlashRaw" : true,
+  "caveats" : [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive proxy is bounded to 2400px and settled\/save\/export remain canonical",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderOverride" : false,
+  "decoderVersion" : "8",
+  "engineStages" : [
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 684.88862500000005,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 636.63604199999997,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 636.54666699999996,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.015917000000000001,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "lens-profile-vignetting"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.5021249999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78045799999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.0091249999999999994,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "lens-profile-vignetting"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.5494159999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.99933300000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.012041,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "lens-profile-vignetting"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.5864589999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74237500000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.013583,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "lens-profile-vignetting"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 743.13475000000005,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 658.91399999999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 658.80729199999996,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.021000000000000001,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "radial-distortion-ca"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.603542,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78420800000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.012,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "radial-distortion-ca"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.1825840000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73450000000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.011124999999999999,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "radial-distortion-ca"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.8720829999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.735209,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.012083,
+      "operation" : "DevelopmentOpticsEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "radial-distortion-ca"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 826.64570900000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 707.67550000000006,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 707.54387499999996,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.2425840000000008,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76691699999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.619667,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73329200000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.457708,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78179200000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1391.207958,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 1271.6803749999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 710.70624999999995,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 560.84045800000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 44.304457999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.0580000000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 46.442625,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.80149999999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 110.984292,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.0169170000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 844.51554199999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 719.16987500000005,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 719.02608299999997,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.1041659999999993,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73250000000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.458042000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74875000000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 12.40025,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77333399999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1308.321584,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 1170.5299170000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 692.57299999999998,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-defringe"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 692.51770799999997,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 477.869708,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 13.864125,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.0532919999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.047500000000000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-defringe"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.220499999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.738958,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.038417,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-defringe"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.886540999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78537500000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.039,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-defringe"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1664.465209,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 1343.2553330000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 877.755,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 877.59770800000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 465.41399999999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 21.787541999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.745,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.13558400000000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 23.182542000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74916700000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.136959,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 65.818749999999994,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.87554100000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.48541699999999999,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1055.4818749999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 960.19708300000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 550.90808300000003,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 550.53537500000004,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 409.21583399999997,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 9.0745000000000005,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76024999999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.104708,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.443791,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75904099999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.098208000000000004,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.5819590000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.763459,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.106917,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1038.80825,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 934.276208,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 518.91604199999995,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 518.45245799999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 415.28391599999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.4314579999999992,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76308299999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.184583,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.7898339999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.743834,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.17324999999999999,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.5482089999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73562499999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.184334,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 983.95612500000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 899.94320800000003,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 529.478792,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 529.38554099999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 370.38483400000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.2078749999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.071958,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.017624999999999998,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.2438750000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74116700000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.01975,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.376250000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78112499999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.30049999999999999,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1238.216625,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 1057.8090420000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 638.10179200000005,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 638.001125,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 419.63195899999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 9.6080419999999993,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.0534159999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.070624999999999993,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 9.3777919999999995,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75629199999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.078875000000000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 12.325917,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74808300000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.080042000000000002,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 2134.1772080000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 1726.6239169999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1390.047667,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1389.897708,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 336.49704100000002,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 18.171832999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.69416699999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.130583,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 20.384416000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73320799999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.123916,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 26.736374999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.3129169999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.14808299999999999,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 819.554125,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 771.63758299999995,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 432.16116599999998,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 432.12733400000002,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 339.398708,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.8605839999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.1597090000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.015583,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.3897079999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.71812500000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.016792000000000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.94475,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75591600000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.022709,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 945.90837499999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 846.21412499999997,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 474.428042,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 474.34525000000002,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 371.700875,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 9.4120830000000009,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78075000000000006,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.051291999999999997,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.4297079999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.72479199999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.063041,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.9401250000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74212500000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.068958000000000005,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 801.59416599999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 752.11591599999997,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 419.31520899999998,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 419.27754199999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 332.715666,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.984416,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.72654099999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.018499999999999999,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.8270840000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73945799999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019833,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.742,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.755166,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.026542,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 690.97791700000005,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 641.44637499999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 363.75312500000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 363.71658300000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 277.59837499999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.2486249999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74041599999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.020833000000000001,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.0672090000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78520800000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.022459,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.286875,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73999999999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.033625000000000002,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-tone"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 407.90795800000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 346.63483300000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 345.81241699999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.9997499999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75662499999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.1477089999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.88900000000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.9099170000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77620800000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 393.30466699999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 341.783458,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 341.70912499999997,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.1432909999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75062499999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.1840840000000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.72787500000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.6918749999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78204200000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 434.53062499999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 375.01154200000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 369.36754200000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.9935,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.718584,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.1123339999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73804199999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.8180829999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75549999999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 393.09437500000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 314.71275000000003,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 311.77691700000003,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.2682919999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77841700000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.818458,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.79170799999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.3226250000000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73112500000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 393.62225000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 370.15924999999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 291.67975000000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.553417,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76491699999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.9152500000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.70574999999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.2154579999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.70891599999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 736.83950000000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 691.88,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 393.30129099999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 298.4855,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.090166,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78487499999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.3754169999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.74783299999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.9502920000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.79412499999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 762.40837499999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 711.87025000000006,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 468.51612499999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 243.261167,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.4508329999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.731792,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.464334,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.72850000000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.577,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75687499999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 349.28895799999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 327.26375000000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 327.16674999999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 12.426292,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.1422920000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.138291000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.1917089999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.464124999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.134333,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 308.60775000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 285.85383400000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 285.77195799999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.7617919999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.66449999999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.8051670000000009,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.64204099999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 13.009416,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.80408299999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 343.009792,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 289.85170799999997,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 289.16958299999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.3601669999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78616699999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.0300830000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.84162499999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.1273340000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78916699999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 386.37212499999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 325.68895800000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 325.02170799999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.7963339999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73129200000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.311375,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73020799999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.6182920000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73124999999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 371.20216599999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 291.24587500000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 291.17079200000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.341583,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.92012499999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.8352919999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78333399999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.1182080000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.72437499999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 744.98433299999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 611.03391699999997,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 397.81129199999998,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 397.70304199999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 213.14324999999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 9.4383330000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.040667,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.074915999999999996,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.506208000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77349999999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.083958000000000005,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.709208,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77424999999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.105541,
+      "operation" : "DevelopmentMaskEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "local-glow"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 574.67641700000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 524.48824999999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 298.69495799999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 225.68754200000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.4577090000000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.61862499999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.0974159999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.56187500000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 3.8485830000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.61804099999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 329.46387499999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 238.00970899999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 237.92129199999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.022540999999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.6517079999999993,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.63587499999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019791,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.7735830000000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.62295800000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.017125000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.8115420000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.60191600000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019375,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 307.85225000000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 231.343041,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 231.25633300000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.024417000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.8406669999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.64900000000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.018291999999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.205584,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.57491700000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.016667000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.0842499999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.58720899999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.020708000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 320.30429199999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 234.81858299999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 234.73666700000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.021333000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-anamorphic"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.7287499999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.57666700000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019415999999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-anamorphic"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.2073749999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.65004200000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.017874999999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-anamorphic"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.2839999999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.60358299999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.020833999999999998,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-anamorphic"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 337.31412499999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 250.422584,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 250.33966599999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.020167000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-ring"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.4213329999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.56712499999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.017416000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-ring"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.7267919999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.58125000000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019042,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-ring"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.1977080000000004,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.59208400000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019917000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-ring"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 319.58195899999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 230.17545799999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 230.084125,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.024500000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.7942080000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.57037499999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.017708000000000002,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.8701249999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.66070799999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.020375000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.6235419999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.59570800000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.019875,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-fiveBlade"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 430.35566699999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 337.355208,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 337.253625,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.027875,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.6365829999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.55800000000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.021583000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.2233330000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.71079099999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.018374999999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 13.640625,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77008299999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.021458000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-bubble"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 704.80912499999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 506.19087500000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 505.69912499999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.41741600000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.31574999999999998,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "focus-auto-mask"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 15.312958999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.1708750000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.323959,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.231958,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "focus-auto-mask"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 17.214666999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.219875,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.32887499999999997,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.230292,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "focus-auto-mask"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 16.893709000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.4808330000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.31945800000000002,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.22800000000000001,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "focus-auto-mask"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 693.80174999999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 497.50020899999998,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 497.00287500000002,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.42449999999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.31824999999999998,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "blur"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 29.351749999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.59308300000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.45958300000000002,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.36058400000000002,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "blur"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 19.205417000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.92420800000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.407416,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.28683399999999998,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "blur"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 16.470459000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.79525000000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.38958300000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.23783399999999999,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "blur"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 719.35183400000005,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 535.79529200000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 535.02154199999995,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.69750000000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.59250000000000003,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "focus"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 14.645917000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.2101660000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.29066599999999998,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.205625,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "focus"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 15.389958999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.88104099999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.33975,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.25220799999999999,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "focus"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 14.549583999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.98987499999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.36633399999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.26445800000000003,
+      "operation" : "DevelopmentLensBlurRefinementEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "focus"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 664.10591699999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 504.61950000000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 494.25229200000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 10.266833999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "device-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 12.896915999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76908299999999996,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.18108299999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "device-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.516583000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.97775000000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.16508300000000001,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "device-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 14.514915999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78274999999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.18812499999999999,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "device-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 647.83529199999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 486.77970800000003,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 486.59362499999997,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.110291,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 15.449,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.93070900000000001,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.085417000000000007,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 18.271125000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.2499579999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.097500000000000003,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.070874999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.96570900000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "图构建",
+      "durationMilliseconds" : 0.107959,
+      "operation" : "DevelopmentLensBlurEngineV3.apply",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "procedural-circle"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 363.91783299999997,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3904800,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 310.99975000000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 41343623,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 148.63370800000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 41343623,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 162.28091699999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.6916250000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 2637901,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.435041,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 2637901,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.514625000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 2637901,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 338.136167,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3904800,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 318.32612499999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 41343623,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 148.07133300000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 41343623,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 170.177583,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 6.1194579999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 2637901,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.6957079999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 2637901,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 10.359875000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 2637901,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 2390.189292,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 2150.6018330000002,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 452.47729099999998,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 478.97304200000002,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 153.47741600000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 174.30837500000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.980124999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78391599999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 15.205791,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.75112500000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 13.926,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.77575000000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1927.028333,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 1667.701292,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 458.512292,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 439.75504100000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 160.19220799999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 163.32875000000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.7101670000000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.60050000000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.9172500000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.58345899999999995,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 18.609708999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.595167,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 676.50908400000003,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 646.11362499999996,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 382.14187500000003,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 152.76958300000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.112375,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.85850000000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 11.212584,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.112541,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 13.983625,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.90200000000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 735.72945800000002,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 708.36695799999995,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 435.772875,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 156.43633299999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 15.341084,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.87166699999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 12.571249999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.96737499999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 23.591166999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 1.0492079999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4056.4696669999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 3616.5778329999998,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 25.489083999999998,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.78245900000000002,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 27.292124999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76870899999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 41.330416,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.76020799999999999,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 280.37729200000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 200.28200000000001,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 200.21591699999999,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 8.7237919999999995,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.72841699999999998,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 4.9277499999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.82525000000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 7.9054589999999996,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.70437499999999997,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 254.03604100000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · settled"
+    },
+    {
+      "boundary" : "图构建与校验",
+      "durationMilliseconds" : 138.56679199999999,
+      "operation" : "DevelopmentRendererV3.develop",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "完整显影图"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 138.48412500000001,
+      "operation" : "显影有限值检查",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "全域归约"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 35.855791000000004,
+      "operation" : "FlashRaw.linearToRGBA16F",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "F16 上传 · 原生方向"
+    },
+    {
+      "boundary" : "RAW 解码",
+      "durationMilliseconds" : 59.864790999999997,
+      "operation" : "FlashRaw.decode",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "output 7 · backend 3 · bilinear · 全图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 5.9650840000000001,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.66495800000000005,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 1.4098329999999999,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.73491700000000004,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 153.772458,
+      "operation" : "生成预览",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "RAW · interactive"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 0.86712500000000003,
+      "operation" : "PreviewMetalFrameValidator",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary" : "GPU 完成",
+      "durationMilliseconds" : 31.227250000000002,
+      "operation" : "FlashRaw.linearToRGBA32F",
+      "outcome" : "成功",
+      "pixelCount" : 3840000,
+      "stage" : "F16 上传 · 方向与缩放"
+    },
+    {
+      "boundary" : "RAW 解码",
+      "durationMilliseconds" : 86.211500000000001,
+      "operation" : "FlashRaw.decode",
+      "outcome" : "成功",
+      "pixelCount" : 60217344,
+      "stage" : "output 7 · backend 3 · bilinear · 全图"
+    },
+    {
+      "boundary" : "API 返回",
+      "durationMilliseconds" : 180.87587500000001,
+      "operation" : "打开原片",
+      "outcome" : "成功",
+      "pixelCount" : 0,
+      "stage" : "校验与捕获"
+    },
+    {
+      "boundary" : "RAW 解码",
+      "durationMilliseconds" : 8.4049580000000006,
+      "operation" : "FlashRaw.decode",
+      "outcome" : "成功",
+      "pixelCount" : 1024,
+      "stage" : "output 7 · backend 3 · bilinear · 区域"
+    }
+  ],
+  "flashRawAvailable" : true,
+  "flashRawDecodeStatistics" : [
+    {
+      "availableThreads" : 16,
+      "decoderBackend" : "CPU NEON x16 threads",
+      "inputBytes" : 69488640,
+      "nativeWallMilliseconds" : 59.899499999999989,
+      "outputBytes" : 361304064,
+      "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated), kernel 14.79 ms",
+      "stages" : [
+        {
+          "milliseconds" : 0.061666999999999916,
+          "name" : "containerParse"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "metadata"
+        },
+        {
+          "milliseconds" : 32.402040999999997,
+          "name" : "entropyDecode"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "unpack"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "predictor"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "calibration"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "postprocess"
+        },
+        {
+          "milliseconds" : 1.9755409999999642,
+          "name" : "gpuUpload"
+        },
+        {
+          "milliseconds" : 15.127876000000015,
+          "name" : "gpuCompute"
+        },
+        {
+          "milliseconds" : 9.2393749999998818,
+          "name" : "gpuDownload"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "preview"
+        }
+      ]
+    },
+    {
+      "availableThreads" : 16,
+      "decoderBackend" : "CPU NEON x16 threads",
+      "inputBytes" : 69488640,
+      "nativeWallMilliseconds" : 86.248291999999992,
+      "outputBytes" : 361304064,
+      "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+      "stages" : [
+        {
+          "milliseconds" : 0.064583999999968,
+          "name" : "containerParse"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "metadata"
+        },
+        {
+          "milliseconds" : 33.302208999999948,
+          "name" : "entropyDecode"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "unpack"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "predictor"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "calibration"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "postprocess"
+        },
+        {
+          "milliseconds" : 2.4277500000000032,
+          "name" : "gpuUpload"
+        },
+        {
+          "milliseconds" : 34.546291999999994,
+          "name" : "gpuCompute"
+        },
+        {
+          "milliseconds" : 15.63512499999996,
+          "name" : "gpuDownload"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "preview"
+        }
+      ]
+    },
+    {
+      "availableThreads" : 16,
+      "decoderBackend" : "CPU NEON x16 threads",
+      "inputBytes" : 69488640,
+      "nativeWallMilliseconds" : 8.435416,
+      "outputBytes" : 6144,
+      "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+      "stages" : [
+        {
+          "milliseconds" : 0.097165999999999988,
+          "name" : "containerParse"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "metadata"
+        },
+        {
+          "milliseconds" : 1.4021670000000002,
+          "name" : "entropyDecode"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "unpack"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "predictor"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "calibration"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "postprocess"
+        },
+        {
+          "milliseconds" : 0.0012080000000000979,
+          "name" : "gpuUpload"
+        },
+        {
+          "milliseconds" : 3.8155009999999985,
+          "name" : "gpuCompute"
+        },
+        {
+          "milliseconds" : 0.0058749999999996305,
+          "name" : "gpuDownload"
+        },
+        {
+          "milliseconds" : 0,
+          "name" : "preview"
+        }
+      ]
+    }
+  ],
+  "flashRawDemosaic" : 0,
+  "flashRawTextureCache" : {
+    "bytesPerPixel" : 8,
+    "fills" : 2,
+    "hits" : 60,
+    "peakReservedBytes" : 722608128,
+    "pinnedBytes" : 0,
+    "residentBytes" : 0
+  },
+  "latestFlashRawDecode" : {
+    "availableThreads" : 16,
+    "decoderBackend" : "CPU NEON x16 threads",
+    "inputBytes" : 69488640,
+    "nativeWallMilliseconds" : 59.899499999999989,
+    "outputBytes" : 361304064,
+    "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated), kernel 14.79 ms",
+    "stages" : [
+      {
+        "milliseconds" : 0.061666999999999916,
+        "name" : "containerParse"
+      },
+      {
+        "milliseconds" : 0,
+        "name" : "metadata"
+      },
+      {
+        "milliseconds" : 32.402040999999997,
+        "name" : "entropyDecode"
+      },
+      {
+        "milliseconds" : 0,
+        "name" : "unpack"
+      },
+      {
+        "milliseconds" : 0,
+        "name" : "predictor"
+      },
+      {
+        "milliseconds" : 0,
+        "name" : "calibration"
+      },
+      {
+        "milliseconds" : 0,
+        "name" : "postprocess"
+      },
+      {
+        "milliseconds" : 1.9755409999999642,
+        "name" : "gpuUpload"
+      },
+      {
+        "milliseconds" : 15.127876000000015,
+        "name" : "gpuCompute"
+      },
+      {
+        "milliseconds" : 9.2393749999998818,
+        "name" : "gpuDownload"
+      },
+      {
+        "milliseconds" : 0,
+        "name" : "preview"
+      }
+    ]
+  },
+  "measurements" : [
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.580667,
+      "interactiveMilliseconds" : [
+        156.120667,
+        2.0192909999999999,
+        6.580667
+      ],
+      "label" : "neutral",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 254.53579199999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 9.0645830000000007,
+      "interactiveMilliseconds" : [
+        9.0645830000000007,
+        5.6362500000000004,
+        9.4590409999999991
+      ],
+      "label" : "exposure-color",
+      "maximumChannelError" : 26,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 280.86295899999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 28.082916999999998,
+      "interactiveMilliseconds" : [
+        42.349834000000001,
+        28.082916999999998,
+        26.125166
+      ],
+      "label" : "adaptive-brilliance",
+      "maximumChannelError" : 25,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 4056.946625,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 16.204584000000001,
+      "interactiveMilliseconds" : [
+        24.775084,
+        13.293291999999999,
+        16.204584000000001
+      ],
+      "label" : "texture",
+      "maximumChannelError" : 21,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 736.20991600000002,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.921832999999999,
+      "interactiveMilliseconds" : [
+        15.031041,
+        11.921832999999999,
+        11.772833
+      ],
+      "label" : "clarity",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 677.16404199999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 8.9992079999999994,
+      "interactiveMilliseconds" : [
+        20.042332999999999,
+        8.9992079999999994,
+        8.7931249999999999
+      ],
+      "label" : "dehaze-v1",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1927.904125,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 15.341708000000001,
+      "interactiveMilliseconds" : [
+        15.341708000000001,
+        16.24775,
+        13.0305
+      ],
+      "label" : "dehaze-v2",
+      "maximumChannelError" : 34,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 2391.0908749999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1337,
+      "interactiveMedianMilliseconds" : 8.3911660000000001,
+      "interactiveMilliseconds" : [
+        11.494040999999999,
+        8.3911660000000001,
+        6.8265000000000002
+      ],
+      "label" : "geometry",
+      "maximumChannelError" : 211,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "settled-resampled-to-proxy",
+      "settledHeight" : 1627,
+      "settledMilliseconds" : 338.67624999999998,
+      "settledWidth" : 2400,
+      "width" : 1973
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1337,
+      "interactiveMedianMilliseconds" : 9.3938749999999995,
+      "interactiveMilliseconds" : [
+        11.588583,
+        9.1404169999999993,
+        9.3938749999999995
+      ],
+      "label" : "post-crop-vignette",
+      "maximumChannelError" : 211,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "settled-resampled-to-proxy",
+      "settledHeight" : 1627,
+      "settledMilliseconds" : 364.44512500000002,
+      "settledWidth" : 2400,
+      "width" : 1973
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 16.202458,
+      "interactiveMilliseconds" : [
+        12.183417,
+        19.03725,
+        16.202458
+      ],
+      "label" : "lens-blur-procedural",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 648.37729100000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 13.973292000000001,
+      "interactiveMilliseconds" : [
+        15.75375,
+        12.376416000000001,
+        13.973292000000001
+      ],
+      "label" : "lens-blur-device-depth",
+      "maximumChannelError" : 18,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 664.99800000000005,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 15.791667,
+      "interactiveMilliseconds" : [
+        15.791667,
+        16.468042000000001,
+        15.341082999999999
+      ],
+      "label" : "lens-blur-refine-focus",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 719.92841699999997,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 20.075165999999999,
+      "interactiveMilliseconds" : [
+        17.639624999999999,
+        20.075165999999999,
+        30.098334000000001
+      ],
+      "label" : "lens-blur-refine-blur",
+      "maximumChannelError" : 17,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 694.34566700000005,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 17.926749999999998,
+      "interactiveMilliseconds" : [
+        17.926749999999998,
+        18.040875,
+        16.039124999999999
+      ],
+      "label" : "lens-blur-refine-auto-mask",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 705.37933299999997,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 9.3283330000000007,
+      "interactiveMilliseconds" : [
+        14.648417,
+        9.1646660000000004,
+        9.3283330000000007
+      ],
+      "label" : "lens-blur-bokeh-bubble",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 430.85287499999998,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 7.4627910000000002,
+      "interactiveMilliseconds" : [
+        6.6676669999999998,
+        7.556,
+        7.4627910000000002
+      ],
+      "label" : "lens-blur-bokeh-five-blade",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 320.09829100000002,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 7.4185410000000003,
+      "interactiveMilliseconds" : [
+        6.1303330000000003,
+        7.4185410000000003,
+        8.0365839999999995
+      ],
+      "label" : "lens-blur-bokeh-ring",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 337.856875,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.2190830000000004,
+      "interactiveMilliseconds" : [
+        6.2190830000000004,
+        5.8267499999999997,
+        7.392792
+      ],
+      "label" : "lens-blur-bokeh-anamorphic",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 320.82724999999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.0437079999999996,
+      "interactiveMilliseconds" : [
+        6.0437079999999996,
+        5.9077919999999997,
+        8.5081670000000003
+      ],
+      "label" : "lens-blur-cat-eye",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 308.435,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 8.4137079999999997,
+      "interactiveMilliseconds" : [
+        6.8710420000000001,
+        8.4137079999999997,
+        9.2630839999999992
+      ],
+      "label" : "lens-blur-bokeh-boost",
+      "maximumChannelError" : 39,
+      "p99ChannelError" : 1,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 329.95024999999998,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 5.1555410000000004,
+      "interactiveMilliseconds" : [
+        4.8985830000000004,
+        7.8007920000000004,
+        5.1555410000000004
+      ],
+      "label" : "lens-blur-depth-preview",
+      "maximumChannelError" : 120,
+      "p99ChannelError" : 0,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 575.25850000000003,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.349041,
+      "interactiveMilliseconds" : [
+        11.925167,
+        11.349041,
+        10.145167000000001
+      ],
+      "label" : "local-glow",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 745.53066699999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.0160410000000004,
+      "interactiveMilliseconds" : [
+        8.1456669999999995,
+        5.5064169999999999,
+        6.0160410000000004
+      ],
+      "label" : "bw-mixer",
+      "maximumChannelError" : 19,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 371.695041,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.6709160000000001,
+      "interactiveMilliseconds" : [
+        6.6709160000000001,
+        6.9885830000000002,
+        5.4561659999999996
+      ],
+      "label" : "point-variance",
+      "maximumChannelError" : 36,
+      "p99ChannelError" : 12,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 386.85645799999998,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.1249580000000003,
+      "interactiveMilliseconds" : [
+        6.1249580000000003,
+        7.7243329999999997,
+        5.9945000000000004
+      ],
+      "label" : "targeted-hsl",
+      "maximumChannelError" : 22,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 343.52395799999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 9.6952079999999992,
+      "interactiveMilliseconds" : [
+        13.975958,
+        9.6952079999999992,
+        9.3922089999999994
+      ],
+      "label" : "visualise-range",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 0,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 309.13041700000002,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 12.00525,
+      "interactiveMilliseconds" : [
+        11.767917000000001,
+        12.00525,
+        13.166791
+      ],
+      "label" : "hue-isolation",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 0,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 349.91008299999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 5.155875,
+      "interactiveMilliseconds" : [
+        5.5505000000000004,
+        5.155875,
+        4.1209579999999999
+      ],
+      "label" : "clipping-shadows",
+      "maximumChannelError" : 53,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 762.98729200000002,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 5.7845839999999997,
+      "interactiveMilliseconds" : [
+        5.9776249999999997,
+        5.0671249999999999,
+        5.7845839999999997
+      ],
+      "label" : "clipping-highlights",
+      "maximumChannelError" : 69,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 737.46866699999998,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 5.5727080000000004,
+      "interactiveMilliseconds" : [
+        8.3388329999999993,
+        5.5727080000000004,
+        4.189584
+      ],
+      "label" : "wb-flash-preset",
+      "maximumChannelError" : 21,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 394.17737499999998,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 7.3802500000000002,
+      "interactiveMilliseconds" : [
+        7.3802500000000002,
+        11.505000000000001,
+        6.9943749999999998
+      ],
+      "label" : "refine-saturation",
+      "maximumChannelError" : 25,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 393.61033300000003,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 4.7456250000000004,
+      "interactiveMilliseconds" : [
+        5.928166,
+        4.7456250000000004,
+        4.6249589999999996
+      ],
+      "label" : "point-curve-targeted",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 435.01037500000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 4.9551249999999998,
+      "interactiveMilliseconds" : [
+        7.7316250000000002,
+        4.9551249999999998,
+        4.7534590000000003
+      ],
+      "label" : "defringe",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 393.80362500000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 7.8294160000000002,
+      "interactiveMilliseconds" : [
+        7.8683329999999998,
+        7.8294160000000002,
+        7.7552089999999998
+      ],
+      "label" : "point-color-samples",
+      "maximumChannelError" : 25,
+      "p99ChannelError" : 18,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 408.49824999999998,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 5.96875,
+      "interactiveMilliseconds" : [
+        12.235917000000001,
+        5.8974169999999999,
+        5.96875
+      ],
+      "label" : "local-point-color",
+      "maximumChannelError" : 21,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 691.49087499999996,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 4.7161249999999999,
+      "interactiveMilliseconds" : [
+        6.7203749999999998,
+        4.6452499999999999,
+        4.7161249999999999
+      ],
+      "label" : "local-light-extended",
+      "maximumChannelError" : 21,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 802.18499999999995,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 9.2414579999999997,
+      "interactiveMilliseconds" : [
+        7.9744169999999999,
+        9.2414579999999997,
+        10.148125
+      ],
+      "label" : "local-wb",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 946.51991599999997,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 5.0664579999999999,
+      "interactiveMilliseconds" : [
+        5.7895000000000003,
+        5.0664579999999999,
+        4.5529999999999999
+      ],
+      "label" : "local-hue-colorize",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 820.10050000000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 21.170750000000002,
+      "interactiveMilliseconds" : [
+        27.748957999999998,
+        21.170750000000002,
+        18.807583000000001
+      ],
+      "label" : "local-texture-clarity",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 2134.7022910000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 10.280875,
+      "interactiveMilliseconds" : [
+        14.987959,
+        10.057584,
+        10.280875
+      ],
+      "label" : "local-dehaze",
+      "maximumChannelError" : 44,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1238.7743330000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 4.939959,
+      "interactiveMilliseconds" : [
+        11.351209000000001,
+        4.939959,
+        4.8601669999999997
+      ],
+      "label" : "local-grain",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 984.50254199999995,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 8.9777500000000003,
+      "interactiveMilliseconds" : [
+        8.9777500000000003,
+        7.467333,
+        9.1600000000000001
+      ],
+      "label" : "local-curves",
+      "maximumChannelError" : 21,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1039.365458,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 7.6925420000000004,
+      "interactiveMilliseconds" : [
+        7.6925420000000004,
+        7.0802500000000004,
+        9.779083
+      ],
+      "label" : "local-grading",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1056.0288330000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 23.944583999999999,
+      "interactiveMilliseconds" : [
+        66.919833999999994,
+        23.944583999999999,
+        22.520624999999999
+      ],
+      "label" : "local-detail",
+      "maximumChannelError" : 91,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1665.0042920000001,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.902917,
+      "interactiveMilliseconds" : [
+        11.902917,
+        10.936875000000001,
+        14.660708
+      ],
+      "label" : "local-defringe",
+      "maximumChannelError" : 20,
+      "p99ChannelError" : 2,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1308.916416,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.125624999999999,
+      "interactiveMilliseconds" : [
+        13.403582999999999,
+        11.125624999999999,
+        8.7674579999999995
+      ],
+      "label" : "global-sharpen-detail",
+      "maximumChannelError" : 163,
+      "p99ChannelError" : 13,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 845.00137500000005,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 47.176250000000003,
+      "interactiveMilliseconds" : [
+        111.90320800000001,
+        47.176250000000003,
+        45.101792000000003
+      ],
+      "label" : "global-sharpen-mask-preview",
+      "maximumChannelError" : 1,
+      "p99ChannelError" : 0,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 1391.730333,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 11.286417,
+      "interactiveMilliseconds" : [
+        11.581792,
+        11.286417,
+        8.8474170000000001
+      ],
+      "label" : "global-noise-detail",
+      "maximumChannelError" : 25,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 827.16179199999999,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 6.7800830000000003,
+      "interactiveMilliseconds" : [
+        6.7800830000000003,
+        6.8650419999999999,
+        6.3387079999999996
+      ],
+      "label" : "optics-ca-distortion",
+      "maximumChannelError" : 125,
+      "p99ChannelError" : 7,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 743.62520800000004,
+      "settledWidth" : 2400,
+      "width" : 2400
+    },
+    {
+      "approximate" : true,
+      "effectiveDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+      "height" : 1600,
+      "interactiveMedianMilliseconds" : 4.1956660000000001,
+      "interactiveMilliseconds" : [
+        8.6683330000000005,
+        4.1956660000000001,
+        4.1020000000000003
+      ],
+      "label" : "optics-lens-profile",
+      "maximumChannelError" : 51,
+      "p99ChannelError" : 3,
+      "qualityComparison" : "matched-pixels",
+      "settledHeight" : 1600,
+      "settledMilliseconds" : 685.45216700000003,
+      "settledWidth" : 2400,
+      "width" : 2400
+    }
+  ],
+  "policy" : "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=1073741824",
+  "prewarming" : true,
+  "proxyVersion" : "actual-parameters-linear-proxy-v3-flashraw-neutral\/integral-noise-snap-v1\/filter-global-v1\/point-cache-retract-v1\/sharpen-noise-detail-v1",
+  "rawBaseCacheBytes" : 1073741824,
+  "schemaVersion" : 1,
+  "sourceDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourceOverlayVersion" : "flashraw-native-hue-sharpen-mask\/source-lattice-local-grain-v1",
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "transparentFrameFailures" : [
+
+  ]
+}

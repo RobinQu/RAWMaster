@@ -26,9 +26,39 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     return .init(bitmapData:pixels.withUnsafeBytes{Data($0)},bytesPerRow:32*16,size:.init(width:32,height:24),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
   }
   private func proxy(_ ledger:ThumbnailLedger,_ device:MTLDevice)throws->ThumbnailProxy {
+    try proxy(input(),ledger,device)
+  }
+  private func proxy(_ image:CIImage,_ ledger:ThumbnailLedger,_ device:MTLDevice)throws->ThumbnailProxy {
     let s=try ThumbnailSurface(width:32,height:24,float:true,kind:.proxy,ledger:ledger,device:device)
-    try DevelopmentThumbnailEngine.withContext(ledger:ledger,device:device){try s.fill(input(),context:$0)};s.finishProducer()
+    try DevelopmentThumbnailEngine.withContext(ledger:ledger,device:device){try s.fill(image,context:$0)};s.finishProducer()
     return .init(surface:s,fingerprint:String(repeating:"b",count:64),sourceBinding:source,sourceGeneration:1,sourceIsRAW:false,bakedBaseEV:0,preparationNanoseconds:0,cold:true)
+  }
+  private func rgba(_ image:CGImage,width:Int,height:Int)throws->[UInt8] {
+    let data=try XCTUnwrap(image.dataProvider?.data) as Data,row=image.bytesPerRow
+    return try data.withUnsafeBytes{bytes in
+      let base=try XCTUnwrap(bytes.baseAddress)
+      var result=[UInt8]();result.reserveCapacity(width*height*4)
+      for y in 0..<height {result.append(contentsOf:UnsafeRawBufferPointer(start:base.advanced(by:y*row),count:width*4))}
+      return result
+    }
+  }
+  private func compareManagedTile(_ request:DevelopmentThumbnailRequest,index:Int,proxy:ThumbnailProxy,
+                                  ledger:ThumbnailLedger,device:MTLDevice,maximumError:Int = 3)throws {
+    let legacy=try DevelopmentThumbnailEngine.tile(request,index:index,scalars:nil,proxy:proxy,ledger:ledger,device:device)
+    defer{legacy.0.retire()}
+    let reference=try ThumbnailImageBacking(copying:legacy.0,tile:legacy.1,ledger:ledger,kind:.filters)
+    defer{reference.detach()}
+    let actual=try DevelopmentThumbnailEngine.managedTile(request,index:index,scalars:nil,proxy:proxy,ledger:ledger,device:device)
+    defer{actual.0.detach()}
+    XCTAssertEqual(actual.1.width,legacy.1.width);XCTAssertEqual(actual.1.height,legacy.1.height)
+    let expectedBytes=try rgba(reference.getImage(),width:legacy.1.width,height:legacy.1.height)
+    let actualBytes=try rgba(actual.0.getImage(),width:actual.1.width,height:actual.1.height)
+    XCTAssertEqual(actualBytes.count,expectedBytes.count)
+    var largest=0,different=0
+    for (a,b) in zip(actualBytes,expectedBytes) {
+      let error=abs(Int(a)-Int(b));largest=max(largest,error);if error != 0{different+=1}
+    }
+    XCTAssertLessThanOrEqual(largest,maximumError,"filter=\(DevelopmentThumbnailEngine.filterOrder[index]), differingBytes=\(different)")
   }
   private func device()throws->MTLDevice{guard let d=MTLCreateSystemDefaultDevice()else{throw XCTSkip("Actual Metal unavailable")};return d}
   func testDetailBasisKeepsActualDetailAndDoesNotRelaxDefaultOrPrimaryRole()throws {
@@ -72,6 +102,25 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
       }
     }
   }
+  func testActiveFilterIsAppliedExactlyOnceAtGlobalStage()throws {
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.contains(.vivid)else{throw XCTSkip("Bundled Vivid unavailable")}
+    let ledger=ThumbnailLedger(),d=try device(),base=try proxy(ledger,d);defer{base.surface.retire()}
+    var p=DevelopmentAdjustmentsV3();p.filter = .init(enabled:true,selection:.vivid,intensity:37)
+    let recipe=DevelopmentRecipe(adjustmentsV3:p)
+    try DevelopmentThumbnailEngine.withContext(ledger:ledger,device:d){context in
+      let global=try DevelopmentGlobalEngineV3.apply(p,to:input(),sourceIsRAW:false)
+      let expected=try DevelopmentPhotoFilterEngineV3.apply(p.filter,to:global)
+      var control=[SIMD4<Float>]()
+      try DevelopmentLocalEngineV3.read(expected,rect:expected.extent,context:context){control=Array($0)}
+      try DevelopmentThumbnailEngine.withSuffix(recipe,proxy:base,context:context,geometry:false,
+        ledger:ledger,expectedResourceVersion:version){image in
+        try DevelopmentLocalEngineV3.read(image,rect:image.extent,context:context){actual in
+          XCTAssertEqual(actual.count,control.count)
+          for i in actual.indices{for c in 0..<4{XCTAssertEqual(actual[i][c],control[i][c],accuracy:2e-4)}}
+        }
+      }
+    }
+  }
   func testUniformScaleUsesNativeCoreGeometryWithoutRoundedAxisStretch()throws {
     let s=256.0/9504,content=CGSize(width:9504*s,height:6336*s)
     XCTAssertNotEqual(content.height,ceil(content.height))
@@ -80,6 +129,23 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     XCTAssertLessThanOrEqual(max(a.layout.width,a.layout.height),128)
     XCTAssertEqual(a.mapping,try g.mapping(sourceSize:.init(width:9504,height:6336)))
     XCTAssertEqual(a.transform.a/a.mapping.forwardMatrix[0],a.outputScale/s,accuracy:1e-12)
+  }
+  func testNearIntegralProxyDimensionsSnapWithoutChangingOrdinaryCeil()throws {
+    XCTAssertEqual(9504*(192.0/9504),192.00000000000003)
+    XCTAssertEqual(try PreviewInteractiveProxyV3.scaledPixelDimension(9504,scale:192.0/9504),192)
+    XCTAssertEqual(try PreviewInteractiveProxyV3.scaledPixelDimension(10,scale:0.123),2)
+    XCTAssertThrowsError(try PreviewInteractiveProxyV3.scaledPixelDimension(10,scale:0))
+    for target in [128,192,256,2400] {
+      let size=CGSize(width:9504,height:6336),scale=Double(target)/9504
+      let geometry=try PreviewInteractiveProxyV3.geometry(.init(),nativeSize:size,inputScale:scale,maxPixel:target)
+      XCTAssertEqual(max(geometry.layout.width,geometry.layout.height),target)
+      if target==192 {XCTAssertEqual(geometry.layout.width,192);XCTAssertEqual(geometry.layout.height,128)}
+      let pointwise=try PreviewNativePointwiseV1.layout(recipe:.init(adjustmentsV3:.init()),size:size,maxPixel:target)
+      XCTAssertEqual(max(pointwise.width,pointwise.height),target)
+    }
+    let portrait=CGSize(width:6336,height:9504)
+    let geometry=try PreviewInteractiveProxyV3.geometry(.init(),nativeSize:portrait,inputScale:192.0/9504,maxPixel:192)
+    XCTAssertEqual(geometry.layout.width,128);XCTAssertEqual(geometry.layout.height,192)
   }
   func testActualTenFilterProducerUsesResourceVersionAndNeverNeedsSummaryScalars()throws {
     let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
@@ -111,6 +177,83 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     XCTAssertGreaterThanOrEqual(ledger.snapshot().peakUnionBytes,8*1024*1024)
     XCTAssertLessThanOrEqual(ledger.snapshot().peakUnionBytes,DevelopmentThumbnailBudgetV1.totalBytes)
   }
+  func testFilterContentKeyIgnoresOnlyFilterAndRevisionButNotActualCandidateInputs()throws {
+    let binding=source,recipe=DevelopmentRecipe(adjustmentsV3:.init())
+    let first=try request(recipe)
+    let originalKey=try DevelopmentThumbnailContentKeyV1.filters(first,source:binding,sourceIsRAW:false)
+    var filtered=recipe;filtered.adjustmentsV3!.filter = .init(enabled:true,selection:.vivid,intensity:37)
+    let second=try request(filtered)
+    XCTAssertEqual(try DevelopmentThumbnailContentKeyV1.filters(second,source:binding,sourceIsRAW:false),originalKey)
+    var changed=recipe;changed.adjustmentsV3!.color = .init(enabled:true,saturation:0.2)
+    XCTAssertNotEqual(try DevelopmentThumbnailContentKeyV1.filters(try request(changed),source:binding,sourceIsRAW:false),originalKey)
+    let revisionRequest=DevelopmentThumbnailRequest(registration:first.registration,
+      preview:.init(sessionID:first.preview.sessionID,sourceGeneration:first.preview.sourceGeneration,
+        consumerID:first.preview.consumerID,role:.primary,revision:99,recipe:recipe,quality:.settled,
+        viewport:first.preview.viewport),expectedRecipeFingerprint:first.expectedRecipeFingerprint,
+      kind:.filters,target:.filters192,expectedPhotoFilterResourceVersion:first.expectedPhotoFilterResourceVersion)
+    XCTAssertEqual(try DevelopmentThumbnailContentKeyV1.filters(revisionRequest,source:binding,sourceIsRAW:false),originalKey)
+  }
+  func testManagedTenFilterPixelsMatchLegacyGPUSRGBIncludingMonoNoirAndAlpha()throws {
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let ledger=ThumbnailLedger(),d=try device(),base=try proxy(ledger,d)
+    let r=try request(DevelopmentRecipe(adjustmentsV3:.init()),version:version)
+    for index in DevelopmentThumbnailEngine.filterOrder.indices {
+      try autoreleasepool{try compareManagedTile(r,index:index,proxy:base,ledger:ledger,device:d)}
+    }
+    base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
+  }
+  func testManagedHDRAndNegativePixelsMatchLegacyClampedSRGB()throws {
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let pixels=(0..<(32*24)).map{i->SIMD4<Float> in
+      let a:Float=i%31==0 ? 0:(i%29==0 ? 0.5:1)
+      return .init((i%7==0 ? 3.5:0.25)*a,(i%11==0 ? -0.75:0.4)*a,(i%13==0 ? 1.25:0.1)*a,a)
+    }
+    let image=CIImage(bitmapData:pixels.withUnsafeBytes{Data($0)},bytesPerRow:32*16,size:.init(width:32,height:24),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+    let ledger=ThumbnailLedger(),d=try device(),base=try proxy(image,ledger,d)
+    let r=try request(DevelopmentRecipe(adjustmentsV3:.init()),version:version)
+    for index in [0,1,7,9] {try autoreleasepool{try compareManagedTile(r,index:index,proxy:base,ledger:ledger,device:d)}}
+    base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
+  }
+  func testManagedConversionMatchesLegacyAtNonCatalogIntensity()throws {
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let ledger=ThumbnailLedger(),d=try device(),base=try proxy(ledger,d)
+    try DevelopmentThumbnailEngine.withContext(ledger:ledger,device:d){context in
+      for look in [DevelopmentPhotoFilterV3.vivid,.mono,.noir] {
+        var p=DevelopmentAdjustmentsV3();p.filter = .init(enabled:true,selection:look,intensity:37.5)
+        try DevelopmentThumbnailEngine.withSuffix(DevelopmentRecipe(adjustmentsV3:p),proxy:base,context:context,geometry:true,ledger:ledger,expectedResourceVersion:version,deferValidation:true){image in
+          let actual=try DevelopmentThumbnailEngine.managedRGBA8(image,context:context,ledger:ledger)
+          let owner=try ThumbnailSurface(width:actual.width,height:actual.height,float:false,kind:.filters,ledger:ledger,device:d)
+          defer{owner.finishProducer();owner.retire()}
+          try owner.fill(image,context:context);owner.finishProducer()
+          var largest=0
+          try owner.withRGBA8Pixels{pointer,row in
+            for y in 0..<actual.height {
+              let expected=UnsafeRawBufferPointer(start:pointer.advanced(by:y*row),count:actual.width*4)
+              for x in 0..<actual.width*4 {largest=max(largest,abs(Int(actual.bytes[y*actual.width*4+x])-Int(expected[x])))}
+            }
+          }
+          XCTAssertLessThanOrEqual(largest,3,"look=\(look)")
+        }
+      }
+    }
+    base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
+  }
+  func testManagedTileRejectsNonfiniteComponentsAndInvalidAlpha()throws {
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let d=try device(),r=try request(DevelopmentRecipe(adjustmentsV3:.init()),version:version)
+    for bad in [SIMD4<Float>(.nan,0.2,0.3,1),.init(0.1,.infinity,0.3,1),.init(0.1,0.2,0.3,.nan),.init(0.1,0.2,0.3,-0.01),.init(0.1,0.2,0.3,1.01)] {
+      try autoreleasepool {
+        let ledger=ThumbnailLedger()
+        var pixels=[SIMD4<Float>](repeating:.init(0.2,0.3,0.4,1),count:32*24);pixels[17]=bad
+        let image=CIImage(bitmapData:pixels.withUnsafeBytes{Data($0)},bytesPerRow:32*16,size:.init(width:32,height:24),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+        let base=try proxy(image,ledger,d)
+        XCTAssertThrowsError(try DevelopmentThumbnailEngine.managedTile(r,index:0,scalars:nil,proxy:base,ledger:ledger,device:d)) {
+          XCTAssertEqual($0 as? DevelopmentThumbnailError,.invalidEncoding)
+        }
+        base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
+      }
+    }
+  }
   func testCurrentDetailNeedsDeliveredPrimaryWitnessAndNewIntentInvalidatesIt()async throws {
     let root=FileManager.default.temporaryDirectory.appendingPathComponent("B7b-authority-"+UUID().uuidString)
     try FileManager.default.createDirectory(at:root,withIntermediateDirectories:true);defer{try?FileManager.default.removeItem(at:root)}
@@ -125,6 +268,17 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     // Controlled main-render seam proves only authority state, not native1:1 pixel quality.
     let service=DevelopmentPreviewService(renderOverride:{_,_ in .init(image:display,nativeSize:.init(width:32,height:24),outputSize:.init(width:32,height:24),bytes:3072)})
     let info=try await service.open(source:.raw(snapshot)),cid=PreviewConsumerID(),recipe=DevelopmentRecipe(adjustmentsV3:.init())
+    if let version=DevelopmentPhotoFilterEngineV3.capabilities().resourceVersion {
+      let independent=DevelopmentThumbnailRequest(registration:.init(visibleGeneration:1),
+        preview:.init(sessionID:info.id,sourceGeneration:info.sourceGeneration,consumerID:cid,role:.primary,
+          revision:1,recipe:recipe,quality:.settled,viewport:.init(maxPixel:2400)),
+        expectedRecipeFingerprint:try EditingFingerprint.of(recipe),kind:.filters,target:.filters192,
+        presentationMode:.managedImage,expectedPhotoFilterResourceVersion:version)
+      let generated=try await service.thumbnails(independent,progress:{_ in})
+      XCTAssertEqual(generated.descriptor.tiles.count,10)
+      let adopted=try await service.adoptThumbnailPresentation(generated,registration:independent.registration)
+      await service.releaseThumbnailPresentation(adopted,registration:independent.registration)
+    }
     let detail=DevelopmentPreviewRequest(sessionID:info.id,sourceGeneration:info.sourceGeneration,consumerID:cid,role:.primary,revision:1,recipe:recipe,quality:.detail,viewport:.init(maxPixel:0))
     let r=DevelopmentThumbnailRequest(registration:.init(visibleGeneration:1),preview:detail,expectedRecipeFingerprint:try EditingFingerprint.of(recipe),kind:.summary(.color),target:.summary128,basis:.currentCanonical)
     do{_=try await service.thumbnails(r,progress:{_ in});XCTFail("No primary frame witness")}catch{XCTAssertEqual(error as? DevelopmentThumbnailError,.awaitingSource)}

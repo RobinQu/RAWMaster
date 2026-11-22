@@ -1,0 +1,366 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "adapter": "BrowserWebGpu:  ( )",
+  "adapterInfo": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "rawSize": [
+    9504,
+    6336
+  ],
+  "rawOpenMs": 1096.9,
+  "rawDecodeMs": 957,
+  "rawDevelopMs": 61,
+  "target": {
+    "kind": "image",
+    "maxSize": 2400,
+    "exact": true
+  },
+  "samples": 20,
+  "verification": "SHA-256 of a 96 × 64 grid of finite linear RGB half-float triplets with at least 98% opaque samples. Every accepted edit changes the grid relative to its previous trial. Each continuous edit must also differ from the fixed reference. Discrete paired edits must return to the reference digest exactly when restoring its setting.",
+  "operations": [
+    {
+      "id": "color-mask-hue",
+      "featureIds": [
+        "color-mask-hue"
+      ],
+      "field": "wheels.hue",
+      "fixed": {
+        "wheels.hue": 50
+      },
+      "localMask": true,
+      "trials": [
+        {
+          "phase": "first-in-session",
+          "value": 10,
+          "ms": 227.65,
+          "digest": "3c5f2b58c9f5dd5882a01f956202e2c9e03df0fa01c6eee92ee5706755fe4ee5",
+          "regions": {
+            "all": "3c5f2b58c9f5dd5882a01f956202e2c9e03df0fa01c6eee92ee5706755fe4ee5",
+            "inside": "13eaf3fc791d222dd4bf326710ed07dd5ab7ec78bfbca3b9cd59aba545e32f6f",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 90,
+          "ms": 3.25,
+          "digest": "5ebf6ca8f868cc3ebd80f7624db67f51d07fc3c6f1e7c91086731327b7e0031a",
+          "regions": {
+            "all": "5ebf6ca8f868cc3ebd80f7624db67f51d07fc3c6f1e7c91086731327b7e0031a",
+            "inside": "36a6c9f33000900d4f79ae8b4437c6123afbfa98ea7d43e5335d3a81e8f78767",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 14,
+          "ms": 2.495,
+          "digest": "c9df5679de3da8ba71e7d83b70e1dc2b5da8037b6515048b761744b4e77de476",
+          "regions": {
+            "all": "c9df5679de3da8ba71e7d83b70e1dc2b5da8037b6515048b761744b4e77de476",
+            "inside": "c964675f11ceafae94489716e36318c9a3b6f1c36ca91733f5df003c463c379b",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 86,
+          "ms": 2.575,
+          "digest": "ab968b73d317a7351200a46e6df4135e6de99065eb45355f7805dfb5babc54ca",
+          "regions": {
+            "all": "ab968b73d317a7351200a46e6df4135e6de99065eb45355f7805dfb5babc54ca",
+            "inside": "ee2dca77a121ff19a3eb0359a4b37c28e7e64428b3f9eecb9c0c0bc6640dece9",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 18,
+          "ms": 2.365,
+          "digest": "2883ce364fa2406e839add1cd2c2500073f3477ff70469aba4ae7f41bb077083",
+          "regions": {
+            "all": "2883ce364fa2406e839add1cd2c2500073f3477ff70469aba4ae7f41bb077083",
+            "inside": "65c0f5c53efdf09debcf5b9ff937f5a02e856336ae49ae74b3c31777a6d03ae1",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 82,
+          "ms": 2.255,
+          "digest": "9f8bde13c09a49fd93043296792b1967df3c05dc0e7a238c8970f173528cd051",
+          "regions": {
+            "all": "9f8bde13c09a49fd93043296792b1967df3c05dc0e7a238c8970f173528cd051",
+            "inside": "0cbd99402524912ede951ba3d12083ec1898f46939bf2ba4a2ee8ed2a6889cba",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 22,
+          "ms": 2.4,
+          "digest": "ba43031a562b32b24d92b33bacb0eb519139df11cfbcc8e0c8775910144fb9f2",
+          "regions": {
+            "all": "ba43031a562b32b24d92b33bacb0eb519139df11cfbcc8e0c8775910144fb9f2",
+            "inside": "4a977ec1e48e3d4e29ea14204900594e5e529ca77f7782e2c7b81a1ebf691c06",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 78,
+          "ms": 2.51,
+          "digest": "47c7cc9932b4ba9ac9afa0a39ddf1ac712090f1caab221bdd387a47105ab2f29",
+          "regions": {
+            "all": "47c7cc9932b4ba9ac9afa0a39ddf1ac712090f1caab221bdd387a47105ab2f29",
+            "inside": "5124f717c010429553ee06bb4f267ed40dbe6485f2876488e147c1b089705413",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 26,
+          "ms": 2.425,
+          "digest": "7c98df5d7733eb3562e0a385a2534afbf8db762d623e4020b4e409660a5f1072",
+          "regions": {
+            "all": "7c98df5d7733eb3562e0a385a2534afbf8db762d623e4020b4e409660a5f1072",
+            "inside": "4573c5fdad1257222e699e9b068d9c5063e1f2b91b95bc45789e2a7aa8a01e95",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 74,
+          "ms": 2.36,
+          "digest": "f2499c5a031b1cc9692cabae1138826be0ed59f5ed7128f3db8be3e121c1c006",
+          "regions": {
+            "all": "f2499c5a031b1cc9692cabae1138826be0ed59f5ed7128f3db8be3e121c1c006",
+            "inside": "0533f0d3ed0b2b0c6c1c555019cd7241059b2c951e3d3b07d638bed315e1c69d",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 30,
+          "ms": 2.395,
+          "digest": "0d1781faf11e525d6416c176c7c6292fc7f7dd8474e8230c12bab996a5fe233e",
+          "regions": {
+            "all": "0d1781faf11e525d6416c176c7c6292fc7f7dd8474e8230c12bab996a5fe233e",
+            "inside": "6b7262a4510a9359b9b36c94b220ad376c233b9fcc53f938e39a8905ffad1030",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 70,
+          "ms": 2.345,
+          "digest": "cbc4063099886b92bb3cc34a7e34e70c6f7a18c966fa4aa13811915f1c1b51a9",
+          "regions": {
+            "all": "cbc4063099886b92bb3cc34a7e34e70c6f7a18c966fa4aa13811915f1c1b51a9",
+            "inside": "57e0268a3b62bb1c4c469a815adfc2c38f6f6fa4c51303b6185337e997407cff",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 34,
+          "ms": 2.225,
+          "digest": "1513bfdcecd3ce9f2af4470fa12e2149c82ee7fd745fed977a02a4db31df26cd",
+          "regions": {
+            "all": "1513bfdcecd3ce9f2af4470fa12e2149c82ee7fd745fed977a02a4db31df26cd",
+            "inside": "8582eeba2189e194321649ec1b47a18740eb6ae994904dd1797f67f0fdf26f3a",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 66,
+          "ms": 2.32,
+          "digest": "8bb3b7c7d759db6375acbde9c6caa6ab4f9f9ca9e564b9fbcf927df9efd73b8f",
+          "regions": {
+            "all": "8bb3b7c7d759db6375acbde9c6caa6ab4f9f9ca9e564b9fbcf927df9efd73b8f",
+            "inside": "e310de23d8dbae8bd49c524011c0bb4c514e279a8cbd540fd45e35bb7a591bdb",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 38,
+          "ms": 2.295,
+          "digest": "ec8b2775954ec9a3483a1ab1567796d7c66fbd8e749fbde522d9efd35fef74c7",
+          "regions": {
+            "all": "ec8b2775954ec9a3483a1ab1567796d7c66fbd8e749fbde522d9efd35fef74c7",
+            "inside": "e3e6606fa34f0540e5d1f7204191351afd51591b9622df106ca8294370683895",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 62,
+          "ms": 2.42,
+          "digest": "e4201a7d015b7077aac2ea2e83ac927b3ecb47b231cb1cd4f50d4695b4819964",
+          "regions": {
+            "all": "e4201a7d015b7077aac2ea2e83ac927b3ecb47b231cb1cd4f50d4695b4819964",
+            "inside": "f165faa0a61fa1b635274641a38f932f49efc2c3f6279fc67c78765879852511",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 42,
+          "ms": 2.3,
+          "digest": "c51215a7f255265a64e158eda326e615711416af2e406d9a2226832de097b2c5",
+          "regions": {
+            "all": "c51215a7f255265a64e158eda326e615711416af2e406d9a2226832de097b2c5",
+            "inside": "06baba4ae954d3a76ac25d8a5fef43e57f815b086dbb83b902078804853c11bf",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 58,
+          "ms": 2.38,
+          "digest": "6da54617e1a8d8fcebe139e7a5aa72c4e1bf75b1df4a38270a12658abb529edd",
+          "regions": {
+            "all": "6da54617e1a8d8fcebe139e7a5aa72c4e1bf75b1df4a38270a12658abb529edd",
+            "inside": "12c03749ddfb021c1c81d2a3bf8ef14ac1c7ae26529b6ce00fa5985713e97cc6",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 46,
+          "ms": 2.24,
+          "digest": "5d2da42d9f15a41268245be7ef6c072542cf1f156ce9d89b8c18f000e4537231",
+          "regions": {
+            "all": "5d2da42d9f15a41268245be7ef6c072542cf1f156ce9d89b8c18f000e4537231",
+            "inside": "c26cc616fa73344684981721b20fcd885fbc6acfd04138a2d79cbe61aa2f8fdb",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 54,
+          "ms": 2.205,
+          "digest": "ca73f03a136fa6cf43fcd931d900528399b1dcb8d3801f0fd8b41a89e51fcc84",
+          "regions": {
+            "all": "ca73f03a136fa6cf43fcd931d900528399b1dcb8d3801f0fd8b41a89e51fcc84",
+            "inside": "cabb22df09a3aeec59bff7543f39fbfeb55937400ffd8e9708ea3ba736d1cb04",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 51,
+          "ms": 2.265,
+          "digest": "29defd2bd557518699d10fb36ea4361043bc3a191aec21c6bc5ded8ad70a336d",
+          "regions": {
+            "all": "29defd2bd557518699d10fb36ea4361043bc3a191aec21c6bc5ded8ad70a336d",
+            "inside": "99062174826f9a2d813b58bf093f80e8bb66e609d3ec300a61d531496ddae1c0",
+            "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+            "insideCount": 416,
+            "outsideCount": 1640
+          },
+          "verified": true
+        }
+      ],
+      "change": {},
+      "referenceDigest": "644b347ac68f4aada8b7451e709f8eb9eaf07ec9389e5d2ff0366fd78718a841",
+      "referenceRegions": {
+        "all": "644b347ac68f4aada8b7451e709f8eb9eaf07ec9389e5d2ff0366fd78718a841",
+        "inside": "72fcb4b95d0bdfc10924b45fb717c77df793111acfe3c334a0312f4023a3132c",
+        "outside": "e5b843c02494e791573df3e98ad9277a264d22b4ad497ab9d6af582db9e2ae21",
+        "insideCount": 416,
+        "outsideCount": 1640
+      },
+      "texture": [
+        2400,
+        1600
+      ],
+      "status": "measured"
+    }
+  ],
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T09:11:31.460180+00:00",
+  "engineSHA256": {
+    "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "browserBinary": "chrome-headless-shell",
+  "probeSHA256": "0046aba961f809e30dd8efc1dc25e94dbc1e703ee452f035f3fd2f71f1f759d8",
+  "system": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "chip": "Apple M4 Max"
+  },
+  "boundary": "Exact output texture at the requested long side: PixelEngine.render entry to resolved PixelEngine.idle. CPU pixel verification follows timing. Excludes UI, presentation and RAW decode."
+}

@@ -53,10 +53,10 @@ extension AppModel {
         let wanted = Set(ids)
         return filteredAssets.filter { wanted.contains($0.id) }
     }
-    func openProjectExport() { guard canExport else { return }; workbenchExportContext = .project; showExport = true }
+    func openProjectExport() { guard canExport else { return }; workbenchExportContext = .project; exportWorkspacePresented = true }
     func openSelectionExport() {
         guard canExport, !actionAssetIDs.isEmpty else { return }
-        workbenchExportContext = .selection(ids: actionAssetIDs); showExport = true
+        workbenchExportContext = .selection(ids: actionAssetIDs); exportWorkspacePresented = true
     }
     func openPhotoExport() {
         guard canExport, let focusedAsset, filteredAssets.contains(where: { $0.id == focusedAsset.id }) else { return }
@@ -150,6 +150,8 @@ extension AppModel {
     }
     func openRenderedPhotoExport() {
         guard canOpenNativeEditing else { return }
+        workbenchExportContext = .photo(id:focusedID ?? "")
         editing?.prepareExport(asset: focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.id]?.fingerprint })
+        exportWorkspacePresented = true; editing?.showExport = false
     }
 }

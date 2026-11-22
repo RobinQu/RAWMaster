@@ -25,6 +25,15 @@ struct DevelopedV3Graph {
   let graphDescriptor: String
   var brilliancePublic:DevelopmentBrilliancePublicV1.Observation? = nil
   var dehazeTIFFRequestID:UUID? = nil
+  var superResolutionNativeArea:CIImage? = nil
+  /// The learned 2×2 cell exactly preserves the original linear mean. At or below
+  /// one native pixel per display pixel, area-average this first level before FIT.
+  func displayImage(scale:CGFloat) -> CIImage {
+    let source:CIImage, factor:CGFloat
+    if scale <= 0.5, let area = superResolutionNativeArea { source=area; factor=scale*2 }
+    else { source=image; factor=scale }
+    return factor == 1 ? source : source.transformed(by:.init(scaleX:factor,y:factor))
+  }
 }
 /// One v3 graph for preview, export and provider inputs. Public CI/Metal only.
 enum DevelopmentRendererV3 {
@@ -35,13 +44,13 @@ enum DevelopmentRendererV3 {
     let whiteBalance: DevelopmentWhiteBalance
     let noiseReduction: DevelopmentRAWNoiseReductionParametersV3?
     let originalDefaultsFingerprint: String?
-    init(_ payload: DevelopmentAdjustmentsV3, noiseDefaults: DevelopmentRAWNoiseReductionDefaultsV3? = nil, originalDefaultsFingerprint: String? = nil) throws {
+    init(_ payload: DevelopmentAdjustmentsV3, noiseDefaults: DevelopmentRAWNoiseReductionDefaultsV3? = nil, originalDefaultsFingerprint: String? = nil, appliesNativeNoise: Bool = true) throws {
       let ev = (payload.legacyBasis?.exposureEV ?? 0)+(payload.light.enabled ? 2*payload.light.exposure:0)
       guard ev.isFinite, Float(ev).isFinite else { throw DevelopmentV3Error.unsupportedNativeParameters }
       exposure = Float(ev)
       whiteBalance = try DevelopmentWhiteBalanceEngineV3.nativeTarget(payload.whiteBalance) ?? payload.legacyBasis?.whiteBalance ?? .asShot
       self.originalDefaultsFingerprint = originalDefaultsFingerprint
-      if payload.noiseReduction.enabled {
+      if appliesNativeNoise && payload.noiseReduction.enabled {
         guard let noiseDefaults else { throw DevelopmentV3Error.unsupportedNativeParameters }
         noiseReduction = try noiseDefaults.resolving(payload.noiseReduction)
       } else { noiseReduction = nil }
@@ -80,7 +89,7 @@ enum DevelopmentRendererV3 {
       size.width <= Double(DevelopmentLocalEditLimits.maximumSourceDimension),size.height <= Double(DevelopmentLocalEditLimits.maximumSourceDimension) else { throw DevelopmentV3Error.invalidGraph }
     struct Contract: Encodable { let version,decoder,nativeContract,stagePipeline,os:String;let originalDefaults:String?;let orientation,width,height:Int }
     let filterStage=try DevelopmentPhotoFilterEngineV3.stageIdentity()
-    let stages=[pipelineVersion,filterStage,DevelopmentSpatialEngineV3.operatorVersion,DevelopmentColorEngineV3.operatorVersion,DevelopmentGlobalEngineV3.operatorVersion,DevelopmentWhiteBalanceEngineV3.operatorVersion,DevelopmentAdvancedDetailEngineV3.operatorVersion,DevelopmentDehazeEngineV3.operatorVersion,DevelopmentLocalEngineV3.operatorVersion,"canonical-local-I0-v1/no-exact-legacy-delegate"].joined(separator:"/")
+    let stages=[pipelineVersion,filterStage,DevelopmentSpatialEngineV3.operatorVersion,DevelopmentColorEngineV3.operatorVersion,DevelopmentGlobalEngineV3.operatorVersion,DevelopmentLensBlurEngineV3.operatorVersion,DevelopmentWhiteBalanceEngineV3.operatorVersion,DevelopmentAdvancedDetailEngineV3.operatorVersion,DevelopmentDehazeEngineV3.operatorVersion,DevelopmentLocalEngineV3.operatorVersion,"canonical-local-I0-v1/no-exact-legacy-delegate"].joined(separator:"/")
     return try EditingFingerprint.of(Contract(version:"local-decoder-contract-v1",decoder:decoder,nativeContract:nativeContract,
       stagePipeline:stages,
       os:ProcessInfo.processInfo.operatingSystemVersionString,originalDefaults:originalDefaults,orientation:orientation,width:Int(size.width),height:Int(size.height)))
@@ -108,6 +117,8 @@ enum DevelopmentRendererV3 {
   static func validateSupport(_ recipe: DevelopmentRecipe, sourceIsRAW: Bool) throws {
     try recipe.validate()
     guard recipe.schemaVersion == 3, let p = recipe.adjustmentsV3 else { throw DevelopmentError.unsupportedEngine }
+    if (p.rawDecoder != nil || p.rawDetails != nil), !sourceIsRAW { throw EditingError.invalidRecipe }
+    if let model = p.aiDenoise?.model, model.usesRAWInput != sourceIsRAW { throw EditingError.invalidRecipe }
     if p.blackAndWhite.grainSamplingVersion != nil, !sourceIsRAW { throw DevelopmentV3Error.unsupportedAdjustment(.blackAndWhite) }
     if let resolved = p.whiteBalance.resolvedState, resolved.sourceCapability != (sourceIsRAW ? .raw:.image) { throw EditingError.invalidRecipe }
     if p.advancedDetail.dehaze.enabled && p.advancedDetail.dehaze.amount != 0 {
@@ -124,16 +135,17 @@ enum DevelopmentRendererV3 {
   }
   static func hasNewEffects(_ p: DevelopmentAdjustmentsV3) -> Bool {
     let nr = p.noiseReduction, g = p.geometry
-    return p.advancedDetail.hasEffects || (p.whiteBalance.enabled && p.whiteBalance.resolvedState != nil) ||
-      (p.light.enabled && p.light.exposure != 0) || DevelopmentSpatialEngineV3.isActive(p.light) ||
+    return p.superResolution != nil || p.aiDenoise != nil || p.rawDetails != nil || p.advancedDetail.hasEffects || (p.whiteBalance.enabled && p.whiteBalance.resolvedState != nil) ||
+      (p.light.enabled && p.light.exposure != 0) || p.light.clippingPreview != nil || DevelopmentSpatialEngineV3.isActive(p.light) ||
       DevelopmentColorEngineV3.pointwiseActive(p) || DevelopmentColorEngineV3.curvesActive(p.curves) || DevelopmentColorEngineV3.levelsActive(p.levels) ||
       (p.whiteBalance.enabled && (p.whiteBalance.adjustment != .asShot || (p.legacyBasis?.whiteBalance ?? .asShot) != .asShot)) ||
       (p.definition.enabled && p.definition.amount != 0) ||
-      (p.selectiveColor.enabled && p.selectiveColor.colors.contains { $0.hue != 0 || $0.saturation != 0 || $0.luminance != 0 }) ||
-      (nr.enabled && (nr.sourceCapability == .raw ? (nr.luminanceNoise != 0 || nr.colorNoise != 0 || nr.detail != 0):(nr.nonRawAmount != 0))) ||
-      (p.sharpen.enabled && p.sharpen.intensity != 0) || (p.vignette.enabled && p.vignette.strength != 0) ||
-      (p.filter.enabled && p.filter.selection != .original && p.filter.intensity != 0) ||
-      p.localEdits.operations.contains { $0.tool == .retouch ? p.localEdits.retouchEnabled:p.localEdits.redEyeEnabled } ||
+      ((p.selectiveColor.enabled && (p.selectiveColor.colors.contains { $0.hue != 0 || $0.saturation != 0 || $0.luminance != 0 || ($0.variance ?? 0) != 0 } || p.selectiveColor.pointColors?.contains(where:\.isActive) == true)) || p.selectiveColor.visualiseRange != nil || p.selectiveColor.visualiseIsolation != nil) ||
+      (nr.enabled && ((nr.sourceCapability == .raw ? (nr.luminanceNoise != 0 || nr.colorNoise != 0 || nr.detail != 0):(nr.nonRawAmount != 0)) || (nr.luminanceContrast ?? 0) != 0 || (nr.colorDetail ?? 0) != 0)) ||
+      (p.sharpen.enabled && (p.sharpen.intensity != 0 || p.sharpen.visualiseMasking == true)) || (p.vignette.enabled && p.vignette.strength != 0) ||
+      (p.filter.enabled && p.filter.selection != .original && p.filter.intensity != 0) || p.effects?.glow?.isActive == true || p.effects?.postCropVignette?.isActive == true || (p.effects?.lensBlur?.isActive == true || p.effects?.lensBlur?.visualiseDepth == true) ||
+      p.optics?.isActive == true || p.gradingLUTs?.isActive == true ||
+      p.localEdits.operations.contains { $0.tool == .retouch ? p.localEdits.retouchEnabled:p.localEdits.redEyeEnabled } || DevelopmentMaskEngineV3.active(p.masks) ||
       ((g.version == .adjustV3 || g.version == .projectiveV3_1) && (g.straightenDegrees != 0 || g.crop != NormalizedCrop() || g.clockwiseQuarterTurns != 0 || g.flipHorizontal || g.flipVertical || g.verticalPerspective != 0 || g.horizontalPerspective != 0 || g.lateOrientation.orientation != .identity))
   }
   private static func validateLocalSource(_ p: DevelopmentAdjustmentsV3, capture: URL, isRAW: Bool) throws {
@@ -164,7 +176,7 @@ enum DevelopmentRendererV3 {
     try recipe.validate()
     // Promotion records its historical geometry version even when a neutral legacy basis is nil.
     // A newly created adjustV3 recipe instead owns the F32 path, including its neutral state.
-    guard let p = recipe.adjustmentsV3, (p.geometry.version == .legacyV1 || p.geometry.version == .legacyV2), !hasNewEffects(p) else { return nil }
+    guard let p = recipe.adjustmentsV3, p.rawDecoder == nil, (p.geometry.version == .legacyV1 || p.geometry.version == .legacyV2), !hasNewEffects(p) else { return nil }
     return try legacyRecipe(p)
   }
   /// Only the RAW legacy-v1 analysis branch owns this short validation lifetime.
@@ -186,7 +198,15 @@ enum DevelopmentRendererV3 {
   }
   static func develop(_ capture: URL, recipe: DevelopmentRecipe, applyGeometry: Bool = true,
                       suppliedRawBase: CIImage? = nil, suppliedImageBase: DevelopmentSuppliedImageBaseV1? = nil, context suppliedContext: CIContext? = nil,
-                      thumbnailNativeSink: ((CIImage) throws -> Void)? = nil, localDecoderContractFingerprint: String? = nil, preparingLocal: Bool = false, preparingDehazeContext: DevelopmentDehazeContextV1? = nil, canonicalFiniteEvidence: PreviewCanonicalFiniteEvidenceV1? = nil, canonicalNaturalEvidence:PreviewNaturalCurveFiniteEvidenceV1? = nil, naturalFiniteObservation:PreviewNaturalCurveFiniteObservation? = nil, preparingNaturalCurvePicker: Bool = false, analysisOwnsLegacyValidationContext: Bool = false, analysisResidentInput: DevelopmentBWSummaryResidentV3.Input? = nil, brillianceQARequest:DevelopmentBrilliancePublicV1.Request? = nil, dehazeTIFFInvocation:DevelopmentDehazeTIFFInvocationV1? = nil, checkCancellation: (() throws -> Void)? = nil) throws -> DevelopedV3Graph {
+                      residentGlobalSource: FlashRawCanonicalTexturePool.Pin? = nil, residentDehazeGuide: DevelopmentResidentDehazeGuide? = nil,
+                      thumbnailNativeSink: ((CIImage) throws -> Void)? = nil, localDecoderContractFingerprint: String? = nil, preparingLocal: Bool = false, preparingDehazeContext: DevelopmentDehazeContextV1? = nil, canonicalFiniteEvidence: PreviewCanonicalFiniteEvidenceV1? = nil, canonicalNaturalEvidence:PreviewNaturalCurveFiniteEvidenceV1? = nil, naturalFiniteObservation:PreviewNaturalCurveFiniteObservation? = nil, preparingNaturalCurvePicker: Bool = false, analysisOwnsLegacyValidationContext: Bool = false, analysisResidentInput: DevelopmentBWSummaryResidentV3.Input? = nil, brillianceQARequest:DevelopmentBrilliancePublicV1.Request? = nil, dehazeTIFFInvocation:DevelopmentDehazeTIFFInvocationV1? = nil, scopeSelection: DevelopmentMaskEngineV3.ScopeSelection? = nil, checkCancellation: (() throws -> Void)? = nil) throws -> DevelopedV3Graph {
+    let performanceToken = ImagePerformanceTelemetry.shared.begin(operation: "DevelopmentRendererV3.develop",
+      stage: applyGeometry ? "完整显影图" : "分析图", queue: "显影引擎", boundary: .graphAndValidation)
+    var performanceOutcome = ImagePerformanceOutcome.failed
+    var performancePixels = 0
+    defer {
+      ImagePerformanceTelemetry.shared.end(performanceToken, outcome: performanceOutcome, pixelCount: performancePixels)
+    }
     var context:CIContext{dehazeTIFFInvocation?.currentContext ?? suppliedContext ?? DevelopmentColorEngineV3.context}
     let isRAW = PhotoRenderer.rawExtensions.contains(capture.pathExtension.lowercased())
     try validateSupport(recipe,sourceIsRAW:isRAW)
@@ -231,7 +251,7 @@ enum DevelopmentRendererV3 {
     } else if p.advancedDetail.dehaze.enabled && p.advancedDetail.dehaze.amount != 0 {
       try DevelopmentDehazeContextFactoryV1.requirePrepared(recipe,context:DevelopmentDehazeContextFactoryV1.fromCapture(capture))
     }
-    if !preparingNaturalCurvePicker, !preparingLocal, preparingDehazeContext == nil, suppliedRawBase == nil, suppliedImageBase == nil, (p.geometry.version == .legacyV1 || p.geometry.version == .legacyV2), !hasNewEffects(p) {
+    if !preparingNaturalCurvePicker, !preparingLocal, preparingDehazeContext == nil, suppliedRawBase == nil, suppliedImageBase == nil, p.rawDecoder == nil, (p.geometry.version == .legacyV1 || p.geometry.version == .legacyV2), !hasNewEffects(p) {
       var legacy = try legacyRecipe(p)
       if !applyGeometry { legacy.straightenDegrees = 0; legacy.crop = .init() }
       let value = try PhotoRenderer.develop(capture,legacy,analysisResidentInput:analysisResidentInput)
@@ -266,6 +286,9 @@ enum DevelopmentRendererV3 {
           sourceSize = orientation >= 5 ? CGSize(width:height,height:width):CGSize(width:width,height:height)
         } else { sourceSize = value.0.extent.size }
       }
+      performancePixels = Int(value.0.extent.width * value.0.extent.height)
+      performanceOutcome = .succeeded
+      try scopeSelection?.capture(value.0)
       return .init(image:value.0,sourceDepth:value.1,sourceSize:sourceSize,canonicalSize:value.0.extent.size,graphDescriptor:pipelineVersion+(analysisResidentInput == nil ? "/exact-legacy":"/"+DevelopmentBWSummaryResidentV3.version))
     }
     // Optional profile input is an already verified oriented native image, BEFORE WB/EV.
@@ -284,8 +307,16 @@ enum DevelopmentRendererV3 {
           expected == (try localDecoderFingerprint(decoder:raw.decoderVersion.rawValue,originalDefaults:decoderDefaultsFingerprint(raw),
             orientation:Int(raw.orientation.rawValue),size:original.extent.size)) else { throw DevelopmentLocalPreparationError.staleInput }
       }
-      try configure(raw,parameters:NativeParameters(p,noiseDefaults:noiseDefaults(raw),originalDefaultsFingerprint:try decoderDefaultsFingerprint(raw)))
-      guard let output = raw.outputImage else { throw DevelopmentV3Error.unsupportedNativeParameters }; image = output
+      if p.aiDenoise != nil || DevelopmentRAWSourcePolicy.usesFlashRaw(p) {
+        let neutral = try p.aiDenoise.map { try DevelopmentPhotoDenoise.neuralRAWInput(capture, settings:$0) } ?? FlashRawImageFactory.linearImage(capture: capture, rawDetails: p.rawDetails)
+        guard neutral.extent.size == raw.outputImage?.extent.size else { throw DevelopmentV3Error.invalidGraph }
+        let asShot = DevelopmentAsShotWhiteBalance(temperature: raw.neutralTemperature, tint: raw.neutralTint)
+        image = try FlashRawImageFactory.applyInputAdjustments(p, to: neutral, asShotWhiteBalance: asShot)
+      } else {
+        try configure(raw,parameters:NativeParameters(p,noiseDefaults:noiseDefaults(raw),originalDefaultsFingerprint:try decoderDefaultsFingerprint(raw)))
+        guard let output = raw.outputImage else { throw DevelopmentV3Error.unsupportedNativeParameters }
+        image = output
+      }
       try thumbnailNativeSink?(image.transformed(by:.init(translationX:-image.extent.minX,y:-image.extent.minY)))
     } else {
       let output:CIImage,originalDepth:Int
@@ -302,7 +333,8 @@ enum DevelopmentRendererV3 {
         output=decoded;originalDepth=cg.bitsPerComponent
         if newBrilliance,let profile=cg.colorSpace?.copyICCData(){brillianceInputICC=profile as Data}
       }
-      image = output; depth = originalDepth
+      image = try p.aiDenoise.map { try DevelopmentPhotoDenoise.apply($0, at: capture, to: output) } ?? output
+      depth = originalDepth
       try thumbnailNativeSink?(image.transformed(by:.init(translationX:-image.extent.minX,y:-image.extent.minY)))
       if let basis = p.legacyBasis {
         if !p.whiteBalance.enabled, case let .temperatureTint(t,v) = basis.whiteBalance { image = image.applyingFilter("CITemperatureAndTint",parameters:["inputNeutral":CIVector(x:t,y:v),"inputTargetNeutral":CIVector(x:6500,y:0)]) }
@@ -330,17 +362,23 @@ enum DevelopmentRendererV3 {
       var remainingLight=p.light;remainingLight.brilliance=0
       image = try DevelopmentSpatialEngineV3.applyLight(remainingLight,to:image)
     } else { image = try DevelopmentSpatialEngineV3.applyLight(p.light,to:image) }
+    image = try DevelopmentBlackAndWhiteMixerEngineV3.apply(p.blackAndWhite,to:image)
     image = try DevelopmentColorEngineV3.applyPointwise(p,to:image,context:context,checkCancellation:checkCancellation)
     if preparingNaturalCurvePicker {
       try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
       try checkCancellation?()
+      performancePixels = Int(image.extent.width * image.extent.height)
+      performanceOutcome = .succeeded
       return .init(image:image,sourceDepth:depth,sourceSize:sourceSize,canonicalSize:image.extent.size,
         graphDescriptor:pipelineVersion+"/"+DevelopmentNaturalCurvePickerV1.samplingVersion)
     }
     image = try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:image,canonicalNaturalEvidence:canonicalNaturalEvidence)
     if !isRAW, p.noiseReduction.enabled, p.noiseReduction.nonRawAmount != 0 { try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation) }
     image = try DevelopmentGlobalEngineV3.apply(p,to:image,sourceIsRAW:isRAW)
-    image = try DevelopmentPhotoFilterEngineV3.apply(p.filter,to:image)
+    image = try DevelopmentGlowEngineV3.apply(p.effects,to:image)
+    image = try DevelopmentPhotoFilterEngineV3.apply(p.filter,to:image,repairRAWTransportAlpha:isRAW)
+    image = try DevelopmentGradingLUTEngine.apply(p.gradingLUTs, to: image)
+    image = try DevelopmentLensBlurEngineV3.apply(p.effects?.lensBlur,to:image)
     // Only this named global-output scan may use actual worker-scoped evidence.
     // Export/analysis/default callers pass nil and execute the unchanged checked scan.
     let globalFiniteProven = try canonicalFiniteEvidence?.consumeGlobalOutput(recipe:recipe,capture:capture,
@@ -349,14 +387,22 @@ enum DevelopmentRendererV3 {
     let naturalFiniteProven = try canonicalNaturalEvidence?.consumeGlobalOutput(recipe:recipe,capture:capture,
       context:context,suppliedBase:suppliedRawBase ?? suppliedImageBase?.image,sourceIsRAW:isRAW,
       sourceSize:sourceSize,output:image,check:checkCancellation) ?? false
+    // A completed scan attests one immutable CIImage. An identity geometry can reuse the
+    // result only while that exact object survives the remaining stages.
+    var checkedImage: CIImage?
     if !globalFiniteProven && !naturalFiniteProven {
       if DevelopmentBrillianceAdaptiveV1.isActive(p.light) {
         try DevelopmentBrillianceAdaptiveV1.withOwnedFiniteValidationContext(sourceIsRAW:isRAW) { validation in
           try DevelopmentBrillianceAdaptiveV1.validateFinite(image,context:validation,checkCancellation:checkCancellation)
         }
+      } else if let residentGlobalSource, naturalFiniteObservation == nil, suppliedRawBase === residentGlobalSource.image {
+        try residentGlobalSource.validateNativeGlobalOutput(image, cancellation: checkCancellation) {
+          try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
+        }
       } else {
         try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
       }
+      checkedImage = image
       naturalFiniteObservation?.joinedGlobalScans += 1
     }
     if p.advancedDetail.hasEffects {
@@ -367,7 +413,11 @@ enum DevelopmentRendererV3 {
         sourceSize.height<=Double(DevelopmentLocalEditLimits.maximumSourceDimension) else { throw DevelopmentV3Error.invalidGraph }
       var bands=p.advancedDetail;bands.dehaze = .init() // T/C engine owns only its unchanged bands.
       image = try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,
-        sourceSize:.init(width:Int(sourceSize.width),height:Int(sourceSize.height)),context:context,checkCancellation:checkCancellation)
+        sourceSize:.init(width:Int(sourceSize.width),height:Int(sourceSize.height)),context:context,checkCancellation:checkCancellation,
+        checkedInput: checkedImage)
+      if bands.texture.enabled && bands.texture.amount != 0 || bands.clarity.enabled && bands.clarity.amount != 0 {
+        checkedImage = image
+      }
     }
     if p.advancedDetail.dehaze.enabled && p.advancedDetail.dehaze.amount != 0 {
       if let dehazeTIFFInvocation {
@@ -375,15 +425,27 @@ enum DevelopmentRendererV3 {
           sourceSize:.init(width:Int(sourceSize.width),height:Int(sourceSize.height)))
       }else{
         image = try DevelopmentDehazeEngineV3.apply(p.advancedDetail,to:image,
-          sourceSize:.init(width:Int(sourceSize.width),height:Int(sourceSize.height)),sourceIsRAW:isRAW,context:context,checkCancellation:checkCancellation)
+          sourceSize:.init(width:Int(sourceSize.width),height:Int(sourceSize.height)),sourceIsRAW:isRAW,context:context,
+          checkCancellation:checkCancellation,checkedInput:residentDehazeGuide == nil ? nil : checkedImage,
+          residentGuide:residentDehazeGuide)
+        if residentDehazeGuide != nil { checkedImage = image }
       }
     }
+    image = try DevelopmentMaskEngineV3.apply(p.masks,to:image,context:context,glow:p.effects?.glow ?? .init(),optics:p.optics,checkCancellation:checkCancellation,scopeSelection:scopeSelection)
+    if DevelopmentMaskEngineV3.active(p.masks) { checkedImage = image }
     image = try DevelopmentLocalEngineV3.apply(p.localEdits,to:image,context:context,checkCancellation:checkCancellation)
+    image = try DevelopmentGlobalEngineV3.applySharpenMaskPreview(p,to:image)
+    image = try DevelopmentLensBlurEngineV3.applyDepthPreview(p.effects?.lensBlur,to:image)
+    image = try DevelopmentGlobalEngineV3.applyClippingPreview(p,to:image)
+    var superResolutionNativeArea:CIImage?
     if applyGeometry {
       if p.geometry.version == .legacyV1 || p.geometry.version == .legacyV2 { image = try PhotoRenderer.applyV2Geometry(image,legacyRecipe(p)) }
       else {
         image = try DevelopmentGeometryEngineV3.apply(p.geometry,to:image)
-        if DevelopmentBrillianceAdaptiveV1.isActive(p.light) {
+        if image === checkedImage {
+          try Task.checkCancellation()
+          try checkCancellation?()
+        } else if DevelopmentBrillianceAdaptiveV1.isActive(p.light) {
           try DevelopmentBrillianceAdaptiveV1.withOwnedFiniteValidationContext(sourceIsRAW:isRAW) { validation in
             try DevelopmentBrillianceAdaptiveV1.validateFinite(image,context:validation,checkCancellation:checkCancellation)
           }
@@ -391,9 +453,15 @@ enum DevelopmentRendererV3 {
           try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
         }
       }
+      image = try DevelopmentPostCropVignetteEngineV3.apply(p.effects,to:image)
+      if let model = p.superResolution {
+        superResolutionNativeArea = image
+        image = try DevelopmentSuperResolution.apply(model, to:image, context:context, check:checkCancellation)
+      }
     }
     let filterIdentity = try DevelopmentPhotoFilterEngineV3.activeResourceIdentity(p.filter)
-    let filterDescriptor = filterIdentity.map { "/photo-filter:"+$0 } ?? ""
+    let filterDescriptor = (p.superResolution.map { "/" + $0.rawValue } ?? "") + (p.aiDenoise.map { "/" + $0.inputContract } ?? "") + (p.rawDetails.map { "/" + $0.rawValue } ?? "") + (filterIdentity.map { "/photo-filter:"+$0 } ?? "") +
+      ((p.gradingLUTs?.isActive == true || p.masks.contains(where: { $0.enabled && $0.opacity > 0 && ($0.adjustments.gradingLUT?.amount ?? 0) > 0 })) ? "/" + DevelopmentGradingLUTEngine.version : "")
     let dehazeVersion=(DevelopmentDehazeEngineV3.usesPositiveV2(p.advancedDetail) ?
       DevelopmentDehazeColorGuideV2.version:DevelopmentDehazeEngineV3.operatorVersion) +
       DevelopmentDehazeEngineV3.rawPositiveV2CoverageSuffix(p.advancedDetail,sourceIsRAW:isRAW) +
@@ -401,6 +469,8 @@ enum DevelopmentRendererV3 {
     let brillianceIdentity=brillianceObservation.map{"/transport:"+$0.transport} ?? ""
     let spatialIdentity=brillianceObservation?.version ?? (DevelopmentBrillianceAdaptiveV1.isActive(p.light) ?
       DevelopmentBrillianceAdaptiveV1.version+DevelopmentBrillianceNativeRGV1.keySuffix(p.light,sourceIsRAW:isRAW)+"/"+DevelopmentSpatialEngineV3.operatorVersion:DevelopmentSpatialEngineV3.operatorVersion)
-    return .init(image:image,sourceDepth:depth,sourceSize:sourceSize,canonicalSize:image.extent.size,graphDescriptor:pipelineVersion+brillianceIdentity+DevelopmentGrainSamplingEngineV1.stageIdentity(p)+filterDescriptor+"/"+spatialIdentity+"/"+DevelopmentColorEngineV3.operatorVersion+"/"+DevelopmentGlobalEngineV3.operatorVersion+"/"+DevelopmentWhiteBalanceEngineV3.operatorVersion+"/"+DevelopmentGeometryEngineV3.operatorVersion+"/"+DevelopmentAdvancedDetailEngineV3.operatorVersion+"/"+dehazeVersion+"/"+DevelopmentLocalEngineV3.operatorVersion,brilliancePublic:brillianceObservation,dehazeTIFFRequestID:dehazeTIFFInvocation?.request.id)
+    performancePixels = Int(image.extent.width * image.extent.height)
+    performanceOutcome = .succeeded
+    return .init(image:image,sourceDepth:depth,sourceSize:sourceSize,canonicalSize:image.extent.size,graphDescriptor:pipelineVersion+brillianceIdentity+DevelopmentGrainSamplingEngineV1.stageIdentity(p)+filterDescriptor+"/"+spatialIdentity+"/"+DevelopmentColorEngineV3.operatorVersion+"/"+DevelopmentRefineSaturationEngineV3.operatorVersion+"/"+DevelopmentBlackAndWhiteMixerEngineV3.operatorVersion+"/"+DevelopmentGlobalEngineV3.operatorVersion+"/"+DevelopmentGlowEngineV3.operatorVersion+"/"+DevelopmentLensBlurEngineV3.operatorVersion+"/"+DevelopmentPostCropVignetteEngineV3.operatorVersion+"/"+DevelopmentWhiteBalanceEngineV3.operatorVersion+"/"+DevelopmentGeometryEngineV3.operatorVersion+"/"+DevelopmentAdvancedDetailEngineV3.operatorVersion+"/"+dehazeVersion+"/"+DevelopmentMaskEngineV3.operatorVersion+"/"+DevelopmentLocalEngineV3.operatorVersion,brilliancePublic:brillianceObservation,dehazeTIFFRequestID:dehazeTIFFInvocation?.request.id,superResolutionNativeArea:superResolutionNativeArea)
   }
 }

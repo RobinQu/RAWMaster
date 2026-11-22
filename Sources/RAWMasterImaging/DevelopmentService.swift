@@ -41,6 +41,9 @@ public actor DevelopmentService {
   public init() {qaBrilliancePublicV1=DevelopmentBrilliancePublicV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,environment:ProcessInfo.processInfo.environment)}
   init(qaBrilliancePublicV1:Bool){self.qaBrilliancePublicV1=qaBrilliancePublicV1}
   public func preview(source: EditingSourceSnapshot, recipe: DevelopmentRecipe, maxPixel: Int = 1600) async throws -> DevelopmentPreview {
+    if let scene = recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth, scene.sourceSHA256 != source.contentSHA256 {
+      throw EditingError.staleSource
+    }
     guard !DevelopmentBrilliancePublicV1.active(recipe) else{throw PreviewPresentationError.unsupported}
     return try await renderingTask {
       try RenderFiles.verify(source)
@@ -48,11 +51,19 @@ public actor DevelopmentService {
       let adaptive=recipe.adjustmentsV3.map{DevelopmentBrillianceAdaptiveV1.isActive($0.light)} ?? false
       let ownedContext=adaptive ? DevelopmentBrillianceAdaptiveV1.makeContext():nil
       defer{ownedContext?.clearCaches()}
-      let (developed, _) = try PhotoRenderer.develop(captured, recipe, context:ownedContext)
-      var image = developed
-      let limit = maxPixel <= 0 ? Int(ceil(max(image.extent.width, image.extent.height))) : max(64, min(4096, maxPixel))
-      let factor = min(1, Double(limit) / max(image.extent.width, image.extent.height))
-      if factor < 1 { image = image.transformed(by: CGAffineTransform(scaleX: factor, y: factor)) }
+      let image:CIImage
+      if recipe.adjustmentsV3?.superResolution != nil {
+        let graph=try DevelopmentRendererV3.develop(captured,recipe:recipe,context:ownedContext ?? DevelopmentColorEngineV3.context)
+        let edge=max(graph.canonicalSize.width,graph.canonicalSize.height)
+        let limit=maxPixel <= 0 ? edge:CGFloat(max(64,min(4096,maxPixel)))
+        image=graph.displayImage(scale:min(1,limit/edge))
+      } else {
+        let (developed, _) = try PhotoRenderer.develop(captured, recipe, context:ownedContext)
+        let edge=max(developed.extent.width,developed.extent.height)
+        let limit=maxPixel <= 0 ? edge:CGFloat(max(64,min(4096,maxPixel)))
+        let factor=min(1,limit/edge)
+        image=factor < 1 ? developed.transformed(by:.init(scaleX:factor,y:factor)):developed
+      }
       guard let cg = (ownedContext ?? PhotoRenderer.renderingContext(recipe)).createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: PhotoRenderer.sRGB, deferred:false) else { throw DevelopmentError.unreadable }
       try RenderFiles.verify(source)
       let bitmap = NSBitmapImageRep(cgImage: cg)
@@ -61,6 +72,9 @@ public actor DevelopmentService {
     }
   }
   public func render(source: EditingSourceSnapshot, recipe: DevelopmentRecipe, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL] = [], preparePublication: RenderPublicationPreparation? = nil) async throws -> RenderedPhoto {
+    if let scene = recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth, scene.sourceSHA256 != source.contentSHA256 {
+      throw EditingError.staleSource
+    }
     let newBrilliance=DevelopmentBrilliancePublicV1.active(recipe)
     guard !newBrilliance || (qaBrilliancePublicV1 && format == .tiff16) else{throw PreviewPresentationError.unsupported}
     return try await renderingTask {
@@ -218,6 +232,11 @@ enum PhotoRenderer {
     return CGSize(width: (width*c-height*s)/cos2, height: (height*c-width*s)/cos2)
   }
   static func write(_ original: CIImage, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL], sourceDepth: Int?, preparePublication: RenderPublicationPreparation? = nil, renderContext: CIContext? = nil, tiffTransport:TIFF16Output.Transport = .whole, beforePublish: () throws -> Void = {}) throws -> RenderedPhoto {
+    let telemetry = ImagePerformanceTelemetry.shared
+    let token = telemetry.begin(operation: "导出图像", stage: format.filenameExtension, queue: "导出")
+    var outcome = ImagePerformanceOutcome.failed
+    defer { telemetry.end(token, outcome: outcome,
+      pixelCount: outcome == .succeeded ? Int(original.extent.width * original.extent.height) : 0) }
     let context = renderContext ?? self.context
     try RenderFiles.check(destination, protected: protectedURLs)
     let directory = destination.deletingLastPathComponent()
@@ -228,10 +247,14 @@ enum PhotoRenderer {
     defer { if !preservePreparedStage { try? FileManager.default.removeItem(at: stage) } }
     var image = original
     if format == .jpeg8 { image = image.composited(over: CIImage(color: .white).cropped(to: image.extent)) }
-    switch format {
-    case .jpeg8: try context.writeJPEGRepresentation(of: image, to: stage, colorSpace: sRGB, options: [CIImageRepresentationOption(rawValue: kCGImageDestinationLossyCompressionQuality as String): 0.95])
-    case .tiff16: try TIFF16Output.write(image, context: context, colorSpace: sRGB, to: stage, transport:tiffTransport)
-    case .png16: try context.writePNGRepresentation(of: image, to: stage, format: .RGBA16, colorSpace: sRGB)
+    if TIFF16Output.requiresTiles(image.extent) {
+      try TIFF16Output.write(image, context:context, colorSpace:sRGB, to:stage, transport:.nativeTiles, format:format)
+    } else {
+      switch format {
+      case .jpeg8: try context.writeJPEGRepresentation(of: image, to: stage, colorSpace: sRGB, options: [CIImageRepresentationOption(rawValue: kCGImageDestinationLossyCompressionQuality as String): 0.95])
+      case .tiff16: try TIFF16Output.write(image, context: context, colorSpace: sRGB, to: stage, transport:tiffTransport)
+      case .png16: try context.writePNGRepresentation(of: image, to: stage, format: .RGBA16, colorSpace: sRGB)
+      }
     }
     var artifact = try inspect(stage, sourceDepth: sourceDepth)
     guard artifact.bitDepth == (format == .jpeg8 ? 8 : 16), artifact.iccProfileSHA256 != nil else { throw DevelopmentError.invalidEncoding }
@@ -244,6 +267,7 @@ enum PhotoRenderer {
     // After the durable intent, publication survives late cancellation and is reconciled by Core.
     // moveItem never replaces an existing file, including a concurrent writer.
     try FileManager.default.moveItem(at: stage, to: destination)
+    outcome = .succeeded
     return RenderedPhoto(fileURL: destination, artifact: artifact)
   }
   static func inspect(_ url: URL, sourceDepth: Int? = nil) throws -> RenderArtifact {
@@ -269,7 +293,8 @@ enum PhotoRenderer {
 
 /// TIFF's integer representation is independent of the canonical F32 adjustment graph.
 enum TIFF16Output {
-  enum Transport { case whole,nativeBands256 }
+  enum Transport { case whole,nativeBands256,nativeTiles }
+  static func requiresTiles(_ extent: CGRect) -> Bool { max(extent.width,extent.height) > 16384 }
   struct Layout {
     let width, height, rowBytes, payload, mappedBytes: Int
     static func checked(_ extent: CGRect, pageSize: Int = Int(getpagesize())) throws -> Layout {
@@ -325,12 +350,32 @@ enum TIFF16Output {
     }
     if let primary {throw primary}
   }
+  static func renderBand(_ image:CIImage, context:CIContext, colorSpace:CGColorSpace, layout:Layout,
+                         format:PhotoRenderFormat, top:Int, height:Int, buffer:UnsafeMutableRawPointer) throws {
+    let stridePerPixel=format == .jpeg8 ? 4:8
+    for x in stride(from:0,to:layout.width,by:1536) {
+      try Task.checkCancellation()
+      try autoreleasepool {
+        let w=min(1536,layout.width-x)
+        let rect=CGRect(x:image.extent.minX+CGFloat(x),y:image.extent.maxY-CGFloat(top+height),width:CGFloat(w),height:CGFloat(height))
+        let destination=CIRenderDestination(bitmapData:buffer.advanced(by:x*stridePerPixel),width:w,height:height,
+          bytesPerRow:layout.rowBytes,format:format == .jpeg8 ? .RGBA8:.RGBA16)
+        destination.colorSpace=colorSpace;destination.alphaMode = .unpremultiplied
+        destination.isFlipped=true;destination.isClamped=true;destination.isDithered=false
+        let task=try context.startTask(toRender:image,from:rect,to:destination,at:.zero)
+        do {_ = try task.waitUntilCompleted()}
+        catch {let failure=error;_ = try? task.waitUntilCompleted();throw failure}
+      }
+    }
+  }
   static func write(_ image: CIImage, context: CIContext, colorSpace: CGColorSpace, to url: URL,
-                    transport:Transport = .whole) throws {
+                    transport:Transport = .whole, format:PhotoRenderFormat = .tiff16, jpegQuality:Double = 0.95) throws {
     let extent=image.extent,layout=try Layout.checked(extent)
-    if transport == .nativeBands256 {
+    if transport != .whole {
       guard extent == extent.integral else { throw DevelopmentError.invalidEncoding }
     }
+    if format == .tiff16, transport == .nativeTiles, try LargeTIFF16Writer.writeIfRepresentable(
+      image:image,layout:layout,context:context,colorSpace:colorSpace,url:url) { return }
     // Same opt-in scalar diagnostic as native finite validation. This records only
     // synchronous stage boundaries, not the continuously sampled process peak.
     let qaScalars=ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] == "1"
@@ -346,7 +391,7 @@ enum TIFF16Output {
       let row:[String:Any]=["tag":"rawmaster-maximum-qa-scalars","kind":"tiff-output","outputID":outputID,
         "boundary":boundary,"phase":phase,"completed":completed,"atNS":DispatchTime.now().uptimeNanoseconds,
         "physFootprintBytes":status==KERN_SUCCESS ? UInt64(info.phys_footprint) as Any:NSNull(),
-        "transport":transport == .nativeBands256 ? "nativeBands256":"whole",
+        "transport":String(describing:transport),
         "width":layout.width,"height":layout.height,"mappedBytes":layout.mappedBytes,
         "measurementScope":"joined-output-stage-boundaries-not-continuous-task-peak"]
       guard var data=try? JSONSerialization.data(withJSONObject:row,options:[.sortedKeys]) else{return}
@@ -359,8 +404,8 @@ enum TIFF16Output {
       try Task.checkCancellation()
       phase="native-render";trace("begin")
       try renderJoined(pages) {
-        func join(_ from:CGRect,at point:CGPoint,pointer:UnsafeMutableRawPointer,height:Int)throws {
-          let destination=CIRenderDestination(bitmapData:pointer,width:layout.width,height:height,bytesPerRow:layout.rowBytes,format:.RGBA16)
+        func join(_ from:CGRect,at point:CGPoint,pointer:UnsafeMutableRawPointer,width:Int,height:Int)throws {
+          let destination=CIRenderDestination(bitmapData:pointer,width:width,height:height,bytesPerRow:layout.rowBytes,format:format == .jpeg8 ? .RGBA8 : .RGBA16)
           destination.colorSpace=colorSpace;destination.alphaMode = .unpremultiplied
           destination.isFlipped=true;destination.isClamped=true;destination.isDithered=false
           let task=try context.startTask(toRender:image,from:from,to:destination,at:point)
@@ -368,7 +413,15 @@ enum TIFF16Output {
           catch {let original=error;_ = try? task.waitUntilCompleted();throw original}
         }
         switch transport {
-        case .whole: try join(extent,at:.zero,pointer:pages.pointer,height:layout.height)
+        case .whole: try join(extent,at:.zero,pointer:pages.pointer,width:layout.width,height:layout.height)
+        case .nativeTiles:
+          // Keep each render and its full graph footprint inside a native texture, even when
+          // the 2× photo exceeds the device limit along either axis. Image I/O receives global top-first rows.
+          for top in stride(from:0,to:layout.height,by:LargeTIFF16Writer.rowsPerStrip) {
+            let h=min(LargeTIFF16Writer.rowsPerStrip,layout.height-top)
+            try renderBand(image,context:context,colorSpace:colorSpace,layout:layout,format:format,
+                           top:top,height:h,buffer:pages.pointer.advanced(by:top*layout.rowBytes))
+          }
         case .nativeBands256:
           for y in stride(from:0,to:layout.height,by:256) {
             let count=min(256,layout.height-y)
@@ -380,7 +433,7 @@ enum TIFF16Output {
                 // The complete output backing remains top-first. Only this destination's
                 // height is local; the input graph and requested source coordinates stay global.
                 let physicalTop=layout.height-y-count
-                try join(from,at:.zero,pointer:pages.pointer.advanced(by:physicalTop*layout.rowBytes),height:count)
+                try join(from,at:.zero,pointer:pages.pointer.advanced(by:physicalTop*layout.rowBytes),width:layout.width,height:count)
               }
             }
             try Task.checkCancellation()
@@ -398,21 +451,28 @@ enum TIFF16Output {
       #else
       let order=CGBitmapInfo.byteOrder16Big
       #endif
-      var cg=CGImage(width:layout.width,height:layout.height,bitsPerComponent:16,bitsPerPixel:64,bytesPerRow:layout.rowBytes,
-        space:colorSpace,bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.last.rawValue).union(order),
+      let bits=format == .jpeg8 ? 8:16
+      let info=CGBitmapInfo(rawValue:CGImageAlphaInfo.last.rawValue)
+      var cg=CGImage(width:layout.width,height:layout.height,bitsPerComponent:bits,bitsPerPixel:bits*4,bytesPerRow:layout.rowBytes,
+        space:colorSpace,bitmapInfo:bits == 16 ? info.union(order):info,
         provider:actualProvider,decode:nil,shouldInterpolate:false,intent:.defaultIntent)
-      var target=CGImageDestinationCreateWithURL(url as CFURL,UTType.tiff.identifier as CFString,1,nil)
+      let type:UTType, properties:[CFString:Any]
+      switch format {
+      case .tiff16: type = .tiff; properties=[kCGImagePropertyTIFFDictionary:[kCGImagePropertyTIFFCompression:1]]
+      case .png16: type = .png; properties=[kCGImagePropertyDepth:16]
+      case .jpeg8: type = .jpeg; properties=[kCGImageDestinationLossyCompressionQuality:jpegQuality]
+      }
+      var target=CGImageDestinationCreateWithURL(url as CFURL,type.identifier as CFString,1,nil)
       defer {target=nil;cg=nil;provider=nil}
       guard let cg,let target else {throw DevelopmentError.invalidEncoding}
-      CGImageDestinationAddImage(target,cg,[kCGImagePropertyOrientation:1,kCGImagePropertyDepth:16,
-        kCGImagePropertyTIFFDictionary:[kCGImagePropertyTIFFCompression:1]] as CFDictionary)
+      CGImageDestinationAddImage(target,cg,properties.merging([kCGImagePropertyOrientation:1]){first,_ in first} as CFDictionary)
       guard CGImageDestinationFinalize(target) else {throw DevelopmentError.invalidEncoding}
       trace("end")
       // CGImage/provider/target retire at the autoreleasepool boundary, before explicit close.
     }
     phase="pages-closed";trace("end")
     try Task.checkCancellation()
-    guard try storedAlpha(url:url) == .straight else {throw DevelopmentError.invalidEncoding}
+    if format == .tiff16, try storedAlpha(url:url) != .straight {throw DevelopmentError.invalidEncoding}
     completed=true
   }
   static func renderJoined(_ pages: Pages, _ native: ()throws->Void) throws {

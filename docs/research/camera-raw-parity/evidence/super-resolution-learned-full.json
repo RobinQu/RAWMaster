@@ -1,0 +1,143 @@
+{
+  "model": "waifu2x upconv_7/photo/scale2.0x_model, native 2\u00d7",
+  "upstream": "cc385f97a9debfe611316aabfd5d8bb30ba2dbeb",
+  "sourceWeightsSHA256": "deb2c288f635bed4a0ffc0be9ca8f6a735233b530ad5b2c392c5b2e6c5fe30ad",
+  "license": "MIT (author confirmation for weights)",
+  "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "linearPlaneSHA256": "df8d21a79b33901af189670f968ff3d2edd3bda13254fadf631ee598b2d1a978",
+  "sourceWidth": 9504,
+  "sourceHeight": 6336,
+  "sourceLinearRange": [
+    -0.0030956268310546875,
+    1.3251953125
+  ],
+  "nativeROI": [
+    4688,
+    3104,
+    128,
+    128
+  ],
+  "modelOutput": [
+    256,
+    256
+  ],
+  "computeUnits": "cpu-gpu",
+  "upstreamWeights": "FP32 legible JSON",
+  "colorPolicy": "globally mapped display RGB in; 2x2 mean anchored to each native linear channel; details bounded by its local 3x3 source range",
+  "interiorVsBilinear": {
+    "mean": 0.00105034504822309,
+    "p95": 0.0029296875,
+    "maximum": 0.01220703125
+  },
+  "tiledVsWhole": {
+    "mean": 0.0,
+    "p95": 0.0,
+    "maximum": 0.0
+  },
+  "recoveredNativeVsSource": {
+    "mean": 1.657705639424023e-09,
+    "p95": 1.4901161193847656e-08,
+    "maximum": 5.960464477539063e-08
+  },
+  "probeElapsedS": 0.582247374986764,
+  "uniformControls": [
+    {
+      "input": -0.0030956268310546875,
+      "mean": -0.0030956268310546875,
+      "centerMinMax": [
+        -0.0030956268310546875,
+        -0.0030956268310546875
+      ]
+    },
+    {
+      "input": 0.0,
+      "mean": 0.0,
+      "centerMinMax": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "input": 0.18,
+      "mean": 0.18000005185604095,
+      "centerMinMax": [
+        0.18000000715255737,
+        0.18000000715255737
+      ]
+    },
+    {
+      "input": 0.5,
+      "mean": 0.5,
+      "centerMinMax": [
+        0.5,
+        0.5
+      ]
+    },
+    {
+      "input": 1.0,
+      "mean": 1.0,
+      "centerMinMax": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "input": 1.3251953125,
+      "mean": 1.3251953125,
+      "centerMinMax": [
+        1.3251953125,
+        1.3251953125
+      ]
+    }
+  ],
+  "asymmetricImpulse": {
+    "sourceXY": [
+      43,
+      31
+    ],
+    "sourceRGB": [
+      1.3251953125,
+      0.6899999976158142,
+      0.27000001072883606
+    ],
+    "brightOutputXY": [
+      [
+        86,
+        62
+      ],
+      [
+        87,
+        62
+      ],
+      [
+        86,
+        63
+      ],
+      [
+        87,
+        63
+      ]
+    ],
+    "minMax": [
+      -0.0020000000949949026,
+      1.3251953125
+    ]
+  },
+  "fullDiagnosticFloatTIFF": {
+    "width": 19008,
+    "height": 12672,
+    "bitsPerChannel": 16,
+    "sampleFormat": "IEEEFP",
+    "byteCount": 1445232640,
+    "sha256": "a5f4fbed9e1218e734c0eef77a339b38bbb3fc63aeb3994d702aa796262c6007",
+    "fullInferenceAndWriteS": 27.498875999997836,
+    "decodedRange": [
+      -0.0030956268310546875,
+      1.3251953125
+    ],
+    "allNativeBlockMeansMaxErrorAfterFP16Write": 0.0003662109375
+  },
+  "maxRSSBytes": 2138800128,
+  "peakMetalAllocationSampledBytes": 234225664,
+  "metalAllocationBoundary": "Public per-process MTLDevice.currentAllocatedSize sampled every 50 ms; Core ML service allocations may live elsewhere"
+}

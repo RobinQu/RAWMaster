@@ -1,0 +1,54 @@
+{
+  "application": "io.robinqu.RAWMaster",
+  "version": "0.1.0",
+  "bundleVersion": "20261122.1901",
+  "configuration": "Release, local candidate",
+  "checkoutRevision": "b89702e8714fd0fd23c809474e0fe581c613cb3b",
+  "includesWorkingTreeChanges": true,
+  "hardware": "Mac16,5",
+  "system": "27.0.1",
+  "osBuild": "26A434",
+  "flashRawUpstreamRevision": "2994e8c550bec70ab78a938ab28a74d7762124f4",
+  "packageVerification": {
+    "command": "codesign --verify --deep --strict",
+    "exitStatus": 0
+  },
+  "packageFiles": {
+    "app": {
+      "relativePath": "Contents/MacOS/RAWMaster",
+      "bytes": 38373952,
+      "sha256": "be6eb72f60b8d417cbf0395aa2c405edaa9702df0e3b7de13d259723df4bb442"
+    },
+    "flashRaw": {
+      "relativePath": "Contents/Resources/FlashRaw/libflashraw_capi.dylib",
+      "bytes": 15621192,
+      "sha256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+    },
+    "depthWeights": {
+      "relativePath": "Contents/Resources/SceneDepth/DepthAnythingV2SmallF16.mlmodelc/weights/weight.bin",
+      "bytes": 49419072,
+      "sha256": "fa60d9b6a155734f59029ebb882fd54e549bfaee3539c1a9cbd2cbbab64a0fed"
+    },
+    "denoiseWeights": {
+      "relativePath": "Contents/Resources/RAWMaster_RAWMasterImaging.bundle/Contents/Resources/PhotoDenoise/PhotoVGG7.f32",
+      "bytes": 1161868,
+      "sha256": "5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5"
+    },
+    "superResolutionWeights": {
+      "relativePath": "Contents/Resources/RAWMaster_RAWMasterImaging.bundle/Contents/Resources/PhotoSuperResolution/PhotoUpconv7.mlpackage/Data/com.apple.CoreML/weights/weight.bin",
+      "bytes": 2210816,
+      "sha256": "50eccc4411c58e1937f5546d6456506187d32b5c08369c5a6abe28137689c400"
+    }
+  },
+  "benchmarkTestBinaries": {
+    "build": "Release",
+    "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "testBinariesSHA256": {
+      "RAWMasterImagingTests": "1bb13ca2b093c838b8633f4c1ea8a324bb437c118da66b459f58ca65d23321e6",
+      "RAWMasterUITests": "4e5d7e673b0082684e87ca7535e56ca22ad06dc657f33f2f848c6cc25d37652f"
+    },
+    "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "benchmarkArchiveSHA256": "a73b61dc844cf89e912dbfb42c949202a4dbf4036c2f7b2c0f8dc21b5d46863e",
+  "regressionPassed": false
+}

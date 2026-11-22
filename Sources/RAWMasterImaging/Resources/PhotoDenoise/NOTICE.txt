@@ -1,0 +1,10 @@
+PhotoVGG7.f32 is the trained waifu2x vgg_7 photographic noise2 model by nagadomi.
+The model and its original implementation are available under the MIT license in LICENSE.txt.
+
+RAWMaster converted the original JSON values to little-endian Float32 and reordered each
+convolution for Metal Performance Shaders. The learned coefficients retain their values.
+Source revision: cc385f97a9debfe611316aabfd5d8bb30ba2dbeb
+Original model: https://github.com/nagadomi/waifu2x/blob/cc385f97a9debfe611316aabfd5d8bb30ba2dbeb/models/vgg_7/photo/noise2_model.json
+Author's confirmation that MIT covers the weights: https://github.com/nagadomi/waifu2x/issues/478#issuecomment-5003816684
+Source SHA-256: e9476299fc348b3570541925d14a431f0e39e103ad6e16c4421602fde0062f06
+Packed SHA-256: 5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5

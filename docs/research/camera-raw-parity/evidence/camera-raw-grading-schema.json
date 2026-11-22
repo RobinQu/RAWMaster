@@ -1,0 +1,164 @@
+{
+  "presetSources": {
+    "Camera Raw": {
+      "files": 1022,
+      "gradingOrTableTerms": [
+        "ColorGradeBlending",
+        "ColorGradeGlobalHue",
+        "ColorGradeGlobalLum",
+        "ColorGradeGlobalSat",
+        "ColorGradeHighlightLum",
+        "ColorGradeMidtoneHue",
+        "ColorGradeMidtoneLum",
+        "ColorGradeMidtoneSat",
+        "ColorGradeShadowLum",
+        "LocalToningHue",
+        "LocalToningSaturation",
+        "Look",
+        "LookTable",
+        "OverrideLookVignette",
+        "ProfileGainTableMap",
+        "RGBTable",
+        "RGBTableAmount",
+        "RGBTables",
+        "RequiresRGBTables",
+        "SplitToningBalance",
+        "SplitToningHighlightHue",
+        "SplitToningHighlightSaturation",
+        "SplitToningShadowHue",
+        "SplitToningShadowSaturation"
+      ],
+      "embeddedProfileTableCount": 336
+    },
+    "Lightroom Classic": {
+      "files": 1075,
+      "gradingOrTableTerms": [
+        "ColorGradeBlending",
+        "ColorGradeGlobalHue",
+        "ColorGradeGlobalLum",
+        "ColorGradeGlobalSat",
+        "ColorGradeHighlightLum",
+        "ColorGradeMidtoneHue",
+        "ColorGradeMidtoneLum",
+        "ColorGradeMidtoneSat",
+        "ColorGradeShadowLum",
+        "LocalToningHue",
+        "LocalToningSaturation",
+        "Look",
+        "LookTable",
+        "OverrideLookVignette",
+        "ProfileGainTableMap",
+        "RGBTable",
+        "RGBTableAmount",
+        "RGBTables",
+        "RequiresRGBTables",
+        "SplitToningBalance",
+        "SplitToningHighlightHue",
+        "SplitToningHighlightSaturation",
+        "SplitToningShadowHue",
+        "SplitToningShadowSaturation"
+      ],
+      "embeddedProfileTableCount": 336
+    }
+  },
+  "factoryCubes": [
+    {
+      "file": "B&W LUT 01.cube",
+      "dimension": 33,
+      "sha256": "d128a838236c85fa127b57fcf3bc5107e4435bc5d20e730515e76c2315712346"
+    },
+    {
+      "file": "B&W LUT 02.cube",
+      "dimension": 33,
+      "sha256": "449ad33f4f55d4580ecdcb773f26b6c4c9d9d7627a64cb97814340c4a54a5ce6"
+    },
+    {
+      "file": "B&W LUT 03.cube",
+      "dimension": 33,
+      "sha256": "7310021a1df1e4df451d0b249c12b6d407c304c785ee472238bec426a1ae7ba1"
+    },
+    {
+      "file": "Color LUT 01.cube",
+      "dimension": 16,
+      "sha256": "48c2faedeef7bb554e4e66efee53ea666225f27f35851d0a43e7fb1a4326b3d2"
+    },
+    {
+      "file": "Color LUT 02.cube",
+      "dimension": 16,
+      "sha256": "8ddd3bac5af9d46ee8f8a41e38ec67ed0eea8e3333027901497bf5d4fefe2f1d"
+    },
+    {
+      "file": "Color LUT 03.cube",
+      "dimension": 16,
+      "sha256": "476343373086229d2cadeda7f889d676467b69f3747bd8a15b5df97411731cab"
+    },
+    {
+      "file": "Color LUT 04.cube",
+      "dimension": 16,
+      "sha256": "49ba645a5c5efef759b6dc7abbc286bc8dc3af453f6a06714e9030e4dbb31c6b"
+    },
+    {
+      "file": "Color LUT 05.cube",
+      "dimension": 16,
+      "sha256": "febf3a03330d1ee404bf617a7ddfa34277f22bb914644195083f9ccf49c0ecbe"
+    },
+    {
+      "file": "Color LUT 06.cube",
+      "dimension": 16,
+      "sha256": "753a602fcc04f804e0df4fb1e7aa3755303deb06700329b55b04afaa85878817"
+    }
+  ],
+  "appleEventTerminology": [
+    "ColorGradingBlending",
+    "ColorGradingGlobalHue",
+    "ColorGradingGlobalLuminance",
+    "ColorGradingGlobalSaturation",
+    "ColorGradingHighlightLuminance",
+    "ColorGradingMidtoneHue",
+    "ColorGradingMidtoneLuminance",
+    "ColorGradingMidtoneSaturation",
+    "ColorGradingShadowLuminance",
+    "LookAmount",
+    "LookName",
+    "LookUUID",
+    "SplitToneBalance",
+    "SplitToneHighlightHue",
+    "SplitToneHighlightSaturation",
+    "SplitToneShadowHue",
+    "SplitToneShadowSaturation"
+  ],
+  "renderedMetadata": {
+    "photoshop": "28.0.0",
+    "size": [
+      9504,
+      6336
+    ],
+    "allCRSTermCount": 138,
+    "gradingTerms": [
+      "ColorGradeBlending",
+      "ColorGradeGlobalHue",
+      "ColorGradeGlobalLum",
+      "ColorGradeGlobalSat",
+      "ColorGradeHighlightLum",
+      "ColorGradeMidtoneHue",
+      "ColorGradeMidtoneLum",
+      "ColorGradeMidtoneSat",
+      "ColorGradeShadowLum",
+      "OverrideLookVignette",
+      "SplitToningBalance",
+      "SplitToningHighlightHue",
+      "SplitToningHighlightSaturation",
+      "SplitToningShadowHue",
+      "SplitToningShadowSaturation"
+    ],
+    "scopes": {},
+    "unknownWitnessCopied": false,
+    "knownGlobalWheelRecorded": true,
+    "knownCorrectionRecorded": true,
+    "returnedXMPBytes": 27897,
+    "returnedXMPSHA256": "5689f06ba3a58812550100ccf4065bdacd9e4bc8c78925957ee52a6547b9b558"
+  },
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "foregroundUnchanged": true
+}

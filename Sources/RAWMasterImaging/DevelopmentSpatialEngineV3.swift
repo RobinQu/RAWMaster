@@ -15,15 +15,39 @@ enum DevelopmentSpatialEngineV3 {
     return .init(guide:guide,light:light)
   }
   static func isActive(_ p: DevelopmentLightV3) -> Bool { p.enabled && (p.brilliance != 0 || p.shadows != 0 || p.highlights != 0) }
-  static func applyLight(_ p: DevelopmentLightV3, to image: CIImage, proxyRadius:Double? = nil) throws -> CIImage {
+  static func meanLogLuminance(_ image:CIImage, radius:Double) throws -> CIImage {
+    let extent=image.extent
+    guard let guide=try loaded.get().guide.apply(extent:extent,roiCallback:{_,rect in rect},arguments:[image]) else { throw DevelopmentError.unreadable }
+    return guide.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius]).cropped(to:extent)
+  }
+  static func applyLight(_ p: DevelopmentLightV3, to image: CIImage, proxyRadius:Double? = nil,
+                         preparedGuide:((CIImage,Double)throws->CIImage)?=nil) throws -> CIImage {
     try p.validate(); guard isActive(p) else { return image }
     let kernels = try loaded.get(), extent = image.extent
     guard extent.width.isFinite, extent.height.isFinite, extent.width > 0, extent.height > 0 else { throw DevelopmentV3Error.invalidGraph }
-    guard let guide = kernels.guide.apply(extent:extent,roiCallback:{ _,rect in rect },arguments:[image]) else { throw DevelopmentError.unreadable }
     if let proxyRadius { guard proxyRadius.isFinite,proxyRadius>0 else{throw DevelopmentV3Error.invalidGraph} }
     let radius:CGFloat = proxyRadius.map{CGFloat($0)} ?? max(1,min(extent.width,extent.height)*radiusFraction)
-    let mean = guide.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius]).cropped(to:extent)
+    let mean=try preparedGuide?(image,radius) ?? meanLogLuminance(image,radius:radius)
     guard let result = kernels.light.apply(extent:extent,roiCallback:{ _,rect in rect },arguments:[image,mean,CIVector(x:p.brilliance,y:p.shadows,z:p.highlights,w:0)]) else { throw DevelopmentError.unreadable }
+    return result
+  }
+  static func materializeScalar(_ image:CIImage,context:CIContext,device:MTLDevice,check:()throws->Void) throws -> CIImage {
+    try check()
+    let extent=image.extent
+    guard extent.origin == .zero,extent==extent.integral,extent.width>0,extent.height>0,extent.width<=16384,extent.height<=16384 else {
+      throw DevelopmentV3Error.invalidGraph
+    }
+    let descriptor=MTLTextureDescriptor.texture2DDescriptor(pixelFormat:.r32Float,width:Int(extent.width),height:Int(extent.height),mipmapped:false)
+    descriptor.storageMode = .private
+    descriptor.usage=[.shaderRead,.shaderWrite,.renderTarget]
+    guard let texture=device.makeTexture(descriptor:descriptor) else {throw RawBaseCacheError.capacity}
+    let destination=CIRenderDestination(mtlTexture:texture,commandBuffer:nil)
+    destination.colorSpace=nil;destination.alphaMode = .none;destination.isFlipped=false
+    destination.isClamped=false;destination.isDithered=false
+    let task=try context.startTask(toRender:image,from:extent,to:destination,at:.zero)
+    do { _ = try task.waitUntilCompleted() } catch { _ = try? task.waitUntilCompleted(); throw error }
+    try check()
+    guard let result=CIImage(mtlTexture:texture,options:[.colorSpace:NSNull()]) else {throw DevelopmentError.unreadable}
     return result
   }
   static func referenceGainEV(encodedLuminance: Double, localLogLuminance: Double, logLuminance: Double, brilliance: Double, shadows: Double, highlights: Double) -> Double {

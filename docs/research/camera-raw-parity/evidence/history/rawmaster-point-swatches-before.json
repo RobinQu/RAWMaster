@@ -1,0 +1,182 @@
+{
+  "application": "RAWMaster",
+  "protocol": "rawmaster-analysis-and-inspection-v1",
+  "binarySHA256": "f0e1861e22b53e212e84ce9fb7a395e4c6a5d73975548eacf97caed9c7400e6b",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "recordedAt": "2026-11-22T08:21:26Z",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "inspectionFramePixels": [
+    2400,
+    1600
+  ],
+  "analysisCache": {
+    "retainedRawTextureBytes": 481738752,
+    "scalarHistoryEntries": 3,
+    "scalarHistoryHits": 17,
+    "workingImageBuilds": 5,
+    "workingImageHits": 59
+  },
+  "repeats": 10,
+  "operations": [
+    {
+      "boundary": "raw.analysis · add the eighth measured swatch while preserving the previous seven real RAW samples",
+      "id": "mixer-point-swatches",
+      "input": "seven existing sampled swatches kept constant, eighth picked at A/B",
+      "samples": [
+        {
+          "digest": "7d8af26d90413b1522973149bc381d952f1ca4c262da1a14836272a270643640",
+          "ms": 402.327375,
+          "phase": "first",
+          "state": 0,
+          "values": [
+            8,
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "6b5a670fd9eaa54aeb3337b1a133beec6f07112d68203b002a9967d2b71da91e",
+          "ms": 367.10175,
+          "phase": "first",
+          "state": 1,
+          "values": [
+            8,
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "7d8af26d90413b1522973149bc381d952f1ca4c262da1a14836272a270643640",
+          "ms": 353.842667,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            8,
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "6b5a670fd9eaa54aeb3337b1a133beec6f07112d68203b002a9967d2b71da91e",
+          "ms": 370.587375,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            8,
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "7d8af26d90413b1522973149bc381d952f1ca4c262da1a14836272a270643640",
+          "ms": 354.850333,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            8,
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "6b5a670fd9eaa54aeb3337b1a133beec6f07112d68203b002a9967d2b71da91e",
+          "ms": 368.661625,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            8,
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "7d8af26d90413b1522973149bc381d952f1ca4c262da1a14836272a270643640",
+          "ms": 349.866167,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            8,
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "6b5a670fd9eaa54aeb3337b1a133beec6f07112d68203b002a9967d2b71da91e",
+          "ms": 358.230125,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            8,
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "7d8af26d90413b1522973149bc381d952f1ca4c262da1a14836272a270643640",
+          "ms": 358.12875,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            8,
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "6b5a670fd9eaa54aeb3337b1a133beec6f07112d68203b002a9967d2b71da91e",
+          "ms": 395.631667,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            8,
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        },
+        {
+          "digest": "7d8af26d90413b1522973149bc381d952f1ca4c262da1a14836272a270643640",
+          "ms": 382.012958,
+          "phase": "warm",
+          "state": 0,
+          "values": [
+            8,
+            0.08099365234375,
+            0.10784912109375,
+            0.1583251953125
+          ]
+        },
+        {
+          "digest": "6b5a670fd9eaa54aeb3337b1a133beec6f07112d68203b002a9967d2b71da91e",
+          "ms": 386.430833,
+          "phase": "warm",
+          "state": 1,
+          "values": [
+            8,
+            0.0247802734375,
+            0.01678466796875,
+            0.00959014892578125
+          ]
+        }
+      ],
+      "status": "measured",
+      "verification": "two stable different result digests",
+      "binarySHA256": "f0e1861e22b53e212e84ce9fb7a395e4c6a5d73975548eacf97caed9c7400e6b",
+      "recordedAt": "2026-11-22T08:21:26Z"
+    }
+  ]
+}

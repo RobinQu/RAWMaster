@@ -1,0 +1,2493 @@
+{
+  "schemaVersion": 1,
+  "protocol": "screen-photo-response-v1",
+  "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+  "build": "Release, -O with testability enabled",
+  "startedAt": "2026-11-22T07:06:47.564861+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "os": "27.0.1",
+  "hardware": "Mac16,5",
+  "osBuild": "26A434",
+  "recorderSHA256": "47a52d24a4676046f994f9af9d3a84f03d6d4aa1d063a5f4caac0ae3ebf80543",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": 60,
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120
+  },
+  "operations": {
+    "light-exposure": {
+      "separationRGB8": 14.188151041666666,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "e2685228eb02ffb452e13fd018ffdeccd7ed0507a9592c3d74017490b1c5c894"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499663645109208,
+          "state": 0,
+          "firstMs": 17.226625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.226625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499664453716166,
+          "state": 1,
+          "firstMs": 14.882292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.882292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499665274561583,
+          "state": 0,
+          "firstMs": 26.577167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.577167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499666092070291,
+          "state": 1,
+          "firstMs": 10.630542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.630542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499666911921375,
+          "state": 0,
+          "firstMs": 16.975,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.975,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499667725465666,
+          "state": 1,
+          "firstMs": 10.614625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.614625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499668541406916,
+          "state": 0,
+          "firstMs": 20.648334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.648334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499669358385416,
+          "state": 1,
+          "firstMs": 12.82,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.82,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499670174202208,
+          "state": 0,
+          "firstMs": 21.20525,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.20525,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499671000458541,
+          "state": 1,
+          "firstMs": 10.934834,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.934834,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        0.5
+      ],
+      "displayLabel": "Exposure",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499662006036666,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "sentNs": 499662829321208,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-contrast": {
+      "separationRGB8": 8.939887152777779,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "6f53d443642c7c0c27d44c31c4121cefd9b73fd0f0953e22ee483a6e1199a2ea"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499674627703833,
+          "state": 0,
+          "firstMs": 23.49225,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.49225,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499675446319791,
+          "state": 1,
+          "firstMs": 21.605292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.605292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499676267153208,
+          "state": 0,
+          "firstMs": 16.623125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.623125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499677079141125,
+          "state": 1,
+          "firstMs": 7.226708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              7.226708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499677898991291,
+          "state": 0,
+          "firstMs": 17.836875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.836875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499678721386875,
+          "state": 1,
+          "firstMs": 21.988,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.988,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499679549682916,
+          "state": 0,
+          "firstMs": 21.009417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.009417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499680371094541,
+          "state": 1,
+          "firstMs": 29.651042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.651042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499681195596625,
+          "state": 0,
+          "firstMs": 24.739,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.739,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499682020679458,
+          "state": 1,
+          "firstMs": 21.88275,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.88275,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Contrast",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499672991242291,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499673801629708,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-highlights": {
+      "separationRGB8": 2.6602647569444446,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "3aa84f912b2ca7897d28c80aa7d42547813a8aaee5d111d53cfecae7ac451ec0"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499685649344708,
+          "state": 0,
+          "firstMs": 26.875375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.875375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499686460585083,
+          "state": 1,
+          "firstMs": 18.148417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.148417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499687282823208,
+          "state": 0,
+          "firstMs": 42.491875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              42.491875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499688103292166,
+          "state": 1,
+          "firstMs": 18.289667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.289667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499688921574041,
+          "state": 0,
+          "firstMs": 27.075042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.075042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499689732586041,
+          "state": 1,
+          "firstMs": 28.147917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.147917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499690545945166,
+          "state": 0,
+          "firstMs": 24.372875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.372875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499691367513458,
+          "state": 1,
+          "firstMs": 12.306083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.306083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499692177741583,
+          "state": 0,
+          "firstMs": 39.45175,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              39.45175,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499692992155833,
+          "state": 1,
+          "firstMs": 24.26175,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.26175,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Highlights",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499684008762916,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499684832189791,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-shadows": {
+      "separationRGB8": 4.046115451388889,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "2e01dd0a099a78021ddbea90da4fda9bdd59ac51120163ec0d9ef4bc723d178b"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499696695144750,
+          "state": 0,
+          "firstMs": 23.039375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.039375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499697513229833,
+          "state": 1,
+          "firstMs": 24.049375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.049375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499698323488291,
+          "state": 0,
+          "firstMs": 26.898334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.898334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499699144337083,
+          "state": 1,
+          "firstMs": 18.438083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.438083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499699968667833,
+          "state": 0,
+          "firstMs": 9.834,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              9.834,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499700787197958,
+          "state": 1,
+          "firstMs": 15.097833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.097833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499701612589791,
+          "state": 0,
+          "firstMs": 25.30575,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.30575,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499702429771250,
+          "state": 1,
+          "firstMs": 25.697291,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.697291,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499703239073583,
+          "state": 0,
+          "firstMs": 22.653375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.653375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499704054886875,
+          "state": 1,
+          "firstMs": 8.771208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              8.771208,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Shadows",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499695063126458,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499695879409750,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-whites": {
+      "separationRGB8": 0.4309895833333333,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "d5ce192cdf62db4e97773c77af72ea53121473f019823f56d1b8ecce86d7a720"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499707709205458,
+          "state": 0,
+          "firstMs": 10.074042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.074042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499708524891000,
+          "state": 1,
+          "firstMs": 11.99525,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              11.99525,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499709337614000,
+          "state": 0,
+          "firstMs": 23.24125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.24125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499710159101708,
+          "state": 1,
+          "firstMs": 16.013667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.013667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499710978170333,
+          "state": 0,
+          "firstMs": 10.401625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.401625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499711791477541,
+          "state": 1,
+          "firstMs": 30.0625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              30.0625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499712597536250,
+          "state": 0,
+          "firstMs": 17.033041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.033041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499713421677875,
+          "state": 1,
+          "firstMs": 24.5345,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.5345,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499714233888041,
+          "state": 0,
+          "firstMs": 22.9225,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.9225,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499715058858041,
+          "state": 1,
+          "firstMs": 26.225584,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.225584,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Whites",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499706070455500,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "sentNs": 499706896314625,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-blacks": {
+      "separationRGB8": 9.798828125,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "8c11953af3ac5e119ba9433ec712b4425e618e803070c2b4eba84562530af3f8"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499718749944916,
+          "state": 0,
+          "firstMs": 20.686292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.686292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499719567528791,
+          "state": 1,
+          "firstMs": 21.179292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.179292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499720382852416,
+          "state": 0,
+          "firstMs": 28.522917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.522917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499721200107000,
+          "state": 1,
+          "firstMs": 21.457541,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.457541,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499722008312583,
+          "state": 0,
+          "firstMs": 12.573167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.573167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499722829040333,
+          "state": 1,
+          "firstMs": 18.075708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.075708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499723638130875,
+          "state": 0,
+          "firstMs": 16.218875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.218875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499724456816500,
+          "state": 1,
+          "firstMs": 19.883083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.883083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499725266048625,
+          "state": 0,
+          "firstMs": 25.872791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.872791,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499726083109000,
+          "state": 1,
+          "firstMs": 25.447625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.447625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Blacks",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499717093689583,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "sentNs": 499717913171000,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-temp-raw": {
+      "separationRGB8": 1.3187934027777777,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "4ed4c1a46244bce47b88bec95095dd30c9b6bb3c13600d8acf10624f8771e647"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499729730378375,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 1.3187934027777777,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499730553343625,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 3.1119791666666665,
+          "changesMsAndTargetError": [
+            [
+              15.102833,
+              3.11198
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499731368309666,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 1.3187934027777777,
+          "changesMsAndTargetError": [
+            [
+              25.424875,
+              1.31879
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499732191737375,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 3.1119791666666665,
+          "changesMsAndTargetError": [
+            [
+              11.569458,
+              3.11198
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499733000972000,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 1.3187934027777777,
+          "changesMsAndTargetError": [
+            [
+              10.655583,
+              1.31879
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499733828303250,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 3.1119791666666665,
+          "changesMsAndTargetError": [
+            [
+              18.511625,
+              3.11198
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499734644421125,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 1.3187934027777777,
+          "changesMsAndTargetError": [
+            [
+              18.215333,
+              1.31879
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499735466259208,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 3.1119791666666665,
+          "changesMsAndTargetError": [
+            [
+              19.104,
+              3.11198
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499736287007416,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 1.3187934027777777,
+          "changesMsAndTargetError": [
+            [
+              14.909209,
+              1.31879
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499737098026708,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 3.1119791666666665,
+          "changesMsAndTargetError": [
+            [
+              21.712708,
+              3.11198
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        5500,
+        6500
+      ],
+      "displayLabel": "Temperature",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499728098061125,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "sentNs": 499728924839125,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-tint": {
+      "separationRGB8": 0.3317599826388889,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "bcb8fc2244bbce6dcfe757de614b80d1d42462318b2f9529b063ca4e1096e549"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "sentNs": 499740774922916,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3317599826388889,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "sentNs": 499741588462958,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 2.279079861111111,
+          "changesMsAndTargetError": [
+            [
+              14.22725,
+              2.27908
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "sentNs": 499742401071708,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3317599826388889,
+          "changesMsAndTargetError": [
+            [
+              12.43775,
+              0.33176
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "sentNs": 499743218881291,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 2.279079861111111,
+          "changesMsAndTargetError": [
+            [
+              28.384375,
+              2.27908
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "sentNs": 499744027251625,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3317599826388889,
+          "changesMsAndTargetError": [
+            [
+              17.382333,
+              0.33176
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "sentNs": 499744843981833,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 2.279079861111111,
+          "changesMsAndTargetError": [
+            [
+              9.930375,
+              2.27908
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "sentNs": 499745668445208,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3317599826388889,
+          "changesMsAndTargetError": [
+            [
+              25.716417,
+              0.33176
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "sentNs": 499746483841166,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 2.279079861111111,
+          "changesMsAndTargetError": [
+            [
+              12.468,
+              2.27908
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "sentNs": 499747299767000,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3317599826388889,
+          "changesMsAndTargetError": [
+            [
+              12.968625,
+              0.33176
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "sentNs": 499748108801083,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 2.279079861111111,
+          "changesMsAndTargetError": [
+            [
+              27.076083,
+              2.27908
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        16,
+        40
+      ],
+      "displayLabel": "Tint",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "sentNs": 499739135057958,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "sentNs": 499739959141708,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-vibrance": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Vibrance",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "sentNs": 499750125142875,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "sentNs": 499750948644666,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-saturation": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Saturation",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "sentNs": 499761112289791,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "sentNs": 499761920983083,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-texture": {
+      "separationRGB8": 0.3481987847222222,
+      "referenceDigests": [
+        "f2dd398607035d2ff7adb4db3afccb943fcd96c630c928c872308cf0b6c0f803",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499773767413375,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499774579778416,
+          "state": 1,
+          "firstMs": 589.138584,
+          "verified": false,
+          "finalErrorRGB8": 0.09412977430555555,
+          "changesMsAndTargetError": [
+            [
+              589.138584,
+              0.09413
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499775410837833,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3878580729166667,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499776225251541,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.09412977430555555,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499777037377208,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": [
+            [
+              18.084917,
+              0.3482
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499777857094500,
+          "state": 1,
+          "firstMs": 23.320041,
+          "verified": false,
+          "finalErrorRGB8": 0.09412977430555555,
+          "changesMsAndTargetError": [
+            [
+              23.320041,
+              0.09413
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499778680175916,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": [
+            [
+              23.385334,
+              0.3482
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499779509119166,
+          "state": 1,
+          "firstMs": 21.243667,
+          "verified": false,
+          "finalErrorRGB8": 0.09412977430555555,
+          "changesMsAndTargetError": [
+            [
+              21.243667,
+              0.09413
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499780323363916,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": [
+            [
+              30.146834,
+              0.3482
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499781138336833,
+          "state": 1,
+          "firstMs": 8.880042,
+          "verified": false,
+          "finalErrorRGB8": 0.09412977430555555,
+          "changesMsAndTargetError": [
+            [
+              8.880042,
+              0.09413
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Texture",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499772121108291,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499772942454833,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-clarity": {
+      "separationRGB8": 0.3481987847222222,
+      "referenceDigests": [
+        "f2dd398607035d2ff7adb4db3afccb943fcd96c630c928c872308cf0b6c0f803",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499784755389583,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499785571712291,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.337890625,
+          "changesMsAndTargetError": [
+            [
+              774.504084,
+              0.33789
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499786390299958,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.5891927083333334,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499787212439666,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.337890625,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499788042671250,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": [
+            [
+              17.134,
+              0.3482
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499788866852041,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.337890625,
+          "changesMsAndTargetError": [
+            [
+              19.573417,
+              0.33789
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499789688453750,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": [
+            [
+              22.43825,
+              0.3482
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499790503058583,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.337890625,
+          "changesMsAndTargetError": [
+            [
+              34.9855,
+              0.33789
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499791317900083,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": [
+            [
+              28.101375,
+              0.3482
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499792132207708,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.337890625,
+          "changesMsAndTargetError": [
+            [
+              21.410958,
+              0.33789
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Clarity",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499783125828250,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "sentNs": 499783943274333,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-dehaze": {
+      "separationRGB8": 0.3481987847222222,
+      "referenceDigests": [
+        "f2dd398607035d2ff7adb4db3afccb943fcd96c630c928c872308cf0b6c0f803",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499798682945125,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499799496859458,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499800311511208,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499801129193583,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499801944547208,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499802767509875,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499803587381291,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3481987847222222,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499804417413291,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 5.317816840277778,
+          "changesMsAndTargetError": [
+            [
+              575.375459,
+              5.31782
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499805238448041,
+          "state": 0,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 5.324978298611111,
+          "changesMsAndTargetError": []
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499806064091583,
+          "state": 1,
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 5.317816840277778,
+          "changesMsAndTargetError": []
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Dehaze",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499794138258666,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "sentNs": 499794959109333,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-pcv-amount": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        -50
+      ],
+      "displayLabel": "Vignette",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499808084103416,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "sentNs": 499808906562416,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-grain-amount": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        50
+      ],
+      "displayLabel": "Grain",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "sentNs": 499819105666875,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "sentNs": 499819918891583,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-glow-amount": {
+      "separationRGB8": 0.0,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca"
+      ],
+      "trials": [],
+      "status": "inconclusive",
+      "reason": "Calibration edit produced insufficient stable photo contrast",
+      "values": [
+        0,
+        65
+      ],
+      "displayLabel": "Glow",
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "sentNs": 499830095654833,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "sentNs": 499830905353125,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    }
+  },
+  "window": {
+    "scale": 1,
+    "title": "RAWMaster Presented Canvas A5DDB054-F931-400B-A717-294BFE1A4843",
+    "id": 33389,
+    "frame": [
+      -541,
+      -1925,
+      3024,
+      1691
+    ]
+  },
+  "photoRectPixels": [
+    328,
+    24,
+    2368,
+    1579
+  ],
+  "roi": [
+    0.2650793650793651,
+    0.20094618568894146,
+    0.46984126984126984,
+    0.5602602010644588
+  ],
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "previewPixels": [
+    2400,
+    1600
+  ],
+  "initialRecipe": {
+    "adjustmentsV3": {
+      "blackAndWhite": {
+        "enabled": false,
+        "grain": 0,
+        "intensity": 0.5,
+        "neutrals": 0,
+        "tone": 0
+      },
+      "color": {
+        "cast": 0,
+        "enabled": false,
+        "saturation": 0,
+        "vibrance": 0
+      },
+      "curves": {
+        "blue": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        },
+        "enabled": false,
+        "green": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        },
+        "red": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        },
+        "rgb": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        }
+      },
+      "definition": {
+        "amount": 0,
+        "enabled": false
+      },
+      "filter": {
+        "enabled": false,
+        "intensity": 100,
+        "selection": "original"
+      },
+      "geometry": {
+        "clockwiseQuarterTurns": 0,
+        "crop": {
+          "height": 1,
+          "width": 1,
+          "x": 0,
+          "y": 0
+        },
+        "flipHorizontal": false,
+        "flipVertical": false,
+        "horizontalPerspective": 0,
+        "straightenDegrees": 0,
+        "version": "adjustV3",
+        "verticalPerspective": 0
+      },
+      "legacyBasis": null,
+      "levels": {
+        "blue": {
+          "kind": "identity"
+        },
+        "enabled": false,
+        "green": {
+          "kind": "identity"
+        },
+        "luminance": {
+          "kind": "identity"
+        },
+        "red": {
+          "kind": "identity"
+        },
+        "rgb": {
+          "kind": "identity"
+        }
+      },
+      "light": {
+        "blackPoint": 0,
+        "brightness": 0,
+        "brilliance": 0,
+        "contrast": 0,
+        "enabled": false,
+        "exposure": 0,
+        "highlights": 0,
+        "shadows": 0
+      },
+      "localEdits": {
+        "operations": [],
+        "redEyeEnabled": false,
+        "retouchEnabled": false,
+        "sourceBinding": null
+      },
+      "noiseReduction": {
+        "colorNoise": 0,
+        "detail": 0,
+        "enabled": false,
+        "luminanceNoise": 0,
+        "nonRawAmount": 0,
+        "sourceCapability": "raw"
+      },
+      "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "selectiveColor": {
+        "colors": [
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "red"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "orange"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "yellow"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "green"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "cyan"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "blue"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "purple"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "magenta"
+          }
+        ],
+        "enabled": false
+      },
+      "sharpen": {
+        "edges": 0.22,
+        "enabled": false,
+        "falloff": 0.69,
+        "intensity": 0
+      },
+      "vignette": {
+        "enabled": false,
+        "radius": 0.5,
+        "softness": 0,
+        "strength": 0
+      },
+      "whiteBalance": {
+        "adjustment": {
+          "mode": "asShot"
+        },
+        "enabled": false
+      }
+    },
+    "engineVersion": "rawmaster-adjust-v3",
+    "schemaVersion": 3
+  },
+  "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "testBundleSHA256": "08a6b10b2936d70bbab6f3ebf4a53ffe5d522ad54b3023067b065d73439c2553",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

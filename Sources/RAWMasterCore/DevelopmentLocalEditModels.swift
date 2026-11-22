@@ -112,6 +112,7 @@ public struct DevelopmentStroke: Codable, Equatable, Sendable {
   }
 }
 public enum DevelopmentLocalTool: String, Codable, Sendable { case retouch, redEye }
+public enum DevelopmentRetouchMode: String, Codable, Sendable { case remove, heal, clone }
 public struct DevelopmentPatchReference: Codable, Equatable, Sendable {
   public var sha256: String
   public var byteCount: Int64
@@ -139,24 +140,29 @@ public struct DevelopmentLocalEdit: Codable, Equatable, Sendable {
   public var stroke: DevelopmentStroke
   public var sourceSample: DevelopmentSourcePoint?
   public var patch: DevelopmentPatchReference?
+  /// Absent in old recipes means the original texture-transfer Heal operator.
+  public var retouchMode: DevelopmentRetouchMode
   public init(id: UUID = UUID(), sourceContentID: String, tool: DevelopmentLocalTool, toolVersion: Int = 1,
-              stroke: DevelopmentStroke, sourceSample: DevelopmentSourcePoint? = nil, patch: DevelopmentPatchReference? = nil) {
-    self.id = id; self.sourceContentID = sourceContentID; self.tool = tool; self.toolVersion = toolVersion; self.stroke = stroke; self.sourceSample = sourceSample; self.patch = patch
+              stroke: DevelopmentStroke, sourceSample: DevelopmentSourcePoint? = nil, patch: DevelopmentPatchReference? = nil,
+              retouchMode: DevelopmentRetouchMode = .heal) {
+    self.id = id; self.sourceContentID = sourceContentID; self.tool = tool; self.toolVersion = toolVersion; self.stroke = stroke; self.sourceSample = sourceSample; self.patch = patch; self.retouchMode = retouchMode
   }
   public func validate() throws {
     guard EditingFingerprint.isSHA256(sourceContentID), toolVersion == 1 else { throw EditingError.invalidRecipe }
     try stroke.validate(); try sourceSample?.validate(); try patch?.validate()
     if let patch { guard patch.sourceContentID == sourceContentID, patch.toolVersion == toolVersion else { throw EditingError.invalidRecipe } }
-    if tool == .redEye { guard stroke.points.count == 1, sourceSample == nil, patch == nil else { throw EditingError.invalidRecipe } }
+    if tool == .redEye { guard stroke.points.count == 1, sourceSample == nil, patch == nil, retouchMode == .heal else { throw EditingError.invalidRecipe } }
   }
-  private enum CodingKeys: String, CodingKey { case id, sourceContentID, tool, toolVersion, stroke, sourceSample, patch }
+  private enum CodingKeys: String, CodingKey { case id, sourceContentID, tool, toolVersion, stroke, sourceSample, patch, retouchMode }
   public init(from decoder: Decoder) throws { try self.init(from:decoder,maximumPoints:DevelopmentLocalEditLimits.maximumPointsPerStroke,maximumPatchBytes:DevelopmentLocalEditLimits.maximumPatchBytes) }
   init(from decoder: Decoder, maximumPoints: Int, maximumPatchBytes: Int64) throws {
-    try RecipeCoding.requireKeys(decoder,["id","sourceContentID","tool","toolVersion","stroke","sourceSample","patch"]); let c = try decoder.container(keyedBy:CodingKeys.self)
+    let c = try decoder.container(keyedBy:CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder,["id","sourceContentID","tool","toolVersion","stroke","sourceSample","patch"] + (c.contains(.retouchMode) ? ["retouchMode"]:[]))
     id = try c.decode(UUID.self,forKey:.id); sourceContentID = try c.decode(String.self,forKey:.sourceContentID)
     tool = try c.decode(DevelopmentLocalTool.self,forKey:.tool); toolVersion = try c.decode(Int.self,forKey:.toolVersion)
     guard toolVersion == 1, EditingFingerprint.isSHA256(sourceContentID) else { throw EditingError.invalidRecipe }
     sourceSample = try c.decodeIfPresent(DevelopmentSourcePoint.self,forKey:.sourceSample); patch = try c.decodeIfPresent(DevelopmentPatchReference.self,forKey:.patch)
+    retouchMode = c.contains(.retouchMode) ? try c.decode(DevelopmentRetouchMode.self,forKey:.retouchMode):.heal
     guard (patch?.byteCount ?? 0) <= maximumPatchBytes else { throw EditingError.invalidRecipe }
     stroke = try DevelopmentStroke(from:c.superDecoder(forKey:.stroke),maximumPoints:maximumPoints); try validate()
   }
@@ -164,6 +170,7 @@ public struct DevelopmentLocalEdit: Codable, Equatable, Sendable {
     try validate(); var c = encoder.container(keyedBy:CodingKeys.self)
     try c.encode(id,forKey:.id); try c.encode(sourceContentID,forKey:.sourceContentID); try c.encode(tool,forKey:.tool); try c.encode(toolVersion,forKey:.toolVersion)
     try c.encode(stroke,forKey:.stroke); try c.encode(sourceSample,forKey:.sourceSample); try c.encode(patch,forKey:.patch)
+    if tool == .retouch && retouchMode != .heal { try c.encode(retouchMode,forKey:.retouchMode) }
   }
 }
 public struct DevelopmentLocalEditsV3: Codable, Equatable, Sendable {

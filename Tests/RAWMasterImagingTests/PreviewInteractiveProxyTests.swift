@@ -36,7 +36,7 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     p.definition = .init(enabled:true,amount:0.5)
     XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.definition))
     p=n.adjustmentsV3!;p.filter = .init(enabled:true,selection:.vivid,intensity:37)
-    XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.filter))
+    XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.eligible)
     p=n.adjustmentsV3!;p.geometry.version = .projectiveV3_1;p.geometry.verticalPerspective=5
     XCTAssertEqual(try PreviewInteractiveProxyV3.support(.init(adjustmentsV3:p),sourceIsRAW:false),.canonical(.projective))
     p=n.adjustmentsV3!;p.blackAndWhite = .init(enabled:true,grain:0.1)
@@ -163,6 +163,32 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     }
     XCTAssertEqual(ledger.statistics.chargedCPUBytes,0);XCTAssertEqual(ledger.statistics.chargedGPUBytes,0)
   }
+  func testParallelInvalidReductionChecksEveryEdgeTileAndPreservesValidHDRAlpha()throws {
+    let device=try XCTUnwrap(MTLCreateSystemDefaultDevice()),ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
+    let context=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
+    defer{context.clearCaches();scope.closeAndRetire()}
+    let width=130,height=70,layout=try PreviewInteractiveLayout.make(width:1,height:1,float:true)
+    let ticket=try scope.reserveSharedOperation(bytes:[layout.bytes])[0]
+    let scratch=try PreviewInteractiveProxyStorage(layout:layout,ticket:ticket,device:device)
+    func image(_ pixels:[SIMD4<Float>])->CIImage {
+      .init(bitmapData:pixels.withUnsafeBytes{Data($0)},bytesPerRow:width*16,size:.init(width:width,height:height),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+    }
+    var valid=(0..<(width*height)).map{i->SIMD4<Float> in
+      let a:Float=i%17==0 ? 0:(i%19==0 ? 0.5:1)
+      return .init((i%11==0 ? 3.5:0.2)*a,(i%13==0 ? -0.5:0.3)*a,0.4*a,a)
+    }
+    XCTAssertNoThrow(try PreviewInteractiveProxyV3.validate(image(valid),using:scratch,context:context,check:{}))
+    for (point,bad) in [(0,SIMD4<Float>(.nan,0,0,0)),(31*width+31,.init(0,.infinity,0,1)),
+                        (32*width+32,.init(0,0,0,1.01)),(63*width+63,.init(0,0,0,-0.01)),
+                        (64*width+64,.init(0,0,0,.nan)),(69*width+129,.init(.nan,0,0,1))] {
+      valid[point] = bad
+      XCTAssertThrowsError(try PreviewInteractiveProxyV3.validate(image(valid),using:scratch,context:context,check:{})) {
+        XCTAssertEqual($0 as? DevelopmentError,.invalidEncoding)
+      }
+      valid[point] = .init(0.2,0.3,0.4,1)
+    }
+    XCTAssertNoThrow(try PreviewInteractiveProxyV3.validate(image(valid),using:scratch,context:context,check:{}))
+  }
   func testActualImageProxyWarmHitNativeDescriptorAndSettledCanonicalSeparation()async throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
@@ -186,6 +212,26 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     await service.closeAll()
     let closed=await service.interactiveProxyStatisticsForTesting();XCTAssertEqual(closed.residentBytes,0);XCTAssertEqual(closed.pinnedBytes,0)
   }
+  func testRevisitingSettledRecipeDeliversExactManagedPixels() async throws {
+    let (root,source) = try fixture()
+    defer { try? FileManager.default.removeItem(at:root) }
+    let service = DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
+    let session = try await service.open(source:.raw(source)), consumer = PreviewConsumerID()
+    let a = neutral()
+    var b = a
+    b.adjustmentsV3!.color = .init(enabled:true,saturation:0.2)
+    let exact = try await service.render(request(session,consumer,a,1,quality:.settled))
+    let fresh = try await service.render(request(session,consumer,b,2))
+    XCTAssertTrue(fresh.approximate)
+    let replay = try await service.render(request(session,consumer,a,3))
+    XCTAssertFalse(replay.approximate)
+    XCTAssertEqual(replay.outputKey,exact.outputKey)
+    XCTAssertEqual(replay.quality,.interactive)
+    XCTAssertEqual(try bytes(replay.image), try bytes(exact.image))
+    XCTAssertNotEqual(try bytes(replay.image), try bytes(fresh.image))
+    await service.closeAll()
+    XCTAssertEqual(try bytes(replay.image), try bytes(exact.image))
+  }
   func testActualEXIFCropStraightenAndLateD4StayRegisteredAgainstCanonical()async throws {
     for orientation in [1,6,8] {
       let(root,source)=try fixture(orientation:orientation);defer{try? FileManager.default.removeItem(at:root)}
@@ -205,20 +251,40 @@ final class PreviewInteractiveProxyTests:XCTestCase {
       await service.closeAll()
     }
   }
-  func testWholeRecipeFilterFallbackIsChargedCanonicalAndReportsClosedReason()async throws {
+  func testWholeRecipeFilterProxyIsChargedApproximateAndSeparatedFromSettledCanonical()async throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
     do {
       let lease=try await service.open(source:.raw(source)),consumer=PreviewConsumerID()
       var r=neutral();r.adjustmentsV3!.filter = .init(enabled:true,selection:.vivid,intensity:37)
       let frame=try await service.render(request(lease,consumer,r,1))
-      XCTAssertFalse(frame.approximate);XCTAssertNil(frame.approximation)
+      XCTAssertTrue(frame.approximate);XCTAssertNotNil(frame.approximation)
       let independent=try await DevelopmentService().preview(source:source,recipe:r,maxPixel:2400)
-      XCTAssertEqual(try bytes(frame.image),try bytes(independent.image))
+      let actual=try bytes(frame.image),expected=try bytes(independent.image)
+      XCTAssertEqual(actual.count,expected.count)
+      for i in actual.indices{XCTAssertLessThanOrEqual(abs(Int(actual[i])-Int(expected[i])),2)}
       let settled=try await service.render(request(lease,consumer,r,2,quality:.settled))
-      XCTAssertEqual(frame.outputKey,settled.outputKey);XCTAssertEqual(try bytes(frame.image),try bytes(settled.image))
-      let stats=await service.statistics();XCTAssertEqual(stats.interactiveProxyCanonicalFallbacks,1);XCTAssertEqual(stats.interactiveProxyLastFallbackReason,"filter")
-      let pool=await service.interactiveProxyStatisticsForTesting();XCTAssertEqual(pool.fills,0);XCTAssertGreaterThan(pool.owned.chargedCPUBytes,0)
+      XCTAssertFalse(settled.approximate);XCTAssertNotEqual(frame.outputKey,settled.outputKey)
+      let settledBytes=try bytes(settled.image);XCTAssertEqual(actual.count,settledBytes.count)
+      for i in actual.indices{XCTAssertLessThanOrEqual(abs(Int(actual[i])-Int(settledBytes[i])),2)}
+      let stats=await service.statistics();XCTAssertEqual(stats.interactiveProxyCanonicalFallbacks,0)
+      let pool=await service.interactiveProxyStatisticsForTesting();XCTAssertEqual(pool.fills,1);XCTAssertGreaterThan(pool.owned.chargedCPUBytes,0)
+    }catch{await service.closeAll();throw error}
+    await service.closeAll()
+  }
+  func testFilterAndTextureUseInteractiveProxyAndMatchSettledWithinDisplayTolerance()async throws {
+    let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let service=DevelopmentPreviewService(policy:.init(bitmapCacheBytes:1024*1024,interactiveEvaluation:.proxyV1))
+    do {
+      let lease=try await service.open(source:.raw(source)),consumer=PreviewConsumerID()
+      var r=neutral();r.adjustmentsV3!.filter = .init(enabled:true,selection:.vivid,intensity:37)
+      r.adjustmentsV3!.advancedDetail.texture = .init(enabled:true,amount:25)
+      let frame=try await service.render(request(lease,consumer,r,1))
+      XCTAssertTrue(frame.approximate)
+      let settled=try await service.render(request(lease,consumer,r,2,quality:.settled))
+      let a=try bytes(frame.image),b=try bytes(settled.image);XCTAssertEqual(a.count,b.count)
+      for i in a.indices{XCTAssertLessThanOrEqual(abs(Int(a[i])-Int(b[i])),3)}
+      let stats=await service.statistics();XCTAssertEqual(stats.interactiveProxyCanonicalFallbacks,0)
     }catch{await service.closeAll();throw error}
     await service.closeAll()
   }

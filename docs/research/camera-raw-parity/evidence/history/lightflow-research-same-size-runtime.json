@@ -1,0 +1,16 @@
+{
+  "target": "LightFlow build 2d41ab1",
+  "canvas": [2400, 1600],
+  "method": "Programmatic edit state; frame event follows GPU idle; not physical input-to-photon",
+  "measurements": [
+    {"operation": "exposure-0.25-first", "frameMs": 6.035},
+    {"operation": "exposure-0.25-second", "frameMs": 15.545},
+    {"operation": "exposure-0.50", "frameMs": 17.410},
+    {"operation": "texture-25", "frameMs": 14.925},
+    {"operation": "texture-30", "frameMs": 12.785},
+    {"operation": "clarity-25", "frameMs": 9.875},
+    {"operation": "clarity-30", "frameMs": 10.140},
+    {"operation": "dehaze-25", "frameMs": 6.605},
+    {"operation": "dehaze-30", "frameMs": 12.295}
+  ]
+}

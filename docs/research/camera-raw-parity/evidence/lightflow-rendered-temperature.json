@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "recordedAt": "2026-11-22T09:22:01.290477+00:00",
+  "protocol": "lightflow-rendered-jpeg-temperature-v1",
+  "sourceKind": "camera JPEG embedded in the Sony ARW",
+  "parentRawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "parentRawSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256": "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "sourceSHA256After": "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "embeddedOffset": 196770,
+  "embeddedLength": 258192,
+  "sourcePixels": [
+    1616,
+    1080
+  ],
+  "viewportPixels": [
+    3200,
+    2000
+  ],
+  "photoRectPixels": [
+    746,
+    417,
+    1616,
+    1080
+  ],
+  "uiSHA256": {
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+    "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+    "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+    "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+    "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+    "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+    "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+    "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+    "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+    "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "samples": 10,
+  "operations": [
+    {
+      "id": "color-temp-rendered",
+      "featureIds": [
+        "color-temp-rendered"
+      ],
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 474.336458,
+          "actualFieldValue": -28,
+          "recipe": {
+            "temperature": -28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "43a0fd623c74a0de73a3f6392c39ebaf755cdf91f7f9a4a76a6e2781b9d0ff85",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 251.895167,
+          "actualFieldValue": 28,
+          "recipe": {
+            "temperature": 28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "e552db3bf976dbf8fbb88a2ffee3f87b27e7458dcafbc8bff6e009f54a17fa17",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 253.070042,
+          "actualFieldValue": -28,
+          "recipe": {
+            "temperature": -28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "43a0fd623c74a0de73a3f6392c39ebaf755cdf91f7f9a4a76a6e2781b9d0ff85",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 252.565708,
+          "actualFieldValue": 28,
+          "recipe": {
+            "temperature": 28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "e552db3bf976dbf8fbb88a2ffee3f87b27e7458dcafbc8bff6e009f54a17fa17",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 253.04075,
+          "actualFieldValue": -28,
+          "recipe": {
+            "temperature": -28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "43a0fd623c74a0de73a3f6392c39ebaf755cdf91f7f9a4a76a6e2781b9d0ff85",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 252.956834,
+          "actualFieldValue": 28,
+          "recipe": {
+            "temperature": 28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "e552db3bf976dbf8fbb88a2ffee3f87b27e7458dcafbc8bff6e009f54a17fa17",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 252.275333,
+          "actualFieldValue": -28,
+          "recipe": {
+            "temperature": -28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "43a0fd623c74a0de73a3f6392c39ebaf755cdf91f7f9a4a76a6e2781b9d0ff85",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 252.690708,
+          "actualFieldValue": 28,
+          "recipe": {
+            "temperature": 28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "e552db3bf976dbf8fbb88a2ffee3f87b27e7458dcafbc8bff6e009f54a17fa17",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 252.072708,
+          "actualFieldValue": -28,
+          "recipe": {
+            "temperature": -28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "43a0fd623c74a0de73a3f6392c39ebaf755cdf91f7f9a4a76a6e2781b9d0ff85",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 253.353916,
+          "actualFieldValue": 28,
+          "recipe": {
+            "temperature": 28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "e552db3bf976dbf8fbb88a2ffee3f87b27e7458dcafbc8bff6e009f54a17fa17",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 253.763916,
+          "actualFieldValue": -28,
+          "recipe": {
+            "temperature": -28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "43a0fd623c74a0de73a3f6392c39ebaf755cdf91f7f9a4a76a6e2781b9d0ff85",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 254.004458,
+          "actualFieldValue": 28,
+          "recipe": {
+            "temperature": 28,
+            "tint": 0,
+            "wbMode": "custom"
+          },
+          "digest": "e552db3bf976dbf8fbb88a2ffee3f87b27e7458dcafbc8bff6e009f54a17fa17",
+          "verified": true
+        }
+      ],
+      "range": [
+        -100,
+        100
+      ],
+      "boundary": "Host send of trusted Return in prepared stock temperature field through accepted relative value, original viewer idle and 96 \u00d7 64 browser-compositor RGB pixels.",
+      "status": "measured"
+    }
+  ]
+}

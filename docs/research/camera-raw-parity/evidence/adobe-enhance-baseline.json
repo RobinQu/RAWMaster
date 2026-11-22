@@ -1,0 +1,49 @@
+{
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "state": "baseline",
+  "settingsMadeIn": "untouched",
+  "sidecars": {},
+  "renderedIn": "Photoshop Camera Raw, CameraRAWOpenOptions.SELECTEDIMAGE",
+  "photoshop": "28.0.0",
+  "foregroundUnchanged": true,
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "actualPixels": [
+    9504,
+    6336
+  ],
+  "bits": 16,
+  "icc": "sRGB IEC61966-2.1",
+  "timedBoundary": "One full document open; TIFF writing timed separately. No interactive or warm timing claim.",
+  "openMs": 773.079,
+  "saveMs": 155.393,
+  "referenceFile": "baseline.tif",
+  "tiffBytes": 361342920,
+  "tiffSHA256": "3ad7f50f3f0eeecdf35deffbf6057e5db9b6aaa8db669863862533c1bb64b761",
+  "returnedXMPSHA256": "d79c2be96a5a5cfa1ab471ad4cae9073aed4b8370628201a66ea918fc76147ab",
+  "qualification": "Captured for image comparison. Verify actual Enhance state, change only that setting and compare with the untouched baseline.",
+  "imageIOFileProperties": {
+    "pixelWidth": "9504",
+    "pixelHeight": "6336",
+    "bitsPerSample": "16",
+    "samplesPerPixel": "3",
+    "profile": "sRGB IEC61966-2.1"
+  },
+  "localReferenceFile": "output/performance/release-background-20261122/adobe-enhance-reference/baseline.tif",
+  "localReturnedXMP": "output/performance/release-background-20261122/adobe-enhance-reference/baseline.returned-xmp",
+  "untouchedPixelRepeat": {
+    "documentOpens": 2,
+    "layout": "Uncompressed native 3-channel RGB16 TIFF strips in file byte order",
+    "byteOrder": "MM",
+    "rgb16Bytes": 361304064,
+    "rgb16SHA256": "fb1db6d7b3330e6d22fb1c02513561ba4480e5efd502ab4541d6813c201eefd5",
+    "identical": true
+  },
+  "nativeRGB16": {
+    "byteOrder": "MM",
+    "rgb16Bytes": 361304064,
+    "rgb16SHA256": "fb1db6d7b3330e6d22fb1c02513561ba4480e5efd502ab4541d6813c201eefd5"
+  }
+}

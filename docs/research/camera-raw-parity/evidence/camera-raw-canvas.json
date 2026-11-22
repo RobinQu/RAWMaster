@@ -1,0 +1,3345 @@
+{
+  "protocol": "screen-photo-response-v1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "hardware": "Mac16,5",
+  "os": "27.0.1",
+  "photoRectPixels": [
+    16,
+    272,
+    2368,
+    1579
+  ],
+  "roi": [
+    0.16201191264063536,
+    0.2684018264840182,
+    0.4701522170747849,
+    0.43260273972602736
+  ],
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": 60,
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120
+  },
+  "schemaVersion": 1,
+  "driver": "Physical numeric typing and Tab to ScreenCaptureKit witness; committed value read before the following edit",
+  "startedAt": "2026-11-22T09:41:15.674790+00:00",
+  "planned": [
+    "light-exposure",
+    "light-contrast",
+    "light-highlights",
+    "light-shadows",
+    "light-whites",
+    "light-blacks",
+    "color-temp-raw",
+    "color-tint",
+    "color-vibrance",
+    "color-saturation",
+    "effects-texture",
+    "effects-clarity",
+    "effects-dehaze",
+    "effects-pcv-amount",
+    "effects-grain-amount",
+    "effects-glow-amount"
+  ],
+  "operations": {
+    "light-exposure": {
+      "separationRGB8": 16.66802300347222,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "3d696dc46ab199dea14e64e4249c8d02681252cc53f620a7875307b58d43377d"
+      ],
+      "trials": [
+        {
+          "sentNs": 509964870674625,
+          "old": "+0.50",
+          "position": [
+            1434,
+            418
+          ],
+          "actual": "0.00",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0.00",
+          "valueWitness": "before-next-input",
+          "firstMs": 118.013,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              118.013,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509965575459375,
+          "old": "0.00",
+          "actual": "+0.50",
+          "position": [
+            1434,
+            418
+          ],
+          "accepted": true,
+          "state": 1,
+          "committedValue": "+0.50",
+          "valueWitness": "before-next-input",
+          "firstMs": 86.425708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              86.425708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            418
+          ],
+          "old": "+0.50",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0.00",
+          "sentNs": 509966295470041,
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0.00",
+          "valueWitness": "before-next-input",
+          "firstMs": 125.542875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              125.542875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "0.00",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "+0.50",
+          "sentNs": 509966997222375,
+          "position": [
+            1434,
+            418
+          ],
+          "accepted": true,
+          "state": 1,
+          "committedValue": "+0.50",
+          "valueWitness": "before-next-input",
+          "firstMs": 124.300375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              124.300375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+0.50",
+          "sentNs": 509967709598583,
+          "actual": "0.00",
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0.00",
+          "valueWitness": "before-next-input",
+          "firstMs": 90.034917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              90.034917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "+0.50",
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0.00",
+          "sentNs": 509968411221083,
+          "accepted": true,
+          "state": 1,
+          "committedValue": "+0.50",
+          "valueWitness": "before-next-input",
+          "firstMs": 93.36,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              93.36,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+0.50",
+          "actual": "0.00",
+          "position": [
+            1434,
+            418
+          ],
+          "sentNs": 509969113177291,
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0.00",
+          "valueWitness": "before-next-input",
+          "firstMs": 92.062125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              92.062125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            418
+          ],
+          "old": "0.00",
+          "sentNs": 509969798868041,
+          "actual": "+0.50",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 1,
+          "committedValue": "+0.50",
+          "valueWitness": "before-next-input",
+          "firstMs": 101.448375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              101.448375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509970527163083,
+          "actual": "0.00",
+          "size": [
+            40,
+            16
+          ],
+          "old": "+0.50",
+          "position": [
+            1434,
+            418
+          ],
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0.00",
+          "valueWitness": "before-next-input",
+          "firstMs": 123.434042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              123.434042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509971235619083,
+          "old": "0.00",
+          "actual": "+0.50",
+          "accepted": true,
+          "state": 1,
+          "committedValue": "+0.50",
+          "valueWitness": "before-next-input",
+          "firstMs": 112.598292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              112.598292,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        0.5
+      ],
+      "displayLabel": "Exposure",
+      "ocrLabels": [
+        "Exposure"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "position": [
+            1434,
+            418
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "sentNs": 509963369575083,
+          "old": "0.00",
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0.00",
+          "valueWitness": "before-next-input"
+        },
+        {
+          "actual": "+0.50",
+          "old": "0.00",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            418
+          ],
+          "sentNs": 509964124380750,
+          "accepted": true,
+          "state": 1,
+          "committedValue": "+0.50",
+          "valueWitness": "before-next-input"
+        }
+      ],
+      "framesSHA256": "81134933e342478c39ad3e94c82b62731cafec4b47ceaffabbcf0cdea6bb108c",
+      "scoreEndNs": 509971834108541,
+      "archive": "camera-raw-screen-typing-repeat.zip"
+    },
+    "light-contrast": {
+      "separationRGB8": 6.627007378472222,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "693b3a01fec13183e7d2792df18641f33ee1f720f918eee32cb7b31ad02272fe"
+      ],
+      "trials": [
+        {
+          "old": "+30",
+          "sentNs": 508965904778541,
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            449
+          ],
+          "actual": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 118.53325,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              118.53325,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "actual": "30",
+          "old": "0",
+          "position": [
+            1434,
+            449
+          ],
+          "sentNs": 508966598407041,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 87.641792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              87.641792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508967258066208,
+          "size": [
+            40,
+            16
+          ],
+          "old": "+30",
+          "actual": "0",
+          "position": [
+            1434,
+            449
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 90.052417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              90.052417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508967999446541,
+          "actual": "30",
+          "position": [
+            1434,
+            449
+          ],
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 87.582167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              87.582167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            449
+          ],
+          "sentNs": 508968657665166,
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 95.745792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              95.745792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            449
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "30",
+          "sentNs": 508969327910583,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 93.378708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              93.378708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "position": [
+            1434,
+            449
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508970054085208,
+          "actual": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 102.266583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              102.266583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508970805109208,
+          "old": "0",
+          "actual": "3",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            449
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 107.436208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              107.436208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508971476567125,
+          "position": [
+            1434,
+            449
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 77.414833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              77.414833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "30",
+          "position": [
+            1434,
+            449
+          ],
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508972166264625,
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "30",
+          "accepted": true,
+          "firstMs": 88.122041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              88.122041,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Contrast",
+      "ocrLabels": [
+        "Contrast"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "position": [
+            1434,
+            449
+          ],
+          "sentNs": 508964532951750,
+          "old": "0",
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true
+        },
+        {
+          "sentNs": 508965208110083,
+          "old": "0",
+          "actual": "3",
+          "position": [
+            1434,
+            449
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "fbc2dbe799503642c39c257d57a121ecd4f0923c95aada49d146dbae4940784a",
+      "scoreEndNs": 508972666264625,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "light-highlights": {
+      "separationRGB8": 5.975314670138889,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "ee1d83b42732c2b28adf0c832cf44be563cd4d46b3d4193d554ef17aead4054c"
+      ],
+      "trials": [
+        {
+          "old": "+30",
+          "sentNs": 508976438972125,
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            480
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 112.275583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              112.275583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508977193390333,
+          "position": [
+            1434,
+            480
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "30",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 92.082,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              92.082,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508977869776541,
+          "actual": "0",
+          "position": [
+            1434,
+            480
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "+30",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 82.923625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              82.923625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            480
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "3",
+          "sentNs": 508978539455458,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 122.073292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              104.974542,
+              5.33398
+            ],
+            [
+              122.073292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "sentNs": 508979221980750,
+          "position": [
+            1434,
+            480
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 100.21925,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              100.21925,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508979914453083,
+          "old": "0",
+          "actual": "3",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            480
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 116.531125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              99.747,
+              5.33398
+            ],
+            [
+              116.531125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "0",
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            480
+          ],
+          "sentNs": 508980595983333,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 84.787792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              84.787792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508981302818208,
+          "position": [
+            1434,
+            480
+          ],
+          "actual": "3",
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 114.377417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              114.377417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "old": "+30",
+          "position": [
+            1434,
+            480
+          ],
+          "sentNs": 508981987362708,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 107.294667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              107.294667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "30",
+          "sentNs": 508982677823458,
+          "position": [
+            1434,
+            480
+          ],
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "30",
+          "accepted": true,
+          "firstMs": 110.875333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              93.771458,
+              5.33398
+            ],
+            [
+              110.875333,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Highlights",
+      "ocrLabels": [
+        "Highlights"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            480
+          ],
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508974833029500,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true
+        },
+        {
+          "old": "0",
+          "position": [
+            1434,
+            480
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "actual": "3",
+          "sentNs": 508975577884708,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "cffbd79692d65a070e07d7a85ad9be01fff50248728282a7e8f667f3064ac4ed",
+      "scoreEndNs": 508983177823458,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "light-shadows": {
+      "separationRGB8": 4.991102430555555,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "60e4aa5394357c411d3981a15c844e6954a3348ed6bdb0e2ff8fada6f40b335f"
+      ],
+      "trials": [
+        {
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            511
+          ],
+          "sentNs": 508986347980916,
+          "old": "+30",
+          "actual": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 72.642125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              72.642125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "0",
+          "sentNs": 508987029754333,
+          "actual": "30",
+          "position": [
+            1434,
+            511
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 101.138083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              101.138083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "actual": "0",
+          "position": [
+            1434,
+            511
+          ],
+          "sentNs": 508987725980958,
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 127.0015,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              127.0015,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "3",
+          "sentNs": 508988434937125,
+          "position": [
+            1434,
+            511
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 120.804041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              101.486583,
+              4.55425
+            ],
+            [
+              120.804041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508989158013125,
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            511
+          ],
+          "old": "+30",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 106.284125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              106.284125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "0",
+          "sentNs": 508989866300083,
+          "old": "0",
+          "position": [
+            1434,
+            511
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 136.320792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              136.320792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "sentNs": 508990540806666,
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "position": [
+            1434,
+            511
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 91.49125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              91.49125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            511
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "30",
+          "sentNs": 508991246341375,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 105.390625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              87.679666,
+              4.55425
+            ],
+            [
+              105.390625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508991960220041,
+          "actual": "0",
+          "old": "+30",
+          "position": [
+            1434,
+            511
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 72.860709,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              72.860709,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            511
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508992638555333,
+          "old": "0",
+          "actual": "30",
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "30",
+          "accepted": true,
+          "firstMs": 119.762083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              102.562667,
+              4.55425
+            ],
+            [
+              119.762083,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Shadows",
+      "ocrLabels": [
+        "Shadows"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "old": "0",
+          "actual": "0",
+          "sentNs": 508984981857500,
+          "position": [
+            1434,
+            511
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true
+        },
+        {
+          "actual": "3",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508985673361458,
+          "old": "0",
+          "position": [
+            1434,
+            511
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "0a6411edbac1eab47f62145c172f491f9dc8eb8faa722ef6db23ff88a8874b9a",
+      "scoreEndNs": 508993138555333,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "light-whites": {
+      "separationRGB8": 2.8795572916666665,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "5fef76c2786eac948de7b004fe2a763f967c396d2b9d51cf9a6d0acd3cae53c0"
+      ],
+      "trials": [
+        {
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508996636042750,
+          "position": [
+            1434,
+            542
+          ],
+          "actual": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 115.213041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              115.213041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "3",
+          "position": [
+            1434,
+            542
+          ],
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 508997397843833,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 108.75575,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              108.75575,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508998095708083,
+          "actual": "0",
+          "position": [
+            1434,
+            542
+          ],
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 121.169042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              121.169042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 508998810946791,
+          "actual": "3",
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "position": [
+            1434,
+            542
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 120.878292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              120.878292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "sentNs": 508999514516458,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 103.269625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              103.269625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "3",
+          "sentNs": 509000233000666,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 125.387292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              108.831167,
+              2.77648
+            ],
+            [
+              125.387292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "0",
+          "old": "+30",
+          "sentNs": 509000937654208,
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 89.498542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              89.498542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509001716674208,
+          "position": [
+            1434,
+            542
+          ],
+          "actual": "30",
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 107.389625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              89.662833,
+              2.77648
+            ],
+            [
+              107.389625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            542
+          ],
+          "sentNs": 509002458492333,
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 135.879208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              135.879208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "0",
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "actual": "3",
+          "sentNs": 509003184879583,
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "3",
+          "accepted": false,
+          "firstMs": 106.460625,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              106.460625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Whites",
+      "ocrLabels": [
+        "Whites"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "sentNs": 508995124579916,
+          "actual": "0",
+          "position": [
+            1434,
+            542
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "3",
+          "position": [
+            1434,
+            542
+          ],
+          "sentNs": 508995832913541,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "234e8b78cc01908ca9be4737a655f1656b0a513af725e37992c39beff8166571",
+      "scoreEndNs": 509003684879583,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "light-blacks": {
+      "separationRGB8": 3.8301866319444446,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "cca6b6cb4eae7442999b6a4c1e0a75fc2302f877e7b8f3709734c910b8caac99"
+      ],
+      "trials": [
+        {
+          "position": [
+            1434,
+            573
+          ],
+          "old": "+30",
+          "sentNs": 509006972149458,
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 95.27525,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              95.27525,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            573
+          ],
+          "sentNs": 509007683573000,
+          "old": "0",
+          "actual": "30",
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 138.857416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              105.165416,
+              3.6384
+            ],
+            [
+              138.857416,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "position": [
+            1434,
+            573
+          ],
+          "old": "+30",
+          "sentNs": 509008405207833,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 78.292292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              78.292292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            573
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509009104151125,
+          "old": "0",
+          "actual": "3",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 126.057916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              126.057916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509009790374375,
+          "old": "+30",
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            573
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 100.699083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              100.699083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            573
+          ],
+          "sentNs": 509010499065458,
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "30",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 120.202417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              102.317625,
+              3.6384
+            ],
+            [
+              120.202417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "position": [
+            1434,
+            573
+          ],
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509011210908791,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 72.958459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              72.958459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509011894552333,
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "30",
+          "position": [
+            1434,
+            573
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 123.559542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              123.559542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509012558123291,
+          "actual": "0",
+          "position": [
+            1434,
+            573
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 92.125834,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              92.125834,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "30",
+          "position": [
+            1434,
+            573
+          ],
+          "sentNs": 509013251922541,
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "30",
+          "accepted": true,
+          "firstMs": 95.566209,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              95.566209,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Blacks",
+      "ocrLabels": [
+        "Blacks"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "position": [
+            1434,
+            573
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "old": "0",
+          "sentNs": 509005501528541,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509006216422416,
+          "old": "0",
+          "position": [
+            1434,
+            573
+          ],
+          "actual": "3",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "3cf4307bbaac9fe99b42395e8012a9360a0ac4e3f239295e1d714b74d3fccead",
+      "scoreEndNs": 509013751922541,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "color-temp-raw": {
+      "separationRGB8": 4.354166666666667,
+      "referenceDigests": [
+        "0dd4989f6489f8abad6aa212828638b17f7b6d7956e9992a00d07c5570f6002c",
+        "859f0e85f21757b0874eedffad47fccc2537130f7857a7aff953259a46f3be48"
+      ],
+      "trials": [
+        {
+          "old": "6500",
+          "sentNs": 509016811736291,
+          "actual": "5",
+          "position": [
+            1434,
+            701
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "5500",
+          "accepted": true,
+          "firstMs": 148.985459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              82.137625,
+              41.49794
+            ],
+            [
+              148.985459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "5500",
+          "actual": "65",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            701
+          ],
+          "sentNs": 509017487785208,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "6500",
+          "accepted": true,
+          "firstMs": 135.84,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              102.179667,
+              42.45106
+            ],
+            [
+              135.84,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "actual": "55",
+          "old": "6500",
+          "sentNs": 509018156299583,
+          "position": [
+            1434,
+            701
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "5500",
+          "accepted": true,
+          "firstMs": 137.681708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              120.8565,
+              41.49794
+            ],
+            [
+              137.681708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509018829278541,
+          "position": [
+            1434,
+            701
+          ],
+          "actual": "65",
+          "size": [
+            40,
+            16
+          ],
+          "old": "5500",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "6500",
+          "accepted": true,
+          "firstMs": 121.030667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              103.3565,
+              42.45106
+            ],
+            [
+              121.030667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509019498550291,
+          "old": "6500",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "5",
+          "position": [
+            1434,
+            701
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "5500",
+          "accepted": true,
+          "firstMs": 125.825334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              125.825334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            701
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509020243142875,
+          "actual": "5500",
+          "old": "5500",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "6500",
+          "accepted": true,
+          "firstMs": 146.097791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              146.097791,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "6500",
+          "sentNs": 509020969066708,
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            701
+          ],
+          "actual": "55",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "5500",
+          "accepted": true,
+          "firstMs": 115.208375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              98.546042,
+              41.49794
+            ],
+            [
+              115.208375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            701
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509021649701416,
+          "old": "5500",
+          "actual": "65",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "6500",
+          "accepted": true,
+          "firstMs": 107.10825,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              89.619792,
+              42.45106
+            ],
+            [
+              107.10825,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            701
+          ],
+          "sentNs": 509022315384791,
+          "actual": "5",
+          "old": "6500",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "5500",
+          "accepted": true,
+          "firstMs": 139.224792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              139.224792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "5500",
+          "position": [
+            1434,
+            701
+          ],
+          "sentNs": 509022992399166,
+          "actual": "65",
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "65",
+          "accepted": false,
+          "firstMs": 125.434084,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              108.782834,
+              42.45106
+            ],
+            [
+              125.434084,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        5500,
+        6500
+      ],
+      "displayLabel": "Temperature",
+      "ocrLabels": [
+        "Temperature"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "sentNs": 509015403563833,
+          "position": [
+            1434,
+            701
+          ],
+          "actual": "550",
+          "old": "5700",
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "5500",
+          "accepted": true
+        },
+        {
+          "sentNs": 509016124562166,
+          "size": [
+            40,
+            16
+          ],
+          "actual": "6",
+          "position": [
+            1434,
+            701
+          ],
+          "old": "5500",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "6500",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "8e1394a147e26aeb37674b9a500f6bcef6391b9bc1c5d3d57bec18bd7efb4f9e",
+      "scoreEndNs": 509023492399166,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "color-tint": {
+      "separationRGB8": 3.342502170138889,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "d512d2ba4814ebb92b836d8dbcd44be327117e1536b5755f5ed2aa6136e1eb96"
+      ],
+      "trials": [
+        {
+          "sentNs": 509026591737708,
+          "actual": "+16",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            732
+          ],
+          "old": "+40",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "+16",
+          "accepted": true,
+          "firstMs": 82.213292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              82.213292,
+              2.0255
+            ],
+            [
+              99.456208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+16",
+          "position": [
+            1434,
+            732
+          ],
+          "sentNs": 509027311974291,
+          "actual": "40",
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+40",
+          "accepted": true,
+          "firstMs": 139.965334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              106.147334,
+              4.96799
+            ],
+            [
+              139.965334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+40",
+          "actual": "16",
+          "sentNs": 509027978933125,
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            732
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "+16",
+          "accepted": true,
+          "firstMs": 105.305666,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              105.305666,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            732
+          ],
+          "actual": "4",
+          "size": [
+            40,
+            16
+          ],
+          "old": "+16",
+          "sentNs": 509028689982083,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+40",
+          "accepted": true,
+          "firstMs": 104.520917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              104.520917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509029369567375,
+          "old": "+40",
+          "actual": "1",
+          "position": [
+            1434,
+            732
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "+16",
+          "accepted": true,
+          "firstMs": 94.4695,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              94.4695,
+              2.0255
+            ],
+            [
+              128.50125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+16",
+          "sentNs": 509030041845125,
+          "actual": "4",
+          "position": [
+            1434,
+            732
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+40",
+          "accepted": true,
+          "firstMs": 117.221083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              100.309666,
+              4.96799
+            ],
+            [
+              117.221083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            732
+          ],
+          "old": "+40",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "16",
+          "sentNs": 509030785707333,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "+16",
+          "accepted": true,
+          "firstMs": 104.293958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              104.293958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509031495645791,
+          "old": "+16",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            732
+          ],
+          "actual": "40",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+40",
+          "accepted": true,
+          "firstMs": 145.589709,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              145.589709,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            732
+          ],
+          "sentNs": 509032215994958,
+          "old": "+40",
+          "actual": "16",
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "+16",
+          "accepted": true,
+          "firstMs": 94.290625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              94.290625,
+              2.0255
+            ],
+            [
+              111.653958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "actual": "40",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            732
+          ],
+          "sentNs": 509032922161166,
+          "old": "+16",
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "40",
+          "accepted": true,
+          "firstMs": 141.680292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              141.680292,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        16,
+        40
+      ],
+      "displayLabel": "Tint",
+      "ocrLabels": [
+        "Tint"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "sentNs": 509025191783208,
+          "actual": "1",
+          "position": [
+            1434,
+            732
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "+16",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "+16",
+          "accepted": true
+        },
+        {
+          "sentNs": 509025871078416,
+          "actual": "40",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            732
+          ],
+          "old": "+16",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+40",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "4e9e6f4108fd74b6916dbb3bdfab2b9e53a5047ab2186a7a586a222d22ec8b20",
+      "scoreEndNs": 509033422161166,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "color-vibrance": {
+      "separationRGB8": 1.5625,
+      "referenceDigests": [
+        "be6fc8966066654dd7313b45bb43afa5b76379235603650c971cc2a20ec6b97a",
+        "043f251c6c6f89ca5d1ba3be5b83c2a9821e14806b83510e12e26b1cbf62467b"
+      ],
+      "trials": [
+        {
+          "position": [
+            1434,
+            762
+          ],
+          "old": "+30",
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509036902314500,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 87.135958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              87.135958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509037592127833,
+          "actual": "30",
+          "position": [
+            1434,
+            762
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 137.895542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              137.895542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509038264586125,
+          "position": [
+            1434,
+            762
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 122.41775,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              122.41775,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            762
+          ],
+          "old": "0",
+          "sentNs": 509038953573041,
+          "actual": "30",
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 109.760375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              109.760375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509039639687500,
+          "position": [
+            1434,
+            762
+          ],
+          "actual": "0",
+          "old": "+30",
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 86.926208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              86.926208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "position": [
+            1434,
+            762
+          ],
+          "old": "0",
+          "actual": "30",
+          "sentNs": 509040339599375,
+          "size": [
+            40,
+            16
+          ],
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 120.2355,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              103.377333,
+              1.43815
+            ],
+            [
+              120.2355,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "actual": "0",
+          "sentNs": 509041026106000,
+          "position": [
+            1434,
+            762
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 126.5065,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              126.5065,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509041723224250,
+          "position": [
+            1434,
+            762
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "actual": "30",
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true,
+          "firstMs": 116.315875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              116.315875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "+30",
+          "actual": "0",
+          "position": [
+            1434,
+            762
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509042411016791,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true,
+          "firstMs": 111.719084,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              111.719084,
+              0.0
+            ]
+          ]
+        },
+        {
+          "sentNs": 509043088605125,
+          "old": "0",
+          "actual": "3",
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            762
+          ],
+          "state": 1,
+          "valueWitness": "immediate-last-input",
+          "committedValue": "3",
+          "accepted": false,
+          "firstMs": 117.785291,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              117.785291,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "At least one edited input failed the prior/target pixel or value witness",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Vibrance",
+      "ocrLabels": [
+        "Vibrance"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "position": [
+            1434,
+            762
+          ],
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "actual": "0",
+          "sentNs": 509035121402833,
+          "state": 0,
+          "valueWitness": "before-next-input",
+          "committedValue": "0",
+          "accepted": true
+        },
+        {
+          "old": "0",
+          "actual": "3",
+          "position": [
+            1434,
+            762
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 509036141109166,
+          "state": 1,
+          "valueWitness": "before-next-input",
+          "committedValue": "+30",
+          "accepted": true
+        }
+      ],
+      "framesSHA256": "94c25f373590e9852b5f696cd00e318cba597a19b0607d2855415a5d3c0bb808",
+      "scoreEndNs": 509043588605125,
+      "archive": "camera-raw-screen-typing.zip"
+    },
+    "color-saturation": {
+      "separationRGB8": 0.3094618055555556,
+      "referenceDigests": [
+        "72e874711afe49c90a71ba79a62e6a28145a2018c2b8093f3fc71a7aeede11f6",
+        "d24cb32d50d6f0e2477053044f72d1afbea04039fda552eab8c9b128e6e3d104"
+      ],
+      "trials": [
+        {
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "sentNs": 510004466490083,
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3094618055555556,
+          "changesMsAndTargetError": []
+        },
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "sentNs": 510005147302666,
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": false,
+          "state": 1,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "actual": "0",
+          "sentNs": 510005838698625,
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3094618055555556,
+          "changesMsAndTargetError": []
+        },
+        {
+          "sentNs": 510006522176750,
+          "position": [
+            1434,
+            793
+          ],
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "accepted": false,
+          "state": 1,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "sentNs": 510007212827708,
+          "position": [
+            1434,
+            793
+          ],
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "old": "0",
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3094618055555556,
+          "changesMsAndTargetError": []
+        },
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "sentNs": 510007883775625,
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": false,
+          "state": 1,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3094618055555556,
+          "changesMsAndTargetError": [
+            [
+              473.043541,
+              0.30946
+            ]
+          ]
+        },
+        {
+          "size": [
+            40,
+            16
+          ],
+          "position": [
+            1434,
+            793
+          ],
+          "sentNs": 510008593849000,
+          "old": "0",
+          "actual": "0",
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        },
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 510009275916458,
+          "accepted": false,
+          "state": 1,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": 319.086625,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              319.086625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "old": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "sentNs": 510009957280416,
+          "actual": "0",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.3094618055555556,
+          "changesMsAndTargetError": []
+        },
+        {
+          "position": [
+            1434,
+            793
+          ],
+          "actual": "0",
+          "old": "0",
+          "sentNs": 510010638614875,
+          "size": [
+            40,
+            16
+          ],
+          "accepted": false,
+          "state": 1,
+          "committedValue": "0",
+          "valueWitness": "before-next-input",
+          "firstMs": null,
+          "verified": false,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": []
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "Calibration input differed from requested value",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Saturation",
+      "ocrLabels": [
+        "Saturation"
+      ],
+      "scope": "central 60% of displayed photo",
+      "calibration": [
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "size": [
+            40,
+            16
+          ],
+          "sentNs": 510003077278458,
+          "old": "0",
+          "accepted": true,
+          "state": 0,
+          "committedValue": "0",
+          "valueWitness": "before-next-input"
+        },
+        {
+          "actual": "0",
+          "position": [
+            1434,
+            793
+          ],
+          "sentNs": 510003777186375,
+          "old": "0",
+          "size": [
+            40,
+            16
+          ],
+          "accepted": false,
+          "state": 1,
+          "committedValue": "0",
+          "valueWitness": "before-next-input"
+        }
+      ],
+      "framesSHA256": "668abbfd25786267d2247ba51a9acb7986fb115a914c8711665db3b79c864537",
+      "scoreEndNs": 510011215545041,
+      "archive": "camera-raw-screen-typing-repeat.zip"
+    }
+  },
+  "sessions": [
+    {
+      "startedAt": "2026-11-22T09:41:15.674790+00:00",
+      "finishedAt": "2026-11-22T09:43:20+00:00",
+      "window": {
+        "id": 35156,
+        "title": "Camera Raw 19.0",
+        "scale": 2,
+        "frame": [
+          39,
+          79,
+          1511,
+          1095
+        ]
+      },
+      "archiveSHA256": "bb8ddd4b8feb8bc843ad3e5a00eac955a4d1a3e169ffa4b0d6c16568da219dc2",
+      "archive": "camera-raw-screen-typing.zip",
+      "outcomes": {
+        "light-exposure": "inconclusive",
+        "light-contrast": "measured",
+        "light-highlights": "measured",
+        "light-shadows": "measured",
+        "light-whites": "inconclusive",
+        "light-blacks": "measured",
+        "color-temp-raw": "inconclusive",
+        "color-tint": "measured",
+        "color-vibrance": "inconclusive"
+      }
+    },
+    {
+      "startedAt": "2026-11-22T09:58:02.953237+00:00",
+      "finishedAt": "2026-11-22T09:59:31.189111+00:00",
+      "window": {
+        "scale": 2,
+        "title": "Camera Raw 19.0",
+        "id": 35630,
+        "frame": [
+          39,
+          79,
+          1511,
+          1095
+        ]
+      },
+      "archiveSHA256": "48f7d9982e0c1d1bf475eae0f49b5d16bbad2c4bde7240bf9bab942322f01220",
+      "stopReason": "ScreenCaptureKit disconnected during the Texture acquisition (SCStreamErrorDomain -3805). Five earlier control records were checkpointed.",
+      "archive": "camera-raw-screen-typing-repeat.zip",
+      "outcomes": {
+        "light-exposure": "measured",
+        "light-whites": "inconclusive",
+        "color-temp-raw": "inconclusive",
+        "color-vibrance": "inconclusive",
+        "color-saturation": "inconclusive"
+      }
+    }
+  ],
+  "finishedAt": "2026-11-22T09:59:31.189111+00:00"
+}

@@ -34,6 +34,23 @@ final class PreviewPresentationLedger: @unchecked Sendable {
   private var entries: [UUID: Entry] = [:]
   private var closed = false
   private var cleanupFailures: UInt64 = 0
+  private let optionalNeuralInputs = NSHashTable<PreviewInteractiveProxyPool>.weakObjects()
+
+  func registerOptionalNeuralInputs(_ pool: PreviewInteractiveProxyPool) {
+    lock.lock(); optionalNeuralInputs.add(pool); lock.unlock()
+  }
+
+  /// Cached extra neural inputs share this ledger across panes and services. Take owners
+  /// out of the lock before asking them to retire their storage and release reservations.
+  private func admit<T>(_ reservation: () throws -> T) throws -> T {
+    do { return try reservation() } catch PreviewPresentationError.displayCapacity {
+      lock.lock(); let owners = optionalNeuralInputs.allObjects; lock.unlock()
+      var reclaimed = false
+      for owner in owners where owner.reclaimSpareNeuralInput() { reclaimed = true }
+      guard reclaimed else { throw PreviewPresentationError.displayCapacity }
+      return try reservation()
+    }
+  }
   /// A single physical budget for every opted-in pane, service and retained image.
   /// Closing an individual scope never shuts admission for unrelated scopes.
   static let shared = PreviewPresentationLedger()
@@ -51,6 +68,9 @@ final class PreviewPresentationLedger: @unchecked Sendable {
     try reserve(bytes: bytes, kind: .cpuFallback, scopeID: nil)
   }
   fileprivate func reserve(bytes: Int, kind: Kind, scopeID: UUID?) throws -> PreviewPresentationReservation {
+    try admit { try recordReservation(bytes: bytes, kind: kind, scopeID: scopeID) }
+  }
+  private func recordReservation(bytes: Int, kind: Kind, scopeID: UUID?) throws -> PreviewPresentationReservation {
     lock.lock(); defer { lock.unlock() }
     guard !closed else { throw PreviewPresentationError.closed }
     guard bytes > 0 else { throw PreviewPresentationError.invalidLayout }
@@ -65,6 +85,9 @@ final class PreviewPresentationLedger: @unchecked Sendable {
   /// Atomic known-peak reservation for one I1 operation. Shared aliases count once in CPU
   /// and once in the GPU subset, never as an extra independent pool per proxy/output.
   fileprivate func reserveSharedOperation(bytes:[Int],scopeID:UUID)throws->[PreviewPresentationReservation] {
+    try admit { try recordSharedOperation(bytes: bytes, scopeID: scopeID) }
+  }
+  private func recordSharedOperation(bytes:[Int],scopeID:UUID)throws->[PreviewPresentationReservation] {
     lock.lock();defer{lock.unlock()}
     guard !closed else{throw PreviewPresentationError.closed}
     guard !bytes.isEmpty,bytes.allSatisfy({$0>0}) else{throw PreviewPresentationError.invalidLayout}

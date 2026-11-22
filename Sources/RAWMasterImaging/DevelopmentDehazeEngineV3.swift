@@ -33,7 +33,8 @@ enum DevelopmentDehazeEngineV3 {
     return .init(guide:guide,apply:apply)
   }
   static func apply(_ parameters:DevelopmentAdvancedDetailV3,to image:CIImage,sourceSize:DevelopmentPixelSize,
-                    sourceIsRAW:Bool=false,context:CIContext,checkCancellation:(()throws->Void)?=nil)throws->CIImage {
+                    sourceIsRAW:Bool=false,context:CIContext,checkCancellation:(()throws->Void)?=nil,
+                    checkedInput:CIImage?=nil,residentGuide:DevelopmentResidentDehazeGuide?=nil)throws->CIImage {
     try parameters.validate()
     let value=parameters.dehaze
     guard value.enabled,value.amount != 0 else { return image }
@@ -41,7 +42,12 @@ enum DevelopmentDehazeEngineV3 {
     try prepared.validate();try sourceSize.validate()
     guard prepared.sourceBinding.sourceSize==sourceSize else { throw DevelopmentDehazePreparationError.preparationRequired }
     guard image.extent.width==Double(sourceSize.width),image.extent.height==Double(sourceSize.height) else { throw DevelopmentV3Error.invalidGraph }
-    try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
+    if checkedInput === image {
+      try Task.checkCancellation()
+      try checkCancellation?()
+    } else {
+      try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation)
+    }
     let result: CIImage
     if usesPositiveV2(parameters) {
       guard image.extent.origin == .zero else { throw DevelopmentV3Error.invalidGraph }
@@ -50,7 +56,10 @@ enum DevelopmentDehazeEngineV3 {
       let input:CIImage
       if rawPositiveV2CoverageSuffix(parameters,sourceIsRAW:sourceIsRAW).isEmpty { input=image }
       else { input=try PreviewFITCoverageV1.normalize(image,extent:image.extent) }
-      if let bounded=try DevelopmentDehazeNativeRfV1.apply(.positiveV2,to:input,airlight:prepared.airlight,
+      if let guide = try residentGuide?.acquire(input:input,positive:true,airlight:prepared.airlight,
+                                                size:sourceSize,check:checkCancellation) {
+        result = try DevelopmentDehazeRfTransportV1.restoreNative(input,guide,airlight:prepared.airlight,amount:value.amount)
+      } else if let bounded=try DevelopmentDehazeNativeRfV1.apply(.positiveV2,to:input,airlight:prepared.airlight,
         sourceSize:sourceSize,amount:value.amount,context:context,checkCancellation:checkCancellation){result=bounded}
       else{
         let guide=try DevelopmentDehazeColorGuideV2.guide(input,airlight:prepared.airlight,sourceSize:sourceSize)
@@ -61,7 +70,10 @@ enum DevelopmentDehazeEngineV3 {
       if sourceIsRAW {
         input=try DevelopmentDehazeRAWCoverageV1.normalize(image)
       }else{input=image}
-      if let bounded=try DevelopmentDehazeNativeRfV1.apply(.signedV1,to:input,airlight:prepared.airlight,
+      if let guide = try residentGuide?.acquire(input:input,positive:false,airlight:prepared.airlight,
+                                                size:sourceSize,check:checkCancellation) {
+        result = try applyGuide(to:input,guide:guide,airlight:prepared.airlight,amount:value.amount)
+      } else if let bounded=try DevelopmentDehazeNativeRfV1.apply(.signedV1,to:input,airlight:prepared.airlight,
         sourceSize:sourceSize,amount:value.amount,context:context,checkCancellation:checkCancellation){result=bounded}
       else{
         let guide=try darkGuide(input,airlight:prepared.airlight,sourceSize:sourceSize)

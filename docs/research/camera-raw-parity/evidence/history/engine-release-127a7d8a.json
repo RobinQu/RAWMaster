@@ -1,0 +1,492 @@
+{
+  "schemaVersion": 1,
+  "os": "Version 27.0.1 (Build 26A434)",
+  "gpu": "Apple M4 Max",
+  "pixels": [
+    2400,
+    1600
+  ],
+  "binarySHA256": "127a7d8a8b0fa6c3b05ea4c659d3b956271ade7390f2bb0575e5997ccd90fc53",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "decoderOverride": false,
+  "sourceOverlayVersion": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1",
+  "prewarming": true,
+  "method": "Three independent macOS XCTest processes, each loaded the same pinned release test bundle. Rendering optimizations and decoder selection used production defaults; the 124-control and 50-operator performance policies intentionally bypass the final bitmap cache. The common readback comparison uses ImageEngines.editing, identical view dimensions and matched UI values on both products.",
+  "processes": [
+    {
+      "action": "paired",
+      "binarySHA256": "127a7d8a8b0fa6c3b05ea4c659d3b956271ade7390f2bb0575e5997ccd90fc53",
+      "pinnedBundle": ".slim/deepwork/camera-raw-before/engine-final/RAWMasterImagingTests.xctest",
+      "report": "output/performance/release-background-20261122/engine-final/paired.json",
+      "reportSHA256": "a2082bfbd7d9294f0c4afa82a10e71621054f8c3a4bacf980111e37f0e9abb48",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "wallSeconds": 3.035,
+      "environment": {
+        "RAWMASTER_FLASHRAW_LIBRARY": "output/tools/flashraw-target/release/libflashraw_capi.dylib",
+        "RAWMASTER_PAIRED_READBACK_RAW": "output/performance/acr-benchmark.ARW",
+        "RAWMASTER_PAIRED_READBACK_REPORT": "output/performance/release-background-20261122/engine-final/paired.json"
+      }
+    },
+    {
+      "action": "controls",
+      "binarySHA256": "127a7d8a8b0fa6c3b05ea4c659d3b956271ade7390f2bb0575e5997ccd90fc53",
+      "pinnedBundle": ".slim/deepwork/camera-raw-before/engine-final/RAWMasterImagingTests.xctest",
+      "report": "output/performance/release-background-20261122/engine-final/controls.json",
+      "reportSHA256": "eb5ceb02698d144d316d9b9fc9c4bd6d5ee148e1badcee0fe5df78618f9e7cd4",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "wallSeconds": 44.592,
+      "environment": {
+        "RAWMASTER_FLASHRAW_LIBRARY": "output/tools/flashraw-target/release/libflashraw_capi.dylib",
+        "RAWMASTER_SCENE_DEPTH_MODEL": "output/tools/monocular-depth/DepthAnythingV2SmallF16.mlmodelc",
+        "RAWMASTER_CONTROL_RAW": "output/performance/acr-benchmark.ARW",
+        "RAWMASTER_CONTROL_REPORT": "output/performance/release-background-20261122/engine-final/controls.json",
+        "RAWMASTER_CONTROL_SAMPLES": "20"
+      }
+    },
+    {
+      "action": "operators",
+      "binarySHA256": "127a7d8a8b0fa6c3b05ea4c659d3b956271ade7390f2bb0575e5997ccd90fc53",
+      "pinnedBundle": ".slim/deepwork/camera-raw-before/engine-final/RAWMasterImagingTests.xctest",
+      "report": "output/performance/release-background-20261122/engine-final/operators/interactive-performance.json",
+      "reportSHA256": "b395b402ebcaccdf0ff53c0842b119cd49f68b76112569638c75d7c15e93bf61",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "wallSeconds": 51.87,
+      "environment": {
+        "RAWMASTER_FLASHRAW_LIBRARY": "output/tools/flashraw-target/release/libflashraw_capi.dylib",
+        "RAWMASTER_REQUIRE_FLASHRAW": "1",
+        "RAWMASTER_INTERACTIVE_PERF": "1",
+        "RAWMASTER_INTERACTIVE_PREWARM": "1",
+        "RAWMASTER_INTERACTIVE_RAW_BASE_CACHE": "1",
+        "RAWMASTER_INTERACTIVE_PERF_SOURCE": "output/performance/acr-benchmark.ARW",
+        "RAWMASTER_INTERACTIVE_PERF_OUTPUT": "output/performance/release-background-20261122/engine-final/operators"
+      }
+    }
+  ],
+  "matched8": {
+    "repeated": {
+      "passed": 8,
+      "total": 8,
+      "rows": {
+        "light-exposure": {
+          "values": [
+            0,
+            0.5
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.6325,
+            "p95Ms": 4.84,
+            "maxMs": 5.135
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.3277920000000005,
+            "p95Ms": 4.70325,
+            "maxMs": 4.840833
+          },
+          "medianLimit": 5.6325,
+          "p95Limit": 6.84,
+          "within": true
+        },
+        "light-contrast": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.7075,
+            "p95Ms": 5.02,
+            "maxMs": 5.035
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.420771,
+            "p95Ms": 4.926417,
+            "maxMs": 4.989083
+          },
+          "medianLimit": 5.7075,
+          "p95Limit": 7.02,
+          "within": true
+        },
+        "light-highlights": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.8774999999999995,
+            "p95Ms": 5.32,
+            "maxMs": 6.01
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.2754375,
+            "p95Ms": 4.959833,
+            "maxMs": 5.0035
+          },
+          "medianLimit": 5.8774999999999995,
+          "p95Limit": 7.32,
+          "within": true
+        },
+        "light-shadows": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.89,
+            "p95Ms": 5.63,
+            "maxMs": 6.11
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.587021,
+            "p95Ms": 5.263625,
+            "maxMs": 5.673291
+          },
+          "medianLimit": 5.89,
+          "p95Limit": 7.63,
+          "within": true
+        },
+        "light-whites": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.89,
+            "p95Ms": 5.345,
+            "maxMs": 5.835
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.288271,
+            "p95Ms": 4.893334,
+            "maxMs": 5.036333
+          },
+          "medianLimit": 5.89,
+          "p95Limit": 7.345,
+          "within": true
+        },
+        "light-blacks": {
+          "values": [
+            0,
+            -30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.0625,
+            "p95Ms": 5.83,
+            "maxMs": 6.34
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.323479000000001,
+            "p95Ms": 5.054416,
+            "maxMs": 5.722917
+          },
+          "medianLimit": 6.0625,
+          "p95Limit": 7.83,
+          "within": true
+        },
+        "color-saturation": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.0600000000000005,
+            "p95Ms": 5.315,
+            "maxMs": 5.965
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.0841875000000005,
+            "p95Ms": 4.91025,
+            "maxMs": 6.831958
+          },
+          "medianLimit": 6.0600000000000005,
+          "p95Limit": 7.315,
+          "within": true
+        },
+        "color-vibrance": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.1325,
+            "p95Ms": 6.265,
+            "maxMs": 6.385
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.343125000000001,
+            "p95Ms": 7.328166,
+            "maxMs": 8.813083
+          },
+          "medianLimit": 6.1325,
+          "p95Limit": 8.265,
+          "within": true
+        }
+      }
+    },
+    "newValues": {
+      "passed": 7,
+      "total": 8,
+      "rows": {
+        "light-exposure": {
+          "values": [
+            0,
+            0.5
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.984999999999999,
+            "p95Ms": 6.4,
+            "maxMs": 6.495
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 5.2156044999999995,
+            "p95Ms": 7.415625,
+            "maxMs": 9.594834
+          },
+          "medianLimit": 6.984999999999999,
+          "p95Limit": 8.4,
+          "within": true
+        },
+        "light-contrast": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 4.9225,
+            "p95Ms": 5.11,
+            "maxMs": 5.15
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.997521000000001,
+            "p95Ms": 6.6355,
+            "maxMs": 7.127459
+          },
+          "medianLimit": 5.9225,
+          "p95Limit": 7.11,
+          "within": true
+        },
+        "light-highlights": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.87,
+            "p95Ms": 6.995,
+            "maxMs": 7.04
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 7.623146,
+            "p95Ms": 10.589958,
+            "maxMs": 11.429417
+          },
+          "medianLimit": 6.87,
+          "p95Limit": 8.995000000000001,
+          "within": false
+        },
+        "light-shadows": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.984999999999999,
+            "p95Ms": 7.71,
+            "maxMs": 7.91
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.952021,
+            "p95Ms": 6.630375,
+            "maxMs": 6.971167
+          },
+          "medianLimit": 6.984999999999999,
+          "p95Limit": 9.71,
+          "within": true
+        },
+        "light-whites": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 6.3275,
+            "p95Ms": 7.735,
+            "maxMs": 9.45
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.980562,
+            "p95Ms": 8.661459,
+            "maxMs": 9.131625
+          },
+          "medianLimit": 7.3275,
+          "p95Limit": 9.735,
+          "within": true
+        },
+        "light-blacks": {
+          "values": [
+            0,
+            -30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 6.23,
+            "p95Ms": 7.7,
+            "maxMs": 8.025
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.7612915000000005,
+            "p95Ms": 6.698041,
+            "maxMs": 6.976583
+          },
+          "medianLimit": 7.23,
+          "p95Limit": 9.7,
+          "within": true
+        },
+        "color-saturation": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 5.5175,
+            "p95Ms": 6.1,
+            "maxMs": 6.915
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.709583,
+            "p95Ms": 7.4535,
+            "maxMs": 13.495459
+          },
+          "medianLimit": 6.5175,
+          "p95Limit": 8.1,
+          "within": true
+        },
+        "color-vibrance": {
+          "values": [
+            0,
+            30
+          ],
+          "LightFlow": {
+            "n": 20,
+            "medianMs": 6.862500000000001,
+            "p95Ms": 7.7,
+            "maxMs": 8.395
+          },
+          "RAWMaster": {
+            "n": 20,
+            "medianMs": 4.9326455,
+            "p95Ms": 7.559541,
+            "maxMs": 7.919
+          },
+          "medianLimit": 7.862500000000001,
+          "p95Limit": 9.7,
+          "within": true
+        }
+      }
+    }
+  },
+  "controls": {
+    "measured": 124,
+    "total": 124,
+    "failures": [],
+    "requestsPerMeasuredControl": 22,
+    "warmSamplesPerControl": 20,
+    "maskGrainMedianMs": 3.904771
+  },
+  "groups": {
+    "total": 50,
+    "transparentFrameFailures": [],
+    "nativeDecoderStages": 11,
+    "qualityRegressions": [],
+    "gates": {
+      "absolute": {
+        "passed": true,
+        "failures": []
+      },
+      "historical": {
+        "passed": false,
+        "failures": [
+          "visualise-range: interactive median regressed 38.33%",
+          "global-sharpen-mask-preview: interactive median regressed 51.57%"
+        ]
+      },
+      "previous": {
+        "passed": false,
+        "failures": [
+          "clarity: interactive median regressed 20.59%",
+          "dehaze-v1: interactive median regressed 23.11%",
+          "dehaze-v2: interactive median regressed 16.78%",
+          "lens-blur-refine-focus: interactive median regressed 13.35%",
+          "lens-blur-bokeh-ring: settled median regressed 22.52%",
+          "lens-blur-bokeh-anamorphic: interactive median regressed 50.22%",
+          "lens-blur-cat-eye: settled median regressed 20.26%",
+          "targeted-hsl: settled median regressed 32.81%",
+          "visualise-range: interactive median regressed 72.62%",
+          "wb-flash-preset: interactive median regressed 19.95%",
+          "refine-saturation: interactive median regressed 32.63%",
+          "point-curve-targeted: interactive median regressed 18.88%",
+          "point-curve-targeted: settled median regressed 26.64%",
+          "defringe: interactive median regressed 60.49%",
+          "defringe: settled median regressed 37.29%",
+          "local-point-color: settled median regressed 32.91%",
+          "local-light-extended: interactive median regressed 48.17%",
+          "local-light-extended: settled median regressed 31.34%",
+          "local-wb: settled median regressed 20.28%",
+          "local-hue-colorize: interactive median regressed 49.82%",
+          "local-hue-colorize: settled median regressed 29.19%",
+          "local-texture-clarity: interactive median regressed 16.94%",
+          "local-texture-clarity: settled median regressed 28.82%",
+          "local-dehaze: settled median regressed 41.55%",
+          "local-grain: interactive median regressed 57.82%",
+          "local-grain: settled median regressed 58.81%",
+          "local-curves: interactive median regressed 30.43%",
+          "local-curves: settled median regressed 30.86%",
+          "local-grading: interactive median regressed 14.29%",
+          "local-grading: settled median regressed 44.56%",
+          "local-detail: interactive median regressed 45.00%",
+          "local-detail: settled median regressed 25.14%",
+          "local-defringe: settled median regressed 27.02%",
+          "global-sharpen-detail: interactive median regressed 14.83%",
+          "optics-ca-distortion: interactive median regressed 14.47%",
+          "optics-lens-profile: interactive median regressed 31.67%"
+        ]
+      }
+    }
+  },
+  "evidence": {
+    "display": "rawmaster-display-readback-release-replicate-1.json",
+    "controls": "rawmaster-controls-127a7d8a.json",
+    "operatorReport": "release-operators-127a7d8a.json",
+    "historicalGate": "release-operators-127a7d8a-regression.json",
+    "sourceGuide": "../interactive-light-guide.json",
+    "repeats": "../interactive-readback-repeatability.json"
+  }
+}

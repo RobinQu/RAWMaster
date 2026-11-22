@@ -1,0 +1,785 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "adapter": "BrowserWebGpu:  ( )",
+  "adapterInfo": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "rawSize": [
+    9504,
+    6336
+  ],
+  "rawOpenMs": 1173.955,
+  "protocol": "lightflow-stock-viewer-tools-v1",
+  "samples": 10,
+  "pixels": [
+    2400,
+    1600
+  ],
+  "witnessGrid": [
+    96,
+    64
+  ],
+  "operations": [
+    {
+      "id": "light-clipping-indicators",
+      "featureIds": [
+        "light-clipping-indicators"
+      ],
+      "field": "FrameInputs.clipping",
+      "values": [
+        false,
+        true
+      ],
+      "fixed": {
+        "exposure": 1.5
+      },
+      "trials": [
+        {
+          "state": 0,
+          "value": false,
+          "phase": "first",
+          "ms": 25.030000030994415,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": false,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": true,
+          "phase": "first",
+          "ms": 5.5299999713897705,
+          "digest": "825759d60bbd1c129aa2a97f1acdf52e07fd3e490c38a07a00787f1b36505454",
+          "verified": false,
+          "grey": 41,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 296
+        },
+        {
+          "state": 0,
+          "value": false,
+          "phase": "warm",
+          "ms": 4.725000023841858,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": false,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": true,
+          "phase": "warm",
+          "ms": 5.5799999833106995,
+          "digest": "825759d60bbd1c129aa2a97f1acdf52e07fd3e490c38a07a00787f1b36505454",
+          "verified": false,
+          "grey": 41,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 296
+        },
+        {
+          "state": 0,
+          "value": false,
+          "phase": "warm",
+          "ms": 4.754999995231628,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": false,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": true,
+          "phase": "warm",
+          "ms": 4.844999969005585,
+          "digest": "825759d60bbd1c129aa2a97f1acdf52e07fd3e490c38a07a00787f1b36505454",
+          "verified": false,
+          "grey": 41,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 296
+        },
+        {
+          "state": 0,
+          "value": false,
+          "phase": "warm",
+          "ms": 4.634999990463257,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": false,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": true,
+          "phase": "warm",
+          "ms": 4.355000019073486,
+          "digest": "825759d60bbd1c129aa2a97f1acdf52e07fd3e490c38a07a00787f1b36505454",
+          "verified": false,
+          "grey": 41,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 296
+        },
+        {
+          "state": 0,
+          "value": false,
+          "phase": "warm",
+          "ms": 4.724999964237213,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": false,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": true,
+          "phase": "warm",
+          "ms": 4.550000011920929,
+          "digest": "825759d60bbd1c129aa2a97f1acdf52e07fd3e490c38a07a00787f1b36505454",
+          "verified": false,
+          "grey": 41,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 296
+        },
+        {
+          "state": 0,
+          "value": false,
+          "phase": "warm",
+          "ms": 4.644999980926514,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": false,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": true,
+          "phase": "warm",
+          "ms": 4.5200000405311584,
+          "digest": "825759d60bbd1c129aa2a97f1acdf52e07fd3e490c38a07a00787f1b36505454",
+          "verified": false,
+          "grey": 41,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 296
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "Error: No increase in the red or blue clipping indicator pixels"
+    },
+    {
+      "id": "light-clipping-modifier",
+      "featureIds": [
+        "light-clipping-modifier"
+      ],
+      "field": "FrameInputs.alt",
+      "values": [
+        null,
+        {
+          "node": "",
+          "view": "clip-high"
+        }
+      ],
+      "fixed": {
+        "exposure": 1.5
+      },
+      "trials": [
+        {
+          "state": 0,
+          "value": null,
+          "phase": "first",
+          "ms": 4.7799999713897705,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": true,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "",
+            "view": "clip-high"
+          },
+          "phase": "first",
+          "ms": 4.405000030994415,
+          "digest": "12387e5937ebd56fc210da1d4383834cd4d2782af28291d76569426c22512290",
+          "verified": true,
+          "grey": 5964,
+          "red": 180,
+          "blue": 0,
+          "black": 5957,
+          "white": 7
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.615000009536743,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": true,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "",
+            "view": "clip-high"
+          },
+          "phase": "warm",
+          "ms": 4.5950000286102295,
+          "digest": "12387e5937ebd56fc210da1d4383834cd4d2782af28291d76569426c22512290",
+          "verified": true,
+          "grey": 5964,
+          "red": 180,
+          "blue": 0,
+          "black": 5957,
+          "white": 7
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.4200000166893005,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": true,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "",
+            "view": "clip-high"
+          },
+          "phase": "warm",
+          "ms": 4.725000023841858,
+          "digest": "12387e5937ebd56fc210da1d4383834cd4d2782af28291d76569426c22512290",
+          "verified": true,
+          "grey": 5964,
+          "red": 180,
+          "blue": 0,
+          "black": 5957,
+          "white": 7
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.964999973773956,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": true,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "",
+            "view": "clip-high"
+          },
+          "phase": "warm",
+          "ms": 4.539999961853027,
+          "digest": "12387e5937ebd56fc210da1d4383834cd4d2782af28291d76569426c22512290",
+          "verified": true,
+          "grey": 5964,
+          "red": 180,
+          "blue": 0,
+          "black": 5957,
+          "white": 7
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.574999988079071,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": true,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "",
+            "view": "clip-high"
+          },
+          "phase": "warm",
+          "ms": 4.629999995231628,
+          "digest": "12387e5937ebd56fc210da1d4383834cd4d2782af28291d76569426c22512290",
+          "verified": true,
+          "grey": 5964,
+          "red": 180,
+          "blue": 0,
+          "black": 5957,
+          "white": 7
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.725000023841858,
+          "digest": "a07cde503d56e76df79dced9a246e6eb1bc3b5331abe68bab2b5c040651be9d2",
+          "verified": true,
+          "grey": 52,
+          "red": 0,
+          "blue": 0,
+          "black": 0,
+          "white": 317
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "",
+            "view": "clip-high"
+          },
+          "phase": "warm",
+          "ms": 4.719999969005585,
+          "digest": "12387e5937ebd56fc210da1d4383834cd4d2782af28291d76569426c22512290",
+          "verified": true,
+          "grey": 5964,
+          "red": 180,
+          "blue": 0,
+          "black": 5957,
+          "white": 7
+        }
+      ],
+      "status": "measured"
+    },
+    {
+      "id": "detail-mask-preview",
+      "featureIds": [
+        "detail-mask-preview"
+      ],
+      "field": "FrameInputs.alt",
+      "values": [
+        null,
+        {
+          "node": "bench",
+          "view": "mask"
+        }
+      ],
+      "fixed": {
+        "sharpenAmount": 110,
+        "sharpenMasking": 70
+      },
+      "trials": [
+        {
+          "state": 0,
+          "value": null,
+          "phase": "first",
+          "ms": 16.235000014305115,
+          "digest": "ffb1bb522348b112af50a6cffdf97d6452eb55ec0ec5fbee04dd41a0389b4950",
+          "verified": false,
+          "grey": 33,
+          "red": 0,
+          "blue": 0,
+          "black": 70,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "bench",
+            "view": "mask"
+          },
+          "phase": "first",
+          "ms": 241.1050000190735,
+          "digest": "bc74b1351bd9c4f4619daa3c8e9a31b947dd8a344241bf13471caab8622d874a",
+          "verified": false,
+          "grey": 6144,
+          "red": 0,
+          "blue": 0,
+          "black": 5162,
+          "white": 185
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 8.1700000166893,
+          "digest": "bea470468cc5a6a576dab902f08ab223e0243e66c42373f205cfae8484341d00",
+          "verified": false,
+          "grey": 33,
+          "red": 0,
+          "blue": 0,
+          "black": 62,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "bench",
+            "view": "mask"
+          },
+          "phase": "warm",
+          "ms": 6.589999973773956,
+          "digest": "39d775f666d0960c6b58a5e64c374076a3166610303078fab1aa582e85c50bfc",
+          "verified": false,
+          "grey": 6144,
+          "red": 0,
+          "blue": 0,
+          "black": 4784,
+          "white": 49
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.959999978542328,
+          "digest": "ffb1bb522348b112af50a6cffdf97d6452eb55ec0ec5fbee04dd41a0389b4950",
+          "verified": false,
+          "grey": 33,
+          "red": 0,
+          "blue": 0,
+          "black": 70,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "bench",
+            "view": "mask"
+          },
+          "phase": "warm",
+          "ms": 4.864999949932098,
+          "digest": "bc74b1351bd9c4f4619daa3c8e9a31b947dd8a344241bf13471caab8622d874a",
+          "verified": false,
+          "grey": 6144,
+          "red": 0,
+          "blue": 0,
+          "black": 5162,
+          "white": 185
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 5.134999990463257,
+          "digest": "ffb1bb522348b112af50a6cffdf97d6452eb55ec0ec5fbee04dd41a0389b4950",
+          "verified": false,
+          "grey": 33,
+          "red": 0,
+          "blue": 0,
+          "black": 70,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "bench",
+            "view": "mask"
+          },
+          "phase": "warm",
+          "ms": 4.834999978542328,
+          "digest": "bc74b1351bd9c4f4619daa3c8e9a31b947dd8a344241bf13471caab8622d874a",
+          "verified": false,
+          "grey": 6144,
+          "red": 0,
+          "blue": 0,
+          "black": 5162,
+          "white": 185
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 5.2799999713897705,
+          "digest": "ffb1bb522348b112af50a6cffdf97d6452eb55ec0ec5fbee04dd41a0389b4950",
+          "verified": false,
+          "grey": 33,
+          "red": 0,
+          "blue": 0,
+          "black": 70,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "bench",
+            "view": "mask"
+          },
+          "phase": "warm",
+          "ms": 4.914999961853027,
+          "digest": "bc74b1351bd9c4f4619daa3c8e9a31b947dd8a344241bf13471caab8622d874a",
+          "verified": false,
+          "grey": 6144,
+          "red": 0,
+          "blue": 0,
+          "black": 5162,
+          "white": 185
+        },
+        {
+          "state": 0,
+          "value": null,
+          "phase": "warm",
+          "ms": 4.909999966621399,
+          "digest": "ffb1bb522348b112af50a6cffdf97d6452eb55ec0ec5fbee04dd41a0389b4950",
+          "verified": false,
+          "grey": 33,
+          "red": 0,
+          "blue": 0,
+          "black": 70,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": {
+            "node": "bench",
+            "view": "mask"
+          },
+          "phase": "warm",
+          "ms": 4.735000014305115,
+          "digest": "bc74b1351bd9c4f4619daa3c8e9a31b947dd8a344241bf13471caab8622d874a",
+          "verified": false,
+          "grey": 6144,
+          "red": 0,
+          "blue": 0,
+          "black": 5162,
+          "white": 185
+        }
+      ],
+      "status": "inconclusive",
+      "reason": "Error: Two independently repeatable photographed states were not observed"
+    },
+    {
+      "id": "detail-sharpen-radius",
+      "featureIds": [
+        "detail-sharpen-radius"
+      ],
+      "field": "detail.sharpenRadius",
+      "values": [
+        0.5,
+        3
+      ],
+      "fixed": {
+        "sharpenAmount": 110,
+        "sharpenDetail": 50
+      },
+      "trials": [
+        {
+          "state": 0,
+          "value": 0.5,
+          "phase": "first",
+          "ms": 9.51500004529953,
+          "digest": "256d5f7af82265735a5ff39696327fe48607d08004c01c1ae8d3df856517bafb",
+          "verified": true,
+          "grey": 35,
+          "red": 0,
+          "blue": 0,
+          "black": 71,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": 3,
+          "phase": "first",
+          "ms": 8.699999988079071,
+          "digest": "618678cd6507b8ace2534f3bbdf6eef3f64e8150b5aa3247f0c482cf6a64e2d1",
+          "verified": true,
+          "grey": 29,
+          "red": 0,
+          "blue": 0,
+          "black": 111,
+          "white": 12
+        },
+        {
+          "state": 0,
+          "value": 0.5,
+          "phase": "warm",
+          "ms": 5.2200000286102295,
+          "digest": "256d5f7af82265735a5ff39696327fe48607d08004c01c1ae8d3df856517bafb",
+          "verified": true,
+          "grey": 35,
+          "red": 0,
+          "blue": 0,
+          "black": 71,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": 3,
+          "phase": "warm",
+          "ms": 5.685000002384186,
+          "digest": "618678cd6507b8ace2534f3bbdf6eef3f64e8150b5aa3247f0c482cf6a64e2d1",
+          "verified": true,
+          "grey": 29,
+          "red": 0,
+          "blue": 0,
+          "black": 111,
+          "white": 12
+        },
+        {
+          "state": 0,
+          "value": 0.5,
+          "phase": "warm",
+          "ms": 5.120000004768372,
+          "digest": "256d5f7af82265735a5ff39696327fe48607d08004c01c1ae8d3df856517bafb",
+          "verified": true,
+          "grey": 35,
+          "red": 0,
+          "blue": 0,
+          "black": 71,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": 3,
+          "phase": "warm",
+          "ms": 5.254999995231628,
+          "digest": "618678cd6507b8ace2534f3bbdf6eef3f64e8150b5aa3247f0c482cf6a64e2d1",
+          "verified": true,
+          "grey": 29,
+          "red": 0,
+          "blue": 0,
+          "black": 111,
+          "white": 12
+        },
+        {
+          "state": 0,
+          "value": 0.5,
+          "phase": "warm",
+          "ms": 5.324999988079071,
+          "digest": "256d5f7af82265735a5ff39696327fe48607d08004c01c1ae8d3df856517bafb",
+          "verified": true,
+          "grey": 35,
+          "red": 0,
+          "blue": 0,
+          "black": 71,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": 3,
+          "phase": "warm",
+          "ms": 6.100000023841858,
+          "digest": "618678cd6507b8ace2534f3bbdf6eef3f64e8150b5aa3247f0c482cf6a64e2d1",
+          "verified": true,
+          "grey": 29,
+          "red": 0,
+          "blue": 0,
+          "black": 111,
+          "white": 12
+        },
+        {
+          "state": 0,
+          "value": 0.5,
+          "phase": "warm",
+          "ms": 4.944999992847443,
+          "digest": "256d5f7af82265735a5ff39696327fe48607d08004c01c1ae8d3df856517bafb",
+          "verified": true,
+          "grey": 35,
+          "red": 0,
+          "blue": 0,
+          "black": 71,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": 3,
+          "phase": "warm",
+          "ms": 5.139999985694885,
+          "digest": "618678cd6507b8ace2534f3bbdf6eef3f64e8150b5aa3247f0c482cf6a64e2d1",
+          "verified": true,
+          "grey": 29,
+          "red": 0,
+          "blue": 0,
+          "black": 111,
+          "white": 12
+        },
+        {
+          "state": 0,
+          "value": 0.5,
+          "phase": "warm",
+          "ms": 5.3299999833106995,
+          "digest": "256d5f7af82265735a5ff39696327fe48607d08004c01c1ae8d3df856517bafb",
+          "verified": true,
+          "grey": 35,
+          "red": 0,
+          "blue": 0,
+          "black": 71,
+          "white": 12
+        },
+        {
+          "state": 1,
+          "value": 3,
+          "phase": "warm",
+          "ms": 4.754999995231628,
+          "digest": "618678cd6507b8ace2534f3bbdf6eef3f64e8150b5aa3247f0c482cf6a64e2d1",
+          "verified": true,
+          "grey": 29,
+          "red": 0,
+          "blue": 0,
+          "black": 111,
+          "white": 12
+        }
+      ],
+      "status": "measured"
+    }
+  ],
+  "viewerProbeSHA256": "0498c514becf6d3e6f33aadaaaa697ba91a18122d4280c39ce99f06b0e965b4c",
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T08:42:16.873156+00:00",
+  "engineSHA256": {
+    "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "browserBinary": "chrome-headless-shell",
+  "probeSHA256": "43459009f7736295c8f893257c10eb777daad81045a2106f84358de5d1d123e5",
+  "system": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "chip": "Apple M4 Max"
+  },
+  "boundary": "Changed resident recipe to complete CPU-accessible 2400 × 1600 sRGB RGBA8 display buffer; hash outside timer"
+}

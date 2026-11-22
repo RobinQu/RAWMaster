@@ -1,0 +1,95 @@
+{
+  "actualRawLinearMaximum" : [
+    1.3251953125,
+    1.31640625,
+    1
+  ],
+  "actualRawLinearMinimum" : [
+    -0.0030956268310546875,
+    -0.0014181137084960938,
+    -0.002750396728515625
+  ],
+  "allowedFourCCs" : [
+    1380411457
+  ],
+  "controlInferenceMs" : 588.47900000000004,
+  "inputAndOutputFormat" : "RGBA 16-bit floating point",
+  "model" : "VideoToolbox revision 1 image 4×",
+  "nativeSize" : [
+    9504,
+    6336
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "rawDecoder" : "FlashRaw 0.3.1 GPU bilinear RGB F16",
+  "realRawROI" : [
+    4496,
+    3040,
+    512,
+    256
+  ],
+  "reduction" : "2×2 area average in extended linear sRGB",
+  "referenceInferenceMs" : 71.357833999999997,
+  "seams" : [
+    {
+      "fullComparedMaxLinear" : 0.020538330078125,
+      "haloNativePixels" : 0,
+      "seamMaxLinear" : 0.020538330078125,
+      "seamP95Linear" : 0.0048828125
+    },
+    {
+      "fullComparedMaxLinear" : 0.0068359375,
+      "haloNativePixels" : 16,
+      "seamMaxLinear" : 0.0068359375,
+      "seamP95Linear" : 0.0029296875
+    },
+    {
+      "fullComparedMaxLinear" : 0.0040283203125,
+      "haloNativePixels" : 32,
+      "seamMaxLinear" : 0.0040283203125,
+      "seamP95Linear" : 0.001983642578125
+    },
+    {
+      "fullComparedMaxLinear" : 0.0040283203125,
+      "haloNativePixels" : 64,
+      "seamMaxLinear" : 0.0040283203125,
+      "seamP95Linear" : 0.001953125
+    }
+  ],
+  "source" : "acr-benchmark.ARW",
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "swatches" : [
+    {
+      "inputLinear" : -0.125,
+      "outputLinear" : 0
+    },
+    {
+      "inputLinear" : 0,
+      "outputLinear" : 0
+    },
+    {
+      "inputLinear" : 0.18000000715255737,
+      "outputLinear" : 0.180419921875
+    },
+    {
+      "inputLinear" : 0.5,
+      "outputLinear" : 0.501953125
+    },
+    {
+      "inputLinear" : 0.875,
+      "outputLinear" : 0.87451171875
+    },
+    {
+      "inputLinear" : 1,
+      "outputLinear" : 1
+    },
+    {
+      "inputLinear" : 1.5,
+      "outputLinear" : 1
+    },
+    {
+      "inputLinear" : 3,
+      "outputLinear" : 1
+    }
+  ]
+}

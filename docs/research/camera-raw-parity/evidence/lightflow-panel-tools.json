@@ -1,0 +1,1498 @@
+{
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "uiSHA256": {
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+    "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+    "_b/20261111155800-2d41ab1/flashraw/browser.js": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+    "_b/20261111155800-2d41ab1/flashraw/core.js": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+    "_b/20261111155800-2d41ab1/flashraw/errors.js": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen_threads.js": "c4803f3d27d9ae36e6dfb0de2ea3f83ff59b4e670d4f428d9da3bfd2747073b2",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd_threads.wasm": "bd70ec98d095602a326780b3dfc13afcccc76a8fe0b887fbc290d3377c49d3eb",
+    "_b/20261111155800-2d41ab1/flashraw/thread-worker.browser.js": "016cd62f67eb77e431b8cf8290886ed03eeb54dd4a84aaf8774677ddd01124d1",
+    "_b/20261111155800-2d41ab1/flashraw/threads.js": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+    "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+    "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+    "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+    "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+    "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+    "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+    "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+    "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+    "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+    "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "recordedAt": "2026-11-22T08:47:47.501093+00:00",
+  "samples": 10,
+  "protocol": "lightflow-editor-panel-actions-v1",
+  "viewportPixels": [
+    3200,
+    2000
+  ],
+  "photoRectPixels": [
+    370,
+    168,
+    2368,
+    1579
+  ],
+  "operations": [
+    {
+      "id": "mixer-hsl-mode",
+      "featureIds": [
+        "mixer-hsl-mode"
+      ],
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 1.5,
+          "observed": {
+            "start": 8155.430000007153,
+            "end": 8156.930000007153,
+            "mode": "hue",
+            "rows": [
+              {
+                "id": "hsl-hue-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "0f1f3e7ba471066eb0b5b31bac1bf93f6999664d0044e44e906158d1d8aa9456"
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 1.5649999976158142,
+          "observed": {
+            "start": 8171.909999966621,
+            "end": 8173.474999964237,
+            "mode": "sat",
+            "rows": [
+              {
+                "id": "hsl-sat-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "d9d0609a79d756114da423a0bb71888181e322bfc717986ee4227f7f1dbab9ea"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.3050000071525574,
+          "observed": {
+            "start": 8188.560000002384,
+            "end": 8189.865000009537,
+            "mode": "hue",
+            "rows": [
+              {
+                "id": "hsl-hue-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "0f1f3e7ba471066eb0b5b31bac1bf93f6999664d0044e44e906158d1d8aa9456"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.5350000262260437,
+          "observed": {
+            "start": 8325.65499997139,
+            "end": 8327.189999997616,
+            "mode": "sat",
+            "rows": [
+              {
+                "id": "hsl-sat-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "d9d0609a79d756114da423a0bb71888181e322bfc717986ee4227f7f1dbab9ea"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.5899999737739563,
+          "observed": {
+            "start": 8338.665000021458,
+            "end": 8340.254999995232,
+            "mode": "hue",
+            "rows": [
+              {
+                "id": "hsl-hue-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "0f1f3e7ba471066eb0b5b31bac1bf93f6999664d0044e44e906158d1d8aa9456"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.6149999499320984,
+          "observed": {
+            "start": 8355.235000014305,
+            "end": 8356.849999964237,
+            "mode": "sat",
+            "rows": [
+              {
+                "id": "hsl-sat-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "d9d0609a79d756114da423a0bb71888181e322bfc717986ee4227f7f1dbab9ea"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.3399999737739563,
+          "observed": {
+            "start": 8371.944999992847,
+            "end": 8373.284999966621,
+            "mode": "hue",
+            "rows": [
+              {
+                "id": "hsl-hue-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "0f1f3e7ba471066eb0b5b31bac1bf93f6999664d0044e44e906158d1d8aa9456"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.6949999928474426,
+          "observed": {
+            "start": 8388.75,
+            "end": 8390.444999992847,
+            "mode": "sat",
+            "rows": [
+              {
+                "id": "hsl-sat-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "d9d0609a79d756114da423a0bb71888181e322bfc717986ee4227f7f1dbab9ea"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.4449999928474426,
+          "observed": {
+            "start": 8405.180000007153,
+            "end": 8406.625,
+            "mode": "hue",
+            "rows": [
+              {
+                "id": "hsl-hue-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "0f1f3e7ba471066eb0b5b31bac1bf93f6999664d0044e44e906158d1d8aa9456"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.5600000023841858,
+          "observed": {
+            "start": 8421.944999992847,
+            "end": 8423.504999995232,
+            "mode": "sat",
+            "rows": [
+              {
+                "id": "hsl-sat-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "d9d0609a79d756114da423a0bb71888181e322bfc717986ee4227f7f1dbab9ea"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.274999976158142,
+          "observed": {
+            "start": 8438.615000009537,
+            "end": 8439.889999985695,
+            "mode": "hue",
+            "rows": [
+              {
+                "id": "hsl-hue-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-hue-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "0f1f3e7ba471066eb0b5b31bac1bf93f6999664d0044e44e906158d1d8aa9456"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.5149999856948853,
+          "observed": {
+            "start": 8455.290000021458,
+            "end": 8456.805000007153,
+            "mode": "sat",
+            "rows": [
+              {
+                "id": "hsl-sat-red",
+                "label": "Red",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-orange",
+                "label": "Orange",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-yellow",
+                "label": "Yellow",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-green",
+                "label": "Green",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-aqua",
+                "label": "Aqua",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-blue",
+                "label": "Blue",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-purple",
+                "label": "Purple",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              },
+              {
+                "id": "hsl-sat-magenta",
+                "label": "Magenta",
+                "value": 0,
+                "min": -100,
+                "max": 100
+              }
+            ]
+          },
+          "verified": true,
+          "digest": "d9d0609a79d756114da423a0bb71888181e322bfc717986ee4227f7f1dbab9ea"
+        }
+      ],
+      "status": "measured",
+      "boundary": "First trusted press to actual 8-property DOM rows after release"
+    },
+    {
+      "id": "mixer-eight-colors",
+      "featureIds": [
+        "mixer-eight-colors"
+      ],
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 17.880208,
+          "observed": {
+            "color": "aqua",
+            "before": {},
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "actualFieldValue": 36
+          },
+          "verified": true,
+          "digest": "fbb27eb418810aff05dc245de1f85d17259c000a670be76ca20dde5800277760"
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 16.329042,
+          "observed": {
+            "color": "magenta",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": -46
+          },
+          "verified": true,
+          "digest": "79cb462303fa069f78836f8f928f59fe2fed9f961dceb6fc1130721c969d1fe2"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 16.161333,
+          "observed": {
+            "color": "aqua",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 0,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": 36
+          },
+          "verified": true,
+          "digest": "fbb27eb418810aff05dc245de1f85d17259c000a670be76ca20dde5800277760"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 18.551709,
+          "observed": {
+            "color": "magenta",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": -46
+          },
+          "verified": true,
+          "digest": "79cb462303fa069f78836f8f928f59fe2fed9f961dceb6fc1130721c969d1fe2"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 16.071125,
+          "observed": {
+            "color": "aqua",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 0,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": 36
+          },
+          "verified": true,
+          "digest": "fbb27eb418810aff05dc245de1f85d17259c000a670be76ca20dde5800277760"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 18.421375,
+          "observed": {
+            "color": "magenta",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": -46
+          },
+          "verified": true,
+          "digest": "79cb462303fa069f78836f8f928f59fe2fed9f961dceb6fc1130721c969d1fe2"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 16.085584,
+          "observed": {
+            "color": "aqua",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 0,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": 36
+          },
+          "verified": true,
+          "digest": "fbb27eb418810aff05dc245de1f85d17259c000a670be76ca20dde5800277760"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 18.697083,
+          "observed": {
+            "color": "magenta",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": -46
+          },
+          "verified": true,
+          "digest": "79cb462303fa069f78836f8f928f59fe2fed9f961dceb6fc1130721c969d1fe2"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 16.332584,
+          "observed": {
+            "color": "aqua",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 0,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": 36
+          },
+          "verified": true,
+          "digest": "fbb27eb418810aff05dc245de1f85d17259c000a670be76ca20dde5800277760"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 18.6045,
+          "observed": {
+            "color": "magenta",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": -46
+          },
+          "verified": true,
+          "digest": "79cb462303fa069f78836f8f928f59fe2fed9f961dceb6fc1130721c969d1fe2"
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 16.205875,
+          "observed": {
+            "color": "aqua",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 0,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": 36
+          },
+          "verified": true,
+          "digest": "fbb27eb418810aff05dc245de1f85d17259c000a670be76ca20dde5800277760"
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 18.654083,
+          "observed": {
+            "color": "magenta",
+            "before": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": 0
+            },
+            "after": {
+              "red": 0,
+              "orange": 0,
+              "yellow": 0,
+              "green": 0,
+              "aqua": 36,
+              "blue": 0,
+              "purple": 0,
+              "magenta": -46
+            },
+            "actualFieldValue": -46
+          },
+          "verified": true,
+          "digest": "79cb462303fa069f78836f8f928f59fe2fed9f961dceb6fc1130721c969d1fe2"
+        }
+      ],
+      "status": "measured",
+      "boundary": "Host submit of trusted Return on a prepared eight-band Hue number input to the stock node recipe and visible value"
+    },
+    {
+      "id": "grading-lut-import",
+      "featureIds": [
+        "grading-lut-import"
+      ],
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 28.2245,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "c121cf5fe0ef0074acfa947b7f44fb5d56d641b93e94bfe1908c7885bf8b2cb3",
+          "returned": {
+            "asset": "lut-c121cf5fe0ef0074acfa947b",
+            "name": "RAW benchmark 00",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "1d08c582715368bf0ca25aa497f8c1c0d0b7c038bdf409c9b774bd7a3a8a835e",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 32.410166,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "1d4841f0672888c3b4abb8551751952612b8ecd78900cfd8fb178984cdfa5e0e",
+          "returned": {
+            "asset": "lut-1d4841f0672888c3b4abb855",
+            "name": "RAW benchmark 01",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "e74d897fb46a060e441c0b95da7ae70496ab40e9b2028c9bcbbb105cc0e21b55",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 32.115375,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "325829d80eb8a59d8fdb683b2c9e14d7074d980c77eb77d49a6571a8ce92c287",
+          "returned": {
+            "asset": "lut-325829d80eb8a59d8fdb683b",
+            "name": "RAW benchmark 02",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "1d08c582715368bf0ca25aa497f8c1c0d0b7c038bdf409c9b774bd7a3a8a835e",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 32.034125,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "fde4875fd272a83f038049810e7672f275317a2ef2404ab843a8b9ed46f8feda",
+          "returned": {
+            "asset": "lut-fde4875fd272a83f03804981",
+            "name": "RAW benchmark 03",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "e74d897fb46a060e441c0b95da7ae70496ab40e9b2028c9bcbbb105cc0e21b55",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 32.216458,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "a22ec6cd57e3585573fd8bd93e0625ddfc65da02ce4c3f6c0523769bdd2a2ffe",
+          "returned": {
+            "asset": "lut-a22ec6cd57e3585573fd8bd9",
+            "name": "RAW benchmark 04",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "1d08c582715368bf0ca25aa497f8c1c0d0b7c038bdf409c9b774bd7a3a8a835e",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 32.378875,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "bb89c2ce27cfeb19ab88a405158ca040c39c409ffce27bc1ce6a134778c81de2",
+          "returned": {
+            "asset": "lut-bb89c2ce27cfeb19ab88a405",
+            "name": "RAW benchmark 05",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "e74d897fb46a060e441c0b95da7ae70496ab40e9b2028c9bcbbb105cc0e21b55",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 32.23875,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "1764d35e7e70b8725122c6ceb40a8f71e9387e188fc11a11191fa0b354700cd1",
+          "returned": {
+            "asset": "lut-1764d35e7e70b8725122c6ce",
+            "name": "RAW benchmark 06",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "1d08c582715368bf0ca25aa497f8c1c0d0b7c038bdf409c9b774bd7a3a8a835e",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 32.061625,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "a8f1fa4c8d31190797b017551f09e1d2c703f55cef84f3f7be07b7f7bda82453",
+          "returned": {
+            "asset": "lut-a8f1fa4c8d31190797b01755",
+            "name": "RAW benchmark 07",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "e74d897fb46a060e441c0b95da7ae70496ab40e9b2028c9bcbbb105cc0e21b55",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 32.288,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "a048560a6f0ec1bde2502542cd9adbb9921a33e855ef93d616e315a2c08a5022",
+          "returned": {
+            "asset": "lut-a048560a6f0ec1bde2502542",
+            "name": "RAW benchmark 08",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "1d08c582715368bf0ca25aa497f8c1c0d0b7c038bdf409c9b774bd7a3a8a835e",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 33.084833,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "381e9cc56e1eb6a128b62a4fc1cd7c8886d58edb0e55c3e727d79a7fb8946988",
+          "returned": {
+            "asset": "lut-381e9cc56e1eb6a128b62a4f",
+            "name": "RAW benchmark 09",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "e74d897fb46a060e441c0b95da7ae70496ab40e9b2028c9bcbbb105cc0e21b55",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 32.187708,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "67b4447e89fcc33b50c9322156b3e8a6969404589555a540f43ae7df88a0652a",
+          "returned": {
+            "asset": "lut-67b4447e89fcc33b50c93221",
+            "name": "RAW benchmark 10",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "1d08c582715368bf0ca25aa497f8c1c0d0b7c038bdf409c9b774bd7a3a8a835e",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 32.098542,
+          "sourceTableSize": 17,
+          "sourceBytes": 132725,
+          "sourceCubeSHA256": "61e59f1703a538c6549f6f31f68a1d9807f3348cb1af27a53d662bf830322b87",
+          "returned": {
+            "asset": "lut-61e59f1703a538c6549f6f31",
+            "name": "RAW benchmark 11",
+            "inputSpace": "rec709",
+            "outputSpace": "rec709",
+            "strength": 100
+          },
+          "digest": "e74d897fb46a060e441c0b95da7ae70496ab40e9b2028c9bcbbb105cc0e21b55",
+          "verified": true
+        }
+      ],
+      "status": "measured",
+      "boundary": "Host submission of chosen .cube bytes via file input to observing the original editor recipe select its content-addressed asset. File chooser opening and photo observation are outside the timer."
+    }
+  ],
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "verification": "For HSL organization, inspect all eight named rows and ranges. For a color band, verify that only the selected stored Hue changes. For import, match the 96-bit source-derived stock asset ID and title in the active RAW recipe and capture repeatable, distinct screenshot pixels for the two sets of file contents."
+}

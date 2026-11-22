@@ -1,0 +1,3680 @@
+{
+  "schemaVersion": 1,
+  "protocol": "screen-photo-response-v1",
+  "driver": "typed numeric commit through the shipping EditingController; nonactivating background AppKit canvas",
+  "trialEnd": "native canvas acknowledged the target settled recipe, followed by the recorded quiet interval",
+  "testHostActivity": "userInitiatedAllowingIdleSystemSleep",
+  "quietSeconds": 0.8,
+  "build": "Release, -O with testability enabled",
+  "startedAt": "2026-11-22T07:25:24.777419+00:00",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "os": "27.0.1",
+  "hardware": "Mac16,5",
+  "osBuild": "26A434",
+  "recorderSHA256": "47a52d24a4676046f994f9af9d3a84f03d6d4aa1d063a5f4caac0ae3ebf80543",
+  "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "policy": {
+    "roiGrid": [
+      96,
+      64
+    ],
+    "captureHz": 60,
+    "minimumSeparationRGB8": 0.03,
+    "firstFraction": 0.2,
+    "finalToleranceFraction": 0.15,
+    "plateauMs": 120
+  },
+  "operations": {
+    "light-exposure": {
+      "separationRGB8": 14.188151041666666,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "e2685228eb02ffb452e13fd018ffdeccd7ed0507a9592c3d74017490b1c5c894"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500781162650416,
+          "state": 0,
+          "firstMs": 11.408125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              11.408125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+          "sentNs": 500781994423666,
+          "state": 1,
+          "firstMs": 12.236375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.236375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500782826859625,
+          "state": 0,
+          "firstMs": 19.133708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.133708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+          "sentNs": 500783653093333,
+          "state": 1,
+          "firstMs": 14.167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500784481476083,
+          "state": 0,
+          "firstMs": 22.529917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.529917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+          "sentNs": 500785306326083,
+          "state": 1,
+          "firstMs": 14.08975,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.08975,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500786140382666,
+          "state": 0,
+          "firstMs": 7.8845,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              7.8845,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+          "sentNs": 500786970933375,
+          "state": 1,
+          "firstMs": 15.623833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.623833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500787793468083,
+          "state": 0,
+          "firstMs": 15.617667,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.617667,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+          "sentNs": 500788623699458,
+          "state": 1,
+          "firstMs": 20.777458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.777458,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        0.5
+      ],
+      "displayLabel": "Exposure",
+      "precondition": {
+        "accepted": true,
+        "actual": 0.5,
+        "mapping": "recipe = supplied / 2.0",
+        "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+        "sentNs": 500777944372625
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500779305647208,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 0.5,
+          "mapping": "recipe = supplied / 2.0",
+          "recipeFingerprint": "0dc39e2e66414c165aee7b8975bc2e6666b90c5c1c56f947571e1919bc61dd5d",
+          "sentNs": 500780332078375,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-contrast": {
+      "separationRGB8": 8.939887152777779,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "6f53d443642c7c0c27d44c31c4121cefd9b73fd0f0953e22ee483a6e1199a2ea"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500792655651708,
+          "state": 0,
+          "firstMs": 15.448875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.448875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+          "sentNs": 500793490056916,
+          "state": 1,
+          "firstMs": 10.733334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.733334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500794332345500,
+          "state": 0,
+          "firstMs": 32.711125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.711125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+          "sentNs": 500795181343666,
+          "state": 1,
+          "firstMs": 24.561834,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.561834,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500796005906708,
+          "state": 0,
+          "firstMs": 14.580375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.580375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+          "sentNs": 500796840036333,
+          "state": 1,
+          "firstMs": 23.766625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.766625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500797669452041,
+          "state": 0,
+          "firstMs": 26.721459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.721459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+          "sentNs": 500798493617666,
+          "state": 1,
+          "firstMs": 20.436334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.436334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500799323726125,
+          "state": 0,
+          "firstMs": 26.752416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.752416,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+          "sentNs": 500800149039041,
+          "state": 1,
+          "firstMs": 24.727625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.727625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Contrast",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / 100.0",
+        "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+        "sentNs": 500789505234250
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500790995259875,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "d83e5b53fdfb5a0157c42e7f3e51cca52f7f08da5fb9035021e0491cfd76a26d",
+          "sentNs": 500791822845083,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-highlights": {
+      "separationRGB8": 2.6602647569444446,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "3aa84f912b2ca7897d28c80aa7d42547813a8aaee5d111d53cfecae7ac451ec0"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500804638210750,
+          "state": 0,
+          "firstMs": 34.128583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              34.128583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+          "sentNs": 500805489219625,
+          "state": 1,
+          "firstMs": 17.741958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.741958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500806318377666,
+          "state": 0,
+          "firstMs": 43.966875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              43.966875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+          "sentNs": 500807161411916,
+          "state": 1,
+          "firstMs": 14.459334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.459334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500807980428666,
+          "state": 0,
+          "firstMs": 23.128,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.128,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+          "sentNs": 500808831484083,
+          "state": 1,
+          "firstMs": 29.737958,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.737958,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500809678600291,
+          "state": 0,
+          "firstMs": 32.402125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.402125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+          "sentNs": 500810514568458,
+          "state": 1,
+          "firstMs": 17.265625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.265625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500811352460666,
+          "state": 0,
+          "firstMs": 21.812584,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.812584,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+          "sentNs": 500812190695625,
+          "state": 1,
+          "firstMs": 8.683708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              8.683708,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Highlights",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / 100.0",
+        "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+        "sentNs": 500801069504000
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500802955849416,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "a090c09668af369fad7c06434b6a8172630aa9e0e7420744af42387a8af71149",
+          "sentNs": 500803814600083,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-shadows": {
+      "separationRGB8": 4.046115451388889,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "2e01dd0a099a78021ddbea90da4fda9bdd59ac51120163ec0d9ef4bc723d178b"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500816686317541,
+          "state": 0,
+          "firstMs": 20.404875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.404875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+          "sentNs": 500817511523791,
+          "state": 1,
+          "firstMs": 18.85025,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.85025,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500818344603291,
+          "state": 0,
+          "firstMs": 12.444542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.444542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+          "sentNs": 500819172158000,
+          "state": 1,
+          "firstMs": 9.074041,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              9.074041,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500820001243916,
+          "state": 0,
+          "firstMs": 14.586459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.586459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+          "sentNs": 500820834801375,
+          "state": 1,
+          "firstMs": 20.179333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.179333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500821662434291,
+          "state": 0,
+          "firstMs": 34.524209,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              34.524209,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+          "sentNs": 500822509914416,
+          "state": 1,
+          "firstMs": 33.287417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              33.287417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500823373861541,
+          "state": 0,
+          "firstMs": 22.878959,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.878959,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+          "sentNs": 500824202940041,
+          "state": 1,
+          "firstMs": 10.932417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.932417,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Shadows",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / 100.0",
+        "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+        "sentNs": 500813106497583
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500814972535708,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "5b1dab0bd8e20d9e7dfe8f9051c213535b81d3b37f757a5430c9df479bfc619d",
+          "sentNs": 500815856032958,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-whites": {
+      "separationRGB8": 0.4309895833333333,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "d5ce192cdf62db4e97773c77af72ea53121473f019823f56d1b8ecce86d7a720"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500828519391708,
+          "state": 0,
+          "firstMs": 20.367375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.367375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+          "sentNs": 500829345568708,
+          "state": 1,
+          "firstMs": 16.620125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.620125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500830177990833,
+          "state": 0,
+          "firstMs": 16.655542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.655542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+          "sentNs": 500831011280625,
+          "state": 1,
+          "firstMs": 15.786666,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.786666,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500831843114833,
+          "state": 0,
+          "firstMs": 22.940083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.940083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+          "sentNs": 500832675111041,
+          "state": 1,
+          "firstMs": 21.610917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.610917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500833514984083,
+          "state": 0,
+          "firstMs": 17.05775,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.05775,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+          "sentNs": 500834353219291,
+          "state": 1,
+          "firstMs": 27.554,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.554,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500835178426958,
+          "state": 0,
+          "firstMs": 11.603,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              11.603,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+          "sentNs": 500836000997458,
+          "state": 1,
+          "firstMs": 27.069083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.069083,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Whites",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / 100.0",
+        "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+        "sentNs": 500825107505875
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "07a0af3b59cacfb918da2650c8e9fc328d90ebc523ef57552e496431136f8576",
+          "sentNs": 500826852196333,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100.0",
+          "recipeFingerprint": "fbdfa224cf42f866bf68e95c3dc6e0e2670004acb59249eacad380fb098018d9",
+          "sentNs": 500827691219791,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "light-blacks": {
+      "separationRGB8": 9.798828125,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "8c11953af3ac5e119ba9433ec712b4425e618e803070c2b4eba84562530af3f8"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "2f9dca3c842a3fa418dcffceb0f512c189b9ecd4d1c9637f3b1fb951ae429531",
+          "sentNs": 500840911278291,
+          "state": 0,
+          "firstMs": 20.592375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.592375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+          "sentNs": 500841744601166,
+          "state": 1,
+          "firstMs": 27.977292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.977292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "2f9dca3c842a3fa418dcffceb0f512c189b9ecd4d1c9637f3b1fb951ae429531",
+          "sentNs": 500842578369916,
+          "state": 0,
+          "firstMs": 11.294209,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              11.294209,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+          "sentNs": 500843414166416,
+          "state": 1,
+          "firstMs": 7.492542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              7.492542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "2f9dca3c842a3fa418dcffceb0f512c189b9ecd4d1c9637f3b1fb951ae429531",
+          "sentNs": 500844240874291,
+          "state": 0,
+          "firstMs": 7.428167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              7.428167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+          "sentNs": 500845073862000,
+          "state": 1,
+          "firstMs": 24.74125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.74125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "2f9dca3c842a3fa418dcffceb0f512c189b9ecd4d1c9637f3b1fb951ae429531",
+          "sentNs": 500845900753708,
+          "state": 0,
+          "firstMs": 27.008458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.008458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+          "sentNs": 500846742258333,
+          "state": 1,
+          "firstMs": 24.016875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.016875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "2f9dca3c842a3fa418dcffceb0f512c189b9ecd4d1c9637f3b1fb951ae429531",
+          "sentNs": 500847599280166,
+          "state": 0,
+          "firstMs": 29.499834,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.499834,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+          "sentNs": 500848450887625,
+          "state": 1,
+          "firstMs": 13.405875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.405875,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Blacks",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / -100.0",
+        "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+        "sentNs": 500836893650500
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "2f9dca3c842a3fa418dcffceb0f512c189b9ecd4d1c9637f3b1fb951ae429531",
+          "sentNs": 500838706012083,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / -100.0",
+          "recipeFingerprint": "4eb28249ed4d6f364dbf228e9b06abe84f9067369d2883d5a764e83e99953886",
+          "sentNs": 500840085084291,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-temp-raw": {
+      "separationRGB8": 3.1119791666666665,
+      "referenceDigests": [
+        "4ed4c1a46244bce47b88bec95095dd30c9b6bb3c13600d8acf10624f8771e647",
+        "4af615cfb89bc444a55c0c01c3ba5c52c8b90fd531b4321d1cc23d4a1c11649b"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "64a777b03067418dd61a8bd21b3b0bb14ea2c294714bc12aadcfce95a3bde09e",
+          "sentNs": 500854020226500,
+          "state": 0,
+          "firstMs": 27.093,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.093,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+          "sentNs": 500854857425250,
+          "state": 1,
+          "firstMs": 21.567,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.567,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "64a777b03067418dd61a8bd21b3b0bb14ea2c294714bc12aadcfce95a3bde09e",
+          "sentNs": 500855694724375,
+          "state": 0,
+          "firstMs": 18.330125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.330125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+          "sentNs": 500856515530208,
+          "state": 1,
+          "firstMs": 15.630542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.630542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "64a777b03067418dd61a8bd21b3b0bb14ea2c294714bc12aadcfce95a3bde09e",
+          "sentNs": 500857353288083,
+          "state": 0,
+          "firstMs": 18.196167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.196167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+          "sentNs": 500858191068791,
+          "state": 1,
+          "firstMs": 24.167625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.167625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "64a777b03067418dd61a8bd21b3b0bb14ea2c294714bc12aadcfce95a3bde09e",
+          "sentNs": 500859031139750,
+          "state": 0,
+          "firstMs": 21.866708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.866708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+          "sentNs": 500859861333833,
+          "state": 1,
+          "firstMs": 28.796042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.796042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "64a777b03067418dd61a8bd21b3b0bb14ea2c294714bc12aadcfce95a3bde09e",
+          "sentNs": 500860708127750,
+          "state": 0,
+          "firstMs": 16.318875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.318875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+          "sentNs": 500861535140583,
+          "state": 1,
+          "firstMs": 13.352292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.352292,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        5500,
+        6500
+      ],
+      "displayLabel": "Temperature",
+      "precondition": {
+        "accepted": true,
+        "actual": 6500,
+        "mapping": "absolute Kelvin",
+        "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+        "sentNs": 500849330868541
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 5500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "64a777b03067418dd61a8bd21b3b0bb14ea2c294714bc12aadcfce95a3bde09e",
+          "sentNs": 500851426320875,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 6500,
+          "mapping": "absolute Kelvin",
+          "recipeFingerprint": "997e5109368fd942a91f6be28d07b08bc292b8c7074034bd0f141564c96b3db2",
+          "sentNs": 500853172010291,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-tint": {
+      "separationRGB8": 2.279079861111111,
+      "referenceDigests": [
+        "bcb8fc2244bbce6dcfe757de614b80d1d42462318b2f9529b063ca4e1096e549",
+        "bcaa6b5ba8042da1695fe3a638889369cd06cbcba1e3d318237dc3efb6701996"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "recipeFingerprint": "be599a79825d1ef46d90abd987ceb57b045e8400203414856f2c33a4a590c110",
+          "sentNs": 500867282446750,
+          "state": 0,
+          "firstMs": 23.149916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.149916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+          "sentNs": 500868106909500,
+          "state": 1,
+          "firstMs": 18.840291,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.840291,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "recipeFingerprint": "be599a79825d1ef46d90abd987ceb57b045e8400203414856f2c33a4a590c110",
+          "sentNs": 500868957739291,
+          "state": 0,
+          "firstMs": 26.522375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.522375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+          "sentNs": 500869805282083,
+          "state": 1,
+          "firstMs": 18.851542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.851542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "recipeFingerprint": "be599a79825d1ef46d90abd987ceb57b045e8400203414856f2c33a4a590c110",
+          "sentNs": 500870636281458,
+          "state": 0,
+          "firstMs": 22.6125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.6125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+          "sentNs": 500871460404333,
+          "state": 1,
+          "firstMs": 26.887625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.887625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "recipeFingerprint": "be599a79825d1ef46d90abd987ceb57b045e8400203414856f2c33a4a590c110",
+          "sentNs": 500872298620125,
+          "state": 0,
+          "firstMs": 24.965333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.965333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+          "sentNs": 500873136365875,
+          "state": 1,
+          "firstMs": 25.787791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.787791,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "recipeFingerprint": "be599a79825d1ef46d90abd987ceb57b045e8400203414856f2c33a4a590c110",
+          "sentNs": 500873960689625,
+          "state": 0,
+          "firstMs": 21.18575,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.18575,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+          "sentNs": 500874788688416,
+          "state": 1,
+          "firstMs": 14.486959,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.486959,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        16,
+        40
+      ],
+      "displayLabel": "Tint",
+      "precondition": {
+        "accepted": true,
+        "actual": 40,
+        "mapping": "native tint",
+        "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+        "sentNs": 500862416114750
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 16,
+          "mapping": "native tint",
+          "recipeFingerprint": "be599a79825d1ef46d90abd987ceb57b045e8400203414856f2c33a4a590c110",
+          "sentNs": 500864541114291,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 40,
+          "mapping": "native tint",
+          "recipeFingerprint": "4b1639b4a669ffef86820892fa739cf8d05004177c0be0df1ad9bba745ec416d",
+          "sentNs": 500866452412083,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-vibrance": {
+      "separationRGB8": 1.6093207465277777,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "db1ae707366a860f492169455593d72c641770db889a19c3934db377f7cae1e9"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500880394785125,
+          "state": 0,
+          "firstMs": 12.564708,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.564708,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+          "sentNs": 500881232290916,
+          "state": 1,
+          "firstMs": 23.575917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.575917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500882073973666,
+          "state": 0,
+          "firstMs": 15.815,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.815,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+          "sentNs": 500882911480291,
+          "state": 1,
+          "firstMs": 18.574459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.574459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500883730798666,
+          "state": 0,
+          "firstMs": 18.806542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.806542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+          "sentNs": 500884571191833,
+          "state": 1,
+          "firstMs": 27.851417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.851417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500885422184291,
+          "state": 0,
+          "firstMs": 18.819875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.819875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+          "sentNs": 500886269425083,
+          "state": 1,
+          "firstMs": 25.428167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.428167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500887093443291,
+          "state": 0,
+          "firstMs": 13.269209,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.269209,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+          "sentNs": 500887923219250,
+          "state": 1,
+          "firstMs": 17.326,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.326,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Vibrance",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / 100",
+        "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+        "sentNs": 500875688721458
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500877777800875,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "948693dd35fd3302ed741ed7c8619f89cf34af5b2d60f4b511780ad894ac4417",
+          "sentNs": 500879574399375,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "color-saturation": {
+      "separationRGB8": 2.020724826388889,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "a7b0f534451d3df861e768afcdb16ef0d0b0931fe12eff52e78093e68daa8fcd"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500892914692333,
+          "state": 0,
+          "firstMs": 21.774417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.774417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+          "sentNs": 500893749181333,
+          "state": 1,
+          "firstMs": 20.921417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.921417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500894586412416,
+          "state": 0,
+          "firstMs": 18.059084,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.059084,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+          "sentNs": 500895420166458,
+          "state": 1,
+          "firstMs": 26.286875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.286875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500896260360333,
+          "state": 0,
+          "firstMs": 20.324625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.324625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+          "sentNs": 500897086368833,
+          "state": 1,
+          "firstMs": 21.268333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.268333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500897923469916,
+          "state": 0,
+          "firstMs": 24.178334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.178334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+          "sentNs": 500898765392041,
+          "state": 1,
+          "firstMs": 25.717292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.717292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500899598777250,
+          "state": 0,
+          "firstMs": 17.669916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.669916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+          "sentNs": 500900427102541,
+          "state": 1,
+          "firstMs": 14.45,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.45,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Saturation",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "recipe = supplied / 100",
+        "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+        "sentNs": 500888844205083
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "3aa0ba1004dc17180408c3479671cd9108c3779efc53eb3ed7da4d1b784747c4",
+          "sentNs": 500891226337416,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5f11a1d42bc04c598a898a98b89e821b7d675d641ff85dea30d63d81aa59de78",
+          "sentNs": 500892076751500,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-texture": {
+      "separationRGB8": 0.09412977430555555,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "bd80c4fa7f10376b6c202616903d1f7e84257feed609c5caaf73c7de8dcc5327"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+          "sentNs": 500907440339333,
+          "state": 0,
+          "firstMs": 13.604208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.604208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+          "sentNs": 500908273966875,
+          "state": 1,
+          "firstMs": 21.214333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.214333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+          "sentNs": 500909107332291,
+          "state": 0,
+          "firstMs": 15.758959,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.758959,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+          "sentNs": 500909947593541,
+          "state": 1,
+          "firstMs": 23.187334,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.187334,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+          "sentNs": 500910791149375,
+          "state": 0,
+          "firstMs": 29.68375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              29.68375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+          "sentNs": 500911632346125,
+          "state": 1,
+          "firstMs": 24.879791,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.879791,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+          "sentNs": 500912467922166,
+          "state": 0,
+          "firstMs": 27.775625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.775625,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+          "sentNs": 500913310385458,
+          "state": 1,
+          "firstMs": 20.0345,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.0345,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+          "sentNs": 500914143557125,
+          "state": 0,
+          "firstMs": 21.017333,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.017333,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+          "sentNs": 500914968726625,
+          "state": 1,
+          "firstMs": 20.010625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.010625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Texture",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "amount",
+        "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+        "sentNs": 500901323211666
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+          "sentNs": 500904626666250,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60",
+          "sentNs": 500906614285791,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-clarity": {
+      "separationRGB8": 0.337890625,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "390ccad1417015c4d6ffbd285ac7bf2b49ccc2491a0e98d086ec160dad2b325d"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+          "sentNs": 500922265088375,
+          "state": 0,
+          "firstMs": 22.98275,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              22.98275,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+          "sentNs": 500923112335541,
+          "state": 1,
+          "firstMs": 18.273375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.273375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+          "sentNs": 500923935666750,
+          "state": 0,
+          "firstMs": 25.964875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              25.964875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+          "sentNs": 500924769806041,
+          "state": 1,
+          "firstMs": 11.654459,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              11.654459,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+          "sentNs": 500925595345375,
+          "state": 0,
+          "firstMs": 10.95125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.95125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+          "sentNs": 500926421039833,
+          "state": 1,
+          "firstMs": 32.853833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              32.853833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+          "sentNs": 500927267768708,
+          "state": 0,
+          "firstMs": 20.17125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.17125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+          "sentNs": 500928102797291,
+          "state": 1,
+          "firstMs": 19.522167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.522167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+          "sentNs": 500928927853791,
+          "state": 0,
+          "firstMs": 13.633959,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.633959,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+          "sentNs": 500929756577416,
+          "state": 1,
+          "firstMs": 26.0435,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              26.0435,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Clarity",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "amount",
+        "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+        "sentNs": 500915872717416
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+          "sentNs": 500919340228291,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "amount",
+          "recipeFingerprint": "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56",
+          "sentNs": 500921424298916,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-dehaze": {
+      "separationRGB8": 5.317816840277778,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "5561b4b5facf98b258724c0f166a3c1a6099f95dac1f21600166b06bb209a348"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "13200bcb7b411bc15ee72be37422c6691c01080ec37c6a9a26f1cf9adeaffd8c",
+          "sentNs": 500942829940416,
+          "state": 0,
+          "firstMs": 16.624417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.624417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+          "sentNs": 500943661494708,
+          "state": 1,
+          "firstMs": 13.476167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.476167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "13200bcb7b411bc15ee72be37422c6691c01080ec37c6a9a26f1cf9adeaffd8c",
+          "sentNs": 500944490264875,
+          "state": 0,
+          "firstMs": 21.084583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              21.084583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+          "sentNs": 500945323149250,
+          "state": 1,
+          "firstMs": 18.09025,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.09025,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "13200bcb7b411bc15ee72be37422c6691c01080ec37c6a9a26f1cf9adeaffd8c",
+          "sentNs": 500946152516291,
+          "state": 0,
+          "firstMs": 10.387084,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.387084,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+          "sentNs": 500946990981500,
+          "state": 1,
+          "firstMs": 13.395833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.395833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "13200bcb7b411bc15ee72be37422c6691c01080ec37c6a9a26f1cf9adeaffd8c",
+          "sentNs": 500947819857541,
+          "state": 0,
+          "firstMs": 15.671917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.671917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+          "sentNs": 500948663388416,
+          "state": 1,
+          "firstMs": 15.972125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.972125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "13200bcb7b411bc15ee72be37422c6691c01080ec37c6a9a26f1cf9adeaffd8c",
+          "sentNs": 500949503390875,
+          "state": 0,
+          "firstMs": 15.231916,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.231916,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+          "sentNs": 500950339229666,
+          "state": 1,
+          "firstMs": 23.044625,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.044625,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        30
+      ],
+      "displayLabel": "Dehaze",
+      "precondition": {
+        "accepted": true,
+        "actual": 30,
+        "mapping": "prepared dehaze amount",
+        "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+        "sentNs": 500930651893750
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "13200bcb7b411bc15ee72be37422c6691c01080ec37c6a9a26f1cf9adeaffd8c",
+          "sentNs": 500939832602708,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 30,
+          "mapping": "prepared dehaze amount",
+          "recipeFingerprint": "a5d55436576279f6a3cc4972186011efd502c42b88571a40bbfb75aab98c9cd4",
+          "sentNs": 500941998355541,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-pcv-amount": {
+      "separationRGB8": 0.32421875,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "a6215c68edc83776f4ccfa8185c8d614acf96bb798872ecb4c65c7f612560cd6"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+          "sentNs": 500956518433791,
+          "state": 0,
+          "firstMs": 13.07725,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.07725,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+          "sentNs": 500957351659208,
+          "state": 1,
+          "firstMs": 20.738083,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              20.738083,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+          "sentNs": 500958189441708,
+          "state": 0,
+          "firstMs": 15.881458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.881458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+          "sentNs": 500959013513916,
+          "state": 1,
+          "firstMs": 19.272417,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.272417,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+          "sentNs": 500959846228083,
+          "state": 0,
+          "firstMs": 15.282042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              15.282042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+          "sentNs": 500960674029000,
+          "state": 1,
+          "firstMs": 13.853416,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.853416,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+          "sentNs": 500961511481333,
+          "state": 0,
+          "firstMs": 24.791833,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.791833,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+          "sentNs": 500962336584083,
+          "state": 1,
+          "firstMs": 19.103458,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.103458,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+          "sentNs": 500963171977166,
+          "state": 0,
+          "firstMs": 14.627875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              14.627875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+          "sentNs": 500964007721375,
+          "state": 1,
+          "firstMs": 27.449375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              27.449375,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        -50
+      ],
+      "displayLabel": "Vignette",
+      "precondition": {
+        "accepted": true,
+        "actual": -50,
+        "mapping": "amount",
+        "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+        "sentNs": 500951215965083
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+          "sentNs": 500953650890416,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": -50,
+          "mapping": "amount",
+          "recipeFingerprint": "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e",
+          "sentNs": 500955690832458,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-grain-amount": {
+      "separationRGB8": 0.3617078993055556,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "cf804cbd6753ec7fc22025b91801d8117ec30ade4214059a1cf00de76b408685"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "812eb3267167a61e84fe4e584032f33841581a259b8bfb6febb2869c236d0b74",
+          "sentNs": 500970274338541,
+          "state": 0,
+          "firstMs": 16.261375,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.261375,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+          "sentNs": 500971110802041,
+          "state": 1,
+          "firstMs": 18.641917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.641917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "812eb3267167a61e84fe4e584032f33841581a259b8bfb6febb2869c236d0b74",
+          "sentNs": 500971936407791,
+          "state": 0,
+          "firstMs": 24.204542,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.204542,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+          "sentNs": 500972763626833,
+          "state": 1,
+          "firstMs": 10.571042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              10.571042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "812eb3267167a61e84fe4e584032f33841581a259b8bfb6febb2869c236d0b74",
+          "sentNs": 500973598527375,
+          "state": 0,
+          "firstMs": 24.0405,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              24.0405,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+          "sentNs": 500974421292708,
+          "state": 1,
+          "firstMs": 17.940167,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.940167,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "812eb3267167a61e84fe4e584032f33841581a259b8bfb6febb2869c236d0b74",
+          "sentNs": 500975256030500,
+          "state": 0,
+          "firstMs": 19.406666,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.406666,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+          "sentNs": 500976090945208,
+          "state": 1,
+          "firstMs": 16.724042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              16.724042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "812eb3267167a61e84fe4e584032f33841581a259b8bfb6febb2869c236d0b74",
+          "sentNs": 500976928595333,
+          "state": 0,
+          "firstMs": 12.592917,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.592917,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+          "sentNs": 500977761532666,
+          "state": 1,
+          "firstMs": 13.16675,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.16675,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        50
+      ],
+      "displayLabel": "Grain",
+      "precondition": {
+        "accepted": true,
+        "actual": 50,
+        "mapping": "recipe = supplied / 100",
+        "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+        "sentNs": 500964885836583
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "812eb3267167a61e84fe4e584032f33841581a259b8bfb6febb2869c236d0b74",
+          "sentNs": 500967169479375,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 50,
+          "mapping": "recipe = supplied / 100",
+          "recipeFingerprint": "5947da72e72518f6290c268d43daea733635a5fd6896a8c1d9c0b7e38f086881",
+          "sentNs": 500969449346666,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    },
+    "effects-glow-amount": {
+      "separationRGB8": 11.0986328125,
+      "referenceDigests": [
+        "ed5ea82664bfe3f15fadbdcea4cd4f3d6c73553d7936f032fc8e19ee1cfa4bca",
+        "d92a134099737e1c97089f8d9db561ddbf75677c64193439d4d3492ec96ce40b"
+      ],
+      "trials": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "0cd66903648515919f52ed2c74451444a41d126fea52dcf52b03e1310ec4b4de",
+          "sentNs": 500984415056958,
+          "state": 0,
+          "firstMs": 23.168875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.168875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+          "sentNs": 500985242651583,
+          "state": 1,
+          "firstMs": 12.757042,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              12.757042,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "0cd66903648515919f52ed2c74451444a41d126fea52dcf52b03e1310ec4b4de",
+          "sentNs": 500986071481250,
+          "state": 0,
+          "firstMs": 17.56825,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              17.56825,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+          "sentNs": 500986898336583,
+          "state": 1,
+          "firstMs": 18.172208,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.172208,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "0cd66903648515919f52ed2c74451444a41d126fea52dcf52b03e1310ec4b4de",
+          "sentNs": 500987732201458,
+          "state": 0,
+          "firstMs": 28.149792,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              28.149792,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+          "sentNs": 500988555961791,
+          "state": 1,
+          "firstMs": 13.249125,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              13.249125,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "0cd66903648515919f52ed2c74451444a41d126fea52dcf52b03e1310ec4b4de",
+          "sentNs": 500989385946958,
+          "state": 0,
+          "firstMs": 9.823583,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              9.823583,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+          "sentNs": 500990213727291,
+          "state": 1,
+          "firstMs": 18.858292,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              18.858292,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "0cd66903648515919f52ed2c74451444a41d126fea52dcf52b03e1310ec4b4de",
+          "sentNs": 500991052556875,
+          "state": 0,
+          "firstMs": 19.750875,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              19.750875,
+              0.0
+            ]
+          ]
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+          "sentNs": 500991870428166,
+          "state": 1,
+          "firstMs": 23.533584,
+          "verified": true,
+          "finalErrorRGB8": 0.0,
+          "changesMsAndTargetError": [
+            [
+              23.533584,
+              0.0
+            ]
+          ]
+        }
+      ],
+      "status": "measured",
+      "values": [
+        0,
+        65
+      ],
+      "displayLabel": "Glow",
+      "precondition": {
+        "accepted": true,
+        "actual": 65,
+        "mapping": "amount",
+        "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+        "sentNs": 500978634657416
+      },
+      "calibration": [
+        {
+          "accepted": true,
+          "actual": 0,
+          "mapping": "amount",
+          "recipeFingerprint": "0cd66903648515919f52ed2c74451444a41d126fea52dcf52b03e1310ec4b4de",
+          "sentNs": 500981230238625,
+          "state": 0
+        },
+        {
+          "accepted": true,
+          "actual": 65,
+          "mapping": "amount",
+          "recipeFingerprint": "cd252952e6816fe5df7056590042e3018d4bedfdec9fd9d4478967ed359eb79a",
+          "sentNs": 500983581837083,
+          "state": 1
+        }
+      ],
+      "scope": "central 60% of displayed photo"
+    }
+  },
+  "window": {
+    "id": 33475,
+    "frame": [
+      -541,
+      -1925,
+      3024,
+      1691
+    ],
+    "scale": 1,
+    "title": "RAWMaster Presented Canvas 80EF2CF9-71B8-4755-B0B7-B9A8335513EA"
+  },
+  "photoRectPixels": [
+    328,
+    24,
+    2368,
+    1579
+  ],
+  "roi": [
+    0.2650793650793651,
+    0.20094618568894146,
+    0.46984126984126984,
+    0.5602602010644588
+  ],
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "previewPixels": [
+    2400,
+    1600
+  ],
+  "initialRecipe": {
+    "adjustmentsV3": {
+      "blackAndWhite": {
+        "enabled": false,
+        "grain": 0,
+        "intensity": 0.5,
+        "neutrals": 0,
+        "tone": 0
+      },
+      "color": {
+        "cast": 0,
+        "enabled": false,
+        "saturation": 0,
+        "vibrance": 0
+      },
+      "curves": {
+        "blue": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        },
+        "enabled": false,
+        "green": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        },
+        "red": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        },
+        "rgb": {
+          "curve": {
+            "points": [
+              {
+                "x": 0,
+                "y": 0
+              },
+              {
+                "x": 1,
+                "y": 1
+              }
+            ]
+          },
+          "inputBlack": 0,
+          "inputWhite": 1
+        }
+      },
+      "definition": {
+        "amount": 0,
+        "enabled": false
+      },
+      "filter": {
+        "enabled": false,
+        "intensity": 100,
+        "selection": "original"
+      },
+      "geometry": {
+        "clockwiseQuarterTurns": 0,
+        "crop": {
+          "height": 1,
+          "width": 1,
+          "x": 0,
+          "y": 0
+        },
+        "flipHorizontal": false,
+        "flipVertical": false,
+        "horizontalPerspective": 0,
+        "straightenDegrees": 0,
+        "version": "adjustV3",
+        "verticalPerspective": 0
+      },
+      "legacyBasis": null,
+      "levels": {
+        "blue": {
+          "kind": "identity"
+        },
+        "enabled": false,
+        "green": {
+          "kind": "identity"
+        },
+        "luminance": {
+          "kind": "identity"
+        },
+        "red": {
+          "kind": "identity"
+        },
+        "rgb": {
+          "kind": "identity"
+        }
+      },
+      "light": {
+        "blackPoint": 0,
+        "brightness": 0,
+        "brilliance": 0,
+        "contrast": 0,
+        "enabled": false,
+        "exposure": 0,
+        "highlights": 0,
+        "shadows": 0
+      },
+      "localEdits": {
+        "operations": [],
+        "redEyeEnabled": false,
+        "retouchEnabled": false,
+        "sourceBinding": null
+      },
+      "noiseReduction": {
+        "colorNoise": 0,
+        "detail": 0,
+        "enabled": false,
+        "luminanceNoise": 0,
+        "nonRawAmount": 0,
+        "sourceCapability": "raw"
+      },
+      "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "selectiveColor": {
+        "colors": [
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "red"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "orange"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "yellow"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "green"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "cyan"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "blue"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "purple"
+          },
+          {
+            "hue": 0,
+            "luminance": 0,
+            "range": 1,
+            "sampledColor": null,
+            "saturation": 0,
+            "slot": "magenta"
+          }
+        ],
+        "enabled": false
+      },
+      "sharpen": {
+        "edges": 0.22,
+        "enabled": false,
+        "falloff": 0.69,
+        "intensity": 0
+      },
+      "vignette": {
+        "enabled": false,
+        "radius": 0.5,
+        "softness": 0,
+        "strength": 0
+      },
+      "whiteBalance": {
+        "adjustment": {
+          "mode": "asShot"
+        },
+        "enabled": false
+      }
+    },
+    "engineVersion": "rawmaster-adjust-v3",
+    "schemaVersion": 3
+  },
+  "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "testBundleSHA256": "86cf5cfe507daaa70281df30c2e997bc827d89d80a19e22b00ce54d99ed6b501",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

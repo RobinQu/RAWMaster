@@ -1,0 +1,25 @@
+{
+  "boundary" : "Call with verified RAW capture, oriented input conversion, Core ML prediction, normalized persisted map",
+  "coldMs" : 3303.4653330000001,
+  "exportPixels" : [
+    9504,
+    6336
+  ],
+  "exportSHA256" : "d8096a01a26580f3c28a8922e0797fe47197a08956f5a1e0d61a27fe72f7b025",
+  "mapPixels" : [
+    256,
+    194
+  ],
+  "mapSHA256" : "cc61526d557448b38021d7fc508eaa90d33389d6c3a5f6fadd76db4e16c2f0ca",
+  "model" : "depth-anything-v2-small-f16-cfef6f6",
+  "previewRGBPixelsChanged" : 42356,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "warmMs" : [
+    96.864833000000004,
+    100.934375,
+    88.983834000000002,
+    99.225042000000002,
+    95.779167000000001
+  ]
+}

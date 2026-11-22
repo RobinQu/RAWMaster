@@ -1,0 +1,467 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "adapter": "BrowserWebGpu:  ( )",
+  "adapterInfo": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "rawSize": [
+    9504,
+    6336
+  ],
+  "rawOpenMs": 1115.095,
+  "protocol": "lightflow-vectorscope-trace-readback-v1",
+  "pixels": [
+    256,
+    168
+  ],
+  "sources": [
+    {
+      "pixels": [
+        1024,
+        683
+      ],
+      "saturation": 0,
+      "sourceRenderMs": 14.469999969005585
+    },
+    {
+      "pixels": [
+        1024,
+        683
+      ],
+      "saturation": 70,
+      "sourceRenderMs": 3.634999990463257
+    }
+  ],
+  "samples": 20,
+  "operations": [
+    {
+      "id": "color-vectorscope",
+      "featureIds": [
+        "color-vectorscope"
+      ],
+      "status": "measured",
+      "verification": "Same input produces exactly the same complete colored scope trace, and two RAW grades produce distinct full RGBA8 traces.",
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 202.6449999809265,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 1.4049999713897705,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.1600000262260437,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.25,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.1450000405311584,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.0699999928474426,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.0400000214576721,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 0.7049999833106995,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 0.6200000047683716,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 0.7099999785423279,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.0300000309944153,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.2049999833106995,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 0.6200000047683716,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 0.6599999666213989,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 0.6200000047683716,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 0.8299999833106995,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 0.5700000524520874,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 0.6850000023841858,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 0.5800000429153442,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 1.0699999928474426,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 1.0899999737739563,
+          "digest": "ceea75d39f3ffc2e15506547c3b5a448e8c4b5cb7070f0651ce7dfd0c0137436",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 481,
+          "totalRGBChroma": 33076
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 0.6899999976158142,
+          "digest": "4eecb532051879a99a4c8f7f95d6b3a3163d5b2a905f97850994e412055fb944",
+          "stats": {
+            "cols": 256,
+            "rows": 256,
+            "samples": 699392,
+            "vecZoom": 1,
+            "vecBoost": 0,
+            "cieDiagram": "xy",
+            "width": 1024,
+            "height": 683
+          },
+          "coloredPixels": 1475,
+          "totalRGBChroma": 175530
+        }
+      ]
+    }
+  ],
+  "scopeProbeSHA256": "3ad6568653efaa10868c94f007c47159777e40c4a41712341106ef96306ac20f",
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T09:11:28.969803+00:00",
+  "engineSHA256": {
+    "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "browserBinary": "chrome-headless-shell",
+  "probeSHA256": "0046aba961f809e30dd8efc1dc25e94dbc1e703ee452f035f3fd2f71f1f759d8",
+  "system": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "chip": "Apple M4 Max"
+  },
+  "boundary": "Resident 1024px RAW output to stock scopeAccumulate, scopeResolveImage, scopeSubmit, then a complete CPU-readable 256 × 168 RGBA8 vectorscope trace"
+}

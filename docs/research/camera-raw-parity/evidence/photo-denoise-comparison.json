@@ -1,0 +1,29 @@
+{
+  "cameraJPEGSHA256": "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "model": "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-v2",
+  "warm": {
+    "public.jpeg/new": {
+      "n": 10,
+      "medianMs": 9.323479,
+      "p95Ms": 20.522375
+    },
+    "public.jpeg/replay": {
+      "n": 10,
+      "medianMs": 4.450875,
+      "p95Ms": 5.37275
+    },
+    "public.tiff/new": {
+      "n": 10,
+      "medianMs": 11.693542,
+      "p95Ms": 11.958459
+    },
+    "public.tiff/replay": {
+      "n": 10,
+      "medianMs": 4.2893125,
+      "p95Ms": 4.565583
+    }
+  },
+  "failures": [],
+  "baselineModel": "waifu2x-vgg7-photo-noise2-cc385f97-f32-v1",
+  "legacyReplayedSources": 9
+}

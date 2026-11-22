@@ -6,7 +6,7 @@ import Darwin
 import RAWMasterCore
 
 /// Process-wide preview coordinator. Canonical save/export/provider input services remain independent.
-public actor DevelopmentPreviewService {
+public actor DevelopmentPreviewService: ImageEngineMonitoring {
   public static let shared = DevelopmentPreviewService()
   private struct Lease {
     var key: String
@@ -91,10 +91,11 @@ public actor DevelopmentPreviewService {
   private var schedulingSequence: UInt64 = 0
   private var consecutiveInteractive = 0
   private var latestRecipeFingerprint: [PreviewConsumerID:String] = [:]
-  private struct Cached { let pixels: PreviewPixels; let sourceKey: String; var use: UInt64;var nativeProfileSemantic=false }
+  private struct Cached { let pixels: PreviewPixels; let sourceKey: String; let settledRecipeFingerprint: String?; var use: UInt64;var nativeProfileSemantic=false }
   private let ioQueue = DispatchQueue(label: "RAWMaster.preview.capture", qos: .userInitiated)
   private var policy = PreviewResourcePolicy.default
   private var rawBasePool: PreviewRawBasePool?
+  private let analysisImages = DevelopmentAnalysisImageCache()
   private var rawBaseRetiring: Set<String> = []
   private var rawBaseClearRequested = false
   private var rawBaseStatsVersion: UInt64 = 0
@@ -119,6 +120,7 @@ public actor DevelopmentPreviewService {
   // Keep exact analysis identity through finishAnalysis's flushing tail, after activeAnalysis is cleared.
   private var analysisWorkerIdentity: (token: UUID, request: DevelopmentAnalysisRequest)?
   private var cache: [String: Cached] = [:]
+  private static let replaysExactDisplay = ProcessInfo.processInfo.environment["RAWMASTER_INTERACTIVE_EXACT_REPLAY"] != "0"
   private var tick: UInt64 = 0
   private var stats = PreviewStatistics()
   private var latest: [PreviewConsumerID: (DevelopmentPreviewSessionID, UInt64, UInt64)] = [:]
@@ -268,6 +270,10 @@ public actor DevelopmentPreviewService {
       task = Task {
         try await withCheckedThrowingContinuation { continuation in
           queue.async {
+            let telemetry = ImagePerformanceTelemetry.shared
+            let token = telemetry.begin(operation: "打开原片", stage: "校验与捕获", queue: "原片读取")
+            var outcome = ImagePerformanceOutcome.failed
+            defer { telemetry.end(token, outcome: outcome, byteCount: Int(clamping: snapshot.byteCount)) }
             do {
               let result = try autoreleasepool { () throws -> (PreviewNativeSource, PreviewFileStamp) in
                 let before = try PreviewFileStamp.read(snapshot.sourceLocation)
@@ -286,6 +292,7 @@ public actor DevelopmentPreviewService {
                   return (try PreviewNativeSource(capture: captured, byteCount: snapshot.byteCount, artifact: isArtifact, memoryLimit: memory), after)
                 } catch { try? FileManager.default.removeItem(at: captured.deletingLastPathComponent()); throw error }
               }
+              outcome = .succeeded
               continuation.resume(returning: result)
             } catch { continuation.resume(throwing: error) }
           }
@@ -374,7 +381,7 @@ public actor DevelopmentPreviewService {
     if let wb = native.asShotWhiteBalance {
       guard wb.temperature.isFinite, wb.tint.isFinite else { throw DevelopmentV3Error.unsupportedNativeParameters }
     }
-    var implemented: Set<DevelopmentAdjustmentID> = [.light,.color,.blackAndWhite,.curves,.levels,.whiteBalance,.definition,.selectiveColor,.noiseReduction,.sharpen,.vignette,.retouch,.redEye,.texture,.clarity,.dehaze]
+    var implemented: Set<DevelopmentAdjustmentID> = [.light,.color,.blackAndWhite,.curves,.levels,.whiteBalance,.definition,.selectiveColor,.noiseReduction,.sharpen,.vignette,.retouch,.redEye,.texture,.clarity,.dehaze,.optics]
     var automatic: Set<DevelopmentAdjustmentID> = [.light,.color,.blackAndWhite,.curves,.levels,.whiteBalance,.definition,.noiseReduction,.sharpen,.vignette]
     if let raw = native.noiseReductionFacts.raw, !raw.luminanceNoiseSupported && !raw.colorNoiseSupported && !raw.detailSupported {
       implemented.remove(.noiseReduction); automatic.remove(.noiseReduction)
@@ -392,7 +399,8 @@ public actor DevelopmentPreviewService {
       dehazeContextV1:native.artifact ? nil:try admittedDehazeContext(native,key:lease.key,source:binding,generation:lease.generation),
       supportedPhotoFilters:photoFilters.filters,photoFilterResourceVersion:photoFilters.resourceVersion,
       supportsCropAutomatic:!native.artifact && min(binding.orientedWidth,binding.orientedHeight)>=256 && DevelopmentCropAutoV1.available,
-      supportedGrainSamplingVersions:native.supportedGrainSamplingVersions)
+      supportedGrainSamplingVersions:native.supportedGrainSamplingVersions,lensMetadata:native.lensMetadata,
+      deviceDepthAvailable:!native.artifact && DevelopmentDeviceDepthV1.probe(native.capture), rawDetailsCapability:native.rawDetailsCapability, aiDenoiseCapability:native.aiDenoiseCapability)
   }
   public func makeProgressChannel(sessionID: DevelopmentPreviewSessionID, sourceGeneration: UInt64,
                                   consumerID: PreviewConsumerID) async throws -> PreviewProgressChannel {
@@ -464,6 +472,14 @@ public actor DevelopmentPreviewService {
       (request.quality == .detail ? request.viewport.maxPixel == 0 : request.viewport.maxPixel != 0),
       (request.clientCorrelation?.count ?? 0) <= 4096 else { throw DevelopmentPreviewError.invalidRequest }
     guard let lease = leases[request.sessionID] else { throw DevelopmentPreviewError.closed }
+    if let scene = request.recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth {
+      let hash: String
+      switch lease.source {
+      case .raw(let snapshot): hash = snapshot.contentSHA256
+      case .artifact(_,let artifact): hash = artifact.sha256
+      }
+      guard hash == scene.sourceSHA256 else { throw EditingError.staleSource }
+    }
     guard lease.valid, request.sourceGeneration == lease.generation else { throw DevelopmentPreviewError.sourceInvalidated }
     try checkStamp(request.sessionID)
     if usesInteractiveEvaluation(request) || usesNativeProfile(request),let native=sources[lease.key]?.native {
@@ -759,6 +775,20 @@ public actor DevelopmentPreviewService {
       return try native.render(recipe:request.recipe,maxPixel:request.viewport.maxPixel,rawBasePool:pool,sourceKey:item.key,
         thumbnailNativeSink:thumbnailHook.map{$0.consume},grainFinalTransport:grainTransport,brillianceFinalTransport:brillianceRequest,dehazeTIFFRequest:dehazeRequest)
     }
+    // Look up the full canonical key, including source, viewport, recipe and active filter resources.
+    // Only a settled primary result can supply a revisited value. The reverse lookup never occurs.
+    let settledDisplay: (key:String, pixels:PreviewPixels)?
+    // A settled pure sharpening-mask recipe already contains the native-resolution
+    // grayscale visualization. Reopening it can use the exact fitted display raster.
+    if Self.replaysExactDisplay, let plan = item.interactivePlan, plan.isProxy,
+       (plan.sourceOverlayVersion == nil ||
+        request.recipe.adjustmentsV3.map({ PreviewInteractiveDetailGuide.isPureSharpen($0,maskPreview:true) }) == true),
+       item.nativePointwisePlan == nil, let fingerprint = latestRecipeFingerprint[request.consumerID],
+       cache.values.contains(where: { $0.sourceKey == item.key && $0.settledRecipeFingerprint == fingerprint }),
+       let exactKey = try? pixelKey(request,sourceKey:item.key), let exact = cache[exactKey], exact.settledRecipeFingerprint == fingerprint,
+       !exact.pixels.managedPresentation, exact.pixels.approximation == nil {
+      settledDisplay = (exactKey,exact.pixels)
+    } else { settledDisplay = nil }
     let sharedFITRequested=requestsSharedFIT(item.nativePointwisePlan)
     let neutralPretransportObserver=item.nativePointwisePlan?.neutralOwnerBootstrap == true ? qaNeutralPretransportObserverForTesting:nil
     let renderNative:(PreviewQALifecycleTrace.IPTiming?)throws->PreviewPixels = { qaIPTiming in
@@ -767,11 +797,18 @@ public actor DevelopmentPreviewService {
         return try native.renderNativePointwise(recipe:request.recipe,maxPixel:request.viewport.maxPixel,plan:plan,pool:pool,scope:scope,memoryLimit:memoryLimit,cancellation:item.interactiveCancellation,thumbnailNativeSink:thumbnailHook.map{$0.consume},qaIPTiming:qaIPTiming,qaSharedFITIntermediate:sharedFITRequested,qaNeutralPretransportObserver:neutralPretransportObserver,canonicalRender:canonicalRender)
       }
       if let plan=item.interactivePlan,let scope {
+        if let settledDisplay, let replay = try PreviewSettledDisplayReplay.make(settledDisplay.pixels,key:settledDisplay.key,size:plan.outputLayout,scope:scope,check:{
+          try native.validateCaptureAuthority()
+          try item.interactiveCancellation.check()
+        }) { return replay }
         return try native.renderInteractiveProxy(recipe:request.recipe,maxPixel:request.viewport.maxPixel,plan:plan,pool:proxyPool,scope:scope,rawBasePool:pool,memoryLimit:memoryLimit,cancellation:item.interactiveCancellation)
       }
       return try canonicalRender()
     }
     worker = Task {
+      let telemetry = ImagePerformanceTelemetry.shared
+      let backend = native.hasRAWFilter ? "RAW" : "图像"
+      let token = telemetry.begin(operation: "生成预览", stage: backend + " · " + request.quality.rawValue, queue: Self.queueName(request))
       let result = await Task.detached(priority: .userInitiated) { () -> (Result<PreviewPixels, Error>, RawBaseStatisticsSnapshot?,PreviewQALifecycleTrace.IPPacket?) in
         PreviewQALifecycleTrace.record(.render,.entered,id:item.token,request:request,sourceID:native.captureID)
         defer { PreviewQALifecycleTrace.record(.render,.returned,id:item.token,request:request,sourceID:native.captureID) }
@@ -793,6 +830,7 @@ public actor DevelopmentPreviewService {
         }
         let rendered=Result { try DevelopmentDehazeNativeResources.run { try renderNative(qaIPTiming) } };return (rendered,nil,packet(rendered))
       }.value
+      telemetry.end(token, result: result.0) { Int($0.outputSize.width * $0.outputSize.height) }
       await self.finish(token:item.token,result:result.0,rawStatistics:result.1,thumbnailHook:thumbnailHook,qaIPPacket:result.2)
     }
   }
@@ -825,7 +863,8 @@ public actor DevelopmentPreviewService {
       if pixels.nativePointwise?.canonicalGlobalFiniteProofID==PreviewCanonicalFiniteEvidenceV1.version {
         stats.nativeProfileCanonicalProvenGlobalOutputs &+= 1;stats.nativeProfileLastRoute=7
       }
-      var actualOutputKey=item.outputKey
+      var actualOutputKey=pixels.settledReplayKey ?? item.outputKey
+      if pixels.settledReplayKey != nil { stats.cacheHits &+= 1 }
       if var plan=item.nativePointwisePlan,plan.canonicalNaturalFiniteProofEnabled,
         pixels.nativePointwise?.canonicalGlobalFiniteProofID != PreviewNaturalCurveFiniteEvidenceV1.version {
         plan.canonicalNaturalFiniteProofEnabled=false
@@ -854,7 +893,14 @@ public actor DevelopmentPreviewService {
         actualOutputKey=try pixelKey(item.request,sourceKey:item.key,interactivePlan:item.interactivePlan,
           nativePointwisePlan:plan,canonicalSharedFITOverride:false)
       }
-      if !clearAfterJoin { insert(pixels, key: actualOutputKey, sourceKey: item.key,nativeProfileSemantic:item.nativePointwisePlan?.semanticLegacy==true) }
+      if !clearAfterJoin && pixels.settledReplayKey == nil {
+        let settled = item.request.quality == .settled && item.request.role == .primary
+        insert(pixels,key:actualOutputKey,sourceKey:item.key,settledRecipe:settled ? item.request.recipe:nil,
+               nativeProfileSemantic:item.nativePointwisePlan?.semanticLegacy==true)
+        if settled, !pixels.managedPresentation, pixels.approximation == nil, cache[actualOutputKey]?.settledRecipeFingerprint != nil {
+          retireEarlierSharpenMaskProxy(item.request,sourceKey:item.key)
+        }
+      }
       deliver(item, .success(frame(item.request, key: actualOutputKey, pixels: pixels,sharedFITRequested:requestsSharedFIT(item.nativePointwisePlan))))
       markComparisonOwed(item.request, channelID: item.channelID, deliveryEnabled: item.deliveryEnabled)
       if let proxy=thumbnailHook?.take(){
@@ -885,13 +931,13 @@ public actor DevelopmentPreviewService {
     qaLifecycle(.render,.frame,id:value.frameID,request:request,sourceID:leases[request.sessionID].flatMap { sources[$0.key]?.native.captureID },receipt:pixels.nativePointwise,frameID:value.frameID,sharedFITRequested:sharedFITRequested,bitmapReplay:bitmapReplay,grainFinalTransport:pixels.actualGrainFinalTransport,presentationTicketID:PreviewQAMainPresentationWitness.registeredTicketID(pixels.presentationTicket?.id))
     return value
   }
-  private func insert(_ pixels: PreviewPixels, key: String, sourceKey: String,nativeProfileSemantic:Bool = false) {
+  private func insert(_ pixels: PreviewPixels, key: String, sourceKey: String,settledRecipe:DevelopmentRecipe?,nativeProfileSemantic:Bool = false) {
     guard pixels.bytes <= policy.bitmapCacheBytes else { return }
     if let old = cache.removeValue(forKey: key) { old.pixels.presentationTicket?.markRetired();stats.cachedBitmapBytes -= old.pixels.bytes }
     while stats.cachedBitmapBytes + pixels.bytes > policy.bitmapCacheBytes, let oldest = cache.min(by: { $0.value.use < $1.value.use }) {
       oldest.value.pixels.presentationTicket?.markRetired();stats.cachedBitmapBytes -= oldest.value.pixels.bytes; cache.removeValue(forKey: oldest.key); stats.evictions += 1
     }
-    tick &+= 1; cache[key] = Cached(pixels: pixels, sourceKey: sourceKey, use: tick,nativeProfileSemantic:nativeProfileSemantic); stats.cachedBitmapBytes += pixels.bytes
+    tick &+= 1; cache[key] = Cached(pixels: pixels, sourceKey: sourceKey, settledRecipeFingerprint: settledRecipe.flatMap { try? EditingFingerprint.of($0) }, use: tick,nativeProfileSemantic:nativeProfileSemantic); stats.cachedBitmapBytes += pixels.bytes
   }
   public func invalidate(_ id: DevelopmentPreviewSessionID) async {
     let thumbnailRunning=(thumbnailStepRegistration != nil && thumbnailActive?.request.preview.sessionID==id) ? worker:nil
@@ -1003,6 +1049,26 @@ public actor DevelopmentPreviewService {
       PreviewQALifecycleTrace.flush()
     }
   }
+  private static func queueName(_ request: DevelopmentPreviewRequest) -> String {
+    if request.role == .comparison { return "比较预览" }
+    switch request.quality {
+    case .interactive: return "交互预览"
+    case .settled: return "稳定预览"
+    case .detail: return "原尺寸预览"
+    }
+  }
+
+  public func performanceSnapshot() -> ImagePerformanceSnapshot {
+    var waiting = ["交互预览": 0, "稳定预览": 0, "原尺寸预览": 0, "比较预览": 0,
+      "分析": userAnalysis == nil ? 0 : 1, "直方图": backgroundHistogram == nil ? 0 : 1,
+      "缩略图": (thumbnailPending == nil ? 0 : 1) + (thumbnailActive != nil && thumbnailStepRegistration == nil ? 1 : 0),
+      "导出": 0, "画布": 0, "显影引擎": 0, "Shader 预热": 0, "Metal GPU": 0, "FlashRaw 解码": 0]
+    for item in pending { waiting[Self.queueName(item.request), default: 0] += 1 }
+    return ImagePerformanceTelemetry.shared.snapshot(pending: waiting, outstanding: ["原片读取": opening.count])
+  }
+
+  public func clearPerformanceSamples() { ImagePerformanceTelemetry.shared.reset() }
+
   public func statistics() -> PreviewStatistics { var value = stats; value.pendingRequests = pending.count; return value }
   private func cleanupSource(_ key: String) {
     guard captureRetirements[key] == nil, let record = sources[key], record.leases.isEmpty, active?.key != key, activeAnalysis?.key != key, thumbnailActive?.key != key, opening[key] == nil, openingWaiters[key, default: 0] == 0 else { return }
@@ -1011,6 +1077,7 @@ public actor DevelopmentPreviewService {
     rawBaseRetiring.insert(key)
     if thumbnailProxy?.key==key{thumbnailProxy?.value.surface.retire();thumbnailProxy=nil;thumbnailProxyScope=nil}
     record.native.context.clearCaches(); try? FileManager.default.removeItem(at: record.native.capture.deletingLastPathComponent())
+    analysisImages.clear(capture: record.native.capture)
     stats.sourceSnapshotDiskBytes -= record.native.byteCount; sources.removeValue(forKey: key)
   }
   private func checkStamp(_ id: DevelopmentPreviewSessionID) throws {
@@ -1061,6 +1128,7 @@ public actor DevelopmentPreviewService {
     guard captureRetirements[key]?.captureID == captureID else { return }
     if let openingID, openingIDs[key] == openingID { removeOpening(key) }
     if let record = sources[key], record.native.captureID == captureID {
+      analysisImages.clear(capture: record.native.capture)
       record.native.context.clearCaches()
       try? FileManager.default.removeItem(at:record.native.capture.deletingLastPathComponent())
       stats.sourceSnapshotDiskBytes -= record.native.byteCount
@@ -1115,6 +1183,7 @@ public actor DevelopmentPreviewService {
   func handleMemoryPressure(critical: Bool = false, normal: Bool = false) {
     criticalPressure = critical
     if normal { return }
+    FlashRawCanonicalTexturePool.shared.retire()
     cancelThumbnailMatching({_ in true},error:DevelopmentThumbnailError.budgetUnavailable)
     if policy.interactiveEvaluation != .canonical {
       cancelMatching({$0.interactivePlan != nil || $0.nativePointwisePlan != nil},error:.memoryBudgetExceeded)
@@ -1127,6 +1196,7 @@ public actor DevelopmentPreviewService {
     }
   }
   private func clearCaches() {
+    analysisImages.clear()
     interactiveProxyPool.retire()
     thumbnailProxy?.value.surface.retire();thumbnailProxy=nil;thumbnailProxyScope=nil
     rawBaseClearRequested = true
@@ -1294,6 +1364,23 @@ public actor DevelopmentPreviewService {
     do { try scope.requireOpenAdmission();try ticket.requireOpenAdmission();return true }
     catch { return false }
   }
+  /// A subsequent request for this exact overlay must not return its older approximate
+  /// bitmap ahead of the native mask that was just accepted at the same display size.
+  private func retireEarlierSharpenMaskProxy(_ request:DevelopmentPreviewRequest,sourceKey:String) {
+    guard Self.replaysExactDisplay, policy.interactiveEvaluation == .proxyV1,
+          let p=request.recipe.adjustmentsV3, PreviewInteractiveDetailGuide.isPureSharpen(p,maskPreview:true) else { return }
+    let earlier = DevelopmentPreviewRequest(sessionID:request.sessionID,sourceGeneration:request.sourceGeneration,
+      consumerID:request.consumerID,role:request.role,revision:request.revision,recipe:request.recipe,
+      quality:.interactive,viewport:request.viewport)
+    guard let plan=try? prepareInteractivePlan(earlier,sourceKey:sourceKey), plan.isProxy,
+          let key=try? pixelKey(earlier,sourceKey:sourceKey,interactivePlan:plan),
+          let old=cache[key], old.pixels.approximation != nil else { return }
+    old.pixels.presentationTicket?.markRetired()
+    cache.removeValue(forKey:key)
+    stats.cachedBitmapBytes -= old.pixels.bytes
+    stats.evictions &+= 1
+  }
+
   private func canReplayInteractive(_ plan:PreviewInteractivePlan?,nativePointwisePlan:PreviewNativePointwisePlanV1?=nil,pixels:PreviewPixels)->Bool {
     // Canonical grain also owns managed storage, independently of experimental plans.
     if pixels.actualGrainFinalTransport != nil && !nativeProfileCacheTicketOpen(pixels) { return false }
@@ -1448,6 +1535,7 @@ public actor DevelopmentPreviewService {
   }
   public func analysisStatistics() -> DevelopmentAnalysisStatistics {
     var value = analysisStats; value.pendingUser = userAnalysis == nil ? 0:1
+    analysisImages.fillStatistics(&value)
     value.pendingHistogram = backgroundHistogram == nil ? 0:1; value.active = activeAnalysis == nil ? 0:1; return value
   }
   public func cancelAnalysis(consumerID: PreviewConsumerID) {
@@ -1494,25 +1582,29 @@ public actor DevelopmentPreviewService {
     stats.activeNativeRenders = 1; stats.maximumObservedNativeRenders = max(1,stats.maximumObservedNativeRenders)
     analysisStats.maximumActive = max(1,analysisStats.maximumActive)
     analysisWorkerIdentity = (item.token,item.request)
-    let pool = rawBasePool, override = analysisOverride, residentObserver = qaBWSummaryObserverForTesting
+    let pool = rawBasePool, override = analysisOverride, residentObserver = qaBWSummaryObserverForTesting, images = analysisImages
     let qaKind:PreviewQALifecycleTrace.Kind = item.request.operation.isHistogram ? .histogram:.userAnalysis
     qaLifecycle(qaKind,.admitted,id:item.token,request:item.request.preview,sourceID:native.captureID)
     let binding = DevelopmentLocalEditSourceBinding(sourceContentID:item.sourceContentID,exifOrientation:native.originalEXIFOrientation,
       orientedWidth:Int(native.nativeSize.width),orientedHeight:Int(native.nativeSize.height))
     worker = Task {
+      let telemetry = ImagePerformanceTelemetry.shared
+      let queue = item.request.operation.isHistogram ? "直方图" : "分析"
+      let token = telemetry.begin(operation: queue, stage: "读取与归约", queue: queue)
       let result = await Task.detached(priority:.userInitiated) { () -> (Result<DevelopmentAnalysisResult,Error>,RawBaseStatisticsSnapshot?) in
         PreviewQALifecycleTrace.record(qaKind,.entered,id:item.token,request:item.request.preview,sourceID:native.captureID)
         defer { PreviewQALifecycleTrace.record(qaKind,.returned,id:item.token,request:item.request.preview,sourceID:native.captureID) }
         func operation() -> Result<DevelopmentAnalysisResult,Error> {
           Result { try DevelopmentDehazeNativeResources.run {
             try native.validateCaptureAuthority()
-            let result = try override?(item.request,binding) ?? native.analyze(item.request,sourceContentID:item.sourceContentID,cancellation:item.cancellation,rawBasePool:pool,sourceKey:item.key,residentObserver:residentObserver)
+            let result = try override?(item.request,binding) ?? native.analyze(item.request,sourceContentID:item.sourceContentID,cancellation:item.cancellation,rawBasePool:pool,sourceKey:item.key,residentObserver:residentObserver,analysisImages:images)
             try native.validateCaptureAuthority(); return result
           } }
         }
         if let pool { return pool.withWorker { (operation(),pool.statistics) } }
         return (operation(),nil)
       }.value
+      telemetry.end(token, result: result.0)
       await self.finishAnalysis(token:item.token,result:result.0,rawStatistics:result.1)
     }
   }
@@ -1610,7 +1702,7 @@ public actor DevelopmentPreviewService {
   }
   public func thumbnails(_ request:DevelopmentThumbnailRequest,progress:@escaping @Sendable(DevelopmentThumbnailProgress)->Void)async throws->DevelopmentThumbnailReadyLease {
     try Task.checkCancellation();let lease=try validateThumbnailInput(request)
-    guard thumbnailIsSettled(request) || matchingSettledFlight(request) else{throw DevelopmentThumbnailError.awaitingSource}
+    guard request.kind == .filters || thumbnailIsSettled(request) || matchingSettledFlight(request) else{throw DevelopmentThumbnailError.awaitingSource}
     guard thumbnailActive?.request.registration != request.registration,thumbnailPending?.request.registration != request.registration,
       !thumbnailSets.values.contains(where:{$0.request.registration==request.registration}) else{throw DevelopmentThumbnailError.invalidRequest}
     guard let native=sources[lease.key]?.native else{throw DevelopmentThumbnailError.staleSource}
@@ -1655,14 +1747,14 @@ public actor DevelopmentPreviewService {
   public func adoptThumbnailSet(_ ready:DevelopmentThumbnailReadyLease,registration:DevelopmentThumbnailRegistration)throws->DevelopmentThumbnailDisplayLease {
     guard let entry=thumbnailSets[ready.setID],entry.owner.token==ready.ownershipToken,
       entry.request.registration==registration,ready.descriptor.registration==registration else{throw DevelopmentThumbnailError.invalidLease}
-    _=try validateThumbnailInput(entry.request);guard thumbnailIsSettled(entry.request)else{throw DevelopmentThumbnailError.superseded}
+    _=try validateThumbnailInput(entry.request);guard entry.request.kind == .filters || thumbnailIsSettled(entry.request)else{throw DevelopmentThumbnailError.superseded}
     return try entry.owner.adopt()
   }
   public func adoptThumbnailPresentation(_ ready:DevelopmentThumbnailReadyLease,registration:DevelopmentThumbnailRegistration)throws->DevelopmentThumbnailPresentationLease {
     guard let entry=thumbnailSets[ready.setID],entry.owner.token==ready.ownershipToken,
       entry.request.registration==registration,ready.descriptor.registration==registration,
       entry.request.presentationMode == .managedImage else{throw DevelopmentThumbnailError.invalidLease}
-    _=try validateThumbnailInput(entry.request);guard thumbnailIsSettled(entry.request)else{throw DevelopmentThumbnailError.superseded}
+    _=try validateThumbnailInput(entry.request);guard entry.request.kind == .filters || thumbnailIsSettled(entry.request)else{throw DevelopmentThumbnailError.superseded}
     return try entry.owner.adoptPresentation()
   }
   public func releaseThumbnailSet(_ ready:DevelopmentThumbnailReadyLease,registration:DevelopmentThumbnailRegistration)async {
@@ -1752,7 +1844,7 @@ public actor DevelopmentPreviewService {
       batch.retireTiles();thumbnailActive=nil;thumbnailStats.cancelled+=1
       retireThumbnailProxyIfIdle();return false
     }
-    guard thumbnailIsSettled(batch.request)else{return false}
+    guard batch.request.kind == .filters || thumbnailIsSettled(batch.request)else{return false}
     do{_=try validateThumbnailInput(batch.request)}catch{batch.revoke(error);batch.retireTiles();thumbnailActive=nil;pump();return true}
     guard let native=sources[batch.key]?.native else{batch.revoke(DevelopmentThumbnailError.staleSource);thumbnailActive=nil;return false}
     let inputRecipe:DevelopmentRecipe,key:String
@@ -1774,6 +1866,8 @@ public actor DevelopmentPreviewService {
     let qaKind:PreviewQALifecycleTrace.Kind = batch.request.kind == .filters ? .filterThumbnail:.summaryThumbnail
     qaLifecycle(qaKind,.admitted,id:qaStep,request:batch.request.preview,sourceID:native.captureID,thumbnailStep:step)
     worker=Task{
+      let telemetry = ImagePerformanceTelemetry.shared
+      let token = telemetry.begin(operation: "缩略图", stage: step.rawValue, queue: "缩略图")
       let result=await Task.detached(priority:.utility){()->Result<ThumbnailStepResult,Error> in
         PreviewQALifecycleTrace.record(qaKind,.entered,id:qaStep,request:batch.request.preview,sourceID:native.captureID,thumbnailStep:step)
         defer { PreviewQALifecycleTrace.record(qaKind,.returned,id:qaStep,request:batch.request.preview,sourceID:native.captureID,thumbnailStep:step) }
@@ -1785,17 +1879,14 @@ public actor DevelopmentPreviewService {
         if let proxy {
           guard proxy.surface.deviceRegistryID==device.registryID else{throw DevelopmentThumbnailError.unavailableDevice}
           if scalars != nil || batch.request.kind == .filters {
-            let value=try DevelopmentThumbnailEngine.tile(batch.request,index:index,scalars:scalars,proxy:proxy,ledger:ledger,device:device,contextOwner:contextOwner)
             if batch.request.presentationMode == .managedImage {
-              // Tile's task and all CI views have joined/drained in the engine. The same
-              // worker now reserves ONE CPU copy before allowing any Ready/image access.
-              defer{value.0.retire()}
-              guard batch.gate.isOpen else{throw DevelopmentThumbnailError.cancelled}
-              let kind:ThumbnailLedger.Kind = batch.request.kind == .filters ? .filters:.summary
-              let backing=try ThumbnailImageBacking(copying:value.0,tile:value.1,ledger:ledger,kind:kind)
-              guard batch.gate.isOpen else{backing.detach();throw DevelopmentThumbnailError.cancelled}
-              result = .managedTile(backing,backing.tileDescriptor(from:value.1),value.2)
-            }else{result = .tile(value.0,value.1,value.2)}
+              let value=try DevelopmentThumbnailEngine.managedTile(batch.request,index:index,scalars:scalars,proxy:proxy,ledger:ledger,device:device,contextOwner:contextOwner)
+              guard batch.gate.isOpen else{value.0.detach();throw DevelopmentThumbnailError.cancelled}
+              result = .managedTile(value.0,value.1,value.2)
+            }else{
+              let value=try DevelopmentThumbnailEngine.tile(batch.request,index:index,scalars:scalars,proxy:proxy,ledger:ledger,device:device,contextOwner:contextOwner)
+              result = .tile(value.0,value.1,value.2)
+            }
           }
           else{result = .scalars(try DevelopmentThumbnailEngine.prepareScalars(batch.request,proxy:proxy,ledger:ledger,device:device,contextOwner:contextOwner))}
         }else{
@@ -1803,6 +1894,7 @@ public actor DevelopmentPreviewService {
         }
         try native.validateCaptureAuthority();return result
       }}}.value
+      telemetry.end(token, result: result)
       await self.finishThumbnailStep(batch:batch,result:result,started:started,qaStep:qaStep,step:step)
     }
     return true

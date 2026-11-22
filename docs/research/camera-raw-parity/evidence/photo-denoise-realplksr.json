@@ -1,0 +1,174 @@
+{
+  "model": "Philip Hofmann 1xDeNoise_realplksr_otf",
+  "license": "CC BY 4.0",
+  "upstreamRevision": "829b63fdbf8b1271595893bdaee6818bdada46bb",
+  "weightsSHA256": "0a3e22bdcb70dd790fce66f45df8d07e774e269b17c92a2835162b150d4a365c",
+  "referenceONNXSHA256": "fa7a85412634b30e078299aafc9a9d4074358f1a5abcd8f17a8355715a258c51",
+  "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "cameraEmbeddedJPEGSHA256": "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "jpegSize": [
+    1616,
+    1080
+  ],
+  "cleanNativeCrop": [
+    744,
+    476,
+    128,
+    128
+  ],
+  "color": "SDR normalized display RGB, 1x",
+  "computeUnits": "CPU only",
+  "software": {
+    "coremltools": "9.0",
+    "onnxruntime": "1.23.2"
+  },
+  "noiseStdDev": 0.04,
+  "rngSeed": 1551,
+  "inputVsClean": {
+    "meanAbsolute": 0.03162233904004097,
+    "p95": 0.07701546177268027,
+    "maximum": 0.1764705777168274,
+    "meanSquared": 0.0015686767874285579
+  },
+  "officialModelVsClean": {
+    "meanAbsolute": 0.029264584183692932,
+    "p95": 0.06857067048549649,
+    "maximum": 0.22397086024284363,
+    "meanSquared": 0.001317522837780416
+  },
+  "convertedModelVsClean": {
+    "meanAbsolute": 0.029266608878970146,
+    "p95": 0.06855660676956177,
+    "maximum": 0.22333362698554993,
+    "meanSquared": 0.0013178540393710136
+  },
+  "conversionVsOfficial": {
+    "meanAbsolute": 0.00034993639565072954,
+    "p95": 0.0008908368647098537,
+    "maximum": 0.004237711429595947,
+    "meanSquared": 2.031225250220814e-07
+  },
+  "meanOutputMinusClean": [
+    -0.01979229785501957,
+    -0.024452943354845047,
+    -0.014707968570291996
+  ],
+  "cpuSingleWarmupInclusiveMs": {
+    "authorONNX": 2305.921583028976,
+    "convertedCoreML": 143.9386249985546
+  },
+  "uniformSwatches": [
+    {
+      "input": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "center": [
+        0.01093292236328125,
+        0.0077972412109375,
+        0.007137298583984375
+      ],
+      "meanInterior": [
+        0.011032350361347198,
+        0.007760997861623764,
+        0.007058609742671251
+      ]
+    },
+    {
+      "input": [
+        0.18,
+        0.18,
+        0.18
+      ],
+      "center": [
+        0.1864013671875,
+        0.1864013671875,
+        0.1878662109375
+      ],
+      "meanInterior": [
+        0.18637385964393616,
+        0.18647505342960358,
+        0.18785624206066132
+      ]
+    },
+    {
+      "input": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "center": [
+        0.501953125,
+        0.5009765625,
+        0.4990234375
+      ],
+      "meanInterior": [
+        0.5017046332359314,
+        0.5009027123451233,
+        0.4989457428455353
+      ]
+    },
+    {
+      "input": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "center": [
+        0.98291015625,
+        0.97607421875,
+        0.97802734375
+      ],
+      "meanInterior": [
+        0.983258843421936,
+        0.9760334491729736,
+        0.9783958196640015
+      ]
+    },
+    {
+      "input": [
+        0.85,
+        0.2,
+        0.1
+      ],
+      "center": [
+        0.83740234375,
+        0.1981201171875,
+        0.0966796875
+      ],
+      "meanInterior": [
+        0.8373461961746216,
+        0.19827495515346527,
+        0.09670009464025497
+      ]
+    }
+  ],
+  "seamReferenceCrop": [
+    712,
+    444,
+    192,
+    192
+  ],
+  "tileStrategy": "128px, sine-squared normalized weighted overlap, no resizing",
+  "tileVsMonolithic192": [
+    {
+      "overlap": 32,
+      "interior": {
+        "meanAbsolute": 0.007277189753949642,
+        "p95": 0.0166015625,
+        "maximum": 0.06640625,
+        "meanSquared": 8.714061550563201e-05
+      }
+    },
+    {
+      "overlap": 64,
+      "interior": {
+        "meanAbsolute": 0.007275700569152832,
+        "p95": 0.01695355474948887,
+        "maximum": 0.07677876949310303,
+        "meanSquared": 8.93304604687728e-05
+      }
+    }
+  ]
+}

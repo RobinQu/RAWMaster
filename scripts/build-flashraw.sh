@@ -34,7 +34,7 @@ fi
 export PATH="${cargo_command:h}:$PATH"
 
 export CARGO_HOME="${CARGO_HOME:-$tools/cargo-home}"
-"$cargo_command" build --manifest-path "$source_dir/Cargo.toml" --release -p flashraw-capi --features gpu,jpegxl --target-dir "$target_dir"
+"$cargo_command" build --locked --manifest-path "$source_dir/Cargo.toml" --release -p flashraw-capi --features gpu,jpegxl --target-dir "$target_dir"
 library="$target_dir/release/libflashraw_capi.dylib"
 if [[ ! -f "$library" ]]; then
   print -u2 "Missing built FlashRaw library: $library"

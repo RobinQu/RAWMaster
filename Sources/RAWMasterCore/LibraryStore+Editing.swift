@@ -1,5 +1,12 @@
 import Foundation
 
+private struct LiveDevelopmentStateCommand: Codable {
+  let workID: String
+  let parentVersionID: String
+  let expectedRevision: Int
+  let recipe: DevelopmentRecipe
+}
+
 extension LibraryStore {
   func createEditingSchema() throws {
     try exec("""
@@ -74,13 +81,22 @@ extension LibraryStore {
   func saveCommand<T: Encodable>(id: String, fingerprint: String, action: String, result: T) throws {
     try statement("INSERT INTO editing_commands VALUES(?,?,?,?)", [id, fingerprint, action, try json(result)])
   }
-  public func createPhotoWork(source: EditingSourceSnapshot, commandID: String = UUID().uuidString) throws -> PhotoWork {
+  public func createPhotoWork(source: EditingSourceSnapshot, rawDecoder: DevelopmentRAWDecoder? = nil, commandID: String = UUID().uuidString) throws -> PhotoWork {
     try transaction {
-      let fingerprint = try EditingFingerprint.of(source)
+      struct InitialSource: Encodable { let source: EditingSourceSnapshot; let decoder: DevelopmentRAWDecoder }
+      let fingerprint = try rawDecoder.map { try EditingFingerprint.of(InitialSource(source: source, decoder: $0)) }
+        ?? EditingFingerprint.of(source)
       if let existing = try commandResult(id: commandID, fingerprint: fingerprint, action: "createWork", type: PhotoWork.self) { return existing }
       try validateEditingSource(source)
       let work = PhotoWork(source: source)
-      let original = EditingVersion(id: work.originalVersionID, workID: work.id, parentVersionID: nil, kind: .original, source: source, createdAt: work.createdAt)
+      var recipe = DevelopmentRecipe()
+      if let rawDecoder {
+        var adjustments = DevelopmentAdjustmentsV3()
+        adjustments.rawDecoder = rawDecoder
+        recipe = DevelopmentRecipe(adjustmentsV3: adjustments)
+      }
+      let original = EditingVersion(id: work.originalVersionID, workID: work.id, parentVersionID: nil,
+                                   kind: .original, source: source, recipe: recipe, createdAt: work.createdAt)
       try statement("INSERT INTO editing_works VALUES(?,?,?,?)", [work.id, source.projectID, source.assetID, try json(work)])
       try insertVersion(original)
       try saveCommand(id: commandID, fingerprint: fingerprint, action: "createWork", result: work)
@@ -99,6 +115,27 @@ extension LibraryStore {
     try locked {
       guard let row = try rows("SELECT data FROM editing_works WHERE id=?", [id]).first else { throw EditingError.missingWork }
       return try decode(row[0], PhotoWork.self)
+    }
+  }
+  /// Persist the current non-destructive edit without rendering or creating an immutable candidate.
+  /// The optimistic revision prevents an older asynchronous gesture from overwriting a newer one.
+  public func saveLiveDevelopmentState(workID: String, recipe: DevelopmentRecipe, parentVersionID: String,
+                                       expectedRevision: Int, commandID: String = UUID().uuidString) throws -> PhotoWork {
+    try transaction {
+      let fingerprint = try EditingFingerprint.of(LiveDevelopmentStateCommand(workID: workID,
+        parentVersionID: parentVersionID, expectedRevision: expectedRevision, recipe: recipe))
+      if let existing = try commandResult(id: commandID, fingerprint: fingerprint,
+          action: "saveLiveDevelopment", type: PhotoWork.self) { return existing }
+      var work = try photoWork(id: workID)
+      let parent = try editingVersion(id: parentVersionID)
+      guard parent.workID == workID, parent.source.hasSameIdentity(as: work.source),
+            (work.liveRevision ?? 0) == expectedRevision else { throw EditingError.staleAdoption }
+      try recipe.validate(); try validateAdmission(work.source)
+      work.liveRecipe = recipe; work.liveParentVersionID = parentVersionID
+      work.liveRevision = expectedRevision + 1
+      try statement("UPDATE editing_works SET data=? WHERE id=?", [try json(work), work.id])
+      try saveCommand(id: commandID, fingerprint: fingerprint, action: "saveLiveDevelopment", result: work)
+      return work
     }
   }
   public func loadEditingVersions(workID: String) throws -> [EditingVersion] {

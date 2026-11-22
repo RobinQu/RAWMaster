@@ -1,0 +1,38 @@
+{
+  "application": "Adobe Camera Raw 19.0",
+  "source": "acr-benchmark.ARW",
+  "sourcePixelSize": "9504x6336",
+  "display": "Fit (24.6%)",
+  "method": "One AXValue edit per operation; ScreenCaptureKit at 60 Hz; mean RGB change over the photo canvas only",
+  "clock": "CMSampleBuffer presentation timestamp aligned to Date wall clock at capture start",
+  "measurements": [
+    {
+      "operation": "Exposure 0.35 to 0.55",
+      "actionWallClockMilliseconds": 1795138968849,
+      "firstCanvasChangeMilliseconds": 113.8707913341932,
+      "principalCanvasChangeMilliseconds": 149.90004134597257,
+      "frames": "exposure-055-frames.jsonl"
+    },
+    {
+      "operation": "Clarity 0 to 25",
+      "actionWallClockMilliseconds": 1795139122469,
+      "firstCanvasChangeMilliseconds": 228.9384583127685,
+      "principalCanvasChangeMilliseconds": 228.9384583127685,
+      "frames": "clarity-25-frames.jsonl"
+    },
+    {
+      "operation": "Dehaze 0 to 25",
+      "actionWallClockMilliseconds": 1795139193416,
+      "firstCanvasChangeMilliseconds": 153.74595794128254,
+      "principalCanvasChangeMilliseconds": 153.74595794128254,
+      "frames": "dehaze-25-valid-frames.jsonl"
+    }
+  ],
+  "limitations": [
+    "Single sample per operation, not a statistically qualified median",
+    "AXValue editing is not a physical slider drag",
+    "Mean canvas change does not prove every final tile has settled",
+    "Texture 25 produced no detectable canvas mean change and is excluded",
+    "These timings cannot be compared directly with RAWMaster API-return timings"
+  ]
+}

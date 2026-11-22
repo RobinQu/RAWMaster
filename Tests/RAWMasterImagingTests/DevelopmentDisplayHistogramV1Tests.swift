@@ -61,6 +61,58 @@ final class DevelopmentDisplayHistogramV1Tests:XCTestCase {
     return .init(preview:.init(sessionID:session,sourceGeneration:generation,consumerID:consumer,role:.primary,revision:revision,recipe:r,quality:.settled,viewport:.init(maxPixel:2400)),expectedRecipeFingerprint:try EditingFingerprint.of(r),stage:.workingImageBeforeGeometry,operation:operation)
   }
   private func binding(_ source:EditingSourceSnapshot)->DevelopmentLocalEditSourceBinding {.init(sourceContentID:source.contentSHA256,exifOrientation:1,orientedWidth:37,orientedHeight:53)}
+  func testSelectedMasksUseLayerInputAndFinalColorsAndPartitionTheScopedCache() throws {
+    let size = CGRect(x: 0, y: 0, width: 16, height: 8), left = CGRect(x: 0, y: 0, width: 8, height: 8)
+    func split(_ leftColor: CIColor, _ rightColor: CIColor) -> CIImage {
+      CIImage(color: leftColor).cropped(to: left).composited(over: CIImage(color: rightColor).cropped(to: size))
+    }
+    let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".tiff")
+    defer { try? FileManager.default.removeItem(at: url) }
+    let ci = context(), space = DevelopmentColorEngineV3.linearSRGB
+    try ci.writeTIFFRepresentation(of: split(.red, .green), to: url, format: .RGBA16, colorSpace: space, options: [:])
+    let hash = SHA256.hash(data: try Data(contentsOf: url)).map { String(format: "%02x", $0) }.joined()
+    let source = DevelopmentLocalEditSourceBinding(sourceContentID: hash, exifOrientation: 1, orientedWidth: 16, orientedHeight: 8)
+    let subjectPNG = try XCTUnwrap(ci.pngRepresentation(of: split(.white, .black), format: .RGBA8, colorSpace: space))
+    let range = DevelopmentMaskLayerV3(name: "red before its exposure edit", kind: .range, feather: 0,
+      rangeLower: 0.18, rangeUpper: 0.24, adjustments: .init(exposure: -1))
+    let right = DevelopmentMaskLayerV3(name: "right", kind: .linear,
+      start: .init(x: 0.5, y: 0.5), end: .init(x: 0.9, y: 0.5), feather: 0)
+    let radial = DevelopmentMaskLayerV3(name: "green center", kind: .radial,
+      center: .init(x: 0.75, y: 0.5), radiusX: 0.17, radiusY: 0.3, feather: 0)
+    let subject = DevelopmentMaskLayerV3(name: "left", kind: .subject, subjectPNG: subjectPNG)
+    let inverted = DevelopmentMaskLayerV3(name: "outside subject", kind: .subject, inverted: true, subjectPNG: subjectPNG)
+    let direct = DevelopmentMaskEngineV3.ScopeSelection(range)
+    try direct.capture(split(.red, .green))
+    let directMask = try XCTUnwrap(direct.coverage)
+    let alpha = try DevelopmentDisplayHistogramEngineV1.renderProxy(directMask, roi: .init(), context: ci)
+    XCTAssertEqual(stride(from: 3, to: alpha.rgba.count, by: 4).filter { alpha.rgba[$0] > 0 }.count, 64,
+                   "The range kernel should select the red half before local exposure")
+    let recipe = DevelopmentRecipe(adjustmentsV3: .init(masks: [range, right, radial, subject, inverted]))
+    var cache: DevelopmentDisplayHistogramEngineV1.CacheEntry?
+    func read(_ id: UUID?) throws -> DevelopmentDisplayHistogramV1 {
+      let r = try request(id.map(DevelopmentAnalysisOperation.displayMaskHistogram) ?? .displayHistogram, recipe: recipe)
+      let result = try DevelopmentDisplayHistogramEngineV1.run(capture: url, request: r, sourceBinding: source,
+        memoryHint: 512, cache: &cache, sourceAuthority: {})
+      guard case let .displayHistogram(histogram) = result.value else { throw DevelopmentPreviewError.invalidRequest }
+      XCTAssertTrue(try r.matchesSamplingVersion(result.samplingVersion))
+      return histogram
+    }
+    XCTAssertEqual(try read(nil).visibleSamples, 128)
+    let red = try read(range.id), first = cache?.key
+    XCTAssertEqual(red.visibleSamples, 64)
+    XCTAssertEqual(red.green[0], 64)
+    XCTAssertEqual(red.red[255], 0, "Selected original red pixels must be measured after the exposure edit")
+    let green = try read(right.id)
+    XCTAssertNotEqual(first, cache?.key)
+    XCTAssertEqual(green.visibleSamples, 64)
+    XCTAssertEqual(green.red[0], 64)
+    let center = try read(radial.id)
+    XCTAssertGreaterThan(center.visibleSamples, 0); XCTAssertLessThan(center.visibleSamples, 64)
+    XCTAssertEqual(center.red[0], UInt64(center.visibleSamples))
+    XCTAssertEqual(try read(subject.id), red)
+    XCTAssertEqual(try read(inverted.id), green)
+    XCTAssertThrowsError(try read(UUID()))
+  }
   func testDisplayHasVersionedSeparateCacheAndCannotEnterExactEngine()throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let display=try request(.displayHistogram),b=binding(source)
@@ -68,7 +120,7 @@ final class DevelopmentDisplayHistogramV1Tests:XCTestCase {
     XCTAssertThrowsError(try DevelopmentAnalysisEngine.run(capture:source.sourceLocation,request:display,sourceBinding:b,memoryHint:512,cache:&exactCache))
     XCTAssertNil(exactCache)
     let first=try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:display,sourceBinding:b,memoryHint:512,cache:&cache,sourceAuthority:{})
-    XCTAssertEqual(first.samplingVersion,"display-tile16-v1");guard case .displayHistogram=first.value else{return XCTFail("Display-only DTO required")}
+    XCTAssertEqual(first.samplingVersion,DevelopmentDisplayHistogramV1.samplingVersion);guard case .displayHistogram=first.value else{return XCTFail("Display-only DTO required")}
     let saved=try XCTUnwrap(cache)
     let second=try DevelopmentDisplayHistogramEngineV1.run(capture:source.sourceLocation,request:display,sourceBinding:b,memoryHint:512,cache:&cache,sourceAuthority:{})
     XCTAssertEqual(first,second);XCTAssertEqual(cache,saved);XCTAssertNil(exactCache)

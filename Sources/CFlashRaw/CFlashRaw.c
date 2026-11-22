@@ -13,6 +13,10 @@ struct rm_flashraw_context {
     uint32_t (*abi_version)(void);
     const char *(*version)(void);
     void (*file_free)(flashraw_file *);
+    uint32_t (*file_width)(const flashraw_file *);
+    int32_t (*file_sensor_layout)(const flashraw_file *);
+    uint32_t (*file_height)(const flashraw_file *);
+    uint32_t (*file_orientation)(const flashraw_file *);
     flashraw_status (*decode_options_init)(flashraw_decode_options *);
     flashraw_status (*decode)(const flashraw_file *, const flashraw_decode_options *, flashraw_frame **);
     const char *(*last_error)(void);
@@ -28,6 +32,9 @@ struct rm_flashraw_context {
     const void *(*frame_data)(const flashraw_frame *);
     size_t (*frame_data_len)(const flashraw_frame *);
     flashraw_status (*frame_origin)(const flashraw_frame *, uint32_t *, uint32_t *);
+    flashraw_status (*frame_stats)(const flashraw_frame *, flashraw_decode_stats *);
+    const char *(*frame_backend)(const flashraw_frame *);
+    const char *(*frame_postprocess_backend)(const flashraw_frame *);
 };
 
 struct rm_flashraw_frame {
@@ -77,6 +84,10 @@ rm_flashraw_context *rm_flashraw_open(const char *path, const char *library_path
     LOAD(abi_version, "flashraw_abi_version");
     LOAD(version, "flashraw_version");
     LOAD(file_free, "flashraw_file_free");
+    LOAD(file_sensor_layout, "flashraw_file_sensor_layout");
+    LOAD(file_width, "flashraw_file_width");
+    LOAD(file_height, "flashraw_file_height");
+    LOAD(file_orientation, "flashraw_file_orientation");
     LOAD(decode_options_init, "flashraw_decode_options_init");
     LOAD(decode, "flashraw_decode");
     LOAD(last_error, "flashraw_last_error_message");
@@ -92,6 +103,9 @@ rm_flashraw_context *rm_flashraw_open(const char *path, const char *library_path
     LOAD(frame_data, "flashraw_frame_data");
     LOAD(frame_data_len, "flashraw_frame_data_len");
     LOAD(frame_origin, "flashraw_frame_origin");
+    LOAD(frame_stats, "flashraw_frame_stats");
+    LOAD(frame_backend, "flashraw_frame_backend");
+    LOAD(frame_postprocess_backend, "flashraw_frame_postprocess_backend");
 #undef LOAD
     if (c->abi_version() != FLASHRAW_ABI_VERSION) {
         set_error(error, error_capacity, "FlashRaw ABI version mismatch");
@@ -111,11 +125,22 @@ missing:
     return NULL;
 }
 
+int32_t rm_flashraw_sensor_layout(const rm_flashraw_context *context) {
+    return context && context->file ? context->file_sensor_layout(context->file) : FLASHRAW_LAYOUT_UNKNOWN;
+}
+
 void rm_flashraw_close(rm_flashraw_context *context) {
     if (!context) return;
     if (context->file && context->file_free) context->file_free(context->file);
     if (context->library) dlclose(context->library);
     free(context);
+}
+
+void rm_flashraw_geometry(const rm_flashraw_context *context, uint32_t *width,
+                          uint32_t *height, uint32_t *orientation) {
+    if (width) *width = context ? context->file_width(context->file) : 0;
+    if (height) *height = context ? context->file_height(context->file) : 0;
+    if (orientation) *orientation = context ? context->file_orientation(context->file) : 0;
 }
 
 const char *rm_flashraw_version(rm_flashraw_context *context) {
@@ -188,4 +213,19 @@ const void *rm_flashraw_frame_data(rm_flashraw_frame *frame, size_t *byte_count)
     const void *data = frame->context->frame_data(frame->handle);
     if (byte_count) *byte_count = frame->context->frame_data_len(frame->handle);
     return data;
+}
+
+int rm_flashraw_frame_statistics(rm_flashraw_frame *frame, rm_flashraw_decode_statistics *out) {
+    if (!frame || !out) return 0;
+    flashraw_decode_stats native = {.size = sizeof(native)};
+    rm_flashraw_context *context = frame->context;
+    if (context->frame_stats(frame->handle, &native) != FLASHRAW_OK) return 0;
+    out->threads = native.threads;
+    out->total_ms = native.total_ms;
+    out->input_bytes = native.input_bytes;
+    out->output_bytes = native.output_bytes;
+    memcpy(out->stage_ms, native.stage_ms, sizeof(out->stage_ms));
+    out->backend = context->frame_backend(frame->handle);
+    out->postprocess_backend = context->frame_postprocess_backend(frame->handle);
+    return 1;
 }

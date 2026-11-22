@@ -1,0 +1,1264 @@
+{
+  "schemaVersion": 1,
+  "workload": "resident-srgb8-readback-v1",
+  "boundary": "Changed resident recipe to complete CPU-accessible sRGB RGBA8 display buffer; hash outside timer",
+  "dimensions": [
+    2400,
+    1600
+  ],
+  "source": "Sony ILCE-7RM5 ARW (9504 × 6336)",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "lightFlowEvidence": "lightflow-display-readback.json",
+  "cache": "Full-resolution R32F mean log-luminance guide, native-relative Gaussian radius; shared immutable input, independent of changed strength; both modes fully validate output.",
+  "abFlag": "RAWMASTER_PROXY_LIGHT_GUIDE_CACHE",
+  "order": "A/B/B/A, independent processes. Each runs all 8 controls; 20 alternating requests after the first 2 calibration requests plus 20 one-time new slider values for each operation. Pixel snapshots are taken in independent untimed processes.",
+  "definition": "Median and nearest-rank p95. LightFlow project tolerances are max(1 ms, 10%) for median and max(2 ms, 20%) for p95.",
+  "runs": [
+    {
+      "cache": false,
+      "recordedAt": "2026-11-22T08:32:11Z",
+      "path": "output/performance/camera-raw-engine-20261122/light-guide-timing-0-a/report.json",
+      "rawReportSHA256": "39e6b0e51160f44c8a09b0d0022110f3554595e9a5d03aeff5caa8ef1715e882",
+      "binarySHA256": "2322555963fe259535a00b6dfd58f390f982c8d23eab61c270bab2b69bdc7608",
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)",
+      "operations": {
+        "light-highlights": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 6.033645999999999,
+              "p95Ms": 10.325709,
+              "maxMs": 12.59425
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": false,
+            "milliseconds": [
+              2.339875,
+              7.454708,
+              2.776,
+              9.263584,
+              2.743125,
+              7.644708,
+              3.038125,
+              9.837583,
+              5.544833,
+              6.522459,
+              2.649542,
+              7.199041,
+              2.642125,
+              10.325709,
+              2.941792,
+              7.548167,
+              2.463833,
+              12.59425,
+              2.777375,
+              7.541958
+            ],
+            "transferMilliseconds": [
+              0.324917,
+              0.275875,
+              0.363958,
+              0.335625,
+              0.322,
+              0.468042,
+              0.377958,
+              0.362625,
+              0.442167,
+              0.426125,
+              0.308375,
+              0.411958,
+              0.345458,
+              0.350709,
+              0.334084,
+              0.397542,
+              0.330125,
+              0.432125,
+              0.330416,
+              0.412916
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 7.8821045000000005,
+              "p95Ms": 9.443334,
+              "maxMs": 9.513125
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": false,
+            "milliseconds": [
+              7.789709,
+              8.946334,
+              7.632833,
+              7.025541,
+              8.744583,
+              6.934208,
+              7.9745,
+              7.976542,
+              8.06475,
+              7.762208,
+              7.07425,
+              8.740333,
+              7.567209,
+              9.443334,
+              7.515958,
+              8.354833,
+              9.513125,
+              7.3365,
+              9.317584,
+              7.406208
+            ],
+            "transferMilliseconds": [
+              0.33725,
+              0.351417,
+              0.479041,
+              0.315291,
+              0.3155,
+              0.353375,
+              0.360209,
+              0.319125,
+              0.422792,
+              0.415291,
+              0.378208,
+              0.371875,
+              0.444459,
+              0.453834,
+              0.428417,
+              0.439458,
+              0.389833,
+              0.396416,
+              0.430959,
+              0.389542
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 2.651125,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.341583
+            },
+            {
+              "digest": "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+              "ms": 11.260916,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.338291
+            }
+          ]
+        },
+        "light-shadows": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 6.1726875,
+              "p95Ms": 10.630708,
+              "maxMs": 10.771709
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": false,
+            "milliseconds": [
+              2.916042,
+              7.153792,
+              5.363875,
+              8.481959,
+              3.303542,
+              6.9815,
+              5.040958,
+              9.703208,
+              2.7925,
+              10.771709,
+              2.636875,
+              7.78075,
+              2.90425,
+              9.7945,
+              3.028833,
+              7.676959,
+              3.258125,
+              10.630708,
+              3.157375,
+              8.398792
+            ],
+            "transferMilliseconds": [
+              0.350792,
+              0.461042,
+              0.366667,
+              0.3635,
+              0.336584,
+              0.410667,
+              0.343791,
+              0.348708,
+              0.445,
+              0.461334,
+              0.339,
+              0.420875,
+              0.3545,
+              0.378167,
+              0.443625,
+              0.442125,
+              0.32575,
+              0.349208,
+              0.59075,
+              0.509167
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 8.282021,
+              "p95Ms": 9.771041,
+              "maxMs": 11.030667
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": false,
+            "milliseconds": [
+              8.845625,
+              8.3065,
+              9.114625,
+              8.794625,
+              11.030667,
+              7.985042,
+              8.056708,
+              8.490417,
+              9.155084,
+              8.251166,
+              8.257542,
+              9.221834,
+              7.551292,
+              9.153125,
+              8.139875,
+              7.689416,
+              8.073916,
+              7.94575,
+              9.771041,
+              7.3285
+            ],
+            "transferMilliseconds": [
+              0.546792,
+              0.539625,
+              0.419375,
+              0.335291,
+              0.350459,
+              0.372375,
+              0.380791,
+              0.327334,
+              0.42325,
+              0.41125,
+              0.437417,
+              0.4085,
+              0.375417,
+              0.445125,
+              0.414583,
+              0.448208,
+              0.460125,
+              0.421292,
+              0.743875,
+              0.45625
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 2.706959,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.327792
+            },
+            {
+              "digest": "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+              "ms": 8.067083,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.449791
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cache": true,
+      "recordedAt": "2026-11-22T08:32:14Z",
+      "path": "output/performance/camera-raw-engine-20261122/light-guide-timing-1-a/report.json",
+      "rawReportSHA256": "109d60df93170c2b30c94179930551cb153866b079e4984cc02161b742d9b1ca",
+      "binarySHA256": "2322555963fe259535a00b6dfd58f390f982c8d23eab61c270bab2b69bdc7608",
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)",
+      "operations": {
+        "light-highlights": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.264875,
+              "p95Ms": 5.293584,
+              "maxMs": 6.071417
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": true,
+            "milliseconds": [
+              2.779208,
+              4.72725,
+              4.187334,
+              4.545958,
+              2.676084,
+              4.27875,
+              6.071417,
+              4.364917,
+              2.418542,
+              4.815208,
+              3.369833,
+              4.270708,
+              2.319875,
+              4.751375,
+              5.293584,
+              4.259042,
+              3.651333,
+              4.233125,
+              2.797375,
+              4.727166
+            ],
+            "transferMilliseconds": [
+              0.326083,
+              0.425,
+              0.358084,
+              0.414208,
+              0.362334,
+              0.380333,
+              0.343042,
+              0.38,
+              0.31725,
+              0.380417,
+              0.334666,
+              0.349583,
+              0.3575,
+              0.399792,
+              0.340084,
+              0.426833,
+              0.35175,
+              0.415167,
+              0.371417,
+              0.400708
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.831417,
+              "p95Ms": 7.228458,
+              "maxMs": 7.546334
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": true,
+            "milliseconds": [
+              5.740292,
+              4.556833,
+              4.566291,
+              4.891959,
+              4.932292,
+              4.581417,
+              4.411292,
+              6.242917,
+              7.546334,
+              5.851083,
+              4.601666,
+              4.770875,
+              4.554167,
+              4.905,
+              4.4205,
+              4.942625,
+              6.617042,
+              4.679125,
+              4.485125,
+              7.228458
+            ],
+            "transferMilliseconds": [
+              0.361875,
+              0.450666,
+              0.343208,
+              0.403542,
+              0.352917,
+              0.292084,
+              0.361959,
+              0.465334,
+              0.370959,
+              0.459333,
+              0.346041,
+              0.456583,
+              0.363833,
+              0.428,
+              0.350208,
+              0.499167,
+              0.394167,
+              0.371084,
+              0.508334,
+              0.362125
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 4.1705,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.365375
+            },
+            {
+              "digest": "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+              "ms": 12.56175,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.400875
+            }
+          ]
+        },
+        "light-shadows": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.475375,
+              "p95Ms": 5.113959,
+              "maxMs": 5.856708
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": true,
+            "milliseconds": [
+              3.385208,
+              4.703209,
+              2.743084,
+              4.613917,
+              2.537625,
+              5.856708,
+              4.711708,
+              4.390708,
+              3.941709,
+              4.466791,
+              2.823541,
+              4.585875,
+              4.738375,
+              5.113959,
+              2.981333,
+              4.568208,
+              2.898625,
+              4.483959,
+              4.145209,
+              5.011791
+            ],
+            "transferMilliseconds": [
+              0.339125,
+              0.410875,
+              0.337625,
+              0.355125,
+              0.317458,
+              0.441416,
+              0.324167,
+              0.429041,
+              0.341917,
+              0.382166,
+              0.355875,
+              0.377125,
+              0.393583,
+              0.359417,
+              0.303458,
+              0.379708,
+              0.323584,
+              0.344625,
+              0.347834,
+              0.398958
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.619562,
+              "p95Ms": 6.158917,
+              "maxMs": 6.358958
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": true,
+            "milliseconds": [
+              5.062,
+              4.621958,
+              4.647,
+              6.358958,
+              4.617166,
+              4.70475,
+              6.158917,
+              4.731708,
+              4.474625,
+              5.29575,
+              4.163166,
+              5.617834,
+              4.4895,
+              4.295292,
+              4.306125,
+              4.292375,
+              4.906542,
+              4.396,
+              4.55625,
+              4.240041
+            ],
+            "transferMilliseconds": [
+              0.358667,
+              0.352708,
+              0.348417,
+              0.35125,
+              0.337041,
+              0.336708,
+              0.309209,
+              0.345375,
+              0.322167,
+              0.321459,
+              0.333125,
+              0.332834,
+              0.313875,
+              0.308875,
+              0.315625,
+              0.344208,
+              0.344,
+              0.330917,
+              0.330958,
+              0.327666
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 5.170875,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.354542
+            },
+            {
+              "digest": "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+              "ms": 4.253791,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.379458
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cache": true,
+      "recordedAt": "2026-11-22T08:32:16Z",
+      "path": "output/performance/camera-raw-engine-20261122/light-guide-timing-1-b/report.json",
+      "rawReportSHA256": "fe6a5846a9ffd8491758152664673e61ff406df27c1647d204200aaac691ad67",
+      "binarySHA256": "2322555963fe259535a00b6dfd58f390f982c8d23eab61c270bab2b69bdc7608",
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)",
+      "operations": {
+        "light-highlights": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.3912914999999995,
+              "p95Ms": 5.753458,
+              "maxMs": 7.098
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": true,
+            "milliseconds": [
+              2.652833,
+              7.098,
+              3.224958,
+              4.755875,
+              4.96775,
+              4.372,
+              2.766708,
+              4.317916,
+              5.753458,
+              4.456625,
+              3.166375,
+              4.410583,
+              2.703417,
+              5.493709,
+              4.286208,
+              4.517458,
+              2.905292,
+              5.32325,
+              3.743209,
+              4.953041
+            ],
+            "transferMilliseconds": [
+              0.3495,
+              0.354458,
+              0.341208,
+              0.325208,
+              0.333084,
+              0.3305,
+              0.328,
+              0.317958,
+              0.322667,
+              0.424084,
+              0.3315,
+              0.405417,
+              0.309584,
+              0.434667,
+              0.377875,
+              0.431166,
+              0.320917,
+              0.377458,
+              0.309792,
+              0.328666
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.084792,
+              "p95Ms": 7.476041,
+              "maxMs": 8.497917
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": true,
+            "milliseconds": [
+              4.930917,
+              4.737833,
+              5.401334,
+              5.125542,
+              4.320708,
+              4.262875,
+              8.497917,
+              7.476041,
+              5.615417,
+              5.211417,
+              5.175916,
+              5.044042,
+              4.444042,
+              6.804458,
+              5.606375,
+              4.584416,
+              5.446625,
+              4.617792,
+              4.42975,
+              4.586792
+            ],
+            "transferMilliseconds": [
+              0.333,
+              0.357708,
+              0.332709,
+              0.289167,
+              0.323291,
+              0.318208,
+              0.325667,
+              0.32075,
+              0.322583,
+              0.281459,
+              0.329833,
+              0.326,
+              0.319625,
+              0.28325,
+              0.335625,
+              0.324208,
+              0.357375,
+              0.337625,
+              0.329875,
+              0.340208
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 2.697333,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.353375
+            },
+            {
+              "digest": "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+              "ms": 15.172542,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.358792
+            }
+          ]
+        },
+        "light-shadows": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 4.175853999999999,
+              "p95Ms": 4.91175,
+              "maxMs": 5.283875
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": true,
+            "milliseconds": [
+              2.61975,
+              4.4195,
+              2.413541,
+              4.183083,
+              2.692667,
+              4.91175,
+              4.199041,
+              4.475917,
+              3.900833,
+              4.168625,
+              4.201375,
+              4.344209,
+              2.528459,
+              4.099875,
+              3.933083,
+              5.283875,
+              2.928375,
+              4.214083,
+              2.749834,
+              4.389375
+            ],
+            "transferMilliseconds": [
+              0.347208,
+              0.330292,
+              0.307208,
+              0.338083,
+              0.315458,
+              0.32525,
+              0.328375,
+              0.342167,
+              0.31525,
+              0.321167,
+              0.33475,
+              0.31175,
+              0.3385,
+              0.337125,
+              0.334916,
+              0.338542,
+              0.295666,
+              0.313667,
+              0.308709,
+              0.294416
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 5.247771,
+              "p95Ms": 6.954958,
+              "maxMs": 8.622375
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": true,
+            "milliseconds": [
+              6.300458,
+              5.065792,
+              5.057125,
+              6.954958,
+              5.764,
+              4.781041,
+              4.658375,
+              5.037625,
+              5.036208,
+              6.80175,
+              4.3855,
+              5.42975,
+              6.517416,
+              4.556584,
+              5.041875,
+              8.622375,
+              6.732208,
+              4.556459,
+              5.779083,
+              6.801625
+            ],
+            "transferMilliseconds": [
+              0.352833,
+              0.335334,
+              0.327792,
+              0.469792,
+              0.332208,
+              0.374666,
+              0.352041,
+              0.423167,
+              0.336041,
+              0.279125,
+              0.33875,
+              0.404125,
+              0.318833,
+              0.387417,
+              0.334625,
+              0.359917,
+              0.440042,
+              0.364,
+              0.55,
+              0.32875
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 2.91925,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.314333
+            },
+            {
+              "digest": "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+              "ms": 5.556916,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.315458
+            }
+          ]
+        }
+      }
+    },
+    {
+      "cache": false,
+      "recordedAt": "2026-11-22T08:32:19Z",
+      "path": "output/performance/camera-raw-engine-20261122/light-guide-timing-0-b/report.json",
+      "rawReportSHA256": "d97ee2be54ec4e83b11795b7a40c7b0e0d9dd547f83f23b989aaa5095a4a9918",
+      "binarySHA256": "2322555963fe259535a00b6dfd58f390f982c8d23eab61c270bab2b69bdc7608",
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)",
+      "operations": {
+        "light-highlights": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.8774999999999995,
+              "p95Ms": 5.32,
+              "maxMs": 6.01
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 6.514229,
+              "p95Ms": 8.338708,
+              "maxMs": 9.594875
+            },
+            "medianLimit": 5.8774999999999995,
+            "p95Limit": 7.32,
+            "within": false,
+            "milliseconds": [
+              2.661458,
+              7.337375,
+              2.82925,
+              8.046167,
+              4.351167,
+              7.407667,
+              6.144708,
+              8.338708,
+              2.728334,
+              7.363416,
+              2.498166,
+              6.88375,
+              4.281167,
+              9.594875,
+              2.719459,
+              7.438958,
+              4.919417,
+              7.343084,
+              2.895833,
+              6.965208
+            ],
+            "transferMilliseconds": [
+              0.342292,
+              0.403208,
+              0.380375,
+              0.44,
+              0.349667,
+              0.333417,
+              0.343958,
+              0.452208,
+              0.333,
+              0.410458,
+              0.3585,
+              0.393458,
+              0.344292,
+              0.363583,
+              0.337584,
+              0.362166,
+              0.372417,
+              0.379459,
+              0.386958,
+              0.344917
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.87,
+              "p95Ms": 6.995,
+              "maxMs": 7.04
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 8.054021,
+              "p95Ms": 9.461084,
+              "maxMs": 9.639792
+            },
+            "medianLimit": 6.87,
+            "p95Limit": 8.995000000000001,
+            "within": false,
+            "milliseconds": [
+              7.293375,
+              7.667458,
+              7.301625,
+              8.201042,
+              8.158584,
+              9.123375,
+              7.172917,
+              9.461084,
+              8.47825,
+              7.716709,
+              7.643416,
+              6.661666,
+              7.116708,
+              9.342791,
+              8.147792,
+              8.662666,
+              9.639792,
+              7.96025,
+              7.739667,
+              8.377542
+            ],
+            "transferMilliseconds": [
+              0.346125,
+              0.361166,
+              0.389625,
+              0.366417,
+              0.344917,
+              0.330958,
+              0.296542,
+              0.450167,
+              0.375459,
+              0.324584,
+              0.3655,
+              0.333625,
+              0.375375,
+              0.321708,
+              0.348459,
+              0.33375,
+              0.35275,
+              0.363083,
+              0.330209,
+              0.345542
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 2.72625,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.335208
+            },
+            {
+              "digest": "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+              "ms": 14.184292,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.403417
+            }
+          ]
+        },
+        "light-shadows": {
+          "repeated": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 4.89,
+              "p95Ms": 5.63,
+              "maxMs": 6.11
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 8.2364375,
+              "p95Ms": 17.10925,
+              "maxMs": 18.000792
+            },
+            "medianLimit": 5.89,
+            "p95Limit": 7.63,
+            "within": false,
+            "milliseconds": [
+              2.84825,
+              8.94375,
+              3.035166,
+              7.837542,
+              4.363958,
+              8.740083,
+              2.487708,
+              7.781292,
+              4.271291,
+              12.656833,
+              2.963833,
+              9.537125,
+              5.428375,
+              12.587584,
+              8.635333,
+              17.10925,
+              9.516541,
+              18.000792,
+              3.373625,
+              11.6165
+            ],
+            "transferMilliseconds": [
+              0.351792,
+              0.349625,
+              0.466541,
+              0.381583,
+              0.3495,
+              0.318583,
+              0.324208,
+              0.330667,
+              0.302291,
+              0.344,
+              0.355958,
+              0.405125,
+              0.4555,
+              0.864125,
+              0.644791,
+              4.753625,
+              2.719666,
+              0.421458,
+              0.575458,
+              0.478834
+            ]
+          },
+          "newValues": {
+            "LightFlow": {
+              "n": 20,
+              "medianMs": 5.984999999999999,
+              "p95Ms": 7.71,
+              "maxMs": 7.91
+            },
+            "RAWMaster": {
+              "n": 20,
+              "medianMs": 9.232854499999998,
+              "p95Ms": 16.268042,
+              "maxMs": 18.572875
+            },
+            "medianLimit": 6.984999999999999,
+            "p95Limit": 9.71,
+            "within": false,
+            "milliseconds": [
+              12.282459,
+              15.532583,
+              18.572875,
+              8.928375,
+              12.865,
+              15.38875,
+              8.373333,
+              8.679292,
+              9.325584,
+              11.786667,
+              9.12825,
+              9.140125,
+              8.809584,
+              8.34125,
+              9.0505,
+              10.118458,
+              12.08675,
+              16.268042,
+              8.961583,
+              8.616958
+            ],
+            "transferMilliseconds": [
+              1.234,
+              0.851958,
+              0.308125,
+              0.4095,
+              0.529042,
+              0.662959,
+              0.538291,
+              0.399375,
+              0.489667,
+              0.383708,
+              0.450791,
+              0.555375,
+              0.575042,
+              0.435417,
+              0.521709,
+              0.332583,
+              0.384,
+              0.388917,
+              0.476458,
+              0.596333
+            ]
+          },
+          "firstStateSamples": [
+            {
+              "digest": "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+              "ms": 3.161958,
+              "phase": "first",
+              "state": 0,
+              "transferMs": 0.310416
+            },
+            {
+              "digest": "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+              "ms": 7.361167,
+              "phase": "first",
+              "state": 1,
+              "transferMs": 0.356
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "fullFrameComparisons": [
+    {
+      "frame": "light-highlights-10.rgba8",
+      "baselineSHA256": "93780002f2896cf3fa8d6301d534a6d5913dc28d566632528dcbeb43d04b226f",
+      "candidateSHA256": "93780002f2896cf3fa8d6301d534a6d5913dc28d566632528dcbeb43d04b226f",
+      "rgbChannels": 11520000,
+      "changedRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "meanAbsoluteRGB": 0.0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "frame": "light-highlights-20.rgba8",
+      "baselineSHA256": "62527dd6c8c45843f6c7d7b4f512764a4e370e2dc9663fbebf1b3282b0540ba2",
+      "candidateSHA256": "62527dd6c8c45843f6c7d7b4f512764a4e370e2dc9663fbebf1b3282b0540ba2",
+      "rgbChannels": 11520000,
+      "changedRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "meanAbsoluteRGB": 0.0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "frame": "light-highlights-30.rgba8",
+      "baselineSHA256": "770fbf66f342553330b6d6a2c40477a05216dacb5e4417e78314a36d7b8889a1",
+      "candidateSHA256": "770fbf66f342553330b6d6a2c40477a05216dacb5e4417e78314a36d7b8889a1",
+      "rgbChannels": 11520000,
+      "changedRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "meanAbsoluteRGB": 0.0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "frame": "light-shadows-10.rgba8",
+      "baselineSHA256": "29d7799f61403eea40b00b42c4b828b26b6396d824e7c53ca3658325efb4e277",
+      "candidateSHA256": "29d7799f61403eea40b00b42c4b828b26b6396d824e7c53ca3658325efb4e277",
+      "rgbChannels": 11520000,
+      "changedRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "meanAbsoluteRGB": 0.0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "frame": "light-shadows-20.rgba8",
+      "baselineSHA256": "fd226fd69e8474bdeafb60cea1bb37438e7434ac948f93d76d1180075bd5d1a0",
+      "candidateSHA256": "fd226fd69e8474bdeafb60cea1bb37438e7434ac948f93d76d1180075bd5d1a0",
+      "rgbChannels": 11520000,
+      "changedRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "meanAbsoluteRGB": 0.0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    },
+    {
+      "frame": "light-shadows-30.rgba8",
+      "baselineSHA256": "e908f881672eb81d10eca20127d71913644441e4238ed65722373e00832ee3ee",
+      "candidateSHA256": "e908f881672eb81d10eca20127d71913644441e4238ed65722373e00832ee3ee",
+      "rgbChannels": 11520000,
+      "changedRGB": 0,
+      "p99AbsoluteRGB": 0,
+      "maximumAbsoluteRGB": 0,
+      "meanAbsoluteRGB": 0.0,
+      "alphaChanged": 0,
+      "opaquePixelsBefore": 3840000,
+      "opaquePixelsAfter": 3840000
+    }
+  ],
+  "syntheticTests": "Test Suite 'Selected tests' started at 2026-11-22 16:32:24.560.\nTest Suite 'RAWMasterImagingTests.xctest' started at 2026-11-22 16:32:24.561.\nTest Suite 'DevelopmentV3CalibrationTests' started at 2026-11-22 16:32:24.561.\nTest Case '-[RAWMasterImagingTests.DevelopmentV3CalibrationTests testCachedLogGuidePreservesRealShadowAndHighlightResponse]' started.\nTest Case '-[RAWMasterImagingTests.DevelopmentV3CalibrationTests testCachedLogGuidePreservesRealShadowAndHighlightResponse]' passed (0.052 seconds).\nTest Suite 'DevelopmentV3CalibrationTests' passed at 2026-11-22 16:32:24.613.\n\t Executed 1 test, with 0 failures (0 unexpected) in 0.052 (0.053) seconds\nTest Suite 'FlashRawCanonicalTexturePoolTests' started at 2026-11-22 16:32:24.614.\nTest Case '-[RAWMasterImagingTests.FlashRawCanonicalTexturePoolTests testDirectTexturePoolHonorsBudgetPinsLRUAndSourceRetirement]' started.\nTest Case '-[RAWMasterImagingTests.FlashRawCanonicalTexturePoolTests testDirectTexturePoolHonorsBudgetPinsLRUAndSourceRetirement]' passed (0.000 seconds).\nTest Case '-[RAWMasterImagingTests.FlashRawCanonicalTexturePoolTests testReplacingARecentGuideRetainsTheOlderDecodedSource]' started.\nTest Case '-[RAWMasterImagingTests.FlashRawCanonicalTexturePoolTests testReplacingARecentGuideRetainsTheOlderDecodedSource]' passed (0.000 seconds).\nTest Case '-[RAWMasterImagingTests.FlashRawCanonicalTexturePoolTests testRetirementDuringDecodeDoesNotBlockAndReleasesReturnedPin]' started.\nTest Case '-[RAWMasterImagingTests.FlashRawCanonicalTexturePoolTests testRetirementDuringDecodeDoesNotBlockAndReleasesReturnedPin]' passed (0.000 seconds).\nTest Suite 'FlashRawCanonicalTexturePoolTests' passed at 2026-11-22 16:32:24.615.\n\t Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds\nTest Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-22 16:32:24.615.\n\t Executed 4 tests, with 0 failures (0 unexpected) in 0.053 (0.054) seconds\nTest Suite 'Selected tests' passed at 2026-11-22 16:32:24.615.\n\t Executed 4 tests, with 0 failures (0 unexpected) in 0.053 (0.054) seconds\n"
+}

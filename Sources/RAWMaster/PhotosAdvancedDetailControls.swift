@@ -45,13 +45,13 @@ struct PhotosAdvancedDetailControls: View {
     let context: EditingInteractionContext
     var body: some View {
         ForEach(editing.availableDevelopmentAdvancedDetailGroups, id: \.self) { group in
-            PhotosAdjustmentSection(id: group, expanded: true,
+            if group != .texture { Divider().opacity(0.65) }
+            PhotosAdjustmentSection(id: group, expanded: session.expandedGroups.contains(group),
                 enabled: session.parameters.isEnabled(group),
                 modified: PhotosAdjustmentCommands.isModified(group, in: session.parameters),
-                onExpand: {},
+                onExpand: { perform { try session.setExpanded(group, expanded: !session.expandedGroups.contains(group), context: context) } },
                 onEnable: { enabled in discrete(group, .enabled(enabled)) },
-                onReset: { discrete(group, .reset) },
-                showsDisclosure: false) {
+                onReset: { discrete(group, .reset) }) {
                     PhotosRecipeValueRow(session: session, context: context, title: "数量", control: "advanced." + group.rawValue,
                         value: amount(group), range: PhotosAdvancedDetailEditing.amountRange,
                         apply: { value, token in

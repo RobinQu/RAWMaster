@@ -1,0 +1,622 @@
+{
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "uiSHA256": {
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+    "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+    "_b/20261111155800-2d41ab1/engine-state/persist-worker.js": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+    "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+    "_b/20261111155800-2d41ab1/flashraw/browser.js": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+    "_b/20261111155800-2d41ab1/flashraw/core.js": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+    "_b/20261111155800-2d41ab1/flashraw/errors.js": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen_threads.js": "c4803f3d27d9ae36e6dfb0de2ea3f83ff59b4e670d4f428d9da3bfd2747073b2",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+    "_b/20261111155800-2d41ab1/flashraw/flashraw_simd_threads.wasm": "bd70ec98d095602a326780b3dfc13afcccc76a8fe0b887fbc290d3377c49d3eb",
+    "_b/20261111155800-2d41ab1/flashraw/thread-worker.browser.js": "016cd62f67eb77e431b8cf8290886ed03eeb54dd4a84aaf8774677ddd01124d1",
+    "_b/20261111155800-2d41ab1/flashraw/threads.js": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+    "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+    "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+    "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+    "_b/20261111155800-2d41ab1/rust/version.json": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+    "assets/chunk-OB3PAWPO-CFl22NXe.js": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "assets/client-ByIw6bCp.js": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+    "assets/constants-BKJYUicQ.js": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+    "assets/entry.client-DsBqhnPk.js": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+    "assets/home-CD2BGesn.js": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+    "assets/home-QVn-GJkA.js": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+    "assets/index-BH-xifXf.js": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+    "assets/index-DkoodY4j.css": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+    "assets/index-zP4kU_H7.js": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "assets/root-CtqOeRF2.js": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+    "assets/root-DyuRdJ4q.css": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+    "assets/worker-PmnZFHwu.js": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+    "index.html": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "recordedAt": "2026-11-22T09:19:15.217169+00:00",
+  "protocol": "lightflow-original-photo-controls-v1",
+  "photoRectPixels": [
+    370,
+    109,
+    2368,
+    1579
+  ],
+  "viewportPixels": [
+    3200,
+    2000
+  ],
+  "samples": 10,
+  "operations": [
+    {
+      "id": "curve-parametric",
+      "featureIds": [
+        "curve-parametric"
+      ],
+      "status": "measured",
+      "boundary": "Trusted Parametric tab selection through the original four controls and the changed curve canvas readback.",
+      "trials": [
+        {
+          "state": 0,
+          "phase": "first",
+          "ms": 26.449708,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                -40
+              ]
+            ],
+            "parametric": {
+              "shadows": -40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "preparedHistogramCurveSHA256": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "framesAfterTabSelection": [
+              {
+                "digest": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+                "hostMs": 26.447042
+              }
+            ]
+          },
+          "digest": "5a2541b00e3594318c65e8bba3449c719a3c04fe5a9792fb80962c5c3a44f523",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "first",
+          "ms": 28.246,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                40
+              ]
+            ],
+            "parametric": {
+              "shadows": 40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "preparedHistogramCurveSHA256": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "framesAfterTabSelection": [
+              {
+                "digest": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+                "hostMs": 28.242791
+              }
+            ]
+          },
+          "digest": "661ee0409e0d5a2c9797ee65d44864a49226a88ae341ef9d8d9d62eca37ee672",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 29.895625,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                -40
+              ]
+            ],
+            "parametric": {
+              "shadows": -40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "preparedHistogramCurveSHA256": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "framesAfterTabSelection": [
+              {
+                "digest": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+                "hostMs": 29.894083
+              }
+            ]
+          },
+          "digest": "5a2541b00e3594318c65e8bba3449c719a3c04fe5a9792fb80962c5c3a44f523",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 31.046375,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                40
+              ]
+            ],
+            "parametric": {
+              "shadows": 40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "preparedHistogramCurveSHA256": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "framesAfterTabSelection": [
+              {
+                "digest": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+                "hostMs": 31.045208
+              }
+            ]
+          },
+          "digest": "661ee0409e0d5a2c9797ee65d44864a49226a88ae341ef9d8d9d62eca37ee672",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 30.96525,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                -40
+              ]
+            ],
+            "parametric": {
+              "shadows": -40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "preparedHistogramCurveSHA256": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "framesAfterTabSelection": [
+              {
+                "digest": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+                "hostMs": 30.96275
+              }
+            ]
+          },
+          "digest": "5a2541b00e3594318c65e8bba3449c719a3c04fe5a9792fb80962c5c3a44f523",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 25.732833,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                40
+              ]
+            ],
+            "parametric": {
+              "shadows": 40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "preparedHistogramCurveSHA256": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "framesAfterTabSelection": [
+              {
+                "digest": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+                "hostMs": 25.729792
+              }
+            ]
+          },
+          "digest": "661ee0409e0d5a2c9797ee65d44864a49226a88ae341ef9d8d9d62eca37ee672",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 25.528542,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                -40
+              ]
+            ],
+            "parametric": {
+              "shadows": -40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "preparedHistogramCurveSHA256": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "framesAfterTabSelection": [
+              {
+                "digest": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+                "hostMs": 25.520167
+              }
+            ]
+          },
+          "digest": "5a2541b00e3594318c65e8bba3449c719a3c04fe5a9792fb80962c5c3a44f523",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 22.827375,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                40
+              ]
+            ],
+            "parametric": {
+              "shadows": 40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "preparedHistogramCurveSHA256": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "framesAfterTabSelection": [
+              {
+                "digest": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+                "hostMs": 22.823208
+              }
+            ]
+          },
+          "digest": "661ee0409e0d5a2c9797ee65d44864a49226a88ae341ef9d8d9d62eca37ee672",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 25.233375,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                -40
+              ]
+            ],
+            "parametric": {
+              "shadows": -40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "preparedHistogramCurveSHA256": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "framesAfterTabSelection": [
+              {
+                "digest": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+                "hostMs": 25.225916
+              }
+            ]
+          },
+          "digest": "5a2541b00e3594318c65e8bba3449c719a3c04fe5a9792fb80962c5c3a44f523",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 23.974209,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                40
+              ]
+            ],
+            "parametric": {
+              "shadows": 40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "preparedHistogramCurveSHA256": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "framesAfterTabSelection": [
+              {
+                "digest": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+                "hostMs": 23.971959
+              }
+            ]
+          },
+          "digest": "661ee0409e0d5a2c9797ee65d44864a49226a88ae341ef9d8d9d62eca37ee672",
+          "verified": true
+        },
+        {
+          "state": 0,
+          "phase": "warm",
+          "ms": 26.075042,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                -40
+              ]
+            ],
+            "parametric": {
+              "shadows": -40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "preparedHistogramCurveSHA256": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+            "framesAfterTabSelection": [
+              {
+                "digest": "e7323fd4424ec099543f7a34a761bd4aa55ba3fa366af848d8f51973c58aa5b2",
+                "hostMs": 26.07275
+              }
+            ]
+          },
+          "digest": "5a2541b00e3594318c65e8bba3449c719a3c04fe5a9792fb80962c5c3a44f523",
+          "verified": true
+        },
+        {
+          "state": 1,
+          "phase": "warm",
+          "ms": 26.248625,
+          "observed": {
+            "width": 282,
+            "height": 282,
+            "fields": [
+              [
+                "Highlights",
+                0
+              ],
+              [
+                "Lights",
+                0
+              ],
+              [
+                "Darks",
+                0
+              ],
+              [
+                "Shadows",
+                40
+              ]
+            ],
+            "parametric": {
+              "shadows": 40,
+              "darks": 0,
+              "lights": 0,
+              "highlights": 0,
+              "split1": 0.25,
+              "split2": 0.5,
+              "split3": 0.75
+            },
+            "hash": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "preparedHistogramCurveSHA256": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+            "framesAfterTabSelection": [
+              {
+                "digest": "062416ff24b908599fc32e14a34ff6432fa0197c3ede1029001f8b1b65228de9",
+                "hostMs": 26.24
+              }
+            ]
+          },
+          "digest": "661ee0409e0d5a2c9797ee65d44864a49226a88ae341ef9d8d9d62eca37ee672",
+          "verified": true
+        }
+      ]
+    }
+  ],
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

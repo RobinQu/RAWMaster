@@ -49,10 +49,9 @@ final class ThumbnailWorkerContextV1: @unchecked Sendable {
       record("created")
     }
     lock.lock();borrows+=1;lock.unlock();record("borrow-enter")
-    // Keep the same per-step pool/clear ordering as the original short-context helper.
+    // cacheIntermediates is false; retain compiled programs until owner retirement.
     return try autoreleasepool {
       let value=context!
-      defer{value.clearCaches()}
       return try body(value)
     }
   }

@@ -4,14 +4,20 @@ import ImageIO
 public enum ImportExecutionStage: Sendable, Equatable { case intake, grouping }
 public typealias ImportStageCallback = @Sendable (String, ImportExecutionStage) -> Void
 
+/// Image I/O decodes the composited image and its color profile for these rendered still formats.
+public enum RenderedPhotoFormats {
+  public static let extensions: Set<String> = [
+    "jpg", "jpeg", "png", "tif", "tiff", "heic", "heif", "avif", "jxl", "webp", "psd", "psb",
+  ]
+}
+
 public final class ImportService: @unchecked Sendable {
   private let store: LibraryStore
   private let postIngest: ImportPostIngestCallback?
   private let control = JobControl()
-  private static let extensions: Set<String> = [
-    "arw", "dng", "raw", "cr2", "cr3", "nef", "raf", "orf", "rw2", "jpg", "jpeg", "heic", "tif",
-    "tiff",
-  ]
+  private static let extensions: Set<String> = RenderedPhotoFormats.extensions.union([
+    "arw", "dng", "raw", "cr2", "cr3", "nef", "raf", "orf", "rw2",
+  ])
   public init(store: LibraryStore, postIngest: ImportPostIngestCallback? = nil) {
     self.store = store
     self.postIngest = postIngest

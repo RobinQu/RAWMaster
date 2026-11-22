@@ -14,6 +14,12 @@ enum DevelopmentAdvancedDetailEngineV3 {
     guard let guide=kernels.first(where:{$0.name == "rmAdvancedGuideV1"}),let band=kernels.first(where:{$0.name == "rmAdvancedBandV1"}) else { throw DevelopmentError.unsupportedEngine }
     return .init(guide:guide,band:band)
   }
+  private static let cachedBandKernels: Result<(factor:CIKernel,restore:CIKernel),Error> = Result {
+    let kernels=try CIKernel.kernels(withMetalString:cachedBandSource)
+    guard let factor=kernels.first(where:{$0.name=="rmAdvancedBandFactor"}),let restore=kernels.first(where:{$0.name=="rmAdvancedBandRestore"}) else {throw DevelopmentError.unsupportedEngine}
+    return (factor,restore)
+  }
+  static var hasCachedBandKernels: Bool { (try? cachedBandKernels.get()) != nil }
   enum Band: Equatable { case texture, clarity }
   struct Radii: Equatable { let texture,clarity: Double }
   struct Guides { let fine,wide: CIImage }
@@ -56,7 +62,7 @@ enum DevelopmentAdvancedDetailEngineV3 {
     guard let result=CIImage(mtlTexture:texture,options:[.colorSpace:DevelopmentColorEngineV3.linearSRGB]) else { throw DevelopmentV3Error.invalidGraph }
     return extent.origin == .zero ? result:result.transformed(by:.init(translationX:extent.minX,y:extent.minY))
   }
-  static func apply(_ parameters: DevelopmentAdvancedDetailV3,to image: CIImage,sourceSize: DevelopmentPixelSize,context: CIContext, checkCancellation: (() throws -> Void)? = nil,deferValidation:Bool = false) throws -> CIImage {
+  static func apply(_ parameters: DevelopmentAdvancedDetailV3,to image: CIImage,sourceSize: DevelopmentPixelSize,context: CIContext, checkCancellation: (() throws -> Void)? = nil,deferValidation:Bool = false, checkedInput: CIImage? = nil) throws -> CIImage {
     try parameters.validate()
     if parameters.dehaze.enabled && parameters.dehaze.amount != 0 { throw DevelopmentV3Error.unsupportedAdjustment(.dehaze) }
     let texture=parameters.texture.enabled && parameters.texture.amount != 0,clarity=parameters.clarity.enabled && parameters.clarity.amount != 0
@@ -66,12 +72,12 @@ enum DevelopmentAdvancedDetailEngineV3 {
     if e.height > e.width {
       // These isotropic operators must not depend on Core Image's portrait/landscape pass order.
       let normalized=image.oriented(.left)
-      let result=try apply(parameters,to:normalized,sourceSize:.init(width:sourceSize.height,height:sourceSize.width),context:context,checkCancellation:checkCancellation,deferValidation:deferValidation)
+      let result=try apply(parameters,to:normalized,sourceSize:.init(width:sourceSize.height,height:sourceSize.width),context:context,checkCancellation:checkCancellation,deferValidation:deferValidation,checkedInput: checkedInput === image ? normalized : nil)
       return result.oriented(.right)
     }
     // Interactive proxy performs one finite gate after the shared suffix surface. Canonical
     // callers retain the existing input and output validation pairs.
-    if !deferValidation { try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation) }
+    if !deferValidation && image !== checkedInput { try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation) }
     var output=image
     if texture { output=try applyBand(.texture,amount:parameters.texture.amount,to:output,radius:r.texture) }
     if clarity { output=try applyBand(.clarity,amount:parameters.clarity.amount,to:output,radius:r.clarity) }
@@ -85,6 +91,20 @@ enum DevelopmentAdvancedDetailEngineV3 {
     let g=try guides(image,radius:radius)
     guard let result=try loaded.get().band.apply(extent:image.extent,roiCallback:{ _,r in r },
       arguments:[image.samplingNearest(),g.fine.samplingNearest(),g.wide.samplingNearest(),CIVector(x:amount/100,y:band == .texture ? 0:1,z:0,w:0)]) else { throw DevelopmentV3Error.invalidGraph }
+    return result
+  }
+  static func bandFactor(_ source:CIImage,radius:Double) throws -> CIImage {
+    guard radius.isFinite,radius>0 else {throw DevelopmentV3Error.invalidGraph}
+    let guide=try guides(source,radius:radius)
+    guard let image=try cachedBandKernels.get().factor.apply(extent:source.extent,roiCallback:{_,r in r},
+      arguments:[guide.fine.samplingNearest(),guide.wide.samplingNearest()]) else {throw DevelopmentV3Error.invalidGraph}
+    return image
+  }
+  static func applyBand(_ band:Band,amount:Double,to image:CIImage,factor:CIImage) throws -> CIImage {
+    guard amount.isFinite,(-100...100).contains(amount),factor.extent == image.extent else {throw DevelopmentV3Error.invalidGraph}
+    if amount == 0 { return image }
+    guard let result=try cachedBandKernels.get().restore.apply(extent:image.extent,roiCallback:{_,r in r},
+      arguments:[image.samplingNearest(),factor.samplingNearest(),CIVector(x:amount/100,y:band == .texture ? 0:1,z:0,w:0)]) else { throw DevelopmentV3Error.invalidGraph }
     return result
   }
   /// CPU equations only: public CI Gaussian evaluation remains the authoritative blur primitive.
@@ -111,6 +131,40 @@ enum DevelopmentAdvancedDetailEngineV3 {
     if ev == 0 { return p }
     let gain=exp2(ev);return .init(p.x*gain,p.y*gain,p.z*gain,p.w)
   }
+  // Isolate these optional proxy kernels from the versioned canonical/export shader.
+  private static let cachedBandSource = #"""
+#include <metal_stdlib>
+#include <CoreImage/CoreImage.h>
+using namespace metal;
+extern "C" { namespace coreimage {
+float rmAdvancedEncodeV1(float x){return x<=.0031308?12.92*x:1.055*pow(x,1.0/2.4)-.055;}
+float4 rmAdvancedGain(float4 p,float band,float4 params){
+ float y=dot(p.rgb,float3(.2126729,.7151522,.0721750))/p.a;
+ if(!isfinite(y))return float4(as_type<float>(0x7fc00000u));if(y<=0)return p;
+ float ev;
+ if(params.y<.5)ev=.35*params.x*band;
+ else{float u=clamp(rmAdvancedEncodeV1(y),0.0,1.0);ev=.60*params.x*4*u*(1-u)*band;}
+ if(ev==0)return p;
+ return float4(p.rgb*exp2(ev),p.a);
+}
+[[stitchable]] float4 rmAdvancedBandFactor(sampler fine,sampler wide,destination dest){
+ float2 d=dest.coord();float4 f=fine.sample(fine.transform(d)),w=wide.sample(wide.transform(d));
+ if(!all(isfinite(f))||!all(isfinite(w)))return float4(as_type<float>(0x7fc00000u));
+ // Every actual factor is in [-1,1]. Preserve the original low-coverage early return.
+ float band=f.g<1.0/65535.0||w.g<1.0/65535.0?2.0:clamp(f.r/f.g-w.r/w.g,-1.0,1.0);
+ return float4(band,band,band,1);
+}
+[[stitchable]] float4 rmAdvancedBandRestore(sampler src,sampler factor,float4 params,destination dest){
+ float2 d=dest.coord();float4 p=src.sample(src.transform(d));
+ if(!all(isfinite(p))||p.a < -0.000001 || p.a > 1.000001)return float4(as_type<float>(0x7fc00000u));
+ if(p.a<1.0/65535.0)return p;
+ float v=factor.sample(factor.transform(d)).r;
+ if(!isfinite(v))return float4(as_type<float>(0x7fc00000u));
+ if(v==2.0)return p;
+ return rmAdvancedGain(p,v,params);
+}
+} }
+"""#
   static let metalSource = #"""
 #include <metal_stdlib>
 #include <CoreImage/CoreImage.h>

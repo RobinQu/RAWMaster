@@ -2,11 +2,83 @@ import AppKit
 import CoreImage
 import Darwin
 import Foundation
+import Metal
 import RAWMasterCore
 import XCTest
 @testable import RAWMasterImaging
 
 final class DevelopmentDehazeNativeRfV1Tests:XCTestCase {
+  func testResidentTransmissionGuideReusesOnlyMatchingInputsAcrossBandBoundaries() throws {
+    let width = 67, height = 519
+    let size = DevelopmentPixelSize(width:width,height:height), extent = CGSize(width:width,height:height)
+    let source = input(width,height)
+    let context = DevelopmentColorEngineV3.makeContext()
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let stamp = PreviewFileStamp(device:1,inode:2,size:411,seconds:5,nanoseconds:6,changedSeconds:5,changedNanoseconds:6)
+    let pool = FlashRawCanonicalTexturePool(byteBudget:8*1024*1024)
+    for (algorithm, amounts) in [(2,[25.0,70.0]), (1,[-12.0,60.0])] {
+      let previous = pool.statistics()
+      for amount in amounts {
+        var recipe = DevelopmentAdjustmentsV3()
+        recipe.rawDecoder = .flashRaw031
+        recipe.advancedDetail = parameters(width,height,amount,algorithm)
+        let resident = try XCTUnwrap(DevelopmentResidentDehazeGuide(recipe,sourceKey:"guide-test",
+          stamp:stamp,size:extent,device:device,pool:pool))
+        let reference = try output(source,amount,algorithm,bounded:true,raw:true)
+        let actual = try pixels(DevelopmentDehazeEngineV3.apply(recipe.advancedDetail,to:source,
+          sourceSize:size,sourceIsRAW:true,context:context,residentGuide:resident),context)
+        resident.release()
+        var worst: Float = 0
+        for (a,b) in zip(reference,actual) {
+          XCTAssertEqual(a.w.bitPattern,b.w.bitPattern)
+          for channel in 0..<3 { worst = max(worst,abs(a[channel]-b[channel])) }
+        }
+        XCTAssertLessThanOrEqual(worst,3e-5)
+      }
+      let final = pool.statistics()
+      XCTAssertEqual(final.fills-previous.fills,1)
+      XCTAssertEqual(final.hits-previous.hits,1)
+      XCTAssertEqual(final.pinnedBytes,0)
+    }
+    pool.retire()
+    XCTAssertEqual(pool.statistics().residentBytes,0)
+  }
+  func testResidentTransmissionIdentityAndRetirement() throws {
+    let width = 17, height = 21, extent = CGSize(width:17,height:21)
+    let source = input(width,height), size = DevelopmentPixelSize(width:width,height:height)
+    let device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    let context = DevelopmentColorEngineV3.makeContext()
+    let pool = FlashRawCanonicalTexturePool(byteBudget:8*1024*1024,maximumEntries:8)
+    let stamp = PreviewFileStamp(device:1,inode:27,size:411,seconds:5,nanoseconds:6,changedSeconds:5,changedNanoseconds:6)
+    var p = DevelopmentAdjustmentsV3()
+    p.rawDecoder = .flashRaw031
+    p.advancedDetail = parameters(width,height,35,2)
+    func render(_ recipe: DevelopmentAdjustmentsV3, _ key: String) throws -> DevelopmentResidentDehazeGuide {
+      let owner = try XCTUnwrap(DevelopmentResidentDehazeGuide(recipe,sourceKey:key,stamp:stamp,
+        size:extent,device:device,pool:pool))
+      _ = try pixels(DevelopmentDehazeEngineV3.apply(recipe.advancedDetail,to:source,sourceSize:size,
+        sourceIsRAW:true,context:context,residentGuide:owner),context)
+      try owner.check()
+      return owner
+    }
+    try render(p,"first").release()
+    let otherSource = try render(p,"second")
+    var changed = p
+    changed.whiteBalance = .init(enabled:true,adjustment:.temperatureTint(temperature:7300,tint:15))
+    try render(changed,"first").release()
+    try render(p,"first").release()
+    let stats = pool.statistics()
+    XCTAssertEqual(stats.fills,3)
+    XCTAssertEqual(stats.hits,1)
+    XCTAssertGreaterThan(stats.pinnedBytes,0)
+    pool.retire(sourceKey:"first")
+    XCTAssertEqual(pool.statistics().residentBytes,stats.pinnedBytes)
+    pool.retire(sourceKey:"second")
+    XCTAssertGreaterThan(pool.statistics().pinnedBytes,0)
+    otherSource.release()
+    XCTAssertEqual(pool.statistics().pinnedBytes,0)
+    XCTAssertEqual(pool.statistics().residentBytes,0)
+  }
   private let air=DevelopmentDehazeAirlightV1(red:Double(Float(0.91)),green:Double(Float(0.82)),blue:Double(Float(0.97)))
   private func image(_ values:[SIMD4<Float>],_ width:Int,_ height:Int)->CIImage {
     CIImage(bitmapData:values.withUnsafeBytes{Data($0)},bytesPerRow:width*16,

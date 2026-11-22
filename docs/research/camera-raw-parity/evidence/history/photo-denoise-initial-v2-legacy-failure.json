@@ -1,0 +1,75 @@
+{
+  "assessment": "The first full-chroma implementation passed the measured luma/chroma/alpha/HDR tests but failed to reproduce the original RGB35 when both recipe generations rendered in the same process. Excluded from the performance baseline.",
+  "ninePhotos": {
+    "gpuTestBinarySHA256": "196215620a1e91801dce8105ebb2c1ec847cf46c2dc9c84f561e4d9f3ad27a16",
+    "originalRunSHA256": "9780529e8b396ff770d4c4fdad558239812726f0ca898810cb5fd06fac0096be",
+    "rows": [
+      {
+        "source": "sony-preview.jpg",
+        "historicalAmount35": "b40dce36261055bccfc5c87f016d8a47d97d817af5dc6fb2b9df392b891c8c3a",
+        "reopenedAmount35": "c412d751e1817c8cd44b9868ffa4693b2a26a64f3571c583659c4be5f0e458fe",
+        "newAmount35": "c412d751e1817c8cd44b9868ffa4693b2a26a64f3571c583659c4be5f0e458fe"
+      },
+      {
+        "source": "camera-p3-16.tiff",
+        "historicalAmount35": "73f6d54ae689cfd6568c53a42edbb776f1509f803e7a4e4a20ed24ef9b8fd057",
+        "reopenedAmount35": "6342af7e511075a83ae68d9c1a830e7e7144f31d545663a28247c27bd0d6f557",
+        "newAmount35": "6342af7e511075a83ae68d9c1a830e7e7144f31d545663a28247c27bd0d6f557"
+      },
+      {
+        "source": "camera.png",
+        "historicalAmount35": "16a29d1df7e350e8feed6933c78cfe15295dcc863b4ea3008bde78171bf9ade2",
+        "reopenedAmount35": "74fc49d9184f60e1ee31d268cf6416c06d5f8c9938fcb32487698d5f26bdcf05",
+        "newAmount35": "74fc49d9184f60e1ee31d268cf6416c06d5f8c9938fcb32487698d5f26bdcf05"
+      },
+      {
+        "source": "camera.heic",
+        "historicalAmount35": "5d610c6876ab21965585ae89ce4f4e79b64be02a11ac154635e1e57096919503",
+        "reopenedAmount35": "b5a34f5034b2b11b6ae54d17b283ecdba67b9fed6b913d3a414c99a6b60ccad4",
+        "newAmount35": "b5a34f5034b2b11b6ae54d17b283ecdba67b9fed6b913d3a414c99a6b60ccad4"
+      },
+      {
+        "source": "camera.avif",
+        "historicalAmount35": "d4bbe4b7da5bd9970724c96d1bb2df2eb53b3faa84b4b1a7307c96c127d4e7b4",
+        "reopenedAmount35": "2512ed52976954c2d0f6b7e43930991621ce86291e084022657b249dc83f9be6",
+        "newAmount35": "2512ed52976954c2d0f6b7e43930991621ce86291e084022657b249dc83f9be6"
+      },
+      {
+        "source": "camera.webp",
+        "historicalAmount35": "afd09523a2ae7d5d139d5b4aa6475c7c39c7fff4e7abda3de49bd182b932c50e",
+        "reopenedAmount35": "4aeed21922432cdfb73b0ea6fc0dda0cd71609ca22e5cf39ce480ae531d0d63a",
+        "newAmount35": "4aeed21922432cdfb73b0ea6fc0dda0cd71609ca22e5cf39ce480ae531d0d63a"
+      },
+      {
+        "source": "camera.jxl",
+        "historicalAmount35": "d82439352ce15d82f10bbb7029221fc5a6647da00c379c0959ba8abc90f5a37c",
+        "reopenedAmount35": "f8a7cf30b0708fa1e64e2708a734cc5577ffb66cf55e9dc9765c5581598510cd",
+        "newAmount35": "f8a7cf30b0708fa1e64e2708a734cc5577ffb66cf55e9dc9765c5581598510cd"
+      },
+      {
+        "source": "camera.psd",
+        "historicalAmount35": "16a29d1df7e350e8feed6933c78cfe15295dcc863b4ea3008bde78171bf9ade2",
+        "reopenedAmount35": "74fc49d9184f60e1ee31d268cf6416c06d5f8c9938fcb32487698d5f26bdcf05",
+        "newAmount35": "74fc49d9184f60e1ee31d268cf6416c06d5f8c9938fcb32487698d5f26bdcf05"
+      },
+      {
+        "source": "camera.psb",
+        "historicalAmount35": "16a29d1df7e350e8feed6933c78cfe15295dcc863b4ea3008bde78171bf9ade2",
+        "reopenedAmount35": "74fc49d9184f60e1ee31d268cf6416c06d5f8c9938fcb32487698d5f26bdcf05",
+        "newAmount35": "74fc49d9184f60e1ee31d268cf6416c06d5f8c9938fcb32487698d5f26bdcf05"
+      }
+    ]
+  },
+  "outputReferredDNG": {
+    "gpuTestBinarySHA256": "196215620a1e91801dce8105ebb2c1ec847cf46c2dc9c84f561e4d9f3ad27a16",
+    "originalRunSHA256": "21f214fb9baebc70f8a5213c0397124779bcd15c242559b50107e7cc7784c9cf",
+    "rows": [
+      {
+        "source": "preview-reference-1.dng",
+        "historicalAmount35": "b44f9dccc428bca46b33d7111fdbd0652de4156f57635ad9d4bac5999cd17000",
+        "reopenedAmount35": "e8f201ee9ba35ce2084e59354b14d70ffb3eba705920c5c7c5f28769b02ca2b5",
+        "newAmount35": "e8f201ee9ba35ce2084e59354b14d70ffb3eba705920c5c7c5f28769b02ca2b5"
+      }
+    ]
+  }
+}

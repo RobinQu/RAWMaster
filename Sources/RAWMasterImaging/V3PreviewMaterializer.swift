@@ -50,17 +50,15 @@ enum V3PreviewMaterializer {
       let extent=graph.image.extent
       let limit=maxPixel<=0 ? max(extent.width,extent.height):CGFloat(max(64,min(4096,maxPixel)))
       let scale=min(1,limit/max(extent.width,extent.height))
-      var final=graph.image
-      if scale<1{final=final.transformed(by:.init(scaleX:scale,y:scale))}
+      let final=graph.displayImage(scale:scale)
       let bounds=final.extent.integral
       guard bounds.minX==0,bounds.minY==0,Int(bounds.width)==managedOutput.layout.width,Int(bounds.height)==managedOutput.layout.height else{throw PreviewPresentationError.invalidLayout}
       let image=PreviewInteractiveProxyV3.canvas(final,width:managedOutput.layout.width,height:managedOutput.layout.height)
       return try managedOutput.materialize(image,context:context,nativeSize:graph.canonicalSize,fallback:managedFallbackReason,check:managedCheck ?? {})
     }
-    var image = graph.image
-    let limit = maxPixel <= 0 ? max(image.extent.width,image.extent.height):CGFloat(max(64,min(4096,maxPixel)))
-    let factor = min(1,limit/max(image.extent.width,image.extent.height))
-    if factor < 1 { image = image.transformed(by:.init(scaleX:factor,y:factor)) }
+    let size=graph.canonicalSize, longEdge=max(size.width,size.height)
+    let limit=maxPixel <= 0 ? longEdge:CGFloat(max(64,min(4096,maxPixel)))
+    let image=graph.displayImage(scale:min(1,limit/longEdge))
     if let presentation {
       try presentation.requireOpenAdmission()
       // Do not infer CGImage canvas rounding for fractional extents or translate

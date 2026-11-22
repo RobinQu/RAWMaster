@@ -1,0 +1,13 @@
+Test Suite 'Selected tests' started at 2026-11-22 18:53:07.329.
+Test Suite 'RAWMasterImagingTests.xctest' started at 2026-11-22 18:53:07.330.
+Test Suite 'NativeGlobalFiniteProofTests' started at 2026-11-22 18:53:07.330.
+Test Case '-[RAWMasterImagingTests.NativeGlobalFiniteProofTests testFailedCancelledAndOverlappingScansNeverPublishAnUnfinishedProof]' started.
+Test Case '-[RAWMasterImagingTests.NativeGlobalFiniteProofTests testFailedCancelledAndOverlappingScansNeverPublishAnUnfinishedProof]' passed (0.001 seconds).
+Test Case '-[RAWMasterImagingTests.NativeGlobalFiniteProofTests testProofFollowsOneLiveTextureAtOneStage]' started.
+Test Case '-[RAWMasterImagingTests.NativeGlobalFiniteProofTests testProofFollowsOneLiveTextureAtOneStage]' passed (0.001 seconds).
+Test Suite 'NativeGlobalFiniteProofTests' passed at 2026-11-22 18:53:07.333.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-22 18:53:07.333.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'Selected tests' passed at 2026-11-22 18:53:07.333.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds

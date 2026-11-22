@@ -1,0 +1,228 @@
+{
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "beforeBinarySHA256": "d5f0c602bd451b7f1311fff4dda917818e2ab04a7e9424dad2734ab080060afd",
+  "afterBinarySHA256": "06cd00a40076d56077e8f285462054f22e3805762c64e19a6f1dffc668cdb642",
+  "before": "history/rawmaster-panel-schedule-d5f0c602.json",
+  "after": "history/rawmaster-panel-schedule-06cd00a4.json",
+  "sameStates": 62,
+  "stateCount": 62,
+  "controls": [
+    {
+      "id": "color-temp-raw",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "color-tint",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-texture",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-clarity",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-grain-amount",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-grain-size",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-grain-roughness",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-pcv-amount",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-pcv-midpoint",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-pcv-roundness",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-pcv-feather",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "effects-pcv-highlights",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "curve-param-highlights",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "curve-param-lights",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "curve-param-darks",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "curve-param-shadows",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "curve-param-splits",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "mixer-hue",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "mixer-saturation",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "mixer-luminance",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-sharpen-amount",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-sharpen-radius",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-sharpen-detail",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-sharpen-masking",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-nr-luminance",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-nr-color",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "detail-nr-lum-detail",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "grading-shadows",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "grading-midtones",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "grading-highlights",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    },
+    {
+      "id": "grading-global",
+      "identicalSettledRaster": [
+        true,
+        true
+      ]
+    }
+  ]
+}

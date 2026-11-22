@@ -1,0 +1,77 @@
+{
+  "nativeX": 7278,
+  "nativeY": 3100,
+  "witness": "Worst normal TIFF vs CPU FlashRaw reference; fresh independent pinned convolution on both input backends (CPU-only prediction).",
+  "rows": [
+    {
+      "input": "source-linear.rgbf16",
+      "linearRange": [
+        -0.0030956268310546875,
+        1.3251953125
+      ],
+      "sourceRGB": [
+        0.669921875,
+        0.434326171875,
+        0.186279296875
+      ],
+      "redSource": 0.669921875,
+      "predictedRedCells": [
+        [
+          0.6700388789176941,
+          0.66943359375
+        ],
+        [
+          0.6706416606903076,
+          0.6695734262466431
+        ]
+      ],
+      "normalTIFFRedCells": [
+        [
+          0.6706271171569824,
+          0.669445276260376
+        ],
+        [
+          0.671837568283081,
+          0.6697200536727905
+        ]
+      ],
+      "normalTIFFMeanRed": 0.6704075336456299,
+      "maxRGBError": 0.0011959075927734375
+    },
+    {
+      "input": "source-linear-gpu.rgbf16",
+      "linearRange": [
+        -0.0030956268310546875,
+        1.3251953125
+      ],
+      "sourceRGB": [
+        0.67041015625,
+        0.434326171875,
+        0.186279296875
+      ],
+      "redSource": 0.67041015625,
+      "predictedRedCells": [
+        [
+          0.6706287860870361,
+          0.6694349646568298
+        ],
+        [
+          0.671845018863678,
+          0.6697319149971008
+        ]
+      ],
+      "normalTIFFRedCells": [
+        [
+          0.6706271171569824,
+          0.669445276260376
+        ],
+        [
+          0.671837568283081,
+          0.6697200536727905
+        ]
+      ],
+      "normalTIFFMeanRed": 0.6704075336456299,
+      "maxRGBError": 1.1861324310302734e-05
+    }
+  ]
+}

@@ -1,0 +1,521 @@
+{
+  "schemaVersion": 1,
+  "exclusive": true,
+  "executableSHA256": "06cd00a40076d56077e8f285462054f22e3805762c64e19a6f1dffc668cdb642",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceAfterSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "measuredAt": "2026-11-22T09:37:18Z",
+  "start": "2026-11-22T17:36:36.034+08:00",
+  "end": "2026-11-22T17:37:18.036+08:00",
+  "scope": "One process, complete fixed 50-operation RAWMaster regression protocol, 3 interactive API completions and 1 independently settled actual frame for each recipe, all in original order. The host was reserved for this rendering suite. This comparison uses RAWMaster history; it is separate from the matched cross-product display timings.",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "decoderOverride": false,
+  "overlay": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1/scalar-mask-r32f-v2",
+  "nativeStageCount": 11,
+  "total": 50,
+  "nonTransparentFrameFailures": [],
+  "interactiveMedianRangeMs": [
+    1.784333,
+    25.336791
+  ],
+  "fixedHistoricalQuality": {
+    "measurable": 48,
+    "missing": [
+      {
+        "operation": "geometry",
+        "historicalP99": -1,
+        "currentP99": 3,
+        "fitMax": 211
+      },
+      {
+        "operation": "post-crop-vignette",
+        "historicalP99": -1,
+        "currentP99": 3,
+        "fitMax": 211
+      }
+    ],
+    "maxP99Increase": 1
+  },
+  "previousD5Quality": {
+    "measurable": 50,
+    "maxP99Increase": 0
+  },
+  "largestMeasuredPreviewSettledDifferences": [
+    {
+      "id": "point-color-samples",
+      "p99ChannelError": 18,
+      "maximumChannelError": 25
+    },
+    {
+      "id": "global-sharpen-detail",
+      "p99ChannelError": 13,
+      "maximumChannelError": 163
+    },
+    {
+      "id": "point-variance",
+      "p99ChannelError": 12,
+      "maximumChannelError": 36
+    },
+    {
+      "id": "optics-ca-distortion",
+      "p99ChannelError": 7,
+      "maximumChannelError": 125
+    },
+    {
+      "id": "exposure-color",
+      "p99ChannelError": 3,
+      "maximumChannelError": 26
+    }
+  ],
+  "selectedPreviouslySlow": {
+    "geometry": {
+      "operation": "geometry",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 6.967542,
+          "p95Ms": 10.0949664,
+          "maxMs": 10.442458,
+          "samplesMs": [
+            10.442458,
+            6.967542,
+            6.934417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 306.694958,
+          "p95Ms": 306.694958,
+          "maxMs": 306.694958,
+          "samplesMs": [
+            306.694958
+          ]
+        },
+        "outputPixels": [
+          1973,
+          1337
+        ],
+        "p99ChannelError": 3,
+        "maximumChannelError": 211
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 9.024458,
+          "p95Ms": 13.808145199999998,
+          "maxMs": 14.339666,
+          "samplesMs": [
+            14.339666,
+            9.024458,
+            8.920167
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 325.956916,
+          "p95Ms": 325.956916,
+          "maxMs": 325.956916,
+          "samplesMs": [
+            325.956916
+          ]
+        },
+        "outputPixels": [
+          1973,
+          1337
+        ],
+        "p99ChannelError": -1,
+        "maximumChannelError": -1
+      },
+      "p99ChannelErrorChange": null,
+      "interactiveMedianChangePercent": -22.792681843053618,
+      "settledMedianChangePercent": -5.909357051347241
+    },
+    "lens-blur-bokeh-boost": {
+      "operation": "lens-blur-bokeh-boost",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 5.704459,
+          "p95Ms": 6.0444709,
+          "maxMs": 6.08225,
+          "samplesMs": [
+            6.08225,
+            5.477625,
+            5.704459
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 358.904708,
+          "p95Ms": 358.904708,
+          "maxMs": 358.904708,
+          "samplesMs": [
+            358.904708
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 39
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.799,
+          "p95Ms": 16.8773378,
+          "maxMs": 16.886042,
+          "samplesMs": [
+            16.886042,
+            16.799,
+            15.691958
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 860.240416,
+          "p95Ms": 860.240416,
+          "maxMs": 860.240416,
+          "samplesMs": [
+            860.240416
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 1,
+        "maximumChannelError": 39
+      },
+      "p99ChannelErrorChange": 0,
+      "interactiveMedianChangePercent": -66.0428656467647,
+      "settledMedianChangePercent": -58.27855779331343
+    },
+    "visualise-range": {
+      "operation": "visualise-range",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.265917,
+          "p95Ms": 14.130666399999999,
+          "maxMs": 14.560083,
+          "samplesMs": [
+            14.560083,
+            9.669667,
+            10.265917
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 341.844083,
+          "p95Ms": 341.844083,
+          "maxMs": 341.844083,
+          "samplesMs": [
+            341.844083
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 1
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 12.0985,
+          "p95Ms": 12.4907497,
+          "maxMs": 12.534333,
+          "samplesMs": [
+            12.0985,
+            10.843417,
+            12.534333
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 879.013542,
+          "p95Ms": 879.013542,
+          "maxMs": 879.013542,
+          "samplesMs": [
+            879.013542
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 237,
+        "maximumChannelError": 255
+      },
+      "p99ChannelErrorChange": -237,
+      "interactiveMedianChangePercent": -15.147191800636438,
+      "settledMedianChangePercent": -61.110487305780325
+    },
+    "hue-isolation": {
+      "operation": "hue-isolation",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 9.806584,
+          "p95Ms": 10.295508100000001,
+          "maxMs": 10.349833,
+          "samplesMs": [
+            10.349833,
+            9.758375,
+            9.806584
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 345.033459,
+          "p95Ms": 345.033459,
+          "maxMs": 345.033459,
+          "samplesMs": [
+            345.033459
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 1
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 10.326375,
+          "p95Ms": 12.656737799999998,
+          "maxMs": 12.915667,
+          "samplesMs": [
+            10.326375,
+            10.023417,
+            12.915667
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 895.505375,
+          "p95Ms": 895.505375,
+          "maxMs": 895.505375,
+          "samplesMs": [
+            895.505375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 22,
+        "maximumChannelError": 128
+      },
+      "p99ChannelErrorChange": -22,
+      "interactiveMedianChangePercent": -5.033625062037739,
+      "settledMedianChangePercent": -61.47053176537327
+    },
+    "global-sharpen-mask-preview": {
+      "operation": "global-sharpen-mask-preview",
+      "current": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 16.377333,
+          "p95Ms": 75.31462049999999,
+          "maxMs": 81.863208,
+          "samplesMs": [
+            81.863208,
+            16.144959,
+            16.377333
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 1117.631709,
+          "p95Ms": 1117.631709,
+          "maxMs": 1117.631709,
+          "samplesMs": [
+            1117.631709
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 0,
+        "maximumChannelError": 1
+      },
+      "baseline": {
+        "interactive": {
+          "count": 3,
+          "medianMs": 30.234458,
+          "p95Ms": 31.5161336,
+          "maxMs": 31.658542,
+          "samplesMs": [
+            30.234458,
+            31.658542,
+            29.449417
+          ]
+        },
+        "settled": {
+          "count": 1,
+          "medianMs": 2043.61375,
+          "p95Ms": 2043.61375,
+          "maxMs": 2043.61375,
+          "samplesMs": [
+            2043.61375
+          ]
+        },
+        "outputPixels": [
+          2400,
+          1600
+        ],
+        "p99ChannelError": 209,
+        "maximumChannelError": 255
+      },
+      "p99ChannelErrorChange": -209,
+      "interactiveMedianChangePercent": -45.83222560166285,
+      "settledMedianChangePercent": -45.31101050773415
+    }
+  },
+  "gates": {
+    "absolute": {
+      "passed": true,
+      "failures": [],
+      "file": "release-operator-absolute.json"
+    },
+    "historical": {
+      "passed": true,
+      "failures": [],
+      "file": "release-operator-regression.json"
+    },
+    "previousSameDay": {
+      "passed": true,
+      "failures": [],
+      "file": "release-operator-same-day.json"
+    }
+  },
+  "raw": "release-operator-sequence.json",
+  "rawSHA256": "af1371fc69e300347f561736ae7eff0b4fb8246819a12704414b96688c639865",
+  "fixedHistorical": "history/point-curve-targeted-release-gate-repeat-20261122-interactive-performance.json",
+  "previous": "history/engine-release-d5f0c602.json",
+  "loadedPreviousRuns": [
+    "history/release-operators-099e258e-loaded.json",
+    "interactive-native-mask-release.json"
+  ],
+  "isolatedMaskABBA": "interactive-native-mask-scalar.json",
+  "simultaneousPreviousCollections": {
+    "records": [
+      {
+        "build": "099e258e",
+        "cohort": "Full release2",
+        "raw": "history/release-operators-099e258e-loaded.json",
+        "gates": {
+          "absolute": {
+            "passed": 50,
+            "failedOperations": [],
+            "evidence": "history/release-operators-099e258e-loaded-absolute.json"
+          },
+          "historical": {
+            "passed": 44,
+            "failedOperations": [
+              "dehaze-v1",
+              "dehaze-v2",
+              "geometry",
+              "hue-isolation",
+              "local-wb",
+              "post-crop-vignette"
+            ],
+            "evidence": "history/release-operators-099e258e-loaded-historical.json"
+          },
+          "same-day": {
+            "passed": 27,
+            "failedOperations": [
+              "clipping-shadows",
+              "dehaze-v1",
+              "dehaze-v2",
+              "geometry",
+              "global-noise-detail",
+              "global-sharpen-detail",
+              "hue-isolation",
+              "lens-blur-bokeh-boost",
+              "lens-blur-bokeh-ring",
+              "lens-blur-device-depth",
+              "lens-blur-procedural",
+              "local-curves",
+              "local-defringe",
+              "local-detail",
+              "local-grading",
+              "local-grain",
+              "local-hue-colorize",
+              "local-light-extended",
+              "local-wb",
+              "neutral",
+              "point-color-samples",
+              "point-variance",
+              "post-crop-vignette"
+            ],
+            "evidence": "history/release-operators-099e258e-loaded-same-day.json"
+          }
+        }
+      },
+      {
+        "build": "2199f18f",
+        "cohort": "Frozen mask qualification",
+        "raw": "history/release-operators-2199f18f.json",
+        "gates": {
+          "absolute": {
+            "passed": 50,
+            "failedOperations": [],
+            "evidence": "history/release-operators-2199f18f-absolute.json"
+          },
+          "historical": {
+            "passed": 46,
+            "failedOperations": [
+              "dehaze-v1",
+              "dehaze-v2",
+              "lens-blur-depth-preview",
+              "lens-blur-procedural"
+            ],
+            "evidence": "history/release-operators-2199f18f-historical.json"
+          },
+          "previous": {
+            "passed": 24,
+            "failedOperations": [
+              "clarity",
+              "clipping-highlights",
+              "clipping-shadows",
+              "dehaze-v1",
+              "dehaze-v2",
+              "global-noise-detail",
+              "global-sharpen-detail",
+              "lens-blur-bokeh-anamorphic",
+              "lens-blur-bokeh-boost",
+              "lens-blur-bokeh-bubble",
+              "lens-blur-bokeh-five-blade",
+              "lens-blur-bokeh-ring",
+              "lens-blur-cat-eye",
+              "lens-blur-depth-preview",
+              "lens-blur-procedural",
+              "lens-blur-refine-blur",
+              "local-detail",
+              "local-glow",
+              "local-grain",
+              "local-hue-colorize",
+              "optics-lens-profile",
+              "point-color-samples",
+              "point-variance",
+              "refine-saturation",
+              "targeted-hsl",
+              "wb-flash-preset"
+            ],
+            "evidence": "history/release-operators-2199f18f-previous.json"
+          }
+        }
+      }
+    ],
+    "overlapSeconds": 49.833,
+    "timingSource": "interactive-native-mask-release.json"
+  }
+}

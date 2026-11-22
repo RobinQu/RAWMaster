@@ -1,0 +1,15 @@
+{
+  "size": [
+    19008,
+    12672
+  ],
+  "pixels": 240869376,
+  "comparedRGBChannels": 722608128,
+  "normalExportSHA256": "1a41584b0c8f761aa32d66dd441b178c93f4fb58eea66adfda9bd4bd72878bc2",
+  "diagnosticFP16SHA256": "a5f4fbed9e1218e734c0eef77a339b38bbb3fc63aeb3994d702aa796262c6007",
+  "decodedSDR": "IEC sRGB unsigned 16-bit decoded to linear compared with independently predicted linear floating TIFF clipped to the selected output gamut",
+  "meanAbsoluteLinearError": 1.2502686214825099e-05,
+  "p95AbsoluteLinearErrorUpperBound": 5.42e-05,
+  "maxAbsoluteLinearError": 0.0014274120330810547,
+  "nonOpaqueRawPixels": 0
+}

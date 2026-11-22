@@ -1,0 +1,462 @@
+{
+  "binarySHA256" : "3816b1ab962f5b02dbeac18aaff0ea868110d71ad6018397e7c6416937f8b7a5",
+  "cameraJPEGSHA256" : "18513b39a513258b842500e423873dc7782faa400135565705e4e0f0dba70dcb",
+  "controlDNGColorimetricReference" : 0,
+  "gpu" : "Apple M4 Max",
+  "importedFilenames" : [
+    "preview-reference-0.dng",
+    "preview-reference-1.dng"
+  ],
+  "inputDNGColorimetricReference" : 1,
+  "model" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "result" : {
+    "componentWitness" : {
+      "inRangeOpaque" : 37418,
+      "p95HalfVsMidpointLumaRGB8" : 0.42779999999999063,
+      "p95ZeroAndHalfVsFullChromaRGB8" : 0.92780000000000484,
+      "p95ZeroVsSourceLumaRGB8" : 0.64299999999998647,
+      "sampled" : 49152,
+      "sourceToFullChromaChangedByTwoCodes" : 997,
+      "sourceToFullLumaChangedByTwoCodes" : 44
+    },
+    "container" : "com.adobe.raw-image",
+    "exportBits" : 16,
+    "exportMs" : 70.979832999999999,
+    "exportSHA256" : "4f3813cab550733ad9926dfd105190dc2903d35f9a3f163249b9fc515247532f",
+    "interactiveVsSettled" : {
+      "maxRGB8" : 1,
+      "meanRGB8" : 2.0345052083333332e-05,
+      "p95RGB8" : 0
+    },
+    "legacyModel" : "waifu2x-vgg7-photo-noise2-cc385f97-output-dng-v1",
+    "nativePixels" : [
+      480,
+      320
+    ],
+    "requests" : [
+      {
+        "denoiseModel" : "disabled",
+        "elapsedMs" : 48.435875000000003,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a5c7c5132b76feb4f1b98e7f246174bef192e2449f8c81a3b58c1657b3a53f69",
+        "state" : "original"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 45.027999999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "19128f337d73a604524a3c665c15f10d57d7eec8809586f7549c737620f1015f",
+        "state" : "zero"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 37.170583999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "full"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 32.445166999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "14d4fec4c2b2615991b7ec8bf415eb25167eb6f9ba55c2c01bd446268f806530",
+        "state" : "half"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 25.762167000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "e8f201ee9ba35ce2084e59354b14d70ffb3eba705920c5c7c5f28769b02ca2b5",
+        "state" : "fresh35"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 27.1265,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "replay100"
+      },
+      {
+        "denoiseModel" : "disabled",
+        "elapsedMs" : 14.457459,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a5c7c5132b76feb4f1b98e7f246174bef192e2449f8c81a3b58c1657b3a53f69",
+        "state" : "disabled"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 72.155709000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "533fc09cd6179bd465c842991098c6507a47c2d733f7577d5996e2e2ae5ecb86",
+        "state" : "full-settled"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-output-dng-v1",
+        "elapsedMs" : 17.599833,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a5c7c5132b76feb4f1b98e7f246174bef192e2449f8c81a3b58c1657b3a53f69",
+        "state" : "legacy-zero"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-output-dng-v1",
+        "elapsedMs" : 26.493167,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "b44f9dccc428bca46b33d7111fdbd0652de4156f57635ad9d4bac5999cd17000",
+        "state" : "legacy35"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-output-dng-v1",
+        "elapsedMs" : 24.319167,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "legacy-full"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 24.982292000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "30f49fa4e2ed773b2c6b5e7cf3dd7d9770828c3ba5978920eceecb750cfe3d42",
+        "state" : "new-11"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 25.859124999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "de0fe4f79b97b9e1fe2adc245616b7636a7e015a79c23c36b6408481271c86ed",
+        "state" : "switch-11"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.9936669999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "30f49fa4e2ed773b2c6b5e7cf3dd7d9770828c3ba5978920eceecb750cfe3d42",
+        "state" : "replay-11"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 26.471833,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "c69412e62209c1e4ec5618175bd132591ec358930777880ff355ea31dc65b37c",
+        "state" : "new-17"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.1392920000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "30f49fa4e2ed773b2c6b5e7cf3dd7d9770828c3ba5978920eceecb750cfe3d42",
+        "state" : "switch-17"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.376833,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "c69412e62209c1e4ec5618175bd132591ec358930777880ff355ea31dc65b37c",
+        "state" : "replay-17"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 33.113416000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a46dc7f68d5d8322e42038ddb2df043206167e65b888f04fcfc649380395d499",
+        "state" : "new-23"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.149,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "c69412e62209c1e4ec5618175bd132591ec358930777880ff355ea31dc65b37c",
+        "state" : "switch-23"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.2422080000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a46dc7f68d5d8322e42038ddb2df043206167e65b888f04fcfc649380395d499",
+        "state" : "replay-23"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 27.437459,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "77110dc49a8247087e0a9f8c6279d7ce4d8bfb7591de2c7c8d832a834c9afced",
+        "state" : "new-29"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.2538330000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "a46dc7f68d5d8322e42038ddb2df043206167e65b888f04fcfc649380395d499",
+        "state" : "switch-29"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.0763750000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "77110dc49a8247087e0a9f8c6279d7ce4d8bfb7591de2c7c8d832a834c9afced",
+        "state" : "replay-29"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 28.421541000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "002ab63fa7570d4249a018ada87045aef1e8a46d3db8ceb0b3af7d432a123b26",
+        "state" : "new-41"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.4762499999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "77110dc49a8247087e0a9f8c6279d7ce4d8bfb7591de2c7c8d832a834c9afced",
+        "state" : "switch-41"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.0765410000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "002ab63fa7570d4249a018ada87045aef1e8a46d3db8ceb0b3af7d432a123b26",
+        "state" : "replay-41"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 26.342375000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5bd614093fc25d6def24c66abdb3d319620c7215e969b55cd128dddae449a3a5",
+        "state" : "new-47"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.3588749999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "002ab63fa7570d4249a018ada87045aef1e8a46d3db8ceb0b3af7d432a123b26",
+        "state" : "switch-47"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.4024999999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5bd614093fc25d6def24c66abdb3d319620c7215e969b55cd128dddae449a3a5",
+        "state" : "replay-47"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 30.342375000000001,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "976c17eb7169b383ce2fcb53a6cbfe8fa6c5b9c9596e3924e821b2ebd52d4dd3",
+        "state" : "new-53"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.1638329999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "5bd614093fc25d6def24c66abdb3d319620c7215e969b55cd128dddae449a3a5",
+        "state" : "switch-53"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.615084,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "976c17eb7169b383ce2fcb53a6cbfe8fa6c5b9c9596e3924e821b2ebd52d4dd3",
+        "state" : "replay-53"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 25.998792000000002,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "fa6fc242fba97618743239603230d716b240e7967bd01a9a9ba7dcda318daf06",
+        "state" : "new-59"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.1240839999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "976c17eb7169b383ce2fcb53a6cbfe8fa6c5b9c9596e3924e821b2ebd52d4dd3",
+        "state" : "switch-59"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.0514169999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "fa6fc242fba97618743239603230d716b240e7967bd01a9a9ba7dcda318daf06",
+        "state" : "replay-59"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 26.533124999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "dfacc8b5d73d7252ae626b241cc65dcd9c58fe2ad4a6b34975f94867a6860641",
+        "state" : "new-67"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.1335829999999998,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "fa6fc242fba97618743239603230d716b240e7967bd01a9a9ba7dcda318daf06",
+        "state" : "switch-67"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.0918749999999999,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "dfacc8b5d73d7252ae626b241cc65dcd9c58fe2ad4a6b34975f94867a6860641",
+        "state" : "replay-67"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 24.863,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "cab51b53fae2340d3591f77066d5592ff369040e7650ae14052e4cc81bafec07",
+        "state" : "new-73"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.903,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "dfacc8b5d73d7252ae626b241cc65dcd9c58fe2ad4a6b34975f94867a6860641",
+        "state" : "switch-73"
+      },
+      {
+        "denoiseModel" : "waifu2x-vgg7-photo-noise2-cc385f97-full-chroma-output-dng-v2",
+        "elapsedMs" : 2.161791,
+        "presentedPixels" : [
+          480,
+          320
+        ],
+        "sampleRGBASHA256" : "cab51b53fae2340d3591f77066d5592ff369040e7650ae14052e4cc81bafec07",
+        "state" : "replay-73"
+      }
+    ],
+    "settledVsTIFF16" : {
+      "maxRGB8" : 0,
+      "meanRGB8" : 0,
+      "p95RGB8" : 0
+    },
+    "source" : "preview-reference-1.dng",
+    "sourceBits" : 16,
+    "sourceICC" : "kCGColorSpaceDisplayP3",
+    "sourceSHA256" : "b75cbb064b7a9a19c029b52665486d797eb02c0c8938568428b5db7e53794202"
+  },
+  "sceneControlSHA256" : "332449054cd8499268a8fbc7c4fe80426bbfa32ee6226ca633f8e055b355d0af",
+  "sourceOrigin" : "Output-referred LinearRaw DNG and matching scene-referred control. Full-resolution raw SubIFD, embedded small RGB preview.",
+  "weightsSHA256" : "5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5"
+}

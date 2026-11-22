@@ -94,6 +94,18 @@ public struct DevelopmentPreviewRequest: Sendable {
 public struct DevelopmentPreviewFrame: @unchecked Sendable {
   public let frameID: UUID
   public let image: NSImage
+  /// Full display pixels for white-box comparisons. The caller owns tightly packed,
+  /// top-to-bottom, premultiplied sRGB RGBA8 storage and may reuse it between frames.
+  public func copyDisplayRGBA8(into target: UnsafeMutableRawBufferPointer) throws {
+    if try PreviewSharedImageBridge.copyRGBA8(from:image,into:target) { return }
+    guard let raster = PreviewSharedImageBridge.canvasRaster(for:image) ?? image.cgImage(forProposedRect:nil,context:nil,hints:nil),
+          target.count == raster.width*raster.height*4, let bytes = target.baseAddress,
+          let bitmap = CGContext(data:bytes,width:raster.width,height:raster.height,bitsPerComponent:8,bytesPerRow:raster.width*4,
+              space:PhotoRenderer.sRGB,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue) else { throw DevelopmentError.invalidEncoding }
+    bitmap.setBlendMode(.copy)
+    bitmap.draw(raster,in:CGRect(x:0,y:0,width:raster.width,height:raster.height))
+    bitmap.flush()
+  }
   public let sessionID: DevelopmentPreviewSessionID
   public let sourceGeneration: UInt64
   public let consumerID: PreviewConsumerID

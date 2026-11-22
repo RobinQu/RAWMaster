@@ -20,6 +20,48 @@ private final class DrawObservedImage: NSImage, @unchecked Sendable {
 }
 
 final class ImageCanvasTests: XCTestCase {
+    @MainActor func testSharedCanvasRetainsSourceRasterAndMatchesAppKitAcrossZoomAndCoordinates() throws {
+        let space = CGColorSpace(name: CGColorSpace.sRGB)!
+        let bitmap = PreviewSharedImageBridge.bitmapInfo.rawValue
+        let source = try XCTUnwrap(CGContext(data:nil,width:127,height:79,bitsPerComponent:8,bytesPerRow:127*4,space:space,bitmapInfo:bitmap))
+        for y in 0..<79 {
+            for x in 0..<127 {
+                source.setFillColor(red:CGFloat(x)/126,green:CGFloat(y)/78,blue:CGFloat(x % 11)/10,alpha:x < 50 ? 0.4 : 1)
+                source.fill(CGRect(x:x,y:y,width:1,height:1))
+            }
+        }
+        let raster = try XCTUnwrap(CGImage(width:127,height:79,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:127*4,
+            space:space,bitmapInfo:PreviewSharedImageBridge.bitmapInfo,
+            provider:CGDataProvider(data:Data(bytes:try XCTUnwrap(source.data),count:127*79*4) as CFData)!,
+            decode:nil,shouldInterpolate:false,intent:.defaultIntent))
+        let shared = PreviewSharedImageBridge.presentationImage(raster)
+        let ordinary = NSImage(cgImage:raster,size:shared.size)
+        XCTAssertTrue(PreviewSharedImageBridge.canvasRaster(for:shared) === raster)
+        XCTAssertNil(PreviewSharedImageBridge.canvasRaster(for:ordinary))
+        let canvas = ImageCanvas(frame:.init(x:0,y:0,width:93,height:67))
+        func pixels(_ image:NSImage,scale:CGFloat,flipped:Bool,lowLatency:Bool) throws -> Data {
+            canvas.update(image:image,actualPixels:false,transform:.init(scale:scale,centerX:0.43,centerY:0.56),
+                          backgroundColor:.black,lowLatency:lowLatency)
+            let context = try XCTUnwrap(CGContext(data:nil,width:93,height:67,bitsPerComponent:8,bytesPerRow:93*4,space:space,bitmapInfo:bitmap))
+            NSGraphicsContext.saveGraphicsState()
+            defer { NSGraphicsContext.restoreGraphicsState() }
+            if flipped { context.translateBy(x:0,y:67);context.scaleBy(x:1,y:-1) }
+            NSGraphicsContext.current = NSGraphicsContext(cgContext:context,flipped:flipped)
+            canvas.draw(canvas.bounds)
+            context.flush()
+            return Data(bytes:try XCTUnwrap(context.data),count:93*67*4)
+        }
+        for scale in [CGFloat(1),1.65,2] {
+            for flipped in [false,true] {
+                for lowLatency in [false,true] {
+                    let reference = try pixels(ordinary,scale:scale,flipped:flipped,lowLatency:lowLatency)
+                    let rendered = try pixels(shared,scale:scale,flipped:flipped,lowLatency:lowLatency)
+                    XCTAssertGreaterThan(Set(reference).count,32)
+                    XCTAssertEqual(reference,rendered,"scale \(scale), flipped \(flipped), drag \(lowLatency)")
+                }
+            }
+        }
+    }
     func testMixedSizeCompareUsesPhysicalOneToOneAndNormalizedCenters() {
         let shared = ImageTransform(centerX: 0.61, centerY: 0.42, physicalMagnification: 1)
         let panes: [(CGSize, CGSize)] = [
@@ -48,6 +90,117 @@ final class ImageCanvasTests: XCTestCase {
             transform: ImageTransform(physicalMagnification: 1.25), backingScale: 2)
         XCTAssertEqual(zoom * 2, 1.25, accuracy: 0.000001)
     }
+    func testFitUsesSafeViewportWhileZoomCanUseFullCanvas() {
+        let pixels = CGSize(width: 1600, height: 1200)
+        let viewport = CGSize(width: 1200, height: 800)
+        let insets = NSEdgeInsets(top: 70, left: 300, bottom: 90, right: 300)
+        let fit = ImageViewportGeometry.imageRect(pixelSize: pixels, viewport: viewport,
+            transform: ImageTransform(), backingScale: 2, fitInsets: insets)
+        XCTAssertEqual(fit, CGRect(x: 300, y: 165, width: 600, height: 450))
+        XCTAssertGreaterThanOrEqual(fit.minX, insets.left)
+        XCTAssertLessThanOrEqual(fit.maxX, viewport.width - insets.right)
+        XCTAssertGreaterThanOrEqual(fit.minY, insets.top)
+        XCTAssertLessThanOrEqual(fit.maxY, viewport.height - insets.bottom)
+
+        let zoomed = ImageViewportGeometry.imageRect(pixelSize: pixels, viewport: viewport,
+            transform: ImageTransform(scale: 2), backingScale: 2, fitInsets: insets)
+        XCTAssertEqual(zoomed.size, CGSize(width: 1200, height: 900))
+        XCTAssertLessThan(zoomed.minX, fit.minX)
+        XCTAssertLessThan(zoomed.minY, fit.minY)
+        XCTAssertEqual(ImageViewportGeometry.pointScale(pixelSize: pixels, viewport: viewport,
+            transform: ImageTransform(scale: 2), backingScale: 2, fitInsets: insets), 0.75, accuracy: 0.000001)
+    }
+
+    @MainActor
+    func testBeforeAfterUsesSharedGeometryWithOriginalLeftAndCurrentRight() throws {
+        _ = NSApplication.shared
+        let canvas = ImageCanvas(frame: NSRect(x: 0, y: 0, width: 200, height: 100))
+        let original = solidImage(width: 200, height: 100, color: .green)
+        let current = solidImage(width: 200, height: 100, color: .red)
+        canvas.update(image: current, actualPixels: false, transform: ImageTransform(),
+                      comparisonImage: original, comparisonSplit: 0.5)
+        let bitmap = render(canvas)
+        let left = try XCTUnwrap(bitmap.colorAt(x: 40, y: 50)?.usingColorSpace(.deviceRGB))
+        let right = try XCTUnwrap(bitmap.colorAt(x: 160, y: 50)?.usingColorSpace(.deviceRGB))
+        XCTAssertGreaterThan(left.greenComponent, 0.9)
+        XCTAssertLessThan(left.redComponent, 0.1)
+        XCTAssertGreaterThan(right.redComponent, 0.9)
+        XCTAssertLessThan(right.greenComponent, 0.1)
+    }
+
+    @MainActor
+    func testVerticalAndInvertedWipeUseExpectedRegions() throws {
+        _ = NSApplication.shared
+        let canvas = ImageCanvas(frame: NSRect(x: 0, y: 0, width: 200, height: 100))
+        let reference = solidImage(width: 200, height: 100, color: .green)
+        let current = solidImage(width: 200, height: 100, color: .red)
+        canvas.update(image: current, actualPixels: false, transform: ImageTransform(), comparisonImage: reference,
+                      comparison: .init(mode: .wipeVertical, amount: 0.5))
+        var bitmap = render(canvas)
+        // NSBitmapImageRep samples use bottom-up coordinates; the canvas is top-down.
+        XCTAssertGreaterThan(try XCTUnwrap(bitmap.colorAt(x: 100, y: 75)?.usingColorSpace(.deviceRGB)).greenComponent, 0.9)
+        XCTAssertGreaterThan(try XCTUnwrap(bitmap.colorAt(x: 100, y: 25)?.usingColorSpace(.deviceRGB)).redComponent, 0.9)
+        canvas.update(image: current, actualPixels: false, transform: ImageTransform(), comparisonImage: reference,
+                      comparison: .init(mode: .wipeHorizontal, amount: 0.5, inverted: true))
+        bitmap = render(canvas)
+        XCTAssertGreaterThan(try XCTUnwrap(bitmap.colorAt(x: 40, y: 50)?.usingColorSpace(.deviceRGB)).redComponent, 0.9)
+        XCTAssertGreaterThan(try XCTUnwrap(bitmap.colorAt(x: 160, y: 50)?.usingColorSpace(.deviceRGB)).greenComponent, 0.9)
+    }
+
+    @MainActor
+    func testMixUsesCurrentOpacityAndInversion() throws {
+        _ = NSApplication.shared
+        let canvas = ImageCanvas(frame: NSRect(x: 0, y: 0, width: 200, height: 100))
+        let reference = solidImage(width: 200, height: 100, color: .green)
+        let current = solidImage(width: 200, height: 100, color: .red)
+        for inverted in [false, true] {
+            canvas.update(image: current, actualPixels: false, transform: ImageTransform(), comparisonImage: reference,
+                          comparison: .init(mode: .mix, amount: 0.25, inverted: inverted))
+            let color = try XCTUnwrap(render(canvas).colorAt(x: 100, y: 50)?.usingColorSpace(.deviceRGB))
+            XCTAssertEqual(color.redComponent, inverted ? 0.75 : 0.25, accuracy: 0.03)
+            XCTAssertEqual(color.greenComponent, inverted ? 0.25 : 0.75, accuracy: 0.03)
+        }
+    }
+
+    @MainActor
+    func testDifferenceIsBlackForEqualDisplayPixels() throws {
+        _ = NSApplication.shared
+        let canvas = ImageCanvas(frame: NSRect(x: 0, y: 0, width: 200, height: 100))
+        let reference = solidImage(width: 200, height: 100, color: .green)
+        let current = solidImage(width: 200, height: 100, color: .red)
+        canvas.update(image: reference, actualPixels: false, transform: ImageTransform(), comparisonImage: reference,
+                      comparison: .init(mode: .difference))
+        var color = try XCTUnwrap(render(canvas).colorAt(x: 100, y: 50)?.usingColorSpace(.deviceRGB))
+        XCTAssertEqual(color.redComponent, 0, accuracy: 0.03)
+        XCTAssertEqual(color.greenComponent, 0, accuracy: 0.03)
+        XCTAssertEqual(color.blueComponent, 0, accuracy: 0.03)
+        canvas.update(image: current, actualPixels: false, transform: ImageTransform(), comparisonImage: reference,
+                      comparison: .init(mode: .difference))
+        color = try XCTUnwrap(render(canvas).colorAt(x: 100, y: 50)?.usingColorSpace(.deviceRGB))
+        XCTAssertEqual(color.redComponent, 1, accuracy: 0.03)
+        XCTAssertEqual(color.greenComponent, 1, accuracy: 0.03)
+        XCTAssertEqual(color.blueComponent, 0, accuracy: 0.03)
+    }
+
+    @MainActor
+    func testCheckerboardAlternatesAndInvertsTiles() throws {
+        _ = NSApplication.shared
+        let canvas = ImageCanvas(frame: NSRect(x: 0, y: 0, width: 200, height: 100))
+        let reference = solidImage(width: 200, height: 100, color: .green)
+        let current = solidImage(width: 200, height: 100, color: .red)
+        for inverted in [false, true] {
+            canvas.update(image: current, actualPixels: false, transform: ImageTransform(), comparisonImage: reference,
+                          comparison: .init(mode: .checkerboard, inverted: inverted))
+            let bitmap = render(canvas)
+            for (x, y, even) in [(20, 20, true), (80, 20, false), (20, 80, false), (80, 80, true)] {
+                let color = try XCTUnwrap(bitmap.colorAt(x: x, y: 99 - y)?.usingColorSpace(.deviceRGB))
+                let showsCurrent = inverted ? !even : even
+                XCTAssertEqual(color.redComponent, showsCurrent ? 1 : 0, accuracy: 0.03)
+                XCTAssertEqual(color.greenComponent, showsCurrent ? 0 : 1, accuracy: 0.03)
+            }
+        }
+    }
+
     @MainActor
     func testMagnifiedCanvasClipsOversizedImageToBounds() throws {
         _ = NSApplication.shared
@@ -162,6 +315,31 @@ final class ImageCanvasTests: XCTestCase {
         let lightColor = try XCTUnwrap(light.colorAt(x: 20, y: 20)?.usingColorSpace(.deviceRGB))
         let darkColor = try XCTUnwrap(dark.colorAt(x: 20, y: 20)?.usingColorSpace(.deviceRGB))
         XCTAssertGreaterThan(lightColor.redComponent - darkColor.redComponent, 0.2)
+    }
+    @MainActor
+    func testIdenticalImageTransformAndActualPixelUpdatesDoNotInvalidateCanvas() throws {
+        _ = NSApplication.shared
+        let canvas = ImageCanvas(frame: NSRect(x: 0, y: 0, width: 320, height: 240))
+        var invalidations = 0
+        canvas.invalidationObserverForTesting = { invalidations += 1 }
+        let image = solidImage(width: 800, height: 600, color: .white)
+        let state = ImageTransform(scale: 1.2, centerX: 0.55, centerY: 0.45)
+        canvas.update(image: image, actualPixels: false, transform: state, backgroundColor: .black)
+        XCTAssertEqual(invalidations, 1)
+        canvas.update(image: image, actualPixels: false, transform: state, backgroundColor: .black)
+        XCTAssertEqual(invalidations, 1)
+        var changed = state; changed.scale = 1.4
+        canvas.update(image: image, actualPixels: false, transform: changed, backgroundColor: .black)
+        XCTAssertEqual(invalidations, 2)
+        canvas.update(image: image, actualPixels: true, transform: changed, backgroundColor: .black)
+        XCTAssertEqual(invalidations, 3)
+        canvas.update(image: image, actualPixels: true, transform: changed, backgroundColor: .black)
+        XCTAssertEqual(invalidations, 3, "Resolved physical magnification must not cause perpetual redraws")
+    }
+    func testInterpolationPolicyPreservesExactAndSettledQuality() {
+        XCTAssertEqual(ImageCanvasInterpolationPolicy.resolve(exactPixels: true, lowLatency: true), .none)
+        XCTAssertEqual(ImageCanvasInterpolationPolicy.resolve(exactPixels: false, lowLatency: true), .medium)
+        XCTAssertEqual(ImageCanvasInterpolationPolicy.resolve(exactPixels: false, lowLatency: false), .high)
     }
     @MainActor
     private func mount(_ canvas: ImageCanvas) -> NSWindow {

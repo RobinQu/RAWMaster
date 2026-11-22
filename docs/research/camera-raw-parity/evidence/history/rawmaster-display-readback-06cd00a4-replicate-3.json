@@ -1,0 +1,2310 @@
+{
+  "application" : "RAWMaster",
+  "binarySHA256" : "06cd00a40076d56077e8f285462054f22e3805762c64e19a6f1dffc668cdb642",
+  "boundary" : "Changed resident recipe to complete CPU-accessible sRGB RGBA8 display buffer; hash outside timer",
+  "cachePolicy" : "shipping defaults",
+  "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "distinctInputCount" : 20,
+  "gpu" : "Apple M4 Max",
+  "operations" : [
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "537ce8eea314bd90fa64f0bf664551f9c54e45ed22da7ca22260771b3fe728d4",
+          "ms" : 3.3939159999999999,
+          "transferMs" : 0.29133300000000001,
+          "value" : 0.040000000000000001
+        },
+        {
+          "digest" : "c3ea50983fe137b01fac8b400f1bd3d6c73d1bf1565b7a5dd579477c8166be48",
+          "ms" : 3.3529170000000001,
+          "transferMs" : 0.28820800000000002,
+          "value" : 0.080000000000000002
+        },
+        {
+          "digest" : "1040291749b3a097ca499795856570143390f4ee2977681043d9d04bc0843138",
+          "ms" : 3.3290419999999998,
+          "transferMs" : 0.29099999999999998,
+          "value" : 0.12
+        },
+        {
+          "digest" : "048f9ec9668dec21c46784c25645b93f8c8946204b1a9e84895bf8f226bafba2",
+          "ms" : 3.6300840000000001,
+          "transferMs" : 0.29333399999999998,
+          "value" : 0.16
+        },
+        {
+          "digest" : "d6cb9ce09e2f1dcd49060183c583eaf06c07bacef3dc81be31c0fa35b2334f02",
+          "ms" : 3.3485830000000001,
+          "transferMs" : 0.31354199999999999,
+          "value" : 0.20000000000000001
+        },
+        {
+          "digest" : "a9ab9ceaed3ebf6dcd7b1ddd7d1d25a9dd4410a7625ae727485c36ee8c486ebe",
+          "ms" : 3.4880420000000001,
+          "transferMs" : 0.28925000000000001,
+          "value" : 0.23999999999999999
+        },
+        {
+          "digest" : "493a64f7cac7bf24f09fa4a5decc4c0e6437bc5f1cc03162c8e2c46685d17e6d",
+          "ms" : 3.3878750000000002,
+          "transferMs" : 0.30633300000000002,
+          "value" : 0.28000000000000003
+        },
+        {
+          "digest" : "fadd792a8933396dc271de180f176ef316e75b96b69c7a9d1ec2a9ad470f7224",
+          "ms" : 3.5381659999999999,
+          "transferMs" : 0.294375,
+          "value" : 0.32000000000000001
+        },
+        {
+          "digest" : "9feb0ab30a2c12fb1aa0604ef169ad134457e1af221ebd5da764300a38f182d7",
+          "ms" : 3.393084,
+          "transferMs" : 0.30962499999999998,
+          "value" : 0.35999999999999999
+        },
+        {
+          "digest" : "757ed48c09db50caca6eb7939da270b4c25be563ec4c7a9698d3ac6ecfd3d8dd",
+          "ms" : 4.0582500000000001,
+          "transferMs" : 0.30191699999999999,
+          "value" : 0.40000000000000002
+        },
+        {
+          "digest" : "c3779c5b12d77c43087ed449d182117ffb1451e6783eed24615ee209961e6215",
+          "ms" : 3.1742089999999998,
+          "transferMs" : 0.30312499999999998,
+          "value" : 0.44
+        },
+        {
+          "digest" : "e811e271584ab2504b65d8ae5823011dc71c3119f275626077df3722cbda74ec",
+          "ms" : 3.2890000000000001,
+          "transferMs" : 0.29049999999999998,
+          "value" : 0.47999999999999998
+        },
+        {
+          "digest" : "c23e762ae72338b514ef2ad66548344dd8c76d3018c0d4ab6f4f4e0f56491b69",
+          "ms" : 3.4351250000000002,
+          "transferMs" : 0.28816599999999998,
+          "value" : 0.52000000000000002
+        },
+        {
+          "digest" : "8e2cc771594b79d381c9f153893b40fe08431727e1e05b39dc3ad68fdffe4dd9",
+          "ms" : 3.3057080000000001,
+          "transferMs" : 0.30325000000000002,
+          "value" : 0.56000000000000005
+        },
+        {
+          "digest" : "d49b7053dccad1c9774d6188876c5a31bcb97075ae7ddbb789f94a99686044db",
+          "ms" : 3.4602909999999998,
+          "transferMs" : 0.29279100000000002,
+          "value" : 0.59999999999999998
+        },
+        {
+          "digest" : "6374cb69953f272bab9ead2d12bace85ff7c0958c95db3eafa5c032618b5d2a6",
+          "ms" : 3.3773330000000001,
+          "transferMs" : 0.30162499999999998,
+          "value" : 0.64000000000000001
+        },
+        {
+          "digest" : "94b8a4eb310050b4e3745a2cda0d3847422cad49d61c86258bec168ad60dd3f4",
+          "ms" : 4.7386670000000004,
+          "transferMs" : 0.31366699999999997,
+          "value" : 0.68000000000000005
+        },
+        {
+          "digest" : "31e190133a22ff6e1c517bcc317c7dbce6c8f7b0312f1412bf643b3a9c8e41f3",
+          "ms" : 3.435333,
+          "transferMs" : 0.30316700000000002,
+          "value" : 0.71999999999999997
+        },
+        {
+          "digest" : "033a6f9e43ce73052fe919ead545b2729bae3529ffad7010dbd8438548411ba0",
+          "ms" : 4.7861669999999998,
+          "transferMs" : 0.29370800000000002,
+          "value" : 0.76000000000000001
+        },
+        {
+          "digest" : "84c2955adb2aa9e2ee3c65bdfb026084db15886ea71da4050701ccf42f603e69",
+          "ms" : 3.3552919999999999,
+          "transferMs" : 0.31645800000000002,
+          "value" : 0.80000000000000004
+        }
+      ],
+      "id" : "light-exposure",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 140.81545800000001,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.95716599999999996
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 4.2848329999999999,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.34866599999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1302919999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29004200000000002
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.544292,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.34612500000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1164580000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.307
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.5044590000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30454199999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.991042,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31570799999999999
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.5199579999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29549999999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9352499999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.27295900000000001
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.3362919999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31816699999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0500419999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.278333
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.2342499999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30349999999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9318329999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.284833
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.4814579999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29408299999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8540000000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.263791
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.1377090000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30095899999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1444589999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.27945900000000001
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.192167,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30329200000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9387909999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30149999999999999
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.3734999999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.28958299999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.863208,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30666599999999999
+        },
+        {
+          "digest" : "50342f63b6e457cc6d59ac1e7e6c900f4355fe0c1815fc05a584ffb608fd1046",
+          "ms" : 3.1186669999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31604199999999999
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        0.5
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "e79a5a45d2a4e241b591f2b10093c0e8d13cf37f994de6189c0ac8c7ab4ef2f4",
+          "ms" : 3.302,
+          "transferMs" : 0.27620800000000001,
+          "value" : 1
+        },
+        {
+          "digest" : "4bf7bb8d8ff297b4f5bb206db8f298034c243587c9048f8cafb415cbff3fe365",
+          "ms" : 3.171875,
+          "transferMs" : 0.308417,
+          "value" : 2
+        },
+        {
+          "digest" : "6128ec646a447e79eefcf2427c72821eee187d4dc16a7d58bd89c49f6cb1df45",
+          "ms" : 3.4902920000000002,
+          "transferMs" : 0.31479200000000002,
+          "value" : 3
+        },
+        {
+          "digest" : "0a6c432434e5f3ddef19b7759cd96cb4570198eaabf935ff1b9df349ed8bc7a8",
+          "ms" : 3.2119580000000001,
+          "transferMs" : 0.309583,
+          "value" : 4
+        },
+        {
+          "digest" : "f724c85d147c178fa31a8b0acb4379aaf9996bb4e3b054bf1f9a6e9d01e2487f",
+          "ms" : 3.8755829999999998,
+          "transferMs" : 0.35525000000000001,
+          "value" : 5
+        },
+        {
+          "digest" : "996f72a7fb251c52dc7ed287bf0d3d737259d6deea1be4afa3883cb42264b911",
+          "ms" : 3.3931659999999999,
+          "transferMs" : 0.298041,
+          "value" : 6
+        },
+        {
+          "digest" : "e86b7282b99eaaa4ab88ef535e5d197dccdd5c229cec58afc70d1ee29940f826",
+          "ms" : 4.1488329999999998,
+          "transferMs" : 0.371083,
+          "value" : 7
+        },
+        {
+          "digest" : "42d7cc1928cb2cfc7ecbcd8f12acd3cb8803fc1c9b186a0afdbabd042441f4f5",
+          "ms" : 3.498167,
+          "transferMs" : 0.31870799999999999,
+          "value" : 8
+        },
+        {
+          "digest" : "e6ca770ebf86157323afd6ee720a1f010fe0f98d5025bd3f8c4c5c5af8d25fab",
+          "ms" : 3.5200830000000001,
+          "transferMs" : 0.38024999999999998,
+          "value" : 9
+        },
+        {
+          "digest" : "d287e57536ab1b197ed87abf8f2fcfce2c0d6e6e63619bc8fe76198176b9d855",
+          "ms" : 3.5063339999999998,
+          "transferMs" : 0.30916700000000003,
+          "value" : 10
+        },
+        {
+          "digest" : "daff6d026e0cfdeb739d25c17b44cf094747d9904016b5dd3828080e0e7e1693",
+          "ms" : 3.448458,
+          "transferMs" : 0.35333300000000001,
+          "value" : 11
+        },
+        {
+          "digest" : "abd2abe0a2a7a05723988cc97983d294c8a8197db44c9d2e664c454977f923c4",
+          "ms" : 4.5049999999999999,
+          "transferMs" : 0.31108400000000003,
+          "value" : 12
+        },
+        {
+          "digest" : "2b7f2d3b7f5001e0f767ae4d880448c974c88d62c3301423d87bc9ff0c781045",
+          "ms" : 3.3370000000000002,
+          "transferMs" : 0.35583399999999998,
+          "value" : 13
+        },
+        {
+          "digest" : "fff6acd451853294b20a2deeff2659533530fe883d53817ef560828ce14195ef",
+          "ms" : 3.4456250000000002,
+          "transferMs" : 0.30579200000000001,
+          "value" : 14
+        },
+        {
+          "digest" : "d62fab7bb2286a70e4be3d7b77c637be5ac5b95865f8422f1530b2d4cc6dca55",
+          "ms" : 3.320084,
+          "transferMs" : 0.31387500000000002,
+          "value" : 15
+        },
+        {
+          "digest" : "23d923c0ea3ef9bf4a216dfcd605e76e5cd3f69b075b97beefc6415a31415b25",
+          "ms" : 4.0905829999999996,
+          "transferMs" : 0.38091700000000001,
+          "value" : 16
+        },
+        {
+          "digest" : "6fc7f8202c178be0a74a014d7b9dbe8a41ff320bf29b6e9ce6e472212ed53786",
+          "ms" : 3.2853750000000002,
+          "transferMs" : 0.29162500000000002,
+          "value" : 17
+        },
+        {
+          "digest" : "0db8c55c2bf0218fd1856a1d83b85c95de47b2d134929c0c69bfb474a9a6bd1c",
+          "ms" : 4.310708,
+          "transferMs" : 0.29466599999999998,
+          "value" : 18
+        },
+        {
+          "digest" : "1ab4ebe8e603575e791b0575b0b894b165fd32888e577ada8364118a81c5829b",
+          "ms" : 3.297542,
+          "transferMs" : 0.33283299999999999,
+          "value" : 19
+        },
+        {
+          "digest" : "e3fb6c974f4ee18dc6285a65aeb59c5e989903458d09ca0cd715c2d4f27bdcd8",
+          "ms" : 3.2312500000000002,
+          "transferMs" : 0.31245800000000001,
+          "value" : 20
+        }
+      ],
+      "id" : "light-contrast",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8467499999999999,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.32516699999999998
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.7149999999999999,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.30320799999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0291250000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28887499999999999
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.5827909999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.287416
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9085829999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28095799999999999
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.244542,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29999999999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9501250000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31479200000000002
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.2216659999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.27237499999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.854708,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29025000000000001
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.5455000000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31070900000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8585419999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.299458
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.0708340000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30516700000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0054590000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30320900000000001
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 4.0043329999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.25304100000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7965420000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28925000000000001
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.7645840000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29683399999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8831659999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29149999999999998
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.2627920000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.309
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1872090000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31704199999999999
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.2422909999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.295541
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7355,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29241699999999998
+        },
+        {
+          "digest" : "73cde9bb144c27d0f8c811f16ee4cf915b0c0798832c657d65027262107d41fe",
+          "ms" : 3.521833,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.326625
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "b9aac836bdbc11811840b3fe4b4a133910ffa99cb89971f95ff27fd75c4dd0f6",
+          "ms" : 3.5090409999999999,
+          "transferMs" : 0.32883299999999999,
+          "value" : 1
+        },
+        {
+          "digest" : "650e0e91322da997d7611d2ca4f6c8ea66260fc7e7ca6efb57b038e9f0b66e55",
+          "ms" : 4.3375000000000004,
+          "transferMs" : 0.28870800000000002,
+          "value" : 2
+        },
+        {
+          "digest" : "c9e823f54d62cae6633933ae2bca45442b7aa5d9ce3cf2f96fe0d35d45f0ee3a",
+          "ms" : 3.6782499999999998,
+          "transferMs" : 0.37595800000000001,
+          "value" : 3
+        },
+        {
+          "digest" : "682edb8e8686928ec94b05e6f6344a395c0ccf6c85905c4a8fb73156cc16edbe",
+          "ms" : 3.6692499999999999,
+          "transferMs" : 0.29675000000000001,
+          "value" : 4
+        },
+        {
+          "digest" : "3f5f8c4df6bc32a5c14103d8e246c98fb18450ae380230caaa9add4cee075d1e",
+          "ms" : 3.8141250000000002,
+          "transferMs" : 0.33562500000000001,
+          "value" : 5
+        },
+        {
+          "digest" : "8a6bc2bd16f960c35501d22932e262a2ce109ce5dcc365b49725261367f99dc1",
+          "ms" : 3.3838750000000002,
+          "transferMs" : 0.31983400000000001,
+          "value" : 6
+        },
+        {
+          "digest" : "c692016b35363c692412bde41ae9d704610f7b900f502257274440708b0ec84d",
+          "ms" : 3.3540000000000001,
+          "transferMs" : 0.35466700000000001,
+          "value" : 7
+        },
+        {
+          "digest" : "acb1d2b2f17b01cdc4dd8d061a4aa7f7138c27d6c9c0a13d5ec2349da4b62066",
+          "ms" : 3.3707500000000001,
+          "transferMs" : 0.28962500000000002,
+          "value" : 8
+        },
+        {
+          "digest" : "bef0b239066940a1857af05bac7eb952de825e9c77ce7ddf49c5c08a765799df",
+          "ms" : 3.5625,
+          "transferMs" : 0.29049999999999998,
+          "value" : 9
+        },
+        {
+          "digest" : "9a751266e40014ef1c3902300fafc6a85c966dc9eff1ad3cfa0c4113dc409988",
+          "ms" : 3.8835000000000002,
+          "transferMs" : 0.31520799999999999,
+          "value" : 10
+        },
+        {
+          "digest" : "7623eb17a7c138cc1974317bb87d53e330e05a26e5175481480c62e01e253c26",
+          "ms" : 3.8221250000000002,
+          "transferMs" : 0.392542,
+          "value" : 11
+        },
+        {
+          "digest" : "3f98dd10b3c2d46d6b930f87b26dc38a0e2b82d26b8c269787785b32b3020858",
+          "ms" : 3.4607920000000001,
+          "transferMs" : 0.293792,
+          "value" : 12
+        },
+        {
+          "digest" : "c89d5e67a7e2fb9d2d74091b692ce9cb1d1d412d5a721369cb2395288ed4978a",
+          "ms" : 3.7019579999999999,
+          "transferMs" : 0.29741699999999999,
+          "value" : 13
+        },
+        {
+          "digest" : "68e74d0a0c169fe1640658c511cf8b35bbd2fa34ebf8c49c91f1cf9339f542d9",
+          "ms" : 3.3042919999999998,
+          "transferMs" : 0.26674999999999999,
+          "value" : 14
+        },
+        {
+          "digest" : "e590dd806ee67c5971b08b79e6bb99c2df18188625e90ae4d663a317784083b6",
+          "ms" : 4.1516250000000001,
+          "transferMs" : 0.30762499999999998,
+          "value" : 15
+        },
+        {
+          "digest" : "e869e47dc6f5ddcc07ca17b687af243d4533e30da27cd23ccbc951b330ebb550",
+          "ms" : 3.6360839999999999,
+          "transferMs" : 0.37054199999999998,
+          "value" : 16
+        },
+        {
+          "digest" : "5cb6356c6e20766c6ed6ccbf368ae02acd7d719affbba3ae90b48b030017dcdf",
+          "ms" : 3.4849589999999999,
+          "transferMs" : 0.31862499999999999,
+          "value" : 17
+        },
+        {
+          "digest" : "594290bee2488b20f8c6fbaa23aeaeb2ace4402cd4ab8a524f599a328747c7de",
+          "ms" : 3.6736249999999999,
+          "transferMs" : 0.30212499999999998,
+          "value" : 18
+        },
+        {
+          "digest" : "8548b8311d0f4e75d31a1f4a5ee1580f905039e9567a3be0ec6fa46ae51a57a7",
+          "ms" : 3.4862500000000001,
+          "transferMs" : 0.377083,
+          "value" : 19
+        },
+        {
+          "digest" : "a24adeb6b033da57130e289d96f76a7f4f5206a06d890d70c0436c2eb285d582",
+          "ms" : 3.9624999999999999,
+          "transferMs" : 0.27725,
+          "value" : 20
+        }
+      ],
+      "id" : "light-highlights",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8134589999999999,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.30479200000000001
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 12.378500000000001,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.36183300000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.023917,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.332625
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 3.6306669999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29299999999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0074999999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.34350000000000003
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 4.4480000000000004,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.32004100000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2673749999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29654199999999997
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 4.2482499999999996,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31604199999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.4788329999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.25695800000000002
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 3.5619170000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29504200000000003
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3680829999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29599999999999999
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 3.3072080000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.35037499999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.88375,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.301541
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 4.0604579999999997,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.33445799999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7943750000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28449999999999998
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 3.2688329999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30354100000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.171459,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.369417
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 3.1707909999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30525000000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4139590000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30966700000000003
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 4.1871660000000004,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.33154099999999997
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7627090000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30229200000000001
+        },
+        {
+          "digest" : "6d2e5a5f7cfd9493e9f3b9129e1284de6d944307bfde8b634fb5b002e85873a8",
+          "ms" : 5.0171659999999996,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29499999999999998
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "40ee73fa8b27e5196f18f309dc046063338fd62c3e979cbb9f046dd4c0cff4c6",
+          "ms" : 3.8225419999999999,
+          "transferMs" : 0.28225,
+          "value" : 1
+        },
+        {
+          "digest" : "60d618111f66ef38e021e005a99481f7d15b7fe77d9e42536600647bf79a2d1e",
+          "ms" : 3.5973329999999999,
+          "transferMs" : 0.31612499999999999,
+          "value" : 2
+        },
+        {
+          "digest" : "ef1adbe705f43cb2e0f8422a583c56c60f42cc622f4640d9a40d416eb4af1026",
+          "ms" : 3.650792,
+          "transferMs" : 0.36545800000000001,
+          "value" : 3
+        },
+        {
+          "digest" : "566ceb057dd9bfd94256f165950c7ee3aedc51076ae9feffdb349bff44015fe6",
+          "ms" : 3.7150409999999998,
+          "transferMs" : 0.31083300000000003,
+          "value" : 4
+        },
+        {
+          "digest" : "a349f23031412dcc234b0134a3cb5c597362ccd41c4c47c7917df144faf59a6d",
+          "ms" : 3.449541,
+          "transferMs" : 0.31379099999999999,
+          "value" : 5
+        },
+        {
+          "digest" : "679e22767e3a708f56832068240acf9dea29179489e978389e1e90ff950bda79",
+          "ms" : 3.5559590000000001,
+          "transferMs" : 0.36125000000000002,
+          "value" : 6
+        },
+        {
+          "digest" : "cbf3c86e081deafbd587b3944b22357c564de5e13938729b529f91f8afa85d26",
+          "ms" : 4.2621250000000002,
+          "transferMs" : 0.269625,
+          "value" : 7
+        },
+        {
+          "digest" : "768774465da3023e6e06fa728be84e95f28d5e7c4b37d81b4906a87de04a3d6d",
+          "ms" : 5.9799170000000004,
+          "transferMs" : 0.49812499999999998,
+          "value" : 8
+        },
+        {
+          "digest" : "a2ab93bfa61596993016edf44588217f39d7d6385e0f7afe8a7ed46dbe8d3fdd",
+          "ms" : 4.8730000000000002,
+          "transferMs" : 0.359541,
+          "value" : 9
+        },
+        {
+          "digest" : "2f8151d73856bc1ec813e14ba9bfd4be16a6f60040ccc52c63d0f7cf327ddb30",
+          "ms" : 4.2406249999999996,
+          "transferMs" : 0.31045800000000001,
+          "value" : 10
+        },
+        {
+          "digest" : "8d8a03442250d61895e730feb212a243c31e59fbd3a31ae5dd913ca9f5d354d5",
+          "ms" : 3.9978750000000001,
+          "transferMs" : 0.30245899999999998,
+          "value" : 11
+        },
+        {
+          "digest" : "374981248d5fd99f9773a7d9685c9eb62ec1e1fdf88b94d6bf21a45ebfc411c9",
+          "ms" : 3.9365830000000002,
+          "transferMs" : 0.30020799999999997,
+          "value" : 12
+        },
+        {
+          "digest" : "e533f5d90253c7b5112b68ef375ca2e280220fdb6e436333bb3ec5762bf795f9",
+          "ms" : 3.8376250000000001,
+          "transferMs" : 0.32154199999999999,
+          "value" : 13
+        },
+        {
+          "digest" : "2e97c87a1ec1f757731dc1079e0d4bc9dab0903772384583ef3a4c11090efe80",
+          "ms" : 4.1052080000000002,
+          "transferMs" : 0.30283300000000002,
+          "value" : 14
+        },
+        {
+          "digest" : "f989779bc718ce3183587198231b44fa756028a2983a4e862a8db0c466194c89",
+          "ms" : 3.8322910000000001,
+          "transferMs" : 0.325291,
+          "value" : 15
+        },
+        {
+          "digest" : "9c6ea1d2d614e09727e63f21ab2c856a8cddad95b98ae93c629970cd3ef19299",
+          "ms" : 4.0852919999999999,
+          "transferMs" : 0.33945900000000001,
+          "value" : 16
+        },
+        {
+          "digest" : "3de0a40488c44e0b8896d20df9fd8dd5f19d4ac2da30fce5373886fca9a5fb86",
+          "ms" : 4.26675,
+          "transferMs" : 0.342416,
+          "value" : 17
+        },
+        {
+          "digest" : "0e40f8d8c91025711972de10b428acbfedff541710e6c7d07b5e357288d836cb",
+          "ms" : 4.6665409999999996,
+          "transferMs" : 0.30933300000000002,
+          "value" : 18
+        },
+        {
+          "digest" : "777bc9fd00a53644c219ba226dc2e8cd8be1e91e2cc5ee9c4aa1e97d1e4926e0",
+          "ms" : 3.9806249999999999,
+          "transferMs" : 0.30387500000000001,
+          "value" : 19
+        },
+        {
+          "digest" : "27dd55a2c0e632a7bb8a6bf7a1f3d7bcb2d621d312425e008d157bd8b76bc82b",
+          "ms" : 5.821625,
+          "transferMs" : 0.293792,
+          "value" : 20
+        }
+      ],
+      "id" : "light-shadows",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8707910000000001,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.28187499999999999
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 4.0469160000000004,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.343916
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9015839999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29483399999999998
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.4542920000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.310083
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.6706660000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.32800000000000001
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.3909579999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29391699999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7821659999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30608299999999999
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.7832910000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.34412500000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.831083,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29691600000000001
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.9870420000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31850000000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0510419999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31737500000000002
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.2951250000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.34354200000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7878339999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29608400000000001
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.6430829999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29041699999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.707541,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.26158300000000001
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.268958,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.35325000000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.736083,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.297458
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.2987500000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31058400000000003
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1291250000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.38674999999999998
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.4685000000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31420799999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.78925,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29862499999999997
+        },
+        {
+          "digest" : "ea2f2e6db475c79f1c9ff65d9e2bbc6d1ddc54c54a60c801e5f171331fcc555a",
+          "ms" : 3.7618749999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.41495799999999999
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "0edcd7153f89dfc9a204fa99e14f758e15699b3338f958ca11ea160824f1d105",
+          "ms" : 3.956334,
+          "transferMs" : 0.32016699999999998,
+          "value" : 1
+        },
+        {
+          "digest" : "50e96799416e9dba253c49dbb4c8c02d71dc18b2eceda6bbb3fd8d6d53d8629a",
+          "ms" : 4.1775000000000002,
+          "transferMs" : 0.330625,
+          "value" : 2
+        },
+        {
+          "digest" : "4a9dfbc762037885f2991cc725404b99d3d560c6bdcafdab1bf59fe288707386",
+          "ms" : 4.0046670000000004,
+          "transferMs" : 0.30512499999999998,
+          "value" : 3
+        },
+        {
+          "digest" : "adf60b3893b3334b8da5b797e5d9de515ff71b97d4459bfde5cb86f885818a04",
+          "ms" : 4.1659579999999998,
+          "transferMs" : 0.373583,
+          "value" : 4
+        },
+        {
+          "digest" : "32ddf8428b086f68a056891f220d4cb825e7e3ab33e93416df8b5d62d4e4c9ea",
+          "ms" : 4.1293749999999996,
+          "transferMs" : 0.30566700000000002,
+          "value" : 5
+        },
+        {
+          "digest" : "5169b49b7129c8faa8cfe270a1fc7185a4cf90be17ca7fc266c7c471efe02117",
+          "ms" : 3.9660419999999998,
+          "transferMs" : 0.348667,
+          "value" : 6
+        },
+        {
+          "digest" : "e85a619dcfa3f6743d5f044b925d3b42019dd0cac825378eeb46d2cb5d9e09eb",
+          "ms" : 3.8870420000000001,
+          "transferMs" : 0.28070899999999999,
+          "value" : 7
+        },
+        {
+          "digest" : "abf1c97b687ae7c5191100b5d5bca7cff8b30bac536dca1f553289dd0dfd54ae",
+          "ms" : 3.755458,
+          "transferMs" : 0.29683300000000001,
+          "value" : 8
+        },
+        {
+          "digest" : "d5b6b37df6d0ebd72aa5faa871a99850c0cbe3f08ac6143cc192a95382b21774",
+          "ms" : 3.7935840000000001,
+          "transferMs" : 0.27362500000000001,
+          "value" : 9
+        },
+        {
+          "digest" : "27137732982ed75486c0d40b41a3107841e1eb69e65b769b8a54da0940033755",
+          "ms" : 3.6369579999999999,
+          "transferMs" : 0.294041,
+          "value" : 10
+        },
+        {
+          "digest" : "ba67ea45bead2a169b65b68e1d710bd193e59e9482d569749dc124d0e804a0de",
+          "ms" : 5.1637500000000003,
+          "transferMs" : 0.29533300000000001,
+          "value" : 11
+        },
+        {
+          "digest" : "9d784267ccddf7b332df3e86197e49cd99b3609ee7eed9396bba8dfbe9bcefdb",
+          "ms" : 3.775541,
+          "transferMs" : 0.29791600000000001,
+          "value" : 12
+        },
+        {
+          "digest" : "e75971f263166a89fe6956069a54b37dc039009aa52d74a4a58a2cbe4d591786",
+          "ms" : 3.8892920000000002,
+          "transferMs" : 0.29916700000000002,
+          "value" : 13
+        },
+        {
+          "digest" : "b70bda497d2fae645dd78c17ca40a17b628a496d9cc04822102d4a005aa958ce",
+          "ms" : 3.4471250000000002,
+          "transferMs" : 0.309166,
+          "value" : 14
+        },
+        {
+          "digest" : "918efd6e7629e18508f20e39c2d31e1824208229a660ba31eafc31dd390105cb",
+          "ms" : 3.7040000000000002,
+          "transferMs" : 0.29616599999999998,
+          "value" : 15
+        },
+        {
+          "digest" : "1813b73eb611d884bbb06bdb8c32c90306549073ed9dee4b9a8a29940507a4e2",
+          "ms" : 3.647875,
+          "transferMs" : 0.33812500000000001,
+          "value" : 16
+        },
+        {
+          "digest" : "e0b8e4d7d351d394a25a6469a68730ec01f4e019af0d931828a9751956a51b97",
+          "ms" : 3.8806250000000002,
+          "transferMs" : 0.30758400000000002,
+          "value" : 17
+        },
+        {
+          "digest" : "d3a2f99253e200abbc5dc61dd325973fb582cf3d5cf510aa960ac88ef3189e10",
+          "ms" : 3.5489999999999999,
+          "transferMs" : 0.30233300000000002,
+          "value" : 18
+        },
+        {
+          "digest" : "c89b216dfe900f9d3971ba6abb328325bc64f0d098f9e64d065401c623abd4a9",
+          "ms" : 5.0304580000000003,
+          "transferMs" : 0.32174999999999998,
+          "value" : 19
+        },
+        {
+          "digest" : "d67a0f1bac7333a94bcc7a37f20f3ea79208f1ce76d0ef3e36d7363c7062163a",
+          "ms" : 3.603583,
+          "transferMs" : 0.29375000000000001,
+          "value" : 20
+        }
+      ],
+      "id" : "light-whites",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0437919999999998,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.317583
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.6265830000000001,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.30279099999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1506249999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30020799999999997
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.5749590000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29041699999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8761669999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31187500000000001
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.4734590000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.27670899999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.947208,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30170799999999998
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 4.4375419999999997,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.28920800000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9475420000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29058299999999998
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 4.046208,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30641699999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8694170000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28020899999999999
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.2832089999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.28975000000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8861250000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.27120899999999998
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.2753749999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31379200000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.777458,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.296375
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.492,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.28254200000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2583329999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.26995799999999998
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.3646660000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.276916
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9099999999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28987499999999999
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.3882500000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.33762500000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1049159999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28887499999999999
+        },
+        {
+          "digest" : "edb6d12f8708e9e0056466f7dcb149f6f75d62b30948384bfa90b9812810b1eb",
+          "ms" : 3.5242079999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30870799999999998
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "c949295192ed6649ef4886af5dbde28ab4ed49ae0051b849bf62c9cc612e6e6f",
+          "ms" : 4.6377920000000001,
+          "transferMs" : 0.36570799999999998,
+          "value" : -1
+        },
+        {
+          "digest" : "c8a3fce97bf5dcda15ce344d1361436470fb1109aa4c32c25ba38da596d3118d",
+          "ms" : 3.7027909999999999,
+          "transferMs" : 0.33816600000000002,
+          "value" : -2
+        },
+        {
+          "digest" : "21678513930e1df12ce204a1092ce6de779b960069ca1b153504fbcbda358e9a",
+          "ms" : 3.5776249999999998,
+          "transferMs" : 0.31529200000000002,
+          "value" : -3
+        },
+        {
+          "digest" : "bfbbeb3eab2b9bea2dbfed638d9446d61619c2f2bc21be4f54bdf4ef152107c0",
+          "ms" : 3.621416,
+          "transferMs" : 0.26700000000000002,
+          "value" : -4
+        },
+        {
+          "digest" : "3ff31c0538c0288cd4b8e4ce8ac596f6128ffc510a15897639935df52fc86a29",
+          "ms" : 3.4350830000000001,
+          "transferMs" : 0.29341600000000001,
+          "value" : -5
+        },
+        {
+          "digest" : "9a7dfbdb31677b0aa66722b1237ecca7566312269a707fb31112d2e58f944309",
+          "ms" : 3.6625000000000001,
+          "transferMs" : 0.30441699999999999,
+          "value" : -6
+        },
+        {
+          "digest" : "12ed8e50d980ec5d71a1e645350d969f9eddd711586a764b7b9b4e29b08a7d15",
+          "ms" : 4.7385419999999998,
+          "transferMs" : 0.33366699999999999,
+          "value" : -7
+        },
+        {
+          "digest" : "e8900421314ad64e44e4a29f08f4dd892a0a54046caf7761c98d1da243f9c950",
+          "ms" : 3.4726659999999998,
+          "transferMs" : 0.30366599999999999,
+          "value" : -8
+        },
+        {
+          "digest" : "95d25b8fdfcbb8d78c728cd2969aab21d33b2e4dad3fdfe8bfa4a7c30baa53be",
+          "ms" : 5.5643750000000001,
+          "transferMs" : 0.294209,
+          "value" : -9
+        },
+        {
+          "digest" : "f1dca3bf39650a176cc21b035389ff0852963e0bbae3a066db925e8db3005dbc",
+          "ms" : 4.0395409999999998,
+          "transferMs" : 0.32024999999999998,
+          "value" : -10
+        },
+        {
+          "digest" : "8e236213d0c98fbe1faf19487c86e044fd5287d1cd11027f64e0ee1908de55f0",
+          "ms" : 3.652666,
+          "transferMs" : 0.39833299999999999,
+          "value" : -11
+        },
+        {
+          "digest" : "0d5ef09f27d0b1547752469f4fe14ea833af7ef01ff1a3395ba69ccfd34a8169",
+          "ms" : 3.4802499999999998,
+          "transferMs" : 0.293209,
+          "value" : -12
+        },
+        {
+          "digest" : "9950e0ffe1113b72ebfbef6ca54b60828e2065ad996f4c541188bfe0fbcfd226",
+          "ms" : 4.0526249999999999,
+          "transferMs" : 0.36262499999999998,
+          "value" : -13
+        },
+        {
+          "digest" : "075d48380325eeaad9b7a878158d60dde7ceee2219b12f85499305087f250929",
+          "ms" : 3.1687090000000002,
+          "transferMs" : 0.26750000000000002,
+          "value" : -14
+        },
+        {
+          "digest" : "74ac61a42ae2946fd047651fe10422a29010b55ee867e1c1c08f268772b51947",
+          "ms" : 3.3791660000000001,
+          "transferMs" : 0.30437500000000001,
+          "value" : -15
+        },
+        {
+          "digest" : "907aa853269e36fe14fe7f809ad4e58a7981486e29ec315668fb7bd904682ac9",
+          "ms" : 3.3381249999999998,
+          "transferMs" : 0.276167,
+          "value" : -16
+        },
+        {
+          "digest" : "dbd13de85b45011efcd7e7c56e73c3b6f35d3a8bd84cfde8de4ac9170f7c9deb",
+          "ms" : 3.7355,
+          "transferMs" : 0.30091699999999999,
+          "value" : -17
+        },
+        {
+          "digest" : "341f6ebb521393111766eaf0d03b74135466b424c4717b2b8ab46c62be82bf75",
+          "ms" : 3.7883330000000002,
+          "transferMs" : 0.29141699999999998,
+          "value" : -18
+        },
+        {
+          "digest" : "559e824c9393d517efb42b8c82c89326b1a84e7446520170941b16032c01bf9d",
+          "ms" : 3.653041,
+          "transferMs" : 0.34649999999999997,
+          "value" : -19
+        },
+        {
+          "digest" : "2eff49db5264cb47d60a85da29595d8ec20100529690017b0e24b839023ffb6a",
+          "ms" : 4.0411250000000001,
+          "transferMs" : 0.30616700000000002,
+          "value" : -20
+        }
+      ],
+      "id" : "light-blacks",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.9698329999999999,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.41808299999999998
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.532708,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.33124999999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4438749999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31595800000000002
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.4493749999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.35345799999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9735,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.27312500000000001
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.246667,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.32191700000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.054916,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.32224999999999998
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.4900410000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.42079100000000003
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1055830000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30666599999999999
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.888709,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29458400000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9903329999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31504100000000002
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 4.9129170000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.36754199999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.931,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.26808399999999999
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.5873330000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30975000000000003
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.36775,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.32383299999999998
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.2911250000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31929099999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.996375,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.315417
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.7139160000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.269791
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.080333,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31620799999999999
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.7541250000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.39104100000000003
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0944579999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30008299999999999
+        },
+        {
+          "digest" : "b1cbb1365904da247866815066e532397b78f15cd40869170a2e4ee08dc1fff6",
+          "ms" : 3.5663339999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31883400000000001
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        -30
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "145cb36a17a626fde54075310b597b03a28d9086f53eb4ef7acfe91b1e2fe65f",
+          "ms" : 3.7281249999999999,
+          "transferMs" : 0.29758400000000002,
+          "value" : 1
+        },
+        {
+          "digest" : "d4f64c940835cdfeb8a4f0815daa1e86bf371ba4680ee0fcfd9f0520428f9c06",
+          "ms" : 3.8726660000000002,
+          "transferMs" : 0.327291,
+          "value" : 2
+        },
+        {
+          "digest" : "e9f7ca8b2f8057aecd244ea9c8424fb62cb97ba8486fabeb4f7fc58857bf6a49",
+          "ms" : 3.7254999999999998,
+          "transferMs" : 0.31316699999999997,
+          "value" : 3
+        },
+        {
+          "digest" : "1fce0adc2243c4281146ce2bd123238ecbf90608287fdb429c8e390f9bcdb1d5",
+          "ms" : 4.0592920000000001,
+          "transferMs" : 0.32000000000000001,
+          "value" : 4
+        },
+        {
+          "digest" : "947b5687e1edaa25327b3255822c2897ab817eeced48935b2f54b87331291273",
+          "ms" : 3.9667919999999999,
+          "transferMs" : 0.41775000000000001,
+          "value" : 5
+        },
+        {
+          "digest" : "19466541e7131178235d2927978ee60b1abe51ebf68f62a58e72feae50734f65",
+          "ms" : 4.6420000000000003,
+          "transferMs" : 0.32550000000000001,
+          "value" : 6
+        },
+        {
+          "digest" : "40cd934dc43dcf59eae8128495861f161f89edb445be5fb015683805db978efd",
+          "ms" : 3.8562500000000002,
+          "transferMs" : 0.38783299999999998,
+          "value" : 7
+        },
+        {
+          "digest" : "0af788666481e4a40b8c1ce12d6e5ca41e51169eaadd7f3890c3ab81a520fe7e",
+          "ms" : 4.368417,
+          "transferMs" : 0.310917,
+          "value" : 8
+        },
+        {
+          "digest" : "1dabbd2b0b2636cf3b0e7b733fbe3264062d4d5506298f458e1309136c3f2f80",
+          "ms" : 3.8930829999999998,
+          "transferMs" : 0.387791,
+          "value" : 9
+        },
+        {
+          "digest" : "a880efbe138cabc3759ad6f6961b778f9c9a696b37bc3d48e2b86f5c071fae4f",
+          "ms" : 4.1386250000000002,
+          "transferMs" : 0.31987500000000002,
+          "value" : 10
+        },
+        {
+          "digest" : "2bae9018fe2f2f0a63588e7e56a6160f9f52dc9af7ac43906dec8e8c1601a312",
+          "ms" : 3.9997500000000001,
+          "transferMs" : 0.41116599999999998,
+          "value" : 11
+        },
+        {
+          "digest" : "b478b50e6bcbcc52dc2b3561344afffab73dddd246459023f524bea0fafd5ce7",
+          "ms" : 4.0927920000000002,
+          "transferMs" : 0.34054200000000001,
+          "value" : 12
+        },
+        {
+          "digest" : "4509e6e39f0913349038be6017e9b1e4d4cb58f7d76a07dad7b023f472063b8b",
+          "ms" : 4.0256249999999998,
+          "transferMs" : 0.42795800000000001,
+          "value" : 13
+        },
+        {
+          "digest" : "837ab0447bdaf37e9b2e6f5cb9ac073dc27cac127a3f620d9ae9d125f8b15e22",
+          "ms" : 4.235417,
+          "transferMs" : 0.29083399999999998,
+          "value" : 14
+        },
+        {
+          "digest" : "44fecb6e6d48a747ada7f123c4eda738a69c2dd67a08e179d79984d3f9088d6d",
+          "ms" : 4.244459,
+          "transferMs" : 0.43570900000000001,
+          "value" : 15
+        },
+        {
+          "digest" : "a3c043eca2f2f71273f4470c57bd8eb0b46203c8dbfc99f5427134c78806d540",
+          "ms" : 3.9704169999999999,
+          "transferMs" : 0.31337500000000001,
+          "value" : 16
+        },
+        {
+          "digest" : "1e2e070062a7e84298340d29377c08a28a6bda84ea1d4e82c1ae6969c88aa31d",
+          "ms" : 4.009792,
+          "transferMs" : 0.32200000000000001,
+          "value" : 17
+        },
+        {
+          "digest" : "ccf5bf48fec4c276bde157235383fafc7bcb02f8a4fe37d63c0b2c4f8e906d33",
+          "ms" : 4.8184170000000002,
+          "transferMs" : 0.38391700000000001,
+          "value" : 18
+        },
+        {
+          "digest" : "26c36c63ff61958ceffe6118287981f5d3e808a272ee1cfa656834bcd525ea04",
+          "ms" : 4.0728330000000001,
+          "transferMs" : 0.326542,
+          "value" : 19
+        },
+        {
+          "digest" : "c6ee41e91ba26f2ac00e80f1c1b915b7f88a6844e2c04e9a12db0f4a074dbf15",
+          "ms" : 4.2765829999999996,
+          "transferMs" : 0.47020800000000001,
+          "value" : 20
+        }
+      ],
+      "id" : "color-saturation",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1964579999999998,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.32558300000000001
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.7832919999999999,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.297292
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.8305419999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28050000000000003
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.480083,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.36283300000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.5255420000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29675000000000001
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.7436250000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.32233299999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0929160000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.361541
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.361917,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31787500000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2392089999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29591699999999999
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.2569170000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.293375
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0339999999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31762499999999999
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.2250000000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.299875
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.775083,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28837499999999999
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.976667,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.275667
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9475,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.35366700000000001
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.934625,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30162499999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1015000000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29499999999999998
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.9315419999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.34120800000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.7472500000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31520799999999999
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.7665829999999998,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29958299999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.908042,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.28129199999999999
+        },
+        {
+          "digest" : "c3bee50e7ca37934bfc3bcb3e70c4c0c77bedcbd3d0301dca0f566bd935ebd46",
+          "ms" : 3.4485830000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.32683299999999998
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "distinctInputs" : [
+        {
+          "digest" : "d2790ef29843b90ba711f29f93cd491d64e72de449c03d643934ee085b5cd714",
+          "ms" : 4.8429589999999996,
+          "transferMs" : 0.33241700000000002,
+          "value" : 1
+        },
+        {
+          "digest" : "32c7baaa8dbaf8435a73404fec5c7285131d781271a1a073171f2f5616c182d6",
+          "ms" : 4.0521669999999999,
+          "transferMs" : 0.36895800000000001,
+          "value" : 2
+        },
+        {
+          "digest" : "f134c50e80e895d092a5c866da98b79270a833832e1448bf4d0282ad295959ab",
+          "ms" : 3.737708,
+          "transferMs" : 0.34779199999999999,
+          "value" : 3
+        },
+        {
+          "digest" : "c698daad8aec77990b64eaf11bfeb95926263b6a4a80b1f5202794e1d03f3f4c",
+          "ms" : 4.1712920000000002,
+          "transferMs" : 0.30066700000000002,
+          "value" : 4
+        },
+        {
+          "digest" : "49d063141cc97c2841923137ff431862e35f4ca9322ed45fd193212ebf30df0d",
+          "ms" : 4.2130419999999997,
+          "transferMs" : 0.326125,
+          "value" : 5
+        },
+        {
+          "digest" : "3a8336af581138933830a72a476a3010948c32ae5b0ab56ff691ebef48ffd000",
+          "ms" : 3.8519580000000002,
+          "transferMs" : 0.28075,
+          "value" : 6
+        },
+        {
+          "digest" : "eb3c5eeebe9f1eea9e6921433ddd664a69e299ff03fe6fc45df508e10ff2cf2d",
+          "ms" : 4.0110840000000003,
+          "transferMs" : 0.45458399999999999,
+          "value" : 7
+        },
+        {
+          "digest" : "8d776696dec215de33e0a775772d70eb736c4400aa2f4c1b83a7002fea307614",
+          "ms" : 3.7612909999999999,
+          "transferMs" : 0.296875,
+          "value" : 8
+        },
+        {
+          "digest" : "60d39ae50f44146afaa9d476a2d4a223c2d5ded5d194fde6e3968acc903ff342",
+          "ms" : 3.8635000000000002,
+          "transferMs" : 0.341333,
+          "value" : 9
+        },
+        {
+          "digest" : "1ec2034ea596cab35f13ad8ba059857ae839b4847cd55dff5c4a1bac9813305d",
+          "ms" : 3.7248329999999998,
+          "transferMs" : 0.32029099999999999,
+          "value" : 10
+        },
+        {
+          "digest" : "c5b50ab294485c8fb01d7e3bea0b1c0f3fde92db1adb34b5208ba0a69807c3ff",
+          "ms" : 4.1184589999999996,
+          "transferMs" : 0.32112499999999999,
+          "value" : 11
+        },
+        {
+          "digest" : "399f446c8a59cf5ec70fe0a8307b0f1d72d2cbeb8cd9516d97b1c69027a47141",
+          "ms" : 3.653791,
+          "transferMs" : 0.29299999999999998,
+          "value" : 12
+        },
+        {
+          "digest" : "d9e317501c13770b07cf3b69264328a4f456f3380153e13c49965ab45503c3b6",
+          "ms" : 3.6935419999999999,
+          "transferMs" : 0.32695800000000003,
+          "value" : 13
+        },
+        {
+          "digest" : "278f2a4e4c405998778dbd613aa9d0587f5141b9950f964db3ab57a74abc8557",
+          "ms" : 4.3567080000000002,
+          "transferMs" : 0.30258299999999999,
+          "value" : 14
+        },
+        {
+          "digest" : "a6c8e9dcb3f69db1358b3b4f36578ae59e7b1f24dabdd54f74cb299ef711ea69",
+          "ms" : 4.0187910000000002,
+          "transferMs" : 0.36983300000000002,
+          "value" : 15
+        },
+        {
+          "digest" : "d35fc3bdc798eedd260aa46b4dbfebdffab6ab6ff516624965ecba64f02dc0b8",
+          "ms" : 4.467708,
+          "transferMs" : 0.31437500000000002,
+          "value" : 16
+        },
+        {
+          "digest" : "8719485cf6f644ae8f2dd9b442ef2a6235c2736c9992e7567a0f51d6112c85b6",
+          "ms" : 3.8148749999999998,
+          "transferMs" : 0.36541699999999999,
+          "value" : 17
+        },
+        {
+          "digest" : "874bbbf1bffb58df1dd0a1bd115def67c8d650617a465100effb6f2cfb5f7c30",
+          "ms" : 4.4040419999999996,
+          "transferMs" : 0.28579199999999999,
+          "value" : 18
+        },
+        {
+          "digest" : "0484fcd15a945e850c0dc90fa6cf38a57d364607cda16ee76bd63a4951344a52",
+          "ms" : 4.2767090000000003,
+          "transferMs" : 0.470667,
+          "value" : 19
+        },
+        {
+          "digest" : "c54ef45c2d877303409161b5a417d9d38e2e6a448370a64bf239722eb95ab553",
+          "ms" : 4.4324579999999996,
+          "transferMs" : 0.29166700000000001,
+          "value" : 20
+        }
+      ],
+      "id" : "color-vibrance",
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3042500000000001,
+          "phase" : "first",
+          "state" : 0,
+          "transferMs" : 0.32791700000000001
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 6.1989999999999998,
+          "phase" : "first",
+          "state" : 1,
+          "transferMs" : 0.389459
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.5012500000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.29899999999999999
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 5.3880420000000004,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.36799999999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4215,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.32600000000000001
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 4.0680829999999997,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.35429100000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3255409999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.33091599999999999
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 3.9981249999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.31529099999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 5.6887080000000001,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.32316699999999998
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 3.7541250000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.294875
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1128749999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.36695899999999998
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 3.8003330000000002,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.43145800000000001
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2072090000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.30558400000000002
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 3.5257499999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.30579099999999998
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1855829999999998,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.434
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 3.4504999999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29312500000000002
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3872080000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.32583299999999998
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 4.6079590000000001,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.29029199999999999
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3661669999999999,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.31079200000000001
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 5.876125,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.394542
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2505000000000002,
+          "phase" : "warm",
+          "state" : 0,
+          "transferMs" : 0.286833
+        },
+        {
+          "digest" : "1729e12ba398d11bc7e4e3d4bef9decbda0793842bdfceccdd3a771168f25f94",
+          "ms" : 5.8574999999999999,
+          "phase" : "warm",
+          "state" : 1,
+          "transferMs" : 0.37
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    }
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "pixels" : [
+    2400,
+    1600
+  ],
+  "protocol" : "resident-srgb8-readback-v1",
+  "recordedAt" : "2026-11-22T09:44:09Z",
+  "samples" : 20,
+  "schemaVersion" : 1,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

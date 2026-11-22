@@ -1,0 +1,4806 @@
+{
+  "application" : "RAWMaster",
+  "binarySHA256" : "1bb13ca2b093c838b8633f4c1ea8a324bb437c118da66b459f58ca65d23321e6",
+  "boundary" : "Changed recipe on resident source through full CPU-readable 2400×1600 sRGB RGBA8 output; RGB check outside time",
+  "cachePolicy" : "shipping defaults",
+  "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "distinctInputCount" : 0,
+  "gpu" : "Apple M4 Max",
+  "operations" : [
+    {
+      "firstStateFullFrameDigests" : [
+        "a3417729a1ed2638b2331d5b15d9d86564cad43c5ccbbdf505efa258ef8ccc82",
+        "cebfa9b625cd6d2f9f845ac0d15647bbd8276fae89c66e887f5314855fd86594"
+      ],
+      "fixed" : {
+        "base.tint" : 16,
+        "base.wbMode" : "custom"
+      },
+      "id" : "color-temp-raw",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "e9991cd1cd2f2b671881b62dd621063c3b856b9a7447f99c09ddd82826771163",
+        "5ea3e08049b9cafd3dd0788dc72a0a714e40a7a4a4aefa038a170f3ff434ff82"
+      ],
+      "samples" : [
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 144.31170800000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 4.5100829999999998,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 4.3300830000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 4.092333,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.69875,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 4.0778749999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.6845840000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.8748749999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.899292,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.8366250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.5666250000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.4901249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.787458,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.818959,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.6323340000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.716167,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.543625,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.5768749999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.8180000000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.5826250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.3867910000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "f51db82460d535500a84855a8f809bb5eae10d77ff2670b7c7e27b0c5f6e6905",
+          "ms" : 3.3484590000000001,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        5500,
+        6500
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "a3417729a1ed2638b2331d5b15d9d86564cad43c5ccbbdf505efa258ef8ccc82",
+        "1e7a5f5ba6eff8d2528a75b53a415623ad200a96cefffe3d848db40871c75a7e"
+      ],
+      "fixed" : {
+        "base.temperature" : 5500,
+        "base.wbMode" : "custom"
+      },
+      "id" : "color-tint",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "e9991cd1cd2f2b671881b62dd621063c3b856b9a7447f99c09ddd82826771163",
+        "0951d9180e234d212027f86640da6f5282f525efe846b9c8284257a24e40a612"
+      ],
+      "samples" : [
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.3222079999999998,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.9266670000000001,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.8876249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.4679160000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.6320410000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.700958,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.710833,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.6954159999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.7261250000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.5831249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 4.1458750000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.9755410000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.8512919999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.8048329999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.4134159999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.6553749999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.7347920000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.539291,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.4393340000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 4.0250839999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "f371360cdc728e17690254cabfda714c6b98a2e768a96f4300a47381984e1c1d",
+          "ms" : 3.38375,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "fa0070b07021a82fd327cbf6a6d455f45502eb627e176364535565416c02eda6",
+          "ms" : 3.5002080000000002,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        16,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "865cf20cf4cba98b84a5d19de6e7ed8b24057cf9065ac6a86091a1ea348c2030"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "effects-texture",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "b272675e1b0a08850b969815f99ab500af3e9eea8ad33fc507aee88ddf799786",
+        "4191490009e75ea45ba0dc2c4c480c38bb401fe3ea3ce17a0606a0880a494f60"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1286659999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 15.960958,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3232499999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.8835829999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4592909999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 4.1099579999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2040410000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 4.0077920000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2152500000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.7798340000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.6054170000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.4247909999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4972500000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.5717500000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8816660000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.376125,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0909580000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.3914589999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.989125,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.6675,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0017499999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "d3582406beffce2afd49dd5965156e26b736fd328f609195c2a136a6f16396f3",
+          "ms" : 3.6953749999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "ace2e70af4c8749303476403d11ce8ac72c28786ab464c4df607df37d1d7a1d5"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "effects-clarity",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "52479c426092450bad2d66d5774702eb17b5417b0aecf8dc38de4289740efd1e",
+        "5d5b2d3b815384b092f8b6461601465af3fde8b006c265930d2cd4e6cbf70f56"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.950666,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 9.2525840000000006,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.6716250000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 5.1058339999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.5465840000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 3.9201250000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0706669999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 5.3617499999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.4063750000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 4.0232910000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1481659999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 3.418291,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8828750000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 4.1048330000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.106833,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 3.3726669999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8771249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 4.029166,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3338749999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 3.426167,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8522080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7aff43e2a0adcda7db5c67d1c058d82f32a9dbbeb19ae571791abf05c1d22a4b",
+          "ms" : 3.3675839999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        30
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "410319c052e06a91ca6b05ee8ce44717f5fbf4bec4995469c5f7cc6aa791cfdf"
+      ],
+      "fixed" : {
+        "effects.grainRoughness" : 25,
+        "effects.grainSize" : 25
+      },
+      "id" : "effects-grain-amount",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "9bc2217dc5015d208574b6a3e1a8b7b588782ba8c7eb24be4c3f78d1ae733541",
+        "06dd759fbec9ded6461ee4e018470448231d86b613f4a98520a3144eb9bc8a67"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.025042,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.6924999999999999,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.9382090000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.9379580000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1092499999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.93675,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0343749999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.5372499999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.914166,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.2106669999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.368833,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.0592079999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9354169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.0463329999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3737089999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.532292,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.978208,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.3585410000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8334999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.3101250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.826667,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.2657500000000002,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        50
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "410319c052e06a91ca6b05ee8ce44717f5fbf4bec4995469c5f7cc6aa791cfdf",
+        "37e7c727141b9a43d33c55b4f53ef5b9103bffe58eed93e3e915e9a9416a8faa"
+      ],
+      "fixed" : {
+        "effects.grainAmount" : 50,
+        "effects.grainRoughness" : 25
+      },
+      "id" : "effects-grain-size",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "06dd759fbec9ded6461ee4e018470448231d86b613f4a98520a3144eb9bc8a67",
+        "0572c957d2accff9dd43d808c646f4c893e0d353e2aa9661fc21b2c24aaaecb3"
+      ],
+      "samples" : [
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 0.468584,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.6695829999999998,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.5683749999999996,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 4.0889579999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.7986249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.5957499999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.3669579999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 4.0361250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.9417499999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 4.0863339999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.4704999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.3291249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.576209,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.3562080000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.0473340000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.7786249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.6213329999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.9478339999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.645667,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 4.0485829999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.4867919999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "df9f96de92a4a13e00575ef00d6fc8a798ba18109bbd137ce6537027d5e6c40e",
+          "ms" : 3.9492919999999998,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        25,
+        65
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "410319c052e06a91ca6b05ee8ce44717f5fbf4bec4995469c5f7cc6aa791cfdf",
+        "ead08ea31f4796745101a6777659bbcf89a65c83f5c77ce20b904237e951cc63"
+      ],
+      "fixed" : {
+        "effects.grainAmount" : 50,
+        "effects.grainSize" : 25
+      },
+      "id" : "effects-grain-roughness",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "06dd759fbec9ded6461ee4e018470448231d86b613f4a98520a3144eb9bc8a67",
+        "223e2238ed39f21cfdcaed6230b1be0edc7ad91c2636c0a60f552565f92fa9c4"
+      ],
+      "samples" : [
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.2625419999999998,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 4.1748750000000001,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.7550829999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.9001250000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.9080830000000004,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 4.3317920000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.9918330000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.9591249999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.4768750000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.3849999999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 4.0428329999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.3724159999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.406917,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.4267080000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.453125,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.4350830000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.3996249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.7413750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.337208,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.865917,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "853243b21f89404830f40a28ddbe37b77264eab04e01e263fba0f2b26c933b7e",
+          "ms" : 3.3550420000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "557848fef92e13cbcffa8d6bedea3b132e7bbbb005709359011041332b6750d7",
+          "ms" : 3.3672499999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        25,
+        65
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "155f732bd6355ea8d9a07ec8f2a767bc18739ec661f4121ca95702ca5edff1f2"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "effects-pcv-amount",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "9622f0d5a02ba99f45c3e85791e7c607ce1f1a469e19dab756dd9855466ea7de",
+        "58117c16154bc2e5e488db648455523a93f63355774f791454ffc7f093d45e3e"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9782500000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.494583,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0753330000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.5020829999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4475829999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.611958,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8414159999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.7469999999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7175419999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.2312500000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.7493749999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 3.2756660000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9770829999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.2344590000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8362080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.3476249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8402909999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 1.962542,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.820125,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 2.442917,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.760875,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "844f45a435dfe486f704199a0e046e6b525a1053d3332355b586fa00c9d886b3",
+          "ms" : 1.947708,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        -50
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "907015e5f7fc25959eed913c3a2547a9d43b8eb856cdbd2726892ba9c6f095dc",
+        "a44edf4de6b10e3d3c6be672be7a0d39df9a9baebdfafcfef961c14f19980009"
+      ],
+      "fixed" : {
+        "effects.vignetteAmount" : -60
+      },
+      "id" : "effects-pcv-midpoint",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "59f476cc04eb80ee86bfff8240c5cef2233e06315ef07c7b2ac34bb83dfae799",
+        "fbf1524cb24aa749757c03096440fa3d5a1ed8042fee66ce64549218866225a4"
+      ],
+      "samples" : [
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.175875,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 2.3762919999999998,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 3.6870419999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 2.1790829999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.8101250000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 3.0580419999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.1841249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 2.5281669999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.0012910000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 1.9036249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 1.890458,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 2.555542,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.0458340000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 1.9733750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.0222500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 1.9978750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.0644580000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 1.9255,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 2.3744999999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 2.0096250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effe5fb2a907c38b72a5d30a6b21d9c8ab40b560c7cc9d9780aad1cf97e54a0c",
+          "ms" : 1.958583,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "4151c08358ba5a51025de39fbef80dd0f71ba7fc6bdd1bd542d2d707e5910311",
+          "ms" : 2.5555840000000001,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        25,
+        65
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+        "86bf4269243b85ad06f55c3414a78352ee5e0b47ed8c2b17db2c73ec9c9b9c21"
+      ],
+      "fixed" : {
+        "effects.vignetteAmount" : -60
+      },
+      "id" : "effects-pcv-roundness",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "94cc08373860108616df2598fc26444d97eac616be9f8083201afd3c79ac456c",
+        "c848893429c1c55b371c33ea1fadc812964a79aa255cd9daf55037e1fcf97646"
+      ],
+      "samples" : [
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.1034160000000002,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.2686670000000002,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.35575,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.0256249999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.508,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.7602500000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 3.4637920000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.8174579999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.7241249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.7450830000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.078792,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 1.8416250000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 1.817917,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.088292,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.031917,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 1.864916,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 1.9829589999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 1.8720000000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 1.8224590000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 2.3259590000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "effd7bd620b36bd89472b9d0874e733b02333d3327925c3d0f03c8908d3eebb6",
+          "ms" : 2.0263749999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "43e96ba142be393dbc195aa7359865d2c54f8093569afafb1286a2b29158f8e4",
+          "ms" : 1.925459,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        60
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "07166d607c517026e7e7efe3efd249be1de5bcb980701cfb40851b31cf4d862f",
+        "4743442fe3cb3f987690db9760d9d4bcac646d879360f1934665070fe9287f25"
+      ],
+      "fixed" : {
+        "effects.vignetteAmount" : -60
+      },
+      "id" : "effects-pcv-feather",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "fa68dadf2b84330a0783432bbc9f1a02e68a59dbe6771ee948309d0f732a15c3",
+        "0545a4ff809f27bad818ddb9b20a7ef85dc21780ed8b1a12323df6d302451e2c"
+      ],
+      "samples" : [
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 1.875958,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.088708,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 2.5315829999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.04325,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 2.461417,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.7832919999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 2.9267080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.8370829999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 3.2406670000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 3.2392919999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 2.641041,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 3.4137909999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 3.3926660000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 3.1001660000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 3.3109999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 3.2120000000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 3.188542,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.5036670000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 3.245708,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.7474159999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "4c9a3fcd7f1546add8ae523d9e68ac103a3aad241cdc5f0c9632a989b8de9c7d",
+          "ms" : 2.3363749999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1f1a5c7ca9ef098e0019c0d38555555a5370a7f5d3de0da999b041dc8eb90197",
+          "ms" : 2.2029999999999998,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        25,
+        65
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+        "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a"
+      ],
+      "fixed" : {
+        "effects.vignetteAmount" : -60
+      },
+      "id" : "effects-pcv-highlights",
+      "pixelWitness" : "entire-opaque-sRGB-RGBA8",
+      "recipes" : [
+        "94cc08373860108616df2598fc26444d97eac616be9f8083201afd3c79ac456c",
+        "c9043bf0fe80c76f820fdcba425713a4a4c25081067e794e84901244e101b2b0"
+      ],
+      "samples" : [
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 2.6360839999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 2.5412499999999998,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 2.5187499999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 2.8765000000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 3.2392919999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 3.3768750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 3.224208,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 2.8735409999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 2.5110420000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 3.2814580000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 3.2930830000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 3.3789159999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 3.2094999999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 2.9612910000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 2.3792089999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 3.1432500000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 2.872458,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 3.3023750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 3.2908750000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 3.1066250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "5a13d9edcaafbc11b3278112175836d3df3bf5bbcb54aeec8516414c048d0eeb",
+          "ms" : 2.8561670000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0882ccf45a2ed4b327fa1723598b96719a701ce4cbf5b2e3b328c51d39fa187a",
+          "ms" : 2.9772500000000002,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        80
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "26d51867bd2f0f2306a7013f5695427f0e23b82902c1fc0efe10596b1367e385"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "curve-param-highlights",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "72fe60fa386177f00dc146595fefb9e85f3891891ec1c8e1f267d84b645f935c",
+        "a38c8cdb2c0b5ac2ccfbb3a64f5d0fbeb4089ca9804ecef669105bc732a1d31d"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.361958,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 4.5109589999999997,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4545840000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 6.0517079999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3488340000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 5.3498749999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.138541,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.3744170000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4510000000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.1918329999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.974291,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.8172090000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0165000000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.7404169999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9735830000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.553375,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.012375,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.4192499999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.852209,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.5166249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.87825,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "38240f6b37a957cc1ab673dce518b45cc1722e2fb5bd8111892d1ff70356ba96",
+          "ms" : 3.4508329999999998,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "211728d6a7f10c7f071961a3b587be2ba12ade143d5aae1496e01bc71a69b38c"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "curve-param-lights",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "72fe60fa386177f00dc146595fefb9e85f3891891ec1c8e1f267d84b645f935c",
+        "caba149d9b6cfbf88ecd2b379d844192a767e4ac7d018bb47ef06672f7a65dd7"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9942500000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 3.7020409999999999,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9691669999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 4.7020419999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0847500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 4.0787500000000003,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.0790000000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 4.0185000000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1244589999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 4.7235420000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.028375,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 3.55775,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4370409999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 3.3907090000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8697090000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 4.0922080000000003,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9314169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 3.480791,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9832080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 3.8984999999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.911459,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "42e3ae765ec8d3e54dd05660d2ae13b980493a0fe5dcbf65410a004fabef8e6b",
+          "ms" : 4.1302909999999997,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "f5d89c1ba5b30f1240e620241b06adeb747a54b899041e851b68c223c0ee1f40"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "curve-param-darks",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "72fe60fa386177f00dc146595fefb9e85f3891891ec1c8e1f267d84b645f935c",
+        "486bc89a0546e46a129084c1cbbafb48477b930508b838f04ae6d93180713466"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0961249999999998,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.2064589999999997,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1112500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.7504160000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.138833,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.1642080000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0917919999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.4574170000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1356250000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.528041,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.963875,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.5527920000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4460000000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.9104169999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.955875,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.3483330000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.205333,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.5361250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.863,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.1048749999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8075410000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.6705000000000001,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "360bec3d173d227a9d0d9da991ccafcefecfce98385069f845d452961484b680"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "curve-param-shadows",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "72fe60fa386177f00dc146595fefb9e85f3891891ec1c8e1f267d84b645f935c",
+        "32368b8bf7c01e9fd3d74c69a44b0c8eeab945eabc969d57671a756ba4e4c0ae"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8963749999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.8238750000000001,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.3587500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 4.9422920000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1044580000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.8959169999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.913,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.900083,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3454169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 4.0897920000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0292089999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.8434170000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0982910000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.8416250000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.926709,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.537417,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9402919999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.5175000000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1113330000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 3.798708,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0177499999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7362fcaba93d41362f0c195be323b73faa6abf1bdd47f830ae53c7fc1c5357f5",
+          "ms" : 4.3083330000000002,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "f5d89c1ba5b30f1240e620241b06adeb747a54b899041e851b68c223c0ee1f40",
+        "64f56452116a992ba8a1a970d1f7c107b94887c07e7c439f90603dc1f6c1045a"
+      ],
+      "fixed" : {
+        "curves.parametric.darks" : 40
+      },
+      "id" : "curve-param-splits",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "486bc89a0546e46a129084c1cbbafb48477b930508b838f04ae6d93180713466",
+        "dfce2bbf16504d4781270848c0e67bdb6b8cfe4896f98b29498ce759216be03d"
+      ],
+      "samples" : [
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.8230840000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 4.3578330000000003,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 5.3013329999999996,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 4.5502919999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.1552090000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 4.328792,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.1852910000000003,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 4.0667080000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.5670419999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 3.6554579999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.6554160000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 3.561375,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.4760409999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 3.645,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.4437500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 3.3341669999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.6211250000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 3.3887499999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 4.0843749999999996,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 4.0422500000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "c67ad4f2292309f09004c0c7dab23875ee95b0b74b816643e2d397cf508b706f",
+          "ms" : 3.732583,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "e9ae5380038a2a1ffa8e21ea03c859af4785c4a3854100df3d784083d78df705",
+          "ms" : 3.5722909999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0.5,
+        0.65000000000000002
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "1a5e872d4e29843443c657e7016dd81b5b198e044963861cae04d59d52c5e140"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "mixer-hue",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "83438ea713af8ae190e0e835669081d917ebdbe918f5652544776cf60021c7e8",
+        "dd46238282edd01f8a04a05330660a6205d5b6d62b3397ec3a60fcd50421cf55"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9333750000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 4.1734590000000003,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.9354580000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.7626249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2068340000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 4.1594170000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.935875,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 4.3716249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.987792,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 4.3221670000000003,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0451250000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.7628330000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9357500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.4868749999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.959209,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.424833,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0117080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.4567079999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0257499999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.6828750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0345,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "cfbc9afd411f665d8f8c32abc5ce7b329a0626aeb96d3954e2d723cb5a9de4c6",
+          "ms" : 3.7664170000000001,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "ce2ae924433e0cbcc870fc491fb8c6049e189677557cabcaf61814644382f4b7"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "mixer-saturation",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "83438ea713af8ae190e0e835669081d917ebdbe918f5652544776cf60021c7e8",
+        "7b97f8e39783c6989df814ffa9672a919761a6289f4177506ff69f8d45884977"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9069590000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.9135,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1956669999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 4.3734169999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0919159999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 4.2022089999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.999792,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 4.342708,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2766670000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 4.1212499999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.917916,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.5955409999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9108339999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.7575419999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8604160000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.4906250000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8938330000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.3561670000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2090830000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.5677500000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9098329999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "523b90601ea7c106d3bf512a52ee9eae9316d00ba6196179f59de7c38f2fb43b",
+          "ms" : 3.6373329999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "3c2a8361549e38e7b27870d78b0c2e37e7cca66fe4d97ef3a98ffcc43695d95b"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "mixer-luminance",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "83438ea713af8ae190e0e835669081d917ebdbe918f5652544776cf60021c7e8",
+        "bcc1c2d86120ebf3f30b28573a6974c376b2b6902921a9d2e6cf545412a27f18"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9230419999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.8902079999999999,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0067080000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 4.3170000000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2137500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 4.091583,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1403750000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.9111669999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.049083,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 4.3505419999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8145,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.8079580000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9101250000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.498875,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0246249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 4.0477080000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.92825,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.7358750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.898417,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.8029579999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0482079999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "1ddc738dfecb0509c74807908f7a6d208fc818be5bdd7639beb4b46924af55a5",
+          "ms" : 3.5449169999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        40
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "280cdbcfac11a58e5795e61cff6a49b8e3f7ec129e99dcd76b4f6deb88fa6b06"
+      ],
+      "fixed" : {
+        "detail.sharpenDetail" : 25,
+        "detail.sharpenRadius" : 1
+      },
+      "id" : "detail-sharpen-amount",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "626ef03c15d8ea2964a0cac74bf4b474821f486d78881e81686b9846ef99fe34",
+        "0f7feddb4974ab7a778372802fe51f8a16e04e781feb13b4038d66554bca440c"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.875,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 9.4779169999999997,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 4.3429169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.8862079999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.3045,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.97525,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.3761670000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 5.3712090000000003,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.298,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.187792,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.1433330000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.1330410000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.3254999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.0015000000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.500041,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.0230410000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.5151249999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.0876659999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.3816660000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 3.963959,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.081,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2f9065bd88d5b156d71b49a8f3ed9499eaa84ee713fd3efe11ecd7bbe513681b",
+          "ms" : 4.4195409999999997,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        75
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "24482223402f8c020e10914c9d09cb913a343796fb7578aa9fe91022e67a500b",
+        "16a13ddeac6e2fc78e31d164f81bedde8a1b3dcd4cd46463f3889c33478ee591"
+      ],
+      "fixed" : {
+        "detail.sharpenAmount" : 75,
+        "detail.sharpenDetail" : 25
+      },
+      "id" : "detail-sharpen-radius",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "59e7d6f65c7b9f759a300f4b833dfb62e31798f8000acf42002f78b0eec98a37",
+        "f54b03943e703bb41b0f5737bb3a3b7bb124e8567994d0bb867e62c745f8874e"
+      ],
+      "samples" : [
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 8.7232909999999997,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 8.9875410000000002,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 4.4507079999999997,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 5.0520829999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 4.3156670000000004,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 4.1262920000000003,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 3.9780000000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.9739170000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 3.8181660000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.8378749999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 3.8629169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.796875,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 3.8229579999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.9245839999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 3.7912080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.9877919999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 4.14825,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.9079169999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 4.0476660000000004,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.7160000000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "b0734f823bfdf3bbee7b1aabd0b1c629f2eb9c285e2ed062de62652d29b379a8",
+          "ms" : 4.0609169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6f4f5fb91bf02faa192fb3d6937f8a019e7fc350f96014bd5411a80eb075797d",
+          "ms" : 3.732834,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0.80000000000000004,
+        2
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "ee99f4c5ebf1119e909ae3e088d856fbc22808bb71661423d010e7148c8a6b4e",
+        "23b7e3b73820ea557e47251c9d8f9f525765e54445f7ffc20b7873e2599442fa"
+      ],
+      "fixed" : {
+        "detail.sharpenAmount" : 75,
+        "detail.sharpenRadius" : 1
+      },
+      "id" : "detail-sharpen-detail",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "949140a1f3a19438ed821459a262bcbef94f573a2acd652cf9fb73eb2e258105",
+        "1da6ae2fa688f58ed4e55865a394128c5b8579da693befd742a83cca7ee0b139"
+      ],
+      "samples" : [
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 7.3601660000000004,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.7949579999999998,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 4.6582080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 4.1462909999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 4.3138329999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.891,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.7484169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.6857920000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.7614169999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.5143749999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.6557089999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.5314589999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.4949159999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.4620000000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.4790000000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.505541,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.2904589999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.3627910000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.6139999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.6219579999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "1865f92e4c0f4f5ab23d4a56a3e139eeaca6ce5d7ec3967b0040176cc07d7078",
+          "ms" : 3.428042,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "5c58cb50327dde1a429bb1f750b4b63bebd36b17fbc1addc8f1b072b7e6386b7",
+          "ms" : 3.5729169999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        10,
+        70
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "608f3768063ea70a49afc8915f5082c90c9de96b70487e20e87955236fca04c3",
+        "eb998213b7acdc719c787771d45d2f0695d4f4d4e98d8fa371943e6a394b09cc"
+      ],
+      "fixed" : {
+        "detail.sharpenAmount" : 75,
+        "detail.sharpenRadius" : 1
+      },
+      "id" : "detail-sharpen-masking",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "8fff544f3ae9afd4bf253783c5b0db45ebdffdd3a2f0882139ba419e43b65545",
+        "832eeb1079487406eaf3f133e04335ff5cf5c346aab53fd11ed52b469e5e24e8"
+      ],
+      "samples" : [
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4185829999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.893084,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 5.2553749999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 4.1277080000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.9604170000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.5779999999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4228749999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.433875,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4580839999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.6148750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.595583,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.638166,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4122910000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.411,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4548749999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.4885000000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4889999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.3909590000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4214579999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.4961669999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "bcb853739750b4b5dcd20751b8fa68826d35dd3777a607011af8ca45f75d03ef",
+          "ms" : 3.4972089999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "774c453befa794f17864abe88a27b4baccca1913c2f5a5498b47ad789aeb12f7",
+          "ms" : 3.396417,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        75
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "2c277a6aaac1fdf4f15788dd651c481353eb01d2933bfeb1233cbcf8eb487c00"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "detail-nr-luminance",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "9277b2e52c78f39573c5ce346129b34fa6c720adc73d50d48515b98783f439ae",
+        "f76615aec7e87f74307145f098a37501747717958446d5a79dff77169a40d486"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 4.1714169999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 7.0261250000000004,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3746659999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.7382499999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2513329999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 4.4486249999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.112625,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 4.4915830000000003,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3482919999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.213292,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8583339999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.3152499999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1782910000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.9165420000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4511250000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.4144999999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3330000000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.3821249999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.891208,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.7433749999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.982208,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "8bc3136c0d97b579c9957b8ca04f6b27b005ab88075dd1568e37f4f889d32ea2",
+          "ms" : 3.4851670000000001,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        70
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "88c349f6c112ee3fd9fe085fa78773dde43d2e9a518874b7de307507b820cb01"
+      ],
+      "fixed" : {
+
+      },
+      "id" : "detail-nr-color",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "9277b2e52c78f39573c5ce346129b34fa6c720adc73d50d48515b98783f439ae",
+        "b5e33f57f1b157aa1ca655d8eeb045b42d3fb0eb85dca4b258778ada648ceadc"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.465166,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 6.5193750000000001,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1927919999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.5192500000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0754589999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.9818749999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.7284579999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.9181249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0786250000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.4408750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.928958,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 4.6966659999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.5095839999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.0553340000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.5466669999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.0578339999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0503749999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 5.4815829999999997,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.946458,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 4.7621250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4375830000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "6365bffda84b212531daca2da63500789a691d55626fab3303694566adcb352d",
+          "ms" : 4.7952500000000002,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        70
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "7ed27ded77370b858d5fff0a210a85a326b4ed46bd0616697094be4c3bca2c61",
+        "009b0a4598dd0f4221d449fd4396a08d79e5dc2b24636028aca5180079613aa0"
+      ],
+      "fixed" : {
+        "detail.noiseLuminance" : 70
+      },
+      "id" : "detail-nr-lum-detail",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "166df402764693810c0111e166b059157c905acad39767d70928c3652a660ed4",
+        "8af2a11898d4f99961231f8729bbf842d1bc9eaf2a74b8dc97b29f9b35c3c576"
+      ],
+      "samples" : [
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.5088330000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.8760840000000001,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 4.047625,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.9795829999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.9062920000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.699792,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 5.4866669999999997,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.9911660000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.8749169999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.5007920000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 4.1968750000000004,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.4832079999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.4636670000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.524,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.4401670000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.6927910000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.576584,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.393208,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.44875,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 3.4455420000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "6729f0581dc15b0c0e6de189232b77a1a04221258d8c1bb56aed64c4fdb9ca08",
+          "ms" : 3.4061669999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "16b435fc87e45541e5e2e7b304f34b7741a20c69f7484258bb06a389eb083d7f",
+          "ms" : 4.0162089999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        10,
+        65
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "5393a50b3bba42701f92a3ea7bad4d92b044f19e8531941e3ec73a0cce193f57"
+      ],
+      "fixed" : {
+        "wheels.lrShadows.hue" : 220
+      },
+      "id" : "grading-shadows",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "5a545bb0b5b6ba21b4d73abf8a61b8c7d7dd2c7bd610a01f10c62b441736142c",
+        "f7323bda3012f22eec2ade0e9e2230f585d2d7b43870b4ae09a532edf78a663a"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2996249999999998,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 4.6351250000000004,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.320125,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.9659580000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.1654170000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.8223750000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0314160000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.61775,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2533750000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.575958,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0714579999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.416042,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.6521659999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.75325,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9748330000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 4.5480830000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0979169999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 3.4560409999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.930167,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 4.1480420000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0484589999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "2cf5562c2701adc89b47cb38624c2d7cd1f6e8a44fa1d869a4ce7d6cb64ca336",
+          "ms" : 4.14025,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        50
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "138e831b2fb5aee4ebea5191246eb4e9512a4223f7504bb5f4c6baba9006168f"
+      ],
+      "fixed" : {
+        "wheels.lrMidtones.hue" : 220
+      },
+      "id" : "grading-midtones",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "d6fbc0941692fdec26a75502e052222807eca53b9c2a7ed8d2a46445c6678c1c",
+        "b0996bdbf5791b16cd7cf4b1692adc95d2180faf8afb9d8717fbdadfcab42db7"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9165000000000001,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 4.4195830000000003,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1547079999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 4.1266249999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2645420000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 4.9419579999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1040000000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.6661670000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9457500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.4765419999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.917584,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.4813339999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4329160000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.7890419999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.4716670000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.5106660000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9419999999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 4.3240420000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9356249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.9102920000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3842500000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "aa0da331626bd541ebf6b859862dc83ec23fdc0c16cf19a6030798cc378064fc",
+          "ms" : 3.3969999999999998,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        50
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "7a59c103eeabc53da0b8e896f46a4bb867638a35a3346050f8f4be31d1e0c7b8"
+      ],
+      "fixed" : {
+        "wheels.lrHighlights.hue" : 220
+      },
+      "id" : "grading-highlights",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "857b56feb2fd564baf04bd367359928a919718253814964eec5b29a7fa67eadc",
+        "e32fb3a748db5a1260af413891e46f3d73daa0d9ed381a8a5a2cdec450154b6f"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.5233340000000002,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.981166,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2725,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.8439999999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.3891249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.8726250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.1727080000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 4.5109579999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1884169999999998,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 4.173,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.0382920000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.7501250000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.967125,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 4.3449159999999996,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9735,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.5205000000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8810420000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.6585000000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1150419999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.48725,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.997417,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "0859d37c1a0680e028fbe011236fde0481739f5e1093b09813834384a25c861d",
+          "ms" : 3.5175420000000002,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        50
+      ]
+    },
+    {
+      "firstStateFullFrameDigests" : [
+        "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52",
+        "f13953e3a53d097f75d52367dd99905d051354f9dbc35c085716743ef345efc4"
+      ],
+      "fixed" : {
+        "wheels.lrGlobal.hue" : 220
+      },
+      "id" : "grading-global",
+      "pixelWitness" : "96x64-RGB-grid",
+      "recipes" : [
+        "662febe8f5fa9216135059b54dea46e1cca133893ea77d9e7d9d8b317560d19f",
+        "71f9de11c18493a0d8dd9ba7d2a75e27ca9809da22ffb5015361a06ab3a279b7"
+      ],
+      "samples" : [
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9247909999999999,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 4.4091250000000004,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2232500000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 4.0838749999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.2240839999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 5.0119170000000004,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.1134580000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.966208,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 3.1989580000000002,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.2832910000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8992500000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 4.1249169999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.9314579999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.9768750000000002,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 2.3786659999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.38625,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.861,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.6871659999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.8580000000000001,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.6067079999999998,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "9436bbe8b74f0ec75db037ce96859414653915d8423fe008e00cf4f66fa4edc7",
+          "ms" : 1.894917,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "99061a5c24ad8cf67d21431f09f7b935292376a3473e87884e52ee7d2b726f50",
+          "ms" : 3.4962499999999999,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "status" : "measured",
+      "values" : [
+        0,
+        50
+      ]
+    }
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "parameterSHA256" : "2e7cc1b77bf59e97a5f91054d6b76006f47d3e343cacc4b91deb753570fed036",
+  "pixels" : [
+    2400,
+    1600
+  ],
+  "protocol" : "resident-srgb8-panels-v1",
+  "recordedAt" : "2026-11-22T11:05:43Z",
+  "samples" : 20,
+  "schemaVersion" : 1,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

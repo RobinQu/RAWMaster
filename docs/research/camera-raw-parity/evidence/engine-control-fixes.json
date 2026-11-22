@@ -1,0 +1,458 @@
+{
+  "schemaVersion": 1,
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "gpu": "Apple M4 Max",
+  "os": "Version 27.0.1 (Build 26A434)",
+  "protocol": "rawmaster-resident-control-v1",
+  "timingBoundary": "Changed recipe request to interactive ImageEngine frame return; RGB readback outside timer",
+  "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "operations": [
+    {
+      "id": "effects-grain-amount",
+      "before": {
+        "status": "inconclusive",
+        "reason": "unsupported(\"native grain context/grid required\")",
+        "warmSamplesMs": [],
+        "effectiveDecoders": null,
+        "stateDigests": [],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          9.72325,
+          11.215084,
+          9.653125,
+          10.689,
+          10.481625,
+          11.256333,
+          9.889125,
+          12.305708,
+          11.836792,
+          13.482417,
+          10.940125,
+          11.594334,
+          14.844375,
+          10.38425,
+          13.853292,
+          10.86225,
+          13.109667,
+          10.445875,
+          10.435459,
+          10.214459
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "e8a889a7c313eee1ff6c362cb72dc53d7b78d3c3019d990eb76bdf3c8360c4e5",
+          "f1b3693c763bc357fe05323216036a80c05cfa41d718bef0e5bfc6fe8104c87f"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "afterMedianMs": 10.901187499999999
+    },
+    {
+      "id": "effects-grain-size",
+      "before": {
+        "status": "inconclusive",
+        "reason": "unsupported(\"native grain context/grid required\")",
+        "warmSamplesMs": [],
+        "effectiveDecoders": null,
+        "stateDigests": [],
+        "outputPixels": [
+          0,
+          0
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          17.781375,
+          10.957875,
+          9.631792,
+          10.907792,
+          10.77375,
+          10.652209,
+          10.680792,
+          12.454459,
+          12.354208,
+          12.512792,
+          13.156167,
+          12.116042,
+          12.730959,
+          13.047,
+          10.956959,
+          13.371292,
+          10.366291,
+          14.2575,
+          10.342333,
+          14.260542
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "b2fdc27d66d31f880f39b2e8676eb5d9ad9e41ad145ce1760383643594905bdc",
+          "e8a889a7c313eee1ff6c362cb72dc53d7b78d3c3019d990eb76bdf3c8360c4e5"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "afterMedianMs": 12.235125
+    },
+    {
+      "id": "effects-grain-roughness",
+      "before": {
+        "status": "inconclusive",
+        "reason": "unsupported(\"native grain context/grid required\")",
+        "warmSamplesMs": [],
+        "effectiveDecoders": null,
+        "stateDigests": [],
+        "outputPixels": [
+          0,
+          0
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          12.162625,
+          12.691125,
+          11.88575,
+          12.926375,
+          10.634583,
+          14.768084,
+          10.251375,
+          14.085833,
+          12.434792,
+          14.218792,
+          11.448708,
+          20.089667,
+          11.57775,
+          11.118,
+          14.758458,
+          16.220708,
+          13.007625,
+          11.202084,
+          13.279542,
+          18.388125
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "8a66f2b0c66389472586ff89c4c4fdcbd88ef30f97196ac468e84770b99dd21b",
+          "e8a889a7c313eee1ff6c362cb72dc53d7b78d3c3019d990eb76bdf3c8360c4e5"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "afterMedianMs": 12.80875
+    },
+    {
+      "id": "detail-nr-luminance",
+      "before": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          91.988333,
+          647.750208,
+          85.480375,
+          639.620291,
+          97.973125,
+          643.852125,
+          88.779875,
+          660.445375,
+          91.278,
+          645.324958,
+          90.952541,
+          641.265042,
+          82.130292,
+          674.169625,
+          89.327,
+          965.640333,
+          161.972958,
+          670.283042,
+          91.101125,
+          683.366792
+        ],
+        "effectiveDecoders": null,
+        "stateDigests": [
+          "e7c4b243a9a83458050ec40a79db3a0d877e64d8ef8fa8d7e0023da458f937cd",
+          "f1b3693c763bc357fe05323216036a80c05cfa41d718bef0e5bfc6fe8104c87f"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          16.693292,
+          13.473542,
+          60.161542,
+          16.045,
+          12.64225,
+          14.761833,
+          10.738667,
+          12.961583,
+          10.388875,
+          11.526208,
+          16.852417,
+          15.148417,
+          12.242834,
+          18.148208,
+          15.834583,
+          13.293334,
+          10.929833,
+          13.050834,
+          15.036708,
+          15.442583
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "94ba1e482253e66f990dd172b9392277ed9b54225bed17d49b9159457c3feed0",
+          "f1b3693c763bc357fe05323216036a80c05cfa41d718bef0e5bfc6fe8104c87f"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "beforeMedianMs": 400.7966245,
+      "afterMedianMs": 14.117687499999999
+    },
+    {
+      "id": "detail-nr-color",
+      "before": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          88.113083,
+          648.168958,
+          80.721042,
+          623.131459,
+          79.2585,
+          611.454333,
+          83.223375,
+          638.11725,
+          86.113875,
+          609.3235,
+          79.388584,
+          600.807584,
+          78.556125,
+          614.392292,
+          86.9185,
+          615.364583,
+          79.775292,
+          617.8585,
+          79.871583,
+          613.624667
+        ],
+        "effectiveDecoders": null,
+        "stateDigests": [
+          "e9c794290de73f85f2e42bfe75ccdd9cbdcd5071d4785ec83861da1fa9f00324",
+          "f1b3693c763bc357fe05323216036a80c05cfa41d718bef0e5bfc6fe8104c87f"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          11.795375,
+          13.203042,
+          12.015958,
+          12.231375,
+          11.359375,
+          15.509166,
+          11.412042,
+          12.860292,
+          10.127166,
+          15.038667,
+          10.906417,
+          12.082333,
+          10.9735,
+          14.930584,
+          9.909666,
+          14.308166,
+          12.455292,
+          12.75225,
+          12.287542,
+          12.027584
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "4548274ca31a0cd394fbacde01492e8308f3e128dc0f31831e43d7cbdd0471e5",
+          "f1b3693c763bc357fe05323216036a80c05cfa41d718bef0e5bfc6fe8104c87f"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "beforeMedianMs": 344.4603335,
+      "afterMedianMs": 12.156854
+    },
+    {
+      "id": "detail-nr-lum-detail",
+      "before": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          659.182416,
+          652.548375,
+          647.8225,
+          651.871292,
+          657.019333,
+          667.029709,
+          651.358708,
+          672.587792,
+          663.372958,
+          674.011333,
+          674.825834,
+          675.077,
+          682.9715,
+          678.468166,
+          670.100292,
+          674.600542,
+          682.059,
+          673.2945,
+          677.432417,
+          677.9555
+        ],
+        "effectiveDecoders": null,
+        "stateDigests": [
+          "b8dd0d9742820f49d35493505b6595f5e80f97f5bbe2322d907547b98374f29b",
+          "eef8dd214a9ccf88a53dc7141682f50205fb92de6df211593a010919e535e89f"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          13.469625,
+          16.084209,
+          14.190375,
+          13.071167,
+          12.492459,
+          12.7745,
+          12.561417,
+          13.321708,
+          15.174167,
+          13.471042,
+          14.522042,
+          12.667042,
+          13.028166,
+          12.962875,
+          12.599417,
+          13.185917,
+          12.678541,
+          15.594959,
+          13.124917,
+          13.768791
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "7262a304fe5742faf3dfcfb023f5e05be95ad7e44cf49c1f5c25dc373b7b2e20",
+          "fb083422456722ed2a3ed30b932a66a2314b268df17245a2caf864fd6b852db8"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "beforeMedianMs": 672.941146,
+      "afterMedianMs": 13.155417
+    },
+    {
+      "id": "mixer-point-mask",
+      "before": {
+        "status": "inconclusive",
+        "reason": "unreadable",
+        "warmSamplesMs": [],
+        "effectiveDecoders": null,
+        "stateDigests": [],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "after": {
+        "status": "measured",
+        "reason": null,
+        "warmSamplesMs": [
+          11.792208,
+          14.872584,
+          11.546625,
+          13.254542,
+          11.518667,
+          13.127,
+          10.148625,
+          14.061541,
+          11.656792,
+          13.195083,
+          11.879417,
+          11.970084,
+          11.770834,
+          14.313875,
+          13.120375,
+          12.4845,
+          11.0155,
+          12.632583,
+          11.917291,
+          16.090292
+        ],
+        "effectiveDecoders": [
+          "flashraw-0.3.1-linear-srgb-bilinear",
+          "flashraw-0.3.1-linear-srgb-bilinear"
+        ],
+        "stateDigests": [
+          "f1b3693c763bc357fe05323216036a80c05cfa41d718bef0e5bfc6fe8104c87f",
+          "ffa5bbc585da12aaafa35c716e13334a0b32e91daa833dbf3d9e55bf9681efab"
+        ],
+        "outputPixels": [
+          2400,
+          1600
+        ]
+      },
+      "afterMedianMs": 12.227292
+    }
+  ]
+}

@@ -1,0 +1,879 @@
+{
+  "baselineSHA256" : "6dc62be8c5baa120e544482fbe950a75651de8f1f7c8da4dd66d0d2b061573d3",
+  "binarySHA256" : "05aa6aa9f181954316e1da792e7d38317cfd57e82e10700b1d439c6c1b721a59",
+  "gpu" : "Apple M4 Max",
+  "operations" : [
+    {
+      "id" : "grading-lut-amount",
+      "samples" : [
+        {
+          "approximate" : true,
+          "beginNs" : 511281259406916,
+          "digest" : "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+          "endNs" : 511281400249250,
+          "frameNs" : 511281399334041,
+          "ms" : 140.84233399999999,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 0,
+          "quality" : "interactive",
+          "stages" : [
+            {
+              "beginNs" : 511281266035458,
+              "boundary" : "RAW 解码",
+              "bytes" : 361304064,
+              "endNs" : 511281352293375,
+              "ms" : 86.257917000000006,
+              "operation" : "FlashRaw.decode",
+              "pixels" : 60217344,
+              "queue" : "FlashRaw 解码",
+              "stage" : "output 7 · backend 3 · bilinear · 全图"
+            },
+            {
+              "beginNs" : 511281352614708,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511281377139750,
+              "ms" : 24.525041999999999,
+              "operation" : "FlashRaw.linearToRGBA32F",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F16 上传 · 方向与缩放"
+            },
+            {
+              "beginNs" : 511281381862250,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281384720375,
+              "ms" : 2.8581249999999998,
+              "operation" : "DevelopmentGradingLUTEngine.apply",
+              "pixels" : 0,
+              "queue" : "图像引擎",
+              "stage" : "2³ LUT 图构建"
+            },
+            {
+              "beginNs" : 511281386665541,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511281387455583,
+              "ms" : 0.79004200000000002,
+              "operation" : "PreviewMetalFrameValidator",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F32 全帧校验和 sRGB8 显示转换"
+            },
+            {
+              "beginNs" : 511281260402083,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281399247083,
+              "ms" : 138.845,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "交互预览",
+              "stage" : "RAW · interactive"
+            }
+          ],
+          "state" : 0
+        },
+        {
+          "approximate" : false,
+          "beginNs" : 511281404916250,
+          "digest" : "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+          "endNs" : 511281604303000,
+          "frameNs" : 511281601640208,
+          "ms" : 199.38675000000001,
+          "nativePoolFills" : 1,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "settled",
+          "stages" : [
+            {
+              "beginNs" : 511281409791458,
+              "boundary" : "RAW 解码",
+              "bytes" : 361304064,
+              "endNs" : 511281454905583,
+              "ms" : 45.114125000000001,
+              "operation" : "FlashRaw.decode",
+              "pixels" : 60217344,
+              "queue" : "FlashRaw 解码",
+              "stage" : "output 7 · backend 3 · bilinear · 全图"
+            },
+            {
+              "beginNs" : 511281455087833,
+              "boundary" : "GPU 完成",
+              "bytes" : 481738752,
+              "endNs" : 511281489253458,
+              "ms" : 34.165624999999999,
+              "operation" : "FlashRaw.linearToRGBA16F",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "F16 上传 · 原生方向"
+            },
+            {
+              "beginNs" : 511281489673333,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281489685166,
+              "ms" : 0.011833,
+              "operation" : "DevelopmentGradingLUTEngine.apply",
+              "pixels" : 0,
+              "queue" : "图像引擎",
+              "stage" : "2³ LUT 图构建"
+            },
+            {
+              "beginNs" : 511281531759541,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511281557290041,
+              "ms" : 25.5305,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281489687541,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511281557324791,
+              "ms" : 67.637249999999995,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511281489641208,
+              "boundary" : "图构建与校验",
+              "bytes" : 0,
+              "endNs" : 511281557372291,
+              "ms" : 67.731082999999998,
+              "operation" : "DevelopmentRendererV3.develop",
+              "pixels" : 60217344,
+              "queue" : "显影引擎",
+              "stage" : "完整显影图"
+            },
+            {
+              "beginNs" : 511281405295750,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281601236250,
+              "ms" : 195.94049999999999,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "稳定预览",
+              "stage" : "RAW · settled"
+            }
+          ],
+          "state" : 0
+        },
+        {
+          "approximate" : true,
+          "beginNs" : 511281609503750,
+          "digest" : "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+          "endNs" : 511281615084291,
+          "frameNs" : 511281614681291,
+          "ms" : 5.5805410000000002,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "interactive",
+          "stages" : [
+            {
+              "beginNs" : 511281610525708,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281610539958,
+              "ms" : 0.014250000000000001,
+              "operation" : "DevelopmentGradingLUTEngine.apply",
+              "pixels" : 0,
+              "queue" : "图像引擎",
+              "stage" : "2³ LUT 图构建"
+            },
+            {
+              "beginNs" : 511281613296541,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511281614372541,
+              "ms" : 1.0760000000000001,
+              "operation" : "PreviewMetalFrameValidator",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F32 全帧校验和 sRGB8 显示转换"
+            },
+            {
+              "beginNs" : 511281610278041,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281614591708,
+              "ms" : 4.3136669999999997,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "交互预览",
+              "stage" : "RAW · interactive"
+            }
+          ],
+          "state" : 1
+        },
+        {
+          "approximate" : false,
+          "beginNs" : 511281619600833,
+          "digest" : "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+          "endNs" : 511281712334333,
+          "frameNs" : 511281710050750,
+          "ms" : 92.733500000000006,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 1,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "settled",
+          "stages" : [
+            {
+              "beginNs" : 511281632255708,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281632270791,
+              "ms" : 0.015082999999999999,
+              "operation" : "DevelopmentGradingLUTEngine.apply",
+              "pixels" : 0,
+              "queue" : "图像引擎",
+              "stage" : "2³ LUT 图构建"
+            },
+            {
+              "beginNs" : 511281644135291,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511281664243291,
+              "ms" : 20.108000000000001,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281632277708,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511281664271541,
+              "ms" : 31.993832999999999,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511281632217666,
+              "boundary" : "图构建与校验",
+              "bytes" : 0,
+              "endNs" : 511281664292083,
+              "ms" : 32.074416999999997,
+              "operation" : "DevelopmentRendererV3.develop",
+              "pixels" : 60217344,
+              "queue" : "显影引擎",
+              "stage" : "完整显影图"
+            },
+            {
+              "beginNs" : 511281620098708,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281709741416,
+              "ms" : 89.642707999999999,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "稳定预览",
+              "stage" : "RAW · settled"
+            }
+          ],
+          "state" : 1
+        }
+      ]
+    },
+    {
+      "id" : "light-mask-exposure",
+      "samples" : [
+        {
+          "approximate" : true,
+          "beginNs" : 511281717867958,
+          "digest" : "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+          "endNs" : 511281723446833,
+          "frameNs" : 511281723111416,
+          "ms" : 5.578875,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "interactive",
+          "stages" : [
+            {
+              "beginNs" : 511281718886125,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281719861208,
+              "ms" : 0.97508300000000003,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 3840000,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511281722267625,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511281722857166,
+              "ms" : 0.58954099999999998,
+              "operation" : "PreviewMetalFrameValidator",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F32 全帧校验和 sRGB8 显示转换"
+            },
+            {
+              "beginNs" : 511281718622291,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281723032750,
+              "ms" : 4.4104590000000004,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "交互预览",
+              "stage" : "RAW · interactive"
+            }
+          ],
+          "state" : 0
+        },
+        {
+          "approximate" : false,
+          "beginNs" : 511281727985708,
+          "digest" : "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+          "endNs" : 511281845138791,
+          "frameNs" : 511281842759041,
+          "ms" : 117.153083,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 1,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "settled",
+          "stages" : [
+            {
+              "beginNs" : 511281758464458,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511281762615750,
+              "ms" : 4.1512919999999998,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281740143708,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511281762646041,
+              "ms" : 22.502333,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511281769262416,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511281789304250,
+              "ms" : 20.041834000000001,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281762686125,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511281789330375,
+              "ms" : 26.64425,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511281762657583,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281789333000,
+              "ms" : 26.675416999999999,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 60217344,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511281740108625,
+              "boundary" : "图构建与校验",
+              "bytes" : 0,
+              "endNs" : 511281789351750,
+              "ms" : 49.243124999999999,
+              "operation" : "DevelopmentRendererV3.develop",
+              "pixels" : 60217344,
+              "queue" : "显影引擎",
+              "stage" : "完整显影图"
+            },
+            {
+              "beginNs" : 511281728379000,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281842408875,
+              "ms" : 114.029875,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "稳定预览",
+              "stage" : "RAW · settled"
+            }
+          ],
+          "state" : 0
+        },
+        {
+          "approximate" : true,
+          "beginNs" : 511281850411083,
+          "digest" : "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+          "endNs" : 511281854581375,
+          "frameNs" : 511281854214041,
+          "ms" : 4.1702919999999999,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "interactive",
+          "stages" : [
+            {
+              "beginNs" : 511281851339916,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281851358916,
+              "ms" : 0.019,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 3840000,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511281853389791,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511281853996208,
+              "ms" : 0.60641699999999998,
+              "operation" : "PreviewMetalFrameValidator",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F32 全帧校验和 sRGB8 显示转换"
+            },
+            {
+              "beginNs" : 511281851119375,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281854148916,
+              "ms" : 3.029541,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "交互预览",
+              "stage" : "RAW · interactive"
+            }
+          ],
+          "state" : 1
+        },
+        {
+          "approximate" : false,
+          "beginNs" : 511281859459625,
+          "digest" : "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+          "endNs" : 511281964392875,
+          "frameNs" : 511281962180333,
+          "ms" : 104.93325,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 1,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "settled",
+          "stages" : [
+            {
+              "beginNs" : 511281878433166,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511281888306791,
+              "ms" : 9.8736250000000005,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281871401916,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511281888342958,
+              "ms" : 16.941041999999999,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511281892400583,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511281913229833,
+              "ms" : 20.829249999999998,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281888375375,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511281913255875,
+              "ms" : 24.880500000000001,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511281888352958,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281913258166,
+              "ms" : 24.905207999999998,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 60217344,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511281871366666,
+              "boundary" : "图构建与校验",
+              "bytes" : 0,
+              "endNs" : 511281913278291,
+              "ms" : 41.911625000000001,
+              "operation" : "DevelopmentRendererV3.develop",
+              "pixels" : 60217344,
+              "queue" : "显影引擎",
+              "stage" : "完整显影图"
+            },
+            {
+              "beginNs" : 511281859933375,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281961859375,
+              "ms" : 101.926,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "稳定预览",
+              "stage" : "RAW · settled"
+            }
+          ],
+          "state" : 1
+        }
+      ]
+    },
+    {
+      "id" : "grading-mask-wheels",
+      "samples" : [
+        {
+          "approximate" : true,
+          "beginNs" : 511281969534625,
+          "digest" : "775a93a3ae67c93c7dea964c61009896e541901994ab4103183d297c8a192825",
+          "endNs" : 511281976762500,
+          "frameNs" : 511281976386375,
+          "ms" : 7.227875,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "interactive",
+          "stages" : [
+            {
+              "beginNs" : 511281970502250,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511281970687541,
+              "ms" : 0.18529100000000001,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 3840000,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511281975597458,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511281976159875,
+              "ms" : 0.56241699999999994,
+              "operation" : "PreviewMetalFrameValidator",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F32 全帧校验和 sRGB8 显示转换"
+            },
+            {
+              "beginNs" : 511281970245791,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511281976319708,
+              "ms" : 6.0739169999999998,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "交互预览",
+              "stage" : "RAW · interactive"
+            }
+          ],
+          "state" : 0
+        },
+        {
+          "approximate" : false,
+          "beginNs" : 511281981454750,
+          "digest" : "ed78c1380cba50b67f3190f152de9a35a083914c296a8a2b2f95e36e7f91752a",
+          "endNs" : 511282185477166,
+          "frameNs" : 511282183257500,
+          "ms" : 204.02241599999999,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 1,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "settled",
+          "stages" : [
+            {
+              "beginNs" : 511282001445666,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511282012885416,
+              "ms" : 11.43975,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511281994295208,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511282012909791,
+              "ms" : 18.614583,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511282017254791,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511282079817000,
+              "ms" : 62.562209000000003,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511282013110708,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511282079838041,
+              "ms" : 66.727333000000002,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511282012921833,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511282079840666,
+              "ms" : 66.918833000000006,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 60217344,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511281994265541,
+              "boundary" : "图构建与校验",
+              "bytes" : 0,
+              "endNs" : 511282079859958,
+              "ms" : 85.594417000000007,
+              "operation" : "DevelopmentRendererV3.develop",
+              "pixels" : 60217344,
+              "queue" : "显影引擎",
+              "stage" : "完整显影图"
+            },
+            {
+              "beginNs" : 511281981858500,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511282182925375,
+              "ms" : 201.06687500000001,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "稳定预览",
+              "stage" : "RAW · settled"
+            }
+          ],
+          "state" : 0
+        },
+        {
+          "approximate" : true,
+          "beginNs" : 511282190740875,
+          "digest" : "1a6a9b4304d1f2944a42f2da0dc4cf088d0a3b7e7752bdee2abda8d4c133a30c",
+          "endNs" : 511282197681166,
+          "frameNs" : 511282197272041,
+          "ms" : 6.9402910000000002,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 0,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "interactive",
+          "stages" : [
+            {
+              "beginNs" : 511282191686666,
+              "boundary" : "图构建",
+              "bytes" : 0,
+              "endNs" : 511282191832541,
+              "ms" : 0.145875,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 3840000,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511282196335041,
+              "boundary" : "GPU 完成",
+              "bytes" : 61440000,
+              "endNs" : 511282196959958,
+              "ms" : 0.62491699999999994,
+              "operation" : "PreviewMetalFrameValidator",
+              "pixels" : 3840000,
+              "queue" : "Metal GPU",
+              "stage" : "F32 全帧校验和 sRGB8 显示转换"
+            },
+            {
+              "beginNs" : 511282191448750,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511282197164333,
+              "ms" : 5.7155829999999996,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "交互预览",
+              "stage" : "RAW · interactive"
+            }
+          ],
+          "state" : 1
+        },
+        {
+          "approximate" : false,
+          "beginNs" : 511282202191041,
+          "digest" : "2b70b02dd5befdffec6c77b1a9a5089dbc80010ced30af425359f4567abf0725",
+          "endNs" : 511282427517041,
+          "frameNs" : 511282425178458,
+          "ms" : 225.32599999999999,
+          "nativePoolFills" : 0,
+          "nativePoolHits" : 1,
+          "nativePoolResidentBytes" : 481738752,
+          "quality" : "settled",
+          "stages" : [
+            {
+              "beginNs" : 511282238967625,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511282246365166,
+              "ms" : 7.3975410000000004,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511282223787000,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511282246394208,
+              "ms" : 22.607208,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511282264828625,
+              "boundary" : "GPU 完成",
+              "bytes" : 61505536,
+              "endNs" : 511282318933583,
+              "ms" : 54.104958000000003,
+              "operation" : "NativeFiniteReduction",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全尺寸 R8 标记与 Metal 并行归约"
+            },
+            {
+              "beginNs" : 511282246597333,
+              "boundary" : "GPU 完成",
+              "bytes" : 0,
+              "endNs" : 511282318957958,
+              "ms" : 72.360624999999999,
+              "operation" : "显影有限值检查",
+              "pixels" : 60217344,
+              "queue" : "Metal GPU",
+              "stage" : "全域归约"
+            },
+            {
+              "beginNs" : 511282246405041,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511282318960291,
+              "ms" : 72.555250000000001,
+              "operation" : "DevelopmentMaskEngineV3.apply",
+              "pixels" : 60217344,
+              "queue" : "图像引擎",
+              "stage" : "local-tone"
+            },
+            {
+              "beginNs" : 511282223755500,
+              "boundary" : "图构建与校验",
+              "bytes" : 0,
+              "endNs" : 511282318980666,
+              "ms" : 95.225166000000002,
+              "operation" : "DevelopmentRendererV3.develop",
+              "pixels" : 60217344,
+              "queue" : "显影引擎",
+              "stage" : "完整显影图"
+            },
+            {
+              "beginNs" : 511282202682250,
+              "boundary" : "API 返回",
+              "bytes" : 0,
+              "endNs" : 511282424849083,
+              "ms" : 222.166833,
+              "operation" : "生成预览",
+              "pixels" : 3840000,
+              "queue" : "稳定预览",
+              "stage" : "RAW · settled"
+            }
+          ],
+          "state" : 1
+        }
+      ]
+    }
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "pixels" : [
+    2400,
+    1600
+  ],
+  "processPeakPhysicalFootprintBytes" : 4201384024,
+  "protocol" : "unique-recipe-canonical-stage-profile-v1",
+  "recordedAt" : "2026-11-22T10:20:32Z",
+  "schemaVersion" : 1,
+  "serialFiniteOverride" : false,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSize" : [
+    9504,
+    6336
+  ],
+  "verified" : true
+}

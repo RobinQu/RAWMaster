@@ -5,6 +5,7 @@ import Foundation
 public enum EditingFingerprint {
   public static func of<T: Encodable>(_ value: T) throws -> String {
     let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys, .withoutEscapingSlashes]
+    encoder.userInfo[DevelopmentColorLUT.fingerprintOnly] = true
     return SHA256.hash(data: try encoder.encode(value)).map { String(format: "%02x", $0) }.joined()
   }
   public static func isSHA256(_ value: String) -> Bool {
@@ -98,8 +99,19 @@ public struct DevelopmentRecipe: Codable, Equatable, Sendable {
   /// Use at standalone recipe JSON boundaries to reject oversized input before JSONDecoder allocates it.
   /// Nested Codable readers still enforce per-array and cumulative local-edit limits incrementally.
   public static func decodeJSON(_ data: Data) throws -> DevelopmentRecipe {
-    guard data.count <= DevelopmentLocalEditLimits.maximumRecipeJSONBytes else { throw EditingError.invalidRecipe }
-    return try JSONDecoder().decode(Self.self,from:data)
+    let metadataLimit = DevelopmentLocalEditLimits.maximumRecipeJSONBytes
+    if data.count <= metadataLimit { return try JSONDecoder().decode(Self.self, from: data) }
+    // Applied cubes are portable recipe payloads. Bound allocation before decoding and give
+    // additional space only to cube bytes actually present (base64 plus JSON escaping).
+    let maximumSlots = DevelopmentLUTStack.maximumLayers + DevelopmentMaskLayerV3.maximumLayers
+    guard data.count <= metadataLimit + 2 * maximumSlots * DevelopmentColorLUT.maximumCubeBytes,
+          data.range(of: Data(("\"" + DevelopmentColorLUT.payloadKey + "\"").utf8)) != nil else { throw EditingError.invalidRecipe }
+    let recipe = try JSONDecoder().decode(Self.self, from: data)
+    let global = recipe.adjustmentsV3?.gradingLUTs?.layers ?? []
+    let local = recipe.adjustmentsV3?.masks.compactMap { $0.adjustments.gradingLUT } ?? []
+    let tableBytes = (global + local).reduce(0) { $0 + $1.cube.rgb.count }
+    guard data.count <= metadataLimit + 2 * tableBytes else { throw EditingError.invalidRecipe }
+    return recipe
   }
   private enum CodingKeys: String, CodingKey { case schemaVersion, exposureEV, whiteBalance, straightenDegrees, crop, engineVersion, color, adjustmentsV3 }
   public init(from decoder: Decoder) throws {
@@ -209,10 +221,15 @@ public struct PhotoWork: Codable, Equatable, Sendable, Identifiable {
   public var originalVersionID: String
   public var adoptedVersionID: String
   public var adoptionRevision: Int
+  /// The live recipe is separate from immutable candidates. Missing fields in older JSON mean no live edit.
+  public var liveRecipe: DevelopmentRecipe?
+  public var liveParentVersionID: String?
+  public var liveRevision: Int?
   public var createdAt: Date
   public init(id: String = UUID().uuidString, source: EditingSourceSnapshot, originalVersionID: String = UUID().uuidString, createdAt: Date = Date()) {
     self.id = id; self.source = source; self.originalVersionID = originalVersionID
     self.adoptedVersionID = originalVersionID; self.adoptionRevision = 0; self.createdAt = createdAt
+    self.liveRecipe = nil; self.liveParentVersionID = nil; self.liveRevision = nil
   }
 }
 public enum VersionDisposition: String, Codable, Sendable { case candidate, retained, discarded }

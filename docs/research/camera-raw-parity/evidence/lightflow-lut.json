@@ -1,0 +1,904 @@
+{
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "adapter": "BrowserWebGpu:  ( )",
+  "adapterInfo": {
+    "vendor": "apple",
+    "architecture": "metal-3",
+    "device": "",
+    "description": "",
+    "isFallbackAdapter": false
+  },
+  "rawSize": [
+    9504,
+    6336
+  ],
+  "rawOpenMs": 3650.345,
+  "rawDecodeMs": 993,
+  "rawDevelopMs": 1604,
+  "target": {
+    "kind": "image",
+    "maxSize": 2400,
+    "exact": true
+  },
+  "samples": 20,
+  "verification": "SHA-256 of a 96 × 64 grid of linear RGB half-float triplets. Every accepted trial changes the grid relative to its fixed-prerequisite baseline and previous trial, with finite RGB and at least 98% opaque samples. Discrete paired edits must change from the previous frame and return to the baseline digest exactly when restoring the baseline setting.",
+  "operations": [
+    {
+      "id": "grading-lut-select",
+      "featureIds": [
+        "grading-lut-select"
+      ],
+      "field": "effects.lut.asset",
+      "fixed": {},
+      "localMask": false,
+      "trials": [
+        {
+          "phase": "first-in-session",
+          "value": "mono",
+          "ms": 23.115,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 1.11,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 1.79,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 0.865,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 1.04,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 0.75,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 0.66,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 1.82,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 8.09,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 0.935,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 10.255,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 1.06,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 0.93,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 0.81,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 0.735,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 1.165,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 1.145,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 3.22,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 0.965,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm",
+          "ms": 5.54,
+          "digest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono",
+          "ms": 2.24,
+          "digest": "21bc2ef573a8171b9781eef71712684ee4cf98e79fdf46adbc2726b1b6be0bd3",
+          "verified": true
+        }
+      ],
+      "colorSpace": "sRGB",
+      "tableSize": 2,
+      "change": {
+        "alternating": [
+          "warm",
+          "mono"
+        ]
+      },
+      "referenceDigest": "b2a87f9f99e1cddc7880f16f3cf5c068082e3ffa6946b33a57b030dbd540a75c",
+      "texture": [
+        2400,
+        1600
+      ],
+      "status": "measured"
+    },
+    {
+      "id": "grading-lut-amount",
+      "featureIds": [
+        "grading-lut-amount"
+      ],
+      "field": "effects.lut.strength",
+      "fixed": {},
+      "localMask": false,
+      "trials": [
+        {
+          "phase": "first-in-session",
+          "value": 15,
+          "ms": 30.5,
+          "digest": "5c2cd3c8b7377d33090887e81e98a644725bb5114e752d7b280014f486e3d0d3",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 95,
+          "ms": 32.655,
+          "digest": "7129500b5ea68d31a50c47c86dd844971d8eaef9e36fa5570145619d3d98a87d",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 19,
+          "ms": 22.52,
+          "digest": "be0d686f5a5ca798166b61239b5c16aec9356a617092f5fd49fdb6329c2f93e9",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 91,
+          "ms": 15.55,
+          "digest": "d8c47ff3d185805d614749d023172eb8ffe1b17330637bdf68218b45c77c6849",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 23,
+          "ms": 29.455,
+          "digest": "faecd3c6287c85ee806d0e1a2b9915770c6b78640b6bc0d44f59c124a046a47d",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 87,
+          "ms": 44.115,
+          "digest": "ce1b85726e5c85e6a328f1a1084dd76476a7526f92c9624da85ba1b2200689ca",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 27,
+          "ms": 34.085,
+          "digest": "e6d015393e5f3be0b021e68f17c698b67d80438d29c43ebae6a319d89671eade",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 83,
+          "ms": 42.735,
+          "digest": "0413769d4737826571ee3a5aea113876cbeedf941a088eaca17598126717605b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 31,
+          "ms": 39.26,
+          "digest": "ced2ad46309bb1917d2c6501b65ee46782b6a0805dda878783637488f99fb102",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 79,
+          "ms": 11,
+          "digest": "0ad497a31cc8262e423f9ee8b697877377c6f78195a3fd6f96fdf0ae555d95d2",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 35,
+          "ms": 41.165,
+          "digest": "178e6e0d5bfcb0fa4fcd212d0ec0570d224c328387e57552e91603e8049adf14",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 75,
+          "ms": 44.635,
+          "digest": "209cc68862bdaba617760fee3c0729ae077f6019fcc429021d9997aa8e3eb937",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 39,
+          "ms": 6.83,
+          "digest": "f1fe5c7b46971cdd3c160b9f1075b295f5c74486cb9d45242ed6c8ea35e1e97f",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 71,
+          "ms": 29.79,
+          "digest": "4360aca7dad2af7195dbd44b9b91098640ffa963471f9b3d24256735e3f15ceb",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 43,
+          "ms": 35.185,
+          "digest": "62385f59a71837741220a268c58561c8cb782e1b9c66957622adf48e6ef6106a",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 67,
+          "ms": 28.31,
+          "digest": "c3879a4957ce1a93399f27d80fef942dc410148cb18bb48a32838a10eca89d79",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 47,
+          "ms": 16.935,
+          "digest": "a3666214382d085c4e6bfaeae82687154c8144ddaa11ad00f79eb4e7a683516c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 63,
+          "ms": 21.185,
+          "digest": "f66f74a819c1f96a99deaf5cb79359d9b54e8f2e62627bfdc663b84940a3f3d2",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 51,
+          "ms": 39.845,
+          "digest": "e66af5726b64ecdbe34544660dc798daddef78d80ba968fef35172fe9944c85c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 59,
+          "ms": 35.905,
+          "digest": "35c91879cd523f3c34aee71960f59634e2fe66c78312ac4e8468a2c8bf840781",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 55,
+          "ms": 33.66,
+          "digest": "bff26ed0b5e2b6e9474e48bf6e75ca7db31b0c33009a7e5e9c92239bc7786e2a",
+          "verified": true
+        }
+      ],
+      "colorSpace": "sRGB",
+      "tableSize": 2,
+      "change": {
+        "strengthRange": [
+          15,
+          95
+        ]
+      },
+      "referenceDigest": "644b347ac68f4aada8b7451e709f8eb9eaf07ec9389e5d2ff0366fd78718a841",
+      "texture": [
+        2400,
+        1600
+      ],
+      "status": "measured"
+    },
+    {
+      "id": "grading-lut-stack",
+      "featureIds": [
+        "grading-lut-stack"
+      ],
+      "field": "grade.nodes.count",
+      "fixed": {},
+      "localMask": false,
+      "trials": [
+        {
+          "phase": "first-in-session",
+          "value": 3,
+          "ms": 36.19,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 1.57,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 2.39,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 1.51,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 0.815,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 0.995,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 2.76,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 1.105,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 1.48,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 0.67,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 2.285,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 1.15,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 1.6,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 1.56,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 0.67,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 0.63,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 1.135,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 2.355,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 1.97,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 2,
+          "ms": 3.86,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 3,
+          "ms": 3.32,
+          "digest": "c1702ecae0fbbb4a075b00ca2959bdc327f90f7ff15c05195691f93bd7147ea8",
+          "verified": true
+        }
+      ],
+      "colorSpace": "sRGB",
+      "tableSize": 2,
+      "change": {
+        "alternating": [
+          2,
+          3
+        ]
+      },
+      "referenceDigest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+      "texture": [
+        2400,
+        1600
+      ],
+      "status": "measured"
+    },
+    {
+      "id": "grading-lut-manage",
+      "featureIds": [
+        "grading-lut-manage"
+      ],
+      "field": "grade.edges.order",
+      "fixed": {},
+      "localMask": false,
+      "trials": [
+        {
+          "phase": "first-in-session",
+          "value": "mono,warm",
+          "ms": 7.36,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 1.71,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 2.085,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 1.215,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 6.29,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 7.39,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 1.96,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 0.865,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 1.715,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 0.935,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 1.13,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 1.275,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 0.94,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 1.005,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 3.24,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 2.005,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 2.175,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 3.555,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 1.76,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "warm,mono",
+          "ms": 1.04,
+          "digest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": "mono,warm",
+          "ms": 1.88,
+          "digest": "0c50774002446b1fd45f714022dad610bbf60d6956a893ec80337238a715874b",
+          "verified": true
+        }
+      ],
+      "colorSpace": "sRGB",
+      "tableSize": 2,
+      "change": {
+        "alternating": [
+          "warm,mono",
+          "mono,warm"
+        ]
+      },
+      "referenceDigest": "657c5e9acbf48b1dbd28265c3b408e5808acf3ef71ecb7a1abb617e2fff3fb22",
+      "texture": [
+        2400,
+        1600
+      ],
+      "status": "measured"
+    },
+    {
+      "id": "grading-lut-mask",
+      "featureIds": [
+        "grading-lut-mask"
+      ],
+      "field": "effects.lut.strength",
+      "fixed": {},
+      "localMask": true,
+      "trials": [
+        {
+          "phase": "first-in-session",
+          "value": 15,
+          "ms": 288.435,
+          "digest": "906927f4273cf9a0043e3c4d23e2c1db30fb2a46e4107c66cfc5d4ed97593516",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 95,
+          "ms": 31.3,
+          "digest": "b49bbe657a16546a656e9904f67f8983c06ce50b3c5abd4715cdf79d9b8ce7d8",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 19,
+          "ms": 19.575,
+          "digest": "c24924f6042080c049364af6c36d0bf733bbcb8de9240324daee6a2f37bca3f1",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 91,
+          "ms": 13,
+          "digest": "ded5913192a23679b26f3f8cae0587fe2660baa03170520b22aef96ec4f2d7d1",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 23,
+          "ms": 17.405,
+          "digest": "5a3fb052fba6fff9d2e3bb56f0acc913af82c5c3c49d0750e56414f9766bc0d9",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 87,
+          "ms": 38.51,
+          "digest": "f5844630a7b721f225350dfc47b76ce90f075fa6152204ed731f49648cf1ccc2",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 27,
+          "ms": 26.055,
+          "digest": "93e5c26f04c09b1fbac6a196ada69c6f9bd89b4bb5c758cc2c65e2b3aa88c931",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 83,
+          "ms": 34.35,
+          "digest": "1de302fc8767173f5088b46ec75371cea0f316db5ad4eaa11f4d80507b055c8c",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 31,
+          "ms": 38.635,
+          "digest": "10545d4bb0c708e78385c0401e883c448762675ba4648fdd8b384c22ac186962",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 79,
+          "ms": 30.93,
+          "digest": "105a16874544ed258fa6e57bb1feb3f8f520751aa4df8247017368eee051ef7e",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 35,
+          "ms": 36.365,
+          "digest": "469cde274fabe871581e9da13556dad506d55810981c6c7b3e244895dce52605",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 75,
+          "ms": 31.75,
+          "digest": "d511e1c8bee1401c7379d03ab7f3379d03b5b3a905ce1de5c6e8f98c8f34e70a",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 39,
+          "ms": 23.63,
+          "digest": "685e447a9c9ad9cbfb1b903112436378969a3a62ee244e86b584439b3253ab83",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 71,
+          "ms": 22.38,
+          "digest": "bdc972750f10546ec62e5d3e4905308908afb387cee081e632d37077d92fa799",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 43,
+          "ms": 11.655,
+          "digest": "d04da6266e5573445ac47eb7156fd0b42fb5d72deb5ef9f4185c14bb6e412ffe",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 67,
+          "ms": 48.985,
+          "digest": "87dc490db1bf52f5e3090420a4b9dfa157be5c1eb020eb8eb1ae09d46af7dc76",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 47,
+          "ms": 12.555,
+          "digest": "a5987dba88be7345e1c23b4b1f6082d709538e14551ead9e76e35355dd8fcafa",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 63,
+          "ms": 4.925,
+          "digest": "458c1cc354d30fedec77aa345c22be860d830311a9cb25b6f108215596a09811",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 51,
+          "ms": 25.94,
+          "digest": "eec7178942e8162115561ca908727f84744cc7989e13e1c1dd2dd892f6ffa42d",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 59,
+          "ms": 41.605,
+          "digest": "60dce41a0f017b1a6c127601cd950be7a91ff2bfdd341573e7b8d114a8e00b37",
+          "verified": true
+        },
+        {
+          "phase": "warm",
+          "value": 55,
+          "ms": 27.575,
+          "digest": "fedd1d9faa30d00b4dc51e423675b22834cb7aa984d41f2fe4917ed2b041db35",
+          "verified": true
+        }
+      ],
+      "colorSpace": "sRGB",
+      "tableSize": 2,
+      "change": {
+        "strengthRange": [
+          15,
+          95
+        ]
+      },
+      "referenceDigest": "644b347ac68f4aada8b7451e709f8eb9eaf07ec9389e5d2ff0366fd78718a841",
+      "texture": [
+        2400,
+        1600
+      ],
+      "status": "measured"
+    }
+  ],
+  "schemaVersion": 1,
+  "application": "LightFlow",
+  "build": "2d41ab1",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "recordedAt": "2026-11-22T07:23:42.676128+00:00",
+  "engineSHA256": {
+    "lightflow_host_wasm.js": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "lightflow_host_wasm_bg.wasm": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674"
+  },
+  "browserBinarySHA256": "269784d37b2ff5ab227e66f4f027860076bbd35c18558c156f9740e0660cbe2a",
+  "browserBinary": "chrome-headless-shell",
+  "probeSHA256": "e8c6acbb1c344d659ba0038d9c163c03106bbbf1fa50c1f7bccbfacf966ffac1",
+  "system": {
+    "os": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "chip": "Apple M4 Max"
+  },
+  "boundary": "Exact output texture at the requested long side: PixelEngine.render entry to resolved PixelEngine.idle. CPU pixel verification follows timing. Excludes UI, presentation and RAW decode."
+}

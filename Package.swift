@@ -13,7 +13,7 @@ let package = Package(
         .systemLibrary(name: "CSQLite"),
         .target(name: "CFlashRaw"),
         .target(name: "RAWMasterCore", dependencies: ["CSQLite"]),
-        .target(name: "RAWMasterImaging", dependencies: ["RAWMasterCore", "CFlashRaw"], resources: [.copy("Resources/PhotoFilters")]),
+        .target(name: "RAWMasterImaging", dependencies: ["RAWMasterCore", "CFlashRaw"], resources: [.copy("Resources/PhotoFilters"), .copy("Resources/PhotoDenoise"), .copy("Resources/PhotoSuperResolution")]),
         .target(name: "RAWMasterAI", dependencies: ["RAWMasterCore"], resources: [.copy("Resources")]),
         // VideoPlayer's SwiftUI overlay needs the Objective-C AVPlayerView superclass at runtime.
         // Importing AVKit alone can autolink only _AVKit_SwiftUI, causing an abort on first preview.

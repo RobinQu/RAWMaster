@@ -83,7 +83,7 @@ swift run RAWMasterDiagnostics /absolute/path/photo.ARW --output output/probe --
 ./scripts/test-image-performance.sh --source /absolute/path/to/RAW-directory --output output/performance/current
 ```
 
-脚本顺序测试网格与胶片条输入、真实 RAW 预览/解码、连续切换、取消、2–4 张比较及画布离屏绘制，保存 `ui.json`、`image.json`、`summary.json` 和日志。输出目录必须是新目录或空目录；每段测试有 180 秒超时，超时会终止该测试进程并留下失败记录。缺少样本、超时、未生成报告或超出预算会失败。真实 RAW 目录应包含至少 15 张受支持文件；原片只读，交互测试使用临时资料库。
+脚本顺序测试网格与胶片条输入、真实 RAW 预览/解码、连续切换、取消、2–4 张比较、画布离屏绘制，以及 50 项 FlashRaw 交互／canonical 算子序列，保存 `ui.json`、`image.json`、`interactive/interactive-performance.json`、`interactive-comparison.json`、`summary.json` 和日志。输出目录必须是新目录或空目录；UI、图像和交互算子测试分别有 180、180、300 秒超时，超时会终止该测试进程并留下失败记录。缺少样本、操作覆盖不全、透明帧、原片哈希变化、未生成报告或超出预算会失败。真实 RAW 目录应包含至少 15 张受支持文件；原片只读，交互测试使用临时资料库。算子回归要求可用的 FlashRaw 动态库，可用 `RAWMASTER_FLASHRAW_LIBRARY` 显式指定；默认交互中位数门槛为 50 ms，基线比较默认允许交互／settled 中位数分别回退 10%／20%。这些门槛只约束 RawMaster 发版回归，不构成 LightFlow 或 Camera Raw 的同口径等价证明。
 
 同机同系统、同样本的后续版本还应比较前次通过的报告：
 

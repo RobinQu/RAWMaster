@@ -1,0 +1,20 @@
+Test Suite 'Selected tests' started at 2026-11-22 18:18:20.132.
+Test Suite 'RAWMasterImagingTests.xctest' started at 2026-11-22 18:18:20.133.
+Test Suite 'DevelopmentPhotoDenoiseTests' started at 2026-11-22 18:18:20.133.
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testMetalMatchesSourceWeightReferenceInPhotographCoordinates]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testMetalMatchesSourceWeightReferenceInPhotographCoordinates]' passed (0.051 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testModelAndSourceDomainPersistThroughUndoPayloads]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testModelAndSourceDomainPersistThroughUndoPayloads]' passed (0.002 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testNativeMetalKeepsAlphaExtendedRangeAndSplitPixels]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testNativeMetalKeepsAlphaExtendedRangeAndSplitPixels]' passed (0.029 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testOutputReferredDNG]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testOutputReferredDNG]' passed (0.905 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testRealCameraRenderedSourcesPreviewAndTIFF]' started.
+Test Case '-[RAWMasterImagingTests.DevelopmentPhotoDenoiseTests testRealCameraRenderedSourcesPreviewAndTIFF]' passed (3.521 seconds).
+Test Suite 'DevelopmentPhotoDenoiseTests' passed at 2026-11-22 18:18:24.641.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 4.508 (4.508) seconds
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-22 18:18:24.641.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 4.508 (4.508) seconds
+Test Suite 'Selected tests' passed at 2026-11-22 18:18:24.641.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 4.508 (4.509) seconds
+Photographic components maximum display-sRGB error: Y0 1.7881393e-07 Y50 1.7881393e-07 chroma 2.3841858e-07 alpha 0.0 HDR/negative at all amounts 1.1920929e-07 legacy blended RGB50 1.7881393e-07

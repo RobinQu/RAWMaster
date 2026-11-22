@@ -5,7 +5,7 @@ import RAWMasterCore
 
 /// Fixed source-space operators. No donor search, face detection, or geometry in replay.
 enum DevelopmentLocalEngineV3 {
-  static let operatorVersion = "local-v2/retouch-texture-transfer25/manual4nearest-f32/ordered-coverage/red-eye-local-v1/alpha-preserved/work-retouch212-redEye2"
+  static let operatorVersion = "local-v3/retouch-texture-transfer25/clone-direct/manual4nearest-f32/ordered-coverage/red-eye-local-v1/alpha-preserved/work-retouch212-clone5-redEye2"
   static let alphaMinimum: Float = 1/65535
   private static let kernels: Result<[CIKernel],Error> = Result {
     guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
@@ -127,7 +127,7 @@ enum DevelopmentLocalEngineV3 {
       CIVector(x:Double(radius),y:operation.stroke.strength,z:Double(cell),w:Double(groups)),
       CIVector(x:Double(dx),y:Double(dy),z:Double(size.width),w:Double(size.height)),
       CIVector(x:Double(dabs.width),y:Double(dabs.height),z:Double(headers.width),w:Double(headers.height)),
-      CIVector(x:Double(indices.width),y:Double(indices.height),z:operation.tool == .retouch ? 0:1,w:0)]
+      CIVector(x:Double(indices.width),y:Double(indices.height),z:operation.tool == .retouch ? 0:1,w:operation.retouchMode == .clone ? 1:0)]
     guard let result = try kernel("rmLocalEdit").apply(extent:e,roiCallback:{ index,r in
       switch index { case 0:return sourceROI(r); case 1:return dabs.image.extent; case 2:return headers.image.extent; default:return indices.image.extent }
     },arguments:args) else { throw DevelopmentV3Error.invalidGraph }
@@ -199,8 +199,11 @@ float4 rmLocalLow(sampler s,float2 p,float radius,float2 size){
  }
  float2 donor=world+float2(source.x,-source.y);
  if(donor.x<.5||donor.y<.5||donor.x>source.z-.5||donor.y>source.w-.5)return float4(as_type<float>(0x7fc00000u));
- float4 d=rmLocalBilinear(src,donor,source.zw),lt=rmLocalLow(src,world,brush.x,source.zw),ld=rmLocalLow(src,donor,brush.x,source.zw);
- if(d.a<1.0/65535.0||lt.a<1.0/65535.0||ld.a<1.0/65535.0)return original;
+ float4 d=rmLocalBilinear(src,donor,source.zw);
+ if(d.a<1.0/65535.0)return original;
+ if(indicesSize.w>.5)return float4(mix(u,d.rgb/d.a,coverage)*original.a,original.a);
+ float4 lt=rmLocalLow(src,world,brush.x,source.zw),ld=rmLocalLow(src,donor,brush.x,source.zw);
+ if(lt.a<1.0/65535.0||ld.a<1.0/65535.0)return original;
  float3 healed=d.rgb/d.a-ld.rgb/ld.a+lt.rgb/lt.a;
  return float4(mix(u,healed,coverage)*original.a,original.a);
 }

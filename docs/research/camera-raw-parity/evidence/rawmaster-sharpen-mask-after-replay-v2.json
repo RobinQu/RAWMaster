@@ -1,0 +1,744 @@
+{
+  "application" : "RAWMaster",
+  "binarySHA256" : "bff8014683d9844fd2e9bbc12c9c0023de73777566469199446a91e53c1f4bfc",
+  "boundary" : "First production interactive request through full sRGB8 readback, then immediate canonical settled request and full sRGB8 readback. Both full hashes after timing; app gesture debounce excluded.",
+  "cachePolicy" : "shipping defaults",
+  "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "distinctInputCount" : 0,
+  "gpu" : "Apple M4 Max",
+  "operations" : [
+    {
+      "firstStateFullFrameDigests" : [
+        "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+        "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4"
+      ],
+      "fixed" : {
+        "masking" : 60,
+        "sharpenAmount" : 75,
+        "sharpenDetail" : 25,
+        "sharpenRadius" : 1
+      },
+      "id" : "detail-mask-preview",
+      "pixelWitness" : "entire-opaque-sRGB-RGBA8",
+      "recipes" : [
+        "2279342f6c4b21f0e49fe189aafc8709951b1bb85cfa3ca1e52d8dd18f2702bd",
+        "a4588cabd60c95673df31cf5890ce97005d4df6c28fb38697246dfedbc52a03c"
+      ],
+      "region" : "global",
+      "samples" : [
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 617.30041700000004,
+          "firstMs" : 161.08275,
+          "firstSHA256" : "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910",
+          "ms" : 617.30041700000004,
+          "phase" : "first",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 600.41112499999997,
+          "firstMs" : 83.828000000000003,
+          "firstSHA256" : "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903",
+          "ms" : 600.41112499999997,
+          "phase" : "first",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 2.309542,
+          "firstMs" : 2.309542,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 2.9312499999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.2202919999999999,
+          "firstMs" : 1.2202919999999999,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.794,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.1995,
+          "firstMs" : 1.1995,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.776,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.2556659999999999,
+          "firstMs" : 1.2556659999999999,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.8727499999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.311167,
+          "firstMs" : 1.311167,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.868708,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.2404999999999999,
+          "firstMs" : 1.2404999999999999,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.7201249999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.1171660000000001,
+          "firstMs" : 1.1171660000000001,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.6311249999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.1323749999999999,
+          "firstMs" : 1.1323749999999999,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.664542,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.093917,
+          "firstMs" : 1.093917,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.6189579999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.112417,
+          "firstMs" : 1.112417,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.5894999999999999,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.0345420000000001,
+          "firstMs" : 1.0345420000000001,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.5690839999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.1557500000000001,
+          "firstMs" : 1.1557500000000001,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.6462920000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.322416,
+          "firstMs" : 1.322416,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.876916,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.280208,
+          "firstMs" : 1.280208,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.8421670000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.3414159999999999,
+          "firstMs" : 1.3414159999999999,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.9327909999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.1177919999999999,
+          "firstMs" : 1.1177919999999999,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.677584,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.2076249999999999,
+          "firstMs" : 1.2076249999999999,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.7809159999999999,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.2873749999999999,
+          "firstMs" : 1.2873749999999999,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 2.0946660000000001,
+          "phase" : "warm",
+          "state" : 1
+        },
+        {
+          "digest" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "firstExactFinalMs" : 1.177125,
+          "firstMs" : 1.177125,
+          "firstSHA256" : "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+          "ms" : 1.675416,
+          "phase" : "warm",
+          "state" : 0
+        },
+        {
+          "digest" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "firstExactFinalMs" : 1.2612920000000001,
+          "firstMs" : 1.2612920000000001,
+          "firstSHA256" : "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+          "ms" : 1.872458,
+          "phase" : "warm",
+          "state" : 1
+        }
+      ],
+      "stateDescriptions" : [
+        {
+          "adjustmentsV3" : {
+            "blackAndWhite" : {
+              "enabled" : false,
+              "grain" : 0,
+              "intensity" : 0.5,
+              "neutrals" : 0,
+              "tone" : 0
+            },
+            "color" : {
+              "cast" : 0,
+              "enabled" : false,
+              "saturation" : 0,
+              "vibrance" : 0
+            },
+            "curves" : {
+              "blue" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              },
+              "enabled" : false,
+              "green" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              },
+              "red" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              },
+              "rgb" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              }
+            },
+            "definition" : {
+              "amount" : 0,
+              "enabled" : false
+            },
+            "filter" : {
+              "enabled" : false,
+              "intensity" : 100,
+              "selection" : "original"
+            },
+            "geometry" : {
+              "clockwiseQuarterTurns" : 0,
+              "crop" : {
+                "height" : 1,
+                "width" : 1,
+                "x" : 0,
+                "y" : 0
+              },
+              "flipHorizontal" : false,
+              "flipVertical" : false,
+              "horizontalPerspective" : 0,
+              "straightenDegrees" : 0,
+              "version" : "adjustV3",
+              "verticalPerspective" : 0
+            },
+            "legacyBasis" : null,
+            "levels" : {
+              "blue" : {
+                "kind" : "identity"
+              },
+              "enabled" : false,
+              "green" : {
+                "kind" : "identity"
+              },
+              "luminance" : {
+                "kind" : "identity"
+              },
+              "red" : {
+                "kind" : "identity"
+              },
+              "rgb" : {
+                "kind" : "identity"
+              }
+            },
+            "light" : {
+              "blackPoint" : 0,
+              "brightness" : 0,
+              "brilliance" : 0,
+              "contrast" : 0,
+              "enabled" : false,
+              "exposure" : 0,
+              "highlights" : 0,
+              "shadows" : 0
+            },
+            "localEdits" : {
+              "operations" : [
+
+              ],
+              "redEyeEnabled" : false,
+              "retouchEnabled" : false,
+              "sourceBinding" : null
+            },
+            "noiseReduction" : {
+              "colorNoise" : 0,
+              "detail" : 0,
+              "enabled" : false,
+              "luminanceNoise" : 0,
+              "nonRawAmount" : 0,
+              "sourceCapability" : "raw"
+            },
+            "rawDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+            "selectiveColor" : {
+              "colors" : [
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "red"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "orange"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "yellow"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "green"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "cyan"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "blue"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "purple"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "magenta"
+                }
+              ],
+              "enabled" : false
+            },
+            "sharpen" : {
+              "detail" : 0.25,
+              "edges" : 0.22,
+              "enabled" : true,
+              "falloff" : 0.68999999999999995,
+              "intensity" : 0.75,
+              "masking" : 0.59999999999999998,
+              "radius" : 1,
+              "visualiseMasking" : false
+            },
+            "vignette" : {
+              "enabled" : false,
+              "radius" : 0.5,
+              "softness" : 0,
+              "strength" : 0
+            },
+            "whiteBalance" : {
+              "adjustment" : {
+                "mode" : "asShot"
+              },
+              "enabled" : false
+            }
+          },
+          "engineVersion" : "rawmaster-adjust-v3",
+          "schemaVersion" : 3
+        },
+        {
+          "adjustmentsV3" : {
+            "blackAndWhite" : {
+              "enabled" : false,
+              "grain" : 0,
+              "intensity" : 0.5,
+              "neutrals" : 0,
+              "tone" : 0
+            },
+            "color" : {
+              "cast" : 0,
+              "enabled" : false,
+              "saturation" : 0,
+              "vibrance" : 0
+            },
+            "curves" : {
+              "blue" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              },
+              "enabled" : false,
+              "green" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              },
+              "red" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              },
+              "rgb" : {
+                "curve" : {
+                  "points" : [
+                    {
+                      "x" : 0,
+                      "y" : 0
+                    },
+                    {
+                      "x" : 1,
+                      "y" : 1
+                    }
+                  ]
+                },
+                "inputBlack" : 0,
+                "inputWhite" : 1
+              }
+            },
+            "definition" : {
+              "amount" : 0,
+              "enabled" : false
+            },
+            "filter" : {
+              "enabled" : false,
+              "intensity" : 100,
+              "selection" : "original"
+            },
+            "geometry" : {
+              "clockwiseQuarterTurns" : 0,
+              "crop" : {
+                "height" : 1,
+                "width" : 1,
+                "x" : 0,
+                "y" : 0
+              },
+              "flipHorizontal" : false,
+              "flipVertical" : false,
+              "horizontalPerspective" : 0,
+              "straightenDegrees" : 0,
+              "version" : "adjustV3",
+              "verticalPerspective" : 0
+            },
+            "legacyBasis" : null,
+            "levels" : {
+              "blue" : {
+                "kind" : "identity"
+              },
+              "enabled" : false,
+              "green" : {
+                "kind" : "identity"
+              },
+              "luminance" : {
+                "kind" : "identity"
+              },
+              "red" : {
+                "kind" : "identity"
+              },
+              "rgb" : {
+                "kind" : "identity"
+              }
+            },
+            "light" : {
+              "blackPoint" : 0,
+              "brightness" : 0,
+              "brilliance" : 0,
+              "contrast" : 0,
+              "enabled" : false,
+              "exposure" : 0,
+              "highlights" : 0,
+              "shadows" : 0
+            },
+            "localEdits" : {
+              "operations" : [
+
+              ],
+              "redEyeEnabled" : false,
+              "retouchEnabled" : false,
+              "sourceBinding" : null
+            },
+            "noiseReduction" : {
+              "colorNoise" : 0,
+              "detail" : 0,
+              "enabled" : false,
+              "luminanceNoise" : 0,
+              "nonRawAmount" : 0,
+              "sourceCapability" : "raw"
+            },
+            "rawDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+            "selectiveColor" : {
+              "colors" : [
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "red"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "orange"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "yellow"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "green"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "cyan"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "blue"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "purple"
+                },
+                {
+                  "hue" : 0,
+                  "luminance" : 0,
+                  "range" : 1,
+                  "sampledColor" : null,
+                  "saturation" : 0,
+                  "slot" : "magenta"
+                }
+              ],
+              "enabled" : false
+            },
+            "sharpen" : {
+              "detail" : 0.25,
+              "edges" : 0.22,
+              "enabled" : true,
+              "falloff" : 0.68999999999999995,
+              "intensity" : 0.75,
+              "masking" : 0.59999999999999998,
+              "radius" : 1,
+              "visualiseMasking" : true
+            },
+            "vignette" : {
+              "enabled" : false,
+              "radius" : 0.5,
+              "softness" : 0,
+              "strength" : 0
+            },
+            "whiteBalance" : {
+              "adjustment" : {
+                "mode" : "asShot"
+              },
+              "enabled" : false
+            }
+          },
+          "engineVersion" : "rawmaster-adjust-v3",
+          "schemaVersion" : 3
+        }
+      ],
+      "status" : "measured",
+      "unit" : "edge-mask preview",
+      "values" : [
+        false,
+        true
+      ]
+    }
+  ],
+  "os" : "Version 27.0.1 (Build 26A434)",
+  "parameterSHA256" : "1ecab2311dfc3efc94d698aeff939708d5dd17c564a0e87c62712004c58ab4d4",
+  "pixels" : [
+    2400,
+    1600
+  ],
+  "protocol" : "resident-photo-operators-interactive-settled-v2",
+  "recordedAt" : "2026-11-22T10:02:09Z",
+  "samples" : 20,
+  "schemaVersion" : 2,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

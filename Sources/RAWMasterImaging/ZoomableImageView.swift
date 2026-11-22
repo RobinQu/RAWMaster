@@ -1,6 +1,10 @@
 import AppKit
 import SwiftUI
 
+extension NSEdgeInsets {
+    public static let zero = NSEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+}
+
 public struct ImageTransform: Equatable, Sendable {
     /// Magnification relative to fitting the image in the viewport.
     public var scale: CGFloat
@@ -18,29 +22,52 @@ public struct ImageTransform: Equatable, Sendable {
 
 /// Pure geometry shared by the native canvas and executable diagnostics.
 public enum ImageViewportGeometry {
-    public static func fitScale(pixelSize: CGSize, viewport: CGSize) -> CGFloat {
-        guard pixelSize.width > 0, pixelSize.height > 0, viewport.width > 0, viewport.height > 0 else { return 1 }
-        return min(viewport.width / pixelSize.width, viewport.height / pixelSize.height)
+    public static func fitScale(pixelSize: CGSize, viewport: CGSize,
+                                fitInsets: NSEdgeInsets = .zero) -> CGFloat {
+        let available = fitViewport(viewport, insets: fitInsets).size
+        guard pixelSize.width > 0, pixelSize.height > 0, available.width > 0, available.height > 0 else { return 1 }
+        return min(available.width / pixelSize.width, available.height / pixelSize.height)
     }
-    public static func actualPixelScale(pixelSize: CGSize, viewport: CGSize, backingScale: CGFloat) -> CGFloat {
-        1 / (max(1, backingScale) * fitScale(pixelSize: pixelSize, viewport: viewport))
+    public static func actualPixelScale(pixelSize: CGSize, viewport: CGSize, backingScale: CGFloat,
+                                        fitInsets: NSEdgeInsets = .zero) -> CGFloat {
+        1 / (max(1, backingScale) * fitScale(pixelSize: pixelSize, viewport: viewport, fitInsets: fitInsets))
     }
     public static func pointScale(pixelSize: CGSize, viewport: CGSize,
-                                  transform: ImageTransform, backingScale: CGFloat) -> CGFloat {
+                                  transform: ImageTransform, backingScale: CGFloat,
+                                  fitInsets: NSEdgeInsets = .zero) -> CGFloat {
         transform.physicalMagnification.map { $0 / max(1, backingScale) }
-            ?? (fitScale(pixelSize: pixelSize, viewport: viewport) * transform.scale)
+            ?? (fitScale(pixelSize: pixelSize, viewport: viewport, fitInsets: fitInsets) * transform.scale)
     }
     public static func imageRect(pixelSize: CGSize, viewport: CGSize,
-                                 transform: ImageTransform, backingScale: CGFloat) -> CGRect {
-        let scale = pointScale(pixelSize: pixelSize, viewport: viewport, transform: transform, backingScale: backingScale)
+                                 transform: ImageTransform, backingScale: CGFloat,
+                                 fitInsets: NSEdgeInsets = .zero) -> CGRect {
+        let scale = pointScale(pixelSize: pixelSize, viewport: viewport, transform: transform,
+                               backingScale: backingScale, fitInsets: fitInsets)
         let width = pixelSize.width * scale, height = pixelSize.height * scale
-        var x = width <= viewport.width ? (viewport.width - width) / 2 : viewport.width / 2 - transform.centerX * width
-        var y = height <= viewport.height ? (viewport.height - height) / 2 : viewport.height / 2 - transform.centerY * height
+        var x: CGFloat, y: CGFloat
+        if transform.physicalMagnification == nil, transform.scale == 1 {
+            // FIT belongs to the unobscured safe viewport. Once the user zooms, the same
+            // fit-relative scale continues smoothly while panning expands to the full canvas.
+            let safe = fitViewport(viewport, insets: fitInsets)
+            x = safe.minX + (safe.width - width) / 2
+            y = safe.minY + (safe.height - height) / 2
+        } else {
+            x = width <= viewport.width ? (viewport.width - width) / 2 : viewport.width / 2 - transform.centerX * width
+            y = height <= viewport.height ? (viewport.height - height) / 2 : viewport.height / 2 - transform.centerY * height
+        }
         if abs(scale * backingScale - 1) < 0.001 {
             x = (x * backingScale).rounded() / backingScale
             y = (y * backingScale).rounded() / backingScale
         }
         return CGRect(x: x, y: y, width: width, height: height)
+    }
+    private static func fitViewport(_ viewport: CGSize, insets: NSEdgeInsets) -> CGRect {
+        let horizontal = max(0, min(viewport.width - 1, insets.left + insets.right))
+        let vertical = max(0, min(viewport.height - 1, insets.top + insets.bottom))
+        let left = max(0, min(insets.left, viewport.width - horizontal))
+        let top = max(0, min(insets.top, viewport.height - vertical))
+        return CGRect(x: left, y: top, width: max(1, viewport.width - horizontal),
+                      height: max(1, viewport.height - vertical))
     }
 }
 
@@ -50,6 +77,13 @@ public struct ImageFrameDrawEvent: Sendable {
     public let drawReturnedUptimeNanoseconds: UInt64
     public let imagePixelWidth: Int
     public let imagePixelHeight: Int
+}
+
+enum ImageCanvasInterpolationPolicy {
+    static func resolve(exactPixels: Bool, lowLatency: Bool) -> NSImageInterpolation {
+        if exactPixels { return .none }
+        return lowLatency ? .medium : .high
+    }
 }
 
 public struct ImageCanvasViewportSnapshot: Equatable, Sendable {
@@ -99,7 +133,10 @@ public enum ImageCanvasDiagnosticEvent: Sendable {
 public struct ZoomableImageView: NSViewRepresentable {
     public var image: NSImage?
     private weak var borrowedImage: NSImage?
+    private weak var borrowedComparisonImage: NSImage?
+    private var comparisonPresentation = ImageComparisonPresentation()
     public var actualPixels: Bool
+    public var lowLatency = false
     @Binding public var transform: ImageTransform
     public var backgroundColor: NSColor
     public var onActualPixelsChange: ((Bool) -> Void)?
@@ -110,6 +147,8 @@ public struct ZoomableImageView: NSViewRepresentable {
     public var onPointerEvent: (@MainActor (ImageCanvasPointerEvent) -> Bool)?
     public var onViewportChange: (@MainActor (ImageCanvasViewportSnapshot) -> Void)?
     public var onPointerHover: (@MainActor (ImageCanvasHoverEvent) -> Void)?
+    public var onDoubleClick: (() -> Void)?
+    public var fitInsets: NSEdgeInsets = .zero
     public init(image: NSImage?, actualPixels: Bool, transform: Binding<ImageTransform>,
                 backgroundColor: NSColor = .controlBackgroundColor,
                 onActualPixelsChange: ((Bool) -> Void)? = nil, onRequestDetail: (() -> Void)? = nil,
@@ -117,13 +156,14 @@ public struct ZoomableImageView: NSViewRepresentable {
                 onPointerEvent: (@MainActor (ImageCanvasPointerEvent) -> Bool)? = nil,
                 onViewportChange: (@MainActor (ImageCanvasViewportSnapshot) -> Void)? = nil,
                 onPointerHover: (@MainActor (ImageCanvasHoverEvent) -> Void)? = nil,
+                onDoubleClick: (() -> Void)? = nil,
                 onCanvasDiagnostic: (@MainActor (ImageCanvasDiagnosticEvent) -> Void)? = nil) {
         self.image = image; self.actualPixels = actualPixels; self._transform = transform
         self.backgroundColor = backgroundColor
         self.onActualPixelsChange = onActualPixelsChange; self.onRequestDetail = onRequestDetail
         self.frameID = frameID; self.onFrameDrawn = onFrameDrawn
         self.onPointerEvent = onPointerEvent; self.onViewportChange = onViewportChange
-        self.onPointerHover = onPointerHover
+        self.onPointerHover = onPointerHover; self.onDoubleClick = onDoubleClick
         self.onCanvasDiagnostic = onCanvasDiagnostic
     }
     /// The caller owns this exact image until the canvas installs it.
@@ -131,6 +171,25 @@ public struct ZoomableImageView: NSViewRepresentable {
         var view = self
         view.image = nil
         view.borrowedImage = image
+        return view
+    }
+    public func lowLatency(_ enabled: Bool) -> Self {
+        var view = self
+        view.lowLatency = enabled
+        return view
+    }
+    public func fitting(around insets: NSEdgeInsets) -> Self {
+        var view = self
+        view.fitInsets = insets
+        return view
+    }
+    public func beforeAfter(_ image: NSImage?, split: CGFloat) -> Self {
+        comparison(image, presentation: .init(mode: .wipeHorizontal, amount: split))
+    }
+    public func comparison(_ image: NSImage?, presentation: ImageComparisonPresentation) -> Self {
+        var view = self
+        view.borrowedComparisonImage = image
+        view.comparisonPresentation = presentation
         return view
     }
     public func makeNSView(context: Context) -> ImageCanvas {
@@ -146,9 +205,12 @@ public struct ZoomableImageView: NSViewRepresentable {
         canvas.onTransform = { transform = $0 }
         canvas.onActualPixelsChange = onActualPixelsChange
         canvas.onRequestDetail = onRequestDetail
+        canvas.onDoubleClick = onDoubleClick
         canvas.frameID = frameID; canvas.onFrameDrawn = onFrameDrawn
         canvas.setInteractionHandlers(pointer:onPointerEvent,viewport:onViewportChange,hover:onPointerHover)
-        canvas.update(image: image, actualPixels: actualPixels, transform: transform, backgroundColor: backgroundColor)
+        canvas.update(image: image, actualPixels: actualPixels, transform: transform, backgroundColor: backgroundColor,
+                      lowLatency: lowLatency, fitInsets: fitInsets,
+                      comparisonImage: borrowedComparisonImage, comparison: comparisonPresentation)
         if onCanvasDiagnostic != nil || canvas.hasCanvasDiagnostic {
             canvas.updateCanvasDiagnostic(onCanvasDiagnostic, installedFrame: image == nil ? nil : frameID)
         }
@@ -191,15 +253,21 @@ public final class ImageCanvas: NSView {
         lastDiagnosticDrawnFrameID = nil
     }
     private var image: NSImage?
+    private var comparisonImage: NSImage?
+    private var comparison = ImageComparisonPresentation()
+    var invalidationObserverForTesting: (() -> Void)?
     private var backgroundColor: NSColor = .controlBackgroundColor
     private var resolvedBackgroundColor: CGColor?
     private var transform = ImageTransform()
     private var actualPixels = false
+    private var lowLatency = false
+    private var fitInsets: NSEdgeInsets = .zero
     private var dragOrigin: NSPoint?
     private var dragTransform = ImageTransform()
     var onTransform: ((ImageTransform) -> Void)?
     var onActualPixelsChange: ((Bool) -> Void)?
     var onRequestDetail: (() -> Void)?
+    var onDoubleClick: (() -> Void)?
     private var onPointerEvent: (@MainActor (ImageCanvasPointerEvent) -> Bool)?
     private var onViewportChange: (@MainActor (ImageCanvasViewportSnapshot) -> Void)?
     private var onPointerHover: (@MainActor (ImageCanvasHoverEvent) -> Void)?
@@ -222,21 +290,35 @@ public final class ImageCanvas: NSView {
         return CGSize(width: rep?.pixelsWide ?? Int(image.size.width), height: rep?.pixelsHigh ?? Int(image.size.height))
     }
     private var backing: CGFloat { window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2 }
-    private var fit: CGFloat {
-        ImageViewportGeometry.fitScale(pixelSize: pixelSize, viewport: bounds.size)
-    }
     func update(image: NSImage?, actualPixels: Bool, transform: ImageTransform,
-                backgroundColor: NSColor = .controlBackgroundColor) {
+                backgroundColor: NSColor = .controlBackgroundColor, lowLatency: Bool = false,
+                fitInsets: NSEdgeInsets = .zero, comparisonImage: NSImage? = nil,
+                comparisonSplit: CGFloat = 0.5, comparison requestedComparison: ImageComparisonPresentation? = nil) {
         let enteringActual = actualPixels && !self.actualPixels
+        var resolvedTransform = transform
+        if actualPixels { resolvedTransform.physicalMagnification = 1 }
+        let insetsChanged = !NSEdgeInsetsEqual(self.fitInsets, fitInsets)
+        var comparison = requestedComparison ?? .init(amount: comparisonSplit)
+        comparison.amount = comparison.mode == .mix ? max(0, min(1, comparison.amount)) : max(0.05, min(0.95, comparison.amount))
+        let changed = self.image !== image || self.actualPixels != actualPixels
+            || self.transform != resolvedTransform || self.lowLatency != lowLatency || insetsChanged
+            || self.comparisonImage !== comparisonImage || self.comparison != comparison
         self.image = image
-        if resolvedBackgroundColor == nil || !self.backgroundColor.isEqual(backgroundColor) {
+        let backgroundChanged = !self.backgroundColor.isEqual(backgroundColor)
+        if resolvedBackgroundColor == nil || backgroundChanged {
             self.backgroundColor = backgroundColor
             resolveBackgroundColor()
         }
         self.actualPixels = actualPixels
-        self.transform = transform
-        if actualPixels { self.transform.physicalMagnification = 1 }
-        needsDisplay = true
+        self.transform = resolvedTransform
+        self.lowLatency = lowLatency
+        self.fitInsets = fitInsets
+        self.comparisonImage = comparisonImage
+        self.comparison = comparison
+        if changed || backgroundChanged {
+            needsDisplay = true
+            invalidationObserverForTesting?()
+        }
         if enteringActual {
             let next = self.transform
             // All panes publish the same physical value, never their different fit scales.
@@ -263,11 +345,11 @@ public final class ImageCanvas: NSView {
     }
     private func pointScale(_ state: ImageTransform) -> CGFloat {
         ImageViewportGeometry.pointScale(pixelSize: pixelSize, viewport: bounds.size,
-                                         transform: state, backingScale: backing)
+                                         transform: state, backingScale: backing, fitInsets: fitInsets)
     }
     private func imageRect(_ state: ImageTransform) -> CGRect {
         ImageViewportGeometry.imageRect(pixelSize: pixelSize, viewport: bounds.size,
-                                        transform: state, backingScale: backing)
+                                        transform: state, backingScale: backing, fitInsets: fitInsets)
     }
     func setInteractionHandlers(pointer: (@MainActor (ImageCanvasPointerEvent) -> Bool)?, viewport: (@MainActor (ImageCanvasViewportSnapshot) -> Void)?,
                                 hover: (@MainActor (ImageCanvasHoverEvent) -> Void)? = nil) {
@@ -293,15 +375,17 @@ public final class ImageCanvas: NSView {
         clearInteractionHandlers()
         // Drop only this canvas's ownership. Other presentation aliases keep their bytes.
         image = nil
+        comparisonImage = nil
         frameID = nil
         lastDrawnFrameID = nil
         onFrameDrawn = nil
         onTransform = nil
         onActualPixelsChange = nil
         onRequestDetail = nil
+        onDoubleClick = nil
         PreviewQAMainPresentationWitness.canvasCleared(store: qaStore, canvasID: qaCanvas, frameID: qaFrame,
             ticketID: qaTicket, fieldsCleared: image == nil && frameID == nil && lastDrawnFrameID == nil &&
-                onFrameDrawn == nil && onTransform == nil && onActualPixelsChange == nil && onRequestDetail == nil &&
+                onFrameDrawn == nil && onTransform == nil && onActualPixelsChange == nil && onRequestDetail == nil && onDoubleClick == nil &&
                 onPointerEvent == nil && onViewportChange == nil && onPointerHover == nil && lastViewport == nil &&
                 hoverTrackingArea == nil && windowObserver == nil && canvasDiagnostic == nil)
     }
@@ -365,6 +449,7 @@ public final class ImageCanvas: NSView {
         guard let owner = pointerOwner else { return }
         pointerOwner = nil; _ = owner.callback(pointerEvent(.cancelled,owner:owner,event:nil))
     }
+    private static let drawsSharedRaster = ProcessInfo.processInfo.environment["RAWMASTER_CANVAS_LEGACY_NSIMAGE"] != "1"
     public override func draw(_ dirtyRect: NSRect) {
         NSGraphicsContext.saveGraphicsState()
         defer { NSGraphicsContext.restoreGraphicsState() }
@@ -378,13 +463,39 @@ public final class ImageCanvas: NSView {
             NSGraphicsContext.current?.cgContext.fill(bounds)
         }
         guard let image else { return }
-        NSGraphicsContext.current?.imageInterpolation = abs(pointScale(transform) * backing - 1) < 0.001 ? .none : .high
+        let exactPixels = abs(pointScale(transform) * backing - 1) < 0.001
+        NSGraphicsContext.current?.imageInterpolation = ImageCanvasInterpolationPolicy.resolve(exactPixels: exactPixels, lowLatency: lowLatency)
         let diagnosticSnapshot = canvasDiagnostic.flatMap { sink in
             diagnosticCanvasID.flatMap { canvas in frameID.map { (sink, canvas, $0) } }
         }
         let began = DispatchTime.now().uptimeNanoseconds
-        image.draw(in: imageRect(transform), from: .zero, operation: .sourceOver, fraction: 1,
-                   respectFlipped: true, hints: nil)
+        let destination = imageRect(transform)
+        let drawn = destination.intersection(bounds).intersection(dirtyRect)
+        let token = ImagePerformanceTelemetry.shared.begin(operation: "画布绘制",
+          stage: comparisonImage == nil ? "主图" : "比较", queue: "画布", boundary: .canvasDrawReturn)
+        defer {
+            let area = drawn.isEmpty ? 0 : Int(ceil(drawn.width * backing) * ceil(drawn.height * backing))
+            ImagePerformanceTelemetry.shared.end(token, pixelCount: area)
+        }
+        if let comparisonImage {
+            drawComparison(current: image, reference: comparisonImage, destination: destination)
+        } else if Self.drawsSharedRaster, let raster = PreviewSharedImageBridge.canvasRaster(for: image), let graphics = NSGraphicsContext.current {
+            // NSView and offscreen/printing contexts can use opposite coordinate systems.
+            let cg = graphics.cgContext
+            cg.saveGState()
+            cg.setBlendMode(.normal)
+            if graphics.isFlipped {
+                cg.translateBy(x: destination.minX, y: destination.maxY)
+                cg.scaleBy(x: 1, y: -1)
+                cg.draw(raster, in: CGRect(origin: .zero, size: destination.size))
+            } else {
+                cg.draw(raster, in: destination)
+            }
+            cg.restoreGState()
+        } else {
+            image.draw(in: destination, from: .zero, operation: .sourceOver, fraction: 1,
+                       respectFlipped: true, hints: nil)
+        }
         if let (sink, canvas, frame) = diagnosticSnapshot, frame != lastDiagnosticDrawnFrameID {
             lastDiagnosticDrawnFrameID = frame
             sink(.drawn(canvas: canvas, frame: frame, began: began, returned: DispatchTime.now().uptimeNanoseconds))
@@ -398,6 +509,57 @@ public final class ImageCanvas: NSView {
             DispatchQueue.main.async { callback(event) }
         }
     }
+    private func drawComparison(current: NSImage, reference: NSImage, destination: CGRect) {
+        func draw(_ image: NSImage, operation: NSCompositingOperation = .sourceOver, fraction: CGFloat = 1) {
+            image.draw(in: destination, from: .zero, operation: operation, fraction: fraction,
+                       respectFlipped: true, hints: nil)
+        }
+        switch comparison.mode {
+        case .wipeHorizontal, .wipeVertical:
+            // Default: reference left/top, current right/bottom. Inversion swaps those regions.
+            draw(comparison.inverted ? current : reference)
+            NSGraphicsContext.saveGraphicsState()
+            let region: CGRect
+            switch comparison.mode {
+            case .wipeHorizontal:
+                region = CGRect(x: comparison.amount * bounds.width, y: 0,
+                                width: bounds.width * (1 - comparison.amount), height: bounds.height)
+            default:
+                region = CGRect(x: 0, y: comparison.amount * bounds.height,
+                                width: bounds.width, height: bounds.height * (1 - comparison.amount))
+            }
+            region.clip()
+            draw(comparison.inverted ? reference : current)
+            NSGraphicsContext.restoreGraphicsState()
+        case .mix:
+            draw(reference)
+            draw(current, fraction: comparison.inverted ? 1 - comparison.amount : comparison.amount)
+        case .difference:
+            // Explicit display-space diagnostic: equal displayed pixels become black.
+            NSGraphicsContext.saveGraphicsState()
+            destination.clip()
+            draw(reference)
+            draw(current, operation: .difference)
+            NSGraphicsContext.restoreGraphicsState()
+        case .checkerboard:
+            draw(comparison.inverted ? current : reference)
+            let tile: CGFloat = 64
+            let rows = Int(ceil(bounds.height / tile)), columns = Int(ceil(bounds.width / tile))
+            guard rows > 0, columns > 0 else { return }
+            for row in 0..<rows {
+                for column in 0..<columns where (row + column).isMultiple(of: 2) {
+                    let tileRect = CGRect(x: CGFloat(column) * tile, y: CGFloat(row) * tile,
+                                          width: tile, height: tile).intersection(destination)
+                    guard !tileRect.isNull, tileRect.width > 0, tileRect.height > 0 else { continue }
+                    NSGraphicsContext.saveGraphicsState()
+                    tileRect.clip()
+                    draw(comparison.inverted ? reference : current)
+                    NSGraphicsContext.restoreGraphicsState()
+                }
+            }
+        }
+    }
+
     private func publish(_ next: ImageTransform) {
         var state = next
         state.scale = max(1, min(64, state.scale))
@@ -413,6 +575,10 @@ public final class ImageCanvas: NSView {
     public override func mouseDown(with event: NSEvent) {
         cancelPointer()
         window?.makeFirstResponder(self)
+        if image != nil, event.clickCount == 2, let onDoubleClick {
+            onDoubleClick()
+            return
+        }
         if image != nil, let onPointerEvent {
             let owner = PointerOwner(id:UUID(),frameID:frameID,callback:onPointerEvent,lastPoint:convert(event.locationInWindow,from:nil))
             let epoch = pointerEpoch

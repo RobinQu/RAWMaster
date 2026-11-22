@@ -77,7 +77,9 @@ final class DevelopmentB2GlobalTests: XCTestCase {
     let input = image(pixels()), original = read(input)
     var cases: [DevelopmentAdjustmentsV3] = []
     var p = DevelopmentAdjustmentsV3(); p.definition = .init(enabled:true,amount:1); cases.append(p)
-    p = .init(); p.selectiveColor.enabled = true; p.selectiveColor.colors[4].hue = 20; p.selectiveColor.colors[4].saturation = 30; cases.append(p)
+    p = .init(); p.selectiveColor.enabled = true
+    let blue = try XCTUnwrap(p.selectiveColor.colors.firstIndex(where: { $0.slot == .blue }))
+    p.selectiveColor.colors[blue].hue = 20; p.selectiveColor.colors[blue].saturation = 30; cases.append(p)
     p = .init(); p.noiseReduction = .init(enabled:true,sourceCapability:.image,nonRawAmount:3); cases.append(p)
     p = .init(); p.sharpen = .init(enabled:true,intensity:0.8,edges:0,falloff:0.69); cases.append(p)
     p = .init(); p.vignette = .init(enabled:true,strength:0.5,radius:0.5,softness:0); cases.append(p)
@@ -85,7 +87,8 @@ final class DevelopmentB2GlobalTests: XCTestCase {
       let output = try DevelopmentGlobalEngineV3.apply(p,to:input,sourceIsRAW:false)
       try DevelopmentColorEngineV3.validateFinite(output)
       let actual = read(output)
-      XCTAssertTrue(zip(actual,original).enumerated().contains { $0.offset%4 != 3 && abs($0.element.0-$0.element.1)>1e-5 },"operator \(index) must have a real response")
+      let maximumDifference=zip(actual,original).enumerated().filter{$0.offset%4 != 3}.map{abs($0.element.0-$0.element.1)}.max() ?? 0
+      XCTAssertTrue(maximumDifference>1e-5,"operator \(index) must have a real response; maximum difference \(maximumDifference)")
       for n in stride(from:3,to:actual.count,by:4) { XCTAssertEqual(actual[n],original[n],accuracy:1e-7,"operator \(index) alpha") }
     }
   }
@@ -103,6 +106,54 @@ final class DevelopmentB2GlobalTests: XCTestCase {
     let input = image(pixels()), first = read(try DevelopmentGlobalEngineV3.apply(p,to:input,sourceIsRAW:false))
     p.selectiveColor.colors.reverse()
     XCTAssertEqual(first.map(\.bitPattern),read(try DevelopmentGlobalEngineV3.apply(p,to:input,sourceIsRAW:false)).map(\.bitPattern))
+  }
+  func testParametricCurveProducesOrderedGPUResponseAndSplitsChangeTheMapping() throws {
+    let gradient = image((0..<(64*32)).map { i in
+      let value = Float(i%64)/63; return .init(value,value,value,1)
+    })
+    let original = read(gradient)
+    var p = DevelopmentAdjustmentsV3()
+    p.curves.enabled = true
+    p.curves.parametric = .init(highlights:45,lights:20,darks:-10,shadows:25)
+    let output = read(try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:gradient))
+    try DevelopmentColorEngineV3.validateFinite(try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:gradient))
+    XCTAssertTrue(zip(output,original).contains { abs($0.0-$0.1)>1e-5 })
+    p.curves.parametric?.split1 = 0.35
+    let moved = read(try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:gradient))
+    XCTAssertNotEqual(output.map(\.bitPattern),moved.map(\.bitPattern))
+    p.curves.rgb.curve = .init(points:[.init(x:0,y:0.05),.init(x:0.5,y:0.7),.init(x:1,y:0.95)])
+    let combined = read(try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:gradient))
+    try DevelopmentColorEngineV3.validateFinite(try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:gradient))
+    XCTAssertNotEqual(moved.map(\.bitPattern),combined.map(\.bitPattern))
+  }
+  func testSelectiveLegacySixAndCurrentEightUseDeterministicGPUPaths() throws {
+    let palette: [SIMD4<Float>] = [
+      .init(1,0.05,0.05,1), .init(1,0.25,0.05,1), .init(1,1,0.05,1), .init(0.05,1,0.1,1),
+      .init(0.05,0.8,1,1), .init(0.05,0.1,1,1), .init(0.55,0.05,1,1), .init(1,0.05,0.8,1)
+    ]
+    let input = image((0..<(64*32)).map { palette[$0 % palette.count] }), original = read(input)
+    var current = DevelopmentAdjustmentsV3()
+    current.selectiveColor.enabled = true
+    guard let orange = current.selectiveColor.colors.firstIndex(where: { $0.slot == .orange }) else { return XCTFail("Missing orange slot") }
+    current.selectiveColor.colors[orange].hue = 20
+    current.selectiveColor.colors[orange].saturation = 30
+    XCTAssertEqual(current.selectiveColor.colors.count,8)
+    let currentOutput = read(try DevelopmentGlobalEngineV3.apply(current,to:input,sourceIsRAW:false))
+    try DevelopmentColorEngineV3.validateFinite(try DevelopmentGlobalEngineV3.apply(current,to:input,sourceIsRAW:false))
+    XCTAssertTrue(zip(currentOutput,original).contains { abs($0.0-$0.1)>1e-5 })
+    current.selectiveColor.colors.reverse()
+    XCTAssertEqual(currentOutput.map(\.bitPattern),read(try DevelopmentGlobalEngineV3.apply(current,to:input,sourceIsRAW:false)).map(\.bitPattern))
+
+    var legacy = DevelopmentAdjustmentsV3()
+    legacy.selectiveColor = .init(enabled:true,colors:DevelopmentSelectiveColorV3.legacySlots.map { .init(slot:$0) })
+    guard let blue = legacy.selectiveColor.colors.firstIndex(where: { $0.slot == .blue }) else { return XCTFail("Missing legacy blue slot") }
+    legacy.selectiveColor.colors[blue].hue = -20
+    XCTAssertEqual(legacy.selectiveColor.colors.count,6)
+    let legacyOutput = read(try DevelopmentGlobalEngineV3.apply(legacy,to:input,sourceIsRAW:false))
+    try DevelopmentColorEngineV3.validateFinite(try DevelopmentGlobalEngineV3.apply(legacy,to:input,sourceIsRAW:false))
+    XCTAssertTrue(zip(legacyOutput,original).contains { abs($0.0-$0.1)>1e-5 })
+    legacy.selectiveColor.colors.reverse()
+    XCTAssertEqual(legacyOutput.map(\.bitPattern),read(try DevelopmentGlobalEngineV3.apply(legacy,to:input,sourceIsRAW:false)).map(\.bitPattern))
   }
   func testAbsoluteImageWBExcludesLegacyWBAndDisablingRestoresIt() throws {
     let (root,source) = try fixture(); defer { try? FileManager.default.removeItem(at:root) }
@@ -145,18 +196,37 @@ final class DevelopmentB2GlobalTests: XCTestCase {
     let service = DevelopmentPreviewService()
     do {
       let info = try await service.open(source:.raw(source)), facts = try await service.sourceFacts(sessionID:info.id,sourceGeneration:info.sourceGeneration)
-      let recipe = DevelopmentRecipe(adjustmentsV3:.init()), consumer = PreviewConsumerID()
+      let recipe = DevelopmentRecipe(adjustmentsV3:.init()), consumer = PreviewConsumerID(), pointID=UUID()
       let operations: [(DevelopmentAnalysisOperation,DevelopmentAnalysisStage)] = [
         (.automatic(.definition),.workingImageBeforeGeometry),(.automatic(.noiseReduction),.workingImageBeforeGeometry),
         (.automatic(.sharpen),.workingImageBeforeGeometry),(.automatic(.vignette),.workingImageBeforeGeometry),
+        (.automaticLight(.exposure),.workingImageBeforeGeometry),
         (.selectiveColorPicker(slot:.blue,sourcePoint:.init(x:0.5,y:0.5)),.workingImageBeforeGeometry),
+        (.pointColorPicker(id:pointID,sourcePoint:.init(x:0.5,y:0.5)),.workingImageBeforeGeometry),
+        (.defringePicker(band:.purple,sourcePoint:.init(x:0.5,y:0.5)),.workingImageBeforeGeometry),
+        (.defringePicker(band:.green,sourcePoint:.init(x:0.5,y:0.5)),.workingImageBeforeGeometry),
         (.whiteBalancePicker(sourcePoint:.init(x:0.5,y:0.5),mode:.neutralGray(warmth:0)),.orientedSourceBeforeGeometry),
         (.whiteBalanceAutomatic(mode:.temperatureTint),.orientedSourceBeforeGeometry)]
       for (i,entry) in operations.enumerated() {
         let preview = DevelopmentPreviewRequest(sessionID:info.id,sourceGeneration:info.sourceGeneration,consumerID:consumer,role:.primary,revision:UInt64(i+1),recipe:recipe,quality:.settled)
         let result = try await service.analyze(.init(preview:preview,expectedRecipeFingerprint:try EditingFingerprint.of(recipe),stage:entry.1,operation:entry.0))
         guard case .resolved(let command) = result.value else { XCTFail(); throw DevelopmentV3Error.invalidGraph }
-        _ = try recipe.applying(.applyAnalysis(command),context:.init(source:facts.sourceBinding,sourceGeneration:info.sourceGeneration,analysisStage:entry.1,sourceCapability:.image))
+        let applied = try recipe.applying(.applyAnalysis(command),context:.init(source:facts.sourceBinding,sourceGeneration:info.sourceGeneration,analysisStage:entry.1,sourceCapability:.image))
+        if case .automaticLight = entry.0 {
+          guard case .light(let automatic)=command.parameters.first else{return XCTFail("Missing automatic Light")}
+          var expected=recipe.adjustmentsV3!.light;expected.enabled=true;expected.exposure=automatic.exposure
+          XCTAssertEqual(applied.adjustmentsV3?.light,expected)
+        }
+        if case .pointColorPicker = entry.0 {
+          XCTAssertTrue(applied.adjustmentsV3?.selectiveColor.pointColors?.contains(where:{$0.id==pointID}) == true)
+        }
+        if case .whiteBalanceAutomatic(.temperatureTint) = entry.0 {
+          guard case .image(_, let state) = applied.adjustmentsV3?.whiteBalance.resolvedState else {
+            return XCTFail("Expected image temperature and tint")
+          }
+          XCTAssertEqual(state.selectedMode, .temperatureTint)
+          XCTAssertEqual(state.temperatureTint.temperature, DevelopmentImageWhiteBalanceStateV3.approximateTemperature(forOffset: state.temperatureOffset))
+        }
         XCTAssertEqual(result.sourceBinding,facts.sourceBinding); XCTAssertEqual(result.actualRecipe,recipe)
       }
       let stats = await service.statistics(), analysis = await service.analysisStatistics()

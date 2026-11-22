@@ -19,6 +19,15 @@ final class PhotosRecipeSliderHostingTests: XCTestCase {
         // The existing text-field parse contract keeps finer input independently of slider step.
         XCTAssertEqual(try XCTUnwrap(DevelopmentNumericText.parse("123.456789", range: 0...360)), 123.456789)
     }
+    func testLabelScrubUsesBoundedQuantizedTrackMappingWithoutTouchingSavedPrecision() throws {
+        XCTAssertEqual(try XCTUnwrap(PhotosSliderInput.scrubbed(origin: 0.5, translation: 20, range: -2...2, step: 0.01)), 0.9, accuracy: 1e-12)
+        XCTAssertEqual(PhotosSliderInput.scrubbed(origin: 0.5, translation: -1000, range: -2...2, step: 0.01), -2)
+        XCTAssertEqual(PhotosSliderInput.scrubbed(origin: 0.5, translation: 1000, range: -2...2, step: 0.01), 2)
+        XCTAssertNil(PhotosSliderInput.scrubbed(origin: .nan, translation: 2, range: -2...2, step: 0.01))
+        XCTAssertNil(PhotosSliderInput.scrubbed(origin: 0, translation: .infinity, range: -2...2, step: 0.01))
+        XCTAssertEqual(try DevelopmentNumericText.parse("0.123456789", range: -2...2), 0.123456789)
+    }
+
     @MainActor func testNativeHostedAdvancedRangeSlidersHaveNoStepTicksOrRecipeWrites() async throws {
         _ = NSApplication.shared
         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")

@@ -1,0 +1,106 @@
+{
+  "featureId" : "detail-raw-details",
+  "metric" : "one interactive request per stated condition, readback after return; optional full 16-bit export including file verification",
+  "mode" : "Release",
+  "rows" : [
+    {
+      "centre192x192LinearF16" : {
+        "bilinear" : {
+          "bytes" : 221184,
+          "decodeBackend" : "CPU NEON x16 threads",
+          "nativeMs" : 2.3207500000000438,
+          "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+          "sha256" : "a8e1ecae560699f4572dcd24f55811e3a3883ef6f115acb36cee893db295a5da"
+        },
+        "flashraw-0.3.1-bayer-ahd-v1" : {
+          "bytes" : 221184,
+          "decodeBackend" : "CPU NEON x16 threads",
+          "nativeMs" : 1.8604579999999491,
+          "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+          "sha256" : "67ec1f55ed85dc349be0898f40dd2b8ebeb7dad11d3db5fb64517f5fbef2d657"
+        }
+      },
+      "export" : {
+        "bits" : 16,
+        "bytes" : 481792806,
+        "height" : 6336,
+        "sha256" : "f3efb25fe024513c06e9aab8f3d9f9fc99de49de95b0af6b0a3d191a8b71ec90",
+        "width" : 9504
+      },
+      "exportMs" : 871.82937500000003,
+      "height" : 6336,
+      "mode" : "flashraw-0.3.1-bayer-ahd-v1",
+      "previewFingerprint" : [
+        "f876720922bac1fdf2d34ce0d1f19b5f2ed61543a1225980f9960e7704da7199",
+        "589926439a92f01413587a6c3b922319e979f2ac87abffb481538f8156d2c04e",
+        "f876720922bac1fdf2d34ce0d1f19b5f2ed61543a1225980f9960e7704da7199"
+      ],
+      "previewMs" : [
+        153.07570899999999,
+        143.24408399999999,
+        85.112375
+      ],
+      "previewSequence" : [
+        "bilinear",
+        "flashraw-0.3.1-bayer-ahd-v1",
+        "bilinear"
+      ],
+      "previewTarget" : 2400,
+      "release" : "0.3.1",
+      "sha256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "source" : "acr-benchmark.ARW",
+      "width" : 9504
+    },
+    {
+      "centre192x192LinearF16" : {
+        "bilinear" : {
+          "bytes" : 221184,
+          "decodeBackend" : "GPU unpack (Apple M4 Max)",
+          "nativeMs" : 1.4956250000002456,
+          "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+          "sha256" : "3393e47fcc52c6765cb1e0f7a3d3f198b299d05f1b8f7c40373b2f6694aa680f"
+        },
+        "flashraw-0.3.1-xtrans-edge-aware-v1" : {
+          "bytes" : 221184,
+          "decodeBackend" : "GPU unpack (Apple M4 Max)",
+          "nativeMs" : 0.92433299999970586,
+          "postprocessBackend" : "GPU Apple M4 Max (Metal, integrated)",
+          "sha256" : "f5f575edbeef8b47fe0d4a866bc903e781f20c100e99c4b60e149c5456715df4"
+        }
+      },
+      "export" : {
+        "bits" : 16,
+        "bytes" : 127856422,
+        "height" : 3264,
+        "sha256" : "c7e37b3b22893d33aa7ca4488bb7afac07fcd279fcfab4b06c710e7373f69643",
+        "width" : 4896
+      },
+      "exportMs" : 260.799667,
+      "height" : 3264,
+      "mode" : "flashraw-0.3.1-xtrans-edge-aware-v1",
+      "previewFingerprint" : [
+        "18f0f953a98b6e90939b1cb3e38520dfecd1d924fa36963f72ea9f6e8747669b",
+        "dc70ab8582e4a7465b76a4d3b058c72f68fe93049abc63338e005ab9bc98a234",
+        "18f0f953a98b6e90939b1cb3e38520dfecd1d924fa36963f72ea9f6e8747669b"
+      ],
+      "previewMs" : [
+        130.73191700000001,
+        270.37629199999998,
+        20.225458
+      ],
+      "previewSequence" : [
+        "bilinear",
+        "flashraw-0.3.1-xtrans-edge-aware-v1",
+        "bilinear"
+      ],
+      "previewTarget" : 2400,
+      "release" : "0.3.1",
+      "sha256" : "e994a1fd6e87e392432fe146a35b0b88584dc2bd50bee2c8c7e886ac2b59fcde",
+      "source" : "raw-details-fuji-xt1.raf",
+      "width" : 4896
+    }
+  ],
+  "sourceCommit" : "2994e8c550bec70ab78a938ab28a74d7762124f4",
+  "sourceEngine" : "FlashRaw 0.3.1",
+  "timestamp" : "2026-11-22T07:23:55Z"
+}
