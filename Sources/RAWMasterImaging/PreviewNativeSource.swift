@@ -200,9 +200,11 @@ final class PreviewNativeSource: @unchecked Sendable {
     return try pool.acquire(key) { try FlashRawImageFactory.linearImage(capture:capture,rawDetails:parameters.rawDetails) }
   }
   func pinInteractiveDetailGuide(_ detail:PreviewInteractiveDetailGuide,descriptor:PreviewInteractiveInputDescriptor,
-                                 source:CIImage,context:CIContext,device:MTLDevice,check:()throws->Void) throws -> FlashRawCanonicalTexturePool.Pin? {
+                                 source:CIImage,upstreamIdentity:String? = nil,context:CIContext,device:MTLDevice,
+                                 check:()throws->Void) throws -> FlashRawCanonicalTexturePool.Pin? {
     let extent = source.extent
     let contract = try "proxy-detail-guide-v1/" + descriptor.fingerprint() + "/" + detail.identity
+      + (upstreamIdentity.map { "/filtered-band-v1/" + $0 } ?? "")
     let key = FlashRawCanonicalTextureKey(sourceKey:descriptor.sourceKey,captureStamp:captureStamp,contract:contract,
       width:Int(extent.width),height:Int(extent.height),representation:.guideR32F)
     flashRawCacheSourceKey = descriptor.sourceKey

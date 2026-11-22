@@ -23,12 +23,8 @@ enum DevelopmentPhotoFilterEngineV3 {
   /// Runtime implementation identity, never part of a Core recipe fingerprint or RAW key.
   static func activeResourceIdentity(_ filter:DevelopmentFilterV3,
                                      resources:DevelopmentPhotoFilterResourceStore = .shared)throws->String? {
-    try filter.validate()
-    guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return nil}
-    try resources.validate(filter) // Actual payload authority before any bitmap/scalar cache replay.
+    guard let version=try resources.resourceVersion(for:filter) else{return nil}
     _ = try loaded.get()
-    let available=resources.capabilities()
-    guard available.filters.contains(filter.selection),let version=available.resourceVersion else{throw DevelopmentPhotoFilterError.unavailableFilter}
     return operatorVersion+"/catalog:"+version
   }
   static func activeResourceIdentity(_ recipe:DevelopmentRecipe,
@@ -48,8 +44,7 @@ enum DevelopmentPhotoFilterEngineV3 {
                     repairRAWTransportAlpha:Bool = false)throws->CIImage {
     try filter.validate() // Even malformed disabled/zero parameters must never bypass validation.
     guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return image}
-    try resources.validate(filter)
-    let kernel=try loaded.get(),pair=try resources.pair(filter)
+    let pair=try resources.pair(filter),kernel=try loaded.get()
     try resourceLease?(pair)
     let extent=image.extent
     guard extent.minX.isFinite,extent.minY.isFinite,extent.width.isFinite,extent.height.isFinite,

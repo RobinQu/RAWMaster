@@ -286,6 +286,11 @@ public final class ImageCanvas: NSView {
     public override var acceptsFirstResponder: Bool { true }
     private var pixelSize: CGSize {
         guard let image else { return .zero }
+        // Shared previews draw their producer's CGImage directly. Retina representations
+        // synthesized by AppKit are display caches and must not redefine zoom or hit testing.
+        if Self.drawsSharedRaster, comparisonImage == nil, let raster = PreviewSharedImageBridge.canvasRaster(for: image) {
+            return CGSize(width: raster.width, height: raster.height)
+        }
         let rep = image.representations.max { $0.pixelsWide < $1.pixelsWide }
         return CGSize(width: rep?.pixelsWide ?? Int(image.size.width), height: rep?.pixelsHigh ?? Int(image.size.height))
     }

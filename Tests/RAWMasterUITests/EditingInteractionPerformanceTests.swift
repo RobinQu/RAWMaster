@@ -49,6 +49,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let revision, generation: UInt64
         let quality: String
         let approximate: Bool
+        let renderedSize: CGSize
         func duration(since start: UInt64) throws -> Double {
             guard event.drawReturnedUptimeNanoseconds >= start else { throw ProbeFailure("Draw predates input") }
             return Double(event.drawReturnedUptimeNanoseconds - start) / 1_000_000
@@ -56,7 +57,8 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         func evidence(start: UInt64) -> [String: Any] {
             ["inputNS":start, "drawBeganNS":event.drawBeganUptimeNanoseconds, "drawReturnedNS":event.drawReturnedUptimeNanoseconds,
              "frameID":event.frameID.uuidString, "revision":revision, "generation":generation, "quality":quality,
-             "approximate":approximate, "width":event.imagePixelWidth, "height":event.imagePixelHeight]
+             "approximate":approximate, "width":event.imagePixelWidth, "height":event.imagePixelHeight,
+             "renderedWidth":Int(renderedSize.width), "renderedHeight":Int(renderedSize.height)]
         }
     }
 
@@ -70,13 +72,18 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                   let event = pane.currentAcceptedDraw, event.frameID == frame.id,
                   event.drawReturnedUptimeNanoseconds >= start else { return false }
             accepted = Draw(event: event, revision: frame.revision, generation: frame.generation,
-                            quality: frame.quality.rawValue, approximate: frame.approximate)
+                            quality: frame.quality.rawValue, approximate: frame.approximate, renderedSize:frame.outputSize)
             return true
         }
         if accepted == nil, let failure = pane.error {
             throw ProbeFailure("\(label): \(failure), rendering=\(pane.rendering), quality=\(pane.frame?.quality.rawValue ?? "none"), recipeMatched=\(pane.frameRecipe == recipe)")
         }
-        return try Self.required(accepted)
+        let draw = try Self.required(accepted)
+        guard draw.renderedSize == CGSize(width:draw.event.imagePixelWidth,height:draw.event.imagePixelHeight),
+              quality == .detail || max(draw.renderedSize.width,draw.renderedSize.height) <= 2400 else {
+            throw ProbeFailure("\(label) raster \(draw.renderedSize) differs from drawn \(draw.event.imagePixelWidth)×\(draw.event.imagePixelHeight) or exceeds the 2400-pixel preview")
+        }
+        return draw
     }
 
     static func counters() async -> [String: Any] {
@@ -84,6 +91,9 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let monitoring = await ImageEngines.monitoring.performanceSnapshot()
         let texture = FlashRawCanonicalTexturePool.shared.statistics()
         let decodes = monitoring.aggregates.filter { $0.boundary == .decode }
+        let flashRawDecodes = decodes.filter { $0.operation == "FlashRaw.decode" }.reduce(into: [String:Int]()) {
+            $0[$1.stage, default:0] += $1.sampleCount
+        }
         return ["submitted":stats.submittedRequests, "completed":stats.completedRenders, "superseded":stats.supersededRequests,
                 "bitmapCacheHits":stats.cacheHits, "sourceCaptures":stats.sourceCaptures, "sourceHashPasses":stats.sourceFullHashPasses,
                 "rawBaseFills":stats.rawBaseFills, "rawBaseHits":stats.rawBaseHits, "rawBaseMisses":stats.rawBaseMisses,
@@ -91,6 +101,7 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                 "fallbacks":stats.interactiveProxyCanonicalFallbacks, "lastFallback":stats.interactiveProxyLastFallbackReason ?? "",
                 "nativeInteractiveJobs":stats.nativeProfileInteractiveJobs, "nativeCanonicalJobs":stats.nativeProfileCanonicalJobs,
                 "nativeLastRoute":stats.nativeProfileLastRoute, "flashRawLatestDecodeBackend":monitoring.latestFlashRaw?.decoderBackend ?? "",
+                "flashRawDecodesByStage":flashRawDecodes,
                 "decodeOperations":decodes.map { ["operation":$0.operation,"stage":$0.stage,"count":$0.sampleCount] as [String:Any] }]
     }
 
@@ -316,8 +327,14 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             for (label, count, makeCommands) in cases {
                 var interactive: [Double] = [], settled: [Double] = [], evidence: [[String:Any]] = []
                 let before = await Self.counters()
-                defer { report[label] = ["interactive":statistics(interactive), "settledAfterGesture":statistics(settled),
-                                         "draws":evidence, "engineBefore":before] }
+                var afterFirst: [String:Any]?, afterLast: [String:Any]?
+                defer {
+                    var row: [String:Any] = ["interactive":statistics(interactive), "settledAfterGesture":statistics(settled),
+                                             "draws":evidence, "engineBefore":before]
+                    row["engineAfterFirstSample"] = afterFirst
+                    row["engineAfterLastSample"] = afterLast
+                    report[label] = row
+                }
                 for index in 1...count {
                     let step: Double = switch label {
                     case "exposure": 0.05
@@ -342,6 +359,19 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                         settled.append(try final.duration(since: settling)); evidence.append(final.evidence(start:settling))
                     }
                     guard editing.developmentContext == context, editing.message == nil else { throw ProbeFailure("Editor changed context in " + label) }
+                    if filterOnly && index == 1 { afterFirst = await Self.counters() }
+                    if filterOnly && index == count { afterLast = await Self.counters() }
+                }
+                if filterOnly {
+                    let first = try Self.required(afterFirst), last = try Self.required(afterLast)
+                    for key in ["sourceCaptures","sourceHashPasses","fallbacks"] {
+                        let initialCount = try Self.required(before[key] as? UInt64)
+                        Self.gate(first[key] as? UInt64 == initialCount && last[key] as? UInt64 == initialCount,
+                                  "classic." + label + ".stable." + key, &report)
+                    }
+                    let cold = try Self.required(first["flashRawDecodesByStage"] as? [String:Int])
+                    let warm = try Self.required(last["flashRawDecodesByStage"] as? [String:Int])
+                    Self.gate(!cold.isEmpty && cold == warm, "classic." + label + ".noWarmFlashRawDecode", &report)
                 }
                 allInteractive += interactive
                 if let first = interactive.first { coldInteractive.append(first) }

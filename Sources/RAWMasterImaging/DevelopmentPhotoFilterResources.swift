@@ -222,12 +222,14 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
   private let readyTarget=16*1024*1024
   init(resourceRoot:URL?,device:MTLDevice?=nil){root=resourceRoot?.standardizedFileURL.resolvingSymlinksInPath();self.device=device}
   private func invalidate(){state=nil;failed=true;cache.removeAll();recent.removeAll()}
-  private func catalog()throws->CatalogState {
+  private func catalog(validating selection:DevelopmentPhotoFilterV3? = nil)throws->CatalogState {
     guard !failed,let root else{throw DevelopmentPhotoFilterError.catalogUnavailable}
     if let state {
       guard try FilterResourceIO.stamp(root.appendingPathComponent("catalog-v1.json"))==state.stamp else{invalidate();throw DevelopmentPhotoFilterError.invalidCatalog}
       var current=state
-      for (look,verified) in state.valid {
+      // Capability discovery rechecks every advertised look. A render or bitmap replay
+      // requires the catalog and all four verified planes of the actual selected look.
+      for (look,verified) in state.valid where selection == nil || selection == look {
         do {
           for p in verified.look.planes {guard try FilterResourceIO.stamp(root.appendingPathComponent(p.file))==verified.stamps[p.intensityPercent] else{throw DevelopmentPhotoFilterError.invalidPayload}}
         }catch{current.valid.removeValue(forKey:look);cache.removeAll();recent.removeAll()}
@@ -255,8 +257,14 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
     catch{return .init(filters:[.original],resourceVersion:nil)}
   }
   func validate(_ filter:DevelopmentFilterV3)throws {
-    try filter.validate();guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return}
-    lock.lock();defer{lock.unlock()};guard try catalog().valid[filter.selection] != nil else{throw DevelopmentPhotoFilterError.unavailableFilter}
+    _ = try resourceVersion(for:filter)
+  }
+  func resourceVersion(for filter:DevelopmentFilterV3)throws->String? {
+    try filter.validate();guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return nil}
+    lock.lock();defer{lock.unlock()}
+    let verified=try catalog(validating:filter.selection)
+    guard verified.valid[filter.selection] != nil else{throw DevelopmentPhotoFilterError.unavailableFilter}
+    return verified.version
   }
   private func trim(excluding:Set<String>,all:Bool=false) {
     var used=cache.values.reduce(0){$0+$1.bytes}
@@ -271,7 +279,7 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
     lock.lock();defer{lock.unlock()}
     guard let root else{throw DevelopmentPhotoFilterError.catalogUnavailable}
     guard let device=device ?? MTLCreateSystemDefaultDevice() else{throw DevelopmentPhotoFilterError.unavailableDevice}
-    let catalog=try catalog();guard let verified=catalog.valid[filter.selection] else{throw DevelopmentPhotoFilterError.unavailableFilter}
+    let catalog=try catalog(validating:filter.selection);guard let verified=catalog.valid[filter.selection] else{throw DevelopmentPhotoFilterError.unavailableFilter}
     let percents=DevelopmentPhotoFilterCatalog.intensities
     let high=percents.first(where:{Double($0)>=filter.intensity}) ?? 100
     let low=percents.last(where:{Double($0)<filter.intensity}) ?? 0

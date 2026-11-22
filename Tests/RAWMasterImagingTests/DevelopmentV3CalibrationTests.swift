@@ -151,6 +151,55 @@ final class DevelopmentV3CalibrationTests: XCTestCase {
     let cached=try DevelopmentGlobalEngineV3.apply(recipe,to:source,sourceIsRAW:true,preparedSharpMean:mean)
     XCTAssertLessThan(zip(materialize(direct),materialize(cached)).map{abs($0-$1)}.max() ?? 1,1e-4)
   }
+  func testFilteredDetailReusesOnlyItsStrengthIndependentGuideAndMatchesDirectPixels() throws {
+    let context = DevelopmentColorEngineV3.makeContext(), device = try XCTUnwrap(MTLCreateSystemDefaultDevice())
+    for (width,height) in [(64,48),(48,64)] {
+      let pixels = (0..<(width*height)).map { i -> SIMD4<Float> in
+        let x = Float(i%width)/Float(width-1), y = Float(i/width)/Float(height-1)
+        let alpha:Float = i%13 == 0 ? 0 : (i%7 == 0 ? 0.37 : 1)
+        return .init((x*1.3-0.04)*alpha,(y*y+0.02)*alpha,(x*y*1.1+0.01)*alpha,alpha)
+      }
+      let source = image(pixels,width:width,height:height)
+      var p = DevelopmentAdjustmentsV3()
+      p.rawDecoder = .flashRaw031
+      p.light = .init(enabled:true,exposure:0.1)
+      p.color = .init(enabled:true,saturation:0.2)
+      p.filter = .init(enabled:true,selection:.vivid,intensity:50)
+      p.advancedDetail.texture = .init(enabled:true,amount:10)
+      var held: [String:CIImage] = [:]
+      func verify(expectedGuides:Int) throws {
+        func render(useGuide:Bool) throws -> [Float] {
+          let prepared: ((CIImage,String)throws->CIImage?)? = useGuide ? { input,version in
+            try PreviewInteractiveDetailGuide.applyFilteredBand(p,input:input,filterVersion:version) { detail,processed,identity in
+              if let previous = held[identity] { return previous }
+              let result = try DevelopmentSpatialEngineV3.materializeScalar(detail.factor(for:processed),context:context,device:device,check:{})
+              held[identity] = result
+              return result
+            }
+          } : nil
+          let graph = try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:true,nativeSize:source.extent.size,
+            scale:1,context:context,check:{},flashRaw:true,filteredBand:prepared)
+          return materialize(graph)
+        }
+        let direct = try render(useGuide:false), cached = try render(useGuide:true)
+        XCTAssertTrue(cached.allSatisfy(\.isFinite))
+        XCTAssertLessThan(zip(cached,direct).map { abs($0-$1) }.max() ?? 1,1e-4)
+        XCTAssertEqual(held.count,expectedGuides)
+      }
+      try verify(expectedGuides:1)
+      p.advancedDetail.texture.amount = -40
+      try verify(expectedGuides:1)
+      p.light.exposure = 0.35
+      try verify(expectedGuides:2)
+      p.filter.intensity = 25
+      try verify(expectedGuides:3)
+      p.advancedDetail.texture = .init()
+      p.advancedDetail.clarity = .init(enabled:true,amount:30)
+      try verify(expectedGuides:4)
+      p.advancedDetail.texture = .init(enabled:true,amount:10)
+      try verify(expectedGuides:4)
+    }
+  }
   func testLightSummaryRemainsSourceDependentBoundedAndNeutralAtZero() throws {
     func stats(_ values: [Float]) throws -> DevelopmentAnalysisScalars {
       try DevelopmentAnalysisEngine.statistics(values.flatMap { [$0,$0,$0,1] },width:values.count,height:1)

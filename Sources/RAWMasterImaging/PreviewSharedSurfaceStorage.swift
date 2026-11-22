@@ -42,6 +42,7 @@ enum PreviewSharedImageBridge {
   private static var rasterKey: UnsafeRawPointer { UnsafeRawPointer(Unmanaged.passUnretained(key).toOpaque()) }
   static func presentationImage(_ cg: CGImage, backing: (any PreviewSharedImageBacking)? = nil) -> NSImage {
     let image = NSImage(cgImage: cg,size:NSSize(width:cg.width,height:cg.height))
+    image.cacheMode = .never
     // The provider retains the read-locked IOSurface. Keep that original immutable raster
     // available for canvas draws without requesting an AppKit representation at each zoom.
     objc_setAssociatedObject(image,rasterKey,CanvasRaster(cg,backing:backing),.OBJC_ASSOCIATION_RETAIN_NONATOMIC)

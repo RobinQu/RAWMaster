@@ -62,6 +62,32 @@ final class ImageCanvasTests: XCTestCase {
             }
         }
     }
+    @MainActor func testViewportUsesDrawnSharedRasterWhileOrdinaryImagesKeepTheirHighestDensity() throws {
+        let bounds = CGRect(x:0,y:0,width:80,height:50)
+        let space = CGColorSpace(name:CGColorSpace.sRGB)!
+        func raster(_ scale:Int) throws -> CGImage {
+            let context = try XCTUnwrap(CGContext(data:nil,width:80*scale,height:50*scale,bitsPerComponent:8,
+                bytesPerRow:80*scale*4,space:space,bitmapInfo:PreviewSharedImageBridge.bitmapInfo.rawValue))
+            return try XCTUnwrap(context.makeImage())
+        }
+        let source = try raster(1), double = try raster(2)
+        let shared = PreviewSharedImageBridge.presentationImage(source)
+        XCTAssertEqual(shared.cacheMode,.never)
+        let ordinary = NSImage(size:bounds.size)
+        ordinary.addRepresentation(NSBitmapImageRep(cgImage:source))
+        let canvas = ImageCanvas(frame:bounds)
+        var observed: CGSize?
+        canvas.setInteractionHandlers(pointer:nil,viewport:{ observed = $0.imagePixelSize })
+        defer { canvas.clearInteractionHandlers() }
+        for (image,expected) in [(shared, bounds.size), (ordinary, CGSize(width:160,height:100))] {
+            let high = NSBitmapImageRep(cgImage:double)
+            high.size=bounds.size
+            image.addRepresentation(high)
+            canvas.update(image:image,actualPixels:true,transform:.init())
+            canvas.layout()
+            XCTAssertEqual(observed,expected)
+        }
+    }
     func testMixedSizeCompareUsesPhysicalOneToOneAndNormalizedCenters() {
         let shared = ImageTransform(centerX: 0.61, centerY: 0.42, physicalMagnification: 1)
         let panes: [(CGSize, CGSize)] = [

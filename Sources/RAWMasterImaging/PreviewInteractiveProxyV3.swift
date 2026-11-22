@@ -180,7 +180,7 @@ enum PreviewInteractiveProxyV3 {
       guard value.x.isFinite,value.x==0 else{throw DevelopmentError.invalidEncoding}
     }
   }
-  static func suffix(_ p:DevelopmentAdjustmentsV3,source:CIImage,sourceIsRAW:Bool,nativeSize:CGSize,scale:Double,context:CIContext,check:@escaping ()throws->Void,illustrativeAdaptiveBrilliance:Bool=false,interactiveMapNamespace:String?=nil,flashRaw:Bool=false,asShotWhiteBalance:DevelopmentAsShotWhiteBalance?=nil,photoFilterResourceLease:((DevelopmentPhotoFilterResourceStore.Pair)throws->Void)?=nil,lightGuide:((CIImage,Double)throws->CIImage)?=nil)throws->CIImage {
+  static func suffix(_ p:DevelopmentAdjustmentsV3,source:CIImage,sourceIsRAW:Bool,nativeSize:CGSize,scale:Double,context:CIContext,check:@escaping ()throws->Void,illustrativeAdaptiveBrilliance:Bool=false,interactiveMapNamespace:String?=nil,flashRaw:Bool=false,asShotWhiteBalance:DevelopmentAsShotWhiteBalance?=nil,photoFilterResourceLease:((DevelopmentPhotoFilterResourceStore.Pair)throws->Void)?=nil,lightGuide:((CIImage,Double)throws->CIImage)?=nil,filteredBand:((CIImage,String)throws->CIImage?)?=nil)throws->CIImage {
     var image=source
     if flashRaw {
       image=try FlashRawImageFactory.applyInputAdjustments(p,to:image,asShotWhiteBalance:asShotWhiteBalance,proxyScale:scale)
@@ -210,7 +210,11 @@ enum PreviewInteractiveProxyV3 {
     image=try DevelopmentColorEngineV3.applyCurvesAndLevels(p,to:image)
     image=try DevelopmentGlobalEngineV3.apply(p,to:image,sourceIsRAW:sourceIsRAW)
     image=try DevelopmentGlowEngineV3.apply(p.effects,to:image)
-    image=try DevelopmentPhotoFilterEngineV3.apply(p.filter,to:image,resourceLease:photoFilterResourceLease)
+    var filterVersion:String?
+    image=try DevelopmentPhotoFilterEngineV3.apply(p.filter,to:image,resourceLease:{ pair in
+      try photoFilterResourceLease?(pair)
+      filterVersion=pair.version
+    })
     image=try DevelopmentGradingLUTEngine.apply(p.gradingLUTs, to: image)
     image=try DevelopmentLensBlurEngineV3.apply(p.effects?.lensBlur,to:image)
     let proxySize=DevelopmentPixelSize(width:Int(image.extent.width),height:Int(image.extent.height))
@@ -230,8 +234,12 @@ enum PreviewInteractiveProxyV3 {
     let texture=advanced.texture.enabled && advanced.texture.amount != 0
     let clarity=advanced.clarity.enabled && advanced.clarity.amount != 0
     if texture || clarity {
-      var bands=advanced;bands.dehaze = .init()
-      image=try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,sourceSize:proxySize,context:context,checkCancellation:check,deferValidation:true)
+      if let filterVersion, let adjusted = try filteredBand?(image,filterVersion) {
+        image=adjusted
+      } else {
+        var bands=advanced;bands.dehaze = .init()
+        image=try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,sourceSize:proxySize,context:context,checkCancellation:check,deferValidation:true)
+      }
     }
     image=try DevelopmentMaskEngineV3.apply(p.masks,to:image,context:context,glow:p.effects?.glow ?? .init(),optics:p.optics,checkCancellation:check,deferValidation:true,sourceGrainScale:flashRaw ? scale:nil)
     image=try DevelopmentGlobalEngineV3.applySharpenMaskPreview(p,to:image,sourceToImageScale:flashRaw ? scale:1)
@@ -478,6 +486,8 @@ extension PreviewNativeSource {
           defer { responsePin?.release() }
           var lightGuidePin:FlashRawCanonicalTexturePool.Pin?
           defer { lightGuidePin?.release() }
+          var filteredBandPin:FlashRawCanonicalTexturePool.Pin?
+          defer { filteredBandPin?.release() }
           let pureDetail = PreviewInteractiveProxyV3.cachesDetailGuides && identityDisplay && descriptor.usesFlashRaw
             ? try PreviewInteractiveDetailGuide(p,size:.init(width:proxyLayout.width,height:proxyLayout.height),scale:descriptor.scale) : nil
           let detailPin = try pureDetail.flatMap {
@@ -521,7 +531,14 @@ extension PreviewNativeSource {
               lightGuidePin=try pinInteractiveLightGuide(p,descriptor:descriptor,input:input,radius:radius,context:context,device:device,check:check)
               return try lightGuidePin?.image ?? DevelopmentSpatialEngineV3.meanLogLuminance(input,radius:radius)
             } : nil
-            suffix=try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:descriptor.sourceIsRAW,nativeSize:nativeSize,scale:descriptor.scale,context:context,check:check,interactiveMapNamespace:try descriptor.fingerprint(),flashRaw:descriptor.usesFlashRaw || p.aiDenoise?.model.usesRAWInput == true,asShotWhiteBalance:asShotWhiteBalance,lightGuide:guide)
+            let filteredBand:((CIImage,String)throws->CIImage?)? = PreviewInteractiveProxyV3.cachesDetailGuides && identityDisplay && !postCropActive ? { [self] input,version in
+              try PreviewInteractiveDetailGuide.applyFilteredBand(p,input:input,filterVersion:version) { detail,source,upstream in
+                filteredBandPin=try pinInteractiveDetailGuide(detail,descriptor:descriptor,source:source,upstreamIdentity:upstream,
+                  context:context,device:device,check:check)
+                return filteredBandPin?.image
+              }
+            } : nil
+            suffix=try PreviewInteractiveProxyV3.suffix(p,source:source,sourceIsRAW:descriptor.sourceIsRAW,nativeSize:nativeSize,scale:descriptor.scale,context:context,check:check,interactiveMapNamespace:try descriptor.fingerprint(),flashRaw:descriptor.usesFlashRaw || p.aiDenoise?.model.usesRAWInput == true,asShotWhiteBalance:asShotWhiteBalance,lightGuide:guide,filteredBand:filteredBand)
           }
           guard !directValidation || base.extent == proxyBounds else { throw PreviewPresentationError.invalidLayout }
           // A crop or rotation changes the final graph, but not an untouched input

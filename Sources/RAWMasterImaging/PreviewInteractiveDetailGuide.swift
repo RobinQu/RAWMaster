@@ -2,8 +2,8 @@ import CoreImage
 import Metal
 import RAWMasterCore
 
-/// These single-control edits can reuse an immutable neighbourhood measured on the
-/// verified FlashRaw proxy. Combined recipes continue through the full ordered graph.
+/// Neighbourhoods measured on the verified FlashRaw proxy. A filtered band additionally
+/// binds its guide to the ordered upstream recipe and the verified filter resource.
 enum PreviewInteractiveDetailGuide {
   case lumaNoise(radius: Double)
   case sharpen(radius: Double)
@@ -79,5 +79,40 @@ enum PreviewInteractiveDetailGuide {
     case .sharpen: return try DevelopmentGlobalEngineV3.apply(recipe,to:source,sourceIsRAW:true,preparedSharpMean:guide)
     case let .band(band,amount,_): return try DevelopmentAdvancedDetailEngineV3.applyBand(band,amount:amount,to:source,factor:guide)
     }
+  }
+
+  /// Classic colour and tone are evaluated on the actual input on every draw. Only the
+  /// strength-independent difference between the two Gaussian neighbourhoods is resident.
+  static func applyFilteredBand(_ p:DevelopmentAdjustmentsV3, input:CIImage, filterVersion:String,
+                                guide: (Self, CIImage, String) throws -> CIImage?) throws -> CIImage? {
+    guard p.rawDecoder == .flashRaw031, p.aiDenoise == nil, p.filter.enabled,
+          p.filter.selection != .original, p.filter.intensity > 0, !filterVersion.isEmpty,
+          p.masks.isEmpty, p.gradingLUTs == nil, p.sharpen.visualiseMasking != true,
+          p.light.clippingPreview == nil, p.effects?.lensBlur == nil,
+          !(p.advancedDetail.dehaze.enabled && p.advancedDetail.dehaze.amount != 0) else { return nil }
+    let texture = p.advancedDetail.texture.enabled && p.advancedDetail.texture.amount != 0
+    let clarity = p.advancedDetail.clarity.enabled && p.advancedDetail.clarity.amount != 0
+    guard texture != clarity, DevelopmentAdvancedDetailEngineV3.hasCachedBandKernels else { return nil }
+    let extent = input.extent
+    guard extent.origin == .zero, extent == extent.integral, !extent.isEmpty, !extent.isInfinite else { return nil }
+    let portrait = extent.height > extent.width
+    let source = portrait ? input.oriented(.left) : input
+    let size = DevelopmentPixelSize(width:Int(source.extent.width),height:Int(source.extent.height))
+    let radii = try DevelopmentAdvancedDetailEngineV3.radii(sourceSize:size)
+    var upstream = p
+    let detail: Self
+    if texture {
+      detail = .band(.texture, amount:p.advancedDetail.texture.amount, radius:radii.texture)
+      upstream.advancedDetail.texture.amount = 0
+    } else {
+      detail = .band(.clarity, amount:p.advancedDetail.clarity.amount, radius:radii.clarity)
+      upstream.advancedDetail.clarity.amount = 0
+    }
+    // Keep every other recipe field in the key. Changing colour, exposure, filter strength,
+    // demosaic or another upstream operator must measure a different guide.
+    let identity = try EditingFingerprint.of(upstream) + "/" + DevelopmentPhotoFilterEngineV3.operatorVersion + "/" + filterVersion
+    guard let factor = try guide(detail,source,identity) else { return nil }
+    let adjusted = try detail.render(p,source:source,guide:factor)
+    return portrait ? adjusted.oriented(.right) : adjusted
   }
 }
