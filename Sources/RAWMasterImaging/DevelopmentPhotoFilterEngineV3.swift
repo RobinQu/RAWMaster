@@ -7,6 +7,7 @@ import RAWMasterCore
 /// The canonical hook is intentionally a later grant; this standalone engine is default closed.
 enum DevelopmentPhotoFilterEngineV3 {
   static let operatorVersion="photo-filter-v1/observed-delta64/planes0-1-25-50-100/manual-trilinear-f32/linear-strength/HDR-boundary-residual-mono-noir-endpoint-v2/alpha-bypass65535"
+  static let spektrafilmOperatorVersion = "spektrafilm-v1/srgb-axis64/linear-delta/endpoint-strength/HDR-boundary-residual/alpha-bypass65535"
   static let alphaMinimum:Float=1.0/65535
   private static let loaded: Result<CIKernel,Error> = Result {
     guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentPhotoFilterError.unavailableDevice}
@@ -25,7 +26,7 @@ enum DevelopmentPhotoFilterEngineV3 {
                                      resources:DevelopmentPhotoFilterResourceStore = .shared)throws->String? {
     guard let version=try resources.resourceVersion(for:filter) else{return nil}
     _ = try loaded.get()
-    return operatorVersion+"/catalog:"+version
+    return DevelopmentPhotoFilterCatalog.Family(filter.selection).operatorVersion+"/catalog:"+version
   }
   static func activeResourceIdentity(_ recipe:DevelopmentRecipe,
                                      resources:DevelopmentPhotoFilterResourceStore = .shared)throws->String? {
@@ -35,8 +36,7 @@ enum DevelopmentPhotoFilterEngineV3 {
   }
   /// An unavailable bundle/kernel is an explicitly closed implementation, not active fallback.
   static func stageIdentity(resources:DevelopmentPhotoFilterResourceStore = .shared)throws->String {
-    let available=capabilities(resources:resources)
-    guard available.filters.count>1,let version=available.resourceVersion else{return "photo-filter-closed-v1"}
+    guard let version = resources.classicStageCatalogVersion(), (try? loaded.get()) != nil else { return "photo-filter-closed-v1" }
     return operatorVersion+"/catalog:"+version
   }
   static func apply(_ filter:DevelopmentFilterV3,to image:CIImage,resources:DevelopmentPhotoFilterResourceStore = .shared,
@@ -77,8 +77,9 @@ enum DevelopmentPhotoFilterEngineV3 {
       if i>0 && q<axis(i){i-=1};if i<62 && q>axis(i+1){i+=1}
       cell[c]=i;weight[c]=(q-axis(i))/(axis(i+1)-axis(i))
     }
-    let high=DevelopmentPhotoFilterCatalog.intensities.first(where:{Double($0)>=intensity}) ?? 100
-    let low=DevelopmentPhotoFilterCatalog.intensities.last(where:{Double($0)<intensity}) ?? 0
+    let intensities = DevelopmentPhotoFilterCatalog.Family(selection).intensities
+    let high=intensities.first(where:{Double($0)>=intensity}) ?? 100
+    let low=intensities.last(where:{Double($0)<intensity}) ?? 0
     func table(_ percent:Int)throws->SIMD3<Double> {
       if percent==0{return .zero}
       var result=SIMD3<Double>.zero

@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "operatorVersion": "spektrafilm-v1/srgb-axis64/linear-delta/endpoint-strength/HDR-boundary-residual/alpha-bypass65535",
+  "representation": "linear-delta64-rgba32f-v1",
+  "cubeDimension": 64,
+  "atlasWidth": 512,
+  "atlasHeight": 512,
+  "axisCodes": [
+    0,
+    1040,
+    2080,
+    3121,
+    4161,
+    5201,
+    6241,
+    7282,
+    8322,
+    9362,
+    10402,
+    11443,
+    12483,
+    13523,
+    14563,
+    15604,
+    16644,
+    17684,
+    18724,
+    19765,
+    20805,
+    21845,
+    22885,
+    23925,
+    24966,
+    26006,
+    27046,
+    28086,
+    29127,
+    30167,
+    31207,
+    32247,
+    33288,
+    34328,
+    35368,
+    36408,
+    37449,
+    38489,
+    39529,
+    40569,
+    41610,
+    42650,
+    43690,
+    44730,
+    45770,
+    46811,
+    47851,
+    48891,
+    49931,
+    50972,
+    52012,
+    53052,
+    54092,
+    55133,
+    56173,
+    57213,
+    58253,
+    59294,
+    60334,
+    61374,
+    62414,
+    63455,
+    64495,
+    65535
+  ],
+  "inputICCsha256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+  "alphaPolicy": "source-alpha-preserved/lowalpha-1over65535-bypass",
+  "hdrPolicy": "boundary-residual-v1",
+  "sourceBindingsSHA256": "0d67e28c7e55f49ca680b566985af4cb12ea7cb2f61bc7cf154b4308c021281f",
+  "builderSHA256": "048c120eff1e4a2ccdb2b09af4a681b74b359ac75c107ac8fa3198318d89e816",
+  "looks": [
+    {
+      "id": "spektraPortra400Endura",
+      "planes": [
+        {
+          "file": "spektraPortra400Endura-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "74ac08d45e2f602df68414e51cd3071d06d78921944e1e1505a4a5db9dc93cb2"
+        }
+      ]
+    },
+    {
+      "id": "spektraVelvia100",
+      "planes": [
+        {
+          "file": "spektraVelvia100-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "68009686b2f669f888bdb701cf1177ccd949ca9acb8a74f6ec3544a5ab3ca45d"
+        }
+      ]
+    },
+    {
+      "id": "spektraVision250D2383",
+      "planes": [
+        {
+          "file": "spektraVision250D2383-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "a67661da29719772555418543dd6a046c390d7c183422578cf792541d248e128"
+        }
+      ]
+    }
+  ]
+}

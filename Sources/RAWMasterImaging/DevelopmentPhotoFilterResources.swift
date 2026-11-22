@@ -67,32 +67,43 @@ struct DevelopmentPhotoFilterCatalog: Codable {
   let axisCodes:[UInt16]
   let inputICCsha256,alphaPolicy,hdrPolicy,sourceBindingsSHA256,builderSHA256:String
   let looks:[DevelopmentPhotoFilterLook]
+  enum Family: CaseIterable {
+    case classic, spektrafilm
+
+    init(_ look: DevelopmentPhotoFilterV3) { self = look.isSpektrafilm ? .spektrafilm : .classic }
+    var intensities: [Int] { self == .classic ? DevelopmentPhotoFilterCatalog.intensities : [100] }
+    var operatorVersion: String {
+      self == .classic ? DevelopmentPhotoFilterEngineV3.operatorVersion : DevelopmentPhotoFilterEngineV3.spektrafilmOperatorVersion
+    }
+    var hdrPolicy: String { self == .classic ? "boundary-residual-mono-noir-endpoint-v2" : "boundary-residual-v1" }
+    func directory(in root: URL) -> URL { self == .classic ? root : root.appendingPathComponent("Spektrafilm", isDirectory: true) }
+  }
   static let payloadBytes=64*64*64*16
   static let intensities=[1,25,50,100]
   static let icc="2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e"
   static func filename(_ look:DevelopmentPhotoFilterV3,_ percent:Int)->String { "\(look.rawValue)-\(String(format:"%03d",percent)).delta64.rgba32f" }
-  static func decode(_ data:Data)throws->Self {
+  static func decode(_ data:Data, family:Family = .classic)throws->Self {
     guard data.count<=65536 else{throw DevelopmentPhotoFilterError.invalidCatalog}
     let object:Any
     do{object=try JSONSerialization.jsonObject(with:data)}catch{throw DevelopmentPhotoFilterError.invalidCatalog}
     guard let top=object as? [String:Any] else{throw DevelopmentPhotoFilterError.invalidCatalog}
     let keys:Set<String>=["schemaVersion","operatorVersion","representation","cubeDimension","atlasWidth","atlasHeight","axisCodes","inputICCsha256","alphaPolicy","hdrPolicy","sourceBindingsSHA256","builderSHA256","looks"]
-    guard Set(top.keys)==keys,let rawLooks=top["looks"] as? [[String:Any]],(1...9).contains(rawLooks.count) else {throw DevelopmentPhotoFilterError.invalidCatalog}
+    guard Set(top.keys)==keys,let rawLooks=top["looks"] as? [[String:Any]],(1...(family == .classic ? 9 : 3)).contains(rawLooks.count) else {throw DevelopmentPhotoFilterError.invalidCatalog}
     for look in rawLooks {
-      guard Set(look.keys)==["id","planes"],let planes=look["planes"] as? [[String:Any]],planes.count==4 else {throw DevelopmentPhotoFilterError.invalidCatalog}
+      guard Set(look.keys)==["id","planes"],let planes=look["planes"] as? [[String:Any]],planes.count==family.intensities.count else {throw DevelopmentPhotoFilterError.invalidCatalog}
       for plane in planes { guard Set(plane.keys)==["intensityPercent","file","byteCount","sha256"] else {throw DevelopmentPhotoFilterError.invalidCatalog} }
     }
     let value:Self
     do{value=try JSONDecoder().decode(Self.self,from:data)}catch{throw DevelopmentPhotoFilterError.invalidCatalog}
     let axis=(0..<64).map{UInt16((65535*$0+31)/63)}
-    guard value.schemaVersion==1,value.operatorVersion==DevelopmentPhotoFilterEngineV3.operatorVersion,
+    guard value.schemaVersion==1,value.operatorVersion==family.operatorVersion,
       value.representation=="linear-delta64-rgba32f-v1",value.cubeDimension==64,value.atlasWidth==512,value.atlasHeight==512,
       value.axisCodes==axis,value.inputICCsha256==icc,
-      value.alphaPolicy=="source-alpha-preserved/lowalpha-1over65535-bypass",value.hdrPolicy=="boundary-residual-mono-noir-endpoint-v2",
+      value.alphaPolicy=="source-alpha-preserved/lowalpha-1over65535-bypass",value.hdrPolicy==family.hdrPolicy,
       EditingFingerprint.isSHA256(value.sourceBindingsSHA256),EditingFingerprint.isSHA256(value.builderSHA256),
       Set(value.looks.map(\.id)).count==value.looks.count else {throw DevelopmentPhotoFilterError.invalidCatalog}
     for look in value.looks {
-      guard look.id != .original,look.planes.map(\.intensityPercent).sorted()==intensities else {throw DevelopmentPhotoFilterError.invalidCatalog}
+      guard look.id != .original,Family(look.id)==family,look.planes.map(\.intensityPercent).sorted()==family.intensities else {throw DevelopmentPhotoFilterError.invalidCatalog}
       for p in look.planes {
         guard p.byteCount==payloadBytes,p.file==filename(look.id,p.intensityPercent),EditingFingerprint.isSHA256(p.sha256) else {throw DevelopmentPhotoFilterError.invalidCatalog}
       }
@@ -207,54 +218,98 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
     return Bundle.module.url(forResource:"PhotoFilters",withExtension:nil)
   }()
   static let shared=DevelopmentPhotoFilterResourceStore(resourceRoot:bundledRoot)
-  struct Capabilities {let filters:Set<DevelopmentPhotoFilterV3>;let resourceVersion:String?}
+  struct Capabilities {
+    let filters: Set<DevelopmentPhotoFilterV3>
+    let resourceVersion: String?
+    var classicVersion: String?
+    var filmVersion: String?
+    func catalogVersion(for look: DevelopmentPhotoFilterV3) -> String? { look.isSpektrafilm ? filmVersion : classicVersion }
+  }
   struct Pair {let lower,upper:DevelopmentPhotoFilterAtlas;let weight:Float;let zeroLower:Bool;let version:String}
   private struct Verified {let look:DevelopmentPhotoFilterLook;let stamps:[Int:FilterResourceIO.Stamp]}
   private struct CatalogState {let stamp:FilterResourceIO.Stamp;let version:String;var valid:[DevelopmentPhotoFilterV3:Verified]}
   private let lock=NSLock()
   private let root:URL?
   private let device:MTLDevice?
-  private var state:CatalogState?
-  private var failed=false
+  private typealias Family = DevelopmentPhotoFilterCatalog.Family
+  private var states: [Family: CatalogState] = [:]
+  private var failedFamilies: Set<Family> = []
   private var cache:[String:DevelopmentPhotoFilterAtlas]=[:]
   private var recent:[String:UInt64]=[:]
   private var sequence:UInt64=0
   private let readyTarget=16*1024*1024
   init(resourceRoot:URL?,device:MTLDevice?=nil){root=resourceRoot?.standardizedFileURL.resolvingSymlinksInPath();self.device=device}
-  private func invalidate(){state=nil;failed=true;cache.removeAll();recent.removeAll()}
-  private func catalog(validating selection:DevelopmentPhotoFilterV3? = nil)throws->CatalogState {
-    guard !failed,let root else{throw DevelopmentPhotoFilterError.catalogUnavailable}
-    if let state {
-      guard try FilterResourceIO.stamp(root.appendingPathComponent("catalog-v1.json"))==state.stamp else{invalidate();throw DevelopmentPhotoFilterError.invalidCatalog}
-      var current=state
-      // Capability discovery rechecks every advertised look. A render or bitmap replay
-      // requires the catalog and all four verified planes of the actual selected look.
-      for (look,verified) in state.valid where selection == nil || selection == look {
-        do {
-          for p in verified.look.planes {guard try FilterResourceIO.stamp(root.appendingPathComponent(p.file))==verified.stamps[p.intensityPercent] else{throw DevelopmentPhotoFilterError.invalidPayload}}
-        }catch{current.valid.removeValue(forKey:look);cache.removeAll();recent.removeAll()}
+  private func catalog(_ family: Family, validating selection: DevelopmentPhotoFilterV3? = nil) throws -> CatalogState {
+    guard !failedFamilies.contains(family), let root else { throw DevelopmentPhotoFilterError.catalogUnavailable }
+    let directory = family.directory(in: root)
+    let manifest = directory.appendingPathComponent("catalog-v1.json")
+    if let state = states[family] {
+      guard (try? FilterResourceIO.stamp(manifest)) == state.stamp else {
+        states.removeValue(forKey: family)
+        failedFamilies.insert(family)
+        cache.removeAll()
+        recent.removeAll()
+        throw DevelopmentPhotoFilterError.invalidCatalog
       }
-      self.state=current;return current
+      var current = state
+      for (look, verified) in state.valid where selection == nil || selection == look {
+        do {
+          for p in verified.look.planes {
+            guard try FilterResourceIO.stamp(directory.appendingPathComponent(p.file)) == verified.stamps[p.intensityPercent]
+            else { throw DevelopmentPhotoFilterError.invalidPayload }
+          }
+        } catch {
+          current.valid.removeValue(forKey: look)
+          cache.removeAll()
+          recent.removeAll()
+        }
+      }
+      states[family] = current
+      return current
     }
-    let(data,stamp)=try FilterResourceIO.readCatalog(root.appendingPathComponent("catalog-v1.json"))
-    let parsed=try DevelopmentPhotoFilterCatalog.decode(data)
+    let (data, stamp) = try FilterResourceIO.readCatalog(manifest)
+    let parsed = try DevelopmentPhotoFilterCatalog.decode(data, family: family)
     var valid:[DevelopmentPhotoFilterV3:Verified]=[:]
     for look in parsed.looks {
       do {
         var stamps:[Int:FilterResourceIO.Stamp]=[:]
-        for p in look.planes {stamps[p.intensityPercent]=try FilterResourceIO.payload(root.appendingPathComponent(p.file),record:p)}
+        for p in look.planes {stamps[p.intensityPercent]=try FilterResourceIO.payload(directory.appendingPathComponent(p.file),record:p)}
         valid[look.id]=Verified(look:look,stamps:stamps)
       }catch is CancellationError{throw CancellationError()}
       catch DevelopmentPhotoFilterError.budgetUnavailable{throw DevelopmentPhotoFilterError.budgetUnavailable}
       catch{continue} // A corrupt/missing look is NOT advertised; no fallback pixels.
     }
     let version=SHA256.hash(data:data).map{String(format:"%02x",$0)}.joined()
-    let result=CatalogState(stamp:stamp,version:version,valid:valid);state=result;return result
+    let result = CatalogState(stamp: stamp, version: version, valid: valid)
+    states[family] = result
+    return result
   }
-  func capabilities()->Capabilities {
-    lock.lock();defer{lock.unlock()}
-    do{let value=try catalog();return .init(filters:Set(value.valid.keys).union([.original]),resourceVersion:value.valid.isEmpty ? nil:value.version)}
-    catch{return .init(filters:[.original],resourceVersion:nil)}
+
+  /// The original stage fingerprint is part of persisted prepared local operations.
+  /// Each active film look carries its separate catalog identity through the canonical render.
+  func classicStageCatalogVersion() -> String? {
+    lock.lock(); defer { lock.unlock() }
+    guard let state = try? catalog(.classic), !state.valid.isEmpty else { return nil }
+    return state.version
+  }
+
+  func capabilities() -> Capabilities {
+    lock.lock(); defer { lock.unlock() }
+    var filters: Set<DevelopmentPhotoFilterV3> = [.original]
+    var versions = [Family: String]()
+    for family in Family.allCases {
+      guard let state = try? catalog(family), !state.valid.isEmpty else { continue }
+      filters.formUnion(state.valid.keys)
+      versions[family] = state.version
+    }
+    let aggregate: String?
+    if let classic = versions[.classic], let film = versions[.spektrafilm] {
+      aggregate = SHA256.hash(data: Data((classic + "/" + film).utf8)).map { String(format: "%02x", $0) }.joined()
+    } else {
+      aggregate = versions.values.first
+    }
+    return .init(filters: filters, resourceVersion: aggregate,
+                 classicVersion: versions[.classic], filmVersion: versions[.spektrafilm])
   }
   func validate(_ filter:DevelopmentFilterV3)throws {
     _ = try resourceVersion(for:filter)
@@ -262,7 +317,7 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
   func resourceVersion(for filter:DevelopmentFilterV3)throws->String? {
     try filter.validate();guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return nil}
     lock.lock();defer{lock.unlock()}
-    let verified=try catalog(validating:filter.selection)
+    let verified=try catalog(Family(filter.selection),validating:filter.selection)
     guard verified.valid[filter.selection] != nil else{throw DevelopmentPhotoFilterError.unavailableFilter}
     return verified.version
   }
@@ -279,8 +334,10 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
     lock.lock();defer{lock.unlock()}
     guard let root else{throw DevelopmentPhotoFilterError.catalogUnavailable}
     guard let device=device ?? MTLCreateSystemDefaultDevice() else{throw DevelopmentPhotoFilterError.unavailableDevice}
-    let catalog=try catalog(validating:filter.selection);guard let verified=catalog.valid[filter.selection] else{throw DevelopmentPhotoFilterError.unavailableFilter}
-    let percents=DevelopmentPhotoFilterCatalog.intensities
+    let family = Family(filter.selection)
+    let directory = family.directory(in: root)
+    let catalog=try catalog(family,validating:filter.selection);guard let verified=catalog.valid[filter.selection] else{throw DevelopmentPhotoFilterError.unavailableFilter}
+    let percents=family.intensities
     let high=percents.first(where:{Double($0)>=filter.intensity}) ?? 100
     let low=percents.last(where:{Double($0)<filter.intensity}) ?? 0
     let exact=Double(high)==filter.intensity
@@ -292,10 +349,10 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
     do{
       for p in records where cache[key(p)]==nil {
         let name=key(p)
-        do{cache[name]=try DevelopmentPhotoFilterAtlas(url:root.appendingPathComponent(p.file),record:p,stamp:verified.stamps[p.intensityPercent]!,device:device)}
+        do{cache[name]=try DevelopmentPhotoFilterAtlas(url:directory.appendingPathComponent(p.file),record:p,stamp:verified.stamps[p.intensityPercent]!,device:device)}
         catch DevelopmentPhotoFilterError.budgetUnavailable {
           trim(excluding:keep,all:true)
-          cache[name]=try DevelopmentPhotoFilterAtlas(url:root.appendingPathComponent(p.file),record:p,stamp:verified.stamps[p.intensityPercent]!,device:device)
+          cache[name]=try DevelopmentPhotoFilterAtlas(url:directory.appendingPathComponent(p.file),record:p,stamp:verified.stamps[p.intensityPercent]!,device:device)
         }
         created.append(name)
       }
@@ -304,7 +361,7 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
       guard let lowRecord=records.first(where:{$0.intensityPercent==lowerPercent}),let highRecord=records.first(where:{$0.intensityPercent==high}),
         let a=cache[key(lowRecord)],let b=cache[key(highRecord)] else{throw DevelopmentPhotoFilterError.invalidPayload}
       a.published();b.published()
-      // Below1percent both references alias one table: weight is direct Delta0→Delta1 scale.
+      // Below the first endpoint both references share the atlas and strength blends from zero.
       let weight:Float=exact ? 0:Float((filter.intensity-Double(low))/Double(high-low))
       return .init(lower:a,upper:b,weight:weight,zeroLower:low==0 && !exact,version:catalog.version)
     }catch{

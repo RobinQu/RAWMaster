@@ -93,7 +93,7 @@ enum DevelopmentThumbnailEngine {
     guard request.kind == .filters || (active.enabled && active.selection != .original && active.intensity != 0) else{return nil}
     let available=DevelopmentPhotoFilterEngineV3.capabilities()
     guard let version=available.resourceVersion,request.expectedPhotoFilterResourceVersion==version,
-      (request.kind != .filters || Set(filterOrder)==available.filters) else{throw DevelopmentThumbnailError.unsupportedGraph}
+      (request.kind != .filters || Set(filterOrder).isSubset(of:available.filters)) else{throw DevelopmentThumbnailError.unsupportedGraph}
     return version
   }
   /// Compact extent throughout; no view is stretched back to native dimensions.
@@ -110,15 +110,19 @@ enum DevelopmentThumbnailEngine {
       if bytes>0 {tickets.append(try ledger.reserve(bytes,kind:.summary))}
     }
     let resourceTicketStart=tickets.count
+    var selectedCatalogVersion: String?
     if active {
       guard let ledger,let expectedResourceVersion else{throw DevelopmentThumbnailError.unsupportedGraph}
       // Reserve known loading scratch and exact table worst-case BEFORE resource lookup.
       tickets.append(try ledger.reserve(65536,kind:.summary))
       tickets.append(try ledger.reserve(DevelopmentPhotoFilterCatalog.payloadBytes,kind:.summary))
-      if !DevelopmentPhotoFilterCatalog.intensities.contains(where:{Double($0)==filter.intensity}) && filter.intensity>1 {
+      if !filter.selection.isSpektrafilm && !DevelopmentPhotoFilterCatalog.intensities.contains(where:{Double($0)==filter.intensity}) && filter.intensity>1 {
         tickets.append(try ledger.reserve(DevelopmentPhotoFilterCatalog.payloadBytes,kind:.filters))
       }
-      guard DevelopmentPhotoFilterEngineV3.capabilities().resourceVersion==expectedResourceVersion else{throw DevelopmentThumbnailError.staleSource}
+      let capabilities = DevelopmentPhotoFilterEngineV3.capabilities()
+      guard capabilities.resourceVersion == expectedResourceVersion,
+            let version = capabilities.catalogVersion(for: filter.selection) else { throw DevelopmentThumbnailError.staleSource }
+      selectedCatalogVersion = version
     }
     return try proxy.surface.withImage{base in
       let nativeSize=CGSize(width:proxy.sourceBinding.orientedWidth,height:proxy.sourceBinding.orientedHeight)
@@ -131,7 +135,7 @@ enum DevelopmentThumbnailEngine {
         try PreviewInteractiveProxyV3.suffix(p,source:image,sourceIsRAW:proxy.sourceIsRAW,nativeSize:nativeSize,scale:proxy.scale,context:context,check:{try Task.checkCancellation()},illustrativeAdaptiveBrilliance:true,photoFilterResourceLease:{pair in
           var ids=Set<ObjectIdentifier>(),bytes=0
           for atlas in [pair.lower,pair.upper] where ids.insert(ObjectIdentifier(atlas.buffer)).inserted{bytes+=atlas.bytes}
-          guard pair.version==expectedResourceVersion,ids.count<=tickets.count-resourceTicketStart-1 else{throw DevelopmentThumbnailError.invalidEncoding}
+          guard pair.version==selectedCatalogVersion,ids.count<=tickets.count-resourceTicketStart-1 else{throw DevelopmentThumbnailError.invalidEncoding}
           var seen=Set<ObjectIdentifier>(),i=resourceTicketStart+1
           for atlas in [pair.lower,pair.upper] where seen.insert(ObjectIdentifier(atlas.buffer)).inserted {
             try tickets[i].adjust(bytes:atlas.bytes,cpu:atlas.bytes,gpu:atlas.bytes)

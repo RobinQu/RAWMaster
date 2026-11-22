@@ -1,0 +1,22 @@
+Spektrafilm colour transforms for RAWMaster, revision 1
+
+Derived from spektrafilm by Andrea Volpato.
+https://github.com/andreavolpato/spektrafilm
+Licensed CC BY-SA 4.0. See SPEKTRAFILM_LICENSE.txt for the unmodified upstream notice and full license.
+Derivative LUTs modified by RAWMaster contributors.
+
+RAWMaster baked three deterministic colour and tone transforms using upstream revision
+3bb2c2d2801ff68b92019cf1dbcbb133d60832bc. The original profiles were used unchanged.
+The Portra 400 negative is printed on Portra Endura. Velvia 100 is scanned as a positive
+transparency. The Vision3 250D negative is printed onto Kodak 2383 release print film.
+
+The input and output are linear sRGB. We sampled the processor on a 64³ grid spaced by the
+sRGB transfer function, stored the linear RGB delta from the original at each grid point,
+and packed those values in the RAWMaster Metal filter atlas. RAWMaster interpolates this
+transform in its working space, retains source alpha and adds back extended-range residuals.
+The recipe's intensity controls a linear blend between the captured image and this endpoint.
+
+The upstream LUT mode uses fixed exposure and deterministic pointwise density and scanning
+stages. Spatial grain, halation, diffusion, sharpening and global exposure metering are
+excluded. The bundled resources require no Python interpreter or upstream runtime.
+See provenance.json for the data sources, their checksums, parameters and tool versions.

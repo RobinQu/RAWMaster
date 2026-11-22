@@ -1,0 +1,148 @@
+{
+  "referenceRevision": "3bb2c2d2801ff68b92019cf1dbcbb133d60832bc",
+  "photoLicense": "CC BY-SA 4.0",
+  "sampleWidth": 160,
+  "sampleHeight": 240,
+  "columns": [
+    "Input",
+    "spektraPortra400Endura",
+    "spektraVelvia100",
+    "spektraVision250D2383"
+  ],
+  "photos": {
+    "person": {
+      "creator": "Hung Pham",
+      "source": "https://discuss.pixls.us/t/cinematic-portrait-in-golden-hour/54881",
+      "inputPreviewSHA256": "1591cf27d8ea23c05b7c533d70f3d6fc82083a7de1534696c61f735e8962295f",
+      "looks": {
+        "spektraPortra400Endura": {
+          "atlasVsDirectLinear": {
+            "mean": 2.337962772200345e-05,
+            "p99": 0.00028553484475213277,
+            "max": 0.0011621510298064908
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.023825063089764207,
+            "p99": 0.14822314983080137,
+            "max": 0.360699628870519
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.0508820327521671,
+            "p99": 1.0202834274431958,
+            "max": 2.0196612829947527
+          }
+        },
+        "spektraVelvia100": {
+          "atlasVsDirectLinear": {
+            "mean": 2.1124705674863385e-05,
+            "p99": 0.00025290251291610753,
+            "max": 0.0014619874539686384
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.03227938617702246,
+            "p99": 0.24896006879941338,
+            "max": 1.356506901391326
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.06287025923878699,
+            "p99": 1.2194706998162212,
+            "max": 4.925181160330497
+          }
+        },
+        "spektraVision250D2383": {
+          "atlasVsDirectLinear": {
+            "mean": 2.0859842221208585e-05,
+            "p99": 0.00025304881200812114,
+            "max": 0.0014937623915228238
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.027854202489772828,
+            "p99": 0.16533503426051668,
+            "max": 0.7828378426518869
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.05871396355609269,
+            "p99": 1.1733274132487845,
+            "max": 2.4723309402456906
+          }
+        }
+      },
+      "pairwiseMeanDifference8": {
+        "Input / spektraPortra400Endura": 12.398085511342243,
+        "Input / spektraVelvia100": 11.196686281067693,
+        "spektraPortra400Endura / spektraVelvia100": 12.466999022437818,
+        "Input / spektraVision250D2383": 11.136612203240317,
+        "spektraPortra400Endura / spektraVision250D2383": 12.084184433570663,
+        "spektraVelvia100 / spektraVision250D2383": 2.310104328917903
+      },
+      "sourceAndReferencesRGB8SHA256": "3bb982861cd812d78744eccc927e3d954c744a6b6107ddca103102e199e4ba43"
+    },
+    "snow": {
+      "creator": "Sean Liu",
+      "source": "https://discuss.pixls.us/t/snow-and-sunset/55869",
+      "inputPreviewSHA256": "319b52e0c764289ff2b4c7f1f6ce23b3bb3852385e0e8da4ae37a19205250eee",
+      "looks": {
+        "spektraPortra400Endura": {
+          "atlasVsDirectLinear": {
+            "mean": 5.313380937659009e-05,
+            "p99": 0.00039304052304943687,
+            "max": 0.0012386411441845935
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.02820478950742072,
+            "p99": 0.14398979827947245,
+            "max": 0.30095410278068624
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.22192433100007383,
+            "p99": 1.292989658913045,
+            "max": 1.8193371472357631
+          }
+        },
+        "spektraVelvia100": {
+          "atlasVsDirectLinear": {
+            "mean": 4.213017421752473e-05,
+            "p99": 0.000337660941693466,
+            "max": 0.000762591626327358
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.029121097641149226,
+            "p99": 0.1327429528053986,
+            "max": 0.9930262393557169
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.24896722855048636,
+            "p99": 1.5730538186166008,
+            "max": 2.062983062058888
+          }
+        },
+        "spektraVision250D2383": {
+          "atlasVsDirectLinear": {
+            "mean": 5.278382414315622e-05,
+            "p99": 0.00038944886699403085,
+            "max": 0.0009644371339186386
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.032513298209112286,
+            "p99": 0.16077476669863713,
+            "max": 0.42810513650627335
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.2263093957853947,
+            "p99": 1.2739379510655444,
+            "max": 1.5435281531092788
+          }
+        }
+      },
+      "pairwiseMeanDifference8": {
+        "Input / spektraPortra400Endura": 10.44036469280197,
+        "Input / spektraVelvia100": 11.83260027017583,
+        "spektraPortra400Endura / spektraVelvia100": 11.643081249856976,
+        "Input / spektraVision250D2383": 11.853699065116666,
+        "spektraPortra400Endura / spektraVision250D2383": 8.84011350023634,
+        "spektraVelvia100 / spektraVision250D2383": 5.136594949483471
+      },
+      "sourceAndReferencesRGB8SHA256": "f614dcffb4778a29a12f20cde95ed55c896b5e62c89d32c33463d7a091c271d9"
+    }
+  }
+}

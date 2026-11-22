@@ -38,14 +38,14 @@ final class DevelopmentPhotoFilterCanonicalTests:XCTestCase {
   private func request(_ lease:PreviewSessionInfo,_ consumer:PreviewConsumerID,_ recipe:DevelopmentRecipe,_ revision:UInt64)->DevelopmentPreviewRequest {
     .init(sessionID:lease.id,sourceGeneration:lease.sourceGeneration,consumerID:consumer,role:.primary,revision:revision,recipe:recipe,quality:.settled,viewport:.init(maxPixel:2400),clientCorrelation:Data("filter-hook".utf8))
   }
-  func testActualBundleCatalogAndAllTenCapabilitiesAndMissingInstalledBundleIsClosed()throws {
+  func testActualBundleCatalogAndInstalledLookCapabilitiesAndMissingBundleIsClosed()throws {
     let root=try XCTUnwrap(DevelopmentPhotoFilterResourceStore.bundledRoot)
     XCTAssertEqual(root.lastPathComponent,"PhotoFilters")
     XCTAssertEqual(try RenderFiles.hash(root.appendingPathComponent("catalog-v1.json")),catalogSHA)
     let catalog=try DevelopmentPhotoFilterCatalog.decode(Data(contentsOf:root.appendingPathComponent("catalog-v1.json")))
     XCTAssertEqual(catalog.looks.count,9);XCTAssertEqual(catalog.looks.flatMap(\.planes).count,36)
     let available=DevelopmentPhotoFilterEngineV3.capabilities()
-    XCTAssertEqual(available.filters,Set(DevelopmentPhotoFilterV3.allCases));XCTAssertEqual(available.resourceVersion,catalogSHA)
+    XCTAssertEqual(available.filters,Set(DevelopmentPhotoFilterV3.allCases));XCTAssertEqual(available.classicVersion,catalogSHA);XCTAssertNotNil(available.filmVersion)
     let missing=FileManager.default.temporaryDirectory.appendingPathComponent("RAWMaster-no-bundle-"+UUID().uuidString)
     XCTAssertNil(DevelopmentPhotoFilterResourceStore.installedAppResourceRoot(resourcesURL:missing))
     XCTAssertNil(DevelopmentPhotoFilterResourceStore.installedAppResourceRoot(resourcesURL:nil))
@@ -53,7 +53,7 @@ final class DevelopmentPhotoFilterCanonicalTests:XCTestCase {
     XCTAssertEqual(try DevelopmentPhotoFilterEngineV3.stageIdentity(resources:closed),"photo-filter-closed-v1")
     XCTAssertThrowsError(try DevelopmentPhotoFilterEngineV3.activeResourceIdentity(recipe(),resources:closed))
   }
-  func testAllNineCanonicalGraphsUseSameActualResourceFilterAfterGlobal()throws {
+  func testClassicAndFilmCanonicalGraphsUseSameActualResourceFilterAfterGlobal()throws {
     let(root,source)=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let ctx=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
     defer{ctx.clearCaches();DevelopmentPhotoFilterResourceStore.shared.trimReady()}
@@ -68,7 +68,8 @@ final class DevelopmentPhotoFilterCanonicalTests:XCTestCase {
         let expected=try DevelopmentPhotoFilterEngineV3.apply(p.filter,to:before.image)
         let a=try read(actual.image,ctx),b=try read(expected,ctx)
         XCTAssertEqual(actual.canonicalSize,before.canonicalSize)
-        XCTAssertTrue(actual.graphDescriptor.contains(catalogSHA));XCTAssertTrue(actual.graphDescriptor.contains(DevelopmentPhotoFilterEngineV3.operatorVersion))
+        let identity = try XCTUnwrap(DevelopmentPhotoFilterEngineV3.activeResourceIdentity(p.filter))
+        XCTAssertTrue(actual.graphDescriptor.contains(identity))
         XCTAssertEqual(a.count,b.count)
         for i in a.indices{for c in 0..<4{XCTAssertEqual(a[i][c],b[i][c],accuracy:2e-4)}}
         XCTAssertEqual(try EditingFingerprint.of(recipe),fp)

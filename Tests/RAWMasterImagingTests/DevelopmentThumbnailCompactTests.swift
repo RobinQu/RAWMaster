@@ -148,7 +148,7 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     XCTAssertEqual(geometry.layout.width,128);XCTAssertEqual(geometry.layout.height,192)
   }
   func testActualTenFilterProducerUsesResourceVersionAndNeverNeedsSummaryScalars()throws {
-    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,Set(DevelopmentThumbnailEngine.filterOrder).isSubset(of:caps.filters) else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
     let ledger=ThumbnailLedger(),d=try device(),base=try proxy(ledger,d);defer{base.surface.retire()}
     let r=try request(DevelopmentRecipe(adjustmentsV3:.init()),version:version)
     var actual=Set<String>()
@@ -194,7 +194,7 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     XCTAssertEqual(try DevelopmentThumbnailContentKeyV1.filters(revisionRequest,source:binding,sourceIsRAW:false),originalKey)
   }
   func testManagedTenFilterPixelsMatchLegacyGPUSRGBIncludingMonoNoirAndAlpha()throws {
-    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,Set(DevelopmentThumbnailEngine.filterOrder).isSubset(of:caps.filters) else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
     let ledger=ThumbnailLedger(),d=try device(),base=try proxy(ledger,d)
     let r=try request(DevelopmentRecipe(adjustmentsV3:.init()),version:version)
     for index in DevelopmentThumbnailEngine.filterOrder.indices {
@@ -203,7 +203,7 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
   }
   func testManagedHDRAndNegativePixelsMatchLegacyClampedSRGB()throws {
-    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,Set(DevelopmentThumbnailEngine.filterOrder).isSubset(of:caps.filters) else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
     let pixels=(0..<(32*24)).map{i->SIMD4<Float> in
       let a:Float=i%31==0 ? 0:(i%29==0 ? 0.5:1)
       return .init((i%7==0 ? 3.5:0.25)*a,(i%11==0 ? -0.75:0.4)*a,(i%13==0 ? 1.25:0.1)*a,a)
@@ -215,7 +215,7 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
   }
   func testManagedConversionMatchesLegacyAtNonCatalogIntensity()throws {
-    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,Set(DevelopmentThumbnailEngine.filterOrder).isSubset(of:caps.filters) else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
     let ledger=ThumbnailLedger(),d=try device(),base=try proxy(ledger,d)
     try DevelopmentThumbnailEngine.withContext(ledger:ledger,device:d){context in
       for look in [DevelopmentPhotoFilterV3.vivid,.mono,.noir] {
@@ -239,7 +239,7 @@ final class DevelopmentThumbnailCompactTests:XCTestCase {
     base.surface.retire();XCTAssertEqual(ledger.snapshot().unionBytes,0)
   }
   func testManagedTileRejectsNonfiniteComponentsAndInvalidAlpha()throws {
-    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,caps.filters.count==10 else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
+    let caps=DevelopmentPhotoFilterEngineV3.capabilities();guard let version=caps.resourceVersion,Set(DevelopmentThumbnailEngine.filterOrder).isSubset(of:caps.filters) else{throw XCTSkip("Qualified bundled ten-filter resources unavailable")}
     let d=try device(),r=try request(DevelopmentRecipe(adjustmentsV3:.init()),version:version)
     for bad in [SIMD4<Float>(.nan,0.2,0.3,1),.init(0.1,.infinity,0.3,1),.init(0.1,0.2,0.3,.nan),.init(0.1,0.2,0.3,-0.01),.init(0.1,0.2,0.3,1.01)] {
       try autoreleasepool {

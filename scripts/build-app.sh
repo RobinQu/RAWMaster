@@ -65,12 +65,32 @@ if not catalog.is_file() or catalog.is_symlink() or sha(catalog)!='0a8a0e9aa4fb7
     raise SystemExit('Missing or unverified bundled photo-filter catalog')
 value=json.loads(catalog.read_text());planes=[p for look in value['looks'] for p in look['planes']]
 expected={'catalog-v1.json'}|{p['file'] for p in planes}
-if len(value['looks'])!=9 or len(planes)!=36 or len(expected)!=37 or {p.name for p in root.iterdir()}!=expected:
+if len(value['looks'])!=9 or len(planes)!=36 or len(expected)!=37 or {p.name for p in root.iterdir()}!=expected|{'Spektrafilm'}:
     raise SystemExit('Unexpected photo-filter resource inventory')
 for plane in planes:
     name=plane['file'];path=root/name
     if Path(name).name!=name or path.is_symlink() or not path.is_file() or path.stat().st_size!=plane['byteCount'] or sha(path)!=plane['sha256']:
         raise SystemExit('Photo-filter payload integrity failure: '+name)
+film=root/'Spektrafilm'
+if film.is_symlink() or not film.is_dir():
+    raise SystemExit('Missing film simulation assets')
+film_catalog=film/'catalog-v1.json'
+film_license=film/'SPEKTRAFILM_LICENSE.txt'
+if (film_catalog.is_symlink() or sha(film_catalog)!='4ba7b660e27a22f0d0cbeb2b51792b99575b0999e78726990ca02e3f0c4cc7e6'
+        or film_license.is_symlink() or sha(film_license)!='76d629501783ae52e8d63aee1e054c1e1a9713b9fe7d36fb306e25b1d14b24e9'):
+    raise SystemExit('Unverified film simulation catalog or upstream license')
+film_manifest=json.loads(film_catalog.read_text())
+film_files={'catalog-v1.json','SPEKTRAFILM_LICENSE.txt','CHANGELOG.txt','provenance.json'}
+if sha(film/'provenance.json')!=film_manifest['sourceBindingsSHA256'] or sha(film/'CHANGELOG.txt')!='ce51d4e4fcd8d82770fb6110f4d8b0d229cc87211a6b6ce8deec0cdab4904edf':
+    raise SystemExit('Missing film simulation attribution or provenance')
+for look in film_manifest['looks']:
+    plane,=look['planes']
+    path=film/plane['file']
+    if path.name!=plane['file'] or path.stat().st_size!=plane['byteCount'] or sha(path)!=plane['sha256']:
+        raise SystemExit('Film LUT failed integrity verification: '+path.name)
+    film_files.add(path.name)
+if {p.name for p in film.iterdir()}!=film_files or any(p.is_symlink() or not p.is_file() for p in film.iterdir()):
+    raise SystemExit('Unexpected film simulation resource inventory')
 photo_denoise = root.parent / 'PhotoDenoise'
 model = photo_denoise / 'PhotoVGG7.f32'
 if model.is_symlink() or not model.is_file() or sha(model) != '5e999f1d9b9fcaed0cc06e2cf1bcdecac32bf28246909a5f7d927a5b22d764b5':
