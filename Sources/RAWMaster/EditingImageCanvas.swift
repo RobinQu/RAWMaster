@@ -408,8 +408,8 @@ struct EditingImageCanvas: View {
                     PhotosCropCanvas(editing: editing, context: context, transform: $transform).id(context)
                 } else if localInput.tool != nil, editing.stage == .development, let context = editing.developmentContext {
                     PhotosLocalEditingCanvas(editing: editing, input: localInput, context: context, transform: $transform).id(context)
-                } else if maskInput.usesCanvas, editing.stage == .development, let context = editing.developmentContext {
-                    PhotosMaskEditingCanvas(editing: editing, input: editing.developmentMaskInput, context: context, transform: $transform).id(context)
+                } else if let owner = maskInput.canvasOwner {
+                    PhotosMaskEditingCanvas(editing: editing, input: maskInput, owner: owner, transform: $transform).id(owner)
                 } else {
                     comparisonCanvas
                         .overlay {

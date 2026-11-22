@@ -100,6 +100,10 @@ public actor DevelopmentSemanticMaskService {
   }
   private var recent: [(intent: Intent, candidate: DevelopmentMaskCandidate)] = []
   private(set) var exactCacheHits = 0
+  private var successfulGenerations = 0
+  public var candidateCounts: (exactCacheHits: Int, successfulGenerations: Int) {
+    (exactCacheHits, successfulGenerations)
+  }
   var cachedCandidateCount: Int { recent.count }
   var retainsAnalysisResources: Bool { image != nil || instances != nil || client.hasLoadedModels }
   var cachedCoverageBytes: Int { recent.reduce(0) { $0 + $1.candidate.bitmap.values.count } }
@@ -212,6 +216,7 @@ public actor DevelopmentSemanticMaskService {
       modelHashes: intent.hashes, prompt: prompt)
     return try stop.whileActive {
       if target != .brush {
+        successfulGenerations += 1
         recent.append((intent, result))
         while recent.count > Self.maximumEntries || cachedCoverageBytes > Self.maximumCoverageBytes
         { recent.removeFirst() }

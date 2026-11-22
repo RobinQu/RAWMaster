@@ -62,10 +62,34 @@ private actor MaskCompletionGate {
         input.cancel()
         editing.undoDevelopment(context:context); XCTAssertTrue(editing.developmentSession.parameters.masks.isEmpty)
         editing.undoDevelopment(context:context,redo:true); XCTAssertEqual(editing.developmentSession.parameters.masks,[layer])
+        var exposed = layer
+        exposed.adjustments.exposure = 0.4
+        try editing.developmentSession.apply(.setMasks([exposed]), event: .init(context: context,
+            control: .init(group: nil, name: "蒙版曝光"), nativeInput: .capture(control: "mask.exposure", phase: "discrete", nativeEvent: true)))
         await editing.shutdown()
         let disk = try LibraryStore(databaseURL:f.library)
         let persisted = try XCTUnwrap(disk.loadPhotoWorks(assetID:f.assets[0].id).first?.liveRecipe?.adjustmentsV3?.masks.first)
         XCTAssertEqual(try DevelopmentMaskBitmap(layer:persisted).values[20*120+30],255)
+        var exportRecord: [String: Any] = [:]
+        try await EditingInteractionPerformanceTests.exportReopenedMask(library: f.library, workID: context.workID,
+            layer: exposed, output: f.root, report: &exportRecord)
+        XCTAssertEqual((exportRecord["export"] as? [String: Any])?["bitsPerComponent"] as? Int, 16)
+        if let output = ProcessInfo.processInfo.environment["RAWMASTER_MASK_FIXTURE_EVIDENCE"] {
+            let directory = URL(fileURLWithPath: output)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: false)
+            let original = try disk.photoWork(id: context.workID).source.sourceLocation
+            try FileManager.default.copyItem(at: original, to: directory.appending(path: "input.png"))
+            try XCTUnwrap(exposed.subjectPNG).write(to: directory.appending(path: "frozen-mask.png"), options: .withoutOverwriting)
+            for name in ["reopened-subject.tiff", "disabled-layer-control.tiff", "same-renderer-zero-coverage.tiff"] {
+                let image = f.root.appending(path: name)
+                if FileManager.default.fileExists(atPath: image.path) {
+                    try FileManager.default.copyItem(at: image, to: directory.appending(path: name))
+                }
+            }
+            exportRecord["sourceSHA256"] = try DevelopmentSemanticMaskSnapshot.digest(Data(contentsOf: original))
+            let json = try JSONSerialization.data(withJSONObject: exportRecord, options: [.prettyPrinted, .sortedKeys])
+            try json.write(to: directory.appending(path: "measurements.json"), options: .withoutOverwriting)
+        }
     }
 
     func testOriginalHoldAndComparisonOwnCanvasAcrossLateResultsAndRestoration() async throws {

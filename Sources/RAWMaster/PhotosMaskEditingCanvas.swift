@@ -5,7 +5,8 @@ import RAWMasterImaging
 struct PhotosMaskEditingCanvas: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var input: EditingMaskInputSession
-    let context: EditingInteractionContext
+    let owner: EditingMaskInputSession.CanvasOwner
+    private var context: EditingInteractionContext { owner.context }
     @Binding var transform: ImageTransform
     @State private var overlay: CGImage?
     @State private var overlayGeometry: DevelopmentGeometryMappingV3?
@@ -15,15 +16,17 @@ struct PhotosMaskEditingCanvas: View {
         let visible: Bool
     }
     var body: some View {
-        let frame = editing.developmentLocalFrame(context:context)
+        let frame = input.canvasOwner == owner ? editing.developmentLocalFrame(context:context) : nil
         let overlayKey = OverlayKey(revision:input.overlayRevision,mapping:frame?.mapping,visible:input.candidate != nil && input.showsOverlay)
         ZStack {
             ZoomableImageView(image:editing.preview,actualPixels:editing.actualPixels && editing.previews.primary.frame?.quality == .detail,
-                transform:.init(get:{transform},set:{if editing.developmentContext == context { transform = $0 }}),
+                transform:.init(get:{transform},set:{if input.canvasOwner == owner { transform = $0 }}),
                 backgroundColor:editing.darkroomBackground.nsColor,
-                onActualPixelsChange:{editing.setActualPixels($0,nativeEvent:true)},onRequestDetail:{editing.requestDetailPreview(nativeEvent:true)},
-                frameID:editing.previews.primary.frame?.id,onFrameDrawn:{editing.previews.primary.didDraw($0)},
-                onPointerEvent:{input.pointer($0,context:context)},onViewportChange:{input.updateViewport($0,context:context)})
+                onActualPixelsChange:{if input.canvasOwner == owner { editing.setActualPixels($0,nativeEvent:true) }},
+                onRequestDetail:{if input.canvasOwner == owner { editing.requestDetailPreview(nativeEvent:true) }},
+                frameID:editing.previews.primary.frame?.id,onFrameDrawn:{if input.canvasOwner == owner { editing.previews.primary.didDraw($0) }},
+                onPointerEvent:{input.canvasOwner == owner && input.pointer($0,context:context)},
+                onViewportChange:{input.canvasViewportChanged($0,owner:owner)})
             if let frame, let viewport = input.viewport, viewport.frameID == frame.frameID {
                 Canvas { graphics,size in
                     guard viewport.viewportSize == size else { return }
@@ -53,6 +56,6 @@ struct PhotosMaskEditingCanvas: View {
             let result = await withTaskCancellationHandler { try? await work.value } onCancel: { work.cancel() }
             if !Task.isCancelled { overlay = result; overlayGeometry = mapping }
         }
-        .onDisappear { if editing.developmentContext == context { input.cancel() } }
+        .onDisappear { input.canvasDidDisappear(owner) }
     }
 }

@@ -5,6 +5,12 @@ import RAWMasterImaging
 
 @MainActor final class EditingMaskInputSession: ObservableObject {
     enum Brush { case add, subtract }
+    struct CanvasOwner: Hashable {
+        let context: EditingInteractionContext
+        fileprivate let generation: UUID
+    }
+    // A point/box interaction keeps its canvas across detector and segmentation jobs.
+    private var canvasGeneration = UUID()
     private weak var editing: EditingController?
     typealias Generate = @Sendable (URL, DevelopmentLocalEditSourceBinding, DevelopmentSemanticTarget, [DevelopmentSourcePoint]) async throws -> DevelopmentMaskCandidate
     typealias Install = @Sendable (DevelopmentMaskModelPack.Component, URL) async throws -> Void
@@ -30,6 +36,7 @@ import RAWMasterImaging
     private(set) var original: DevelopmentMaskLayerV3?
     private var gesture: UUID?
     private var frame: EditingDevelopmentLocalFrame?
+    private var viewportUpdate: Task<Void, Never>?
     private var ticket: (id:UUID, context:EditingInteractionContext, revision:UUID)?
     private var task: Task<Void,Never>?
     private var beforeStroke: DevelopmentMaskBitmap?
@@ -45,6 +52,18 @@ import RAWMasterImaging
         self.service = service
         generateCandidate = generate ?? { try await service.generate(capture:$0, source:$1, target:$2, prompt:$3) }
     }
+    func candidateCounts() async -> (exactCacheHits: Int, successfulGenerations: Int) {
+        await service.candidateCounts
+    }
+
+    var canvasOwner: CanvasOwner? {
+        guard usesCanvas, let context = editing?.developmentContext, allowsInput(context) else { return nil }
+        return CanvasOwner(context: context, generation: canvasGeneration)
+    }
+    func canvasDidDisappear(_ owner: CanvasOwner) {
+        guard owner.generation == canvasGeneration, owner.context == editing?.developmentContext else { return }
+        cancel()
+    }
     func presetCandidate(capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget) async throws -> DevelopmentMaskCandidate {
         guard [.subject,.background,.sky,.water].contains(target) else { throw DevelopmentMaskError.invalidPrompt }
         return try await generateCandidate(capture,source,target,[])
@@ -57,12 +76,14 @@ import RAWMasterImaging
         cancel(); activeKind = kind == .range || kind == .subject ? nil : kind
     }
     func cancel() {
+        canvasGeneration = UUID()
+        viewportUpdate?.cancel(); viewportUpdate = nil
         task?.cancel(); task = nil; ticket = nil; busy = false; note = nil
         activeKind = nil; selecting = nil; instanceOptions = []; brush = nil; candidate = nil; original = nil; changed = false
-        resetPointer()
+        resetPointer(); viewport = nil
     }
     func release() {
-        cancel(); viewport = nil
+        cancel()
         let service = service
         Task { await service.release() }
     }
@@ -178,9 +199,18 @@ import RAWMasterImaging
         if let beforeStroke { candidate?.bitmap = beforeStroke; overlayRevision = UUID() }
         resetPointer()
     }
+    func canvasViewportChanged(_ value: ImageCanvasViewportSnapshot, owner: CanvasOwner) {
+        guard canvasOwner == owner else { return }
+        // AppKit can report geometry during updateNSView. Publish the latest measurement after that update.
+        viewportUpdate?.cancel()
+        viewportUpdate = Task { [weak self] in
+            guard let self, !Task.isCancelled, canvasOwner == owner else { return }
+            updateViewport(value, context: owner.context)
+        }
+    }
     func updateViewport(_ value: ImageCanvasViewportSnapshot, context: EditingInteractionContext) {
-        guard allowsInput(context) else { return }
-        if let viewport, viewport != value { cancelStroke() }
+        guard allowsInput(context), viewport != value else { return }
+        if viewport != nil { cancelStroke() }
         viewport = value
     }
     private func point(_ event: ImageCanvasPointerEvent, frame: EditingDevelopmentLocalFrame) throws -> DevelopmentSourcePoint {
@@ -204,6 +234,7 @@ import RAWMasterImaging
             switch event.phase {
             case .began:
                 guard start == nil, event.beganFrameID == presented.frameID, event.viewport.frameID == presented.frameID else { return true }
+                viewportUpdate?.cancel()
                 gesture = event.gestureID; frame = presented; viewport = event.viewport; start = p; current = p
                 if brush != nil { beforeStroke = candidate?.bitmap; paint(p,p) }
             case .changed, .ended:
