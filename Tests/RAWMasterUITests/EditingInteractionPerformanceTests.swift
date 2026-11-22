@@ -29,6 +29,63 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             "maxMs": sorted[sorted.count - 1], "samplesMs": values]
     }
 
+    @MainActor private func comparePresetWithManualExposure(
+        editing: EditingController, context: EditingInteractionContext
+    ) async throws -> [String: Any] {
+        let session = editing.developmentSession
+        let baseline = session.recipe
+        var samples = ["preset": [Double](), "manual": [Double]()]
+        var exposureValues: [Double] = []
+        for pair in 0...30 {
+            let target = 0.12 + Double(pair) * 0.005
+            exposureValues.append(target)
+            var patch = DevelopmentPresetPatch()
+            patch.exposure = target
+            let preset = DevelopmentPresetRecord(id: "qa-exposure", name: "曝光", group: "QA", kind: .user, patch: patch)
+            let order = pair.isMultiple(of: 2) ? ["preset", "manual"] : ["manual", "preset"]
+            var firstRecipe: DevelopmentRecipe?
+            for path in order {
+                XCTAssertEqual(session.recipe, baseline)
+                let started = DispatchTime.now().uptimeNanoseconds
+                if path == "preset" {
+                    try session.adoptPreset(preset, context: context, revision: session.revision)
+                } else {
+                    var light = session.parameters.light
+                    light.enabled = true
+                    light.exposure = target
+                    try session.apply(.setParameters(.light(light)), event: .init(context: context,
+                        control: .init(group: .light, name: "曝光"),
+                        nativeInput: .capture(control: "light.exposure", phase: "discrete", nativeEvent: true)))
+                }
+                try await wait("settled draw for " + path, seconds: 60) {
+                    editing.previews.primary.frameRecipe == session.recipe &&
+                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
+                }
+                samples[path, default: []].append(Double(DispatchTime.now().uptimeNanoseconds - started) / 1_000_000)
+                if let firstRecipe { XCTAssertEqual(session.recipe, firstRecipe) } else { firstRecipe = session.recipe }
+                try session.undo(context: context)
+                try await wait("restore matched baseline", seconds: 60) {
+                    session.recipe == baseline && editing.previews.primary.frameRecipe == baseline &&
+                        editing.previews.primary.frame?.quality == .settled && editing.previews.primary.currentFrameWasDrawn
+                }
+            }
+        }
+        var result: [String: Any] = ["order": "alternating AB/BA", "exposureValues": exposureValues,
+            "boundary": "discrete edit to accepted settled canvas draw return", "firstPair": "warm-up"]
+        var p95: [String: Double] = [:]
+        for path in ["preset", "manual"] {
+            let series = try XCTUnwrap(samples[path])
+            let warm = statistics(Array(series.dropFirst()))
+            result[path] = ["firstMs": try XCTUnwrap(series.first), "warm": warm] as [String: Any]
+            p95[path] = try XCTUnwrap(warm["p95Ms"] as? Double)
+        }
+        let presetP95 = try XCTUnwrap(p95["preset"])
+        let manualP95 = try XCTUnwrap(p95["manual"])
+        result["passes"] = presetP95 <= manualP95
+        XCTAssertLessThanOrEqual(presetP95, manualP95, "031 SC-02 same-source discrete exposure")
+        return result
+    }
+
     @MainActor func testOptInRealRAWCompoundEditingCanvasPerformance() async throws {
         let environment = ProcessInfo.processInfo.environment
         guard environment["RAWMASTER_EDITING_PERF"] == "1",
@@ -71,8 +128,9 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let store = prepared.0, asset = prepared.1
         let defaults = try XCTUnwrap(UserDefaults(suiteName: "EditingPerformance-" + UUID().uuidString))
         let filterOnly = environment["RAWMASTER_EDITING_PERF_FILTER_ONLY"] == "1"
+        let pairedPreset = environment["RAWMASTER_EDITING_PERF_PRESET_PAIR"] == "1"
         let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0,
-            rawBaseCacheBytes: filterOnly ? 1_073_741_824 : 0, interactiveEvaluation: .proxyV1))
+            rawBaseCacheBytes: filterOnly || pairedPreset ? 1_073_741_824 : 0, interactiveEvaluation: .proxyV1))
         let backend = SharedEditingPreviewBackend(service: service)
         let editing = try EditingController(store: store, libraryURL: library, defaults: defaults, previewBackend: backend)
         let appModel = AppModel(libraryURL: library, defaults: defaults)
@@ -143,7 +201,11 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                         .setParameters(.filter(.init(enabled: true, selection: .vivid, intensity: 50)))]
                 })
             ]
-            let cases = filterOnly ? filterCases : standardCases
+            if pairedPreset {
+                report["protocol"] = "031-discrete-preset-manual-settled-v1"
+                report["pairedExposure"] = try await comparePresetWithManualExposure(editing: editing, context: context)
+            }
+            let cases = pairedPreset ? [] : (filterOnly ? filterCases : standardCases)
             var allInteractive: [Double] = [], coldInteractive: [Double] = [], warmInteractive: [Double] = []
             for (label, count, makeCommands) in cases {
                 var interactive: [Double] = [], settled: [Double] = []

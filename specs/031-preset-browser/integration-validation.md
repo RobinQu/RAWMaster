@@ -6,6 +6,8 @@
 
 基础编辑负责人交付其已对齐的范围、对应提交或可重建的源码快照、已知例外、渲染和性能报告后，记录引擎及两项功能的修订。把**功能增量**应用到该版本，保留对方对色彩、几何、预览、导出和缓存的改动。对于尚未对齐的基础算子，只能按已实测范围签收。智能修图的场景卡和生成队列留给后续 030。[项目顺序](../../docs/planning/24-mask-preset-retouch-roadmap.md) · [030 交接](../030-ai-retouching/handoff.md)
 
+蒙版开发版的 RAW 分析取 CIRAWFilter 已定向的中性 sRGB 图，长边 1,536 像素。合入采用 FlashRaw 的引擎时，要用相同原件对照方向、有效区域和裁切，逐张记录分析前缀和重复解码次数。只有缓存身份与像素空间一致才可复用引擎的分析图。既有蒙版回放直接读取冻结结果。[编辑器功能证据](../027-mask-ai-raw-integration/editor-validation.md)
+
 ## 接收、对照与记录
 
 | 步骤 | 操作与证据 | 判定 |
@@ -17,3 +19,18 @@
 | 5. 签收 | QA 保存输入/输出 SHA、日志、原始计时数组、操作计数、截图或失败样张。对每条已测路径填构建、环境、覆盖与结果，给未过项分配责任与复测条件 | 基础编辑、预设、蒙版三个负责人核认同一构建。Lightroom 实机回读、VoiceOver、真实摄影师走查及高级 Profile/景深逐项单列 |
 
 028 历史实测的暖窗口 p50/p95 为 27.367/34.061 ms。027 独立服务的主体冷创建/快照命中为 1,621.93/1.93 ms。两组测量的边界与测试对象不同，联合签收须记录新版本的实际值。[窗口基线](../028-filter-experience/validation.md) · [蒙版基线](../027-mask-ai-raw-integration/service-validation.md)
+
+## 对齐版本上的 Release 测量入口
+
+Classic Filters 沿用 028 的 `RAWMASTER_EDITING_PERF_FILTER_ONLY=1` 窗口协议。031 的普通预设另以 `RAWMASTER_EDITING_PERF_PRESET_PAIR=1` 运行同一原生画布。在每一对测量中分别通过真实预设采用和手工曝光命令写入相同值，等待已接受的 settled 帧绘制完成，再 Undo 回到同一基线。交替交换两条路径的顺序，保存首对样本、30 对暖样本、两侧 p95、每轮配方一致性和源文件前后 SHA。该计时边界从离散采用到 settled 绘制返回。[028 的输入、环境变量与原始运行方法](../028-filter-experience/validation.md)
+
+```sh
+RAWMASTER_EDITING_PERF=1 RAWMASTER_EDITING_PERF_PRESET_PAIR=1 \
+RAWMASTER_EDITING_PERF_SOURCE="$PWD/output/performance/acr-benchmark.ARW" \
+RAWMASTER_EDITING_PERF_OUTPUT="$PWD/output/performance/preset-paired-$(date +%Y%m%d-%H%M%S)" \
+RAWMASTER_LIGHTFLOW_REFERENCE="$PWD/output/lightflow-research/same-size-runtime.json" \
+swift test -c release --test-product RAWMasterUITests \
+  --filter EditingInteractionPerformanceTests/testOptInRealRAWCompoundEditingCanvasPerformance
+```
+
+同一次集成登记还需附 027 在编辑器中的输入、采用、重开与导出结果。独立的 `PerformanceAcceptanceTests` 复测只作为服务对照，使用副本运行以保存旧基线。
