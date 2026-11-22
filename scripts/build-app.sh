@@ -6,11 +6,25 @@ if [[ "$configuration" != "release" && "$configuration" != "debug" ]]; then
   print -u2 'Usage: scripts/build-app.sh [release|debug]'
   exit 2
 fi
+flashraw_source="${FLASHRAW_SOURCE_DIR:-$PWD/output/tools/flashraw-src}"
+flashraw_target="${FLASHRAW_TARGET_DIR:-$PWD/output/tools/flashraw-target}"
+flashraw_library="${FLASHRAW_LIBRARY:-$flashraw_target/release/libflashraw_capi.dylib}"
+if [[ ! -f "$flashraw_library" && -z "${FLASHRAW_LIBRARY:-}" ]]; then
+  ./scripts/build-flashraw.sh
+fi
+if [[ ! -f "$flashraw_library" || ! -f "$flashraw_source/LICENSE-MIT" || ! -f "$flashraw_source/LICENSE-APACHE" ]]; then
+  print -u2 "Missing FlashRaw library or licenses. Set FLASHRAW_LIBRARY and FLASHRAW_SOURCE_DIR for an external build."
+  exit 1
+fi
 swift build --configuration "$configuration" --jobs 4
 binary_dir="$(swift build --configuration "$configuration" --show-bin-path)"
 app="$PWD/output/RAWMaster.app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary_dir/RAWMaster" "$app/Contents/MacOS/RAWMaster"
+depth_resources="$app/Contents/Resources/SceneDepth"
+python3 scripts/build-depth-model.py --destination "$depth_resources"
+cp "$flashraw_source/LICENSE-APACHE" "$depth_resources/LICENSE-Apache-2.0.txt"
+cp scripts/licenses/SceneDepth-NOTICE.txt "$depth_resources/NOTICE.txt"
 ai_resources="$binary_dir/RAWMaster_RAWMasterAI.bundle"
 if [[ ! -d "$ai_resources" ]]; then
   print -u2 "Missing AI runtime resources: $ai_resources"
@@ -52,14 +66,9 @@ rm -rf "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
 cp -R "$imaging_resources" "$app/Contents/Resources/"
 verify_photo_filter_resources "$app/Contents/Resources/RAWMaster_RAWMasterImaging.bundle"
 
-flashraw_library="${FLASHRAW_LIBRARY:-$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib}"
-if [[ ! -f "$flashraw_library" ]]; then
-  print -u2 "Missing FlashRaw C ABI library. Set FLASHRAW_LIBRARY to a gpu-enabled libflashraw_capi.dylib."
-  exit 1
-fi
 mkdir -p "$app/Contents/Resources/FlashRaw"
 cp "$flashraw_library" "$app/Contents/Resources/FlashRaw/libflashraw_capi.dylib"
-cp "$PWD/output/tools/flashraw-src/LICENSE-MIT" "$PWD/output/tools/flashraw-src/LICENSE-APACHE" "$app/Contents/Resources/FlashRaw/"
+cp "$flashraw_source/LICENSE-MIT" "$flashraw_source/LICENSE-APACHE" "$app/Contents/Resources/FlashRaw/"
 
 runtime_artifacts="${RAWMASTER_RUNTIME_ARTIFACTS_DIR:-$PWD/output/runtime-artifacts}"
 # Runtime executables stay inside a data archive until the native installer has

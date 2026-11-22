@@ -1,0 +1,98 @@
+{
+  "zone": {
+    "regionsXYXY": {
+      "nearBoat": [
+        217,
+        331,
+        336,
+        409
+      ],
+      "mountain": [
+        190,
+        58,
+        710,
+        260
+      ]
+    },
+    "pairedMeanAbsRGB8": 9.746,
+    "lowPairedMeanAbsRGB8": 4.539,
+    "source": {
+      "meanMaxMinusMinRGB8": 60.354,
+      "nearBoat": 1.0,
+      "mountain": 1.0
+    },
+    "grade": {
+      "meanMaxMinusMinRGB8": 0.0,
+      "nearBoat": 1.0,
+      "mountain": 0.9999
+    },
+    "base": {
+      "meanMaxMinusMinRGB8": 52.999,
+      "nearBoat": 0.3451,
+      "mountain": 0.3584
+    },
+    "with-lora": {
+      "meanMaxMinusMinRGB8": 48.856,
+      "nearBoat": 0.2977,
+      "mountain": 0.3429
+    },
+    "base-low": {
+      "meanMaxMinusMinRGB8": 58.501,
+      "nearBoat": 0.5592,
+      "mountain": 0.5474
+    },
+    "with-lora-low": {
+      "meanMaxMinusMinRGB8": 57.665,
+      "nearBoat": 0.5857,
+      "mountain": 0.5499
+    }
+  },
+  "neon": {
+    "regionsXYXY": {
+      "trainAndBridge": [
+        125,
+        145,
+        531,
+        207
+      ],
+      "cyclist": [
+        470,
+        245,
+        565,
+        380
+      ]
+    },
+    "pairedMeanAbsRGB8": 9.563,
+    "lowPairedMeanAbsRGB8": 4.092,
+    "source": {
+      "meanMaxMinusMinRGB8": 99.775,
+      "trainAndBridge": 1.0,
+      "cyclist": 1.0
+    },
+    "grade": {
+      "meanMaxMinusMinRGB8": 107.37,
+      "trainAndBridge": 0.9998,
+      "cyclist": 0.9998
+    },
+    "base": {
+      "meanMaxMinusMinRGB8": 101.5,
+      "trainAndBridge": 0.1844,
+      "cyclist": 0.348
+    },
+    "with-lora": {
+      "meanMaxMinusMinRGB8": 103.095,
+      "trainAndBridge": 0.1779,
+      "cyclist": 0.3874
+    },
+    "base-low": {
+      "meanMaxMinusMinRGB8": 102.055,
+      "trainAndBridge": 0.408,
+      "cyclist": 0.5149
+    },
+    "with-lora-low": {
+      "meanMaxMinusMinRGB8": 102.02,
+      "trainAndBridge": 0.3912,
+      "cyclist": 0.5165
+    }
+  }
+}

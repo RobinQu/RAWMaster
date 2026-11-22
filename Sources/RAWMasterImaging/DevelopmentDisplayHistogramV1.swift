@@ -2,19 +2,32 @@ import Foundation
 import CoreImage
 import RAWMasterCore
 
-/// Sampled display luminance only. This DTO cannot supply RGB/scalars to automatic adjustments.
+/// Sampled display RGB and luminance. This DTO cannot supply scalars to automatic adjustments.
 public struct DevelopmentDisplayHistogramV1: Equatable, Sendable {
-  public static let samplingVersion = "display-tile16-v1"
+  public static let samplingVersion = "display-tile16-rgb-v3-hue-saturation"
+  public static let hueBins = 72, saturationBins = 33
   public let luminance:[UInt64]
+  public let red,green,blue:[UInt64]
+  /// Row-major hue/saturation counts from the same visible pixels as the RGB histogram.
+  public let chroma: [UInt32]
   public let visibleSamples,transparentSamples:Int
   public let sampledSize:DevelopmentPixelSize
-  public init(luminance:[UInt64],visibleSamples:Int,transparentSamples:Int,sampledSize:DevelopmentPixelSize) {
-    self.luminance=luminance;self.visibleSamples=visibleSamples;self.transparentSamples=transparentSamples;self.sampledSize=sampledSize
+  public init(luminance:[UInt64],visibleSamples:Int,transparentSamples:Int,sampledSize:DevelopmentPixelSize,
+              red:[UInt64]=[],green:[UInt64]=[],blue:[UInt64]=[],chroma:[UInt32]=[]) {
+    self.luminance=luminance;self.red=red;self.green=green;self.blue=blue
+    self.chroma = chroma
+    self.visibleSamples=visibleSamples;self.transparentSamples=transparentSamples;self.sampledSize=sampledSize
   }
   func validate()throws {
-    guard (1...128).contains(sampledSize.width),(1...128).contains(sampledSize.height),luminance.count==256,
+    let channels=[red,green,blue]
+    let validChannels=channels.allSatisfy(\.isEmpty) || channels.allSatisfy {
+      $0.count==256 && $0.allSatisfy{$0<=UInt64(max(0,visibleSamples))} && $0.reduce(0,+)==UInt64(max(0,visibleSamples))
+    }
+    let validChroma = chroma.isEmpty || (chroma.count == Self.hueBins * Self.saturationBins &&
+      chroma.reduce(UInt64(0)) { $0 + UInt64($1) } == UInt64(max(0, visibleSamples)))
+    guard validChroma,(1...128).contains(sampledSize.width),(1...128).contains(sampledSize.height),luminance.count==256,
       visibleSamples>=0,transparentSamples>=0,visibleSamples<=16384,transparentSamples<=16384,
-      visibleSamples+transparentSamples==sampledSize.width*sampledSize.height,
+      visibleSamples+transparentSamples==sampledSize.width*sampledSize.height,validChannels,
       luminance.allSatisfy({$0<=UInt64(visibleSamples)}),luminance.reduce(0,+)==UInt64(visibleSamples) else {throw DevelopmentPreviewError.invalidRequest}
   }
 }
@@ -69,17 +82,31 @@ enum DevelopmentDisplayHistogramEngineV1 {
     guard pixels.allSatisfy(\.isFinite)else{throw DevelopmentError.invalidEncoding}
     return .init(rgba:pixels,width:width,height:height)
   }
-  static func histogram(_ pixels:ProxyPixels)throws->DevelopmentDisplayHistogramV1 {
+  static func histogram(_ pixels:ProxyPixels, coverage: ProxyPixels? = nil)throws->DevelopmentDisplayHistogramV1 {
     guard (1...128).contains(pixels.width),(1...128).contains(pixels.height),pixels.rgba.count==pixels.width*pixels.height*4 else {throw DevelopmentPreviewError.invalidRequest}
-    var bins=[UInt64](repeating:0,count:256),visible=0,transparent=0
+    if let coverage, coverage.width != pixels.width || coverage.height != pixels.height || coverage.rgba.count != pixels.rgba.count {
+      throw DevelopmentPreviewError.invalidRequest
+    }
+    var bins=[UInt64](repeating:0,count:256),red=bins,green=bins,blue=bins,visible=0,transparent=0
+    let hues = DevelopmentDisplayHistogramV1.hueBins, saturations = DevelopmentDisplayHistogramV1.saturationBins
+    var chroma = [UInt32](repeating: 0, count: hues * saturations)
     for i in 0..<(pixels.width*pixels.height) {
       let n=i*4;guard (0..<4).allSatisfy({pixels.rgba[n+$0].isFinite})else{throw DevelopmentError.invalidEncoding}
+      if let coverage, coverage.rgba[n+3] <= 0 { transparent += 1; continue }
       let alpha=Double(pixels.rgba[n+3]);if alpha<=0{transparent+=1;continue}
       let c=SIMD3(Double(pixels.rgba[n]),Double(pixels.rgba[n+1]),Double(pixels.rgba[n+2]))/alpha
-      let y=DevelopmentColorEngineV2.encode(DevelopmentColorEngineV2.luma(c))
-      bins[Int((min(1,max(0,y))*255).rounded(.down))]+=1;visible+=1
+      func encoded(_ value: Double) -> Double { min(1, max(0, DevelopmentColorEngineV2.encode(value))) }
+      let rgb = SIMD3(encoded(c.x), encoded(c.y), encoded(c.z))
+      red[Int(rgb.x * 255)] += 1; green[Int(rgb.y * 255)] += 1; blue[Int(rgb.z * 255)] += 1
+      bins[Int(encoded(DevelopmentColorEngineV2.luma(c)) * 255)] += 1; visible += 1
+      let high = max(rgb.x, rgb.y, rgb.z), low = min(rgb.x, rgb.y, rgb.z)
+      let saturation = high > 0 ? (high - low) / high : 0
+      let h = Int((DevelopmentGlobalEngineV3.hue(rgb) * Double(hues)).rounded()) % hues
+      let s = Int((saturation * Double(saturations - 1)).rounded())
+      chroma[s * hues + h] += 1
     }
-    let value=DevelopmentDisplayHistogramV1(luminance:bins,visibleSamples:visible,transparentSamples:transparent,sampledSize:.init(width:pixels.width,height:pixels.height))
+    let value=DevelopmentDisplayHistogramV1(luminance:bins,visibleSamples:visible,transparentSamples:transparent,
+      sampledSize:.init(width:pixels.width,height:pixels.height),red:red,green:green,blue:blue,chroma:chroma)
     try value.validate();return value
   }
   static func run(capture:URL,request:DevelopmentAnalysisRequest,sourceBinding:DevelopmentLocalEditSourceBinding,memoryHint:Int,
@@ -97,9 +124,18 @@ enum DevelopmentDisplayHistogramEngineV1 {
     else {
       let context=CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryHint])
       defer{context.clearCaches()}
-      let graph=try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,checkCancellation:{try check(cancellation)})
+      let selected = request.operation.scopeMaskID.flatMap { id in sampling.adjustmentsV3?.masks.first { $0.id == id } }
+      let scopeSelection = selected.map(DevelopmentMaskEngineV3.ScopeSelection.init)
+      let graph=try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,scopeSelection:scopeSelection,checkCancellation:{try check(cancellation)})
       let pixels=try renderProxy(graph.image,roi:request.roi,context:context,checkCancellation:{try check(cancellation)})
-      value=try histogram(pixels)
+      var coverage: ProxyPixels?
+      if let scopeSelection {
+        guard let mask = scopeSelection.coverage, mask.extent == graph.image.extent else { throw DevelopmentV3Error.invalidGraph }
+        // Read the mask on its own sampling grid, so later color transforms and feathered
+        // premultiplication cannot change membership or bias the displayed pixel color.
+        coverage = try renderProxy(mask,roi:request.roi,context:context,checkCancellation:{try check(cancellation)})
+      }
+      value=try histogram(pixels, coverage: coverage)
       try check(cancellation);try sourceAuthority();try check(cancellation)
       cache = .init(key:key,value:value)
     }

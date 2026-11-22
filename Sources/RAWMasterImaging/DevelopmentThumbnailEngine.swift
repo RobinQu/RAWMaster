@@ -62,7 +62,7 @@ final class ThumbnailProxy: @unchecked Sendable {
 }
 /// All operations are invoked by the SAME Service native worker, one step then priority repump.
 enum DevelopmentThumbnailEngine {
-  static let version="rawmaster-thumbnail-compact-v3/linear-premul256/prefix-unbaked/source-scale-suffix/native-geometry/filter-v1/raw-nextup-alpha-roundoff-v1/adaptive-brilliance-illustrative-only-v1"
+  static let version="rawmaster-thumbnail-compact-v3/linear-premul256/prefix-unbaked/source-scale-suffix/native-geometry/filter-v2-global-stage/integral-noise-snap-v1/raw-nextup-alpha-roundoff-v1/adaptive-brilliance-illustrative-only-v1"
   static let filterOrder:[DevelopmentPhotoFilterV3]=[.original,.vivid,.vividWarm,.vividCool,.dramatic,.dramaticWarm,.dramaticCool,.mono,.silvertone,.noir]
   /// BW summary candidates replace the whole BW group via the existing resolver.
   /// Only their preparation input may omit that group; request identity stays original.
@@ -75,7 +75,7 @@ enum DevelopmentThumbnailEngine {
   static func checkSupport(_ recipe:DevelopmentRecipe,sourceIsRAW:Bool = false)throws {
     guard recipe.adjustmentsV3 != nil else{throw DevelopmentThumbnailError.unsupportedGraph}
     var supportRecipe=recipe
-    // Support projection ONLY: the actual filter is applied below, never removed from pixels.
+    // Support projection ONLY: the shared suffix still applies the actual filter to pixels.
     supportRecipe.adjustmentsV3!.filter = .init()
     // Thumbnails are already a separate approximation contract. Permit the new operator
     // here only; withSuffix explicitly computes it on this compact input, never main pixels.
@@ -96,11 +96,11 @@ enum DevelopmentThumbnailEngine {
   /// Compact extent throughout; no view is stretched back to native dimensions.
   /// The scoped body may return owned output/scalars, never its borrowed CI graph.
   static func withSuffix<T>(_ recipe:DevelopmentRecipe,proxy:ThumbnailProxy,context:CIContext,geometry:Bool,
-                            ledger:ThumbnailLedger? = nil,expectedResourceVersion:String? = nil,maximumPixel:Int = 256,diagnostic:DevelopmentThumbnailDiagnostic.Callback? = nil,_ body:(CIImage)throws->T)throws->T {
+                            ledger:ThumbnailLedger? = nil,expectedResourceVersion:String? = nil,maximumPixel:Int = 256,deferValidation:Bool = false,diagnostic:DevelopmentThumbnailDiagnostic.Callback? = nil,_ body:(CIImage)throws->T)throws->T {
     try checkSupport(recipe,sourceIsRAW:proxy.sourceIsRAW);let p=recipe.adjustmentsV3!
     let filter=p.filter,active=filter.enabled && filter.selection != .original && filter.intensity != 0
     var tickets=[ThumbnailTicket](),held:DevelopmentPhotoFilterResourceStore.Pair?
-    defer{context.clearCaches();if active{DevelopmentPhotoFilterResourceStore.shared.trimReady()};held=nil;for t in tickets{t.release()}}
+    defer{held=nil;for t in tickets{t.release()}}
     if let ledger{tickets.append(try ledger.reserve(65536,kind:.summary))}
     if DevelopmentBrillianceAdaptiveV1.isActive(p.light),let ledger {
       let bytes=DevelopmentBrillianceAdaptiveV1.mapWorkingBytes(proxy.contentRect)
@@ -125,24 +125,26 @@ enum DevelopmentThumbnailEngine {
         if delta != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:Double(delta)])}
       }
       image=try DevelopmentThumbnailDiagnostic.trace("scalars.suffix",extent:image.extent,callback:diagnostic){
-        try PreviewInteractiveProxyV3.suffix(p,source:image,sourceIsRAW:proxy.sourceIsRAW,nativeSize:nativeSize,scale:proxy.scale,context:context,check:{try Task.checkCancellation()},illustrativeAdaptiveBrilliance:true)
+        try PreviewInteractiveProxyV3.suffix(p,source:image,sourceIsRAW:proxy.sourceIsRAW,nativeSize:nativeSize,scale:proxy.scale,context:context,check:{try Task.checkCancellation()},illustrativeAdaptiveBrilliance:true,photoFilterResourceLease:{pair in
+          var ids=Set<ObjectIdentifier>(),bytes=0
+          for atlas in [pair.lower,pair.upper] where ids.insert(ObjectIdentifier(atlas.buffer)).inserted{bytes+=atlas.bytes}
+          guard pair.version==expectedResourceVersion,ids.count<=tickets.count-resourceTicketStart-1 else{throw DevelopmentThumbnailError.invalidEncoding}
+          var seen=Set<ObjectIdentifier>(),i=resourceTicketStart+1
+          for atlas in [pair.lower,pair.upper] where seen.insert(ObjectIdentifier(atlas.buffer)).inserted {
+            try tickets[i].adjust(bytes:atlas.bytes,cpu:atlas.bytes,gpu:atlas.bytes)
+            guard atlas.bytes<=DevelopmentPhotoFilterCatalog.payloadBytes else{throw DevelopmentThumbnailError.invalidEncoding};i+=1
+          }
+          guard bytes<=(tickets.count-resourceTicketStart-1)*DevelopmentPhotoFilterCatalog.payloadBytes else{throw DevelopmentThumbnailError.invalidEncoding}
+          held=pair
+        })
       }
-      image=try DevelopmentPhotoFilterEngineV3.apply(filter,to:image,resourceLease:{pair in
-        var ids=Set<ObjectIdentifier>(),bytes=0
-        for atlas in [pair.lower,pair.upper] where ids.insert(ObjectIdentifier(atlas.buffer)).inserted{bytes+=atlas.bytes}
-        guard pair.version==expectedResourceVersion,ids.count<=tickets.count-resourceTicketStart-1 else{throw DevelopmentThumbnailError.invalidEncoding}
-        var seen=Set<ObjectIdentifier>(),i=resourceTicketStart+1
-        for atlas in [pair.lower,pair.upper] where seen.insert(ObjectIdentifier(atlas.buffer)).inserted {
-          try tickets[i].adjust(bytes:atlas.bytes,cpu:atlas.bytes,gpu:atlas.bytes)
-          guard atlas.bytes<=DevelopmentPhotoFilterCatalog.payloadBytes else{throw DevelopmentThumbnailError.invalidEncoding};i+=1
-        }
-        guard bytes<=(tickets.count-resourceTicketStart-1)*DevelopmentPhotoFilterCatalog.payloadBytes else{throw DevelopmentThumbnailError.invalidEncoding}
-        held=pair
-      })
-      try DevelopmentThumbnailDiagnostic.trace("scalars.local-validation",extent:image.extent,callback:diagnostic){try DevelopmentLocalEngineV3.validatePixels(image,context:context)}
       if geometry {
         let mapping=try PreviewInteractiveProxyV3.geometry(p.geometry,nativeSize:nativeSize,inputScale:proxy.scale,maxPixel:maximumPixel)
         image=PreviewInteractiveProxyV3.canvas(image.samplingLinear().transformed(by:mapping.transform),width:mapping.layout.width,height:mapping.layout.height)
+      }
+      if !deferValidation {
+        // One final check covers both finite components and source alpha after all geometry.
+        try DevelopmentThumbnailDiagnostic.trace("scalars.local-validation",extent:image.extent,callback:diagnostic){try DevelopmentLocalEngineV3.validatePixels(image,context:context)}
       }
       let result=try body(image);withExtendedLifetime(held){};return result
     }
@@ -214,14 +216,59 @@ enum DevelopmentThumbnailEngine {
       }}
     }
   }
-  static func resolveCandidate(_ request:DevelopmentThumbnailRequest,index:Int,scalars:DevelopmentAnalysisScalars,source:DevelopmentLocalEditSourceBinding,sourceIsRAW:Bool)throws->DevelopmentRecipe {
+  static func resolveCandidate(_ request:DevelopmentThumbnailRequest,index:Int,scalars:DevelopmentAnalysisScalars?,source:DevelopmentLocalEditSourceBinding,sourceIsRAW:Bool)throws->DevelopmentRecipe {
     if request.kind == .filters {
       guard filterOrder.indices.contains(index)else{throw DevelopmentThumbnailError.invalidRequest}
       return try request.preview.recipe.applying(.setParameters(.filter(.init(enabled:index != 0,selection:filterOrder[index],intensity:100))),context:.init(source:source,sourceGeneration:request.preview.sourceGeneration,analysisStage:.workingImageBeforeGeometry,sourceCapability:sourceIsRAW ? .raw:.image))
     }
-    guard case .summary(let group)=request.kind,(0..<5).contains(index)else{throw DevelopmentThumbnailError.unsupportedGraph}
+    guard case .summary(let group)=request.kind,(0..<5).contains(index),let scalars else{throw DevelopmentThumbnailError.unsupportedGraph}
     let parameters=try DevelopmentAnalysisEngine.resolvedSummary(group,amount:[-1.0,-0.5,0,0.5,1][index],scalars:scalars)
     return try request.preview.recipe.applying(.setParameters(parameters),context:.init(source:source,sourceGeneration:request.preview.sourceGeneration,analysisStage:.workingImageBeforeGeometry,sourceCapability:sourceIsRAW ? .raw:.image))
+  }
+  static func managedRGBA8(_ image:CIImage,context:CIContext,ledger:ThumbnailLedger)throws->(bytes:[UInt8],width:Int,height:Int) {
+    let width=Int(image.extent.width),height=Int(image.extent.height),count=width*height
+    let scratch=try ledger.reserve(count*20,kind:.summary);defer{scratch.release()}
+    var linear=[Float](repeating:0,count:count*4)
+    linear.withUnsafeMutableBytes{bytes in
+      context.render(image,toBitmap:bytes.baseAddress!,rowBytes:width*16,bounds:image.extent,format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
+    }
+    var rgba=[UInt8](repeating:0,count:count*4)
+    func encodedByte(_ value:Float,_ alpha:Float)->UInt8 {
+      let bounded=min(1,max(0,value)),encoded=DevelopmentColorEngineV2.encode(Double(bounded))
+      return UInt8((Float(encoded)*alpha*255).rounded())
+    }
+    for i in 0..<count {
+      let n=i*4,r=linear[n],g=linear[n+1],b=linear[n+2],a=linear[n+3]
+      guard [r,g,b,a].allSatisfy(\.isFinite),a>=0,a<=1 else{throw DevelopmentThumbnailError.invalidEncoding}
+      rgba[n+3]=UInt8((a*255).rounded())
+      guard a>0 else{continue}
+      let ur=r/a,ug=g/a,ub=b/a
+      guard [ur,ug,ub].allSatisfy(\.isFinite) else{throw DevelopmentThumbnailError.invalidEncoding}
+      rgba[n]=encodedByte(ur,a);rgba[n+1]=encodedByte(ug,a);rgba[n+2]=encodedByte(ub,a)
+    }
+    return(rgba,width,height)
+  }
+  static func managedTile(_ request:DevelopmentThumbnailRequest,index:Int,scalars:DevelopmentAnalysisScalars?,proxy:ThumbnailProxy,ledger:ThumbnailLedger,device:MTLDevice,contextOwner:ThumbnailWorkerContextV1? = nil)throws->(ThumbnailImageBacking,DevelopmentThumbnailTileDescriptor,Float) {
+    guard index>=0,index<request.kind.count else{throw DevelopmentThumbnailError.invalidRequest}
+    _ = try resourceVersion(request)
+    let amount:Double? = request.kind == .filters ? nil:[-1.0,-0.5,0,0.5,1][index]
+    let actualScalars:DevelopmentAnalysisScalars
+    if let scalars{actualScalars=scalars}else if request.kind == .filters{
+      let bins=[UInt64](repeating:0,count:256)
+      actualScalars = .init(histogram:.init(red:bins,green:bins,blue:bins,luminance:bins,visibleSamples:0,transparentSamples:0,sampledSize:.init(width:1,height:1)),meanLinearRGB:.zero,meanSaturation:0)
+    }else{throw DevelopmentThumbnailError.unsupportedGraph}
+    let candidate=try resolveCandidate(request,index:index,scalars:actualScalars,source:proxy.sourceBinding,sourceIsRAW:proxy.sourceIsRAW)
+    let p=candidate.adjustmentsV3!,ev=Float((p.legacyBasis?.exposureEV ?? 0)+(p.light.enabled ? 2*p.light.exposure:0))
+    return try withContext(ledger:ledger,device:device,contextOwner:contextOwner){context in try withSuffix(candidate,proxy:proxy,context:context,geometry:true,ledger:ledger,expectedResourceVersion:request.expectedPhotoFilterResourceVersion,maximumPixel:request.target.maximumPixel,deferValidation:true){image in
+      guard image.extent.minX==0,image.extent.minY==0,image.extent==image.extent.integral,max(image.extent.width,image.extent.height)<=Double(request.target.maximumPixel)else{throw DevelopmentThumbnailError.invalidEncoding}
+      let converted=try managedRGBA8(image,context:context,ledger:ledger),width=converted.width,height=converted.height,rgba=converted.bytes
+      guard let destinationICC=PhotoRenderer.sRGB.copyICCData() as Data?,!destinationICC.isEmpty else{throw DevelopmentThumbnailError.invalidEncoding}
+      let tile=DevelopmentThumbnailTileDescriptor(index:index,summaryAmount:amount,filter:request.kind == .filters ? filterOrder[index]:nil,actualRecipe:candidate,actualRecipeFingerprint:try EditingFingerprint.of(candidate),width:width,height:height,
+        allocation:.init(allocationID:UUID(),residentCPUBytes:0,residentGPUBytes:0,unionBytes:0,bytesPerRow:width*4),storageFormat:"rgba8Unorm/top-row-first",destinationColorSpace:(PhotoRenderer.sRGB.name as String?) ?? "sRGB",
+        destinationICCProfileSHA256:SHA256.hash(data:destinationICC).map{String(format:"%02x",$0)}.joined(),alphaPolicy:"premultiplied")
+      let backing=try ThumbnailImageBacking(copyingRGBA8:rgba,width:width,height:height,tile:tile,ledger:ledger,kind:request.kind == .filters ? .filters:.summary)
+      return(backing,backing.tileDescriptor(from:tile),ev)
+    }}
   }
   static func tile(_ request:DevelopmentThumbnailRequest,index:Int,scalars:DevelopmentAnalysisScalars?,proxy:ThumbnailProxy,ledger:ThumbnailLedger,device:MTLDevice,contextOwner:ThumbnailWorkerContextV1? = nil)throws->(ThumbnailSurface,DevelopmentThumbnailTileDescriptor,Float) {
     guard index>=0,index<request.kind.count else{throw DevelopmentThumbnailError.invalidRequest}
@@ -239,7 +286,6 @@ enum DevelopmentThumbnailEngine {
       let result=try withContext(ledger:ledger,device:device,contextOwner:contextOwner){context in try withSuffix(candidate,proxy:proxy,context:context,geometry:true,ledger:ledger,expectedResourceVersion:request.expectedPhotoFilterResourceVersion,maximumPixel:request.target.maximumPixel){graph in
         let image=graph
         guard image.extent.minX==0,image.extent.minY==0,image.extent==image.extent.integral,max(image.extent.width,image.extent.height)<=Double(request.target.maximumPixel)else{throw DevelopmentThumbnailError.invalidEncoding}
-        try DevelopmentColorEngineV3.validateFinite(image,context:context)
         guard let destinationICC=PhotoRenderer.sRGB.copyICCData() as Data?,!destinationICC.isEmpty else{throw DevelopmentThumbnailError.invalidEncoding}
         let owner=try ThumbnailSurface(width:Int(image.extent.width),height:Int(image.extent.height),float:false,kind:request.kind == .filters ? .filters:.summary,ledger:ledger,device:device)
         created=owner;try owner.fill(image,context:context)

@@ -6,6 +6,7 @@ import RAWMasterImaging
 struct RAWMasterApp: App {
     @StateObject private var model = AppModel()
     @StateObject private var appearance = AppearanceController()
+    @Environment(\.openWindow) private var openWindow
     @NSApplicationDelegateAdaptor(ApplicationDelegate.self) private var appDelegate
     @MainActor @ViewBuilder private var workbenchRoot: some View {
         if let probe = appDelegate.workbenchTeardown {
@@ -22,13 +23,12 @@ struct RAWMasterApp: App {
                 .environment(\.resolvedAppAppearance, appearance.resolved)
                 .focusedSceneValue(\.workbenchModel, model)
                 .frame(minWidth: 1100, minHeight: 720)
-                .onAppear { appDelegate.model = model }
+                .onAppear { appDelegate.model = model; ImageEnginePrewarming.start() }
                 .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in model.saveBrowse(); model.flushProjectReviewState(); model.cancelJob() }
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified(showsTitle: false))
         .windowResizability(.contentMinSize)
-        .windowIdealSize(.maximum)
         .defaultSize(width: QAInitialWindowGeometry.initialSize.width, height: QAInitialWindowGeometry.initialSize.height)
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -44,10 +44,7 @@ struct RAWMasterApp: App {
                 Button("进入照片初修") { model.openNativeEditing() }
                     .keyboardShortcut("d", modifiers: [])
                     .disabled(model.isCatalog || model.isNativeEditing || !model.canOpenNativeEditing)
-                Button("保存初修版本") { model.editing?.saveDevelopment() }
-                    .keyboardShortcut("s", modifiers: .command)
-                    .disabled(!model.isNativeEditing || model.editing?.stage != .development || model.editing?.developmentContext == nil || model.editing?.saving == true)
-                Button(model.editing?.isDirty == true ? "保存版本并退出" : "完成编辑") { model.editing?.completeDevelopment() }
+                Button("完成编辑") { model.editing?.leaveBrowsingContext() }
                     .keyboardShortcut(.return, modifiers: .command)
                     .disabled(!model.isNativeEditing || model.editing?.saving == true)
             }
@@ -67,13 +64,42 @@ struct RAWMasterApp: App {
                 Button("比较") { model.setMode(.compare) }.keyboardShortcut("c", modifiers: []).disabled(model.isCatalog)
                 Divider()
                 Button("适合窗口 / 原始像素 Z") {
-                    if model.isNativeEditing { model.editing?.setActualPixels(model.editing?.actualPixels != true, nativeEvent: true) }
-                    else { model.actualPixels.toggle() }
+                    if model.isNativeEditing, let editing = model.editing {
+                        if editing.actualPixels { editing.requestCanvasCommand(.fit) }
+                        else { editing.setActualPixels(true, nativeEvent: true) }
+                    } else { model.actualPixels.toggle() }
                 }.disabled(model.isCatalog)
-                Button("显示 / 收起信息栏 Tab") { model.toggleRightSidebar() }.disabled(model.isCatalog || model.mode == .compare)
+                Button("适合可用画面") { model.editing?.requestCanvasCommand(.fit) }
+                    .keyboardShortcut("0", modifiers: .command).disabled(!model.isNativeEditing)
+                Button("放大") { model.editing?.requestCanvasCommand(.zoomIn) }.disabled(!model.isNativeEditing)
+                Button("缩小") { model.editing?.requestCanvasCommand(.zoomOut) }.disabled(!model.isNativeEditing)
+                Button("循环工作视图 Tab / ⇧Tab") { model.cycleWorkflow() }
+                Button("显示 / 收起信息栏") { model.toggleRightSidebar() }.disabled(model.isCatalog || model.mode == .compare)
                 Button("刷新文件可用性") { model.refreshAvailability() }.disabled(model.isCatalog)
             }
+            CommandMenu("诊断") {
+                Button("图像性能监控") { openWindow(id: "image-performance-monitor") }
+                    .keyboardShortcut("p", modifiers: [.command, .option])
+                    .accessibilityIdentifier("menu.imagePerformanceMonitor")
+            }
         }
+        Window("颜色示波器", id: "editing-color-scopes") {
+            Group {
+                if model.isNativeEditing, let editing = model.editing {
+                    PhotosColorScopes(editing: editing, floating: true).padding()
+                } else {
+                    Text("打开一张照片进行调整以查看示波器。").foregroundStyle(.secondary)
+                }
+            }.frame(minWidth: 240, minHeight: 180)
+        }
+        .windowLevel(.floating)
+        .windowResizability(.contentMinSize)
+        .defaultSize(width: 360, height: 280)
+        Window("图像性能监控", id: "image-performance-monitor") {
+            PerformanceMonitorWindow()
+        }
+        .windowResizability(.contentMinSize)
+        .defaultSize(width: 980, height: 700)
         Settings { RAWMasterSettingsView(appearance: appearance, model: model) }
     }
 }
@@ -198,6 +224,12 @@ struct KeyboardMonitor: NSViewRepresentable {
                     guard let self, let window = self.view?.window, (note.object as? NSWindow) === window else { return }
                     MainActor.assumeIsolated { self.focusChanged(focused) }
                 })
+            }
+            // SwiftUI may rebuild this anchor while an existing window is already key (notably
+            // after zoom/toolkit layout changes). Notifications alone miss that current state.
+            DispatchQueue.main.async { [weak self] in
+                guard let self, let window = self.view?.window else { return }
+                MainActor.assumeIsolated { self.focusChanged(window.isKeyWindow) }
             }
             monitor = NSEvent.addLocalMonitorForEvents(matching: [.keyDown, .keyUp, .leftMouseDown, .rightMouseDown]) { [weak self] event in
                 guard let self else { return event }

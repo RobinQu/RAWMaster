@@ -262,13 +262,14 @@ final class PhotosDevelopmentIntegrationTests: XCTestCase {
         _ = PhotosWhiteBalanceStateEditing.adjustment(in: baseline, mode: .temperatureTint)
         _ = PhotosWhiteBalanceStateEditing.adjustment(in: baseline, mode: .skinTone)
         XCTAssertEqual(editing.recipe, original)
-        let command = try PhotosWhiteBalanceStateEditing.command(state: baseline, mode: .temperatureTint, component: .temperature, value: 6000)
+        let command = try PhotosWhiteBalanceStateEditing.command(state: baseline, mode: .temperatureTint, component: .temperature, value: 50)
         try editing.developmentSession.apply(command, event: .init(context: context, control: .init(group: .whiteBalance, name: "色温")))
         let resolved = try XCTUnwrap(editing.recipe.adjustmentsV3?.whiteBalance.resolvedState)
         if case .image(let source, let state) = resolved, case .image(_, let initial) = baseline {
             XCTAssertEqual(source, editing.developmentSession.source)
             XCTAssertEqual(state.gray, initial.gray); XCTAssertEqual(state.skin, initial.skin)
-            XCTAssertEqual(state.temperatureTint.temperature, 6000)
+            XCTAssertEqual(state.temperatureOffset, 50)
+            XCTAssertEqual(state.temperatureTint.temperature, 5000 * pow(2, 0.5), accuracy: 0.001)
             XCTAssertEqual(state.temperatureTint.tintBits, initial.temperatureTint.tintBits)
         } else { XCTFail("The image source may not be interpreted as a RAW white balance") }
         editing.undoDevelopment(context: context); XCTAssertEqual(editing.recipe, original)
@@ -512,9 +513,9 @@ final class PhotosDevelopmentIntegrationTests: XCTestCase {
         editing.setDevelopmentOriginalHeld(true)
         editing.beginDevelopmentPicker(.whiteBalance(.neutralGray), context: context); XCTAssertNil(editing.developmentPicker)
         editing.setDevelopmentOriginalHeld(false); await settled(editing)
-        editing.comparing = true
+        editing.setComparisonMode(.wipeHorizontal)
         editing.beginDevelopmentPicker(.selectiveColor(.red), context: context); XCTAssertNil(editing.developmentPicker)
-        editing.comparing = false
+        editing.stopComparing()
         editing.cropEditing = true
         editing.beginDevelopmentPicker(.curve(channel: .rgb, point: .white), context: context); XCTAssertNil(editing.developmentPicker)
         editing.cropEditing = false
@@ -685,7 +686,7 @@ final class PhotosDevelopmentIntegrationTests: XCTestCase {
     }
 }
 
-private actor PhotosAnalysisGate {
+actor PhotosAnalysisGate {
     private var entered = false, cancelled = false, released = false
     private let onCancellation: (@Sendable () -> Void)?
     init(onCancellation: (@Sendable () -> Void)? = nil) { self.onCancellation = onCancellation }
@@ -701,13 +702,14 @@ private actor PhotosAnalysisGate {
         cancelled = true; let waiting = cancelledWaiters; cancelledWaiters = []; waiting.forEach { $0.resume() }
     }
     var hasReleased: Bool { released }
+    var wasCancelled: Bool { cancelled }
     func waitUntilEntered() async { if !entered { await withCheckedContinuation { enteredWaiters.append($0) } } }
     func waitUntilCancelled() async { if !cancelled { await withCheckedContinuation { cancelledWaiters.append($0) } } }
     func release() { released = true; let waiting = held; held = []; waiting.forEach { $0.resume() } }
 }
 
 /// Test-only scalar backend. It never invokes the real image service, runtime or paid provider.
-private actor PhotosDevelopmentBackend: EditingPreviewBackend {
+actor PhotosDevelopmentBackend: EditingPreviewBackend {
     private(set) var opens = 0
     private(set) var userRequests: [DevelopmentAnalysisRequest] = []
     private(set) var displayRequests: [DevelopmentAnalysisRequest] = []
@@ -903,6 +905,9 @@ private actor PhotosDevelopmentBackend: EditingPreviewBackend {
                 case .retouchSource(let stroke, let donor):
                     operations = [.init(id: request.operationID, sourceContentID: facts.sourceBinding.sourceContentID, tool: .retouch,
                         stroke: stroke, sourceSample: donor ?? .init(x: 0.25, y: 0.3))]
+                case .retouch(let stroke, let donor, let mode):
+                    operations = [.init(id: request.operationID, sourceContentID: facts.sourceBinding.sourceContentID, tool: .retouch,
+                        stroke: stroke, sourceSample: donor ?? .init(x: 0.25, y: 0.3), retouchMode: mode)]
                 case .redEyeAt(let point, let radius, let strength):
                     operations = [.init(id: request.operationID, sourceContentID: facts.sourceBinding.sourceContentID, tool: .redEye,
                         stroke: .init(points: [.init(position: point)], radiusInShortEdge: radius, strength: strength))]
@@ -924,13 +929,27 @@ private actor PhotosDevelopmentBackend: EditingPreviewBackend {
             let purpose: DevelopmentAnalysisPurpose, parameters: [DevelopmentAdjustmentParametersV3]
             switch request.operation {
             case .summary(let group, let amount): purpose = .summary(group, amount: amount); parameters = [.light(.init(enabled: true, brilliance: amount))]
+            case .selectiveColorPicker(let slot, _):
+                var selective=request.preview.recipe.adjustmentsV3!.selectiveColor
+                for required in DevelopmentSelectiveColorSlotV3.allCases where !selective.colors.contains(where:{$0.slot == required}){selective.colors.append(.init(slot:required))}
+                guard let index=selective.colors.firstIndex(where:{$0.slot == slot})else{throw DevelopmentPreviewError.invalidRequest}
+                selective.enabled=true;selective.colors[index].sampledColor = .init(red:0.8,green:0.1,blue:0.1);try selective.validate()
+                purpose = .selectiveColorPicker;parameters = [.selectiveColor(selective)]
             case .whiteBalanceAutomatic(let mode):
                 guard let baseline = facts.initialWhiteBalanceState, case .image(let source, var state) = baseline else { throw DevelopmentPreviewError.invalidRequest }
                 state.selectedMode = mode
                 purpose = .automatic(.whiteBalance)
                 parameters = [.whiteBalance(.init(enabled: true, resolvedState: .image(source: source, state: state)))]
-            case .curvePicker:
-                var curves = request.preview.recipe.adjustmentsV3!.curves; curves.enabled = true; curves.rgb.inputBlack = 0.1
+            case .curvePicker(let channel, let point, _):
+                var curves = request.preview.recipe.adjustmentsV3!.curves; curves.enabled = true
+                if point == .addPoint {
+                    var target:DevelopmentCurveChannelV3
+                    switch channel {case .rgb:target=curves.rgb;case .red:target=curves.red;case .green:target=curves.green;case .blue:target=curves.blue}
+                    let y=try target.curve.value(at:0.5)
+                    if let added=DevelopmentCurveInteraction.adding(target.curve,x:0.5,y:y){target.curve=added.0}
+                    try target.validate()
+                    switch channel {case .rgb:curves.rgb=target;case .red:curves.red=target;case .green:curves.green=target;case .blue:curves.blue=target}
+                } else { curves.rgb.inputBlack = 0.1 }
                 purpose = .curvesPicker; parameters = [.curves(curves)]
             default: purpose = .automatic(.light); parameters = [.light(.init(enabled: true, brilliance: 0.7))]
             }
@@ -1166,9 +1185,10 @@ extension PhotosDevelopmentIntegrationTests {
             backingScale: 2, transform: .init())
     }
     private func cropEvent(_ phase: ImageCanvasPointerPhase, id: UUID, began: UUID,
-                           viewport: ImageCanvasViewportSnapshot, point: CGPoint) -> ImageCanvasPointerEvent {
+                           viewport: ImageCanvasViewportSnapshot, point: CGPoint,
+                           modifiers: UInt64 = 0) -> ImageCanvasPointerEvent {
         .init(phase: phase, gestureID: id, beganFrameID: began, viewport: viewport, locationInView: point,
-            pressure: 1, supportsPressure: false, modifiersRawValue: 0, eventTimestamp: 123)
+            pressure: 1, supportsPressure: false, modifiersRawValue: modifiers, eventTimestamp: 123)
     }
     @MainActor func testManualCropReadsDoNotPromoteAndLockedAngleDragNeverAccumulatesShrink() async throws {
         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
@@ -1337,7 +1357,7 @@ extension PhotosDevelopmentIntegrationTests {
             await currentCropPreview(editing)
             let frame = try XCTUnwrap(editing.developmentCropFrame(context: context)), viewport = cropViewport(frame)
             let tracker = PhotosCropTrackingController(editing: editing, context: context), id = UUID()
-            let start = CGPoint(x: viewport.imageRect.midX, y: viewport.imageRect.minY - 10)
+            let start = CGPoint(x: viewport.imageRect.maxX + 14, y: viewport.imageRect.minY - 14)
             let end = CGPoint(x: start.x + 35, y: start.y + 8)
             let center = CGPoint(x: viewport.imageRect.midX, y: viewport.imageRect.midY)
             let delta = (atan2(end.y - center.y, end.x - center.x) - atan2(start.y - center.y, start.x - center.x)) * 180 / .pi
@@ -1348,6 +1368,23 @@ extension PhotosDevelopmentIntegrationTests {
         }
         await editing.shutdown()
     }
+    @MainActor func testCropShiftRotationSnapsToFifteenDegrees() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults, previewBackend: PhotosDevelopmentBackend())
+        let context = try await cropReady(editing, asset: fixture.assets[0])
+        let frame = try XCTUnwrap(editing.developmentCropFrame(context: context)), viewport = cropViewport(frame)
+        let tracker = PhotosCropTrackingController(editing: editing, context: context), id = UUID()
+        let start = CGPoint(x: viewport.imageRect.maxX + 14, y: viewport.imageRect.minY - 14)
+        let end = CGPoint(x: start.x + 35, y: start.y + 8)
+        let center = CGPoint(x: viewport.imageRect.midX, y: viewport.imageRect.midY)
+        let delta = (atan2(end.y - center.y, end.x - center.x) - atan2(start.y - center.y, start.x - center.x)) * 180 / .pi
+        XCTAssertTrue(tracker.pointer(cropEvent(.began, id: id, began: frame.frameID, viewport: viewport, point: start)))
+        XCTAssertTrue(tracker.pointer(cropEvent(.ended, id: id, began: frame.frameID, viewport: viewport, point: end,
+            modifiers: UInt64(NSEvent.ModifierFlags.shift.rawValue))))
+        XCTAssertEqual(editing.developmentGeometry.straightenDegrees, (-delta / 15).rounded() * 15, accuracy: 1e-10)
+        await editing.shutdown()
+    }
+
     @MainActor func testCropNativePointerUsesContinuousPlaneOneUndoAndViewportCancelCannotCommit() async throws {
         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
         let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults, previewBackend: PhotosDevelopmentBackend())
@@ -1355,6 +1392,13 @@ extension PhotosDevelopmentIntegrationTests {
         let frame = try XCTUnwrap(editing.developmentCropFrame(context: context)), viewport = cropViewport(frame)
         let tracker = PhotosCropTrackingController(editing: editing, context: context), original = editing.recipe
         let start = CGPoint(x: viewport.imageRect.minX, y: viewport.imageRect.midY), moved = CGPoint(x: start.x + 50, y: start.y)
+        tracker.hover(.init(viewport: viewport, locationInView: start, modifiersRawValue: 0))
+        XCTAssertEqual(tracker.hoveredHandle, .left)
+        tracker.hover(.init(viewport: viewport, locationInView: .init(x: viewport.imageRect.minX - 14,
+            y: viewport.imageRect.minY - 14), modifiersRawValue: 0))
+        XCTAssertEqual(tracker.hoveredHandle, .straighten)
+        tracker.hover(.init(viewport: viewport, locationInView: nil, modifiersRawValue: 0))
+        XCTAssertNil(tracker.hoveredHandle)
         let id = UUID()
         XCTAssertTrue(tracker.pointer(cropEvent(.began, id: id, began: frame.frameID, viewport: viewport, point: start)))
         XCTAssertTrue(tracker.pointer(cropEvent(.changed, id: id, began: frame.frameID, viewport: viewport, point: moved)))
@@ -1377,7 +1421,7 @@ extension PhotosDevelopmentIntegrationTests {
         let context = try await cropReady(editing, asset: fixture.assets[0])
         let frame = try XCTUnwrap(editing.developmentCropFrame(context: context)), viewport = cropViewport(frame)
         let tracker = PhotosCropTrackingController(editing: editing, context: context), original = editing.recipe
-        let start = CGPoint(x: viewport.imageRect.midX, y: viewport.imageRect.minY - 10)
+        let start = CGPoint(x: viewport.imageRect.maxX + 14, y: viewport.imageRect.minY - 14)
         let changed = CGPoint(x: start.x + 35, y: start.y + 8), ended = CGPoint(x: start.x + 55, y: start.y + 15)
         let id = UUID()
         XCTAssertTrue(tracker.pointer(cropEvent(.began, id: id, began: frame.frameID, viewport: viewport, point: start)))
@@ -1388,7 +1432,20 @@ extension PhotosDevelopmentIntegrationTests {
         let newViewport = ImageCanvasViewportSnapshot(frameID: newer.id, viewportSize: viewport.viewportSize, imagePixelSize: newer.outputSize,
             imageRect: ImageViewportGeometry.imageRect(pixelSize: newer.outputSize, viewport: viewport.viewportSize, transform: .init(), backingScale: 2), backingScale: 2, transform: .init())
         tracker.updateViewport(newViewport)
+        let duringRotation = try XCTUnwrap(tracker.overlayPresentation(),
+            "The grid and crop boundary must remain visible while a rotated frame is in flight")
+        XCTAssertEqual(duringRotation.frame.frameID, frame.frameID)
+        XCTAssertEqual(duringRotation.viewport, viewport)
         XCTAssertTrue(tracker.pointer(cropEvent(.ended, id: id, began: frame.frameID, viewport: newViewport, point: ended)))
+        XCTAssertNotNil(tracker.overlayPresentation(), "The overlay also survives the post-drag settling render")
+        await currentCropPreview(editing)
+        let settled = try XCTUnwrap(editing.previews.primary.frame)
+        let settledViewport = ImageCanvasViewportSnapshot(frameID: settled.id, viewportSize: viewport.viewportSize,
+            imagePixelSize: settled.outputSize, imageRect: ImageViewportGeometry.imageRect(pixelSize: settled.outputSize,
+                viewport: viewport.viewportSize, transform: .init(), backingScale: 2), backingScale: 2, transform: .init())
+        tracker.updateViewport(settledViewport)
+        XCTAssertEqual(tracker.overlayPresentation()?.frame.frameID, settled.id,
+            "Once rotation settles, the overlay returns to the current frame")
         XCTAssertNotEqual(editing.developmentGeometry.straightenDegrees, 0)
         XCTAssertEqual(editing.developmentSession.history.entryCount, 1)
         editing.undoDevelopment(context: context); XCTAssertEqual(editing.recipe, original)
@@ -1894,7 +1951,7 @@ extension PhotosDevelopmentIntegrationTests {
             var termination: Task<Void, Never>?
             switch action {
             case "original": editing.setDevelopmentOriginalHeld(true)
-            case "comparison": editing.comparing = true
+            case "comparison": editing.setComparisonMode(.wipeHorizontal)
             case "crop": editing.changeDevelopmentPage(.crop, context: context)
             case "focus": editing.suspendDevelopmentFocus()
             case "branch":
@@ -2091,16 +2148,19 @@ extension PhotosDevelopmentIntegrationTests {
             }
         }
     }
-    @MainActor func testDehazeDraftExportRejectsBlockedAndHeldPreparationThenKeepsExistingFrozenSaveContract() async throws {
+    @MainActor func testDehazeLiveExportRejectsBlockedAndHeldPreparationWithoutCreatingCandidates() async throws {
         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
         let backend = PhotosDevelopmentBackend(dehazeEnabled: true)
         let editing = try EditingController(store: fixture.store, libraryURL: fixture.library, defaults: fixture.defaults, previewBackend: backend)
         try await ready(editing, asset: fixture.assets[0]); let context = try await activate(editing)
         try editing.developmentSession.apply(.setParameters(.light(.init(enabled: true, brilliance: 0.2))),
-            event: .init(context: context, control: .init(group: .light, name: "dirty draft")))
+            event: .init(context: context, control: .init(group: .light, name: "live edit")))
         let before = editing.recipe, versions = editing.versions.count
         for held in [false, true] {
-            editing.openExport(); XCTAssertTrue(editing.showDraftExportChoice)
+            editing.openExport()
+            XCTAssertTrue(editing.showExport); XCTAssertFalse(editing.showDraftExportChoice)
+            XCTAssertEqual(editing.exportVersion?.recipe, before)
+            editing.showExport = false
             let gate = PhotosAnalysisGate(); await backend.setGate(gate)
             try editing.developmentDehazeInput.commit(40, context: context); await gate.waitUntilEntered()
             if held {
@@ -2110,37 +2170,25 @@ extension PhotosDevelopmentIntegrationTests {
                 XCTAssertTrue(editing.developmentDehazeInput.waitingForRelease)
                 XCTAssertFalse(editing.developmentAnalysisBusy)
             }
-            editing.saveDraftForExport()
-            XCTAssertFalse(editing.saving); XCTAssertFalse(editing.showDraftExportChoice)
-            editing.openExport(); XCTAssertFalse(editing.showDraftExportChoice)
+            editing.openExport()
+            XCTAssertFalse(editing.showExport, "Pending preparation must not freeze a stale export")
+            XCTAssertFalse(editing.saving)
+            XCTAssertEqual(editing.exportVersion?.recipe, before)
+            editing.showExport = false
             XCTAssertEqual(editing.versions.count, versions); XCTAssertEqual(editing.recipe, before)
             editing.developmentDehazeInput.cancel()
             if !held { await gate.waitUntilCancelled(); await gate.release(); await localFinished(editing) }
             XCTAssertEqual(editing.versions.count, versions); XCTAssertEqual(editing.recipe, before)
         }
-        editing.openExport(); XCTAssertTrue(editing.showDraftExportChoice)
-        editing.exportAdoptedInsteadOfDraft()
-        XCTAssertTrue(editing.showExport); XCTAssertEqual(editing.exportVersionID, editing.work?.adoptedVersionID)
-        editing.showExport = false
-        editing.openExport(); XCTAssertTrue(editing.showDraftExportChoice)
-        let frozen = editing.recipe
+        editing.openExport()
+        XCTAssertTrue(editing.showExport)
+        XCTAssertEqual(editing.exportVersionID, editing.draftParentID)
+        XCTAssertEqual(editing.exportVersion?.recipe, before)
         try editing.developmentSession.apply(.setParameters(.light(.init(enabled: true, brilliance: 0.3))),
-            event: .init(context: context, control: .init(group: .light, name: "later draft")))
-        let later = editing.recipe
-        let completed = expectation(description: "normal frozen draft save completes")
-        var began = false, finished = false
-        let observation = editing.$saving.sink { busy in
-            if busy { began = true }
-            if began, !busy, !finished { finished = true; completed.fulfill() }
-        }
-        // This final normal-save check uses the existing actual 120x80 PNG fixture renderer,
-        // not a fake archive publication. Root owns the sole tiny GPU/test execution slot.
-        editing.saveDraftForExport()
-        await fulfillment(of: [completed], timeout: 10); observation.cancel()
-        XCTAssertEqual(editing.versions.count, versions + 1)
-        XCTAssertEqual(editing.selectedVersion?.recipe, frozen)
-        XCTAssertEqual(editing.recipe, later, "Export save must not rebind its earlier frozen recipe to the later draft")
-        XCTAssertEqual(editing.exportVersionID, editing.selectedVersion?.id); XCTAssertTrue(editing.showExport)
+            event: .init(context: context, control: .init(group: .light, name: "later live edit")))
+        XCTAssertEqual(editing.exportVersion?.recipe, editing.recipe,
+            "The export sheet reads the current live recipe without a draft-save transaction")
+        XCTAssertEqual(editing.versions.count, versions)
         XCTAssertEqual(editing.work?.adoptedVersionID, editing.versions.first { $0.kind == .original }?.id)
         await editing.shutdown()
     }
@@ -2310,7 +2358,7 @@ extension PhotosDevelopmentIntegrationTests {
             var stopped = false; var termination: Task<Void, Never>?
             switch action {
             case "original": editing.setDevelopmentOriginalHeld(true)
-            case "comparison": editing.comparing = true
+            case "comparison": editing.setComparisonMode(.wipeHorizontal)
             case "crop": editing.changeDevelopmentPage(.crop, context: context)
             case "focus": editing.suspendDevelopmentFocus()
             case "branch":
@@ -2579,6 +2627,20 @@ extension PhotosDevelopmentIntegrationTests {
                 presentationMode: .managedImage, basis: .currentCanonical)
             XCTAssertNotEqual(baseKey, EditingThumbnailPresentation.cacheKey(changed, context: context))
         }
+        let resumedContext = EditingInteractionContext(workID: context.workID,
+            admissionFingerprint: context.admissionFingerprint, sourceContentID: context.sourceContentID,
+            sourceGeneration: context.sourceGeneration, draftBranchID: context.draftBranchID,
+            draftBranchEpoch: context.draftBranchEpoch + 1)
+        let resumedPreview = DevelopmentPreviewRequest(sessionID: detail.preview.sessionID,
+            sourceGeneration: detail.preview.sourceGeneration, consumerID: detail.preview.consumerID,
+            role: detail.preview.role, revision: detail.preview.revision + 1, recipe: detail.preview.recipe,
+            quality: detail.preview.quality, viewport: detail.preview.viewport)
+        let resumed = DevelopmentThumbnailRequest(registration: registration, preview: resumedPreview,
+            expectedRecipeFingerprint: detail.expectedRecipeFingerprint,
+            presentedRecipeFingerprint: detail.presentedRecipeFingerprint, kind: detail.kind, target: detail.target,
+            presentationMode: .managedImage, basis: detail.basis)
+        XCTAssertEqual(baseKey, EditingThumbnailPresentation.cacheKey(resumed, context: resumedContext),
+            "Focus-only epoch and preview revision changes must reuse the displayed image set")
         await editing.shutdown()
     }
     @MainActor func testB7bBridgePassesActualFilterCatalogForGridAndNonzeroSummary() async throws {
@@ -2743,7 +2805,9 @@ extension PhotosDevelopmentIntegrationTests {
         try await ready(editing, asset: fixture.assets[0]); let old = try await activate(editing), before = editing.recipe
         let owner = editing.developmentThumbnails
         owner.setVisible(.summary(.light), true, context: old); await gate.waitUntilEntered()
-        editing.suspendDevelopmentFocus(); await gate.waitUntilCancelled()
+        editing.suspendDevelopmentFocus(); await Task.yield()
+        let thumbnailCancelled = await gate.wasCancelled
+        XCTAssertFalse(thumbnailCancelled, "Focus loss retains thumbnail work and adopted image sets")
         let fresh = try await activate(editing)
         owner.setVisible(.summary(.color), true, context: fresh)
         owner.retry(.summary(.light), context: old); owner.setVisible(.summary(.color), false, context: old)
@@ -2951,6 +3015,13 @@ extension PhotosDevelopmentIntegrationTests {
         XCTAssertNil(editing.developmentSession.activeGesture)
         await editing.shutdown()
     }
+
+    func testPresenceControlsBelongToEffectsNavigation() {
+        let presence:Set<DevelopmentAdjustmentID>=[.texture,.clarity,.dehaze]
+        XCTAssertTrue(presence.isSubset(of:Set(PhotosAdjustmentDestination.effects.groups)))
+        XCTAssertTrue(presence.isDisjoint(with:PhotosAdjustmentDestination.basic.groups))
+        XCTAssertTrue(PhotosAdjustmentDestination.basic.groups.contains(.definition))
+    }
 }
 
 extension PhotosDevelopmentIntegrationTests {
@@ -3088,7 +3159,7 @@ extension PhotosDevelopmentIntegrationTests {
                     timestamp: 0, windowNumber: 0, context: nil, characters: "z", charactersIgnoringModifiers: "z", isARepeat: false, keyCode: 6))
                 XCTAssertTrue(editing.handleDevelopmentKey(event))
             case "original": editing.setDevelopmentOriginalHeld(true)
-            case "comparison": editing.comparing = true
+            case "comparison": editing.setComparisonMode(.wipeHorizontal)
             case "tracking": token = try editing.developmentSession.beginGesture(.init(group: nil, name: "crop"), context: context)
             case "constraint":
                 var constraint = editing.developmentSession.cropConstraint; constraint.customWidth = 6
@@ -3289,7 +3360,7 @@ extension PhotosDevelopmentIntegrationTests {
         }
     }
 }
-private actor PhotosSaveStartCounter {
+actor PhotosSaveStartCounter {
     private(set) var count = 0
     func begin() { count += 1 }
 }
@@ -3512,12 +3583,11 @@ extension PhotosDevelopmentIntegrationTests {
             let exportEditor = numberEditor(editing, context: current, didWrite: { writes += 1 }); hosts.append(exportEditor)
             _ = try exportEditor.enter("0.62")
             editing.openExport()
-            XCTAssertEqual(writes, 2); XCTAssertTrue(editing.showDraftExportChoice)
-            editing.saveDraftForExport()
-            XCTAssertTrue(editing.saving)
-            await waitForNumberSave(editing)
-            XCTAssertEqual(editing.selectedVersion?.recipe.adjustmentsV3?.color.saturation, 0.62)
-            XCTAssertTrue(editing.showExport); XCTAssertEqual(editing.work?.adoptedVersionID, original)
+            XCTAssertEqual(writes, 2); XCTAssertFalse(editing.showDraftExportChoice)
+            XCTAssertTrue(editing.showExport); XCTAssertFalse(editing.saving)
+            XCTAssertEqual(editing.exportVersion?.recipe.adjustmentsV3?.color.saturation, 0.62)
+            XCTAssertEqual(editing.versions.count, 2)
+            XCTAssertEqual(editing.work?.adoptedVersionID, original)
             editing.developmentNumberInputOwner.finishCurrentEdit(); XCTAssertEqual(writes, 2)
         } catch { hosts.forEach { $0.close() }; await editing.shutdown(); throw error }
         hosts.forEach { $0.close() }; await editing.shutdown()
@@ -3555,5 +3625,146 @@ extension PhotosDevelopmentIntegrationTests {
             XCTAssertTrue(terminated.window.makeFirstResponder(terminated.other)); XCTAssertEqual(writes, 1)
         } catch { hosts.forEach { $0.close() }; await editing.shutdown(); throw error }
         hosts.forEach { $0.close() }; await editing.shutdown()
+    }
+}
+
+extension PhotosDevelopmentIntegrationTests {
+    @MainActor func testFilterFavoritesPersistAndKeepStableDisplayOrder() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend(filtersEnabled: true)
+        var editing: EditingController? = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: backend)
+        try await ready(editing!, asset: fixture.assets[0]); _ = try await activate(editing!)
+        editing!.toggleDevelopmentFilterFavorite(.vivid)
+        XCTAssertTrue(editing!.favoriteDevelopmentFilters.contains(.vivid))
+        XCTAssertEqual(editing!.displayDevelopmentFilters.first, .vivid)
+        XCTAssertEqual(fixture.defaults.stringArray(forKey: "editing.filterFavorites.v1"), ["vivid"])
+        await editing!.shutdown(); editing = nil
+        let restored = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: PhotosDevelopmentBackend(filtersEnabled: true))
+        XCTAssertEqual(restored.favoriteDevelopmentFilters, [.vivid])
+        await restored.shutdown()
+    }
+
+    @MainActor func testFilterHoverUsesIndependentConsumerAndNeverCommitsRecipeOrHistory() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend(filtersEnabled: true)
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: backend)
+        try await ready(editing, asset: fixture.assets[0]); let context = try await activate(editing)
+        let before = editing.recipe, undo = editing.developmentSession.canUndo
+        editing.previewDevelopmentFilter(.vivid, context: context)
+        for _ in 0..<200 {
+            if editing.filterHoverFrame != nil { break }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertNotNil(editing.filterHoverFrame)
+        XCTAssertEqual(editing.recipe, before); XCTAssertEqual(editing.developmentSession.canUndo, undo)
+        let requests = await backend.renderRequests
+        let hover = try XCTUnwrap(requests.last(where: { $0.recipe.adjustmentsV3?.filter.selection == .vivid }))
+        XCTAssertNotEqual(hover.consumerID, editing.previews.primary.consumerID)
+        XCTAssertEqual(hover.quality, .interactive)
+        editing.cancelDevelopmentFilterHover()
+        XCTAssertNil(editing.filterHoverFrame); XCTAssertNil(editing.hoveredDevelopmentFilter)
+        XCTAssertEqual(editing.recipe, before); XCTAssertEqual(editing.developmentSession.canUndo, undo)
+        await editing.shutdown()
+    }
+
+    @MainActor func testFilterHoverCrossingAndLateFrameCannotOverrideCommittedPresentation() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend(filtersEnabled: true)
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: backend)
+        try await ready(editing, asset: fixture.assets[0]); let context = try await activate(editing)
+        let committed = editing.recipe, history = editing.developmentSession.history.entryCount
+        editing.previewDevelopmentFilter(.vivid, context: context)
+        for _ in 0..<200 where editing.filterHoverFrame == nil { try await Task.sleep(nanoseconds: 10_000_000) }
+        let vivid = try XCTUnwrap(editing.filterHoverFrame)
+        editing.previewDevelopmentFilter(.noir, context: context)
+        for _ in 0..<200 where editing.filterHoverFrame == nil || editing.filterHoverFrame?.revision == vivid.revision { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertEqual(editing.hoveredDevelopmentFilter, .noir)
+        XCTAssertGreaterThan(try XCTUnwrap(editing.filterHoverFrame).revision, vivid.revision)
+        XCTAssertEqual(editing.recipe, committed); XCTAssertEqual(editing.developmentSession.history.entryCount, history)
+        let gate = PhotosAnalysisGate(); await backend.setRenderGate(gate)
+        editing.previewDevelopmentFilter(.vividWarm, context: context); await gate.waitUntilEntered()
+        editing.setComparisonMode(.wipeHorizontal)
+        XCTAssertNil(editing.filterHoverFrame); XCTAssertNil(editing.hoveredDevelopmentFilter)
+        await gate.release()
+        for _ in 0..<20 { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertNil(editing.filterHoverFrame); XCTAssertTrue(editing.comparing)
+        XCTAssertEqual(editing.recipe, committed); XCTAssertEqual(editing.developmentSession.history.entryCount, history)
+        await editing.shutdown()
+    }
+
+    @MainActor func testFilterFavoritesIgnoreCorruptUnknownAndOriginalIDs() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        fixture.defaults.set(["broken", "vivid", "original", "noir"], forKey: "editing.filterFavorites.v1")
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: PhotosDevelopmentBackend(filtersEnabled: true))
+        XCTAssertEqual(editing.favoriteDevelopmentFilters, [.vivid, .noir])
+        XCTAssertEqual(fixture.defaults.stringArray(forKey: "editing.filterFavorites.v1"), ["noir", "vivid"])
+        await editing.shutdown()
+    }
+
+    @MainActor func testActualFilterThumbnailContentKeySkipsFilterOnlyAndRetainsImagesThroughColorChanges() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0, rawBaseCacheBytes: 0,
+            interactiveEvaluation: .proxyV1))
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: SharedEditingPreviewBackend(service: service))
+        try await ready(editing, asset: fixture.assets[0]); let context = try await activate(editing)
+        XCTAssertEqual(editing.availableDevelopmentFilters.count, 10)
+        let owner = editing.developmentThumbnails, id = DevelopmentThumbnailKind.filters.presentationKey
+        owner.setVisible(.filters, true, context: context)
+        for _ in 0..<500 where owner.sets[id] == nil { try await Task.sleep(nanoseconds: 10_000_000) }
+        let firstKey = try XCTUnwrap(owner.sets[id]).key; XCTAssertEqual(owner.sets[id]?.images.count, 10)
+        let initialCompleted = await service.thumbnailStatistics().completed
+        try editing.changeDevelopmentFilter(.vivid, context: context)
+        for _ in 0..<30 { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertEqual(owner.sets[id]?.key, firstKey)
+        let selectionCompleted = await service.thumbnailStatistics().completed
+        XCTAssertEqual(selectionCompleted, initialCompleted, "Filter selection must not rebuild candidates")
+        var blankFrames = 0
+        for step in 1...8 {
+            var color = DevelopmentColorV3(); color.enabled = true; color.saturation = Double(step) * 0.03
+            try editing.developmentSession.apply(.setParameters(.color(color)),
+                event: .init(context: context, control: .init(group: .color, name: "饱和度")))
+            for _ in 0..<20 {
+                if owner.sets[id] == nil { blankFrames += 1 }
+                try await Task.sleep(nanoseconds: 2_000_000)
+            }
+        }
+        for _ in 0..<500 where owner.sets[id]?.key == firstKey || owner.isRefreshing(.filters) {
+            if owner.sets[id] == nil { blankFrames += 1 }
+            try await Task.sleep(nanoseconds: 10_000_000)
+        }
+        XCTAssertNotEqual(owner.sets[id]?.key, firstKey)
+        XCTAssertEqual(owner.sets[id]?.images.count, 10); XCTAssertEqual(blankFrames, 0)
+        let changedCompleted = await service.thumbnailStatistics().completed
+        XCTAssertGreaterThan(changedCompleted, initialCompleted)
+        await editing.shutdown(); await service.closeAll()
+        let finalStatistics = await service.thumbnailStatistics()
+        XCTAssertEqual(finalStatistics.unionBytes, 0)
+    }
+
+    @MainActor func testActualFilterSaveArchivesCanonicalRecipeAndLeavesSourceUntouched() async throws {
+        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let service = DevelopmentPreviewService()
+        let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
+            defaults: fixture.defaults, previewBackend: SharedEditingPreviewBackend(service: service))
+        try await ready(editing, asset: fixture.assets[0]); let context = try await activate(editing)
+        try editing.changeDevelopmentFilter(.noir, context: context)
+        let current = try XCTUnwrap(editing.work), source = current.source
+        let before = try RenderFiles.hash(source.sourceLocation)
+        editing.saveDevelopment(context: context)
+        for _ in 0..<500 where editing.saving { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertFalse(editing.saving); XCTAssertEqual(editing.message, "已保存初修候选。采用后才会成为当前版本。")
+        let saved = try XCTUnwrap(editing.versions.last(where: { $0.kind == .development }))
+        XCTAssertEqual(saved.recipe.adjustmentsV3?.filter.selection, .noir)
+        XCTAssertEqual(saved.recipe.adjustmentsV3?.filter.enabled, true); XCTAssertNotNil(saved.artifact)
+        let persisted = try await Task.detached { try fixture.store.loadEditingVersions(workID: current.id) }.value
+        XCTAssertTrue(persisted.contains(where: { $0.id == saved.id && $0.recipe == saved.recipe }))
+        XCTAssertEqual(try RenderFiles.hash(source.sourceLocation), before)
+        await editing.shutdown(); await service.closeAll()
     }
 }

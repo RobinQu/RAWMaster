@@ -34,6 +34,7 @@ final class PreviewInteractiveProxyPool:@unchecked Sendable {
   final class Entry {
     let descriptor:PreviewInteractiveInputDescriptor,storage:PreviewInteractiveProxyStorage
     var pins=0,retired=false
+    var lastUse: UInt64 = 0
     init(_ descriptor:PreviewInteractiveInputDescriptor,_ storage:PreviewInteractiveProxyStorage){self.descriptor=descriptor;self.storage=storage}
   }
   final class Pin {
@@ -48,10 +49,12 @@ final class PreviewInteractiveProxyPool:@unchecked Sendable {
   struct Statistics:Sendable {let fills,hits,retiredInputs:Int;let residentBytes,pinnedBytes:Int;let owned:PreviewPresentationStatistics}
   fileprivate let lock=NSLock()
   private var entries:[String:Entry]=[:],fills=0,hits=0,retiredInputs=0
+  private var access: UInt64 = 0
   private var building:(id:UUID,sourceKey:String,generation:UInt64,revoked:Bool,storage:PreviewInteractiveProxyStorage?)?
   func lookup(_ descriptor:PreviewInteractiveInputDescriptor)throws->Pin? {
     let key=try descriptor.fingerprint();lock.lock();defer{lock.unlock()}
     guard let entry=entries[key],!entry.retired else{return nil}
+    access &+= 1; entry.lastUse = access
     entry.pins+=1;hits+=1;return Pin(entry,self)
   }
   func beginBuild(_ descriptor:PreviewInteractiveInputDescriptor)throws->UUID {
@@ -64,15 +67,44 @@ final class PreviewInteractiveProxyPool:@unchecked Sendable {
     building?.storage=storage
   }
   func endBuild(_ id:UUID){lock.lock();if building?.id==id{building=nil};lock.unlock()}
-  func evictUnpinnedBeforeFill(){
-    lock.lock();defer{lock.unlock()}
-    for key in Array(entries.keys){guard let entry=entries[key],entry.pins==0 else{continue};entry.retired=true;entry.storage.markRetired();entries.removeValue(forKey:key);retiredInputs+=1}
+  /// A RAW 9 base costs a full neural inference. Keep at most one prior amount for this exact
+  /// capture and model. The reservation ledger may reclaim it before admitting any GPU work.
+  func evictUnpinnedBeforeFill(keepingPreviousFor next: PreviewInteractiveInputDescriptor? = nil) {
+    lock.lock(); defer { lock.unlock() }
+    let previous = next.flatMap { target in
+      entries.values.filter { entry in
+        let old = entry.descriptor
+        return !entry.retired && old.captureID == target.captureID && old.generation == target.generation &&
+          old.sourceKey == target.sourceKey && old.proxyDecoder == target.proxyDecoder
+      }.max { $0.lastUse < $1.lastUse }
+    }
+    for key in Array(entries.keys) {
+      guard let entry = entries[key], entry.pins == 0, entry !== previous else { continue }
+      entry.retired = true
+      entry.storage.markRetired()
+      entries.removeValue(forKey: key)
+      retiredInputs += 1
+    }
+  }
+  /// Called outside the physical ledger lock when any service or pane needs its budget.
+  func reclaimSpareNeuralInput() -> Bool {
+    lock.lock(); defer { lock.unlock() }
+    guard building != nil || entries.count > 1 else { return false }
+    let candidates = entries.filter { pair in
+      pair.value.pins == 0 && DevelopmentAIDenoiseV1.Model(rawValue: pair.value.descriptor.proxyDecoder) != nil
+    }
+    guard let oldest = candidates.min(by: { $0.value.lastUse < $1.value.lastUse }) else { return false }
+    oldest.value.retired = true
+    oldest.value.storage.markRetired()
+    entries.removeValue(forKey: oldest.key)
+    retiredInputs += 1
+    return true
   }
   func publish(_ descriptor:PreviewInteractiveInputDescriptor,_ storage:PreviewInteractiveProxyStorage,buildID:UUID)throws->Pin {
     let key=try descriptor.fingerprint();lock.lock();defer{lock.unlock()}
     guard entries[key]==nil,building?.id==buildID,building?.revoked==false else{storage.markRetired();throw PreviewPresentationError.closed}
     building=nil
-    let entry=Entry(descriptor,storage);entry.pins=1;entries[key]=entry;fills+=1;return Pin(entry,self)
+    let entry=Entry(descriptor,storage);access &+= 1;entry.lastUse=access;entry.pins=1;entries[key]=entry;fills+=1;return Pin(entry,self)
   }
   func retire(sourceKey:String?=nil,generation:UInt64?=nil){
     lock.lock();defer{lock.unlock()}

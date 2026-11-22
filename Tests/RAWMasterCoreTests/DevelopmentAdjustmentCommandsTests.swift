@@ -75,7 +75,7 @@ final class DevelopmentAdjustmentCommandsTests: XCTestCase {
     let global = try result(recipe,purpose:.automatic(nil),parameters:[.light(.init(enabled:true,exposure:0.5)),.color(.init(enabled:true,vibrance:0.4))])
     let changed = try recipe.applying(.applyAnalysis(global),context:context)
     XCTAssertEqual(changed.adjustmentsV3!.light.exposure,0.5); XCTAssertEqual(changed.adjustmentsV3!.color.vibrance,0.4)
-    let invalid = try result(recipe,purpose:.automatic(nil),parameters:[.light(.init(enabled:true,exposure:1)),.whiteBalance(.init(enabled:false,adjustment:.temperatureTint(temperature:20001,tint:0)))])
+    let invalid = try result(recipe,purpose:.automatic(nil),parameters:[.light(.init(enabled:true,exposure:1)),.whiteBalance(.init(enabled:false,adjustment:.temperatureTint(temperature:50001,tint:0)))])
     XCTAssertThrowsError(try recipe.applying(.applyAnalysis(invalid),context:context)); XCTAssertEqual(recipe.adjustmentsV3!.light.exposure,0)
   }
   func testAppendRemoveAndToolResetBindToCurrentSourceAndKeepOrder() throws {

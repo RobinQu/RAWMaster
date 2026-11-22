@@ -60,6 +60,8 @@ final class ImagePerformanceTests: XCTestCase {
         var operatingSystem: String
         var boundaries: [String]
         var fixtures: [Fixture]
+        var sourceSHA256After: [String] = []
+        var nativeDetailStages: [ImagePerformanceAggregate] = []
         var metrics: [Metric] = []
         var cancellation: [String: Int] = [:]
         var timingGatesEnabled = false
@@ -215,6 +217,9 @@ final class ImagePerformanceTests: XCTestCase {
             report.metrics.append(Metric(name: "rapid_navigation_cancel_burst", boundary: "24 request enqueue→all returns, cancel first23 after5ms", cache: "application-cold; filesystem-uncontrolled", samples: [.init(milliseconds: elapsed(burstStart), result: "latest-completed")]))
             report.metrics += try await canvasMetrics(image: warmRAW)
             XCTAssertTrue(report.metrics.allSatisfy { !$0.samples.isEmpty && $0.samples.allSatisfy { $0.milliseconds.isFinite && $0.milliseconds >= 0 } })
+            // Hash after the last measured access so verification does not populate the filesystem cache beforehand.
+            report.sourceSHA256After = try urls.map(RenderFiles.hash)
+            report.nativeDetailStages = ImagePerformanceTelemetry.shared.snapshot().aggregates.filter { $0.operation == "ImagePipeline.detail" }
             try enforceGates(report: &report, baselinePath: env["RAWMASTER_IMAGE_PERF_BASELINE"])
             guard (testRun?.failureCount ?? 0) == 0 else {
                 throw NSError(domain: "ImagePerformance", code: 5,
@@ -271,13 +276,15 @@ final class ImagePerformanceTests: XCTestCase {
             let data = try Data(contentsOf: URL(fileURLWithPath: path))
             let baseline = try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
             let names = (baseline["fixtures"] as? [[String: Any]] ?? []).compactMap { $0["filename"] as? String }
+            let baselineHashes = (baseline["sourceSHA256After"] as? [String]) ?? []
             guard ["completed", "passed"].contains(baseline["status"] as? String ?? ""),
                   baseline["hardwareModel"] as? String == report.hardwareModel,
                   baseline["cpu"] as? String == report.cpu,
                   baseline["physicalMemory"] as? UInt64 == report.physicalMemory,
                   baseline["operatingSystem"] as? String == report.operatingSystem,
                   baseline["build"] as? String == report.build,
-                  names == report.fixtures.map(\.filename) else {
+                  names == report.fixtures.map(\.filename),
+                  baselineHashes.isEmpty || baselineHashes == report.sourceSHA256After else {
                 throw NSError(domain: "ImagePerformance", code: 2,
                     userInfo: [NSLocalizedDescriptionKey: "Relative baseline is incomplete or differs in machine, OS, release configuration or RAW sample selection"])
             }

@@ -64,10 +64,13 @@ final class PreviewNativeSource: @unchecked Sendable {
   let originalEXIFOrientation: Int
   let noiseReductionFacts: DevelopmentNoiseReductionFacts
   let asShotWhiteBalance: DevelopmentAsShotWhiteBalance?
+  let lensMetadata: DevelopmentLensMetadata?
   var hasRAWFilter: Bool { raw != nil }
   private var v3AnalysisCache: DevelopmentAnalysisCacheEntry?
   private var displayHistogramCache: DevelopmentDisplayHistogramEngineV1.CacheEntry?
   private var v3DecoderDefaultsFingerprint: String?
+  let rawDetailsCapability: DevelopmentRawDetails?
+  let aiDenoiseCapability: DevelopmentAIDenoiseV1.Model?
   private let raw: CIRAWFilter?
   private let base: CIImage?
   private let temperature: Float
@@ -75,6 +78,8 @@ final class PreviewNativeSource: @unchecked Sendable {
   private let contextMemoryLimitMiB: Int
   private(set) var context: CIContext
   private var retainedInteractiveContext: CIContext?
+  private var retainedPointColorContext: CIContext?
+  private var flashRawCacheSourceKey: String?
   init(capture: URL, byteCount: Int64, artifact: Bool, memoryLimit: Int) throws {
     self.capture = capture; self.byteCount = byteCount; self.artifact = artifact
     // Construct/warm the lazy filter kernel only on this existing native worker. Facts later
@@ -82,6 +87,7 @@ final class PreviewNativeSource: @unchecked Sendable {
     let filterCapabilities = artifact ? DevelopmentPhotoFilterResourceStore.Capabilities(filters:[.original],resourceVersion:nil):DevelopmentPhotoFilterEngineV3.capabilities()
     photoFilterKernelAvailable = filterCapabilities.filters.count>1 && filterCapabilities.resourceVersion != nil
     captureStamp = try PreviewFileStamp.read(capture)
+    lensMetadata=artifact ? nil:DevelopmentLensMetadata.read(capture)
     nativePointwiseDeviceID=MTLCreateSystemDefaultDevice()?.registryID
     contextMemoryLimitMiB = memoryLimit
     context = CIContext(options: [.cacheIntermediates: false,
@@ -91,6 +97,8 @@ final class PreviewNativeSource: @unchecked Sendable {
     if !artifact && PhotoRenderer.rawExtensions.contains(capture.pathExtension.lowercased()) {
       guard let filter = CIRAWFilter(imageURL: capture), let output = filter.outputImage else { throw DevelopmentError.unreadable }
       originalLocalDefaults = try DevelopmentRendererV3.decoderDefaultsFingerprint(filter)
+      rawDetailsCapability = DevelopmentRAWSourcePolicy.rawDetailsCapability(at: capture, nativeSize: output.extent.size, orientation: Int(filter.orientation.rawValue))
+      aiDenoiseCapability = DevelopmentNeuralRaw9.capability(filter, mosaic: rawDetailsCapability)
       raw = filter; base = nil; temperature = filter.neutralTemperature; tint = filter.neutralTint
       noiseReductionFacts = .init(sourceCapability:.raw,raw:.init(
         luminanceNoiseSupported:filter.isLuminanceNoiseReductionSupported,
@@ -102,6 +110,8 @@ final class PreviewNativeSource: @unchecked Sendable {
       decoder = filter.decoderVersion.rawValue; nativeSize = output.extent.size; orientedNativeExtent=output.extent; originalEXIFOrientation = Int(filter.orientation.rawValue)
     } else {
       guard let image = CIImage(contentsOf: capture, options: [.applyOrientationProperty: true]) else { throw DevelopmentError.unreadable }
+      rawDetailsCapability = nil
+      aiDenoiseCapability = nil
       originalLocalDefaults = nil
       raw = nil; base = image; temperature = 6500; tint = 0; decoder = artifact ? "archived-image" : "image-io"
       noiseReductionFacts = .init(sourceCapability:.image,raw:nil); asShotWhiteBalance = nil
@@ -121,6 +131,9 @@ final class PreviewNativeSource: @unchecked Sendable {
       orientation:originalEXIFOrientation,size:nativeSize)
     supportedGrainSamplingVersions=DevelopmentGrainSamplingEngineV1.admit(sourceIsRAW:raw != nil && !artifact,extent:orientedNativeExtent)
     try validateCaptureAuthority()
+  }
+  deinit {
+    if let flashRawCacheSourceKey { FlashRawCanonicalTexturePool.shared.retire(sourceKey:flashRawCacheSourceKey) }
   }
   var photoFilterCapabilities:DevelopmentPhotoFilterResourceStore.Capabilities {
     guard !artifact,photoFilterKernelAvailable else{return .init(filters:[.original],resourceVersion:nil)}
@@ -149,13 +162,24 @@ final class PreviewNativeSource: @unchecked Sendable {
       context.clearCaches()
       context = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:contextMemoryLimitMiB])
       retainedInteractiveContext = nil
+      retainedPointColorContext?.clearCaches()
+      retainedPointColorContext = nil
     }
   }
-  func interactiveContext(memoryLimit: Int) throws -> CIContext {
-    if let retainedInteractiveContext { return retainedInteractiveContext }
+  func interactiveContext(memoryLimit: Int, pointColor: Bool = false) throws -> CIContext {
+    if let retained = pointColor ? retainedPointColorContext : retainedInteractiveContext { return retained }
     let made = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryLimit])
-    retainedInteractiveContext = made
+    if pointColor { retainedPointColorContext = made } else { retainedInteractiveContext = made }
     return made
+  }
+  func pinFlashRawSource(_ parameters:DevelopmentAdjustmentsV3, sourceKey:String) throws -> FlashRawCanonicalTexturePool.Pin? {
+    let key = FlashRawCanonicalTextureKey(sourceKey:sourceKey,captureStamp:captureStamp,
+      contract:parameters.rawDetails?.rawValue ?? "flashraw-0.3.1-bilinear-canonical-rgba16f-v2",
+      width:Int(nativeSize.width),height:Int(nativeSize.height))
+    let pool=FlashRawCanonicalTexturePool.shared
+    guard pool.canHold(key) else { return nil }
+    flashRawCacheSourceKey=sourceKey
+    return try pool.acquire(key) { try FlashRawImageFactory.linearImage(capture:capture,rawDetails:parameters.rawDetails) }
   }
   func render(recipe: DevelopmentRecipe, maxPixel: Int, rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "",
               thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
@@ -304,11 +328,24 @@ final class PreviewNativeSource: @unchecked Sendable {
       guard displayWitness == nil else{throw PreviewPresentationError.allocationProtocol}
       try request.requireCurrent();return result
     }
+    if raw != nil, !artifact, let adjustments = recipe.adjustmentsV3, DevelopmentRAWSourcePolicy.usesFlashRaw(adjustments) {
+      context.clearCaches()
+      context = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:contextMemoryLimitMiB])
+      defer{context.clearCaches()}
+      let cacheSource = adjustments.rawDecoder != nil || adjustments.rawDetails != nil || rawBasePool != nil
+      let texturePin = cacheSource ? try pinFlashRawSource(adjustments,sourceKey:sourceKey) : nil
+      defer{texturePin?.release()}
+      let neutral = try texturePin?.image ?? FlashRawImageFactory.linearImage(capture:capture,rawDetails:adjustments.rawDetails)
+      let based=try FlashRawImageFactory.applyInputAdjustments(adjustments,to:neutral,asShotWhiteBalance:asShotWhiteBalance)
+      let graph=try DevelopmentRendererV3.develop(capture,recipe:recipe,suppliedRawBase:based,context:context,thumbnailNativeSink:thumbnailNativeSink)
+      let result=try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
+      try validateCaptureAuthority();return result
+    }
     context.clearCaches()
     context = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:contextMemoryLimitMiB])
     defer { context.clearCaches() }
     do {
-      if let rawBasePool, raw != nil, !artifact {
+      if let rawBasePool, raw != nil, !artifact, recipe.adjustmentsV3?.aiDenoise == nil {
         if v3DecoderDefaultsFingerprint == nil {
           guard let fresh = CIRAWFilter(imageURL:capture) else { throw DevelopmentError.unreadable }
           v3DecoderDefaultsFingerprint = try? DevelopmentRendererV3.decoderDefaultsFingerprint(fresh)
@@ -339,6 +376,7 @@ final class PreviewNativeSource: @unchecked Sendable {
       let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
       try validateCaptureAuthority(); return result
     } catch {
+      if let flashRawCacheSourceKey { FlashRawCanonicalTexturePool.shared.retire(sourceKey:flashRawCacheSourceKey) }
       do { try validateCaptureAuthority() } catch { rawBasePool?.retire(sourceKey:sourceKey); throw error }
       throw error
     }
@@ -368,7 +406,7 @@ final class PreviewNativeSource: @unchecked Sendable {
     return try outcome.get()
   }
 
-  func analyze(_ request: DevelopmentAnalysisRequest, sourceContentID: String, cancellation: DevelopmentAnalysisCancellation? = nil, rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "", residentObserver: DevelopmentBWSummaryResidentV3.Observer? = nil) throws -> DevelopmentAnalysisResult {
+  func analyze(_ request: DevelopmentAnalysisRequest, sourceContentID: String, cancellation: DevelopmentAnalysisCancellation? = nil, rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "", residentObserver: DevelopmentBWSummaryResidentV3.Observer? = nil, analysisImages: DevelopmentAnalysisImageCache? = nil) throws -> DevelopmentAnalysisResult {
     try validateCaptureAuthority(); retireIdleCanonicalContextForIndependentWork()
     let binding = DevelopmentLocalEditSourceBinding(sourceContentID:sourceContentID,exifOrientation:originalEXIFOrientation,
       orientedWidth:Int(nativeSize.width),orientedHeight:Int(nativeSize.height))
@@ -402,7 +440,7 @@ final class PreviewNativeSource: @unchecked Sendable {
       }
       let result = try DevelopmentAnalysisEngine.run(capture:capture,request:request,sourceBinding:binding,
         memoryHint:contextMemoryLimitMiB,cache:&v3AnalysisCache,localDecoderContractFingerprint:localDecoderContractFingerprint,
-        dehazeContext:dehaze,cancellation:cancellation)
+        dehazeContext:dehaze,cancellation:cancellation,analysisImages:analysisImages,sourceAuthority:{ try self.validateCaptureAuthority() })
       try validateCaptureAuthority(); return result
     } catch { try validateCaptureAuthority(); throw error }
   }

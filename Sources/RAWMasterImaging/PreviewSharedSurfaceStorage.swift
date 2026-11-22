@@ -4,6 +4,7 @@ import CoreVideo
 import IOSurface
 import Metal
 import Darwin
+import ObjectiveC
 
 struct PreviewSharedSurfaceLayout: Equatable {
   let width: Int, height: Int, rowBytes: Int, allocationBytes: Int
@@ -30,6 +31,23 @@ protocol PreviewSharedImageBacking: AnyObject {
 enum PreviewSharedImageBridge {
   static let colorSpace = CGColorSpace(name: CGColorSpace.sRGB)!
   static let bitmapInfo = CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue))
+  private final class CanvasRaster {
+    let image: CGImage
+    init(_ image: CGImage) { self.image = image }
+  }
+  private final class RasterKey {}
+  private static let key = RasterKey()
+  private static var rasterKey: UnsafeRawPointer { UnsafeRawPointer(Unmanaged.passUnretained(key).toOpaque()) }
+  static func presentationImage(_ cg: CGImage) -> NSImage {
+    let image = NSImage(cgImage: cg,size:NSSize(width:cg.width,height:cg.height))
+    // The provider retains the read-locked IOSurface. Keep that original immutable raster
+    // available for canvas draws without requesting an AppKit representation at each zoom.
+    objc_setAssociatedObject(image,rasterKey,CanvasRaster(cg),.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    return image
+  }
+  static func canvasRaster(for image: NSImage) -> CGImage? {
+    (objc_getAssociatedObject(image,rasterKey) as? CanvasRaster)?.image
+  }
   private final class ReleaseBox {
     private let lock = NSLock()
     private var backing: (any PreviewSharedImageBacking)?
@@ -143,8 +161,7 @@ final class PreviewSharedSurfaceStorage: PreviewSharedImageBacking {
       owner.lock.lock()
       guard owner.phase == .readLocked else { owner.lock.unlock(); throw PreviewPresentationError.imageCreationFailed }
       owner.phase = .providerOwned; owner.lock.unlock()
-      let size = NSSize(width: owner.sharedImageLayout.width, height: owner.sharedImageLayout.height)
-      let image = NSImage(cgImage: cg, size: size)
+      let image = PreviewSharedImageBridge.presentationImage(cg)
       try Task.checkCancellation(); try owner.reservation.requireOpenAdmission()
       return .init(image: image, cgImage: cg, layout: owner.sharedImageLayout,
                    allocationID: owner.reservation.id, actualAllocationBytes: owner.actualAllocationBytes, gpuJoined: true)

@@ -96,7 +96,7 @@ enum PreviewRawBaseRenderer {
     }
   }
   static func v3CacheEligible(_ recipe: DevelopmentRecipe, sourceIsRAW: Bool) -> Bool {
-    guard sourceIsRAW, recipe.schemaVersion == 3, let payload = recipe.adjustmentsV3,
+    guard sourceIsRAW, recipe.schemaVersion == 3, let payload = recipe.adjustmentsV3, payload.aiDenoise == nil,
       (try? DevelopmentRendererV3.validateSupport(recipe,sourceIsRAW:true)) != nil else { return false }
     if DevelopmentBrillianceAdaptiveV1.isActive(payload.light) { return false }
     if DevelopmentRendererV3.hasNewEffects(payload) { return true }
@@ -110,6 +110,7 @@ enum PreviewRawBaseRenderer {
                        grainFinalTransport: PreviewGrainFinalTransportV1.Request? = nil) throws -> PreviewPixels? {
     try cacheAttempt {
       try DevelopmentRendererV3.validateSupport(recipe,sourceIsRAW:true)
+      guard recipe.adjustmentsV3?.aiDenoise == nil else { throw RawBaseCacheError.ineligible }
       if DevelopmentBrillianceAdaptiveV1.isActive(recipe.adjustmentsV3!.light) {
         // This worker already serializes native renders. The adaptive operator has its own
         // bounded native transport; retaining a whole RGBAf base here duplicates its input.

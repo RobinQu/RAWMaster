@@ -1,0 +1,36 @@
+{
+  "case": "lake",
+  "options": {
+    "model": "doubao-seedream-5-5-261028",
+    "size": "1248x832",
+    "output_format": "png",
+    "watermark": false,
+    "response_format": "b64_json",
+    "background": "opaque"
+  },
+  "referencesInRequestOrder": [
+    {
+      "file": "lake.png",
+      "sha256": "e48857c7e657563f473357f97eddc4f53fea94897c2935c3ae829b4fc7fd84b1"
+    },
+    {
+      "file": "blue-hour-reference.png",
+      "sha256": "2919803c9949f53f6b0ac46c1652cc81a2e3a618477dc82759f451f713d3443a"
+    }
+  ],
+  "prompt": "Edit the FIRST photograph of the mountain lake. Borrow only the blue-hour illumination from the SECOND photograph: a cool twilight sky, subdued foreground and a few understated warm highlights on existing sun-facing rock, with consistent reflections on water. Preserve exactly the mountain ridge outline, tree silhouettes, all small boats, passengers, shoreline, wakes, number of objects, viewpoint and crop in the first image. Do not introduce any tower, rocket, light fixtures, buildings, clouds or objects from the second photo. A realistic photograph, the same location and event.",
+  "http": 200,
+  "requestId": "021795333914743f4d7ae5d724d9e41b76430b6d79530bc79b824",
+  "httpSeconds": 13.299,
+  "modelReturned": "doubao-seedream-5-5-261028",
+  "usage": {
+    "input_images": 2,
+    "generated_images": 1,
+    "output_tokens": 4056,
+    "total_tokens": 4056
+  },
+  "mode": "RGB",
+  "sha256": "b083643ee171bfca7f504e59715165061b4490f8be0b6de0c6a92c2b0b0af02b",
+  "status": "decoded",
+  "elapsedSeconds": 13.314
+}

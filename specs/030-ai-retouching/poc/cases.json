@@ -1,0 +1,13 @@
+{
+  "size": [1024, 1024],
+  "cases": {
+    "lake": {
+      "input": "lake-input.png",
+      "prompt": "An unchanged realistic photograph of a turquoise alpine lake under a clear blue sky, with mountains, pine trees and small occupied rowing boats. Remove only the small red STOP sign and its grey post in the lower right of the water. Restore natural continuous ripples and visible lakebed in that spot. Keep every boat, person, mountain outline, shoreline, color, exposure, framing and all other details exactly as in the reference."
+    },
+    "portrait": {
+      "input": "portrait-input.png",
+      "prompt": "An unchanged realistic studio portrait of the same smiling short-haired astronaut wearing an orange suit and holding a black helmet, with the flag and spacecraft behind her. Correct only the underexposed face by gently lifting its shadows to match the existing studio lighting. Preserve her identity, expression, pores, hair, eyes and teeth, all uniform patches and their lettering, the helmet, background, framing and color. No smoothing or new objects."
+    }
+  }
+}

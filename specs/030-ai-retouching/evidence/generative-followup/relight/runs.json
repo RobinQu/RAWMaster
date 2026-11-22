@@ -1,0 +1,83 @@
+{
+  "model": "FLUX.3 Image Klein",
+  "quantization": "MLX q8-16",
+  "cases": {
+    "preset": {
+      "prompt": "Edit only the lighting of the person in the FIRST image. Return the same original square NASA studio photograph with the same identity, expression, pose, eyes, hair, lettering on the suit, helmet, flags, spacecraft and camera framing. Preserve the studio background exactly and do not add or remove objects. Use natural-looking skin texture. Relight the face with a single broad neutral softbox at image-right, above eye level; the viewer-right cheek should be visibly brighter than the viewer-left cheek, with a soft nose shadow falling toward image-left. No change to the global exposure.",
+      "width": 512,
+      "height": 512,
+      "seed": 31903,
+      "steps": 16,
+      "guidance": null,
+      "alpha": 6.93,
+      "references": [
+        {
+          "file": "source.png",
+          "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5"
+        }
+      ],
+      "profile": "q8-16",
+      "transformer": "q8",
+      "text_encoder": "q8",
+      "process": {
+        "wallSeconds": 41.15,
+        "exit": 0
+      },
+      "outputSha256": "4ea1e3dc0031681cc9c8733f7bd9fedc086f1ba9aa4fc774714a350944757f43"
+    },
+    "reference": {
+      "prompt": "Edit only the lighting of the person in the FIRST image. Return the same original square NASA studio photograph with the same identity, expression, pose, eyes, hair, lettering on the suit, helmet, flags, spacecraft and camera framing. Preserve the studio background exactly and do not add or remove objects. Use natural-looking skin texture. Use the SECOND image only as a lighting reference. Transfer its key-light direction and soft contrast to the face, without copying the sphere, background or geometry of the reference. No change to the global exposure.",
+      "width": 512,
+      "height": 512,
+      "seed": 31903,
+      "steps": 16,
+      "guidance": null,
+      "alpha": 6.93,
+      "references": [
+        {
+          "file": "source.png",
+          "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5"
+        },
+        {
+          "file": "light-sphere.png",
+          "sha256": "9ef5fd0f52872ba24369a3d7dba8868253655f4f4ddb2fb255b6bf521fa171a2"
+        }
+      ],
+      "profile": "q8-16",
+      "transformer": "q8",
+      "text_encoder": "q8",
+      "process": {
+        "wallSeconds": 60.33,
+        "exit": 0
+      },
+      "outputSha256": "4addc7a46141fe6d1cb52ee66b4b3d29e200fbff0b6e952e9b4e98a0caf3fb71"
+    },
+    "photo": {
+      "prompt": "Edit only the lighting of the person in the FIRST image. Return the same original square NASA studio photograph with the same identity, expression, pose, eyes, hair, lettering on the suit, helmet, flags, spacecraft and camera framing. Preserve the studio background exactly and do not add or remove objects. Use natural-looking skin texture. Use the SECOND image only as a lighting reference. Transfer its key-light direction and soft contrast to the face, without copying the other person's identity, uniform, background or geometry of the reference. No change to the global exposure.",
+      "width": 512,
+      "height": 512,
+      "seed": 31903,
+      "steps": 16,
+      "guidance": null,
+      "alpha": 6.93,
+      "references": [
+        {
+          "file": "source.png",
+          "sha256": "88431cd9653ccd539741b555fb0a46b61558b301d4110412b5bc28b5e3ea6cb5"
+        },
+        {
+          "file": "light-photo.png",
+          "sha256": "13710b88bfcb76a3351eefea5ee0680b6ef62ec9d86b9a1ef4dfe72eceb64c40"
+        }
+      ],
+      "profile": "q8-16",
+      "transformer": "q8",
+      "text_encoder": "q8",
+      "process": {
+        "wallSeconds": 52.08,
+        "exit": 0
+      },
+      "outputSha256": "5ed071828b0ff22a399fea6166a89b43aa0b3d250053f1755322bd5f46a34ba4"
+    }
+  }
+}

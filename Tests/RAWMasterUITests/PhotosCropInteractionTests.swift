@@ -66,4 +66,51 @@ final class PhotosCropInteractionTests: XCTestCase {
         XCTAssertThrowsError(try constraint.ratio(source: .init(width: 6000, height: 4000)))
         XCTAssertThrowsError(try PhotosCropInteraction.resized(start, handle: .left, delta: .init(x: CGFloat.infinity, y: 0), plane: plane, ratio: nil))
     }
+
+    func testLightflowStyleSquareHandlesAndCornerRotationRegions() {
+        let crop = CGRect(x: 100, y: 100, width: 300, height: 200)
+        let image = CGRect(x: 50, y: 50, width: 400, height: 300)
+        let handles: [(PhotosCropHandle, CGPoint)] = [
+            (.topLeft, .init(x: crop.minX, y: crop.minY)),
+            (.top, .init(x: crop.midX, y: crop.minY)),
+            (.topRight, .init(x: crop.maxX, y: crop.minY)),
+            (.right, .init(x: crop.maxX, y: crop.midY)),
+            (.bottomRight, .init(x: crop.maxX, y: crop.maxY)),
+            (.bottom, .init(x: crop.midX, y: crop.maxY)),
+            (.bottomLeft, .init(x: crop.minX, y: crop.maxY)),
+            (.left, .init(x: crop.minX, y: crop.midY))
+        ]
+        for (expected, point) in handles {
+            XCTAssertEqual(PhotosCropInteraction.hit(point, cropRect: crop, imageRect: image), expected)
+            XCTAssertNotNil(PhotosCropInteraction.hit(.init(x: point.x + 10, y: point.y + 10),
+                cropRect: crop, imageRect: image))
+        }
+        XCTAssertEqual(PhotosCropInteraction.hit(.init(x: crop.midX, y: crop.midY),
+            cropRect: crop, imageRect: image), .center)
+        for point in [
+            CGPoint(x: crop.minX - 14, y: crop.minY - 14),
+            CGPoint(x: crop.maxX + 14, y: crop.minY - 14),
+            CGPoint(x: crop.minX - 14, y: crop.maxY + 14),
+            CGPoint(x: crop.maxX + 14, y: crop.maxY + 14)
+        ] {
+            XCTAssertEqual(PhotosCropInteraction.hit(point, cropRect: crop, imageRect: image), .straighten)
+        }
+    }
+
+    func testOptionStyleCenteredResizePreservesCenterAndPhysicalAspect() throws {
+        let plane = DevelopmentContinuousRectV3(x: 0, y: 0, width: 1000, height: 500)
+        let start = NormalizedCrop(x: 0.2, y: 0.2, width: 0.4, height: 0.4)
+        let centered = try PhotosCropInteraction.resized(start, handle: .right,
+            delta: .init(x: 0.05, y: 0), plane: plane, ratio: nil, fromCenter: true)
+        XCTAssertEqual(centered.x, 0.15, accuracy: 1e-12)
+        XCTAssertEqual(centered.width, 0.5, accuracy: 1e-12)
+        XCTAssertEqual(centered.y, start.y); XCTAssertEqual(centered.height, start.height)
+        XCTAssertEqual(centered.x + centered.width / 2, start.x + start.width / 2, accuracy: 1e-12)
+
+        let locked = try PhotosCropInteraction.resized(start, handle: .top,
+            delta: .init(x: 0, y: -0.05), plane: plane, ratio: 2, fromCenter: true)
+        XCTAssertEqual(locked.width * plane.width / (locked.height * plane.height), 2, accuracy: 1e-12)
+        XCTAssertEqual(locked.x + locked.width / 2, start.x + start.width / 2, accuracy: 1e-12)
+        XCTAssertEqual(locked.y + locked.height / 2, start.y + start.height / 2, accuracy: 1e-12)
+    }
 }

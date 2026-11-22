@@ -87,4 +87,21 @@ final class DevelopmentCurveInteractionTests: XCTestCase {
         XCTAssertTrue(direct.enabled)
         XCTAssertEqual(direct.rgb.curve,saved.rgb.curve)
     }
+    @MainActor func testCurveKeyboardCoordinatesChannelsSelectionAndDeselection() throws {
+        let control=DevelopmentCurveControl(frame:.init(x:0,y:0,width:240,height:180))
+        control.curve = .init(points:[.init(x:0,y:0),.init(x:0.5,y:0.4),.init(x:1,y:1)]);control.selected=1
+        var channels=0,deselects=0;control.onChannelChange={_ in channels+=1};control.onDeselect={deselects+=1}
+        func key(_ code:UInt16,_ text:String="",flags:NSEvent.ModifierFlags=[])throws->NSEvent {
+            try XCTUnwrap(NSEvent.keyEvent(with:.keyDown,location:.zero,modifierFlags:flags,timestamp:1,windowNumber:0,context:nil,characters:text,charactersIgnoringModifiers:text,isARepeat:false,keyCode:code))
+        }
+        control.keyDown(with:try key(124));XCTAssertEqual(control.curve.points[1].x,0.505,accuracy:1e-9)
+        control.keyDown(with:try key(126));XCTAssertEqual(control.curve.points[1].y,0.405,accuracy:1e-9)
+        control.keyDown(with:try key(123,"",flags:.shift));XCTAssertEqual(control.curve.points[1].x,0.455,accuracy:1e-9)
+        control.keyDown(with:try key(0,"["));XCTAssertEqual(control.selected,0)
+        control.keyDown(with:try key(0,"]"));XCTAssertEqual(control.selected,1)
+        control.keyDown(with:try key(0,"2"));XCTAssertEqual(control.channel,.red);XCTAssertEqual(control.selected,0);XCTAssertEqual(channels,1)
+        control.keyDown(with:try key(0,"d"));XCTAssertFalse(control.selectionActive);XCTAssertEqual(deselects,1)
+        let unchanged=control.curve;control.keyDown(with:try key(126));XCTAssertEqual(control.curve,unchanged)
+        control.keyDown(with:try key(0,"["));XCTAssertTrue(control.selectionActive)
+    }
 }

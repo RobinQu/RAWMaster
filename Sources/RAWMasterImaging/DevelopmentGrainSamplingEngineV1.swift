@@ -21,6 +21,24 @@ final class DevelopmentGrainSamplingEngineV1:CIImageProcessorKernel {
    }
    out.write(float4(value,0.0,0.0,1.0),gid);
  }
+ kernel void rmSizedRoughnessGrain(texture2d<float,access::write> out [[texture(0)]],
+   constant int4 &region [[buffer(0)]],constant int4 &bounds [[buffer(1)]],
+   constant float2 &params [[buffer(2)]],uint2 gid [[thread_position_in_grid]]) {
+   if(gid.x>=uint(region.z) || gid.y>=uint(region.w)) return;
+   int2 g=int2(region.x+int(gid.x),region.y+region.w-1-int(gid.y)); float value=0.0;
+   if(g.x>=bounds.x && g.y>=bounds.y && g.x<bounds.z && g.y<bounds.w) {
+    float scale=1.0+params.x*15.0;
+    int2 cell=int2(floor(float2(g)/scale));
+    auto hash=[](uint2 p)->float {
+     uint n=p.x*0x9e3779b9u ^ p.y*0x85ebca6bu ^ 0x021a31b7u;
+     n^=n>>16;n*=0x7feb352du;n^=n>>15;n*=0x846ca68bu;n^=n>>16;
+     return float(n>>8)*(1.0/16777216.0)-.5;
+    };
+    float a=hash(uint2(cell)),b=hash(uint2(cell+int2(17,29)));
+    value=mix(a,(a+b)*.5,1.0-params.y);
+   }
+   out.write(float4(value,0.0,0.0,1.0),gid);
+ }
  """#
  private static let lock=NSLock()
  private static var cached:(UInt64,MTLComputePipelineState)?
@@ -32,6 +50,14 @@ final class DevelopmentGrainSamplingEngineV1:CIImageProcessorKernel {
   let library=try device.makeLibrary(source:metalSource,options:nil)
   guard let fn=library.makeFunction(name:"rm022Grain")else{throw GrainError.unsupported("lattice function")}
   let p=try device.makeComputePipelineState(function:fn);cached=(device.registryID,p);return p
+ }
+ private static var cachedSized:(UInt64,MTLComputePipelineState)?
+ private static func sizedPipeline(_ device:MTLDevice)throws->MTLComputePipelineState {
+  lock.lock();defer{lock.unlock()}
+  if let c=cachedSized {try grainRequire(c.0==device.registryID,"same actual sized device");return c.1}
+  let library=try device.makeLibrary(source:metalSource,options:nil)
+  guard let fn=library.makeFunction(name:"rmSizedRoughnessGrain")else{throw GrainError.unsupported("sized lattice function")}
+  let p=try device.makeComputePipelineState(function:fn);cachedSized=(device.registryID,p);return p
  }
  static func integers(_ r:CGRect)throws->SIMD4<Int32>{
   let a=[r.minX,r.minY,r.width,r.height]
@@ -48,6 +74,15 @@ final class DevelopmentGrainSamplingEngineV1:CIImageProcessorKernel {
   let bounds=[Int(b.x),Int(b.y),Int(b.x+b.z),Int(b.y+b.w)]
   let applyExtent=[Int(i.x),Int(i.y),Int(i.z),Int(i.w)]
   return try apply(withExtent:extent,inputs:nil,arguments:["bounds":bounds,"applyExtent":applyExtent])
+ }
+ static func image(_ extent:CGRect,effects:DevelopmentEffectsV3?,activeBounds:CGRect?=nil)throws->CIImage {
+  guard let effects, effects.usesSizeRoughnessSampling else { return try image(extent,activeBounds:activeBounds) }
+  try effects.validate()
+  let i=try integers(extent),active=activeBounds ?? extent,b=try integers(active)
+  try grainRequire(extent.contains(active),"sized active bounds contained by apply extent")
+  let bounds=[Int(b.x),Int(b.y),Int(b.x+b.z),Int(b.y+b.w)],applyExtent=[Int(i.x),Int(i.y),Int(i.z),Int(i.w)]
+  return try apply(withExtent:extent,inputs:nil,arguments:["bounds":bounds,"applyExtent":applyExtent,
+    "grainSize":effects.grainSize ?? 0.25,"grainRoughness":effects.grainRoughness ?? 0.5])
  }
  override class func process(with inputs:[CIImageProcessorInput]?,arguments:[String:Any]?,output:CIImageProcessorOutput)throws {
   try grainRequire(inputs==nil || inputs!.isEmpty,"generator no input")
@@ -67,11 +102,18 @@ final class DevelopmentGrainSamplingEngineV1:CIImageProcessorKernel {
   try grainRequire(t.pixelFormat == .r32Float && t.width==Int(r.z) && t.height==Int(r.w),"Rf actual r32Float/region texture origin contract")
   // No undocumented texture offset: strict 1:1 local gid ↔ output.region min + gid.
   // Every requested tile pixel is written, including zeros outside apply extent/tails.
-  let p=try pipeline(cb.device)
+  let size=arguments?["grainSize"] as? Double
+  let p=try size == nil ? pipeline(cb.device):sizedPipeline(cb.device)
   guard let encoder=cb.makeComputeCommandEncoder()else{throw GrainError.unsupported("existing system encoder")}
   encoder.setComputePipelineState(p);encoder.setTexture(t,index:0)
   encoder.setBytes(&r,length:MemoryLayout<SIMD4<Int32>>.stride,index:0)
   encoder.setBytes(&bounds,length:MemoryLayout<SIMD4<Int32>>.stride,index:1)
+  if let size {
+   let roughness=arguments?["grainRoughness"] as? Double ?? 0.5
+   try grainRequire((0...1).contains(size) && (0...1).contains(roughness),"sized grain parameters outside 0...1")
+   var params=SIMD2<Float>(Float(size),Float(roughness))
+   encoder.setBytes(&params,length:MemoryLayout<SIMD2<Float>>.stride,index:2)
+  }
   let tw=max(1,min(p.threadExecutionWidth,32));let th=max(1,min(8,p.maxTotalThreadsPerThreadgroup/tw))
   let groups=MTLSize(width:(Int(r.z)+tw-1)/tw,height:(Int(r.w)+th-1)/th,depth:1)
   encoder.dispatchThreadgroups(groups,threadsPerThreadgroup:MTLSize(width:tw,height:th,depth:1));encoder.endEncoding()
@@ -84,6 +126,11 @@ final class DevelopmentGrainSamplingEngineV1:CIImageProcessorKernel {
   n ^= n>>16;n = n &* 0x7feb352d;n ^= n>>15;n = n &* 0x846ca68b;n ^= n>>16
   return Float(n>>8)*(Float(1)/Float(16777216))-Float(0.5)
  }
+ static func cpuSized(_ x:Int,_ y:Int,size:Double,roughness:Double)->Float {
+  let scale=1+size*15,cx=Int(floor(Double(x)/scale)),cy=Int(floor(Double(y)/scale))
+  let a=cpu(cx,cy),b=cpu(cx+17,cy+29)
+  return a+(b-a)*Float(0.5*(1-roughness))
+ }
 }
 
 private enum GrainError:Error { case unsupported(String) }
@@ -92,7 +139,7 @@ private func grainRequire(_ condition:Bool,_ reason:String)throws {
 }
 
 extension DevelopmentGrainSamplingEngineV1 {
- static let originalPointSHA="775c7009e4a86947f23d2f4b207c261ee578a416585e85133c874d4b261386db"
+ static let originalPointSHA="9aa99ca63a6b87e084a8eb430435f3996e01510e5ef7a73c276169fa2b4d3f7c"
  static let legacyInputIdentity="legacy-grain-canonical-U-v1"
  static var pointSource:String {
   DevelopmentColorEngineV3.metalSource
@@ -139,13 +186,88 @@ extension DevelopmentGrainSamplingEngineV1 {
  static func apply(_ payload:DevelopmentAdjustmentsV3,to input:CIImage,context:CIContext?,checkCancellation:(()throws->Void)?)throws->CIImage {
   try checkCancellation?()
   try grainRequire(context != nil && validNativeExtent(input.extent),"native grain context/grid required")
-  let grain=try image(input.extent).samplingNearest()
+  let grain=try image(input.extent,effects:payload.effects).samplingNearest()
   let l=payload.light,c=payload.color,b=payload.blackAndWhite
-  let args:[Any]=[input,grain,CIVector(x:l.brightness,y:l.contrast,z:l.blackPoint,w:0),CIVector(x:c.saturation,y:c.vibrance,z:c.cast,w:0),CIVector(x:b.intensity,y:b.neutrals,z:b.tone,w:b.grain),CIVector(x:l.enabled ? 1:0,y:c.enabled ? 1:0,z:b.enabled ? 1:0,w:0)]
+  let effectGrain=payload.effects?.enabled == true ? payload.effects?.grain ?? 0:0
+  let combinedGrain=min(1,b.grain+effectGrain)
+  let args:[Any]=[input,grain,CIVector(x:l.brightness,y:l.contrast,z:l.blackPoint,w:l.whites),CIVector(x:c.saturation,y:c.vibrance,z:c.cast,w:0),CIVector(x:b.intensity,y:b.neutrals,z:b.tone,w:combinedGrain),CIVector(x:l.enabled ? 1:0,y:c.enabled ? 1:0,z:b.enabled ? 1:0,w:0)]
   guard let result=try point.get().apply(extent:input.extent,roiCallback:{_,r in r},arguments:args)else{throw GrainError.unsupported("native grain graph")}
   try checkCancellation?();return result
  }
+ static let colorGrainLattice = #"""
+  float rmColorGrainHash(int2 p) {
+    uint2 v=uint2(p); uint n=v.x*0x9e3779b9u ^ v.y*0x85ebca6bu ^ 0x021a31b7u;
+    n^=n>>16; n*=0x7feb352du; n^=n>>15; n*=0x846ca68bu; n^=n>>16;
+    return float(n>>8)*(1.0/16777216.0)-.5;
+  }
+  float rmColorGrainAt(int2 p, float size, float roughness) {
+    if (size<0.0) return rmColorGrainHash(p);
+    int2 cell=int2(floor(float2(p)/(1.0+15.0*size)));
+    float a=rmColorGrainHash(cell), b=rmColorGrainHash(cell+int2(17,29));
+    return mix(a,(a+b)*.5,1.0-roughness);
+  }
+  float rmSourceGrainSample(float2 at,float4 settings) {
+    float2 native=at/settings.w-.5; int2 low=int2(floor(native)); float2 t=fract(native);
+    float noise=rmColorGrainAt(low,settings.y,settings.z);
+    if (settings.w<1.0) {
+      float right=rmColorGrainAt(low+int2(1,0),settings.y,settings.z);
+      float upper=rmColorGrainAt(low+int2(0,1),settings.y,settings.z);
+      float diagonal=rmColorGrainAt(low+int2(1,1),settings.y,settings.z);
+      noise=mix(mix(noise,right,t.x),mix(upper,diagonal,t.x),t.y);
+    }
+    return noise;
+  }
+  """#
+ private static let colorGrain: Result<CIKernel, Error> = Result {
+  let source = #"""
+  #include <metal_stdlib>
+  #include <CoreImage/CoreImage.h>
+  using namespace metal;
+  extern "C" { namespace coreimage {
+  \#(DevelopmentGrainSamplingEngineV1.colorGrainLattice)
+  float3 rmColorGrainEncode(float3 c) {
+    float3 a=abs(c);
+    return sign(c)*select(1.055*pow(a,float3(1.0/2.4))-.055,12.92*a,a<=.0031308);
+  }
+  float3 rmColorGrainDecode(float3 c) {
+    float3 a=abs(c);
+    return sign(c)*select(pow((a+.055)/1.055,float3(2.4)),a/12.92,a<=.04045);
+  }
+  [[stitchable]] float4 rmEffectsColorGrain(sampler src,float4 settings,destination dest) {
+    float2 at=dest.coord(); float4 p=src.sample(src.transform(at));
+    if (!all(isfinite(p)) || p.a<=0) return p;
+    // Coordinates are source-native before crop or geometry. A proxy pixel samples the
+    // same four lattice values as the bilinear FIT presentation of the native grain.
+    float noise=rmSourceGrainSample(at,settings);
+    float3 encoded=rmColorGrainEncode(p.rgb/p.a);
+    float level=clamp(dot(encoded,float3(.2126,.7152,.0722)),0.0,1.0);
+    encoded+=noise*.06*settings.x*(.35+sqrt(level));
+    return float4(rmColorGrainDecode(encoded)*p.a,p.a);
+  }
+  } }
+  """#
+  guard let kernel = try CIKernel.kernels(withMetalString: source).first(where: { $0.name == "rmEffectsColorGrain" }) else {
+   throw GrainError.unsupported("colour grain kernel")
+  }
+  return kernel
+ }
+ static func colorGrainSettings(_ effects: DevelopmentEffectsV3, scale: Double) -> CIVector {
+  let size = effects.usesSizeRoughnessSampling ? effects.grainSize ?? 0.25 : -1
+  return CIVector(x: effects.grain, y: size, z: effects.grainRoughness ?? 0.5, w: scale)
+ }
+ static func applyColorGrain(_ effects: DevelopmentEffectsV3, to input: CIImage, proxyScale: Double) throws -> CIImage {
+  guard proxyScale > 0, proxyScale <= 1 else { throw GrainError.unsupported("colour grain source scale") }
+  let settings = colorGrainSettings(effects,scale:proxyScale)
+  guard let output = try colorGrain.get().apply(extent: input.extent, roiCallback: { _, rect in rect }, arguments: [input,settings]) else {
+   throw GrainError.unsupported("colour grain graph")
+  }
+  return output
+ }
  static func stageIdentity(_ payload:DevelopmentAdjustmentsV3)->String {
-  payload.blackAndWhite.grainSamplingVersion==nil ? "":"/grain:"+sourceVersion
+  let legacy=payload.blackAndWhite.grainSamplingVersion==nil ? "":"/grain:"+sourceVersion
+  let effects=payload.effects?.enabled == true && (payload.effects?.grain ?? 0) != 0 ? "/effects-grain:"+sourceVersion:""
+  let sized=payload.effects?.usesSizeRoughnessSampling == true ? "/sized-roughness-grain-v1":""
+  let color = !effects.isEmpty && !payload.blackAndWhite.enabled ? "/effects-color-grain-v1" : ""
+  return legacy+effects+sized+color
  }
 }

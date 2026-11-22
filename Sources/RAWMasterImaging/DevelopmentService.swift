@@ -41,6 +41,9 @@ public actor DevelopmentService {
   public init() {qaBrilliancePublicV1=DevelopmentBrilliancePublicV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,environment:ProcessInfo.processInfo.environment)}
   init(qaBrilliancePublicV1:Bool){self.qaBrilliancePublicV1=qaBrilliancePublicV1}
   public func preview(source: EditingSourceSnapshot, recipe: DevelopmentRecipe, maxPixel: Int = 1600) async throws -> DevelopmentPreview {
+    if let scene = recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth, scene.sourceSHA256 != source.contentSHA256 {
+      throw EditingError.staleSource
+    }
     guard !DevelopmentBrilliancePublicV1.active(recipe) else{throw PreviewPresentationError.unsupported}
     return try await renderingTask {
       try RenderFiles.verify(source)
@@ -61,6 +64,9 @@ public actor DevelopmentService {
     }
   }
   public func render(source: EditingSourceSnapshot, recipe: DevelopmentRecipe, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL] = [], preparePublication: RenderPublicationPreparation? = nil) async throws -> RenderedPhoto {
+    if let scene = recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth, scene.sourceSHA256 != source.contentSHA256 {
+      throw EditingError.staleSource
+    }
     let newBrilliance=DevelopmentBrilliancePublicV1.active(recipe)
     guard !newBrilliance || (qaBrilliancePublicV1 && format == .tiff16) else{throw PreviewPresentationError.unsupported}
     return try await renderingTask {
@@ -218,6 +224,11 @@ enum PhotoRenderer {
     return CGSize(width: (width*c-height*s)/cos2, height: (height*c-width*s)/cos2)
   }
   static func write(_ original: CIImage, format: PhotoRenderFormat, destination: URL, protectedURLs: [URL], sourceDepth: Int?, preparePublication: RenderPublicationPreparation? = nil, renderContext: CIContext? = nil, tiffTransport:TIFF16Output.Transport = .whole, beforePublish: () throws -> Void = {}) throws -> RenderedPhoto {
+    let telemetry = ImagePerformanceTelemetry.shared
+    let token = telemetry.begin(operation: "导出图像", stage: format.filenameExtension, queue: "导出")
+    var outcome = ImagePerformanceOutcome.failed
+    defer { telemetry.end(token, outcome: outcome,
+      pixelCount: outcome == .succeeded ? Int(original.extent.width * original.extent.height) : 0) }
     let context = renderContext ?? self.context
     try RenderFiles.check(destination, protected: protectedURLs)
     let directory = destination.deletingLastPathComponent()
@@ -244,6 +255,7 @@ enum PhotoRenderer {
     // After the durable intent, publication survives late cancellation and is reconciled by Core.
     // moveItem never replaces an existing file, including a concurrent writer.
     try FileManager.default.moveItem(at: stage, to: destination)
+    outcome = .succeeded
     return RenderedPhoto(fileURL: destination, artifact: artifact)
   }
   static func inspect(_ url: URL, sourceDepth: Int? = nil) throws -> RenderArtifact {

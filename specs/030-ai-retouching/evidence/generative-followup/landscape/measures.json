@@ -1,0 +1,105 @@
+{
+  "size": [
+    768,
+    512
+  ],
+  "linearRgbControlMultiplier": [
+    0.5984,
+    0.6596000000000001,
+    0.7616000000000002
+  ],
+  "regionsXYXY": {
+    "mainBoat": [
+      217,
+      331,
+      336,
+      409
+    ],
+    "distantBoat": [
+      525,
+      278,
+      565,
+      306
+    ],
+    "mountain": [
+      190,
+      58,
+      710,
+      260
+    ],
+    "upperRightCloud": [
+      684,
+      0,
+      750,
+      38
+    ]
+  },
+  "results": {
+    "lake.png": {
+      "sha256": "e48857c7e657563f473357f97eddc4f53fea94897c2935c3ae829b4fc7fd84b1",
+      "medianLinearY": 0.27719,
+      "regions": {
+        "mainBoat": {
+          "sourceEdgeCorrelation": 1.0,
+          "meanLinearY": 0.28837
+        },
+        "distantBoat": {
+          "sourceEdgeCorrelation": 1.0,
+          "meanLinearY": 0.30215
+        },
+        "mountain": {
+          "sourceEdgeCorrelation": 1.0,
+          "meanLinearY": 0.34335
+        },
+        "upperRightCloud": {
+          "sourceEdgeCorrelation": 1.0,
+          "meanLinearY": 0.7028
+        }
+      }
+    },
+    "native-control.png": {
+      "sha256": "df80398b6128f073e5f736c50da185dc491db5e0f6352fd7c920c53d8caf6f78",
+      "medianLinearY": 0.18284,
+      "regions": {
+        "mainBoat": {
+          "sourceEdgeCorrelation": 0.9998,
+          "meanLinearY": 0.18951
+        },
+        "distantBoat": {
+          "sourceEdgeCorrelation": 0.9997,
+          "meanLinearY": 0.20078
+        },
+        "mountain": {
+          "sourceEdgeCorrelation": 0.9999,
+          "meanLinearY": 0.22538
+        },
+        "upperRightCloud": {
+          "sourceEdgeCorrelation": 0.9999,
+          "meanLinearY": 0.46104
+        }
+      }
+    },
+    "transferred.png": {
+      "sha256": "199482b9101dffbc9f6bea4e0181c49946c6f32c36838d0e8c9b3d9cdfebc5c5",
+      "medianLinearY": 0.08272,
+      "regions": {
+        "mainBoat": {
+          "sourceEdgeCorrelation": 0.7162,
+          "meanLinearY": 0.10126
+        },
+        "distantBoat": {
+          "sourceEdgeCorrelation": 0.6438,
+          "meanLinearY": 0.0937
+        },
+        "mountain": {
+          "sourceEdgeCorrelation": 0.8143,
+          "meanLinearY": 0.1199
+        },
+        "upperRightCloud": {
+          "sourceEdgeCorrelation": 0.0767,
+          "meanLinearY": 0.12088
+        }
+      }
+    }
+  }
+}

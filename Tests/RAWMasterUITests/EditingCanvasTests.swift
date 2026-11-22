@@ -2,6 +2,7 @@ import AppKit
 import XCTest
 import RAWMasterCore
 @testable import RAWMaster
+@testable import RAWMasterImaging
 
 final class EditingCanvasTests: XCTestCase {
     @MainActor func testInitialDevelopmentDraftTitleAndAdoptionTargetDoNotDescribeAdoptedAIPixels() async throws {
@@ -34,6 +35,18 @@ final class EditingCanvasTests: XCTestCase {
         XCTAssertEqual(controller.runtimeStateTitle, "已停止")
         await controller.shutdown()
     }
+    @MainActor func testCanvasDoubleClickUsesToolActionInsteadOfChangingZoom() throws {
+        let canvas = ImageCanvas(frame: .init(x: 0, y: 0, width: 320, height: 240))
+        canvas.update(image: NSImage(size: .init(width: 320, height: 240)), actualPixels: false, transform: .init())
+        var completions = 0
+        canvas.onDoubleClick = { completions += 1 }
+        let event = try XCTUnwrap(NSEvent.mouseEvent(with: .leftMouseDown, location: .init(x: 100, y: 100),
+            modifierFlags: [], timestamp: 0, windowNumber: 0, context: nil, eventNumber: 0, clickCount: 2, pressure: 1))
+        canvas.mouseDown(with: event)
+        XCTAssertEqual(completions, 1)
+        XCTAssertNil(canvas.onTransform, "A tool double-click must not publish an actual-pixel zoom")
+    }
+
     @MainActor private func wait(_ condition: () -> Bool) async throws {
         for _ in 0..<500 { if condition() { return }; try await Task.sleep(nanoseconds: 10_000_000) }
         XCTFail("Timed out waiting for canvas fixture")

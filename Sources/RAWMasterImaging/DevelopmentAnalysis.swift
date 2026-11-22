@@ -2,29 +2,34 @@ import Foundation
 import CoreImage
 import RAWMasterCore
 
-public enum DevelopmentCurveChannelV3ID: String, Sendable { case rgb, red, green, blue }
 public enum DevelopmentCurvePickerPointV3: String, Sendable { case black, midtone, white, addPoint }
 public enum DevelopmentAnalysisOperation: Equatable, Sendable {
   case histogram
   /// Versioned display-only bins; never an input to automatic adjustments.
   case displayHistogram
+  case displayMaskHistogram(UUID)
   case cropAutomatic
   case prepareDehaze
   case retouchSource(stroke: DevelopmentStroke, explicitDonor: DevelopmentSourcePoint?)
+  case retouch(stroke: DevelopmentStroke, explicitDonor: DevelopmentSourcePoint?, mode: DevelopmentRetouchMode)
   case redEyeAt(sourcePoint: DevelopmentSourcePoint, radiusInShortEdge: Double, strength: Double)
   case redEyeAutomatic
   case automatic(DevelopmentAdjustmentID?)
+  case automaticLight(DevelopmentLightAutoFieldV3)
   case summary(DevelopmentAdjustmentID, amount: Double)
   case curvePicker(channel: DevelopmentCurveChannelV3ID, point: DevelopmentCurvePickerPointV3, sourcePoint: DevelopmentSourcePoint)
   // Represented for a stable adapter boundary; P3B-A explicitly returns unsupported for these B tools.
   case whiteBalancePicker(sourcePoint: DevelopmentSourcePoint, mode: DevelopmentWhiteBalanceAdjustmentV3)
   case selectiveColorPicker(slot: DevelopmentSelectiveColorSlotV3, sourcePoint: DevelopmentSourcePoint)
+  case defringePicker(band: DevelopmentDefringeBandV3, sourcePoint: DevelopmentSourcePoint)
+  case pointColorPicker(id: UUID, sourcePoint: DevelopmentSourcePoint)
   case whiteBalanceAutomatic(mode: DevelopmentWhiteBalanceModeV3)
   var localTool: DevelopmentLocalTool? {
-    switch self { case .retouchSource:return .retouch; case .redEyeAt,.redEyeAutomatic:return .redEye; default:return nil }
+    switch self { case .retouchSource,.retouch:return .retouch; case .redEyeAt,.redEyeAutomatic:return .redEye; default:return nil }
   }
-  var isHistogram: Bool { switch self { case .histogram,.displayHistogram:return true;default:return false } }
-  var isDisplayHistogram: Bool { if case .displayHistogram = self { return true };return false }
+  var isHistogram: Bool { self == .histogram || isDisplayHistogram }
+  var isDisplayHistogram: Bool { switch self { case .displayHistogram, .displayMaskHistogram: return true; default: return false } }
+  var scopeMaskID: UUID? { if case let .displayMaskHistogram(id) = self { return id }; return nil }
 }
 public enum DevelopmentAnalysisSampling: Equatable, Sendable {
   case legacy
@@ -74,6 +79,9 @@ public struct DevelopmentAnalysisRequest: Sendable {
       [roi.x,roi.y,roi.width,roi.height].allSatisfy(\.isFinite), roi.x >= 0, roi.y >= 0, roi.width > 0, roi.height > 0,
       roi.x+roi.width <= 1, roi.y+roi.height <= 1 else { throw DevelopmentPreviewError.invalidRequest }
     if operation.isDisplayHistogram { guard stage == .workingImageBeforeGeometry else { throw DevelopmentPreviewError.invalidRequest } }
+    if let id = operation.scopeMaskID, preview.recipe.adjustmentsV3?.masks.contains(where: { $0.id == id }) != true {
+      throw DevelopmentPreviewError.invalidRequest
+    }
     if !operation.isHistogram { guard preview.recipe.schemaVersion == 3 else { throw DevelopmentAdjustmentCommandError.requiresV3 } }
     // Natural Auto is still unsupported. Picker has a distinct pre-curves contract,
     // including disabled natural metadata; never dispatch it through legacy sampling.
@@ -101,6 +109,8 @@ public struct DevelopmentAnalysisRequest: Sendable {
     } else if dehazeInputV1 != nil { throw DevelopmentPreviewError.invalidRequest }
     switch operation {
     case .retouchSource(let stroke,let donor): try stroke.validate(); try donor?.validate()
+    case .retouch(let stroke,let donor,let mode):
+      try stroke.validate(); try donor?.validate(); if mode == .clone, donor == nil { throw DevelopmentPreviewError.invalidRequest }
     case .redEyeAt(let point,let radius,let strength):
       try DevelopmentStroke(points:[.init(position:point)],radiusInShortEdge:radius,strength:strength).validate()
     case let .summary(group,amount): guard [.light,.color,.blackAndWhite].contains(group), amount.isFinite, (-1...1).contains(amount) else { throw DevelopmentPreviewError.invalidRequest }
@@ -110,6 +120,8 @@ public struct DevelopmentAnalysisRequest: Sendable {
       switch mode { case .neutralGray,.skinTone:break; default:throw DevelopmentPreviewError.invalidRequest }
     case .whiteBalanceAutomatic(let mode): guard mode != .asShot, stage == .orientedSourceBeforeGeometry else { throw DevelopmentPreviewError.invalidRequest }
     case .selectiveColorPicker(_,let point): try point.validate()
+    case .defringePicker(_,let point): try point.validate()
+    case .pointColorPicker(_,let point): try point.validate()
     default: break
     }
   }
@@ -212,12 +224,13 @@ enum DevelopmentAnalysisEngine {
     if request.operation.localTool != nil { return try DevelopmentLocalAnalysisV3.projection(request).recipe }
     if case .prepareDehaze=request.operation { return try DevelopmentDehazeAnalysisV3.projection(request).samplingRecipe }
     var recipe = request.preview.recipe.schemaVersion == 3 ? request.preview.recipe : try request.preview.recipe.promotingToV3()
-    if case .cropAutomatic = request.operation { recipe.adjustmentsV3 = .init(); return recipe }
+    let neutral = recipe.adjustmentsV3!.neutralForSameSource
+    if case .cropAutomatic = request.operation { recipe.adjustmentsV3 = neutral; return recipe }
     var p = recipe.adjustmentsV3!
     switch request.operation {
     case .whiteBalancePicker,.whiteBalanceAutomatic:
       // Original pre-WB source: no historical WB/EV/color or any new source-dependent effect.
-      recipe.adjustmentsV3 = .init(); return recipe
+      recipe.adjustmentsV3 = neutral; return recipe
     default:break
     }
     if request.stage == .orientedSourceBeforeGeometry {
@@ -235,7 +248,7 @@ enum DevelopmentAnalysisEngine {
     recipe.adjustmentsV3 = p; try recipe.validate(); return recipe
   }
   static func run(capture: URL, request: DevelopmentAnalysisRequest, sourceBinding: DevelopmentLocalEditSourceBinding,
-                  memoryHint: Int, cache: inout DevelopmentAnalysisCacheEntry?, localDecoderContractFingerprint: String? = nil, dehazeContext: DevelopmentDehazeContextV1? = nil, cancellation: DevelopmentAnalysisCancellation? = nil, residentInput: DevelopmentBWSummaryResidentV3.Input? = nil) throws -> DevelopmentAnalysisResult {
+                  memoryHint: Int, cache: inout DevelopmentAnalysisCacheEntry?, localDecoderContractFingerprint: String? = nil, dehazeContext: DevelopmentDehazeContextV1? = nil, cancellation: DevelopmentAnalysisCancellation? = nil, residentInput: DevelopmentBWSummaryResidentV3.Input? = nil, analysisImages: DevelopmentAnalysisImageCache? = nil, sourceAuthority: (() throws -> Void)? = nil) throws -> DevelopmentAnalysisResult {
     guard !request.operation.isDisplayHistogram else { throw DevelopmentPreviewError.invalidRequest }
     try request.validate(); try sourceBinding.validate()
     let isRAW = PhotoRenderer.rawExtensions.contains(capture.pathExtension.lowercased())
@@ -255,8 +268,36 @@ enum DevelopmentAnalysisEngine {
     let sampling = try samplingRecipe(request), fingerprint = try EditingFingerprint.of(sampling)
     let filterIdentity = try DevelopmentPhotoFilterEngineV3.activeResourceIdentity(sampling)
     let effectiveVersion = resultSamplingVersion(request, filterIdentity: filterIdentity)
-    let context = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryHint])
-    defer { context.clearCaches() }
+    let retainsImage: Bool
+    switch request.operation {
+    case .automatic, .automaticLight, .curvePicker, .whiteBalanceAutomatic, .selectiveColorPicker, .defringePicker, .pointColorPicker: retainsImage = true
+    default: retainsImage = false
+    }
+    // Keep the native rgba16Float texture only for source/light/colour graphs. Multi-pass filters,
+    // masks and local edits can retain additional full-size assets and use their existing lifetime.
+    let pixels = Int64(sourceBinding.orientedWidth) * Int64(sourceBinding.orientedHeight)
+    let maximumPixels = Int64(min(512, max(0, memoryHint))) * 1024 * 1024 / 8
+    let parameters = sampling.adjustmentsV3!
+    var cacheable = parameters.neutralForSameSource
+    cacheable.light = parameters.light; cacheable.color = parameters.color; cacheable.whiteBalance = parameters.whiteBalance
+    cacheable.curves = parameters.curves; cacheable.rawDetails = parameters.rawDetails
+    let images = retainsImage && request.sampling == .legacy && parameters.rawDecoder == .flashRaw031 &&
+      cacheable == parameters && pixels <= maximumPixels ? analysisImages : nil
+    let context = images?.context(memoryHint:memoryHint) ?? CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryHint])
+    defer { if images == nil { context.clearCaches() } }
+    let natural = DevelopmentNaturalCurvePickerV1.isNatural(request)
+    let ownLegacy = requestsOwnedLegacyValidationContext(request.operation)
+    let key = DevelopmentAnalysisImageCache.Key(capture:capture,contentID:sourceBinding.sourceContentID,
+      generation:request.preview.sourceGeneration,samplingRecipe:fingerprint,stage:request.stage,version:effectiveVersion,
+      filterResource:filterIdentity,graphKind:natural ? "pre-natural-curves" : (ownLegacy ? "owned-legacy" : "working"))
+    func stillCurrent() throws { try cancellation?.check(); try Task.checkCancellation(); try sourceAuthority?() }
+    func samplingImage() throws -> CIImage {
+      let build = { try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,
+        preparingNaturalCurvePicker:natural,analysisOwnsLegacyValidationContext:ownLegacy,analysisResidentInput:residentInput,
+        checkCancellation:{ try cancellation?.check(); try residentInput?.requireCurrent() }).image }
+      if let images { return try images.image(for:key,validate:stillCurrent,build:build) }
+      return try build()
+    }
     let binding = DevelopmentAnalysisBinding(sourceContentID:sourceBinding.sourceContentID,sourceGeneration:request.preview.sourceGeneration,expectedRecipeFingerprint:request.expectedRecipeFingerprint,stage:request.stage)
     let mapping = try (request.preview.recipe.adjustmentsV3?.geometry ?? .init(version:request.preview.recipe.schemaVersion == 2 ? .legacyV2:.legacyV1,straightenDegrees:request.preview.recipe.straightenDegrees,crop:request.preview.recipe.crop)).mapping(sourceSize:sourceBinding.sourceSize)
     let value: DevelopmentAnalysisValue
@@ -273,26 +314,51 @@ enum DevelopmentAnalysisEngine {
       let local = try DevelopmentLocalAnalysisV3.prepare(capture:capture,request:request,sourceBinding:sourceBinding,decoderContractFingerprint:decoder,context:context,cancellation:cancellation)
       value = .local(local.0); localReceipt = local.1
     } else if case .whiteBalancePicker = request.operation {
-      value = .resolved(try whiteBalanceCommand(capture:capture,request:request,binding:binding,sourceBinding:sourceBinding,context:context,checkCancellation:{ try cancellation?.check() }))
+      value = .resolved(try whiteBalanceCommand(capture:capture,request:request,binding:binding,sourceBinding:sourceBinding,context:context,samplingImage:samplingImage))
     } else if case .whiteBalanceAutomatic = request.operation {
-      value = .resolved(try whiteBalanceCommand(capture:capture,request:request,binding:binding,sourceBinding:sourceBinding,context:context,checkCancellation:{ try cancellation?.check() }))
+      value = .resolved(try whiteBalanceCommand(capture:capture,request:request,binding:binding,sourceBinding:sourceBinding,context:context,samplingImage:samplingImage))
     } else if case let .selectiveColorPicker(slot,position) = request.operation {
-      let graph = try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,checkCancellation:{ try cancellation?.check() })
-      let c = try samplePixel(graph.image,position:position,context:context)
+      let c = try samplePixel(samplingImage(),position:position,context:context)
       var p = request.preview.recipe.adjustmentsV3!.selectiveColor
+      for required in DevelopmentSelectiveColorSlotV3.allCases where !p.colors.contains(where: { $0.slot == required }) {
+        p.colors.append(.init(slot: required))
+      }
       guard let index = p.colors.firstIndex(where: { $0.slot == slot }) else { throw DevelopmentPreviewError.invalidRequest }
       p.enabled = true; p.colors[index].sampledColor = .init(red:c.x,green:c.y,blue:c.z)
       value = .resolved(.init(binding:binding,purpose:.selectiveColorPicker,parameters:[.selectiveColor(p)]))
+    } else if case let .pointColorPicker(id,position) = request.operation {
+      let c=try samplePixel(samplingImage(),position:position,context:context)
+      var p=request.preview.recipe.adjustmentsV3!.selectiveColor
+      var samples=p.pointColors ?? []
+      if !samples.contains(where:{$0.id==id}) {
+        guard samples.count<8 else{throw DevelopmentPreviewError.invalidRequest}
+        samples.append(.init(id:id,sampledColor:.init(red:c.x,green:c.y,blue:c.z)))
+      }
+      p.pointColors=samples;p.enabled=true;try p.validate()
+      value = .resolved(.init(binding:binding,purpose:.pointColorPicker,parameters:[.selectiveColor(p)]))
+    } else if case let .defringePicker(band,position) = request.operation {
+      let c=try samplePixel(samplingImage(),position:position,context:context)
+      let encoded=SIMD3<Double>(DevelopmentColorEngineV2.encode(c.x),DevelopmentColorEngineV2.encode(c.y),DevelopmentColorEngineV2.encode(c.z))
+      let center=DevelopmentGlobalEngineV3.hue(encoded)*360,lower=max(0,center-30),upper=min(360,center+30)
+      var optics=request.preview.recipe.adjustmentsV3!.optics ?? .init()
+      optics.defringe.enabled=true
+      switch band {
+      case .purple:
+        optics.defringe.purpleHueLower=lower;optics.defringe.purpleHueUpper=upper
+        if optics.defringe.purpleAmount==0{optics.defringe.purpleAmount=60}
+      case .green:
+        optics.defringe.greenHueLower=lower;optics.defringe.greenHueUpper=upper
+        if optics.defringe.greenAmount==0{optics.defringe.greenAmount=60}
+      }
+      try optics.validate()
+      value = .resolved(.init(binding:binding,purpose:.defringePicker,parameters:[.optics(optics)]))
     } else if case let .curvePicker(channel,point,position) = request.operation {
       if DevelopmentNaturalCurvePickerV1.isNatural(request) {
-        let graph = try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,
-          preparingNaturalCurvePicker:true,checkCancellation:{ try cancellation?.check() })
-        let pixel = try DevelopmentNaturalCurvePickerV1.sample(graph.image,position:position,context:context,checkCancellation:{ try cancellation?.check() })
+        let pixel = try DevelopmentNaturalCurvePickerV1.sample(samplingImage(),position:position,context:context,checkCancellation:{ try cancellation?.check() })
         value = .resolved(try DevelopmentNaturalCurvePickerV1.command(curves:request.preview.recipe.adjustmentsV3!.curves,
           pixel:pixel,channel:channel,point:point,binding:binding))
       } else {
-      let graph = try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,checkCancellation:{ try cancellation?.check() })
-      let color = try samplePixel(graph.image,position:position,context:context)
+      let color = try samplePixel(samplingImage(),position:position,context:context)
       value = .resolved(try curveCommand(request:request,binding:binding,channel:channel,point:point,sample:color))
       }
     } else {
@@ -300,11 +366,9 @@ enum DevelopmentAnalysisEngine {
       if let entry = cache, entry.matches(recipeFingerprint:fingerprint,stage:request.stage,roi:request.roi,filterResourceIdentity:filterIdentity,samplingVersion:effectiveVersion,residentIdentity:residentInput?.identity) {
         try residentInput?.willPublish(cacheHit: true); scalars = entry.scalars
       }
+      else if let previous = images?.scalars(for:key,roi:request.roi) { try stillCurrent(); scalars = previous }
       else {
-        let graph = try DevelopmentRendererV3.develop(capture,recipe:sampling,applyGeometry:false,context:context,
-          analysisOwnsLegacyValidationContext:requestsOwnedLegacyValidationContext(request.operation),analysisResidentInput:residentInput,checkCancellation:{ try cancellation?.check(); try residentInput?.requireCurrent() })
-        scalars = try analyzePixels(graph.image,roi:request.roi,context:context,sampling:request.sampling,cancellation:cancellation)
-        // One scalar/bin entry per captured source. No proxy pixel, CIImage or frame survives this call.
+        scalars = try analyzePixels(samplingImage(),roi:request.roi,context:context,sampling:request.sampling,cancellation:cancellation)
         let entry = DevelopmentAnalysisCacheEntry(recipeFingerprint:fingerprint,stage:request.stage,roi:request.roi,
           scalars:scalars,filterResourceIdentity:filterIdentity,samplingVersion:effectiveVersion,residentIdentity:residentInput?.identity)
         try residentInput?.willPublish(cacheHit: false)
@@ -312,13 +376,14 @@ enum DevelopmentAnalysisEngine {
           try Task.checkCancellation()
           if let cancellation { try cancellation.withInputPublication(allowFrameSuperseded: false) { cache = entry } }
           else { cache = entry }
-        } else { cache = entry }
+        } else { try stillCurrent(); cache = entry; images?.remember(scalars,for:key,roi:request.roi) }
       }
       if request.operation.isHistogram { value = .histogram(scalars.histogram) }
       else {
         guard scalars.histogram.visibleSamples > 0 else { throw DevelopmentAnalysisError.noVisibleSamples }
         let defaults: DevelopmentRAWNoiseReductionDefaultsV3?
-        if isRAW && requestsRAWNoiseDefaults(request.operation) { guard let filter = CIRAWFilter(imageURL:capture) else { throw DevelopmentError.unreadable }; defaults = DevelopmentRendererV3.noiseDefaults(filter) }
+        let needsNoise = images == nil ? requestsRAWNoiseDefaults(request.operation) : request.operation == .automatic(.noiseReduction)
+        if isRAW && needsNoise { guard let filter = CIRAWFilter(imageURL:capture) else { throw DevelopmentError.unreadable }; defaults = DevelopmentRendererV3.noiseDefaults(filter) }
         else { defaults = nil }
         value = .resolved(try resolve(request:request,binding:binding,scalars:scalars,rawDefaults:defaults))
       }
@@ -351,6 +416,7 @@ enum DevelopmentAnalysisEngine {
     if request.sampling == .blackAndWhiteSummaryResident32V3 { return DevelopmentBWSummaryResidentV3.version }
     if request.sampling == .blackAndWhiteSummaryStripes32V2 { return blackAndWhiteStripesVersion }
     if DevelopmentNaturalCurvePickerV1.isNatural(request) { return DevelopmentNaturalCurvePickerV1.samplingVersion }
+    if let id = request.operation.scopeMaskID { return DevelopmentDisplayHistogramEngineV1.version + "/mask:" + id.uuidString }
     if request.operation.isDisplayHistogram { return DevelopmentDisplayHistogramEngineV1.version }
     if case .cropAutomatic=request.operation { return DevelopmentCropAutoV1.version }
     if case .redEyeAutomatic=request.operation { return DevelopmentRedEyeAutomaticV3.version }
@@ -472,6 +538,18 @@ enum DevelopmentAnalysisEngine {
     let purpose: DevelopmentAnalysisPurpose, values: [DevelopmentAdjustmentParametersV3]
     switch request.operation {
     case let .summary(group,amount): purpose = .summary(group,amount:amount); values = [try resolvedSummary(group,amount:amount,scalars:scalars)]
+    case .automaticLight(let field):
+      purpose = .automatic(.light)
+      guard case .light(let automatic)=try resolvedSummary(.light,amount:0.8,scalars:scalars)else{throw DevelopmentV3Error.unsupportedAnalysis}
+      var current=request.preview.recipe.adjustmentsV3!.light;current.enabled=true
+      switch field {
+      case .brilliance:current.brilliance=automatic.brilliance;current.brillianceVersion=automatic.brillianceVersion
+      case .exposure:current.exposure=automatic.exposure; case .highlights:current.highlights=automatic.highlights
+      case .shadows:current.shadows=automatic.shadows; case .whites:current.whites=automatic.whites
+      case .blackPoint:current.blackPoint=automatic.blackPoint; case .brightness:current.brightness=automatic.brightness
+      case .contrast:current.contrast=automatic.contrast
+      }
+      values=[.light(current)]
     case .automatic(let group):
       purpose = .automatic(group)
       if let group, group == .curves || group == .levels {
@@ -505,7 +583,7 @@ enum DevelopmentAnalysisEngine {
     return .init(binding:binding,purpose:purpose,parameters:values)
   }
   private static func whiteBalanceCommand(capture: URL, request: DevelopmentAnalysisRequest, binding: DevelopmentAnalysisBinding,
-                                         sourceBinding: DevelopmentLocalEditSourceBinding, context: CIContext, checkCancellation: (() throws -> Void)? = nil) throws -> DevelopmentResolvedAdjustmentCommand {
+                                         sourceBinding: DevelopmentLocalEditSourceBinding, context: CIContext, samplingImage: () throws -> CIImage) throws -> DevelopmentResolvedAdjustmentCommand {
     let isRAW = PhotoRenderer.rawExtensions.contains(capture.pathExtension.lowercased())
     let raw = isRAW ? CIRAWFilter(imageURL:capture):nil
     if isRAW, raw == nil { throw DevelopmentError.unreadable }
@@ -521,15 +599,15 @@ enum DevelopmentAnalysisEngine {
       switch adjustment { case .neutralGray(let w):mode = .neutralGray; warmth = w; case .skinTone(let w):mode = .skinTone; warmth = w
       default:throw DevelopmentPreviewError.invalidRequest }
     case .whiteBalanceAutomatic(let requested):
-      let graph = try DevelopmentRendererV3.develop(capture,recipe:samplingRecipe(request),applyGeometry:false,context:context,checkCancellation:checkCancellation)
-      originalImage = graph.image
-      let chosen = try automaticWBPosition(graph.image,roi:request.roi,mode:requested,context:context)
+      let image = try samplingImage()
+      originalImage = image
+      let chosen = try automaticWBPosition(image,roi:request.roi,mode:requested,context:context)
       mode = requested; position = chosen.0; sampled = chosen.1; warmth = 0; purpose = .automatic(.whiteBalance)
     default:throw DevelopmentPreviewError.invalidRequest
     }
     var skinSample: DevelopmentSampledColorV3?, sampleAlpha = 1.0
     if mode == .skinTone {
-      if originalImage == nil { originalImage = try DevelopmentRendererV3.develop(capture,recipe:samplingRecipe(request),applyGeometry:false,context:context,checkCancellation:checkCancellation).image }
+      if originalImage == nil { originalImage = try samplingImage() }
       // Proxy selection is only a candidate. Re-read the actual source location and run exactly
       // the same versioned sample domain as manual picking before any native WB setter.
       let pixel = try samplePixelRGBA(originalImage!,position:position,context:context)
@@ -571,15 +649,15 @@ enum DevelopmentAnalysisEngine {
       state = .raw(source:source,state:s)
     } else {
       if sampled == nil {
-        let graph = try DevelopmentRendererV3.develop(capture,recipe:samplingRecipe(request),applyGeometry:false,context:context,checkCancellation:checkCancellation)
-        sampled = try samplePixel(graph.image,position:position,context:context)
+        sampled = try samplePixel(samplingImage(),position:position,context:context)
       }
       let rgb = sampled!, sample = DevelopmentSampledColorV3(red:rgb.x,green:rgb.y,blue:rgb.z)
       guard case .image(let source,var s) = state else { throw EditingError.invalidRecipe }
       s.selectedMode = mode
       if mode == .temperatureTint {
         guard rgb.x > 1e-6, rgb.z > 1e-6 else { throw DevelopmentAnalysisError.noVisibleSamples }
-        let temperature = Float(5000*sqrt(rgb.z/rgb.x))
+        s.temperatureOffset = min(100, max(-100, 50 * log2(rgb.z / rgb.x)))
+        let temperature = DevelopmentImageWhiteBalanceStateV3.approximateTemperature(forOffset: s.temperatureOffset)
         let tint = Float(-100*(rgb.y-(rgb.x+rgb.z)/2)/max(1e-6,rgb.x+rgb.y+rgb.z))
         s.temperatureTint = .init(temperature:temperature,tint:tint)
       } else {

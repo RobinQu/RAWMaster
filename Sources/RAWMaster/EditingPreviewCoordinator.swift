@@ -98,33 +98,36 @@ struct EditingPreviewBitmap: @unchecked Sendable {
     }
 }
 struct SharedEditingPreviewBackend: EditingPreviewBackend {
-    let service: DevelopmentPreviewService
-    init(service: DevelopmentPreviewService = .shared) { self.service = service }
-    func thumbnails(_ request: DevelopmentThumbnailRequest, progress: @escaping @Sendable (DevelopmentThumbnailProgress) -> Void) async throws -> DevelopmentThumbnailReadyLease { try await service.thumbnails(request, progress: progress) }
-    func revokeThumbnails(_ registration: DevelopmentThumbnailRegistration) async { await service.revokeThumbnailDelivery(registration) }
-    func joinThumbnails(_ registration: DevelopmentThumbnailRegistration) async { await service.cancelAndJoinThumbnail(registration) }
-    func adoptThumbnails(_ ready: DevelopmentThumbnailReadyLease, registration: DevelopmentThumbnailRegistration) async throws -> DevelopmentThumbnailPresentationLease { try await service.adoptThumbnailPresentation(ready, registration: registration) }
-    func releaseThumbnails(_ ready: DevelopmentThumbnailReadyLease, registration: DevelopmentThumbnailRegistration) async { await service.releaseThumbnailSet(ready, registration: registration) }
-    func releaseThumbnails(_ presentation: DevelopmentThumbnailPresentationLease, registration: DevelopmentThumbnailRegistration) async { await service.releaseThumbnailPresentation(presentation, registration: registration) }
+    /// Dependency inversion boundary: the UI knows the imaging-owned protocol, not its actor.
+    let engine: any ImageEngine
+    init(engine: any ImageEngine = ImageEngines.editing) { self.engine = engine }
+    /// Source compatibility for existing integration fixtures during the protocol migration.
+    init(service: DevelopmentPreviewService) { self.engine = service }
+    func thumbnails(_ request: DevelopmentThumbnailRequest, progress: @escaping @Sendable (DevelopmentThumbnailProgress) -> Void) async throws -> DevelopmentThumbnailReadyLease { try await engine.thumbnails(request, progress: progress) }
+    func revokeThumbnails(_ registration: DevelopmentThumbnailRegistration) async { await engine.revokeThumbnailDelivery(registration) }
+    func joinThumbnails(_ registration: DevelopmentThumbnailRegistration) async { await engine.cancelAndJoinThumbnail(registration) }
+    func adoptThumbnails(_ ready: DevelopmentThumbnailReadyLease, registration: DevelopmentThumbnailRegistration) async throws -> DevelopmentThumbnailPresentationLease { try await engine.adoptThumbnailPresentation(ready, registration: registration) }
+    func releaseThumbnails(_ ready: DevelopmentThumbnailReadyLease, registration: DevelopmentThumbnailRegistration) async { await engine.releaseThumbnailSet(ready, registration: registration) }
+    func releaseThumbnails(_ presentation: DevelopmentThumbnailPresentationLease, registration: DevelopmentThumbnailRegistration) async { await engine.releaseThumbnailPresentation(presentation, registration: registration) }
     func sourceFacts(_ lease: EditingPreviewLease) async throws -> DevelopmentSourceFacts {
-        try await service.sourceFacts(sessionID: lease.id, sourceGeneration: lease.generation)
+        try await engine.sourceFacts(sessionID: lease.id, sourceGeneration: lease.generation)
     }
     func analyze(_ request: DevelopmentAnalysisRequest) async throws -> DevelopmentAnalysisResult {
-        try await service.analyze(request)
+        try await engine.analyze(request)
     }
-    func joinAnalysis(_ request: DevelopmentAnalysisRequest) async { await service.cancelAnalysisAndJoin(request) }
-    func open(_ source: DevelopmentPreviewSource) async throws -> EditingPreviewLease { let info = try await service.open(source: source); return .init(info) }
-    func render(_ request: DevelopmentPreviewRequest) async throws -> EditingPreviewBitmap { let frame = try await service.render(request); return .init(frame) }
-    func cancel(_ consumer: PreviewConsumerID) async { await service.cancel(consumerID: consumer) }
-    func cancelAndJoin(_ consumer: PreviewConsumerID) async { await service.cancelAndJoin(consumerID: consumer) }
+    func joinAnalysis(_ request: DevelopmentAnalysisRequest) async { await engine.cancelAnalysisAndJoin(request) }
+    func open(_ source: DevelopmentPreviewSource) async throws -> EditingPreviewLease { let info = try await engine.open(source: source); return .init(info) }
+    func render(_ request: DevelopmentPreviewRequest) async throws -> EditingPreviewBitmap { let frame = try await engine.render(request); return .init(frame) }
+    func cancel(_ consumer: PreviewConsumerID) async { await engine.cancel(consumerID: consumer) }
+    func cancelAndJoin(_ consumer: PreviewConsumerID) async { await engine.cancelAndJoin(consumerID: consumer) }
     func makeProgressChannel(_ lease: EditingPreviewLease, consumer: PreviewConsumerID) async throws -> EditingProgressChannel {
-        let channel = try await service.makeProgressChannel(sessionID: lease.id, sourceGeneration: lease.generation, consumerID: consumer)
+        let channel = try await engine.makeProgressChannel(sessionID: lease.id, sourceGeneration: lease.generation, consumerID: consumer)
         return .init(id: channel.id, snapshots: channel.snapshots, submit: { try channel.submit($0) }, noteActivity: { channel.noteActivity() })
     }
-    func closeProgressChannel(_ id: PreviewProgressChannelID) async { await service.closeProgressChannel(id) }
-    func close(_ lease: DevelopmentPreviewSessionID) async { await service.close(lease) }
+    func closeProgressChannel(_ id: PreviewProgressChannelID) async { await engine.closeProgressChannel(id) }
+    func close(_ lease: DevelopmentPreviewSessionID) async { await engine.close(lease) }
     func revalidate(_ lease: DevelopmentPreviewSessionID, source: DevelopmentPreviewSource) async throws -> EditingPreviewLease {
-        let info = try await service.revalidate(lease, source: source); return .init(info)
+        let info = try await engine.revalidate(lease, source: source); return .init(info)
     }
 }
 /// Does not include exposure/WB. Every change creates a new registration/publication epoch.
@@ -302,6 +305,7 @@ enum EditingPreviewPromptDispatch {
     private var frameDrawn = false
     private(set) var frameRecipe: DevelopmentRecipe?
     private(set) var framePresentationID: String?
+    private(set) var frameSourceKey: String?
     var onChange: (() -> Void)?
     var onInvalidation: (() -> Void)?
     var diagnosticSink: ((EditingPreviewDiagnosticEvent) -> Void)?
@@ -400,6 +404,16 @@ enum EditingPreviewPromptDispatch {
             quality: frame.quality.rawValue, viewportMaximumPixel: target.intent.viewport.maxPixel, recipeFingerprint: fingerprint)
     }
     var thumbnailBackend: any EditingPreviewBackend { backend }
+    func renderDevelopmentFilterHover(recipe: DevelopmentRecipe, consumerID: PreviewConsumerID,
+                                      revision: UInt64) async throws -> EditingPreviewBitmap {
+        guard canInspectDevelopmentSource, let lease else { throw DevelopmentPreviewError.sourceInvalidated }
+        return try await backend.render(.init(sessionID: lease.id, sourceGeneration: lease.generation,
+            consumerID: consumerID, role: .primary, revision: revision, recipe: recipe,
+            quality: .interactive, viewport: .init(maxPixel: 2400)))
+    }
+    func cancelDevelopmentFilterHover(_ consumerID: PreviewConsumerID) async {
+        await backend.cancel(consumerID)
+    }
     func thumbnailRequest(recipe: DevelopmentRecipe, kind: DevelopmentThumbnailKind, registration: DevelopmentThumbnailRegistration, basis: DevelopmentThumbnailBasis, resourceVersion: String?) throws -> DevelopmentThumbnailRequest {
         let promoted = try recipe.promotingToV3(), fp = try encodeRecipeFingerprint(recipe)
         // promotingToV3 validates then returns self for v3; this is value provenance, not Equatable.
@@ -424,6 +438,31 @@ enum EditingPreviewPromptDispatch {
         signals = pair.stream; signalContinuation = pair.continuation
     }
     deinit { signalContinuation.finish() }
+
+    private static func sameDraftPixels(_ lhs: EditingDraftPresentation?, _ rhs: EditingDraftPresentation?) -> Bool {
+        guard let lhs, let rhs else { return lhs == nil && rhs == nil }
+        return lhs.focusID == rhs.focusID && lhs.workID == rhs.workID
+            && lhs.draftParentID == rhs.draftParentID && lhs.selectedVersionID == rhs.selectedVersionID
+            && lhs.draftBranchID == rhs.draftBranchID && lhs.comparing == rhs.comparing
+        // cropOverlay and the interaction-only draftBranchEpoch deliberately do not affect pixels.
+    }
+
+    /// Rebind presentation metadata only when every pixel-affecting input is identical.
+    /// The existing frame/revision/lease remain the same; no renderer or service call is made.
+    func reuseForPresentation(_ requested: EditingPreviewIntent, input: EditingPreviewInput) -> Bool {
+        guard let current = desired, let frame,
+              !rendering, frame.revision == current.revision,
+              current.intent.sourceKey == requested.sourceKey,
+              current.intent.recipe == requested.recipe,
+              current.intent.quality == requested.quality,
+              Self.sameDraftPixels(current.intent.draftPresentation, requested.draftPresentation),
+              frameRecipe == requested.recipe,
+              current.intent.presentationID != requested.presentationID else { return false }
+        desired = Desired(intent: requested, input: input, revision: current.revision, epoch: current.epoch)
+        framePresentationID = requested.presentationID
+        onChange?()
+        return true
+    }
 
     func submit(_ requested: EditingPreviewIntent, input: EditingPreviewInput, duplicateReason: String? = nil,
                 allowCanonicalGesture:Bool = false) {
@@ -694,7 +733,8 @@ enum EditingPreviewPromptDispatch {
     }
     private func publish(_ output: EditingPreviewBitmap, request: DevelopmentPreviewRequest, input: EditingPreviewInput?, epoch: UInt64,
                          token: PreviewSubmissionID?, channel: PreviewProgressChannelID?) {
-        frame = output; frameRecipe = request.recipe; framePresentationID = desired?.intent.presentationID; frameInput = input; frameDrawn = false
+        frame = output; frameRecipe = request.recipe; framePresentationID = desired?.intent.presentationID
+        frameSourceKey = desired?.intent.sourceKey; frameInput = input; frameDrawn = false
         displayedEpoch = epoch; displayedRevision = request.revision; displayedToken = token; displayedChannel = channel
     }
     private func acceptsExact(_ target: Desired) -> Bool { !stopped && !sourceInvalidated && desired?.revision == target.revision && publicationEpoch == target.epoch }
@@ -818,7 +858,8 @@ enum EditingPreviewPromptDispatch {
         if let old = lease { lease = nil; boundSourceKey = nil; await backend.close(old.id) }
     }
     private func clearFrame() {
-        frame = nil; frameRecipe = nil; framePresentationID = nil; frameInput = nil; displayedToken = nil; displayedChannel = nil; displayedRevision = 0; displayedEpoch = 0
+        frame = nil; frameRecipe = nil; framePresentationID = nil; frameSourceKey = nil; frameInput = nil
+        displayedToken = nil; displayedChannel = nil; displayedRevision = 0; displayedEpoch = 0
     }
     private func requestFullRetirement() { desiredFingerprintMemo=nil; canonicalGestureIntent=nil; retireRequested &+= 1; resourceChild?.cancel() }
     func reset() {

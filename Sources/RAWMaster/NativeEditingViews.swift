@@ -56,7 +56,7 @@ struct NativeEditingInspector: View {
                 bottomActions.padding(14)
             }
         }
-        .background(.regularMaterial)
+        .background(Color.clear)
         .environment(\.developmentNumberInputOwner, editing.developmentNumberInputOwner)
         .onChange(of: editing.stage) { _, _ in editing.previewContextChanged() }
     }

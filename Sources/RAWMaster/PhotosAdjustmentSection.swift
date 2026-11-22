@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 import RAWMasterCore
 
 extension DevelopmentAdjustmentID {
@@ -7,7 +8,7 @@ extension DevelopmentAdjustmentID {
         case .light: return "光效"
         case .color: return "颜色"
         case .blackAndWhite: return "黑白"
-        case .retouch: return "修饰"
+        case .retouch: return "修复"
         case .redEye: return "红眼"
         case .whiteBalance: return "白平衡"
         case .curves: return "曲线"
@@ -21,6 +22,7 @@ extension DevelopmentAdjustmentID {
         case .sharpen: return "锐化"
         case .vignette: return "晕影"
         case .filter: return "滤镜"
+        case .optics: return "光学"
         }
     }
     var photosSymbol: String {
@@ -42,6 +44,7 @@ extension DevelopmentAdjustmentID {
         case .sharpen: return "triangle"
         case .vignette: return "viewfinder.circle"
         case .filter: return "camera.filters"
+        case .optics: return "camera.aperture"
         }
     }
 }
@@ -60,6 +63,7 @@ struct PhotosAdjustmentSection<Content: View>: View {
     var autoInProgress = false
     var onCancelAutomatic: (() -> Void)? = nil
     var showsDisclosure = true
+    @State private var hovering = false
     @ViewBuilder let content: () -> Content
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -92,9 +96,18 @@ struct PhotosAdjustmentSection<Content: View>: View {
                 Toggle("启用\(id.photosTitle)", isOn: .init(get: { enabled }, set: onEnable))
                     .labelsHidden().toggleStyle(.checkbox)
                     .accessibilityIdentifier("photos.\(id.rawValue).enabled")
-            }.frame(minHeight: 34)
-            if expanded { content().padding(.leading, showsDisclosure ? 19 : 0) }
-        }.padding(.horizontal, 16).padding(.vertical, 9)
+            }
+            .frame(minHeight: 34)
+            .padding(.horizontal, 4)
+            .background(hovering && showsDisclosure ? Color.primary.opacity(0.035) : Color.clear,
+                        in: RoundedRectangle(cornerRadius: 6))
+            .onHover { hovering = $0 }
+            if expanded {
+                content().padding(.leading, showsDisclosure ? 19 : 0)
+                    .transition(.opacity)
+            }
+        }.padding(.horizontal, 12).padding(.vertical, 9)
+            .animation(.easeOut(duration: 0.18), value: expanded)
             .accessibilityIdentifier("photos.\(id.rawValue).section")
     }
 }
@@ -142,22 +155,29 @@ struct PhotosScalarField: Identifiable {
     let id: String
     let title: String
     let path: WritableKeyPath<DevelopmentAdjustmentsV3, Double>
+    /// Recipe domain remains unchanged; display mapping is explicit and independently testable.
     let range: ClosedRange<Double>
+    let displayRange: ClosedRange<Double>
+    let displayScale: Double
     var step = 0.01
     var digits = 2
     init(_ id: String, _ title: String, _ path: WritableKeyPath<DevelopmentAdjustmentsV3, Double>,
-         _ range: ClosedRange<Double>, step: Double = 0.01, digits: Int = 2) {
+         _ range: ClosedRange<Double>, step: Double = 0.01, digits: Int = 2,
+         displayRange: ClosedRange<Double>? = nil, displayScale: Double = 1) {
         self.id = id; self.title = title; self.path = path; self.range = range; self.step = step; self.digits = digits
+        self.displayRange = displayRange ?? range; self.displayScale = displayScale
     }
+    func displayed(_ recipeValue: Double) -> Double { recipeValue * displayScale }
+    func recipeValue(_ displayValue: Double) -> Double { displayValue / displayScale }
     static func fields(for group: DevelopmentAdjustmentID, noiseReduction: DevelopmentNoiseReductionSourceCapability?) -> [Self] {
         switch group {
         case .light: return [
             .init("brilliance", "鲜明度", \.light.brilliance, -2...2), .init("exposure", "曝光", \.light.exposure, -2...2),
             .init("highlights", "高光", \.light.highlights, -1...1), .init("shadows", "阴影", \.light.shadows, -1...1),
-            .init("brightness", "亮度", \.light.brightness, -2...2), .init("contrast", "对比度", \.light.contrast, -1...2),
-            .init("blackPoint", "黑点", \.light.blackPoint, -2...2)]
-        case .color: return [.init("saturation", "饱和度", \.color.saturation, -1...2),
-                            .init("vibrance", "自然饱和度", \.color.vibrance, -1...2), .init("cast", "色偏", \.color.cast, -1...1)]
+            .init("whites", "白色", \.light.whites, -1...1), .init("blackPoint", "黑点", \.light.blackPoint, -2...2),
+            .init("brightness", "亮度", \.light.brightness, -2...2), .init("contrast", "对比度", \.light.contrast, -1...2)]
+        case .color: return [.init("saturation", "饱和度", \.color.saturation, -1...2, displayRange: -100...100, displayScale: 100),
+                            .init("vibrance", "自然饱和度", \.color.vibrance, -1...2, displayRange: -100...100, displayScale: 100), .init("cast", "色偏", \.color.cast, -1...1)]
         case .blackAndWhite: return [.init("intensity", "强度", \.blackAndWhite.intensity, 0...1),
             .init("neutrals", "中性色", \.blackAndWhite.neutrals, -1...1), .init("tone", "色调", \.blackAndWhite.tone, -1...1),
             .init("grain", "颗粒", \.blackAndWhite.grain, 0...1)]
@@ -165,7 +185,7 @@ struct PhotosScalarField: Identifiable {
         case .noiseReduction:
             switch noiseReduction {
             case .raw: return [.init("luminance", "亮度噪点", \.noiseReduction.luminanceNoise, -0.1...1),
-                .init("color", "颜色噪点", \.noiseReduction.colorNoise, -1...1), .init("detail", "细节", \.noiseReduction.detail, 0...3)]
+                .init("color", "颜色噪点", \.noiseReduction.colorNoise, -1...1), .init("detail", "亮度细节", \.noiseReduction.detail, 0...3)]
             case .image: return [.init("amount", "数量", \.noiseReduction.nonRawAmount, 0...5)]
             case nil: return []
             }
@@ -196,6 +216,7 @@ enum PhotosAdjustmentCommands {
         case .sharpen: return .sharpen(value.sharpen)
         case .vignette: return .vignette(value.vignette)
         case .filter: return .filter(value.filter)
+        case .optics: return .optics(value.optics ?? .init())
         case .retouch, .redEye: return nil
         }
     }
@@ -240,11 +261,14 @@ struct PhotosScalarAdjustmentControls: View {
     let group: DevelopmentAdjustmentID
     let onError: (Error) -> Void
     var supportedFieldIDs: Set<String>? = nil
+    var automaticAction: ((PhotosScalarField) -> Void)? = nil
+    var onClipping: ((DevelopmentClippingPreviewV3?) -> Void)? = nil
     var body: some View {
         VStack(spacing: 9) {
             ForEach(PhotosScalarField.fields(for: group, noiseReduction: session.noiseReductionCapability)
                 .filter { supportedFieldIDs?.contains($0.id) ?? true }) { field in
-                PhotosScopedParameterRow(session: session, context: context, group: group, field: field, onError: onError)
+                PhotosScopedParameterRow(session: session, context: context, group: group, field: field, onError: onError,
+                    onAutomatic: automaticAction == nil ? nil:{ automaticAction?(field) }, onClipping:onClipping)
             }
         }
     }
@@ -256,28 +280,50 @@ private struct PhotosScopedParameterRow: View {
     let group: DevelopmentAdjustmentID
     let field: PhotosScalarField
     let onError: (Error) -> Void
+    let onAutomatic: (() -> Void)?
+    let onClipping: ((DevelopmentClippingPreviewV3?) -> Void)?
     @State private var token: EditingGestureToken?
+    @State private var dragOrigin: Double?
+    @State private var optionClipping = false
     var body: some View {
-        VStack(spacing: 4) {
-            HStack {
-                Text(field.title).font(.caption)
-                Spacer()
-                DevelopmentNumberField(title: field.title, value: .init(get: { value }, set: { change($0, gesture: nil) }),
-                    range: field.range, fractionDigits: field.digits)
-                    .frame(width: 72).accessibilityIdentifier(identifier + ".number")
-            }
-            Slider(value: .init(get: { value }, set: { change($0, gesture: token) }), in: field.range,
-                   step: field.step, onEditingChanged: interaction)
+        HStack(spacing: 8) {
+            Text(field.title)
+                .font(.system(size: 11)).foregroundStyle(.secondary)
+                .frame(width: 76, alignment: .leading)
+                .contentShape(Rectangle())
+                .onTapGesture(count: 2) { automaticOrReset() }
+                .gesture(DragGesture(minimumDistance: 2).onChanged(scrub).onEnded { _ in scrubEnded() })
+                .help("横向拖动名称或滑杆调整；双击复位；支持时 Shift＋双击单独自动调整")
+                .accessibilityAction(named: "复位" + field.title) { reset() }
+            Slider(value: .init(get: { value }, set: { candidate in
+                if let snapped = PhotosSliderInput.snapped(candidate, range: field.displayRange, step: field.step) {
+                    change(snapped, gesture: token)
+                }
+            }), in: field.displayRange, onEditingChanged: interaction)
+                .controlSize(.small)
+                .frame(height: 26)
+                .frame(maxWidth: .infinity)
                 .accessibilityLabel(field.title).accessibilityIdentifier(identifier)
-        }.onDisappear { finish() }
+            DevelopmentNumberField(title: field.title, value: .init(get: { value }, set: { change($0, gesture: nil) }),
+                range: field.displayRange, fractionDigits: field.digits)
+                .frame(width: 62).accessibilityIdentifier(identifier + ".number")
+        }
+        .frame(minHeight: 26)
+        .onDisappear { finish() }
     }
-    private var value: Double { session.parameters[keyPath: field.path] }
+    private var value: Double { field.displayed(session.parameters[keyPath: field.path]) }
     private var identifier: String { "photos.\(group.rawValue).\(field.id)" }
     private var control: EditingControlID { .init(group: group, name: "\(group.photosTitle) · \(field.title)") }
+    private var clippingMode: DevelopmentClippingPreviewV3 {
+        switch field.id { case "shadows","blackPoint":return .shadows;case "highlights","whites":return .highlights;default:return .both }
+    }
     private func change(_ value: Double, gesture: EditingGestureToken?) {
         do {
+            if gesture != nil,NSApp.currentEvent?.modifierFlags.contains(.option) == true {
+                optionClipping=true;onClipping?(clippingMode)
+            }
             let grainVersions = group == .blackAndWhite && field.id == "grain" ? try session.grainSamplingVersions(context: context, gesture: gesture):[]
-            let command = try PhotosAdjustmentCommands.scalar(field, group: group, value: value,
+            let command = try PhotosAdjustmentCommands.scalar(field, group: group, value: field.recipeValue(value),
                 parameters: session.parameters, noiseReduction: session.noiseReductionCapability,
                 supportedGrainSamplingVersions: grainVersions)
             try session.apply(command, event: .init(context: context, control: control,
@@ -289,8 +335,32 @@ private struct PhotosScopedParameterRow: View {
             do { token = try session.beginGesture(control, context: context) } catch { onError(error) }
         } else { finish() }
     }
+    private func scrub(_ drag: DragGesture.Value) {
+        if dragOrigin == nil {
+            do { token = try session.beginGesture(control, context: context); dragOrigin = value }
+            catch { onError(error); return }
+        }
+        guard let dragOrigin, let next = PhotosSliderInput.scrubbed(origin: dragOrigin,
+            translation: drag.translation.width, range: field.displayRange, step: field.step) else { return }
+        change(next, gesture: token)
+    }
+    private func scrubEnded() {
+        dragOrigin = nil
+        finish()
+    }
     private func finish() {
+        if optionClipping { onClipping?(nil);optionClipping=false }
         guard let token else { return }; self.token = nil
         do { try session.endGesture(token, .commit) } catch { onError(error) }
+    }
+    private func automaticOrReset() {
+        if NSApp.currentEvent?.modifierFlags.contains(.shift) == true, let onAutomatic {
+            finish(); onAutomatic()
+        } else { reset() }
+    }
+    private func reset() {
+        dragOrigin = nil
+        finish()
+        change(0, gesture: nil)
     }
 }

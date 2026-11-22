@@ -13,17 +13,19 @@ struct EditingExportSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack { Text("导出成片").font(.title2.weight(.semibold)); Spacer(); Button("完成") { editing.showExport = false }.disabled(exporting).keyboardShortcut(.cancelAction) }
-            if let version = editing.versions.first(where: { $0.id == editing.exportVersionID }) {
+            if let version = editing.exportVersion {
                 Picker("导出版本", selection: $editing.exportVersionID) {
                     ForEach(editing.versions) { item in
                         Text((item.id == editing.work?.adoptedVersionID ? "当前采用 · " : "") + item.editingTitle + " · " + item.shortID).tag(Optional(item.id))
                     }
                 }.disabled(exporting).accessibilityIdentifier("editing.export.version")
-                Text(version.id == editing.work?.adoptedVersionID ? "当前采用版本" : "明确选择的版本（尚未采用也可导出）").font(.caption).foregroundStyle(.secondary)
+                Text(editing.exportUsesLiveState ? "当前编辑 · 调整已自动生效" :
+                    (version.id == editing.work?.adoptedVersionID ? "当前采用版本" : "明确选择的版本（尚未采用也可导出）"))
+                    .font(.caption).foregroundStyle(.secondary)
                 if let artifact = version.artifact {
                     LabeledContent("源图像", value: "\(artifact.pixelWidth) × \(artifact.pixelHeight) 像素")
                     if !artifact.resamplingChain.isEmpty { Text("此版本已重采样：" + artifact.resamplingChain.joined(separator: " → ")).font(.caption).foregroundStyle(AppPalette.warning) }
-                } else { Text("使用保存的显影配方与原片计算裁切后尺寸。").font(.caption).foregroundStyle(.secondary) }
+                } else { Text("使用当前显影配方与原片计算裁切后尺寸。").font(.caption).foregroundStyle(.secondary) }
                 Picker("格式", selection: $format) {
                     Text("JPEG · 8 位").tag(PhotoRenderFormat.jpeg8)
                     Text("TIFF · 16 位容器").tag(PhotoRenderFormat.tiff16)

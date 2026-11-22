@@ -1,0 +1,33 @@
+{
+  "model": "FLUX.3 Image Klein",
+  "quantization": "MLX q8-16",
+  "cases": {
+    "transferred": {
+      "prompt": "Edit the FIRST photograph of the mountain lake. Borrow only the blue-hour illumination from the SECOND photograph: a cool twilight sky, subdued foreground and a few understated warm highlights on existing sun-facing rock, with consistent reflections on water. Preserve exactly the mountain ridge outline, tree silhouettes, all small boats, passengers, shoreline, wakes, number of objects, viewpoint and crop in the first image. Do not introduce any tower, rocket, light fixtures, buildings, clouds or objects from the second photo. A realistic photograph, the same location and event.",
+      "width": 768,
+      "height": 512,
+      "seed": 31903,
+      "steps": 16,
+      "guidance": null,
+      "alpha": 6.93,
+      "references": [
+        {
+          "file": "lake.png",
+          "sha256": "e48857c7e657563f473357f97eddc4f53fea94897c2935c3ae829b4fc7fd84b1"
+        },
+        {
+          "file": "blue-hour-reference.png",
+          "sha256": "2919803c9949f53f6b0ac46c1652cc81a2e3a618477dc82759f451f713d3443a"
+        }
+      ],
+      "profile": "q8-16",
+      "transformer": "q8",
+      "text_encoder": "q8",
+      "process": {
+        "wallSeconds": 83.14,
+        "exit": 0
+      },
+      "outputSha256": "199482b9101dffbc9f6bea4e0181c49946c6f32c36838d0e8c9b3d9cdfebc5c5"
+    }
+  }
+}

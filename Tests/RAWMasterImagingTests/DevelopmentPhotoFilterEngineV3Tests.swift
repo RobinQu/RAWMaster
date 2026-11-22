@@ -116,6 +116,28 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
       XCTAssertGreaterThan(actual[2].x,1);XCTAssertLessThan(actual[2].y,0)
     }
   }
+  func testRAWTransportRepairAcceptsOnlyMeasuredOneToThreeULPWhenExplicitlyEnabled()throws {
+    let root=try fixture();defer{try? FileManager.default.removeItem(at:root)}
+    let store=DevelopmentPhotoFilterResourceStore(resourceRoot:root),context=context();defer{store.trimReady();context.clearCaches()}
+    let filter=DevelopmentFilterV3(enabled:true,selection:.vivid,intensity:37)
+    let expected=try DevelopmentPhotoFilterEngineV3.reference(.init(0.2,0.3,0.4,1),intensity:37){percent,r,g,b in
+      let n=self.value(percent,r,g,b);return .init(Double(n.x),Double(n.y),Double(n.z))
+    }
+    for bits in UInt32(0x3f800001)...0x3f800003 {
+      let source=image([.init(0.2,0.3,0.4,Float(bitPattern:bits))],width:1,height:1)
+      let repaired=try DevelopmentPhotoFilterEngineV3.apply(filter,to:source,resources:store,repairRAWTransportAlpha:true)
+      let actual=try read(repaired,context:context)[0]
+      XCTAssertEqual(actual.w,1)
+      for c in 0..<3{XCTAssertEqual(Double(actual[c]),expected[c],accuracy:2e-4)}
+      let ordinary=try DevelopmentPhotoFilterEngineV3.apply(filter,to:source,resources:store)
+      XCTAssertThrowsError(try read(ordinary,context:context))
+    }
+    for alpha in [Float(bitPattern:0x3f800004),-0.01,.infinity,.nan] {
+      let invalid=image([.init(0.2,0.3,0.4,alpha)],width:1,height:1)
+      let graph=try DevelopmentPhotoFilterEngineV3.apply(filter,to:invalid,resources:store,repairRAWTransportAlpha:true)
+      XCTAssertThrowsError(try read(graph,context:context))
+    }
+  }
   func testActualAtlasNodeAddressesPinCrossRowAndCubeBoundaries()throws {
     let root=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let store=DevelopmentPhotoFilterResourceStore(resourceRoot:root),context=context();defer{store.trimReady();context.clearCaches()}
@@ -248,7 +270,7 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
             let pair=try store.pair(.init(enabled:true,selection:look,intensity:amount))
             let kernel=try XCTUnwrap(CIKernel.kernels(withMetalString:DevelopmentPhotoFilterEngineV3.metalSource).first(where:{$0.name=="rmPhotoFilterV1"}))
             let params=CIVector(x:CGFloat(pair.weight),y:pair.zeroLower ? 1:0,z:0,w:CGFloat(amount/100))
-            let baseline=try XCTUnwrap(kernel.apply(extent:source.extent,roiCallback:{index,rect in index==0 ? rect:CGRect(x:0,y:0,width:512,height:512)},arguments:[source.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params]))
+            let baseline=try XCTUnwrap(kernel.apply(extent:source.extent,roiCallback:{index,rect in index==0 ? rect:CGRect(x:0,y:0,width:512,height:512)},arguments:[source.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params,CIVector(x:0,y:0,z:0,w:0)]))
             let color=try read(baseline,context:context)
             XCTAssertEqual(actual[2],color[2])
             if look == .vivid || look == .silvertone{XCTAssertEqual(actual,color)}

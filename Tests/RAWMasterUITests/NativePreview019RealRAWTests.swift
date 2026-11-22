@@ -96,14 +96,14 @@ final class NativePreview019RealRAWTests: XCTestCase {
             report["secondWorkID"] = controller.work?.id
             model.select(assets[0]); try await wait { controller.work?.id == workID && controller.preview != nil }
             controller.stage = .versions; controller.selectVersion(baseline)
-            controller.comparisonVersionID = originalVersion; controller.comparing = true; controller.requestPreview()
+            controller.setComparisonReference(.version(originalVersion)); controller.setComparisonMode(.wipeHorizontal)
             try await wait { controller.previews.primary.frame != nil && controller.previews.comparison.frame != nil }
             controller.setActualPixels(true)
             try await wait { controller.previews.primary.frame?.quality == .detail && controller.previews.comparison.frame?.quality == .detail }
             XCTAssertEqual(controller.previews.primary.frame?.outputSize, controller.previews.primary.frame?.nativeSize)
             controller.setActualPixels(false)
             try await wait { controller.previews.primary.frame?.quality == .settled && controller.previews.comparison.frame?.quality == .settled }
-            controller.comparing = false; controller.previewContextChanged()
+            controller.stopComparing(requestPreview: false); controller.previewContextChanged()
             controller.stage = .development; controller.selectVersion(baseline, continueEditing: true)
             model.saveBrowse(); model.flushProjectReviewState()
             XCTAssertEqual(try EditingFingerprint.of(store.loadAdmissions()), originalAdmissions)

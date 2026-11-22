@@ -30,6 +30,7 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
     @Published private(set) var sets: [String: VisibleSet] = [:]
     @Published private(set) var errors: [String: String] = [:]
     @Published private(set) var loading: Set<String> = []
+    @Published private(set) var refreshing: Set<String> = []
     private weak var editing: EditingController?
     private var visible: [String: DevelopmentThumbnailKind] = [:]
     private struct Attempt { let key: String; let witness: EditingThumbnailCanonicalWitness?; let automaticRetryUsed: Bool }
@@ -41,17 +42,24 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
     private var child: Task<DevelopmentThumbnailReadyLease, Error>?
     private var active: DevelopmentThumbnailRegistration?
     private let progress = ThumbnailProgressMailbox()
+    private var retryTasks: [String: Task<Void, Never>] = [:]
+    private var retryCounts: [String: Int] = [:]
     init(editing: EditingController) { self.editing = editing }
     private var shouldTraceActivity: Bool {
         InteractionTrace.shared.isEnabled && (editing?.developmentContext != nil || !visible.isEmpty || !retirements.isEmpty)
     }
     static func cacheKey(_ request: DevelopmentThumbnailRequest, context: EditingInteractionContext) -> String {
-        String(reflecting: context) + ":" + request.presentedRecipeFingerprint + ":" + String(request.preview.revision)
-            + ":" + request.kind.presentationKey + ":" + request.basis.rawValue
+        // Focus restoration creates a new interaction epoch and may publish a new preview revision,
+        // but neither changes thumbnail pixels. Key only the immutable source/branch and recipe inputs.
+        String(reflecting: context.historyKey) + ":source:" + String(context.sourceGeneration)
+            + ":" + request.presentedRecipeFingerprint + ":" + request.kind.presentationKey + ":" + request.basis.rawValue
             + ":" + String(reflecting: request.preview.quality) + ":" + String(request.preview.viewport.maxPixel)
             + ":" + (request.expectedPhotoFilterResourceVersion ?? "none")
     }
-    private func key(_ request: DevelopmentThumbnailRequest, context: EditingInteractionContext) -> String { Self.cacheKey(request, context: context) }
+    private func key(_ request: DevelopmentThumbnailRequest, context: EditingInteractionContext) throws -> String {
+        guard let editing else { throw DevelopmentThumbnailError.closed }
+        return try editing.developmentThumbnailContentKey(request, context: context)
+    }
     func setVisible(_ kind: DevelopmentThumbnailKind, _ value: Bool, context: EditingInteractionContext) {
         let scopeMatch = editing?.developmentContext == context
         InteractionTrace.shared.thumbnail(.ownerVisible, kind: kind) {
@@ -63,8 +71,32 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
         }
         guard scopeMatch else { return }
         let id = kind.presentationKey
-        if value { visible[id] = kind } else { visible[id] = nil; if loading.contains(id) { child?.cancel() }; detach(id); attempts[id] = nil; states[id] = .idle }
+        if value { visible[id] = kind } else {
+            visible[id] = nil; cancelRetry(id)
+            if loading.contains(id) { child?.cancel() }
+            // Keep the bounded adopted image set while scrolled off-screen or otherwise hidden.
+            // A real recipe/source change still invalidates it through recipeChanged()/invalidate().
+            states[id] = sets[id] == nil ? .idle : .ready
+        }
         refresh()
+    }
+    private func cancelRetry(_ id: String) {
+        retryTasks.removeValue(forKey: id)?.cancel(); retryCounts.removeValue(forKey: id)
+    }
+    private func cancelAllRetries() {
+        for task in retryTasks.values { task.cancel() }
+        retryTasks.removeAll(); retryCounts.removeAll()
+    }
+    private func scheduleFilterRetry(_ id: String) {
+        guard id == DevelopmentThumbnailKind.filters.presentationKey, visible[id] != nil,
+              retryTasks[id] == nil, retryCounts[id, default: 0] < 5 else { return }
+        let count = retryCounts[id, default: 0], delay: UInt64 = [50, 100, 200, 400, 800][count] * 1_000_000
+        retryCounts[id] = count + 1
+        retryTasks[id] = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: delay)
+            guard !Task.isCancelled else { return }
+            self?.retryTasks[id] = nil; self?.attempts[id] = nil; self?.refresh()
+        }
     }
     func retry(_ kind: DevelopmentThumbnailKind, context: EditingInteractionContext) {
         let scopeMatch = editing?.developmentContext == context, isVisible = visible[kind.presentationKey] != nil
@@ -76,28 +108,40 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
                 numbers: [.visibleCount: Double(visible.count)], state: state(kind))
         }
         guard scopeMatch, isVisible else { return }
+        cancelRetry(kind.presentationKey)
         attempts[kind.presentationKey] = nil; errors[kind.presentationKey] = nil; refresh()
     }
     func state(_ kind: DevelopmentThumbnailKind) -> State { states[kind.presentationKey] ?? .idle }
+    func isRefreshing(_ kind: DevelopmentThumbnailKind) -> Bool { refreshing.contains(kind.presentationKey) }
     private func mayAttempt(_ id: String, key: String, witness: EditingThumbnailCanonicalWitness?) -> Bool {
-        if sets[id]?.key == key { return false }
+        if sets[id]?.key == key { refreshing.remove(id); return false }
         guard let last = attempts[id], last.key == key else { return true }
+        if id == DevelopmentThumbnailKind.filters.presentationKey {
+            return !last.automaticRetryUsed && states[id] == .waitingForSource
+        }
         return !last.automaticRetryUsed && states[id] == .waitingForSource && witness != nil && last.witness != witness
     }
     func progressText(_ kind: DevelopmentThumbnailKind) -> String {
         if let value = progress.get(), value.registration == active { return "准备预览 \(value.completed)/\(value.total)" }
         return "正在准备预览…"
     }
-    private func detach(_ id: String) { if let old = sets.removeValue(forKey: id) { retirements.append(.init(lease: old.lease, registration: old.registration)) } }
+    private func detach(_ id: String) {
+        refreshing.remove(id); cancelRetry(id)
+        if let old = sets.removeValue(forKey: id) { retirements.append(.init(lease: old.lease, registration: old.registration)) }
+    }
     func recipeChanged() {
-        generation &+= 1; child?.cancel()
-        for id in Array(sets.keys) { detach(id) }
-        attempts = [:]; errors = [:]; states = visible.mapValues { _ in .waitingForSource }
+        generation &+= 1; child?.cancel(); cancelAllRetries()
+        for id in Array(sets.keys) where id != DevelopmentThumbnailKind.filters.presentationKey { detach(id) }
+        attempts = [:]; errors = [:]
+        refreshing = Set(sets.keys)
+        states = visible.mapValues { kind in sets[kind.presentationKey] == nil ? .waitingForSource : .queued }
         ensureDriver()
     }
     func pause() { recipeChanged(); ensureDriver() }
     func invalidate() {
-        visible = [:]; recipeChanged(); ensureDriver()
+        visible = [:]; recipeChanged()
+        for id in Array(sets.keys) { detach(id) }
+        refreshing.removeAll(); ensureDriver()
     }
     func refresh() {
         if shouldTraceActivity {
@@ -107,16 +151,22 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
                     numbers: [.visibleCount: Double(visible.count), .retirementCount: Double(retirements.count)])
             }
         }
-        guard let editing, let context = editing.developmentContext else { invalidateIfNeeded(); return }
+        guard let editing, let context = editing.developmentContext else { return }
         for (id, kind) in visible {
             guard let request = try? editing.developmentThumbnailRequest(kind, registration: .init(visibleGeneration: generation)) else {
-                child?.cancel(); detach(id); states[id] = .waitingForSource; continue
+                child?.cancel()
+                if sets[id] == nil { states[id] = .waitingForSource }
+                continue
             }
-            if let old = sets[id], old.key != key(request, context: context) { detach(id); attempts[id] = nil }
+            guard let wanted = try? key(request, context: context) else { continue }
+            if let old = sets[id], old.key != wanted {
+                attempts[id] = nil
+                if kind == .filters { refreshing.insert(id); states[id] = .queued }
+                else { detach(id) }
+            } else if sets[id] != nil { refreshing.remove(id); states[id] = .ready }
         }
         ensureDriver()
     }
-    private func invalidateIfNeeded() { if !visible.isEmpty || !sets.isEmpty { invalidate() } }
     private func ensureDriver() {
         guard !driving, let editing, !visible.isEmpty || !retirements.isEmpty else {
             if shouldTraceActivity {
@@ -134,7 +184,7 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
                 guard let request = try? editing.developmentThumbnailRequest(kind, registration: .init(visibleGeneration: generation)) else {
                     reason = .requestRejected; return false
                 }
-                let wanted = key(request, context: context)
+                guard let wanted = try? key(request, context: context) else { reason = .requestRejected; return false }
                 let allowed = mayAttempt(id, key: wanted, witness: editing.developmentThumbnailCanonicalWitness())
                 reason = allowed ? .scheduled : (sets[id]?.key == wanted ? .alreadyCurrent : .attemptExhausted)
                 return allowed
@@ -190,14 +240,14 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
             guard !Task.isCancelled, let context = editing.developmentContext else { break }
             var next: (String, DevelopmentThumbnailRequest, String)?
             for id in visible.keys.sorted() {
-                guard let kind = visible[id], let request = try? editing.developmentThumbnailRequest(kind, registration: .init(visibleGeneration: generation)) else { continue }
-                let wanted = key(request, context: context)
+                guard let kind = visible[id], let request = try? editing.developmentThumbnailRequest(kind, registration: .init(visibleGeneration: generation)),
+                      let wanted = try? key(request, context: context) else { continue }
                 if mayAttempt(id, key: wanted, witness: editing.developmentThumbnailCanonicalWitness()) { next = (id, request, wanted); break }
             }
             guard let (id, request, wanted) = next else { break }
             let automaticRetry = attempts[id]?.key == wanted
             attempts[id] = .init(key: wanted, witness: editing.developmentThumbnailCanonicalWitness(), automaticRetryUsed: automaticRetry)
-            active = request.registration; loading = [id]; errors[id] = nil; states[id] = .queued
+            active = request.registration; loading = [id]; refreshing.insert(id); errors[id] = nil; states[id] = .queued
             let mailbox = progress
             let task = Task { try await backend.thumbnails(request, progress: { mailbox.put($0) }) }
             child = task; states[id] = .preparing
@@ -209,26 +259,29 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
                 ready = try await withTaskCancellationHandler(operation: { try await task.value }, onCancel: { task.cancel() })
                 try Task.checkCancellation()
                 guard !task.isCancelled, visible[id] != nil, generation == request.registration.visibleGeneration,
-                      editing.developmentContext == context,
+                      let currentContext = editing.developmentContext,
+                      currentContext.historyKey == context.historyKey,
+                      currentContext.sourceGeneration == context.sourceGeneration,
                       let current = try? editing.developmentThumbnailRequest(request.kind, registration: request.registration),
-                      key(current, context: context) == wanted, let value = ready else { throw DevelopmentThumbnailError.superseded }
-                let descriptor = value.descriptor
+                      (try? key(current, context: currentContext)) == wanted, let value = ready else { throw DevelopmentThumbnailError.superseded }
                 try Self.validateAdoptionDescriptor(value.descriptor, request: request,
                     source: editing.developmentSession.source, resourceVersion: editing.developmentSourceFacts?.photoFilterResourceVersion)
                 let lease = try await backend.adoptThumbnails(value, registration: request.registration)
                 presentation = lease; ready = nil
-                guard !task.isCancelled, !Task.isCancelled, editing.developmentContext == context,
+                guard !task.isCancelled, !Task.isCancelled,
+                      let currentContext = editing.developmentContext,
+                      currentContext.historyKey == context.historyKey,
                       generation == request.registration.visibleGeneration, visible[id] != nil,
                       let current = try? editing.developmentThumbnailRequest(request.kind, registration: request.registration),
-                      key(current, context: context) == wanted else { throw DevelopmentThumbnailError.superseded }
+                      (try? key(current, context: currentContext)) == wanted else { throw DevelopmentThumbnailError.superseded }
                 let images = try lease.tiles.map { tile in
                     NSImage(cgImage: try lease.cgImage(tile: tile.index), size: .init(width: tile.width, height: tile.height))
                 }
                 detach(id)
                 sets[id] = .init(key: wanted, registration: request.registration, lease: lease, images: images)
-                presentation = nil; states[id] = .ready; published = true
+                presentation = nil; refreshing.remove(id); states[id] = .ready; published = true
             } catch {
-                terminalReason = .error(error)
+                terminalReason = .error(error); refreshing.remove(id)
                 if !Task.isCancelled, generation == request.registration.visibleGeneration,
                    editing.developmentContext == context, visible[id] != nil {
                     // A terminal is never displayed as a still-running native operation. Keep its
@@ -245,6 +298,14 @@ private final class ThumbnailProgressMailbox: @unchecked Sendable {
                         default: errors[id] = "未能准备效果预览，请重试。"
                         }
                     } else { errors[id] = "未能准备效果预览，请重试。" }
+                    if id == DevelopmentThumbnailKind.filters.presentationKey,
+                       let thumbnailError = error as? DevelopmentThumbnailError {
+                        switch thumbnailError {
+                        case .awaitingSource, .staleSource, .superseded, .closed, .cancelled, .budgetUnavailable:
+                            scheduleFilterRetry(id)
+                        default: break
+                        }
+                    }
                 }
             }
             InteractionTrace.shared.thumbnail(.terminal, kind: request.kind) {

@@ -89,7 +89,7 @@ enum PreviewNativePointwiseV1 {
   /// eligibility API and its sealed sat-v1 result/priority remain unchanged.
   static func routeEligibility(_ recipe: DevelopmentRecipe,size: CGSize) throws -> Reason? {
     try recipe.validate()
-    if recipe.schemaVersion==3,let p=recipe.adjustmentsV3,p.blackAndWhite.grain != 0 { return .grainCanonical }
+    if recipe.schemaVersion==3,let p=recipe.adjustmentsV3,p.blackAndWhite.grain != 0 || (p.effects?.enabled == true && (p.effects?.grain ?? 0) != 0) { return .grainCanonical }
     let old=try eligibility(recipe,size:size)
     if old==nil || old == .legacyDelegate { return old }
     return try PreviewNativePointwiseCertificateV2.domainReason(recipe,size:size)
@@ -99,7 +99,7 @@ enum PreviewNativePointwiseV1 {
     let map=try p.geometry.mapping(sourceSize:.init(width:Int(size.width),height:Int(size.height)))
     let w=Double(map.outputSize.width),h=Double(map.outputSize.height)
     let scale=min(1,Double(max(64,min(4096,maxPixel)))/max(w,h))
-    return try .make(width:Int(ceil(w*scale)),height:Int(ceil(h*scale)),float:false)
+    return try .make(width:PreviewInteractiveProxyV3.scaledPixelDimension(w,scale:scale),height:PreviewInteractiveProxyV3.scaledPixelDimension(h,scale:scale),float:false)
   }
   static func prefix(_ p: DevelopmentAdjustmentsV3,input: CIImage,sourceIsRAW: Bool,
                      context: CIContext,check: @escaping () throws -> Void) throws -> CIImage {
@@ -115,10 +115,13 @@ enum PreviewNativePointwiseV1 {
   static func geometry(_ p: DevelopmentAdjustmentsV3,input: CIImage,context: CIContext,
                        check: @escaping () throws -> Void) throws -> CIImage {
     let image=try DevelopmentLocalEngineV3.apply(p.localEdits,to:input,context:context,checkCancellation:check)
+    let developed: CIImage
     if p.geometry.version == .legacyV1 || p.geometry.version == .legacyV2 {
-      return try PhotoRenderer.applyV2Geometry(image,DevelopmentRendererV3.legacyRecipe(p))
+      developed = try PhotoRenderer.applyV2Geometry(image,DevelopmentRendererV3.legacyRecipe(p))
+    } else {
+      developed = try DevelopmentGeometryEngineV3.apply(p.geometry,to:image)
     }
-    return try DevelopmentGeometryEngineV3.apply(p.geometry,to:image)
+    return try DevelopmentPostCropVignetteEngineV3.apply(p.effects,to:developed)
   }
   static func fit(_ image: CIImage,grid: PreviewNativePointwiseCertificateV1.Grid) -> CIImage {
     grid.scale < 1 ? image.transformed(by:.init(scaleX:grid.scale,y:grid.scale)):image
@@ -217,6 +220,7 @@ extension PreviewNativeSource {
     try recipe.validate()
     let layout=try PreviewNativePointwiseV1.layout(recipe:recipe,size:nativeSize,maxPixel:maxPixel)
     if maxPixel != 2400 || artifact { return .init(descriptor:nil,grid:nil,outputLayout:layout,fallback:.viewport) }
+    if recipe.adjustmentsV3?.aiDenoise != nil { return .init(descriptor:nil,grid:nil,outputLayout:layout,fallback:.sourceProfile) }
     if let reason=try PreviewNativePointwiseV1.routeEligibility(recipe,size:nativeSize) {
       return .init(descriptor:nil,grid:nil,outputLayout:layout,fallback:reason)
     }
@@ -237,7 +241,7 @@ extension PreviewNativeSource {
   /// Separate RAW-only canonical domain; OFF remains the same full-native graph with its original scan.
   func nativeNaturalCurvePlan(recipe:DevelopmentRecipe,sourceKey:String,generation:UInt64,
                              verifiedContentID:String,maxPixel:Int,proofEnabled:Bool)throws->PreviewNativePointwisePlanV1 {
-    guard maxPixel==2400,!artifact,hasRAWFilter,try PreviewNaturalCurveFiniteEvidenceV1.domain(recipe,size:nativeSize) else {
+    guard maxPixel==2400,!artifact,hasRAWFilter,recipe.adjustmentsV3?.aiDenoise == nil,try PreviewNaturalCurveFiniteEvidenceV1.domain(recipe,size:nativeSize) else {
       return try nativePointwisePlan(recipe:recipe,sourceKey:sourceKey,generation:generation,verifiedContentID:verifiedContentID,maxPixel:maxPixel)
     }
     let layout=try PreviewNativePointwiseV1.layout(recipe:recipe,size:nativeSize,maxPixel:maxPixel)

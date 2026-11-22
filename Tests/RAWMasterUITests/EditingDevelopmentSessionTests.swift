@@ -15,7 +15,8 @@ final class EditingDevelopmentSessionTests: XCTestCase {
     private let source = DevelopmentLocalEditSourceBinding(sourceContentID: String(repeating: "a", count: 64),
         exifOrientation: 6, orientedWidth: 2400, orientedHeight: 3600)
     private var admission: String { String(repeating: "b", count: 64) }
-    @MainActor private func make(_ recipe: DevelopmentRecipe = .init(), limits: DevelopmentUndoHistory.Limits = .init()) throws
+    @MainActor private func make(_ recipe: DevelopmentRecipe = .init(), limits: DevelopmentUndoHistory.Limits = .init(),
+                                 capability: DevelopmentNoiseReductionSourceCapability = .image) throws
         -> (Draft, EditingDevelopmentSession, EditingInteractionContext) {
         let draft = Draft(recipe)
         let session = EditingDevelopmentSession(historyLimits: limits, readRecipe: { draft.recipe }, commitRecipe: { recipe, _ in
@@ -24,11 +25,61 @@ final class EditingDevelopmentSessionTests: XCTestCase {
             draft.recipe = recipe; draft.publications += 1
         })
         let context = try session.activate(workID: "work", admissionFingerprint: admission, source: source,
-                                          sourceGeneration: 1, noiseReduction: .image)
+                                          sourceGeneration: 1, noiseReduction: capability)
         return (draft, session, context)
     }
     private func event(_ context: EditingInteractionContext, group: DevelopmentAdjustmentID = .light) -> EditingCommandEvent {
         .init(context: context, control: .init(group: group, name: group.photosTitle))
+    }
+    @MainActor func testAIDenoiseAmountGestureUndoRedoAndSwitchOff() throws {
+        let (draft, session, context) = try make(capability: .raw)
+        let baseline = draft.recipe
+        let event = EditingCommandEvent(context: context, control: .init(group: nil, name: "AI 降噪量"))
+        try session.apply(.setAIDenoise(.init(model: .appleRAW9)), event: event)
+        let selected = draft.recipe
+        let gesture = try session.beginGesture(event.control, context: context)
+        for amount in [62, 71, 83] {
+            try session.apply(.setAIDenoise(.init(model: .appleRAW9, amount: amount)), event: event, gesture: gesture)
+        }
+        try session.endGesture(gesture, .commit)
+        let adjusted = draft.recipe
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, selected)
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, baseline)
+        try session.redo(context: context)
+        try session.redo(context: context)
+        XCTAssertEqual(draft.recipe, adjusted)
+        try session.apply(.setAIDenoise(nil), event: event)
+        XCTAssertNil(draft.recipe.adjustmentsV3?.aiDenoise)
+    }
+
+    @MainActor func testRawDetailsCanUndoToOlderDecoderAndRedo() throws {
+        let (draft, session, context) = try make(capability: .raw)
+        let old = draft.recipe
+        try session.apply(.setRawDetails(.bayerAHD), event: event(context))
+        XCTAssertEqual(draft.recipe.adjustmentsV3?.rawDetails, .bayerAHD)
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, old)
+        try session.redo(context: context)
+        XCTAssertEqual(draft.recipe.adjustmentsV3?.rawDetails, .bayerAHD)
+    }
+
+    @MainActor func testGradingLUTStackAndMaskUndoRedo() throws {
+        let (draft, session, context) = try make()
+        let baseline = draft.recipe
+        let stack = DevelopmentLUTStack(layers: [.init(cube: .warm, amount: 25), .init(cube: .monochrome, amount: 80)])
+        try session.apply(.setGradingLUTs(stack), event: event(context))
+        let layered = draft.recipe
+        try session.apply(.setMasks([.init(kind: .radial, adjustments: .init(gradingLUT: .init(cube: .monochrome)))]), event: event(context))
+        let masked = draft.recipe
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, layered)
+        try session.undo(context: context)
+        XCTAssertEqual(draft.recipe, baseline)
+        try session.redo(context: context)
+        try session.redo(context: context)
+        XCTAssertEqual(draft.recipe, masked)
     }
     @MainActor func testReadingPresentationAndDefaultResetNeverPromotesLegacyRecipe() throws {
         let legacy = try DevelopmentRecipe().promotingToV2()

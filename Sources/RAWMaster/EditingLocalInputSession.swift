@@ -16,6 +16,7 @@ struct EditingDevelopmentLocalFrame {
 @MainActor final class EditingLocalInputSession: ObservableObject {
     private weak var editing: EditingController?
     @Published private(set) var tool: DevelopmentLocalTool?
+    @Published var retouchMode: DevelopmentRetouchMode = .heal
     @Published private var sizes: [String: Double] = [:]
     @Published private(set) var donor: DevelopmentSourcePoint?
     @Published private(set) var points: [DevelopmentStrokePoint] = []
@@ -105,8 +106,8 @@ struct EditingDevelopmentLocalFrame {
                 if donorContext != context || donorFingerprint != frame.recipeFingerprint { clearDonor() }
                 let selecting = tool == .retouch && option
                 if !selecting, tool == .retouch, donor == nil,
-                   editing.developmentSourceFacts?.localCapabilities.contains(.automaticDonor) != true {
-                    editing.message = "请按住 Option 点击照片，选择修复来源。"; return true
+                   retouchMode == .clone || editing.developmentSourceFacts?.localCapabilities.contains(.automaticDonor) != true {
+                    editing.message = "请按住 Option 点击照片，选择\(retouchMode == .clone ? "克隆" : "修复")来源。"; return true
                 }
                 let radius = size / Double(min(frame.source.orientedWidth, frame.source.orientedHeight))
                 tracking = .init(id: event.gestureID, frame: frame, viewport: event.viewport, tool: tool,

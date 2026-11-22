@@ -97,6 +97,8 @@ enum DevelopmentLocalAnalysisV3 {
     switch request.operation {
     case .retouchSource(let stroke,let donor):
       pending = .init(id:request.operationID,sourceContentID:sourceBinding.sourceContentID,tool:.retouch,stroke:stroke,sourceSample:donor ?? stroke.points[0].position)
+    case .retouch(let stroke,let donor,let mode):
+      pending = .init(id:request.operationID,sourceContentID:sourceBinding.sourceContentID,tool:.retouch,stroke:stroke,sourceSample:donor ?? stroke.points[0].position,retouchMode:mode)
     case .redEyeAt(let point,let radius,let strength):
       pending = .init(id:request.operationID,sourceContentID:sourceBinding.sourceContentID,tool:.redEye,
         stroke:.init(points:[.init(position:point)],radiusInShortEdge:radius,strength:strength))
@@ -128,6 +130,18 @@ enum DevelopmentLocalAnalysisV3 {
       }
       if donor == stroke.points[0].position { return try finish(.noResult(.unchanged)) }
       operation = .init(id:request.operationID,sourceContentID:sourceBinding.sourceContentID,tool:.retouch,stroke:stroke,sourceSample:donor)
+    case .retouch(let stroke,let explicit,let mode):
+      if stroke.strength == 0 || !stroke.points.contains(where:{$0.pressure>0}) { return try finish(.noResult(.unchanged)) }
+      let donor: DevelopmentSourcePoint
+      if let explicit { donor = explicit }
+      else {
+        if mode == .clone { return try finish(.noResult(.noUsableDonor)) }
+        let sampler = try Sampler(image:graph.image,context:context,cancellation:cancellation)
+        guard let selected = try automaticDonor(stroke:stroke,size:sourceBinding.sourceSize,sampler:sampler) else { return try finish(.noResult(.noUsableDonor)) }
+        donor = selected
+      }
+      if donor == stroke.points[0].position { return try finish(.noResult(.unchanged)) }
+      operation = .init(id:request.operationID,sourceContentID:sourceBinding.sourceContentID,tool:.retouch,stroke:stroke,sourceSample:donor,retouchMode:mode)
     case .redEyeAt(let point,let radius,let strength):
       if strength == 0 { return try finish(.noResult(.unchanged)) }
       operation = .init(id:request.operationID,sourceContentID:sourceBinding.sourceContentID,tool:.redEye,

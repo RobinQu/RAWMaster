@@ -2,6 +2,10 @@ import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
 
+private extension Collection {
+    subscript(safe index: Index) -> Element? { indices.contains(index) ? self[index] : nil }
+}
+
 struct PhotosThumbnailVisibility: ViewModifier {
     let editing: EditingController
     let context: EditingInteractionContext
@@ -136,37 +140,90 @@ struct PhotosFilterControls: View {
     @ObservedObject var owner: EditingThumbnailPresentation
     let context: EditingInteractionContext
     let viewportHeight: CGFloat
+    @FocusState private var focusedFilter: DevelopmentPhotoFilterV3?
     private var filter: DevelopmentFilterV3 { session.parameters.filter }
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Toggle("启用滤镜", isOn: .init(get: { filter.enabled }, set: { value in apply(.setEnabled(.filter, value)) }))
-                    .disabled(editing.availableDevelopmentFilters.count <= 1)
-                Spacer()
-                Button("复位") { apply(.reset(.filter)) }
+        VStack(alignment: .leading, spacing: 12) {
+            Text("预览基于当前照片生成，仅在区块可见时渲染。")
+                .font(.caption2).foregroundStyle(.secondary)
+            if owner.isRefreshing(.filters), owner.sets[DevelopmentThumbnailKind.filters.presentationKey] != nil {
+                HStack(spacing: 5) { ProgressView().controlSize(.mini); Text("正在更新滤镜预览…") }
+                    .font(.caption2).foregroundStyle(.secondary)
+                    .accessibilityLabel("正在更新滤镜预览")
             }
-            Text("直接在主照片中查看效果，不生成额外效果缩略图。")
-                .font(.caption).foregroundStyle(.secondary)
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
-                ForEach(editing.availableDevelopmentFilters, id: \.self) { look in
+            if owner.sets[DevelopmentThumbnailKind.filters.presentationKey] == nil {
+                PhotosThumbnailStatus(owner: owner, kind: .filters, context: context)
+            } else if let error = owner.errors[DevelopmentThumbnailKind.filters.presentationKey] {
+                HStack(spacing: 6) {
+                    Text(error).font(.caption2).foregroundStyle(.secondary)
+                    Button("重试预览") { owner.retry(.filters, context: context) }.font(.caption2)
+                        .accessibilityIdentifier("photos.filters.thumbnail.retry")
+                }
+            }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 9) {
+                ForEach(editing.displayDevelopmentFilters, id: \.self) { look in
+                    let imageIndex = editing.availableDevelopmentFilters.firstIndex(of: look) ?? 0
                     Button {
                         do { try editing.changeDevelopmentFilter(look, context: context) }
                         catch { editing.message = "滤镜未应用，请重试。" }
                     } label: {
-                        HStack(spacing: 7) {
-                            if selected(look) { Image(systemName: "checkmark").font(.caption.weight(.bold)) }
-                            Text(look.photosName).font(.caption).lineLimit(1)
-                            Spacer(minLength: 0)
+                        VStack(spacing: 0) {
+                            ZStack {
+                                if let image = owner.sets[DevelopmentThumbnailKind.filters.presentationKey]?.images[safe: imageIndex] {
+                                    Image(nsImage: image).resizable().scaledToFill()
+                                } else {
+                                    AppPalette.thumbnailWell
+                                    if owner.state(.filters).isBusy { ProgressView().controlSize(.mini) }
+                                    else { Image(systemName: "photo").foregroundStyle(.tertiary) }
+                                }
+                            }
+                            .frame(maxWidth: .infinity).frame(height: 68).clipped()
+                            HStack(spacing: 4) {
+                                if selected(look) { Image(systemName: "checkmark").font(.system(size: 8, weight: .bold)) }
+                                Text(look.photosName).font(.system(size: 10, weight: selected(look) ? .semibold : .regular)).lineLimit(1)
+                                Spacer(minLength: 0)
+                            }
+                            .padding(.horizontal, 7).frame(maxWidth: .infinity, minHeight: 25)
                         }
-                        .padding(.horizontal, 12).frame(maxWidth: .infinity, minHeight: 36)
-                        .background(selected(look) ? AppPalette.accent.opacity(0.14) : Color.primary.opacity(0.045), in: RoundedRectangle(cornerRadius: 8))
-                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(selected(look) ? AppPalette.accent.opacity(0.7) : .clear, lineWidth: 1))
+                        .background(selected(look) ? AppPalette.accent.opacity(0.14) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 7))
+                        .overlay(RoundedRectangle(cornerRadius: 7).stroke(selected(look) ? AppPalette.accent.opacity(0.8) : AppPalette.boundary.opacity(0.28), lineWidth: selected(look) ? 1.2 : 0.5))
+                        .clipShape(RoundedRectangle(cornerRadius: 7))
+                        .contentShape(RoundedRectangle(cornerRadius: 7))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(look.photosName)
+                    .accessibilityIdentifier("editing.filter.\(look.rawValue)")
                     .accessibilityAddTraits(selected(look) ? .isSelected : [])
+                    .overlay(alignment: .topTrailing) {
+                        if look != .original {
+                            Button {
+                                editing.toggleDevelopmentFilterFavorite(look)
+                            } label: {
+                                Image(systemName: editing.favoriteDevelopmentFilters.contains(look) ? "star.fill" : "star")
+                                    .font(.system(size: 10)).padding(6)
+                            }.buttonStyle(.plain)
+                                .accessibilityLabel(editing.favoriteDevelopmentFilters.contains(look) ? "取消收藏\(look.photosName)" : "收藏\(look.photosName)")
+                                .accessibilityIdentifier("editing.filter.favorite.\(look.rawValue)")
+                        }
+                    }
+                    .onHover { hovering in
+                        if hovering { editing.previewDevelopmentFilter(look, context: context) }
+                        else if editing.hoveredDevelopmentFilter == look { editing.cancelDevelopmentFilterHover() }
+                    }
+                    .focused($focusedFilter, equals: look)
+                    .onKeyPress(.leftArrow) { moveFocus(from: look, by: -1) }
+                    .onKeyPress(.rightArrow) { moveFocus(from: look, by: 1) }
+                    .onKeyPress(.upArrow) { moveFocus(from: look, by: -2) }
+                    .onKeyPress(.downArrow) { moveFocus(from: look, by: 2) }
+                    .onExitCommand { editing.cancelDevelopmentFilterHover() }
                 }
             }
+            .modifier(PhotosThumbnailVisibility(editing: editing, context: context, kind: .filters, viewportHeight: viewportHeight))
+            .onChange(of: focusedFilter) { _, look in
+                if let look, !selected(look) { editing.previewDevelopmentFilter(look, context: context) }
+                else if editing.hoveredDevelopmentFilter != nil { editing.cancelDevelopmentFilterHover() }
+            }
+            .onDisappear { editing.cancelDevelopmentFilterHover() }
             PhotosRecipeValueRow(session: session, context: context, title: "强度", control: "filter.intensity", value: filter.intensity,
                 range: 0...100, step: 1, digits: 0, apply: { amount, token in
                     var value = session.parameters.filter; value.intensity = amount
@@ -175,6 +232,12 @@ struct PhotosFilterControls: View {
                 }, onError: { _ in editing.message = "滤镜强度未应用，请检查数值。" })
                 .disabled(editing.availableDevelopmentFilters.count <= 1 || filter.selection == .original)
         }
+    }
+    private func moveFocus(from look: DevelopmentPhotoFilterV3, by offset: Int) -> KeyPress.Result {
+        let items = editing.displayDevelopmentFilters
+        guard let index = items.firstIndex(of: look), items.indices.contains(index + offset) else { return .ignored }
+        focusedFilter = items[index + offset]
+        return .handled
     }
     private func selected(_ look: DevelopmentPhotoFilterV3) -> Bool { look == .original ? !filter.enabled || filter.selection == .original : filter.enabled && filter.selection == look }
     private func apply(_ command: DevelopmentAdjustmentCommand) {

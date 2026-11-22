@@ -12,4 +12,9 @@ enum PhotosSliderInput {
         guard result.isFinite else { return nil }
         return min(range.upperBound, max(range.lowerBound, result))
     }
+    static func scrubbed(origin: Double, translation: Double, range: ClosedRange<Double>, step: Double) -> Double? {
+        guard origin.isFinite, translation.isFinite, range.upperBound >= range.lowerBound else { return nil }
+        let candidate = origin + translation / 200 * (range.upperBound - range.lowerBound)
+        return snapped(candidate, range: range, step: step)
+    }
 }

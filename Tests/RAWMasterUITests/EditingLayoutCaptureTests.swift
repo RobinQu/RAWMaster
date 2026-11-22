@@ -33,7 +33,7 @@ final class EditingLayoutCaptureTests: XCTestCase {
         editing.stage = .development; editing.saveDevelopment()
         for _ in 0..<500 { if !editing.saving && editing.versions.count >= 2 { break }; try await Task.sleep(nanoseconds: 10_000_000) }
         XCTAssertGreaterThanOrEqual(editing.versions.count, 2)
-        editing.stage = .versions; editing.comparing = true; editing.requestPreview()
+        editing.stage = .versions; editing.setComparisonMode(.wipeHorizontal)
         for dark in [false, true] {
             for size in [NSSize(width: 1100, height: 720), NSSize(width: 1480, height: 940)] {
                 evidence.append(try await capture(WorkbenchView().environmentObject(model), size: size, dark: dark, output: output, name: "candidate-compare-\(Int(size.width))-" + (dark ? "dark" : "light")))

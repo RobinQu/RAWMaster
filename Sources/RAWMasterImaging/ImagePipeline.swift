@@ -193,13 +193,31 @@ public actor ImagePipeline {
             guard let raw = CIRAWFilter(imageURL: url) else { throw ImagePipelineError.unsupportedRAW(url.lastPathComponent) }
             raw.scaleFactor = 1
             raw.isDraftModeEnabled = false
-            // CIRAWFilter applies its metadata orientation. Applying EXIF again would rotate twice.
-            guard let output = raw.outputImage,
-                  !output.extent.isEmpty, !output.extent.isInfinite,
-                  let rendered = context.createCGImage(output, from: output.extent.integral,
-                        format: .RGBA8, colorSpace: displayColorSpace, deferred: false) else {
+            guard let reference = raw.outputImage, !reference.extent.isEmpty, !reference.extent.isInfinite else {
                 throw ImagePipelineError.renderFailed(url.lastPathComponent)
             }
+            // The browser's native-resolution view uses the same oriented linear base as a newly developed RAW.
+            // Keep the platform decoder for formats and crop geometries which FlashRaw cannot match.
+            var output = reference
+            var decoder = "CIRAWFilter"
+            if FlashRawSource.isAvailable {
+                let decode = ImagePerformanceTelemetry.shared.begin(operation:"ImagePipeline.detail", stage:"FlashRaw 原尺寸解码", queue:"原尺寸浏览", boundary:.decode)
+                if let linear = try? FlashRawImageFactory.linearImage(capture:url), linear.extent.size == reference.extent.size {
+                    output = linear
+                    decoder = "FlashRaw"
+                }
+                ImagePerformanceTelemetry.shared.end(decode, outcome:decoder == "FlashRaw" ? .succeeded : .failed,
+                    pixelCount:Int(reference.extent.width * reference.extent.height))
+            }
+            try Task.checkCancellation()
+            let conversion = ImagePerformanceTelemetry.shared.begin(operation:"ImagePipeline.detail", stage:decoder + " → sRGB 位图", queue:"原尺寸浏览")
+            var conversionOutcome = ImagePerformanceOutcome.failed
+            defer { ImagePerformanceTelemetry.shared.end(conversion, outcome:conversionOutcome, pixelCount:Int(output.extent.width * output.extent.height)) }
+            guard let rendered = context.createCGImage(output, from: output.extent.integral,
+                format:.RGBA8, colorSpace:displayColorSpace, deferred:false) else {
+                throw ImagePipelineError.renderFailed(url.lastPathComponent)
+            }
+            conversionOutcome = .succeeded
             cgImage = rendered
         } else {
             guard let source = CGImageSourceCreateWithURL(url as CFURL,

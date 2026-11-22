@@ -10,6 +10,10 @@ enum PhotosCropOrientation: String, CaseIterable, Identifiable {
     case landscape = "横向", portrait = "纵向"
     var id: String { rawValue }
 }
+enum PhotosCropOverlayStyle: String, CaseIterable, Identifiable {
+    case ruleOfThirds = "三分法", goldenRatio = "黄金比例", diagonal = "对角线", triangle = "三角形", none = "无参考线"
+    var id: String { rawValue }
+}
 struct PhotosCropConstraint: Equatable {
     var aspect: PhotosCropAspect = .freeform
     var orientation: PhotosCropOrientation = .landscape
@@ -57,7 +61,7 @@ enum PhotosCropInteraction {
         try DevelopmentCropGeometryAutoV1.fitted(crop, ratio: ratio, plane: plane)
     }
     static func resized(_ start: NormalizedCrop, handle: PhotosCropHandle, delta: CGPoint,
-                        plane: DevelopmentContinuousRectV3, ratio: Double?) throws -> NormalizedCrop {
+                        plane: DevelopmentContinuousRectV3, ratio: Double?, fromCenter: Bool = false) throws -> NormalizedCrop {
         try validate(start, plane: plane)
         guard delta.x.isFinite, delta.y.isFinite else { throw EditingError.invalidRecipe }
         if delta == .zero {
@@ -69,6 +73,25 @@ enum PhotosCropInteraction {
         }
         guard handle != .straighten else { return start }
         let minW = min(1, 2 / plane.width), minH = min(1, 2 / plane.height)
+        if fromCenter {
+            // Lightflow's Option-drag grows both opposing sides and preserves the centre.
+            var width = start.width, height = start.height
+            if handle.left { width -= 2 * delta.x }
+            if handle.right { width += 2 * delta.x }
+            if handle.top { height -= 2 * delta.y }
+            if handle.bottom { height += 2 * delta.y }
+            width = max(minW, width); height = max(minH, height)
+            if let ratio {
+                guard ratio.isFinite, ratio > 0 else { throw EditingError.invalidRecipe }
+                let q = ratio * plane.height / plane.width
+                if (handle.top || handle.bottom) && !(handle.left || handle.right) { width = height * q }
+                else if (handle.left || handle.right) && !(handle.top || handle.bottom) { height = width / q }
+                else if width / q > height { height = width / q } else { width = height * q }
+            }
+            let candidate = NormalizedCrop(x: start.x + start.width / 2 - width / 2,
+                y: start.y + start.height / 2 - height / 2, width: width, height: height)
+            return try fitted(candidate, ratio: ratio, plane: plane)
+        }
         if let ratio {
             guard ratio.isFinite, ratio > 0 else { throw EditingError.invalidRecipe }
             let q = ratio * plane.height / plane.width
@@ -120,8 +143,13 @@ enum PhotosCropInteraction {
         let positions: [(PhotosCropHandle, CGPoint)] = [(.topLeft,.init(x:cropRect.minX,y:cropRect.minY)),(.topRight,.init(x:cropRect.maxX,y:cropRect.minY)),
             (.bottomLeft,.init(x:cropRect.minX,y:cropRect.maxY)),(.bottomRight,.init(x:cropRect.maxX,y:cropRect.maxY)),(.left,.init(x:cropRect.minX,y:cropRect.midY)),
             (.right,.init(x:cropRect.maxX,y:cropRect.midY)),(.top,.init(x:cropRect.midX,y:cropRect.minY)),(.bottom,.init(x:cropRect.midX,y:cropRect.maxY))]
-        if let result = positions.min(by: { hypot(point.x-$0.1.x,point.y-$0.1.y) < hypot(point.x-$1.1.x,point.y-$1.1.y) }),
-           hypot(point.x-result.1.x,point.y-result.1.y) <= 9 { return result.0 }
+        // Lightflow uses square 22×22 targets for all eight resize handles. Square hit areas
+        // avoid diagonal dead zones and leave the area immediately outside a corner for rotation.
+        for (handle, center) in positions {
+            if CGRect(x: center.x - 11, y: center.y - 11, width: 22, height: 22).contains(point) {
+                return handle
+            }
+        }
         if cropRect.contains(point) { return .center }
         if imageRect.insetBy(dx:-20,dy:-20).contains(point) { return .straighten }
         return nil

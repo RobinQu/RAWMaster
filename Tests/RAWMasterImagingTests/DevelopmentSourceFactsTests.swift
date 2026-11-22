@@ -35,7 +35,7 @@ final class DevelopmentSourceFactsTests: XCTestCase {
     XCTAssertEqual(facts.supportedPhotoFilters,Set(DevelopmentPhotoFilterV3.allCases))
     XCTAssertEqual(facts.photoFilterResourceVersion,"0a8a0e9aa4fb7dacdf6ad20d12d5f24dda4132c4b7880acd7fab1c28fa6c61f9")
     XCTAssertNil(facts.asShotWhiteBalance)
-    XCTAssertEqual(facts.implementedAdjustments,Set([.light,.color,.blackAndWhite,.curves,.levels,.whiteBalance,.definition,.selectiveColor,.noiseReduction,.sharpen,.vignette,.retouch,.redEye,.texture,.clarity,.dehaze,.filter]))
+    XCTAssertEqual(facts.implementedAdjustments,Set([.light,.color,.blackAndWhite,.curves,.levels,.whiteBalance,.definition,.selectiveColor,.noiseReduction,.sharpen,.vignette,.retouch,.redEye,.texture,.clarity,.dehaze,.filter,.optics]))
     XCTAssertFalse(facts.automaticAdjustments.contains(.selectiveColor)); XCTAssertTrue(facts.automaticAdjustments.contains(.definition))
     XCTAssertTrue(facts.implementedAdjustments.contains(.dehaze))
     XCTAssertEqual(facts.dehazeContextV1?.source,facts.sourceBinding)

@@ -6,7 +6,7 @@ import RAWMasterCore
 
 /// Own versioned operators. Initial reference calibration is not Photos algorithm equivalence or qualification.
 enum DevelopmentColorEngineV3 {
-  static let operatorVersion = "rawmaster-point-v3.2/encoded-srgb-hue-fit256/curves-PCHIP-v3.1"
+  static let operatorVersion = "rawmaster-point-v3.4-white/encoded-srgb-hue-fit256/curves-PCHIP-v3.1-parametric-v1"
   static let linearSRGB = DevelopmentColorEngineV2.linearSRGB
   static let context = makeContext()
   static func makeContext() -> CIContext {
@@ -20,22 +20,34 @@ enum DevelopmentColorEngineV3 {
     return .init(point:point,curvesLevels:curves)
   }
   static var sourceSHA256: String { SHA256.hash(data:Data(metalSource.utf8)).map { String(format:"%02x",$0) }.joined() }
+  static func prewarm(){_ = try? loaded.get()}
   static func pointwiseActive(_ p: DevelopmentAdjustmentsV3) -> Bool {
-    (p.light.enabled && (p.light.brightness != 0 || p.light.contrast != 0 || p.light.blackPoint != 0)) ||
-    (p.color.enabled && (p.color.saturation != 0 || p.color.vibrance != 0 || p.color.cast != 0)) || p.blackAndWhite.enabled
+    (p.light.enabled && (p.light.brightness != 0 || p.light.contrast != 0 || p.light.blackPoint != 0 || p.light.whites != 0)) ||
+    (p.color.enabled && (p.color.saturation != 0 || p.color.vibrance != 0 || p.color.cast != 0)) || p.blackAndWhite.enabled ||
+    (p.effects?.enabled == true && (p.effects?.grain ?? 0) != 0)
   }
   static func curvesActive(_ p: DevelopmentCurvesV3) -> Bool {
-    p.enabled && [p.rgb,p.red,p.green,p.blue].contains { !$0.curve.isNeutral || $0.inputBlack != 0 || $0.inputWhite != 1 }
+    p.enabled && ((p.refineSaturation ?? 0) != 0 || p.parametric?.isActive == true || [p.rgb,p.red,p.green,p.blue].contains { !$0.curve.isNeutral || $0.inputBlack != 0 || $0.inputWhite != 1 })
   }
   static func levelsActive(_ p: DevelopmentLevelsV3) -> Bool { p.enabled && [p.luminance,p.rgb,p.red,p.green,p.blue].contains { $0 != .identity } }
-  static func applyPointwise(_ p: DevelopmentAdjustmentsV3, to image: CIImage, context: CIContext? = nil, checkCancellation: (() throws -> Void)? = nil) throws -> CIImage {
+  static func applyPointwise(_ p: DevelopmentAdjustmentsV3, to image: CIImage, context: CIContext? = nil,
+                             checkCancellation: (() throws -> Void)? = nil, proxyScale: Double = 1) throws -> CIImage {
     try p.validate(); guard pointwiseActive(p) else { return image }
-    if p.blackAndWhite.enabled, p.blackAndWhite.grain != 0, p.blackAndWhite.grainSamplingVersion != nil {
+    let generalGrain = p.effects?.enabled == true && (p.effects?.grain ?? 0) != 0
+    if p.blackAndWhite.enabled && (generalGrain || (p.blackAndWhite.grain != 0 && p.blackAndWhite.grainSamplingVersion != nil)) {
       return try DevelopmentGrainSamplingEngineV1.apply(p,to:image,context:context,checkCancellation:checkCancellation)
     }
+    if generalGrain, let effects = p.effects {
+      var point = p
+      point.effects?.grain = 0
+      let toned = try applyPointwise(point, to: image, context: context, checkCancellation: checkCancellation)
+      return try DevelopmentGrainSamplingEngineV1.applyColorGrain(effects, to: toned, proxyScale: proxyScale)
+    }
     let l = p.light, c = p.color, b = p.blackAndWhite
-    let arguments: [Any] = [image,CIVector(x:l.brightness,y:l.contrast,z:l.blackPoint,w:0),
-      CIVector(x:c.saturation,y:c.vibrance,z:c.cast,w:0),CIVector(x:b.intensity,y:b.neutrals,z:b.tone,w:b.grain),
+    let effectGrain = p.effects?.enabled == true ? p.effects?.grain ?? 0:0
+    let combinedGrain = min(1,b.grain+effectGrain)
+    let arguments: [Any] = [image,CIVector(x:l.brightness,y:l.contrast,z:l.blackPoint,w:l.whites),
+      CIVector(x:c.saturation,y:c.vibrance,z:c.cast,w:0),CIVector(x:b.intensity,y:b.neutrals,z:b.tone,w:combinedGrain),
       CIVector(x:l.enabled ? 1:0,y:c.enabled ? 1:0,z:b.enabled ? 1:0,w:0)]
     guard let result = try loaded.get().point.apply(extent:image.extent,roiCallback:{ _,rect in rect },arguments:arguments) else { throw DevelopmentError.unreadable }
     return result
@@ -65,6 +77,20 @@ enum DevelopmentColorEngineV3 {
     return x
   }
   static func applyCurvesAndLevels(_ p: DevelopmentAdjustmentsV3, to image: CIImage, canonicalNaturalEvidence:PreviewNaturalCurveFiniteEvidenceV1? = nil) throws -> CIImage {
+    if p.curves.enabled, let amount=p.curves.refineSaturation, amount != 0 {
+      var withoutRefine=p;withoutRefine.curves.refineSaturation=nil
+      let developed=try applyCurvesAndLevels(withoutRefine,to:image,canonicalNaturalEvidence:canonicalNaturalEvidence)
+      return try DevelopmentRefineSaturationEngineV3.apply(p.curves,to:developed)
+    }
+    if p.curves.enabled, let parametric = p.curves.parametric, parametric.isActive {
+      // Parametric tone is a separate, ordered GPU stage before the point channels and levels.
+      var prefix = p
+      prefix.levels = .init()
+      prefix.curves = .init(enabled:true,rgb:.init(curve:try parametric.pointCurve()),algorithm:.legacyPCHIPV1)
+      let developed = try applyLegacyCurvesAndLevels(prefix,to:image)
+      var suffix = p; suffix.curves.parametric = nil
+      return try applyCurvesAndLevels(suffix,to:developed,canonicalNaturalEvidence:canonicalNaturalEvidence)
+    }
     if p.curves.algorithm == .naturalCubicGamma512LumaV1, curvesActive(p.curves) {
       try p.validate()
       let curved = try DevelopmentNaturalCubicCurvesV1.apply(p.curves,to:image,canonicalNaturalEvidence:canonicalNaturalEvidence)
@@ -100,9 +126,14 @@ enum DevelopmentColorEngineV3 {
   }
   static func validateFinite(_ image: CIImage, context: CIContext = context,
                              checkCancellation: (() throws -> Void)? = nil) throws {
+    let telemetry = ImagePerformanceTelemetry.shared.begin(operation: "显影有限值检查", stage: "全域归约", queue: "Metal GPU", boundary: .gpuCompletion)
+    var outcome = ImagePerformanceOutcome.failed
+    defer { ImagePerformanceTelemetry.shared.end(telemetry, outcome: outcome,
+      pixelCount: outcome == .succeeded ? Int(image.extent.width * image.extent.height) : 0) }
     let mask=try DevelopmentColorEngineV2.finiteMaskForV3(image)
     let maximum=try DevelopmentCheckedMaximumV3.maximum(mask,domain:image.extent,context:context,checkCancellation:checkCancellation)
     guard maximum.x < 0.5 else { throw DevelopmentError.invalidEncoding }
+    outcome = .succeeded
   }
   /// Retained direct-read regression seam. Production now uses the shared checked maximum
   /// transport, which validates all returned components after each real joined task.
@@ -140,6 +171,9 @@ float v3noise(float2 position) {
     float y=v3y(c), u=v3e(y), w=clamp(u,0.0,1.0), target=v3contrast(u+.8*light.x*w*(1.0-w),light.y);
     float output=v3d(target); c=abs(y)>1e-8?c*(output/y):c+float3(output-y);
     float black=.05*light.z; c=(c-float3(black))/(1.0-black);
+    // White adjusts the upper tonal range without moving the black endpoint.
+    float whiteWeight=smoothstep(.45,1.0,clamp(v3e(v3y(c)),0.0,1.0));
+    c*=1.0+.35*light.w*whiteWeight;
   }
   if(flags.y>0) {
     float3 e=v3e3(c); float l=v3y(e), top=max(e.r,max(e.g,e.b)), bottom=min(e.r,min(e.g,e.b));

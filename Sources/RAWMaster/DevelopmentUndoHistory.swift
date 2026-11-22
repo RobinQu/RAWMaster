@@ -13,6 +13,14 @@ struct DevelopmentHistoryKey: Hashable {
     let branchID: EditingDraftBranchID
 }
 
+struct DevelopmentHistoryItem: Identifiable {
+    let position: Int
+    let title: String
+    let isCurrent: Bool
+    let isFuture: Bool
+    var id: Int { position }
+}
+
 /// Recipe metadata only. Cost deliberately double-counts shared value storage; no pixels or patch bytes
 /// are retained here. The ledger is independent of the renderer's image-cache budget.
 struct DevelopmentUndoHistory {
@@ -36,6 +44,7 @@ struct DevelopmentUndoHistory {
         let afterUI: DevelopmentSummaryUIState
         let title: String
         let cost: Int
+        let lutCosts: [String: Int]
     }
     private final class SummaryEndpoint {
         let ui: DevelopmentSummaryUIState
@@ -55,6 +64,12 @@ struct DevelopmentUndoHistory {
         // conservatively, including its fixed SHA when no recipe history entry exists.
         var summaryEndpoint: SummaryEndpoint?
         var endpointCost: Int { summaryEndpoint == nil ? 0 : DevelopmentSummaryUIState.conservativeCost }
+        var retainedBytes: Int {
+            // Slider snapshots share immutable table storage. Charge each table once per branch.
+            var cubes: [String: Int] = [:]
+            for entry in entries where !entry.lutCosts.isEmpty { cubes.merge(entry.lutCosts) { a, _ in a } }
+            return cost + endpointCost + cubes.values.reduce(0, +)
+        }
     }
     let limits: Limits
     private var branches: [DevelopmentHistoryKey: Branch] = [:]
@@ -62,7 +77,7 @@ struct DevelopmentUndoHistory {
     private var clock: UInt64 = 0
     init(limits: Limits = .init()) { self.limits = limits }
 
-    var totalCost: Int { branches.values.reduce(0) { $0 + $1.cost + $1.endpointCost } }
+    var totalCost: Int { branches.values.reduce(0) { $0 + $1.retainedBytes } }
     var branchCount: Int { branches.count }
     var entryCount: Int { activeKey.flatMap { branches[$0]?.entries.count } ?? 0 }
     var canUndo: Bool { activeKey.flatMap { branches[$0]?.cursor }.map { $0 > 0 } ?? false }
@@ -77,6 +92,15 @@ struct DevelopmentUndoHistory {
     var redoTitle: String? {
         guard let key = activeKey, let branch = branches[key], branch.cursor < branch.entries.count else { return nil }
         return branch.entries[branch.cursor].title
+    }
+    var items: [DevelopmentHistoryItem] {
+        guard let key = activeKey, let branch = branches[key], !branch.entries.isEmpty else { return [] }
+        var result = [DevelopmentHistoryItem(position: -1, title: "打开照片", isCurrent: branch.cursor == 0, isFuture: false)]
+        result.append(contentsOf: branch.entries.indices.map { index in
+            .init(position: index, title: branch.entries[index].title,
+                  isCurrent: branch.cursor == index + 1, isFuture: branch.cursor <= index)
+        })
+        return result
     }
 
     mutating func activate(_ key: DevelopmentHistoryKey, current: DevelopmentRecipe) {
@@ -105,7 +129,8 @@ struct DevelopmentUndoHistory {
         }
         let entry = Entry(before: before, after: after, beforeUI: beforeUI.validating(for: before), afterUI: afterUI.validating(for: after),
                           title: String(title.prefix(128)),
-                          cost: Self.metadataCost(before) + Self.metadataCost(after) + 1024 + DevelopmentSummaryUIState.conservativeCost)
+                          cost: Self.metadataCost(before) + Self.metadataCost(after) + 1024 + DevelopmentSummaryUIState.conservativeCost,
+                          lutCosts: Self.lutCosts(before, after))
         branch.summaryEndpoint = .init(ui: entry.afterUI, recipe: after)
         // An oversized edit remains the current draft. It does not escape the history budget.
         if limits.entriesPerBranch == 0 || entry.cost > min(limits.bytesPerBranch, limits.totalBytes) {
@@ -155,13 +180,41 @@ struct DevelopmentUndoHistory {
         branch.summaryEndpoint = .init(ui: entry.afterUI, recipe: entry.after)
         branch.cursor += 1; clock &+= 1; branch.access = clock; branches[key] = branch; trim()
     }
+    func restorationCandidate(position: Int, current: DevelopmentRecipe) -> (recipe: DevelopmentRecipe, ui: DevelopmentSummaryUIState)? {
+        guard let key = activeKey, let branch = branches[key], endpoint(branch) == current else { return nil }
+        if position == -1, let first = branch.entries.first { return (first.before, first.beforeUI) }
+        guard branch.entries.indices.contains(position) else { return nil }
+        let entry = branch.entries[position]
+        return (entry.after, entry.afterUI)
+    }
+    /// Find the nearest prior occurrence of a modal tool's entry recipe. Unlike appending a reset
+    /// edit, restoring this position preserves a truthful undo/redo cursor after Cancel.
+    func restorationPosition(for target: DevelopmentRecipe, current: DevelopmentRecipe) -> Int? {
+        guard let key = activeKey, let branch = branches[key], endpoint(branch) == current else { return nil }
+        guard branch.cursor > 0 else { return nil }
+        for index in stride(from: branch.cursor - 1, through: 0, by: -1) {
+            if branch.entries[index].after == target { return index }
+            if branch.entries[index].before == target { return index - 1 }
+        }
+        return nil
+    }
+    mutating func didRestore(position: Int) {
+        guard let key = activeKey, var branch = branches[key] else { return }
+        if position == -1, let first = branch.entries.first {
+            branch.summaryEndpoint = .init(ui: first.beforeUI, recipe: first.before)
+        } else if branch.entries.indices.contains(position) {
+            let entry = branch.entries[position]
+            branch.summaryEndpoint = .init(ui: entry.afterUI, recipe: entry.after)
+        } else { return }
+        branch.cursor = position + 1; clock &+= 1; branch.access = clock; branches[key] = branch; trim()
+    }
     private func endpoint(_ branch: Branch) -> DevelopmentRecipe? {
         if branch.cursor > 0 { return branch.entries[branch.cursor - 1].after }
         return branch.entries.first?.before
     }
     private mutating func trim() {
         while branches.count > limits.branches || totalCost > limits.totalBytes
-            || activeKey.flatMap({ branches[$0] }).map({ $0.cost + $0.endpointCost > limits.bytesPerBranch }) == true {
+            || activeKey.flatMap({ branches[$0] }).map({ $0.retainedBytes > limits.bytesPerBranch }) == true {
             if let oldest = branches.filter({ $0.key != activeKey }).min(by: { $0.value.access < $1.value.access })?.key {
                 branches.removeValue(forKey: oldest)
             } else if let key = activeKey, var branch = branches[key], !branch.entries.isEmpty {
@@ -173,6 +226,17 @@ struct DevelopmentUndoHistory {
                 branch.summaryEndpoint = nil; branches[key] = branch
             } else { break }
         }
+    }
+    private static func lutCosts(_ before: DevelopmentRecipe, _ after: DevelopmentRecipe) -> [String: Int] {
+        var costs: [String: Int] = [:]
+        for recipe in [before, after] {
+            guard let p = recipe.adjustmentsV3 else { continue }
+            for layer in p.gradingLUTs?.layers ?? [] { costs[layer.cube.id] = layer.cube.rgb.count }
+            for mask in p.masks {
+                if let cube = mask.adjustments.gradingLUT?.cube { costs[cube.id] = cube.rgb.count }
+            }
+        }
+        return costs
     }
     static func metadataCost(_ recipe: DevelopmentRecipe) -> Int {
         // Fixed fields/enums/containers, then conservative per-element storage and reference strings.

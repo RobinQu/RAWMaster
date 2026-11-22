@@ -9,7 +9,7 @@ import RAWMasterCore
 enum PreviewNativePointwiseCertificateV1 {
   static let version = "point-saturation-alpha1-abs2p20-f32-v1"
   static let samplerVersion = "identity-native-or-inverse-FIT-positive-linear/envelope-v1"
-  static let pointSourceSHA256 = "775c7009e4a86947f23d2f4b207c261ee578a416585e85133c874d4b261386db"
+  static let pointSourceSHA256 = "9aa99ca63a6b87e084a8eb430435f3996e01510e5ef7a73c276169fa2b4d3f7c"
   static let bound: Float = 0x1p20
   struct Input {
     let owner: UUID
@@ -122,11 +122,11 @@ extern "C" { namespace coreimage {
 /// All original MSL intermediates are <2^120 under the reviewed normal RGBAf API
 /// premise. This does not extend the old saturation proof or certify Curves/Levels.
 enum PreviewNativePointwiseCertificateV2 {
-  static let version = "point-common-LCBW-grain0-alpha1-abs2p20-f32-v2.1"
+  static let version = "point-common-LCBW-white-grain0-alpha1-abs2p20-f32-v2.2"
   static let proofDocumentSHA256 = "c82e984c3d008cb911975286fe4fcfe52b140e70b4acc28294c2c7167169de74"
-  static let routeVersion = "native-F32-common-point-certificate-v2.1/public-canonical-FIT-target"
-  static let fullValidationVersion = "native-F32-common-point-v2.1/full-native-validation/public-canonical-FIT-target"
-  static let samplerVersion = "common-LCBW-grain0-native-or-inverse-FIT-positive-linear/envelope-v2.1"
+  static let routeVersion = "native-F32-common-point-certificate-v2.2/public-canonical-FIT-target"
+  static let fullValidationVersion = "native-F32-common-point-v2.2/full-native-validation/public-canonical-FIT-target"
+  static let samplerVersion = "common-LCBW-white-grain0-native-or-inverse-FIT-positive-linear/envelope-v2.2"
   struct Binding: Encodable, Equatable {
     let proofID: String
     let recipeFingerprint: String
@@ -140,7 +140,7 @@ enum PreviewNativePointwiseCertificateV2 {
       proofID=PreviewNativePointwiseCertificateV2.version;recipeFingerprint=try EditingFingerprint.of(recipe)
       pointwiseActive=DevelopmentColorEngineV3.pointwiseActive(p)
       let l=p.light,c=p.color,b=p.blackAndWhite
-      let values:[Double]=[l.brightness,l.contrast,l.blackPoint,0,c.saturation,c.vibrance,c.cast,0,
+      let values:[Double]=[l.brightness,l.contrast,l.blackPoint,l.whites,c.saturation,c.vibrance,c.cast,0,
         b.intensity,b.neutrals,b.tone,b.grain,l.enabled ? 1:0,c.enabled ? 1:0,b.enabled ? 1:0,0]
       floatBits=values.map { Float($0).bitPattern }
     }
@@ -154,7 +154,9 @@ enum PreviewNativePointwiseCertificateV2 {
     // Arithmetic finiteness of grain was proven, but its public FIT pixels failed
     // strict qualification. Any STORED nonzero value is canonical-only, even when
     // disabled or rounded to Float zero. Signed Double zero remains zero.
-    guard p.blackAndWhite.grain==0 else { return .grainCanonical }
+    guard p.blackAndWhite.grain==0,!(p.effects?.enabled == true && (p.effects?.grain ?? 0) != 0) else { return .grainCanonical }
+    // The sealed native point shader has no B&W Mixer inputs; never silently drop active bands.
+    guard p.blackAndWhite.mixer?.isActive != true else { return .recipe }
     guard p.light.brilliance==0,p.light.exposure==0,p.light.highlights==0,p.light.shadows==0 else { return .recipe }
     p.light=DevelopmentLightV3();p.color=DevelopmentColorV3();p.blackAndWhite=DevelopmentBlackAndWhiteV3()
     // Reuse only the exact fresh-suffix/neutral-legacy/identity projection checks.

@@ -34,8 +34,8 @@ enum PreviewNeutralOwnerBootstrapV1 {
     // The admitted legacy recipe has identity geometry. Preserve its full-canvas FIT size;
     // the V3 layout helper deliberately rejects schema1 and is not a promotion mechanism.
     let scale=min(1,Double(maxPixel)/max(native.nativeSize.width,native.nativeSize.height))
-    let layout=try PreviewInteractiveLayout.make(width:Int(ceil(native.nativeSize.width*scale)),
-      height:Int(ceil(native.nativeSize.height*scale)),float:false)
+    let layout=try PreviewInteractiveLayout.make(width:PreviewInteractiveProxyV3.scaledPixelDimension(native.nativeSize.width,scale:scale),
+      height:PreviewInteractiveProxyV3.scaledPixelDimension(native.nativeSize.height,scale:scale),float:false)
     var result=PreviewNativePointwisePlanV1(descriptor:descriptor,grid:nil,outputLayout:layout,fallback:nil)
     result.neutralOwnerBootstrap=true
     // This first experiment cancels its own frame normally; no superseded fill is retained.

@@ -19,7 +19,7 @@ enum DevelopmentGeometryEngineV3 {
       e.width <= Double(DevelopmentLocalEditLimits.maximumSourceDimension), e.height <= Double(DevelopmentLocalEditLimits.maximumSourceDimension) else { throw DevelopmentV3Error.invalidGraph }
     let sourceSize = DevelopmentPixelSize(width:Int(e.width),height:Int(e.height))
     let mapping = try geometry.mapping(sourceSize:sourceSize)
-    let image = input.transformed(by:.init(translationX:-e.minX,y:-e.minY))
+    let image = e.origin == .zero ? input : input.transformed(by:.init(translationX:-e.minX,y:-e.minY))
     let output = CGRect(x:0,y:0,width:mapping.outputSize.width,height:mapping.outputSize.height)
     if mapping.projective == nil {
       let m = mapping.forwardMatrix

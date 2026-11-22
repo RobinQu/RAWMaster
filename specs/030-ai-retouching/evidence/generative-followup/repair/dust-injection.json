@@ -1,0 +1,124 @@
+{
+  "sourceSHA256": "e48857c7e657563f473357f97eddc4f53fea94897c2935c3ae829b4fc7fd84b1",
+  "size": [
+    768,
+    512
+  ],
+  "injectedXYSigmaDepth": [
+    [
+      278,
+      32,
+      4,
+      0.24
+    ],
+    [
+      443,
+      45,
+      5,
+      0.2
+    ],
+    [
+      593,
+      43,
+      4,
+      0.22
+    ],
+    [
+      63,
+      345,
+      5,
+      0.28
+    ],
+    [
+      458,
+      324,
+      4,
+      0.25
+    ],
+    [
+      505,
+      449,
+      5,
+      0.22
+    ],
+    [
+      142,
+      163,
+      4,
+      0.24
+    ],
+    [
+      386,
+      181,
+      5,
+      0.26
+    ]
+  ],
+  "matchingRadiusPx": 6,
+  "cleanCandidates": 291,
+  "injectedCandidates": 295,
+  "matched": 6,
+  "unmatchedCandidates": 289,
+  "matches": [
+    {
+      "injectedXY": [
+        443,
+        45
+      ],
+      "proposedXY": [
+        443,
+        45
+      ]
+    },
+    {
+      "injectedXY": [
+        593,
+        43
+      ],
+      "proposedXY": [
+        593,
+        43
+      ]
+    },
+    {
+      "injectedXY": [
+        458,
+        324
+      ],
+      "proposedXY": [
+        458,
+        319
+      ]
+    },
+    {
+      "injectedXY": [
+        505,
+        449
+      ],
+      "proposedXY": [
+        505,
+        448
+      ]
+    },
+    {
+      "injectedXY": [
+        142,
+        163
+      ],
+      "proposedXY": [
+        142,
+        166
+      ]
+    },
+    {
+      "injectedXY": [
+        386,
+        181
+      ],
+      "proposedXY": [
+        381,
+        180
+      ]
+    }
+  ]
+}

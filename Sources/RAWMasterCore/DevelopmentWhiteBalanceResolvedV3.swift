@@ -171,7 +171,7 @@ public struct DevelopmentRawWhiteBalanceStateV3: Codable, Equatable, Sendable {
     for pick in [gray,skin].compactMap({ $0 }) where pick.usesSourceDefaultAtZero {
       guard pick.baseline == defaultTTDiagnostic else { throw EditingError.invalidRecipe }
     }
-    guard temperatureTint.temperature <= 20000, selectedMode != .neutralGray || gray != nil, selectedMode != .skinTone || skin != nil else { throw EditingError.invalidRecipe }
+    guard temperatureTint.temperature <= 50000, selectedMode != .neutralGray || gray != nil, selectedMode != .skinTone || skin != nil else { throw EditingError.invalidRecipe }
   }
   /// Nil means preserve a fresh decoder's original neutral; diagnostic TT MUST NOT be assigned.
   public func nativeTarget() throws -> DevelopmentNativeWhiteBalanceV3? {
@@ -190,22 +190,36 @@ public struct DevelopmentRawWhiteBalanceStateV3: Codable, Equatable, Sendable {
 public struct DevelopmentImageWhiteBalanceStateV3: Codable, Equatable, Sendable {
   public var selectedMode: DevelopmentWhiteBalanceModeV3
   public var temperatureTint: DevelopmentNativeWhiteBalanceV3
+  /// Rendered-image UI uses an approximate −100…100 scale, not a fabricated Kelvin metadata claim.
+  /// The actual working neutral remains stored for deterministic replay of older and newer recipes.
+  public var temperatureOffset: Double
   public var gray, skin: DevelopmentImageWhiteBalancePickV3?
   public init(selectedMode: DevelopmentWhiteBalanceModeV3 = .asShot, temperatureTint: DevelopmentNativeWhiteBalanceV3 = .init(temperature:6500,tint:0),
-              gray: DevelopmentImageWhiteBalancePickV3? = nil, skin: DevelopmentImageWhiteBalancePickV3? = nil) {
-    self.selectedMode = selectedMode; self.temperatureTint = temperatureTint; self.gray = gray; self.skin = skin
+              temperatureOffset: Double = 0, gray: DevelopmentImageWhiteBalancePickV3? = nil, skin: DevelopmentImageWhiteBalancePickV3? = nil) {
+    self.selectedMode = selectedMode; self.temperatureTint = temperatureTint; self.temperatureOffset = temperatureOffset; self.gray = gray; self.skin = skin
+  }
+  public static func approximateTemperature(forOffset offset: Double) -> Float {
+    Float(5000 * pow(2, offset / 100))
   }
   public func validate() throws {
     try temperatureTint.validate(); try gray?.validate(); try skin?.validate()
-    guard temperatureTint.temperature <= 20000, selectedMode != .neutralGray || gray != nil, selectedMode != .skinTone || skin != nil else { throw EditingError.invalidRecipe }
+    guard temperatureTint.temperature <= 20000, temperatureOffset.isFinite, (-100...100).contains(temperatureOffset),
+      selectedMode != .neutralGray || gray != nil, selectedMode != .skinTone || skin != nil else { throw EditingError.invalidRecipe }
   }
-  private enum CodingKeys: String, CodingKey { case selectedMode, temperatureTint, gray, skin }
+  private enum CodingKeys: String, CodingKey { case selectedMode, temperatureTint, temperatureOffset, gray, skin }
   public init(from decoder: Decoder) throws {
-    try RecipeCoding.requireKeys(decoder,["selectedMode","temperatureTint","gray","skin"]); let c = try decoder.container(keyedBy:CodingKeys.self)
+    let c = try decoder.container(keyedBy:CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder,["selectedMode","temperatureTint","gray","skin"]+(c.contains(.temperatureOffset) ? ["temperatureOffset"]:[]))
     selectedMode = try c.decode(DevelopmentWhiteBalanceModeV3.self,forKey:.selectedMode); temperatureTint = try c.decode(DevelopmentNativeWhiteBalanceV3.self,forKey:.temperatureTint)
+    temperatureOffset = try c.decodeIfPresent(Double.self,forKey:.temperatureOffset) ?? 0
     gray = try c.decodeIfPresent(DevelopmentImageWhiteBalancePickV3.self,forKey:.gray); skin = try c.decodeIfPresent(DevelopmentImageWhiteBalancePickV3.self,forKey:.skin); try validate()
   }
-  public func encode(to encoder: Encoder) throws { try validate(); var c = encoder.container(keyedBy:CodingKeys.self); try c.encode(selectedMode,forKey:.selectedMode); try c.encode(temperatureTint,forKey:.temperatureTint); try c.encode(gray,forKey:.gray); try c.encode(skin,forKey:.skin) }
+  public func encode(to encoder: Encoder) throws {
+    try validate(); var c = encoder.container(keyedBy:CodingKeys.self)
+    try c.encode(selectedMode,forKey:.selectedMode); try c.encode(temperatureTint,forKey:.temperatureTint)
+    if temperatureOffset != 0 { try c.encode(temperatureOffset,forKey:.temperatureOffset) }
+    try c.encode(gray,forKey:.gray); try c.encode(skin,forKey:.skin)
+  }
 }
 public enum DevelopmentResolvedWhiteBalanceV3: Codable, Equatable, Sendable {
   case raw(source: DevelopmentLocalEditSourceBinding, state: DevelopmentRawWhiteBalanceStateV3)

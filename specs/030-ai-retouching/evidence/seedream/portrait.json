@@ -1,0 +1,35 @@
+{
+  "case": "portrait",
+  "started_utc": "2026-11-22T00:30:45.249512+00:00",
+  "options": {
+    "model": "doubao-seedream-5-5-261028",
+    "size": "1024x1024",
+    "response_format": "b64_json",
+    "output_format": "png",
+    "background": "opaque",
+    "watermark": false
+  },
+  "input_sha256": "60d1171bebc89e6170873b6815e9b510f3a304578a6dfb54a1596f49e6d7c3cc",
+  "prompt_sha256": "4262cd3dcfb9eb2f8acb03b7181c52ac33c17866154296aeb8887eea8ccc76cf",
+  "http": 200,
+  "request_id": "02179530744528593e048b1e87f4ca8485d3a0240faade79423e8",
+  "http_seconds": 10.281,
+  "model_returned": "doubao-seedream-5-5-261028",
+  "usage": {
+    "input_images": 1,
+    "generated_images": 1,
+    "output_tokens": 4096,
+    "total_tokens": 4096
+  },
+  "size": [
+    1024,
+    1024
+  ],
+  "mode": "RGB",
+  "format": "PNG",
+  "icc": false,
+  "output_sha256": "602f58097d9a965604297e2afaf762f565305f557ab4d843a3b128adb90b3037",
+  "output_bytes": 1597089,
+  "status": "decoded",
+  "elapsed_seconds": 10.304
+}

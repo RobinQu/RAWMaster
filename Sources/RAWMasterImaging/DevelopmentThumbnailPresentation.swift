@@ -76,6 +76,29 @@ final class ThumbnailImageBacking: @unchecked Sendable {
       allocation:.init(allocationID:ticket.id,residentCPUBytes:storage.bytes,residentGPUBytes:0,unionBytes:storage.bytes,bytesPerRow:row),
       storageFormat:Self.format,destinationICCProfileSHA256:tile.destinationICCProfileSHA256)
   }
+  init(copyingRGBA8 bytes:[UInt8],width:Int,height:Int,tile:DevelopmentThumbnailTileDescriptor,ledger:ThumbnailLedger,kind:ThumbnailLedger.Kind)throws {
+    guard width>0,height>0,width<=256,height<=256,bytes.count>=width*height*4,
+      let icc=PhotoRenderer.sRGB.copyICCData() as Data?,
+      SHA256.hash(data:icc).map({String(format:"%02x",$0)}).joined()==tile.destinationICCProfileSHA256 else{throw DevelopmentThumbnailError.invalidEncoding}
+    let row=((width*4+63)/64)*64,(length,overflow)=row.multipliedReportingOverflow(by:height)
+    guard !overflow,length>0 else{throw DevelopmentThumbnailError.invalidEncoding}
+    let storage=try ThumbnailProviderStorage(reserved:malloc_good_size(length),ledger:ledger,kind:kind)
+    try bytes.withUnsafeBytes{source in
+      guard let base=source.baseAddress else{throw DevelopmentThumbnailError.invalidEncoding}
+      for y in 0..<height {memcpy(storage.pointer.advanced(by:y*row),base.advanced(by:y*width*4),width*4)}
+    }
+    let retained=Unmanaged.passRetained(storage)
+    guard let provider=CGDataProvider(dataInfo:retained.toOpaque(),data:UnsafeRawPointer(storage.pointer),size:length,releaseData:{info,_,_ in
+      if let info {Unmanaged<ThumbnailProviderStorage>.fromOpaque(info).release()}
+    })else{retained.release();throw DevelopmentThumbnailError.invalidEncoding}
+    let info=CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue)
+    guard let cg=CGImage(width:width,height:height,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:row,
+      space:PhotoRenderer.sRGB,bitmapInfo:info,provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent)else{throw DevelopmentThumbnailError.invalidEncoding}
+    ticket=storage.ticket;image=cg
+    descriptor = .init(index:tile.index,width:width,height:height,
+      allocation:.init(allocationID:ticket.id,residentCPUBytes:storage.bytes,residentGPUBytes:0,unionBytes:storage.bytes,bytesPerRow:row),
+      storageFormat:Self.format,destinationICCProfileSHA256:tile.destinationICCProfileSHA256)
+  }
   func getImage()throws->CGImage {lock.lock();defer{lock.unlock()};guard let image else{throw DevelopmentThumbnailError.invalidLease};return image}
   func phase(_ value:ThumbnailLedger.Phase){ticket.phase(value)}
   func detach(){ticket.phase(.retired);lock.lock();image=nil;lock.unlock()}

@@ -93,6 +93,13 @@ final class PreviewInteractiveProxyStorage {
     joined = true
     try check()
   }
+  fileprivate func fillValidatedDisplay(from source:MTLTexture, validation:PreviewPresentationReservation, check:()throws->Void) throws {
+    try ticket.requireOpenAdmission()
+    guard !layout.float,let texture else { throw PreviewPresentationError.invalidLayout }
+    joined=false
+    try PreviewMetalFrameValidator.checked(source,ticket:validation,requireVisible:true,display:texture,check:check) {}
+    joined=true
+  }
   // Shared by the actual joined readback and pure malformed-write regressions.
   // Poison every channel on EVERY submission: an old successful zero is unsafe.
   static func poisonCheckedPixel(_ address:UnsafeMutableRawPointer){
@@ -114,6 +121,10 @@ final class PreviewInteractiveProxyStorage {
   func withImage<T>(_ body:(CIImage)throws->T)throws->T {
     guard layout.float,joined,let buffer else{throw PreviewPresentationError.allocationProtocol}
     return try autoreleasepool{try body(CIImage(cvPixelBuffer:buffer,options:[.colorSpace:DevelopmentColorEngineV3.linearSRGB]))}
+  }
+  func withJoinedTexture<T>(_ body: (MTLTexture) throws -> T) throws -> T {
+    guard layout.float, joined, let texture else { throw PreviewPresentationError.allocationProtocol }
+    return try body(texture)
   }
   func withPixels<T>(_ body:(UnsafeRawPointer,Int)throws->T)throws->T {
     guard layout.float,joined,let buffer,CVPixelBufferLockBaseAddress(buffer,.readOnly)==kCVReturnSuccess else{throw PreviewPresentationError.cpuLockFailed}
@@ -157,12 +168,14 @@ final class PreviewInteractiveOutputStorage:PreviewSharedImageBacking {
     let l=storage.layout;sharedImageLayout = .init(width:l.width,height:l.height,rowBytes:l.rowBytes,allocationBytes:l.bytes)
   }
   var sharedImageBaseAddress:UnsafeRawPointer{UnsafeRawPointer(IOSurfaceGetBaseAddress(lockedSurface!))}
-  func image(_ graph:CIImage,context:CIContext,check:()throws->Void)throws->NSImage {
-    try storage.fill(graph,context:context,check:check)
+  func image(_ graph:CIImage,context:CIContext,validatedDisplay:(source:MTLTexture,ticket:PreviewPresentationReservation)?=nil,check:()throws->Void)throws->NSImage {
+    if let validatedDisplay {
+      try storage.fillValidatedDisplay(from:validatedDisplay.source,validation:validatedDisplay.ticket,check:check)
+    } else { try storage.fill(graph,context:context,check:check) }
     lockedSurface=try storage.lockOutput()
     do {
       let cg=try PreviewSharedImageBridge.makeCGImage(backing:self)
-      let result=NSImage(cgImage:cg,size:CGSize(width:sharedImageLayout.width,height:sharedImageLayout.height))
+      let result=PreviewSharedImageBridge.presentationImage(cg)
       try check();return result
     }catch{sharedImageProviderDidRelease();throw error}
   }
@@ -189,7 +202,7 @@ final class PreviewInteractiveManagedOutput {
   private let lock=NSLock();private var consumed=false
   var qaIPTiming:PreviewQALifecycleTrace.IPTiming?
   init(layout:PreviewInteractiveLayout,ticket:PreviewPresentationReservation,device:MTLDevice,qaMainOwnerStoreForTesting:PreviewQAMainPresentationWitness.Store?=nil){self.layout=layout;self.ticket=ticket;self.device=device;self.qaMainOwnerStoreForTesting=qaMainOwnerStoreForTesting}
-  func materialize(_ image:CIImage,context:CIContext,nativeSize:CGSize,approximation:PreviewApproximationInfo?=nil,fallback:String?=nil,storageObserverForTesting:((PreviewInteractiveProxyStorage)->Void)?=nil,check:()throws->Void)throws->PreviewPixels {
+  func materialize(_ image:CIImage,context:CIContext,nativeSize:CGSize,approximation:PreviewApproximationInfo?=nil,fallback:String?=nil,storageObserverForTesting:((PreviewInteractiveProxyStorage)->Void)?=nil,validatedDisplay:(source:MTLTexture,ticket:PreviewPresentationReservation)?=nil,check:()throws->Void)throws->PreviewPixels {
     lock.lock();let allowed = !consumed;consumed=true;lock.unlock()
     guard allowed else{throw PreviewPresentationError.allocationProtocol}
     guard image.extent==CGRect(x:0,y:0,width:layout.width,height:layout.height)else{throw PreviewPresentationError.invalidLayout}
@@ -198,7 +211,7 @@ final class PreviewInteractiveManagedOutput {
     storageObserverForTesting?(surface) // Synchronous, never stored; product callers pass nil.
     surface.qaIPTiming=qa;surface.qaIPPurpose = .output
     let backing=try PreviewInteractiveOutputStorage(storage:surface)
-    let result=try backing.image(image,context:context,check:check)
+    let result=try backing.image(image,context:context,validatedDisplay:validatedDisplay,check:check)
     PreviewQAMainPresentationWitness.register(image:result,ticketID:ticket.id,bytes:layout.bytes,testingStore:qaMainOwnerStoreForTesting)
     return .init(image:result,nativeSize:nativeSize,outputSize:CGSize(width:layout.width,height:layout.height),bytes:layout.bytes,approximation:approximation,interactiveCanonicalFallbackReason:fallback,presentationTicket:ticket)
   }

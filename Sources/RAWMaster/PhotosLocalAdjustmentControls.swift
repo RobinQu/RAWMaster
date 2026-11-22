@@ -8,10 +8,26 @@ struct PhotosLocalAdjustmentControls: View {
     @ObservedObject var input: EditingLocalInputSession
     let context: EditingInteractionContext
     let tool: DevelopmentLocalTool
-    private var title: String { tool == .retouch ? "修饰" : "红眼" }
+    private var title: String { tool == .retouch ? "修复" : "红眼" }
     private var operations: [DevelopmentLocalEdit] { session.parameters.localEdits.operations.filter { $0.tool == tool } }
+    private var modeDescription: String {
+        switch input.retouchMode {
+        case .remove: return "Erase：涂抹需要移除的区域，自动匹配周围纹理。"
+        case .heal: return "Heal：混合来源与目标的颜色、明暗和纹理。"
+        case .clone: return "Clone：直接复制所选来源；按住 Option 选择来源。"
+        }
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            if tool == .retouch {
+                Picker("修复方式", selection: $input.retouchMode) {
+                    Label("Erase", systemImage: "wand.and.rays").tag(DevelopmentRetouchMode.remove)
+                    Label("Heal", systemImage: "bandage").tag(DevelopmentRetouchMode.heal)
+                    Label("Clone", systemImage: "square.on.square").tag(DevelopmentRetouchMode.clone)
+                }.pickerStyle(.segmented).labelsHidden().accessibilityIdentifier("photos.retouch.mode")
+                Text(modeDescription).font(.caption2).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             HStack {
                 Text("大小").font(.caption); Spacer()
                 DevelopmentNumberField(title: title + "大小", value: .init(get: { input.size(for: tool) }, set: { input.setSize($0, tool: tool) }),

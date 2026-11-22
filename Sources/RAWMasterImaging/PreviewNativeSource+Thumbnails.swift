@@ -17,9 +17,11 @@ extension PreviewNativeSource {
     if hasRAWFilter {
       let n=noiseReductionFacts.raw!
       params=try .init(p,noiseDefaults:.init(luminance:n.defaultLuminanceNoise,color:n.defaultColorNoise,detail:n.defaultDetail,
-        luminanceSupported:n.luminanceNoiseSupported,colorSupported:n.colorNoiseSupported,detailSupported:n.detailSupported))
+        luminanceSupported:n.luminanceNoiseSupported,colorSupported:n.colorNoiseSupported,detailSupported:n.detailSupported),
+        appliesNativeNoise:p.aiDenoise == nil && !DevelopmentRAWSourcePolicy.usesFlashRaw(p))
     }else{params=nil}
-    return try EditingFingerprint.of(Signature(source:source,generation:generation,decoderContract:localDecoderContractFingerprint,
+    let inputContract = p.aiDenoise?.inputContract ?? (hasRAWFilter && DevelopmentRAWSourcePolicy.usesFlashRaw(p) ? (p.rawDetails?.rawValue ?? "flashraw-0.3.1-linear-f16") : nil)
+    return try EditingFingerprint.of(Signature(source:source,generation:generation,decoderContract:localDecoderContractFingerprint + (inputContract.map { "/" + $0 } ?? ""),
       encoding:DevelopmentThumbnailEngine.version,nativeExposure:params?.exposure.bitPattern,nativeWB:params?.whiteBalance,
       nativeNR:hasRAWFilter ? p.noiseReduction:nil))
   }
@@ -43,17 +45,25 @@ extension PreviewNativeSource {
         let actual=try DevelopmentRendererV3.localDecoderFingerprint(decoder:raw.decoderVersion.rawValue,
           originalDefaults:original,orientation:Int(raw.orientation.rawValue),size:nativeSize)
         guard actual==localDecoderContractFingerprint else{throw DevelopmentThumbnailError.staleSource}
-        let parameters=try DevelopmentRendererV3.NativeParameters(p,noiseDefaults:DevelopmentRendererV3.noiseDefaults(raw),originalDefaultsFingerprint:original)
-        try DevelopmentRendererV3.configure(raw,parameters:parameters)
-        guard let output=raw.outputImage,output.extent.size==nativeSize else{throw DevelopmentError.unreadable}
-        image=output;bakedEV=raw.exposure
+        let flashRaw = DevelopmentRAWSourcePolicy.usesFlashRaw(p)
+        let parameters=try DevelopmentRendererV3.NativeParameters(p,noiseDefaults:DevelopmentRendererV3.noiseDefaults(raw),originalDefaultsFingerprint:original,appliesNativeNoise:!flashRaw && p.aiDenoise == nil)
+        if flashRaw || p.aiDenoise != nil {
+          let neutral = try p.aiDenoise.map { try DevelopmentNeuralRaw9.neutralImage(capture, settings: $0) } ?? FlashRawImageFactory.linearImage(capture: capture, rawDetails: p.rawDetails)
+          guard neutral.extent.size == nativeSize else { throw DevelopmentError.unreadable }
+          image = try FlashRawImageFactory.applyInputAdjustments(p, to: neutral, asShotWhiteBalance: asShotWhiteBalance)
+          bakedEV = parameters.exposure
+        } else {
+          try DevelopmentRendererV3.configure(raw,parameters:parameters)
+          guard let output=raw.outputImage,output.extent.size==nativeSize else{throw DevelopmentError.unreadable}
+          image=output;bakedEV=raw.exposure
+        }
       }else{
         guard let decoded=CIImage(contentsOf:capture,options:[.applyOrientationProperty:true])else{throw DevelopmentError.unreadable}
         image=decoded;bakedEV=0 // Image WB/legacyEV remain strictly unbaked.
       }
       guard interest()else{throw DevelopmentThumbnailError.cancelled}
       let e=image.extent,s=min(1,256.0/max(e.width,e.height))
-      let w=Int(ceil(e.width*s)),h=Int(ceil(e.height*s))
+      let w=try PreviewInteractiveProxyV3.scaledPixelDimension(e.width,scale:s),h=try PreviewInteractiveProxyV3.scaledPixelDimension(e.height,scale:s)
       let normalized=image.transformed(by:.init(translationX:-e.minX,y:-e.minY))
       let small=PreviewInteractiveProxyV3.canvas(normalized.samplingLinear().transformed(by:.init(scaleX:s,y:s)),width:w,height:h)
       let owner=try ThumbnailSurface(width:w,height:h,float:true,kind:.proxy,ledger:ledger,device:device)

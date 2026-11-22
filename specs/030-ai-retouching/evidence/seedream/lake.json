@@ -1,0 +1,35 @@
+{
+  "case": "lake",
+  "started_utc": "2026-11-22T00:30:34.686434+00:00",
+  "options": {
+    "model": "doubao-seedream-5-5-261028",
+    "size": "1024x1024",
+    "response_format": "b64_json",
+    "output_format": "png",
+    "background": "opaque",
+    "watermark": false
+  },
+  "input_sha256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+  "prompt_sha256": "54c635bae9cca56f16f8b0c01988c3e46a28f1900cdfe97121555c3cebc8039c",
+  "http": 200,
+  "request_id": "0217953074347468b180e7ab5368500e338034e77cb755d31a387",
+  "http_seconds": 10.521,
+  "model_returned": "doubao-seedream-5-5-261028",
+  "usage": {
+    "input_images": 1,
+    "generated_images": 1,
+    "output_tokens": 4096,
+    "total_tokens": 4096
+  },
+  "size": [
+    1024,
+    1024
+  ],
+  "mode": "RGB",
+  "format": "PNG",
+  "icc": false,
+  "output_sha256": "daad697e22a5a4786fade0742133d4c8eb27aa6c3347ea4467ecd0ffad019999",
+  "output_bytes": 1951899,
+  "status": "decoded",
+  "elapsed_seconds": 10.558
+}

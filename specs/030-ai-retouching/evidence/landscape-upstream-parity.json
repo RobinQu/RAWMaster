@@ -1,0 +1,253 @@
+{
+  "standaloneExportSHA256": "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d",
+  "retainedExportSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+  "officialCheckpointSHA256": "fabfa7163e35d14888690969cd852069f399137be39697bfe5165f03ea76b510",
+  "weightsRevision": "cf3ccaf9cbaf670a2cb283612773546824ca0aa1",
+  "sourceRevision": "5c423e51ba97e5fb2ccbda4ee4814b208fc42f62",
+  "onnxOpset": 17,
+  "torch": "2.14.1",
+  "onnx": "1.20.1",
+  "onnxRuntime": "1.27.0",
+  "cases": [
+    {
+      "case": "6000079",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.5702,
+      "officialFractionSelected": 0.247034
+    },
+    {
+      "case": "0007323",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 71680,
+      "officialIoU": 0.8502,
+      "officialFractionSelected": 0.267662
+    },
+    {
+      "case": "6000195",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.9265,
+      "officialFractionSelected": 0.079382
+    },
+    {
+      "case": "6000229",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.9424,
+      "officialFractionSelected": 0.091992
+    },
+    {
+      "case": "6000047",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "9004965",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 99200,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "5000149",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 68160,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "0002755",
+      "target": "sky",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "0007323",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 71680,
+      "officialIoU": 0.9397,
+      "officialFractionSelected": 0.323577
+    },
+    {
+      "case": "8002274",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.9608,
+      "officialFractionSelected": 0.239063
+    },
+    {
+      "case": "8006302",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.9586,
+      "officialFractionSelected": 0.324062
+    },
+    {
+      "case": "5000137",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 68160,
+      "officialIoU": 0.9644,
+      "officialFractionSelected": 0.584072
+    },
+    {
+      "case": "6000079",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "6000047",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "6000195",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "6000229",
+      "target": "water",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "0007323",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 1,
+      "pixelsDiffering": 12,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 71680,
+      "officialIoU": 0.392,
+      "officialFractionSelected": 0.058259
+    },
+    {
+      "case": "8002274",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.0,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "8006302",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.0,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "0102234",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": 0.9812,
+      "officialFractionSelected": 0.355417
+    },
+    {
+      "case": "6000079",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "6000047",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "6000195",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    },
+    {
+      "case": "6000229",
+      "target": "mountains",
+      "maxAbsoluteGray8Difference": 0,
+      "pixelsDiffering": 0,
+      "binaryPixelsDiffering": 0,
+      "pixelsCompared": 76800,
+      "officialIoU": null,
+      "officialFractionSelected": 0.0
+    }
+  ]
+}

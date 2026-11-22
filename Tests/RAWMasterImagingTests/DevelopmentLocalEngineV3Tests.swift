@@ -50,8 +50,14 @@ final class DevelopmentLocalEngineV3Tests: XCTestCase {
       let coverage=1-remaining;if coverage==0 { continue }
       let a=Double(original.w),u=SIMD3(Double(original.x),Double(original.y),Double(original.z))/a
       if operation.tool == .retouch {
-        let d=sample(px+dx,py+dy),lt=low(px,py),ld=low(px+dx,py+dy)
-        if d.w<Double(DevelopmentLocalEngineV3.alphaMinimum) || lt.w<Double(DevelopmentLocalEngineV3.alphaMinimum) || ld.w<Double(DevelopmentLocalEngineV3.alphaMinimum) { continue }
+        let d=sample(px+dx,py+dy)
+        if d.w<Double(DevelopmentLocalEngineV3.alphaMinimum) { continue }
+        if operation.retouchMode == .clone {
+          let clone=SIMD3(d.x,d.y,d.z)/d.w,c=(u*(1-coverage)+clone*coverage)*a
+          output[y*width+x] = .init(Float(c.x),Float(c.y),Float(c.z),original.w);continue
+        }
+        let lt=low(px,py),ld=low(px+dx,py+dy)
+        if lt.w<Double(DevelopmentLocalEngineV3.alphaMinimum) || ld.w<Double(DevelopmentLocalEngineV3.alphaMinimum) { continue }
         let heal=SIMD3(d.x,d.y,d.z)/d.w-SIMD3(ld.x,ld.y,ld.z)/ld.w+SIMD3(lt.x,lt.y,lt.z)/lt.w
         let c=(u*(1-coverage)+heal*coverage)*a
         output[y*width+x] = .init(Float(c.x),Float(c.y),Float(c.z),original.w)
@@ -98,7 +104,7 @@ final class DevelopmentLocalEngineV3Tests: XCTestCase {
       for c in 0..<4 { XCTAssertEqual(Double(actual[c]),expected[c],accuracy:2e-7,"world \(point), channel \(c)") }
     }
     XCTAssertTrue(DevelopmentLocalEngineV3.operatorVersion.contains("manual4nearest-f32"))
-    XCTAssertTrue(DevelopmentLocalEngineV3.operatorVersion.contains("work-retouch212-redEye2"))
+    XCTAssertTrue(DevelopmentLocalEngineV3.operatorVersion.contains("work-retouch212-clone5-redEye2"))
   }
   func testRetouchActualMetalMatchesDoubleReferenceAndPreservesAlphaOutsideMask() throws {
     let source=pixels(),operation=op(),expected=try reference(source,operation:operation)
@@ -110,6 +116,16 @@ final class DevelopmentLocalEngineV3Tests: XCTestCase {
       if expected[i] == source[i] { XCTAssertEqual(actual[i],source[i]) }
       if actual[i] != source[i] { changed += 1 }
     };XCTAssertGreaterThan(changed,0)
+  }
+  func testCloneCopiesDonorWithoutTextureTransferAndMatchesReference() throws {
+    let source=pixels();var clone=op();clone.retouchMode = .clone
+    let actual=try read(DevelopmentLocalEngineV3.apply(edits([clone]),to:image(source),context:DevelopmentColorEngineV3.context))
+    let expected=try reference(source,operation:clone),healed=try read(DevelopmentLocalEngineV3.apply(edits([op()]),to:image(source),context:DevelopmentColorEngineV3.context))
+    XCTAssertNotEqual(actual,healed)
+    for i in actual.indices {
+      XCTAssertEqual(actual[i].w.bitPattern,source[i].w.bitPattern)
+      for c in 0..<3 { XCTAssertEqual(actual[i][c],expected[i][c],accuracy:2e-4) }
+    }
   }
   func testMultiDabTailPressureAndFrozenOverlappingDonor() throws {
     let source=pixels();var operation=op(donor:.init(x:0.47,y:0.5))

@@ -132,7 +132,8 @@ public enum DevelopmentLocalWorkEstimatorV1 {
         let b=try box(dab.position,radius:radius,size:size)
         if b.empty { return }
         let width=try checkedAdd(b.x1-b.x0,1),height=try checkedAdd(b.y1-b.y0,1)
-        let area=try checkedMultiply(width,height),cost=try checkedMultiply(area,operation.tool == .retouch ? retouchWorkUnitsPerPixel:redEyeWorkUnitsPerPixel)
+        let units=operation.tool == .redEye ? redEyeWorkUnitsPerPixel:(operation.retouchMode == .clone ? 5:retouchWorkUnitsPerPixel)
+        let area=try checkedMultiply(width,height),cost=try checkedMultiply(area,units)
         total=try checkedAdd(total,cost)
         guard total<=maximumWorkUnits else { throw DevelopmentLocalPreparationError.localWorkBudgetExceeded }
         if operation.tool == .retouch {

@@ -106,10 +106,110 @@ final class DevelopmentAdjustmentsV3Tests: XCTestCase {
       var p = DevelopmentAdjustmentsV3(); p.whiteBalance = .init(enabled:true,adjustment:value)
       let r = DevelopmentRecipe(adjustmentsV3:p); XCTAssertEqual(try DevelopmentRecipe.decodeJSON(encoded(r)),r)
     }
-    for bad: DevelopmentWhiteBalanceAdjustmentV3 in [.neutralGray(warmth:0.5001),.skinTone(warmth:Double.nan),.temperatureTint(temperature:20000.1,tint:0),.temperatureTint(temperature:6000,tint:150.1)] { XCTAssertThrowsError(try bad.validate()) }
+    for bad: DevelopmentWhiteBalanceAdjustmentV3 in [.neutralGray(warmth:0.5001),.skinTone(warmth:Double.nan),.temperatureTint(temperature:50000.1,tint:0),.temperatureTint(temperature:6000,tint:150.1)] { XCTAssertThrowsError(try bad.validate()) }
+    XCTAssertNoThrow(try DevelopmentWhiteBalanceAdjustmentV3.temperatureTint(temperature:50000,tint:0).validate())
     let data = try JSONEncoder().encode(DevelopmentWhiteBalanceAdjustmentV3.asShot)
     XCTAssertEqual(try JSONSerialization.jsonObject(with:data) as? [String:String],["mode":"asShot"])
     XCTAssertThrowsError(try JSONDecoder().decode(DevelopmentWhiteBalanceAdjustmentV3.self,from:Data(#"{"mode":"asShot","temperature":6500}"#.utf8)))
+  }
+  func testImageWhiteBalanceUsesOptionalApproximateOffsetAndKeepsLegacyBytes() throws {
+    var state = DevelopmentImageWhiteBalanceStateV3(selectedMode:.temperatureTint,temperatureTint:.init(temperature:5000,tint:0))
+    let legacy = try JSONEncoder().encode(state)
+    let object = try XCTUnwrap(JSONSerialization.jsonObject(with:legacy) as? [String:Any])
+    XCTAssertNil(object["temperatureOffset"])
+    XCTAssertEqual(try JSONDecoder().decode(DevelopmentImageWhiteBalanceStateV3.self,from:legacy),state)
+    for offset in [-100.0,-50.0,0.0,50.0,100.0] {
+      state.temperatureOffset = offset
+      state.temperatureTint = .init(temperature:DevelopmentImageWhiteBalanceStateV3.approximateTemperature(forOffset:offset),tint:0)
+      try state.validate()
+      XCTAssertEqual(try JSONDecoder().decode(DevelopmentImageWhiteBalanceStateV3.self,from:JSONEncoder().encode(state)),state)
+    }
+    for invalid in [-100.01,100.01,Double.nan,Double.infinity] {
+      state.temperatureOffset = invalid
+      XCTAssertThrowsError(try state.validate())
+    }
+  }
+  func testSelectiveColorKeepsLegacySixAndSupportsCurrentEightSlots() throws {
+    let current = DevelopmentSelectiveColorV3()
+    XCTAssertEqual(current.colors.map(\.slot),DevelopmentSelectiveColorSlotV3.allCases)
+    XCTAssertEqual(current.colors.count,8)
+    XCTAssertEqual(try JSONDecoder().decode(DevelopmentSelectiveColorV3.self,from:JSONEncoder().encode(current)),current)
+    let legacy = DevelopmentSelectiveColorV3(enabled:true,colors:DevelopmentSelectiveColorV3.legacySlots.map { .init(slot:$0) })
+    XCTAssertEqual(legacy.colors.count,6)
+    let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+    let data = try encoder.encode(legacy)
+    let decoded = try JSONDecoder().decode(DevelopmentSelectiveColorV3.self,from:data)
+    XCTAssertEqual(decoded,legacy)
+    XCTAssertEqual(try encoder.encode(decoded),data)
+    let incomplete = DevelopmentSelectiveColorV3(colors:[.init(slot:.red)])
+    XCTAssertThrowsError(try incomplete.validate())
+  }
+  func testEffectsGrainSizeAndRoughnessAreOptionalAndBounded() throws {
+    let legacy = DevelopmentEffectsV3(enabled:true,grain:0.4)
+    let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+    let legacyData = try encoder.encode(legacy)
+    let object = try XCTUnwrap(JSONSerialization.jsonObject(with:legacyData) as? [String:Any])
+    XCTAssertNil(object["grainSize"]); XCTAssertNil(object["grainRoughness"])
+    XCTAssertEqual(try JSONDecoder().decode(DevelopmentEffectsV3.self,from:legacyData),legacy)
+    for value in [DevelopmentEffectsV3(enabled:true,grain:0.4,grainSize:0,grainRoughness:1),
+                  .init(enabled:false,grain:0,grainSize:1,grainRoughness:0)] {
+      let data = try encoder.encode(value)
+      XCTAssertEqual(try JSONDecoder().decode(DevelopmentEffectsV3.self,from:data),value)
+    }
+    for invalid in [DevelopmentEffectsV3(grainSize:-0.01),DevelopmentEffectsV3(grainSize:1.01),
+                    .init(grainRoughness:-0.01),.init(grainRoughness:1.01)] {
+      XCTAssertThrowsError(try invalid.validate())
+    }
+  }
+  func testParametricCurveIsOptionalValidatedAndRoundTrips() throws {
+    let curves = DevelopmentCurvesV3()
+    let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+    let legacy = try encoder.encode(curves)
+    XCTAssertEqual(try JSONDecoder().decode(DevelopmentCurvesV3.self,from:legacy),curves)
+    let value = DevelopmentParametricCurveV3(highlights:35,lights:20,darks:-15,shadows:25,split1:0.2,split2:0.55,split3:0.8)
+    XCTAssertTrue(value.isActive)
+    let points = try value.pointCurve()
+    XCTAssertEqual(points.points.count,16)
+    XCTAssertGreaterThan(abs(try points.value(at:0.8)-0.8),1e-9)
+    var edited = curves; edited.enabled = true; edited.parametric = value
+    let data = try encoder.encode(edited)
+    XCTAssertEqual(try JSONDecoder().decode(DevelopmentCurvesV3.self,from:data),edited)
+    for invalid in [DevelopmentParametricCurveV3(highlights:100.01),
+                    .init(split1:0.5,split2:0.4), .init(split2:0.8,split3:0.7)] {
+      XCTAssertThrowsError(try invalid.validate())
+    }
+  }
+  func testGlowStylesAndParametersAreOptionalValidatedAndRoundTrip() throws {
+    let legacy = DevelopmentEffectsV3(enabled:true,grain:0.2)
+    let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+    let legacyData = try encoder.encode(legacy)
+    XCTAssertNil(try XCTUnwrap(JSONSerialization.jsonObject(with:legacyData) as? [String:Any])["glow"])
+    XCTAssertEqual(try JSONDecoder().decode(DevelopmentEffectsV3.self,from:legacyData),legacy)
+    for style in DevelopmentGlowStyleV3.allCases {
+      let glow = DevelopmentGlowV3(enabled:true,amount:50,style:style,range:60,spread:40,warmth:-20,direction:45,softness:70)
+      let effects = DevelopmentEffectsV3(glow:glow)
+      try effects.validate()
+      let data = try encoder.encode(effects)
+      XCTAssertEqual(try JSONDecoder().decode(DevelopmentEffectsV3.self,from:data),effects)
+    }
+    for invalid in [DevelopmentGlowV3(amount:100.01),DevelopmentGlowV3(warmth:-100.01),DevelopmentGlowV3(direction:360.01)] {
+      XCTAssertThrowsError(try invalid.validate())
+    }
+  }
+  func testPostCropVignetteStylesAreOptionalValidatedAndRoundTrip() throws {
+    let legacy = DevelopmentEffectsV3(enabled:true,grain:0.2)
+    let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
+    XCTAssertNil(try XCTUnwrap(JSONSerialization.jsonObject(with:encoder.encode(legacy)) as? [String:Any])["postCropVignette"])
+    for style in DevelopmentPostCropVignetteStyleV3.allCases {
+      let value = DevelopmentPostCropVignetteV3(enabled:true,amount:-40,style:style,midpoint:60,roundness:-20,feather:70,highlights:80)
+      let effects = DevelopmentEffectsV3(postCropVignette:value)
+      try effects.validate()
+      let data = try encoder.encode(effects)
+      XCTAssertEqual(try JSONDecoder().decode(DevelopmentEffectsV3.self,from:data),effects)
+    }
+    for invalid in [DevelopmentPostCropVignetteV3(amount:-100.01),DevelopmentPostCropVignetteV3(roundness:100.01),DevelopmentPostCropVignetteV3(feather:100.01)] {
+      XCTAssertThrowsError(try invalid.validate())
+    }
   }
   func testStandaloneJSONByteLimitRunsBeforeParsing() {
     let data = Data(repeating:0x20,count:DevelopmentLocalEditLimits.maximumRecipeJSONBytes+1)

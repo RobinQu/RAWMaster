@@ -31,6 +31,16 @@ enum EditingDevelopmentSessionError: Error, Equatable {
     case inactive, staleInteraction, unfinishedGesture, wrongGesture, recipeDiverged, commitRejected
     case missingSourceCapability, staleAnalysis, staleFrame, epochExhausted, invalidIdentity
 }
+struct DevelopmentSnapshot: Identifiable, Equatable {
+    let id: UUID
+    var name: String
+    let createdAt: Date
+    let recipe: DevelopmentRecipe
+    init(id: UUID = UUID(), name: String, createdAt: Date = .now, recipe: DevelopmentRecipe) {
+        self.id = id; self.name = name; self.createdAt = createdAt; self.recipe = recipe
+    }
+}
+
 struct EditingDisplayedFrameContext {
     let frameID: UUID
     let interaction: EditingInteractionContext
@@ -112,6 +122,9 @@ enum EditingDevelopmentTransaction {
     @Published private(set) var cropConstraint = PhotosCropConstraint()
     private var cropConstraintKey: DevelopmentHistoryKey?
     private(set) var history: DevelopmentUndoHistory
+    /// Named recipe pointers are scoped to the same source/branch identity as undo history.
+    /// Restoring one creates a normal history entry instead of moving or destroying the cursor.
+    private var snapshotStorage: [DevelopmentHistoryKey: [DevelopmentSnapshot]] = [:]
     private var summaryUI = DevelopmentSummaryUIState()
     private(set) var source: DevelopmentLocalEditSourceBinding?
     private(set) var analysisStage: DevelopmentAnalysisStage = .workingImageBeforeGeometry
@@ -164,6 +177,11 @@ enum EditingDevelopmentTransaction {
     var canRedo: Bool { acceptingInput && context != nil && gesture == nil && history.canRedo }
     var undoTitle: String? { history.undoTitle }
     var redoTitle: String? { history.redoTitle }
+    var historyItems: [DevelopmentHistoryItem] { history.items }
+    var snapshots: [DevelopmentSnapshot] {
+        guard let key = context?.historyKey else { return [] }
+        return snapshotStorage[key] ?? []
+    }
     var activeGesture: EditingGestureToken? { gesture?.token }
     var activeControl: EditingControlID? { gesture?.control }
     func beginningRecipe(for token: EditingGestureToken) throws -> DevelopmentRecipe {
@@ -364,6 +382,70 @@ enum EditingDevelopmentTransaction {
         }
         invalidatePendingAnalysis(); try commit(candidate, event: .init(context: expected, control: .init(group: nil, name: "重做"), nativeInput: input))
         history.didRedo(); summaryUI = history.currentUI(current: recipe); publish()
+    }
+    func restoreHistory(position: Int, context expected: EditingInteractionContext, input: EditingPreviewInput? = nil) throws {
+        try require(expected)
+        if let gesture { try endGesture(gesture.token, .commit) }
+        guard let candidate = history.restorationCandidate(position: position, current: recipe) else {
+            throw EditingDevelopmentSessionError.recipeDiverged
+        }
+        guard candidate.recipe != recipe else { return }
+        invalidatePendingAnalysis()
+        try commit(candidate.recipe, event: .init(context: expected,
+            control: .init(group: nil, name: "恢复历史状态"), nativeInput: input))
+        history.didRestore(position: position)
+        summaryUI = history.currentUI(current: recipe); publish()
+    }
+    func restoreHistory(recipe target: DevelopmentRecipe, context expected: EditingInteractionContext,
+                        input: EditingPreviewInput? = nil) throws {
+        try require(expected)
+        if let gesture { try endGesture(gesture.token, .commit) }
+        guard recipe != target else { return }
+        guard let position = history.restorationPosition(for: target, current: recipe) else {
+            throw EditingDevelopmentSessionError.recipeDiverged
+        }
+        try restoreHistory(position: position, context: expected, input: input)
+    }
+    @discardableResult
+    func createSnapshot(name: String? = nil, context expected: EditingInteractionContext) throws -> DevelopmentSnapshot {
+        try require(expected)
+        if let gesture { try endGesture(gesture.token, .commit) }
+        guard let key = context?.historyKey else { throw EditingDevelopmentSessionError.inactive }
+        var items = snapshotStorage[key] ?? []
+        let proposed = name?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let title = String((proposed?.isEmpty == false ? proposed! : "快照 \(items.count + 1)").prefix(60))
+        let snapshot = DevelopmentSnapshot(name: title, recipe: recipe)
+        if items.count >= 32 { items.removeFirst() }
+        items.append(snapshot); snapshotStorage[key] = items; publish()
+        return snapshot
+    }
+    func renameSnapshot(id: DevelopmentSnapshot.ID, name: String, context expected: EditingInteractionContext) throws {
+        try require(expected)
+        guard let key = context?.historyKey, var items = snapshotStorage[key],
+              let index = items.firstIndex(where: { $0.id == id }) else { return }
+        let title = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty else { return }
+        items[index].name = String(title.prefix(60)); snapshotStorage[key] = items; publish()
+    }
+    func deleteSnapshot(id: DevelopmentSnapshot.ID, context expected: EditingInteractionContext) throws {
+        try require(expected)
+        guard let key = context?.historyKey else { return }
+        snapshotStorage[key]?.removeAll { $0.id == id }; publish()
+    }
+    func restoreSnapshot(id: DevelopmentSnapshot.ID, context expected: EditingInteractionContext) throws {
+        try require(expected)
+        if let gesture { try endGesture(gesture.token, .commit) }
+        guard let key = context?.historyKey,
+              let snapshot = snapshotStorage[key]?.first(where: { $0.id == id }) else { return }
+        guard snapshot.recipe != recipe else { return }
+        let before = recipe, beforeUI = summaryUI.validating(for: recipe)
+        invalidatePendingAnalysis()
+        let input = EditingPreviewInput.capture(control: "snapshot.restore", phase: "discrete", nativeEvent: true)
+        try commit(snapshot.recipe, event: .init(context: expected,
+            control: .init(group: nil, name: "恢复快照 · " + snapshot.name), nativeInput: input))
+        history.record(before: before, after: snapshot.recipe, title: "恢复快照 · " + snapshot.name,
+            beforeUI: beforeUI, afterUI: beforeUI.reconciling(to: snapshot.recipe))
+        summaryUI = history.currentUI(current: recipe); publish()
     }
     func cancelAnalysis(context expected: EditingInteractionContext) throws {
         try require(expected); invalidatePendingAnalysis()
