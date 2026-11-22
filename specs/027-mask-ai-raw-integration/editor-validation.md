@@ -1,6 +1,6 @@
 # 027 · 编辑器蒙版功能实测
 
-2026-11-22，在独立开发版本的编辑器、配方和离线 TIFF 输出路径验证。运行环境为 Apple Silicon、macOS 27.0.1、Swift 6.4。四组定向回归共 17 项。与 Camera Raw 基础编辑的联合验收执行前，还需在双方对齐的目标版本上测首屏、交互与高分辨率导出的耗时、峰值和退出后的内存。[功能测试记录](evidence/editor-functional.log) · [联合验收单](../031-preset-browser/integration-validation.md)
+2026-11-22，在独立开发版本的编辑器、配方和离线 TIFF 输出路径验证。运行环境为 Apple Silicon、macOS 27.0.1、Swift 6.4。五组定向回归共 19 项。与 Camera Raw 基础编辑的联合验收执行前，还需在双方对齐的目标版本上测首屏、交互与高分辨率导出的耗时、峰值和退出后的内存。[功能测试记录](evidence/editor-functional.log) · [联合验收单](../031-preset-browser/integration-validation.md)
 
 ## 摄影师可完成的操作
 
@@ -28,6 +28,17 @@
 | 实际导出 | 从序列化配方恢复，通过 DevelopmentService 输出 16 位 TIFF，验证方向、尺寸以及涂画区与保护区的明暗差。替换为同尺寸但内容不同的原片后，旧语义图层被拒绝 |
 | 可选模型 | 从离线包复制到临时安装位置后实际推理，移除该目录再回放快照。otool 检查编辑器可执行文件，无 ONNX Runtime 链接项或开发机 Vendor rpath。打包只接纳固定运行库及权重指纹。[模型包与安装](model-pack.md) |
 
+## 旧作品开关图层的两组对照
+
+在主图以画笔选出一小片区域，采用后把局部曝光设为 +0.4。关闭编辑器，按作品 ID 读回配方并写出 120×80、16 位 TIFF。使用同一冻结 Gray8，对有效遮罩等于零的 9,484 个像素比较四通道，覆盖 ≥0.5 的像素共 112 个。三份成片、原图和冻结蒙版随规格保存。[测量和哈希](evidence/legacy-renderer-toggle/measurements.json) · [原图](evidence/legacy-renderer-toggle/input.png) · [冻结蒙版](evidence/legacy-renderer-toggle/frozen-mask.png)
+
+| 对照方式 | 保护区最大差（16 位通道） | 选区情况 |
+| --- | ---: | --- |
+| 同一 V3 渲染器、相同局部曝光，使用全零覆盖作为对照 | 0 | 112/112 像素变亮。[采用成片](evidence/legacy-renderer-toggle/reopened-subject.tiff) · [零覆盖对照](evidence/legacy-renderer-toggle/same-renderer-zero-coverage.tiff) |
+| 自然关闭该图层，旧作品从 V3 返回历史渲染器 | 2 / 65,535 | 112/112 像素变亮。重复导出关闭状态自身的差为 0。[关闭图层对照](evidence/legacy-renderer-toggle/disabled-layer-control.tiff) |
+
+此差异归入基础引擎集成时的旧作品回归。联合 Release 探针同时检查自然开关图层的保护区零差及局部增亮。开发版蒙版已补充具体请求的画布所有权。真实窗口验证了旧画布 A 延迟退出时，同一照片上的新请求 B 继续运行，退出当前 B 会取消。真实 Vision 服务同时核对了冷生成、精确命中、画笔、取消与失败的计数。[联合检查和运行命令](../031-preset-browser/integration-validation.md)
+
 ## 复跑
 
 `RAWMASTER_MASK_FIXTURES` 指向包含 `mountain-lake.jpg`、`no-water-6000079.jpg`、`person.ARW` 和 `snow.ARW` 的目录。`RAWMASTER_MASK_PACK` 指向上述离线运行库及两个模型组件的根目录。真实素材及大模型独立保存。缺少两项环境变量时，照片与真模型用例会报告跳过，其他定向用例仍可运行。山湖图来自[026 样本脚本](../../experiments/MaskAI/Scripts/download-fixtures.sh)，人物和雪景的作者及许可见[样片清单](portrait-snow-validation.md)。
@@ -35,7 +46,7 @@
 ```sh
 RAWMASTER_MASK_FIXTURES="$PWD/output/preset-mask-fixtures" \
 RAWMASTER_MASK_PACK="$PWD/output/preset-mask-fixtures/portable-mask-models" \
-swift test --filter 'DevelopmentSemanticMaskTests|PhotosSemanticMaskInteractionTests|PhotosMaskWorkflowTests|DevelopmentMaskEngineV3Tests'
+swift test --filter 'DevelopmentSemanticMaskTests|PhotosSemanticMaskInteractionTests|PhotosMaskWorkflowTests|DevelopmentMaskEngineV3Tests|EditingMaskCanvasOwnershipTests'
 ```
 
 真实样片里的识别值没有人工逐像素边界标注。选区边界质量另参考独立标注集试验，水面和天空均保留人工复核，其他风景类别、负点和人体部位留在实验环节。[标注与质量分项](../030-ai-retouching/mask-validation.md)

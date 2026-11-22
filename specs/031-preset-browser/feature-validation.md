@@ -4,15 +4,17 @@
 
 ## 独立版本与复测
 
-功能源码提交为 `d0091997`，分支为 `codex/preset-mask-delivery`。在 Apple M4 Max 上合并运行常规编辑器、Core 和成像功能测试 **92/92**，含真实窗口、本机 Adobe 安装、真实相机样片和可选权重。另用独立 MaskAI 包跑模型、RAW、方向与服务功能测试 **27/27**，两组均零跳过。首次整组运行时发现既有滤镜的预算测试假设全进程缓存为空；修正夹具按尚可用内存制造同等压力后，整组复跑通过。[逐项测试与构建身份](evidence/feature-functional.json)
+功能源码提交为 `1a7d6b35`（初版 `d0091997`），分支为 `codex/preset-mask-delivery`。在 Apple M4 Max 上合并运行常规编辑器、Core 和成像功能测试 **94/94**，含真实窗口、本机 Adobe 安装、真实相机样片和可选权重。另用独立 MaskAI 包跑模型、RAW、方向与服务功能测试 **27/27**，两组均零跳过，其中 7 项窗口、跨片与导出用例也在 Release 构建复跑通过。首次整组运行时发现既有滤镜的预算测试假设全进程缓存为空；修正夹具按尚可用内存制造同等压力后，整组复跑通过。[逐项测试与构建身份](evidence/feature-functional.json)
 
-开发工作树建立时冻结了当时未提交的基础编辑源码。`2df67339` 为冻结点，`78505f04` 为该树的编译基线；这两项属于对齐交付方已有的代码。后续接入在目标版本上重放 `78505f04..d0091997` 的功能与测试增量，再按联合验收单执行。030 的方案、视觉稿与 PoC 仍可以直接从主工作区的 Spec Kit 目录打开。[030 交接](../030-ai-retouching/handoff.md)
+开发工作树建立时冻结了当时未提交的基础编辑源码。`2df67339` 为冻结点，`78505f04` 为该树的编译基线；这两项属于对齐交付方已有的代码。后续接入在目标版本上重放 `78505f04..1a7d6b35` 的功能与测试增量，再按联合验收单执行。030 的方案、视觉稿与 PoC 仍可以直接从主工作区的 Spec Kit 目录打开。[030 交接](../030-ai-retouching/handoff.md)
 
 ## 试用 Release 包
 
 主工作区可直接打开 `output/preset-mask-release/RAWMaster.app`。这是从独立功能提交构建的 arm64 Release 0.1.0，交付副本的可执行文件、FlashRaw 和可选权重 SHA-256 均与构建收据一致。应用已通过本地签名校验，隔离启动后正常创建资料库，SQLite 完整性检查通过。包内含 FlashRaw 和经逐字节核对的 53 条迁移规则。开发构建和 Release 包的测试范围分别见[构建收据](evidence/feature-functional.json)。
 
 左栏「照片工具 → 预设」可试用、保存和迁入预设。右栏「调整 → 蒙版」可直接选主体、背景并用画笔修正。需要点选、框选、天空或水面时，从「模型包」选择主工作区 `output/preset-mask-release/model-pack`。运行库和权重随该目录提供，可在本机验证安装。[模型与安装说明](../027-mask-ai-raw-integration/model-pack.md)
+
+如需和已经打开的 RAWMaster 并行试用，可在主工作区执行 `open -n "$PWD/output/preset-mask-release/RAWMaster.app" --args --library "$PWD/output/preset-mask-release/trial.sqlite"`，新窗口会使用独立资料库。
 
 ## 滤镜预设
 

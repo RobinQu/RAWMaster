@@ -2,7 +2,7 @@
 
 2026-11-22 · 031 滤镜预设、027 AI 蒙版已交独立 Release · 030 已归档待研发
 
-滤镜预设和 AI 蒙版已可在主工作区的独立 Release 包试用。编辑器相关功能回归 92 项、独立 MaskAI 功能回归 27 项全部通过。负责 Camera Raw 基础编辑的会话交付对齐结果后，再将两项功能接入该版本并执行联合性能验收。[功能、实测与试用入口](../../specs/031-preset-browser/feature-validation.md)
+滤镜预设和 AI 蒙版已可在主工作区的独立 Release 包试用。编辑器相关功能回归 94 项、独立 MaskAI 功能回归 27 项全部通过。负责 Camera Raw 基础编辑的会话交付对齐结果后，再将两项功能接入该版本并执行联合性能验收。[功能、实测与试用入口](../../specs/031-preset-browser/feature-validation.md)
 
 智能修图本轮交付产品、交互、技术和 PoC 的本地规格。下文三场景首发、批次与人力估计供后续 030 启动时使用。参见[集成验收单](../../specs/031-preset-browser/integration-validation.md)与[智能修图交接](../../specs/030-ai-retouching/handoff.md)。
 

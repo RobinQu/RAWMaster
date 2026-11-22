@@ -8,7 +8,7 @@
 
 蒙版开发版的 RAW 分析取 CIRAWFilter 已定向的中性 sRGB 图，长边 1,536 像素。合入采用 FlashRaw 的引擎时，要用相同原件对照方向、有效区域和裁切，逐张记录分析前缀和重复解码次数。只有缓存身份与像素空间一致才可复用引擎的分析图。既有蒙版回放直接读取冻结结果。[编辑器功能证据](../027-mask-ai-raw-integration/editor-validation.md)
 
-2026-11-22 17:03，基础编辑会话仍在复核显示和尾延迟，报告记录为 `measured-with-open-parity-gaps`，对齐状态为 `not-qualified`。截至此次核对，基础会话报告 RAWMaster 已实测 157 项、Camera Raw 已验证 100 项。集成待接收已对齐范围的稳定修订。主工作区的动态证据位于 `docs/research/camera-raw-parity/performance-data.json`。
+2026-11-22 17:03，基础编辑会话仍在复核显示和尾延迟，报告记录为 `measured-with-open-parity-gaps`，对齐状态为 `not-qualified`。截至此次核对，基础会话报告 RAWMaster 已实测 157 项、Camera Raw 已验证 100 项。集成待接收已对齐范围的稳定修订。随后基础会话报告，在同一 RAW 上 8 项基础调整的三轮中位数和 p95 达到 LightFlow 门槛。另外 31 项最终帧全部达到，首帧有 27 项达到。裁剪后暗角的中点和圆度、锐化半径、明度降噪细节仍在检查。第一段 Adobe 前台采集已结束，另有 11 项待完整实机计数。截至本次功能交付，基础会话尚未给出已对齐范围的最终版本。主工作区的动态证据位于 `docs/research/camera-raw-parity/performance-data.json`。
 
 本次只读交接检查发现，功能增量所改的既有文件中有 9 个也被基础编辑会话修改，包括 Package.swift、EditingController、DevelopmentAdjustmentCommands、DevelopmentMaskEngineV3、DevelopmentPreviewService、DevelopmentRendererV3、PreviewInteractiveProxyV3、EditingDevelopmentSessionTests 及 build-app.sh。功能新增文件当时没有重名。接到目标快照后重新计算交集，在对应方法上分别合并模型包、源绑定、预览与资源复制逻辑，随后运行双方回归。[开发版本与功能证据](feature-validation.md)
 
@@ -37,4 +37,21 @@ swift test -c release --test-product RAWMasterUITests \
   --filter EditingInteractionPerformanceTests/testOptInRealRAWCompoundEditingCanvasPerformance
 ```
 
-同一次集成登记还需附 027 在编辑器中的输入、采用、重开与导出结果。独立的 `PerformanceAcceptanceTests` 复测只作为服务对照，使用副本运行以保存旧基线。
+在实际候选版本上，027 的主体专项使用同一 AppKit 宿主。以下命令以已知能产生主体与背景的竖拍 RAW 开始。61 MP 样片另存一次结果。每次指定新的输出目录。
+
+```sh
+RAWMASTER_EDITING_PERF=1 RAWMASTER_EDITING_PERF_MASK_SUBJECT=1 \
+RAWMASTER_EDITING_PERF_SOURCE="$PWD/output/preset-mask-fixtures/person.ARW" \
+RAWMASTER_EDITING_PERF_OUTPUT="$PWD/output/performance/mask-subject-$(date +%Y%m%d-%H%M%S)" \
+RAWMASTER_LIGHTFLOW_REFERENCE="$PWD/output/lightflow-research/same-size-runtime.json" \
+swift test -c release --test-product RAWMasterUITests \
+  --filter EditingInteractionPerformanceTests/testOptInRealRAWCompoundEditingCanvasPerformance
+```
+
+计时从编辑器触发「主体」到主线程发布可采用的 Gray8 候选。冷请求和三十次重复请求分别取数。读取同一蒙版服务的真实计数，相对启动时的「精确命中 / 成功新建」应依次为首次主体 0/1、重复主体 30/1、首次背景 30/2、恢复主体 31/2。记录每次耗时、Gray8 哈希及前后景逐像素的互补关系。采用至 settled 画布绘制返回单独计时。开始首个请求前先等待基础画布 settled。红色叠层第一次可见和系统窗口合成仍需另外测量。预览 RAW 基图的填充和命中另行记录。
+
+随后以实际编辑会话调节局部曝光，关闭编辑器，按作品 ID 从磁盘读取配方并导出原尺寸 16 位 TIFF。记录源、冻结 PNG 和各 TIFF 的哈希，检查方向、尺寸和位深。另导出仅禁用该图层的对照。如果禁用会退回旧渲染器，再导出同 V3 路径、零覆盖的对照。逐行比较 16 位 RGBA 样本，冻结遮罩为零处取最大通道差，覆盖 ≥0.5 处统计增亮像素和 RGB 总增量。Release 专项对自然开关图层的保护区仍要求零差。RSS 在首次请求前、首次生成后、编辑器关闭后和主成片写出后取样，峰值属于整个进程。两份诊断对照的开销单列，不并入主成片的时间和内存读数。
+
+独立旧作品夹具已重现同 V3 前缀保护区差 **0**、自然开关回到旧前缀时差 **2/65,535**。9,484 个保护像素和 112 个选中像素均来自同一张 120×80 自制图片。目标引擎需用此例检查旧作品兼容，同时以真实 RAW 验证显示、局部效果和导出。[原始输入、候选与对照](../027-mask-ai-raw-integration/editor-validation.md#旧作品开关图层的两组对照)
+
+独立的 `PerformanceAcceptanceTests` 复测只作为服务对照，使用副本运行以保存旧基线。

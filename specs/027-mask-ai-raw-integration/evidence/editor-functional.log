@@ -1,28 +1,26 @@
-RAWMaster editor mask functional suite
+RAWMaster local editor mask functional suite
 2026-11-22 · macOS 27.0.1 arm64, Swift 6.4
-Isolated preset and mask development version. Includes real optical fixtures, optional models, TIFF16 output, cache lifecycle and installation races.
+Source 1a7d6b3555f7ab1e41b7e55f7b9ceb455ef1d4b6
 
-Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskCurvesPersistAndUndo]' passed (0.309 seconds).
-Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskLayerIsLivePersistentAndUndoable]' passed (0.238 seconds).
+Test Case '-[RAWMasterUITests.EditingMaskCanvasOwnershipTests testCountersObserveTheEditorsGeneratorAndExcludeBrushesAndFailures]' passed (4.709 seconds).
+Test Case '-[RAWMasterUITests.EditingMaskCanvasOwnershipTests testDelayedDepartureOfPreviousCanvasCannotCancelNextRequestInSameContext]' passed (0.172 seconds).
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskCurvesPersistAndUndo]' passed (0.236 seconds).
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskLayerIsLivePersistentAndUndoable]' passed (0.237 seconds).
 Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testVectorscopeRotatesStandardChromaAxesTogether]' passed (0.000 seconds).
-Test Suite 'PhotosMaskWorkflowTests' passed at 2026-11-22 16:50:32.908.
-Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testCancelFromMaskPanelReachesModelInstaller]' passed (0.049 seconds).
-Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testLateCompletionAfterCancelRevisionOrPhotoSwitchCannotPublish]' passed (0.248 seconds).
-Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testOriginalHoldAndComparisonOwnCanvasAcrossLateResultsAndRestoration]' passed (0.131 seconds).
-Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testPaintReviewAdoptUndoAndReopenFromProject]' passed (0.262 seconds).
-Test Suite 'PhotosSemanticMaskInteractionTests' passed at 2026-11-22 16:50:33.597.
-Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testInteractiveProxyDoesNotDropActiveMask]' passed (0.013 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testLocalGlowUsesSharedSettingsAndOptionalRecipeStorage]' passed (0.016 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testPhotoFilterPrecedesMaskInInteractiveSuffix]' passed (4.385 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testRadialAndLinearMasksAffectDifferentRegions]' passed (0.006 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testRangeLayerOrderDisableAndNeutralBypass]' passed (0.006 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testSubjectUsesStoredPixelsAndRecipeRoundTrip]' passed (0.014 seconds).
-Test Suite 'DevelopmentMaskEngineV3Tests' passed at 2026-11-22 16:50:38.279.
-Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testFrozenCoverageDrivesExportAndMatchesSourceSpaceBounds]' passed (0.033 seconds).
+Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testCancelFromMaskPanelReachesModelInstaller]' passed (0.045 seconds).
+Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testLateCompletionAfterCancelRevisionOrPhotoSwitchCannotPublish]' passed (0.253 seconds).
+Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testOriginalHoldAndComparisonOwnCanvasAcrossLateResultsAndRestoration]' passed (0.094 seconds).
+Test Case '-[RAWMasterUITests.PhotosSemanticMaskInteractionTests testPaintReviewAdoptUndoAndReopenFromProject]' passed (0.299 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testInteractiveProxyDoesNotDropActiveMask]' passed (0.002 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testLocalGlowUsesSharedSettingsAndOptionalRecipeStorage]' passed (0.011 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testPhotoFilterPrecedesMaskInInteractiveSuffix]' passed (4.403 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testRadialAndLinearMasksAffectDifferentRegions]' passed (0.008 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testRangeLayerOrderDisableAndNeutralBypass]' passed (0.007 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentMaskEngineV3Tests testSubjectUsesStoredPixelsAndRecipeRoundTrip]' passed (0.013 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testFrozenCoverageDrivesExportAndMatchesSourceSpaceBounds]' passed (0.039 seconds).
 Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testGray8IsExactAtAllLevelsAndBrushRepairsRoundTrip]' passed (0.001 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testInterruptedInstallIsInvisibleAndConcurrentRepairPreservesBothComponents]' passed (0.281 seconds).
-Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testPhotographicFixturesAndInstalledComponents]' passed (5.492 seconds).
-Test Suite 'DevelopmentSemanticMaskTests' passed at 2026-11-22 16:50:44.085.
+Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testInterruptedInstallIsInvisibleAndConcurrentRepairPreservesBothComponents]' passed (0.289 seconds).
+Test Case '-[RAWMasterImagingTests.DevelopmentSemanticMaskTests testPhotographicFixturesAndInstalledComponents]' passed (6.639 seconds).
 MASK_FIXTURE sky 1536 1025 0.1793114837398374
 MASK_FIXTURE water 1536 1025 0.4634343241869919
 MASK_FIXTURE oriented-raw 4000 6000 1024 1536
@@ -31,5 +29,5 @@ MASK_FIXTURE instance 2 1024 1536 255
 MASK_FIXTURE object 1 1024 1536 210
 MASK_FIXTURE object 2 1024 1536 223
 
-17 tests passed; 0 failed; 0 skipped.
-Editor executable: otool -L and otool -l show no libonnxruntime dependency or Vendor/ONNXRuntime rpath.
+19 tests passed, 0 failed, 0 skipped.
+Release integration and performance qualification is tracked separately in 031.
