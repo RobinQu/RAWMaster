@@ -1,0 +1,116 @@
+{
+  "date": "2026-11-22",
+  "hardware": "Apple M4 Max, 128 GiB",
+  "os": "macOS 27.0.1",
+  "scenario": "single-image model transport and restart recovery, reviewed scope samples",
+  "runs": [
+    {
+      "model": "black-forest-labs/flux-3-image-klein",
+      "scope": "whole",
+      "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+      "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+      "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+      "mlxVersion": "0.32.4",
+      "modelPreset": "q8-16",
+      "steps": 16,
+      "seed": 8521,
+      "crop": null,
+      "inputSHA256": "60d1171bebc89e6170873b6815e9b510f3a304578a6dfb54a1596f49e6d7c3cc",
+      "promptSHA256": "c89e45b771cada158d8ffe2b47b412403a320a84d7da27bb2984749791b1eccd",
+      "outputSHA256": "86fd47aba2153420729cc3b9bc5db40a627fa5da5eb5b419bf06a933fde60ec6",
+      "output": [
+        1024,
+        1024
+      ],
+      "swiftSeconds": 164.004,
+      "pipelineSeconds": 159.786,
+      "peakMLXBytes": 8698124108,
+      "independentCLISeconds": 158.249,
+      "sameSHAAsCLI": true,
+      "reconciled": true
+    },
+    {
+      "model": "black-forest-labs/flux-3-image-klein",
+      "scope": "region",
+      "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+      "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+      "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+      "mlxVersion": "0.32.4",
+      "modelPreset": "q8-16",
+      "steps": 16,
+      "seed": 8521,
+      "crop": [
+        480,
+        496,
+        992,
+        1008
+      ],
+      "inputSHA256": "28fdcf1e15261014a0126f672b28ca58e59880cac67636e8e3bb64ad0fac0b58",
+      "promptSHA256": "c16117c706680219d921a7d11daf0cc21769aea779039c2102a5239886a96b36",
+      "outputSHA256": "5b055eea756a4a58587e53b6d62d3d60e9b407779b28143b6b242e305ef74af0",
+      "output": [
+        1024,
+        1024
+      ],
+      "swiftSeconds": 152.652,
+      "pipelineSeconds": 152.198,
+      "peakMLXBytes": 8545654604,
+      "independentCLISeconds": 148.233,
+      "sameSHAAsCLI": true,
+      "reconciled": true
+    },
+    {
+      "model": "doubao-seedream-5-5-261028",
+      "scope": "whole",
+      "crop": null,
+      "inputSHA256": "09fc2049a0c52f366a3fa38cc6cf6e2494cdd934147fe3994192965d78d03bf5",
+      "promptSHA256": "dfc3d4befb88c65444e8f673c02a3191b28e8165148d8edd15d4c8533045e50f",
+      "outputSHA256": "ff921bfb197dccf481e5e6ac06af3bb68f9826770f4702693d2290f54d59e09d",
+      "output": [
+        1024,
+        1024
+      ],
+      "swiftSeconds": 9.931,
+      "independentHTTPSeconds": 12.895,
+      "httpPOSTs": 1,
+      "usage": {
+        "generated_images": 1,
+        "input_images": 1,
+        "output_tokens": 4096,
+        "total_tokens": 4096
+      },
+      "requestedVisibleWatermark": false,
+      "fee": "unknown",
+      "reconciled": true
+    },
+    {
+      "model": "doubao-seedream-5-5-261028",
+      "scope": "region",
+      "crop": [
+        112,
+        0,
+        624,
+        512
+      ],
+      "inputSHA256": "a3a1e654bf5ac58bde5ab8a86727adb30a1451689eaaeccce59bffa2822dfb82",
+      "promptSHA256": "a84e02d9ae8f3a440919efeb15f7bd12315e74cefad0e7cf3db4dca165d7c67c",
+      "outputSHA256": "818b452a670055b4dd029ce5d93011b1e867853166a7c39daadbfd95f6cf4c0c",
+      "output": [
+        1024,
+        1024
+      ],
+      "swiftSeconds": 9.37,
+      "independentHTTPSeconds": 11.534,
+      "httpPOSTs": 1,
+      "usage": {
+        "generated_images": 1,
+        "input_images": 1,
+        "output_tokens": 4096,
+        "total_tokens": 4096
+      },
+      "requestedVisibleWatermark": false,
+      "fee": "unknown",
+      "reconciled": true
+    }
+  ]
+}
