@@ -9,8 +9,8 @@
 | 证据 | 定位方式 |
 | --- | --- |
 | 公开编辑器与资料库入口 | 下文函数名对应这一版 `index-zP4kU_H7.js`，SHA-256 为 `0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e`。首页 SHA-256 为 `df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b`。[发布脚本](https://lightflow.dev/assets/index-zP4kU_H7.js) |
-| REA 静态分析 | 对持久化 Worker、SQLite／目录迁移／ML 的 WASM 绑定及 CPU Worker 做定向静态分析，并从 UI 处理函数人工追踪到这些模块。下载目录快照 SHA-256 为 `839cc57f015d24c2826aa835bfa5cf038feb78c911e0825e9d6341386367ed97`。[下载清单](../../output/library-033-research/lightflow/download-manifest.json) · [静态分析回执](../../output/library-033-research/lightflow/rea-final-receipt.json) |
-| 浏览器实测 | REA 在全新 Chromium 157.0.8103.78 配置中打开回环镜像。夹具向原版 Library 派发文件拖放、向搜索框输入文字，读取网格计数与目录 ID。网站请求限于本地镜像。两张合成 JPEG 只用于验证竞品行为。[夹具](../../output/library-033-research/lightflow/browser-fixture.html) · [观测记录](../../output/library-033-research/lightflow/browser-observations.json) · [运行回执](../../output/library-033-research/lightflow/browser-rea.json) |
+| REA 静态分析 | 对持久化 Worker、SQLite／目录迁移／ML 的 WASM 绑定及 CPU Worker 做定向静态分析，并从 UI 处理函数人工追踪到这些模块。下载目录快照 SHA-256 为 `839cc57f015d24c2826aa835bfa5cf038feb78c911e0825e9d6341386367ed97`。原始回执为 `rea-final-receipt.json`。[下载清单](evidence/lightflow-download-manifest.json) |
+| 浏览器实测 | REA 在全新 Chromium 157.0.8103.78 配置中打开回环镜像。夹具向原版 Library 派发文件拖放、向搜索框输入文字，读取网格计数与目录 ID。网站请求限于本地镜像。两张合成 JPEG 只用于验证竞品行为。原始夹具和回执为 `browser-fixture.html` 与 `browser-rea.json`。[观测记录](evidence/lightflow-browser-observations.json) |
 
 ## 从建库到重新打开
 
