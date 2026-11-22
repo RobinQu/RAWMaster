@@ -8,6 +8,10 @@
 
 蒙版开发版的 RAW 分析取 CIRAWFilter 已定向的中性 sRGB 图，长边 1,536 像素。合入采用 FlashRaw 的引擎时，要用相同原件对照方向、有效区域和裁切，逐张记录分析前缀和重复解码次数。只有缓存身份与像素空间一致才可复用引擎的分析图。既有蒙版回放直接读取冻结结果。[编辑器功能证据](../027-mask-ai-raw-integration/editor-validation.md)
 
+2026-11-22 17:03，基础编辑会话仍在复核显示和尾延迟，报告记录为 `measured-with-open-parity-gaps`，对齐状态为 `not-qualified`。截至此次核对，基础会话报告 RAWMaster 已实测 157 项、Camera Raw 已验证 100 项。集成待接收已对齐范围的稳定修订。主工作区的动态证据位于 `docs/research/camera-raw-parity/performance-data.json`。
+
+本次只读交接检查发现，功能增量所改的既有文件中有 9 个也被基础编辑会话修改，包括 Package.swift、EditingController、DevelopmentAdjustmentCommands、DevelopmentMaskEngineV3、DevelopmentPreviewService、DevelopmentRendererV3、PreviewInteractiveProxyV3、EditingDevelopmentSessionTests 及 build-app.sh。功能新增文件当时没有重名。接到目标快照后重新计算交集，在对应方法上分别合并模型包、源绑定、预览与资源复制逻辑，随后运行双方回归。[开发版本与功能证据](feature-validation.md)
+
 ## 接收、对照与记录
 
 | 步骤 | 操作与证据 | 判定 |

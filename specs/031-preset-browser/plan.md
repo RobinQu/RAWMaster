@@ -1,6 +1,6 @@
 # 031 · 预设实施方案
 
-2026-11-22 · 拟实施 · Swift 6、macOS 15+、SwiftUI/AppKit、Core Image/Metal · [产品目标](spec.md) · [执行任务](tasks.md)
+2026-11-22 · 设计基线，独立实现及覆盖见[开发交付记录](feature-validation.md) · Swift 6、macOS 15+、SwiftUI/AppKit、Core Image/Metal · [产品目标](spec.md) · [执行任务](tasks.md)
 
 ## 按当前工作树修正设计
 
@@ -12,7 +12,7 @@
 | 已有程序焦平面、ImageIO 设备深度/视差、主体焦点、五种散景、猫眼/高光增强和修正笔划 | 13 项 Lens Blur 的第一步是辨认真实输入、对应字段和核。没有设备深度的普通 RAW 另验本地单目深度，Swirl 单独立项。术语相同还需要端点、散景轮廓、遮挡和成片对照。[配方](../../Sources/RAWMasterCore/DevelopmentLensBlurV3.swift) · [渲染器](../../Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift) · [主体焦点](../../Sources/RAWMasterImaging/DevelopmentLensBlurSubjectFocusV1.swift) |
 | 支持域内的 RAW 交互代理取 FlashRaw F16，经 Metal 与既有调整渲染。全尺寸预览有独立 FlashRaw 配置，普通配方导出仍有 CIRAWFilter 路径，归档作品还有直接导出路径 | 按实际 decoder、有效源区域、坐标、色彩和管线版本登记能力。代理、全尺寸重新显影与既有归档分别回归。全质量不支持的资源保留诊断，杜绝把临时预览写成成片。[030 源码复核](../030-ai-retouching/source-review.md) · [V3 渲染器](../../Sources/RAWMasterImaging/DevelopmentRendererV3.swift) |
 
-以上是本机工作树 2026-11-22 的代码事实，包含进行中的改动。Camera Raw 对照表用来定位已有入口。每项 Adobe 字段的数值和像素承诺以本规格的金样登记为准。[现有能力矩阵](../../docs/research/camera-raw-parity/feature-matrix.json)
+以上是本机工作树 2026-11-22 的代码事实，包含进行中的改动。Camera Raw 对照表用来定位已有入口。每项 Adobe 字段的数值和像素承诺以本规格的金样登记为准。基础编辑会话维护的实时矩阵位于主工作区 `docs/research/camera-raw-parity/feature-matrix.json`。接入时按已交付的修订核对。[集成验收单](integration-validation.md)
 
 V3 的相关渲染顺序为 Global、Glow、Photo Filter、Lens Blur，随后经过细节/去雾、调整蒙版、有序局部修复与几何等阶段。把原生滤镜放在现有 Photo Filter 节点，把语义局部值写入调整蒙版，保留修复的顺序。RAW Profile 要求更早的基底数据，需要专门的前端接入点。[当前阶段顺序](../../Sources/RAWMasterImaging/DevelopmentRendererV3.swift)
 

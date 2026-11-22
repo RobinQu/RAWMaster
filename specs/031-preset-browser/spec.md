@@ -1,6 +1,6 @@
 # 031 · 滤镜与可复用预设
 
-2026-11-22 · 产品规格草案 · macOS 编辑工作区 · 承接 028 的 M2/M3
+2026-11-22 · macOS 编辑工作区 · 承接 028 的 M2/M3。独立开发版的用户功能和限制见[本地交付](feature-validation.md)，与目标引擎的发布条件见[集成验收单](integration-validation.md)。
 
 摄影师能在左栏找到常用风格，在主图试看，只把选中的调整应用到照片，再把自己的做法保存给下一张。第一批即可使用原片、九个现有滤镜和用户自己创建的预设。迁入 Lightroom 资源后，每个条目说明它在当前照片上能做什么、还缺什么，以及采用后哪些控制仍可调整。[既有滤镜与性能契约](../028-filter-experience/spec.md) · [目录与 XMP 调研](../../docs/research/lightroom-preset-browser-plan.md)
 

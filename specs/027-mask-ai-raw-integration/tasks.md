@@ -11,7 +11,7 @@
 - [x] T07 形成 RAWMaster 集成架构、资源约束和分阶段方案。
 - [x] T08 取得并验证原生人像、明暗雪景与无雪负例四张 RAW，补齐 People 正向和 Snow 负／正样本，修复竖拍方向与原尺寸裁切。阴影雪地漏选，雪类别仍留实验。[逐项证据](portrait-snow-validation.md)
 - [ ] T09 在独立开发版本接入编辑器与快照，Camera Raw 基础编辑对齐后合入目标版本。联合验收依赖、功能与生产读数分别记录在[集成验收单](../031-preset-browser/integration-validation.md)。
-- [ ] T10 验证主工程局部调整、完整导出、历史、取消、同步和释放后内存。
+- [ ] T10 独立开发版已覆盖局部成像、TIFF16、历史、取消、精确缓存与换片隔离；在交付的引擎上补测同步、原尺寸资源峰值和释放后内存并签收。[编辑器实测](editor-validation.md) · [联合验收](../031-preset-browser/integration-validation.md)
 - [x] T11 实现语义描述、不可变快照、异步协调、原生取消、取消回滚和资源释放。
 - [x] T12 完成真实 RAW 性能门槛、快照冷热隔离与内存验收。
 - [x] T13 同时启用全部模型／RAW／服务／性能测试，27 项通过、0 失败；详见 `service-validation.md`。

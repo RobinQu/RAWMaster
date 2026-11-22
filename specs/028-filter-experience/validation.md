@@ -1,5 +1,7 @@
 # 028 · 生产验证记录
 
+2026-11-22 更新。031 的独立开发版已将左栏风格入口接入元数据目录，并保留经典滤镜。以下数值对应 028 历史构建；后续联合窗口验证沿用相同绘制边界。[031 交付](../031-preset-browser/feature-validation.md) · [对齐后验收](../031-preset-browser/integration-validation.md)
+
 ## 结论状态
 
 固定九滤镜 + 原片的交互代理、独立缩略图、内容键、last-known-good、有界恢复、hover、收藏和键盘导航已经实施。真实 RAW 的十组 canonical settled、全尺寸 PNG16 导出、暖十候选吞吐、滤镜相关 Debug/Release 回归均通过。
