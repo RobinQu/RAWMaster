@@ -1,5 +1,7 @@
 # 027 · 编辑器蒙版功能实测
 
+Camera Raw 交付后的 GPU 分析、自然开关、全尺寸 TIFF 和窗口复测见[联合验收记录](../031-preset-browser/integration-validation.md)。以下为独立版本的历史基线。
+
 2026-11-22，在独立开发版本的编辑器、配方和离线 TIFF 输出路径验证。运行环境为 Apple Silicon、macOS 27.0.1、Swift 6.4。五组定向回归共 19 项。与 Camera Raw 基础编辑的联合验收执行前，还需在双方对齐的目标版本上测首屏、交互与高分辨率导出的耗时、峰值和退出后的内存。[功能测试记录](evidence/editor-functional.log) · [联合验收单](../031-preset-browser/integration-validation.md)
 
 ## 摄影师可完成的操作

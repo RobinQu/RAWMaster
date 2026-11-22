@@ -1,0 +1,24 @@
+{
+  "sourceRevision": "a712912d23860efed05cf0e6622907be8a5e5bba",
+  "bundleID": "io.robinqu.RAWMaster",
+  "version": "0.1.0",
+  "architecture": "arm64",
+  "executableSHA256": "800ec479cbafd146ed3600c24399cd252cdfa8dba75185798177c4259d315e7a",
+  "flashRawSHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+  "verifiedMigrationRules": 53,
+  "migrationResourceSHA256": "f1205bafa1e2bcaa6923d33612d4d0ccdeb83e240e4394ccdc1c120f250257b4",
+  "imagingResourceSets": [
+    "PhotoFilters",
+    "PhotoDenoise",
+    "PhotoSuperResolution"
+  ],
+  "optionalModelSHA256": {
+    "Models/efficientvit-seg-b2-ade20k/model.onnx": "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d",
+    "Models/slimsam/prompt_encoder_mask_decoder_quantized.onnx": "cb90b279f549d2cab7fd6e20c38522438c65d84bdcca3d2a764cff7d857fdce2",
+    "Models/slimsam/vision_encoder_quantized.onnx": "cce23c7b2e5d4f330932738fb67ba518e04b0d99ccdd1cccd22a7da4e01f2971",
+    "ONNXRuntime/lib/libonnxruntime.1.27.0.dylib": "49422a138fff12d7fcbd544373aefbffd510e473e08e18af28a8ecc3581029bf"
+  },
+  "startup": "NSWorkspace launched signed delivered bundle with isolated SQLite library; integrity_check ok",
+  "signing": "local ad hoc; codesign --verify --strict",
+  "onnxRuntimeHardLinked": false
+}

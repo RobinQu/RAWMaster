@@ -1,0 +1,57 @@
+{
+  "61MP": {
+    "file": "acr-benchmark.ARW",
+    "size": 69488640,
+    "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+  },
+  "portrait": {
+    "file": "person.ARW",
+    "size": 24890112,
+    "sha256": "0a0775e6f803329341b954fd4d0ed08d6cc71b3b226c34d0218865761e31f0d8"
+  },
+  "snow": {
+    "file": "snow.ARW",
+    "size": 25001984,
+    "sha256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2"
+  },
+  "skyWaterPositive": {
+    "file": "mountain-lake.jpg",
+    "size": 488528,
+    "sha256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442"
+  },
+  "waterNegative": {
+    "file": "no-water-6000079.jpg",
+    "size": 18083,
+    "sha256": "08acde855667c2e8c8b9e81e67c02e3c6d810f3c69cceaf9a9065b658481416a"
+  },
+  "FlashRaw": {
+    "file": "libflashraw_capi.dylib",
+    "size": 15621192,
+    "sha256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "reference": {
+    "file": "same-size-runtime.json",
+    "size": 676,
+    "sha256": "dc8d7ef3fb55ae6f32500c1d8ed9ce6a2236e17769f45366dcf5a0285a343d16"
+  },
+  "Models/efficientvit-seg-b2-ade20k/model.onnx": {
+    "file": "model.onnx",
+    "size": 61372077,
+    "sha256": "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+  },
+  "Models/slimsam/prompt_encoder_mask_decoder_quantized.onnx": {
+    "file": "prompt_encoder_mask_decoder_quantized.onnx",
+    "size": 4903810,
+    "sha256": "cb90b279f549d2cab7fd6e20c38522438c65d84bdcca3d2a764cff7d857fdce2"
+  },
+  "Models/slimsam/vision_encoder_quantized.onnx": {
+    "file": "vision_encoder_quantized.onnx",
+    "size": 8882165,
+    "sha256": "cce23c7b2e5d4f330932738fb67ba518e04b0d99ccdd1cccd22a7da4e01f2971"
+  },
+  "ONNXRuntime/lib/libonnxruntime.1.27.0.dylib": {
+    "file": "libonnxruntime.1.27.0.dylib",
+    "size": 29651448,
+    "sha256": "49422a138fff12d7fcbd544373aefbffd510e473e08e18af28a8ecc3581029bf"
+  }
+}

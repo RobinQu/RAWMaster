@@ -2,7 +2,7 @@
 
 ## 状态与目的
 
-- 独立服务及真实 RAW 验证已有可重算结果，当前开发版本接入产品编辑入口。与 Camera Raw 基础编辑的联合签收按[集成验收单](../031-preset-browser/integration-validation.md)执行。[首轮验证](validation.md) · [人像与雪景追加验证](portrait-snow-validation.md)
+- 产品编辑器已经接入 Camera Raw 基础编辑交付。真实 RAW 方向、候选速度、旧作品逐像素兼容和新编辑器导出按同一构建记录。[联合验收](../031-preset-browser/integration-validation.md) · [首轮验证](validation.md) · [人像与雪景追加验证](portrait-snow-validation.md)
 - 前置证据：026 独立模块的原生 ONNX 推理、公开图像测试与有限摄影质量检查。
 - 目的：定义 Mask AI 与现有配方、编辑控制器、预览、持久化和导出的集成边界，并验证真实 RAW 输入上的蒙版及实际局部像素效果。
 
@@ -10,7 +10,7 @@
 
 1. **推理与渲染解耦**：模型只在新建、同步或显式刷新时运行；渲染、历史和导出读取已确认快照。
 2. **稳定分析输入**：AI 使用定向、固定中性显影、显示参考 sRGB 的源图，不读取已包含当前 Mask 的输出。
-3. **不重复 RAW 解码**：集成时应复用当前照片允许复用的中性源／分析代理；若代理语义不满足，则使用独立、可缓存的 CIRAWFilter 分析输入，不在每个 prompt 重新显影。
+3. **分析代理跟随作品的解码器。** 新 RAW 作品用固定的 FlashRaw 0.3.1 线性 sRGB 输入做方向校验、缩放和颜色转换。历史 RAW 配方沿用 CIRAWFilter。当前源、解码器或坐标变化时失效，同一输入的后续请求复用分析图。[实现](../../Sources/RAWMasterImaging/DevelopmentSemanticMaskService.swift)
 4. **向后兼容**：旧 `subjectPNG` 配方继续可读；新字段采用缺省解码，不改变旧像素结果。
 5. **有界资源**：模型、session、embedding、场景概率、快照和后台任务均有明确预算与淘汰规则。
 

@@ -1,6 +1,6 @@
 # 031 · 本地开发版本交付
 
-2026-11-22 · 对应左侧「照片工具 → 预设」和右侧「调整 → 蒙版」。本页记录用户可执行的功能与其适用范围。后续在 Camera Raw 基础编辑交付的目标版本上执行[联合验收](integration-validation.md)。
+本页保留独立功能版本的历史实测。基于 Camera Raw 提交 `e2b9c68a` 的集成候选位于 `output/preset-mask-integrated/RAWMaster.app`。打开照片编辑器，在左栏「滤镜」选择「预设目录」即可试用，随时可切回经典滤镜。[集成验收记录](integration-validation.md)
 
 ## 独立版本与复测
 

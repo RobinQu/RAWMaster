@@ -1,0 +1,210 @@
+{
+  "paired": {
+    "preset": {
+      "all": {
+        "inputToDraw": {
+          "count": 30,
+          "medianMs": 27.724396,
+          "p95Ms": 59.39825
+        },
+        "synchronousCommand": {
+          "count": 30,
+          "medianMs": 0.6201045000000001,
+          "p95Ms": 0.793
+        }
+      },
+      "firstInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 53.488,
+          "p95Ms": 61.047416
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.576958,
+          "p95Ms": 0.704291
+        }
+      },
+      "secondInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 8.31875,
+          "p95Ms": 12.59225
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.6575,
+          "p95Ms": 0.797958
+        }
+      },
+      "p95Draw": {
+        "pair": 6,
+        "frameID": "DDAA1451-76FD-455F-8E31-1272B04415C2",
+        "commandMs": 0.576958,
+        "commitToDrawBeganMs": 58.784584,
+        "drawingMs": 0.036708
+      },
+      "requests": {
+        "submitted": 30,
+        "renders": 15,
+        "bitmapHits": 15,
+        "fallbacks": 0
+      }
+    },
+    "manual": {
+      "all": {
+        "inputToDraw": {
+          "count": 30,
+          "medianMs": 37.1995835,
+          "p95Ms": 61.858334
+        },
+        "synchronousCommand": {
+          "count": 30,
+          "medianMs": 0.39849999999999997,
+          "p95Ms": 0.461625
+        }
+      },
+      "firstInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 52.133083,
+          "p95Ms": 63.637792
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.398708,
+          "p95Ms": 0.513208
+        }
+      },
+      "secondInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 10.941833,
+          "p95Ms": 28.577917
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.398292,
+          "p95Ms": 0.461625
+        }
+      },
+      "p95Draw": {
+        "pair": 3,
+        "frameID": "82746B23-F72B-4977-9F54-FE17680C7153",
+        "commandMs": 0.458292,
+        "commitToDrawBeganMs": 61.362708,
+        "drawingMs": 0.037334
+      },
+      "requests": {
+        "submitted": 30,
+        "renders": 15,
+        "bitmapHits": 15,
+        "fallbacks": 0
+      }
+    }
+  },
+  "confirm-paired": {
+    "preset": {
+      "all": {
+        "inputToDraw": {
+          "count": 30,
+          "medianMs": 28.4699585,
+          "p95Ms": 58.016959
+        },
+        "synchronousCommand": {
+          "count": 30,
+          "medianMs": 0.596604,
+          "p95Ms": 0.6975
+        }
+      },
+      "firstInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 51.096458,
+          "p95Ms": 58.893917
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.575792,
+          "p95Ms": 0.6975
+        }
+      },
+      "secondInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 7.208166,
+          "p95Ms": 13.600167
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.597541,
+          "p95Ms": 0.711791
+        }
+      },
+      "p95Draw": {
+        "pair": 26,
+        "frameID": "4FFCF409-8F5F-4125-B16D-CC54B1DF2BF8",
+        "commandMs": 0.575792,
+        "commitToDrawBeganMs": 57.389,
+        "drawingMs": 0.052167
+      },
+      "requests": {
+        "submitted": 30,
+        "renders": 15,
+        "bitmapHits": 15,
+        "fallbacks": 0
+      }
+    },
+    "manual": {
+      "all": {
+        "inputToDraw": {
+          "count": 30,
+          "medianMs": 29.3185005,
+          "p95Ms": 55.517125
+        },
+        "synchronousCommand": {
+          "count": 30,
+          "medianMs": 0.3965835,
+          "p95Ms": 0.519709
+        }
+      },
+      "firstInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 48.89825,
+          "p95Ms": 58.320875
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.394625,
+          "p95Ms": 0.519709
+        }
+      },
+      "secondInPair": {
+        "inputToDraw": {
+          "count": 15,
+          "medianMs": 8.380917,
+          "p95Ms": 14.678042
+        },
+        "synchronousCommand": {
+          "count": 15,
+          "medianMs": 0.400708,
+          "p95Ms": 0.593375
+        }
+      },
+      "p95Draw": {
+        "pair": 9,
+        "frameID": "7DC4A7E7-9853-4A8A-9476-180606A1FC02",
+        "commandMs": 0.373917,
+        "commitToDrawBeganMs": 55.102083,
+        "drawingMs": 0.041125
+      },
+      "requests": {
+        "submitted": 30,
+        "renders": 15,
+        "bitmapHits": 15,
+        "fallbacks": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,3 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-22 19:55:57.055 E  xctest[63269:c0da61] [com.apple.coreimage:render] Failed to render 1 pixels
+2026-11-22 19:55:57.055 E  xctest[63269:c0da61] [com.apple.coreimage:api] -[CIContext(CIRenderDestination) _startTaskToRender:toDestination:forPrepareRender:forClear:error:] Failed to render part of the image because memory requirement of 980254720 too big (tile 1x1)

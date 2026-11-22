@@ -1,0 +1,1050 @@
+{
+  "allInteractive" : {
+    "count" : 22,
+    "maxMs" : 95.546374999999998,
+    "medianMs" : 11.283416500000001,
+    "p95Ms" : 27.983499999999999,
+    "samplesMs" : [
+      95.546374999999998,
+      9.5068330000000003,
+      15.169625,
+      10.992959000000001,
+      10.173583000000001,
+      10.233333999999999,
+      10.318415999999999,
+      10.007167000000001,
+      17.560167,
+      9.3352079999999997,
+      11.781791999999999,
+      9.4085420000000006,
+      13.867832999999999,
+      8.2010419999999993,
+      11.314875000000001,
+      11.070957999999999,
+      27.983499999999999,
+      11.251958,
+      11.360167000000001,
+      16.054957999999999,
+      13.582834,
+      11.493459
+    ]
+  },
+  "build" : "release",
+  "classicThresholdsMs" : {
+    "warmP50Max" : 20,
+    "warmP95Max" : 33
+  },
+  "clock" : "DispatchTime.uptimeNanoseconds, frame-correlated drawReturnedUptimeNanoseconds",
+  "coldInteractiveFirstPerCase" : {
+    "count" : 3,
+    "maxMs" : 95.546374999999998,
+    "medianMs" : 27.983499999999999,
+    "p95Ms" : 95.546374999999998,
+    "samplesMs" : [
+      95.546374999999998,
+      17.560167,
+      27.983499999999999
+    ]
+  },
+  "composition" : "AppModel.editing \/ ImageEngines.editing",
+  "engine" : "RAWMasterImaging.DevelopmentPreviewService",
+  "engineAfterInitialSettled" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 481738752,
+    "canonicalTextureFills" : 1,
+    "canonicalTextureHits" : 0,
+    "completed" : 1,
+    "decodeOperations" : [
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+      "output 7 · backend 3 · bilinear · 全图" : 1,
+      "output 7 · backend 3 · bilinear · 区域" : 1
+    },
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 1,
+    "superseded" : 0
+  },
+  "engineAfterInteraction" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 497098752,
+    "canonicalTextureFills" : 2,
+    "canonicalTextureHits" : 5,
+    "completed" : 23,
+    "decodeOperations" : [
+      {
+        "count" : 2,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+      "output 7 · backend 3 · bilinear · 全图" : 2,
+      "output 7 · backend 3 · bilinear · 区域" : 1
+    },
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 23,
+    "superseded" : 0
+  },
+  "engineAfterReleaseAndExport" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 0,
+    "canonicalTextureFills" : 2,
+    "canonicalTextureHits" : 5,
+    "completed" : 23,
+    "decodeOperations" : [
+      {
+        "count" : 2,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+      "output 7 · backend 3 · bilinear · 全图" : 2,
+      "output 7 · backend 3 · bilinear · 区域" : 1
+    },
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 23,
+    "superseded" : 0
+  },
+  "engineBeforeApp" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 0,
+    "canonicalTextureFills" : 0,
+    "canonicalTextureHits" : 0,
+    "completed" : 0,
+    "decodeOperations" : [
+
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+
+    },
+    "flashRawLatestDecodeBackend" : "",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 0,
+    "sourceHashPasses" : 0,
+    "submitted" : 0,
+    "superseded" : 0
+  },
+  "filterCompound" : {
+    "draws" : [
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711625990458,
+        "drawReturnedNS" : 519711625996833,
+        "frameID" : "CAC58E51-673C-4472-ABE9-3A3FE014FC0B",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711598013333,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 19,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711644220583,
+        "drawReturnedNS" : 519711644228541,
+        "frameID" : "D27C59E8-8E38-4C92-9472-BFEB614CA3B5",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711632976583,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 20,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711658492000,
+        "drawReturnedNS" : 519711658498958,
+        "frameID" : "1AB3303E-2B94-4E0D-8F08-07BE4E6C958E",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711647138791,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 21,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711680533250,
+        "drawReturnedNS" : 519711680543291,
+        "frameID" : "C440941B-11A1-4D1E-83CC-3F6A58221165",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711664488333,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 22,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711700545416,
+        "drawReturnedNS" : 519711700553875,
+        "frameID" : "231BE7EE-8D92-4303-BB48-670160DF542C",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711686971041,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 23,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711718288750,
+        "drawReturnedNS" : 519711718298875,
+        "frameID" : "B37ADA4A-9CCD-40CC-B6FF-8614883A4D56",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711706805416,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 24,
+        "width" : 2400
+      }
+    ],
+    "engineAfterFirstSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 497098752,
+      "canonicalTextureFills" : 2,
+      "canonicalTextureHits" : 0,
+      "completed" : 18,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 18,
+      "superseded" : 0
+    },
+    "engineAfterLastSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 497098752,
+      "canonicalTextureFills" : 2,
+      "canonicalTextureHits" : 5,
+      "completed" : 23,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 23,
+      "superseded" : 0
+    },
+    "engineBefore" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 17,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 17,
+      "superseded" : 0
+    },
+    "interactive" : {
+      "count" : 6,
+      "maxMs" : 27.983499999999999,
+      "medianMs" : 12.5381465,
+      "p95Ms" : 27.983499999999999,
+      "samplesMs" : [
+        27.983499999999999,
+        11.251958,
+        11.360167000000001,
+        16.054957999999999,
+        13.582834,
+        11.493459
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterIntensity" : {
+    "draws" : [
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711474059833,
+        "drawReturnedNS" : 519711474069500,
+        "frameID" : "CCDC1EE9-D963-40C8-AD62-FDE7FE3CBAD0",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711456509333,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 11,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711490797708,
+        "drawReturnedNS" : 519711490806541,
+        "frameID" : "9FA37229-5ED6-4C09-A78D-C46AC6245D4B",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711481471333,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 12,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711508923958,
+        "drawReturnedNS" : 519711508931583,
+        "frameID" : "D00325BA-27BB-4DF6-8F87-95777EEFA657",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711497149791,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 13,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711524597458,
+        "drawReturnedNS" : 519711524602875,
+        "frameID" : "9C67BED7-3296-4282-9B05-8A2176527921",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711515194333,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 14,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711541681125,
+        "drawReturnedNS" : 519711541690541,
+        "frameID" : "D7589E81-AEDC-41E7-820F-C00925FC6216",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711527822708,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 15,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711556115708,
+        "drawReturnedNS" : 519711556123833,
+        "frameID" : "49906ADC-37ED-4039-835A-4449F8CC5F7A",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711547922791,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 16,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711573711208,
+        "drawReturnedNS" : 519711573719583,
+        "frameID" : "1EB07ACF-704A-4944-AE09-9A953879E744",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711562404708,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 17,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711590851000,
+        "drawReturnedNS" : 519711590859583,
+        "frameID" : "5D3C61BE-C244-43ED-8CC8-309F9964FCAE",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711579788625,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 18,
+        "width" : 2400
+      }
+    ],
+    "engineAfterFirstSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 10,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 10,
+      "superseded" : 0
+    },
+    "engineAfterLastSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 17,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 17,
+      "superseded" : 0
+    },
+    "engineBefore" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 9,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 9,
+      "superseded" : 0
+    },
+    "interactive" : {
+      "count" : 8,
+      "maxMs" : 17.560167,
+      "medianMs" : 11.192916499999999,
+      "p95Ms" : 17.560167,
+      "samplesMs" : [
+        17.560167,
+        9.3352079999999997,
+        11.781791999999999,
+        9.4085420000000006,
+        13.867832999999999,
+        8.2010419999999993,
+        11.314875000000001,
+        11.070957999999999
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterLook" : {
+    "draws" : [
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711333406833,
+        "drawReturnedNS" : 519711333414625,
+        "frameID" : "BC4AFDEC-68C5-474D-AE3D-F1A3C8A385BF",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711237868250,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 3,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711348045666,
+        "drawReturnedNS" : 519711348053958,
+        "frameID" : "F17958ED-A7E9-49EA-A3B7-DB6EABD1E343",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711338547125,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 4,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711366341791,
+        "drawReturnedNS" : 519711366349875,
+        "frameID" : "19BF0026-BC92-4BEA-88C8-5CD0347081B4",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711351180250,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 5,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711383276166,
+        "drawReturnedNS" : 519711383285375,
+        "frameID" : "BC0D1EDC-7962-4DBA-8391-16048F80B58B",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711372292416,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 6,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711399919458,
+        "drawReturnedNS" : 519711399928291,
+        "frameID" : "DA802F00-62F2-4C07-973A-8C10AEAD8104",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711389754708,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 7,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711416376416,
+        "drawReturnedNS" : 519711416386875,
+        "frameID" : "0B9C8BAA-CBBE-43FF-851A-63CCC8DD29B5",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711406153541,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 8,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711433129791,
+        "drawReturnedNS" : 519711433137791,
+        "frameID" : "DEB538FA-AD80-4E90-9AD1-283417881E59",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711422819375,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 9,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+        "drawBeganNS" : 519711449133166,
+        "drawReturnedNS" : 519711449140875,
+        "frameID" : "6C2171CD-D7AA-4AD9-BF24-7E33587326B1",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 519711439133708,
+        "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 10,
+        "width" : 2400
+      }
+    ],
+    "engineAfterFirstSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 2,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 2,
+      "superseded" : 0
+    },
+    "engineAfterLastSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 9,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 9,
+      "superseded" : 0
+    },
+    "engineBefore" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 1,
+      "decodeOperations" : [
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 1,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 1,
+      "superseded" : 0
+    },
+    "interactive" : {
+      "count" : 8,
+      "maxMs" : 95.546374999999998,
+      "medianMs" : 10.275874999999999,
+      "p95Ms" : 95.546374999999998,
+      "samplesMs" : [
+        95.546374999999998,
+        9.5068330000000003,
+        15.169625,
+        10.992959000000001,
+        10.173583000000001,
+        10.233333999999999,
+        10.318415999999999,
+        10.007167000000001
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterOnly" : true,
+  "gates" : {
+    "classic.19WarmHistoricalSamples" : true,
+    "classic.filterCompound.noWarmFlashRawDecode" : true,
+    "classic.filterCompound.stable.fallbacks" : true,
+    "classic.filterCompound.stable.sourceCaptures" : true,
+    "classic.filterCompound.stable.sourceHashPasses" : true,
+    "classic.filterIntensity.noWarmFlashRawDecode" : true,
+    "classic.filterIntensity.stable.fallbacks" : true,
+    "classic.filterIntensity.stable.sourceCaptures" : true,
+    "classic.filterIntensity.stable.sourceHashPasses" : true,
+    "classic.filterLook.noWarmFlashRawDecode" : true,
+    "classic.filterLook.stable.fallbacks" : true,
+    "classic.filterLook.stable.sourceCaptures" : true,
+    "classic.filterLook.stable.sourceHashPasses" : true,
+    "classic.warmP50AtMost20ms" : true,
+    "classic.warmP95AtMost33ms" : true,
+    "source.preserved" : true
+  },
+  "initialFrame" : {
+    "approximate" : false,
+    "consumerID" : "41D8FB0A-9067-4E9F-9708-ED6EF6F5266D",
+    "drawBeganNS" : 519711215275333,
+    "drawReturnedNS" : 519711215352666,
+    "frameID" : "EC3F8A8B-5097-4555-B32F-2864F5BE3426",
+    "generation" : 1,
+    "height" : 1600,
+    "inputNS" : 519711215275333,
+    "leaseID" : "F33EB473-47C5-4D5F-AA3E-F4F3D4B93EEC",
+    "quality" : "settled",
+    "renderedHeight" : 1600,
+    "renderedWidth" : 2400,
+    "revision" : 2,
+    "width" : 2400
+  },
+  "lightflowReference" : {
+    "canvas" : [
+      2400,
+      1600
+    ],
+    "measurements" : [
+      {
+        "frameMs" : 6.0350000000000001,
+        "operation" : "exposure-0.25-first"
+      },
+      {
+        "frameMs" : 15.545,
+        "operation" : "exposure-0.25-second"
+      },
+      {
+        "frameMs" : 17.41,
+        "operation" : "exposure-0.50"
+      },
+      {
+        "frameMs" : 14.925000000000001,
+        "operation" : "texture-25"
+      },
+      {
+        "frameMs" : 12.785,
+        "operation" : "texture-30"
+      },
+      {
+        "frameMs" : 9.875,
+        "operation" : "clarity-25"
+      },
+      {
+        "frameMs" : 10.140000000000001,
+        "operation" : "clarity-30"
+      },
+      {
+        "frameMs" : 6.6050000000000004,
+        "operation" : "dehaze-25"
+      },
+      {
+        "frameMs" : 12.295,
+        "operation" : "dehaze-30"
+      }
+    ],
+    "method" : "Programmatic edit state; frame event follows GPU idle; not physical input-to-photon",
+    "target" : "LightFlow build 2d41ab1"
+  },
+  "measurementBoundary" : "programmatic recipe commit to accepted AppKit canvas draw return; not physical input or WindowServer presentation",
+  "passes" : true,
+  "protocol" : "filter-canvas-burst-v1",
+  "recipeRawDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourcePixelHeight" : 6336,
+  "sourcePixelWidth" : 9504,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "status" : "passed",
+  "warmInteractiveAfterFirstPerCase" : {
+    "count" : 19,
+    "maxMs" : 16.054957999999999,
+    "medianMs" : 11.070957999999999,
+    "p95Ms" : 16.054957999999999,
+    "samplesMs" : [
+      9.5068330000000003,
+      15.169625,
+      10.992959000000001,
+      10.173583000000001,
+      10.233333999999999,
+      10.318415999999999,
+      10.007167000000001,
+      9.3352079999999997,
+      11.781791999999999,
+      9.4085420000000006,
+      13.867832999999999,
+      8.2010419999999993,
+      11.314875000000001,
+      11.070957999999999,
+      11.251958,
+      11.360167000000001,
+      16.054957999999999,
+      13.582834,
+      11.493459
+    ]
+  },
+  "window" : {
+    "backingScale" : 2,
+    "height" : 760,
+    "width" : 1100
+  }
+}

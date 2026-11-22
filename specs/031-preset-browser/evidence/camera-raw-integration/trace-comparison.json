@@ -1,0 +1,100 @@
+{
+  "countsTowardAcceptance": false,
+  "matchedExposureCountPerCacheState": 30,
+  "warmFramesWithMatchedTrace": 120,
+  "milliseconds": {
+    "render": {
+      "preset": {
+        "inputToSubmit": {
+          "medianMs": 0.568771,
+          "p95Ms": 0.665792
+        },
+        "submitToPublish": {
+          "medianMs": 45.7620205,
+          "p95Ms": 50.375375
+        },
+        "publishToDrawBegin": {
+          "medianMs": 3.595833,
+          "p95Ms": 8.303458
+        },
+        "draw": {
+          "medianMs": 0.0348545,
+          "p95Ms": 0.040875
+        },
+        "inputToDraw": {
+          "medianMs": 49.763020999999995,
+          "p95Ms": 56.589292
+        }
+      },
+      "manual": {
+        "inputToSubmit": {
+          "medianMs": 0.3622295,
+          "p95Ms": 0.495376
+        },
+        "submitToPublish": {
+          "medianMs": 45.347417,
+          "p95Ms": 51.581125
+        },
+        "publishToDrawBegin": {
+          "medianMs": 2.0826035,
+          "p95Ms": 9.194041
+        },
+        "draw": {
+          "medianMs": 0.035646,
+          "p95Ms": 0.039916
+        },
+        "inputToDraw": {
+          "medianMs": 48.5200205,
+          "p95Ms": 57.955916
+        }
+      }
+    },
+    "bitmapHit": {
+      "preset": {
+        "inputToSubmit": {
+          "medianMs": 0.5730415,
+          "p95Ms": 0.735917
+        },
+        "submitToPublish": {
+          "medianMs": 4.8419375,
+          "p95Ms": 6.977709
+        },
+        "publishToDrawBegin": {
+          "medianMs": 1.673062,
+          "p95Ms": 5.786208
+        },
+        "draw": {
+          "medianMs": 0.0340625,
+          "p95Ms": 0.039667
+        },
+        "inputToDraw": {
+          "medianMs": 7.5278125,
+          "p95Ms": 11.327333
+        }
+      },
+      "manual": {
+        "inputToSubmit": {
+          "medianMs": 0.415063,
+          "p95Ms": 0.528251
+        },
+        "submitToPublish": {
+          "medianMs": 4.708,
+          "p95Ms": 7.926
+        },
+        "publishToDrawBegin": {
+          "medianMs": 1.5209160000000002,
+          "p95Ms": 5.749583
+        },
+        "draw": {
+          "medianMs": 0.03475,
+          "p95Ms": 0.050208
+        },
+        "inputToDraw": {
+          "medianMs": 7.495063,
+          "p95Ms": 12.50125
+        }
+      }
+    }
+  },
+  "boundary": "submission and publication are observed by the application. GPU completion is unmeasured."
+}

@@ -1,0 +1,89 @@
+{
+  "initialMemory" : {
+    "currentRSSBytes" : 3326083072,
+    "maximumRSSBytes" : 3326083072
+  },
+  "maximumMemoryBudgetBytes" : 4000000000,
+  "memoryPassed" : true,
+  "passed" : true,
+  "records" : [
+    {
+      "budgetMilliseconds" : 6000,
+      "cacheHit" : false,
+      "currentRSSBytes" : 3074342912,
+      "elapsedMilliseconds" : 1101.676106452942,
+      "maximumRSSBytes" : 3326132224,
+      "name" : "subject.cold",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 250,
+      "cacheHit" : true,
+      "currentRSSBytes" : 3067854848,
+      "elapsedMilliseconds" : 1.7980337142944336,
+      "maximumRSSBytes" : 3326132224,
+      "name" : "subject.snapshotHit",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 6000,
+      "cacheHit" : false,
+      "currentRSSBytes" : 3210575872,
+      "elapsedMilliseconds" : 276.24595165252686,
+      "maximumRSSBytes" : 3326132224,
+      "name" : "landscape.firstScene",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 1500,
+      "cacheHit" : false,
+      "currentRSSBytes" : 3210592256,
+      "elapsedMilliseconds" : 47.865986824035645,
+      "maximumRSSBytes" : 3326132224,
+      "name" : "landscape.sharedScene",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 6000,
+      "cacheHit" : false,
+      "currentRSSBytes" : 3487547392,
+      "elapsedMilliseconds" : 751.1299848556519,
+      "maximumRSSBytes" : 3487547392,
+      "name" : "object.firstPrompt",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 2000,
+      "cacheHit" : false,
+      "currentRSSBytes" : 3513679872,
+      "elapsedMilliseconds" : 110.3219985961914,
+      "maximumRSSBytes" : 3513679872,
+      "name" : "object.cachedEncoder",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 100,
+      "cacheHit" : true,
+      "currentRSSBytes" : 3507879936,
+      "elapsedMilliseconds" : 1.4729499816894531,
+      "maximumRSSBytes" : 3513679872,
+      "name" : "snapshot.read",
+      "passed" : true
+    },
+    {
+      "budgetMilliseconds" : 2000,
+      "cacheHit" : false,
+      "currentRSSBytes" : 3527852032,
+      "elapsedMilliseconds" : 115.98706245422363,
+      "maximumRSSBytes" : 3548168192,
+      "name" : "subject.cancel",
+      "passed" : true
+    }
+  ],
+  "releasedMemory" : {
+    "currentRSSBytes" : 3349643264,
+    "maximumRSSBytes" : 3548168192
+  },
+  "resourcesReleased" : true,
+  "sourceSHA256" : "7e1c08d929be90733292ccc335567900e022dcfdf1f10b220c02a1e8ac312892"
+}

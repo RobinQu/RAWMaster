@@ -1,8 +1,8 @@
 # 031 · 开发任务与依赖
 
-2026-11-22 · 负责人以角色表示，供排期时认领。勾选项已在本地独立版本验证。含基础编辑对齐、Release 窗口、Lightroom 实机或摄影师验收的任务继续保留。[实施方案](plan.md) · [验收 V1–V7](validation.md) · [跨模块排期](../../docs/planning/24-mask-preset-retouch-roadmap.md)
+2026-11-22 · 每项按完整验收条件勾选。Camera Raw 交付后的同机 Release 读数、发布门和独立复测见[联合验收结果](integration-validation.md)。[实施方案](plan.md) · [验收 V1–V7](validation.md) · [跨模块排期](../../docs/planning/24-mask-preset-retouch-roadmap.md)
 
-原生目录和采用事务、Adobe 文件交换、逐图语义重建各有独立实证。T005/T006 的真实窗口功能已接入，T008 与 V5 联合性能需使用对齐版本。T013/T014 的左栏主体/背景及受支持的天空/水面可独立运行，右栏三场景卡留给 030。[原生功能记录](native-validation.md) · [交换功能记录](exchange-validation.md) · [本地交付范围](feature-validation.md)
+原生目录、采用与重开、Adobe 文件交换和逐图语义重建都已接入基础编辑交付版。T005 的普通预设对照保留两次独立窗口的判定，T006 的物理键盘与 VoiceOver 走查待签，T008 仍受这些条件约束。T013/T014 的左栏主体、背景和受支持的天空、水面可独立运行。右栏三场景卡由 030 接续。[原生功能记录](native-validation.md) · [交换功能记录](exchange-validation.md) · [联合验收清单](integration-validation.md)
 
 ## 共同基础
 

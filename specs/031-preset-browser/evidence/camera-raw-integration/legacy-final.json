@@ -1,0 +1,40 @@
+{
+  "controlTIFFSHA256" : "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+  "export" : {
+    "bitsPerComponent" : 16,
+    "file" : "reopened-subject.tiff",
+    "height" : 80,
+    "sha256" : "6e92bf3253146179edefdf5076adb8bf1eb713976c93de2416626b2417b43183",
+    "width" : 120
+  },
+  "gates" : {
+    "mask.fullSizeTIFF16" : true,
+    "mask.nonemptySelectionBrighter" : true,
+    "mask.reopenedSnapshotAndSettings" : true,
+    "mask.samePrefixProtectedPixelsExact" : true
+  },
+  "historicalBeforeAdoptionTIFFSHA256" : "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+  "memoryAfterExport" : {
+    "processPeakResidentBytes" : 287752192,
+    "residentBytes" : 264077312
+  },
+  "pixelComparison" : {
+    "protectedMaximumRGBA16Difference" : 0,
+    "protectedPixels" : 9484,
+    "selectedBrighterPixels" : 112,
+    "selectedPixels" : 112,
+    "selectedRGBSumGain" : 3107080
+  },
+  "reopenedRecipeExportMs" : 25.646583,
+  "sourceSHA256" : "a77908af83b27bd604ad0f96a57a8bcd40b97b5640cc0cd759e8624deaa61158",
+  "togglePixelComparison" : {
+    "protectedMaximumRGBA16Difference" : 0,
+    "protectedPixels" : 9484,
+    "selectedBrighterPixels" : 112,
+    "selectedPixels" : 112,
+    "selectedRGBSumGain" : 3107080
+  },
+  "toggleUsesSameRenderer" : false,
+  "undoToHistoricalTIFFSHA256" : "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f",
+  "zeroCoverageTIFFSHA256" : "154460e9fdfed7dd6d6da726dac2f48596ed54c28a78e7821bbc627158bc783f"
+}

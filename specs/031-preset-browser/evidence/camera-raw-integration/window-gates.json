@@ -1,0 +1,34 @@
+{
+  "sourceRevision": "a712912d23860efed05cf0e6622907be8a5e5bba",
+  "scope": "machine gates on this build",
+  "checks": {
+    "classic": {
+      "status": "passed"
+    },
+    "paired": {
+      "status": "passed"
+    },
+    "portrait": {
+      "status": "passed"
+    },
+    "bird": {
+      "status": "passed"
+    },
+    "confirm-classic": {
+      "status": "passed"
+    },
+    "confirm-paired": {
+      "status": "exceeds_threshold",
+      "reason": "SC-02 preset p95 58.017 ms exceeds matched manual p95 55.517 ms"
+    }
+  },
+  "strictWindowSuitePassed": false,
+  "verifierOutput": [
+    "classic: PASS",
+    "paired: PASS",
+    "portrait: PASS",
+    "bird: PASS",
+    "confirm-classic: PASS",
+    "confirm-paired: SC-02 preset p95 58.017 ms exceeds matched manual p95 55.517 ms"
+  ]
+}

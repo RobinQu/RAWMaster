@@ -1,0 +1,1004 @@
+{
+  "allInteractive" : {
+    "count" : 22,
+    "maxMs" : 133.52437499999999,
+    "medianMs" : 11.138291500000001,
+    "p95Ms" : 34.073917000000002,
+    "samplesMs" : [
+      133.52437499999999,
+      13.657541999999999,
+      10.656292000000001,
+      10.910042000000001,
+      10.444959000000001,
+      10.595292000000001,
+      10.382999999999999,
+      10.354708,
+      13.162584000000001,
+      10.055,
+      14.124292000000001,
+      11.366541,
+      10.290165999999999,
+      10.25625,
+      10.597042,
+      10.665625,
+      34.073917000000002,
+      13.819791,
+      16.369209000000001,
+      16.567958000000001,
+      12.058999999999999,
+      12.923375
+    ]
+  },
+  "build" : "release",
+  "classicThresholdsMs" : {
+    "warmP50Max" : 20,
+    "warmP95Max" : 33
+  },
+  "clock" : "DispatchTime.uptimeNanoseconds, frame-correlated drawReturnedUptimeNanoseconds",
+  "coldInteractiveFirstPerCase" : {
+    "count" : 3,
+    "maxMs" : 133.52437499999999,
+    "medianMs" : 34.073917000000002,
+    "p95Ms" : 133.52437499999999,
+    "samplesMs" : [
+      133.52437499999999,
+      13.162584000000001,
+      34.073917000000002
+    ]
+  },
+  "composition" : "AppModel.editing \/ ImageEngines.editing",
+  "engine" : "RAWMasterImaging.DevelopmentPreviewService",
+  "engineAfterInitialSettled" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 481738752,
+    "canonicalTextureFills" : 1,
+    "canonicalTextureHits" : 0,
+    "completed" : 1,
+    "decodeOperations" : [
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+      "output 7 · backend 3 · bilinear · 全图" : 1,
+      "output 7 · backend 3 · bilinear · 区域" : 1
+    },
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 1,
+    "superseded" : 0
+  },
+  "engineAfterInteraction" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 497098752,
+    "canonicalTextureFills" : 2,
+    "canonicalTextureHits" : 5,
+    "completed" : 23,
+    "decodeOperations" : [
+      {
+        "count" : 2,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+      "output 7 · backend 3 · bilinear · 全图" : 2,
+      "output 7 · backend 3 · bilinear · 区域" : 1
+    },
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 23,
+    "superseded" : 0
+  },
+  "engineAfterReleaseAndExport" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 0,
+    "canonicalTextureFills" : 2,
+    "canonicalTextureHits" : 5,
+    "completed" : 23,
+    "decodeOperations" : [
+      {
+        "count" : 2,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+      "output 7 · backend 3 · bilinear · 全图" : 2,
+      "output 7 · backend 3 · bilinear · 区域" : 1
+    },
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 23,
+    "superseded" : 0
+  },
+  "engineBeforeApp" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 0,
+    "canonicalTextureFills" : 0,
+    "canonicalTextureHits" : 0,
+    "completed" : 0,
+    "decodeOperations" : [
+
+    ],
+    "fallbacks" : 0,
+    "flashRawDecodesByStage" : {
+
+    },
+    "flashRawLatestDecodeBackend" : "",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 0,
+    "sourceHashPasses" : 0,
+    "submitted" : 0,
+    "superseded" : 0
+  },
+  "filterCompound" : {
+    "draws" : [
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954105924875,
+        "drawReturnedNS" : 517954105936250,
+        "frameID" : "A7EFAC86-E237-4935-8954-02581BCD9D08",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954071862333,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 19,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954126994333,
+        "drawReturnedNS" : 517954127000666,
+        "frameID" : "947E0BC7-FFB9-407A-B5D5-A6889E4BE998",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954113180875,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 20,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954149719791,
+        "drawReturnedNS" : 517954149730500,
+        "frameID" : "4D2F270B-A766-408A-9E99-02EDFC04DBC3",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954133361291,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 21,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954172622708,
+        "drawReturnedNS" : 517954172631083,
+        "frameID" : "BD5E22BB-431C-49DD-B5D1-48980676E71C",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954156063125,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 22,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954191137916,
+        "drawReturnedNS" : 517954191144041,
+        "frameID" : "B85C6DF3-6114-44E5-A374-5E784F8D7196",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954179085041,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 23,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954210066583,
+        "drawReturnedNS" : 517954210073833,
+        "frameID" : "CB56AAD2-FD9C-423C-A8B8-A122653EE7CA",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954197150458,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 24,
+        "width" : 2400
+      }
+    ],
+    "engineAfterFirstSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 497098752,
+      "canonicalTextureFills" : 2,
+      "canonicalTextureHits" : 0,
+      "completed" : 18,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 18,
+      "superseded" : 0
+    },
+    "engineAfterLastSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 497098752,
+      "canonicalTextureFills" : 2,
+      "canonicalTextureHits" : 5,
+      "completed" : 23,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 23,
+      "superseded" : 0
+    },
+    "engineBefore" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 17,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 17,
+      "superseded" : 0
+    },
+    "interactive" : {
+      "count" : 6,
+      "maxMs" : 34.073917000000002,
+      "medianMs" : 15.0945,
+      "p95Ms" : 34.073917000000002,
+      "samplesMs" : [
+        34.073917000000002,
+        13.819791,
+        16.369209000000001,
+        16.567958000000001,
+        12.058999999999999,
+        12.923375
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterIntensity" : {
+    "draws" : [
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953943393750,
+        "drawReturnedNS" : 517953943400500,
+        "frameID" : "6A8EEA2D-6D7C-421D-914C-04D1F9B8700E",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953930237916,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 11,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953960445625,
+        "drawReturnedNS" : 517953960453333,
+        "frameID" : "422C8336-291F-4EAF-92C6-E4042A36616B",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953950398333,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 12,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953981064458,
+        "drawReturnedNS" : 517953981073958,
+        "frameID" : "BDDD7F96-B89A-4AF7-A2E7-E0D9A2D8E434",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953966949666,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 13,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953997996375,
+        "drawReturnedNS" : 517953998005791,
+        "frameID" : "66F13667-6A4A-4D0F-9E8B-3AC90652D635",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953986639250,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 14,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954014613083,
+        "drawReturnedNS" : 517954014620041,
+        "frameID" : "56D3E7D6-4263-4B69-B256-010CFBA40E9B",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954004329875,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 15,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954031201958,
+        "drawReturnedNS" : 517954031209291,
+        "frameID" : "2472B15F-3150-4991-88A0-5ED817AA3081",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954020953041,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 16,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954048077000,
+        "drawReturnedNS" : 517954048087208,
+        "frameID" : "3DA75F50-404C-4A9D-B38C-B2711CAA7CDE",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954037490166,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 17,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517954065015416,
+        "drawReturnedNS" : 517954065024666,
+        "frameID" : "F6E6CC07-EDDA-47CC-B1C1-B0A6DE7E358D",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517954054359041,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 18,
+        "width" : 2400
+      }
+    ],
+    "engineAfterFirstSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 10,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 10,
+      "superseded" : 0
+    },
+    "engineAfterLastSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 17,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 17,
+      "superseded" : 0
+    },
+    "engineBefore" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 9,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 9,
+      "superseded" : 0
+    },
+    "interactive" : {
+      "count" : 8,
+      "maxMs" : 14.124292000000001,
+      "medianMs" : 10.6313335,
+      "p95Ms" : 14.124292000000001,
+      "samplesMs" : [
+        13.162584000000001,
+        10.055,
+        14.124292000000001,
+        11.366541,
+        10.290165999999999,
+        10.25625,
+        10.597042,
+        10.665625
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterLook" : {
+    "draws" : [
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953800807333,
+        "drawReturnedNS" : 517953800816958,
+        "frameID" : "A3529214-E968-4FA7-B3A5-9084C61CA97D",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953667292583,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 3,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953823180750,
+        "drawReturnedNS" : 517953823191125,
+        "frameID" : "A0E4EF7D-0DC7-4984-B440-D9620B6D7AF3",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953809533583,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 4,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953839920833,
+        "drawReturnedNS" : 517953839930625,
+        "frameID" : "EB75CCD3-8285-4AAD-8365-35D223F225A6",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953829274333,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 5,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953856817958,
+        "drawReturnedNS" : 517953856826875,
+        "frameID" : "7F417A52-EF9F-4659-B01C-9800955D2F60",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953845916833,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 6,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953873074416,
+        "drawReturnedNS" : 517953873084000,
+        "frameID" : "63174C06-FF86-4AE8-BFCC-D734D91189F6",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953862639041,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 7,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953889873125,
+        "drawReturnedNS" : 517953889882333,
+        "frameID" : "7E3C20CB-71A0-4530-8485-DC98EC2226ED",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953879287041,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 8,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953906332541,
+        "drawReturnedNS" : 517953906342125,
+        "frameID" : "E80C6C76-8E98-463C-8DF7-F8C19612D91E",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953895959125,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 9,
+        "width" : 2400
+      },
+      {
+        "approximate" : true,
+        "drawBeganNS" : 517953922875041,
+        "drawReturnedNS" : 517953922883708,
+        "frameID" : "9FF3BD12-B41E-41BA-88F8-2C2EE4E9C426",
+        "generation" : 1,
+        "height" : 1600,
+        "inputNS" : 517953912529000,
+        "quality" : "interactive",
+        "renderedHeight" : 1600,
+        "renderedWidth" : 2400,
+        "revision" : 10,
+        "width" : 2400
+      }
+    ],
+    "engineAfterFirstSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 2,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 2,
+      "superseded" : 0
+    },
+    "engineAfterLastSample" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 9,
+      "decodeOperations" : [
+        {
+          "count" : 2,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 2,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 9,
+      "superseded" : 0
+    },
+    "engineBefore" : {
+      "bitmapCacheHits" : 0,
+      "canonicalTextureBytes" : 481738752,
+      "canonicalTextureFills" : 1,
+      "canonicalTextureHits" : 0,
+      "completed" : 1,
+      "decodeOperations" : [
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 全图"
+        },
+        {
+          "count" : 1,
+          "operation" : "FlashRaw.decode",
+          "stage" : "output 7 · backend 3 · bilinear · 区域"
+        }
+      ],
+      "fallbacks" : 0,
+      "flashRawDecodesByStage" : {
+        "output 7 · backend 3 · bilinear · 全图" : 1,
+        "output 7 · backend 3 · bilinear · 区域" : 1
+      },
+      "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+      "lastFallback" : "",
+      "nativeCanonicalJobs" : 0,
+      "nativeInteractiveJobs" : 0,
+      "nativeLastRoute" : 0,
+      "rawBaseFills" : 0,
+      "rawBaseHits" : 0,
+      "rawBaseMisses" : 0,
+      "sourceCaptures" : 1,
+      "sourceHashPasses" : 1,
+      "submitted" : 1,
+      "superseded" : 0
+    },
+    "interactive" : {
+      "count" : 8,
+      "maxMs" : 133.52437499999999,
+      "medianMs" : 10.625792000000001,
+      "p95Ms" : 133.52437499999999,
+      "samplesMs" : [
+        133.52437499999999,
+        13.657541999999999,
+        10.656292000000001,
+        10.910042000000001,
+        10.444959000000001,
+        10.595292000000001,
+        10.382999999999999,
+        10.354708
+      ]
+    },
+    "settledAfterGesture" : {
+
+    }
+  },
+  "filterOnly" : true,
+  "gates" : {
+    "classic.19WarmHistoricalSamples" : true,
+    "classic.filterCompound.noWarmFlashRawDecode" : true,
+    "classic.filterCompound.stable.fallbacks" : true,
+    "classic.filterCompound.stable.sourceCaptures" : true,
+    "classic.filterCompound.stable.sourceHashPasses" : true,
+    "classic.filterIntensity.noWarmFlashRawDecode" : true,
+    "classic.filterIntensity.stable.fallbacks" : true,
+    "classic.filterIntensity.stable.sourceCaptures" : true,
+    "classic.filterIntensity.stable.sourceHashPasses" : true,
+    "classic.filterLook.noWarmFlashRawDecode" : true,
+    "classic.filterLook.stable.fallbacks" : true,
+    "classic.filterLook.stable.sourceCaptures" : true,
+    "classic.filterLook.stable.sourceHashPasses" : true,
+    "classic.warmP50AtMost20ms" : true,
+    "classic.warmP95AtMost33ms" : true,
+    "source.preserved" : true
+  },
+  "initialFrame" : {
+    "approximate" : false,
+    "drawBeganNS" : 517953643508916,
+    "drawReturnedNS" : 517953643572041,
+    "frameID" : "CD7BDFC0-7B0E-48AA-8BA1-13AC04E73475",
+    "generation" : 1,
+    "height" : 1600,
+    "inputNS" : 517953643508916,
+    "quality" : "settled",
+    "renderedHeight" : 1600,
+    "renderedWidth" : 2400,
+    "revision" : 2,
+    "width" : 2400
+  },
+  "lightflowReference" : {
+    "canvas" : [
+      2400,
+      1600
+    ],
+    "measurements" : [
+      {
+        "frameMs" : 6.0350000000000001,
+        "operation" : "exposure-0.25-first"
+      },
+      {
+        "frameMs" : 15.545,
+        "operation" : "exposure-0.25-second"
+      },
+      {
+        "frameMs" : 17.41,
+        "operation" : "exposure-0.50"
+      },
+      {
+        "frameMs" : 14.925000000000001,
+        "operation" : "texture-25"
+      },
+      {
+        "frameMs" : 12.785,
+        "operation" : "texture-30"
+      },
+      {
+        "frameMs" : 9.875,
+        "operation" : "clarity-25"
+      },
+      {
+        "frameMs" : 10.140000000000001,
+        "operation" : "clarity-30"
+      },
+      {
+        "frameMs" : 6.6050000000000004,
+        "operation" : "dehaze-25"
+      },
+      {
+        "frameMs" : 12.295,
+        "operation" : "dehaze-30"
+      }
+    ],
+    "method" : "Programmatic edit state; frame event follows GPU idle; not physical input-to-photon",
+    "target" : "LightFlow build 2d41ab1"
+  },
+  "measurementBoundary" : "programmatic recipe commit to accepted AppKit canvas draw return; not physical input or WindowServer presentation",
+  "passes" : true,
+  "protocol" : "filter-canvas-burst-v1",
+  "recipeRawDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourcePixelHeight" : 6336,
+  "sourcePixelWidth" : 9504,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "status" : "passed",
+  "warmInteractiveAfterFirstPerCase" : {
+    "count" : 19,
+    "maxMs" : 16.567958000000001,
+    "medianMs" : 10.665625,
+    "p95Ms" : 16.567958000000001,
+    "samplesMs" : [
+      13.657541999999999,
+      10.656292000000001,
+      10.910042000000001,
+      10.444959000000001,
+      10.595292000000001,
+      10.382999999999999,
+      10.354708,
+      10.055,
+      14.124292000000001,
+      11.366541,
+      10.290165999999999,
+      10.25625,
+      10.597042,
+      10.665625,
+      13.819791,
+      16.369209000000001,
+      16.567958000000001,
+      12.058999999999999,
+      12.923375
+    ]
+  },
+  "window" : {
+    "backingScale" : 2,
+    "height" : 760,
+    "width" : 1100
+  }
+}

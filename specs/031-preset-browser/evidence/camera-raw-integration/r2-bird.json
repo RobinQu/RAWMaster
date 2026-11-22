@@ -1,0 +1,476 @@
+{
+  "adjustedMaskDraw" : {
+    "approximate" : false,
+    "drawBeganNS" : 517561911912625,
+    "drawReturnedNS" : 517561911947291,
+    "frameID" : "909F5340-0901-46C8-9336-E87E9DB87911",
+    "generation" : 1,
+    "height" : 1600,
+    "inputNS" : 517561459137125,
+    "quality" : "settled",
+    "renderedHeight" : 1600,
+    "renderedWidth" : 2400,
+    "revision" : 4,
+    "width" : 2400
+  },
+  "adoptDraw" : {
+    "approximate" : false,
+    "drawBeganNS" : 517561451031000,
+    "drawReturnedNS" : 517561451067208,
+    "frameID" : "1D12113A-BEE5-4309-BD66-7B6301471D6C",
+    "generation" : 1,
+    "height" : 1600,
+    "inputNS" : 517561317865791,
+    "quality" : "settled",
+    "renderedHeight" : 1600,
+    "renderedWidth" : 2400,
+    "revision" : 3,
+    "width" : 2400
+  },
+  "adoptToSettledDrawMs" : 133.20141699999999,
+  "build" : "release",
+  "clock" : "DispatchTime.uptimeNanoseconds, frame-correlated drawReturnedUptimeNanoseconds",
+  "composition" : "AppModel.editing \/ ImageEngines.editing",
+  "controlTIFFSHA256" : "ca3d79060ca17704b44302f6409d4f8c04dfcf65720a4ae19d7041bf1bfba3c6",
+  "coverageGray8SHA256" : "e55d8f4958f49c89fc8969cea62c7964b84dbf9deababb26bed96973b8286f3b",
+  "coverageHeight" : 1024,
+  "coverageWidth" : 1536,
+  "engine" : "RAWMasterImaging.DevelopmentPreviewService",
+  "engineAfterInitialSettled" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 481738752,
+    "canonicalTextureFills" : 1,
+    "canonicalTextureHits" : 0,
+    "completed" : 1,
+    "decodeOperations" : [
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 1,
+    "superseded" : 0
+  },
+  "engineAfterInteraction" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 481738752,
+    "canonicalTextureFills" : 1,
+    "canonicalTextureHits" : 2,
+    "completed" : 3,
+    "decodeOperations" : [
+      {
+        "count" : 3,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 1,
+    "sourceHashPasses" : 1,
+    "submitted" : 3,
+    "superseded" : 0
+  },
+  "engineAfterReleaseAndExport" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 0,
+    "canonicalTextureFills" : 2,
+    "canonicalTextureHits" : 2,
+    "completed" : 4,
+    "decodeOperations" : [
+      {
+        "count" : 7,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 全图"
+      },
+      {
+        "count" : 1,
+        "operation" : "FlashRaw.decode",
+        "stage" : "output 7 · backend 3 · bilinear · 区域"
+      }
+    ],
+    "fallbacks" : 0,
+    "flashRawLatestDecodeBackend" : "CPU NEON x16 threads",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 2,
+    "sourceHashPasses" : 2,
+    "submitted" : 4,
+    "superseded" : 0
+  },
+  "engineBeforeApp" : {
+    "bitmapCacheHits" : 0,
+    "canonicalTextureBytes" : 0,
+    "canonicalTextureFills" : 0,
+    "canonicalTextureHits" : 0,
+    "completed" : 0,
+    "decodeOperations" : [
+
+    ],
+    "fallbacks" : 0,
+    "flashRawLatestDecodeBackend" : "",
+    "lastFallback" : "",
+    "nativeCanonicalJobs" : 0,
+    "nativeInteractiveJobs" : 0,
+    "nativeLastRoute" : 0,
+    "rawBaseFills" : 0,
+    "rawBaseHits" : 0,
+    "rawBaseMisses" : 0,
+    "sourceCaptures" : 0,
+    "sourceHashPasses" : 0,
+    "submitted" : 0,
+    "superseded" : 0
+  },
+  "export" : {
+    "bitsPerComponent" : 16,
+    "file" : "reopened-subject.tiff",
+    "height" : 6336,
+    "sha256" : "9cdcbd8c8947dafe0648d039874ac05e087cd06b867bf965d543334d0c0adcd3",
+    "width" : 9504
+  },
+  "filterOnly" : false,
+  "freshEditorInvocationsAfterExport" : 0,
+  "freshEditorInvocationsAtSettled" : 0,
+  "freshEditorInvocationsBeforeReopen" : 0,
+  "frozenPngSHA256" : "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+  "gates" : {
+    "mask.30ExactHitsOneGeneration" : true,
+    "mask.adoptedSourceAndTarget" : true,
+    "mask.allWarmHitsAtMost250ms" : true,
+    "mask.backgroundComplementsSubject" : true,
+    "mask.coldAtMost6000ms" : true,
+    "mask.coldSubjectRanVision" : true,
+    "mask.disabledToggleProtectedPixelsExact" : true,
+    "mask.distinctBackgroundCandidate" : true,
+    "mask.freshEditorReopenAndExportNoModelInvocations" : true,
+    "mask.freshEditorReopensAdoptedLayer" : true,
+    "mask.freshFirstGeneration" : true,
+    "mask.fullSizeTIFF16" : true,
+    "mask.matchesEditorSourceCoordinates" : true,
+    "mask.nonemptySelectionBrighter" : true,
+    "mask.reopenedSnapshotAndSettings" : true,
+    "mask.reopenExportNoModelInvocations" : true,
+    "mask.restoredSubjectCoverageUnchanged" : true,
+    "mask.samePrefixProtectedPixelsExact" : true,
+    "mask.subjectReusedAfterBackground" : true,
+    "mask.usesSelectedFlashRawDecoder" : true,
+    "mask.warmCoverageUnchanged" : true,
+    "mask.warmHitsNoDecode" : true,
+    "mask.warmHitsNoModelInvocations" : true,
+    "source.preserved" : true,
+    "source.preservedAfterExport" : true
+  },
+  "initialFrame" : {
+    "approximate" : false,
+    "drawBeganNS" : 517559821940375,
+    "drawReturnedNS" : 517559822093916,
+    "frameID" : "C47DC7DC-EBF1-4022-8452-A2DE91E5AA9C",
+    "generation" : 1,
+    "height" : 1600,
+    "inputNS" : 517559821940375,
+    "quality" : "settled",
+    "renderedHeight" : 1600,
+    "renderedWidth" : 2400,
+    "revision" : 2,
+    "width" : 2400
+  },
+  "lightflowReference" : {
+    "canvas" : [
+      2400,
+      1600
+    ],
+    "measurements" : [
+      {
+        "frameMs" : 6.0350000000000001,
+        "operation" : "exposure-0.25-first"
+      },
+      {
+        "frameMs" : 15.545,
+        "operation" : "exposure-0.25-second"
+      },
+      {
+        "frameMs" : 17.41,
+        "operation" : "exposure-0.50"
+      },
+      {
+        "frameMs" : 14.925000000000001,
+        "operation" : "texture-25"
+      },
+      {
+        "frameMs" : 12.785,
+        "operation" : "texture-30"
+      },
+      {
+        "frameMs" : 9.875,
+        "operation" : "clarity-25"
+      },
+      {
+        "frameMs" : 10.140000000000001,
+        "operation" : "clarity-30"
+      },
+      {
+        "frameMs" : 6.6050000000000004,
+        "operation" : "dehaze-25"
+      },
+      {
+        "frameMs" : 12.295,
+        "operation" : "dehaze-30"
+      }
+    ],
+    "method" : "Programmatic edit state; frame event follows GPU idle; not physical input-to-photon",
+    "target" : "LightFlow build 2d41ab1"
+  },
+  "maskAnalysisAfterFirst" : {
+    "analysisHeight" : 1024,
+    "analysisWidth" : 1536,
+    "coreImageRawDecodes" : 0,
+    "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+    "exactHits" : 0,
+    "flashRawDecodes" : 1,
+    "hashChecks" : 3,
+    "imageIODecodes" : 0,
+    "landscapeRuns" : 0,
+    "modelInvocations" : 1,
+    "objectDecoderRuns" : 0,
+    "objectEncoderRuns" : 0,
+    "orientation" : 1,
+    "orientedHeight" : 6336,
+    "orientedWidth" : 9504,
+    "sourceContentID" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "successfulGenerations" : 1,
+    "visionRequests" : 1
+  },
+  "maskAnalysisAfterWarm" : {
+    "analysisHeight" : 1024,
+    "analysisWidth" : 1536,
+    "coreImageRawDecodes" : 0,
+    "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+    "exactHits" : 30,
+    "flashRawDecodes" : 1,
+    "hashChecks" : 33,
+    "imageIODecodes" : 0,
+    "landscapeRuns" : 0,
+    "modelInvocations" : 1,
+    "objectDecoderRuns" : 0,
+    "objectEncoderRuns" : 0,
+    "orientation" : 1,
+    "orientedHeight" : 6336,
+    "orientedWidth" : 9504,
+    "sourceContentID" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "successfulGenerations" : 1,
+    "visionRequests" : 1
+  },
+  "maskAnalysisBeforeAdopt" : {
+    "analysisHeight" : 1024,
+    "analysisWidth" : 1536,
+    "coreImageRawDecodes" : 0,
+    "decoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+    "exactHits" : 31,
+    "flashRawDecodes" : 1,
+    "hashChecks" : 36,
+    "imageIODecodes" : 0,
+    "landscapeRuns" : 0,
+    "modelInvocations" : 1,
+    "objectDecoderRuns" : 0,
+    "objectEncoderRuns" : 0,
+    "orientation" : 1,
+    "orientedHeight" : 6336,
+    "orientedWidth" : 9504,
+    "sourceContentID" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "successfulGenerations" : 2,
+    "visionRequests" : 1
+  },
+  "maskCountersAfterBackground" : {
+    "exactHits" : 30,
+    "freshNonBrushCandidates" : 2
+  },
+  "maskCountersAfterFirst" : {
+    "exactHits" : 0,
+    "freshNonBrushCandidates" : 1
+  },
+  "maskCountersAfterReturn" : {
+    "exactHits" : 31,
+    "freshNonBrushCandidates" : 2
+  },
+  "maskCountersAfterWarm" : {
+    "exactHits" : 30,
+    "freshNonBrushCandidates" : 1
+  },
+  "measurementBoundary" : "mask request to published adoptable candidate; adoption to accepted settled AppKit draw return; export to TIFF writer return",
+  "memoryAfterEditorShutdown" : {
+    "processPeakResidentBytes" : 1794441216,
+    "residentBytes" : 1436581888
+  },
+  "memoryAfterExport" : {
+    "processPeakResidentBytes" : 2086846464,
+    "residentBytes" : 1602945024
+  },
+  "memoryAfterFirstSubject" : {
+    "processPeakResidentBytes" : 1794441216,
+    "residentBytes" : 1343717376
+  },
+  "memoryBeforeSubject" : {
+    "processPeakResidentBytes" : 1673805824,
+    "residentBytes" : 1314471936
+  },
+  "modelInvocationsAfterExport" : 1,
+  "modelInvocationsBeforeReopen" : 1,
+  "orientedSource" : {
+    "exifOrientation" : 1,
+    "height" : 6336,
+    "width" : 9504
+  },
+  "passes" : true,
+  "pixelComparison" : {
+    "protectedMaximumRGBA16Difference" : 0,
+    "protectedPixels" : 60003066,
+    "selectedBrighterPixels" : 38649,
+    "selectedPixels" : 152274,
+    "selectedRGBSumGain" : 173872989
+  },
+  "protocol" : "027-editor-subject-and-frozen-export-v1",
+  "recipeRawDecoder" : "flashraw-0.3.1-linear-srgb-bilinear",
+  "reopenedDraw" : {
+    "approximate" : false,
+    "drawBeganNS" : 517562991678041,
+    "drawReturnedNS" : 517562991723166,
+    "frameID" : "7B51BA18-FEAE-4F6C-BF20-4F9CAE7A5F21",
+    "generation" : 2,
+    "height" : 1600,
+    "inputNS" : 517561967062708,
+    "quality" : "settled",
+    "renderedHeight" : 1600,
+    "renderedWidth" : 2400,
+    "revision" : 2,
+    "width" : 2400
+  },
+  "reopenedRecipeExportMs" : 2166.454166,
+  "reopenedToFrozenSettledDrawMs" : 1024.6604580000001,
+  "sameSourceFirstBackgroundMs" : 63.876458,
+  "sourcePixelHeight" : 6336,
+  "sourcePixelWidth" : 9504,
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256AfterExport" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "status" : "passed",
+  "subjectAfterBackgroundMs" : 29.482917,
+  "subjectFirstMs" : 336.64262500000001,
+  "subjectGenerator" : "vision-foreground-r1-v1",
+  "subjectWarm" : {
+    "count" : 30,
+    "maxMs" : 37.213124999999998,
+    "medianMs" : 29.8092085,
+    "p95Ms" : 31.135750000000002,
+    "samplesMs" : [
+      31.135750000000002,
+      30.325749999999999,
+      30.394749999999998,
+      29.808541999999999,
+      30.009,
+      30.280584000000001,
+      29.289459000000001,
+      29.517334000000002,
+      29.528915999999999,
+      29.667874999999999,
+      29.282499999999999,
+      29.910582999999999,
+      29.656542000000002,
+      29.844042000000002,
+      29.882666,
+      29.465790999999999,
+      29.520458000000001,
+      29.920667000000002,
+      29.406959000000001,
+      29.224416000000002,
+      29.318666,
+      29.82525,
+      30.303792000000001,
+      29.814291999999998,
+      29.642291,
+      29.867042000000001,
+      37.213124999999998,
+      29.809875000000002,
+      29.670292,
+      29.053833000000001
+    ]
+  },
+  "subjectWarmSamplesMs" : [
+    31.135750000000002,
+    30.325749999999999,
+    30.394749999999998,
+    29.808541999999999,
+    30.009,
+    30.280584000000001,
+    29.289459000000001,
+    29.517334000000002,
+    29.528915999999999,
+    29.667874999999999,
+    29.282499999999999,
+    29.910582999999999,
+    29.656542000000002,
+    29.844042000000002,
+    29.882666,
+    29.465790999999999,
+    29.520458000000001,
+    29.920667000000002,
+    29.406959000000001,
+    29.224416000000002,
+    29.318666,
+    29.82525,
+    30.303792000000001,
+    29.814291999999998,
+    29.642291,
+    29.867042000000001,
+    37.213124999999998,
+    29.809875000000002,
+    29.670292,
+    29.053833000000001
+  ],
+  "togglePixelComparison" : {
+    "protectedMaximumRGBA16Difference" : 0,
+    "protectedPixels" : 60003066,
+    "selectedBrighterPixels" : 38649,
+    "selectedPixels" : 152274,
+    "selectedRGBSumGain" : 173872989
+  },
+  "toggleUsesSameRenderer" : true,
+  "window" : {
+    "backingScale" : 2,
+    "height" : 760,
+    "width" : 1100
+  }
+}

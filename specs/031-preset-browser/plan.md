@@ -2,6 +2,8 @@
 
 2026-11-22 · 设计基线，独立实现及覆盖见[开发交付记录](feature-validation.md) · Swift 6、macOS 15+、SwiftUI/AppKit、Core Image/Metal · [产品目标](spec.md) · [执行任务](tasks.md)
 
+集成候选在同一左栏保留「经典滤镜」与「预设目录」。首次打开显示经典滤镜，显式切换后按编辑器偏好 `editing.filterBrowserMode.v1` 记忆。两个视图互斥挂载，原有收藏共用；离开目录会取消尚未采用的准备任务。启用目录与切回经典滤镜都可以在当前照片完成。[实测与发布条件](integration-validation.md)
+
 ## 按当前工作树修正设计
 
 | 实际接点 | 本次设计决策 |
