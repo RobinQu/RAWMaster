@@ -198,7 +198,7 @@ struct PhotosSelectiveColorControls: View {
     }
     private func row(_ name: String, value: Double, range: ClosedRange<Double>,
                      path: WritableKeyPath<DevelopmentSelectiveColorAdjustmentV3, Double>,
-                     target: DevelopmentSelectiveColorSlotV3? = nil) -> some View {
+                     target: DevelopmentSelectiveColorSlotV3? = nil) -> PhotosTypedValueRow {
         let capturedSlot = target ?? slot
         return PhotosTypedValueRow(session: session, context: context, group: .selectiveColor,
             name: name, value: value, range: range, trackColors: tracks(for: name, slot: capturedSlot), command: { value in
