@@ -1,0 +1,462 @@
+{
+  "detection": {
+    "format": 1,
+    "labelSource": "AgLibraryKeywordFace.userPick=1,userReject=0, matched original path",
+    "inputFiles": 67,
+    "humanBoxes": 73,
+    "humanIdentities": 3,
+    "shootDates": 10,
+    "cameraModels": 5,
+    "inputDecodeErrors": 0,
+    "comparedCaptureTimes": 67,
+    "matchingCaptureTimes": 67,
+    "calibrationDates": 3,
+    "heldoutDates": 7,
+    "coordinateMappings": {
+      "AB": 0,
+      "DA": 0
+    },
+    "coordinateCalibration": {
+      "AB": {
+        "observations": 8,
+        "best": 5.974050731091547,
+        "second": 3.648927693103254
+      },
+      "DA": {
+        "observations": 3,
+        "best": 2.1683667600456924,
+        "second": 0.9443501807867696
+      }
+    },
+    "iouCutoff": 0.35,
+    "detectedBoxes": 72,
+    "allMatched": 61,
+    "unmatchedOrAmbiguous": 12,
+    "heldoutHumanBoxes": 62,
+    "heldoutMatched": 50,
+    "heldoutIdentities": 3,
+    "heldoutPairCounts": {
+      "all": {
+        "positive": 497,
+        "aboveCutoffPositive": 386,
+        "negative": 728,
+        "aboveCutoffNegative": 27
+      },
+      "crossDay": {
+        "positive": 261,
+        "aboveCutoffPositive": 180,
+        "negative": 646,
+        "aboveCutoffNegative": 27
+      },
+      "crossCamera": {
+        "positive": 239,
+        "aboveCutoffPositive": 177,
+        "negative": 552,
+        "aboveCutoffNegative": 9
+      },
+      "crossDayAndCamera": {
+        "positive": 239,
+        "aboveCutoffPositive": 177,
+        "negative": 552,
+        "aboveCutoffNegative": 9
+      }
+    },
+    "allPairCounts": {
+      "all": {
+        "positive": 690,
+        "aboveCutoffPositive": 540,
+        "negative": 1140,
+        "aboveCutoffNegative": 27
+      },
+      "crossDay": {
+        "positive": 430,
+        "aboveCutoffPositive": 310,
+        "negative": 1058,
+        "aboveCutoffNegative": 27
+      },
+      "crossCamera": {
+        "positive": 387,
+        "aboveCutoffPositive": 286,
+        "negative": 957,
+        "aboveCutoffNegative": 9
+      },
+      "crossDayAndCamera": {
+        "positive": 387,
+        "aboveCutoffPositive": 286,
+        "negative": 957,
+        "aboveCutoffNegative": 9
+      }
+    },
+    "heldoutClusters": {
+      "groups": 8,
+      "singletons": 4,
+      "coClusterSame": 303,
+      "coClusterDifferent": 21
+    },
+    "latencyIncludingDecodeMsP50": 39.86912500113249
+  },
+  "daySplit": {
+    "calibrationRule": "five whole dates split by balance of confirmed source identities; smallest 0.05-grid cutoff above maximum calibration impostor score plus 0.03",
+    "priorObservedAllDatesAt0.50": true,
+    "newCutoff": 0.6,
+    "calibrationMaxDifferent": 0.4163367990296203,
+    "calibrationDays": 5,
+    "auditDays": 5,
+    "calibrationMatched": 33,
+    "auditHumanBoxes": 38,
+    "auditMatched": 28,
+    "auditIdentities": 3,
+    "calibrationPairs": {
+      "all": {
+        "same": 244,
+        "different": 282,
+        "acceptedSame": 153,
+        "acceptedDifferent": 0
+      },
+      "crossDay": {
+        "same": 61,
+        "different": 212,
+        "acceptedSame": 35,
+        "acceptedDifferent": 0
+      },
+      "crossCamera": {
+        "same": 61,
+        "different": 205,
+        "acceptedSame": 35,
+        "acceptedDifferent": 0
+      },
+      "crossDayAndCamera": {
+        "same": 61,
+        "different": 205,
+        "acceptedSame": 35,
+        "acceptedDifferent": 0
+      }
+    },
+    "auditPairs": {
+      "all": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 78,
+        "acceptedDifferent": 7
+      },
+      "crossDay": {
+        "same": 41,
+        "different": 250,
+        "acceptedSame": 9,
+        "acceptedDifferent": 7
+      },
+      "crossCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 9,
+        "acceptedDifferent": 7
+      },
+      "crossDayAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 9,
+        "acceptedDifferent": 7
+      }
+    },
+    "auditClusters": {
+      "groups": 9,
+      "singletons": 3,
+      "togetherSame": 42,
+      "togetherDifferent": 5
+    },
+    "auditAtPriorThreshold": {
+      "all": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 93,
+        "acceptedDifferent": 9
+      },
+      "crossDay": {
+        "same": 41,
+        "different": 250,
+        "acceptedSame": 16,
+        "acceptedDifferent": 9
+      },
+      "crossCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 16,
+        "acceptedDifferent": 9
+      },
+      "crossDayAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 16,
+        "acceptedDifferent": 9
+      }
+    }
+  },
+  "sensitivity": [
+    {
+      "threshold": 0.5,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 93,
+        "acceptedDifferent": 9
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 16,
+        "acceptedDifferent": 9
+      },
+      "auditGroups": {
+        "groups": 5,
+        "singletons": 2,
+        "togetherSame": 92,
+        "togetherDifferent": 9
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 540,
+        "acceptedDifferent": 27
+      },
+      "allGroups": {
+        "groups": 9,
+        "singletons": 2,
+        "togetherSame": 263,
+        "togetherDifferent": 13
+      }
+    },
+    {
+      "threshold": 0.6,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 78,
+        "acceptedDifferent": 7
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 9,
+        "acceptedDifferent": 7
+      },
+      "auditGroups": {
+        "groups": 9,
+        "singletons": 3,
+        "togetherSame": 42,
+        "togetherDifferent": 5
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 389,
+        "acceptedDifferent": 20
+      },
+      "allGroups": {
+        "groups": 17,
+        "singletons": 5,
+        "togetherSame": 134,
+        "togetherDifferent": 6
+      }
+    },
+    {
+      "threshold": 0.65,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 61,
+        "acceptedDifferent": 4
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 0,
+        "acceptedDifferent": 4
+      },
+      "auditGroups": {
+        "groups": 10,
+        "singletons": 5,
+        "togetherSame": 49,
+        "togetherDifferent": 0
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 279,
+        "acceptedDifferent": 15
+      },
+      "allGroups": {
+        "groups": 20,
+        "singletons": 7,
+        "togetherSame": 97,
+        "togetherDifferent": 5
+      }
+    },
+    {
+      "threshold": 0.7,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 50,
+        "acceptedDifferent": 0
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 0,
+        "acceptedDifferent": 0
+      },
+      "auditGroups": {
+        "groups": 11,
+        "singletons": 6,
+        "togetherSame": 48,
+        "togetherDifferent": 0
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 169,
+        "acceptedDifferent": 7
+      },
+      "allGroups": {
+        "groups": 24,
+        "singletons": 12,
+        "togetherSame": 88,
+        "togetherDifferent": 2
+      }
+    },
+    {
+      "threshold": 0.75,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 48,
+        "acceptedDifferent": 0
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 0,
+        "acceptedDifferent": 0
+      },
+      "auditGroups": {
+        "groups": 11,
+        "singletons": 6,
+        "togetherSame": 48,
+        "togetherDifferent": 0
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 106,
+        "acceptedDifferent": 3
+      },
+      "allGroups": {
+        "groups": 27,
+        "singletons": 13,
+        "togetherSame": 68,
+        "togetherDifferent": 2
+      }
+    },
+    {
+      "threshold": 0.8,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 43,
+        "acceptedDifferent": 0
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 0,
+        "acceptedDifferent": 0
+      },
+      "auditGroups": {
+        "groups": 13,
+        "singletons": 7,
+        "togetherSame": 36,
+        "togetherDifferent": 0
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 69,
+        "acceptedDifferent": 0
+      },
+      "allGroups": {
+        "groups": 32,
+        "singletons": 16,
+        "togetherSame": 55,
+        "togetherDifferent": 0
+      }
+    },
+    {
+      "threshold": 0.85,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 37,
+        "acceptedDifferent": 0
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 0,
+        "acceptedDifferent": 0
+      },
+      "auditGroups": {
+        "groups": 15,
+        "singletons": 8,
+        "togetherSame": 26,
+        "togetherDifferent": 0
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 48,
+        "acceptedDifferent": 0
+      },
+      "allGroups": {
+        "groups": 39,
+        "singletons": 26,
+        "togetherSame": 37,
+        "togetherDifferent": 0
+      }
+    },
+    {
+      "threshold": 0.9,
+      "audit": {
+        "same": 118,
+        "different": 259,
+        "acceptedSame": 23,
+        "acceptedDifferent": 0
+      },
+      "auditCrossDateAndCamera": {
+        "same": 41,
+        "different": 178,
+        "acceptedSame": 0,
+        "acceptedDifferent": 0
+      },
+      "auditGroups": {
+        "groups": 18,
+        "singletons": 9,
+        "togetherSame": 11,
+        "togetherDifferent": 0
+      },
+      "allMatched": {
+        "same": 690,
+        "different": 1137,
+        "acceptedSame": 30,
+        "acceptedDifferent": 0
+      },
+      "allGroups": {
+        "groups": 44,
+        "singletons": 31,
+        "togetherSame": 21,
+        "togetherDifferent": 0
+      }
+    }
+  ],
+  "operatingPoint": 0.8,
+  "releaseNote": "Chosen conservatively following the recorded sweep; wider independent identity validation is outstanding."
+}

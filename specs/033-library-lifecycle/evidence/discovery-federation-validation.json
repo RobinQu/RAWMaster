@@ -1,0 +1,35 @@
+{
+  "authorityDigestsUnchanged": true,
+  "currentProjectScopePreserved": true,
+  "eligibleBySource": [
+    4,
+    3
+  ],
+  "foreignPersonScopeRejected": true,
+  "lateDeselectedSourceDiscarded": true,
+  "oneOfflineSourceIsolatedAndReconnected": true,
+  "ownConsentRequired": true,
+  "ownRatingRestricted": true,
+  "packageCreatedCacheDuringRead": false,
+  "perSourceIDVersionAndWatermark": true,
+  "run": "macOS Apple Silicon, Swift 6, Rust v8 read API",
+  "sameNameAndWorkIDHitsBySource": [
+    1,
+    1
+  ],
+  "sameSizePackageTamperingRejected": true,
+  "schemaVersion": 1,
+  "securityScopedReadOnlyBookmarkRoundTrip": true,
+  "semanticIndexedBySource": [
+    4,
+    0
+  ],
+  "semanticMissingBySource": [
+    0,
+    3
+  ],
+  "sourceKinds": [
+    "checked live v8 catalog",
+    "checked immutable catalog-only package"
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "source": "mountain-lake.jpg",
+    "sourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442",
+    "maskSHA256": "c4dd3d1d32ba59b5dcee9e505958fd7f815622bb45b5ce2069ddedf73b3c2c9e",
+    "width": 1600, "height": 1067,
+    "model": "efficientvit-seg-b2-ade20k", "modelSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+    "descriptor": "landscape.sky", "coordinates": "oriented-top-left", "storage": "gray8-coverage",
+    "measurement": {"modelRunMs":817.4530267715454,"meanCoverage":0.17615270503702887,"selectedPixels":377743}
+  },
+  {
+    "source": "sony-landscape.ARW",
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "maskSHA256": "e5bb9ddcd54666ff9866b7b7060b12a10e0f2cef335a595c665f7659c33be117",
+    "width": 2400, "height": 1600,
+    "model": "efficientvit-seg-b2-ade20k", "modelSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+    "descriptor": "landscape.sky", "coordinates": "oriented-top-left", "storage": "gray8-coverage",
+    "provenance": "experiments/MaskAI/Validation/RAW/raw-results.json, Spec 027"
+  }
+]

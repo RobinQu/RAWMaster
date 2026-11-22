@@ -1,0 +1,375 @@
+{
+  "protocol": "library-lifecycle-L11-native-v1",
+  "platform": "arm64 macOS, local CPU/GPU; 128 GiB",
+  "format": "uncompressed TIFF, RGB float32, linear sRGB ICC",
+  "timing": "each measured worker includes digest/verified private source copy, native RAW read, rendering, TIFF readback and output SHA; one run per stated row, no latency SLA",
+  "tests": {
+    "star-performance": {
+      "cadenceBreakIndices": [
+        2,
+        3,
+        4,
+        21
+      ],
+      "case": "starTrail",
+      "changedFromFirstPixels": 42229714,
+      "foregroundReviewIndices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "foregroundUnknownIndices": [],
+      "frames": 24,
+      "height": 5760,
+      "inputSetSHA256": "60c609eb24ef496b8845661c8ae444c9414f08d699c35580b0e91c55d3d3ecf1",
+      "maximumSample": 2.558541774749756,
+      "maximumUnexposedSeconds": 240.79299998283386,
+      "medianStartIntervalSeconds": 60.02499985694885,
+      "minimumSample": -0.32356196641921997,
+      "outputByteCount": 597198276,
+      "outputSHA256": "f2002fd5fca031e184b3bd8166ab2dcc73e045f4ff83198844933ec9992402c9",
+      "overOnePixels": 2069,
+      "p01Luminance": 0.0007234878146322442,
+      "p99Luminance": 0.07526551093906164,
+      "sampleCount": 16387,
+      "seconds": 32.48,
+      "width": 8640,
+      "winningFrames": 24,
+      "workerPeakRSSMiB": 2104.9
+    },
+    "star-preserve": {
+      "cadenceBreakIndices": [
+        2,
+        3,
+        4,
+        21
+      ],
+      "case": "starTrail",
+      "changedFromFirstPixels": 42229714,
+      "featheredForegroundPixels": 743040,
+      "foregroundReviewIndices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "foregroundUnknownIndices": [],
+      "frames": 24,
+      "height": 5760,
+      "inputSetSHA256": "60c609eb24ef496b8845661c8ae444c9414f08d699c35580b0e91c55d3d3ecf1",
+      "maximumSample": 2.558541774749756,
+      "maximumUnexposedSeconds": 240.79299998283386,
+      "medianStartIntervalSeconds": 60.02499985694885,
+      "minimumSample": -0.34754568338394165,
+      "outputByteCount": 597198276,
+      "outputSHA256": "399cdb3fe47169eeb6dcffed67b1755d3358bed030fa52fe69564fef33e3ce9a",
+      "overOnePixels": 2099,
+      "p01Luminance": -9.197524259798219e-06,
+      "p99Luminance": 0.06327611981108784,
+      "referenceForegroundPixels": 20157120,
+      "sampleCount": 16387,
+      "seconds": 26.54,
+      "width": 8640,
+      "winningFrames": 24
+    },
+    "star-stable": {
+      "cadenceBreakIndices": [
+        17
+      ],
+      "case": "starTrail",
+      "changedFromFirstPixels": 45422406,
+      "foregroundReviewIndices": [],
+      "foregroundUnknownIndices": [],
+      "frames": 20,
+      "height": 5760,
+      "inputSetSHA256": "f2e12ed8f6696669df01a91111a31d417ae97fa375f110c500fab41273297ca0",
+      "maximumSample": 2.465909957885742,
+      "maximumUnexposedSeconds": 91.09800004959106,
+      "medianStartIntervalSeconds": 60.0220000743866,
+      "minimumSample": -0.2627147138118744,
+      "outputByteCount": 597198276,
+      "outputSHA256": "1e91a0bb06c9366ec049686d69fe7582e3bd3c4ccbbfe4869131830734ad7180",
+      "overOnePixels": 1771,
+      "p01Luminance": 0.00046773690368281674,
+      "p99Luminance": 0.0687962720170617,
+      "sampleCount": 16387,
+      "seconds": 22.86,
+      "width": 8640,
+      "winningFrames": 20
+    },
+    "star-gap-final": {
+      "cadenceBreakIndices": [
+        2,
+        3,
+        4,
+        12,
+        20
+      ],
+      "case": "starTrail",
+      "changedFromFirstPixels": 42112523,
+      "foregroundReviewIndices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "foregroundUnknownIndices": [],
+      "frames": 23,
+      "height": 5760,
+      "inputSetSHA256": "b16b5df66f6e7989221dca1b4e892a42f3feb174ae85480061eafdaf377dc967",
+      "maximumSample": 2.558541774749756,
+      "maximumUnexposedSeconds": 240.79299998283386,
+      "medianStartIntervalSeconds": 60.027000188827515,
+      "minimumSample": -0.32356196641921997,
+      "outputByteCount": 597198276,
+      "outputSHA256": "ee45ab3e82b823f84365ab4aa9016d7f4242c3da58e9d184832e636530df8f44",
+      "overOnePixels": 1976,
+      "p01Luminance": 0.0007144020058971365,
+      "p99Luminance": 0.07526551093906164,
+      "sampleCount": 16387,
+      "seconds": 27.58,
+      "width": 8640,
+      "winningFrames": 23
+    },
+    "hdr-final": {
+      "case": "hdr",
+      "frames": 3,
+      "height": 5760,
+      "inputSetSHA256": "23d1d1cfc25d7a2421adb73bf820decb39a2a538b0417fd6b7e78b6a041b384b",
+      "maximumSample": 3.825416326522827,
+      "minimumSample": -0.3898654580116272,
+      "motionReferencePixels": 22,
+      "outputByteCount": 597198276,
+      "outputSHA256": "b8be7d33959a915390ce7a521faf9b0869c7deec37ed3921e98e741439fc517a",
+      "overOnePixels": 48300,
+      "p01Luminance": 0.00022844060475181322,
+      "p99Luminance": 0.19381527935266496,
+      "referenceIndex": 0,
+      "registration": [
+        "reference",
+        "SIFT translation",
+        "SIFT translation"
+      ],
+      "sampleCount": 16387,
+      "seconds": 6.06,
+      "width": 8640,
+      "workerPeakRSSMiB": 3062.3,
+      "zeroWeightReferenceFallbackPixels": 1665605
+    },
+    "hdr-five-final": {
+      "case": "hdr",
+      "frames": 5,
+      "height": 5760,
+      "inputSetSHA256": "ac345c0b67f73825bd36df18d5c50aeca086e6bd94372ef7a7c7a6710776585e",
+      "maximumSample": 2.512503147125244,
+      "minimumSample": -0.1269461214542389,
+      "motionReferencePixels": 6491308,
+      "outputByteCount": 597198276,
+      "outputSHA256": "b2d11c0b9fdec386ccecf73a9dd5e8c37a02b4ea980433f9d48368ab00bce171",
+      "overOnePixels": 8613324,
+      "p01Luminance": 0.00529686886081472,
+      "p99Luminance": 1.3866021266937254,
+      "referenceIndex": 0,
+      "registration": [
+        "reference",
+        "SIFT translation",
+        "median threshold bitmap translation",
+        "median threshold bitmap translation",
+        "SIFT translation"
+      ],
+      "sampleCount": 16387,
+      "seconds": 9.12,
+      "width": 8640,
+      "workerPeakRSSMiB": 3063.9,
+      "zeroWeightReferenceFallbackPixels": 0
+    },
+    "pano-final": {
+      "case": "panorama",
+      "cropRect": [
+        11,
+        386,
+        11519,
+        5384
+      ],
+      "frames": 3,
+      "height": 5384,
+      "inputSetSHA256": "fc7e2dca98c9220d59329361ef3bafd26edb55c407ac1d8a20f1bc508b0afffd",
+      "maximumSample": 0.35634148120880127,
+      "minimumSample": 0.0056776851415634155,
+      "outputByteCount": 744220988,
+      "outputSHA256": "c95e93fc642f50019779c0e6565100801cf4aaefa3cc96064d4336a2ff62f229",
+      "overOnePixels": 0,
+      "overlapEdges": [
+        {
+          "featureSupport": 0.7570032006252768,
+          "homographyP50ProxyPixels": 0.19556764388352357,
+          "homographyP95ProxyPixels": 0.6544124899675494,
+          "indices": [
+            0,
+            1
+          ],
+          "inliers": 1513,
+          "ratioMatches": 1523,
+          "rotationP95ProxyPixels": 0.7668836675923951,
+          "secondaryMotionInliers": 0
+        },
+        {
+          "featureSupport": 0.5384806939048007,
+          "homographyP50ProxyPixels": 0.21408913474508706,
+          "homographyP95ProxyPixels": 0.7194296749883877,
+          "indices": [
+            1,
+            2
+          ],
+          "inliers": 1211,
+          "ratioMatches": 1219,
+          "rotationP95ProxyPixels": 1.1418722633696765,
+          "secondaryMotionInliers": 0
+        },
+        {
+          "closure": true,
+          "indices": [
+            0,
+            2
+          ],
+          "inliers": 1004,
+          "rotationP95ProxyPixels": 1.144946329932803
+        }
+      ],
+      "p01Luminance": 0.023023826608434318,
+      "p99Luminance": 0.1826377631932497,
+      "sampleCount": 16386,
+      "seconds": 11.27,
+      "uncroppedEmptyPixels": 2377848,
+      "uncroppedOverlapPixels": 48689397,
+      "uncroppedSize": [
+        11596,
+        6094
+      ],
+      "width": 11519,
+      "workerPeakRSSMiB": 4668.2
+    },
+    "pano-disconnected-final": {
+      "case": "panorama",
+      "inputSetSHA256": "9baeaaaf34dc64c22daf7f024bc8e540d8fd79c9b31d92c2d36ebec199180e24",
+      "seconds": 2.26,
+      "workerPeakRSSMiB": 381.1,
+      "expectedFailure": "disconnected",
+      "diagnostic": "panorama disconnected between frozen indices 0,1 (inliers 4, matches 16, status 4)"
+    },
+    "anchors-final": {
+      "foregroundAnchors": [
+        {
+          "lowestCorrelation": 0.9873,
+          "maxShiftProxyPx": 0.0,
+          "preservedCorrelation": 0.9767,
+          "preservedOffset": [
+            0,
+            0
+          ],
+          "unmaskedCorrelation": 0.1534
+        },
+        {
+          "lowestCorrelation": 0.9949,
+          "maxShiftProxyPx": 0.0,
+          "preservedCorrelation": 0.9845,
+          "preservedOffset": [
+            0,
+            0
+          ],
+          "unmaskedCorrelation": 0.3029
+        }
+      ],
+      "inputSetSHA256": "60c609eb24ef496b8845661c8ae444c9414f08d699c35580b0e91c55d3d3ecf1",
+      "proxyHeight": 667,
+      "proxyWidth": 1000,
+      "stableFrozenIndices": [
+        4,
+        23
+      ],
+      "starTrajectories": [
+        {
+          "masterLocalContrastP05MAD": 54.74,
+          "samples": 20,
+          "trajectoryP95ProxyPx": 1.24
+        },
+        {
+          "masterLocalContrastP05MAD": 45.58,
+          "samples": 20,
+          "trajectoryP95ProxyPx": 1.016
+        },
+        {
+          "masterLocalContrastP05MAD": 45.41,
+          "samples": 20,
+          "trajectoryP95ProxyPx": 0.923
+        }
+      ]
+    }
+  },
+  "starForegroundComparison": {
+    "indexes": "zero based",
+    "referenceIndex": 12,
+    "startY": 0.58,
+    "normalizedCameraPreviewPatchCenters1000x667": [
+      [
+        432,
+        477
+      ],
+      [
+        750,
+        500
+      ]
+    ],
+    "unmaskedPeakCorrelation": [
+      0.1534,
+      0.3029
+    ],
+    "referenceForegroundPeakCorrelation": [
+      0.9767,
+      0.9845
+    ],
+    "referenceForegroundShiftProxyPixels": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ]
+  },
+  "controlledKernelChecks": {
+    "star": "whole winning RGB, deterministic ties",
+    "hdr": {
+      "labelledMovingPixels": 96,
+      "detectedMovingPixels": 96,
+      "falsePositivePixels": 0,
+      "falseNegativePixels": 0,
+      "tooDarkFallbackPixels": 112,
+      "reconstructedRadiance": 1.6
+    },
+    "panorama": "two separately moved texture layers rejected; single-shift control passed; textureless/disconnected and exact valid-rectangle cases passed"
+  },
+  "coverageLimits": [
+    "No independently labeled real moving-object HDR mask available",
+    "Real relief/parallax ground truth unavailable: controlled two-layer test is synthetic",
+    "Measured lower-region shifts require visible fixed foreground; unobserved regions remain unknown",
+    "Apple RAW decoder is macOS-specific; the C++ geometry, compositing and TIFF code use a portable boundary"
+  ],
+  "swiftHost": {
+    "actualHDRFormat": "tiff32f",
+    "actualHDRSize": [
+      8640,
+      5760
+    ],
+    "publishedFrames": 1,
+    "starCancellation": "child reaped; private attempt contained zero files after cancellation",
+    "sourcePolicyProbe": {
+      "policy": "originalLinearRAW",
+      "verifiedWorkVersionIDs": 3,
+      "unsupportedActiveAppearanceRejectedWithoutOutput": true
+    }
+  }
+}

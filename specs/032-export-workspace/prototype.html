@@ -129,7 +129,8 @@
 <body>
 <main class="app">
   <header>
-    <div class="title"><h1>导出</h1><span class="small">河谷拍摄 / 资料库所选</span></div>
+    <div class="title"><h1>导出</h1><span id="selection-origin" class="small">河谷拍摄 / 资料库所选</span></div>
+    <a id="workbench-entry" class="link-button" href="../../docs/ui/prototype/index.html">返回摄影工作台</a>
 
   </header>
   <div class="layout">
@@ -281,13 +282,21 @@
     <div class="actions"><button type="button" id="cancel-exchange">取消</button><button class="primary" id="confirm-exchange"></button></div>
   </form>
 </dialog>
+<script src="../../docs/ui/prototype/photos.js"></script>
 <script src="export-layout.js"></script>
 <script src="export-preset.js"></script>
 <script src="workspace-selection.js"></script>
 <script>
   const byId = id => document.getElementById(id);
   const root = '../../Tests/RAWMasterImagingTests/Fixtures/SequenceGrouping/v1/cases/';
-  const photos = [
+  const workbenchPhotos = typeof RMPhotos === 'undefined' ? null : RMPhotos;
+  const handoff = workbenchPhotos?.readHandoff(location.hash);
+  if (handoff) {
+    byId('selection-origin').textContent = handoff.source;
+    byId('sample-size').closest('label').hidden = true;
+  }
+  byId('workbench-entry').hidden = !workbenchPhotos || window.parent !== window;
+  const photos = handoff?.photos ?? [
     {name:'DJI_0348.DNG', scene:'日落时的河道', image:'dji187-context376', date:'20261017', online:true, gps:true, rights:true, choice:0,
       exif:{camera:'DJI Mavic 3',lens:'Hasselblad L2D-20c',focal:'24 mm 等效',aperture:'ƒ/2.8',shutter:'1/500 s',iso:'ISO 100',date:'2026-10-17'},
       versions:[{label:'当前调整',w:6000,h:3375},{label:'采用版本 1',w:4000,h:2250}]},
@@ -338,7 +347,7 @@
       color:'srgb',gps:byId('gps').checked,layout:structuredClone(layout)};
   }
 
-  function imageURL(photo) { return root + photo.image + '/files/asset0000.jpg'; }
+  function imageURL(photo) { return root + (workbenchPhotos?.file(photo) ?? photo.image + '/files/asset0000.jpg'); }
   function inputAvailable(photo, kind, version = photo.versions[photo.choice]) {
     return photo.online || (kind === 'render' && version.archive === true);
   }
@@ -553,11 +562,17 @@
   function canRetry(row) {
     return row.state === '已取消' || (row.state === '待找回' && inputAvailable(photos[row.index],job.mode,row.version));
   }
+  function publishJob() {
+    if (!handoff || window.parent === window) return;
+    window.parent.postMessage({type:'rawmaster.delivery.receipt', id:job.id, running:job.running,
+      kind:job.mode==='render'?'成片导出':'原件交付', folder:job.directory,
+      rows:job.items.map(({name,state})=>({name,state}))}, location.protocol==='file:'?'*':location.origin);
+  }
   function runNext() {
     if (runnerJob !== job) { runnerJob = job; taskCursor = 0; }
     while (taskCursor < job.items.length && job.items[taskCursor].state !== '待执行') taskCursor++;
     const next = job.items[taskCursor++];
-    if (!next) { job.running = false; showJob(); refresh(); return; }
+    if (!next) { job.running = false; showJob(); refresh(); publishJob(); return; }
     next.state = '处理中'; showJob();
     timer = setTimeout(() => {
       next.state = '已完成';
@@ -583,10 +598,10 @@
       try { updateMemory(); } catch { memory.previous=previous; presetStatus('本机存储不可用，上次设置未保存。',true); }
       byId('preset').value = selection;
     }
-    job = {mode,folder,directory:folderNames[folder] + (mode === 'original' ? ' / RAWMaster精选' : ''),
+    job = {id:crypto.randomUUID?.() ?? String(Date.now()),mode,folder,directory:folderNames[folder] + (mode === 'original' ? ' / RAWMaster精选' : ''),
       recipe:mode === 'render' ? byId('format').selectedOptions[0].textContent+' · '+styleName(layout) : '原件清单',
       settings:currentSettings(),items,running:true};
-    byId('job').showModal(); refresh(); runNext();
+    byId('job').showModal(); refresh(); publishJob(); runNext();
   }
   function switchMode(value) {
     if (mode===value) return;
@@ -635,12 +650,12 @@
   byId('cancel-job').onclick = () => {
     clearTimeout(timer);
     for (const row of job.items) if (['待执行','处理中'].includes(row.state)) row.state = '已取消';
-    job.running = false; showJob(); refresh();
+    job.running = false; showJob(); refresh(); publishJob();
   };
   byId('retry').onclick = () => {
     for (const row of job.items) if (canRetry(row)) row.state = '待执行';
     taskCursor = 0;
-    job.running = true; refresh(); runNext();
+    job.running = true; refresh(); publishJob(); runNext();
   };
 </script>
 <script src="workspace-controls.js"></script>

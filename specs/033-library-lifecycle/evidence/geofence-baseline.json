@@ -1,0 +1,22 @@
+{
+  "sqlite": "3.53.4",
+  "catalog_images": 43380,
+  "usable_gps": 10960,
+  "no_usable_gps": 32420,
+  "circle_25_km": {
+    "bbox_candidates": 5102,
+    "matches": 3833,
+    "same_ids_as_full_scan": true,
+    "warm_n": 31,
+    "p50_ms": 2.848,
+    "p95_ms": 2.941
+  },
+  "local_polygon": {
+    "bbox_candidates": 1379,
+    "matches": 1145,
+    "same_ids_as_full_scan": true,
+    "warm_n": 31,
+    "p50_ms": 1.311,
+    "p95_ms": 1.366
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "platform": "macOS 27.0.1 arm64",
+  "base_checkout": "b89702e8714fd0fd23c809474e0fe581c613cb3b",
+  "build": "native SwiftPM debug, frozen working sources, focused imaging test target in private copy",
+  "selected_tests": 100,
+  "failures": 0,
+  "skipped": 0,
+  "selected_elapsed_seconds": 15.597,
+  "full_suite": "initial all-target compilation blocked by Double-to-Float error in PairedPhotoOperatorRecipes.swift:90",
+  "raw_files": 6,
+  "raw_bytes": 423075840,
+  "source_and_test_copy_digest_verified": true,
+  "original_volume_mtimes_unchanged": true,
+  "real_import": {
+    "assetCount": 6,
+    "groupCount": 0,
+    "mode": "reference",
+    "providerVersion": "runtime-exiftool-jsonq-v1",
+    "runState": "completedNoGroups",
+    "elapsedSeconds": 1.7032722083386034,
+    "sourceSHAUnchanged": true
+  },
+  "sony_fields_observed": {
+    "sony.AFPointSelected": 6,
+    "sony.FocusFrameSize": 6,
+    "sony.FocusLocation": 6
+  },
+  "real_timelapse": {
+    "test_elapsed_seconds": 11.71,
+    "source_modification_dates_preserved": true,
+    "renders": [
+      {
+        "duration": 0.2,
+        "frameCount": 6,
+        "height": 540,
+        "preview": true,
+        "width": 960
+      },
+      {
+        "duration": 0.2,
+        "frameCount": 6,
+        "height": 1080,
+        "preview": false,
+        "width": 1920
+      }
+    ]
+  }
+}

@@ -1,0 +1,283 @@
+[
+  {
+    "schema_version": 1,
+    "mode": "hdr",
+    "frame_count": 3,
+    "ordered_source_sha256": "23d1d1cfc25d7a2421adb73bf820decb39a2a538b0417fd6b7e78b6a041b384b",
+    "max_preview_edge_px": 640,
+    "versions": {
+      "opencv": "4.12.0",
+      "rawpy": "0.26.1",
+      "numpy": "2.2.6",
+      "libraw": "0.22.0",
+      "exiftool": "13.59"
+    },
+    "measurements": {
+      "reference_frame": 1,
+      "exposure_seconds": [
+        0.00625,
+        0.0015625,
+        0.025
+      ],
+      "iso": 100.0,
+      "aperture": 8.0,
+      "sensor_step": 17,
+      "sensor_sites": 173910,
+      "adjacent_exposures": [
+        {
+          "shorter_frame": 2,
+          "longer_frame": 1,
+          "overlap_sites": 13794,
+          "expected_ratio": 4.0,
+          "median_signal_ratio": 3.966887417218543
+        },
+        {
+          "shorter_frame": 1,
+          "longer_frame": 3,
+          "overlap_sites": 80545,
+          "expected_ratio": 4.0,
+          "median_signal_ratio": 3.9888059701492535
+        }
+      ],
+      "reference_near_white": 3,
+      "near_white_covered_by_shorter": 1,
+      "reference_low_signal": 92795,
+      "low_signal_covered_by_longer": 24572,
+      "preview_size": [
+        640,
+        428
+      ],
+      "preview_median_luma": [
+        46.0,
+        11.0,
+        106.0
+      ],
+      "preview_integer_shifts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    }
+  },
+  {
+    "schema_version": 1,
+    "mode": "hdr",
+    "frame_count": 5,
+    "ordered_source_sha256": "ac345c0b67f73825bd36df18d5c50aeca086e6bd94372ef7a7c7a6710776585e",
+    "max_preview_edge_px": 640,
+    "versions": {
+      "opencv": "4.12.0",
+      "rawpy": "0.26.1",
+      "numpy": "2.2.6",
+      "libraw": "0.22.0",
+      "exiftool": "13.59"
+    },
+    "measurements": {
+      "reference_frame": 1,
+      "exposure_seconds": [
+        0.003125,
+        0.0004,
+        0.025,
+        0.000125,
+        0.2
+      ],
+      "iso": 200.0,
+      "aperture": 8.0,
+      "sensor_step": 17,
+      "sensor_sites": 173910,
+      "adjacent_exposures": [
+        {
+          "shorter_frame": 4,
+          "longer_frame": 2,
+          "overlap_sites": 63751,
+          "expected_ratio": 3.2,
+          "median_signal_ratio": 2.616858237547893
+        },
+        {
+          "shorter_frame": 2,
+          "longer_frame": 1,
+          "overlap_sites": 57505,
+          "expected_ratio": 7.8125,
+          "median_signal_ratio": 7.24009900990099
+        },
+        {
+          "shorter_frame": 1,
+          "longer_frame": 3,
+          "overlap_sites": 55254,
+          "expected_ratio": 8.0,
+          "median_signal_ratio": 7.401789280293953
+        },
+        {
+          "shorter_frame": 3,
+          "longer_frame": 5,
+          "overlap_sites": 72862,
+          "expected_ratio": 8.0,
+          "median_signal_ratio": 7.887488656987296
+        }
+      ],
+      "reference_near_white": 6006,
+      "near_white_covered_by_shorter": 6005,
+      "reference_low_signal": 52434,
+      "low_signal_covered_by_longer": 52433,
+      "preview_size": [
+        640,
+        428
+      ],
+      "preview_median_luma": [
+        58.0,
+        9.0,
+        201.0,
+        4.0,
+        255.0
+      ],
+      "preview_integer_shifts": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ]
+    }
+  },
+  {
+    "schema_version": 1,
+    "mode": "panorama",
+    "frame_count": 2,
+    "ordered_source_sha256": "ad84859e791d3705df9a5f7ff72f3d43625a2035fdcb5ecb930e100e4f255fdf",
+    "max_preview_edge_px": 640,
+    "versions": {
+      "opencv": "4.12.0",
+      "rawpy": "0.26.1",
+      "numpy": "2.2.6",
+      "libraw": "0.22.0",
+      "exiftool": "13.59"
+    },
+    "measurements": {
+      "preview_sizes": [
+        [
+          640,
+          428
+        ],
+        [
+          640,
+          428
+        ]
+      ],
+      "pairs": [
+        {
+          "frames": [
+            1,
+            2
+          ],
+          "matches": 1,
+          "inliers": 0,
+          "median_proxy_px": null,
+          "p95_proxy_px": null
+        }
+      ],
+      "stitch_status": 1,
+      "used_frames": [
+        1
+      ],
+      "all_frames_stitched": false,
+      "panorama_size": null
+    }
+  },
+  {
+    "schema_version": 1,
+    "mode": "panorama",
+    "frame_count": 3,
+    "ordered_source_sha256": "fc7e2dca98c9220d59329361ef3bafd26edb55c407ac1d8a20f1bc508b0afffd",
+    "max_preview_edge_px": 640,
+    "versions": {
+      "opencv": "4.12.0",
+      "rawpy": "0.26.1",
+      "numpy": "2.2.6",
+      "libraw": "0.22.0",
+      "exiftool": "13.59"
+    },
+    "measurements": {
+      "preview_sizes": [
+        [
+          640,
+          428
+        ],
+        [
+          640,
+          428
+        ],
+        [
+          640,
+          428
+        ]
+      ],
+      "pairs": [
+        {
+          "frames": [
+            1,
+            2
+          ],
+          "matches": 638,
+          "inliers": 608,
+          "median_proxy_px": 0.625747561454773,
+          "p95_proxy_px": 1.815878987312317
+        },
+        {
+          "frames": [
+            2,
+            3
+          ],
+          "matches": 503,
+          "inliers": 474,
+          "median_proxy_px": 0.6748401522636414,
+          "p95_proxy_px": 2.027334213256836
+        },
+        {
+          "frames": [
+            1,
+            3
+          ],
+          "matches": 353,
+          "inliers": 322,
+          "median_proxy_px": 0.6428731679916382,
+          "p95_proxy_px": 1.9518086910247803
+        }
+      ],
+      "stitch_status": 0,
+      "used_frames": [
+        1,
+        2,
+        3
+      ],
+      "all_frames_stitched": true,
+      "panorama_size": [
+        863,
+        451
+      ]
+    }
+  }
+]

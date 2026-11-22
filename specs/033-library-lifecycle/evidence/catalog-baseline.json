@@ -1,0 +1,92 @@
+{
+  "schema_version": 7,
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "sqlite_projection_version": "3.54.0",
+  "production_read_sources_sha256": "63e361e663ba1aa6b987afc0ddfa97a73695af97e36caaaec2cd5748f73706a6",
+  "snapshot_files": 6928,
+  "admitted_files": 1408,
+  "groups": 49,
+  "catalog_open_ms": 44.884,
+  "first_snapshot_ms": 236.229,
+  "subsequent_snapshot": {
+    "n": 9,
+    "p50_ms": 235.8442,
+    "p95_ms": 236.5051
+  },
+  "projection_build_ms": 7.431,
+  "projection_bytes": 430080,
+  "page_size_files": 60,
+  "cases": {
+    "all": {
+      "matched_files": 1408,
+      "all_ordered_ids_match": true,
+      "swift_resident_all_matches": {
+        "n": 31,
+        "p50_ms": 3.9005,
+        "p95_ms": 4.4524
+      },
+      "sqlite_first_60_and_exact_count": {
+        "n": 31,
+        "p50_ms": 0.041,
+        "p95_ms": 0.0453
+      },
+      "sqlite_plan": [
+        "SCAN photo USING INDEX by_time"
+      ]
+    },
+    "camera_since_median": {
+      "matched_files": 704,
+      "all_ordered_ids_match": true,
+      "swift_resident_all_matches": {
+        "n": 31,
+        "p50_ms": 5.522,
+        "p95_ms": 5.9391
+      },
+      "sqlite_first_60_and_exact_count": {
+        "n": 31,
+        "p50_ms": 0.0474,
+        "p95_ms": 0.0491
+      },
+      "sqlite_plan": [
+        "SEARCH photo USING INDEX by_camera_time (camera=? AND missing_time=? AND reverse_time<?)"
+      ]
+    },
+    "rating_four_plus": {
+      "matched_files": 1,
+      "all_ordered_ids_match": true,
+      "swift_resident_all_matches": {
+        "n": 31,
+        "p50_ms": 0.18,
+        "p95_ms": 0.3487
+      },
+      "sqlite_first_60_and_exact_count": {
+        "n": 31,
+        "p50_ms": 0.0921,
+        "p95_ms": 0.0972
+      },
+      "sqlite_plan": [
+        "SCAN photo USING INDEX by_time"
+      ]
+    },
+    "filename_substring": {
+      "matched_files": 1,
+      "all_ordered_ids_match": true,
+      "swift_resident_all_matches": {
+        "n": 31,
+        "p50_ms": 1.249,
+        "p95_ms": 1.6367
+      },
+      "sqlite_first_60_and_exact_count": {
+        "n": 31,
+        "p50_ms": 0.0291,
+        "p95_ms": 0.0367
+      },
+      "sqlite_plan": [
+        "SEARCH photo USING INTEGER PRIMARY KEY (rowid=?)",
+        "LIST SUBQUERY 1",
+        "SCAN names VIRTUAL TABLE INDEX 0:M1",
+        "USE TEMP B-TREE FOR ORDER BY"
+      ]
+    }
+  }
+}

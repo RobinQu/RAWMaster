@@ -1,0 +1,176 @@
+{
+  "protocol": "L08-native-relative-v2",
+  "platform": "macOS arm64, system SQLite, Swift 6, ImageIO + CIRAWFilter + ExifTool 13.59; production Rust inspector through C ABI",
+  "sourceCohorts": {
+    "existingLandscapeRAW": 6,
+    "eyeBursts": {
+      "groups": 2,
+      "framesPerGroup": 3,
+      "interFrameMilliseconds": 100,
+      "distinctSubjects": 1
+    },
+    "nightSkyRAW": 3,
+    "additionalCameraGeometryRAW": 1
+  },
+  "uniqueRawFiles": 16,
+  "exifEmbeddedCounts": {
+    "camera": 16,
+    "lens": 16,
+    "iso": 16,
+    "aperture": 16,
+    "shutterSeconds": 16,
+    "focalLength": 16,
+    "width": 16,
+    "height": 16,
+    "orientation": 16
+  },
+  "makerNote": {
+    "tag": "Sony:FocusLocation 0x2027",
+    "axes": "unoriented native top left",
+    "cameras": {
+      "ILCE-1M2": 1,
+      "ILCE-7RM5": 6,
+      "ILCE-1": 9
+    },
+    "qualified": 13,
+    "unknownReason": {
+      "ambiguousCentreFallback": 3
+    },
+    "relationToEye": "All six camera-point 192px contexts overlap the visually reviewed second eye. The marker can lie on the iris margin or near the eyelid. Exact pupil-centre accuracy ungraded."
+  },
+  "histogram": {
+    "label": "cameraJPEG embedded in RAW",
+    "space": "sRGB 8 bit",
+    "binsPerChannel": 256,
+    "sourcesPassingAllThreeChannelSumChecks": 16,
+    "matchingSourceDigests": 16,
+    "pixelsPerFile": [
+      175104
+    ]
+  },
+  "classifier": {
+    "method": "native-region-relative-v2",
+    "nativePatchPixels": [
+      96,
+      96
+    ],
+    "frameRegionObservations": 42,
+    "automaticSummary": {
+      "cameraAF": {
+        "verdicts": {
+          "unknown": 6
+        },
+        "reasons": {
+          "lowTexture": 4,
+          "insufficientComparableFrames": 2
+        }
+      },
+      "cameraEyeA": {
+        "verdicts": {
+          "clear": 3
+        },
+        "reasons": {
+          "comparableFineDetail": 3
+        }
+      },
+      "cameraEyeB": {
+        "verdicts": {
+          "clear": 3
+        },
+        "reasons": {
+          "comparableFineDetail": 3
+        }
+      },
+      "dayRiver": {
+        "verdicts": {
+          "unknown": 1,
+          "clear": 5
+        },
+        "reasons": {
+          "ambiguousRelativeDetail": 1,
+          "comparableFineDetail": 5
+        }
+      },
+      "daySky": {
+        "verdicts": {
+          "unknown": 6
+        },
+        "reasons": {
+          "lowTexture": 6
+        }
+      },
+      "dayTexture": {
+        "verdicts": {
+          "unknown": 6
+        },
+        "reasons": {
+          "lowSignalShadow": 6
+        }
+      },
+      "eyeBurstA": {
+        "verdicts": {
+          "clear": 3
+        },
+        "reasons": {
+          "comparableFineDetail": 3
+        }
+      },
+      "eyeBurstB": {
+        "verdicts": {
+          "clear": 3
+        },
+        "reasons": {
+          "comparableFineDetail": 3
+        }
+      },
+      "night": {
+        "verdicts": {
+          "unknown": 3
+        },
+        "reasons": {
+          "underOrOverexposed": 3
+        }
+      },
+      "nightAF": {
+        "verdicts": {
+          "unknown": 3
+        },
+        "reasons": {
+          "noAFOrSubject": 3
+        }
+      }
+    }
+  },
+  "manualReview": {
+    "independentOfMachineScores": "one visual review of camera preview for landmark nomination and 1:1 native RAW 192px context with the 96px measurement window outlined; no optical bench or second reviewer",
+    "distinctManuallyResolvedRegions": 11,
+    "breakdown": {
+      "chosenEyeClear": 6,
+      "stationaryRiverBankClear": 5
+    },
+    "falseSuspectedBlurAgainstResolvedRegions": 0,
+    "visiblySofterRelativeRiverReferences": 1,
+    "softRiverMachineVerdict": "unknown / ambiguousRelativeDetail",
+    "softRiverRelativeScore": 0.5588,
+    "reviewPolicyIfOnlySuspectedBlurIsFlagged": {
+      "manualReviewNeeded": 1,
+      "flagged": 0,
+      "abstained": 1
+    },
+    "confirmedOpticalDefocusPositives": 0,
+    "falseNegativeRateForOpticalDefocus": null,
+    "humanOverridePostReanalysis": {
+      "dayRiver": {
+        "eligible": true,
+        "human": "suspectedBlur",
+        "machine": "unknown"
+      },
+      "night": {
+        "eligible": true,
+        "human": "unknown",
+        "machine": "unknown"
+      }
+    },
+    "privacy": "no original names, absolute paths, human identity, face embeddings, images or GPS in this report"
+  }
+}

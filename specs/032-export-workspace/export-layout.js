@@ -105,7 +105,10 @@ const ExportLayout = (() => {
     const scale=first.w/version.w;
     const second=sourceCrop ? {x:sourceCrop.x*scale,y:sourceCrop.y*scale,w:sourceCrop.w*scale,h:sourceCrop.h*scale}
       : crop(first.w,first.h,rect.w/rect.h);
+    ctx.save();
+    if (version.look) ctx.filter = RMPhotos.filter(version.look);
     ctx.drawImage(image,first.x+second.x,first.y+second.y,second.w,second.h,rect.x,rect.y,rect.w,rect.h);
+    ctx.restore();
   }
   function mark(ctx,layout,geometry,lines,logoImage) {
     if (layout.mark === 'off') return;

@@ -1,0 +1,399 @@
+{
+  "origin": "https://lightflow.dev/",
+  "build": "20261111155800-2d41ab1",
+  "finishedUTC": "2026-11-22T15:11:34.708599+00:00",
+  "fileCount": 65,
+  "fileBytes": 43901147,
+  "files": [
+    {
+      "path": "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js",
+      "bytes": 67597,
+      "sha256": "e6f60be14128f814724b8aafe1521468cf964f4a3721a7bb062555b6957dbe02",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm",
+      "bytes": 2176531,
+      "sha256": "83d91cf5bdd064f8b07a85015d7d992f15aed4976aab93c5a0a57c0e465fc393",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/engine-state/lightflow_host_wasm_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/engine-state/persist-worker.js",
+      "bytes": 13481,
+      "sha256": "cf45df523c3cf3fa69668593110528dfd9474487aa498b94dfefa10c348d8f31",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/engine-state/persist-worker.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js",
+      "bytes": 87030,
+      "sha256": "24899f1abe64a1c12e978313fa616fe54789dd652429ce9ad3d821a386158992",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm",
+      "bytes": 3427245,
+      "sha256": "60eccb47c1b5481b747c2b1a22cf19e719b89d6b325429522abd7f3e863d2699",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/engine-state/persist/lightflow_host_wasm_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/browser.js",
+      "bytes": 3776,
+      "sha256": "c251490329d499fdec0dfeb29e2df65a703a593450958c60d5c20194d544e231",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/browser.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/core.js",
+      "bytes": 46241,
+      "sha256": "c703ddb931367b21f256a20c9842d5c4ec517629e5dd1314676fd109660b170a",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/core.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/errors.js",
+      "bytes": 3118,
+      "sha256": "9063113ae8d20a7ac62f04119a08bf3f566ea867c910b78869802f303b217cad",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/errors.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/flashraw.wasm",
+      "bytes": 2600351,
+      "sha256": "259664cc83f3d8c4d932d51d0f100e816782ad2e520512267f9efc5646c1190d",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/flashraw.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js",
+      "bytes": 24953,
+      "sha256": "119afa008b86ae2a73268aecba2135355fac127eceeacc7402562d6772e7e900",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen_threads.js",
+      "bytes": 30816,
+      "sha256": "c4803f3d27d9ae36e6dfb0de2ea3f83ff59b4e670d4f428d9da3bfd2747073b2",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/flashraw_bindgen_threads.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm",
+      "bytes": 2649619,
+      "sha256": "f2d14f64b74f9a8c9a0b56eda191429c1cbe105e8fc4321d20d1f17c97c22021",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/flashraw_simd.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/flashraw_simd_threads.wasm",
+      "bytes": 2726741,
+      "sha256": "bd70ec98d095602a326780b3dfc13afcccc76a8fe0b887fbc290d3377c49d3eb",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/flashraw_simd_threads.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/thread-worker.browser.js",
+      "bytes": 434,
+      "sha256": "016cd62f67eb77e431b8cf8290886ed03eeb54dd4a84aaf8774677ddd01124d1",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/thread-worker.browser.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/threads.js",
+      "bytes": 8557,
+      "sha256": "a18ec5f6781af02815fe67de6896002b1ce70ab45effb7cb19a75dc10af17d66",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/threads.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js",
+      "bytes": 431,
+      "sha256": "2005150e5af686942e2f95a0ba5ab1d14f32efa820aa4d51d7268e63ee3e1abd",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/worker-entry.browser.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/flashraw/worker-protocol.js",
+      "bytes": 16082,
+      "sha256": "a9b4b96a2ad379a2eb602b6b560e2cb5f8b48e003910d72ef391dece7623e278",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/flashraw/worker-protocol.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/io-catalog/web/lightflow_io_catalog_wasm.js",
+      "bytes": 11812,
+      "sha256": "4b8056478a2c2ef620f0c59aa02d833f12a902c0a5152036fe8d27ea356313d2",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/io-catalog/web/lightflow_io_catalog_wasm.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/io-catalog/web/lightflow_io_catalog_wasm_bg.wasm",
+      "bytes": 2658854,
+      "sha256": "7f3174018c9642c7e7d85ca70049399327992c7d55ee898f7640df517b2b7961",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/io-catalog/web/lightflow_io_catalog_wasm_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/io/web-mt/lightflow_io_wasm_mt.js",
+      "bytes": 34286,
+      "sha256": "1fd10035976c36606fa80a75195c136650de2b8d2717a5035b2b98102378d879",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/io/web-mt/lightflow_io_wasm_mt.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/io/web-mt/lightflow_io_wasm_mt_bg.wasm",
+      "bytes": 4878684,
+      "sha256": "562c1d6387caa27621a5b89338455484834928bfc8735df017ca09093bb157d5",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/io/web-mt/lightflow_io_wasm_mt_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js",
+      "bytes": 32794,
+      "sha256": "f2175d9523958cd0ffab877b1f845bb72d6e350dacb2bf6ac5fed09fb746eeea",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm",
+      "bytes": 4840461,
+      "sha256": "64182ef473d44c53564643f1bd6d1d1e0256f262cfb573c2debdaa63165a85aa",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/io/web/lightflow_io_wasm_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/ml/web/lightflow_ml_wasm.js",
+      "bytes": 25857,
+      "sha256": "6b8d0c05d84381f37aa724af2d3ecc08c5907a537fcae3a8fe48eea2aa06b4db",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/ml/web/lightflow_ml_wasm.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/ml/web/lightflow_ml_wasm_bg.wasm",
+      "bytes": 516420,
+      "sha256": "afff61851ff419c221b7f654b92e84d1c6934f3927e40f752f0f25921195e130",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/ml/web/lightflow_ml_wasm_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/version.json",
+      "bytes": 592,
+      "sha256": "4fa0a931372c2b25cb3f08aeddfdbeb7e7f35d98da9b4c7cc1bc2c73d50b993f",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/version.json"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+      "bytes": 159110,
+      "sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt_bg.wasm",
+      "bytes": 6743162,
+      "sha256": "99cd37e2b3a3d61d35ef9e9ccebec597043e9cc5b52fa9525b2b72ec42d90391",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+      "bytes": 154778,
+      "sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm",
+      "bytes": 6786497,
+      "sha256": "bf00cd83e6ef03014878f83dc235dcf46f7e408c052cef48240a764268227674",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm_bg.wasm"
+    },
+    {
+      "path": "_b/20261111155800-2d41ab1/vendor/sql-wasm-browser.wasm",
+      "bytes": 658410,
+      "sha256": "38c14f6e379210bc942bdc4ebca44e7bfdb4318ecc1c72ca666a28fdce96670a",
+      "url": "https://lightflow.dev/_b/20261111155800-2d41ab1/vendor/sql-wasm-browser.wasm"
+    },
+    {
+      "path": "assets/chunk-OB3PAWPO-CFl22NXe.js",
+      "bytes": 131692,
+      "sha256": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+      "url": "https://lightflow.dev/assets/chunk-OB3PAWPO-CFl22NXe.js"
+    },
+    {
+      "path": "assets/client-ByIw6bCp.js",
+      "bytes": 12460,
+      "sha256": "137570041f77f14ee2793027b5b157982475b40cdf84e69142c8ba37673de41f",
+      "url": "https://lightflow.dev/assets/client-ByIw6bCp.js"
+    },
+    {
+      "path": "assets/codecPoolWorker-CI4cKCaX.js",
+      "bytes": 322,
+      "sha256": "a63eefa6e47db51a70ddb3fe69a98f0db1a47b3313e9ca053a1a9c464fe441f0",
+      "url": "https://lightflow.dev/assets/codecPoolWorker-CI4cKCaX.js"
+    },
+    {
+      "path": "assets/codecWorker-Dt1VOinP.js",
+      "bytes": 4957,
+      "sha256": "6ea14c9f2b5c8c5141597d9e28ea2fff807d50816c7c9c777706b43f895fbc4e",
+      "url": "https://lightflow.dev/assets/codecWorker-Dt1VOinP.js"
+    },
+    {
+      "path": "assets/constants-BKJYUicQ.js",
+      "bytes": 852,
+      "sha256": "75c19257cdbd6cd68358084163618333e38d8853096c103e025581b4f75bce6a",
+      "url": "https://lightflow.dev/assets/constants-BKJYUicQ.js"
+    },
+    {
+      "path": "assets/cpuWorker-DaXiU2P4.js",
+      "bytes": 33103,
+      "sha256": "82cb8a8b22f6cf3278b583153bb8c5081fdf1edebdc87c9858b0f1dfc421980c",
+      "url": "https://lightflow.dev/assets/cpuWorker-DaXiU2P4.js"
+    },
+    {
+      "path": "assets/engine-d1gvi8U2.js",
+      "bytes": 185,
+      "sha256": "175b925ee0c3f72e92b4db9dfc6ae6059964aebd7998dd3c6c857fd02838670e",
+      "url": "https://lightflow.dev/assets/engine-d1gvi8U2.js"
+    },
+    {
+      "path": "assets/entry.client-DsBqhnPk.js",
+      "bytes": 215826,
+      "sha256": "0fdc04f0c0e8f108d96c8f33e7322a60e9aaaf8156e47139ebc9ddd60a56fd0f",
+      "url": "https://lightflow.dev/assets/entry.client-DsBqhnPk.js"
+    },
+    {
+      "path": "assets/home-CD2BGesn.js",
+      "bytes": 2466,
+      "sha256": "f775616a287aed892ba2ce8e11be2a8157d795650b0f0a270ff7c56994ed9fae",
+      "url": "https://lightflow.dev/assets/home-CD2BGesn.js"
+    },
+    {
+      "path": "assets/home-QVn-GJkA.js",
+      "bytes": 98,
+      "sha256": "538b2219bc4626c6dc277a468f7a26c41a5c301d4806aabca50f5d366c79fb51",
+      "url": "https://lightflow.dev/assets/home-QVn-GJkA.js"
+    },
+    {
+      "path": "assets/index-BH-xifXf.js",
+      "bytes": 4235,
+      "sha256": "86913d4a58e20824cac905da757a54bc3a4695e70df85cb471dad19e94bf71a0",
+      "url": "https://lightflow.dev/assets/index-BH-xifXf.js"
+    },
+    {
+      "path": "assets/index-CbOzpU21.js",
+      "bytes": 1508,
+      "sha256": "8a93414a8a98d77806213197391129a01e506811f5ddaa0bdb5731c37de3571f",
+      "url": "https://lightflow.dev/assets/index-CbOzpU21.js"
+    },
+    {
+      "path": "assets/index-DkoodY4j.css",
+      "bytes": 211000,
+      "sha256": "78e3a2e40489626fceae5433a54e17c459e14ced81e3f901cbf6885fc62b8829",
+      "url": "https://lightflow.dev/assets/index-DkoodY4j.css"
+    },
+    {
+      "path": "assets/index-zP4kU_H7.js",
+      "bytes": 1377818,
+      "sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+      "url": "https://lightflow.dev/assets/index-zP4kU_H7.js"
+    },
+    {
+      "path": "assets/inpaintGpu-Cp3ARYYv.js",
+      "bytes": 1582,
+      "sha256": "a42a2698c1c8c606f863fee77649ac329dcf6afd1a70061f7a1934da513f99a7",
+      "url": "https://lightflow.dev/assets/inpaintGpu-Cp3ARYYv.js"
+    },
+    {
+      "path": "assets/jobs-BKGhUuG3.js",
+      "bytes": 5255,
+      "sha256": "8608eaa7dfbf2a799a4b503dd2ebf0a162f37881e5f0a18d5edd35cc5cfad752",
+      "url": "https://lightflow.dev/assets/jobs-BKGhUuG3.js"
+    },
+    {
+      "path": "assets/license-D2AiRKFk.js",
+      "bytes": 554,
+      "sha256": "386b40b9c010d6875789f80890cf0016ca58f17cb2869925e775f5e71a3d4e81",
+      "url": "https://lightflow.dev/assets/license-D2AiRKFk.js"
+    },
+    {
+      "path": "assets/magic-uEMurClU.js",
+      "bytes": 1400,
+      "sha256": "3732581ac76d4b79db023b725f6e808ce15056db185cf69db37890edbfc5ca8b",
+      "url": "https://lightflow.dev/assets/magic-uEMurClU.js"
+    },
+    {
+      "path": "assets/manifest-e2d6bcaa.js",
+      "bytes": 4308,
+      "sha256": "49be1be48765fbbfbb0d65eaf33d2e994007817197bfeba8abfa69747017cc5d",
+      "url": "https://lightflow.dev/assets/manifest-e2d6bcaa.js"
+    },
+    {
+      "path": "assets/ortWorker-DaXiU2P4.js",
+      "bytes": 33103,
+      "sha256": "82cb8a8b22f6cf3278b583153bb8c5081fdf1edebdc87c9858b0f1dfc421980c",
+      "url": "https://lightflow.dev/assets/ortWorker-DaXiU2P4.js"
+    },
+    {
+      "path": "assets/platform-desktop-viewer-MWZ0vuNw.js",
+      "bytes": 27980,
+      "sha256": "a2c820b6c9773f73f770c21bcfc4685c824ae82474f44f652e331cdb1758ad06",
+      "url": "https://lightflow.dev/assets/platform-desktop-viewer-MWZ0vuNw.js"
+    },
+    {
+      "path": "assets/poolWorker-BBICA5-b.js",
+      "bytes": 334,
+      "sha256": "ed6fb3d7124e3b649c86cc303c36d10f9af548eccabc9500682265aa5d084d7e",
+      "url": "https://lightflow.dev/assets/poolWorker-BBICA5-b.js"
+    },
+    {
+      "path": "assets/root-CtqOeRF2.js",
+      "bytes": 2029,
+      "sha256": "0f33e8ad7e216f128878af6cdee456d3d4996c8ac93dc9ff4ad018ea11ec7f97",
+      "url": "https://lightflow.dev/assets/root-CtqOeRF2.js"
+    },
+    {
+      "path": "assets/root-DyuRdJ4q.css",
+      "bytes": 645,
+      "sha256": "cf4e929148d69a20ba6d601675ea86b7d1b95bba68ae320a2d7835feb9d31c1c",
+      "url": "https://lightflow.dev/assets/root-DyuRdJ4q.css"
+    },
+    {
+      "path": "assets/thread-worker.browser-4fNPWh2f.js",
+      "bytes": 13579,
+      "sha256": "68a1d8113cf28842b2105706022f463f2b5f4e0807f47319aa69d8e96e162bcc",
+      "url": "https://lightflow.dev/assets/thread-worker.browser-4fNPWh2f.js"
+    },
+    {
+      "path": "assets/worker-PmnZFHwu.js",
+      "bytes": 255042,
+      "sha256": "1c1203c0e3d6e4329d9ac2892b61fc4e3fca4e805c73b919ab17f72cf240d2fc",
+      "url": "https://lightflow.dev/assets/worker-PmnZFHwu.js"
+    },
+    {
+      "path": "assets/worker-entry.browser-D3t_BklX.js",
+      "bytes": 111039,
+      "sha256": "d1f08fd15ee4d807789e5976677007dd93eb5b0a15d650b0190c3f74a28f0ee4",
+      "url": "https://lightflow.dev/assets/worker-entry.browser-D3t_BklX.js"
+    },
+    {
+      "path": "assets/worker.browser-6jfDYsUu.js",
+      "bytes": 7481,
+      "sha256": "75f8f643c551165441dcb23f34d52d9e5df979194ac22961a9ff374ad255b065",
+      "url": "https://lightflow.dev/assets/worker.browser-6jfDYsUu.js"
+    },
+    {
+      "path": "favicon.ico",
+      "bytes": 15086,
+      "sha256": "ed84bd7fb93592d20f231455251ef7d9aa8df1a35f4e1631f0f1e6fb37707d69",
+      "url": "https://lightflow.dev/favicon.ico"
+    },
+    {
+      "path": "favicon.svg",
+      "bytes": 19514,
+      "sha256": "5019ad533e115706128fb0fac046c34a728811f4891490b418c469bc58d4a1b2",
+      "url": "https://lightflow.dev/favicon.svg"
+    },
+    {
+      "path": "icon-180.png",
+      "bytes": 10421,
+      "sha256": "c6bf974ea3ac871fb2c50241823f4504fde63f80dedcd77314b5bb161b682471",
+      "url": "https://lightflow.dev/icon-180.png"
+    },
+    {
+      "path": "index.html",
+      "bytes": 4833,
+      "sha256": "df73c8755895192cad1cb2ee6f2fbb1a6b82d45d1e8b6aaeeff7b622d13b829b",
+      "url": "https://lightflow.dev/"
+    },
+    {
+      "path": "license.html",
+      "bytes": 4919,
+      "sha256": "7e7e7eac60362a6f5e1a78949b23b6d3ce03e9d7cbcd8839e8fa08527b802d11",
+      "url": "https://lightflow.dev/license"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 801,
+      "sha256": "399716a0953e9867ea643cc78af10cc166cd10797fd214611b8b00965661a419",
+      "url": "https://lightflow.dev/manifest.webmanifest"
+    }
+  ]
+}

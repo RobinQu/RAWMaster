@@ -1,0 +1,4 @@
+module RMCatalogProbe {
+    header "catalog_probe.h"
+    export *
+}

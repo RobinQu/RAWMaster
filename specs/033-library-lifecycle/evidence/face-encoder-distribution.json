@@ -1,0 +1,298 @@
+{
+  "candidates": {
+    "SFace": {
+      "crossBodyDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 0,
+          "acceptedPositive": 0,
+          "auc": 0.989826,
+          "negative": 445,
+          "positive": 254
+        },
+        "acceptedNegative": 0,
+        "acceptedPositive": 218,
+        "auc": 0.989826,
+        "negative": 445,
+        "positive": 254
+      },
+      "crossCameraModelDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 0,
+          "acceptedPositive": 0,
+          "auc": 0.985739,
+          "negative": 574,
+          "positive": 285
+        },
+        "acceptedNegative": 0,
+        "acceptedPositive": 239,
+        "auc": 0.985739,
+        "negative": 574,
+        "positive": 285
+      },
+      "dimensions": 128,
+      "weightBytes": 38696353,
+      "weightsSHA256": "0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79"
+    },
+    "dlib-resnet29-v1": {
+      "crossBodyDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 445,
+          "acceptedPositive": 254,
+          "auc": 0.965832,
+          "negative": 445,
+          "positive": 254
+        },
+        "acceptedNegative": 434,
+        "acceptedPositive": 254,
+        "auc": 0.965832,
+        "negative": 445,
+        "positive": 254
+      },
+      "crossCameraModelDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 574,
+          "acceptedPositive": 285,
+          "auc": 0.962877,
+          "negative": 574,
+          "positive": 285
+        },
+        "acceptedNegative": 563,
+        "acceptedPositive": 285,
+        "auc": 0.962877,
+        "negative": 574,
+        "positive": 285
+      },
+      "dimensions": 128,
+      "sidecars": {
+        "fivePointPredictor": {
+          "bytes": 9150489,
+          "sha256": "c4b1e9804792707d3a405c2c16a80a20269e6675021f64a41d30fffafbc41888"
+        }
+      },
+      "weightBytes": 22466066,
+      "weightsSHA256": "55533b28a95800a551ba546ba62fe69625c7e95a7061c338adffead08719da30"
+    },
+    "intel-face-reidentification-retail-0095-fp32-ort": {
+      "crossBodyDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 0,
+          "acceptedPositive": 18,
+          "auc": 0.994895,
+          "negative": 445,
+          "positive": 254
+        },
+        "acceptedNegative": 0,
+        "acceptedPositive": 128,
+        "auc": 0.994895,
+        "negative": 445,
+        "positive": 254
+      },
+      "crossCameraModelDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 0,
+          "acceptedPositive": 18,
+          "auc": 0.993135,
+          "negative": 574,
+          "positive": 285
+        },
+        "acceptedNegative": 0,
+        "acceptedPositive": 139,
+        "auc": 0.993135,
+        "negative": 574,
+        "positive": 285
+      },
+      "dimensions": 256,
+      "sidecars": {
+        "IRgraph": {
+          "bytes": 237585,
+          "sha256": "6cf60c341452155e35c467510c6c50a96ade5b2bd8f88c5a90902e905d8a80c3"
+        }
+      },
+      "weightBytes": 4427256,
+      "weightsSHA256": "21319b95e54181857f99e22dc32ec89770eca2969a1432cfa1594bffc94edd62"
+    },
+    "taguchi-resnet29-v1": {
+      "crossBodyDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 444,
+          "acceptedPositive": 254,
+          "auc": 0.99194,
+          "negative": 445,
+          "positive": 254
+        },
+        "acceptedNegative": 283,
+        "acceptedPositive": 254,
+        "auc": 0.99194,
+        "negative": 445,
+        "positive": 254
+      },
+      "crossCameraModelDifferentDayPairs": {
+        "aboveOld080": {
+          "acceptedNegative": 573,
+          "acceptedPositive": 285,
+          "auc": 0.990311,
+          "negative": 574,
+          "positive": 285
+        },
+        "acceptedNegative": 354,
+        "acceptedPositive": 285,
+        "auc": 0.990311,
+        "negative": 574,
+        "positive": 285
+      },
+      "dimensions": 128,
+      "sidecars": {
+        "fivePointPredictor": {
+          "bytes": 9150489,
+          "sha256": "c4b1e9804792707d3a405c2c16a80a20269e6675021f64a41d30fffafbc41888"
+        }
+      },
+      "weightBytes": 22524902,
+      "weightsSHA256": "ba6d064646e0ff0bfe9cb8b21e328cb2eb18d58ec43935a1b9e080f325b4de9e"
+    }
+  },
+  "checkedUpstreamSHA256": {
+    "dlibCompressed": "abb1f61041e434465855ce81c2bd546e830d28bcbed8d27ffbe5bb408b11553a",
+    "intelIRGraph": "6cf60c341452155e35c467510c6c50a96ade5b2bd8f88c5a90902e905d8a80c3",
+    "intelWeights": "21319b95e54181857f99e22dc32ec89770eca2969a1432cfa1594bffc94edd62",
+    "taguchi7z": "a854f7028bbb44b5c1680acd508ae6394cc19300ef88df9a829f29e954ebddc7",
+    "taguchiDlibCompressed": "6054dcc5b73afa740a81e4419c8e6b1d578ceb9243dfcc00c31e716d55d1a11b"
+  },
+  "detector": {
+    "confirmedFaces": 73,
+    "detectedAndMapped": 61,
+    "detector": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "originals": 67,
+    "unmapped": 12
+  },
+  "dlibOriginalPublishedEuclideanGate": {
+    "gate": 0.6,
+    "heldOut": {
+      "body-day": {
+        "absentIdentity": 38,
+        "absentWrongAccepted": 21,
+        "actuallyAbsentIdentity": 4,
+        "actuallyAbsentWrongAccepted": 1,
+        "correctAccepted": 27,
+        "detectedKnown": 27,
+        "identitiesWithKnownQueries": 3,
+        "known": 34,
+        "knownAbstained": 7,
+        "knownWithDistractors": 34,
+        "macroRecall": 0.841667,
+        "rankTop1": 27,
+        "rankTop1WithDistractors": 27,
+        "wrongAccepted": 0
+      },
+      "camera-day": {
+        "absentIdentity": 38,
+        "absentWrongAccepted": 28,
+        "actuallyAbsentIdentity": 4,
+        "actuallyAbsentWrongAccepted": 1,
+        "correctAccepted": 27,
+        "detectedKnown": 27,
+        "identitiesWithKnownQueries": 3,
+        "known": 34,
+        "knownAbstained": 7,
+        "knownWithDistractors": 34,
+        "macroRecall": 0.841667,
+        "rankTop1": 27,
+        "rankTop1WithDistractors": 27,
+        "wrongAccepted": 0
+      },
+      "day": {
+        "absentIdentity": 38,
+        "absentWrongAccepted": 28,
+        "actuallyAbsentIdentity": 0,
+        "actuallyAbsentWrongAccepted": 0,
+        "correctAccepted": 27,
+        "detectedKnown": 28,
+        "identitiesWithKnownQueries": 3,
+        "known": 38,
+        "knownAbstained": 10,
+        "knownWithDistractors": 38,
+        "macroRecall": 0.758929,
+        "rankTop1": 27,
+        "rankTop1WithDistractors": 27,
+        "wrongAccepted": 1
+      }
+    }
+  },
+  "input": {
+    "allTruthIdentities": 3,
+    "bodyCount": 4,
+    "calibrationTruthFaces": 35,
+    "holdoutDays": 5,
+    "holdoutTruthFaces": 38,
+    "originalsWithKnownBody": 67,
+    "referenceAndCalibrationDays": 5
+  },
+  "intelFinalOfflineDistribution": {
+    "model": "yunet-2023mar-intel-0095-fp32-edge1024-v2",
+    "nativeEncoderTimingsMs": {
+      "alignAndInferWarm": {
+        "p50": 5.942,
+        "p95": 6.112
+      },
+      "coldStart": 139.106,
+      "firstInfer": 6.41,
+      "p50": 5.808,
+      "p95": 5.987,
+      "rssPeakMiB": 186.66,
+      "scope": "World-clock CPU on one process. Cold includes backend import/weight validation/initialization after common packages. Warm excludes proxy I/O and first face.",
+      "warmCount": 60
+    },
+    "nativeVsPacked": {
+      "faces": 61,
+      "maxPairCosineDelta": 5.879213306192455e-07,
+      "maxUnitComponentDelta": 3.498926966910565e-07,
+      "minimumCosine": 0.9999999999980251
+    },
+    "onnxBytes": 4466624,
+    "onnxSHA256": "53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373",
+    "packEncoderTimingsMs": {
+      "alignAndInferWarm": {
+        "p50": 8.106,
+        "p95": 8.305
+      },
+      "coldStart": 32.435,
+      "firstInfer": 8.558,
+      "p50": 7.981,
+      "p95": 8.164,
+      "rssPeakMiB": 118.11,
+      "scope": "World-clock CPU on one process. Cold includes backend import/weight validation/initialization after common packages. Warm excludes proxy I/O and first face.",
+      "warmCount": 60
+    },
+    "researchVsProductIdenticalChips": 61,
+    "runtime": "ONNX Runtime CPU 1.23.2",
+    "sidecar": {
+      "childPeakRSSMiB": 196.34,
+      "detectedFaces": 72,
+      "firstProxyDetections": 1,
+      "onnxThreads": 1,
+      "opencvThreads": 2,
+      "proxyRequests": 67,
+      "startupThroughFirstPositiveProxyMs": 162.155,
+      "warmAfterFirst": 66,
+      "warmRequestMs": {
+        "p50": 21.616,
+        "p95": 31.585
+      }
+    },
+    "sidecarVsPacked": {
+      "faces": 61,
+      "maxPairCosineDelta": 0.0,
+      "maxUnitComponentDelta": 0.0,
+      "minimumCosine": 0.9999999999999996
+    }
+  },
+  "publisherListedNotDownloadedSHA256": {
+    "deepface128h5": "90659cc97bfda5999120f95d8e122f4d262cca11715a21e59ba024bcce816d5c",
+    "deepface128onnx": "6c296aaff7ceb4d06de6d621603cef63020a4fd23da8422309318a25c88b7b73",
+    "deepface512h5": "3f76b5117a9ca574d536af8199e6720089eb4ad3dc7e93534496d88265de864f",
+    "deepface512onnx": "a7a4fbcc6af3175f5c4e91de0b92b4fa387e0e9f141efd59616337220363da33",
+    "edgefaceSGamma05": "dc59abda2e8580399fd115a1eeb07e1f21156196db604b884407bcf0f17efb07",
+    "edgefaceXXS": "5b6bac48ea660aca185be8a8ac934db2093b51259461721da53c468230bc24c9"
+  },
+  "retrievalComparison": "Feature pairs are scored only on held-out dates vs reference. Refer to the current end-to-end named-person evaluation for the shipping multi-reference decision."
+}

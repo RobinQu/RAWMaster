@@ -1,0 +1,150 @@
+[
+  {
+    "catalog_bytes": 33562624,
+    "adobe_db_version": "1400000",
+    "counts": {
+      "images": 2342,
+      "files": 2340,
+      "folders": 29,
+      "volumes": 3,
+      "collections_all_types": 26,
+      "collection_memberships": 181,
+      "folder_stack_memberships": 76,
+      "collection_stack_memberships": 0,
+      "keyword_memberships": 0,
+      "develop_rows": 2342,
+      "virtual_copies": 2,
+      "missing_master_reference": 0,
+      "missing_file_reference": 0,
+      "smart_collections": 6,
+      "groups_of_collections": 2
+    },
+    "opaque_sample_byte_roundtrips": 24,
+    "lrcat_data_kind": "directory",
+    "previews": {
+      "status": "index inspected",
+      "image_candidates": 118,
+      "virtual_copy_candidates": 0,
+      "sampled_candidates": 3,
+      "sampled_level_jpeg_decoded": 3,
+      "sampled_unpacked_jpeg_decoded": 3,
+      "sampled_packed_jpeg_decoded": 0
+    }
+  },
+  {
+    "catalog_bytes": 35909632,
+    "adobe_db_version": "1300000",
+    "counts": {
+      "images": 2465,
+      "files": 2463,
+      "folders": 28,
+      "volumes": 3,
+      "collections_all_types": 16,
+      "collection_memberships": 202,
+      "folder_stack_memberships": 76,
+      "collection_stack_memberships": 0,
+      "keyword_memberships": 0,
+      "develop_rows": 2465,
+      "virtual_copies": 2,
+      "missing_master_reference": 0,
+      "missing_file_reference": 0,
+      "smart_collections": 6,
+      "groups_of_collections": 2
+    },
+    "opaque_sample_byte_roundtrips": 24,
+    "lrcat_data_kind": "directory",
+    "previews": {
+      "status": "index inspected",
+      "image_candidates": 669,
+      "virtual_copy_candidates": 1,
+      "sampled_candidates": 3,
+      "sampled_level_jpeg_decoded": 3,
+      "sampled_unpacked_jpeg_decoded": 0,
+      "sampled_packed_jpeg_decoded": 3
+    }
+  },
+  {
+    "catalog_bytes": 99004416,
+    "adobe_db_version": "1200001",
+    "counts": {
+      "images": 7154,
+      "files": 7152,
+      "folders": 72,
+      "volumes": 4,
+      "collections_all_types": 17,
+      "collection_memberships": 378,
+      "folder_stack_memberships": 84,
+      "collection_stack_memberships": 0,
+      "keyword_memberships": 0,
+      "develop_rows": 7154,
+      "virtual_copies": 2,
+      "missing_master_reference": 0,
+      "missing_file_reference": 0,
+      "smart_collections": 6,
+      "groups_of_collections": 2
+    },
+    "opaque_sample_byte_roundtrips": 24,
+    "lrcat_data_kind": "directory",
+    "previews": {
+      "status": "no adjacent previews.db"
+    }
+  },
+  {
+    "catalog_bytes": 130101248,
+    "adobe_db_version": "1300000",
+    "counts": {
+      "images": 9053,
+      "files": 9050,
+      "folders": 86,
+      "volumes": 5,
+      "collections_all_types": 17,
+      "collection_memberships": 380,
+      "folder_stack_memberships": 532,
+      "collection_stack_memberships": 0,
+      "keyword_memberships": 0,
+      "develop_rows": 9053,
+      "virtual_copies": 3,
+      "missing_master_reference": 0,
+      "missing_file_reference": 0,
+      "smart_collections": 6,
+      "groups_of_collections": 2
+    },
+    "opaque_sample_byte_roundtrips": 24,
+    "lrcat_data_kind": "directory",
+    "previews": {
+      "status": "no adjacent previews.db"
+    }
+  },
+  {
+    "catalog_bytes": 555634688,
+    "adobe_db_version": "1504001",
+    "counts": {
+      "images": 43380,
+      "files": 43266,
+      "folders": 220,
+      "volumes": 6,
+      "collections_all_types": 95,
+      "collection_memberships": 16966,
+      "folder_stack_memberships": 15923,
+      "collection_stack_memberships": 2,
+      "keyword_memberships": 73,
+      "develop_rows": 43380,
+      "virtual_copies": 114,
+      "missing_master_reference": 0,
+      "missing_file_reference": 0,
+      "smart_collections": 10,
+      "groups_of_collections": 7
+    },
+    "opaque_sample_byte_roundtrips": 24,
+    "lrcat_data_kind": "directory",
+    "previews": {
+      "status": "index inspected",
+      "image_candidates": 10853,
+      "virtual_copy_candidates": 2,
+      "sampled_candidates": 3,
+      "sampled_level_jpeg_decoded": 3,
+      "sampled_unpacked_jpeg_decoded": 3,
+      "sampled_packed_jpeg_decoded": 0
+    }
+  }
+]

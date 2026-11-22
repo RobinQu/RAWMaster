@@ -1,0 +1,203 @@
+{
+  "protocol": "rawmaster-local-discovery-validation-v1",
+  "selection": "two fixed positions in each reachable capture directory, excluding all development folders from the 53-image research set and the 16-image weight comparison; source paths stay in the private local map",
+  "samples": [
+    {
+      "id": "E01",
+      "event": "event-01",
+      "proxySHA256": "6e3fa0aa5131eabe47224dfb04a6ead5df71d4352402038b6e6f4a0548b940af"
+    },
+    {
+      "id": "E02",
+      "event": "event-01",
+      "proxySHA256": "a2aefd9164770820e6b5436a693b0cfc744677c1b5a8266dac5adfa0313eb5c3"
+    },
+    {
+      "id": "E03",
+      "event": "event-02",
+      "proxySHA256": "0429ecb4c64471c69ad0064e238fd1af18a1c857901888211b02f36dcbf23c2b"
+    },
+    {
+      "id": "E04",
+      "event": "event-02",
+      "proxySHA256": "b18b3bd2724c72d84d8d0a0372898f654829c1da4fdb739c0bfe034d6dee71bf"
+    },
+    {
+      "id": "E05",
+      "event": "event-03",
+      "proxySHA256": "e3a94d62f8789762f6de5427bda3ebfe77b4f30586b750ef3e5fb96862362618"
+    },
+    {
+      "id": "E06",
+      "event": "event-03",
+      "proxySHA256": "bfdf5e3130750d3dd3d9baac35b22af255bcaac989640b1efb488ba4be230bd3"
+    },
+    {
+      "id": "E07",
+      "event": "event-04",
+      "proxySHA256": "044cd1d5e69bc5cd34ddd04c45c86732ebd218399fc05f279aea715f7281cde3"
+    },
+    {
+      "id": "E08",
+      "event": "event-04",
+      "proxySHA256": "1c6eeb10b47008faee030c73402a235bdd94464abfd53e14c9f9f07900acdc1f"
+    },
+    {
+      "id": "E09",
+      "event": "event-05",
+      "proxySHA256": "8d37adf981ac91b8ae2e3efe67862f21c0b6496ae13687691d55893c6d618323"
+    },
+    {
+      "id": "E10",
+      "event": "event-05",
+      "proxySHA256": "34898b186f3157a09e0589b01df66a23da5cadd28b597fcef01c825a01c4e7a6"
+    },
+    {
+      "id": "E11",
+      "event": "event-06",
+      "proxySHA256": "68c72a6a1bdd6fd7b791dadabe78214828045a313ce84397ceb4ab67dbeb4e9b"
+    },
+    {
+      "id": "E12",
+      "event": "event-06",
+      "proxySHA256": "a92dce68ec2c7f7deb2f8140c8118ee9684ac4868d5a7a21ff33b443f6cdc93e"
+    },
+    {
+      "id": "E13",
+      "event": "event-07",
+      "proxySHA256": "1fd4a4cac286f408d9e564d2ff76be055bad38dc3237807239834bcbe2b881e2"
+    },
+    {
+      "id": "E14",
+      "event": "event-07",
+      "proxySHA256": "3cc3da1a1ca1266515b0d757632ff6939a8bbc2d20b22273586dc7f265e654c0"
+    },
+    {
+      "id": "E15",
+      "event": "event-08",
+      "proxySHA256": "13cb53ca7024063729eb96a26c2b09c21fe3a0457bbbe1a8761aaca5954b2196"
+    },
+    {
+      "id": "E16",
+      "event": "event-08",
+      "proxySHA256": "a3c1318e35d9dc9d9f478a66eb33f134df6cf228668b93eb1b9112ac66b8008a"
+    },
+    {
+      "id": "E17",
+      "event": "event-09",
+      "proxySHA256": "36476080a3abac975d75ed16b80a4d9de20603865439f48500506bbc430e4214"
+    },
+    {
+      "id": "E18",
+      "event": "event-09",
+      "proxySHA256": "bd7881e1d2ae59a582bbf8b1e27e4be17e93c59da595d5098799a9c6d487b12c"
+    },
+    {
+      "id": "E19",
+      "event": "event-10",
+      "proxySHA256": "2f4ab175eb804c700096515d8f9fd0f807cf6cd60cef71fa273ef99faea9ec87"
+    },
+    {
+      "id": "E20",
+      "event": "event-10",
+      "proxySHA256": "3733a8755ba45438f3711887d9383493429341b94e90a165cf1d86f50c85e1ee"
+    },
+    {
+      "id": "E21",
+      "event": "event-11",
+      "proxySHA256": "e7c9b514fbf9b95e740fd32da6c086b97efb503f59156137a7ef526356e4604d"
+    },
+    {
+      "id": "E22",
+      "event": "event-11",
+      "proxySHA256": "de6fdec36b8dd0e3c27955b0c8f5229a6450bd37b81f009b08a3951dab307632"
+    },
+    {
+      "id": "E23",
+      "event": "event-12",
+      "proxySHA256": "761d07094e685918cd02f876c55898e9af2eeb4ef7a5d54682414dcc88f6e077"
+    },
+    {
+      "id": "E24",
+      "event": "event-12",
+      "proxySHA256": "abb835b957b110fe80c7116eecd5bb19414e9da7457dc198d312b1101a6d0471"
+    }
+  ],
+  "queries": [
+    {
+      "text": "从头顶往下看，河水形成一个紧凑的U形弯",
+      "relevant": [
+        "E02"
+      ]
+    },
+    {
+      "text": "人在树林里由安全绳吊着",
+      "relevant": [
+        "E03"
+      ]
+    },
+    {
+      "text": "几匹马站在树林里",
+      "relevant": [
+        "E07"
+      ]
+    },
+    {
+      "text": "打开的硬壳箱子里面有隔层",
+      "relevant": [
+        "E08"
+      ]
+    },
+    {
+      "text": "抬头看木梁从中心向四周放射的圆形屋顶",
+      "relevant": [
+        "E12"
+      ]
+    },
+    {
+      "text": "近处能看见鹿角的驯鹿",
+      "relevant": [
+        "E13",
+        "E14"
+      ]
+    },
+    {
+      "text": "人用手给驯鹿喂食",
+      "relevant": [
+        "E13"
+      ]
+    },
+    {
+      "text": "黄昏天空中的云倒映在平静水面上",
+      "relevant": [
+        "E17",
+        "E18"
+      ]
+    },
+    {
+      "text": "山坡旁停着一辆白色越野车",
+      "relevant": [
+        "E19"
+      ]
+    },
+    {
+      "text": "红色落日在天际线上，前方有分汊的河流",
+      "relevant": [
+        "E23",
+        "E24"
+      ]
+    },
+    {
+      "text": "有人打着红色雨伞",
+      "relevant": []
+    },
+    {
+      "text": "暴雪中停着红色消防车",
+      "relevant": []
+    },
+    {
+      "text": "摆满书的室内图书馆",
+      "relevant": []
+    }
+  ]
+}

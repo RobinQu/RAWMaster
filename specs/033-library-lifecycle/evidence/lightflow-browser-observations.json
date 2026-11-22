@@ -1,0 +1,99 @@
+{
+  "steps": [
+    {
+      "step": "empty",
+      "count": 0
+    },
+    {
+      "step": "import",
+      "count": 2,
+      "visible": [
+        "Study_Amber_01.jpg",
+        "Study_Blue_02.jpg"
+      ],
+      "grid": "2",
+      "bytes": [
+        771,
+        771
+      ]
+    },
+    {
+      "step": "metadata search",
+      "query": "amber study",
+      "visible": [
+        "Study_Amber_01.jpg"
+      ],
+      "grid": "1"
+    },
+    {
+      "step": "repeat same file",
+      "count": 2,
+      "visible": [
+        "Study_Amber_01.jpg",
+        "Study_Blue_02.jpg"
+      ],
+      "notice": "already in the catalog"
+    },
+    {
+      "step": "rename identical bytes",
+      "count": 3,
+      "ids": [
+        "p4bbeaefe",
+        "p6f0f7de7",
+        "pd2316be4"
+      ],
+      "visible": [
+        "Renamed_Copy.jpg"
+      ]
+    },
+    {
+      "step": "same name size mtime different bytes",
+      "count": 3,
+      "fixtureSHA256": [
+        "f5e8e0021bf8886c7196f174229cff01f78e7a120923de901a8cc2b261ce38d3",
+        "5950d62a99ba44d655b61067f26e8ee92a8d5f8b5bd4d101ae2c216becdded72"
+      ],
+      "bytes": 771,
+      "name": "Study_Amber_01.jpg",
+      "notice": "already in the catalog"
+    },
+    {
+      "step": "reload",
+      "count": 3,
+      "ids": [
+        "p4bbeaefe",
+        "p6f0f7de7",
+        "pd2316be4"
+      ],
+      "records": [
+        "Renamed_Copy.jpg",
+        "Study_Amber_01.jpg",
+        "Study_Blue_02.jpg"
+      ]
+    }
+  ],
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.8103.78 Safari/537.36",
+  "engine": {
+    "asked": "rust",
+    "loaded": true,
+    "adopted": true,
+    "store": true,
+    "fallback": null,
+    "storage": "engine",
+    "notice": null,
+    "message": null,
+    "quarantined": null
+  },
+  "opfs": {
+    "engine": [
+      "files",
+      "journal",
+      "sqlite"
+    ],
+    "sqlite": [
+      ".lock",
+      ".opaque"
+    ]
+  },
+  "status": "passed"
+}

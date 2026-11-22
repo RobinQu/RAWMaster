@@ -1,0 +1,4 @@
+module RMQueueProbe {
+    header "queue_probe.h"
+    export *
+}
