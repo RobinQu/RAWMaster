@@ -118,6 +118,7 @@ final class AppModelTests: XCTestCase {
         defer { window.close() }
         WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: model.windowContextTitle, darkEditing: true)
         XCTAssertEqual(window.title, "RAWMaster – " + browsingTitle)
+        XCTAssertEqual(window.titleVisibility, .hidden)
         XCTAssertEqual(window.appearance?.name, .darkAqua)
         XCTAssertTrue(window.isMovable)
         XCTAssertTrue(window.styleMask.contains(.resizable))

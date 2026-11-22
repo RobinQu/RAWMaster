@@ -55,7 +55,25 @@ extension AppModel {
 
     private func workbenchExportInput(_ asset: AssetRecord) async throws -> (PhotoWork, EditingVersion) {
         guard let store = workbenchExportStore else { throw EditingError.missingWork }
-        let existing = try await Task.detached(priority: .userInitiated) { try store.loadPhotoWorks(assetID: asset.id).first }.value
+        let fingerprint = editingAdmissions[asset.id]?.fingerprint
+        if isNativeEditing, focusedID == asset.id, let editing, let fingerprint,
+           !editing.hasWorkbenchExport(for: asset.id),
+           !editing.beginWorkbenchExport(asset: asset, admissionFingerprint: fingerprint) {
+            throw LibraryError.invalid(editing.message ?? "当前版本尚未准备好导出。")
+        }
+        if var (work, version) = try await editing?.workbenchExportInput(for: asset.id) {
+            guard work.source.projectID == asset.projectID, work.source.admissionFingerprint == fingerprint,
+                  version.source.hasSameIdentity(as: work.source) else { throw EditingError.staleSource }
+            work.source.sourceLocation = asset.resolvedURL
+            version.source = work.source
+            return (work, version)
+        }
+        let existing = try await Task.detached(priority: .userInitiated) {
+            try store.loadPhotoWorks(projectID: asset.projectID, assetID: asset.id).last {
+                $0.source.admissionFingerprint == fingerprint && $0.source.byteCount == asset.fileSize &&
+                    (asset.contentHash?.lowercased() ?? $0.source.contentSHA256) == $0.source.contentSHA256
+            }
+        }.value
         var work: PhotoWork
         if let existing { work = existing }
         else {
@@ -71,8 +89,7 @@ extension AppModel {
         }
         work.source.sourceLocation = asset.resolvedURL
         var version: EditingVersion
-        if let editing, editing.asset?.id == asset.id, let live = editing.exportVersion, live.workID == work.id { version = live }
-        else if let recipe = work.liveRecipe, let parent = work.liveParentVersionID {
+        if let recipe = work.liveRecipe, let parent = work.liveParentVersionID {
             version = try await Task.detached { try store.editingVersion(id: parent) }.value
             if version.artifact == nil && (asset.availability != .available || !FileManager.default.isReadableFile(atPath: asset.resolvedURL.path)) {
                 let adoptedID = work.adoptedVersionID

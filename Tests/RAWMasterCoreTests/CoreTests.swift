@@ -25,12 +25,22 @@ final class CoreTests: XCTestCase {
     try Data(text.utf8).write(to: u)
     return u
   }
-  func runImport(_ mode: ImportMode = .reference, name: String = "Test", projectID: String? = nil)
+  func runImport(_ mode: ImportMode = .reference, name: String = "Test", projectID: String? = nil,
+                 initialScreening: Bool = false)
     async throws -> ImportSession
   {
     try await ImportService(store: store).importDirectory(
       source: source, destination: mode == .copy ? root.appendingPathComponent("work") : nil,
-      projectName: name, mode: mode, projectID: projectID, progress: { _ in })
+      projectName: name, mode: mode, projectID: projectID, initialScreening: initialScreening, progress: { _ in })
+  }
+
+  func assertSealedSessionCannotResume(_ id: String, file: StaticString = #filePath, line: UInt = #line) async {
+    do {
+      _ = try await ImportService(store: store).resume(sessionID: id, progress: { _ in })
+      XCTFail("A sealed import must stay closed", file: file, line: line)
+    } catch {
+      XCTAssertTrue(error.localizedDescription.contains("已关闭"), error.localizedDescription, file: file, line: line)
+    }
   }
 
   func testReferenceDiscoveryIdempotenceAndOriginalPreservation() async throws {
@@ -39,22 +49,34 @@ final class CoreTests: XCTestCase {
     try file(".hidden.ARW")
     try file("ignored.txt")
     let hash = try FileSafety.hash(a)
-    let session = try await runImport()
+    let session = try await runImport(initialScreening: true)
     let assets = try store.loadAssets()
     XCTAssertEqual(session.completed, 2)
     XCTAssertEqual(Set(assets.map(\.relativePath)), ["a.ARW", "nested/a.ARW"])
     XCTAssertTrue(assets.allSatisfy { $0.importState == .ready && $0.currentPath == $0.sourcePath })
     XCTAssertEqual(try FileSafety.hash(a), hash)
-    let repeated = try await runImport(projectID: session.projectID)
-    XCTAssertEqual(repeated.id, session.id)
+    let continued = try await runImport(projectID: session.projectID, initialScreening: true)
+    XCTAssertEqual(continued.id, session.id)
     XCTAssertEqual(try store.loadAssets().count, 2)
     let resumed = try await ImportService(store: store).resume(
       sessionID: session.id, progress: { _ in })
     XCTAssertEqual(resumed.completed, 2)
+    XCTAssertEqual(Set(try store.loadAssets(sessionID: session.id).map(\.id)), Set(assets.map(\.id)))
+    let preview = try store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true)
+    _ = try store.commitCompletion(preview)
+    await assertSealedSessionCannotResume(session.id)
+    let later = try await runImport(projectID: session.projectID)
+    XCTAssertNotEqual(later.id, session.id)
+    let laterAssets = try store.loadAssets(sessionID: later.id)
+    XCTAssertEqual(Set(laterAssets.map(\.relativePath)), Set(assets.map(\.relativePath)))
+    XCTAssertTrue(Set(laterAssets.map(\.id)).isDisjoint(with: assets.map(\.id)))
+    XCTAssertEqual(try store.rows("SELECT count(*) FROM lc_catalog_files WHERE project_id=?", [session.projectID]), [["2"]])
+    XCTAssertEqual(try store.rows("SELECT count(*),count(DISTINCT content_id) FROM lc_scopes WHERE project_id=?", [session.projectID]), [["4","2"]])
+    XCTAssertEqual(try FileSafety.hash(a), hash)
   }
   func testCopyCollisionResumeAndChangedSourceIdentity() async throws {
     let original = try file("a.ARW", "original bytes")
-    let s = try await runImport(.copy)
+    let s = try await runImport(.copy, initialScreening: true)
     var a = try XCTUnwrap(store.loadAssets().first)
     let priorHash = a.contentHash
     XCTAssertNotEqual(a.currentPath, a.sourcePath)
@@ -75,7 +97,7 @@ final class CoreTests: XCTestCase {
   }
   func testReferenceSameSizeRewriteRefreshAndResume() async throws {
     let original = try file("a.ARW", "aaaa")
-    let s = try await runImport()
+    let s = try await runImport(initialScreening: true)
     let a = try XCTUnwrap(store.loadAssets().first)
     try Data("bbbb".utf8).write(to: original)
     try store.refreshAvailability(ids: [a.id])
@@ -83,6 +105,7 @@ final class CoreTests: XCTestCase {
     let resumed = try await ImportService(store: store).resume(sessionID: s.id, progress: { _ in })
     XCTAssertEqual(resumed.failed, 1)
     XCTAssertEqual(try store.loadAssets()[0].contentHash, a.contentHash)
+    XCTAssertTrue(try store.loadAdmissions().isEmpty)
   }
   func testSelectionUndoAtomicFailureAndReopen() async throws {
     try file("a.ARW")
@@ -213,9 +236,9 @@ final class CoreTests: XCTestCase {
   }
   func testExistingSessionCannotSilentlyChangeMode() async throws {
     try file("a.ARW")
-    let session = try await runImport()
+    let session = try await runImport(initialScreening: true)
     do {
-      _ = try await runImport(.copy, projectID: session.projectID)
+      _ = try await runImport(.copy, projectID: session.projectID, initialScreening: true)
       XCTFail("accepted silent mode change")
     } catch { XCTAssertTrue(error.localizedDescription.contains("接入方式")) }
   }
@@ -252,12 +275,18 @@ final class CoreTests: XCTestCase {
   func testCompletedManagedCopySurvivesSourceRemoval() async throws {
     try file("a.ARW", "card original")
     let session = try await runImport(.copy)
+    let original = try XCTUnwrap(store.loadAssets(sessionID: session.id).first)
     try FileManager.default.removeItem(at: source)
-    let resumed = try await ImportService(store: store).resume(
-      sessionID: session.id, progress: { _ in })
-    XCTAssertEqual(resumed.completed, 1)
-    XCTAssertEqual(resumed.status, "completed")
-    XCTAssertEqual(try store.loadAssets()[0].importState, .ready)
+    await assertSealedSessionCannotResume(session.id)
+    store = try LibraryStore(databaseURL: root.appendingPathComponent("catalog.sqlite"))
+    try store.refreshAvailability(ids: [original.id])
+    let persisted = try XCTUnwrap(store.loadSessions().first { $0.id == session.id })
+    XCTAssertEqual(persisted.completed, 1)
+    XCTAssertEqual(persisted.status, "completed")
+    let reopened = try XCTUnwrap(store.loadAssets(sessionID: session.id).first)
+    XCTAssertEqual(reopened.importState, .ready)
+    XCTAssertEqual(reopened.availability, .available)
+    XCTAssertEqual(try FileSafety.hash(reopened.resolvedURL), original.contentHash)
     let report = try await ExportService(store: store).exportAssets(
       ids: store.loadAssets().map(\.id), destination: root.appendingPathComponent("delivery"),
       progress: { _ in })
@@ -317,8 +346,38 @@ final class CoreTests: XCTestCase {
     XCTAssertEqual(try store.loadProjects().count, 2)
     XCTAssertEqual(try store.loadAssets().count, 2)
     let repeated = try await runImport(name: "同名项目", projectID: first.projectID)
-    XCTAssertEqual(repeated.id, first.id)
-    XCTAssertEqual(try store.loadAssets().count, 2)
+    XCTAssertNotEqual(repeated.id, first.id)
+    XCTAssertEqual(repeated.projectID, first.projectID)
+    XCTAssertEqual(try store.loadProjects().count, 2)
+    let occurrences = try [first, second, repeated].map { try XCTUnwrap(store.loadAssets(sessionID: $0.id).first) }
+    XCTAssertEqual(Set(occurrences.map(\.id)).count, 3)
+    XCTAssertEqual(Set(try store.catalogFiles(for: occurrences.map(\.id)).map(\.id)).count, 1)
+    XCTAssertEqual(try store.rows("SELECT count(*) FROM lc_catalog_files WHERE project_id=?", [first.projectID]), [["1"]])
+    XCTAssertEqual(try store.rows("SELECT count(*) FROM lc_catalog_files WHERE project_id=?", [second.projectID]), [["1"]])
+    XCTAssertEqual(try store.rows("SELECT count(*),count(DISTINCT content_id),count(DISTINCT project_id) FROM lc_scopes"), [["3","1","2"]])
+  }
+  func testExplicitLightroomReconnectionSharesOnlyTheVerifiedOriginalAtThatLocation() async throws {
+    let firstURL = try file("first.RAW", "same bytes")
+    let differentURL = try file("separate.RAW", "same bytes")
+    let initial = try await runImport()
+    let files = try store.loadAssets(sessionID: initial.id)
+    let first = try XCTUnwrap(files.first { $0.filename == "first.RAW" })
+    let other = try XCTUnwrap(files.first { $0.filename == "separate.RAW" })
+    let originalID = try XCTUnwrap(store.catalogFiles(for: [first.id]).first?.id)
+    let otherID = try XCTUnwrap(store.catalogFiles(for: [other.id]).first?.id)
+    XCTAssertNotEqual(originalID, otherID)
+    let project = ProjectRecord(name: "Lightroom")
+    try store.saveProject(project)
+    XCTAssertThrowsError(try store.admitLightroomOriginal(firstURL, projectID: "missing-project"))
+    XCTAssertEqual(try store.admitLightroomOriginal(firstURL, projectID: project.id), originalID)
+    XCTAssertEqual(try store.admitLightroomOriginal(differentURL, projectID: project.id), otherID)
+    XCTAssertEqual(try store.admitLightroomOriginal(firstURL, projectID: project.id), originalID)
+    XCTAssertEqual(try store.rows("SELECT count(*) FROM lc_scopes WHERE project_id=?", [project.id]), [["2"]])
+    try Data("new version".utf8).write(to: firstURL)
+    let changed = try store.admitLightroomOriginal(firstURL, projectID: project.id)
+    XCTAssertNotEqual(changed, originalID)
+    XCTAssertEqual(try store.rows("SELECT count(*) FROM lc_scopes WHERE project_id=?", [project.id]), [["3"]])
+    XCTAssertEqual(try store.rows("SELECT count(*) FROM lc_contents"), [["2"]])
   }
   struct Operation {
     var action: String

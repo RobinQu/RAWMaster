@@ -14,7 +14,15 @@ final class ColorLabelTests: XCTestCase {
     let project = ProjectRecord(name: "Colors"); try store.saveProject(project)
     let session = ImportSession(projectID: project.id, projectName: project.name, sourcePath: root.path, mode: .reference, status: "completed", discovered: 2, completed: 2, scanCompleted: true)
     try store.saveSession(session)
-    return try (0..<2).map { try store.register(AssetRecord(sessionID: session.id, projectID: project.id, sourcePath: root.appendingPathComponent("\($0).jpg").path, importState: .ready)) }
+    let files = try (0..<2).map { number in
+      let url = root.appendingPathComponent("\(number).jpg")
+      let data = Data("original-\(number)".utf8)
+      try data.write(to:url)
+      return try store.register(AssetRecord(sessionID:session.id,projectID:project.id,sourcePath:url.path,
+                                            fileSize:Int64(data.count),contentHash:try FileSafety.hash(url),importState:.ready))
+    }
+    try store.completedDirectImport(session)
+    return files
   }
   func testLabelsAreIndependentFromTextTagsAndSearchUsesStoredColor() throws {
     let files = try assets()
@@ -53,7 +61,7 @@ final class ColorLabelTests: XCTestCase {
     let tables = try store.rows("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").map { $0[0] }
     let before = try Dictionary(uniqueKeysWithValues: tables.map { ($0, try store.rows("SELECT * FROM \($0) ORDER BY rowid")) })
     store = nil; store = try LibraryStore(databaseURL: database)
-    XCTAssertEqual(try DatabaseSchema.strings(store.db, "PRAGMA user_version"), ["7"])
+    XCTAssertEqual(try DatabaseSchema.strings(store.db, "PRAGMA user_version"), [String(DatabaseSchema.version)])
     XCTAssertTrue(try store.loadColorLabels().isEmpty)
     for table in tables { XCTAssertEqual(try store.rows("SELECT * FROM \(table) ORDER BY rowid"), before[table], table) }
     let backup = try XCTUnwrap(store.lastMigrationBackupURL)

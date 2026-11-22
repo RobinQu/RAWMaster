@@ -103,17 +103,17 @@ final class TriageWorkflowTests: XCTestCase {
     XCTAssertEqual(try store.loadAssets().first { $0.id == oldAssets[0].id }?.rating, 4)
     XCTAssertEqual(try store.loadAssets().first { $0.id == assets[0].id }?.decision, .undecided)
   }
-  func testOrdinaryBurstRejectCanBeExcludedButIntervalInputIsProtected() throws {
+  func testExcludedBurstAndRequiredIntervalStayExcludedUnlessExplicitlyAdmitted() throws {
     let (session, assets) = try batch(count: 3)
     try store.createGroup(ids: [assets[0].id, assets[1].id], name: "Burst", kind: "连拍")
     try store.createGroup(ids: [assets[2].id], name: "Interval", kind: "间隔序列")
     _ = try store.updateTriage(ids: [assets[0].id, assets[2].id], disposition: .excluded)
     let preview = try store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true)
-    XCTAssertEqual(preview.excludedAssetIDs, [assets[0].id])
-    XCTAssertEqual(preview.sequenceOnlyAssetIDs, [assets[2].id])
+    XCTAssertEqual(Set(preview.excludedAssetIDs), Set([assets[0].id, assets[2].id]))
+    XCTAssertTrue(preview.sequenceOnlyAssetIDs.isEmpty)
     let before = try store.loadGroups()
     _ = try store.commitCompletion(preview)
-    XCTAssertTrue(try store.loadAdmissions().first { $0.assetID == assets[2].id }!.sequenceOnly)
+    XCTAssertNil(try store.loadAdmissions().first { $0.assetID == assets[2].id })
     XCTAssertEqual(try store.loadGroups().flatMap(\.assetIDs), before.flatMap(\.assetIDs))
   }
   func testTriageUndoPersistsAndRefusesNewerHumanChange() throws {
@@ -154,6 +154,26 @@ final class TriageWorkflowTests: XCTestCase {
     let pair = try store.confirmCapturePair(rawAssetID: assets[0].id, jpegAssetID: jpeg.id)
     XCTAssertTrue(pair.isManual)
   }
+  func testWeakLegacyPairRequiresAUserDecisionBeforeFolding() throws {
+    let (session, sources) = try batch(count: 1)
+    let raw = sources[0]
+    var jpeg = raw
+    jpeg.id = UUID().uuidString; jpeg.filename = "other.JPG"; jpeg.relativePath = "other.JPG"
+    jpeg.sourcePath = root.appendingPathComponent("other.JPG").path; jpeg.currentPath = jpeg.sourcePath
+    try Data("asset-0".utf8).write(to:jpeg.url)
+    _ = try store.register(jpeg)
+    let legacy = CapturePair(sessionID:session.id,rawAssetID:raw.id,jpegAssetID:jpeg.id,isManual:false)
+    try store.transaction { try store.statement("INSERT INTO capture_pairs VALUES(?,?)", [legacy.id,try store.json(legacy)]) }
+    XCTAssertTrue(try store.loadCapturePairs(sessionID:session.id).isEmpty)
+    let candidate = try XCTUnwrap(store.capturePairCandidates(sessionID:session.id).first)
+    try store.dismissCapturePairCandidate(candidate)
+    XCTAssertTrue(try store.capturePairCandidates(sessionID:session.id).isEmpty)
+    let confirmed = try store.confirmCapturePair(rawAssetID:raw.id,jpegAssetID:jpeg.id)
+    XCTAssertEqual(try store.loadCapturePairs(sessionID:session.id).filter(\.isManual).map(\.id),[confirmed.id])
+    try store.unlinkCapturePair(id:confirmed.id)
+    XCTAssertTrue(try store.scanCapturePairs(sessionID:session.id).isEmpty)
+    XCTAssertTrue(try store.loadAdmissions().isEmpty)
+  }
   func testFaultyFileRequiresExplicitExclusionAndDoesNotRejectPartner() throws {
     let (session, assets) = try batch(count: 2)
     var failed = assets[0]; failed.importState = .failed; failed.availability = .missing
@@ -161,9 +181,10 @@ final class TriageWorkflowTests: XCTestCase {
     var preview = try store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true)
     XCTAssertFalse(preview.canCommit)
     _ = try store.updateTriage(ids: [failed.id], disposition: .excluded)
-    preview = try store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true)
+    preview = try store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true, confirmedFailures: true)
     XCTAssertTrue(preview.canCommit)
     XCTAssertEqual(preview.admittedAssetIDs, [assets[1].id])
+    XCTAssertEqual(preview.failedAssetIDs, [failed.id])
   }
   func testStaleQualityAndStagingExportManifestAreRejected() async throws {
     let (session, assets) = try batch(count: 1)
@@ -206,7 +227,9 @@ final class TriageWorkflowTests: XCTestCase {
     _ = try store.confirmCapturePair(rawAssetID: assets[0].id, jpegAssetID: jpeg.id)
     try store.createGroup(ids: [jpeg.id], name: "Interval", kind: "延时")
     _ = try store.updateTriage(ids: [jpeg.id], disposition: .excluded)
-    _ = try store.commitCompletion(store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true))
+    let member = try XCTUnwrap(store.completionMembers(sessionID: session.id).first { $0.assetID == jpeg.id })
+    _ = try store.commitCompletion(store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true,
+                                                           dispositions: [member.id: .sequenceOnly]))
     let implicit = try store.exportSelection(ids: [assets[0].id], formats: .both)
     XCTAssertEqual(implicit.assetIDs, [assets[0].id])
     XCTAssertEqual(implicit.missingFormats.count, 1)
@@ -351,7 +374,7 @@ final class TriageWorkflowTests: XCTestCase {
     var failed = assets[0]; failed.importState = .failed; failed.contentHash = nil; failed.error = "Not yet verified"
     try store.saveImportAsset(failed)
     _ = try store.updateTriage(ids: [failed.id], disposition: .excluded)
-    _ = try store.commitCompletion(store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true))
+    _ = try store.commitCompletion(store.previewCompletion(sessionID: session.id, acknowledgeManualAnalysis: true, confirmedFailures: true))
     let before = try store.stableJSON(store.loadAssets())
     let workflowBefore = try store.stableJSON(store.loadWorkflows())
     let triageBefore = try store.stableJSON(store.loadTriageRecords())

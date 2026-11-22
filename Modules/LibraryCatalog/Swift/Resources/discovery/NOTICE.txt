@@ -1,0 +1,18 @@
+RawMaster local discovery runtime, model set 2
+
+SigLIP 2 base patch16 224, Google, Apache License 2.0.
+Source https://huggingface.co/google/siglip2-base-patch16-224/tree/75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2
+RawMaster exports two fixed-shape ONNX towers and stores floating-point
+weights in half precision. RGB preprocessing and tokenizer are included.
+
+YuNet 2023mar, Shiqi Yu and contributors, MIT license.
+Source https://github.com/opencv/opencv_zoo/tree/48b10fa505aeb51fbd127fc60a5c660040e823b7/models
+YuNet is unmodified and pinned in models.json.
+
+Intel face-reidentification-retail-0095, Copyright 2023-2024 Intel Corporation,
+Apache License 2.0 (see licenses/Intel-Open-Model-Zoo.txt).
+Source https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/face-reidentification-retail-0095
+RawMaster converts the FP32 OpenVINO IR graph and weights to ONNX opset 17.
+The converted graph is the artifact pinned by SHA-256 in models.json.
+
+Third-party runtime wheel licenses are installed with their dist-info records.

@@ -18,6 +18,7 @@ final class RenderedExportTests: XCTestCase {
     try store.saveSession(session)
     let asset = try store.register(.init(sessionID: session.id, projectID: project.id, sourcePath: source.path,
       fileSize: FileSafety.stat(source).size, contentHash: FileSafety.hash(source), importState: .ready))
+    try store.completedDirectImport(session)
     work = try store.createPhotoWork(source: store.captureEditingSourceSnapshot(assetID: asset.id))
     _ = try store.configureEditingArchive(root: root.appendingPathComponent("Archive"))
   }

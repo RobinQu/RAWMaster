@@ -2,6 +2,7 @@ import AppKit
 import Foundation
 import UniformTypeIdentifiers
 import RAWMasterCore
+import RAWMasterLibrary
 
 enum WorkbenchExportMode: String { case render, original }
 
@@ -53,30 +54,52 @@ extension AppModel {
     var explicitExportAssets: [AssetRecord] {
         guard let ids = workbenchExportContext.exactAssetIDs else { return [] }
         let wanted = Set(ids)
-        return filteredAssets.filter { wanted.contains($0.id) }
+        return (isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : filteredAssets).filter { wanted.contains($0.id) }
     }
     func openProjectExport() { prepareLibraryExport(.project) }
 
-    func openExportWorkspace(_ mode: WorkbenchExportMode) {
+    func openExportWorkspace(_ exportMode: WorkbenchExportMode) {
         guard canExport else { return }
-        requestedWorkbenchExportMode = mode
+        requestedWorkbenchExportMode = exportMode
         activateWorkflow(.export)
     }
-
     func openSelectionExport() {
         guard !actionAssetIDs.isEmpty else { return }
         prepareLibraryExport(.selection(ids: actionAssetIDs))
     }
-
     func prepareLibraryExport(_ context: WorkbenchExportContext) {
         guard canExport else { return }
-        workbenchExportContext = context
-        exportWorkspacePresented = true
+        guard isPagedGrid, let grid = catalogGrid, let store else {
+            exportCatalogScope = nil
+            workbenchExportContext = context; exportWorkspacePresented = true
+            return
+        }
+        Task {
+            do {
+                let scope: CatalogFrozenSelection
+                if let ids = context.exactAssetIDs {
+                    if let frozenSelection, Set(ids) == Set(frozenSelection.assetIDs) { scope = frozenSelection }
+                    else { scope = try grid.visibleSelection(ids) }
+                } else { scope = try await grid.frozenSelection() }
+                let items = try await Task.detached(priority: .userInitiated) { try store.catalogAssets(for: scope) }.value
+                guard isPagedGrid, grid.watermark == scope.watermark, grid.libraryID == scope.libraryID else {
+                    throw LibraryEngineError("导出范围已变化，请重新选择")
+                }
+                exportCatalogScope = scope; exportCatalogAssets = items
+                workbenchExportContext = context; exportWorkspacePresented = true
+            } catch { errorMessage = error.localizedDescription }
+        }
     }
-
-    func openPhotoExport() {
+    func openPhotoExport(_ mode: WorkbenchExportMode = .original) {
         guard canExport, let focusedAsset, filteredAssets.contains(where: { $0.id == focusedAsset.id }) else { return }
-        workbenchExportContext = .photo(id: focusedAsset.id); showExport = true
+        switch mode {
+        case .render: openRenderedPhotoExport()
+        case .original: openOriginalPhotoExport(focusedAsset)
+        }
+    }
+    private func openOriginalPhotoExport(_ asset: AssetRecord) {
+        requestedWorkbenchExportMode = .original
+        prepareLibraryExport(.photo(id: asset.id))
     }
     func openContextExport() {
         switch mode { case .grid: openProjectExport(); case .single: openPhotoExport(); case .compare: openSelectionExport() }
@@ -164,10 +187,11 @@ extension AppModel {
         guard canOpenNativeEditing else { return }
         editing?.focus(focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.id]?.fingerprint }); editing?.isPresented = true
     }
-    func openRenderedPhotoExport() {
-        guard canOpenNativeEditing else { return }
-        workbenchExportContext = .photo(id:focusedID ?? "")
-        editing?.prepareExport(asset: focusedAsset, admissionFingerprint: focusedAsset.flatMap { editingAdmissions[$0.id]?.fingerprint })
-        exportWorkspacePresented = true; editing?.showExport = false
+    func openRenderedPhotoExport(context: WorkbenchExportContext? = nil) {
+        guard canExport, canOpenNativeEditing, let asset = focusedAsset,
+              let admission = editingAdmissions[asset.id], let editing,
+              editing.beginWorkbenchExport(asset: asset, admissionFingerprint: admission.fingerprint) else { return }
+        requestedWorkbenchExportMode = .render
+        prepareLibraryExport(context ?? .photo(id: asset.id))
     }
 }

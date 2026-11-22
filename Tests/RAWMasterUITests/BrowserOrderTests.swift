@@ -39,14 +39,18 @@ final class BrowserOrderTests: XCTestCase {
         var ids: [String] = []
         for (sessionIndex, paths) in [["card10/DSC10.ARW", "card2/DSC10.ARW", "card2/DSC2.ARW"], ["DSC1.ARW", "DSC1.arw"]].enumerated() {
             let session = ImportSession(projectID: project.id, projectName: project.name,
-                sourcePath: fixture.source.appendingPathComponent("session\(sessionIndex)").path, mode: .reference)
+                sourcePath: fixture.source.appendingPathComponent("session\(sessionIndex)").path, mode: .reference, status:"completed", discovered:paths.count, completed:paths.count, scanCompleted:true)
             try fixture.store.saveSession(session)
             for path in paths {
-                let asset = try fixture.store.register(AssetRecord(sessionID: session.id, projectID: project.id,
-                    sourcePath: fixture.source.appendingPathComponent("session\(sessionIndex)/\(path)").path,
-                    relativePath: path, importState: .ready))
+                let url = URL(fileURLWithPath:session.sourcePath).appendingPathComponent(path)
+                try FileManager.default.createDirectory(at:url.deletingLastPathComponent(),withIntermediateDirectories:true)
+                let payload = Data(path.lowercased().utf8)
+                try payload.write(to:url)
+                let asset = try fixture.store.register(AssetRecord(sessionID:session.id,projectID:project.id,sourcePath:url.path,
+                    relativePath:path,fileSize:Int64(payload.count),contentHash:try FileSafety.hash(url),importState:.ready))
                 ids.append(asset.id)
             }
+            try fixture.store.completedDirectImport(session)
         }
         try fixture.store.createGroup(ids: [ids[1], ids[0], ids[2]], name: "Manual order", kind: "其他")
         let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)

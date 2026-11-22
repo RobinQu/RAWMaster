@@ -15,12 +15,15 @@ final class WorkbenchActionTests: XCTestCase {
         let model = AppModel(libraryURL: f.library, defaults: f.defaults)
         model.selectScope(.project, id: session.projectID); model.select(jpeg); model.setMode(.single)
         model.openPhotoExport()
+        XCTAssertTrue(model.exportWorkspacePresented)
+        XCTAssertEqual(model.requestedWorkbenchExportMode, .original)
+        XCTAssertFalse(model.showExport || model.editing?.showExport == true)
         XCTAssertEqual(model.workbenchExportContext, .photo(id: jpeg.id))
         XCTAssertEqual(model.explicitExportAssets.map(\.id), [jpeg.id])
         let preview = try XCTUnwrap(model.exportSelection(ids: [jpeg.id], formats: .both, exactAssetIDs: [jpeg.id]))
         XCTAssertEqual(preview.assetIDs, [jpeg.id])
         model.select(raw)
-        XCTAssertEqual(model.workbenchExportContext.exactAssetIDs, [jpeg.id], "The sheet captures its original photo")
+        XCTAssertEqual(model.workbenchExportContext.exactAssetIDs, [jpeg.id], "Original delivery keeps its selected physical file")
     }
 
     @MainActor func testExactPhotoExportCopiesAndListsOnlyJPEGAcrossFormats() async throws {

@@ -68,6 +68,7 @@ public final class ImportService: @unchecked Sendable {
             stageChanged(result.id, .grouping)
             await postIngest(result, { try self.control.check() }, progress)
           }
+          if result.status == "completed", result.scanCompleted == true { try store.completedDirectImport(result) }
           return result
         } catch {
           progress(

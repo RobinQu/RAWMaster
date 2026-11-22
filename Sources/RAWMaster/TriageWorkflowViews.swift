@@ -1,4 +1,5 @@
 import SwiftUI
+import RAWMasterLibrary
 import RAWMasterCore
 
 struct SessionWorkflowHeader: View {
@@ -205,6 +206,13 @@ struct CompletionReviewSheet: View {
                 }
                 Text("未明确排除的正常素材将进入项目，保持未精筛、无新增评分。仅序列用途的文件不会自动成为单张精选。")
                     .font(.caption).foregroundStyle(.secondary)
+                if let draft = model.sealDraft {
+                    DisclosureGroup("核对每个原件的归档资格（\(draft.members.count) 个文件）") {
+                        ImportSealReview(draft: Binding(get: { model.sealDraft ?? draft }, set: model.updateSealDraft))
+                            .frame(height: 185)
+                    }
+                    if let failed = preview.failedAssetIDs, !failed.isEmpty { Text("仅保留失败历史　\(failed.count) 个文件").font(.caption) }
+                }
                 if !preview.issues.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
                         Label("以下问题需要先处理", systemImage: "exclamationmark.triangle").foregroundStyle(AppPalette.warning)
@@ -284,7 +292,12 @@ extension TriageQualityStatus {
 struct CapturePairReviewSheet: View {
     @EnvironmentObject var model: AppModel
     @Environment(\.dismiss) private var dismiss
-    private var pairs: [CapturePair] { let ids = Set(model.scopedAssets.map(\.id)); return model.capturePairs.filter { ids.isSuperset(of: $0.assetIDs) } }
+    @State private var candidates: [CapturePair] = []
+    private var pairs: [CapturePair] { model.capturePairs.filter(model.confirmsPairScope) }
+    private func refreshCandidates() {
+        do { candidates = try (model.store?.capturePairCandidates(sessionID: model.scope == .session ? model.scopeID : nil) ?? []).filter(model.confirmsPairScope) }
+        catch { model.errorMessage = error.localizedDescription }
+    }
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("RAW + JPEG 关联").font(.title2.weight(.semibold))
@@ -292,6 +305,21 @@ struct CapturePairReviewSheet: View {
                 .font(.caption).foregroundStyle(.secondary)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 10) {
+                    ForEach(candidates) { candidate in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("待核对的拍摄关联").font(.headline)
+                            ForEach(candidate.assetIDs, id: \.self) { id in Text(model.assets.first { $0.id == id }?.filename ?? id).font(.caption) }
+                            if model.canMaintainPairs {
+                                HStack {
+                                    Button("确认同一次拍摄") { model.confirmPair(rawID: candidate.rawAssetID, jpegID: candidate.jpegAssetID); refreshCandidates() }
+                                    Button("忽略候选") {
+                                        do { try model.store?.dismissCapturePairCandidate(candidate); refreshCandidates() }
+                                        catch { model.errorMessage = error.localizedDescription }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     ForEach(pairs) { pair in
                         HStack {
                             VStack(alignment: .leading, spacing: 4) {
@@ -311,6 +339,7 @@ struct CapturePairReviewSheet: View {
                 Spacer(); Button("返回") { dismiss() }.keyboardShortcut(.cancelAction)
             }
         }.padding(26).frame(width: 690)
+        .onAppear { refreshCandidates() }
     }
 }
 

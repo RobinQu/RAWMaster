@@ -82,13 +82,17 @@ final class ProjectEditingFlowTests: XCTestCase {
         let editing = try XCTUnwrap(model.editing); try await wait { editing.work != nil }
         let firstWork = try XCTUnwrap(editing.work)
         editing.setRecipe { $0.exposureEV = 0.8 }; model.openRenderedPhotoExport()
-        var admission = try XCTUnwrap(model.admissions.first { $0.assetID == f.assets[0].id })
+        let admission = try XCTUnwrap(model.admissions.first { $0.assetID == f.assets[0].id })
+        let scopeID = try XCTUnwrap(admission.catalogScopeID)
         for changesDate in [true, false] {
             let priorID = try XCTUnwrap(editing.work?.id)
-            if changesDate { admission.admittedAt = admission.admittedAt.addingTimeInterval(1) }
-            else { admission.sequenceOnly.toggle() }
-            let json = String(decoding: try JSONEncoder().encode(admission), as: UTF8.self)
-            try f.store.locked { try f.store.statement("UPDATE project_admissions SET data=? WHERE asset_id=?", [json, admission.assetID]) }
+            try f.store.transaction {
+                if changesDate {
+                    try f.store.statement("UPDATE lc_scope_times SET admitted_at=admitted_at+1 WHERE scope_id=?", [scopeID])
+                } else {
+                    try f.store.statement("UPDATE lc_scopes SET kind='sequenceOnly' WHERE scope_id=?", [scopeID])
+                }
+            }
             model.admissions = try f.store.loadAdmissions()
             XCTAssertFalse(editing.isPresented); XCTAssertNil(editing.work); XCTAssertNil(editing.asset)
             XCTAssertFalse(editing.showDraftExportChoice)

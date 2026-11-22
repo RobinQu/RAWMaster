@@ -1,4 +1,5 @@
 import Foundation
+import RAWMasterLibrary
 
 public enum TriagePhase: String, Codable, Sendable { case ingesting, screening, closed, legacyHistory }
 public enum TriageDisposition: String, Codable, Sendable, CaseIterable { case pending, passed, excluded, review }
@@ -45,8 +46,22 @@ public struct ProjectAdmission: Codable, Sendable, Identifiable {
   public var projectID: String
   public var sequenceOnly: Bool
   public var admittedAt: Date
+  public var catalogScopeID: String?
+  public var catalogOperationID: String?
   public init(assetID: String, projectID: String, sequenceOnly: Bool = false, admittedAt: Date = Date()) {
     self.assetID = assetID; self.projectID = projectID; self.sequenceOnly = sequenceOnly; self.admittedAt = admittedAt
+  }
+  init(catalogRow row: [String]) throws {
+    guard row.count == 7, let timestamp = Double(row[3]), timestamp.isFinite else {
+      throw LibraryError.database("纳入记录缺少有效时间")
+    }
+    self.init(assetID: row[0], projectID: row[1], sequenceOnly: row[2] == "sequenceOnly",
+              admittedAt: Date(timeIntervalSinceReferenceDate: timestamp))
+    // V7 editing works already persist the fingerprint of the four fields above.
+    if row[4] != "v7" {
+      catalogScopeID = row[5]
+      catalogOperationID = row[6]
+    }
   }
 }
 public struct CompletionPreview: Codable, Sendable, Identifiable {
@@ -62,7 +77,12 @@ public struct CompletionPreview: Codable, Sendable, Identifiable {
   public var unanalysedCount: Int
   public var captureCount: Int
   public var manualAnalysisAcknowledged: Bool
-  public var canCommit: Bool { issues.isEmpty && manualAnalysisAcknowledged }
+  public var failedAssetIDs: [String]? = nil
+  public var explicitDispositions: [String: CatalogImportDisposition]? = nil
+  public var confirmedFailures: Bool? = nil
+  public var canCommit: Bool {
+    issues.isEmpty && manualAnalysisAcknowledged && ((failedAssetIDs ?? []).isEmpty || confirmedFailures == true)
+  }
 }
 public struct TriageCommand: Codable, Sendable, Identifiable {
   public var id: String

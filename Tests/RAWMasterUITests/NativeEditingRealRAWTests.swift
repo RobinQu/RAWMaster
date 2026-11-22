@@ -45,6 +45,7 @@ final class NativeEditingRealRAWTests: XCTestCase {
             let asset = try store.register(.init(sessionID: session.id, projectID: project.id, projectName: project.name,
                 sourcePath: link.path, currentPath: source.path, filename: source.lastPathComponent, fileSize: bytes,
                 capturedAt: Date(), width: width, height: height, contentHash: originalHash, importState: .ready))
+            try store.completedDirectImport(session)
             return (store, asset, originalHash)
         }.value
         let store = prepared.0, asset = prepared.1, originalHash = prepared.2

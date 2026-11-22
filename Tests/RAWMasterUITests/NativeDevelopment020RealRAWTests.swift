@@ -38,6 +38,7 @@ final class NativeDevelopment020RealRAWTests: XCTestCase {
                     contentHash: hash, importState: .ready)))
                 hashes.append(hash)
             }
+            try store.completedDirectImport(session)
             guard try store.loadAdmissions().count == 3 else { throw EditingError.invalidSource }
             return (store, assets, hashes)
         }.value

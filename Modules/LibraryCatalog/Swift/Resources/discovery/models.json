@@ -1,0 +1,20 @@
+{
+  "source": "75de2d55ec2d0b4efc50b3e9ad70dba96a7b2fa2",
+  "sourceSHA256": "612923381c76ec5a9bed335d1c48827e3f2e506ac31b044b63b2031fadee6a0b",
+  "sha256": {
+    "vision-f16w.onnx": "5bef45b84d6041d8d20eed4b7f60515ef38931ab920fd77630c085857a8e6dab",
+    "text-f16w.onnx": "dfc21a91e2d3d61e87febadc97e007f5dbf1f7e33383acaf5f71fe773d7c9eda",
+    "tokenizer.json": "cb9140fae3ac5122c972d37adf83e1248471a38147ad76f8215c8872c6fd8322",
+    "preprocessor_config.json": "9b36b57ebaf20f09bf4c22100ccc21877ea6bfe5aead0c00c59f8af8ccefacfc",
+    "yunet.onnx": "8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4",
+    "face-reidentification-retail-0095.onnx": "53349972f8899c86d7afe7f585f3be76f2303f458893679ae42baafc59be6373"
+  },
+  "version": 1,
+  "sceneModel": "siglip2-base-p16-224-75de2d55-f16w-v1",
+  "faceModel": "yunet-2023mar-intel-0095-fp32-edge1024-v2",
+  "faceEncoder": {
+    "file": "face-reidentification-retail-0095.onnx",
+    "dimensions": 256,
+    "size": 128
+  }
+}

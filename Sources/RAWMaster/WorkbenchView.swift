@@ -69,7 +69,7 @@ struct WorkbenchView: View {
                     if model.isTriageScope { TriageStatusStrip() }
                     else if model.scope == .session { SessionHistoryBrowsingControls() }
                     Divider()
-                    if model.scopedAssets.isEmpty && model.mode != .compare { emptyState }
+                    if !model.isPagedGrid && model.scopedAssets.isEmpty && model.mode != .compare { emptyState }
                     else { BrowserView() }
                     Divider()
                     if model.mode == .compare { ComparisonToolbar() }
@@ -92,19 +92,16 @@ struct WorkbenchView: View {
         workbenchSurface
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                HStack(spacing: 10) {
-                    HStack(spacing: 7) {
-                        BrandIconView(size: 19)
-                        Text("RAWMaster").font(.system(size: 12, weight: .semibold))
+                if !model.isNativeEditing {
+                    Button { model.showSidebar.toggle() } label: {
+                        Label("资料库导航", systemImage: "sidebar.left")
                     }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("RAWMaster")
-                    if !model.isNativeEditing {
-                        Button { model.showSidebar.toggle() } label: { Image(systemName: "sidebar.left") }.help("显示或收起项目栏")
-                    }
+                    .labelStyle(.iconOnly)
+                    .help("显示或收起项目栏")
+                    .accessibilityIdentifier("workbench.sidebarToggle")
                 }
             }
-            ToolbarItem(id: TitlebarDoubleClickRouter.brandItemID, placement: .principal) {
+            ToolbarItem(placement: .principal) {
                 WorkflowTabs()
             }
         }
@@ -119,6 +116,7 @@ struct WorkbenchView: View {
     private var workflowSheets: some View {
         toolbarSurface
         .modifier(EditingWorkflowPresentation(editing: model.editing))
+        .sheet(item: $model.libraryPanel, onDismiss: { model.reload() }) { CatalogWorkspacePanel(panel: $0).environmentObject(model) }
         .sheet(isPresented: $model.showImport) { ImportSheet() }
         .sheet(isPresented: $model.showExport) { ExportSheet() }
         .sheet(isPresented: $model.showTimelapse) {
@@ -235,7 +233,7 @@ struct WorkbenchView: View {
             }.frame(height: 26)
             HStack(spacing: 8) {
                 Text(headerCounts).font(.caption2).foregroundStyle(.secondary).fixedSize()
-                    .help("范围共 \(model.scopeCaptureCount) 次拍摄、\(model.scopedAssets.count) 个文件；\(model.keptCount) 个文件入选")
+                    .help("范围共 \(model.scopeCaptureCount) 次拍摄、\(model.scopeFileCount) 个文件；\(model.keptCount) 个文件入选")
                 if model.scope == .project, let progress = model.projectProgress {
                     Text("已审 \(progress.reviewedCaptures)/\(progress.totalCaptures)").font(.caption2.monospacedDigit()).foregroundStyle(.secondary).fixedSize()
                         .help("已审 \(progress.reviewedFiles)/\(progress.totalFiles) 个文件；\(progress.partiallyReviewedCaptures) 个组合部分已审；仅序列用途 \(progress.sequenceOnlyFiles) 个，包含在总数中。")
@@ -246,10 +244,10 @@ struct WorkbenchView: View {
         }.padding(.horizontal, 18).padding(.vertical, model.scope == .session ? 0 : 10)
     }
     private var headerCounts: String {
-        if model.isTriageScope { return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopedAssets.count) 个文件 · 初筛" }
-        if model.isHistoryScope { return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopedAssets.count) 个文件 · 导入历史" }
-        if model.hasSearchConditions { return "匹配 \(model.matchedCaptureCount)/\(model.scopeCaptureCount) 次 · \(model.filteredAssets.count)/\(model.scopedAssets.count) 文件" }
-        return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopedAssets.count) 个文件"
+        if model.isTriageScope { return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopeFileCount) 个文件 · 初筛" }
+        if model.isHistoryScope { return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopeFileCount) 个文件 · 导入历史" }
+        if model.hasSearchConditions { return "匹配 \(model.matchedCaptureCount)/\(model.scopeCaptureCount) 次 · \(model.matchedFileCount)/\(model.scopeFileCount) 文件" }
+        return "\(model.scopeCaptureCount) 次拍摄 · \(model.scopeFileCount) 个文件"
     }
     @ViewBuilder private var emptyState: some View {
         if model.scope == .session {
@@ -359,15 +357,15 @@ struct SidebarView: View {
                 }.buttonStyle(.plain).foregroundStyle(AppPalette.accent).disabled(model.isBusy)
                     .padding(.bottom, 10).help("创建全局导入会话 · ⌘I")
                 sectionTitle("资料库")
-                row("全部素材", icon: "photo.on.rectangle.angled", count: model.publishedAssets.count,
+                row("全部素材", icon: "photo.on.rectangle.angled", count: model.isPagedGrid ? model.overview?.files ?? 0 : model.publishedAssets.count,
                     selected: model.scope == .all) { model.selectScope(.all) }
-                row("导入记录", icon: "tray.and.arrow.down", count: model.sessions.count,
+                row("导入记录", icon: "tray.and.arrow.down", count: model.isPagedGrid ? model.overview?.sessions ?? 0 : model.sessions.count,
                     selected: model.scope == .imports || model.scope == .session) { model.openImportCatalog() }
-                row("拍摄序列", icon: "square.stack.3d.up", count: model.visibleGroups.count,
+                row("拍摄序列", icon: "square.stack.3d.up", count: model.isPagedGrid ? model.overview?.groups ?? 0 : model.visibleGroups.count,
                     selected: model.scope == .sequences || model.scope == .group) { model.openSequenceCatalog() }
                 sectionTitle("项目")
                 ForEach(model.projects, id: \.id) { project in
-                    row(project.name, icon: "folder", count: model.publishedAssets.filter { $0.projectID == project.id }.count,
+                    row(project.name, icon: "folder", count: model.projectFileCount(project.id),
                         selected: model.scope == .project && model.scopeID == project.id) { model.selectScope(.project, id: project.id) }
                 }
                 if model.projects.isEmpty { Text("尚无项目").font(.caption).foregroundStyle(.secondary).padding(10) }
@@ -433,10 +431,25 @@ struct BrowserView: View {
                                 header: placement.header(at: index, in: items),
                                 headerHeight: placement.headerHeight(inRowContaining: index, items: items),
                                 memberships: layout.memberships[item.asset.id] ?? [], collapsedGroupIDs: $collapsedGroupIDs)
+                                .environment(\.libraryGridCard, item.asset.id)
+                                .overlay { model.paintMark(item.asset.id) }
+                                .task(id: model.isPagedGrid && index >= items.count - 6 ? model.assets.count : 0) {
+                                    // Several pages of one collapsed sequence can leave the same tail card visible.
+                                    if model.isPagedGrid, index >= items.count - 6 { model.catalogGrid?.loadMore() }
+                                }
                                 .id(item.id)
                         }
                     }.padding(18).padding(.bottom, model.selectedIDs.count > 1 ? 115 : 0)
-                    if model.filteredAssets.isEmpty { ContentUnavailableView("当前筛选下没有素材", systemImage: "line.3.horizontal.decrease.circle").padding(40) }
+                    if model.filteredAssets.isEmpty {
+                        if model.isPagedGrid && model.catalogGrid?.isLoading == true { ProgressView("读取资料库…").padding(40) }
+                        else if let error = model.catalogGrid?.errorDescription, model.isPagedGrid {
+                            Text(error).foregroundStyle(.secondary).textSelection(.enabled).padding()
+                            Button("重试查询") { model.reload() }
+                        } else {
+                            ContentUnavailableView("当前筛选下没有素材", systemImage: "line.3.horizontal.decrease.circle")
+                                .padding(40).overlay { model.paintMark(nil) }
+                        }
+                    }
                 }.onChange(of: model.navigationReveal) {
                     if let id = model.navigationReveal?.assetID { reveal(id, layout: layout, proxy: proxy) }
                 }.onChange(of: model.focusedID) {
@@ -524,12 +537,15 @@ struct AssetCard: View {
 }
 
 struct ThumbnailView: View {
+    @Environment(\.libraryGridCard) private var gridCard
+    @EnvironmentObject private var model: AppModel
     let asset: AssetRecord
     @State private var image: NSImage?
     @State private var failed = false
     var body: some View {
         ZStack {
-            if let image { Image(nsImage: image).resizable().scaledToFit() }
+            if let image { Image(nsImage: image).resizable().scaledToFit()
+                    .overlay { if let gridCard { model.paintMark(gridCard, photo: true) } } }
             else if failed { Image(systemName: "photo.badge.exclamationmark").foregroundStyle(.secondary) }
             else { ProgressView().controlSize(.small) }
         }.task(id: asset.currentPath + asset.importState.rawValue + asset.availability.rawValue) {
@@ -672,7 +688,13 @@ struct InspectorView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                HStack { Text("照片信息").font(.headline); Spacer(); Image(systemName: "info.circle").foregroundStyle(.secondary) }
+                HStack {
+                    Text("照片信息").font(.headline)
+                    Spacer()
+                    Button { model.inspectWorks() } label: { Image(systemName: "info.circle") }
+                        .buttonStyle(.borderless).help("打开完整元数据、直方图与对焦检查")
+                        .disabled(model.isTriageScope || model.actionAssetIDs.isEmpty)
+                }
                 if let asset = model.focusedAsset {
                     Text(asset.filename).font(.system(size: 14, weight: .medium)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                     if model.isTriageScope || model.isHistoryScope {
@@ -780,37 +802,52 @@ struct InspectorView: View {
 }
 
 
-/// Keeps the document title stable when the immersive editor hides the toolbar
-/// that would otherwise present navigationSubtitle.
+/// Maintains the context shown by the Window menu and the editor's native chrome.
 struct WorkbenchWindowTitleSynchronizer: NSViewRepresentable {
     let contextTitle: String
     var darkEditing = false
 
     static func apply(to window: NSWindow?, contextTitle: String, darkEditing: Bool = false) {
         guard let window else { return }
-        window.title = contextTitle.isEmpty ? "RAWMaster" : "RAWMaster – " + contextTitle
-        window.isMovable = true
-        window.styleMask.insert(.resizable)
-        window.standardWindowButton(.zoomButton)?.isEnabled = true
-        window.minSize = CGSize(width: 1100, height: 720)
-        window.appearance = darkEditing ? NSAppearance(named: .darkAqua) : nil
-        // The unified title/toolbar surface can retain windowBackgroundColor even after its
-        // SwiftUI color scheme changes. Make the editing chrome transparent over a dark window.
-        window.titlebarAppearsTransparent = darkEditing
-        window.backgroundColor = darkEditing ? AppPalette.panelNSColor : .windowBackgroundColor
+        let title = contextTitle.isEmpty ? "RAWMaster" : "RAWMaster – " + contextTitle
+        if window.title != title { window.title = title }
+        if window.titleVisibility != .hidden { window.titleVisibility = .hidden }
+        if !window.isMovable { window.isMovable = true }
+        if !window.styleMask.contains(.resizable) { window.styleMask.insert(.resizable) }
+        if let zoomButton = window.standardWindowButton(.zoomButton), !zoomButton.isEnabled {
+            zoomButton.isEnabled = true
+        }
+        let minimumSize = CGSize(width: 1100, height: 720)
+        if window.minSize != minimumSize { window.minSize = minimumSize }
+        let appearance = darkEditing ? NSAppearance(named: .darkAqua) : nil
+        if window.appearance?.name != appearance?.name { window.appearance = appearance }
+        // The unified toolbar may retain its light background on entry to the editor.
+        if window.titlebarAppearsTransparent != darkEditing {
+            window.titlebarAppearsTransparent = darkEditing
+        }
+        let backgroundColor = darkEditing ? AppPalette.panelNSColor : NSColor.windowBackgroundColor
+        if window.backgroundColor != backgroundColor { window.backgroundColor = backgroundColor }
     }
 
-    func makeNSView(context: Context) -> NSView { NSView(frame: .zero) }
+    final class AnchorView: NSView {
+        var contextTitle = ""
+        var darkEditing = false
 
-    func updateNSView(_ view: NSView, context: Context) {
-        // Apply AppKit appearance before the next toolbar render; deferring this to a later
-        // async cycle leaves the system title bar visibly light after entering the darkroom.
-        Self.apply(to: view.window, contextTitle: contextTitle, darkEditing: darkEditing)
-        if view.window == nil {
-            DispatchQueue.main.async { [weak view] in
-                guard let view else { return }
-                Self.apply(to: view.window, contextTitle: contextTitle, darkEditing: darkEditing)
-            }
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            apply()
         }
+
+        func apply() {
+            WorkbenchWindowTitleSynchronizer.apply(to: window, contextTitle: contextTitle, darkEditing: darkEditing)
+        }
+    }
+
+    func makeNSView(context: Context) -> AnchorView { AnchorView(frame: .zero) }
+
+    func updateNSView(_ view: AnchorView, context: Context) {
+        view.contextTitle = contextTitle
+        view.darkEditing = darkEditing
+        view.apply()
     }
 }

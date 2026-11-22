@@ -16,9 +16,14 @@ if [[ ! -f "$flashraw_library" || ! -f "$flashraw_source/LICENSE-MIT" || ! -f "$
   print -u2 "Missing FlashRaw library or licenses. Set FLASHRAW_LIBRARY and FLASHRAW_SOURCE_DIR for an external build."
   exit 1
 fi
-swift build --configuration "$configuration" --jobs 4
-binary_dir="$(swift build --configuration "$configuration" --show-bin-path)"
-app="$PWD/output/RAWMaster.app"
+typeset -a swift_build_options
+swift_build_options=(--configuration "$configuration")
+if [[ -n "${RAWMASTER_BUILD_PATH:-}" ]]; then
+  swift_build_options+=(--scratch-path "$RAWMASTER_BUILD_PATH")
+fi
+swift build "${swift_build_options[@]}" --jobs 4 --product RAWMaster
+binary_dir="$(swift build "${swift_build_options[@]}" --show-bin-path)"
+app="${RAWMASTER_APP_OUTPUT:-$PWD/output/RAWMaster.app}"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary_dir/RAWMaster" "$app/Contents/MacOS/RAWMaster"
 /usr/bin/ditto "$binary_dir/PhotoExport_RAWMasterPhotoExport.bundle" "$app/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle"
@@ -111,6 +116,38 @@ if not all((sr / name).is_file() for name in ('LICENSE.txt', 'NOTICE.txt')):
     raise SystemExit('Missing photographic 2x model attribution')
 PHOTO_FILTER_PY
 }
+catalog_bundle="$binary_dir/LibraryCatalog_RAWMasterLibrary.bundle"
+catalog_runtime="$catalog_bundle/Contents/Resources/rawmaster-library.runtime"
+test -f "$catalog_runtime"
+mkdir -p "$app/Contents/Helpers" "$app/Contents/Resources/LibraryNotices"
+Modules/LibraryCatalog/GroupRender/build.sh "$app/Contents/Helpers/rawmaster-group-render"
+cp Modules/LibraryCatalog/GroupRender/OpenCV-LICENSE.txt "$app/Contents/Resources/LibraryNotices/"
+discovery_pack="${RAWMASTER_LIBRARY_DISCOVERY_PACK:-$PWD/output/library-models/LibraryDiscovery}"
+if [[ -d "$discovery_pack" ]]; then
+  python3 - "$discovery_pack" Modules/LibraryCatalog/Swift/Resources/discovery/models.json <<'DISCOVERY'
+import hashlib, json, pathlib, sys
+root = pathlib.Path(sys.argv[1])
+pins = json.loads(pathlib.Path(sys.argv[2]).read_text())
+runtime = json.loads((root / 'runtime.json').read_text())
+for field in ['sceneModel','faceModel']:
+    if runtime[field] != pins[field]:
+        raise SystemExit('Unexpected library discovery model ' + field)
+for name, expected in pins['sha256'].items():
+    with (root / 'models' / name).open('rb') as f:
+        if hashlib.file_digest(f,'sha256').hexdigest() != expected:
+            raise SystemExit('Library model digest mismatch for ' + name)
+if not (root / 'runtime/bin/python3.12').is_file() or not (root / 'discovery/worker.py').is_file():
+    raise SystemExit('Incomplete library discovery runtime')
+DISCOVERY
+  ditto "$discovery_pack" "$app/Contents/Resources/LibraryDiscovery"
+elif [[ -n "${RAWMASTER_LIBRARY_DISCOVERY_PACK:-}" ]]; then
+  print -u2 "Missing requested library model bundle: $discovery_pack"
+  exit 1
+fi
+codesign --force --sign - "$app/Contents/Helpers/rawmaster-group-render"
+mkdir -p "$app/Contents/Frameworks"
+cp "$catalog_runtime" "$app/Contents/Frameworks/librawmaster_library.dylib"
+ditto "$catalog_bundle" "$app/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle"
 imaging_resources="$binary_dir/RAWMaster_RAWMasterImaging.bundle"
 if [[ ! -d "$imaging_resources" ]]; then
   print -u2 "Missing Imaging filter resources: $imaging_resources"

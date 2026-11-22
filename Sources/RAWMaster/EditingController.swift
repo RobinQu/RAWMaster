@@ -279,6 +279,7 @@ import RAWMasterAI
     private let defaults: UserDefaults
     let developmentLensProfileDefaults: DevelopmentLensProfileDefaultsStore
     private var pendingExportAssetID: String?
+    private var workbenchExport: (assetID: String, input: Task<(PhotoWork, EditingVersion), Error>)?
     private var focusedAdmissionFingerprint: String?
     private var savedAdmissionFingerprints: [String: Set<String>] = [:]
     private struct DraftExportIntent {
@@ -341,11 +342,17 @@ import RAWMasterAI
     var focusSnapshotHook: (@Sendable (String) -> Void)?
     var archivePublicationHook: (@Sendable (EditingVersionKind) throws -> Void)?
 
+    nonisolated static func openArchive(store: LibraryStore, libraryURL: URL) throws -> EditingArchive {
+        let defaultRoot = libraryURL.deletingLastPathComponent().appendingPathComponent("Editing Archive", isDirectory: true)
+        return try (try? store.editingArchive()) ?? store.configureEditingArchive(root: defaultRoot)
+    }
+
     init(store: LibraryStore, libraryURL: URL, defaults: UserDefaults = .standard,
          previewBackend: any EditingPreviewBackend = SharedEditingPreviewBackend(),
          renderer: any ImageDevelopmentRendering = ImageEngines.makeDevelopmentRenderer(),
          exportService: any ImageVersionExporting = ImageEngines.makeVersionExporter(),
          applicationServices: ApplicationEditingServices? = nil,
+         preparedArchive: EditingArchive? = nil,
          promptCanonicalDispatch: Bool = EditingPreviewPromptDispatch.enabled()) throws {
         self.store = store; self.defaults = defaults
         self.renderer = renderer
@@ -363,7 +370,7 @@ import RAWMasterAI
         self.applicationServices = services; ownsApplicationServices = applicationServices == nil
         previews = EditingPreviewCoordinator(backend: previewBackend, promptCanonicalDispatch: promptCanonicalDispatch)
         let base = libraryURL.deletingLastPathComponent()
-        archive = try (try? store.editingArchive()) ?? store.configureEditingArchive(root: base.appendingPathComponent("Editing Archive", isDirectory: true))
+        archive = try preparedArchive ?? Self.openArchive(store: store, libraryURL: libraryURL)
         let temporaryRoot = base.appendingPathComponent("Editing Temporary", isDirectory: true)
         outputRoot = temporaryRoot
         localProvider = LocalComfyProvider(runtime: services.runtime, outputDirectory: temporaryRoot)
@@ -532,6 +539,7 @@ import RAWMasterAI
     /// Leave only the browsing/editing surface. Durable jobs and exports retain their frozen requests.
     func leaveBrowsingContext() {
         suspendDevelopmentInteraction()
+        closeWorkbenchExport()
         pendingExportAssetID = nil; draftExportIntent = nil; showDraftExportChoice = false
         showExport = false; exportVersionID = nil; isPresented = false
         focus(nil)
@@ -1092,21 +1100,65 @@ import RAWMasterAI
         else { pendingExportAssetID = asset?.id; focus(asset, admissionFingerprint: admissionFingerprint) }
     }
     func openExport() {
-        guard !shuttingDown, let originalWork = work?.id else { return }
+        if selectVersionForExport() { showExport = true }
+    }
+
+    /// Keep the exact current recipe or selected saved version for both preview and delivery.
+    /// Focus may still be loading. Both consumers await the same selection without opening a sheet.
+    func beginWorkbenchExport(asset: AssetRecord, admissionFingerprint: String) -> Bool {
+        closeWorkbenchExport()
+        pendingExportAssetID = nil
+        showExport = false
+        isPresented = true
+        focus(asset, admissionFingerprint: admissionFingerprint)
+        if let work {
+            guard selectVersionForExport(), let version = exportVersion else { return false }
+            workbenchExport = (asset.id, Task { (work, version) })
+        } else {
+            guard loading, let focusTask else { return false }
+            let generation = focusGeneration
+            workbenchExport = (asset.id, Task { [weak self] in
+                await focusTask.value
+                try Task.checkCancellation()
+                guard let self, self.focusGeneration == generation,
+                      let work = self.work, work.source.assetID == asset.id,
+                      work.source.admissionFingerprint == admissionFingerprint else { throw EditingError.staleSource }
+                guard self.selectVersionForExport(), let version = self.exportVersion else {
+                    throw LibraryError.invalid(self.message ?? "当前版本尚未准备好导出。")
+                }
+                return (work, version)
+            })
+        }
+        return true
+    }
+
+    func workbenchExportInput(for assetID: String) async throws -> (PhotoWork, EditingVersion)? {
+        guard let workbenchExport, workbenchExport.assetID == assetID else { return nil }
+        return try await workbenchExport.input.value
+    }
+
+    func hasWorkbenchExport(for assetID: String) -> Bool { workbenchExport?.assetID == assetID }
+
+    func closeWorkbenchExport() {
+        workbenchExport?.input.cancel()
+        workbenchExport = nil
+    }
+
+    private func selectVersionForExport() -> Bool {
+        guard !shuttingDown, let originalWork = work?.id else { return false }
         let originalFocus = focusGeneration, originalBranch = developmentBranchID
         finishDevelopmentNumberInput()
         guard focusGeneration == originalFocus, work?.id == originalWork,
-              developmentBranchID == originalBranch, !shuttingDown, let work else { return }
+              developmentBranchID == originalBranch, !shuttingDown, let work else { return false }
         if isDisplayingDevelopmentDraft {
             guard !developmentAnalysisBusy, !developmentDehazeInput.hasPendingInput else {
-                message = "请等待这笔调整完成后再导出。"; return
+                message = "请等待这笔调整完成后再导出。"; return false
             }
             exportVersionID = draftParentID ?? selectedVersionID ?? work.originalVersionID
-            showExport = exportVersionID != nil
-            return
+        } else {
+            exportVersionID = displayedSavedVersion?.id ?? selectedVersionID ?? work.adoptedVersionID
         }
-        exportVersionID = displayedSavedVersion?.id ?? selectedVersionID ?? work.adoptedVersionID
-        showExport = exportVersionID != nil
+        return exportVersionID != nil
     }
     func cancelDraftExport() { draftExportIntent = nil; showDraftExportChoice = false }
     func saveDraftForExport() {
@@ -1873,7 +1925,7 @@ import RAWMasterAI
     }
     /// Photo work stops before the application owner closes preparation and its runtime.
     func shutdown(finishPreviews: Bool = true) async {
-        shuttingDown = true; pendingExportAssetID = nil
+        shuttingDown = true; pendingExportAssetID = nil; closeWorkbenchExport()
         quickPromptNetwork.cancel()
         closeQuickPrompt(restoreComparison: false)
         let estimatingDepth = sceneDepthTask
