@@ -32,7 +32,12 @@ extension AppModel {
     static var maximumWorkbenchExportCount: Int { PhotoExportKernel.maximumBatchPhotos }
 
     var workbenchExportCandidates: [AssetRecord] {
-        let scope = supportsProjectSearch ? filteredAssets : scopedAssets
+        let fallback = supportsProjectSearch ? filteredAssets : scopedAssets
+        #if canImport(RAWMasterLibrary)
+        let scope = isPagedGrid && exportCatalogScope != nil ? exportCatalogAssets : fallback
+        #else
+        let scope = fallback
+        #endif
         guard let explicit = workbenchExportContext.exactAssetIDs else { return scope }
         let requested = Set(explicit)
         return scope.filter { requested.contains($0.id) }
@@ -104,6 +109,11 @@ extension AppModel {
         guard (includedIDs?.count ?? candidates.count) <= Self.maximumWorkbenchExportCount else {
             throw LibraryError.invalid("每批最多可交付 \(Self.maximumWorkbenchExportCount) 张照片，请缩小选片范围。")
         }
+        #if canImport(RAWMasterLibrary)
+        if isPagedGrid, let frozen = exportCatalogScope {
+            _ = try await Task.detached(priority: .userInitiated) { try store.catalogAssets(for: frozen) }.value
+        }
+        #endif
         let ids = includedIDs ?? Set(candidates.filter { $0.availability == .available }.map(\.id))
         try PhotoExportKernel.validatePhotoCount(ids.count)
         let selected = candidates.filter { ids.contains($0.id) }
