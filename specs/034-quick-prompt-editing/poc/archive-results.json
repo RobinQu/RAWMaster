@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "tests": [
+    {
+      "adoptUndoReopened": true,
+      "archivedBitDepth": 8,
+      "archivedSHA256": "60898f176743fd38ea559bbad49dd3e7647039d6912ed44a0fc81baaef9ab73a",
+      "archivedSize": [
+        1024,
+        1024
+      ],
+      "attempts": 1,
+      "inputSHA256": "e9498312856c45c8c5198f58531e8b08a45ffc91746a5fc80ca7922c71aecf62",
+      "inputSize": [
+        1024,
+        1024
+      ],
+      "model": "black-forest-labs/flux-3-image-klein",
+      "nativeTotalSeconds": 180.282,
+      "originalSHA256": "60d1171bebc89e6170873b6815e9b510f3a304578a6dfb54a1596f49e6d7c3cc",
+      "providerSeconds": 180.069,
+      "receivedEncoding": "image/png",
+      "receivedSHA256": "60898f176743fd38ea559bbad49dd3e7647039d6912ed44a0fc81baaef9ab73a",
+      "scope": "whole",
+      "sourceUnchanged": true
+    },
+    {
+      "adoptUndoReopened": true,
+      "archivedBitDepth": 16,
+      "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "archivedSize": [
+        1024,
+        1024
+      ],
+      "attempts": 1,
+      "changedPixelsInSelection": 262144,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "inputSize": [
+        1024,
+        1008
+      ],
+      "model": "black-forest-labs/flux-3-image-klein",
+      "nativeTotalSeconds": 150.47,
+      "originalSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "protectedChannelDifferences": 0,
+      "protectedPixels": 786432,
+      "providerSeconds": 150.252,
+      "receivedEncoding": "image/png",
+      "receivedSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "scope": "region",
+      "selectionTopLeftPixels": {
+        "height": 512,
+        "width": 512,
+        "x": 480,
+        "y": 496
+      },
+      "signTestRedFractionAfter": 0.0,
+      "signTestRedFractionBefore": 0.92254,
+      "sourceUnchanged": true
+    },
+    {
+      "adoptUndoReopened": true,
+      "archivedBitDepth": 8,
+      "archivedSHA256": "e2f9a0db0767829024c43d7afc6f3f85ca794f2823b058d771c288e0980d2918",
+      "archivedSize": [
+        1024,
+        1024
+      ],
+      "attempts": 1,
+      "inputSHA256": "e9498312856c45c8c5198f58531e8b08a45ffc91746a5fc80ca7922c71aecf62",
+      "inputSize": [
+        1024,
+        1024
+      ],
+      "model": "doubao-seedream-5-5-261028",
+      "nativeTotalSeconds": 10.221,
+      "originalSHA256": "60d1171bebc89e6170873b6815e9b510f3a304578a6dfb54a1596f49e6d7c3cc",
+      "providerSeconds": 10.011,
+      "receivedEncoding": "image/png",
+      "receivedSHA256": "e2f9a0db0767829024c43d7afc6f3f85ca794f2823b058d771c288e0980d2918",
+      "scope": "whole",
+      "sourceUnchanged": true
+    },
+    {
+      "adoptUndoReopened": true,
+      "archivedBitDepth": 16,
+      "archivedSHA256": "bc7519350f5561ad24a2cee114abbc9e8b9e299aacff309813704268912459bc",
+      "archivedSize": [
+        1024,
+        1024
+      ],
+      "attempts": 1,
+      "changedPixelsInSelection": 260376,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "inputSize": [
+        1024,
+        1008
+      ],
+      "model": "doubao-seedream-5-5-261028",
+      "nativeTotalSeconds": 9.321,
+      "originalSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "protectedChannelDifferences": 0,
+      "protectedPixels": 786432,
+      "providerSeconds": 9.088,
+      "receivedEncoding": "image/png",
+      "receivedSHA256": "03be5c55ca221e7c84b0ac192d3f6b63fa6a3d33049e17c48a77dfb420f97806",
+      "scope": "region",
+      "selectionTopLeftPixels": {
+        "height": 512,
+        "width": 512,
+        "x": 480,
+        "y": 496
+      },
+      "signTestRedFractionAfter": 0.0,
+      "signTestRedFractionBefore": 0.92254,
+      "sourceUnchanged": true
+    }
+  ]
+}

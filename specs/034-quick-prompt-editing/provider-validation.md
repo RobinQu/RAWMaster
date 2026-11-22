@@ -40,3 +40,5 @@ python3 specs/034-quick-prompt-editing/poc/build-provider-probe.py \
 最后一条命令采用调用方提供的安全文件描述符 3。正常应用通过已绑定目标的钥匙串读取凭证。以上用例专门覆盖模型适配层，产品的点击到采用、Matte 外保护与重新导出由集成验收分别记录。
 
 本机独立 CLI 材料和肉眼对照位于 `output/quick-prompt-native/flux-provider-baseline/`。Swift 实时 FLUX 私有候选与本地取消记录位于 `output/quick-prompt-native/provider-functional/results/`，实时 Seedream 候选与每范围计数位于 `output/quick-prompt-native/provider-functional/seedream-live/`。这些目录按机器保留，仓库内的验收记录包含四个候选的完整 SHA-256。[可随版本复核的数据](poc/provider-results.json)
+
+随后两端用相同的整图人像和局部湖景，通过真实提供者、原生生成队列和 TIFF16 局部合成。两款模型均清除了局部样片中的测试路牌，并通过原样像素保护、归档、采用、撤销和重开。[原生集成验收](native-validation.md) · [整图与局部回执](poc/archive-results.json)
