@@ -65,12 +65,16 @@ final class EditingInteractionPerformanceTests: XCTestCase {
         let pane = editing.previews.primary
         var accepted: Draw?
         try await wait(label, seconds: seconds) {
+            if pane.error != nil && !pane.rendering { return true }
             guard pane.frameRecipe == recipe, let frame = pane.frame, frame.quality == quality,
                   let event = pane.currentAcceptedDraw, event.frameID == frame.id,
                   event.drawReturnedUptimeNanoseconds >= start else { return false }
             accepted = Draw(event: event, revision: frame.revision, generation: frame.generation,
                             quality: frame.quality.rawValue, approximate: frame.approximate)
             return true
+        }
+        if accepted == nil, let failure = pane.error {
+            throw ProbeFailure("\(label): \(failure), rendering=\(pane.rendering), quality=\(pane.frame?.quality.rawValue ?? "none"), recipeMatched=\(pane.frameRecipe == recipe)")
         }
         return try Self.required(accepted)
     }
@@ -360,8 +364,8 @@ final class EditingInteractionPerformanceTests: XCTestCase {
             report["sourceSHA256After"] = hashAfter
             Self.gate(hashAfter == prepared.2, "source.preserved", &report)
             report["engineAfterInteraction"] = await Self.counters()
+            // An editor releases its leases. The shared engine lives until the application exits.
             await editing.shutdown()
-            await ImageEngines.previewLifecycle.closeAll()
             didClose = true
             if let adoptedMask {
                 report["memoryAfterEditorShutdown"] = try Self.maskProcessMemory()
@@ -396,10 +400,10 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                     Self.gate(initialCalls == 0 && reopenedCalls == 0 && exportedCalls == 0,
                               "mask.freshEditorReopenAndExportNoModelInvocations", &report)
                 } catch {
-                    await reopened.shutdown(); await ImageEngines.previewLifecycle.closeAll()
+                    await reopened.shutdown()
                     throw error
                 }
-                await reopened.shutdown(); await ImageEngines.previewLifecycle.closeAll()
+                await reopened.shutdown()
                 let after = try Self.required(await input.analysisDiagnostics(for: sourceID), "Missing post-export mask diagnostics")
                 report["modelInvocationsAfterExport"] = after.modelInvocations
                 Self.gate(before.modelInvocations == after.modelInvocations, "mask.reopenExportNoModelInvocations", &report)
@@ -409,10 +413,12 @@ final class EditingInteractionPerformanceTests: XCTestCase {
                 report["sourceSHA256AfterExport"] = finalHash
                 Self.gate(finalHash == prepared.2, "source.preservedAfterExport", &report)
             }
+            await ImageEngines.previewLifecycle.closeAll()
             report["engineAfterReleaseAndExport"] = await Self.counters()
         } catch {
             report["engineAtFailure"] = await Self.counters()
-            if !didClose { await editing.shutdown(); await ImageEngines.previewLifecycle.closeAll() }
+            if !didClose { await editing.shutdown() }
+            await ImageEngines.previewLifecycle.closeAll()
             throw error
         }
     }

@@ -1,6 +1,7 @@
 import XCTest
 import CoreImage
 import ImageIO
+import UniformTypeIdentifiers
 import RAWMasterCore
 @testable import RAWMasterImaging
 
@@ -86,6 +87,123 @@ final class DevelopmentSemanticMaskTests: XCTestCase {
         catch { XCTAssertEqual(error as? DevelopmentMaskError,.missingModels) }
     }
 
+    func testRejectedGeometryCannotDescribeASubsequentVerifiedDecode() async throws {
+        let dir = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let url = dir.appending(path: "source.png")
+        try DevelopmentMaskBitmap(width: 24, height: 16, values: Array(repeating: 73, count: 384)).png().write(to: url)
+        let correct = try binding(url), service = DevelopmentSemanticMaskService()
+        var incorrect = correct
+        incorrect.exifOrientation = 8; incorrect.orientedWidth = 16; incorrect.orientedHeight = 24
+        do { _ = try await service.generate(capture: url, source: incorrect, target: .brush); XCTFail("Bad geometry admitted") }
+        catch { XCTAssertEqual(error as? DevelopmentMaskError, .staleSource) }
+        let rejected = await service.analysisDiagnostics(for: correct.sourceContentID)
+        XCTAssertEqual(rejected?.imageIODecodes, 0); XCTAssertEqual(rejected?.exifOrientation, 0)
+        XCTAssertEqual(rejected?.orientedWidth, 0); XCTAssertEqual(rejected?.orientedHeight, 0)
+        _ = try await service.generate(capture: url, source: correct, target: .brush)
+        let verified = await service.analysisDiagnostics(for: correct.sourceContentID)
+        XCTAssertEqual(verified?.imageIODecodes, 1); XCTAssertEqual(verified?.exifOrientation, correct.exifOrientation)
+        XCTAssertEqual(verified?.orientedWidth, correct.orientedWidth); XCTAssertEqual(verified?.orientedHeight, correct.orientedHeight)
+    }
+
+    func testFrozenMatteTileEdgesMatchWholeImageAndBound61MPSourceROI() throws {
+        let w = 359, h = 211, smallWidth = 37, smallHeight = 25
+        let values = (0..<(smallWidth*smallHeight)).map { i in
+            UInt8(i%smallWidth < 4 || i/smallWidth > 21 ? 0 : (i%smallWidth*13 + i/smallWidth*47)%256)
+        }
+        let bitmap = try DevelopmentMaskBitmap(width: smallWidth, height: smallHeight, values: values)
+        let source = DevelopmentLocalEditSourceBinding(sourceContentID: String(repeating: "9", count: 64), exifOrientation: 1,
+                                                       orientedWidth: w, orientedHeight: h)
+        var layer = try DevelopmentMaskCandidate(bitmap: bitmap, source: source, target: .brush,
+            generator: "source-brush-v1", modelHashes: [], prompt: []).layer()
+        layer.adjustments.exposure = 0.4
+        let input = CIImage(color: CIColor(red: 0.28, green: 0.4, blue: 0.21)).cropped(to: CGRect(x: 0, y: 0, width: w, height: h))
+        let context = DevelopmentColorEngineV3.makeContext()
+        let result = try DevelopmentMaskEngineV3.apply([layer], to: input, context: context)
+        func read(x: Int, top: Int, width: Int, height: Int) throws -> [SIMD4<UInt16>] {
+            let area = CGRect(x: x, y: h-top-height, width: width, height: height)
+            var pixels = [SIMD4<UInt16>](repeating: .zero, count: width*height)
+            try pixels.withUnsafeMutableBytes {
+                let dest = CIRenderDestination(bitmapData: $0.baseAddress!, width: width, height: height, bytesPerRow: width*8, format: .RGBA16)
+                dest.colorSpace = PhotoRenderer.sRGB; dest.alphaMode = .unpremultiplied; dest.isFlipped = true; dest.isDithered = false
+                _ = try context.startTask(toRender: result, from: area, to: dest, at: .zero).waitUntilCompleted()
+            }
+            return pixels
+        }
+        let full = try read(x: 0, top: 0, width: w, height: h)
+        XCTAssertGreaterThan(Set(full.map(\.x)).count, 80)
+        for top in stride(from: 0, to: h, by: 53) {
+            for x in stride(from: 0, to: w, by: 71) {
+                let tw = min(71, w-x), th = min(53, h-top)
+                let tile = try read(x: x, top: top, width: tw, height: th)
+                for row in 0..<th {
+                    let offset = (top+row)*w+x
+                    XCTAssertTrue(tile[row*tw..<(row+1)*tw].elementsEqual(full[offset..<offset+tw]))
+                }
+            }
+        }
+        // No 61 MP sensor buffer is needed to check the kernel's actual ROI callback.
+        let native = CIImage(color: .black).cropped(to: CGRect(x: 0,y: 0,width: 9504,height: 6336))
+        let nativeBinding = DevelopmentLocalEditSourceBinding(sourceContentID: source.sourceContentID,exifOrientation: 1,
+                                                             orientedWidth: 9504,orientedHeight: 6336)
+        let nativeMatte = try DevelopmentMaskBitmap(width: 1536,height: 1024,values: Array(repeating: 0,count: 1536*1024))
+        let nativeLayer = try DevelopmentMaskCandidate(bitmap: nativeMatte,source: nativeBinding,target: .subject,
+            generator: "vision-foreground-r1-v1",modelHashes: [],prompt: []).layer()
+        let sample = CGRect(x: 6451,y: 3107,width: 1,height: 1)
+        let callback = DevelopmentMaskEngineV3.maskROI(nativeLayer, subject: native, index: 1)
+        XCTAssertEqual(callback(0,sample), sample)
+        XCTAssertEqual(callback(1,sample), sample.insetBy(dx: -7, dy: -7))
+    }
+
+    func testLegacyMaskOnTransparentSamplesPreservesStraightenedEdges() async throws {
+        let dir = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let w = 96, h = 64
+        var rgba = [UInt8](repeating: 0, count: w*h*4)
+        var coverage = [UInt8](repeating: 0, count: w*h)
+        for y in 0..<h {
+            for x in 0..<w {
+                let index = y*w + x, edge = 40 + y%7
+                let alpha = x < edge ? 255 : (x == edge ? 91 : 0)
+                rgba[4*index] = UInt8(56 + x)
+                rgba[4*index+1] = UInt8(115 + y)
+                rgba[4*index+2] = UInt8(176 - x/2)
+                rgba[4*index+3] = UInt8(alpha)
+                coverage[index] = alpha == 0 ? 255 : 0
+            }
+        }
+        let space = try XCTUnwrap(CGColorSpace(name: CGColorSpace.sRGB))
+        let provider = try XCTUnwrap(CGDataProvider(data: Data(rgba) as CFData))
+        let frame = try XCTUnwrap(CGImage(width: w, height: h, bitsPerComponent: 8, bitsPerPixel: 32, bytesPerRow: w*4,
+            space: space, bitmapInfo: .init(rawValue: CGImageAlphaInfo.last.rawValue), provider: provider,
+            decode: nil, shouldInterpolate: false, intent: .defaultIntent))
+        let mask = try DevelopmentMaskBitmap(width: w, height: h, values: coverage)
+        let old = DevelopmentRecipe(exposureEV: 0.1, straightenDegrees: 11, crop: .init(x: 0.04, y: 0.05, width: 0.9, height: 0.9))
+        for type in [UTType.png, .tiff] {
+            let name = try XCTUnwrap(type.preferredFilenameExtension)
+            let url = dir.appending(path: "source").appendingPathExtension(name)
+            let encoder = try XCTUnwrap(CGImageDestinationCreateWithURL(url as CFURL, type.identifier as CFString, 1, nil))
+            CGImageDestinationAddImage(encoder, frame, nil); XCTAssertTrue(CGImageDestinationFinalize(encoder))
+            let src = try binding(url)
+            let source = EditingSourceSnapshot(projectID: "p", assetID: "a", contentSHA256: src.sourceContentID,
+                byteCount: Int64(try Data(contentsOf: url).count), admissionFingerprint: src.sourceContentID, sourceLocation: url)
+            var layer = try DevelopmentMaskCandidate(bitmap: mask, source: src, target: .brush,
+                generator: "source-brush-v1", modelHashes: [], prompt: []).layer()
+            layer.adjustments.exposure = 0.45
+            var edited = try old.promotingToV3()
+            edited.adjustmentsV3?.masks = [layer]
+            let renderer = DevelopmentService()
+            let reference = try await renderer.render(source: source, recipe: old, format: .tiff16,
+                destination: dir.appending(path: name+"-before.tiff"))
+            let result = try await renderer.render(source: source, recipe: edited, format: .tiff16,
+                destination: dir.appending(path: name+"-applied.tiff"))
+            XCTAssertEqual(result.artifact.sha256, reference.artifact.sha256,
+                "A mask selecting only transparent source samples must preserve every rotated/cropped historical pixel.")
+        }
+    }
+
     func testHistoricalColorAndCropKeepProtectedCodesInLosslessExports() async throws {
         let dir = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
@@ -150,6 +268,19 @@ final class DevelopmentSemanticMaskTests: XCTestCase {
         let old = try await service.generate(capture: url, source: source, target: .brush)
         XCTAssertTrue(old.analysisDecoder?.hasPrefix("core-image-raw/") == true)
         let subject = try await service.generate(capture: url, source: source, target: .subject, rawDecoder: .flashRaw031)
+        // Landmarks read in the published upright photograph: the white shirt and the upper tree canopy.
+        // A small patch tolerates hair/edge softness while still detecting a rotated or mirrored mask.
+        func meanCoverage(x: Double, y: Double) -> Double {
+            let bitmap = subject.bitmap
+            let centerX = Int(x * Double(bitmap.width)), centerY = Int(y * Double(bitmap.height))
+            var sum = 0
+            for row in (centerY-8)...(centerY+8) {
+                for col in (centerX-8)...(centerX+8) { sum += Int(bitmap.values[row*bitmap.width+col]) }
+            }
+            return Double(sum) / 289
+        }
+        XCTAssertGreaterThan(meanCoverage(x: 0.46, y: 0.54), 190)
+        XCTAssertLessThan(meanCoverage(x: 0.18, y: 0.10), 45)
         let first = await service.analysisDiagnostics(for: source.sourceContentID)
         let cold = try XCTUnwrap(first)
         XCTAssertEqual(cold.decoder, DevelopmentRAWDecoder.flashRaw031.rawValue)

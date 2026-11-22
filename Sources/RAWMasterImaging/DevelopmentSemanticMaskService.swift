@@ -95,7 +95,7 @@ private final class MaskCancellation: @unchecked Sendable {
 /// pixel materialization. Candidate counts exclude brushes, failures and cancelled publications.
 public struct DevelopmentMaskAnalysisDiagnostics: Sendable, Equatable {
   public let sourceContentID: String
-  public let exifOrientation, orientedWidth, orientedHeight: Int
+  public fileprivate(set) var exifOrientation = 0, orientedWidth = 0, orientedHeight = 0
   public fileprivate(set) var decoder = ""
   public fileprivate(set) var analysisWidth = 0, analysisHeight = 0
   public fileprivate(set) var flashRawDecodes = 0, coreImageRawDecodes = 0, imageIODecodes = 0
@@ -103,12 +103,7 @@ public struct DevelopmentMaskAnalysisDiagnostics: Sendable, Equatable {
   public fileprivate(set) var visionRequests = 0, landscapeRuns = 0, objectEncoderRuns = 0, objectDecoderRuns = 0
   public var modelInvocations: Int { visionRequests + landscapeRuns + objectEncoderRuns + objectDecoderRuns }
 
-  fileprivate init(source: DevelopmentLocalEditSourceBinding) {
-    sourceContentID = source.sourceContentID
-    exifOrientation = source.exifOrientation
-    orientedWidth = source.orientedWidth
-    orientedHeight = source.orientedHeight
-  }
+  fileprivate init(sourceContentID: String) { self.sourceContentID = sourceContentID }
 }
 
 public actor DevelopmentSemanticMaskService {
@@ -282,7 +277,7 @@ public actor DevelopmentSemanticMaskService {
     if let index = diagnostics.firstIndex(where: { $0.sourceContentID == source.sourceContentID }) {
       if index != 0 { diagnostics.insert(diagnostics.remove(at: index), at: 0) }
     } else {
-      diagnostics.insert(.init(source: source), at: 0)
+      diagnostics.insert(.init(sourceContentID: source.sourceContentID), at: 0)
       if diagnostics.count > Self.maximumEntries { diagnostics.removeLast() }
     }
     try verifyCapture(capture, source: source)
@@ -345,6 +340,9 @@ public actor DevelopmentSemanticMaskService {
     }
     let decoded = try NativeImage(ciImage: image, maximumLongEdge: Self.maximumLongEdge)
     diagnostics[0].decoder = decoder
+    diagnostics[0].exifOrientation = source.exifOrientation
+    diagnostics[0].orientedWidth = source.orientedWidth
+    diagnostics[0].orientedHeight = source.orientedHeight
     diagnostics[0].analysisWidth = decoded.width
     diagnostics[0].analysisHeight = decoded.height
     if rawDecoder != nil { diagnostics[0].flashRawDecodes += 1 }

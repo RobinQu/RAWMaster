@@ -200,7 +200,7 @@ enum DevelopmentRendererV3 {
   static func develop(_ capture: URL, recipe: DevelopmentRecipe, applyGeometry: Bool = true,
                       suppliedRawBase: CIImage? = nil, suppliedImageBase: DevelopmentSuppliedImageBaseV1? = nil, context suppliedContext: CIContext? = nil,
                       residentGlobalSource: FlashRawCanonicalTexturePool.Pin? = nil, residentDehazeGuide: DevelopmentResidentDehazeGuide? = nil,
-                      thumbnailNativeSink: ((CIImage) throws -> Void)? = nil, localDecoderContractFingerprint: String? = nil, preparingLocal: Bool = false, preparingDehazeContext: DevelopmentDehazeContextV1? = nil, canonicalFiniteEvidence: PreviewCanonicalFiniteEvidenceV1? = nil, canonicalNaturalEvidence:PreviewNaturalCurveFiniteEvidenceV1? = nil, naturalFiniteObservation:PreviewNaturalCurveFiniteObservation? = nil, preparingNaturalCurvePicker: Bool = false, analysisOwnsLegacyValidationContext: Bool = false, analysisResidentInput: DevelopmentBWSummaryResidentV3.Input? = nil, brillianceQARequest:DevelopmentBrilliancePublicV1.Request? = nil, dehazeTIFFInvocation:DevelopmentDehazeTIFFInvocationV1? = nil, scopeSelection: DevelopmentMaskEngineV3.ScopeSelection? = nil, checkCancellation: (() throws -> Void)? = nil) throws -> DevelopedV3Graph {
+                      thumbnailNativeSink: ((CIImage) throws -> Void)? = nil, localDecoderContractFingerprint: String? = nil, preparingLocal: Bool = false, preparingDehazeContext: DevelopmentDehazeContextV1? = nil, canonicalFiniteEvidence: PreviewCanonicalFiniteEvidenceV1? = nil, canonicalNaturalEvidence:PreviewNaturalCurveFiniteEvidenceV1? = nil, naturalFiniteObservation:PreviewNaturalCurveFiniteObservation? = nil, preparingNaturalCurvePicker: Bool = false, analysisOwnsLegacyValidationContext: Bool = false, analysisResidentInput: DevelopmentBWSummaryResidentV3.Input? = nil, brillianceQARequest:DevelopmentBrilliancePublicV1.Request? = nil, dehazeTIFFInvocation:DevelopmentDehazeTIFFInvocationV1? = nil, scopeSelection: DevelopmentMaskEngineV3.ScopeSelection? = nil, legacyCoverage: DevelopmentLegacyMaskOutput.Coverage? = nil, checkCancellation: (() throws -> Void)? = nil) throws -> DevelopedV3Graph {
     let performanceToken = ImagePerformanceTelemetry.shared.begin(operation: "DevelopmentRendererV3.develop",
       stage: applyGeometry ? "完整显影图" : "分析图", queue: "显影引擎", boundary: .graphAndValidation)
     var performanceOutcome = ImagePerformanceOutcome.failed
@@ -432,7 +432,7 @@ enum DevelopmentRendererV3 {
         if residentDehazeGuide != nil { checkedImage = image }
       }
     }
-    image = try DevelopmentMaskEngineV3.apply(p.masks,to:image,context:context,glow:p.effects?.glow ?? .init(),optics:p.optics,checkCancellation:checkCancellation,scopeSelection:scopeSelection)
+    image = try DevelopmentMaskEngineV3.apply(p.masks,to:image,context:context,glow:p.effects?.glow ?? .init(),optics:p.optics,checkCancellation:checkCancellation,scopeSelection:scopeSelection,legacyCoverage:legacyCoverage)
     if DevelopmentMaskEngineV3.active(p.masks) { checkedImage = image }
     image = try DevelopmentLocalEngineV3.apply(p.localEdits,to:image,context:context,checkCancellation:checkCancellation)
     image = try DevelopmentGlobalEngineV3.applySharpenMaskPreview(p,to:image)

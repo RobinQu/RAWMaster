@@ -29,7 +29,7 @@ enum DevelopmentMaskEngineV3 {
     func capture(_ input: CIImage) throws {
       let (subject, args) = try maskInputs(layer, image: input)
       guard let result = try kernels.get().scopeCoverage.apply(extent: input.extent,
-        roiCallback: { index, rect in index == 1 ? subject.extent : rect }, arguments: args) else { throw DevelopmentV3Error.invalidGraph }
+        roiCallback:maskROI(layer, subject:subject, index:1), arguments: args) else { throw DevelopmentV3Error.invalidGraph }
       coverage = result
     }
   }
@@ -45,6 +45,19 @@ enum DevelopmentMaskEngineV3 {
       CIVector(x: layer.start.x, y: layer.start.y, z: layer.end.x, w: layer.end.y),
       CIVector(x: layer.center.x, y: layer.center.y, z: layer.radiusX, w: layer.radiusY),
       CIVector(x: layer.rangeLower, y: layer.rangeUpper, z: image.extent.width, w: image.extent.height)])
+  }
+  /// Frozen Gray8 is already transformed to source coordinates. Each pointwise kernel samples
+  /// only its output tile and one original Gray8 texel on either side for interpolation.
+  /// Requesting the entire upscaled matte for every finite-reduction tile forces a native F32
+  /// intermediate (about 960 MB on a 61 MP capture), including for a one-pixel reduction.
+  static func maskROI(_ layer: DevelopmentMaskLayerV3, subject: CIImage, index: Int32) -> CIKernelROICallback {
+    let extent = subject.extent
+    guard let snapshot = layer.semanticSnapshot else { return { sampler, rect in sampler == index ? extent : rect } }
+    let dx = max(1, ceil(extent.width / CGFloat(snapshot.width)))
+    let dy = max(1, ceil(extent.height / CGFloat(snapshot.height)))
+    return { sampler, rect in
+      sampler == index ? rect.insetBy(dx: -dx, dy: -dy).intersection(extent) : rect
+    }
   }
   static func prewarm(){_ = try? kernels.get()}
   static func active(_ layers:[DevelopmentMaskLayerV3])->Bool {
@@ -63,7 +76,7 @@ enum DevelopmentMaskEngineV3 {
   }
   static func apply(_ layers:[DevelopmentMaskLayerV3],to input:CIImage,context:CIContext,
                     glow sharedGlow:DevelopmentGlowV3?=nil,optics:DevelopmentOpticsV3?=nil,
-                    checkCancellation:(()throws->Void)?=nil,deferValidation:Bool=false,scopeSelection:ScopeSelection?=nil,sourceGrainScale:Double?=nil)throws->CIImage {
+                    checkCancellation:(()throws->Void)?=nil,deferValidation:Bool=false,scopeSelection:ScopeSelection?=nil,sourceGrainScale:Double?=nil,legacyCoverage:DevelopmentLegacyMaskOutput.Coverage?=nil)throws->CIImage {
     try DevelopmentMaskLayerV3.validateLayers(layers)
     guard active(layers) else { try scopeSelection?.capture(input); return input }
     try sharedGlow?.validate()
@@ -86,7 +99,7 @@ enum DevelopmentMaskEngineV3 {
         let (subject, geometry) = try maskInputs(layer, image: image, opacity: layer.opacity * min(1, -(layer.adjustments.defringe ?? 0)))
         var args = geometry
         args.insert(unprotected,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:args)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:args)else{throw DevelopmentError.unreadable}
         image=output
       }
     }
@@ -94,6 +107,7 @@ enum DevelopmentMaskEngineV3 {
       if layer.id == scopeSelection?.layer.id { try scopeSelection?.capture(image) }
       guard layer.enabled, layer.opacity>0, !layer.adjustments.isNeutral else { continue }
       try checkCancellation?()
+      try legacyCoverage?.capture(layer, input: image)
       let a=layer.adjustments
       let (subject, geometry) = try maskInputs(layer, image: image)
       var args: [Any] = geometry + [
@@ -108,7 +122,7 @@ enum DevelopmentMaskEngineV3 {
           "inputNeutral":CIVector(x:6500,y:0),
           "inputTargetNeutral":CIVector(x:6500+5000*temperature,y:150*tint)])
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(warmed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       let texture=a.texture ?? 0,clarity=a.clarity ?? 0
@@ -122,7 +136,7 @@ enum DevelopmentMaskEngineV3 {
         if clarity != 0 { changed=try DevelopmentAdvancedDetailEngineV3.applyBand(.clarity,amount:clarity*100,to:changed,radius:radii.clarity) }
         if portrait { changed=changed.oriented(.right) }
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if let grain=a.grain,grain>0 {
@@ -133,7 +147,7 @@ enum DevelopmentMaskEngineV3 {
           guard sourceGrainScale>0,sourceGrainScale<=1 else {throw DevelopmentV3Error.invalidGraph}
           grainArgs.append(DevelopmentGrainSamplingEngineV1.colorGrainSettings(settings,scale:sourceGrainScale))
           if layer.kind == .subject {
-            filtered=kernels.sourceGrain.apply(extent:image.extent,roiCallback:{index,rect in index==1 ? subject.extent:rect},arguments:grainArgs)
+            filtered=kernels.sourceGrain.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:1),arguments:grainArgs)
           } else {
             // Analytic masks only need the colour input. A second 1x1 sampler can collide
             // with another cached Core Image program after a long sequence of local edits.
@@ -143,7 +157,7 @@ enum DevelopmentMaskEngineV3 {
         } else {
           let noise=try DevelopmentGrainSamplingEngineV1.image(image.extent,effects:settings)
           grainArgs.insert(noise,at:1);grainArgs.append(grain)
-          filtered=kernels.grain.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:grainArgs)
+          filtered=kernels.grain.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:grainArgs)
         }
         guard let output=filtered else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
@@ -159,20 +173,20 @@ enum DevelopmentMaskEngineV3 {
         var local=DevelopmentAdjustmentsV3();local.curves=curves
         let changed=try DevelopmentColorEngineV3.applyCurvesAndLevels(local,to:image)
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if let grading=a.grading,!grading.isNeutral {
         let changed=try DevelopmentColorEngineV2.apply(.init(grading:grading),to:image)
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if let lut = a.gradingLUT, lut.amount > 0 {
         let changed = try DevelopmentGradingLUTEngine.apply(lut, to: image)
         var compositeArgs = Array(args.prefix(6))
         compositeArgs.insert(changed, at: 1)
-        guard let output = kernels.composite.apply(extent:image.extent, roiCallback:{ index, rect in index == 2 ? subject.extent : rect },
+        guard let output = kernels.composite.apply(extent:image.extent, roiCallback:maskROI(layer, subject:subject, index:2),
                                                    arguments:compositeArgs) else { throw DevelopmentError.unreadable }
         image = output
         args[0] = image
@@ -181,7 +195,7 @@ enum DevelopmentMaskEngineV3 {
         let local=DevelopmentOpticsV3(defringe:.init(enabled:true,purpleAmount:defringe*100,greenAmount:defringe*100))
         let changed=try DevelopmentDefringeEngineV3.apply(local,to:image)
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       let sharpness=a.sharpness ?? 0,noiseReduction=a.noiseReduction ?? 0
@@ -191,26 +205,26 @@ enum DevelopmentMaskEngineV3 {
         if noiseReduction>0 { local.noiseReduction = .init(enabled:true,sourceCapability:.image,nonRawAmount:noiseReduction*5) }
         let changed=try DevelopmentGlobalEngineV3.apply(local,to:image,sourceIsRAW:false)
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if sharpness<0 {
         let changed=image.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:max(0.1,-sharpness*1.2)]).cropped(to:image.extent)
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
-        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if let moire=a.moireReduction,moire>0 {
         let blurred=image.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:1.5]).cropped(to:image.extent)
         var moireArgs=Array(args.prefix(6));moireArgs.insert(blurred,at:1);moireArgs.append(moire)
-        guard let output=kernels.moire.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:moireArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.moire.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:moireArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if let dehaze=a.dehaze,dehaze != 0 {
         let radius=max(1,min(image.extent.width,image.extent.height)*0.01)
         let airlight=image.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius]).cropped(to:image.extent)
         var dehazeArgs=Array(args.prefix(6));dehazeArgs.insert(airlight,at:1);dehazeArgs.append(dehaze)
-        guard let output=kernels.dehaze.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:dehazeArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.dehaze.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:dehazeArgs)else{throw DevelopmentError.unreadable}
         image=output;args[0]=image
       }
       if let sample=a.pointColor,sample.isActive {
@@ -222,14 +236,14 @@ enum DevelopmentMaskEngineV3 {
         let pointOnly = other.isNeutral || (a.glowAmount ?? 0) > 0
         let pointArgs = (pointOnly ? Array(args.prefix(6)) : args) + [point, options]
         let kernel = pointOnly ? kernels.pointColorOnly : kernels.pointColor
-        guard let output=kernel.apply(extent:image.extent,roiCallback:{index,rect in index==1 ? subject.extent:rect},arguments:pointArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernel.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:1),arguments:pointArgs)else{throw DevelopmentError.unreadable}
         image=output
         if let amount=a.glowAmount,amount>0 {
           var settings=sharedGlow ?? .init()
           settings.enabled=true;settings.amount=amount*100
           let glowed=try DevelopmentGlowEngineV3.apply(settings,to:image)
           var glowArgs=Array(args.prefix(10));glowArgs[0]=image;glowArgs.insert(glowed,at:1)
-          guard let combined=kernels.glowLayer.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:glowArgs)else{throw DevelopmentError.unreadable}
+          guard let combined=kernels.glowLayer.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:glowArgs)else{throw DevelopmentError.unreadable}
           image=combined
         }
         // Without Glow, Point Color also applies tone in the same GPU pass.
@@ -242,10 +256,10 @@ enum DevelopmentMaskEngineV3 {
         // The final kernel computes coverage from the pre-layer pixels, composites Glow, then
         // applies tone. No full-frame coverage texture or separate tonal pass is required.
         var glowArgs=args;glowArgs.insert(glowed,at:1)
-        guard let output=kernels.glowLayer.apply(extent:image.extent,roiCallback:{index,rect in index==2 ? subject.extent:rect},arguments:glowArgs)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.glowLayer.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:glowArgs)else{throw DevelopmentError.unreadable}
         image=output
       }else{
-        guard let output=kernels.layer.apply(extent:image.extent,roiCallback:{index,rect in index==1 ? subject.extent:rect},arguments:args)else{throw DevelopmentError.unreadable}
+        guard let output=kernels.layer.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:1),arguments:args)else{throw DevelopmentError.unreadable}
         image=output
       }
     }

@@ -13,26 +13,38 @@ struct DevelopmentLegacyMaskOutput {
     .workingFormat: CIFormat.RGBAf.rawValue, .cacheIntermediates: false
   ])
 
-  static func make(capture: URL, recipe: DevelopmentRecipe, extent: CGRect, format: PhotoRenderFormat) throws -> Self? {
-    guard var parameters = recipe.adjustmentsV3, parameters.rawDecoder == nil,
-          parameters.geometry.version == .legacyV1 || parameters.geometry.version == .legacyV2 else { return nil }
-    let layers = parameters.masks.filter { $0.semanticSnapshot != nil && $0.enabled && $0.opacity > 0 && !$0.adjustments.isNeutral }
-    guard let source = layers.first?.semanticSnapshot?.source else { return nil }
-    parameters.masks.removeAll { $0.semanticSnapshot != nil }
-    var baseline = recipe
-    baseline.adjustmentsV3 = parameters
-    guard let legacy = try DevelopmentRendererV3.legacyEquivalent(baseline) else { return nil }
+  /// Collect only when removing all semantic layers would restore the original V1/V2 renderer.
+  /// Each coverage graph sees the actual pre-layer pixels, including transparency and source orientation.
+  final class Coverage {
+    let legacy: DevelopmentRecipe
+    private(set) var union: CIImage?
 
-    let input = CIImage(color: .white).cropped(to: CGRect(x: 0, y: 0, width: source.orientedWidth, height: source.orientedHeight))
-    var union: CIImage?
-    for layer in layers {
+    init?(recipe: DevelopmentRecipe) throws {
+      guard var parameters = recipe.adjustmentsV3, parameters.rawDecoder == nil,
+            parameters.geometry.version == .legacyV1 || parameters.geometry.version == .legacyV2,
+            parameters.masks.contains(where: { $0.semanticSnapshot != nil && $0.enabled && $0.opacity > 0 && !$0.adjustments.isNeutral })
+      else { return nil }
+      parameters.masks.removeAll { $0.semanticSnapshot != nil }
+      var baseline = recipe
+      baseline.adjustmentsV3 = parameters
+      guard let legacy = try DevelopmentRendererV3.legacyEquivalent(baseline) else { return nil }
+      self.legacy = legacy
+    }
+
+    func capture(_ layer: DevelopmentMaskLayerV3, input: CIImage) throws {
+      guard layer.semanticSnapshot != nil else { return }
       let selection = DevelopmentMaskEngineV3.ScopeSelection(layer)
       try selection.capture(input)
       guard let coverage = selection.coverage else { throw DevelopmentV3Error.invalidGraph }
       union = union.map { $0.applyingFilter("CIMaximumCompositing", parameters: [kCIInputBackgroundImageKey: coverage]) } ?? coverage
     }
-    guard let union else { throw DevelopmentV3Error.invalidGraph }
-    let coverage = try PhotoRenderer.applyV2Geometry(union, legacy)
+  }
+
+  static func make(capture: URL, collected: Coverage?, extent: CGRect, format: PhotoRenderFormat) throws -> Self? {
+    guard let collected else { return nil }
+    guard let sourceCoverage = collected.union else { throw DevelopmentV3Error.invalidGraph }
+    let legacy = collected.legacy
+    let coverage = try PhotoRenderer.applyV2Geometry(sourceCoverage, legacy)
     var (reference, _) = try PhotoRenderer.develop(capture, legacy)
     guard coverage.extent == extent, reference.extent == extent else { throw DevelopmentV3Error.invalidGraph }
     if format == .jpeg8 { reference = reference.composited(over: CIImage(color: .white).cropped(to: extent)) }

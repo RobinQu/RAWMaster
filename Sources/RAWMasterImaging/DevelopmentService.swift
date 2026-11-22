@@ -90,8 +90,9 @@ public actor DevelopmentService {
         (adaptive ? DevelopmentBrillianceAdaptiveV1.makeContext():(banded ? DevelopmentColorEngineV3.makeContext():nil))
       defer { ownedContext?.clearCaches() }
       let brillianceRequest=brillianceScope.map{DevelopmentBrilliancePublicV1.Request(scope:$0,check:{try Task.checkCancellation()})}
-      let (image, depth) = try PhotoRenderer.develop(captured, recipe, context:ownedContext,brillianceQARequest:brillianceRequest)
-      let legacyMask = try DevelopmentLegacyMaskOutput.make(capture: captured, recipe: recipe, extent: image.extent, format: format)
+      let legacyCoverage = try DevelopmentLegacyMaskOutput.Coverage(recipe: recipe)
+      let (image, depth) = try PhotoRenderer.develop(captured, recipe, context:ownedContext,brillianceQARequest:brillianceRequest,legacyCoverage:legacyCoverage)
+      let legacyMask = try DevelopmentLegacyMaskOutput.make(capture: captured, collected: legacyCoverage, extent: image.extent, format: format)
       return try PhotoRenderer.write(image, format: format, destination: destination,
         protectedURLs: protectedURLs + [source.sourceLocation], sourceDepth: depth, preparePublication: preparePublication,
         renderContext: ownedContext ?? PhotoRenderer.renderingContext(recipe),
@@ -170,7 +171,7 @@ enum PhotoRenderer {
   static let context = CIContext(options: [.cacheIntermediates: false, .workingColorSpace: CGColorSpace(name: CGColorSpace.extendedLinearSRGB)!])
   static let sRGB = CGColorSpace(name: CGColorSpace.sRGB)!
   static let rawExtensions: Set<String> = ["arw", "dng", "raw", "cr2", "cr3", "nef", "raf", "orf", "rw2", "pef", "srw", "3fr", "iiq"]
-  static func develop(_ url: URL, _ recipe: DevelopmentRecipe, context:CIContext?=nil,brillianceQARequest:DevelopmentBrilliancePublicV1.Request?=nil,analysisResidentInput:DevelopmentBWSummaryResidentV3.Input?=nil) throws -> (CIImage, Int?) {
+  static func develop(_ url: URL, _ recipe: DevelopmentRecipe, context:CIContext?=nil,brillianceQARequest:DevelopmentBrilliancePublicV1.Request?=nil,analysisResidentInput:DevelopmentBWSummaryResidentV3.Input?=nil,legacyCoverage:DevelopmentLegacyMaskOutput.Coverage?=nil) throws -> (CIImage, Int?) {
     try recipe.validate()
     if let analysisResidentInput {
       guard recipe == DevelopmentRecipe(),rawExtensions.contains(url.pathExtension.lowercased()),
@@ -179,7 +180,7 @@ enum PhotoRenderer {
     }
     if recipe.schemaVersion == 3 {
       let graph = try DevelopmentRendererV3.develop(url,recipe:recipe,context:context ?? DevelopmentColorEngineV3.context,
-        brillianceQARequest:brillianceQARequest,checkCancellation:context == nil ? nil:{try Task.checkCancellation()})
+        brillianceQARequest:brillianceQARequest,legacyCoverage:legacyCoverage,checkCancellation:context == nil ? nil:{try Task.checkCancellation()})
       return (graph.image,graph.sourceDepth)
     }
     if recipe.schemaVersion == 2 { return try developV2(url, recipe) }
