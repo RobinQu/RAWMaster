@@ -104,20 +104,26 @@ public struct DevelopmentColorGrading: Codable, Equatable, Sendable {
   public var global: DevelopmentGradingWheel
   public var blending: Double
   public var balance: Double
-  public init(shadows: DevelopmentGradingWheel = .init(), midtones: DevelopmentGradingWheel = .init(), highlights: DevelopmentGradingWheel = .init(), global: DevelopmentGradingWheel = .init(), blending: Double = 50, balance: Double = 0) {
+  /// Missing in existing recipes; a stored false bypasses the wheels without losing their values.
+  public var enabled: Bool?
+  public var isEnabled: Bool { enabled != false }
+  public init(shadows: DevelopmentGradingWheel = .init(), midtones: DevelopmentGradingWheel = .init(), highlights: DevelopmentGradingWheel = .init(), global: DevelopmentGradingWheel = .init(), blending: Double = 50, balance: Double = 0, enabled: Bool? = nil) {
     self.shadows = shadows
     self.midtones = midtones
     self.highlights = highlights
     self.global = global
     self.blending = blending
     self.balance = balance
+    self.enabled = enabled
   }
-  public var isNeutral: Bool { shadows.isNeutral && midtones.isNeutral && highlights.isNeutral && global.isNeutral }
+  public var isNeutral: Bool { !isEnabled || (shadows.isNeutral && midtones.isNeutral && highlights.isNeutral && global.isNeutral) }
   public func validate() throws { try shadows.validate(); try midtones.validate(); try highlights.validate(); try global.validate(); try valuesInRange([blending], 0...100); try valuesInRange([balance], -100...100) }
-  private enum CodingKeys: String, CodingKey { case shadows, midtones, highlights, global, blending, balance }
+  private enum CodingKeys: String, CodingKey { case shadows, midtones, highlights, global, blending, balance, enabled }
   public init(from decoder: Decoder) throws {
-    try RecipeCoding.requireKeys(decoder, ["shadows", "midtones", "highlights", "global", "blending", "balance"])
     let container = try decoder.container(keyedBy: CodingKeys.self)
+    try RecipeCoding.requireKeys(decoder, ["shadows", "midtones", "highlights", "global", "blending", "balance"]
+      + (container.contains(.enabled) ? ["enabled"] : []))
+    enabled = container.contains(.enabled) ? try container.decode(Bool.self, forKey: .enabled) : nil
     shadows = try container.decode(DevelopmentGradingWheel.self, forKey: .shadows)
     midtones = try container.decode(DevelopmentGradingWheel.self, forKey: .midtones)
     highlights = try container.decode(DevelopmentGradingWheel.self, forKey: .highlights)

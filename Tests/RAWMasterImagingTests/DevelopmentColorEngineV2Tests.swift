@@ -70,6 +70,29 @@ final class DevelopmentColorEngineV2Tests: XCTestCase {
     let result = try DevelopmentColorEngineV2.reference(.init(0.7,0.2,0.01,1),color:color)
     XCTAssertEqual(result.x,result.y,accuracy:1e-12); XCTAssertEqual(result.y,result.z,accuracy:1e-12)
   }
+  func testDisabledGradingPreservesWheelsAndChangesOnlyGradingPixels() throws {
+    var color = DevelopmentColorAdjustments(tones: .init(contrast: 15),
+      grading: .init(global: .init(hueDegrees: 44, saturation: 55, luminance: 10)))
+    let photo = image([.init(0.2, 0.3, 0.5, 1), .init(0.1, 0.25, 0.4, 1)])
+    let enabled = materialize(try DevelopmentColorEngineV2.apply(color, to: photo))
+    let old = try JSONEncoder().encode(color.grading)
+    XCTAssertFalse(String(decoding: old, as: UTF8.self).contains("enabled"))
+    let legacy = try JSONDecoder().decode(DevelopmentColorGrading.self, from: old)
+    XCTAssertTrue(legacy.isEnabled)
+
+    color.grading.enabled = false
+    let off = materialize(try DevelopmentColorEngineV2.apply(color, to: photo))
+    let tonesOnly = materialize(try DevelopmentColorEngineV2.apply(.init(tones: color.tones), to: photo))
+    XCTAssertNotEqual(enabled, off)
+    XCTAssertEqual(off, tonesOnly)
+    let archived = try JSONEncoder().encode(color)
+    var restored = try JSONDecoder().decode(DevelopmentColorAdjustments.self, from: archived)
+    XCTAssertEqual(restored, color)
+    XCTAssertEqual(restored.grading.global, legacy.global)
+    restored.grading.enabled = nil
+    XCTAssertEqual(materialize(try DevelopmentColorEngineV2.apply(restored, to: photo)), enabled)
+  }
+
   func testModernMetalKernelCompilesAndAllControlsMatchDoubleReferenceRGBA() throws {
     let samples: [SIMD3<Float>] = [.init(0,0,0),.init(0.003,0.01,0.08),.init(0.18,0.18,0.18),.init(0.8,0.2,0.05),
       .init(1,1,1),.init(4,1.5,0.2),.init(-0.1,0.2,0.8),.init(16,8,2)]

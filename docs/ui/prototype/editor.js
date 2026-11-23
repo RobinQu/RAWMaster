@@ -12,6 +12,9 @@ const editTools = {
       ['black', '黑色色阶'],
       ['warmth', '白平衡'],
       ['tint', '色调'],
+      ['sat', '饱和度'],
+      ['vibrance', '自然饱和度'],
+      ['definition', '清晰度'],
     ],
   ],
   tones: [
@@ -25,8 +28,6 @@ const editTools = {
   color: [
     '混色',
     [
-      ['sat', '饱和度'],
-      ['vibrance', '自然饱和度'],
       ['hue', '点颜色 · 色相'],
       ['luminance', '选色明度'],
     ],
@@ -97,47 +98,81 @@ function adjustments(key, fields) {
   Studio.patchRecipe(Studio.data.work, key, fields);
   render();
 }
-function rangeRow(key, label, low = -100, high = 100, step = 1, v = 0) {
-  return `<label class="range"><span>${h(label)}<output>${Number(v).toFixed(step < 1 ? 2 : 0)}</output></span><input aria-label="${h(label)}" type="range" name="adjust" data-key="${key}" data-label="${h(label)}" min="${low}" max="${high}" step="${step}" value="${v}"></label>`;
+function rangeRow(key, label, low = -100, high = 100, step = 1, v = 0, unavailable = false) {
+  const bounds = `min="${low}" max="${high}" step="${step}" value="${v}"${unavailable ? ' disabled' : ''}`;
+  return `<div class="range"><div class="range-readout"><label for="value-${key}">${h(label)}</label>
+    <input id="value-${key}" aria-label="${h(label)}数值" type="number" name="adjustNumber"
+      data-adjustment="${key}" data-label="${h(label)}" ${bounds}></div>
+    <input aria-label="${h(label)}" type="range" name="adjust" data-key="${key}" data-label="${h(label)}" ${bounds}></div>`;
 }
 const adaptivePresets = [
-  { name: '主体柔光', value: 'subject', target: '主体', values: { ev: 0.22, contrast: -8 } },
-  { name: '日出天空', value: 'sky', target: '天空', values: { ev: -0.18, warmth: 36 } },
+  { name: '主体柔光', value: 'subject', group: 'Subject', target: '主体', values: { ev: 0.22, contrast: -8 } },
+  { name: '日出天空', value: 'sky', group: 'Sky', target: '天空', values: { ev: -0.18, warmth: 36 } },
 ];
-function filmGallery(recipe) {
-  const selected = RMPhotos.filmStocks[recipe.filmStock];
-  const stocks = Object.entries(RMPhotos.filmStocks).filter(([key, stock]) =>
-    (!S.favoriteOnly || Studio.data.favorites.includes(`film.${key}`)) && stock.name.toLowerCase().includes((S.presetQuery || '').toLowerCase()));
-  if (!stocks.length) return '';
-  return `<details class="preset-folder filter-gallery" open><summary>胶片模拟</summary>
-    <div class="film-choices" role="group" aria-label="胶片模拟">${stocks
-      .map(([key, stock]) => `<div class="preset-item"><button type="button" data-act="film-stock" data-val="${key}" aria-pressed="${recipe.filmStock === key}">${stock.name}</button>
-      ${btn('收藏 ' + stock.name, 'favorite', `film.${key}`, { icon: 'star', only: true, pressed: Studio.data.favorites.includes(`film.${key}`), cls: 'icon-btn' })}</div>`)
-      .join('')}</div>${
-      selected
-        ? `<div class="film-strength">${rangeRow('filmAmount', '胶片强度', 0, 100, 1, recipe.filmAmount ?? 100)}${btn('移除胶片模拟', 'remove-film', '', { cls: 'link' })}</div>`
-        : ''
-    }</details>`;
+function presetRow(action, key, name, favoriteID, active = false) {
+  return `<div class="preset-item">${btn(name, action, key, { icon: 'sliders', cls: active ? 'sidebar-row current' : 'sidebar-row', pressed: active })}
+    ${btn('收藏 ' + name, 'favorite', favoriteID, { icon: 'star', only: true, pressed: Studio.data.favorites.includes(favoriteID), cls: 'icon-btn' })}</div>`;
+}
+function presetFolder(id, label, count, content, expanded = false) {
+  const term = (S.presetQuery || '').trim();
+  const open = (term ? S.presetSearchFolders : S.presetFolders)?.get(id) ?? (term ? true : expanded);
+  return `<details class="preset-folder" data-folder="${h(id)}"${open ? ' open' : ''}><summary>
+    ${icon('chevron', 12)}${icon('folder', 13)}<span>${h(label)}</span><small>${count}</small></summary>
+    <div class="preset-children">${content}</div></details>`;
+}
+document.addEventListener('click', (event) => {
+  const el = event.target.closest('.preset-folder > summary')?.parentElement;
+  if (!el) return;
+  event.preventDefault();
+  el.open = !el.open;
+  const folders = (S.presetQuery || '').trim() ? (S.presetSearchFolders ??= new Map()) : (S.presetFolders ??= new Map());
+  folders.set(el.dataset.folder, el.open);
+  if (!el.open && el.contains(previewChoice)) endEditPreview();
+});
+function filterDirectory(recipe) {
+  const term = (S.presetQuery || '').trim().toLowerCase();
+  const show = (favorite, ...terms) => (!S.favoriteOnly || Studio.data.favorites.includes(favorite)) &&
+    terms.some((value) => value.toLowerCase().includes(term));
+  const adaptive = adaptivePresets.filter((p) => show(p.name, p.name, p.group, 'Adaptive'));
+  const film = Object.entries(RMPhotos.filmStocks)
+    .filter(([key, p]) => show('film.' + key, p.name, '胶片模拟 Film'));
+  const basic = Studio.data.presets.filter((p) => p.group === 'Classic Filters' && show(p.name, p.name, '基础滤镜'));
+  const imported = Studio.data.presets.filter((p) => p.group !== 'Classic Filters' && show(p.name, p.name, p.group, 'Imported'));
+  const renderAdaptive = (p) => presetRow('adaptive-preset', p.value, p.name, p.name);
+  const renderPreset = (p) => presetRow('apply-preset', p.name, p.name, p.name, recipe.preset === p.name);
+  const children = (prefix, entries, row) => Object.entries(Object.groupBy(entries, (p) => p.group))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([group, list]) => presetFolder(prefix + group, group, list.length, list.map(row).join(''), true)).join('');
+  const folders = [
+    adaptive.length && presetFolder('adaptive', 'Adaptive', adaptive.length, children('adaptive.', adaptive, renderAdaptive), true),
+    film.length && presetFolder('film', '胶片模拟', film.length, film.map(([key, p]) =>
+      presetRow('film-stock', key, p.name, 'film.' + key, recipe.filmStock === key)).join(''), true),
+    (imported.length || !term && !S.favoriteOnly) && presetFolder('imported', 'Imported', imported.length,
+      children('imported.', imported, renderPreset) || '<p class="muted">尚无导入预设</p>'),
+    basic.length && presetFolder('basic', '基础滤镜', basic.length, basic.map(renderPreset).join('')),
+  ].filter(Boolean);
+  return `<div class="preset-directory">${folders.join('') || '<p class="muted">没有匹配的预设</p>'}</div>`;
 }
 function presetList() {
-  const e = currentEdit(),
-    data = Studio.data;
-  const list = data.presets.filter(
-    (p) => (!S.favoriteOnly || data.favorites.includes(p.name)) && p.name.includes(S.presetQuery || ''),
-  );
-  const folders = Object.groupBy(list, (p) => ['导入组', '我的预设'].includes(p.group) ? p.group : '基础滤镜');
-  const adaptive = adaptivePresets.filter((p) =>
-    (!S.favoriteOnly || data.favorites.includes(p.name)) && p.name.includes(S.presetQuery || ''));
+  const e = currentEdit();
+  const recipe = e.recipe;
+  const filmAmountEnabled = !!recipe.filmStock;
   return `<aside class="edit-left" aria-label="照片工具"${S.tool === 'versions' ? ' inert' : ''}>
-    <section aria-labelledby="preset-heading"><div class="row between"><h2 id="preset-heading">预设</h2>
-      ${btn('预设管理', 'preset-manage', '', { only: true, icon: 'plus', cls: 'icon-btn' })}</div>
+    <section aria-labelledby="preset-heading"><h2 id="preset-heading">滤镜</h2>
       <div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="查找预设" name="presetQuery" placeholder="查找预设" value="${h(S.presetQuery)}"></label>
       ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
-      ${Object.entries(folders).map(([group, rows]) => `<details class="preset-folder" open><summary>${h(group)}</summary>${rows.map((p) => `<div class="preset-item"><button data-act="apply-preset" data-val="${h(p.name)}" class="${e.recipe.preset === p.name ? 'current' : ''}">${h(p.name)}</button>${btn('收藏 ' + p.name, 'favorite', p.name, { icon: 'star', only: true, pressed: data.favorites.includes(p.name), cls: 'icon-btn' })}</div>`).join('')}</details>`).join('')}
-      ${adaptive.length ? `<details class="preset-folder" open><summary>Adobe Adaptive</summary>${adaptive.map((p) => `<div class="preset-item">${btn(p.name, 'adaptive-preset', p.value)}${btn('收藏 ' + p.name, 'favorite', p.name, { icon: 'star', only: true, pressed: data.favorites.includes(p.name), cls: 'icon-btn' })}</div>`).join('')}</details>` : ''}
-      ${filmGallery(e.recipe)}</section>
+      <div class="filter-actions">
+        ${btn('导入预设…', 'preset-import', '', { icon: 'plus' })}
+        ${btn('预设管理', 'preset-manage', '', { only: true, icon: 'menu', cls: 'icon-btn' })}
+      </div>
+      <div class="film-strength">${rangeRow('filmAmount', '滤镜强度', 0, 100, 1, recipe.filmAmount ?? 100, !filmAmountEnabled)}
+        ${filmAmountEnabled ? btn('移除胶片模拟', 'remove-film', '', { cls: 'link' }) : '<small>采用支持强度的滤镜后可调整</small>'}</div>
+      ${filterDirectory(recipe)}</section>
     <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2>${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}</div>
-      ${e.snapshots.map((x, i) => `<div class="list-row">${btn(x.name, 'restore-snap', i)}${btn('删除', 'delete-snap', i, { cls: 'link' })}</div>`).join('') || '<p class="muted">尚无快照</p>'}</section>
+      <div class="snapshot-list">${e.snapshots.map((x, i) => `<div class="preset-item">
+        ${btn(x.name, 'restore-snap', i, { icon: 'photo', cls: 'sidebar-row' })}
+        <details class="snapshot-menu"><summary aria-label="管理快照 ${h(x.name)}">${icon('menu', 14)}</summary><div>
+        ${btn('重命名…', 'rename-snap', i)}${btn('删除', 'delete-snap', i)}</div></details></div>`).join('') || '<p class="muted">尚无快照</p>'}</div></section>
     <section aria-labelledby="history-heading"><div class="row between"><h2 id="history-heading">历史</h2><div class="row">
       ${btn('撤销', 'edit-step', 'undo', { icon: 'undo', only: true, cls: 'icon-btn', disabled: !e.past.length })}${btn('重做', 'edit-step', 'redo', { icon: 'undo', only: true, cls: 'icon-btn redo', disabled: !e.future.length })}</div></div>
       <ol class="edit-history">${e.past.map((p) => '<li>' + h(p.label) + '</li>').join('')}<li>初始状态</li></ol></section></aside>`;
@@ -145,6 +180,48 @@ function presetList() {
 function activeLayer(r) {
   return r.masks[Math.min(S.selectedLayer, r.masks.length - 1)];
 }
+const adjustmentSections = {
+  basic: [
+    ['whiteBalance', '白平衡', ['warmth', 'tint']],
+    ['light', '光效', ['ev', 'contrast', 'high', 'shadow', 'white', 'black']],
+    ['color', '颜色', ['sat', 'vibrance']],
+    ['definition', '清晰度', ['definition']],
+  ],
+  tones: [['curves', '曲线', ['curveLow', 'curveHigh']], ['levels', '色阶', ['levels']]],
+  color: [['mix', '混色', ['hue', 'luminance']]],
+  detail: [['detail', '细节调整', ['sharp', 'noise', 'texture']]],
+  optics: [['optics', '光学校正', ['distort', 'fringe', 'vertical']]],
+  effects: [
+    ['clarity', '清晰度和纹理', ['clarity']],
+    ['dehaze', '去雾', ['dehaze']],
+    ['vignette', '暗角', ['vignette']],
+    ['blur', '镜头模糊', ['blur']],
+  ],
+  grading: [['grading', '色彩分级', ['warmHighlights', 'coolShadows', 'balance']], ['lut', '查找表', ['lut']]],
+  repair: [['repair', '修复', []]],
+};
+function adjustmentSection(id, title, contents, first, recipe) {
+  const photoPanel = Studio.data.work + ':' + S.tool;
+  const open = S.adjustmentDisclosure?.get(photoPanel)?.get(id) ?? first;
+  const enabled = recipe.sectionEnabled?.[id] !== false;
+  return `<div class="adjustment-section"><details data-adjustment-section="${id}" data-photo-panel="${h(photoPanel)}"${open ? ' open' : ''}>
+    <summary>${icon('chevron', 12)}<strong>${h(title)}</strong></summary>
+    <fieldset${enabled ? '' : ' disabled'}>${contents}</fieldset></details>
+    <input type="checkbox" role="switch" aria-label="启用${h(title)}" name="adjustmentEnabled"
+      data-key="${id}" data-title="${h(title)}"${enabled ? ' checked' : ''}></div>`;
+}
+document.addEventListener('click', (event) => {
+  const el = event.target.closest('[data-adjustment-section] > summary')?.parentElement;
+  if (!el) return;
+  event.preventDefault();
+  el.open = !el.open;
+  const panels = (S.adjustmentDisclosure ??= new Map()), panel = el.dataset.photoPanel;
+  if (!panels.has(panel)) panels.set(panel, new Map());
+  panels.get(panel).set(el.dataset.adjustmentSection, el.open);
+});
+changes.adjustmentEnabled = (el) => adjustments('启停' + el.dataset.title, {
+  sectionEnabled: { ...currentEdit().recipe.sectionEnabled, [el.dataset.key]: el.checked },
+});
 function toolFields(r) {
   if (S.tool === 'masks') {
     const m = activeLayer(r);
@@ -169,7 +246,7 @@ function toolFields(r) {
     );
   }
   if (S.tool === 'repair')
-    return (
+    return adjustmentSection('repair', '修复',
       select('修复工具', 'repairKind', ['移除', '修复', '仿制'], S.repairKind || '修复') +
       '<p class="muted">在画面点选目标位置。仿制需再点一次取样位置。</p>' +
       btn('在中心标记', 'center-repair') +
@@ -178,19 +255,18 @@ function toolFields(r) {
           (p, i) =>
             `<div class="list-row"><span>${h(p.kind)} ${i + 1}${p.kind === '仿制' && !p.source ? ' · 待取样' : ''}</span>${btn('移除标记', 'remove-repair', i, { cls: 'link' })}</div>`,
         )
-        .join('')
+        .join(''), true, r
     );
-  return (
-    (S.tool === 'tones' ? toneCurve(r) : '') +
-    editTools[S.tool][1]
-      .map(([k, n, lo = -100, hi = 100, step = 1]) => rangeRow(k, n, lo, hi, step, r[k] ?? 0))
-      .join('') +
-    (S.tool === 'detail'
-      ? btn('增强细节…', 'enhance')
-      : S.tool === 'grading'
-        ? select('查找表', 'lut', ['无', '柔和胶片', '冷调'], r.lut || '无')
-        : '')
-  );
+  const controls = editTools[S.tool][1];
+  return adjustmentSections[S.tool].map(([id, title, fields], i) => {
+    const content = id === 'lut'
+      ? select('查找表', 'lut', ['无', '柔和胶片', '冷调'], r.lut || '无')
+      : (id === 'curves' ? toneCurve(r) : '') + fields.map((key) => {
+        const [k, n, lo = -100, hi = 100, step = 1] = controls.find(([k]) => k === key);
+        return rangeRow(k, n, lo, hi, step, r[k] ?? 0);
+      }).join('');
+    return adjustmentSection(id, title, content, i === 0, r);
+  }).join('') + (S.tool === 'detail' ? btn('增强细节…', 'enhance') : '');
 }
 function developInspector(r) {
   return `<div class="row between"><h2>${editTools[S.tool][0]}</h2>${btn('颜色示波器', 'scopes', '', { icon: 'pulse', only: true, cls: 'icon-btn' })}</div>
@@ -302,8 +378,9 @@ function editorView() {
       : S.tool === 'smart'
         ? smartInspector()
         : developInspector(r);
-  const left = presetList(),
-    canvas = canvasContent(r, id);
+  const left = presetList();
+  const strip = filmstrip(Studio.visible(S.scope).filter(validWork), id, 'edit-photo');
+  const canvas = `<div class="edit-center">${canvasContent(r, id)}${strip}</div>`;
   const right =
     '<aside class="edit-inspector" aria-label="调整工具">' +
     inspectorRail() +
@@ -409,17 +486,27 @@ function adjusted(el) {
 }
 inputs.adjust = (el) => {
   const r = adjusted(el);
-  el.previousElementSibling.querySelector('output').value = el.value;
-  const img = $('.developed');
-  if (img) {
-    img.style.filter = RMPhotos.filter(RMPhotos.displayLook(r));
-    if (el.dataset.key === 'angle') img.style.transform = 'rotate(' + r.angle + 'deg)';
-  }
+  el.closest('.range').querySelector('[name=adjustNumber]').value = el.value;
+  paintEditPreview(r);
 };
 changes.adjust = (el) => {
   Studio.setRecipe(Studio.data.work, el.dataset.label, adjusted(el));
   render();
 };
+changes.adjustNumber = (el) => {
+  const slider = el.closest('.range').querySelector('[name=adjust]');
+  if (el.value !== '' && Number.isFinite(el.valueAsNumber)) {
+    const number = Math.max(Number(el.min), Math.min(Number(el.max), el.valueAsNumber));
+    Studio.setRecipe(Studio.data.work, slider.dataset.label, adjusted({
+      dataset: slider.dataset, value: number,
+    }));
+  }
+  render();
+};
+document.addEventListener('keydown', (event) => {
+  if (event.target.name === 'adjustNumber' && event.key === 'Enter' && !event.isComposing)
+    event.target.blur();
+});
 document.addEventListener('pointerdown', (event) => {
   const chart = event.target.closest('.tone-control svg');
   if (!chart || event.button !== 0) return;
@@ -523,6 +610,7 @@ changes.repairKind = (el) => {
   S.repairKind = el.value;
 };
 function point(x, y) {
+  if (S.tool === 'repair' && currentEdit().recipe.sectionEnabled?.repair === false) return;
   if (S.cropOpen || S.compare) return;
   if (S.tool === 'masks' && activeLayer(currentEdit().recipe))
     alterMasks('定位选区', (ms) => Object.assign(activeLayer({ masks: ms }), { x, y }));
@@ -585,51 +673,62 @@ actions['favorite-only'] = () => {
 };
 inputs.presetQuery = (el) => {
   S.presetQuery = el.value;
+  S.presetSearchFolders = new Map();
+  const selection = [el.selectionStart, el.selectionEnd];
   render();
-  $('[name=presetQuery]').focus();
+  $('[name=presetQuery]').setSelectionRange(...selection);
 };
-const previewSelector = '[data-act="apply-preset"],[data-act="film-stock"]';
+const previewSelector = '[data-act="apply-preset"],[data-act="adaptive-preset"],[data-act="film-stock"],[data-act="restore-snap"]';
 let previewChoice;
+function paintEditPreview(recipe) {
+  const img = $('.developed');
+  if (!img) return;
+  img.style.filter = RMPhotos.filter(RMPhotos.displayLook(recipe));
+  img.style.transform = 'rotate(' + (recipe.angle || 0) + 'deg)';
+  $('.dark-canvas').style.setProperty('--ratio', editImageRatio(recipe, Studio.data.work));
+}
 function endEditPreview() {
   if (!previewChoice) return;
+  const connected = previewChoice.isConnected;
   previewChoice = null;
-  const img = $('.developed');
-  if (img && S.tool !== 'versions')
-    img.style.filter = RMPhotos.filter(RMPhotos.displayLook(currentEdit().recipe));
-  const note = $('.look-preview');
-  if (note) note.hidden = true;
+  if (connected) {
+    paintEditPreview(currentEdit().recipe);
+    $('.look-preview').hidden = true;
+  }
+}
+function rowPreview(el) {
+  const recipe = currentEdit().recipe;
+  const key = el.dataset.val;
+  switch (el.dataset.act) {
+    case 'film-stock':
+      return { ...recipe, filmStock: key, filmAmount: recipe.filmStock === key ? (recipe.filmAmount ?? 100) : 100 };
+    case 'apply-preset':
+      return { ...recipe, ...Studio.data.presets.find((p) => p.name === key)?.values };
+    case 'adaptive-preset':
+      return { ...recipe, ...adaptivePresets.find((p) => p.value === key)?.values };
+    case 'restore-snap':
+      return currentEdit().snapshots[key]?.recipe;
+  }
 }
 for (const type of ['pointerover', 'focusin', 'pointerout', 'focusout']) {
   document.addEventListener(type, (event) => {
     const el = event.target.closest(previewSelector);
-    if (
-      !el ||
-      el.contains(event.relatedTarget) ||
-      S.page !== 'edit' ||
-      S.tool === 'versions' ||
-      S.compare ||
-      S.cropOpen
-    )
-      return;
+    if (!el || el.contains(event.relatedTarget) || S.page !== 'edit' || S.tool === 'versions' ||
+      S.compare || S.cropOpen || quickPromptVisible() || sheet.open) return;
     if (type === 'pointerout' || type === 'focusout') {
       if (previewChoice === el) endEditPreview();
       return;
     }
-    const recipe = currentEdit().recipe,
-      film = el.dataset.act === 'film-stock',
-      key = el.dataset.val;
-    const sample = film
-      ? { filmStock: key, filmAmount: recipe.filmStock === key ? (recipe.filmAmount ?? 100) : 100 }
-      : Studio.data.presets.find((p) => p.name === key)?.values;
-    const img = $('.developed'),
-      note = $('.look-preview');
-    if (!sample || !img || (film && recipe.filmStock === key)) return;
+    const recipe = rowPreview(el);
+    if (!recipe) return;
     previewChoice = el;
-    img.style.filter = RMPhotos.filter(RMPhotos.displayLook({ ...recipe, ...sample }));
-    note.textContent = '临时预览 · ' + (film ? RMPhotos.filmStocks[key].name : key);
+    paintEditPreview(recipe);
+    const note = $('.look-preview');
+    note.textContent = '临时预览 · ' + el.getAttribute('aria-label');
     note.hidden = false;
   });
 }
+window.addEventListener('blur', endEditPreview);
 document.addEventListener('keydown', (event) => {
   if (S.page !== 'edit' || sheet.open) return;
   if (event.key === 'Escape' && previewChoice?.isConnected) {
@@ -642,11 +741,14 @@ document.addEventListener('keydown', (event) => {
   const keys = ['ArrowUp', 'ArrowDown'];
   if (!keys.includes(event.key)) return;
   event.preventDefault();
-  const rows = $$('.edit-left [data-act="' + el.dataset.act + '"]'),
+  const rows = [...el.closest('.preset-children,.snapshot-list').querySelectorAll(previewSelector)].filter((row) => row.getClientRects().length),
     step = event.key === keys[0] ? -1 : 1;
   rows[Math.max(0, Math.min(rows.length - 1, rows.indexOf(el) + step))].focus();
 });
-actions['preset-manage'] = () =>
+actions['preset-import'] = () => {
+  actions['preset-manage']('import');
+};
+actions['preset-manage'] = (operation) =>
   dialog(
     '预设管理',
     field('预设名称', 'presetName', '我的调整') +
@@ -654,9 +756,11 @@ actions['preset-manage'] = () =>
         '操作',
         'presetOperation',
         ['保存当前调整', '导入 Lightroom / Camera Raw 预设', '导出原生预设'],
-        '保存当前调整',
+        operation === 'import' ? '导入 Lightroom / Camera Raw 预设' : '保存当前调整',
       ) +
-      '<p id="preset-detail" class="muted">保存可跨片复用的调整字段。</p>',
+      (operation === 'import'
+        ? '<p id="preset-detail" class="muted">示例导入。为预设命名，再从 Imported 查看。</p>'
+        : '<p id="preset-detail" class="muted">保存可跨片复用的调整字段。</p>'),
     btn('取消', 'close') + btn('执行', 'preset-command'),
   );
 changes.presetOperation = (el) => {
@@ -680,7 +784,10 @@ actions['preset-command'] = () => {
   let title = name,
     seq = 2;
   while (Studio.data.presets.some((p) => p.name === title)) title = name + ' ' + seq++;
-  Studio.data.presets.push({ name: title, group: op === '保存当前调整' ? '我的预设' : '导入组', values });
+  const group = op === '保存当前调整' ? '我的预设' : '导入组';
+  Studio.data.presets.push({ name: title, group, values });
+  (S.presetFolders ??= new Map()).set('imported', true);
+  S.presetFolders.set('imported.' + group, true);
   Studio.save();
   closeSheet();
   render();
@@ -702,6 +809,17 @@ actions['save-snap'] = () => {
 };
 actions['restore-snap'] = (i) => {
   Studio.setRecipe(Studio.data.work, '恢复快照', currentEdit().snapshots[i].recipe);
+  render();
+};
+actions['rename-snap'] = (i) =>
+  dialog('重命名快照', field('名称', 'snapshotName', currentEdit().snapshots[i].name),
+    btn('取消', 'close') + btn('存储', 'save-snap-name', i));
+actions['save-snap-name'] = (i) => {
+  const name = value('snapshotName').trim();
+  if (!name) return;
+  currentEdit().snapshots[i].name = name;
+  Studio.save();
+  closeSheet();
   render();
 };
 actions['delete-snap'] = (i) => {

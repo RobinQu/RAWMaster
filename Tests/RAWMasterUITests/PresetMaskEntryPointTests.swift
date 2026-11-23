@@ -185,9 +185,11 @@ import RAWMasterCore
         })
         mount(editing, first.context)
         try await eventually("The text directory and the right-hand masks appear together") {
-            self.element("editing.presets.search", in: window) != nil && self.element("editing.filter.favorite.vivid", in: window) != nil
+            self.element("editing.presets.search", in: window) != nil && self.element("editing.presets.folder.classic", in: window) != nil
                 && self.element("photos.mask.subject", in: window) != nil
         }
+        try press("editing.presets.folder.classic", in: window)
+        try await eventually("Basic filters remain reachable") { self.element("editing.filter.favorite.vivid", in: window) != nil }
         XCTAssertNil(element("editing.filters.browserMode", in: window))
         XCTAssertNil(element("photos.filters.thumbnail.retry", in: window))
         try press("editing.filter.favorite.vivid", in: window)
@@ -227,6 +229,64 @@ import RAWMasterCore
         window.contentView = nil; await reopened.editing.shutdown(finishPreviews: false)
     }
 
+    func testImportedPresetPreviewsMappedFieldsWithoutCommitting() async throws {
+        let fixture = try EditingWorkflowTests.Fixture()
+        defer { fixture.clean() }
+        let backend = PhotosDevelopmentBackend()
+        let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: backend)
+        app.selectScope(.project, id: fixture.assets[0].projectID)
+        app.select(fixture.assets[0]); app.setMode(.single); app.openNativeEditing()
+        let editing = try XCTUnwrap(app.editing)
+        try await eventually("The photo must admit native adjustment previews") {
+            if editing.work != nil && editing.developmentContext == nil { editing.beginDevelopmentInterface() }
+            return editing.developmentContext != nil
+        }
+        let context = try XCTUnwrap(editing.developmentContext)
+        let catalog = DevelopmentPresetCatalog(root: fixture.root.appendingPathComponent("hover-presets"))
+        let url = fixture.root.appendingPathComponent("Mapped.xmp")
+        try Data("""
+            <x:xmpmeta xmlns:x="adobe:ns:meta/"><r:RDF xmlns:r="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+            <r:Description xmlns:c="http://ns.adobe.com/camera-raw-settings/1.0/"
+              c:PresetType="Normal" c:ProcessVersion="15.4" c:Exposure2012="1" c:FutureOperator="9"/>
+            </r:RDF></x:xmpmeta>
+            """.utf8).write(to: url)
+        let stage = try DevelopmentPresetExchange.inspectFiles([url], catalog: catalog)
+        _ = try stage.commit(to: catalog)
+        let row = try XCTUnwrap(catalog.records().first)
+        XCTAssertFalse(row.blockingReasons.isEmpty)
+        let preview = try XCTUnwrap(editing.presetForHover(row, context: context))
+        let before = editing.recipe, entries = editing.developmentSession.history.entryCount
+        editing.previewDevelopmentPreset(preview, context: context, explicit: true)
+        try await eventually("Imported XMP should reach the temporary canvas") { editing.filterHoverFrame != nil }
+        let requests = await backend.renderRequests
+        XCTAssertTrue(requests.contains { $0.recipe.adjustmentsV3?.light.exposure == 0.5 && $0.quality == .settled })
+        XCTAssertEqual(editing.recipe, before)
+        XCTAssertEqual(editing.developmentSession.history.entryCount, entries)
+        editing.cancelPresetHover(id: row.id)
+        XCTAssertNil(editing.filterHoverFrame)
+        XCTAssertThrowsError(try editing.developmentSession.adoptPreset(row, context: context,
+            revision: editing.developmentSession.revision))
+        await editing.shutdown(finishPreviews: false)
+    }
+
+    func testDirectoryKeepsSourceAdaptiveGroupsAheadOfImportedFolders() {
+        var patch = DevelopmentPresetPatch()
+        patch.exposure = 0.5
+        let sky = DevelopmentPresetRecord(id: "sky", name: "Azure", group: "Mixed", kind: .imported, patch: patch,
+            metadata: ["origin": "adobeBuiltin", "relativePath": "Premium/Adaptive - Sky/Azure.xmp"])
+        let portrait = DevelopmentPresetRecord(id: "portrait", name: "Warm", group: "Mixed", kind: .imported, patch: patch,
+            metadata: ["origin": "adobeBuiltin", "relativePath": "Premium/Adaptive - Portrait/Warm.xmp"])
+        let user = DevelopmentPresetRecord(id: "user", name: "Tone", group: "Personal", kind: .imported, patch: patch)
+        let folders = DevelopmentPresetDirectory.folders(records: [sky, portrait, user], favorites: [],
+            looks: [.original, .spektraPortra400Endura], favoriteLooks: [], query: "")
+        XCTAssertEqual(Array(folders.prefix(3).map(\.id)), ["adaptive", "film", "imported"])
+        XCTAssertEqual(folders.first?.children.map(\.name), ["Portrait", "Sky"])
+        XCTAssertEqual(folders.first(where: { $0.id == "imported" })?.children.map(\.name), ["Personal"])
+        let search = DevelopmentPresetDirectory.folders(records: [sky, portrait, user], favorites: [],
+            looks: [], favoriteLooks: [], query: "Sky")
+        XCTAssertEqual(search.first?.children.flatMap(\.rows).map(\.id), ["sky"])
+    }
+
     func testQuickPromptDockReplacesCanvasControlsInTheNativeWindow() async throws {
         _ = NSApplication.shared
         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
@@ -252,6 +312,13 @@ import RAWMasterCore
             self.element("editing.quickPrompt.text", in: window) != nil && self.element("editing.fit", in: window) == nil
         }
         XCTAssertNotNil(element("editing.quickPrompt.scopeMenu", in: window))
+        XCTAssertNotNil(element("editing.quickPrompt.rectangle", in: window))
+        XCTAssertNotNil(element("editing.quickPrompt.whole", in: window))
+        try press("editing.quickPrompt.rectangle", in: window)
+        XCTAssertTrue(editing.quickPromptSelecting)
+        editing.setQuickPromptScope(.rectangle(.init(x: 0.2, y: 0.3, width: 0.4, height: 0.5)))
+        try press("editing.quickPrompt.whole", in: window)
+        XCTAssertFalse(editing.quickPromptSelecting)
         XCTAssertNotNil(element("editing.quickPrompt.model", in: window))
         XCTAssertTrue(editing.jobs.isEmpty)
         XCTAssertEqual(editing.quickPromptDraft.selection, .whole)

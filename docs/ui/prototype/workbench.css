@@ -789,25 +789,57 @@ small {
 }
 .filmstrip {
   display: flex;
+  align-items: center;
   min-width: 0;
-  gap: 5px;
+  gap: 7px;
   overflow-x: auto;
-  padding: 7px 4px;
+  padding: 5px 4px;
 }
-.filmstrip button {
+.filmstrip-group {
+  display: flex;
+  align-items: center;
   flex: none;
-  width: 65px;
-  height: 49px;
-  padding: 2px;
-  background: var(--inset);
+  gap: 5px;
+  min-height: 70px;
+  padding: 2px 5px;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent) 6%, var(--inset));
 }
-.filmstrip button.chosen {
-  border: 2px solid var(--accent);
+.filmstrip .filmstrip-label {
+  max-width: 146px;
+  padding: 4px 2px;
+  overflow: hidden;
+  background: transparent;
+  border-color: transparent;
+  color: var(--accent);
+  font-size: 11px;
+}
+.filmstrip-photo {
+  display: grid;
+  grid-template-rows: 46px auto;
+  gap: 2px;
+  flex: none;
+  width: 78px;
+  height: 64px;
+  padding: 2px 3px;
+  background: var(--inset);
+  font-size: 9px;
+}
+.filmstrip-photo.chosen {
+  border-color: var(--accent);
+}
+.filmstrip-photo span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .filmstrip img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 3px;
 }
 dialog {
   color: var(--text);
@@ -944,19 +976,21 @@ dialog::backdrop {
   gap: 2px;
   margin: 14px 0;
 }
-.range > span {
+.range-readout {
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 12px;
 }
-.range output {
-  font:
-    11px ui-monospace,
-    monospace;
-  color: var(--muted);
+.range-readout input[type='number'] {
+  width: 62px;
+  min-height: 23px;
+  height: 23px;
+  padding: 1px 4px;
+  text-align: right;
+  font: 11px ui-monospace, monospace;
 }
-.range input {
+.range > input[type='range'] {
   width: 100%;
   padding: 0;
   height: 15px;

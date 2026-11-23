@@ -289,6 +289,8 @@ function render() {
     return;
   }
   const left = root.querySelector('.photos-scroll')?.scrollTop ?? 0,
+    strip = root.querySelector('.filmstrip')?.scrollLeft ?? 0,
+    stripFocus = root.querySelector('.filmstrip .chosen')?.dataset.val,
     side = root.querySelector('.inspector,.inspector-content')?.scrollTop ?? 0,
     toolsLeft = root.querySelector('.edit-left')?.scrollTop ?? 0,
     darkroom = root.querySelector('.edit-body')?.scrollTop ?? 0,
@@ -309,6 +311,14 @@ function render() {
       ins = root.querySelector('.inspector,.inspector-content');
     if (scroll) scroll.scrollTop = left;
     if (ins) ins.scrollTop = side;
+    const film = root.querySelector('.filmstrip');
+    if (film) film.scrollLeft = strip;
+  }
+  const chosen = root.querySelector('.filmstrip .chosen');
+  if (chosen && (S.renderRoute !== location.hash || stripFocus !== chosen.dataset.val)) {
+    const film = chosen.closest('.filmstrip'), bounds = film.getBoundingClientRect(), card = chosen.getBoundingClientRect();
+    film.scrollLeft += card.left < bounds.left ? card.left - bounds.left - 4
+      : Math.max(0, card.right - bounds.right + 4);
   }
   if (S.page === 'edit' && S.renderRoute?.startsWith('#edit/')) {
     root.querySelector('.edit-left').scrollTop = toolsLeft;
@@ -322,7 +332,7 @@ function render() {
   if (S.renderRoute === location.hash && previous && !previous.isConnected && !sheet.open) {
     const next = previous.name
       ? Array.from(root.querySelectorAll('[name]')).find(
-          (el) => el.name === previous.name && el.dataset.key === previous.dataset.key,
+          (el) => el.name === previous.name && (el.dataset.key ?? el.dataset.adjustment) === (previous.dataset.key ?? previous.dataset.adjustment),
         )
       : previous.dataset.act
         ? Array.from(document.querySelectorAll('[data-act]')).find(

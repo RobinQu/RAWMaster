@@ -54,14 +54,6 @@ struct WorkbenchView: View {
         Group {
             if model.isCatalog {
                 LibraryCatalogView().id(model.catalogKind?.rawValue ?? "catalog")
-            } else if model.isNativeEditing, let editing = model.editing {
-                VStack(spacing: 0) {
-                    BrowserView()
-                        .overlay(alignment: .top) { ImmersiveEditingHeader(editing: editing) }
-                    Divider()
-                    FilmstripView()
-                        .accessibilityIdentifier("editing.filmstrip")
-                }
             } else {
                 VStack(spacing: 0) {
                     browserHeader
@@ -635,37 +627,55 @@ struct ImagePanel: View {
 struct FilmstripView: View {
     @EnvironmentObject var model: AppModel
     @State private var collapsedGroupIDs = Set<String>()
-    var floating = false
+    var inEditor = false
     var body: some View {
         let layout = model.sequenceBrowserLayout
+        let cardHeight = filmstripCardHeight(layout)
+        let rowHeight = cardHeight + 6
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
-                LazyHStack(alignment: .top, spacing: 10) {
+                LazyHStack(alignment: .center, spacing: 9) {
                     ForEach(layout.segments) { segment in
-                        SequenceBrowserSection(segment: segment, compact: true, collapsedGroupIDs: $collapsedGroupIDs) {
+                        SequenceFilmstripSection(segment: segment, height: rowHeight, collapsedGroupIDs: $collapsedGroupIDs) {
                             LazyHStack(alignment: .top, spacing: 8) {
                                 ForEach(segment.assets, id: \.id) { asset in
                                     WorkflowAssetTile(asset: asset, compact: true, sequenceMemberships: layout.memberships[asset.id] ?? [])
-                                        .frame(width: 110).id(asset.id)
+                                        .frame(width: 110, height: cardHeight, alignment: .top)
+                                        .id(asset.id)
                                 }
                             }
                         }
                     }
                     if layout.segments.isEmpty {
                         Label("当前范围没有照片", systemImage: "photo.on.rectangle").font(.caption).foregroundStyle(.secondary)
-                            .frame(height: 100)
+                            .frame(height: rowHeight)
                     }
-                }.padding(.horizontal, 14).padding(.vertical, 8)
-            }.frame(height: floating ? 126 : 160).background(floating ? Color.clear : AppPalette.canvas)
+                }.padding(.horizontal, 12).padding(.vertical, 4)
+            }.frame(height: rowHeight + 8).background(AppPalette.canvas)
                 .onChange(of: model.navigationReveal) { if let id = model.navigationReveal?.assetID { reveal(id, layout: layout, proxy: proxy) } }
                 .onChange(of: model.focusedID) {
                     if let id = model.focusedID, let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
                 }
                 .onAppear { if let id = model.focusedID { reveal(id, layout: layout, proxy: proxy) } }
                 .accessibilityElement(children: .contain)
-                .accessibilityIdentifier(floating ? "editing.filmstrip" : "browser.filmstrip")
+                .accessibilityIdentifier(inEditor ? "editing.filmstrip" : "browser.filmstrip")
         }
     }
+    private func filmstripCardHeight(_ layout: BrowserSequenceLayout) -> CGFloat {
+        // All tiles share one top edge, with room for whichever accessory rows appear in this scope.
+        var accessoryRows = 0
+        for segment in layout.segments {
+            if let group = segment.group, collapsedGroupIDs.contains(group.id) { continue }
+            for asset in segment.assets {
+                let hasPair = model.pair(for: asset.id) != nil
+                let hasMemberships = (layout.memberships[asset.id]?.count ?? 0) > 1
+                if hasPair && hasMemberships { return 114 }
+                if hasPair || hasMemberships { accessoryRows = 1 }
+            }
+        }
+        return accessoryRows == 0 ? 86 : 100
+    }
+
     private func reveal(_ id: String, layout: BrowserSequenceLayout, proxy: ScrollViewProxy) {
         if let groupID = layout.primaryGroupID(containing: id) { collapsedGroupIDs.remove(groupID) }
         DispatchQueue.main.async { proxy.scrollTo(id) }

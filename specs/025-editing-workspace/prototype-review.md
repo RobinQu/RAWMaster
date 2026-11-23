@@ -26,3 +26,16 @@
 [打开资料库](../../docs/ui/prototype/index.html#library/project/river) · [浏览器回归脚本](../../scripts/check-ui-prototype.py)
 
 2026-11-22 在 Release 31.4 的隔离资料库中用实际鼠标事件验证。旧版 31.3 标题栏空白处的拖动没有改变窗口位置。31.4 在资料库、编辑与导出分别通过空白处拖动、右边缘缩放、底边缩放和恢复原尺寸。标题栏空白处双击可缩放并恢复。侧栏收起和恢复后仍可打开同一张照片。原生回归还核对了工作流与窗口按钮的点击范围。[窗口测量](../../output/release-window-integration/native-window-verification.json) · [输入路由回归](../../Tests/RAWMasterUITests/TitlebarInputTests.swift) · [安装收据](../../output/release-window-integration/install-receipt.json)
+
+## 胶片带与调整面板
+
+2026-11-23 在 Chrome 走查。1440 × 900 使用深色查看资料库与编辑布局，390 × 844 使用浅色复查 Prompt、焦点和操作边界。工作台 22 组场景均通过。[暗房面板](evidence/panels-browser.webp) · [桌面 Prompt](evidence/prompt-browser.webp) · [窄窗 Prompt](evidence/prompt-compact-browser.webp) · [回归脚本](../../scripts/check-ui-prototype.py)
+
+| 入口 | 动作与采用结果 |
+| --- | --- |
+| [河谷拍摄](../../docs/ui/prototype/index.html#library/project/river) → 单张 → 编辑 | 比较组内外缩略图中心。点首张左侧组名折叠、再展开，选片保持。编辑胶片带点离线的 DSC_0713.JPG，可从找回提示取消并回原照。 |
+| [暗房左栏](../../docs/ui/prototype/index.html#edit/development) → 滤镜、快照 | 核对 Adaptive、胶片模拟及 Imported 的顺序和分隔线，Adaptive 下展开 Sky 和 Subject。从标题区模拟导入 XMP，悬停观察效果，离开恢复。搜索无匹配的名称再清空。调整胶片强度，创建快照，撤销强度修改后用 Tab 聚焦快照。失焦结束试看，快照行仍在，点击后才恢复配方。 |
+| [暗房基础](../../docs/ui/prototype/index.html#edit/basic) → 光效／分级 | 首次打开白平衡，手动展开光效，核对上方数值框与全宽滑块。切至分级后输入 35、停用、再启用，效果与数值恢复。撤销后返回基础，光效仍展开。 |
+| [暗房画布](../../docs/ui/prototype/index.html#edit/development) → Prompt | 初始焦点在大输入区。用短句补充已有文字。点圈选，Escape 退出拖框，再从更多圈选操作通过键盘输入坐标。无效范围提示修正。点击全图恢复默认。以窄窗确认模型、生成、关闭可触达。 |
+
+Chrome 的样片预览用 CSS 模拟色调。快速 Prompt 的生成和出站确认使用示例任务；对应原生效果、窗口焦点与交互见[原生验证](validation.md)。

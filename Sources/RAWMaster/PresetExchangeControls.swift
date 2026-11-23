@@ -10,6 +10,7 @@ struct PresetExchangeControls: View {
   let onChange: () -> Void
   let onApplySubset: (DevelopmentPresetRecord) -> Void
   let onPrepareSemantic: (DevelopmentPresetRecord) -> Void
+  let onImportNative: () -> Void
 
   private enum Page { case loading, review, details, sourceFields, projection, original, undo, message }
   @State private var page = Page.loading
@@ -37,6 +38,7 @@ struct PresetExchangeControls: View {
   var body: some View {
     Menu {
       Button("导入 Lightroom / Camera Raw 预设…") { chooseFiles() }
+      Button("导入 RAWMaster 预设…", action: onImportNative)
       Button("撤销导入批次…") {
         do {
           let snapshot = try catalog.importHistory()
@@ -62,10 +64,11 @@ struct PresetExchangeControls: View {
         makeProjection(name: "RAWMaster 调整") { try DevelopmentPresetExchange.projectedXMP(for: currentRecipe, name: "RAWMaster 调整") }
       }
     } label: {
-      Label("XMP 交换", systemImage: "arrow.left.arrow.right")
+      Label("导入预设…", systemImage: "square.and.arrow.down")
     }
     .menuStyle(.borderlessButton)
     .fixedSize()
+    .accessibilityIdentifier("editing.presets.import")
     .sheet(isPresented: $open, onDismiss: cancel) {
       VStack(alignment: .leading, spacing: 12) {
         switch page {

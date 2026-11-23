@@ -152,19 +152,30 @@ private struct PhotosDevelopmentContent: View {
         }
         .onAppear(perform: validateDestination)
         .onChange(of: editing.availablePhotosGroups) { _, _ in validateDestination() }
+        .onChange(of: editing.developmentContext) { _, _ in initializeSections() }
+        .onChange(of: destination) { _, _ in initializeSections() }
+        .onChange(of: sectionOrder) { _, _ in initializeSections() }
+    }
+
+    private var sectionOrder: [String] {
+        switch destination {
+        case .effects:
+            return editing.availableDevelopmentAdvancedDetailGroups.map(\.rawValue)
+                + (editing.supportsDevelopmentDehaze ? [DevelopmentAdjustmentID.dehaze.rawValue] : [])
+                + ["effects.lensBlur", "effects.glow", "effects.postCrop", "effects"]
+        case .grading: return ["grading", "grading.lut"]
+        default:
+            return destination.groups.map(\.rawValue)
+        }
     }
 
     @ViewBuilder private var destinationContent: some View {
         switch destination {
         case .group(let group): section(group)
         case .effects:
-            PhotosEffectsControls(editing: editing, session: session, context: context).padding(16)
+            PhotosEffectsControls(editing: editing, session: session, context: context)
         case .grading:
-            VStack(alignment: .leading, spacing: 12) {
-                PhotosLegacyAdvancedControls(editing: editing, session: session, context: context, section: .grading)
-                Divider()
-                PhotosGradingLUTControls(session: session, context: context)
-            }.padding(16)
+            gradingSections
         case .masks:
             PhotosMaskControls(editing: editing, session: session, context: context)
         default:
@@ -234,27 +245,60 @@ private struct PhotosDevelopmentContent: View {
         .frame(maxHeight: .infinity, alignment: .top)
     }
 
+    private var gradingSections: some View {
+        let grading = editing.developmentLegacyBasis.color?.grading ?? .init()
+        let lutEnabled = session.parameters.gradingLUTs?.enabled ?? true
+        return VStack(spacing: 0) {
+            PhotosEffectSection(session: session, context: context, key: "grading", title: "色彩分级",
+                symbol: "circle.dashed.inset.filled", enabled: grading.isEnabled, onEnable: setGradingEnabled, onError: report) {
+                PhotosColorGradingControls(editing: editing, session: session, context: context)
+                    .disabled(!grading.isEnabled)
+            }
+            Divider().opacity(0.65)
+            PhotosEffectSection(session: session, context: context, key: "grading.lut", title: "应用 LUT",
+                symbol: "square.3.layers.3d", enabled: lutEnabled, onEnable: setLUTEnabled, onError: report) {
+                PhotosGradingLUTControls(session: session, context: context)
+                    .disabled(!lutEnabled)
+            }
+        }
+    }
+
+    private func setGradingEnabled(_ enabled: Bool) {
+        perform {
+            editing.cancelDevelopmentGradingInteraction()
+            try finishGesture()
+            try editing.updateDevelopmentLegacy(context: context, control: "legacy.grading.enabled", nativeEvent: true) { basis in
+                var color = basis.color ?? .init()
+                color.grading.enabled = enabled ? nil : false
+                basis.color = color
+            }
+        }
+    }
+
+    private func setLUTEnabled(_ enabled: Bool) {
+        perform {
+            try finishGesture()
+            var stack = session.parameters.gradingLUTs ?? .init()
+            stack.enabled = enabled
+            try session.apply(.setGradingLUTs(stack), event: event(nil, "启用 LUT"))
+        }
+    }
+
     private func validateDestination() {
         guard !destinations.isEmpty else { return }
         if !destinations.contains(destination) { destination = destinations[0] }
-        // A suspended snapshot is read-only and must not write expansion state through an old scope.
-        guard editing.developmentContext == context else { return }
-        if case .group(let group) = destination { select(destination, group: group) }
+        initializeSections()
     }
 
-    private func select(_ item: PhotosAdjustmentDestination, group suppliedGroup: DevelopmentAdjustmentID? = nil) {
+    private func initializeSections() {
+        // A suspended snapshot is read-only and must not write expansion state through an old scope.
+        guard editing.developmentContext == context else { return }
+        perform { try session.openFirstSectionIfNeeded(sectionOrder, context: context) }
+    }
+
+    private func select(_ item: PhotosAdjustmentDestination) {
         destination = item
         if item != .masks { editing.developmentMaskInput.cancel() }
-        guard case .group(let group) = item else { return }
-        let target = suppliedGroup ?? group
-        perform {
-            for expanded in session.expandedGroups where expanded != target {
-                try session.setExpanded(expanded, expanded: false, context: context)
-            }
-            if !session.expandedGroups.contains(target) {
-                try session.setExpanded(target, expanded: true, context: context)
-            }
-        }
     }
 
     private func section(_ group: DevelopmentAdjustmentID) -> some View {
@@ -402,21 +446,24 @@ private struct PhotosSummaryStrengthControl: View {
     @State private var amount = 0.0
     @State private var token: EditingGestureToken?
     var body: some View {
-        HStack(spacing: 8) {
-            Text("整体强度").font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
-                .frame(width: 76, alignment: .leading)
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 6) {
+                Text("整体强度").font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+                if editing.developmentAnalysisBusy { ProgressView().controlSize(.mini) }
+                Text(editing.developmentSummaryAmounts[group] == nil && token == nil && session.parameters.isEnabled(group)
+                    ? "自定" : DevelopmentNumericText.format(amount, fractionDigits: 2))
+                    .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+            }
             Slider(value: Binding(get: { amount }, set: { candidate in
                 if let snapped = PhotosSliderInput.snapped(candidate, range: -1...1, step: 0.01) { change(snapped) }
             }), in: -1...1, onEditingChanged: interaction)
                 .controlSize(.small).frame(height: 26).frame(maxWidth: .infinity)
                 .accessibilityLabel(group.photosTitle + "强度").accessibilityIdentifier("photos.\(group.rawValue).summary")
-            if editing.developmentAnalysisBusy { ProgressView().controlSize(.mini) }
-            Text(editing.developmentSummaryAmounts[group] == nil && token == nil && session.parameters.isEnabled(group)
-                ? "自定" : DevelopmentNumericText.format(amount, fractionDigits: 2)).font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-                .frame(width: 50, alignment: .trailing)
-        }.frame(minHeight: 26).onAppear { amount = editing.developmentSummaryAmounts[group] ?? 0 }
-            .onChange(of: editing.developmentSummaryAmounts[group]) { _, value in if token == nil { amount = value ?? 0 } }
-            .onDisappear { finish() }
+        }
+        .onAppear { amount = editing.developmentSummaryAmounts[group] ?? 0 }
+        .onChange(of: editing.developmentSummaryAmounts[group]) { _, value in if token == nil { amount = value ?? 0 } }
+        .onDisappear { finish() }
     }
     private func interaction(_ active: Bool) {
         if active { begin() } else { finish() }
@@ -640,65 +687,68 @@ private struct PhotosEffectsControls: View {
     private var glow: DevelopmentGlowV3 { effects.glow ?? .init() }
     private var postCrop: DevelopmentPostCropVignetteV3 { effects.postCropVignette ?? .init() }
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Label("效果", systemImage: "sparkles").font(.system(size: 13, weight: .semibold))
-            if !editing.availableDevelopmentAdvancedDetailGroups.isEmpty {
-                PhotosAdvancedDetailControls(editing: editing, session: session, context: context)
-            }
+        VStack(spacing: 0) {
+            PhotosAdvancedDetailControls(editing: editing, session: session, context: context)
             if editing.supportsDevelopmentDehaze {
+                Divider().opacity(0.65)
                 PhotosDehazeControls(editing: editing, session: session, input: editing.developmentDehazeInput, context: context)
             }
-            Divider()
-            PhotosLensBlurControls(editing: editing, session: session, context: context, onError: { _ in errorText = "Lens Blur 调整未应用，请检查数值。" })
-            Divider()
-            Label("光晕", systemImage: "sun.haze").font(.caption.weight(.semibold))
-            Toggle("启用光晕", isOn: Binding(get: { glow.enabled }, set: { enabled in
-                applyGlow { $0.enabled = enabled }
-            })).accessibilityIdentifier("photos.effects.glow.enabled")
-            Picker("光晕风格", selection: Binding(get: { glow.style }, set: { style in
-                applyGlow { $0.style = style }
-            })) {
-                ForEach(DevelopmentGlowStyleV3.allCases, id: \.self) { Text(glowStyleTitle($0)).tag($0) }
-            }.disabled(!glow.enabled).accessibilityIdentifier("photos.effects.glow.style")
-            glowRow("光晕数量", control: "amount", value: glow.amount, range: 0...100) { $0.amount = $1 }
-            glowRow("范围", control: "range", value: glow.range, range: 0...100) { $0.range = $1 }
-            glowRow("扩散", control: "spread", value: glow.spread, range: 0...100) { $0.spread = $1 }
-            glowRow("色温", control: "warmth", value: glow.warmth, range: -100...100) { $0.warmth = $1 }
-            if glow.style.usesDirectionalControls {
-                glowRow("方向 °", control: "direction", value: glow.direction, range: 0...360) { $0.direction = $1 == 360 ? 0 : $1 }
-                glowRow("柔和度", control: "softness", value: glow.softness, range: 0...100) { $0.softness = $1 }
+            Divider().opacity(0.65)
+            PhotosLensBlurControls(editing: editing, session: session, context: context, onError: report)
+            Divider().opacity(0.65)
+            PhotosEffectSection(session: session, context: context, key: "effects.glow", title: "光晕", symbol: "sun.haze",
+                enabled: glow.enabled, onEnable: { enabled in applyGlow { $0.enabled = enabled } }, onError: report) {
+                Picker("光晕风格", selection: Binding(get: { glow.style }, set: { style in
+                    applyGlow { $0.style = style }
+                })) {
+                    ForEach(DevelopmentGlowStyleV3.allCases, id: \.self) { Text(glowStyleTitle($0)).tag($0) }
+                }.disabled(!glow.enabled).accessibilityIdentifier("photos.effects.glow.style")
+                glowRow("光晕数量", control: "amount", value: glow.amount, range: 0...100) { $0.amount = $1 }
+                glowRow("范围", control: "range", value: glow.range, range: 0...100) { $0.range = $1 }
+                glowRow("扩散", control: "spread", value: glow.spread, range: 0...100) { $0.spread = $1 }
+                glowRow("色温", control: "warmth", value: glow.warmth, range: -100...100) { $0.warmth = $1 }
+                if glow.style.usesDirectionalControls {
+                    glowRow("方向 °", control: "direction", value: glow.direction, range: 0...360) { $0.direction = $1 == 360 ? 0 : $1 }
+                    glowRow("柔和度", control: "softness", value: glow.softness, range: 0...100) { $0.softness = $1 }
+                }
             }
-            Divider()
-            Label("裁切后晕影", systemImage: "circle.dashed").font(.caption.weight(.semibold))
-            Toggle("启用裁切后晕影", isOn: Binding(get: { postCrop.enabled }, set: { enabled in
-                applyPostCrop { $0.enabled = enabled }
-            })).accessibilityIdentifier("photos.effects.postCrop.enabled")
-            Picker("晕影风格", selection: Binding(get: { postCrop.style }, set: { style in
-                applyPostCrop { $0.style = style }
-            })) {
-                ForEach(DevelopmentPostCropVignetteStyleV3.allCases, id: \.self) { Text(postCropStyleTitle($0)).tag($0) }
-            }.disabled(!postCrop.enabled).accessibilityIdentifier("photos.effects.postCrop.style")
-            postCropRow("数量", control: "amount", value: postCrop.amount, range: -100...100) { $0.amount = $1 }
-            postCropRow("中点", control: "midpoint", value: postCrop.midpoint, range: 0...100) { $0.midpoint = $1 }
-            postCropRow("圆度", control: "roundness", value: postCrop.roundness, range: -100...100) { $0.roundness = $1 }
-            postCropRow("羽化", control: "feather", value: postCrop.feather, range: 0...100) { $0.feather = $1 }
-            if postCrop.amount < 0, postCrop.style != .paintOverlay {
-                postCropRow("高光保护", control: "highlights", value: postCrop.highlights, range: 0...100) { $0.highlights = $1 }
+            Divider().opacity(0.65)
+            PhotosEffectSection(session: session, context: context, key: "effects.postCrop", title: "裁切后晕影", symbol: "circle.dashed",
+                enabled: postCrop.enabled, onEnable: { enabled in applyPostCrop { $0.enabled = enabled } }, onError: report) {
+                Picker("晕影风格", selection: Binding(get: { postCrop.style }, set: { style in
+                    applyPostCrop { $0.style = style }
+                })) {
+                    ForEach(DevelopmentPostCropVignetteStyleV3.allCases, id: \.self) { Text(postCropStyleTitle($0)).tag($0) }
+                }.disabled(!postCrop.enabled).accessibilityIdentifier("photos.effects.postCrop.style")
+                postCropRow("数量", control: "amount", value: postCrop.amount, range: -100...100) { $0.amount = $1 }
+                postCropRow("中点", control: "midpoint", value: postCrop.midpoint, range: 0...100) { $0.midpoint = $1 }
+                postCropRow("圆度", control: "roundness", value: postCrop.roundness, range: -100...100) { $0.roundness = $1 }
+                postCropRow("羽化", control: "feather", value: postCrop.feather, range: 0...100) { $0.feather = $1 }
+                if postCrop.amount < 0, postCrop.style != .paintOverlay {
+                    postCropRow("高光保护", control: "highlights", value: postCrop.highlights, range: 0...100) { $0.highlights = $1 }
+                }
             }
-            Divider()
-            Label("颗粒", systemImage: "circle.grid.cross").font(.caption.weight(.semibold))
-            Toggle("启用颗粒", isOn: Binding(get: { effects.enabled }, set: { apply(effects.grain, $0) }))
-                .accessibilityIdentifier("photos.effects.enabled")
-            grainRow(title: "颗粒", control: "effects.grain", value: effects.grain, field: .amount)
-                .accessibilityIdentifier("photos.effects.grain")
-            grainRow(title: "颗粒尺寸", control: "effects.grainSize", value: effects.grainSize ?? 0.25, field: .size)
-                .accessibilityIdentifier("photos.effects.grainSize")
-            grainRow(title: "颗粒粗糙度", control: "effects.grainRoughness", value: effects.grainRoughness ?? 0.5, field: .roughness)
-                .accessibilityIdentifier("photos.effects.grainRoughness")
-            Text("尺寸控制颗粒粒径，粗糙度控制颗粒的不均匀程度。旧配方保留原颗粒采样；调整新参数后使用版本化 GPU 路径。")
-                .font(.caption).foregroundStyle(.secondary)
-            if let errorText { Text(errorText).font(.caption).foregroundStyle(AppPalette.warning) }
+            Divider().opacity(0.65)
+            PhotosEffectSection(session: session, context: context, key: "effects", title: "颗粒", symbol: "circle.grid.cross",
+                enabled: effects.enabled, onEnable: { apply(effects.grain, $0) }, onError: report) {
+                grainRow(title: "颗粒", control: "effects.grain", value: effects.grain, field: .amount)
+                    .accessibilityIdentifier("photos.effects.grain")
+                grainRow(title: "颗粒尺寸", control: "effects.grainSize", value: effects.grainSize ?? 0.25, field: .size)
+                    .accessibilityIdentifier("photos.effects.grainSize")
+                grainRow(title: "颗粒粗糙度", control: "effects.grainRoughness", value: effects.grainRoughness ?? 0.5, field: .roughness)
+                    .accessibilityIdentifier("photos.effects.grainRoughness")
+                Text("尺寸控制颗粒粒径，粗糙度控制颗粒的不均匀程度。旧配方保留原颗粒采样；调整新参数后使用版本化 GPU 路径。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            if let errorText {
+                Text(errorText).font(.caption).foregroundStyle(AppPalette.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading).padding(12)
+            }
         }
+    }
+
+    private func report(_ error: Error) {
+        if session.context == context { errorText = error.localizedDescription }
     }
     private func glowStyleTitle(_ style: DevelopmentGlowStyleV3) -> String {
         switch style { case .bloom: "Bloom 柔光"; case .diffusion: "Diffusion 漫射"; case .halation: "Halation 光晕"
@@ -767,73 +817,39 @@ private struct PhotosEffectsControls: View {
     }
 }
 
-private struct PhotosLegacyAdvancedControls: View {
+private struct PhotosColorGradingControls: View {
     @ObservedObject var editing: EditingController
     @ObservedObject var session: EditingDevelopmentSession
     let context: EditingInteractionContext
-    enum LegacySection { case all, legacy, grading }
-    var section: LegacySection = .all
     @State private var region: DevelopmentGradingRegion = .shadows
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
+            Picker("色彩分级", selection: Binding(get: { region }, set: { value in
+                editing.cancelDevelopmentGradingInteraction(); region = value
+            })) {
+                ForEach(DevelopmentGradingRegion.allCases) { Text($0.rawValue).tag($0) }
+            }.pickerStyle(.segmented)
+            PhotosScopedGradingCanvas(editing: editing, context: context, region: region,
+                wheel: color.grading[keyPath: region.path]).frame(height: 180)
+                .id(PhotosGradingScope(context: context, region: region.key))
             HStack {
-                Label(section == .grading ? "色彩分级" : (section == .legacy ? "已有配方" : "高级与已有调整"),
-                    systemImage: section == .grading ? "circle.dashed.inset.filled" : "slider.horizontal.3")
-                    .font(.system(size: 13, weight: .semibold))
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color(nsColor: DevelopmentGradingFeedback.color(hue: color.grading[keyPath: region.path].hueDegrees,
+                        saturation: color.grading[keyPath: region.path].saturation, luminance: color.grading[keyPath: region.path].luminance)))
+                    .frame(width: 28, height: 18).accessibilityLabel("分级颜色")
                 Spacer()
+                Button("复位此区域") { resetGrading(all: false) }
+                Button("复位分级") { resetGrading(all: true) }
+            }.buttonStyle(.borderless).font(.caption)
+            gradingRow("色相 °", path: \.hueDegrees, range: 0...360)
+            gradingRow("饱和度", path: \.saturation, range: 0...100)
+            gradingRow("亮度", path: \.luminance, range: -100...100)
+            row("分级混合", control: "legacy.grading.blending", value: color.grading.blending, range: 0...100) { basis, value in
+                var c = basis.color ?? .init(); c.grading.blending = value; basis.color = c
             }
-            if section == .all {
-                PhotosAdvancedDetailControls(editing: editing, session: session, context: context)
-                if editing.supportsDevelopmentDehaze {
-                    PhotosDehazeControls(editing: editing, session: session, input: editing.developmentDehazeInput, context: context)
-                }
-                Divider()
-            }
-            if section != .grading {
-                Text("已有调整保留原先效果，可继续修改。").font(.caption).foregroundStyle(.secondary)
-                row("曝光 EV", value: editing.developmentLegacyBasis.exposureEV, range: -10...10) { $0.exposureEV = $1 }
-                ForEach(DevelopmentToneControl.allCases) { tone in
-                    row(tone.title, value: color.tones[keyPath: tone.path], range: -100...100) { basis, value in
-                        var c = basis.color ?? .init(); c.tones[keyPath: tone.path] = value; basis.color = c
-                    }
-                }
-                Divider()
-            }
-            if section != .legacy {
-                Picker("色彩分级", selection: Binding(get: { region }, set: { value in
-                    editing.cancelDevelopmentGradingInteraction(); region = value
-                })) {
-                    ForEach(DevelopmentGradingRegion.allCases) { Text($0.rawValue).tag($0) }
-                }.pickerStyle(.segmented)
-                PhotosScopedGradingCanvas(editing: editing, context: context, region: region,
-                    wheel: color.grading[keyPath: region.path]).frame(height: 180)
-                    .id(PhotosGradingScope(context: context, region: region.key))
-                HStack {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color(nsColor: DevelopmentGradingFeedback.color(hue: color.grading[keyPath: region.path].hueDegrees,
-                            saturation: color.grading[keyPath: region.path].saturation, luminance: color.grading[keyPath: region.path].luminance)))
-                        .frame(width: 28, height: 18).accessibilityLabel("分级颜色")
-                    Spacer()
-                    Button("复位此区域") { resetGrading(all: false) }
-                    Button("复位分级") { resetGrading(all: true) }
-                }.buttonStyle(.borderless).font(.caption)
-                gradingRow("色相 °", path: \.hueDegrees, range: 0...360)
-                gradingRow("饱和度", path: \.saturation, range: 0...100)
-                gradingRow("亮度", path: \.luminance, range: -100...100)
-                row("分级混合", control: "legacy.grading.blending", value: color.grading.blending, range: 0...100) { basis, value in
-                    var c = basis.color ?? .init(); c.grading.blending = value; basis.color = c
-                }
-                row("分级平衡", control: "legacy.grading.balance", value: color.grading.balance, range: -100...100) { basis, value in
-                    var c = basis.color ?? .init(); c.grading.balance = value; basis.color = c
-                }
-            }
-            if section != .grading, case let .temperatureTint(temperature, tint) = editing.developmentLegacyBasis.whiteBalance {
-                if session.parameters.whiteBalance.enabled {
-                    Text("原有白平衡已由上方调整接管。关闭“白平衡”可恢复。").font(.caption).foregroundStyle(.secondary)
-                } else {
-                    row("已有色温 K", value: temperature, range: 2000...50000) { $0.whiteBalance = .temperatureTint(temperature: $1, tint: tint) }
-                    row("已有色调", value: tint, range: -150...150) { $0.whiteBalance = .temperatureTint(temperature: temperature, tint: $1) }
-                }
+            row("分级平衡", control: "legacy.grading.balance", value: color.grading.balance, range: -100...100) { basis, value in
+                var c = basis.color ?? .init(); c.grading.balance = value; basis.color = c
             }
         }.font(.caption)
     }
@@ -844,7 +860,8 @@ private struct PhotosLegacyAdvancedControls: View {
             editing.cancelDevelopmentGradingInteraction()
             try editing.updateDevelopmentLegacy(context: context, control: "legacy.grading.reset", nativeEvent: true) { basis in
                 var c = basis.color ?? .init()
-                if all { c.grading = .init() } else { c.grading[keyPath: capturedRegion.path] = .init() }
+                if all { c.grading = .init(enabled: c.grading.enabled) }
+                else { c.grading[keyPath: capturedRegion.path] = .init() }
                 basis.color = c
             }
         } catch { if session.context == context { editing.message = "色彩分级未复位，请重试。" } }

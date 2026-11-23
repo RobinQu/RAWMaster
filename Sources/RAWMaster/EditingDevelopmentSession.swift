@@ -138,7 +138,15 @@ enum EditingDevelopmentTransaction {
         publishedAdoptions = adoptions
     }
     var presetCapabilityIssue: ((DevelopmentPresetRecord, EditingInteractionContext) -> String?)?
-    @Published private(set) var expandedGroups: Set<DevelopmentAdjustmentID> = [.light]
+    @Published private(set) var expandedSections: Set<String> = []
+    var expandedGroups: Set<DevelopmentAdjustmentID> {
+        Set(expandedSections.compactMap(DevelopmentAdjustmentID.init(rawValue:)))
+    }
+    private struct SectionDisclosure {
+        var expanded: Set<String> = []
+        var initialized: Set<String> = []
+    }
+    private var sectionDisclosures: [DevelopmentHistoryKey: SectionDisclosure] = [:]
     @Published private(set) var expandedOptions: Set<DevelopmentAdjustmentID> = []
     @Published private(set) var cropConstraint = PhotosCropConstraint()
     private var cropConstraintKey: DevelopmentHistoryKey?
@@ -200,9 +208,13 @@ enum EditingDevelopmentTransaction {
     var redoTitle: String? { history.redoTitle }
     var historyItems: [DevelopmentHistoryItem] { history.items }
     var snapshots: [DevelopmentSnapshot] {
-        guard let key = context?.historyKey else { return [] }
-        return snapshotStorage[key] ?? []
+        context.map { snapshots(in: $0) } ?? []
     }
+
+    func snapshots(in presentation: EditingInteractionContext) -> [DevelopmentSnapshot] {
+        snapshotStorage[presentation.historyKey] ?? []
+    }
+
     var activeGesture: EditingGestureToken? { gesture?.token }
     var activeControl: EditingControlID? { gesture?.control }
     func beginningRecipe(for token: EditingGestureToken) throws -> DevelopmentRecipe {
@@ -240,6 +252,7 @@ enum EditingDevelopmentTransaction {
             cropConstraint = .init(orientation: source.orientedWidth >= source.orientedHeight ? .landscape : .portrait)
             cropConstraintKey = next.historyKey
         }
+        expandedSections = sectionDisclosures[next.historyKey]?.expanded ?? []
         context = next; history.activate(next.historyKey, current: recipe)
         summaryUI = history.currentUI(current: recipe); acceptingInput = true; publish()
         return next
@@ -284,7 +297,26 @@ enum EditingDevelopmentTransaction {
     func setExpanded(_ id: DevelopmentAdjustmentID, expanded: Bool, context expected: EditingInteractionContext) throws {
         try require(expected)
         if let gesture, gesture.control.group == id { try endGesture(gesture.token, .commit) }
-        if expanded { expandedGroups.insert(id) } else { expandedGroups.remove(id) }
+        updateDisclosure(id.rawValue, expanded: expanded, key: expected.historyKey)
+    }
+    func setExpanded(section: String, expanded: Bool, context expected: EditingInteractionContext) throws {
+        try require(expected)
+        if let gesture { try endGesture(gesture.token, .commit) }
+        updateDisclosure(section, expanded: expanded, key: expected.historyKey)
+    }
+    func openFirstSectionIfNeeded(_ sections: [String], context expected: EditingInteractionContext) throws {
+        try require(expected)
+        guard let first = sections.first else { return }
+        if sections.contains(where: { sectionDisclosures[expected.historyKey]?.initialized.contains($0) == true }) { return }
+        sectionDisclosures[expected.historyKey, default: .init()].initialized.formUnion(sections)
+        updateDisclosure(first, expanded: true, key: expected.historyKey)
+    }
+    private func updateDisclosure(_ section: String, expanded: Bool, key: DevelopmentHistoryKey) {
+        var value = sectionDisclosures[key, default: .init()]
+        value.initialized.insert(section)
+        if expanded { value.expanded.insert(section) } else { value.expanded.remove(section) }
+        sectionDisclosures[key] = value
+        expandedSections = value.expanded
     }
     func setOptionsExpanded(_ id: DevelopmentAdjustmentID, expanded: Bool, context expected: EditingInteractionContext) throws {
         try require(expected)

@@ -37,18 +37,29 @@ struct EditingImageCanvas: View {
     init(editing: EditingController) {
         self.editing = editing; self.localInput = editing.developmentLocalInput; self.maskInput = editing.developmentMaskInput
     }
+    private var dockWidth: CGFloat {
+        min(672, max(280, canvasWidth - 2 * (EditingLayout.sidebarWidth + 2 * EditingLayout.outerPadding) - 24))
+    }
+
+    private var quickPromptFitInsets: NSEdgeInsets {
+        var insets = EditingLayout.fitInsets
+        if editing.quickPromptSelecting {
+            insets.bottom = QuickPromptDockLayout.inputHeight(width: dockWidth) + QuickPromptDockLayout.bottomPadding + 10
+        }
+        return insets
+    }
+
     var body: some View {
         currentPane
         .background(editing.darkroomBackground.color)
         .onGeometryChange(for: CGFloat.self) { geometry in geometry.size.width } action: { canvasWidth = $0 }
         .overlay(alignment: .bottom) {
-            let width = min(672, max(280, canvasWidth - 2 * (EditingLayout.sidebarWidth + 2 * EditingLayout.outerPadding) - 24))
-            QuickPromptDock(editing: editing, width: width, canvasControls: { canvasControls },
+            QuickPromptDock(editing: editing, width: dockWidth, canvasControls: { canvasControls },
                 showCandidate: $quickPromptShowCandidate, inspectPixels: inspectQuickPromptEdge)
                 .overlay(alignment: .top) {
                     if !editing.quickPromptPresented { navigationPreview.offset(y: -48) }
                 }
-                .padding(.bottom, 18)
+                .padding(.bottom, QuickPromptDockLayout.bottomPadding)
         }
         .onChange(of: editing.quickPromptReview?.job.id) { _, _ in
             quickPromptDetail = nil; quickPromptReviewTransform = .init()
@@ -401,11 +412,11 @@ struct EditingImageCanvas: View {
                 if let review = editing.quickPromptReview, editing.quickPromptPresented {
                     quickPromptReviewCanvas(review)
                 } else if editing.quickPromptPresented {
-                    comparisonCanvas.overlay {
+                    imageCanvas(frame: editing.previews.primary.frame, primary: true, insets: quickPromptFitInsets).overlay {
                         if let frame = editing.previews.primary.frame {
                             GeometryReader { geometry in
                                 let available = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: geometry.size,
-                                    transform: transform, backingScale: backingScale, fitInsets: EditingLayout.fitInsets)
+                                    transform: transform, backingScale: backingScale, fitInsets: quickPromptFitInsets)
                                 QuickPromptAreaOverlay(editing: editing, viewport: available)
                             }
                         }

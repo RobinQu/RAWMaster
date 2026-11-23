@@ -21,9 +21,13 @@ struct PhotosTypedValueRow: View {
     var onInteraction: ((Bool) -> Void)? = nil
     @State private var token: EditingGestureToken?
     var body: some View {
-        HStack(spacing: 8) {
-            Text(name).font(.system(size: 11)).foregroundStyle(.secondary)
-                .frame(width: 76, alignment: .leading)
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 8) {
+                Text(name).font(.system(size: 11)).foregroundStyle(.secondary)
+                Spacer(minLength: 0)
+                DevelopmentNumberField(title: name, value: makeBinding(gesture: { nil }),
+                    range: range, fractionDigits: digits).frame(width: 62)
+            }
             if range.lowerBound < range.upperBound {
                 if let trackColors {
                     PhotosNativeSlider(value: currentValue, range: range, trackColors: trackColors,
@@ -42,10 +46,7 @@ struct PhotosTypedValueRow: View {
                         .controlSize(.small).frame(height: 26).frame(maxWidth: .infinity).accessibilityLabel(name)
                 }
             }
-            DevelopmentNumberField(title: name, value: makeBinding(gesture: { nil }),
-                                   range: range, fractionDigits: digits).frame(width: 62)
         }
-        .frame(minHeight: 26)
         .onDisappear { finish(); onInteraction?(false) }
     }
     // Both controls read the current scoped value without waiting for a parent body refresh.

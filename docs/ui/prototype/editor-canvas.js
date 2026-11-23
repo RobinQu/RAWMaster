@@ -88,15 +88,18 @@ function editingMarks(r) {
           : '',
       )
       .join('');
-  if (S.tool === 'repair')
+  if (S.tool === 'repair' && r.sectionEnabled?.repair !== false)
     return r.repairs
       .map((m, i) => mark(m, i + 1, 'repair-mark') + (m.source ? mark(m.source, '源', 'repair-mark') : ''))
       .join('');
   return '';
 }
+function editImageRatio(recipe, id) {
+  const p = Studio.photo(id);
+  return { '1:1': 1, '4:5': 0.8, '3:2': 1.5, '16:9': 16 / 9 }[recipe.crop] ?? p.w / p.h;
+}
 function canvasContent(r, id) {
-  const p = Studio.photo(id),
-    ratio = { '1:1': 1, '4:5': 0.8, '3:2': 1.5, '16:9': 16 / 9 }[r.crop] ?? p.w / p.h;
+  const p = Studio.photo(id), ratio = editImageRatio(r, id);
   const prompt = quickPromptVisible();
   const mode = S.compare && !prompt ? S.compareMode : 'off',
     ref = S.reference || 'original';
@@ -132,7 +135,10 @@ function canvasContent(r, id) {
 }
 actions['canvas-nav'] = (direction) => {
   const id = neighbors()[direction];
-  if (!id || !canEditPhoto(id)) return;
+  if (id) actions['edit-photo'](id);
+};
+actions['edit-photo'] = (id) => {
+  if (id === Studio.data.work || !canEditPhoto(id)) return;
   const b = activeBrowser();
   if (b.selected.length === 1) b.selected = [id];
   b.focus = id;

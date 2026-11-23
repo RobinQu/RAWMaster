@@ -4,6 +4,12 @@ import RAWMasterAI
 import RAWMasterCore
 import RAWMasterImaging
 
+enum QuickPromptDockLayout {
+    static func compactActions(width: CGFloat) -> Bool { width < 390 }
+    static func inputHeight(width: CGFloat) -> CGFloat { compactActions(width: width) ? 285 : 254 }
+    static let bottomPadding: CGFloat = 18
+}
+
 struct QuickPromptDock<CanvasControls: View>: View {
     @ObservedObject var editing: EditingController
     let width: CGFloat
@@ -57,6 +63,8 @@ struct QuickPromptDock<CanvasControls: View>: View {
         }
     }
 
+    private var compactActions: Bool { QuickPromptDockLayout.compactActions(width: width) }
+
     private var surface: some View {
         ZStack(alignment: .bottom) {
             if editing.quickPromptPresented {
@@ -90,7 +98,7 @@ struct QuickPromptDock<CanvasControls: View>: View {
             }
         }
         .frame(width: editing.quickPromptPresented ? width : min(width, 392),
-               height: editing.quickPromptPresented ? (editing.quickPromptReview == nil ? 207 : 113) : 42,
+               height: editing.quickPromptPresented ? (editing.quickPromptReview == nil ? QuickPromptDockLayout.inputHeight(width: width) : 113) : 42,
                alignment: .bottom)
         .clipped()
         .controlSize(.small)
@@ -119,10 +127,11 @@ struct QuickPromptDock<CanvasControls: View>: View {
     }
 
     private var inputControls: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 7) {
+            templates
             ZStack(alignment: .topLeading) {
                 if editing.quickPromptDraft.prompt.isEmpty {
-                    Text("描述要修改的内容…").foregroundStyle(.secondary).padding(.horizontal, 6).padding(.vertical, 4)
+                    Text("描述要修改的内容…").foregroundStyle(.secondary).padding(.horizontal, 8).padding(.vertical, 7)
                         .allowsHitTesting(false).accessibilityHidden(true)
                 }
                 TextEditor(text: $editing.quickPromptDraft.prompt, selection: $selection)
@@ -132,68 +141,133 @@ struct QuickPromptDock<CanvasControls: View>: View {
                         if !Task.isCancelled && editing.quickPromptPresented { inputFocused = true }
                     }
                     .scrollContentBackground(.hidden)
-                    .padding(.horizontal, 2)
+                    .padding(.horizontal, 4).padding(.vertical, 3)
                     .accessibilityLabel("提示词")
                     .accessibilityIdentifier("editing.quickPrompt.text")
             }
             .font(.system(size: 13))
-            .frame(height: 56)
-            .background(AppPalette.panel.opacity(0.58), in: RoundedRectangle(cornerRadius: 7))
-            .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(inputFocused ? AppPalette.accent : AppPalette.boundary))
-
-            HStack(spacing: 6) {
-                ForEach(Self.templates.prefix(4)) { item in
-                    Button(item.title) { insert(item) }.accessibilityIdentifier("editing.quickPrompt.template." + item.id)
-                }
-                Menu("更多") { ForEach(Self.templates.dropFirst(4)) { item in Button(item.title) { insert(item) } } }
-                Spacer(minLength: 0)
+            .frame(height: 105)
+            .background(AppPalette.panel.opacity(0.62), in: RoundedRectangle(cornerRadius: 9))
+            .overlay {
+                RoundedRectangle(cornerRadius: 9)
+                    .strokeBorder(inputFocused ? AppPalette.accent : AppPalette.boundary)
+                    .allowsHitTesting(false)
             }
-            .lineLimit(1)
 
-            HStack(spacing: 6) {
-                Button {
-                    editing.quickPromptSelecting.toggle(); inputFocused = false
-                } label: { Label(editing.quickPromptSelecting ? "取消圈选" : "圈选", systemImage: "selection.pin.in.out") }
-                    .accessibilityIdentifier("editing.quickPrompt.rectangle")
-                Menu("范围") {
-                    Button("整张照片") { editing.setQuickPromptScope(.whole) }
-                    Button("输入坐标…") { coordinates = true }
-                    Divider()
-                    if editing.quickPromptAvailableMasks.isEmpty { Text("当前构图没有可用蒙版") }
-                    else {
-                        Section("使用已确认的蒙版") {
-                            ForEach(editing.quickPromptAvailableMasks) { mask in
-                                Button(mask.name) { editing.setQuickPromptScope(.mask(mask.id.uuidString)) }
-                            }
-                        }
-                    }
-                }.accessibilityIdentifier("editing.quickPrompt.scopeMenu")
-                Menu {
-                    ForEach(QuickPromptModel.allCases) { model in
-                        Button { editing.quickPromptDraft.model = model } label: {
-                            Label(model.title, systemImage: editing.quickPromptDraft.model == model ? "checkmark" : "circle")
-                        }
-                    }
-                    Button("配置所选模型…") { configure = editing.quickPromptDraft.model }
-                    Divider()
-                    Button(editing.work?.strictDocumentary == true ? "取消严格纪实标记" : "标记为严格纪实") {
-                        editing.setStrictDocumentary(editing.work?.strictDocumentary != true)
-                    }
-                } label: {
-                    Text(editing.quickPromptDraft.model == .flux ? "FLUX · 本机" : "Seedream · 云端")
+            if compactActions {
+                VStack(alignment: .leading, spacing: 5) {
+                    selectionActions
+                    submissionActions.frame(maxWidth: .infinity, alignment: .trailing)
                 }
-                .accessibilityLabel(editing.quickPromptDraft.model.title)
-                .accessibilityIdentifier("editing.quickPrompt.model")
-                Spacer(minLength: 2)
-                Button(editing.quickPromptDraft.model == .flux ? "生成候选" : "核对并生成…") { editing.prepareQuickPrompt() }
-                    .buttonStyle(.borderedProminent)
-                    .keyboardShortcut(.return, modifiers: .command)
-                    .disabled(editing.quickPromptSubmissionIssue != nil || editing.quickPromptPreparing || editing.quickPromptJob?.blocksQuickPromptSubmission == true)
-                    .accessibilityIdentifier("editing.quickPrompt.generate")
+            } else {
+                HStack(spacing: 8) {
+                    selectionActions
+                    Spacer(minLength: 0)
+                    submissionActions
+                }
             }
-            .lineLimit(1)
             status
         }
+    }
+
+    private var templates: some View {
+        HStack(spacing: 6) {
+            ScrollView(.horizontal) {
+                HStack(spacing: 5) {
+                    ForEach(Self.templates.prefix(4)) { item in
+                        Button { insert(item) } label: {
+                            Text(item.title).font(.system(size: 11, weight: .medium))
+                                .padding(.horizontal, 9).frame(height: 25)
+                                .background(Color.primary.opacity(0.07), in: Capsule())
+                                .contentShape(Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("editing.quickPrompt.template." + item.id)
+                    }
+                }
+                .fixedSize(horizontal: true, vertical: false)
+            }
+            .scrollIndicators(.hidden)
+            Menu("更多短句") {
+                ForEach(Self.templates.dropFirst(4)) { item in Button(item.title) { insert(item) } }
+            }
+            .menuStyle(.borderlessButton).fixedSize()
+        }.frame(height: 27)
+    }
+
+    private var selectionActions: some View {
+        HStack(spacing: 5) {
+            let full = editing.quickPromptDraft.selection == .whole && !editing.quickPromptSelecting
+            scopeButton("圈选", symbol: "selection.pin.in.out", active: !full, id: "rectangle") {
+                editing.quickPromptSelecting.toggle()
+                inputFocused = false
+            }
+            scopeButton("全图", symbol: "photo", active: full, id: "whole") {
+                editing.setQuickPromptScope(.whole)
+            }
+            Menu {
+                Button("输入坐标…") { coordinates = true }
+                Divider()
+                if editing.quickPromptAvailableMasks.isEmpty { Text("当前构图没有可用蒙版") }
+                else {
+                    Section("使用已确认的蒙版") {
+                        ForEach(editing.quickPromptAvailableMasks) { mask in
+                            Button(mask.name) { editing.setQuickPromptScope(.mask(mask.id.uuidString)) }
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: "ellipsis").frame(width: 24, height: 24)
+            }
+            .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+            .accessibilityLabel("更多圈选操作").help("输入坐标或使用现有蒙版")
+            .accessibilityIdentifier("editing.quickPrompt.scopeMenu")
+        }.fixedSize(horizontal: true, vertical: false)
+    }
+
+    private func scopeButton(_ title: String, symbol: String, active: Bool, id: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Label(title, systemImage: symbol)
+                .font(.system(size: 11, weight: .medium))
+                .padding(.horizontal, 8).frame(height: 26)
+                .foregroundStyle(active ? AppPalette.accent : Color.primary)
+                .background(active ? AppPalette.accent.opacity(0.16) : Color.primary.opacity(0.06),
+                            in: RoundedRectangle(cornerRadius: 7))
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(active ? .isSelected : [])
+        .accessibilityIdentifier("editing.quickPrompt." + id)
+    }
+
+    private var submissionActions: some View {
+        HStack(spacing: 8) {
+            let model = editing.quickPromptDraft.model
+            Menu {
+                ForEach(QuickPromptModel.allCases) { choice in
+                    Button { editing.quickPromptDraft.model = choice } label: {
+                        Label(choice.title, systemImage: model == choice ? "checkmark" : "circle")
+                    }
+                }
+                Button("配置所选模型…") { configure = model }
+                Divider()
+                Button(editing.work?.strictDocumentary == true ? "取消严格纪实标记" : "标记为严格纪实") {
+                    editing.setStrictDocumentary(editing.work?.strictDocumentary != true)
+                }
+            } label: {
+                Text(model == .flux ? "FLUX" : "Seedream").font(.system(size: 11, weight: .medium))
+            }
+            .menuStyle(.borderlessButton).fixedSize()
+            .accessibilityLabel(model.title).help(model.title)
+            .accessibilityIdentifier("editing.quickPrompt.model")
+
+            Button(model == .flux ? "生成候选" : "核对并生成…") { editing.prepareQuickPrompt() }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.return, modifiers: .command)
+                .disabled(editing.quickPromptSubmissionIssue != nil || editing.quickPromptPreparing
+                          || editing.quickPromptJob?.blocksQuickPromptSubmission == true)
+                .accessibilityIdentifier("editing.quickPrompt.generate")
+        }.fixedSize(horizontal: true, vertical: false)
     }
 
     @ViewBuilder private var status: some View {
@@ -230,7 +304,7 @@ struct QuickPromptDock<CanvasControls: View>: View {
             }
         }
         .frame(maxWidth: .infinity, minHeight: 19, alignment: .leading)
-        .lineLimit(1).font(.caption).foregroundStyle(.secondary)
+        .lineLimit(2).font(.caption).foregroundStyle(.secondary)
         .accessibilityIdentifier("editing.quickPrompt.status")
     }
 

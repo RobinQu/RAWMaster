@@ -30,14 +30,8 @@ struct PhotosGradingLUTControls: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
+            if maskID != nil {
                 Text("应用 LUT").font(.system(size: 12, weight: .semibold))
-                Spacer()
-                if maskID == nil, !stack.layers.isEmpty {
-                    Button { change("预览") { $0.enabled.toggle() } } label: {
-                        Image(systemName: stack.enabled ? "eye" : "eye.slash")
-                    }.buttonStyle(.borderless).accessibilityLabel("预览 LUT 效果")
-                }
             }
             ForEach(stack.layers) { layer in
                 VStack(spacing: 5) {

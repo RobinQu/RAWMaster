@@ -2,7 +2,7 @@
 
 2026-11-22 · macOS 编辑工作区 · 承接 028 的 M2/M3。目录已与 Camera Raw 基础编辑及本地 AI 蒙版集成。版本、性能对照、原尺寸输出和待验项目有独立记录。[集成验收](integration-validation.md) · [功能范围与迁移支持](feature-validation.md)
 
-摄影师能在左栏文字目录找到基础滤镜、Adobe Adaptive 和 Spektrafilm 胶片模拟，在主图试看并采用，再把自己的做法保存给下一张。迁入的 Adobe 条目显示当前照片可用的字段、分析需求和依赖。个人 Lightroom／Camera Raw 预设可通过 XMP 或 ZIP 手工导入。[既有滤镜与性能契约](../028-filter-experience/spec.md) · [目录与 XMP 调研](../../docs/research/lightroom-preset-browser-plan.md)
+摄影师能在左栏文字目录找到Adaptive、Spektrafilm 胶片模拟和个人导入预设，在主图试看并采用，再把自己的做法保存给下一张。迁入的 Adobe 条目显示当前照片可用的字段、分析需求和依赖。个人 Lightroom／Camera Raw 预设可通过 XMP 或 ZIP 手工导入。[既有滤镜与性能契约](../028-filter-experience/spec.md) · [目录与 XMP 调研](../../docs/research/lightroom-preset-browser-plan.md)
 
 场景生成卡由右栏管理。保存为个人预设时记录场景目标、保护语义、参考用途及经核验的风格包版本。应用到另一张图重新准备范围并显式生成；本片的像素补丁留在自己的历史中。031 的外观预览与 XMP 迁移沿现有快速路径执行。[生成卡、风格包与采用合同](../030-ai-retouching/generative-editing.md)
 
@@ -17,10 +17,10 @@
 
 ## 界面与操作
 
-- 左栏从上至下排列滤镜目录、快照及历史。目录将基础滤镜、Adobe Adaptive 和胶片模拟组织在同一列表。显影 Profile、用户组和导入组也按来源浏览。收藏引用原条目。所有行显示文字，支持搜索、折叠、键盘遍历及 VoiceOver。文件夹、星标和菜单有独立操作。
-- 「胶片模拟」提供 Portra 400／Portra Endura、Velvia 100 和 VISION3 250D／2383。三款使用 Spektrafilm 烘焙的 64³ 色彩表。鼠标悬停或键盘聚焦时在主图临时试看，移开或 Escape 还原。点击或回车采用后可调强度、撤销、存快照或版本。浏览目录时滤镜缩略图请求为 0。[可操作原型](../../docs/ui/prototype/index.html#edit/development) · [原生实现与验收](directory-delivery.md)
+- 左栏从上至下排列滤镜目录、快照及历史。标题下集中放置搜索、滤镜强度、导入与管理。目录依次显示带分隔线的 Adaptive、胶片模拟（Film）和 Imported，基础滤镜及收藏可继续在下方访问。Adaptive 沿用 Lightroom 的 Blur Background、Landscape、Portrait、Sky、Subject 与 Profiles 子组；导入目录保留文件记录的原组名。收藏引用原条目。所有行显示文字，支持搜索、折叠、键盘遍历及 VoiceOver。文件夹、星标和菜单有独立操作。
+- 「胶片模拟」提供 Portra 400／Portra Endura、Velvia 100 和 VISION3 250D／2383。三款使用 Spektrafilm 烘焙的 64³ 色彩表。鼠标悬停或键盘聚焦时在主图临时试看，移开或 Escape 还原。点击或回车采用后可调强度、撤销、存快照或版本。浏览目录时滤镜缩略图请求为 0。[可操作原型](../../docs/ui/prototype/index.html#edit/development) · [本次走查](../025-editing-workspace/prototype-review.md#胶片带与调整面板) · [原生实现与验收](directory-delivery.md)
 - 名称优先用文件中的本地化名称，组缺失则归入 Imported。按组、排序名及显示名稳定排列，重名保留来源和独立身份。依赖详情能找到隐藏 Look，搜索结果和收藏不将它们提升为独立可套用的风格。
-- 鼠标停留或键盘聚焦时，只有当前可预览的条目能占用临时主图。仍需分析的条目提供「准备选区」，渲染较慢者提供显式全质量查看。离开、Escape、比较、按住原片、裁切、换片或其他编辑立即结束临时展示。点击或回车采用后可撤销。
+- 鼠标停留或键盘聚焦时，在当前照片临时呈现基础滤镜、胶片、个人预设与导入条目的可用配方。可用的全质量配方通过同一预览入口请求。普通 XMP 含未映射字段时，试看显示已映射且兼容的子集，详情提供实际遗漏字段。逐图蒙版在停留后准备，经过来源与修订校验才可呈现，移开会取消。缺少依赖或可用字段的条目显示原因。离开、Escape、比较、按住原片、裁切、换片或其他编辑立即结束临时展示。点击或回车采用后可撤销。
 - 右栏「智能预设」按场景选择任务、在本张确认范围并试看。纪实组照由「同组参考配平」显示参考张与逐张例外。已保存或导入的语义配方可从左栏重用同一套参数和蒙版。风格浏览、收藏、保存和常规应用都可离线完成。[按场景的智能预设](../030-ai-retouching/scene-presets.md) · [左栏、蒙版、智能卡的交互和视觉评审](../030-ai-retouching/ux-design.md)
 
 ## 功能契约
@@ -44,7 +44,7 @@
 | --- | ---: | --- |
 | 内置 Subject 9、Sky 9、Landscape 8、Portrait 12 | 38 / 38 | 按目标、局部字段与区域组合分别验收。先对照主体、天空，再开放已过关的水面、人物及部位 |
 | 内置 Lens Blur | 13 / 13 | Reset 直接映射。Circle、Circle Swirl、Strong、Subtle 可用本机深度和主体焦距近似，采用前检查主图。其余条目保留解析与依赖信息 |
-| 内置 Adaptive Color、Adaptive B&W | 2 / 2 | 在 Adobe Adaptive 组内可查看。独立验证 RAW 前端、静态及逐图数据、SDR/HDR 和 Amount |
+| 内置 Adaptive Color、Adaptive B&W | 2 / 2 | 在 Adaptive → Profiles 内可查看。独立验证 RAW 前端、静态及逐图数据、SDR/HDR 和 Amount |
 | 用户 Normal | 19 / 19 | 12 项引用库内 Look，6 项依赖渲染端相机基底，1 项缺外部 Adobe Color。逐项报告，完整可用数量以实际验收计 |
 | 用户 RNI 静态 Look | 6 / 0 | 隐藏依赖，可在所引用预设的详情中检查 |
 | **迁入合计** | **78 / 72** | 53 内置加 25 用户文件，共 1,881,440 字节。Classic Filters 和用户新建项另计 |

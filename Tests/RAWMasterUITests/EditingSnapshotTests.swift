@@ -26,7 +26,7 @@ final class EditingSnapshotTests: XCTestCase {
             return editing.developmentContext != nil
         }
         let session = editing.developmentSession
-        let context = try XCTUnwrap(editing.developmentContext)
+        var context = try XCTUnwrap(editing.developmentContext)
         let original = session.recipe
 
         let snapshot = try session.createSnapshot(name: "自然基底", context: context)
@@ -41,6 +41,23 @@ final class EditingSnapshotTests: XCTestCase {
             control: .init(group: .light, name: "调整曝光")))
         let changed = session.recipe
         XCTAssertNotEqual(changed, original)
+        let historyBeforeHover = session.history.entryCount
+        editing.previewDevelopmentSnapshot(id: snapshot.id, context: context)
+        try await wait { editing.filterHoverFrame != nil }
+        XCTAssertEqual(session.recipe, changed)
+        XCTAssertEqual(session.history.entryCount, historyBeforeHover)
+
+        editing.suspendDevelopmentFocus()
+        editing.suspendDevelopmentFocus()
+        let presentation = try XCTUnwrap(editing.developmentPresentationContext)
+        XCTAssertNil(editing.developmentContext)
+        XCTAssertNil(editing.filterHoverFrame)
+        XCTAssertEqual(session.snapshots(in: presentation).map(\.name), ["柔和"])
+        XCTAssertThrowsError(try session.restoreSnapshot(id: snapshot.id, context: context))
+        editing.beginDevelopmentInterface()
+        try await wait { editing.developmentContext != nil }
+        context = try XCTUnwrap(editing.developmentContext)
+        XCTAssertEqual(session.snapshots.map(\.id), [snapshot.id])
         try session.restoreSnapshot(id: snapshot.id, context: context)
         XCTAssertEqual(session.recipe, original)
         XCTAssertEqual(session.historyItems.last?.title, "恢复快照 · 柔和")

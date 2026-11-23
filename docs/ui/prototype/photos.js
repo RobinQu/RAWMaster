@@ -144,24 +144,26 @@ const RMPhotos = (() => {
   function displayLook(r) {
     const film = Object.hasOwn(filmStocks, r.filmStock) ? filmStocks[r.filmStock] : null;
     const amount = film ? (r.filmAmount ?? 100) / 100 : 0;
-    const n = (key) => Number(r[key]) || 0;
+    const enabled = (group) => r.sectionEnabled?.[group] !== false;
+    const n = (key, group) => enabled(group) ? Number(r[key]) || 0 : 0;
+    const light = (key) => n(key, 'light');
     return cleanLook({
       ev:
-        n('ev') + (n('high') + n('shadow') + n('white') + n('black') + n('levels') + n('luminance')) * 0.002,
+        light('ev') + (light('high') + light('shadow') + light('white') + light('black') + n('levels', 'levels') + n('luminance', 'mix')) * 0.002,
       contrast:
-        n('contrast') +
-        (n('curveHigh') - n('curveLow') + n('dehaze') + n('clarity') + n('texture')) * 0.22 +
-        n('sharp') * 0.1 +
+        light('contrast') +
+        (n('curveHigh', 'curves') - n('curveLow', 'curves') + n('dehaze', 'dehaze') + n('clarity', 'clarity') + n('definition', 'definition') + n('texture', 'detail')) * 0.22 +
+        n('sharp', 'detail') * 0.1 +
         (film?.contrast ?? 0) * amount,
       sat:
-        (100 + n('sat') + n('vibrance') * 0.4 + (r.profile === '相机鲜艳' ? 15 : 0)) *
+        (100 + n('sat', 'color') + n('vibrance', 'color') * 0.4 + (r.profile === '相机鲜艳' ? 15 : 0)) *
           (1 + ((film?.sat ?? 0) * amount) / 100) -
         100,
       warmth:
-        n('warmth') +
+        n('warmth', 'whiteBalance') +
         (film?.warmth ?? 0) * amount +
-        (n('warmHighlights') - n('coolShadows') + n('balance')) * 0.35 +
-        (r.lut === '柔和胶片' ? 25 : r.lut === '冷调' ? -25 : 0),
+        (n('warmHighlights', 'grading') - n('coolShadows', 'grading') + n('balance', 'grading')) * 0.35 +
+        (enabled('lut') ? r.lut === '柔和胶片' ? 25 : r.lut === '冷调' ? -25 : 0 : 0),
       mono: r.mono,
     });
   }

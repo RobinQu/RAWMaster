@@ -12,6 +12,7 @@ struct EditingLeftSidebar: View {
     @State private var lensName: String?
     @State private var renamingSnapshot: DevelopmentSnapshot?
     @State private var snapshotName = ""
+    @FocusState private var focusedSnapshot: DevelopmentSnapshot.ID?
 
     init(editing: EditingController, presetCatalog: DevelopmentPresetCatalog = .shared) {
         self.editing = editing
@@ -124,46 +125,58 @@ struct EditingLeftSidebar: View {
 
     @ViewBuilder private func snapshotList(session: EditingDevelopmentSession,
                                            context: EditingInteractionContext) -> some View {
-        if session.snapshots.isEmpty {
-            Text("点击 + 保存当前调整状态；之后可随时恢复，且不会覆盖历史。")
-                .font(.caption2).foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
+        let snapshots = session.snapshots(in: context)
+        if snapshots.isEmpty {
+            Text("尚无快照").font(.caption2).foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 14).padding(.bottom, 12)
         } else {
-            LazyVStack(spacing: 3) {
-                ForEach(session.snapshots) { snapshot in
-                    HStack(spacing: 6) {
-                        Button {
-                            restoreSnapshot(snapshot, session: session, context: context)
-                        } label: {
-                            HStack(spacing: 8) {
-                                Image(systemName: snapshot.recipe == session.recipe ? "checkmark.circle.fill" : "camera.viewfinder")
-                                    .font(.system(size: 11))
-                                    .foregroundStyle(snapshot.recipe == session.recipe ? AppPalette.accent : Color.secondary)
-                                Text(snapshot.name).font(.system(size: 11)).lineLimit(1)
-                                Spacer(minLength: 0)
-                            }
-                            .padding(.horizontal, 8).frame(maxWidth: .infinity, minHeight: 30)
-                            .background(snapshot.recipe == session.recipe ? AppPalette.accent.opacity(0.11) : Color.clear,
-                                        in: RoundedRectangle(cornerRadius: 6))
-                            .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .help("恢复此快照；恢复操作可通过撤销退回")
-                        .accessibilityIdentifier("editing.snapshot.\(snapshot.id.uuidString)")
-                        Menu {
-                            Button("重命名…") { snapshotName = snapshot.name; renamingSnapshot = snapshot }
-                            Divider()
-                            Button("删除", role: .destructive) { deleteSnapshot(snapshot, session: session, context: context) }
-                        } label: { Image(systemName: "ellipsis").frame(width: 24, height: 26) }
-                            .menuStyle(.borderlessButton)
-                            .accessibilityLabel("快照操作")
-                    }
-                    .padding(.horizontal, 6)
+            LazyVStack(spacing: 2) {
+                ForEach(snapshots) { snapshot in
+                    snapshotRow(snapshot, session: session, context: context)
                 }
             }
-            .padding(.horizontal, 6).padding(.bottom, 10)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12).padding(.bottom, 10)
+            .onChange(of: focusedSnapshot) { previous, next in
+                if let previous { editing.cancelPresetHover(id: "snapshot." + previous.uuidString) }
+                if let next { editing.previewDevelopmentSnapshot(id: next, context: context) }
+            }
+        }
+    }
+
+    private func snapshotRow(_ snapshot: DevelopmentSnapshot, session: EditingDevelopmentSession,
+                             context: EditingInteractionContext) -> some View {
+        let hoverID = "snapshot." + snapshot.id.uuidString
+        let restore = { restoreSnapshot(snapshot, session: session, context: context) }
+        return HStack(spacing: 4) {
+            Button(action: restore) {
+                EditingSidebarRowLabel(title: snapshot.name, symbol: "photo") { inside in
+                    if inside { editing.previewDevelopmentSnapshot(id: snapshot.id, context: context) }
+                    else { editing.cancelPresetHover(id: hoverID) }
+                }
+            }
+            .buttonStyle(.plain)
+            .focused($focusedSnapshot, equals: snapshot.id)
+            .onKeyPress(.return) { restore(); return .handled }
+            .onKeyPress(.escape) {
+                editing.cancelPresetHover(id: hoverID)
+                focusedSnapshot = nil
+                return .handled
+            }
+            .onDisappear { editing.cancelPresetHover(id: hoverID) }
+            .help("悬停试看，点击恢复快照")
+            .accessibilityIdentifier("editing.snapshot." + snapshot.id.uuidString)
+
+            Menu {
+                Button("重命名…") { snapshotName = snapshot.name; renamingSnapshot = snapshot }
+                Divider()
+                Button("删除", role: .destructive) { deleteSnapshot(snapshot, session: session, context: context) }
+            } label: {
+                Image(systemName: "ellipsis").frame(width: 24, height: 24)
+            }
+            .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+            .accessibilityLabel("快照操作")
         }
     }
 
@@ -240,6 +253,7 @@ struct EditingLeftSidebar: View {
     }
     private func restoreSnapshot(_ snapshot: DevelopmentSnapshot, session: EditingDevelopmentSession,
                                  context: EditingInteractionContext) {
+        editing.cancelPresetHover()
         do { try session.restoreSnapshot(id: snapshot.id, context: context) }
         catch { editing.message = "无法恢复快照，请检查当前照片。" }
     }
@@ -304,5 +318,34 @@ private struct LeftRailSection<Content: View>: View {
             .padding(.horizontal, 10)
             if expanded { content().transition(.opacity) }
         }
+    }
+}
+
+
+/// The title occupies the available row width. Secondary actions keep their own hit targets.
+struct EditingSidebarRowLabel: View {
+    let title: String
+    let symbol: String
+    var active = false
+    var onHover: (Bool) -> Void
+    @State private var hovered = false
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: symbol).foregroundStyle(.secondary)
+                .frame(width: 13)
+            Text(title).lineLimit(1)
+            Spacer(minLength: 0)
+            if active { Image(systemName: "checkmark").font(.system(size: 9)) }
+        }
+        .font(.system(size: 11))
+        .padding(.horizontal, 6)
+        .frame(maxWidth: .infinity, minHeight: 25, alignment: .leading)
+        .background {
+            RoundedRectangle(cornerRadius: 5)
+                .fill(active ? AppPalette.accent.opacity(0.13) : Color.primary.opacity(hovered ? 0.06 : 0))
+        }
+        .contentShape(Rectangle())
+        .onHover { inside in hovered = inside; onHover(inside) }
     }
 }

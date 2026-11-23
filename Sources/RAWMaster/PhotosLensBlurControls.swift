@@ -22,15 +22,22 @@ struct PhotosLensBlurControls: View {
     private var blur: DevelopmentLensBlurV3 { session.parameters.effects?.lensBlur ?? .init() }
     private var brush: DevelopmentLensBlurRefinementBrushV3 { blur.refinementBrush ?? .init() }
     var body: some View {
+        PhotosEffectSection(session: session, context: context, key: "effects.lensBlur", title: "镜头模糊",
+            symbol: "camera.aperture", enabled: blur.enabled || editing.enablingSceneDepth == context,
+            onEnable: setEnabled, onError: onError) {
+                controls.onDisappear { editing.cancelDevelopmentLensBlurDepthPreview() }
+            }
+    }
+
+    private func setEnabled(_ enabled: Bool) {
+        if !enabled && editing.enablingSceneDepth == context { editing.cancelEnablingSceneDepth(context: context) }
+        else if enabled && !blur.enabled && blur.renderDepth == nil && editing.supportsSceneDepth {
+            editing.useDevelopmentSceneDepth(context: context, enabling: true)
+        } else { apply(nil, enabled: enabled) }
+    }
+
+    private var controls: some View {
         VStack(alignment: .leading, spacing: 9) {
-            Label("Lens Blur", systemImage: "camera.aperture").font(.caption.weight(.semibold))
-            Toggle("启用 Lens Blur", isOn: .init(get: { blur.enabled || editing.enablingSceneDepth == context }, set: { enabled in
-                if !enabled && editing.enablingSceneDepth == context { editing.cancelEnablingSceneDepth(context: context) }
-                else if enabled && !blur.enabled && blur.renderDepth == nil && editing.supportsSceneDepth {
-                    editing.useDevelopmentSceneDepth(context: context, enabling: true)
-                } else { apply(nil, enabled: enabled) }
-            }))
-                .accessibilityIdentifier("photos.effects.lensBlur.enabled")
             Picker("焦外光斑", selection: .init(get: { blur.bokehStyle ?? .circle }, set: { applyStyle($0) })) {
                 ForEach(DevelopmentLensBokehStyleV3.allCases, id: \.self) { style in Text(styleTitle(style)).tag(style) }
             }.disabled(!blur.enabled).accessibilityIdentifier("photos.effects.lensBlur.bokehStyle")
@@ -97,7 +104,7 @@ struct PhotosLensBlurControls: View {
                     .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("photos.effects.lensBlur.deviceDepthAvailable")
             }
-        }.onDisappear { editing.cancelDevelopmentLensBlurDepthPreview() }
+        }
     }
     private func value(_ field: Field) -> Double {
         switch field { case .amount: blur.amount; case .focusX: blur.focusX; case .focusY: blur.focusY; case .focusRange: blur.focusRange;

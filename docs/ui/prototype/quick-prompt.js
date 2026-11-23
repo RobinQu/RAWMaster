@@ -4,6 +4,7 @@ const promptModels = {
   flux: 'FLUX.3 Image Klein · 本机',
   seedream: 'Seedream 5.5 · 云端',
 };
+const promptModelButton = { flux: 'FLUX', seedream: 'Seedream' };
 const promptTemplates = {
   remove: ['移除干扰', '移除［干扰物］，按相邻光线与纹理自然补齐，保留周围对象的边缘。'],
   background: ['替换背景', '将背景改成［新背景］，保留主体的形状、发丝边缘和原有构图。'],
@@ -100,9 +101,9 @@ function promptDock() {
   const d = quickDraft(), job = quickTask();
   const ready = job?.state === 'done' && !!job.result;
   const title = `<header class="quick-head" tabindex="-1"><strong>${icon('spark', 17)} 快速 Prompt</strong>
-    <span class="quick-scope" id="quick-scope">${h(quickScopeTitle(ready ? job.quickPrompt.scope : d.scope))}</span>
+    <span class="quick-scope" id="quick-scope">${h(d.drawing && !ready ? '正在圈选' : quickScopeTitle(ready ? job.quickPrompt.scope : d.scope))}</span>
     ${btn('收起快速 Prompt', 'quick-close', '', { icon: 'close', only: true, cls: 'quick-close' })}</header>`;
-  const more = (menu, label, content) => `<details class="quick-menu" data-menu="${menu}"><summary>${label}</summary><div>${content}</div></details>`;
+  const more = (menu, label, content, symbol = "") => `<details class="quick-menu" data-menu="${menu}"><summary aria-label="${h(label)}" title="${h(label)}">${symbol ? icon(symbol, 15) : h(label)}</summary><div>${content}</div></details>`;
   let body;
   if (job?.state === 'running') {
     body = `<div class="quick-result"><p role="status"><span class="quick-spinner"></span>${job.quickPrompt.reconciling ? '正在核对原任务' : '正在生成候选'} · ${promptModels[job.quickPrompt.model]}</p>
@@ -122,22 +123,24 @@ function promptDock() {
     ${btn('应用到照片', 'quick-apply', '', { cls: 'quick-primary', disabled: !!issue })}</div></div>`;
   } else {
     const status = quickStatus(d, job);
-    const ranges = more('scope', '范围工具', [
+    const selectionTools = more('selection', '更多圈选操作', [
       btn('输入坐标…', 'quick-coordinates'), btn('使用现有蒙版…', 'quick-mask'),
-      btn('使用整张照片', 'quick-whole'),
-    ].join(''));
+    ].join(''), 'menu');
     const phraseGroup = (keys) => keys.map((id) => btn(promptPhrases[id], 'quick-template', id)).join('');
     const helpers = more('phrases', '更多短句', `<b>保护对象</b>${phraseGroup(['face', 'signage', 'structure'])}<b>光色与衔接</b>${phraseGroup(['shadow', 'water', 'seam'])}`);
-    body = `<textarea aria-label="编辑提示词" aria-describedby="quick-scope quick-status" name="quickPrompt" maxlength="${promptLimit}" rows="2"
-      placeholder="描述想改变的内容，例如：移除岸边路牌，保留倒影">${h(d.text)}</textarea>
-      <div class="quick-templates"><div class="quick-chips" role="group" aria-label="快捷 Prompt 模板">${Object.entries(promptTemplates)
+    body = `<div class="quick-templates"><div class="quick-chips" role="group" aria-label="快捷 Prompt 模板">${Object.entries(promptTemplates)
         .map(([id, [label]]) => btn(label, 'quick-template', id)).join('')}</div>${helpers}</div>
+      <textarea aria-label="编辑提示词" aria-describedby="quick-scope quick-status" name="quickPrompt" maxlength="${promptLimit}" rows="3"
+        placeholder="描述想改变的内容，例如：移除岸边路牌，保留倒影">${h(d.text)}</textarea>
       <div class="quick-footer">
-        <div class="quick-buttons">${btn(d.drawing ? '正在圈选' : '圈选', 'quick-draw', '', { icon: 'crop', pressed: d.drawing })}
-          ${ranges}</div>
+        <div class="quick-buttons" role="group" aria-label="编辑范围">
+          ${btn('圈选', 'quick-draw', '', { icon: 'crop', pressed: d.drawing || !!d.scope })}
+          ${btn('全图', 'quick-whole', '', { icon: 'photo', pressed: !d.drawing && !d.scope })}
+          ${selectionTools}</div>
         <div class="quick-model-action">
-          <select name="quickModel" aria-label="选择生成模型">${Object.entries(promptModels)
-            .map(([id, label]) => `<option value="${id}" ${d.model === id ? 'selected' : ''}>${label}</option>`).join('')}</select>
+          <label class="quick-model" title="${h(promptModels[d.model])}"><span aria-hidden="true">${promptModelButton[d.model]}${icon('down', 12)}</span>
+            <select name="quickModel" aria-label="选择生成模型">${Object.entries(promptModels)
+              .map(([id, label]) => `<option value="${id}" ${d.model === id ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
           ${btn(d.model === 'flux' ? '生成候选' : '核对并生成…', 'quick-submit', '', { cls: 'quick-primary', disabled: status.blocked })}
         </div>
       </div>
@@ -214,9 +217,10 @@ actions['quick-draw'] = () => {
   render();
 };
 actions['quick-whole'] = () => {
+  quickPointer = null;
   Object.assign(quickDraft(), { drawing: false, scope: null, notice: '' });
   render();
-  $('[data-act=quick-draw]')?.focus({ preventScroll: true });
+  $('[data-act=quick-whole]')?.focus({ preventScroll: true });
 };
 function quickUpdateField(el) {
   const d = quickDraft(), status = quickStatus(d);
@@ -312,6 +316,7 @@ document.addEventListener('pointerup', (event) => {
   if (range.w < .01 || range.h < .01) d.notice = '范围太小。请重新拖动，或选择整张照片。';
   else Object.assign(d, { scope: range, drawing: false, notice: '' });
   render();
+  $('[data-act=quick-draw]')?.focus({ preventScroll: true });
 });
 document.addEventListener('pointercancel', (event) => {
   if (quickPointer?.id !== event.pointerId) return;

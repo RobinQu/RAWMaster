@@ -253,8 +253,10 @@ public struct DevelopmentPresetPatch: Codable, Equatable, Sendable {
         !isEmpty && !hasFullRecipe && semanticMasks == nil && (try? commands(from: base, amount: 0.5)) != nil
     }
 
-    private static func mixGrading(_ a: DevelopmentColorGrading, _ b: DevelopmentColorGrading, amount: Double) -> DevelopmentColorGrading {
-        if amount == 1 { return b }
+    private static func mixGrading(_ baseline: DevelopmentColorGrading, _ target: DevelopmentColorGrading, amount: Double) -> DevelopmentColorGrading {
+        if amount == 1 { return target }
+        let a = baseline.isEnabled ? baseline : DevelopmentColorGrading()
+        let b = target.isEnabled ? target : DevelopmentColorGrading()
         func mix(_ old: Double, _ new: Double) -> Double { old + (new - old) * amount }
         func wheel(_ old: DevelopmentGradingWheel, _ new: DevelopmentGradingWheel) -> DevelopmentGradingWheel {
             let start = old.saturation == 0 ? new.hueDegrees : old.hueDegrees

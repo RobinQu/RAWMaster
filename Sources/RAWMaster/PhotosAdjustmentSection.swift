@@ -52,13 +52,15 @@ extension DevelopmentAdjustmentID {
 /// Each header action has its own hit target. Auto appears only when an actual backend action is
 /// supplied by the eventual integration; this component never invents an analysis capability.
 struct PhotosAdjustmentSection<Content: View>: View {
-    let id: DevelopmentAdjustmentID
+    let key: String
+    let title: String
+    let symbol: String
     let expanded: Bool
     let enabled: Bool
     let modified: Bool
     let onExpand: () -> Void
     let onEnable: (Bool) -> Void
-    let onReset: () -> Void
+    let onReset: (() -> Void)?
     var autoAction: (() -> Void)? = nil
     var autoInProgress = false
     var onCancelAutomatic: (() -> Void)? = nil
@@ -73,29 +75,32 @@ struct PhotosAdjustmentSection<Content: View>: View {
                         if showsDisclosure {
                             Image(systemName: expanded ? "chevron.down" : "chevron.right").font(.caption.weight(.semibold)).frame(width: 12)
                         }
-                        Image(systemName: id.photosSymbol).frame(width: 17)
-                        Text(id.photosTitle).font(.system(size: 13, weight: .semibold))
+                        Image(systemName: symbol).frame(width: 17)
+                        Text(title).font(.system(size: 13, weight: .semibold))
                         if modified { Image(systemName: "circle.fill").font(.system(size: 4)).accessibilityLabel("已调整") }
-                    }.contentShape(Rectangle())
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .disabled(!showsDisclosure)
-                .accessibilityLabel("\(id.photosTitle)，\(expanded ? "收起" : "展开")")
-                Spacer(minLength: 4)
-                Button(action: onReset) { Image(systemName: "arrow.uturn.backward").frame(width: 24, height: 28) }
-                    .buttonStyle(.plain).disabled(!modified).help("复位\(id.photosTitle)")
-                    .accessibilityLabel("复位\(id.photosTitle)").accessibilityIdentifier("photos.\(id.rawValue).reset")
+                .accessibilityLabel("\(title)，\(expanded ? "收起" : "展开")")
+                .accessibilityIdentifier("photos.\(key).disclosure")
+                if let onReset {
+                    Button(action: onReset) { Image(systemName: "arrow.uturn.backward").frame(width: 24, height: 28) }
+                        .buttonStyle(.plain).disabled(!modified).help("复位\(title)")
+                        .accessibilityLabel("复位\(title)").accessibilityIdentifier("photos.\(key).reset")
+                }
                 if autoInProgress, let onCancelAutomatic {
-                    ProgressView().controlSize(.mini).accessibilityLabel("正在自动调整\(id.photosTitle)")
+                    ProgressView().controlSize(.mini).accessibilityLabel("正在自动调整\(title)")
                     Button("取消", action: onCancelAutomatic).buttonStyle(.borderless).font(.caption)
-                        .accessibilityLabel("取消自动调整\(id.photosTitle)")
+                        .accessibilityLabel("取消自动调整\(title)")
                 } else if let autoAction {
                     Button("自动", action: autoAction).buttonStyle(.borderless).font(.caption)
-                        .accessibilityLabel("自动调整\(id.photosTitle)")
+                        .accessibilityLabel("自动调整\(title)")
                 }
-                Toggle("启用\(id.photosTitle)", isOn: .init(get: { enabled }, set: onEnable))
-                    .labelsHidden().toggleStyle(.checkbox)
-                    .accessibilityIdentifier("photos.\(id.rawValue).enabled")
+                Toggle("启用\(title)", isOn: .init(get: { enabled }, set: onEnable))
+                    .labelsHidden().toggleStyle(.switch).controlSize(.mini)
+                    .accessibilityIdentifier("photos.\(key).enabled")
             }
             .frame(minHeight: 34)
             .padding(.horizontal, 4)
@@ -108,7 +113,41 @@ struct PhotosAdjustmentSection<Content: View>: View {
             }
         }.padding(.horizontal, 12).padding(.vertical, 9)
             .animation(.easeOut(duration: 0.18), value: expanded)
-            .accessibilityIdentifier("photos.\(id.rawValue).section")
+            .accessibilityElement(children: .contain)
+            .accessibilityIdentifier("photos.\(key).section")
+    }
+}
+
+extension PhotosAdjustmentSection {
+    init(id: DevelopmentAdjustmentID, expanded: Bool, enabled: Bool, modified: Bool,
+         onExpand: @escaping () -> Void, onEnable: @escaping (Bool) -> Void, onReset: @escaping () -> Void,
+         autoAction: (() -> Void)? = nil, autoInProgress: Bool = false, onCancelAutomatic: (() -> Void)? = nil,
+         showsDisclosure: Bool = true, @ViewBuilder content: @escaping () -> Content) {
+        self.init(key: id.rawValue, title: id.photosTitle, symbol: id.photosSymbol, expanded: expanded, enabled: enabled,
+            modified: modified, onExpand: onExpand, onEnable: onEnable, onReset: onReset, autoAction: autoAction,
+            autoInProgress: autoInProgress, onCancelAutomatic: onCancelAutomatic, showsDisclosure: showsDisclosure,
+            content: content)
+    }
+}
+
+struct PhotosEffectSection<Content: View>: View {
+    @ObservedObject var session: EditingDevelopmentSession
+    let context: EditingInteractionContext
+    let key: String
+    let title: String
+    let symbol: String
+    let enabled: Bool
+    let onEnable: (Bool) -> Void
+    let onError: (Error) -> Void
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        let expanded = session.expandedSections.contains(key)
+        PhotosAdjustmentSection(key: key, title: title, symbol: symbol, expanded: expanded, enabled: enabled,
+            modified: false, onExpand: {
+                do { try session.setExpanded(section: key, expanded: !expanded, context: context) }
+                catch { onError(error) }
+            }, onEnable: onEnable, onReset: nil, content: content)
     }
 }
 
@@ -286,15 +325,20 @@ private struct PhotosScopedParameterRow: View {
     @State private var dragOrigin: Double?
     @State private var optionClipping = false
     var body: some View {
-        HStack(spacing: 8) {
-            Text(field.title)
-                .font(.system(size: 11)).foregroundStyle(.secondary)
-                .frame(width: 76, alignment: .leading)
-                .contentShape(Rectangle())
-                .onTapGesture(count: 2) { automaticOrReset() }
-                .gesture(DragGesture(minimumDistance: 2).onChanged(scrub).onEnded { _ in scrubEnded() })
-                .help("横向拖动名称或滑杆调整；双击复位；支持时 Shift＋双击单独自动调整")
-                .accessibilityAction(named: "复位" + field.title) { reset() }
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: 8) {
+                Text(field.title)
+                    .font(.system(size: 11)).foregroundStyle(.secondary)
+                    .contentShape(Rectangle())
+                    .onTapGesture(count: 2) { automaticOrReset() }
+                    .gesture(DragGesture(minimumDistance: 2).onChanged(scrub).onEnded { _ in scrubEnded() })
+                    .help("横向拖动名称或滑杆调整；双击复位；支持时 Shift＋双击单独自动调整")
+                    .accessibilityAction(named: "复位" + field.title) { reset() }
+                Spacer(minLength: 0)
+                DevelopmentNumberField(title: field.title, value: .init(get: { value }, set: { change($0, gesture: nil) }),
+                    range: field.displayRange, fractionDigits: field.digits)
+                    .frame(width: 62).accessibilityIdentifier(identifier + ".number")
+            }
             Slider(value: .init(get: { value }, set: { candidate in
                 if let snapped = PhotosSliderInput.snapped(candidate, range: field.displayRange, step: field.step) {
                     change(snapped, gesture: token)
@@ -304,11 +348,7 @@ private struct PhotosScopedParameterRow: View {
                 .frame(height: 26)
                 .frame(maxWidth: .infinity)
                 .accessibilityLabel(field.title).accessibilityIdentifier(identifier)
-            DevelopmentNumberField(title: field.title, value: .init(get: { value }, set: { change($0, gesture: nil) }),
-                range: field.displayRange, fractionDigits: field.digits)
-                .frame(width: 62).accessibilityIdentifier(identifier + ".number")
         }
-        .frame(minHeight: 26)
         .onDisappear { finish() }
     }
     private var value: Double { field.displayed(session.parameters[keyPath: field.path]) }

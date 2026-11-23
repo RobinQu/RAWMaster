@@ -33,3 +33,7 @@ Release 定向测试共 65 项通过，其中 19 项覆盖 Adobe 交换，27 项
 本轮属于工程验收。正式首发仍需六名摄影师实操、每种模型与范围各至少 12 张留出照片，以及原生动效的 30 次暖样本 p95、VoiceOver／系统偏好复测。局部出图质量按场景评定。两款改光样例都改动了细节，Seedream 局部样例的清理目标难以确认。[SC-01–05](spec.md#成功标准)
 
 运行 `python3 scripts/check-ui-prototype.py --editing-only` 可复验滤镜及七条 Prompt 走查。全工作台脚本在本轮基线 `25e88fc4` 已可复现独立导出原型的选片交接问题，父页面给出两张而内嵌页初始化为三张。[工作台检查脚本](../../scripts/check-ui-prototype.py)
+
+## 2026-11-23 · 工具条更新
+
+原生窗口验证扩展后的输入条及紧凑模型入口，从「圈选」进入拖框，确认一个矩形，再使用「全图」清除选区。收起后底部查看动作重新出现。浏览器覆盖窄窗、浅色、键盘选区和候选退出。[原生窗口回归](../../Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift) · [本次走查和截图](../025-editing-workspace/prototype-review.md#胶片带与调整面板)

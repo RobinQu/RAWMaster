@@ -2,7 +2,7 @@
 
 2026-11-22 · [规格](spec.md) · [摄影工作台](../../docs/ui/prototype/index.html#edit/development)
 
-左栏使用文字目录浏览基础滤镜、Adobe Adaptive 与胶片模拟。悬停和键盘聚焦使用原主图预览，离开恢复已采用效果。原片、旧滤镜收藏、快照和历史按原 ID 读取。目录加载、搜索及收藏均走元数据。Lightroom／Camera Raw 导入从「预设交换」选择 XMP 或 ZIP，显示原字段、依赖和冲突后入库。
+左栏使用文字目录浏览 Adaptive、胶片模拟、Imported 与基础滤镜。悬停和键盘聚焦使用原主图预览，离开恢复已采用效果。原片、旧滤镜收藏、快照和历史按原 ID 读取。目录加载、搜索及收藏均走元数据。Lightroom／Camera Raw 导入从滤镜标题下「导入预设…」选择 XMP 或 ZIP，显示原字段、依赖和冲突后入库。
 
 ## 一次性迁移
 

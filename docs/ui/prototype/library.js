@@ -81,8 +81,35 @@ function histogram(id) {
   return `<figure class="histogram" aria-label="示例 JPEG 的 RGB 直方图"><figcaption>直方图 <small>RGB</small></figcaption><svg viewBox="0 0 160 49" preserveAspectRatio="none" role="img" aria-label="红绿蓝三通道分布"><path d="M40 2v45m40-45v45m40-45v45" stroke="#455057" stroke-dasharray="2 3"/>${channels.map((points, i) => `<path d="M0 48 ${points.map((n, j) => `L${(j * 160) / (points.length - 1)} ${47 - n}`).join(' ')} L160 48Z" fill="${['#e68c7f', '#81bc98', '#79aeea'][i]}" opacity=".62" style="mix-blend-mode:screen"/>`).join('')}</svg></figure>`;
 }
 function filmstrip(ids, focus, act = 'photo') {
-  return `<div class="filmstrip" aria-label="胶片带">${ids.map((id) => `<button data-act="${act}" data-val="${id}" class="${id === focus ? 'chosen' : ''}" aria-label="${h(Studio.asset(id).name)}" aria-pressed="${id === focus}">${pic(id)}</button>`).join('')}</div>`;
+  const groups = [...Studio.catalog().groups].sort((a, b) => a.id.localeCompare(b.id));
+  const preferred = Studio.scopeInfo(S.scope).group;
+  if (preferred) groups.unshift(preferred);
+  const runs = [];
+  for (const id of ids) {
+    const group = groups.find((g) => g.ids.includes(id));
+    const last = runs.at(-1);
+    if (last && last.group === group) last.ids.push(id);
+    else runs.push({ group, ids: [id] });
+  }
+  const collapsed = (S.filmstripCollapsed ??= new Set());
+  if (S.filmstripFocus !== focus) {
+    collapsed.delete(groups.find((g) => g.ids.includes(focus))?.id);
+    S.filmstripFocus = focus;
+  }
+  const photo = (id) => {
+    const asset = Studio.asset(id);
+    return `<button class="filmstrip-photo${id === focus ? ' chosen' : ''}" data-act="${act}" data-val="${h(id)}" aria-label="${h(asset.name)}${asset.online ? '' : '，离线'}" aria-pressed="${id === focus}">${pic(id)}<span>${h(asset.name)}</span></button>`;
+  };
+  return `<div class="filmstrip" aria-label="胶片带">${runs.map(({ group, ids }) => {
+    if (!group) return ids.map(photo).join('');
+    const open = !collapsed.has(group.id);
+    return `<div class="filmstrip-group">${btn(group.name + ' · ' + ids.length + ' 张', 'filmstrip-group', group.id, { icon: open ? 'down' : 'chevron', cls: 'filmstrip-label', expanded: open })}${open ? ids.map(photo).join('') : ''}</div>`;
+  }).join('')}</div>`;
 }
+actions['filmstrip-group'] = (id) => {
+  if (!S.filmstripCollapsed.delete(id)) S.filmstripCollapsed.add(id);
+  render();
+};
 function card(id, b) {
   const a = Studio.asset(id),
     p = Studio.photo(id),

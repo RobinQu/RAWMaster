@@ -3,7 +3,7 @@ import Combine
 import RAWMasterCore
 import RAWMasterImaging
 
-/// A ready selection belongs to exactly one photo, preset version and draft revision. Browsing never starts this task.
+/// A ready selection belongs to exactly one photo, preset version and draft revision. Callers cancel when that scope ends.
 @MainActor final class DevelopmentPresetMaskPreparation: ObservableObject {
     struct Ticket: Equatable {
         let record: DevelopmentPresetRecord

@@ -15,13 +15,19 @@ enum EditingLayout {
     static var comparisonFitInsets: NSEdgeInsets { fitInsets }
 }
 
-/// Full-bleed darkroom with stable tool columns and one compact canvas command bar.
+/// Full-bleed darkroom with stable tool columns, a canvas command bar and a compact filmstrip.
 struct EditingWorkspace: View {
     @ObservedObject var editing: EditingController
 
     var body: some View {
         ZStack {
-            BrowserView()
+            VStack(spacing: 0) {
+                BrowserView()
+                FilmstripView(inEditor: true)
+                    .padding(.horizontal, EditingLayout.sidebarWidth + 2 * EditingLayout.outerPadding)
+                    .padding(.bottom, 6)
+                    .disabled(editing.quickPromptAdopting)
+            }
             HStack(alignment: .top, spacing: 0) {
                 EditingLeftSidebar(editing: editing)
                     .floatingSelectionSurface()
@@ -36,6 +42,7 @@ struct EditingWorkspace: View {
             .disabled(editing.quickPromptAdopting)
         }
         .background(editing.darkroomBackground.color)
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("editing.darkroom")
     }
 }

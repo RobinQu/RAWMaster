@@ -56,7 +56,7 @@ def main():
     def scenario(title, js):
         if editing_only and "快速 Prompt" not in title and title not in {
             "双击入口与本地照片", "标题栏与资料库侧栏开关", "搜索、筛选、多选比较与批量标签",
-            "导入、续接、分组、初筛封存与历史恢复", "暗房布局、智能预设与胶片采用", "浮动工具条、邻片、裁切与参考对比",
+            "导入、续接、分组、初筛封存与历史恢复", "暗房布局、智能预设与胶片采用", "浮动工具条、邻片、裁切与参考对比", "胶片带对齐、折叠和离线照片",
         }:
             return
         try:
@@ -127,11 +127,26 @@ def main():
               assert(modal().textContent.includes('已恢复'),'restore from sealed ledger');act('close',null,modal());
               act('goto','library/project/river');await page('[data-act=photo][data-val=n2]');
             """)
+            scenario("胶片带对齐、折叠和离线照片", """
+              act('mode','single');
+              const centers=()=>all('.filmstrip-photo img').map(img=>{const r=img.getBoundingClientRect();return r.top+r.height/2;});
+              assert(Math.max(...centers())-Math.min(...centers())<1,'grouped and ungrouped thumbnails align');
+              const label=el('.filmstrip-group .filmstrip-label'), first=label.nextElementSibling;
+              assert(label.getBoundingClientRect().right<first.getBoundingClientRect().left,'group label before first photo');
+              const count=all('.filmstrip-photo').length, selected=activeBrowser().focus;
+              act('filmstrip-group',label.dataset.val);assert(all('.filmstrip-photo').length<count&&activeBrowser().focus===selected,'collapse preserves focus');
+              act('filmstrip-group',label.dataset.val);assert(all('.filmstrip-photo').length===count,'expand restores members');
+              act('workflow','edit');await page('.edit-center .filmstrip');
+              assert(Math.max(...centers())-Math.min(...centers())<1,'editing strip also aligns');
+              act('edit-photo','w1');assert(modal().textContent.includes('原片待找回'),'offline entry explains recovery');
+              act('close',null,modal());assert(Studio.data.work===selected,'offline cancel retains photo');
+              act('workflow','library');await page('.loupe');act('mode','grid');
+            """)
             scenario("暗房布局、智能预设与胶片采用", """
               await hash('library/group/dusk');act('photo','d1');act('workflow','edit');await page('.smart-panel');
-              assert(!el('.edit-head .switch,.edit-left .switch,.edit-inspector .tool-palette,.edit-page .filmstrip,.agent-panel'),'single darkroom');
+              assert(!el('.edit-head .switch,.edit-left .switch,.edit-inspector .tool-palette,.agent-panel'),'single darkroom');
               const headings=all('.edit-left > section h2');
-              assert(headings.map(n=>n.textContent).join('/')==='预设/快照/历史'&&headings[0].offsetTop<headings[1].offsetTop&&headings[1].offsetTop<headings[2].offsetTop,'stacked left sections');
+              assert(headings.map(n=>n.textContent).join('/')==='滤镜/快照/历史'&&headings[0].offsetTop<headings[1].offsetTop&&headings[1].offsetTop<headings[2].offsetTop,'stacked left sections');
               const rail=el('.inspector-rail').getBoundingClientRect(),pane=el('.inspector-content').getBoundingClientRect();
               assert(rail.width<51&&rail.right<=pane.left+1&&all('.rail-tool').every(b=>!b.textContent.trim()&&b.title),'vertical labeled icon rail');
               assert(!el('[name=aiPrompt]')&&el('[data-act=edit-tool][data-val=agent]'),'opt in to Agent');
@@ -141,7 +156,15 @@ def main():
               assert(all('[name=matchReference] option',modal()).length===3,'scope contains just this group');set('[name=matchReference]','d2',modal());
               assert(!el('[name=matchTarget][value=d2]',modal()),'reference protected');act('close',null,modal());
               const neutral=el('.developed').style.filter;
-              assert(all('.preset-folder summary').map(x=>x.textContent).join('|').includes('基础滤镜|Adobe Adaptive|胶片模拟')&&!el('.preset-folder img'),'three text folders without thumbnails');
+              assert(all('.preset-directory > details > summary > span').slice(0,3).map(x=>x.textContent).join('|')==='Adaptive|胶片模拟|Imported'&&!el('.preset-folder img'),'three primary folders without thumbnails');
+              assert(all('[data-folder=adaptive] > .preset-children > details > summary > span').map(x=>x.textContent).join('|')==='Sky|Subject','preserve source folders');
+              assert(el('[data-key=filmAmount]').disabled&&el('.filter-actions').compareDocumentPosition(el('.preset-directory'))&Node.DOCUMENT_POSITION_FOLLOWING,'amount and import before folders');
+              act('preset-import');set('[name=presetName]','走查 XMP',modal());act('preset-command',null,modal());
+              const imported=el('[data-act=apply-preset][data-val="走查 XMP"]');
+              imported.dispatchEvent(new PointerEvent('pointerover',{bubbles:true}));assert(el('.developed').style.filter!==neutral,'import hover changes the canvas');
+              imported.dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));assert(el('.developed').style.filter===neutral,'import hover restores');
+              set('[name=presetQuery]','无匹配输入');assert(el('.preset-directory').textContent.includes('没有匹配'),'search empty');
+              set('[name=presetQuery]','');
               act('preset-manage');assert(all('[name=presetOperation] option',modal()).some(x=>x.value.includes('Lightroom'))&&!modal().textContent.includes('迁移'),'XMP import without migration UI');act('close',null,modal());
               act('adaptive-preset','subject');act('adaptive-mask-preview','subject',modal());assert(el('.adaptive-mask-proof .subject'),'current-photo mask review');act('close',null,modal());
               let film=el('[data-act=film-stock][data-val=cinema]');film.focus();assert(el('.developed').style.filter!==neutral,'keyboard film preview');
@@ -153,17 +176,35 @@ def main():
               act('film-stock','cinema');const fullLook=el('.developed').style.filter;assert(fullLook!==neutral,'applied film');
               set('[data-key=filmAmount]','45');const blend=el('.developed').style.filter;assert(blend!==neutral&&blend!==fullLook,'strength preview');
               act('snapshot');act('save-snap',null,modal());act('edit-step','undo');assert(el('[data-key=filmAmount]').value==='100','one step');
+              const snap=el('[data-act=restore-snap]');
+              assert(!snap.classList.contains('current')&&snap.getBoundingClientRect().width>140,'snapshot list spans panel');
+              snap.focus();assert(el('.developed').style.filter===blend&&el('[data-key=filmAmount]').value==='100','snapshot preview leaves recipe untouched');
+              window.dispatchEvent(new Event('blur'));assert(snap.checkVisibility()&&el('.look-preview').hidden&&el('.developed').style.filter===fullLook,'window blur keeps snapshots and ends preview');
               act('restore-snap','0');assert(el('.developed').style.filter===blend,'snapshot restore');
-              act('edit-tool','basic',el('.inspector-rail'));await page('[data-key=ev]');const basic=el('.rail-tool[data-val=basic]');
-              assert(document.activeElement===basic,'focus on icon');key(basic,'ArrowDown');await page('.curve-chart');
-              assert(document.activeElement.dataset.val==='tones','keyboard navigates rail');
+              act('edit-tool','basic',el('.inspector-rail'));await page('[data-adjustment-section=light] summary');const basic=el('.rail-tool[data-val=basic]');
+              assert(document.activeElement===basic&&el('[data-adjustment-section=whiteBalance]').open,'first section and rail focus');
+              tap('[data-adjustment-section=light] summary');
+              const slider=el('[data-key=ev]'), numeric=el('[data-adjustment=ev]');
+              assert(slider.getBoundingClientRect().top>numeric.getBoundingClientRect().bottom&&slider.getBoundingClientRect().width>numeric.getBoundingClientRect().width*2,'slider has its own wide row');
+              key(basic,'ArrowDown');await page('.curve-chart');assert(document.activeElement.dataset.val==='tones','keyboard navigates rail');
+              act('edit-tool','grading');await page('[data-key=warmHighlights]');
+              const base=el('.developed').style.filter;
+              set('[data-adjustment=warmHighlights]','35');const grade=el('.developed').style.filter;
+              assert(grade!==base,'numeric input applies grading');
+              set('[name=adjustmentEnabled][data-key=grading]',false);
+              assert(el('.developed').style.filter===base&&el('[data-key=warmHighlights]').matches(':disabled'),'toggle bypasses grading effects');
+              set('[name=adjustmentEnabled][data-key=grading]',true);
+              assert(el('.developed').style.filter===grade&&el('[data-key=warmHighlights]').value==='35','toggle preserves values');
+              act('edit-step','undo');act('edit-step','undo');act('edit-step','undo');
+              act('edit-tool','basic');await page('[data-key=ev]');
+              assert(el('[data-adjustment-section=light]').open,'right panel remembers disclosure');
             """)
             scenario("浮动工具条、邻片、裁切与参考对比", """
               const bar=el('.canvas-dock').getBoundingClientRect(),canvas=el('.canvas-panel').getBoundingClientRect();
               assert(bar.bottom<canvas.bottom&&bar.width<canvas.width&&Math.abs((bar.left+bar.right)-(canvas.left+canvas.right))<3,'floating dock centered');
               assert(el('[data-act=canvas-nav][data-val=previous]').disabled,'start of current group');
               el('[data-act=canvas-nav][data-val=next]').focus();assert(all('.neighbor-preview').filter(n=>n.checkVisibility()).length===1,'single adjacent preview');
-              act('canvas-nav','next');assert(!el('[data-key=filmAmount]'),'separate photo recipe');act('canvas-nav','next');
+              act('canvas-nav','next');assert(el('[data-key=filmAmount]').disabled,'separate photo recipe');act('canvas-nav','next');
               assert(el('[data-act=canvas-nav][data-val=next]').disabled,'end of group');key(el('#workspace'),'ArrowLeft');act('canvas-nav','previous');
               assert(el('[data-key=filmAmount]').value==='45','draft survives round trip');
               const width=el('.edit-image').getBoundingClientRect().width;act('edit-zoom','in');assert(el('.edit-image').getBoundingClientRect().width>width,'zoom in');
@@ -190,13 +231,13 @@ def main():
             """)
             scenario("调整、蒙版、裁切、候选采用与显式草稿导出", """
               act('photo','r1');act('multi');act('photo','b1');act('workflow','edit');await page('.edit-inspector');
-              act('edit-tool','basic');await page('[data-key=ev]');set('[data-key=ev]','0.5');act('edit-tool','masks');await page('[data-act=add-mask]');act('add-mask');
+              act('edit-tool','basic');await page('[data-adjustment-section=light] summary');if(!el('[data-adjustment-section=light]').open)tap('[data-adjustment-section=light] summary');set('[data-key=ev]','0.5');act('edit-tool','masks');await page('[data-act=add-mask]');act('add-mask');
               assert(el('.mask-mark'),'mask preview');act('edit-step','undo');assert(!el('.mask-mark'),'undo layer');
               act('edit-step','redo');act('canvas-crop');set('[name=crop]','1:1');act('canvas-crop');act('save-version');
               act('open-versions');await page('.version-row');
               assert(el('.version-row').textContent.includes('候选'),'saved independently');
               act('adopt',null,el('.version-row'));assert(el('.version-row').textContent.includes('当前采用'),'explicit adoption');
-              act('return-adjustments');await page('[data-act=add-mask]');act('edit-tool','basic');await page('[data-key=ev]');set('[data-key=ev]','0.75');
+              act('return-adjustments');await page('[data-act=add-mask]');act('edit-tool','basic');await page('[data-adjustment-section=light] summary');if(!el('[data-adjustment-section=light]').open)tap('[data-adjustment-section=light] summary');set('[data-key=ev]','0.75');
               act('workflow','export');assert(modal().open&&modal().textContent.includes('导出哪个版本'),'draft decision');
               act('export-choice','draft',modal());await page('#export-frame[src]');
               const f=el('#export-frame');await wait(()=>f.contentDocument?.querySelector('#selected')?.textContent==='2 / 2');
@@ -290,7 +331,8 @@ def main():
               assert(Math.abs(expanded.bottom-normal.bottom)<1&&Math.abs(middle.bottom-normal.bottom)<1,'bottom edge stays anchored');
               const prompt=()=>el('[name=quickPrompt]');
               assert(!el('.canvas-dock [data-act=canvas-nav]')&&document.activeElement===prompt(),'replace controls and focus text');
-              assert(el('#quick-scope').textContent==='整张照片'&&!el('.comparison-layer'),'explicit whole scope');
+              assert(el('#quick-scope').textContent==='整张照片'&&!el('.comparison-layer')&&el('[data-act=quick-whole]').getAttribute('aria-pressed')==='true','explicit whole scope');
+              assert(prompt().getBoundingClientRect().height>=108&&el('.quick-model').getBoundingClientRect().width<110,'large text surface and compact model');
               key(prompt(),'Escape',{isComposing:true});assert(el('#quick-prompt'),'composition owns Escape');
               key(prompt(),'b');assert(!el('.canvas-popover'),'typing does not cycle background');
               act('quick-template','remove');
@@ -300,7 +342,7 @@ def main():
               assert(prompt().value.includes('移除岸边路牌。')&&prompt().value.includes('保留水面倒影。'),'short phrase preserves draft');
               act('quick-draw');assert(el('.quick-gesture')&&el('[data-act=quick-submit]').disabled,'pending rectangle blocks generation');
               key(el('[data-act=quick-draw]'),'Escape');assert(!el('.quick-gesture')&&el('#quick-prompt'),'Escape exits only drawing');
-              el('.quick-menu[data-menu=scope]').open=true;act('quick-coordinates',null,el('#quick-prompt'));
+              el('.quick-menu[data-menu=selection]').open=true;act('quick-coordinates',null,el('#quick-prompt'));
               set('[name=w]','0');act('quick-set-coordinates',null,modal());
               assert(modal().open&&el('#quick-coord-error').textContent.includes('有效'),'invalid bounds keep waiting');
               set('[name=w]','38');set('[name=h]','24');act('quick-set-coordinates',null,modal());
@@ -333,7 +375,7 @@ def main():
                 await hash('edit/development');await page('#quick-prompt');
               }
               set('[name=quickPrompt]','将整张照片调为冷蓝色，保留构图与高光。');
-              el('.quick-menu[data-menu=scope]').open=true;act('quick-whole');
+              act('quick-whole');
               const count=()=>Studio.data.jobs.filter(j=>j.quickPrompt).length, before=count();
               Object.defineProperty(navigator,'onLine',{configurable:true,value:false});dispatchEvent(new Event('offline'));
               assert(el('[data-act=quick-submit]').disabled&&el('#quick-status').textContent.includes('离线'),'offline cloud block');
@@ -370,7 +412,7 @@ def main():
             scenario("快速 Prompt 已有蒙版、严格纪实和窄窗", """
               act('quick-close');await hash('edit/masks');await page('[data-act=add-mask]');act('add-mask');
               act('quick-open');await wait(()=>!el('.canvas-dock').classList.contains('quick-morphing'));
-              el('.quick-menu[data-menu=scope]').open=true;act('quick-mask',null,el('#quick-prompt'));act('quick-use-mask',null,modal());
+              el('.quick-menu[data-menu=selection]').open=true;act('quick-mask',null,el('#quick-prompt'));act('quick-use-mask',null,modal());
               assert(el('#quick-scope').textContent.includes('蒙版')&&el('.quick-outline').checkVisibility(),'confirmed mask scope');
               act('quick-close');await hash('edit/agent');conversation().strict=true;
               act('quick-open');assert(el('#quick-status').textContent.includes('严格纪实')&&el('[data-act=quick-submit]').disabled,'strict protect');

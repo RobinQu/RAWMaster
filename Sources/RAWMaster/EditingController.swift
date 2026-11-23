@@ -2210,7 +2210,7 @@ import RAWMasterAI
     }
     private func suspendDevelopmentInteraction(disposition: EditingGestureDisposition = .commit,
                                                preserveThumbnails: Bool = false) {
-        suspendedDevelopmentContext = developmentSessionStorage?.context
+        if let activeContext = developmentSessionStorage?.context { suspendedDevelopmentContext = activeContext }
         settledPreviewTask?.cancel(); settledPreviewTask = nil
         switch disposition {
         case .commit: finishDevelopmentNumberInput()
@@ -2443,6 +2443,12 @@ import RAWMasterAI
         }
         return nil
     }
+    func presetForHover(_ record: DevelopmentPresetRecord, context: EditingInteractionContext) -> DevelopmentPresetRecord? {
+        if sourceIssueForPreset(record, context: context) == nil { return record }
+        guard !record.blockingReasons.isEmpty, let subset = try? DevelopmentPresetExchange.subset(for: record),
+              sourceIssueForPreset(subset, context: context) == nil else { return nil }
+        return subset
+    }
     func previewDevelopmentPreset(_ record: DevelopmentPresetRecord, context: EditingInteractionContext, explicit: Bool = false,
                                   preparedMasks: [DevelopmentMaskLayerV3]? = nil) {
         guard record.patch.fullRecipe == nil || explicit else { cancelDevelopmentFilterHover(); return }
@@ -2452,11 +2458,17 @@ import RAWMasterAI
         }
         previewPresetCandidate(candidate, id: record.id, context: context, quality: explicit ? .settled : .interactive)
     }
+    func previewDevelopmentSnapshot(id: DevelopmentSnapshot.ID, context: EditingInteractionContext) {
+        guard developmentContext == context,
+              let snapshot = developmentSession.snapshots(in: context).first(where: { $0.id == id }) else { return }
+        previewPresetCandidate(snapshot.recipe, id: "snapshot." + id.uuidString, context: context, quality: .settled)
+    }
+
     private func previewPresetCandidate(_ hovered: DevelopmentRecipe, id: String, look: DevelopmentPhotoFilterV3? = nil,
                                         context: EditingInteractionContext, quality: PreviewQuality = .interactive) {
         guard developmentContext == context, developmentInterfaceActive, isPresented, sourceReady, stage == .development,
               !actualPixels, !comparing, !cropEditing, !developmentShowingOriginal,
-              !previewInteracting, developmentSession.activeGesture == nil else { return }
+              !quickPromptPresented, !previewInteracting, developmentSession.activeGesture == nil else { return }
         cancelDevelopmentFilterHover()
         let token = UUID(), baseRecipe = recipe, baseRevision = previews.primary.currentRevision
         let basePresentation = developmentPreviewPresentationID, sessionRevision = developmentSession.revision
@@ -2476,7 +2488,7 @@ import RAWMasterAI
                       self.developmentPreviewPresentationID == basePresentation,
                       self.developmentInterfaceActive, self.isPresented, self.sourceReady, !self.shuttingDown,
                       self.stage == .development, !self.actualPixels, !self.comparing, !self.cropEditing,
-                      !self.developmentShowingOriginal, !self.previewInteracting,
+                      !self.developmentShowingOriginal, !self.quickPromptPresented, !self.previewInteracting,
                       self.developmentSession.activeGesture == nil else { return }
                 self.filterHoverFrame = frame
             } catch { /* Latest hover or committed state wins. */ }
@@ -2671,8 +2683,8 @@ import RAWMasterAI
         let consumer=lensBlurDepthPreviewConsumer
         Task{await previews.primary.cancelDevelopmentFilterHover(consumer)}
     }
-    func cancelPresetHover() {
-        if hoveredPresetID != nil { cancelDevelopmentFilterHover() }
+    func cancelPresetHover(id: String? = nil) {
+        if let hoveredPresetID, id == nil || hoveredPresetID == id { cancelDevelopmentFilterHover() }
     }
     func cancelDevelopmentFilterHover() {
         filterHoverTask?.cancel(); filterHoverTask = nil; filterHoverToken = nil
@@ -3500,6 +3512,7 @@ import RAWMasterAI
         prepareDevelopmentSessionIfNeeded()
     }
     func suspendDevelopmentFocus() {
+        cancelPresetHover()
         finishDevelopmentNumberInput()
         developmentInterfaceActive = false
         let facts = developmentSourceFacts

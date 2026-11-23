@@ -46,7 +46,8 @@ final class EditingLayoutInteractionTests: XCTestCase {
         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
 
-        let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+        let fixture = try EditingWorkflowTests.Fixture(photoCount: 3); defer { fixture.clean() }
+        try fixture.store.createGroup(ids: fixture.assets.prefix(2).map(\.id), name: "两张测试组", kind: "连拍")
         let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults,
             editingPreviewBackend: PhotosDevelopmentBackend())
         model.selectScope(.project, id: fixture.assets[0].projectID)
@@ -58,6 +59,7 @@ final class EditingLayoutInteractionTests: XCTestCase {
             .frame(width: 1440, height: 900))
         let window = NSWindow(contentRect: .init(x: 0, y: 0, width: 1440, height: 900),
             styleMask: [.titled, .resizable], backing: .buffered, defer: false)
+        window.appearance = NSAppearance(named: .darkAqua)
         window.isReleasedWhenClosed = false; window.contentView = host
         defer {
             window.orderOut(nil); window.contentView = nil; window.close()
@@ -71,11 +73,9 @@ final class EditingLayoutInteractionTests: XCTestCase {
                 host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
                 let elements = accessibleElements(window)
                 let ids = elements.compactMap { axValue($0, "accessibilityIdentifier") as? String }
-                let filmstripPhoto = model.sequenceBrowserLayout.segments.contains { segment in
-                    segment.assets.contains { $0.id == fixture.assets[0].id }
-                }
+                let filmstripGroup = ids.contains(where: { $0.hasPrefix("browser.filmstrip.group.") })
                 return ids.contains("editing.darkroom") && ids.contains("editing.leftRail.filters")
-                    && filmstripPhoto && ids.contains("editing.beforeAfter") && ids.contains("editing.crop")
+                    && filmstripGroup && ids.contains("editing.filmstrip") && ids.contains("editing.beforeAfter") && ids.contains("editing.crop")
                     && !ids.contains("photos.tool.裁切与拉直")
             }
         } catch {
@@ -90,6 +90,29 @@ final class EditingLayoutInteractionTests: XCTestCase {
             await editing.shutdown()
             throw error
         }
+        func element(_ identifier: String) -> NSObject? {
+            accessibleElements(window).first { axValue($0, "accessibilityIdentifier") as? String == identifier }
+        }
+        try await wait {
+            editing.developmentSession.expandedGroups.contains(.whiteBalance) && element("photos.light.disclosure") != nil
+        }
+        try press(try XCTUnwrap(element("photos.light.disclosure")))
+        try await wait { element("photos.light.exposure") != nil && element("photos.light.exposure.number") != nil }
+        var context = try XCTUnwrap(editing.developmentContext)
+        try press(try XCTUnwrap(element("editing.leftRail.filters")))
+        _ = try editing.developmentSession.createSnapshot(name: "基底", context: context)
+        let snapshot = try editing.developmentSession.createSnapshot(name: "复核", context: context)
+        let snapshotID = "editing.snapshot." + snapshot.id.uuidString
+        try await wait {
+            host.layoutSubtreeIfNeeded()
+            return element(snapshotID) != nil
+        }
+        NotificationCenter.default.post(name: NSWindow.didResignKeyNotification, object: window)
+        try await wait { editing.developmentContext == nil && element(snapshotID) != nil }
+        NotificationCenter.default.post(name: NSWindow.didBecomeKeyNotification, object: window)
+        try await wait { editing.developmentContext != nil }
+        context = try XCTUnwrap(editing.developmentContext)
+
         if ProcessInfo.processInfo.environment["RAWMASTER_CAPTURE_LAYOUT"] == "1",
            let bitmap = host.bitmapImageRepForCachingDisplay(in: host.bounds) {
             host.cacheDisplay(in: host.bounds, to: bitmap)
@@ -97,6 +120,24 @@ final class EditingLayoutInteractionTests: XCTestCase {
                 try? data.write(to: URL(fileURLWithPath: "output/tools/diagnostics/darkroom-layout-current.png"))
             }
         }
+
+        try press(try XCTUnwrap(element("photos.tool.分级")))
+        try await wait {
+            editing.developmentSession.expandedSections.contains("grading") && element("photos.grading.enabled") != nil
+        }
+        try editing.updateDevelopmentLegacy(context: context, control: "test.grading") { basis in
+            var color = basis.color ?? .init()
+            color.grading.global.saturation = 30
+            basis.color = color
+        }
+        let gradeToggle = try XCTUnwrap(element("photos.grading.enabled"))
+        try press(gradeToggle)
+        try await wait { editing.developmentLegacyBasis.color?.grading.isEnabled == false }
+        XCTAssertEqual(editing.developmentLegacyBasis.color?.grading.global.saturation, 30)
+        try press(try XCTUnwrap(element("photos.grading.enabled")))
+        XCTAssertEqual(editing.developmentLegacyBasis.color?.grading.isEnabled, true)
+        try press(try XCTUnwrap(element("photos.tool.基础")))
+        try await wait { element("photos.light.exposure") != nil }
 
         let curvesTab = try XCTUnwrap(accessibleElements(window).first {
             axValue($0, "accessibilityIdentifier") as? String == "photos.tool.曲线"

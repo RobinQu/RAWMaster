@@ -92,17 +92,50 @@
   align-items: center;
   gap: 3px;
 }
-.preset-item > button:first-child {
+.preset-item:has(.sidebar-row:hover),
+.preset-item:has(.sidebar-row:focus-visible) {
+  background: var(--inset);
+  border-radius: 6px;
+}
+.sidebar-row {
   justify-content: flex-start;
   flex: 1;
   min-width: 0;
-  padding: 5px 6px;
+  min-height: 27px;
+  overflow: hidden;
+  padding: 4px 5px;
   background: transparent;
   border-color: transparent;
+  white-space: nowrap;
+  font-size: 12px;
 }
-.preset-item > button.current {
+.sidebar-row.current {
   color: var(--accent);
   background: var(--active);
+}
+.snapshot-menu {
+  position: relative;
+  flex: none;
+}
+.snapshot-menu summary {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  list-style: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.snapshot-menu > div {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 3px;
+  display: grid;
+  width: max-content;
 }
 .edit-left .field {
   grid-template-columns: auto 1fr;
@@ -115,37 +148,34 @@
   width: auto;
   font-size: 12px;
 }
-.filter-gallery {
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-}
-.filter-gallery h3 {
-  font-size: 13px;
-}
-.film-kind {
+.filter-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 7px;
-  font-size: 12px;
 }
-.filter-gallery small {
-  color: var(--muted);
+.preset-directory > .preset-folder {
+  padding: 6px 0;
+  border-top: 1px solid var(--line);
 }
-.film-choices {
-  margin-top: 4px;
-}
-.preset-folder {
-  margin: 9px 0;
+.preset-children {
+  padding-left: 10px;
 }
 .preset-folder summary {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  list-style: none;
   cursor: pointer;
   font-size: 12px;
   color: var(--muted);
   padding: 3px 0;
 }
-.film-choices [data-act='film-stock'][aria-pressed='true'] {
-  color: var(--accent);
+.preset-folder[open] > summary > .icon:first-child,
+.adjustment-section details[open] > summary > .icon {
+  transform: rotate(90deg);
+}
+.preset-folder summary small {
+  margin-left: auto;
 }
 .adaptive-mask-proof {
   position: relative;
@@ -166,7 +196,62 @@
   border-radius: 0;
 }
 .film-strength .range {
-  margin: 10px 0 0;
+  margin: 6px 0 0;
+}
+.film-strength {
+  margin-bottom: 7px;
+}
+.adjustment-section {
+  position: relative;
+  border-top: 1px solid var(--line);
+}
+.adjustment-section summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding-right: 40px;
+  list-style: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+.adjustment-section fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.adjustment-section fieldset:disabled {
+  opacity: .54;
+}
+.adjustment-section [role='switch'] {
+  appearance: none;
+  position: absolute;
+  right: 1px;
+  top: 10px;
+  width: 29px;
+  height: 16px;
+  margin: 0;
+  border-radius: 9px;
+  background: var(--inset);
+  border: 1px solid var(--muted);
+  cursor: pointer;
+}
+.adjustment-section [role='switch']::before {
+  content: '';
+  position: absolute;
+  inset: 2px auto 2px 2px;
+  width: 10px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.adjustment-section [role='switch']:checked {
+  border-color: var(--accent);
+  background: var(--active);
+}
+.adjustment-section [role='switch']:checked::before {
+  background: var(--accent);
+  transform: translateX(13px);
 }
 .edit-history {
   list-style: none;
@@ -311,6 +396,21 @@
 }
 .version-row small {
   font-size: 11px;
+}
+.edit-center {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  gap: 6px;
+}
+.edit-center > .canvas-panel {
+  flex: 1;
+}
+.edit-center > .filmstrip {
+  flex: none;
+  border-top: 1px solid color-mix(in srgb, var(--line), transparent 25%);
+  --inset: var(--panel);
 }
 .canvas-panel {
   min-width: 0;
@@ -562,8 +662,11 @@ body[data-route^='edit/'] .toast {
     gap: 8px;
     overflow: auto;
   }
-  .canvas-panel {
+  .edit-center {
     order: 0;
+    flex: none;
+  }
+  .edit-center > .canvas-panel {
     flex: none;
     height: clamp(230px, 44svh, 460px);
   }

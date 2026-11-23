@@ -11,20 +11,20 @@ final class EditingWorkflowTests: XCTestCase {
     struct Fixture {
         let root: URL, library: URL, store: LibraryStore, defaults: UserDefaults
         let assets: [AssetRecord]
-        init() throws {
+        init(photoCount: Int = 2) throws {
             root = FileManager.default.temporaryDirectory.appendingPathComponent("NativeEditing-" + UUID().uuidString)
             library = root.appendingPathComponent("library.sqlite")
             let originals = root.appendingPathComponent("originals")
             try FileManager.default.createDirectory(at: originals, withIntermediateDirectories: true)
             store = try LibraryStore(databaseURL: library)
             let project = ProjectRecord(name: "Native Editing QA"); try store.saveProject(project)
-            let session = ImportSession(projectID: project.id, projectName: project.name, sourcePath: originals.path, mode: .reference, status: "completed", discovered: 2, completed: 2, scanCompleted: true)
+            let session = ImportSession(projectID: project.id, projectName: project.name, sourcePath: originals.path, mode: .reference, status: "completed", discovered: photoCount, completed: photoCount, scanCompleted: true)
             try store.saveSession(session)
             var registered: [AssetRecord] = []
-            for index in 0..<2 {
+            for index in 0..<photoCount {
                 let url = originals.appendingPathComponent("QA-\(index).png")
                 let context = CGContext(data: nil, width: 120, height: 80, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
-                context.setFillColor(CGColor(red: index == 0 ? 0.35 : 0.7, green: 0.4, blue: 0.5, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: 120, height: 80))
+                context.setFillColor(CGColor(red: index == 0 ? 0.35 : 0.7, green: 0.4 + 0.1 * Double(max(0, index - 1)), blue: 0.5, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: 120, height: 80))
                 let destination = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil)!
                 CGImageDestinationAddImage(destination, context.makeImage()!, nil); XCTAssertTrue(CGImageDestinationFinalize(destination))
                 let bytes = try Data(contentsOf: url)
