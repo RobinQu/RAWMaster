@@ -171,28 +171,41 @@ struct QuickPromptDock<CanvasControls: View>: View {
     }
 
     private var templates: some View {
-        HStack(spacing: 6) {
-            ScrollView(.horizontal) {
-                HStack(spacing: 5) {
-                    ForEach(Self.templates.prefix(4)) { item in
-                        Button { insert(item) } label: {
-                            Text(item.title).font(.system(size: 11, weight: .medium))
-                                .padding(.horizontal, 9).frame(height: 25)
-                                .background(Color.primary.opacity(0.07), in: Capsule())
-                                .contentShape(Capsule())
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityIdentifier("editing.quickPrompt.template." + item.id)
-                    }
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 6) {
+                templateChips
+                moreTemplates
+            }.fixedSize(horizontal: true, vertical: false)
+            HStack(spacing: 6) {
+                ScrollView(.horizontal) { templateChips }
+                    .scrollIndicators(.hidden)
+                moreTemplates
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 27)
+    }
+
+    private var templateChips: some View {
+        HStack(spacing: 5) {
+            ForEach(Self.templates.prefix(4)) { item in
+                Button { insert(item) } label: {
+                    Text(item.title).font(.system(size: 11, weight: .medium))
+                        .padding(.horizontal, 9).frame(height: 25)
+                        .background(Color.primary.opacity(0.07), in: Capsule())
+                        .contentShape(Capsule())
                 }
-                .fixedSize(horizontal: true, vertical: false)
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("editing.quickPrompt.template." + item.id)
             }
-            .scrollIndicators(.hidden)
-            Menu("更多短句") {
-                ForEach(Self.templates.dropFirst(4)) { item in Button(item.title) { insert(item) } }
-            }
-            .menuStyle(.borderlessButton).fixedSize()
-        }.frame(height: 27)
+        }.fixedSize(horizontal: true, vertical: false)
+    }
+
+    private var moreTemplates: some View {
+        Menu("更多短句") {
+            ForEach(Self.templates.dropFirst(4)) { item in Button(item.title) { insert(item) } }
+        }
+        .menuStyle(.borderlessButton).fixedSize()
     }
 
     private var selectionActions: some View {
