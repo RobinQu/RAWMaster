@@ -232,14 +232,13 @@ import RAWMasterCore
     func testImportedPresetPreviewsMappedFieldsWithoutCommitting() async throws {
         let fixture = try EditingWorkflowTests.Fixture()
         defer { fixture.clean() }
-        let backend = PhotosDevelopmentBackend()
-        let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: backend)
+        let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
         app.selectScope(.project, id: fixture.assets[0].projectID)
         app.select(fixture.assets[0]); app.setMode(.single); app.openNativeEditing()
         let editing = try XCTUnwrap(app.editing)
         try await eventually("The photo must admit native adjustment previews") {
             if editing.work != nil && editing.developmentContext == nil { editing.beginDevelopmentInterface() }
-            return editing.developmentContext != nil
+            return editing.developmentContext != nil && editing.previews.primary.frame?.quality == .settled
         }
         let context = try XCTUnwrap(editing.developmentContext)
         let catalog = DevelopmentPresetCatalog(root: fixture.root.appendingPathComponent("hover-presets"))
@@ -256,10 +255,20 @@ import RAWMasterCore
         XCTAssertFalse(row.blockingReasons.isEmpty)
         let preview = try XCTUnwrap(editing.presetForHover(row, context: context))
         let before = editing.recipe, entries = editing.developmentSession.history.entryCount
+        func red(_ image: NSImage) throws -> CGFloat {
+            let cgImage = try XCTUnwrap(image.cgImage(forProposedRect: nil, context: nil, hints: nil))
+            let bitmap = NSBitmapImageRep(cgImage: cgImage)
+            let color = try XCTUnwrap(bitmap.colorAt(x: cgImage.width / 2, y: cgImage.height / 2)?.usingColorSpace(.sRGB))
+            return color.redComponent
+        }
+        let committed = try XCTUnwrap(editing.previews.primary.frame)
+        let baseRed = try red(committed.image)
         editing.previewDevelopmentPreset(preview, context: context, explicit: true)
         try await eventually("Imported XMP should reach the temporary canvas") { editing.filterHoverFrame != nil }
-        let requests = await backend.renderRequests
-        XCTAssertTrue(requests.contains { $0.recipe.adjustmentsV3?.light.exposure == 0.5 && $0.quality == .settled })
+        let displayed = try XCTUnwrap(editing.filterHoverFrame)
+        XCTAssertEqual(displayed.quality, .settled)
+        XCTAssertGreaterThan(try red(displayed.image), baseRed + 0.01)
+        XCTAssertEqual(editing.previews.primary.frame?.id, committed.id)
         XCTAssertEqual(editing.recipe, before)
         XCTAssertEqual(editing.developmentSession.history.entryCount, entries)
         editing.cancelPresetHover(id: row.id)

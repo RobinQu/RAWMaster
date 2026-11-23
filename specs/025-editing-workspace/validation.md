@@ -35,7 +35,7 @@
 [浏览器走查和截图](prototype-review.md#胶片带与调整面板) · [原生胶片带窗口截图](evidence/filmstrip-native.webp)
 
 - **胶片带。** 原生暗房窗口挂载两张组片和一张散片。组名与收起按钮位于首张左侧，三张缩略图上沿和中心对齐。资料库与暗房共用胶片带组件。组模型回归覆盖原顺序、续段、折叠与 RAW+JPEG 伴随文件。 [窗口用例](../../Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift) · [分组模型用例](../../Tests/RAWMasterUITests/SequenceBrowserLayoutTests.swift)
-- **滤镜与快照。** 测试从 XMP 导入包含曝光及未知字段的预设。可用曝光进入临时渲染请求，离开清除该帧，配方和历史未写入。对照片创建两条快照后，原生窗口的失焦通知撤销写入上下文，列表仍可读取。调曝光后试看和恢复快照，确认恢复可撤销。[预设原生用例](../../Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift) · [快照用例](../../Tests/RAWMasterUITests/EditingSnapshotTests.swift)
+- **滤镜与快照。** 测试从 XMP 导入包含曝光及未知字段的预设。临时图像经原生成像链路渲染，中心采样的红通道随曝光上升。离开清除该帧，主图版本、配方和历史保持原值。对照片创建两条快照后，原生窗口的失焦通知撤销写入上下文，列表仍可读取。调曝光后试看和恢复快照，确认恢复可撤销。[预设原生用例](../../Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift) · [快照用例](../../Tests/RAWMasterUITests/EditingSnapshotTests.swift)
 - **右栏。** 展开光效时，曝光数值框和滑块各自可达。切换分级并再次返回，光效保持打开。关闭和打开分级均保留色轮强度。颜色引擎测试用浮点像素对照启用、停用及归档重读。[窗口用例](../../Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift) · [引擎用例](../../Tests/RAWMasterImagingTests/DevelopmentColorEngineV2Tests.swift)
 - **快速 Prompt。** 原生窗口打开输入条、切换圈选与全图，再收起并检查底部画布动作。生成、云端预检、候选和撤销沿用可控提供者回归。[Prompt 验证记录](../034-quick-prompt-editing/native-validation.md)
 
