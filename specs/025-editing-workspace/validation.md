@@ -39,4 +39,4 @@
 - **右栏。** 展开光效时，曝光数值框和滑块各自可达。切换分级并再次返回，光效保持打开。关闭和打开分级均保留色轮强度。颜色引擎测试用浮点像素对照启用、停用及归档重读。[窗口用例](../../Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift) · [引擎用例](../../Tests/RAWMasterImagingTests/DevelopmentColorEngineV2Tests.swift)
 - **快速 Prompt。** 原生窗口打开输入条、切换圈选与全图，再收起并检查底部画布动作。生成、云端预检、候选和撤销沿用可控提供者回归。[Prompt 验证记录](../034-quick-prompt-editing/native-validation.md)
 
-工作台浏览器 22 组通过。原生定向 Swift 测试选中 96 项，93 项通过，3 项需要本机冻结 XMP 夹具而跳过。
+工作台浏览器 22 组通过。原生定向 Swift 测试共 96 项通过，其中 3 项通过 `RAWMASTER_CHECK_ADOBE_PRESET_FIXTURE=1` 补跑，覆盖本机 78 条 XMP、冻结导入重放、源文件变化和景深参数映射。
