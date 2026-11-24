@@ -40,3 +40,11 @@
 - **快速 Prompt。** 原生窗口打开输入条、切换圈选与全图，再收起并检查底部画布动作。生成、云端预检、候选和撤销沿用可控提供者回归。[Prompt 验证记录](../034-quick-prompt-editing/native-validation.md)
 
 工作台浏览器 22 组通过。原生定向 Swift 测试共 96 项通过，其中 3 项通过 `RAWMASTER_CHECK_ADOBE_PRESET_FIXTURE=1` 补跑，覆盖本机 78 条 XMP、冻结导入重放、源文件变化和景深参数映射。
+
+## 2026-11-25 · 合并后的原生复验
+
+[完整走查、合并提交与逐套日志](prototype-review.md#2026-11-25--合并后的复验)
+
+- 合并 `codex/editing-ui-polish` 与 `codex/portable-processing-acceptance` 后重建 Release。两次干净浏览器走查各 37 组通过；原生 `EditingLayoutInteractionTests`、`EditingSnapshotTests`、`EditingWorkflowTests`、`PresetMaskEntryPointTests`、`SequenceBrowserLayoutTests`、`DevelopmentColorEngineV2Tests`、`QuickPromptProviderTests`、`EditingMaskCanvasOwnershipTests` 共 48 项执行、0 失败，其中 1 项按模型包条件跳过。
+- 右栏展开偏好、快照试看与失焦、胶片带折叠和离线找回仍由原窗口用例覆盖。目录任务租约、Prompt 归档与渲染导出沿用可移植处理批次的路径，本轮没有新增可见界面改动。
+- 原始日志：`output/acceptance/editing-ui-merge-20261125/`。Release 应用 `f2bbe0c3…`，UI 测试 `cbd440cb…`。

@@ -39,3 +39,14 @@
 | [暗房画布](../../docs/ui/prototype/index.html#edit/development) → Prompt | 初始焦点在大输入区。用短句补充已有文字。点圈选，Escape 退出拖框，再从更多圈选操作通过键盘输入坐标。无效范围提示修正。点击全图恢复默认。以窄窗确认模型、生成、关闭可触达。 |
 
 Chrome 的样片预览用 CSS 模拟色调。快速 Prompt 的生成和出站确认使用示例任务；对应原生效果、窗口焦点与交互见[原生验证](validation.md)。
+
+## 2026-11-25 · 合并后的复验
+
+`codex/editing-ui-polish` 与 `codex/portable-processing-acceptance` 合并到 `main` 后，用同一合并树的 Release 重跑浏览器走查与原生定向用例，确认两边的改动互不覆盖。
+
+- 合并提交 `1b8ac88b`，基线 `1b7df6b6`。Release 应用 `f2bbe0c3…`、UI 测试 `cbd440cb…`、成像测试 `c5c25779…`、Prompt 测试 `90910d82…`。
+- 浏览器：工作台 37 组场景全部通过，含资料库胶片带折叠与离线找回、暗房右栏展开与启停、快照试看与失焦、快速 Prompt 的窄窗、键盘和浅色。原始日志 `output/acceptance/editing-ui-merge-20261125/prototype-full*.log`。
+- 并行构建时的首轮在「导入、续接、分组、初筛封存与历史恢复」的导入历史路由超时；同一脚本在无构建争用后连续两轮 37 组通过。首轮保留，不把构建争用计为界面回归。
+- 原生定向：`EditingLayoutInteractionTests` 2、`EditingSnapshotTests` 1、`EditingWorkflowTests` 15、`PresetMaskEntryPointTests` 5、`SequenceBrowserLayoutTests` 11、`DevelopmentColorEngineV2Tests` 7、`QuickPromptProviderTests` 5、`EditingMaskCanvasOwnershipTests` 2（1 项按模型包条件跳过）。共 48 项执行、0 失败。逐套日志在同一目录。
+
+两分支重叠的 `EditingController.swift`、`coverage.md`、`photos.js` 与回归脚本按双方改动共同保留：目录任务租约和 Prompt 归档路径来自可移植处理批次，右栏展开、快照试看和胶片带来自界面批次。文档索引 `build_report.py --check`、`build_performance_report.py --check --require-complete` 与 `verify-acceptance.py` 在合并树上通过。
