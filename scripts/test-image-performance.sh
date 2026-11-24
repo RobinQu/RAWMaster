@@ -7,6 +7,7 @@ source_dir=""
 operator_source=""
 report_dir=""
 baseline_dir=""
+prebuilt_test_dir=""
 measure_only=0
 background_only=0
 while (( $# > 0 )); do
@@ -15,9 +16,10 @@ while (( $# > 0 )); do
     --operator-source) operator_source="$2"; shift 2 ;;
     --output) report_dir="$2"; shift 2 ;;
     --baseline-dir) baseline_dir="$2"; shift 2 ;;
+    --test-products-dir) prebuilt_test_dir="$2"; shift 2 ;;
     --measure-only) measure_only=1; shift ;;
     --background) background_only=1; shift ;;
-    *) print -u2 'Usage: scripts/test-image-performance.sh --source RAW_DIRECTORY [--operator-source FILE] [--output DIRECTORY] [--baseline-dir PREVIOUS_REPORTS] [--measure-only] [--background]'; exit 2 ;;
+    *) print -u2 'Usage: scripts/test-image-performance.sh --source RAW_DIRECTORY [--operator-source FILE] [--output DIRECTORY] [--baseline-dir PREVIOUS_REPORTS] [--test-products-dir FROZEN_RELEASE_DIRECTORY] [--measure-only] [--background]'; exit 2 ;;
   esac
 done
 if [[ -z "$source_dir" || ! -d "$source_dir" ]]; then
@@ -62,15 +64,25 @@ fi
 ui_gate=1
 phase=regression
 if (( measure_only )); then ui_gate=0; phase=baseline; fi
-perf_build_path="${RAWMASTER_PERF_BUILD_PATH:-$project_root/.build}"
-swift build --scratch-path "$perf_build_path" --configuration release --build-tests -Xswiftc -enable-testing --jobs 4
+if [[ -n "$prebuilt_test_dir" ]]; then
+  source_products="${prebuilt_test_dir:A}"
+else
+  perf_build_path="${RAWMASTER_PERF_BUILD_PATH:-$project_root/.build}"
+  swift build --scratch-path "$perf_build_path" --configuration release --build-tests -Xswiftc -enable-testing --jobs 4
+  source_products="$perf_build_path/release"
+fi
 # Freeze the executable and its bundled models once. Every stage in this report
 # uses those same bytes even when another development build finishes meanwhile.
 xctest_executable="$(xcrun --find xctest)"
 test_products="$report_dir/test-products"
 mkdir "$test_products"
 for test_module in RAWMasterImagingTests RAWMasterUITests; do
-  ditto "$perf_build_path/release/$test_module.xctest" "$test_products/$test_module.xctest"
+  bundle="$source_products/$test_module.xctest"
+  if [[ ! -x "$bundle/Contents/MacOS/$test_module" ]]; then
+    print -u2 "Missing test executable for $test_module in $source_products"
+    exit 2
+  fi
+  ditto "$bundle" "$test_products/$test_module.xctest"
 done
 python3 - "$test_products" "$report_dir/test-build.json" "$RAWMASTER_FLASHRAW_LIBRARY" <<'PYINFO'
 import hashlib,json,platform,sys
@@ -82,10 +94,13 @@ def digest_file(path):
         for block in iter(lambda:source.read(1<<20),b""): digest.update(block)
         return digest.hexdigest()
 digests = {}
+runtimes = {}
 for p in sorted(products.glob("*.xctest")):
     digests[p.stem] = digest_file(p/"Contents"/"MacOS"/p.stem)
+    runtimes[p.stem] = {str(runtime.relative_to(p)): digest_file(runtime)
+                        for runtime in sorted((p/"Contents"/"Resources").rglob("*.runtime"))}
 report.write_text(json.dumps({"build":"Release","system":platform.platform(),"testBinariesSHA256":digests,
-    "flashRawLibrarySHA256":digest_file(flashraw)},indent=2)+"\n")
+    "bundledRuntimesSHA256":runtimes,"flashRawLibrarySHA256":digest_file(flashraw)},indent=2)+"\n")
 PYINFO
 failures=()
 if (( ! background_only )); then
@@ -129,6 +144,18 @@ else
   fi
 fi
 python3 scripts/check-control-performance.py "${control_args[@]}" || failures+=(control-comparison)
+if [[ -n "${RAWMASTER_PERF_CAMERA_JPEG:-}" ]]; then
+  print 'Measuring the rendered-file temperature, photographic denoise and device-depth controls…'
+  RAWMASTER_RENDERED_CONTROL_IMAGE="$RAWMASTER_PERF_CAMERA_JPEG" \
+  RAWMASTER_RENDERED_CONTROL_REPORT="$report_dir/rendered-controls.json" RAWMASTER_CONTROL_SAMPLES=20 \
+    python3 scripts/run-performance-command.py --timeout 600 --log "$report_dir/rendered-controls.log" -- \
+    "$xctest_executable" -XCTest "RAWMasterImagingTests.RenderedFileControlPerformanceTests" "$test_products/RAWMasterImagingTests.xctest" || failures+=(rendered-controls)
+  rendered_args=("$report_dir/rendered-controls.json" --output "$report_dir/rendered-controls-comparison.json")
+  if [[ -n "$baseline_dir" && -f "${baseline_dir:A}/rendered-controls.json" ]]; then
+    rendered_args+=(--baseline "${baseline_dir:A}/rendered-controls.json")
+  fi
+  python3 scripts/check-rendered-control-performance.py "${rendered_args[@]}" || failures+=(rendered-controls-comparison)
+fi
 print 'Measuring complete sRGB display readback for repeated edits and 20 distinct slider values…'
 RAWMASTER_PAIRED_READBACK_RAW="$raw_source" RAWMASTER_PAIRED_READBACK_REPORT="$report_dir/display-readback.json" \
   python3 scripts/run-performance-command.py --timeout 180 --log "$report_dir/display-readback.log" -- \

@@ -97,7 +97,7 @@ fn capture_inputs(
             entry["exposureSeconds"] =
                 entry["asset"]["sequenceFrameEvidence"]["exposureSeconds"].clone();
         }
-        if db.execute("UPDATE lc_proc_jobs SET lease_until=?3 WHERE job_id=?1 AND token=?2 AND state='preparing'",params![jid,token,time()?+300])?!=1{return Err("Rendering attempt was superseded".into());}
+        if db.execute("UPDATE lc_proc_jobs SET lease_until=?3 WHERE job_id=?1 AND token=?2 AND state='preparing' AND lease_until>unixepoch()",params![jid,token,time()?+300])?!=1{return Err("Rendering attempt was superseded".into());}
     }
     Ok(input)
 }
@@ -110,7 +110,13 @@ pub(super) fn claim(catalog: &Path, db: &mut Connection, r: &Value) -> Result<Va
     if let Some(old) = j["token"].as_str() {
         let old_dir = attempt_dir(catalog, &jid, old)?;
         if j["state"] == "rendering" && old_dir.join("receipt.json").is_file() {
-            return checkpoint(catalog, db, &json!({"jobID":jid,"token":old}));
+            // A fresh claim can reconcile a committed on-disk receipt left by a dead worker.
+            // The old worker's own checkpoint call always requires a live lease.
+            let recovered = checkpoint_output(catalog, db, &json!({"jobID":jid,"token":old}), true);
+            if recovered.is_ok() || j["leaseUntil"].as_i64().unwrap_or(0) > time()? {
+                return recovered;
+            }
+            // An invalid abandoned marker must not strand a replayable local job.
         }
     }
     let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
@@ -158,7 +164,7 @@ pub(super) fn claim(catalog: &Path, db: &mut Connection, r: &Value) -> Result<Va
         }
     };
     let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
-    if tx.execute("UPDATE lc_proc_jobs SET state='rendering',lease_until=?3 WHERE job_id=?1 AND token=?2 AND state='preparing'",params![jid,token,time()?+300])?!=1{return Err("Rendering attempt was cancelled".into());}
+    if tx.execute("UPDATE lc_proc_jobs SET state='rendering',lease_until=?3 WHERE job_id=?1 AND token=?2 AND state='preparing' AND lease_until>unixepoch()",params![jid,token,time()?+300])?!=1{return Err("Rendering attempt was cancelled".into());}
     tx.execute(
         "UPDATE lc_proc_attempts SET state='rendering' WHERE job_id=?1 AND attempt=?2",
         params![jid, attempt],
@@ -171,6 +177,15 @@ pub(super) fn claim(catalog: &Path, db: &mut Connection, r: &Value) -> Result<Va
     Ok(result)
 }
 pub(super) fn checkpoint(catalog: &Path, db: &mut Connection, r: &Value) -> Result<Value> {
+    checkpoint_output(catalog, db, r, false)
+}
+
+fn checkpoint_output(
+    catalog: &Path,
+    db: &mut Connection,
+    r: &Value,
+    recover_marker: bool,
+) -> Result<Value> {
     let jid = job_id(r)?;
     let token = required(r, "token")?;
     let job = status(db, &jid)?;
@@ -185,7 +200,9 @@ pub(super) fn checkpoint(catalog: &Path, db: &mut Connection, r: &Value) -> Resu
         }
         return Ok(job);
     }
-    if job["state"] != "rendering" {
+    if job["state"] != "rendering"
+        || (!recover_marker && job["leaseUntil"].as_i64().unwrap_or(0) <= time()?)
+    {
         return Err("Attempt no longer accepts an output".into());
     }
     let dir = attempt_dir(catalog, &jid, token)?;
@@ -285,6 +302,10 @@ pub(super) fn checkpoint(catalog: &Path, db: &mut Connection, r: &Value) -> Resu
         return Err("Attempt changed before storing output".into());
     }
     if latest["state"] == "rendering" {
+        // Check the deadline again after reading the full media and waiting for the write lock.
+        if !recover_marker && latest["leaseUntil"].as_i64().unwrap_or(0) <= time()? {
+            return Err("Rendering lease expired before publication".into());
+        }
         resources::register(&tx, &resource)?;
         tx.execute("UPDATE lc_proc_jobs SET state='staged',receipt_json=?2,resource_id=?3,lease_until=NULL WHERE job_id=?1",params![jid,receipt.to_string(),resource.resource_id])?;
         tx.execute(
@@ -304,15 +325,20 @@ pub(super) fn stop(db: &mut Connection, r: &Value, cancel: bool) -> Result<Value
     let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
     let job = status(&tx, &jid)?;
     let state = if cancel { "cancelled" } else { "failed" };
+    if job["token"].as_str() != r["token"].as_str() {
+        return Err("Attempt token changed".into());
+    }
+    if matches!(job["state"].as_str(), Some("rendering" | "preparing"))
+        && job["leaseUntil"].as_i64().unwrap_or(0) <= time()?
+    {
+        return Err("Rendering lease expired".into());
+    }
     if job["state"] == state {
         tx.commit()?;
         return Ok(job);
     }
     if matches!(job["state"].as_str(), Some("published" | "staged")) {
         return Err("Verified output is already staged or published".into());
-    }
-    if job["token"].as_str() != r["token"].as_str() {
-        return Err("Attempt token changed".into());
     }
     let detail = r["detail"].as_str().unwrap_or(if cancel {
         "Cancelled by user"

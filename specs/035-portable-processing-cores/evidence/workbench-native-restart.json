@@ -1,0 +1,363 @@
+{
+  "status": "passed",
+  "build": "1f1752218a5d32416584012aaeaee8a1c6328e21c54572273be95a18992766eb",
+  "restarts": {
+    "beforePrepare": {
+      "batchID": "03f9a001-4cd2-41b4-b161-6448df53601c",
+      "firstInodePreserved": true,
+      "generation": 2,
+      "initialCheckpoint": "71457 beforePrepare",
+      "outputs": {
+        "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+        "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+        "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+      },
+      "postPublicationInodePreserved": false,
+      "rejectedReplacementDirectory": true,
+      "relocationCheckedAgainstSource": false,
+      "selectionPreserved": true,
+      "status": "passed",
+      "versionIDs": [
+        "E68F0257-2F85-47FD-97B0-3D1DC543C2AD",
+        "A0984CF9-27F9-42C1-AFCB-40322913A400",
+        "B78F13C3-7131-4A09-A122-DE397AA0508D"
+      ],
+      "initialFiles": [
+        "station.v2-0.edit-0001.jpg"
+      ]
+    },
+    "prepared": {
+      "batchID": "165443a1-4799-4cdb-976b-35e2e3487380",
+      "firstInodePreserved": true,
+      "generation": 2,
+      "initialCheckpoint": "71549 prepared",
+      "outputs": {
+        "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+        "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+        "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+      },
+      "postPublicationInodePreserved": false,
+      "rejectedReplacementDirectory": true,
+      "relocationCheckedAgainstSource": false,
+      "selectionPreserved": true,
+      "status": "passed",
+      "versionIDs": [
+        "6A6728DB-A702-4BCA-8015-87538EDA05D1",
+        "17B849A2-B47B-44B1-8EB4-269C2F830D7F",
+        "9DF54D01-BCA8-45F3-B408-21E19C7DDC01"
+      ],
+      "initialFiles": [
+        "station.v2-0.edit-0001.jpg"
+      ]
+    },
+    "published": {
+      "batchID": "6a159c29-22e3-4373-be38-5fb189f1edd8",
+      "firstInodePreserved": true,
+      "generation": 3,
+      "initialCheckpoint": "71598 published",
+      "outputs": {
+        "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+        "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+        "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+      },
+      "postPublicationInodePreserved": true,
+      "rejectedReplacementDirectory": true,
+      "relocationCheckedAgainstSource": true,
+      "selectionPreserved": true,
+      "status": "passed",
+      "versionIDs": [
+        "CE0FA237-EBF7-4EBA-A688-5D8105F25000",
+        "86892576-5346-4EBD-BBD1-933C33A18777",
+        "5F333B98-2842-4737-BEB5-BAC8792447D3"
+      ],
+      "initialFiles": [
+        "station.v2-0.edit-0001.jpg",
+        "station.v2-1.edit-0002.jpg"
+      ]
+    }
+  },
+  "products": "candidate-batch4",
+  "worktreeEvidence": "output/035-development/workbench-restart-batch4",
+  "nativeTargetedTestsPassed": 12,
+  "inlineBatch5": {
+    "status": "passed",
+    "build": "d753019a0753ea8846a24502a75f352c492427a144f6b00be00db84b93f65929",
+    "restarts": {
+      "beforePrepare": {
+        "batchID": "361e1346-b27c-4c96-abfc-c5d20e7448ec",
+        "firstInodePreserved": true,
+        "generation": 2,
+        "initialCheckpoint": "73749 beforePrepare",
+        "manifestSchema": 1,
+        "outputs": {
+          "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+        },
+        "postPublicationInodePreserved": false,
+        "rejectedReplacementDirectory": true,
+        "relocationCheckedAgainstSource": false,
+        "restoredBackupRemainedHistorical": false,
+        "selectionPreserved": true,
+        "status": "passed",
+        "versionIDs": [
+          "F8425BFC-5C69-4F14-8BB9-199F8C16F2E1",
+          "830EC75A-A617-42E1-A359-04879AD9C576",
+          "221DBE32-534F-4BE1-A96A-D38B038539F3"
+        ],
+        "initialFiles": [
+          "station.v2-0.edit-0001.jpg"
+        ]
+      },
+      "prepared": {
+        "batchID": "7d130aa8-28ef-4447-991e-623c7f549d4e",
+        "firstInodePreserved": true,
+        "generation": 2,
+        "initialCheckpoint": "73952 prepared",
+        "manifestSchema": 1,
+        "outputs": {
+          "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+        },
+        "postPublicationInodePreserved": false,
+        "rejectedReplacementDirectory": true,
+        "relocationCheckedAgainstSource": false,
+        "restoredBackupRemainedHistorical": false,
+        "selectionPreserved": true,
+        "status": "passed",
+        "versionIDs": [
+          "06123D34-04D7-47F1-9118-B9733A03FA1A",
+          "14304B16-9E51-475C-AC48-BF61CC9B72E2",
+          "3C25811B-9F30-4283-B612-8D9F0029C57E"
+        ],
+        "initialFiles": [
+          "station.v2-0.edit-0001.jpg"
+        ]
+      },
+      "published": {
+        "batchID": "f908b85b-6579-4ce8-96e1-63e33c6affa9",
+        "firstInodePreserved": true,
+        "generation": 3,
+        "initialCheckpoint": "74014 published",
+        "manifestSchema": 1,
+        "outputs": {
+          "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+        },
+        "postPublicationInodePreserved": true,
+        "rejectedReplacementDirectory": true,
+        "relocationCheckedAgainstSource": true,
+        "restoredBackupRemainedHistorical": true,
+        "selectionPreserved": true,
+        "status": "passed",
+        "versionIDs": [
+          "30EB04EA-540A-40EE-BA1D-256E16967302",
+          "68DB3F63-9701-4B27-B534-D9B84AE09C9D",
+          "5FA9414A-5F35-4EA1-91E1-E06EA61A59A6"
+        ],
+        "initialFiles": [
+          "station.v2-0.edit-0001.jpg",
+          "station.v2-1.edit-0002.jpg"
+        ]
+      }
+    },
+    "worktreeEvidence": "output/035-development/workbench-restart-batch5-inline"
+  },
+  "activeTargetedBuild5Tests": {
+    "app": 12,
+    "core": 39
+  },
+  "batch8": {
+    "checksAfterRenamingRelocatedSourceExtension": {
+      "inline": {
+        "status": "passed",
+        "build": "73f974911d33f7269dc6e1ca10699919c53363ec25990385d95935995fca0454",
+        "sameBatchDeliveryPassed": true,
+        "crossRunOutputSHA256Matches": true,
+        "restarts": {
+          "beforePrepare": {
+            "batchID": "6731a5fe-739e-4e64-8941-89411a3df8d0",
+            "firstInodePreserved": true,
+            "generation": 2,
+            "initialCheckpoint": "81161 beforePrepare",
+            "manifestSchema": 1,
+            "outputs": {
+              "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+              "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+              "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+            },
+            "postPublicationInodePreserved": false,
+            "rejectedReplacementDirectory": true,
+            "relocationCheckedAgainstSource": false,
+            "restoredBackupRemainedHistorical": false,
+            "selectionPreserved": true,
+            "status": "passed",
+            "versionIDs": [
+              "71F6E22D-0BB2-4C1A-9F4E-ED8817877452",
+              "9A127299-6CDD-4527-9C0F-03222CBE477C",
+              "3BF2A83A-73CC-40A4-8A61-7E8573440414"
+            ],
+            "secondItemMatchesPreCrashBytes": true,
+            "initialFiles": [
+              "station.v2-0.edit-0001.jpg"
+            ]
+          },
+          "prepared": {
+            "batchID": "ce20158a-e8fd-4bca-9fc9-964ef3c7d433",
+            "firstInodePreserved": true,
+            "generation": 2,
+            "initialCheckpoint": "81249 prepared",
+            "manifestSchema": 1,
+            "outputs": {
+              "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+              "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+              "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+            },
+            "postPublicationInodePreserved": false,
+            "rejectedReplacementDirectory": true,
+            "relocationCheckedAgainstSource": false,
+            "restoredBackupRemainedHistorical": false,
+            "selectionPreserved": true,
+            "status": "passed",
+            "versionIDs": [
+              "B17D36BA-E6B2-4421-ADED-46BAFC6ADCF9",
+              "3CE3608B-5811-483E-8274-0883223AB531",
+              "60ABB91C-77CC-408E-A04D-8933F87FCBEB"
+            ],
+            "secondItemMatchesPreCrashBytes": true,
+            "initialFiles": [
+              "station.v2-0.edit-0001.jpg"
+            ]
+          },
+          "published": {
+            "batchID": "69067a50-c1c9-4175-8b1c-36a810087c97",
+            "firstInodePreserved": true,
+            "generation": 3,
+            "initialCheckpoint": "81409 published",
+            "manifestSchema": 1,
+            "outputs": {
+              "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+              "station.v2-1.edit-0002.jpg": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+              "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+            },
+            "postPublicationInodePreserved": true,
+            "rejectedReplacementDirectory": true,
+            "relocationCheckedAgainstSource": true,
+            "restoredBackupRemainedHistorical": true,
+            "selectionPreserved": true,
+            "status": "passed",
+            "versionIDs": [
+              "F461D00B-5EF7-4BD6-9E01-E07C241E772A",
+              "E47F523F-B781-4D14-9AE6-5356B33B69AC",
+              "D880B0CA-AF65-4765-B975-C675CC1514F4"
+            ],
+            "secondItemMatchesPreCrashBytes": true,
+            "initialFiles": [
+              "station.v2-0.edit-0001.jpg",
+              "station.v2-1.edit-0002.jpg"
+            ]
+          }
+        },
+        "worktreeEvidence": "output/035-development/workbench-restart-batch8-inline"
+      },
+      "objects": {
+        "status": "passed",
+        "build": "73f974911d33f7269dc6e1ca10699919c53363ec25990385d95935995fca0454",
+        "sameBatchDeliveryPassed": true,
+        "crossRunOutputSHA256Matches": true,
+        "restarts": {
+          "beforePrepare": {
+            "batchID": "5a932cfd-d297-4c2a-95b6-b3e01b5c0a92",
+            "firstInodePreserved": true,
+            "generation": 2,
+            "initialCheckpoint": "81162 beforePrepare",
+            "manifestSchema": 2,
+            "outputs": {
+              "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+              "station.v2-1.edit-0002.jpg": "ffd45b9250a9ee1a23153771ac3536032211700cc607275dcf7e865c20b8e1b6",
+              "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+            },
+            "postPublicationInodePreserved": false,
+            "rejectedReplacementDirectory": true,
+            "relocationCheckedAgainstSource": false,
+            "restoredBackupRemainedHistorical": false,
+            "selectionPreserved": true,
+            "status": "passed",
+            "versionIDs": [
+              "A4B7AE7A-8EDB-461D-BBA9-EBA3A1DA7531",
+              "842513BC-56B8-4E3D-A399-91B57AEEDB97",
+              "623E3D58-1200-4709-AD32-430349288293"
+            ],
+            "secondItemMatchesPreCrashBytes": true,
+            "initialFiles": [
+              "station.v2-0.edit-0001.jpg"
+            ]
+          },
+          "prepared": {
+            "batchID": "a186af57-d016-4c15-9c24-f731a6b5ec25",
+            "firstInodePreserved": true,
+            "generation": 2,
+            "initialCheckpoint": "81250 prepared",
+            "manifestSchema": 2,
+            "outputs": {
+              "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+              "station.v2-1.edit-0002.jpg": "ffd45b9250a9ee1a23153771ac3536032211700cc607275dcf7e865c20b8e1b6",
+              "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+            },
+            "postPublicationInodePreserved": false,
+            "rejectedReplacementDirectory": true,
+            "relocationCheckedAgainstSource": false,
+            "restoredBackupRemainedHistorical": false,
+            "selectionPreserved": true,
+            "status": "passed",
+            "versionIDs": [
+              "B116DFFB-DC7E-4E78-91A5-69F16E2F9EA8",
+              "5E38E199-411A-4A98-B7C3-69ECD497B123",
+              "2273ED4A-06CC-43FF-9EA3-509830C2B774"
+            ],
+            "secondItemMatchesPreCrashBytes": true,
+            "initialFiles": [
+              "station.v2-0.edit-0001.jpg"
+            ]
+          },
+          "published": {
+            "batchID": "3b78d9be-45b5-4e72-8ac5-9d78403c36e3",
+            "firstInodePreserved": true,
+            "generation": 3,
+            "initialCheckpoint": "81410 published",
+            "manifestSchema": 2,
+            "outputs": {
+              "station.v2-0.edit-0001.jpg": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+              "station.v2-1.edit-0002.jpg": "ffd45b9250a9ee1a23153771ac3536032211700cc607275dcf7e865c20b8e1b6",
+              "station.v2-2.edit-0003.jpg": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886"
+            },
+            "postPublicationInodePreserved": true,
+            "rejectedReplacementDirectory": true,
+            "relocationCheckedAgainstSource": true,
+            "restoredBackupRemainedHistorical": true,
+            "selectionPreserved": true,
+            "status": "passed",
+            "versionIDs": [
+              "275FF2D7-07DE-4341-9335-3B2367BBD533",
+              "4530E97F-CFD7-4029-92E5-636E69EDE653",
+              "885516F8-DA42-4CBF-88EF-AB2E4D018B77"
+            ],
+            "secondItemMatchesPreCrashBytes": true,
+            "initialFiles": [
+              "station.v2-0.edit-0001.jpg",
+              "station.v2-1.edit-0002.jpg"
+            ]
+          }
+        },
+        "worktreeEvidence": "output/035-development/workbench-restart-batch8-objects"
+      }
+    },
+    "targetedNative": {
+      "ui": 12,
+      "catalogAndEditingBackup": 39,
+      "imaging": 24
+    }
+  }
+}

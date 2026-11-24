@@ -1,0 +1,356 @@
+{
+  "experiment": "Code-signed standalone Rust v10 worker with kernel-enforced macOS Seatbelt filesystem policy and authenticated descriptor handoff",
+  "dateLocal": "2026-11-24",
+  "productionIntegrated": false,
+  "performanceMeasured": false,
+  "host": {
+    "os": "macOS 27.0.1 (26A434)",
+    "CPU": "Apple M4 Max",
+    "filesystem": "owned temporary directories on local APFS",
+    "mountMetadataScope": "/System/Volumes/Data"
+  },
+  "replay": "experiments/portable-processing/catalog/macos-interop-probe/sandbox/README.md",
+  "trackedSourceSHA256": {
+    "README.md": "27300101e525c68fae9d59a0fcfae2147b262dec766646d1225742b9764bef13",
+    "broker.py": "cf6f5cf566ec3296c0ed6cc46c4b8f591582d1039d016cd8f4cf3c44d9e4f24b",
+    "build.py": "e438005d6937e00d538e1c698568d7172c1ff6a37224155afd8f9d99972bc249",
+    "entry.rs": "d3c0b33b9a3799bb2f600e0209110a35e47f03c7a83e1522e12e089e336a00ba",
+    "run.py": "51be9fa3544a2eb4d48086170b1f664e4c8a08dfc7c01b8c5fa8017a9069d016",
+    "transport.c": "555b5b0ec3f77636f73c7038a1a840996e7e7b189f858f86822dd461281d7823",
+    "verify.c": "f7ff0b1db060fd992715df0b394ec9357657946462ddc63adcd51c2c8952dd33"
+  },
+  "relevantSourceSHA256": {
+    "Sources/RAWMaster/WorkbenchDeliveryAccess.swift": "dbf08d8cd6d29a259f576b672b13fa5f61e40601f36fa121e9a422d561d9fe8e",
+    "Modules/LibraryCatalog/Swift/LibraryLocation.swift": "affa6462c83268d98274bc843395c07d938cde9ef7dc346fb1e5f39403dbc0bb",
+    "scripts/build-app.sh": "2da94712e66cd41680e13154d2e368242884f74bbee3e84f55cd4aad3a89a437",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs": "0087fbba7bec71022d16f480cae31f850367035c3ce1954308dae4dd463d6a16",
+    "Modules/LibraryCatalog/src/scheduler/batch/directory.rs": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd",
+    "Tests/RAWMasterUITests/WorkbenchContinuation035Tests.swift": "a82860cd620e8b2e92c9e1c5a6910246f166636f4d1cfbf470cfab459f058332",
+    "experiments/portable-processing/catalog/macos-interop-probe/private.rs": "c5fe68a1f131e728d6656935c2897ea666889104815ef18a2c9b69a811df6d86",
+    "experiments/portable-processing/catalog/macos-interop-probe/proof.rs": "d8e2bf3b6ff369471fada1c1630c9433fc4b4eb479e20c12975b480a349931f0",
+    "experiments/portable-processing/catalog/macos-interop-probe/mac-proof.c": "fed205317e08b54fcb86c0ef71f30ff460557f6b698c14f9253d3105da0fc95e",
+    "experiments/portable-processing/catalog/macos-interop-probe/build.py": "5d7ed792cfd45c1d9055bbbb237c23cd3b4d462676e83e5cd10684494952d73e",
+    "experiments/portable-processing/catalog/macos-interop-probe/run.py": "20268e092b2ee86756b8e4c816e2f28acf80feac822219781d2731c91ae01144",
+    "experiments/portable-processing/catalog/macos-interop-probe/bootstrap/supervisor.py": "cf88ef8f30b8ab77ce96ee26ef8de8bce2610f22c2d1e312b971ac72bc7c8049"
+  },
+  "upstreamEvidence": [
+    {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-interop.json",
+      "sha256": "6cca561a8feca4b6e7cfe6a77aa00582db0c39efe131f3bd8ba02c7fdf3f2a6b",
+      "bytes": 14163
+    },
+    {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-bootstrap.json",
+      "sha256": "bdb69b18d5564cee244ab4bea24adca0745b92ce937edfcfabf3cee26d309be7",
+      "bytes": 13897
+    }
+  ],
+  "raw": [
+    {
+      "path": "output/035-development/phase-z/catalog/gate.json",
+      "sha256": "8df8da0bdf0f3fca61af8e2937247a774f2671ecf55bd7030677e0ab2ba262ff",
+      "bytes": 976
+    },
+    {
+      "path": "output/035-development/phase-z/catalog/matrix.json",
+      "sha256": "e4294ee15f931511f417f630378628e3d297760dfcacc8da955d8fcfb63e5992",
+      "bytes": 109244
+    },
+    {
+      "path": "output/035-development/phase-z/catalog/full.json",
+      "sha256": "41c22f2ffc5d7d4684876469e5c8961d0228d78062b8fae4d388c95568d693b5",
+      "bytes": 215263
+    },
+    {
+      "path": "output/035-development/phase-z/catalog/archive.json",
+      "sha256": "c4cf2abc20a62f7d3c292e7ba26897b1b07ceb165bfcbced29da3f06ccd7815e",
+      "bytes": 219712
+    },
+    {
+      "path": "output/035-development/phase-z/catalog/archive-build.log",
+      "sha256": "863b0e9585f4595fdbd2d3d2c1ddaad7aa995832d76168f8edc1c8d6e2e98be8",
+      "bytes": 537
+    },
+    {
+      "path": "output/035-development/phase-z/catalog/signature-inventory.json",
+      "sha256": "38fbabaebb22fdaf48433818426696cf5c117a83419f353fa79cbe8843cea233",
+      "bytes": 2307
+    }
+  ],
+  "runtime": {
+    "existingSystemCatalogReleaseSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "signedPrograms": {
+      "expected-worker": {
+        "CDHash": "458e10390d1eac4295a58f8ab3bc64d8ecf46d09",
+        "sha256": "23df3f57c6acf801d2ce2ea73d58a27bb5aef421ff33c26c89bb46782d9d1ad5",
+        "identifier": "org.rawmaster.fixture.catalog035-restricted",
+        "hardenedRuntime": true,
+        "signature": "ad hoc"
+      },
+      "other-worker": {
+        "CDHash": "42221826da371e322b24065b0cf246fc9f323498",
+        "sha256": "264d2c2a82a19f8753f7abfe6fab473be8e4a23dcae259fba85682691fda7454",
+        "identifier": "org.rawmaster.fixture.catalog035-restricted",
+        "hardenedRuntime": true,
+        "signature": "ad hoc"
+      }
+    },
+    "appAndExistingHelperEmbeddedSignatureInventory": {
+      "packagedApp": {
+        "artifact": "output/035-development/RAWMaster-035.app",
+        "identifier": "io.robinqu.RAWMaster",
+        "CDHash": "16f1532e4f7462491dc5614f1b5f4928fd8f1c72",
+        "team": "not set",
+        "kind": "adhoc",
+        "codeDirectory": "CodeDirectory v=20400 size=101357 flags=0x2(adhoc) hashes=3161+3 location=embedded",
+        "embeddedEntitlementOutputBytes": 0,
+        "declaresAppSandbox": false,
+        "embeddedXPCServices": []
+      },
+      "packagedGroupHelper": {
+        "artifact": "output/035-development/RAWMaster-035.app/Contents/Helpers/rawmaster-group-render",
+        "identifier": "rawmaster-group-render-555549449fca9e6b038e36d2a4db779d744732e5",
+        "CDHash": "91385cbc8617dde3afbcda7b59a7e7a230e11c6e",
+        "team": "not set",
+        "kind": "adhoc",
+        "codeDirectory": "CodeDirectory v=20400 size=11928 flags=0x2(adhoc) hashes=366+2 location=embedded",
+        "embeddedEntitlementOutputBytes": 0,
+        "declaresAppSandbox": false
+      },
+      "sealedBatch27Program": {
+        "artifact": "output/035-development/candidate-batch27-portable-half-initialized/RAWMaster",
+        "identifier": "RAWMaster",
+        "CDHash": "51f5b71cf2291402e26ebf0c406bc7eed02bcbe2",
+        "team": "not set",
+        "kind": "adhoc",
+        "codeDirectory": "CodeDirectory v=20400 size=463330 flags=0x20002(adhoc,linker-signed) hashes=14476+0 location=embedded",
+        "embeddedEntitlementOutputBytes": 0,
+        "declaresAppSandbox": false
+      }
+    },
+    "requestABI": "rm_library_request_v1; X2 production crate code and pinned private SQLite, compiled in the signed process. Apple release runtime independently initializes the fixture and supplies an independent reader.",
+    "scope": "Private local fixture signatures with codesign -s - and Hardened Runtime. CDHashes are specific to these measured builds."
+  },
+  "matrix": {
+    "cases": 5,
+    "signedWorkerProcesses": 33,
+    "seatbeltDenyDefaultRuns": 32,
+    "sameUIDPositiveUnsandboxedRuns": 1,
+    "fourReadOnlySCMRightsGranted": 28,
+    "zeroRightsAndUnsentCommands": 5,
+    "narrowedLiveY2WALAndSHMToNewReadonlyDescriptions": 6,
+    "actualRustABIRequests": 26,
+    "completedTransactionChecks": 60,
+    "readChecks": 21,
+    "writeChecks": 39,
+    "actualZeroByteWALChecks": 28,
+    "phases": {
+      "read": 21,
+      "write": 21,
+      "prepare": 4,
+      "link": 5,
+      "ack": 8,
+      "rename": 1
+    },
+    "JPEGDeliveriesWithOriginalTicketAndStageInode": 4,
+    "duplicateACKPairs": 4,
+    "outputBytes": 47835,
+    "outputSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f"
+  },
+  "securityAndRecoveryControls": {
+    "kernelDenyForGeneratedData": {
+      "withheldReadErrno": 1,
+      "withheldReadWriteErrno": 1,
+      "unauthorizedCreateErrno": 1,
+      "unauthorizedRenameErrno": 1,
+      "siblingReadErrno": 1
+    },
+    "sameUIDPositive": {
+      "withheldReadErrno": 0,
+      "withheldReadWriteErrno": 0,
+      "unauthorizedCreateErrno": 0,
+      "unauthorizedRenameErrno": 0,
+      "siblingReadErrno": 0
+    },
+    "sameIdentifierDifferentSignedImplementation": {
+      "codesignStaticRequirementExit": 3,
+      "dynamicRequirementOSStatus": -67050,
+      "baseDynamicSignatureOSStatus": 0,
+      "sameIdentifier": true,
+      "capturedPeerCDHash": "42221826da371e322b24065b0cf246fc9f323498",
+      "ungrantedMainDirectRead": "EPERM or EACCES asserted by the alternate fixture under the identity-only profile",
+      "descriptorsSent": 0
+    },
+    "fiveNoGrantCases": [
+      {
+        "reason": "other signed executable with same identifier",
+        "issuerEpochBefore": null,
+        "issuerEpochAtTransfer": null,
+        "issuerActiveAtTransfer": true,
+        "requestedEpoch": null,
+        "currentPeerCDHashMatched": false,
+        "registeredPIDMatched": true,
+        "receivedFDs": 0,
+        "receivedQueueCommand": false
+      },
+      {
+        "reason": "correct image, unregistered PID",
+        "issuerEpochBefore": null,
+        "issuerEpochAtTransfer": null,
+        "issuerActiveAtTransfer": true,
+        "requestedEpoch": null,
+        "currentPeerCDHashMatched": true,
+        "registeredPIDMatched": false,
+        "receivedFDs": 0,
+        "receivedQueueCommand": false
+      },
+      {
+        "reason": "authority withdrawn before launch",
+        "issuerEpochBefore": null,
+        "issuerEpochAtTransfer": null,
+        "issuerActiveAtTransfer": true,
+        "requestedEpoch": null,
+        "currentPeerCDHashMatched": true,
+        "registeredPIDMatched": true,
+        "receivedFDs": 0,
+        "receivedQueueCommand": false
+      },
+      {
+        "reason": "actual Y2 generation retired after dynamic peer authentication, before SCM handoff",
+        "issuerEpochBefore": 1,
+        "issuerEpochAtTransfer": 2,
+        "issuerActiveAtTransfer": false,
+        "requestedEpoch": 1,
+        "currentPeerCDHashMatched": true,
+        "registeredPIDMatched": true,
+        "receivedFDs": 0,
+        "receivedQueueCommand": false
+      },
+      {
+        "reason": "new Y2 generation active but request still names the old generation",
+        "issuerEpochBefore": 2,
+        "issuerEpochAtTransfer": 2,
+        "issuerActiveAtTransfer": true,
+        "requestedEpoch": 1,
+        "currentPeerCDHashMatched": true,
+        "registeredPIDMatched": true,
+        "receivedFDs": 0,
+        "receivedQueueCommand": false
+      }
+    ],
+    "missingMountMetadata": {
+      "failure": {
+        "attachmentDiagnostic": "volumeAttributes",
+        "errno": 1,
+        "mode": 16832
+      },
+      "itemRowsBeforeAndAfter": 0,
+      "destinationStayedEmpty": true,
+      "observedProfile": "no-volume",
+      "approvedRoot": "/System/Volumes/Data",
+      "scope": "file-read-metadata for the mount root itself only, without descendants"
+    },
+    "readonlyDeliveryDirectory": {
+      "physicalCalls": [
+        {
+          "errno": 1,
+          "publicationSyscall": "linkat"
+        },
+        {
+          "errno": 1,
+          "publicationSyscall": "renameatx_np(RENAME_EXCL)"
+        }
+      ],
+      "actualRustFences": [
+        "read",
+        "write",
+        "link",
+        "rename"
+      ],
+      "preparedAndOriginalStageRetained": true,
+      "authorizedRetryThenTwoACKs": true
+    },
+    "signedAcrossColdGeneration": {
+      "initialSystemPERSISTWAL": {
+        "closeRC": 0,
+        "persistentBefore": 1,
+        "persistentAfter": 0
+      },
+      "retire": {
+        "rc": 0,
+        "busy": 0,
+        "log": 0,
+        "checkpointed": 0
+      },
+      "postAuthenticationActualRetirementBeforeFDTransfer": true,
+      "ticketReadFromMainAloneBetweenGenerations": true,
+      "coldRealZeroByteWALAnd32KiBShmProofs": [
+        {
+          "generation": 1,
+          "walBytes": 0,
+          "shmBytes": 32768,
+          "POSIXAndOFDMatchKeeper": true
+        },
+        {
+          "generation": 2,
+          "walBytes": 0,
+          "shmBytes": 32768,
+          "POSIXAndOFDMatchKeeper": true
+        }
+      ]
+    }
+  },
+  "statusByCase": [
+    {
+      "case": "permissions",
+      "workers": 5,
+      "independentAppleIntegrity": null
+    },
+    {
+      "case": "clean-delivery",
+      "workers": 6,
+      "independentAppleIntegrity": [
+        "ok",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "case": "refused-delivery",
+      "workers": 7,
+      "independentAppleIntegrity": [
+        "ok",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "case": "refused-attachment-metadata",
+      "workers": 7,
+      "independentAppleIntegrity": [
+        "ok",
+        "0",
+        "0"
+      ]
+    },
+    {
+      "case": "signed-cold-recreation",
+      "workers": 8,
+      "independentAppleIntegrity": [
+        "ok",
+        "0",
+        "0"
+      ]
+    }
+  ],
+  "limits": [
+    "Real kernel Seatbelt restrictions from the deprecated sandbox-exec utility, real ad-hoc signatures and Hardened Runtime. The harness does not launch an entitlement-based App Sandbox bundle or create a per-user container.",
+    "No Powerbox, distributed scoped bookmarks, Developer ID/team signing or signed upgrade, XPC/launchd service, external volume, remount, hot-WAL recovery or throughput was qualified. The production SwiftUI bookmark and packaging route were inspected and unchanged.",
+    "The private service exclusively owns the fixture namespace and executable paths. Registered PID and kernel audit-token-backed dynamic CDHash are checked before FD/command release. OS pathname access is configured at launch. No retroactive revocation of previously issued FDs or pathname permissions is claimed.",
+    "The mount-root metadata requirement was measured for this OS/version and APFS mount layout. Explicit writes are limited to the approved SQLite names and the selected output folder. The fixture uses no recursive mount grant and no system-wide hook."
+  ],
+  "publicPlatformReferences": [
+    "https://developer.apple.com/documentation/security/accessing-files-from-the-macos-app-sandbox",
+    "https://developer.apple.com/documentation/xpc"
+  ]
+}

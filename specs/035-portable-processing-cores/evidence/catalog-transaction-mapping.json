@@ -1,0 +1,623 @@
+{
+  "schema": 1,
+  "study": "Spec 035 bounded SHM validation inside a real workbench write transaction",
+  "recordedDate": "2026-11-23",
+  "environment": {
+    "platform": "Linux aarch64, container-native overlayfs, 1 CPU quota",
+    "kernel": "7.2.12-orbstack-00394-gbecdd6130068",
+    "rustImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "catalogABI": 1,
+    "sqlite": "3.53.2, bundled, SQLITE_ENABLE_FILESTAT",
+    "sqliteSourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "releaseRuntimeSHA256": "156a70024dca27ddb74e641b3948a051030ea8fea6ef0b253c37863aae35f207",
+    "signedProductionArtifact": false
+  },
+  "scope": "The candidate copies the unchanged production custody, reservation and no-replace logic. It registers a named non-default VFS only for the tested queue connection and records successful natural page-zero maps. Missing or changed identities refuse the operation. A single-connection worker owns the map lifetime.",
+  "arms": {
+    "scan": "Same test VFS and checks; reads all of /proc/self/maps on each check to match the natural address. This is an instrumented full-scan reference, not a shipping app benchmark.",
+    "address": "A fixed 104-byte PROCMAP_QUERY at SQLite’s actual page-zero address, checking range, zero offset, shared/readable permissions and device/inode. The syscall uses the kernel VMA lookup; the host does not parse the mapping list.",
+    "cached": "Full address-specific mapping check once in the initial read transaction. During that same call the live open generation, native mapping generation, pointer and size must continue matching, in addition to FILESTAT, descriptor, name, and lock checks."
+  },
+  "correctnessByArm": {
+    "address": {
+      "cases": 10,
+      "CABIRequests": 67,
+      "liveAttachmentChecks": 161,
+      "zeroByteWAL": 48,
+      "accepted": 154,
+      "refused": 7,
+      "refusedAt": {
+        "link": 2,
+        "write": 1,
+        "rename": 1,
+        "ack": 1,
+        "prepare": 1,
+        "read": 1
+      },
+      "fullyDeliveredAfterRetryAndDuplicateACK": 10
+    },
+    "cached": {
+      "cases": 10,
+      "CABIRequests": 67,
+      "liveAttachmentChecks": 161,
+      "zeroByteWAL": 48,
+      "accepted": 154,
+      "refused": 7,
+      "refusedAt": {
+        "link": 2,
+        "write": 1,
+        "rename": 1,
+        "ack": 1,
+        "prepare": 1,
+        "read": 1
+      },
+      "fullyDeliveredAfterRetryAndDuplicateACK": 10
+    }
+  },
+  "epoch": {
+    "arms": [
+      "address",
+      "cached",
+      "scan"
+    ],
+    "sqliteLastCloseRemovedWalAndShm": true,
+    "sameMainAndPreparedTicket": true,
+    "bothNewSidecarInodes": true,
+    "oldGrantsRefusedBeforeAnyPublish": true,
+    "explicitNewGrantsReusedOriginalTicket": true,
+    "sameSHAAndDuplicateACK": true,
+    "onlyControlledEnrollment": true
+  },
+  "compatibilityCheck": {
+    "simulatedUnsupportedIOCTL": "ENOTTY on first read in auto arm",
+    "selected": "cached",
+    "successfulDeliveredOutputs": 1,
+    "nativeLegacyKernelWasUsed": false
+  },
+  "timing": {
+    "method": "One discarded round per arm and VMA count, then balanced order; held interval begins after BEGIN IMMEDIATE succeeds and ends after sqlite commit returns. All JSON reporting to stderr deferred until after transaction.",
+    "roundsPerCell": 6,
+    "warmupsPerCell": 1,
+    "profiles": "One optimized backend and one CPU; a separate short macOS GPU sampling task shared the physical host.",
+    "orders": "All six permutations of [scan,address,cached]; alternation of pressure groups",
+    "measuredBatches": 36,
+    "measuredActionRows": 180,
+    "exportSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+    "exportBytes": 47835,
+    "actualPublishMappingLineCounts": {
+      "0": [
+        60
+      ],
+      "4096": [
+        4157
+      ]
+    },
+    "units": "Microseconds; six observations per arm/pressure/action, nearest-rank P95 equals the maximum. Writer time excludes acquisition, includes commit; logs are emitted after the handle releases the transaction.",
+    "readback": {
+      "0": {
+        "prepareItem": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 1749.859,
+            "p95HoldUs": 2481.756,
+            "p50WriteGuardUs": 59.875,
+            "p50ReadGuardUs": 40.376,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 1748.4,
+            "p95HoldUs": 3096.8,
+            "p50WriteGuardUs": 54.603,
+            "p50ReadGuardUs": 87.355,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 1737.13,
+            "p95HoldUs": 2167.172,
+            "p50WriteGuardUs": 116.126,
+            "p50ReadGuardUs": 90.396,
+            "p50ScannedBytesInWrite": 13300.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "publishItem": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 152.042,
+            "p95HoldUs": 183.625,
+            "p50WriteGuardUs": 31.98,
+            "p50ReadGuardUs": 40.812,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 155.209,
+            "p95HoldUs": 168.542,
+            "p50WriteGuardUs": 30.875,
+            "p50ReadGuardUs": 92.521,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 187.168,
+            "p95HoldUs": 233.792,
+            "p50WriteGuardUs": 65.729,
+            "p50ReadGuardUs": 93.188,
+            "p50ScannedBytesInWrite": 13300.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/commit": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 4807.658,
+            "p95HoldUs": 5686.265,
+            "p50WriteGuardUs": 49.188,
+            "p50ReadGuardUs": 41.625,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 3614.676,
+            "p95HoldUs": 4112.428,
+            "p50WriteGuardUs": 47.291,
+            "p50ReadGuardUs": 91.084,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 3665.822,
+            "p95HoldUs": 4844.596,
+            "p50WriteGuardUs": 91.959,
+            "p50ReadGuardUs": 89.875,
+            "p50ScannedBytesInWrite": 13300.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/replay": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 106.459,
+            "p95HoldUs": 127.083,
+            "p50WriteGuardUs": 46.604,
+            "p50ReadGuardUs": 42.209,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 100.646,
+            "p95HoldUs": 202.751,
+            "p50WriteGuardUs": 42.125,
+            "p50ReadGuardUs": 86.605,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 156.313,
+            "p95HoldUs": 194.542,
+            "p50WriteGuardUs": 87.668,
+            "p50ReadGuardUs": 83.625,
+            "p50ScannedBytesInWrite": 13300.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        }
+      },
+      "4096": {
+        "prepareItem": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 1690.067,
+            "p95HoldUs": 2057.214,
+            "p50WriteGuardUs": 52.874,
+            "p50ReadGuardUs": 40.938,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 1946.671,
+            "p95HoldUs": 2077.589,
+            "p50WriteGuardUs": 72.395,
+            "p50ReadGuardUs": 824.773,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 3259.341,
+            "p95HoldUs": 3380.759,
+            "p50WriteGuardUs": 1281.149,
+            "p50ReadGuardUs": 823.793,
+            "p50ScannedBytesInWrite": 414812.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "publishItem": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 157.105,
+            "p95HoldUs": 178.751,
+            "p50WriteGuardUs": 30.75,
+            "p50ReadGuardUs": 44.687,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 150.813,
+            "p95HoldUs": 190.75,
+            "p50WriteGuardUs": 30.5,
+            "p50ReadGuardUs": 842.106,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 1287.774,
+            "p95HoldUs": 1578.837,
+            "p50WriteGuardUs": 1143.045,
+            "p50ReadGuardUs": 846.481,
+            "p50ScannedBytesInWrite": 414812.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/commit": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 3434.947,
+            "p95HoldUs": 4201.261,
+            "p50WriteGuardUs": 45.895,
+            "p50ReadGuardUs": 44.375,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 3953.135,
+            "p95HoldUs": 4704.179,
+            "p50WriteGuardUs": 46.73,
+            "p50ReadGuardUs": 792.085,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 5226.889,
+            "p95HoldUs": 12252.991,
+            "p50WriteGuardUs": 1141.733,
+            "p50ReadGuardUs": 817.002,
+            "p50ScannedBytesInWrite": 414812.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/replay": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 107.73,
+            "p95HoldUs": 133.958,
+            "p50WriteGuardUs": 46.02,
+            "p50ReadGuardUs": 39.666,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 120.855,
+            "p95HoldUs": 156.542,
+            "p50WriteGuardUs": 50.479,
+            "p50ReadGuardUs": 796.753,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 1230.254,
+            "p95HoldUs": 1366.003,
+            "p50WriteGuardUs": 1155.524,
+            "p50ReadGuardUs": 800.981,
+            "p50ScannedBytesInWrite": 414812.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        }
+      }
+    }
+  },
+  "raw": {
+    "capability": {
+      "path": "output/035-development/ucat-guard/kernel-gate.json",
+      "sha256": "ac56293f28bbb5f7d5916710c5ecbc9ff80f4c02416e6ca67ca65b53dae3d421"
+    },
+    "releaseBuild": {
+      "path": "output/035-development/ucat-guard/build-release.log",
+      "sha256": "89401518580e09e3829b41c7470dd304055ef447667273515a11490611f8c1c3"
+    },
+    "originalDebugSmoke": {
+      "path": "output/035-development/ucat-guard/smoke.json",
+      "sha256": "4f8aed586e1ee43dc615464976be6ad96b8b6210e77e2ab05199a2c92cf3d0b3"
+    },
+    "releaseCorrectness": {
+      "path": "output/035-development/ucat-guard/correctness.json",
+      "sha256": "6d64107c0b95348221dc4bb197711734bec60540d58a18514516166c3f591aec"
+    },
+    "sidecarEpochs": {
+      "path": "output/035-development/ucat-guard/churn.json",
+      "sha256": "0ffab42e82fadfb6e8779d49598beebf6a97aeabda32588e8b1637d47042d6c0"
+    },
+    "oldIoctlSimulation": {
+      "path": "output/035-development/ucat-guard/fallback.json",
+      "sha256": "b6dd97b63d5266f9b0f1ed0ce62e1aa2f6bb5fdac99d4351f78e2a192f33c4aa"
+    },
+    "releaseCrossover": {
+      "path": "output/035-development/ucat-guard/release-crossover.json",
+      "sha256": "7bf010f460c91ad65df660aafd49f9400508a562deb6d439179178b421cbd3c0"
+    }
+  },
+  "limitations": [
+    "The two new paths preserve the domain grant and verified receipt models. A true service still needs authoritative first enrollment and authorization of naturally recreated sidecars.",
+    "WAL mode, upstream FILESTAT and a single trusted owner were exercised. The default macOS VFS, Apple security scopes, volumes and multi-connection app performance were not measured.",
+    "The compatible branch moves one map scan to the read path. The 6.11+ capability was measured on Linux 7.2, and ENOTTY fallback was simulated.",
+    "A matching held attachment does not prevent someone changing a pathname after the check. An authenticated connection may not pass certificates across calls."
+  ],
+  "timedBuildSources": {
+    "Modules/LibraryCatalog/Cargo.lock": "674f98fbddfac2b648c221a1b182a81a7fdea92d808c7c7231562b8cae7afbca",
+    "Modules/LibraryCatalog/src/scheduler.rs": "276b822cec0914f67546c2c3bf5e4d0fcc4a024a9c76b4091ae9de9ed0a91c4a",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs": "0087fbba7bec71022d16f480cae31f850367035c3ce1954308dae4dd463d6a16",
+    "Modules/LibraryCatalog/src/scheduler/batch/directory.rs": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd",
+    "output/035-development/ucat-guard/build_u.py": "da15b3ffcf9e881e287fd8f6fbe640e826bc68bfb7ae64e0ceea049c623b37c7",
+    "output/035-development/ucat-guard/bounded.rs": "6e75f2f1dafca8bdcc0fbf914718b48c80d47f1afe2ec53494272e5f04cd4f62",
+    "output/035-development/ucat-guard/witness-vfs.c": "87dfaeb8926f97bfdd8292f4e08b95fcfc98fef8c146f5ca368ba43fd5f7dbd6",
+    "output/035-development/ucat-guard/build_native.rs": "1b2f0f248c0bb3931515799fb67924dcf2b84d868eea6adbbf8c72232cca5353",
+    "output/035-development/ucat-guard/child.py": "d444c51abb90e866f81378d769df6d2d277ebdb3e7e7761c0faab532de07f56d",
+    "output/035-development/ucat-guard/scenarios.py": "dabce8ae16532dad7817e7f64709b7452eefda5719a96ef6bcb78c3af0549ee4",
+    "output/035-development/ucat-guard/timing.py": "f3e5d54c47a8900374a0ab5b420777462484eeb6293996e8dbd5c13a6370be97",
+    "output/035-development/ucat-guard/churn.py": "3ef32299575ba7ec6d9a043c6f5b8b50131342a82dfcaf3ef34c18d1af3a9387"
+  },
+  "archivedRebuild": {
+    "raw": {
+      "path": "output/035-development/ucat-guard/archive-replay/receipt.json",
+      "sha256": "899bafc68962b9caec2d6340ffb33c55a07bbb1c1d2691e5d7958d31c66299f1"
+    },
+    "compileAndRunLog": {
+      "path": "output/035-development/ucat-guard/archive-replay/replay.log",
+      "sha256": "17b15f24d578c3de5dab9985fedeca5d0de1a0ba7091f32258548b3fc787014e"
+    },
+    "runtimeSHA256": "4e2e0195c86b57882203a6e3465c842e182624580bc67d912b36e9872abb5f81",
+    "sameProcessPairedACKDistinctOpenAndMappingGenerations": {
+      "address": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "cached": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ],
+      "scan": [
+        [
+          1,
+          2
+        ],
+        [
+          3,
+          4
+        ]
+      ]
+    },
+    "sixRoundRepeatedTimings": {
+      "0": {
+        "publishItem": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 139.708,
+            "p95HoldUs": 158.667,
+            "p50WriteGuardUs": 27.293,
+            "p50ReadGuardUs": 40.729,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 133.417,
+            "p95HoldUs": 199.917,
+            "p50WriteGuardUs": 26.437,
+            "p50ReadGuardUs": 83.876,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 183.813,
+            "p95HoldUs": 194.25,
+            "p50WriteGuardUs": 62.897,
+            "p50ReadGuardUs": 87.354,
+            "p50ScannedBytesInWrite": 13302.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/commit": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 3626.696,
+            "p95HoldUs": 4374.219,
+            "p50WriteGuardUs": 48.688,
+            "p50ReadGuardUs": 40.209,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 3658.383,
+            "p95HoldUs": 4670.053,
+            "p50WriteGuardUs": 41.396,
+            "p50ReadGuardUs": 90.376,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 4166.676,
+            "p95HoldUs": 11265.444,
+            "p50WriteGuardUs": 93.542,
+            "p50ReadGuardUs": 81.188,
+            "p50ScannedBytesInWrite": 13302.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/replay": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 105.562,
+            "p95HoldUs": 179.625,
+            "p50WriteGuardUs": 42.605,
+            "p50ReadGuardUs": 41.521,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 98.417,
+            "p95HoldUs": 134.251,
+            "p50WriteGuardUs": 42.0,
+            "p50ReadGuardUs": 82.396,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 143.396,
+            "p95HoldUs": 153.834,
+            "p50WriteGuardUs": 80.771,
+            "p50ReadGuardUs": 82.083,
+            "p50ScannedBytesInWrite": 13302.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        }
+      },
+      "4096": {
+        "publishItem": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 143.375,
+            "p95HoldUs": 170.75,
+            "p50WriteGuardUs": 28.625,
+            "p50ReadGuardUs": 41.647,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 142.438,
+            "p95HoldUs": 207.084,
+            "p50WriteGuardUs": 28.543,
+            "p50ReadGuardUs": 777.21,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 1144.065,
+            "p95HoldUs": 1338.337,
+            "p50WriteGuardUs": 1028.149,
+            "p50ReadGuardUs": 820.793,
+            "p50ScannedBytesInWrite": 414814.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/commit": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 4461.469,
+            "p95HoldUs": 4861.054,
+            "p50WriteGuardUs": 38.063,
+            "p50ReadGuardUs": 40.875,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 4576.261,
+            "p95HoldUs": 4914.804,
+            "p50WriteGuardUs": 42.584,
+            "p50ReadGuardUs": 760.876,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 4928.553,
+            "p95HoldUs": 5422.054,
+            "p50WriteGuardUs": 1088.482,
+            "p50ReadGuardUs": 753.273,
+            "p50ScannedBytesInWrite": 414814.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        },
+        "acknowledgeItem/replay": {
+          "address": {
+            "n": 6,
+            "p50HoldUs": 100.959,
+            "p95HoldUs": 123.333,
+            "p50WriteGuardUs": 42.416,
+            "p50ReadGuardUs": 37.104,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 2.0
+          },
+          "cached": {
+            "n": 6,
+            "p50HoldUs": 131.792,
+            "p95HoldUs": 146.292,
+            "p50WriteGuardUs": 50.771,
+            "p50ReadGuardUs": 769.043,
+            "p50ScannedBytesInWrite": 0.0,
+            "p50AddressQueriesInWrite": 0.0
+          },
+          "scan": {
+            "n": 6,
+            "p50HoldUs": 1159.357,
+            "p95HoldUs": 1538.087,
+            "p50WriteGuardUs": 1087.482,
+            "p50ReadGuardUs": 771.898,
+            "p50ScannedBytesInWrite": 414814.0,
+            "p50AddressQueriesInWrite": 0.0
+          }
+        }
+      }
+    },
+    "cases": 20,
+    "nativeEpochCases": 3,
+    "simulatedENOTTYReplays": 1,
+    "sourceSHA256": {
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/README.md": "842d1edd958e0249156147e4eeadfafc71d937e4d2a14fcde51b1901cc437f8b",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/bounded.rs": "9ea8fe46664c68928c20e5a4df8d1fc765bfc242a81b0616dee8102e3b2c3dce",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/build_native.rs": "b10ffc1512a74f8b605afa1a35a91e89c77c31f68b2161b84746e2f2275d18a6",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/build_variant.py": "132a0973424954b10de1f57f091795d3c4608e146e1f7413c3234d4f2796dc99",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/child.py": "178c026ac6c2bff9e39540daacfc0a6734c17e0f873773fc2ed6a393217b0ede",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/epoch.py": "2a601afda002b18e4222329b1c5aa0610a85cddfc2c337b4a744dc52b227ed6c",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/fixtures.py": "1ae00d759f42e9e571a724489912ee55540357b15d2060e00432cb05eba8f2d9",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/run.py": "03e12db94b19e83358f15f8ef3ecb754b5dbe4df226b52f910c92869f1abe7fc",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/timing.py": "5e48d91df55d5601e1fefe15baacc6efd956a83d085b023ae8d5487c7f3e76fe",
+      "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/witness-vfs.c": "4da29abc0b682c5c29f6e91c9fc1a1b586e6501bf7592b625c7f77836d4a4dfd"
+    }
+  }
+}

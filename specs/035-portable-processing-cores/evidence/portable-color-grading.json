@@ -1,0 +1,1409 @@
+{
+  "bufferedSamples": {
+    "linuxArm64Cpu": {
+      "backend": "cpu",
+      "cases": [
+        {
+          "case": "primary.grading-balance-0",
+          "elapsedMs": 1.480418,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "73a5e47359cab685c12c349ee3ef7acf845e76632d551ac0cb64fd058fc00076",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-balance-1",
+          "elapsedMs": 1.319543,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "4aaf5edb54dcb557fd126bffbabe1292850cd4eeb149d73517905c80cd11899f",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "f54d422c512d24b8d24e55b5b09f9635c23b43ee02ba66023c62f4636f362850",
+          "stockSHA": "3a059422cc49656d6161fe6a7419e8ebe53424055b244f728ecdec7cc57b1f04",
+          "surfaceSHA": "a5b54cd05c6422c4255b5c5428fce5c27128cc6c82661728df06e57e6af1964c"
+        },
+        {
+          "case": "primary.grading-blending-0",
+          "elapsedMs": 2.565128,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "6dfa5964b61b9d068450cefe7715f411a2c0b6b15bc94bafa4486c5dcbcdc0e7",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "65fd0dd682c855e3162ee912945ae3303b109ce3c55b96b065c9b9e269771b61",
+          "stockSHA": "6c2e09abd4015ce4d1dcc5ab9bb7f175024a4cb47c11ef2985f0aabc94861cfe",
+          "surfaceSHA": "37aa3b7d5e6dfa6dc58d6003b6cbdb4fa2f149421c3eff3e41c46f56230d8998"
+        },
+        {
+          "case": "primary.grading-blending-1",
+          "elapsedMs": 1.738419,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "2d4f4aab4da153fbe0fa11addc950dfb0928bd901b2fef39d794743585c029b8",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "7ab72e86bd987e4fb55f52acce6de910889f0f355534b00c5913cec833d46229",
+          "stockSHA": "ccec0168bf549b10feefde66b20a384aa771351b2cd6d2d00edc9f50801a68b1",
+          "surfaceSHA": "e18b8bc570a47d30fe9aa66f7ae8988a1eaced7ea04a8a6242b4e3a083b44c99"
+        },
+        {
+          "case": "primary.grading-luminance-0",
+          "elapsedMs": 2.22446,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "73a5e47359cab685c12c349ee3ef7acf845e76632d551ac0cb64fd058fc00076",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-luminance-1",
+          "elapsedMs": 1.339502,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "cd06f711a5a1332292a5e64e7c29242af00ddb68e2ed131ada1fb1d5e8fd6515",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "e8286edb19d6791e3090b9e7128e33922f2017e16b684f4f7dced375d9313b66",
+          "stockSHA": "979defe789c9f48e6442536d990c298c456e0494c8672335324d7dfdd62e485b",
+          "surfaceSHA": "3c7e987bb11959766709beff50b1df4d6d9d483a8384a335f9af864d1551f678"
+        },
+        {
+          "case": "secondary.grading-balance-0",
+          "elapsedMs": 2.286127,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "ae2568fc2d9fb52778d3bdaa17135f2a6fa6d9d67fd7605e8180c852037f5910",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-balance-1",
+          "elapsedMs": 2.131711,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "f441107c06b6de382a57d7ec7a97837e4080cd60b6e32b11f384d9569df76478",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "990231d8106d23c96a6be20754333ce805987f237efca88a06a97451fed44a26",
+          "stockSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9",
+          "surfaceSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9"
+        },
+        {
+          "case": "secondary.grading-blending-0",
+          "elapsedMs": 1.652418,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "2a1ce924b99bb6373757d9eee5f9dcbad7419c475557898d19296c23343d6862",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "afaf29b897a239be6fdc7303bc8967a2f06ed89303da6a9f2e4ccff3d1419766",
+          "stockSHA": "64a49de80dd3f1f681444149d74b367c9753f1f63368dd0b4fe03b02c25300a0",
+          "surfaceSHA": "c6925ae0b2f0736d0e46469087f196c5ab11f93331d2851bcb5b560d0c85a51a"
+        },
+        {
+          "case": "secondary.grading-blending-1",
+          "elapsedMs": 1.348168,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "925b85533a2608557a567e536aaeb030e84741fd705d70dfa35fe09a03817226",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "57cb5addfa4a5c8c0975e91785484ca6e053d71cac6b8f656c383cdcdaa71c90",
+          "stockSHA": "eb100f480fdd85d4f9f8583cd5236e700a57651cdefd79b8ea7eb437790c56c6",
+          "surfaceSHA": "58c99d508f554830553976e7c2f6e962a5620dd4f2e40ac8b40d013df13a2288"
+        },
+        {
+          "case": "secondary.grading-luminance-0",
+          "elapsedMs": 1.96621,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "ae2568fc2d9fb52778d3bdaa17135f2a6fa6d9d67fd7605e8180c852037f5910",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-luminance-1",
+          "elapsedMs": 1.182543,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "bfc4ebc171aef579392165d685edd2ba1f2062257ea0e7537d3ce185c49fa741",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "5016f1bb6513bb0bb2b660abd522fd3e74574c7727abfb3c5b59acf620a9c085",
+          "stockSHA": "c8e40df4968dbfbbfc63a5b81df31b3487e641935ed8e743d69a20c310c1d5e5",
+          "surfaceSHA": "3a9094678e6d25f16ac3b3900a9979c659f24ab7591affefccf82d942a3ed635"
+        }
+      ],
+      "maximumAbsolute": 7.152557373046875e-07,
+      "over2e6Components": 0,
+      "report": {
+        "path": "output/035-development/phase-ab/grading/actual-linux-cpu.json",
+        "sha256": "d719ea1b45ab2e6b1e66c7c381517bc936b5c00f26876d8b4b2c206f7c527226"
+      },
+      "runtimeSHA": "04ff9ef089d7d22d88c43f67dd713a06eab579d9fd9705a72cffb58d5727464a",
+      "samplePixels": 147456
+    },
+    "linuxArm64SoftwareVulkan": {
+      "backend": "gpu",
+      "cases": [
+        {
+          "case": "primary.grading-balance-0",
+          "elapsedMs": 42.389504,
+          "maximumAbsolute": 1.3113021850585938e-06,
+          "outputSHA": "27f58e9c69974cc45ae6cef90d9775b7df8181192818dd9a51980bac2dadeca8",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-balance-1",
+          "elapsedMs": 0.786709,
+          "maximumAbsolute": 1.3113021850585938e-06,
+          "outputSHA": "943b7bf99c60a5f7ead79c70d497873b997f1075a7ee2d094bc210c4a40f2114",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "f54d422c512d24b8d24e55b5b09f9635c23b43ee02ba66023c62f4636f362850",
+          "stockSHA": "3a059422cc49656d6161fe6a7419e8ebe53424055b244f728ecdec7cc57b1f04",
+          "surfaceSHA": "a5b54cd05c6422c4255b5c5428fce5c27128cc6c82661728df06e57e6af1964c"
+        },
+        {
+          "case": "primary.grading-blending-0",
+          "elapsedMs": 0.810917,
+          "maximumAbsolute": 1.3113021850585938e-06,
+          "outputSHA": "b54436f4b7af7d27f5c6fcae715c15d5793ef2502d007cc80d9cf52f244c701c",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "65fd0dd682c855e3162ee912945ae3303b109ce3c55b96b065c9b9e269771b61",
+          "stockSHA": "6c2e09abd4015ce4d1dcc5ab9bb7f175024a4cb47c11ef2985f0aabc94861cfe",
+          "surfaceSHA": "37aa3b7d5e6dfa6dc58d6003b6cbdb4fa2f149421c3eff3e41c46f56230d8998"
+        },
+        {
+          "case": "primary.grading-blending-1",
+          "elapsedMs": 0.766667,
+          "maximumAbsolute": 1.0728836059570312e-06,
+          "outputSHA": "17446e7ebcc8a056c0edc5355b2ffc1a5e9249c1606972b90a1107dde5ab7219",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "7ab72e86bd987e4fb55f52acce6de910889f0f355534b00c5913cec833d46229",
+          "stockSHA": "ccec0168bf549b10feefde66b20a384aa771351b2cd6d2d00edc9f50801a68b1",
+          "surfaceSHA": "e18b8bc570a47d30fe9aa66f7ae8988a1eaced7ea04a8a6242b4e3a083b44c99"
+        },
+        {
+          "case": "primary.grading-luminance-0",
+          "elapsedMs": 0.813459,
+          "maximumAbsolute": 1.3113021850585938e-06,
+          "outputSHA": "27f58e9c69974cc45ae6cef90d9775b7df8181192818dd9a51980bac2dadeca8",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-luminance-1",
+          "elapsedMs": 0.897209,
+          "maximumAbsolute": 1.3113021850585938e-06,
+          "outputSHA": "977368840abd14d2da53723e0640a12591c8376fdc94d0a04ef536c9f7151be3",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "e8286edb19d6791e3090b9e7128e33922f2017e16b684f4f7dced375d9313b66",
+          "stockSHA": "979defe789c9f48e6442536d990c298c456e0494c8672335324d7dfdd62e485b",
+          "surfaceSHA": "3c7e987bb11959766709beff50b1df4d6d9d483a8384a335f9af864d1551f678"
+        },
+        {
+          "case": "secondary.grading-balance-0",
+          "elapsedMs": 0.935501,
+          "maximumAbsolute": 5.364418029785156e-07,
+          "outputSHA": "b6060e373048ec358578871535f6594f1a4df5748feb92906a626e2eff4cf446",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-balance-1",
+          "elapsedMs": 0.774251,
+          "maximumAbsolute": 5.364418029785156e-07,
+          "outputSHA": "15d5271af87e8a80bf072c0a3de085c1bfde2ad0a7aad2f4e4fbb613f710cfde",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "990231d8106d23c96a6be20754333ce805987f237efca88a06a97451fed44a26",
+          "stockSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9",
+          "surfaceSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9"
+        },
+        {
+          "case": "secondary.grading-blending-0",
+          "elapsedMs": 0.863834,
+          "maximumAbsolute": 5.364418029785156e-07,
+          "outputSHA": "5823a2e0f3d9920ec0d5ff73cffd032af94bf8bc8cf19e9a40f6b76984c56f57",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "afaf29b897a239be6fdc7303bc8967a2f06ed89303da6a9f2e4ccff3d1419766",
+          "stockSHA": "64a49de80dd3f1f681444149d74b367c9753f1f63368dd0b4fe03b02c25300a0",
+          "surfaceSHA": "c6925ae0b2f0736d0e46469087f196c5ab11f93331d2851bcb5b560d0c85a51a"
+        },
+        {
+          "case": "secondary.grading-blending-1",
+          "elapsedMs": 0.840375,
+          "maximumAbsolute": 4.76837158203125e-07,
+          "outputSHA": "44a515ff1098a23afbfcb5e602e0add6c0a95fb5e86b62916dd69dea0ba2769b",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "57cb5addfa4a5c8c0975e91785484ca6e053d71cac6b8f656c383cdcdaa71c90",
+          "stockSHA": "eb100f480fdd85d4f9f8583cd5236e700a57651cdefd79b8ea7eb437790c56c6",
+          "surfaceSHA": "58c99d508f554830553976e7c2f6e962a5620dd4f2e40ac8b40d013df13a2288"
+        },
+        {
+          "case": "secondary.grading-luminance-0",
+          "elapsedMs": 0.792959,
+          "maximumAbsolute": 5.364418029785156e-07,
+          "outputSHA": "b6060e373048ec358578871535f6594f1a4df5748feb92906a626e2eff4cf446",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-luminance-1",
+          "elapsedMs": 0.832293,
+          "maximumAbsolute": 5.364418029785156e-07,
+          "outputSHA": "30b071bf87c7a45dcf9222228ef41284ae650c9821f1325834a3cba8f019822c",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "5016f1bb6513bb0bb2b660abd522fd3e74574c7727abfb3c5b59acf620a9c085",
+          "stockSHA": "c8e40df4968dbfbbfc63a5b81df31b3487e641935ed8e743d69a20c310c1d5e5",
+          "surfaceSHA": "3a9094678e6d25f16ac3b3900a9979c659f24ab7591affefccf82d942a3ed635"
+        }
+      ],
+      "maximumAbsolute": 1.3113021850585938e-06,
+      "over2e6Components": 0,
+      "report": {
+        "path": "output/035-development/phase-ab/grading/actual-linux-vulkan.json",
+        "sha256": "91b89a805b75df24719a47bdd8eea50bb65a14e64b199395ae13bfd16cd66e16"
+      },
+      "runtimeSHA": "8d064719220bde5e0622f6f467e33f5b16d697eed768a3fd01fc10690e26a4bd",
+      "samplePixels": 147456
+    },
+    "macOSCpu": {
+      "backend": "cpu",
+      "cases": [
+        {
+          "case": "primary.grading-balance-0",
+          "elapsedMs": 0.900708,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "73a5e47359cab685c12c349ee3ef7acf845e76632d551ac0cb64fd058fc00076",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-balance-1",
+          "elapsedMs": 0.580833,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "4aaf5edb54dcb557fd126bffbabe1292850cd4eeb149d73517905c80cd11899f",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "f54d422c512d24b8d24e55b5b09f9635c23b43ee02ba66023c62f4636f362850",
+          "stockSHA": "3a059422cc49656d6161fe6a7419e8ebe53424055b244f728ecdec7cc57b1f04",
+          "surfaceSHA": "a5b54cd05c6422c4255b5c5428fce5c27128cc6c82661728df06e57e6af1964c"
+        },
+        {
+          "case": "primary.grading-blending-0",
+          "elapsedMs": 0.71775,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "6dfa5964b61b9d068450cefe7715f411a2c0b6b15bc94bafa4486c5dcbcdc0e7",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "65fd0dd682c855e3162ee912945ae3303b109ce3c55b96b065c9b9e269771b61",
+          "stockSHA": "6c2e09abd4015ce4d1dcc5ab9bb7f175024a4cb47c11ef2985f0aabc94861cfe",
+          "surfaceSHA": "37aa3b7d5e6dfa6dc58d6003b6cbdb4fa2f149421c3eff3e41c46f56230d8998"
+        },
+        {
+          "case": "primary.grading-blending-1",
+          "elapsedMs": 0.568458,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "2d4f4aab4da153fbe0fa11addc950dfb0928bd901b2fef39d794743585c029b8",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "7ab72e86bd987e4fb55f52acce6de910889f0f355534b00c5913cec833d46229",
+          "stockSHA": "ccec0168bf549b10feefde66b20a384aa771351b2cd6d2d00edc9f50801a68b1",
+          "surfaceSHA": "e18b8bc570a47d30fe9aa66f7ae8988a1eaced7ea04a8a6242b4e3a083b44c99"
+        },
+        {
+          "case": "primary.grading-luminance-0",
+          "elapsedMs": 0.823583,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "73a5e47359cab685c12c349ee3ef7acf845e76632d551ac0cb64fd058fc00076",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-luminance-1",
+          "elapsedMs": 0.789167,
+          "maximumAbsolute": 7.152557373046875e-07,
+          "outputSHA": "cd06f711a5a1332292a5e64e7c29242af00ddb68e2ed131ada1fb1d5e8fd6515",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "e8286edb19d6791e3090b9e7128e33922f2017e16b684f4f7dced375d9313b66",
+          "stockSHA": "979defe789c9f48e6442536d990c298c456e0494c8672335324d7dfdd62e485b",
+          "surfaceSHA": "3c7e987bb11959766709beff50b1df4d6d9d483a8384a335f9af864d1551f678"
+        },
+        {
+          "case": "secondary.grading-balance-0",
+          "elapsedMs": 0.833542,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "ae2568fc2d9fb52778d3bdaa17135f2a6fa6d9d67fd7605e8180c852037f5910",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-balance-1",
+          "elapsedMs": 0.6675,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "f441107c06b6de382a57d7ec7a97837e4080cd60b6e32b11f384d9569df76478",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "990231d8106d23c96a6be20754333ce805987f237efca88a06a97451fed44a26",
+          "stockSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9",
+          "surfaceSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9"
+        },
+        {
+          "case": "secondary.grading-blending-0",
+          "elapsedMs": 0.916125,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "2a1ce924b99bb6373757d9eee5f9dcbad7419c475557898d19296c23343d6862",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "afaf29b897a239be6fdc7303bc8967a2f06ed89303da6a9f2e4ccff3d1419766",
+          "stockSHA": "64a49de80dd3f1f681444149d74b367c9753f1f63368dd0b4fe03b02c25300a0",
+          "surfaceSHA": "c6925ae0b2f0736d0e46469087f196c5ab11f93331d2851bcb5b560d0c85a51a"
+        },
+        {
+          "case": "secondary.grading-blending-1",
+          "elapsedMs": 0.740333,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "925b85533a2608557a567e536aaeb030e84741fd705d70dfa35fe09a03817226",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "57cb5addfa4a5c8c0975e91785484ca6e053d71cac6b8f656c383cdcdaa71c90",
+          "stockSHA": "eb100f480fdd85d4f9f8583cd5236e700a57651cdefd79b8ea7eb437790c56c6",
+          "surfaceSHA": "58c99d508f554830553976e7c2f6e962a5620dd4f2e40ac8b40d013df13a2288"
+        },
+        {
+          "case": "secondary.grading-luminance-0",
+          "elapsedMs": 0.826084,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "ae2568fc2d9fb52778d3bdaa17135f2a6fa6d9d67fd7605e8180c852037f5910",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-luminance-1",
+          "elapsedMs": 0.834708,
+          "maximumAbsolute": 3.5762786865234375e-07,
+          "outputSHA": "bfc4ebc171aef579392165d685edd2ba1f2062257ea0e7537d3ce185c49fa741",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": false,
+          "sampleSHA": "5016f1bb6513bb0bb2b660abd522fd3e74574c7727abfb3c5b59acf620a9c085",
+          "stockSHA": "c8e40df4968dbfbbfc63a5b81df31b3487e641935ed8e743d69a20c310c1d5e5",
+          "surfaceSHA": "3a9094678e6d25f16ac3b3900a9979c659f24ab7591affefccf82d942a3ed635"
+        }
+      ],
+      "maximumAbsolute": 7.152557373046875e-07,
+      "over2e6Components": 0,
+      "report": {
+        "path": "output/035-development/candidate-batch30-native-mask-ring/native-grading/buffered-mac-cpu.json",
+        "sha256": "00f92b5c57e6bdee02859b0e471ac20fa9cd3ecdfdf015ad3521e333e93e24f8"
+      },
+      "runtimeSHA": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+      "samplePixels": 147456
+    },
+    "macOSMetalBuffer": {
+      "backend": "gpu",
+      "cases": [
+        {
+          "case": "primary.grading-balance-0",
+          "elapsedMs": 5.813625,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-balance-1",
+          "elapsedMs": 5.405458,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "3a059422cc49656d6161fe6a7419e8ebe53424055b244f728ecdec7cc57b1f04",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "f54d422c512d24b8d24e55b5b09f9635c23b43ee02ba66023c62f4636f362850",
+          "stockSHA": "3a059422cc49656d6161fe6a7419e8ebe53424055b244f728ecdec7cc57b1f04",
+          "surfaceSHA": "a5b54cd05c6422c4255b5c5428fce5c27128cc6c82661728df06e57e6af1964c"
+        },
+        {
+          "case": "primary.grading-blending-0",
+          "elapsedMs": 5.414083,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "6c2e09abd4015ce4d1dcc5ab9bb7f175024a4cb47c11ef2985f0aabc94861cfe",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "65fd0dd682c855e3162ee912945ae3303b109ce3c55b96b065c9b9e269771b61",
+          "stockSHA": "6c2e09abd4015ce4d1dcc5ab9bb7f175024a4cb47c11ef2985f0aabc94861cfe",
+          "surfaceSHA": "37aa3b7d5e6dfa6dc58d6003b6cbdb4fa2f149421c3eff3e41c46f56230d8998"
+        },
+        {
+          "case": "primary.grading-blending-1",
+          "elapsedMs": 5.474875,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "ccec0168bf549b10feefde66b20a384aa771351b2cd6d2d00edc9f50801a68b1",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "7ab72e86bd987e4fb55f52acce6de910889f0f355534b00c5913cec833d46229",
+          "stockSHA": "ccec0168bf549b10feefde66b20a384aa771351b2cd6d2d00edc9f50801a68b1",
+          "surfaceSHA": "e18b8bc570a47d30fe9aa66f7ae8988a1eaced7ea04a8a6242b4e3a083b44c99"
+        },
+        {
+          "case": "primary.grading-luminance-0",
+          "elapsedMs": 5.352625,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+          "stockSHA": "39de0917321204a9e32e03d1e8ef924036b9a3662d502abed02bfdcd54496fb5",
+          "surfaceSHA": "5e85209ad5d54c704edae99f64ad99c8d27d35ebfa4946d9cd85077f03b4b21f"
+        },
+        {
+          "case": "primary.grading-luminance-1",
+          "elapsedMs": 5.520334,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "979defe789c9f48e6442536d990c298c456e0494c8672335324d7dfdd62e485b",
+          "over2e6Components": 0,
+          "pixels": 12800,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "e8286edb19d6791e3090b9e7128e33922f2017e16b684f4f7dced375d9313b66",
+          "stockSHA": "979defe789c9f48e6442536d990c298c456e0494c8672335324d7dfdd62e485b",
+          "surfaceSHA": "3c7e987bb11959766709beff50b1df4d6d9d483a8384a335f9af864d1551f678"
+        },
+        {
+          "case": "secondary.grading-balance-0",
+          "elapsedMs": 5.418375,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-balance-1",
+          "elapsedMs": 5.469792,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "2d3ec401fac4a59c687cfb0de738607b15552e3f0dcf32509d76352c2cc238e1",
+          "sameAsMetalSurface": true,
+          "sameAsStock": true,
+          "sampleSHA": "990231d8106d23c96a6be20754333ce805987f237efca88a06a97451fed44a26",
+          "stockSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9",
+          "surfaceSHA": "f92b773e9c91b063f0980b86b56ddfd5a53012494c633f96773de92fbda11ed9"
+        },
+        {
+          "case": "secondary.grading-blending-0",
+          "elapsedMs": 5.40225,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "64a49de80dd3f1f681444149d74b367c9753f1f63368dd0b4fe03b02c25300a0",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "c6432a597a20bc69af832ed3eb3c58d38739e85f91c1ebdef5acbe7dd03d9adb",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "afaf29b897a239be6fdc7303bc8967a2f06ed89303da6a9f2e4ccff3d1419766",
+          "stockSHA": "64a49de80dd3f1f681444149d74b367c9753f1f63368dd0b4fe03b02c25300a0",
+          "surfaceSHA": "c6925ae0b2f0736d0e46469087f196c5ab11f93331d2851bcb5b560d0c85a51a"
+        },
+        {
+          "case": "secondary.grading-blending-1",
+          "elapsedMs": 5.437458,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "eb100f480fdd85d4f9f8583cd5236e700a57651cdefd79b8ea7eb437790c56c6",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "4e87d7dadda8e097f4041feddde8190959206f7e92415dd492c1414870f2075a",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "57cb5addfa4a5c8c0975e91785484ca6e053d71cac6b8f656c383cdcdaa71c90",
+          "stockSHA": "eb100f480fdd85d4f9f8583cd5236e700a57651cdefd79b8ea7eb437790c56c6",
+          "surfaceSHA": "58c99d508f554830553976e7c2f6e962a5620dd4f2e40ac8b40d013df13a2288"
+        },
+        {
+          "case": "secondary.grading-luminance-0",
+          "elapsedMs": 5.537166,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "29b6347c039c0caf4fa0e6cfb54f23efd35cf383f3c5289c7e3ebaaabd62ace5",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+          "stockSHA": "dbee5c89b72529108c715075befdd9751407c7375c1ff8117f2db4814e0bf416",
+          "surfaceSHA": "45cafd4f5a7e208b6bb0db34c3d0f931a0df3e2b46fa7fad6e3b07d9a94486d0"
+        },
+        {
+          "case": "secondary.grading-luminance-1",
+          "elapsedMs": 5.392125,
+          "maximumAbsolute": 0.0,
+          "outputSHA": "c8e40df4968dbfbbfc63a5b81df31b3487e641935ed8e743d69a20c310c1d5e5",
+          "over2e6Components": 0,
+          "pixels": 11776,
+          "recipeSHA": "19502730231de7a8b0cfb0c65067e91c486aa92831e9bc00434048a2fa25f458",
+          "sameAsMetalSurface": false,
+          "sameAsStock": true,
+          "sampleSHA": "5016f1bb6513bb0bb2b660abd522fd3e74574c7727abfb3c5b59acf620a9c085",
+          "stockSHA": "c8e40df4968dbfbbfc63a5b81df31b3487e641935ed8e743d69a20c310c1d5e5",
+          "surfaceSHA": "3a9094678e6d25f16ac3b3900a9979c659f24ab7591affefccf82d942a3ed635"
+        }
+      ],
+      "maximumAbsolute": 0.0,
+      "over2e6Components": 0,
+      "report": {
+        "path": "output/035-development/candidate-batch30-native-mask-ring/native-grading/buffered-mac-gpu.json",
+        "sha256": "5129c541444c2c4e64eff32cbefa28e4767f169248d1884900d8c58cfbfcdc47"
+      },
+      "runtimeSHA": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+      "samplePixels": 147456
+    }
+  },
+  "candidate": "candidate-batch30-native-mask-ring",
+  "desktopSettledBackend": "Retains existing Core Image V3 grading at the complete-frame exactness gate.",
+  "linuxAcceleratedScope": "Mesa llvmpipe Vulkan arm64; a physical Linux GPU was not used.",
+  "node": "color_grading_v2",
+  "probeSources": {
+    "path": "specs/035-portable-processing-cores/evidence/portable-color-grading-sources.tar.gz",
+    "sha256": "b9cd0ef9165ae148dc5256271a4beb072fbbfdbfa2602ee2f69d983cc0d9ce49"
+  },
+  "runtimeSHA256": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+  "schemaVersion": 1,
+  "stagedComposedGraphAndParameterRebind": {
+    "path": "Modules/ImageEdit/tests/color_grading_v2.rs",
+    "sha256": "e1179c3cb38f6bea81b7abfa237dd4c620d15085fe5ea333e4a370d0ba0c1962"
+  },
+  "surfaceShadowDiagnostic": {
+    "encodedRgbLumaAndHighlightWeightDifferences": 0,
+    "receipt": {
+      "path": "output/035-development/phase-ab/grading/surface-trace.json",
+      "sha256": "82a2e548652fea79f72222f10ae0af20320e2ad2db5015cb98885ade7af75efd"
+    },
+    "samplePixels": 147456,
+    "samplePixelsWithDifferentOriginalSurfaceOutput": 2418,
+    "samplePixelsWithDifferentShadowWeight": 10390,
+    "scope": "isolated stage instrumentation through the actual IOSurface shader entry"
+  },
+  "toleranceAbsoluteFloat32Component": 2e-06,
+  "wholeFrames": {
+    "displayPixels": 46080000,
+    "halfPixels": 164975616,
+    "iosurfaceDisplayDifferences": [
+      {
+        "alphaValues": 0,
+        "changedPixels": 5,
+        "edgePixels": 0,
+        "id": "grading-blending",
+        "maxCodeDifference": 1,
+        "meanAbsoluteCodeDifference": 3.255208333333333e-07,
+        "source": "primary",
+        "state": 0
+      },
+      {
+        "alphaValues": 0,
+        "changedPixels": 2,
+        "edgePixels": 0,
+        "id": "grading-luminance",
+        "maxCodeDifference": 1,
+        "meanAbsoluteCodeDifference": 1.3020833333333334e-07,
+        "source": "secondary",
+        "state": 1
+      }
+    ],
+    "iosurfaceDisplayExactStates": 10,
+    "iosurfaceHalfMaximumAbsolute": 7.450580596923828e-08,
+    "iosurfaceNativeMaximumAbsolute": 1.1920928955078125e-07,
+    "nativePixels": 659902464,
+    "sources": {
+      "primary": {
+        "archiveSHA256": "4977998a47325ac975bb45e6e8a589f51e877b9c067238f5658dcb4d1d780308",
+        "cases": [
+          {
+            "archiveSHA256": "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+            "candidateDisplaySHA256": "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 78037,
+              "changedPixels": 73506,
+              "maxAbs": 2.2351741790771484e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 15054336
+            },
+            "id": "grading-balance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 99826,
+              "changedPixels": 95398,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 60217344
+            },
+            "sampleBytes": 819264,
+            "sampleSHA256": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+            "shader": "public IOSurface C ABI",
+            "state": 0,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f"
+          },
+          {
+            "archiveSHA256": "5f9f15423060039570f792ef80332f8f0dd0625780315dfc9a7a3c3ef5ee0679",
+            "candidateDisplaySHA256": "5f9f15423060039570f792ef80332f8f0dd0625780315dfc9a7a3c3ef5ee0679",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 501869,
+              "changedPixels": 476860,
+              "maxAbs": 9.313225746154785e-09,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 15054336
+            },
+            "id": "grading-balance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 834877,
+              "changedPixels": 802086,
+              "maxAbs": 2.60770320892334e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 60217344
+            },
+            "sampleBytes": 819264,
+            "sampleSHA256": "f54d422c512d24b8d24e55b5b09f9635c23b43ee02ba66023c62f4636f362850",
+            "shader": "public IOSurface C ABI",
+            "state": 1,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "5f9f15423060039570f792ef80332f8f0dd0625780315dfc9a7a3c3ef5ee0679"
+          },
+          {
+            "archiveSHA256": "0f61f41087dbc51bbdd6391bfd47c3ee08abb486dbe155910acd5fd513d731b1",
+            "candidateDisplaySHA256": "c03615fe7506fbebb22c1adaec194d6f680825314e2dcb25f5c8cde3885a27af",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 5,
+              "edgePixels": 0,
+              "maxCodeDifference": 1,
+              "meanAbsoluteCodeDifference": 3.255208333333333e-07
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 5,
+              "edgePixels": 0,
+              "maxCodeDifference": 1,
+              "meanAbsoluteCodeDifference": 3.255208333333333e-07
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 2324948,
+              "changedPixels": 1877859,
+              "maxAbs": 7.450580596923828e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 15054336
+            },
+            "id": "grading-blending",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 4151864,
+              "changedPixels": 3730637,
+              "maxAbs": 1.1920928955078125e-07,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 60217344
+            },
+            "sampleBytes": 819264,
+            "sampleSHA256": "65fd0dd682c855e3162ee912945ae3303b109ce3c55b96b065c9b9e269771b61",
+            "shader": "public IOSurface C ABI",
+            "state": 0,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "0f61f41087dbc51bbdd6391bfd47c3ee08abb486dbe155910acd5fd513d731b1"
+          },
+          {
+            "archiveSHA256": "2a9c9bfcbc3db28f1a4049c7c4f7f7626da31f80253fab9530e8740100f4ef8f",
+            "candidateDisplaySHA256": "2a9c9bfcbc3db28f1a4049c7c4f7f7626da31f80253fab9530e8740100f4ef8f",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 625530,
+              "changedPixels": 589904,
+              "maxAbs": 2.2351741790771484e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 15054336
+            },
+            "id": "grading-blending",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 903454,
+              "changedPixels": 863838,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 60217344
+            },
+            "sampleBytes": 819264,
+            "sampleSHA256": "7ab72e86bd987e4fb55f52acce6de910889f0f355534b00c5913cec833d46229",
+            "shader": "public IOSurface C ABI",
+            "state": 1,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "2a9c9bfcbc3db28f1a4049c7c4f7f7626da31f80253fab9530e8740100f4ef8f"
+          },
+          {
+            "archiveSHA256": "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+            "candidateDisplaySHA256": "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 78037,
+              "changedPixels": 73506,
+              "maxAbs": 2.2351741790771484e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 15054336
+            },
+            "id": "grading-luminance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 99826,
+              "changedPixels": 95398,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 60217344
+            },
+            "sampleBytes": 819264,
+            "sampleSHA256": "4be8c15e2ae35b7f2c471a61e6e2a13ff7d9944a1e075dcb90514102d29f785d",
+            "shader": "public IOSurface C ABI",
+            "state": 0,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "c2eb8e04e1c1eb08f9e5f2d2c2c594c8d9e09286af93f5739fb984d2c361985f"
+          },
+          {
+            "archiveSHA256": "6b778991d2fcbd0d921b50e32ff86b20f055c3f8688616d9629052d739ae20ab",
+            "candidateDisplaySHA256": "6b778991d2fcbd0d921b50e32ff86b20f055c3f8688616d9629052d739ae20ab",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 247417,
+              "changedPixels": 195004,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 15054336
+            },
+            "id": "grading-luminance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 419419,
+              "changedPixels": 320720,
+              "maxAbs": 1.043081283569336e-07,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 60217344
+            },
+            "sampleBytes": 819264,
+            "sampleSHA256": "e8286edb19d6791e3090b9e7128e33922f2017e16b684f4f7dced375d9313b66",
+            "shader": "public IOSurface C ABI",
+            "state": 1,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "6b778991d2fcbd0d921b50e32ff86b20f055c3f8688616d9629052d739ae20ab"
+          }
+        ],
+        "device": "Apple M4 Max",
+        "inputSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "report": {
+          "path": "output/035-development/candidate-batch30-native-mask-ring/native-grading/primary.json",
+          "sha256": "3bad94ee988e7d2806a2adb83bff3cc40311576506d556de9f488553d21b51b4"
+        },
+        "runtimeSHA256": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+        "sampleContract": "uint4 x/logicalY/0/0 + 3 float4s input/stock/port, header 64"
+      },
+      "secondary": {
+        "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+        "cases": [
+          {
+            "archiveSHA256": "a0e16aaf2d028fdc3301e796f359016a62c65d8b9eef54fcd3be4028fc6a9ada",
+            "candidateDisplaySHA256": "a0e16aaf2d028fdc3301e796f359016a62c65d8b9eef54fcd3be4028fc6a9ada",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 466852,
+              "changedPixels": 441048,
+              "maxAbs": 2.2351741790771484e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 12441600
+            },
+            "id": "grading-balance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 607570,
+              "changedPixels": 578233,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 49766400
+            },
+            "sampleBytes": 753728,
+            "sampleSHA256": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+            "shader": "public IOSurface C ABI",
+            "state": 0,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "a0e16aaf2d028fdc3301e796f359016a62c65d8b9eef54fcd3be4028fc6a9ada"
+          },
+          {
+            "archiveSHA256": "79dffd3b2afdf5555d38adbdcd1c3a8bb9f416e66da8a398239c7d60fb6a0450",
+            "candidateDisplaySHA256": "79dffd3b2afdf5555d38adbdcd1c3a8bb9f416e66da8a398239c7d60fb6a0450",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 273,
+              "changedPixels": 264,
+              "maxAbs": 5.587935447692871e-09,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 12441600
+            },
+            "id": "grading-balance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 304,
+              "changedPixels": 293,
+              "maxAbs": 1.862645149230957e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 49766400
+            },
+            "sampleBytes": 753728,
+            "sampleSHA256": "990231d8106d23c96a6be20754333ce805987f237efca88a06a97451fed44a26",
+            "shader": "public IOSurface C ABI",
+            "state": 1,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "79dffd3b2afdf5555d38adbdcd1c3a8bb9f416e66da8a398239c7d60fb6a0450"
+          },
+          {
+            "archiveSHA256": "db8ed3f510cfa0d2244a9f5537966aba28d8f1b3b8f808f9f0bdedea3d29672c",
+            "candidateDisplaySHA256": "db8ed3f510cfa0d2244a9f5537966aba28d8f1b3b8f808f9f0bdedea3d29672c",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 402958,
+              "changedPixels": 344437,
+              "maxAbs": 5.960464477539063e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 12441600
+            },
+            "id": "grading-blending",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 636854,
+              "changedPixels": 584018,
+              "maxAbs": 1.1920928955078125e-07,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 49766400
+            },
+            "sampleBytes": 753728,
+            "sampleSHA256": "afaf29b897a239be6fdc7303bc8967a2f06ed89303da6a9f2e4ccff3d1419766",
+            "shader": "public IOSurface C ABI",
+            "state": 0,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "db8ed3f510cfa0d2244a9f5537966aba28d8f1b3b8f808f9f0bdedea3d29672c"
+          },
+          {
+            "archiveSHA256": "82906e23435ba1796ae15b7bdbc1ae6f4a6716cd33abb78239ea52acc4845c21",
+            "candidateDisplaySHA256": "82906e23435ba1796ae15b7bdbc1ae6f4a6716cd33abb78239ea52acc4845c21",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 1126838,
+              "changedPixels": 1040431,
+              "maxAbs": 2.2351741790771484e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 12441600
+            },
+            "id": "grading-blending",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 1356923,
+              "changedPixels": 1287529,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 49766400
+            },
+            "sampleBytes": 753728,
+            "sampleSHA256": "57cb5addfa4a5c8c0975e91785484ca6e053d71cac6b8f656c383cdcdaa71c90",
+            "shader": "public IOSurface C ABI",
+            "state": 1,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "82906e23435ba1796ae15b7bdbc1ae6f4a6716cd33abb78239ea52acc4845c21"
+          },
+          {
+            "archiveSHA256": "a0e16aaf2d028fdc3301e796f359016a62c65d8b9eef54fcd3be4028fc6a9ada",
+            "candidateDisplaySHA256": "a0e16aaf2d028fdc3301e796f359016a62c65d8b9eef54fcd3be4028fc6a9ada",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 466852,
+              "changedPixels": 441048,
+              "maxAbs": 2.2351741790771484e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 12441600
+            },
+            "id": "grading-luminance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 607570,
+              "changedPixels": 578233,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 49766400
+            },
+            "sampleBytes": 753728,
+            "sampleSHA256": "c4547aa9fa77f80ee6e4a84f946ae455d9343a6b91ff948e173532261b04af3d",
+            "shader": "public IOSurface C ABI",
+            "state": 0,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "a0e16aaf2d028fdc3301e796f359016a62c65d8b9eef54fcd3be4028fc6a9ada"
+          },
+          {
+            "archiveSHA256": "fb7f7aaf61822c5c509591f32153529acb08193332ded82698e8ff75b1d9e904",
+            "candidateDisplaySHA256": "81ecba19b494ec5ac90ed6d18b221bb5b6c946ef87b5f3adb1e6df7dbec9eb3e",
+            "candidateVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 2,
+              "edgePixels": 0,
+              "maxCodeDifference": 1,
+              "meanAbsoluteCodeDifference": 1.3020833333333334e-07
+            },
+            "candidateVsStockBand": {
+              "alphaValues": 0,
+              "changedPixels": 2,
+              "edgePixels": 0,
+              "maxCodeDifference": 1,
+              "meanAbsoluteCodeDifference": 1.3020833333333334e-07
+            },
+            "halfRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 1349595,
+              "changedPixels": 1096247,
+              "maxAbs": 4.470348358154297e-08,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 12441600
+            },
+            "id": "grading-luminance",
+            "nativeRGBAf": {
+              "alphaChanges": 0,
+              "changedComponents": 2122537,
+              "changedPixels": 1674607,
+              "maxAbs": 1.043081283569336e-07,
+              "nonfinitePixels": 0,
+              "over2e6Pixels": 0,
+              "pixels": 49766400
+            },
+            "sampleBytes": 753728,
+            "sampleSHA256": "5016f1bb6513bb0bb2b660abd522fd3e74574c7727abfb3c5b59acf620a9c085",
+            "shader": "public IOSurface C ABI",
+            "state": 1,
+            "stockBandVsArchive": {
+              "alphaValues": 0,
+              "changedPixels": 0,
+              "edgePixels": 0,
+              "maxCodeDifference": 0,
+              "meanAbsoluteCodeDifference": 0
+            },
+            "stockBandedDisplaySHA256": "fb7f7aaf61822c5c509591f32153529acb08193332ded82698e8ff75b1d9e904"
+          }
+        ],
+        "device": "Apple M4 Max",
+        "inputSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "nativeSize": [
+          8640,
+          5760
+        ],
+        "report": {
+          "path": "output/035-development/candidate-batch30-native-mask-ring/native-grading/secondary.json",
+          "sha256": "73ad50d954f9b66dbdcfe410218b90032f53a231b92029e9d94f60a0c66a1268"
+        },
+        "runtimeSHA256": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+        "sampleContract": "uint4 x/logicalY/0/0 + 3 float4s input/stock/port, header 64"
+      }
+    },
+    "stockExactStates": 12
+  }
+}

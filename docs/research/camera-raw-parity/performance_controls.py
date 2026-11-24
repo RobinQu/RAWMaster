@@ -14,6 +14,7 @@ from histogram_witness import grain_distances, native_pixel_separation
 from lightflow_editor_evidence import supplemental_controls, rendered_temperature
 from mask_grading_witness import verify as verify_mask_grading
 from profile_match_witness import verify_report as verify_profile_match
+from rendered_control_witness import rendered_rows as rendered_control_rows
 
 HERE = Path(__file__).resolve().parent
 PRODUCTS = ("LightFlow", "RAWMaster", "Camera Raw")
@@ -250,6 +251,11 @@ def assemble(sha):
             if not (HERE / "evidence" / name).is_file(): continue
             extra = inspection_rows(read_evidence(name,sha,product),name)
             if extra.keys() & data[product].keys(): raise ValueError("Duplicate RAWMaster recipe and inspection timings")
+            data[product].update(extra)
+        if product == "RAWMaster" and (HERE / "evidence" / "rawmaster-rendered-controls.json").is_file():
+            name = "rawmaster-rendered-controls.json"
+            extra = rendered_control_rows(HERE / "evidence" / name, "evidence/" + name)
+            if extra.keys() & data[product].keys(): raise ValueError("Duplicate rendered-file control timing")
             data[product].update(extra)
         for name in ("lightflow-lut.json", "lightflow-supplement.json") if product == "LightFlow" else ():
             if not (HERE / "evidence" / name).is_file():

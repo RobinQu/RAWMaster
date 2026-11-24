@@ -1,0 +1,373 @@
+{
+  "experiment": "Uncheckpointed committed v10 catalog WAL after actual supervisor and keeper process death",
+  "recordedLocalDate": "2026-11-23",
+  "productionIntegrated": false,
+  "reproduction": "experiments/portable-processing/catalog/transaction-filestat-probe/bootstrap/recovery/README.md",
+  "underlyingBootstrapEvidence": {
+    "file": "specs/035-portable-processing-cores/evidence/catalog-attachment-bootstrap.json",
+    "SHA256": "8000ad38ddc6a8631edbb949766b82e24ee06c1132cabb0e8f12470a4d36ad9e"
+  },
+  "sourceSHA256": {
+    "README.md": "01e9a8e36bfac3c0aaba7e3dbeab73d1ced010268c48c546d71f18af107fafe0",
+    "build.py": "acef4099062a7930ce3d3138a8377b3009c7937c79f024b281419cf24d7ecf1f",
+    "durable_owner.py": "d3a7722e1691faea2864271652bd77ab716e2c95fd6023e8ff31ec412cec49df",
+    "launch.py": "97128bb4c37d0d73655c5d9f2d844841b007fb6853e81f2e234f48fbc5dbdfcf",
+    "ledger.py": "88cc8fbd6b20d1b6f4d22a17331e2c57bd300a21aa3df8b73f4b036ab016a91a",
+    "run.py": "ec0aebb5ebc4549a5fc7ad2e24c8fc0ccc88b12654edc15dff9a71283ad1b0dc"
+  },
+  "binary": {
+    "existingCatalogCABI": "rm_library_request_v1",
+    "existingBorrowedMigrationABI": "rm_library_transaction_v1",
+    "measuredLinuxDebugCatalogSHA256": "881269d97cfb32bafb7560b333922837c5eb36e34b9b7ead075c911d34a645f5",
+    "newPrivateInventoryKeeperSHA256": "b171668ea09587258557896340774c1c8c8630aff06ae6800b52595b685d14c4",
+    "incrementalKeeperBuildLog": {
+      "path": "output/035-development/wcat-recovery/bound-keeper-build.log",
+      "sha256": "44d69c1071ecc296708622d7d36ec6ca7984c5ca5938eda6cfe785dbc485e480"
+    },
+    "sourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "libsqlite3-sys": "0.38.2",
+    "rusqlite": "0.40.1",
+    "pinnedDocker": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "cpu": 1,
+    "profile": "Linux aarch64 debug, cargo --locked --offline; same V3 library with opt-in FILESTAT and private Unix backend, an extra inventory query in the keeper.",
+    "compiledKeeperSourceSHA256": "6ad87d7f70f863edccb577a9aedebbe0ca6588247e28e30646e471413395fdd8"
+  },
+  "raw": [
+    {
+      "path": "output/035-development/wcat-recovery/smoke.json",
+      "sha256": "ba76ce06976cc521941b6fc9ce1d8f6361b1685ef911ef0f044b7452e8414871",
+      "cases": 1
+    },
+    {
+      "path": "output/035-development/wcat-recovery/recovery.json",
+      "sha256": "0c31f0fb9a059c1cc1975db836755338057015a0b0f23a83391cb860be937422",
+      "cases": 11
+    },
+    {
+      "path": "output/035-development/wcat-recovery/archive.json",
+      "sha256": "6b3bd4baa803dc5c2ae238acce7ded3c669809050572b0dfeef87c5e8c09982f",
+      "cases": 13
+    }
+  ],
+  "measuredCapabilities": {
+    "ordinaryHandleErrno": 95,
+    "opaqueHandleType": 248,
+    "opaqueHandleBytes": 44,
+    "heldFDNameAndRenameMatch": true,
+    "sameBytesSeparateObjectDiffers": true,
+    "mainRequiresOnlyOneHardLink": true
+  },
+  "archivedRun": {
+    "passedScenarios": 13,
+    "eventualDeliveryScenarios": 11,
+    "terminalHoldScenarios": 2,
+    "deliveredRealJPEGs": 12,
+    "duplicateACKsVerified": 12,
+    "bytesPerJPEG": 47835,
+    "outputSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+    "actualHotWALByteRange": [
+      28872,
+      70072
+    ],
+    "actualFinalCommitFrameRange": [
+      7,
+      17
+    ],
+    "eachOriginalMainOnlyItemCount": 0,
+    "oldSupervisorSIGKILLAndKeeperPidfdTerminalForEveryCase": true,
+    "newSupervisorOpenedItsOwnDescriptorsFromAuthenticatedAuthority": true,
+    "fdIdentityOnEverySuccessfulKeeper": "all three actual open file descriptions match",
+    "successfulRecoveryKeeperReadMasks": [
+      16
+    ],
+    "successfulRecoveryKeeperWriteMasks": [
+      1
+    ],
+    "activeSHMBytes": 32768,
+    "modelledPowerFailures": false,
+    "externalDrivesTested": false
+  },
+  "cases": [
+    {
+      "name": "normal-hot-WAL",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7
+    },
+    {
+      "name": "new-SHM",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7,
+      "oldIndexBeforeRemoved": "ee2ac2f4f2dc47b6accb39ecfe4b9887893e195f36199dcb47f9c695313ba525"
+    },
+    {
+      "name": "published-before-ACK",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem",
+        "publishItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7
+    },
+    {
+      "name": "ACK-before-confirmation",
+      "hotWALBytes": 45352,
+      "lastCommittedFrameBeforeCrash": 11,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem",
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 11
+    },
+    {
+      "name": "confirmed-ACK",
+      "hotWALBytes": 45352,
+      "lastCommittedFrameBeforeCrash": 11,
+      "confirmedRecordsBeforeCrash": 2,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem",
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 11
+    },
+    {
+      "name": "two-confirmed",
+      "hotWALBytes": 70072,
+      "lastCommittedFrameBeforeCrash": 17,
+      "confirmedRecordsBeforeCrash": 2,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem",
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 2,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem",
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 17,
+      "oldIndexBeforeRemoved": "8e43485340484133835a00704669f05d3fc60472007448b2b0b39e202bff7927"
+    },
+    {
+      "name": "kernel-short-write",
+      "hotWALBytes": 29673,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7,
+      "kernelFault": {
+        "nativeCAbiRegisterDiedWithSIGXFSZ": true,
+        "bytesBefore": 28872,
+        "kernelEnforcedFileLimit": 29673,
+        "realIncompleteFrameBytes": 801,
+        "committedFramesBefore": 7,
+        "committedFramesAfter": 7
+      },
+      "oldIndexBeforeRemoved": "7f480045e916efb4c9a3983cb9d7d30163030b31ff8ddb831c6a8268a8a68e51"
+    },
+    {
+      "name": "wrong-objects",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7,
+      "refused": [
+        "main object or checkpoint generation differs",
+        "WAL object differs",
+        "existing SHM object differs",
+        "existing SHM object differs",
+        "directory object differs"
+      ]
+    },
+    {
+      "name": "auth-record-damaged",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7,
+      "refused": "invalid prior service record"
+    },
+    {
+      "name": "old-child-live",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7,
+      "liveSignedPIDBlockedIndependentSupervisorAfterFlockLoss": true
+    },
+    {
+      "name": "short-acknowledged-prefix",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "retained, no activation",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "expectedRejection": "acknowledged WAL prefix is missing or altered",
+      "sameOriginalWALInode": true,
+      "bytesAfterPartialMediaLoss": 16512,
+      "stagePreservedFinalVacant": true,
+      "independentSQLiteAfterEarlierValidCommit": {
+        "states": [
+          "running"
+        ],
+        "reservations": 0,
+        "quickCheck": "ok"
+      }
+    },
+    {
+      "name": "damaged-owned-index",
+      "hotWALBytes": 28872,
+      "lastCommittedFrameBeforeCrash": 7,
+      "confirmedRecordsBeforeCrash": 1,
+      "outcome": "delivered",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "deliveredItems": 1,
+      "afterRecoveryActions": [
+        "publishItem",
+        "acknowledgeItem"
+      ],
+      "verifiedIndexFrame": 7,
+      "SQLiteRebuiltExistingOwnedIndexInPlace": true
+    },
+    {
+      "name": "semantic-obligation-mismatch",
+      "hotWALBytes": 70072,
+      "lastCommittedFrameBeforeCrash": 17,
+      "confirmedRecordsBeforeCrash": 2,
+      "outcome": "retained, no activation",
+      "beforeCrashActions": [
+        "register",
+        "claimItem",
+        "prepareItem",
+        "register",
+        "claimItem",
+        "prepareItem"
+      ],
+      "expectedRejection": "confirmed work identity missing",
+      "allTwoPhysicalTicketsMatchIndependentSQLite": true,
+      "allStageFilesPreservedBothFinalsVacant": true
+    }
+  ],
+  "scope": [
+    "Trusted, private service directory and separate service vault. The vault and its HMAC secret are provisioned independently of the catalog and are not rolled back or cloned with it.",
+    "Unique Linux mount ID plus boot ID and opaque filesystem object handles limit this authorization to the same host boot, same mounted filesystem and same registered checkpoint generation. No ability to reopen a file by handle and no second database hard link are required.",
+    "All fixture-side work is serialized. The wrapper publishes durable PREPARED and DELIVERED acknowledgments only after recording the actual sealed WAL prefix, immutable work and ticket digests. Before issuing new work, the replacement checks every recorded semantic obligation inside the live SQLite write transaction.",
+    "Main-file SHA and cryptographic SHA of the mutually authenticated WAL prefix detect same-object truncation or rollback to a valid older SQLite commit. Additional complete but not yet acknowledged work may be present and must satisfy previously recorded obligations.",
+    "A foreign current SHM remains untouched. An authenticated old SHM may be reinitialized by SQLite under its native dead-man lock; a missing SHM may be exclusively created. Both index copies, salts, final rolling checksum, frame number and active mapping are checked before activation.",
+    "Fixture limits are 16 item records and 32 MiB WAL. General checkpoint rotation/compaction, concurrent writers, rollback of the entire service vault, abrupt machine power failure, Apple SQLite, network/external volumes and production throughput have not been established."
+  ],
+  "references": [
+    "https://man7.org/linux/man-pages/man2/open_by_handle_at.2.html",
+    "https://sqlite.org/fileformat.html#walformat",
+    "https://sqlite.org/walformat.html",
+    "https://sqlite.org/howtocorrupt.html"
+  ]
+}

@@ -150,8 +150,8 @@ fn head(db: &Connection) -> Result<Head> {
 }
 pub(super) fn validate_source(db: &Connection) -> Result<()> {
     let version: i64 = db.query_row("PRAGMA user_version", [], |r| r.get(0))?;
-    if version != crate::CATALOG_SCHEMA_VERSION {
-        return Err(format!("library query requires catalog v8; opened v{version}").into());
+    if !crate::readable_schema(version) {
+        return Err(format!("library query requires catalog v8 or v9; opened v{version}").into());
     }
     let library: String =
         db.query_row("SELECT value FROM lc_meta WHERE key='libraryID'", [], |r| {

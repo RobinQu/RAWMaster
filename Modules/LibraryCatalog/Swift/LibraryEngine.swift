@@ -64,12 +64,28 @@ public final class LibraryEngine: @unchecked Sendable {
         return try JSONDecoder().decode(type, from: data)
     }
 
+    /// Opaque wire data for callers that must decide whether an encoded request fits a bound.
+    public struct PreparedRequest: Sendable {
+        fileprivate let message: Data
+        public var byteCount: Int { message.count }
+    }
+
+    public static func prepare<Payload: Encodable>(_ operation: String, index: URL? = nil,
+                                                   payload: Payload, encoder: JSONEncoder) throws -> PreparedRequest {
+        let envelope = CatalogEnvelope(operation: operation, indexPath: index?.path, request: payload)
+        return PreparedRequest(message: try encoder.encode(envelope))
+    }
+
     public func request<Payload: Encodable, Response: Decodable>(
         _ operation: String, at catalog: URL, index: URL? = nil, payload: Payload,
         as type: Response.Type
     ) throws -> Response {
-        let envelope = CatalogEnvelope(operation: operation, indexPath: index?.path, request: payload)
-        let message = try JSONEncoder().encode(envelope)
+        try request(Self.prepare(operation, index: index, payload: payload, encoder: JSONEncoder()), at: catalog, as: type)
+    }
+
+    public func request<Response: Decodable>(_ prepared: PreparedRequest, at catalog: URL,
+                                              as type: Response.Type) throws -> Response {
+        let message = prepared.message
         let path = Array(catalog.path.utf8)
         return try decode(type) { reply in
             path.withUnsafeBufferPointer { name in

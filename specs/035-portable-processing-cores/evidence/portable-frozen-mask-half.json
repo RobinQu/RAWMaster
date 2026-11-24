@@ -1,0 +1,850 @@
+{
+  "faults": {
+    "sameProgramRetryExactDisplays": 2,
+    "twoPrimaryExposureStates": {
+      "sourceAsMask": 1,
+      "unwrittenOrNaN": 3,
+      "withdrawAfterSubmission": 5,
+      "wrongNamedPlane": 1
+    }
+  },
+  "flag": "RAWMASTER_QA_PORTABLE_MASK_HALF_FIT=1",
+  "nativeAuthorityXCTestLogSHA256": "8d0b077378a6ed11c5c948ba4d64f44adc04e28bb903b8f99aa979d206a85d57",
+  "nativeShape": "Rust Metal renders the named mask_tone_v3 node on original pixels into one private 256-row RGBA32F texture. In each of four bands it checks native source/covered result, uses hardware normalized linear sampling into the independent RGBA32F half, verifies real workgroup counts and drains the submitted command before retaining the half.",
+  "negativeControl": "The first primary exposure control reported differences in all four components of one 256-row native band (2,433,024 pixels) and its corresponding half, while its actual final display matched. Replacing the shared diagnostic context with an independent stock proof context and explicitly initializing the baseline texture eliminated the difference on both photos. Those two changes were tested together; the raw first and diagnosed reports are archived.",
+  "newCABI": [
+    "rm_image_metal_mask_half_program_open_v1",
+    "rm_image_metal_mask_half_render_v1"
+  ],
+  "normalEntry": {
+    "allInteractiveAndSettledObservations": 1184,
+    "controlNote": "The ring and mask flags toggle together; per-event intersections were checked. Whole-process peak can contain other operators.",
+    "eligibleSettledCalls": 128,
+    "maskOnCalls": 64,
+    "method": "sealed normal editing service, sequential A/B/B/A, 37 pairs on each of two photos; mask-only execution verified",
+    "runs": [
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "1-primary-0.json",
+        "hits": 0,
+        "processPeak": 5170449048,
+        "settledStates": 74,
+        "sha256": "c0ec75d1d3ec3b1859f0b9aace4387a14e2ae06502206709a4cda38b86713a1e"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "1-secondary-0.json",
+        "hits": 0,
+        "processPeak": 4663232960,
+        "settledStates": 74,
+        "sha256": "fcce37a7ef2769c4596061eb76f1661446d9183248bed21ff6f8eca436ec52e5"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "2-primary-1.json",
+        "hits": 16,
+        "processPeak": 5167172248,
+        "settledStates": 74,
+        "sha256": "2ce855bafbb4763ff58e9292dd7f1439342b50453a40ffc645483f52e3f1a4be"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "2-secondary-1.json",
+        "hits": 16,
+        "processPeak": 4661217704,
+        "settledStates": 74,
+        "sha256": "ad9e64afab583a9ef53c0ce9c3fe3f7e40e4e06c7caf382458cb539cf0c216c2"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "3-primary-1.json",
+        "hits": 16,
+        "processPeak": 5158865536,
+        "settledStates": 74,
+        "sha256": "45062e688c2efb2319bf5d054de982292904bbaa1c2e170f9afc4c84de917fe8"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "3-secondary-1.json",
+        "hits": 16,
+        "processPeak": 4661348896,
+        "settledStates": 74,
+        "sha256": "a434f1ef74bc5ca1f0e26351b4d1c42c1114a1eb3e1f5f9c65a5afd43a3bf0fc"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "4-primary-0.json",
+        "hits": 0,
+        "processPeak": 5186390656,
+        "settledStates": 74,
+        "sha256": "07b5e7e1f736f52aeb0b5b274646c5fcaa6ea9bef0a009925febd7bc249f48e0"
+      },
+      {
+        "approximateFrames": 70,
+        "binarySHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+        "file": "4-secondary-0.json",
+        "hits": 0,
+        "processPeak": 4661496280,
+        "settledStates": 74,
+        "sha256": "50a0cc58607561d48ba99648a37459e783ef628e7cb3b4aff81a26e2a290a013"
+      }
+    ],
+    "settledArchiveMatches": 592,
+    "sources": {
+      "primary": {
+        "footprintBytes": {
+          "0": [
+            5170449048,
+            5186390656
+          ],
+          "1": [
+            5167172248,
+            5158865536
+          ]
+        },
+        "rows": {
+          "color-mask-hue/0": {
+            "maskGpuBoundaryMS": [
+              53.639583,
+              50.228083
+            ],
+            "ms": {
+              "0": [
+                54.446542,
+                50.597083
+              ],
+              "1": [
+                246.184583,
+                81.97575
+              ]
+            },
+            "sha256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064"
+          },
+          "color-mask-hue/1": {
+            "maskGpuBoundaryMS": [
+              38.416958,
+              38.31375
+            ],
+            "ms": {
+              "0": [
+                47.80975,
+                49.347042
+              ],
+              "1": [
+                55.612208,
+                56.846
+              ]
+            },
+            "sha256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31"
+          },
+          "color-mask-saturation/0": {
+            "maskGpuBoundaryMS": [
+              38.395208,
+              35.845
+            ],
+            "ms": {
+              "0": [
+                46.345708,
+                48.743333
+              ],
+              "1": [
+                55.343417,
+                53.614541
+              ]
+            },
+            "sha256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+          },
+          "color-mask-saturation/1": {
+            "maskGpuBoundaryMS": [
+              45.054958,
+              36.379416
+            ],
+            "ms": {
+              "0": [
+                47.468125,
+                50.544084
+              ],
+              "1": [
+                65.395333,
+                54.441625
+              ]
+            },
+            "sha256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102"
+          },
+          "light-mask-blacks/0": {
+            "maskGpuBoundaryMS": [
+              45.490583,
+              38.265041
+            ],
+            "ms": {
+              "0": [
+                51.866375,
+                53.661458
+              ],
+              "1": [
+                85.9555,
+                77.176084
+              ]
+            },
+            "sha256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682"
+          },
+          "light-mask-blacks/1": {
+            "maskGpuBoundaryMS": [
+              37.966375,
+              43.766417
+            ],
+            "ms": {
+              "0": [
+                54.190958,
+                51.836416
+              ],
+              "1": [
+                55.562625,
+                61.539
+              ]
+            },
+            "sha256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173"
+          },
+          "light-mask-contrast/0": {
+            "maskGpuBoundaryMS": [
+              41.145292,
+              46.231875
+            ],
+            "ms": {
+              "0": [
+                55.831417,
+                52.788958
+              ],
+              "1": [
+                58.482625,
+                68.391125
+              ]
+            },
+            "sha256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c"
+          },
+          "light-mask-contrast/1": {
+            "maskGpuBoundaryMS": [
+              43.856542,
+              41.333792
+            ],
+            "ms": {
+              "0": [
+                55.984916,
+                52.854958
+              ],
+              "1": [
+                61.783167,
+                61.342167
+              ]
+            },
+            "sha256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4"
+          },
+          "light-mask-exposure/0": {
+            "maskGpuBoundaryMS": [
+              40.672625,
+              39.091042
+            ],
+            "ms": {
+              "0": [
+                50.870625,
+                53.388708
+              ],
+              "1": [
+                58.371666,
+                57.45125
+              ]
+            },
+            "sha256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258"
+          },
+          "light-mask-exposure/1": {
+            "maskGpuBoundaryMS": [
+              38.931958,
+              44.028291
+            ],
+            "ms": {
+              "0": [
+                79.835042,
+                79.741333
+              ],
+              "1": [
+                57.160042,
+                61.544083
+              ]
+            },
+            "sha256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746"
+          },
+          "light-mask-highlights/0": {
+            "maskGpuBoundaryMS": [
+              41.860834,
+              43.128208
+            ],
+            "ms": {
+              "0": [
+                49.541917,
+                50.406042
+              ],
+              "1": [
+                60.062667,
+                60.234417
+              ]
+            },
+            "sha256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0"
+          },
+          "light-mask-highlights/1": {
+            "maskGpuBoundaryMS": [
+              43.286291,
+              45.45375
+            ],
+            "ms": {
+              "0": [
+                45.80775,
+                47.889917
+              ],
+              "1": [
+                61.086625,
+                64.352375
+              ]
+            },
+            "sha256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818"
+          },
+          "light-mask-shadows/0": {
+            "maskGpuBoundaryMS": [
+              42.366959,
+              43.079042
+            ],
+            "ms": {
+              "0": [
+                48.532666,
+                48.099667
+              ],
+              "1": [
+                59.848542,
+                60.251334
+              ]
+            },
+            "sha256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc"
+          },
+          "light-mask-shadows/1": {
+            "maskGpuBoundaryMS": [
+              38.614666,
+              42.377084
+            ],
+            "ms": {
+              "0": [
+                48.487083,
+                48.239416
+              ],
+              "1": [
+                56.054917,
+                59.713583
+              ]
+            },
+            "sha256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21"
+          },
+          "light-mask-whites/0": {
+            "maskGpuBoundaryMS": [
+              48.382625,
+              44.792
+            ],
+            "ms": {
+              "0": [
+                47.405625,
+                49.463333
+              ],
+              "1": [
+                65.901375,
+                67.110916
+              ]
+            },
+            "sha256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc"
+          },
+          "light-mask-whites/1": {
+            "maskGpuBoundaryMS": [
+              40.404334,
+              40.837541
+            ],
+            "ms": {
+              "0": [
+                47.971291,
+                49.250125
+              ],
+              "1": [
+                60.050417,
+                58.345625
+              ]
+            },
+            "sha256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff"
+          }
+        },
+        "settledTimingMS": {
+          "0": {
+            "maximum": 79.835042,
+            "minimum": 45.80775,
+            "p50": 49.9739795,
+            "p95NearestRank": 79.741333
+          },
+          "1": {
+            "maximum": 246.184583,
+            "minimum": 53.614541,
+            "p50": 60.148542,
+            "p95NearestRank": 85.9555
+          }
+        },
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "footprintBytes": {
+          "0": [
+            4663232960,
+            4661496280
+          ],
+          "1": [
+            4661217704,
+            4661348896
+          ]
+        },
+        "rows": {
+          "color-mask-hue/0": {
+            "maskGpuBoundaryMS": [
+              42.758417,
+              45.740375
+            ],
+            "ms": {
+              "0": [
+                57.938875,
+                51.867625
+              ],
+              "1": [
+                78.409041,
+                80.454958
+              ]
+            },
+            "sha256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96"
+          },
+          "color-mask-hue/1": {
+            "maskGpuBoundaryMS": [
+              36.9235,
+              37.644291
+            ],
+            "ms": {
+              "0": [
+                52.309625,
+                42.643042
+              ],
+              "1": [
+                53.450083,
+                54.383
+              ]
+            },
+            "sha256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50"
+          },
+          "color-mask-saturation/0": {
+            "maskGpuBoundaryMS": [
+              37.911417,
+              39.743875
+            ],
+            "ms": {
+              "0": [
+                50.917125,
+                45.733625
+              ],
+              "1": [
+                54.468333,
+                56.77275
+              ]
+            },
+            "sha256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+          },
+          "color-mask-saturation/1": {
+            "maskGpuBoundaryMS": [
+              39.932291,
+              35.298459
+            ],
+            "ms": {
+              "0": [
+                51.319583,
+                54.073792
+              ],
+              "1": [
+                56.795334,
+                51.133792
+              ]
+            },
+            "sha256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435"
+          },
+          "light-mask-blacks/0": {
+            "maskGpuBoundaryMS": [
+              39.118667,
+              33.655208
+            ],
+            "ms": {
+              "0": [
+                64.54975,
+                53.830583
+              ],
+              "1": [
+                75.696375,
+                67.7345
+              ]
+            },
+            "sha256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a"
+          },
+          "light-mask-blacks/1": {
+            "maskGpuBoundaryMS": [
+              32.889042,
+              36.987083
+            ],
+            "ms": {
+              "0": [
+                60.450958,
+                64.485541
+              ],
+              "1": [
+                53.824041,
+                54.582084
+              ]
+            },
+            "sha256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6"
+          },
+          "light-mask-contrast/0": {
+            "maskGpuBoundaryMS": [
+              31.139666,
+              34.930208
+            ],
+            "ms": {
+              "0": [
+                60.815708,
+                50.281708
+              ],
+              "1": [
+                49.536916,
+                51.818417
+              ]
+            },
+            "sha256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c"
+          },
+          "light-mask-contrast/1": {
+            "maskGpuBoundaryMS": [
+              40.323583,
+              39.642333
+            ],
+            "ms": {
+              "0": [
+                51.697083,
+                48.811958
+              ],
+              "1": [
+                58.41575,
+                57.004167
+              ]
+            },
+            "sha256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009"
+          },
+          "light-mask-exposure/0": {
+            "maskGpuBoundaryMS": [
+              35.09225,
+              35.529
+            ],
+            "ms": {
+              "0": [
+                60.775667,
+                50.613209
+              ],
+              "1": [
+                59.165792,
+                52.930583
+              ]
+            },
+            "sha256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c"
+          },
+          "light-mask-exposure/1": {
+            "maskGpuBoundaryMS": [
+              39.18475,
+              38.82
+            ],
+            "ms": {
+              "0": [
+                89.436542,
+                85.019292
+              ],
+              "1": [
+                65.1845,
+                56.09375
+              ]
+            },
+            "sha256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442"
+          },
+          "light-mask-highlights/0": {
+            "maskGpuBoundaryMS": [
+              36.340666,
+              37.017458
+            ],
+            "ms": {
+              "0": [
+                55.99825,
+                48.5425
+              ],
+              "1": [
+                55.707792,
+                54.427584
+              ]
+            },
+            "sha256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45"
+          },
+          "light-mask-highlights/1": {
+            "maskGpuBoundaryMS": [
+              32.184875,
+              36.453417
+            ],
+            "ms": {
+              "0": [
+                49.265292,
+                45.922875
+              ],
+              "1": [
+                60.242917,
+                54.752292
+              ]
+            },
+            "sha256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d"
+          },
+          "light-mask-shadows/0": {
+            "maskGpuBoundaryMS": [
+              33.495459,
+              33.534708
+            ],
+            "ms": {
+              "0": [
+                48.363,
+                48.265167
+              ],
+              "1": [
+                52.330375,
+                50.484041
+              ]
+            },
+            "sha256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9"
+          },
+          "light-mask-shadows/1": {
+            "maskGpuBoundaryMS": [
+              38.665541,
+              37.002208
+            ],
+            "ms": {
+              "0": [
+                50.640417,
+                51.157458
+              ],
+              "1": [
+                57.839375,
+                54.52775
+              ]
+            },
+            "sha256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef"
+          },
+          "light-mask-whites/0": {
+            "maskGpuBoundaryMS": [
+              36.286875,
+              38.514542
+            ],
+            "ms": {
+              "0": [
+                51.568083,
+                49.630541
+              ],
+              "1": [
+                56.892333,
+                55.734583
+              ]
+            },
+            "sha256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086"
+          },
+          "light-mask-whites/1": {
+            "maskGpuBoundaryMS": [
+              32.397959,
+              36.116166
+            ],
+            "ms": {
+              "0": [
+                55.702708,
+                49.929125
+              ],
+              "1": [
+                59.239333,
+                53.266792
+              ]
+            },
+            "sha256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d"
+          }
+        },
+        "settledTimingMS": {
+          "0": {
+            "maximum": 89.436542,
+            "minimum": 42.643042,
+            "p50": 51.443833,
+            "p95NearestRank": 85.019292
+          },
+          "1": {
+            "maximum": 80.454958,
+            "minimum": 49.536916,
+            "p50": 55.7211875,
+            "p95NearestRank": 78.409041
+          }
+        },
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "uniqueSourceControlStateQualityPairs": 296
+  },
+  "oldRuntimeFallback": [
+    {
+      "dataSHA256": "b82c8bd8934e1ee1761a798b9063e0ccbd1bdb404bf99b5b551f64963b3adff7",
+      "finiteChecks": true,
+      "hostSHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+      "runtimeSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+      "settledArchiveMatches": 4,
+      "symbolPresent": false,
+      "tag": "candidate-batch29-cross-backend"
+    },
+    {
+      "dataSHA256": "42b7925bc77ca51cafe276fd53e153cb5ef5b44398ca9a72035b5fed219bb2e6",
+      "finiteChecks": true,
+      "hostSHA256": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+      "runtimeSHA256": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+      "settledArchiveMatches": 4,
+      "symbolPresent": false,
+      "tag": "candidate-batch19b-source"
+    }
+  ],
+  "qualification": "Single verified immutable original RGBA16F, opaque native finite proof, default geometry and raw details, EXIF1, two measured landscape extents on Apple M4 Max, 512 MiB CI working target. Exact real graph object and zero-overdraw pass/pixel estimate required before the masked half can be consumed.",
+  "rawChecksums": {
+    "all32/primary.json": "7a268391b4068651f72b9cd09d6f6f86b80694c79615e71e937f3b98e0bc70f4",
+    "all32/secondary.json": "d37d0d1bc5f64a17cc32ba75fd3d0c7491d006f480fc3257b666befb677b92ce",
+    "diagnosed/primary.json": "dce7c181d1527232d93ca04807118c5158523119062d08333b63135f2ed2067e",
+    "diagnosed/secondary.json": "23b1b87ac3777259a36d1fa28dbff31ec807d75202a68ad0330ea52693566877",
+    "faults/primary.json": "e6edfb18e834dd14f987aec25ddb785ce863e384b81908a25325e330bb8b0c88",
+    "first/primary.json": "7e50b3d0e58e4d1a92a0e7cb3930b30b0333c8c06ff93289b3f2d2f1131c8a9b",
+    "scope-primary.json": "2adaf94b9fb14b359e0745a53da989a16aa325912b0df5feb2b22f22598d2521",
+    "scope-secondary.json": "6d45b16b3d3ec95681515d9233e79d4f57fe55f010bca75821d28918e4cacb55"
+  },
+  "replayArchive": {
+    "bytes": 417522,
+    "path": "portable-frozen-mask-half-sources.tar.gz",
+    "sha256": "00d5a7c95ad98de3c8e78afcf3fa479133fdfcd80dc4f87236715deae100c70f"
+  },
+  "reviewedSources": {
+    "Modules/ImageEdit/Bridge/ImageEditLoader.c": "089f85ff29119be5822a80b5c7a2ca8ac23ee7dc87b19b89bc8ec3ea4e221253",
+    "Modules/ImageEdit/Bridge/include/ImageEditLoader.h": "6a20b1d90e9eb28a0eec6af9056d12a8044884ab706ad244be067d204fef7997",
+    "Modules/ImageEdit/Swift/RAWMasterImageKernel.swift": "ed127bd0ef6af6709320521ccdb59faef940baf409a8457a74909dcbeb12940d",
+    "Modules/ImageEdit/include/rawmaster_image_metal.h": "70d98f1544b56e44006a431e7cec0dc31b0dac0b376b5c742d3fbcb294956d28",
+    "Modules/ImageEdit/src/gpu/metal_surface/native_half.rs": "e47f918c48fdc09f334c4cb64e3c1921eacb7691f229a8a0683142fa8823a3a4",
+    "Modules/ImageEdit/src/gpu/metal_surface/native_half_main.wgsl": "ffdf9ed7b6cdc437b8d051cc92e6b91ea20e0d78d0e188edb7727a8435b724d2",
+    "Modules/ImageEdit/src/gpu/metal_surface/native_half_mask.wgsl": "21f3ede5cf0e1f2fff0855edefaa7f5ffabec3a869779574159260af1fd83142",
+    "Modules/ImageEdit/src/mask_tone_v3.wgsl": "473bf85d9d1969187fd5b6650a050cbd576d5bcb75576a03a8b56221368231d7",
+    "Modules/ImageEdit/src/premultiplied_f32.wgsl": "ba29af49af392aa3ef7a76d8550fbd402786537c83a574629722adac4c5f8a47",
+    "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift": "cf430d8feec41896db3700e97bcb17ac627d0fa980ffa1f01161c47e6ec1138b",
+    "Sources/RAWMasterImaging/DevelopmentPreviewService.swift": "083d09e3264ae131c2b1ba1f410d750318ba0992ab926cfdb86671b16b0625d9",
+    "Sources/RAWMasterImaging/PreviewCanonicalHalfFIT.swift": "6ac713ec195d93c736048d43e3766e859198407944729938337f215e4da3bca4",
+    "Sources/RAWMasterImaging/PreviewNativeSource.swift": "6f0cab0378e8e2b5bb2799534b5cdaf82fbd6ff208b69829b06dd86d00c1b9ee",
+    "Sources/RAWMasterImaging/PreviewPortableBasic.swift": "1d03c625336e7b19f1ff1c05958ae8a687e0386b0334ece77390041d07ef77ed",
+    "Sources/RAWMasterImaging/PreviewPortableHalfFIT.swift": "490821256b980f5edecb4068a1e0ef71e76609a6054163c5d3e92c6e331e2e8e",
+    "Sources/RAWMasterImaging/PreviewPortableMaskTone.swift": "2150c276f05790aaca587ae98c79211687294d302c654e23a1f4ebd144821f4f",
+    "Tests/RAWMasterImagingTests/PreviewPortableHalfFITTests.swift": "014e88fd815266898cb2aab55575469893ac1adb4e01ee544105d645b7bda6c1"
+  },
+  "schemaVersion": 1,
+  "scope": "Primary settled 2400 FlashRaw 0.3.1 preview with one whole original frozen radial F32 plane and one nonzero local tone or hue control; default off.",
+  "sealedRuntime": {
+    "diagnosticTraceSymbolPresent": false,
+    "imageRuntimeSHA256": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+    "maskedSymbolsPresent": true,
+    "package": "candidate-batch30-native-mask-ring"
+  },
+  "sources": {
+    "primary": {
+      "displayFrameSHA256": {
+        "color-mask-hue/0": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+        "color-mask-hue/1": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+        "color-mask-saturation/0": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+        "color-mask-saturation/1": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+        "light-mask-blacks/0": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+        "light-mask-blacks/1": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+        "light-mask-contrast/0": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+        "light-mask-contrast/1": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+        "light-mask-exposure/0": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+        "light-mask-exposure/1": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+        "light-mask-highlights/0": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+        "light-mask-highlights/1": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+        "light-mask-shadows/0": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+        "light-mask-shadows/1": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+        "light-mask-whites/0": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+        "light-mask-whites/1": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff"
+      },
+      "displayRGBA8Differences": 0,
+      "fullHalfPixelsCompared": 240869376,
+      "fullNativePixelsCompared": 963477504,
+      "hardwareHalfRGBA32BitDifferences": 0,
+      "hostReservedMaskHalfAndMaxScratchBytes": 533692416,
+      "nativeDimensions": [
+        9504,
+        6336
+      ],
+      "nativeRGBA32BitDifferences": 0,
+      "privateHalfAllocationBytes": 241680384,
+      "privateMaskAllocationBytes": 241680384,
+      "scalarsInOriginalScope": 60217344,
+      "scopeFractional": 366,
+      "scopeOne": 19863760,
+      "scopeZero": 40353218,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "states": 16
+    },
+    "secondary": {
+      "displayFrameSHA256": {
+        "color-mask-hue/0": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+        "color-mask-hue/1": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+        "color-mask-saturation/0": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+        "color-mask-saturation/1": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+        "light-mask-blacks/0": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+        "light-mask-blacks/1": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6",
+        "light-mask-contrast/0": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+        "light-mask-contrast/1": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+        "light-mask-exposure/0": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+        "light-mask-exposure/1": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+        "light-mask-highlights/0": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+        "light-mask-highlights/1": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+        "light-mask-shadows/0": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+        "light-mask-shadows/1": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+        "light-mask-whites/0": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+        "light-mask-whites/1": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d"
+      },
+      "displayRGBA8Differences": 0,
+      "fullHalfPixelsCompared": 199065600,
+      "fullNativePixelsCompared": 796262400,
+      "hardwareHalfRGBA32BitDifferences": 0,
+      "hostReservedMaskHalfAndMaxScratchBytes": 448462848,
+      "nativeDimensions": [
+        8640,
+        5760
+      ],
+      "nativeRGBA32BitDifferences": 0,
+      "privateHalfAllocationBytes": 199065600,
+      "privateMaskAllocationBytes": 199065600,
+      "scalarsInOriginalScope": 49766400,
+      "scopeFractional": 363,
+      "scopeOne": 16416287,
+      "scopeZero": 33349750,
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "states": 16
+    }
+  },
+  "timingScope": "Annotated full-native tracing and standalone scope freeze are correctness runs. Scratch masks may be reused across recipes of equal geometry. The real Swift host generates and reserves its R32F mask for each admitted request; only sealed normal-entry timings are comparable.",
+  "traceRuntimeSHA256": "c98b56a4ce10994e28e1b813050fb1ca94113d3672cfc339d3357c7f5f29f85e",
+  "witness": "Independent feature-only trace blits each actual Rust native band into a full-size private diagnostic texture. Independent original Core Image RGBAf proof context, native hardware half and full display use every source position. The expensive full intermediate and test symbol are excluded from the shipped library."
+}

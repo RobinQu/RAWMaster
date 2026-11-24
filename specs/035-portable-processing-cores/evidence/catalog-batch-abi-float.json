@@ -1,0 +1,14 @@
+{
+  "inputDecimal": "51.248178375505404",
+  "abi": "rm_library_request_v1 / workbenchBatch register + load",
+  "before": {
+    "returnedDecimal": "51.24817837550541",
+    "ieee754Binary64Hex": "40499fc44f1b2f61",
+    "catalogBinarySHA256": "4865f943dfa149b5405714e5fd99a05e4943b07fb2cbf487cf2f7775428be0da"
+  },
+  "after": {
+    "returnedDecimal": "51.248178375505404",
+    "ieee754Binary64Hex": "40499fc44f1b2f60",
+    "catalogBinarySHA256": "ef010313a633846f41284f674b46d1a879814172d2d2b15272fd471d4c1ce324"
+  }
+}

@@ -3,12 +3,13 @@ import CoreImage
 import CryptoKit
 import ImageIO
 import RAWMasterCore
+import RAWMasterLibrary
 import Darwin
 import UniformTypeIdentifiers
 
 public typealias RenderPublicationPreparation = @Sendable (_ stagedURL: URL, _ targetURL: URL, _ artifact: RenderArtifact) throws -> Void
 
-public enum PhotoRenderFormat: String, CaseIterable, Sendable { case png16, jpeg8, tiff16
+public enum PhotoRenderFormat: String, CaseIterable, Codable, Sendable { case png16, jpeg8, tiff16
   public var filenameExtension: String { self == .jpeg8 ? "jpg" : (self == .tiff16 ? "tiff" : "png") }
 }
 public struct DevelopmentPreview: @unchecked Sendable {
@@ -77,7 +78,7 @@ public actor DevelopmentService {
     }
     let newBrilliance=DevelopmentBrilliancePublicV1.active(recipe)
     guard !newBrilliance || (qaBrilliancePublicV1 && format == .tiff16) else{throw PreviewPresentationError.unsupported}
-    return try await renderingTask {
+    return try await renderingTask(lane: .export) {
       try RenderFiles.verify(source)
       let captured = try RenderFiles.capture(source); defer { try? FileManager.default.removeItem(at: captured.deletingLastPathComponent()) }
       let dehazeBanded = format == .tiff16 && DevelopmentDehazeNativeRfV1.isActive(recipe.adjustmentsV3?.advancedDetail)
@@ -91,7 +92,16 @@ public actor DevelopmentService {
       defer { ownedContext?.clearCaches() }
       let brillianceRequest=brillianceScope.map{DevelopmentBrilliancePublicV1.Request(scope:$0,check:{try Task.checkCancellation()})}
       let legacyCoverage = try DevelopmentLegacyMaskOutput.Coverage(recipe: recipe)
-      let (image, depth) = try PhotoRenderer.develop(captured, recipe, context:ownedContext,brillianceQARequest:brillianceRequest,legacyCoverage:legacyCoverage)
+      let develop = { try PhotoRenderer.develop(captured, recipe, context:ownedContext,brillianceQARequest:brillianceRequest,legacyCoverage:legacyCoverage) }
+      let image: CIImage, depth: Int?
+      if format == .tiff16, let p = recipe.adjustmentsV3, p.superResolution == .photoUpconv7,
+         p.rawDecoder == .flashRaw031, p.rawDetails == nil, p.aiDenoise == nil,
+         FlashRawBandedUpload.enabled, p.effects?.lensBlur?.sceneDepth == nil,
+         !p.masks.contains(where: { $0.kind == .subject }) {
+        (image, depth) = try FlashRawBandedUpload.$sourceCapture.withValue(captured, operation: develop)
+      } else {
+        (image, depth) = try develop()
+      }
       let legacyMask = try DevelopmentLegacyMaskOutput.make(capture: captured, collected: legacyCoverage, extent: image.extent, format: format)
       return try PhotoRenderer.write(image, format: format, destination: destination,
         protectedURLs: protectedURLs + [source.sourceLocation], sourceDepth: depth, preparePublication: preparePublication,
@@ -101,16 +111,64 @@ public actor DevelopmentService {
     }
   }
   public func inspect(fileURL: URL, sourceEffectiveBitDepth: Int? = nil) async throws -> RenderArtifact {
-    try await renderingTask { try PhotoRenderer.inspect(fileURL, sourceDepth: sourceEffectiveBitDepth) }
+    try await renderingTask(resources: .init(cpu: 1, io: 1)) {
+      try PhotoRenderer.inspect(fileURL, sourceDepth: sourceEffectiveBitDepth)
+    }
   }
 }
 
-func renderingTask<T: Sendable>(_ operation: @escaping @Sendable () throws -> T) async throws -> T {
-  let task = Task.detached(priority: .userInitiated) { try Task.checkCancellation(); return try DevelopmentDehazeNativeResources.run(operation) }
-  return try await withTaskCancellationHandler(operation: { try await task.value }, onCancel: { task.cancel() })
+func renderingTask<T: Sendable>(
+  lane: ProcessingAdmission.Lane = .editing,
+  resources: ProcessingAdmission.Resources = .init(cpu: 1, gpu: 1, io: 1),
+  _ operation: @escaping @Sendable () throws -> T
+) async throws -> T {
+  try await ProcessingAdmission.shared.withPermit(lane, resources: resources) {
+    let task = Task.detached(priority: .userInitiated) {
+      try Task.checkCancellation()
+      return try DevelopmentDehazeNativeResources.run(operation)
+    }
+    return try await withTaskCancellationHandler(operation: { try await task.value }, onCancel: { task.cancel() })
+  }
 }
 
 enum RenderFiles {
+  /// A digest of the bytes written to an exclusive private capture. The read-only
+  /// descriptor pins that inode for the lifetime of the preview source.
+  final class VerifiedCapture: @unchecked Sendable {
+    let url: URL
+    let contentSHA256: String
+    let stamp: PreviewFileStamp
+    let id: UUID
+    private let anchor: FileHandle
+
+    fileprivate init(writtenTo output: FileHandle, at url: URL, digest: String, byteCount: Int64) throws {
+      let id = UUID()
+      guard Darwin.fchmod(output.fileDescriptor, 0o400) == 0,
+            let stamp = try? PreviewFileStamp.read(descriptor: output.fileDescriptor), stamp.size == byteCount else {
+        throw PreviewCaptureFault(captureID: id)
+      }
+      let fd = Darwin.open(url.path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK)
+      guard fd >= 0 else { throw PreviewCaptureFault(captureID: id) }
+      let anchor = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
+      self.url = url; self.contentSHA256 = digest; self.stamp = stamp; self.id = id; self.anchor = anchor
+      try requireCurrent(at: url)
+    }
+
+    func requireCurrent(at capture: URL) throws {
+      guard capture == url, (try? PreviewFileStamp.read(descriptor: anchor.fileDescriptor)) == stamp,
+            (try? PreviewFileStamp.read(url, noFollow: true)) == stamp else { throw PreviewCaptureFault(captureID: id) }
+    }
+
+    func withCurrent<T>(at capture: URL, _ body: () throws -> T) throws -> T {
+      try requireCurrent(at: capture)
+      let result: T
+      do { result = try body() }
+      catch { try requireCurrent(at: capture); throw error }
+      try requireCurrent(at: capture)
+      return result
+    }
+  }
+
   static func hash(_ url: URL) throws -> String {
     let handle = try FileHandle(forReadingFrom: url); defer { try? handle.close() }
     var hash = SHA256()
@@ -128,27 +186,48 @@ enum RenderFiles {
       try hash(source.sourceLocation) == source.contentSHA256 else { throw EditingError.staleSource }
   }
   static func capture(_ source: EditingSourceSnapshot, synchronize: Bool = true) throws -> URL {
+    try writeCapture(source, synchronize: synchronize, exclusive: false) { url, _, _ in url }
+  }
+
+  static func verifiedPreviewCapture(_ source: EditingSourceSnapshot) throws -> VerifiedCapture {
+    try writeCapture(source, synchronize: true, exclusive: true) { url, output, digest in
+      try VerifiedCapture(writtenTo: output, at: url, digest: digest, byteCount: source.byteCount)
+    }
+  }
+
+  private static func writeCapture<T>(_ source: EditingSourceSnapshot, synchronize: Bool, exclusive: Bool,
+                                      finish: (URL, FileHandle, String) throws -> T) throws -> T {
     let directory = FileManager.default.temporaryDirectory.appendingPathComponent("RAWMaster-render-" + UUID().uuidString)
-    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: !exclusive,
+      attributes: exclusive ? [.posixPermissions: 0o700] : nil)
     let destination = directory.appendingPathComponent("source").appendingPathExtension(source.sourceLocation.pathExtension)
     do {
       let input = try FileHandle(forReadingFrom: source.sourceLocation); defer { try? input.close() }
-      FileManager.default.createFile(atPath: destination.path, contents: nil)
-      let output = try FileHandle(forWritingTo: destination); defer { try? output.close() }
+      let output: FileHandle
+      if exclusive {
+        let fd = Darwin.open(destination.path, O_CREAT | O_EXCL | O_WRONLY | O_NOFOLLOW | O_CLOEXEC, 0o600)
+        guard fd >= 0 else { throw POSIXError(POSIXErrorCode(rawValue: errno) ?? .EIO) }
+        output = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
+      } else {
+        FileManager.default.createFile(atPath: destination.path, contents: nil)
+        output = try FileHandle(forWritingTo: destination)
+      }
+      defer { try? output.close() }
       var digest = SHA256(), count: Int64 = 0
       while true {
         try Task.checkCancellation()
         let length = try autoreleasepool {
           let bytes = try input.read(upToCount: 1024 * 1024) ?? Data()
-          digest.update(data: bytes); try output.write(contentsOf: bytes); return bytes.count
+          try output.write(contentsOf: bytes); digest.update(data: bytes); return bytes.count
         }
         if length == 0 { break }; count += Int64(length)
       }
       if synchronize { try output.synchronize() }
-      try output.close()
       let hash = digest.finalize().map { String(format: "%02x", $0) }.joined()
       guard count == source.byteCount, hash == source.contentSHA256 else { throw EditingError.staleSource }
-      return destination
+      let result = try finish(destination, output, hash)
+      try output.close()
+      return result
     } catch { try? FileManager.default.removeItem(at: directory); throw error }
   }
   static func canonical(_ url: URL) -> URL {

@@ -1,0 +1,3923 @@
+{
+  "schema": 1,
+  "decision": "Keep current scalar canonical validation for pure local sharpening and denoising. Whole-width bands accepted a graph rejected by the existing full tile path on both independent launches.",
+  "protocol": {
+    "inputs": {
+      "primary": {
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "archiveSHA256": "7b6f5d10644b08d03ebaea3e416437a636843b77c1a93a03014fa23b34874212"
+      },
+      "secondary": {
+        "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f"
+      }
+    },
+    "releaseAppSHA256": "e2be2fb91a4eba50edea787313a607fa00ac285ddc990a688c6c12b9b52260a9",
+    "releaseXCTestSHA256": "f1d489bfb6840af26502cebcb34a904b2fc859197478b44248a6ef70258a850b",
+    "linkedProductionProbeSHA256": "51acb832cc070667a928d15132803c8e70df07263d8311312379b34bbe3d89d2",
+    "probeSource": "output/035-development/fit-pass-study/profile-half-fit.swift",
+    "commandsAndEnvironmentManifest": "run1/manifest.json",
+    "manifestSHA256": "b3981c64e8a78b1b0e6c28f684d476d7369e8c6acd629d85971e7bb9a0aaa42a",
+    "boundary": "normal ImageEngines.editing.open/render(.settled,maxPixel:2400) through copyDisplayRGBA8, serialized on one GPU; two independent unique local-exposure states warm the resident source in each process; both target states visit once, operator order inverted in cycle 2",
+    "samples": "2 RAW x 2 ABBA cycles each x 4 processes per cycle x 2 operators x 2 states = 64 complete display byte digests; 8 exact responses per source/arm/operator. Timing P50 is arithmetic median, P95 nearest rank, equal to maximum at n=8. Peak is lifetime peak physical footprint inclusive of process startup and warmup; group physical samples n=4.",
+    "controls": "Same sealed linked binary/working context, 512 MiB native policy, Apple unified Metal device and FlashRaw. Only RAWMASTER_QA_CANONICAL_LOCAL_MASK_BANDS changed between arms. This scratch normal-entry session warms the global source; app-wide first-from-cold and absolute global peak caps require separate official tests.",
+    "reproduce": [
+      "python3 output/035-development/local-detail-full-bands-q/run-abba.py NEWLABEL",
+      "python3 output/035-development/local-detail-full-bands-q/make-fault.py",
+      "python3 output/035-development/dehaze-sharpen-stages/link-probe.py output/035-development/local-detail-full-bands-q/full-band-fault.swift output/035-development/local-detail-full-bands-q/NEWFAULTBIN",
+      "RAWMASTER_CANONICAL_SERIAL_FINITE=0 output/035-development/local-detail-full-bands-q/NEWFAULTBIN/probe output/035-development/local-detail-full-bands-q/NEWFAULT.json",
+      "python3 output/035-development/local-detail-full-bands-q/review.py"
+    ]
+  },
+  "frozenStates": {
+    "primary": {
+      "detail-mask-noise": {
+        "recipeSHA256": [
+          "dc2712846825128d3db08cd1bd45a1d8262522fee93e0b9b84a9959889f7b5ad",
+          "1878951e77d71f44439ee61f9e6c8cec63a4d67dd0660e6aa6c04ad86c15f26e"
+        ],
+        "wholeDisplaySHA256": [
+          "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+          "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+        ],
+        "descriptions": [
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "noiseReduction": 0.15,
+                    "saturation": 0,
+                    "shadows": 0
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          },
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "noiseReduction": 0.55,
+                    "saturation": 0,
+                    "shadows": 0
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          }
+        ],
+        "values": [
+          15,
+          55
+        ]
+      },
+      "detail-mask-sharpness": {
+        "recipeSHA256": [
+          "291f8819031492bfbb25d1dd965a64f588792d50e28e9efb4ce06298fefd5f3c",
+          "da238694a24cd4682039fe3575c0722c2c5000b59d46f831e70ef04d1e558f81"
+        ],
+        "wholeDisplaySHA256": [
+          "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+          "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7"
+        ],
+        "descriptions": [
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "saturation": 0,
+                    "shadows": 0,
+                    "sharpness": 0.15
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          },
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "saturation": 0,
+                    "shadows": 0,
+                    "sharpness": 0.55
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          }
+        ],
+        "values": [
+          15,
+          55
+        ]
+      }
+    },
+    "secondary": {
+      "detail-mask-noise": {
+        "recipeSHA256": [
+          "dc2712846825128d3db08cd1bd45a1d8262522fee93e0b9b84a9959889f7b5ad",
+          "1878951e77d71f44439ee61f9e6c8cec63a4d67dd0660e6aa6c04ad86c15f26e"
+        ],
+        "wholeDisplaySHA256": [
+          "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+          "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e"
+        ],
+        "descriptions": [
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "noiseReduction": 0.15,
+                    "saturation": 0,
+                    "shadows": 0
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          },
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "noiseReduction": 0.55,
+                    "saturation": 0,
+                    "shadows": 0
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          }
+        ],
+        "values": [
+          15,
+          55
+        ]
+      },
+      "detail-mask-sharpness": {
+        "recipeSHA256": [
+          "291f8819031492bfbb25d1dd965a64f588792d50e28e9efb4ce06298fefd5f3c",
+          "da238694a24cd4682039fe3575c0722c2c5000b59d46f831e70ef04d1e558f81"
+        ],
+        "wholeDisplaySHA256": [
+          "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+          "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051"
+        ],
+        "descriptions": [
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "saturation": 0,
+                    "shadows": 0,
+                    "sharpness": 0.15
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          },
+          {
+            "adjustmentsV3": {
+              "blackAndWhite": {
+                "enabled": false,
+                "grain": 0,
+                "intensity": 0.5,
+                "neutrals": 0,
+                "tone": 0
+              },
+              "color": {
+                "cast": 0,
+                "enabled": false,
+                "saturation": 0,
+                "vibrance": 0
+              },
+              "curves": {
+                "blue": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "enabled": false,
+                "green": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "red": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                },
+                "rgb": {
+                  "curve": {
+                    "points": [
+                      {
+                        "x": 0,
+                        "y": 0
+                      },
+                      {
+                        "x": 1,
+                        "y": 1
+                      }
+                    ]
+                  },
+                  "inputBlack": 0,
+                  "inputWhite": 1
+                }
+              },
+              "definition": {
+                "amount": 0,
+                "enabled": false
+              },
+              "filter": {
+                "enabled": false,
+                "intensity": 100,
+                "selection": "original"
+              },
+              "geometry": {
+                "clockwiseQuarterTurns": 0,
+                "crop": {
+                  "height": 1,
+                  "width": 1,
+                  "x": 0,
+                  "y": 0
+                },
+                "flipHorizontal": false,
+                "flipVertical": false,
+                "horizontalPerspective": 0,
+                "straightenDegrees": 0,
+                "version": "adjustV3",
+                "verticalPerspective": 0
+              },
+              "legacyBasis": null,
+              "levels": {
+                "blue": {
+                  "kind": "identity"
+                },
+                "enabled": false,
+                "green": {
+                  "kind": "identity"
+                },
+                "luminance": {
+                  "kind": "identity"
+                },
+                "red": {
+                  "kind": "identity"
+                },
+                "rgb": {
+                  "kind": "identity"
+                }
+              },
+              "light": {
+                "blackPoint": 0,
+                "brightness": 0,
+                "brilliance": 0,
+                "contrast": 0,
+                "enabled": false,
+                "exposure": 0,
+                "highlights": 0,
+                "shadows": 0
+              },
+              "localEdits": {
+                "operations": [],
+                "redEyeEnabled": false,
+                "retouchEnabled": false,
+                "sourceBinding": null
+              },
+              "masks": [
+                {
+                  "adjustments": {
+                    "exposure": 0,
+                    "highlights": 0,
+                    "saturation": 0,
+                    "shadows": 0,
+                    "sharpness": 0.55
+                  },
+                  "center": {
+                    "x": 0.5,
+                    "y": 0.5
+                  },
+                  "enabled": true,
+                  "end": {
+                    "x": 0.75,
+                    "y": 0.75
+                  },
+                  "feather": 0,
+                  "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+                  "inverted": false,
+                  "kind": "radial",
+                  "name": "Paired ellipse",
+                  "opacity": 1,
+                  "radiusX": 0.35,
+                  "radiusY": 0.3,
+                  "rangeLower": 0,
+                  "rangeUpper": 1,
+                  "start": {
+                    "x": 0.25,
+                    "y": 0.25
+                  }
+                }
+              ],
+              "noiseReduction": {
+                "colorNoise": 0,
+                "detail": 0,
+                "enabled": false,
+                "luminanceNoise": 0,
+                "nonRawAmount": 0,
+                "sourceCapability": "raw"
+              },
+              "rawDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+              "selectiveColor": {
+                "colors": [
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "red"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "orange"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "yellow"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "green"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "cyan"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "blue"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "purple"
+                  },
+                  {
+                    "hue": 0,
+                    "luminance": 0,
+                    "range": 1,
+                    "sampledColor": null,
+                    "saturation": 0,
+                    "slot": "magenta"
+                  }
+                ],
+                "enabled": false
+              },
+              "sharpen": {
+                "edges": 0.22,
+                "enabled": false,
+                "falloff": 0.69,
+                "intensity": 0
+              },
+              "vignette": {
+                "enabled": false,
+                "radius": 0.5,
+                "softness": 0,
+                "strength": 0
+              },
+              "whiteBalance": {
+                "adjustment": {
+                  "mode": "asShot"
+                },
+                "enabled": false
+              }
+            },
+            "engineVersion": "rawmaster-adjust-v3",
+            "schemaVersion": 3
+          }
+        ],
+        "values": [
+          15,
+          55
+        ]
+      }
+    }
+  },
+  "statistics": {
+    "primary": {
+      "stock": {
+        "detail-mask-sharpness": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 416.2039995,
+            "p95": 434.870209,
+            "min": 410.420667,
+            "max": 434.870209
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 247.09837499999998,
+            "p95": 256.349958,
+            "min": 242.284166,
+            "max": 256.349958
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 151.77335399999998,
+            "p95": 163.897417,
+            "min": 145.668791,
+            "max": 163.897417
+          }
+        },
+        "detail-mask-noise": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 404.5913545,
+            "p95": 428.856625,
+            "min": 384.756833,
+            "max": 428.856625
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 241.8085005,
+            "p95": 258.551333,
+            "min": 234.6805,
+            "max": 258.551333
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 143.08027049999998,
+            "p95": 155.861791,
+            "min": 134.536167,
+            "max": 155.861791
+          }
+        },
+        "processPeakPhysicalFootprintBytes": {
+          "n": 4,
+          "p50": 3392080032.0,
+          "p95": 3420473504,
+          "min": 3315697824,
+          "max": 3420473504
+        }
+      },
+      "bands": {
+        "detail-mask-sharpness": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 267.398729,
+            "p95": 319.563083,
+            "min": 247.472209,
+            "max": 319.563083
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 95.07314550000001,
+            "p95": 125.715083,
+            "min": 78.132167,
+            "max": 125.715083
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 153.1285005,
+            "p95": 165.522958,
+            "min": 145.190834,
+            "max": 165.522958
+          }
+        },
+        "detail-mask-noise": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 213.1084375,
+            "p95": 303.977667,
+            "min": 206.443833,
+            "max": 303.977667
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 49.6284585,
+            "p95": 125.894375,
+            "min": 44.337833,
+            "max": 125.894375
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 142.114896,
+            "p95": 154.574583,
+            "min": 135.674333,
+            "max": 154.574583
+          }
+        },
+        "processPeakPhysicalFootprintBytes": {
+          "n": 4,
+          "p50": 3510479008.0,
+          "p95": 3556608208,
+          "min": 3464415344,
+          "max": 3556608208
+        }
+      }
+    },
+    "secondary": {
+      "stock": {
+        "detail-mask-sharpness": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 346.5239795,
+            "p95": 360.769834,
+            "min": 338.963542,
+            "max": 360.769834
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 203.8194375,
+            "p95": 213.002667,
+            "min": 197.728125,
+            "max": 213.002667
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 121.170792,
+            "p95": 126.793625,
+            "min": 117.342541,
+            "max": 126.793625
+          }
+        },
+        "detail-mask-noise": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 341.1675835,
+            "p95": 356.318458,
+            "min": 318.542333,
+            "max": 356.318458
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 202.31154199999997,
+            "p95": 208.474208,
+            "min": 193.056042,
+            "max": 208.474208
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 120.994437,
+            "p95": 127.29025,
+            "min": 110.60925,
+            "max": 127.29025
+          }
+        },
+        "processPeakPhysicalFootprintBytes": {
+          "n": 4,
+          "p50": 3074099192.0,
+          "p95": 3086731328,
+          "min": 3055126616,
+          "max": 3086731328
+        }
+      },
+      "bands": {
+        "detail-mask-sharpness": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 221.925792,
+            "p95": 229.58825,
+            "min": 209.0615,
+            "max": 229.58825
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 74.540208,
+            "p95": 84.534042,
+            "min": 70.033667,
+            "max": 84.534042
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 119.725667,
+            "p95": 125.664666,
+            "min": 115.648875,
+            "max": 125.664666
+          }
+        },
+        "detail-mask-noise": {
+          "exactReadbackMs": {
+            "n": 8,
+            "p50": 194.433917,
+            "p95": 203.92375,
+            "min": 180.411334,
+            "max": 203.92375
+          },
+          "finiteMs": {
+            "n": 8,
+            "p50": 46.348,
+            "p95": 52.312416,
+            "min": 34.906458,
+            "max": 52.312416
+          },
+          "displayCGImageMs": {
+            "n": 8,
+            "p50": 118.354667,
+            "p95": 129.786417,
+            "min": 115.814458,
+            "max": 129.786417
+          }
+        },
+        "processPeakPhysicalFootprintBytes": {
+          "n": 4,
+          "p50": 3071936540.0,
+          "p95": 3088255064,
+          "min": 3055912928,
+          "max": 3088255064
+        }
+      }
+    }
+  },
+  "receipts": [
+    {
+      "run": "1-1-primary-stock",
+      "receiptSHA256": "aafdc4c3f848e686561b35a05d67ebc5c6b9ca23d914bb12339e5b875eb4836a",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3420473504,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-1-secondary-stock",
+      "receiptSHA256": "0d9e8162bf16eaf63b670e35102dcb75195ed9117dd53438eae2e1009b936fe9",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3063367648,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-2-primary-bands",
+      "receiptSHA256": "e3c4bdcf6cc82545e18097819d06c1abdd2a50144e0c808406eb8d0667f14056",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3464415344,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-2-secondary-bands",
+      "receiptSHA256": "0cf7008f62d49d156b19c4a67b730931834d1993e2fe81b560e35649683c2c65",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3056060408,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-3-primary-bands",
+      "receiptSHA256": "ca92a82331c6373b45ad36c426583ec889095de1c0dc955cb07dabfcb1dcc3ad",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3484174400,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-3-secondary-bands",
+      "receiptSHA256": "bb9dbdd3971d64faf4b526eded0b6b8cb34d73a564a685527882f05dc8a4892a",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3055912928,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-4-primary-stock",
+      "receiptSHA256": "24f7db481530d8c510de9c1c601fe4ca6123eafe8344ad2ba9c3ef8873521fa6",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3419621512,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "1-4-secondary-stock",
+      "receiptSHA256": "721413ed7288fdb3e16ae544659cf18ef8eab1bc9e458ebefc77882f8cd1c6f8",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3084830736,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-1-secondary-stock",
+      "receiptSHA256": "b490d3b6e0d1c4e1732a87804c5001b9839c6b96e7d2e3ed3866932f8f9b4e20",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3055126616,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-1-primary-stock",
+      "receiptSHA256": "2b372c62abe8c4bb2931a73146331b3d76b5632eaa0a295db4cdfb013659b115",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3364538552,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-2-secondary-bands",
+      "receiptSHA256": "5f3413cc0f228f3ef3f5e7e787572d5001cf36534bdaeb6935cbfe36a23db0d4",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3087812672,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-2-primary-bands",
+      "receiptSHA256": "c366a0bc16feaf5ae3d7ed401cb242e22782eb9c56a44b1c32c347b020f23ef5",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3556608208,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-3-secondary-bands",
+      "receiptSHA256": "521ec389c1ce5e3277a49fdb951b10e6499e574642cc54e2ac701ff6b2afbc07",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3088255064,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-3-primary-bands",
+      "receiptSHA256": "b3821013dfaaf7c0868019b2244867c545c697aa54c26ee613daa4d7b701fb16",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3536783616,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-4-secondary-stock",
+      "receiptSHA256": "2160ccabadb693e884b089865608dc2a32fdba6ed664a817599ceab2c03d589a",
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "processPeakPhysicalFootprintBytes": 3086731328,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    },
+    {
+      "run": "2-4-primary-stock",
+      "receiptSHA256": "446ed7c1b2d5a9d2517700fde6eedad0e0f285870816da183b4605fca7a27db9",
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "processPeakPhysicalFootprintBytes": 3315697824,
+      "gpu": "Apple M4 Max",
+      "os": "Version 27.0.1 (Build 26A434)"
+    }
+  ],
+  "samples": [
+    {
+      "run": "1-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 411.008708,
+      "finiteMs": 243.526291,
+      "displayCGImageMs": 152.74425,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 421.74875,
+      "finiteMs": 248.645875,
+      "displayCGImageMs": 150.846291,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 428.856625,
+      "finiteMs": 258.551333,
+      "displayCGImageMs": 149.264583,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 425.622458,
+      "finiteMs": 248.8155,
+      "displayCGImageMs": 155.861791,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 348.653959,
+      "finiteMs": 197.728125,
+      "displayCGImageMs": 125.517667,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 360.769834,
+      "finiteMs": 213.002667,
+      "displayCGImageMs": 126.793625,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 354.126125,
+      "finiteMs": 205.281625,
+      "displayCGImageMs": 127.29025,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 356.318458,
+      "finiteMs": 208.474208,
+      "displayCGImageMs": 126.2315,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 312.719,
+      "finiteMs": 120.988083,
+      "displayCGImageMs": 165.522958,
+      "bandMs": 117.351791,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 319.563083,
+      "finiteMs": 125.715083,
+      "displayCGImageMs": 162.105791,
+      "bandMs": 115.473917,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 303.977667,
+      "finiteMs": 125.894375,
+      "displayCGImageMs": 154.574583,
+      "bandMs": 114.644166,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 224.985042,
+      "finiteMs": 51.958875,
+      "displayCGImageMs": 151.858625,
+      "bandMs": 42.816,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 213.169584,
+      "finiteMs": 74.99775,
+      "displayCGImageMs": 119.773042,
+      "bandMs": 70.190292,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 225.840291,
+      "finiteMs": 84.534042,
+      "displayCGImageMs": 115.648875,
+      "bandMs": 77.201042,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 180.411334,
+      "finiteMs": 45.648333,
+      "displayCGImageMs": 115.814458,
+      "bandMs": 38.608917,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 181.645125,
+      "finiteMs": 44.836375,
+      "displayCGImageMs": 116.070375,
+      "bandMs": 37.851417,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 251.367833,
+      "finiteMs": 78.132167,
+      "displayCGImageMs": 148.211917,
+      "bandMs": 77.985667,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 247.472209,
+      "finiteMs": 84.212541,
+      "displayCGImageMs": 145.190834,
+      "bandMs": 76.051458,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 211.585875,
+      "finiteMs": 48.555042,
+      "displayCGImageMs": 142.669125,
+      "bandMs": 40.631541,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 208.375083,
+      "finiteMs": 47.906583,
+      "displayCGImageMs": 142.180167,
+      "bandMs": 39.363583,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "1-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 219.60325,
+      "finiteMs": 74.544333,
+      "displayCGImageMs": 119.191958,
+      "bandMs": 70.074542,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 209.0615,
+      "finiteMs": 71.525292,
+      "displayCGImageMs": 118.818625,
+      "bandMs": 63.852291,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 201.061375,
+      "finiteMs": 47.047667,
+      "displayCGImageMs": 124.647916,
+      "bandMs": 39.461125,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 203.92375,
+      "finiteMs": 45.235917,
+      "displayCGImageMs": 129.786417,
+      "bandMs": 36.82,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "1-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 434.870209,
+      "finiteMs": 256.349958,
+      "displayCGImageMs": 163.897417,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 411.935666,
+      "finiteMs": 242.552083,
+      "displayCGImageMs": 145.668791,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 404.247042,
+      "finiteMs": 240.684209,
+      "displayCGImageMs": 145.131667,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 404.935667,
+      "finiteMs": 242.932792,
+      "displayCGImageMs": 143.039708,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 345.897167,
+      "finiteMs": 207.124875,
+      "displayCGImageMs": 121.2145,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 347.150792,
+      "finiteMs": 204.64375,
+      "displayCGImageMs": 121.127084,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 342.234417,
+      "finiteMs": 202.136375,
+      "displayCGImageMs": 120.154416,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "1-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 339.009208,
+      "finiteMs": 204.529,
+      "displayCGImageMs": 114.396042,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 318.542333,
+      "finiteMs": 193.056042,
+      "displayCGImageMs": 110.60925,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 332.929333,
+      "finiteMs": 196.271084,
+      "displayCGImageMs": 117.359792,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 338.963542,
+      "finiteMs": 201.896417,
+      "displayCGImageMs": 117.342541,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 342.487375,
+      "finiteMs": 202.5385,
+      "displayCGImageMs": 120.291792,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 394.37725,
+      "finiteMs": 240.412875,
+      "displayCGImageMs": 140.116833,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 406.028042,
+      "finiteMs": 247.198083,
+      "displayCGImageMs": 143.120833,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 410.420667,
+      "finiteMs": 245.550875,
+      "displayCGImageMs": 147.948166,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-1-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 418.518916,
+      "finiteMs": 249.063583,
+      "displayCGImageMs": 149.757542,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 191.506,
+      "finiteMs": 34.906458,
+      "displayCGImageMs": 119.054,
+      "bandMs": 34.751959,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 195.498167,
+      "finiteMs": 48.850583,
+      "displayCGImageMs": 118.678459,
+      "bandMs": 40.620333,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 223.538417,
+      "finiteMs": 73.178584,
+      "displayCGImageMs": 122.529542,
+      "bandMs": 65.1755,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-2-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 220.313167,
+      "finiteMs": 70.033667,
+      "displayCGImageMs": 119.678292,
+      "bandMs": 62.212458,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 214.596,
+      "finiteMs": 50.701875,
+      "displayCGImageMs": 140.326041,
+      "bandMs": 47.009167,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 211.620875,
+      "finiteMs": 44.337833,
+      "displayCGImageMs": 142.049625,
+      "bandMs": 37.79575,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 269.615667,
+      "finiteMs": 98.557291,
+      "displayCGImageMs": 153.948709,
+      "bandMs": 92.984584,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-2-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 262.538375,
+      "finiteMs": 91.589,
+      "displayCGImageMs": 148.978875,
+      "bandMs": 81.189875,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 196.311833,
+      "finiteMs": 52.312416,
+      "displayCGImageMs": 118.030875,
+      "bandMs": 47.26325,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 193.369667,
+      "finiteMs": 49.194583,
+      "displayCGImageMs": 116.032208,
+      "bandMs": 40.959167,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 227.218083,
+      "finiteMs": 77.745292,
+      "displayCGImageMs": 120.671667,
+      "bandMs": 70.501292,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-3-secondary-bands",
+      "source": "secondary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 229.58825,
+      "finiteMs": 74.536083,
+      "displayCGImageMs": 125.664666,
+      "bandMs": 66.379459,
+      "reportedExplicitScratchBytes": 2146304
+    },
+    {
+      "run": "2-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 206.443833,
+      "finiteMs": 45.822125,
+      "displayCGImageMs": 135.674333,
+      "bandMs": 42.284458,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 216.545375,
+      "finiteMs": 53.952084,
+      "displayCGImageMs": 137.778334,
+      "bandMs": 47.657917,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 265.181791,
+      "finiteMs": 89.549,
+      "displayCGImageMs": 158.188666,
+      "bandMs": 83.265958,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-3-primary-bands",
+      "source": "primary",
+      "arm": "bands",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 288.316458,
+      "finiteMs": 103.324375,
+      "displayCGImageMs": 152.308292,
+      "bandMs": 93.244,
+      "reportedExplicitScratchBytes": 2162688
+    },
+    {
+      "run": "2-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 340.10075,
+      "finiteMs": 202.486709,
+      "displayCGImageMs": 121.834458,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 343.865708,
+      "finiteMs": 202.0815,
+      "displayCGImageMs": 121.920791,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 354.925208,
+      "finiteMs": 208.545208,
+      "displayCGImageMs": 125.043625,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-secondary-stock",
+      "source": "secondary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+      "sourcePixels": 49766400,
+      "exactReadbackMs": 344.596625,
+      "finiteMs": 202.995125,
+      "displayCGImageMs": 120.914208,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 0,
+      "wholeDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 384.756833,
+      "finiteMs": 236.238667,
+      "displayCGImageMs": 134.536167,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-noise",
+      "state": 1,
+      "wholeDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 386.756542,
+      "finiteMs": 234.6805,
+      "displayCGImageMs": 136.862458,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 0,
+      "wholeDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 413.889083,
+      "finiteMs": 242.284166,
+      "displayCGImageMs": 153.807834,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    },
+    {
+      "run": "2-4-primary-stock",
+      "source": "primary",
+      "arm": "stock",
+      "op": "detail-mask-sharpness",
+      "state": 1,
+      "wholeDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "sourcePixels": 60217344,
+      "exactReadbackMs": 423.53125,
+      "finiteMs": 249.862709,
+      "displayCGImageMs": 152.700417,
+      "bandMs": null,
+      "reportedExplicitScratchBytes": null
+    }
+  ],
+  "faults": {
+    "receiptHashes": [
+      {
+        "receipt": "fault-1.json",
+        "sha256": "9677721fef133efe689af034b3b5e89525218a8d7261ab385e5d9f5d37abe1c8"
+      },
+      {
+        "receipt": "fault-2.json",
+        "sha256": "9677721fef133efe689af034b3b5e89525218a8d7261ab385e5d9f5d37abe1c8"
+      }
+    ],
+    "fixtureSHA256": "8816dfbb07d47bbe2a13c6ad99f5843c288f8fd8397f3d055c7890f39d2800d2",
+    "linkedFaultProbeSHA256": "0d61c7d2bec935a241c15a56871662a560d0137878960c524e16fc69773cc16a",
+    "originalPFixtureSHA256": "b1a73ee5b2bcd8a3bfa4f57f5f17dcf486d70953a963c2fc202b60b10b18d62e",
+    "transportSourceSHA256": "4d2de10456ed715cc056fb8cd967772ce208e10c0b05814219bf2750d62f2916",
+    "extent": [
+      3074,
+      2050
+    ],
+    "fullNativeBandHeight": 334,
+    "retainedLegacyRegion": [
+      1024,
+      0,
+      2048,
+      2048
+    ],
+    "decisions": [
+      {
+        "site": "inside",
+        "kernel": "rmMaskComposite",
+        "coverage": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": false,
+        "regionalAccepted": false,
+        "fullBandAccepted": false
+      },
+      {
+        "site": "inside",
+        "kernel": "rmMaskGrain",
+        "coverage": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "finite": [
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": false,
+        "regionalAccepted": false,
+        "fullBandAccepted": true
+      },
+      {
+        "site": "beyond-ellipse",
+        "kernel": "rmMaskComposite",
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "regionalAccepted": true,
+        "fullBandAccepted": true
+      },
+      {
+        "site": "beyond-ellipse",
+        "kernel": "rmMaskGrain",
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "regionalAccepted": true,
+        "fullBandAccepted": true
+      },
+      {
+        "site": "omitted-first-cell",
+        "kernel": "rmMaskComposite",
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": false,
+        "regionalAccepted": true,
+        "fullBandAccepted": true
+      },
+      {
+        "site": "omitted-first-cell",
+        "kernel": "rmMaskGrain",
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "regionalAccepted": true,
+        "fullBandAccepted": true
+      },
+      {
+        "site": "omitted-clipped-last-cell",
+        "kernel": "rmMaskComposite",
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "regionalAccepted": true,
+        "fullBandAccepted": true
+      },
+      {
+        "site": "omitted-clipped-last-cell",
+        "kernel": "rmMaskGrain",
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "regionalAccepted": true,
+        "fullBandAccepted": true
+      }
+    ],
+    "realTerminalKernels": "Both real shipped rmMaskComposite / rmMaskGrain with shipped neutral rmMaskLayerV7 and an injected adjusted sampler. This is adversarial input to the real terminals; a normal noise/sharpen RAW was not observed to contain these faults.",
+    "rowAndPlan": "At the omitted-first-cell rmMaskComposite site, a separate 8-pixel direct F32 row read was finite, while the whole original scalar graph failed. Inside rmMaskGrain, row samples 0 and 1 themselves contained infinities; the band route still accepted. All shader inputs, outputs and coverage bits are in the identical raw receipts. The measurements establish differing CI graph evaluations, without pinpointing the private optimizer pass.",
+    "checks": {
+      "ordinaryFullTerminalFaultsRejectedByBoth": 20,
+      "realOperatorsAndFourRetainedFaults": [
+        {
+          "fullAccepted": true,
+          "fullBandAccepted": true,
+          "lastRetainedFaultsRejectedInBoth": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "lastRetainedFaultsRejectedInFullBands": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "operator": "sharpness",
+          "regionalAccepted": true
+        },
+        {
+          "fullAccepted": true,
+          "fullBandAccepted": true,
+          "lastRetainedFaultsRejectedInBoth": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "lastRetainedFaultsRejectedInFullBands": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "operator": "noiseReduction",
+          "regionalAccepted": true
+        },
+        {
+          "fullAccepted": true,
+          "fullBandAccepted": true,
+          "lastRetainedFaultsRejectedInBoth": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "lastRetainedFaultsRejectedInFullBands": [
+            true,
+            true,
+            true,
+            true
+          ],
+          "operator": "grain",
+          "regionalAccepted": true
+        }
+      ],
+      "sourceRejectedOutsideRegionInBoth": true,
+      "instrumentedProductionTwin": {
+        "controlAfter": true,
+        "controlBefore": true,
+        "missingLastGroupFlagAccepted": false,
+        "missingLastNativeRowAccepted": false
+      },
+      "instrumentation": "Only the missing-write check uses an otherwise byte-pinned transport twin. Last producer row or last reduction group deliberately omitted; validated expected domain/flags stay full. All shader, canonical, terminal and cancellation decisions use the original linked production transport.",
+      "linkedAfterFirstJoinCancellationAndGoodRetry": {
+        "acceptedRetry": true,
+        "afterFirstJoin": true,
+        "checkCount": 2
+      }
+    }
+  }
+}

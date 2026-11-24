@@ -2,7 +2,7 @@ import Darwin
 import Foundation
 import ImageIO
 import XCTest
-import RAWMasterCore
+@testable import RAWMasterCore
 import RAWMasterImaging
 @testable import RAWMaster
 
@@ -119,5 +119,10 @@ final class ExportPerformanceTests: XCTestCase {
             try JSONSerialization.data(withJSONObject: result, options: [.sortedKeys, .prettyPrinted]).write(to: file, options: .atomic)
         }
         await model.editing?.shutdown()
+        if environment["RAWMASTER_EXPORT_BENCH_RECEIPTS"] == "1" {
+            // Preserve the finished run for independent receipt-to-file comparison after all clocks stop.
+            let snapshot = directory.appending(path: "rawmaster/receipts.sqlite")
+            try fixture.store.locked { try fixture.store.statement("VACUUM INTO ?", [snapshot.path]) }
+        }
     }
 }

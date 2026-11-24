@@ -1,0 +1,464 @@
+{
+  "schema": 1,
+  "result": "passed",
+  "scope": "Real macOS embedded launchd XPC, ad-hoc hardened app client, ad-hoc hardened App Sandbox service, generated APFS only. Controlled package uses X2's upstream FILESTAT-enabled SQLite and the normal v10 C ABI. The independent keeper uses the packaged production runtime and system SQLite. The RAWMaster release does not contain this packaged service.",
+  "host": {
+    "arch": "arm64",
+    "macOS": "27.0.1",
+    "build": "26A434"
+  },
+  "receipt": {
+    "path": "output/035-development/phase-aa/catalog/archive.json",
+    "sha256": "4f29d3081887c2eb68f6637cab0ed0fcb529812b927dd4a7ffdcde226b07fc11",
+    "firstComplete": {
+      "path": "output/035-development/phase-aa/catalog/matrix4.json",
+      "sha256": "d8efedb25e7f174da0f96e0e46b721a9ae0241b9e2737df488bda4d6ed6b9cc4"
+    }
+  },
+  "sourceSHA256": {
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/README.md": "32d40fba1661d454fc9c30273357139fa56c862a1c78c50327e13fc7ea28909d",
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/bundle.py": "eb0245b91cbea6c20eb25b569f384631a168ad4985eb670eb7fcca003dab163c",
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/core.py": "c3f6d7568fc812d8fe018cbeea9a88c6d380edf51d2691759a973c49446562f3",
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/host.m": "77e4ebaaf8da5dcef79edd0bce9b613125e6e98aedbf17806cbc3fe241527c6a",
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/run.py": "7c3be539ba470855793e821170593d79f9e486ed38571157bb783d00d2092134",
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/service.m": "00b38dac2cb0a5b831f03880a434cf96df60b2a9fc12630eacd5b58eaa7401ae",
+    "experiments/portable-processing/catalog/macos-interop-probe/xpc/shared.h": "027416156aa9ef53380285883fc485a58c763bc16079afc50153022e92dcb62e"
+  },
+  "programs": {
+    "hostIdentifier": "org.rawmaster.fixture.aa.7616db9aab50.host",
+    "workerIdentifier": "org.rawmaster.fixture.aa.7616db9aab50.worker",
+    "hostCDHash": "3b9a7d467809a760a00c838498e75ed32e884c61",
+    "workerCDHash": "e43b6188ab93f8ae7aac9d9a09b6538efd017d53",
+    "otherHostCDHash": "c685f635d247a4b76cd54d14d47c4f890c0e6171",
+    "workerSHA256": "7d08b1e63bb3a85a1c8a964263ae691345c70a8653940525e197d95eda2fc6ed",
+    "staticCoreSHA256": "78687f87ce65386a63429c48aeb03cfb0919bf821762625a109b538bf7522ea0",
+    "authorityKeySHA256": "67f96a71bce74dd080d1e4e201be5aa11f8391e494ec9c51a4b13307df182161",
+    "signing": "Both applications and embedded service are sign - / runtime. The second authorized-fixture candidate uses the original host identifier.",
+    "policy": "P-256 signature over peer identifier and exact CDHash. Private key existed only for this bundle build in a disposable private directory.",
+    "workerEntitlements": {
+      "com.apple.security.app-sandbox": true,
+      "com.apple.security.temporary-exception.files.absolute-path.read-only": [
+        "<fixture build>/peer-policy.json"
+      ]
+    },
+    "hostAppSandboxEntitlement": false,
+    "independentSystemKeeper": {
+      "version": 10,
+      "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+      "abiIdentityMatches": true
+    },
+    "productionRuntimeSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "workerLinkedImages": [
+      "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+      "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+      "/usr/lib/libiconv.2.dylib",
+      "/usr/lib/libSystem.B.dylib",
+      "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+      "/usr/lib/libobjc.A.dylib"
+    ],
+    "privateSQLiteSourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24"
+  },
+  "authenticatedCalls": {
+    "positivePeers": 14,
+    "differentHostWorkerPIDs": true,
+    "allWorkersParentPID1": true,
+    "distinctWorkerPIDs": 14,
+    "appSandboxEntitlementFromRunningProcess": true,
+    "helloFailures": {
+      "differentCallerCDHash": {
+        "phase": "hello",
+        "sentCapabilities": false,
+        "callerPID": 407,
+        "error": "Connection interrupted"
+      },
+      "differentExpectedWorkerCDHash": {
+        "phase": "hello",
+        "sentCapabilities": false,
+        "callerPID": 409,
+        "error": "Peer Forbidden"
+      },
+      "refusedWhilePrepared": {
+        "phase": "hello",
+        "sentCapabilities": false,
+        "callerPID": 418,
+        "error": "Connection interrupted",
+        "originalTicketUnchanged": true,
+        "finalAbsent": true,
+        "reservationCount": 1
+      }
+    }
+  },
+  "photoAccess": {
+    "fd": {
+      "hostBookmark": {
+        "bytes": 0,
+        "kind": "none",
+        "issuerMatchedFD": true,
+        "error": 0
+      },
+      "received": false,
+      "matchedFD": 0,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 1,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 1,
+      "freshWriteAfter": 1,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216009,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    },
+    "withoutScope": {
+      "hostBookmark": {
+        "bytes": 1112,
+        "kind": "noScope",
+        "issuerMatchedFD": true,
+        "error": 0
+      },
+      "received": true,
+      "resolved": 1,
+      "stale": true,
+      "nameOnlyStart": false,
+      "nameOnlyReadErrno": 1,
+      "matchedFD": 0,
+      "resolutionError": 0,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 1,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 1,
+      "freshWriteAfter": 1,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216009,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    },
+    "implicit": {
+      "hostBookmark": {
+        "bytes": 1424,
+        "kind": "implicit",
+        "issuerMatchedFD": true,
+        "error": 0
+      },
+      "received": true,
+      "resolved": 1,
+      "stale": true,
+      "matchedFD": 0,
+      "resolutionError": 0,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 1,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 1,
+      "freshWriteAfter": 1,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216009,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    },
+    "fresh": {
+      "hostBookmark": {
+        "bytes": 1424,
+        "kind": "fresh",
+        "issuerMatchedFD": true,
+        "error": 0
+      },
+      "received": true,
+      "resolved": 1,
+      "stale": true,
+      "firstStart": true,
+      "reissued": 1,
+      "secondStale": false,
+      "secondStart": true,
+      "matchedVnode": true,
+      "matchedAPFSVolume": true,
+      "matchedFD": 1,
+      "resolutionError": 0,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 0,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 0,
+      "freshWriteAfter": 1,
+      "firstWriteOpenErrno": 0,
+      "refreshedWriteOpenErrno": 0,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216009,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    },
+    "sameBytesWrongFile": {
+      "hostBookmark": {
+        "bytes": 1428,
+        "kind": "fresh",
+        "issuerMatchedFD": false,
+        "error": 0
+      },
+      "received": true,
+      "resolved": 1,
+      "stale": true,
+      "firstStart": true,
+      "matchedFD": 0,
+      "resolutionError": 0,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 1,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 1,
+      "freshWriteAfter": 1,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216009,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    },
+    "sameNameDifferentFD": {
+      "hostBookmark": {
+        "bytes": 1492,
+        "kind": "fresh",
+        "issuerMatchedFD": false,
+        "error": 0
+      },
+      "received": true,
+      "resolved": 1,
+      "stale": true,
+      "firstStart": true,
+      "matchedFD": 0,
+      "resolutionError": 0,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 1,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 1,
+      "freshWriteAfter": 1,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216010,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    },
+    "persistentReadonly": {
+      "hostBookmark": {
+        "bytes": 1180,
+        "kind": "persistent",
+        "issuerMatchedFD": true,
+        "error": 0
+      },
+      "received": true,
+      "resolved": 0,
+      "stale": false,
+      "matchedFD": 0,
+      "resolutionError": 256,
+      "heldWriteErrno": 9,
+      "readOnlyFD": true,
+      "freshReadBefore": 1,
+      "freshReadDuring": 1,
+      "freshReadAfter": 1,
+      "freshWriteBefore": 1,
+      "freshWriteDuring": 1,
+      "freshWriteAfter": 1,
+      "freshSiblingRead": 1,
+      "freshSiblingWrite": 1,
+      "fdInode": 191216009,
+      "fdSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "bytes": 47835
+    }
+  },
+  "catalogOperations": [
+    {
+      "action": "register",
+      "destinationMode": "fresh",
+      "privateABIStatus": 0,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": null,
+      "transactionEvidence": []
+    },
+    {
+      "action": "claimItem",
+      "destinationMode": "fresh",
+      "privateABIStatus": 0,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": null,
+      "transactionEvidence": [
+        {
+          "phase": "read",
+          "txnState": 1,
+          "observedWALBytes": 1141272
+        },
+        {
+          "phase": "write",
+          "txnState": 2,
+          "observedWALBytes": 1141272
+        }
+      ]
+    },
+    {
+      "action": "prepareItem",
+      "destinationMode": "fresh",
+      "privateABIStatus": 0,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": null,
+      "transactionEvidence": [
+        {
+          "phase": "read",
+          "txnState": 1,
+          "observedWALBytes": 1149512
+        },
+        {
+          "phase": "write",
+          "txnState": 2,
+          "observedWALBytes": 1149512
+        },
+        {
+          "phase": "prepare",
+          "txnState": 2,
+          "observedWALBytes": 1149512
+        }
+      ]
+    },
+    {
+      "action": "publishItem",
+      "destinationMode": "noScope",
+      "privateABIStatus": null,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": "unavailable directory grant",
+      "transactionEvidence": []
+    },
+    {
+      "action": "publishItem",
+      "destinationMode": "fresh",
+      "privateABIStatus": 0,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": null,
+      "transactionEvidence": [
+        {
+          "phase": "read",
+          "txnState": 1,
+          "observedWALBytes": 0
+        },
+        {
+          "phase": "write",
+          "txnState": 2,
+          "observedWALBytes": 0
+        },
+        {
+          "phase": "link",
+          "txnState": 2,
+          "observedWALBytes": 0
+        }
+      ]
+    },
+    {
+      "action": "acknowledgeItem",
+      "destinationMode": "fresh",
+      "privateABIStatus": 0,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": null,
+      "transactionEvidence": [
+        {
+          "phase": "read",
+          "txnState": 1,
+          "observedWALBytes": 0
+        },
+        {
+          "phase": "write",
+          "txnState": 2,
+          "observedWALBytes": 0
+        },
+        {
+          "phase": "ack",
+          "txnState": 2,
+          "observedWALBytes": 0
+        }
+      ]
+    },
+    {
+      "action": "acknowledgeItem",
+      "destinationMode": "fresh",
+      "privateABIStatus": 0,
+      "freshCatalogPathErrnoAfterStop": 1,
+      "gateFailure": null,
+      "transactionEvidence": [
+        {
+          "phase": "read",
+          "txnState": 1,
+          "observedWALBytes": 16512
+        },
+        {
+          "phase": "write",
+          "txnState": 2,
+          "observedWALBytes": 16512
+        },
+        {
+          "phase": "ack",
+          "txnState": 2,
+          "observedWALBytes": 16512
+        }
+      ]
+    }
+  ],
+  "physicalAttachmentSummary": {
+    "checks": 14,
+    "actualZeroByteWAL": 6,
+    "checksAllowed": 14,
+    "threeObjectsSameLiveAuthorizedAndNamedIdentity": true,
+    "writerChecks": 9,
+    "matchingEstablishedReaderLockEach": true,
+    "matchingWriterLockForWrites": true,
+    "naturalSHMMapBytes": [
+      32768
+    ]
+  },
+  "delivery": {
+    "originalStageInode": 191216030,
+    "finalInode": 191216030,
+    "bytes": 47835,
+    "sha256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+    "originTicketSHA256": "4ae3f8a3692cff29655ed8bff0961e758ddad7d5375c34a52b17c8b5f877cf6b",
+    "originalTicketRetained": true,
+    "twoIdenticalAcknowledgments": true,
+    "checkBeforePublication": {
+      "checkpointRC": 0,
+      "log": 0,
+      "done": 0
+    },
+    "independentSystemSQLite": [
+      "ok",
+      "0",
+      "0"
+    ]
+  },
+  "workspaceScope": {
+    "inputBytesUnchanged": true,
+    "fixtureSubdirectoryRemoved": true,
+    "generatedOSContainer": "~/Library/Containers/org.rawmaster.fixture.aa.7616db9aab50.worker",
+    "observedContainer": true,
+    "earlierSmokeContainer": "~/Library/Containers/org.rawmaster.fixture.aa.1961da7bdee7.worker",
+    "behavior": "Only the generated test identifiers were started. macOS manages its generated containers; no user document was selected. No mounted/ejected volume, no installed launch agent."
+  },
+  "limits": [
+    "Host acquired a synthetic URL directly. Real user Powerbox selection and its persistent authority in a sandboxed production host, application upgrade, and Developer ID/team trust remain open.",
+    "Only a live per-request ephemeral grant can be issued again under a matched original FD. A stored stale host bookmark keeps the existing fail-closed behavior.",
+    "Implicit Foundation sharing on this host allowed opening the authorized JPEG for writing as well as reading. The read-only input contract must use O_RDONLY descriptor delivery without issuing this URL scope.",
+    "Balanced stop prevented new path opens here. It cannot revoke an already issued ordinary descriptor. The test closes its descriptors.",
+    "Same machine APFS. No physical removable volume, loss of mount, production crash-and-restore or performance benchmark was measured.",
+    "The private upstream SQLite has FILESTAT; Apple's installed SQLite is the independent keeper. The signed policy file exception is fixture-specific and would need a maintained deployment policy in a signed product."
+  ]
+}

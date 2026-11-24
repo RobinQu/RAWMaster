@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "diagnosticCapabilityAvailable": false,
+  "device": {
+    "arch": "arm64",
+    "macOS": "27.0.1",
+    "SQLite": "3.54.0",
+    "SQLiteSourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+    "defaultVFS": "unix"
+  },
+  "rawReceipt": {
+    "repoPath": "output/035-development/catalog-attachment-replay/receipt.json",
+    "sha256": "a0fe794d32c6890c9afab49331cd2f796d5591e24de3b9f29dc0e8b89ce840fc"
+  },
+  "reproduction": [
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/capability.c",
+      "sha256": "32e439d02a2b9694b0f1815df9f56b04eee3f31d64fc1efaa1fe4a741b512c75"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/run.py",
+      "sha256": "2c3d6b8b03b53fc8e16d92efbba300948a35284b826bdbc4b7807cf26c755535"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/README.md",
+      "sha256": "1ecc198723f5caf4340b6a7eaf72f897b604bff0065da2b8c70ce82e3d084e9f"
+    }
+  ],
+  "scopedTo": "SQLite FILESTAT capability and transaction integrity. Sidecar sizes are path observations only.",
+  "recorderInvokedShmOrFetch": false,
+  "cases": [
+    {
+      "transaction": "read",
+      "fixture": "empty",
+      "liveTxnState": 1,
+      "activeAfterDiagnostic": true,
+      "walBytes": 0,
+      "shmBytes": 32768,
+      "marker": "from-main",
+      "markerAfter": "from-main",
+      "businessRowsChanged": 0,
+      "fileControls": {
+        "connectionFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "mainFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "walFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        }
+      },
+      "immutableReopen": {
+        "writer": "same-writer",
+        "marker": "from-main",
+        "quickCheck": "ok",
+        "mainSHA256": "37a79ee43742a36623ebe8dca96956927a6d15b0b958de6231ce6681191b9bb7"
+      }
+    },
+    {
+      "transaction": "read",
+      "fixture": "dirty",
+      "liveTxnState": 1,
+      "activeAfterDiagnostic": true,
+      "walBytes": 4152,
+      "shmBytes": 32768,
+      "marker": "only-in-wal",
+      "markerAfter": "only-in-wal",
+      "businessRowsChanged": 0,
+      "fileControls": {
+        "connectionFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "mainFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "walFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        }
+      },
+      "immutableReopen": {
+        "writer": "same-writer",
+        "marker": "only-in-wal",
+        "quickCheck": "ok",
+        "mainSHA256": "0426f213ec273111bf3d904600dac443ace7d035f370e3b8fea094ca57a8b596"
+      }
+    },
+    {
+      "transaction": "write",
+      "fixture": "empty",
+      "liveTxnState": 2,
+      "activeAfterDiagnostic": true,
+      "walBytes": 0,
+      "shmBytes": 32768,
+      "marker": "from-main",
+      "markerAfter": "from-main",
+      "businessRowsChanged": 0,
+      "fileControls": {
+        "connectionFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "mainFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "walFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        }
+      },
+      "immutableReopen": {
+        "writer": "same-writer",
+        "marker": "from-main",
+        "quickCheck": "ok",
+        "mainSHA256": "37a79ee43742a36623ebe8dca96956927a6d15b0b958de6231ce6681191b9bb7"
+      }
+    },
+    {
+      "transaction": "write",
+      "fixture": "dirty",
+      "liveTxnState": 2,
+      "activeAfterDiagnostic": true,
+      "walBytes": 4152,
+      "shmBytes": 32768,
+      "marker": "only-in-wal",
+      "markerAfter": "only-in-wal",
+      "businessRowsChanged": 0,
+      "fileControls": {
+        "connectionFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "mainFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        },
+        "walFileStat": {
+          "result": 12,
+          "diagnosticBytes": 0
+        }
+      },
+      "immutableReopen": {
+        "writer": "same-writer",
+        "marker": "only-in-wal",
+        "quickCheck": "ok",
+        "mainSHA256": "0426f213ec273111bf3d904600dac443ace7d035f370e3b8fea094ca57a8b596"
+      }
+    }
+  ]
+}

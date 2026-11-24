@@ -1,0 +1,454 @@
+{
+  "build": "candidate-rc7-mask-mixed",
+  "status": "passed",
+  "test": "RAWMasterUITests.EditingInteractionPerformanceTests/testOptIn035SkyMaskWithConcurrentWorkbenchAndIntake",
+  "machine": "Apple M4 Max, macOS 27.0.1, 128 GiB",
+  "candidateRounds": 8,
+  "deliveryVerification": "Independent Python reopened each SQLite DB read-only and SHA-256 hashed every actual same-workload file, keyed by path and basename against each receipt and the merged-main outputs.",
+  "physicalJPEGFiles": 1600,
+  "bayerDNGImports": 160,
+  "freshSkyInferenceCount": 8,
+  "canvasWorkload": "Every process supplies 30 distinct EV changes, only frames with native input through AppKit draw return inside all three measured intervals enter the overlap statistics.",
+  "overlapSamples": 60,
+  "overlapMedianMs": 17.8380625,
+  "overlapP95Ms": 47.8065,
+  "overlapMaxMs": 53.079958,
+  "runs": [
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run1",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569581469340916,
+        "exportFirstFile": 569575714379250,
+        "exportLastFile": 569581469191916,
+        "exportPrepared": 569575602639791,
+        "importCompleted": 569575937212791,
+        "importFirstFile": 569575739192708,
+        "importLastFile": 569575928809375,
+        "maskCandidate": 569576175646875,
+        "maskRequested": 569575740082958
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2560540672,
+        "residentBytes": 2280751104
+      },
+      "drawsWithinAllWorkNS": [
+        25647333,
+        18114209,
+        13948833,
+        20359417,
+        16318125,
+        19604084,
+        17845666
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run2",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569648599983958,
+        "exportFirstFile": 569642717958333,
+        "exportLastFile": 569648599821250,
+        "exportPrepared": 569642601664500,
+        "importCompleted": 569642981339666,
+        "importFirstFile": 569642774459500,
+        "importLastFile": 569642972852958,
+        "maskCandidate": 569643221467250,
+        "maskRequested": 569642775063583
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2503442432,
+        "residentBytes": 2240151552
+      },
+      "drawsWithinAllWorkNS": [
+        27009416,
+        19583041,
+        44992125,
+        21393625,
+        21674459,
+        25007958
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run3",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569656376237833,
+        "exportFirstFile": 569650570329958,
+        "exportLastFile": 569656376097125,
+        "exportPrepared": 569650454867625,
+        "importCompleted": 569650809379375,
+        "importFirstFile": 569650601329750,
+        "importLastFile": 569650800666541,
+        "maskCandidate": 569651040556708,
+        "maskRequested": 569650604125958
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2563653632,
+        "residentBytes": 2291974144
+      },
+      "drawsWithinAllWorkNS": [
+        19191333,
+        17830459,
+        14780042,
+        40975709,
+        17602167,
+        18361792,
+        19929791,
+        14519958
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run4",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569664221910375,
+        "exportFirstFile": 569658272937208,
+        "exportLastFile": 569664221777916,
+        "exportPrepared": 569658154622333,
+        "importCompleted": 569658508435875,
+        "importFirstFile": 569658313541208,
+        "importLastFile": 569658499897125,
+        "maskCandidate": 569658748760666,
+        "maskRequested": 569658315054750
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2559950848,
+        "residentBytes": 2278703104
+      },
+      "drawsWithinAllWorkNS": [
+        17572417,
+        17201375,
+        15621250,
+        36111750,
+        21440791,
+        16685292,
+        18363667
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run5",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569672452794416,
+        "exportFirstFile": 569666246727500,
+        "exportLastFile": 569672452654083,
+        "exportPrepared": 569666126769916,
+        "importCompleted": 569666497727750,
+        "importFirstFile": 569666285722125,
+        "importLastFile": 569666488773916,
+        "maskCandidate": 569666733431583,
+        "maskRequested": 569666286028458
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2572337152,
+        "residentBytes": 2267578368
+      },
+      "drawsWithinAllWorkNS": [
+        17083833,
+        17461750,
+        15848209,
+        49860792,
+        15826958,
+        17447042,
+        14231666,
+        13974625
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run6",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569680017369750,
+        "exportFirstFile": 569674393629708,
+        "exportLastFile": 569680017223958,
+        "exportPrepared": 569674274610916,
+        "importCompleted": 569674687107958,
+        "importFirstFile": 569674454415916,
+        "importLastFile": 569674679160375,
+        "maskCandidate": 569674899913750,
+        "maskRequested": 569674455343791
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2569043968,
+        "residentBytes": 2284503040
+      },
+      "drawsWithinAllWorkNS": [
+        18663792,
+        16054542,
+        13575792,
+        49097292,
+        15588417,
+        14505584,
+        18436875,
+        16387417,
+        14399125
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run7",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569687947993208,
+        "exportFirstFile": 569681982450166,
+        "exportLastFile": 569687947846666,
+        "exportPrepared": 569681867091000,
+        "importCompleted": 569682222090125,
+        "importFirstFile": 569682008582500,
+        "importLastFile": 569682209775041,
+        "maskCandidate": 569682452807458,
+        "maskRequested": 569682010823666
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2566209536,
+        "residentBytes": 2280292352
+      },
+      "drawsWithinAllWorkNS": [
+        18428709,
+        16355084,
+        16256250,
+        53079958,
+        17640125,
+        16404125,
+        18666167
+      ]
+    },
+    {
+      "folder": "output/035-development/mixed-mask-rc7-run8",
+      "native": "f0328121af7ea69a633564bfcd99c5436ad7fb23a259792fa50bd7e55c852814",
+      "fixtures": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "timelineUptimeNS": {
+        "exportCompleted": 569695931559375,
+        "exportFirstFile": 569689992866333,
+        "exportLastFile": 569695931419583,
+        "exportPrepared": 569689873216291,
+        "importCompleted": 569690239458583,
+        "importFirstFile": 569690023389208,
+        "importLastFile": 569690230562875,
+        "maskCandidate": 569690480251791,
+        "maskRequested": 569690023728750
+      },
+      "deliveredSHA256ByteMatched": true,
+      "maskPNG": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+      "maskModels": [
+        "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+      ],
+      "maskDiagnostics": {
+        "analysisHeight": 1024,
+        "analysisWidth": 1536,
+        "coreImageRawDecodes": 0,
+        "decoder": "flashraw-0.3.1-linear-srgb-bilinear",
+        "exactHits": 0,
+        "flashRawDecodes": 1,
+        "hashChecks": 3,
+        "imageIODecodes": 0,
+        "landscapeRuns": 1,
+        "modelInvocations": 1,
+        "objectDecoderRuns": 0,
+        "objectEncoderRuns": 0,
+        "orientation": 1,
+        "orientedHeight": 6336,
+        "orientedWidth": 9504,
+        "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "successfulGenerations": 1,
+        "visionRequests": 0
+      },
+      "processMemory": {
+        "processPeakResidentBytes": 2573090816,
+        "residentBytes": 2289909760
+      },
+      "drawsWithinAllWorkNS": [
+        23136625,
+        15686625,
+        15224917,
+        47806500,
+        19621917,
+        18616083,
+        15142250,
+        18479459
+      ]
+    }
+  ]
+}

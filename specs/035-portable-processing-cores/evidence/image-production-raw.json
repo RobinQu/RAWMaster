@@ -1,0 +1,48 @@
+{
+  "source": "sony-landscape.ARW",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "decoder": "FlashRaw SIMD linear RGB F32, opaque RGBA packing",
+  "operation": "+1 EV / CPU",
+  "imageABI": 1,
+  "maxAbsErrorVs2x": 0,
+  "bytesExactlyEqual": true,
+  "outputContract": "top-down extended-linear-sRGB premultiplied RGBA32F little-endian",
+  "runs": [
+    {
+      "decoder": "FlashRaw 0.3.1",
+      "roi": [
+        3500,
+        1800,
+        512,
+        384
+      ],
+      "orientation": 1,
+      "maxAbsErrorVs2x": 0,
+      "peakRGB": 0.420674235,
+      "floatBytes": 3145728,
+      "platform": "macOS arm64 / Apple M4 Max",
+      "imageCore": "Release packaged C ABI, CPU selected",
+      "imageCoreSHA256": "d4bd4a57c130f70823fecbd4b568453985915b2a7ae08bf1e23b4b752edf70d3",
+      "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32",
+      "pixelSHA256": "d45565a9a183f357dfaa0f76d33525f1c0d47d40dc198d14b21c1a09122615fc"
+    },
+    {
+      "decoder": "FlashRaw 0.3.1",
+      "roi": [
+        3500,
+        1800,
+        512,
+        384
+      ],
+      "orientation": 1,
+      "maxAbsErrorVs2x": 0,
+      "peakRGB": 0.420674235,
+      "floatBytes": 3145728,
+      "platform": "Linux aarch64 container",
+      "imageCore": "Release C ABI, compiled without GPU",
+      "imageCoreSHA256": "4dd01fef78f7e00267540b910b4f214b73a9c0aa8498fb2865d2bd2df73587de",
+      "flashRawLibrarySHA256": "9a0d2cd20e019471e6f75b3fbb4ab3c58dd8af5789ad9612f22607e7d6206ac3",
+      "pixelSHA256": "d45565a9a183f357dfaa0f76d33525f1c0d47d40dc198d14b21c1a09122615fc"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import Foundation
 import CoreImage
 import Metal
 import RAWMasterCore
+import RAWMasterImage
 
 struct PreviewInteractivePhaseProfile {
   static let enabled=ProcessInfo.processInfo.environment["RAWMASTER_INTERACTIVE_TIMING"] == "1"
@@ -48,6 +49,9 @@ enum PreviewInteractiveProxyV3 {
     }
   }
   static let version="actual-parameters-linear-proxy-v3-flashraw-neutral/integral-noise-snap-v1/filter-global-v1/point-cache-retract-v1/sharpen-noise-detail-v1"
+    + (PreviewPortableExposure.enabled ? "/portable-metal-exposure-v1" : "")
+    + (PreviewPortableBasic.enabled ? "/portable-metal-basic-v1" : "")
+    + (PreviewPortableCurvesLevels.enabled ? "/portable-metal-curves-levels-v1" : "")
   private static let transportAlphaKernel: Result<CIKernel,Error> = Result {
     let source = #"""
     #include <metal_stdlib>
@@ -193,7 +197,7 @@ enum PreviewInteractiveProxyV3 {
     }
     // Both RAW and image use the same legacy point basis BEFORE Light, not image-only.
     if let color=p.legacyBasis?.color,!color.isNeutral{image=try DevelopmentColorEngineV2.apply(color,to:image)}
-    if !flashRaw,!sourceIsRAW,p.light.enabled,p.light.exposure != 0{image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:2*p.light.exposure])}
+    if !flashRaw,!sourceIsRAW,p.light.enabled,p.light.exposure != 0{image = try DevelopmentPortableExposure.apply(2 * p.light.exposure, to: image)}
     try check()
     let radius=max(1,min(Double(nativeSize.width),Double(nativeSize.height))*DevelopmentSpatialEngineV3.radiusFraction)*scale
     if DevelopmentBrillianceAdaptiveV1.isActive(p.light) {
@@ -306,7 +310,7 @@ extension PreviewNativeSource {
     return try .init(p,noiseDefaults:defaults,originalDefaultsFingerprint:originalNativeDefaultsFingerprint)
   }
   /// Worker-only, synchronous and bounded. No fallback after ANY fill/task has started.
-  func renderInteractiveProxy(recipe:DevelopmentRecipe,maxPixel:Int,plan:PreviewInteractivePlan,pool:PreviewInteractiveProxyPool,scope:PreviewPresentationScope,rawBasePool:PreviewRawBasePool?,memoryLimit:Int,cancellation:DevelopmentAnalysisCancellation)throws->PreviewPixels {
+  func renderInteractiveProxy(recipe:DevelopmentRecipe,maxPixel:Int,plan:PreviewInteractivePlan,pool:PreviewInteractiveProxyPool,programs:PreviewPortableMetalPrograms,scope:PreviewPresentationScope,rawBasePool:PreviewRawBasePool?,memoryLimit:Int,cancellation:DevelopmentAnalysisCancellation)throws->PreviewPixels {
     try validateCaptureAuthority();try cancellation.check();try scope.requireOpenAdmission()
     guard memoryLimit==512 else{throw PreviewPresentationError.unsupported}
     var profile=PreviewInteractivePhaseProfile()
@@ -468,7 +472,40 @@ extension PreviewNativeSource {
         let source=base.cropped(to:descriptor.contentRect)
         var displayPostCrop: PreviewMetalPostCrop?
         let suffixSurface: PreviewInteractiveProxyStorage
-        if neuralOnly {
+        if let portable = PreviewPortablePointEdit(p, input: descriptor) {
+          let destination = try PreviewInteractiveProxyStorage(layout: proxyLayout, ticket: tickets[suffixTicketIndex], device: device)
+          let kind = portable.program
+          do {
+            let parameters = try portable.plan()
+            profile.mark(kind.rawValue + "-parameters-ready")
+            let (program, compiled) = try programs.acquire(kind, parameters: parameters, device: device)
+            profile.mark(kind.rawValue + (compiled ? "-program-compiled" : "-program-reused"))
+            try destination.fill(from: acquired.storage, check: check) { input, output in
+              let current: (UInt64) -> Bool = { _ in (try? check()) != nil }
+              do {
+                switch kind {
+                case .exposure:
+                  try program.render(parameters, input: input, output: output, revision: descriptor.generation, isCurrent: current)
+                case .basic, .curvesLevels:
+                  try program.render(parameters, input: input, coveragePlanes: [], output: output,
+                                     revision: descriptor.generation, isCurrent: current)
+                }
+              } catch RAWMasterImageKernel.Failure.renderFailed {
+                programs.discard(program, kind: kind)
+                throw RAWMasterImageKernel.Failure.renderFailed
+              }
+            }
+            profile.mark(kind.rawValue + "-submitted-and-joined")
+          } catch {
+            try check()
+            let graph = try PreviewInteractiveProxyV3.suffix(p, source: source, sourceIsRAW: descriptor.sourceIsRAW,
+              nativeSize: nativeSize, scale: descriptor.scale, context: context, check: check,
+              flashRaw: descriptor.usesFlashRaw, asShotWhiteBalance: asShotWhiteBalance)
+            try destination.fill(graph, context: context, check: check)
+            profile.mark(kind.rawValue + "-core-image-fallback")
+          }
+          suffixSurface = destination
+        } else if neuralOnly {
           // A pure denoise edit is already the validated neutral base. This also leaves room
           // for the previous amount while the window retains the currently displayed image.
           suffixSurface = acquired.storage

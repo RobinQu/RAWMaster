@@ -1,0 +1,261 @@
+{
+  "schema": 1,
+  "study": "Spec 035 live Linux workbench publication transaction",
+  "recordedDate": "2026-11-23",
+  "fixture": "Temporary v10 from the canonical pre-v8 schema, real JPEG and independent keeper; normal workbench C ABI and source operations run in isolated children.",
+  "backend": {
+    "platform": "Linux arm64",
+    "filesystem": "private container overlayfs",
+    "kernel": "7.2.12-orbstack-00394-gbecdd6130068",
+    "debianImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "sqliteVersion": "3.53.2",
+    "sqliteSourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "libsqlite3Sys": "0.38.2",
+    "amalgamationSHA256": "0a409f1633283fa31a9126b11fbfd64a1991c5d30defad07e5745d4667f5e23d",
+    "compileFlag": "SQLITE_ENABLE_FILESTAT",
+    "catalogABI": 1,
+    "shippedBinary": false,
+    "changes": "Added guard call sites to a copy of the production Rust item operations. Built the locked bundled SQLite with its upstream diagnostic feature. Stage::publish, POSIX no-replace calls and the public command and receipt contracts are the original source."
+  },
+  "method": {
+    "observedConnection": "sqlite3_txn_state on main and SELECT sqlite_filestat('main') on that same borrowed Connection inside the existing transaction",
+    "authority": "The parent holds a no-follow metadata fd for each file and the parent directory before this command. The worker fstats actual FILESTAT descriptors and witnesses, and checks current entries relative to the held directory.",
+    "sharedMemory": "Real SHM fd and this connection\u2019s reader mask; writer bit in each write transaction; one file-backed shared mapping at offset zero matching fd device/inode. Each measured worker holds one SQLite connection.",
+    "faultInjection": "Wrong reference can switch at a named boundary. Separate all-file peer case sends correct original grant to an actual copy. A child-only seccomp EPERM for linkat selects the real renameat2(RENAME_NOREPLACE) fallback."
+  },
+  "perFullRun": {
+    "cases": 10,
+    "abiCalls": 67,
+    "attachmentChecks": 161,
+    "readTransactionChecks": 57,
+    "writeTransactionChecks": 104,
+    "physicalZeroByteWALChecks": 48,
+    "observedSharedShmMappings": 161,
+    "allowedChecks": 154,
+    "deniedChecks": 7,
+    "checksByBoundary": {
+      "read": 57,
+      "write": 56,
+      "prepare": 11,
+      "link": 13,
+      "ack": 21,
+      "rename": 3
+    },
+    "verifiedOutputs": 10
+  },
+  "output": {
+    "jpegBytes": 47835,
+    "sha256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f"
+  },
+  "cases": [
+    {
+      "scenario": "live-link",
+      "physicalWALBytesAtSuccessfulPublish": 1161872,
+      "exclusiveRename": false,
+      "finalAckReplayed": true
+    },
+    {
+      "scenario": "empty-decoys-link",
+      "physicalWALBytesAtSuccessfulPublish": 0,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "unrelatedOpenFileSizes": [
+        0,
+        1
+      ]
+    },
+    {
+      "scenario": "empty-wal-copy-link",
+      "physicalWALBytesAtSuccessfulPublish": 0,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "refusedAction": "publishItem",
+      "refusedBoundary": "link",
+      "mismatchedActualVersusGrant": [
+        "wal"
+      ],
+      "durableOutcome": "denialPreservedOriginalTicketStageAndVacantFinal",
+      "identicalCopyBytes": 0,
+      "identicalCopySHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "unrelatedOpenFileSizes": [
+        0,
+        1
+      ]
+    },
+    {
+      "scenario": "live-shm-copy-link",
+      "physicalWALBytesAtSuccessfulPublish": 1161872,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "refusedAction": "publishItem",
+      "refusedBoundary": "link",
+      "mismatchedActualVersusGrant": [
+        "shm"
+      ],
+      "durableOutcome": "denialPreservedOriginalTicketStageAndVacantFinal",
+      "identicalCopyBytes": 32768,
+      "identicalCopySHA256": "edde1489ef28cb2ca405949067600bfca42fe186a559d273e7aad066606db3a8"
+    },
+    {
+      "scenario": "main-copy-write",
+      "physicalWALBytesAtSuccessfulPublish": 0,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "refusedAction": "publishItem",
+      "refusedBoundary": "write",
+      "mismatchedActualVersusGrant": [
+        "main"
+      ],
+      "durableOutcome": "denialPreservedOriginalTicketStageAndVacantFinal",
+      "identicalCopyBytes": 1101824,
+      "identicalCopySHA256": "e6661adaf2786b28d4bb48dce4e7167425172def0c8be8d68fb5c0915c713cf9",
+      "unrelatedOpenFileSizes": [
+        0,
+        1
+      ]
+    },
+    {
+      "scenario": "true-exclusive-rename",
+      "physicalWALBytesAtSuccessfulPublish": 0,
+      "exclusiveRename": true,
+      "finalAckReplayed": true,
+      "unrelatedOpenFileSizes": [
+        0,
+        1
+      ]
+    },
+    {
+      "scenario": "shm-copy-rename-fence",
+      "physicalWALBytesAtSuccessfulPublish": 0,
+      "exclusiveRename": true,
+      "finalAckReplayed": true,
+      "refusedAction": "publishItem",
+      "refusedBoundary": "rename",
+      "mismatchedActualVersusGrant": [
+        "shm"
+      ],
+      "durableOutcome": "denialPreservedOriginalTicketStageAndVacantFinal",
+      "identicalCopyBytes": 32768,
+      "identicalCopySHA256": "ccd3cb8930c6c54d4f263051cf3f3b7e4523bf80fd0319a00b1219443ff0ee70",
+      "unrelatedOpenFileSizes": [
+        0,
+        1
+      ]
+    },
+    {
+      "scenario": "after-publication-bad-ack",
+      "physicalWALBytesAtSuccessfulPublish": 1161872,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "refusedAction": "acknowledgeItem",
+      "refusedBoundary": "ack",
+      "mismatchedActualVersusGrant": [
+        "main"
+      ],
+      "durableOutcome": "deniedAckPreservedPreparedStageAndVerifiedFinal",
+      "identicalCopyBytes": 4096,
+      "identicalCopySHA256": "da63a52bdf62b3fc863995d79f497584be3ba97c1de4c55d1d301afbafab6cfc"
+    },
+    {
+      "scenario": "denied-preparation",
+      "physicalWALBytesAtSuccessfulPublish": 1161872,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "refusedAction": "prepareItem",
+      "refusedBoundary": "prepare",
+      "mismatchedActualVersusGrant": [
+        "wal"
+      ],
+      "durableOutcome": "failedPrepareLeftRunningWithoutTicket",
+      "identicalCopyBytes": 1149512,
+      "identicalCopySHA256": "b193a14a71f93c05886606d741ad71d38a089d0bd50ed46e5525f5ad634637ba"
+    },
+    {
+      "scenario": "same-byte-peer-catalog",
+      "physicalWALBytesAtSuccessfulPublish": 0,
+      "exclusiveRename": false,
+      "finalAckReplayed": true,
+      "refusedAction": "publishItem",
+      "refusedBoundary": "read",
+      "mismatchedActualVersusGrant": [
+        "main",
+        "wal",
+        "shm"
+      ],
+      "durableOutcome": "denialPreservedOriginalTicketStageAndVacantFinal",
+      "peerFiles": [
+        {
+          "sha256": "983e4b122b0ee027631cfa9d88bf5828029d72b7bb2e42a6b00b884d2ea0b35a",
+          "differentInode": true,
+          "bytes": 1101824
+        },
+        {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "differentInode": true,
+          "bytes": 0
+        },
+        {
+          "sha256": "fd2772d3f05bdd2d7681cd913964bf632cdd631cbb4cc5f0a371df9f859e2540",
+          "differentInode": true,
+          "bytes": 32768
+        }
+      ],
+      "unrelatedOpenFileSizes": [
+        0,
+        1
+      ]
+    }
+  ],
+  "replays": {
+    "initial": {
+      "runtimeSHA256": "dd6fb34b2fc4548906c3bd6726ed90bed2ee487cd8117cf417597753fb46a6cf",
+      "raw": {
+        "path": "output/035-development/tail-refine/catalog/matrix.json",
+        "sha256": "87b60ecd16184a397b838476776685181f87cbce32becab6d23233319fbf59a8"
+      }
+    },
+    "archived": {
+      "runtimeSHA256": "c3c476f1a08dfbbd4bb92da8c5cfcde5582e9fd0269f2c8efceb4a871f2f687e",
+      "keeperSHA256": "7891daae72cb0989008e4810349b20c1b33c7d962db263527fa1e55d2c76c7d8",
+      "raw": {
+        "path": "output/035-development/tail-refine/catalog/archive-replay/receipt-final.json",
+        "sha256": "c7667c3729e9f1f4211b06330c08f82d4ceb8e650821372a02908cf4dadaa980"
+      },
+      "log": {
+        "path": "output/035-development/tail-refine/catalog/archive-replay/replay-final.log",
+        "sha256": "682200deeefdd9b4781a29d1ddc694b8907ca10ca26597b1040126a518625d7a"
+      },
+      "sourceSHA256": {
+        "experiments/portable-processing/catalog/transaction-filestat-probe/guard.rs": "eb13ea826c3d35f6e1feb53b767ed9bfccee8597c61768f6b31421bb9e7053fe",
+        "experiments/portable-processing/catalog/transaction-filestat-probe/build.py": "5a62ffc9c00598ff3cecfae841571a772c354b29de611d5b5c06704e5bd81854",
+        "experiments/portable-processing/catalog/transaction-filestat-probe/child.py": "586ea41b16e21b65048290dc6d0fe86c47c0fec3e5328111da2c6071242285ca",
+        "experiments/portable-processing/catalog/transaction-filestat-probe/keeper.rs": "1e2298e92f95c014958fddae0974eae52871351e2bb2d379c703428b61839b91",
+        "experiments/portable-processing/catalog/transaction-filestat-probe/run.py": "890b8f4d39652978c3d8b318357f799e7c7d89c761325ca739411c289077cf18",
+        "experiments/portable-processing/catalog/queue-transaction-probe/run.py": "ea6a5acd82f8329897786be991a51ea71fb2dd70d3a81930dc750c673e3a33ad",
+        "Modules/LibraryCatalog/src/scheduler/batch/items.rs": "0087fbba7bec71022d16f480cae31f850367035c3ce1954308dae4dd463d6a16",
+        "Modules/LibraryCatalog/src/scheduler/batch/directory.rs": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd",
+        "src/scheduler/batch/items.rs": "615f3ac4c331c9d584f1752c18f71d0ce3c5853c3a42c1088b0c5e51759448cb",
+        "src/scheduler/batch/directory.rs": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd",
+        "Cargo.lock": "674f98fbddfac2b648c221a1b182a81a7fdea92d808c7c7231562b8cae7afbca"
+      },
+      "sealedBuild": {
+        "firstFullReplay": {
+          "path": "output/035-development/tail-refine/catalog/archive-replay/receipt.json",
+          "sha256": "2254ee86dbee84952a1563bbc77510ba22ab01a94deb838ddc08b1549152ebc2"
+        },
+        "compileAndRunLog": {
+          "path": "output/035-development/tail-refine/catalog/archive-replay/replay.log",
+          "sha256": "ec53dd23b56827e7f289eb80dc377d2e23254b1655e9a0b5129d4287759ba675"
+        },
+        "sameRuntimeAndKeeper": true,
+        "finalReplay": "Same sealed runtime and keeper, all ten cases repeated with final Python driver."
+      }
+    }
+  },
+  "remaining": [
+    "Bundled Linux fixture only. Apple system SQLite lacked FILESTAT in the earlier public diagnostic test. Native macOS helper packaging, security-scoped grants, interoperation and real restart are unverified.",
+    "WAL/SHM authority is pre-established. Initial absence, legitimate replacement, source history and session epochs need an enrollment protocol before production use.",
+    "The upstream diagnostic JSON is version-specific. Production must bind to a private known backend and replace the per-check process mapping scan or validate an equally strict bounded alternative. No multi-connection performance measurement was taken.",
+    "Checks identify the attachments carrying the transaction. They do not lock external name changes between the last comparison and a filesystem syscall."
+  ]
+}

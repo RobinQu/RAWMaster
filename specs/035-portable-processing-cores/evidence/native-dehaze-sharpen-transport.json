@@ -1,0 +1,1453 @@
+{
+  "candidate": "candidate-batch11r",
+  "sealedImagingBinary": {
+    "path": "output/035-development/candidate-batch11r/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+    "sha256": "cc01068941695dc01cc7c48e68a1438d004428024151cada2685f345ea7dbac3"
+  },
+  "candidateManifest": {
+    "path": "output/035-development/candidate-batch11r/source-files.sha256",
+    "sha256": "1d75ab7ea8b5145a295f1b987d5b17c3b687b8b049e4befff979c5ab2127ea0e"
+  },
+  "nativeTests": [
+    {
+      "suite": "dehaze-native-default",
+      "tests": 29,
+      "log": {
+        "path": "output/035-development/candidate-batch11r/dehaze-native-default.log",
+        "sha256": "a9810b8bda996d9341ae7df185b80c1a287b34772e24d26df4ee1d1ede0d8d9b"
+      }
+    },
+    {
+      "suite": "dehaze-native-texture",
+      "tests": 9,
+      "log": {
+        "path": "output/035-development/candidate-batch11r/dehaze-native-texture.log",
+        "sha256": "40ab290875f1933ec1f443364441a0db41b44064383724d64c979e3bfc6378d7"
+      }
+    },
+    {
+      "suite": "preview-portable",
+      "tests": 29,
+      "log": {
+        "path": "output/035-development/candidate-batch11r/preview-portable.log",
+        "sha256": "f1039400351605f5e53dfe4b3584665ac7e671909bd62a703fad4ea4cea48e61"
+      }
+    },
+    {
+      "suite": "targeted-workbench",
+      "tests": 12,
+      "log": {
+        "path": "output/035-development/candidate-batch11r/targeted-workbench.log",
+        "sha256": "3cccfda5bde4a531318c0800db72a97bb83442c108b59e02eaa958e758ee2e1d"
+      }
+    }
+  ],
+  "independentEvidence": {
+    "captureCost": {
+      "path": "output/035-development/dehaze-sharpen-stages/context-cost.json",
+      "sha256": "3a6b145ae88a319fd25a004edb2b25f0d5a03e8536beb5176bfe457357438677"
+    },
+    "preliminaryAliasedTexture": {
+      "path": "output/035-development/dehaze-sharpen-stages/resident-texture-proof.json",
+      "sha256": "b71ad7b4d2744ad88109bbfc8cd48343376f69a2bad982635fc317823b34b658"
+    },
+    "displayContextTargetsPrimary": {
+      "path": "output/035-development/dehaze-sharpen-stages/context-sweep/primary.json",
+      "sha256": "7c7e1660a9191f3b84d62538ea0901b518b9f2f96badcabab14e31c9123beb5d"
+    },
+    "displayContextTargetsSecondary": {
+      "path": "output/035-development/dehaze-sharpen-stages/context-sweep/secondary.json",
+      "sha256": "e6bf47e466f8e70c81a239fb896b1b9916d35b7335d98b945d231ee9e4625d93"
+    },
+    "catalogChangesWithLiveCapture": {
+      "path": "output/035-development/candidate-batch11r/catalog-reload.json",
+      "sha256": "2d602cac15e4b78b307802bd75688286b2a0ec43f1f267d2f27ba52c78e195e4"
+    },
+    "cancelJoinRetryAndComparison": {
+      "path": "output/035-development/candidate-batch11r/texture-cancel.json",
+      "sha256": "80c2bd5e05ce6bc7fc47cdd4bdaf4a7d70b61d73e229bbbc20d3659a0775522e"
+    }
+  },
+  "guideScans": [
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-01-1.json",
+      "sha256": "43a6cfef1a95720870cab51fbfac75671f3fa0a1d061d0d3eac1b9cd407c7711"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-02-2.json",
+      "sha256": "a0a0aa4acad699dfc574da9c880ae6c709941a4644547fd6145343fd64a183ae"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-03-4.json",
+      "sha256": "ae0e49d38557d4be99c2b048194807b248a1304766e9a05b6b65c443e884632d"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-04-4.json",
+      "sha256": "1c2254d925dbf8895f2acbb96d14e87e4b366bc0585ae43214e48c10c172e6ec"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-05-2.json",
+      "sha256": "cff8e792a1812e37148e4aff0d7dddcf58cd853d7b114d4cecfc2bf25d8f1c9a"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-06-1.json",
+      "sha256": "36426e76fd3496a47ab74689f706f5e982f36bea6c9671b03271e32d9d832606"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-07-2.json",
+      "sha256": "d88e7f3b1b8e3e03301e75b90d280b9ded7fb6db00ba40467447dfb5391d01b0"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-08-4.json",
+      "sha256": "75f16dcd355ce764d32941701a0993202a43e683e47bafbeaefa2529360f5457"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-09-1.json",
+      "sha256": "e9f2a886759bd96e77a6845950b80f54c199dc7d606d5bf42835fdd95d5158b3"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-10-1.json",
+      "sha256": "c66efde32ad1f2001bd1f8d91686e749ae1f379796928549c5405481b76fd659"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-11-4.json",
+      "sha256": "dbd2a1e20db0e408c0f3dc5ca879ea4fe5ab3408d46aa02c55118a27424fb12b"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/cold-guide-12-2.json",
+      "sha256": "e9817efbab3333e499ff161a6f41ddb9abd8d148e3a088cd765f0415591a6e77"
+    }
+  ],
+  "directPlaneReadbacks": [
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/resident-plane-1-A.json",
+      "sha256": "751ef83a1b3d22a2ae6231118529433a3262ef7b563521e6967788801bfa510f"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/resident-plane-2-B.json",
+      "sha256": "8f63e624b34bae15c94a0b0d8da9c2931f579382be793aa11cb752545419e629"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/resident-plane-3-B.json",
+      "sha256": "dde2f7e27cc47151e192ea3025e91726aae4f1c235f62440818ab2e7ddbbbe18"
+    },
+    {
+      "path": "output/035-development/dehaze-sharpen-stages/resident-plane-4-A.json",
+      "sha256": "022b26654d10e01e44e733fb207550de03fac7daaf5b898ecb25a38bf1d36e79"
+    }
+  ],
+  "old512MiBDisplayContractViolations": [
+    {
+      "state": 0,
+      "affectedPixels": 1118,
+      "maximumRGBCodeDelta": 1,
+      "maximumAlphaDelta": 0,
+      "providerFrame": {
+        "path": "output/035-development/dehaze-sharpen-stages/texture-discrepancy/normal-provider.state-0.rgba8",
+        "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf"
+      },
+      "textureFrame": {
+        "path": "output/035-development/dehaze-sharpen-stages/texture-discrepancy/normal-texture.state-0.rgba8",
+        "sha256": "9d6bd215eb126d52bc95b07059d4d46d3b64a742f97191c0a3451e5ae00ece3c"
+      }
+    },
+    {
+      "state": 1,
+      "affectedPixels": 1205,
+      "maximumRGBCodeDelta": 1,
+      "maximumAlphaDelta": 0,
+      "providerFrame": {
+        "path": "output/035-development/dehaze-sharpen-stages/texture-discrepancy/normal-provider.state-1.rgba8",
+        "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+      },
+      "textureFrame": {
+        "path": "output/035-development/dehaze-sharpen-stages/texture-discrepancy/normal-texture.state-1.rgba8",
+        "sha256": "038bae8de11b14d22068a4f6a147e7a4484439768699af0c0d4bf7f4eafeb60a"
+      }
+    }
+  ],
+  "focusedPrimary": {
+    "verifiedFrames": 96,
+    "configuration": {
+      "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/configuration.json",
+      "sha256": "8c45be76841f661f69ee00a8da1e8e19a82fb59b0ffb9dbf1cad70a0076847fc"
+    },
+    "runs": [
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/01-A.json",
+          "sha256": "36a91dfd275bdf5bc8d5e0b2bb6694ef92e33175a6977d3bf18256a3ca805eee"
+        },
+        "peakPhysicalFootprintBytes": 4469983368,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 946.134583,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 194.277042,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 35.153875
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 4.5285,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 68.495166,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 36.461458
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 356.028333,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 334.855958,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 101.416209
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 148.567916,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 444.948042,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 89.64475
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 339.758833,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 1974.152375,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 76.476792,
+              "生成并校验原生 R32F 透射率": 974.887917,
+              "create sRGB8 CGImage": 122.4055
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 11.305583,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 339.678166,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 74.09275,
+              "create sRGB8 CGImage": 129.331708
+            }
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/02-B.json",
+          "sha256": "3fab4f36d4e918b62509c3be0a8867dfbab50dc543ebbc82dab9c67d8f254516"
+        },
+        "peakPhysicalFootprintBytes": 5273127336,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 157.148417,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 138.98225,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 33.432125
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 3.876541,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 66.067708,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 37.20525
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 13.951792,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 187.916042,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "validate sharpened RGB": 71.777917,
+              "create sRGB8 CGImage": 100.80375
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 79.625167,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 321.049334,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "validate sharpening mask": 64.991125,
+              "create sRGB8 CGImage": 89.678417
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 21.700417,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 1102.023375,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 77.01975,
+              "生成并校验原生 R32F 透射率": 711.172125,
+              "create sRGB8 CGImage": 129.560209
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 11.520333,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 352.663583,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 78.719375,
+              "create sRGB8 CGImage": 131.610875
+            }
+          }
+        ]
+      },
+      {
+        "arm": "G",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/03-G.json",
+          "sha256": "1276828a5e8d8379e001e5636a9ab9a44d5a53e607807a7a63bf84b9eedfcbf6"
+        },
+        "peakPhysicalFootprintBytes": 5542054312,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 184.09825,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 169.613959,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 35.415917
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 3.874417,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 67.744625,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 37.781917
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 14.043375,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 337.661792,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 104.214875
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 80.31825,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 460.853416,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 92.048
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 21.921667,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 933.650375,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 0.970958,
+              "每两带清理的原生 R32F 透射率": 598.849834,
+              "create sRGB8 CGImage": 136.880667
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 15.635709,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 283.709291,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 1.746875,
+              "create sRGB8 CGImage": 133.433792
+            }
+          }
+        ]
+      },
+      {
+        "arm": "F",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/04-F.json",
+          "sha256": "7d0b83c5e749e32b85d26445e4838fc33f10fe7399327906daa41cbddad51566"
+        },
+        "peakPhysicalFootprintBytes": 5207001392,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 155.02425,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 142.186583,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 33.637958
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 4.280875,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 69.661667,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 36.408042
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 15.303333,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 339.355916,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 98.895042
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 75.198417,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 436.618458,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 85.062208
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 19.398917,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 786.526292,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 0.915292,
+              "每两带清理的原生 R32F 透射率": 648.194834,
+              "原生 R32F 共享纹理": 0.003333,
+              "create sRGB8 CGImage": 53.840166
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 12.598125,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 106.48325,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 0.925625,
+              "原生 R32F 共享纹理": 0.000625,
+              "create sRGB8 CGImage": 54.939333
+            }
+          }
+        ]
+      },
+      {
+        "arm": "F",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/05-F.json",
+          "sha256": "770fb1982040ba6ac2f397ffadf8379659a90a9532b55296a22526fb019928ed"
+        },
+        "peakPhysicalFootprintBytes": 5136927144,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 143.679208,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 150.985625,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 33.643125
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 3.953916,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 68.611792,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 36.986666
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 13.356667,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 337.464,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 103.707209
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 76.222542,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 460.975208,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 94.363417
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 22.995875,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 805.822917,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 0.941625,
+              "每两带清理的原生 R32F 透射率": 660.728959,
+              "原生 R32F 共享纹理": 0.003125,
+              "create sRGB8 CGImage": 55.003291
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 15.259458,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 108.58075,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 0.940959,
+              "原生 R32F 共享纹理": 0.000542,
+              "create sRGB8 CGImage": 59.479542
+            }
+          }
+        ]
+      },
+      {
+        "arm": "G",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/06-G.json",
+          "sha256": "a83a8221005b0500bbf1d0d877ee85db976a4a99f8cd36d46af8208957e5f0b4"
+        },
+        "peakPhysicalFootprintBytes": 5550590328,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 137.045416,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 146.243,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 33.330958
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 3.972625,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 64.317917,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 34.57325
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 13.714833,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 326.977333,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 100.079333
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 77.664666,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 449.599125,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 92.038292
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 19.596833,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 880.26125,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 0.971959,
+              "每两带清理的原生 R32F 透射率": 561.082041,
+              "create sRGB8 CGImage": 128.708292
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 13.011833,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 260.523041,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "verify resident dehaze capture context": 1.145292,
+              "create sRGB8 CGImage": 126.428667
+            }
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/07-B.json",
+          "sha256": "710dae4fd97ee17fba518d35a6125d62cee037f0c80528970a284c569e93f215"
+        },
+        "peakPhysicalFootprintBytes": 5717232040,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 152.28475,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 145.16025,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 32.938542
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 4.248,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 66.631958,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 36.4715
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 13.874542,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 182.115125,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "validate sharpened RGB": 67.520292,
+              "create sRGB8 CGImage": 100.284042
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 79.002416,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 306.629416,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "validate sharpening mask": 62.553791,
+              "create sRGB8 CGImage": 84.867167
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 23.598875,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 1084.242459,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 77.281,
+              "生成并校验原生 R32F 透射率": 670.66575,
+              "create sRGB8 CGImage": 145.909958
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 11.787,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 358.130167,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 78.904333,
+              "create sRGB8 CGImage": 132.344416
+            }
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/batch11r-focused/08-A.json",
+          "sha256": "989ec26e70f2c716cc2782dc93b141fbaf3df0a7fd24f041653dda53723c9c36"
+        },
+        "peakPhysicalFootprintBytes": 5148215600,
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "frames": [
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 150.577083,
+            "sha256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b"
+          },
+          {
+            "control": "curve-channels",
+            "state": 0,
+            "quality": "settled",
+            "ms": 147.300334,
+            "sha256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 35.063625
+            }
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 4.207125,
+            "sha256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538"
+          },
+          {
+            "control": "curve-channels",
+            "state": 1,
+            "quality": "settled",
+            "ms": 70.585125,
+            "sha256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 37.023875
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 14.322167,
+            "sha256": "cbf9f255cf910eadfc58926587d3c14add391e37e94c0659a8d472fafc7ef910"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 0,
+            "quality": "settled",
+            "ms": 347.555625,
+            "sha256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 104.3705
+            }
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 82.771167,
+            "sha256": "ed53ef2ae74033646de911670f8c6f1384cba055ff4a28734720b9650598a903"
+          },
+          {
+            "control": "detail-mask-preview",
+            "state": 1,
+            "quality": "settled",
+            "ms": 465.949417,
+            "sha256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "finitePixelCounts": [],
+            "stagesMilliseconds": {
+              "create sRGB8 CGImage": 86.394958
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "interactive",
+            "ms": 21.894542,
+            "sha256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "quality": "settled",
+            "ms": 1066.531042,
+            "sha256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 75.760583,
+              "生成并校验原生 R32F 透射率": 671.713625,
+              "create sRGB8 CGImage": 128.948708
+            }
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "interactive",
+            "ms": 14.542083,
+            "sha256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "quality": "settled",
+            "ms": 346.742083,
+            "sha256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "finitePixelCounts": [
+              60217344
+            ],
+            "stagesMilliseconds": {
+              "rebuild dehaze capture context": 78.352084,
+              "create sRGB8 CGImage": 127.064708
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "verifiedFullFirstAndWarmTexturePairs": 814,
+  "textureOnReleaseReadback": {
+    "path": "output/035-development/candidate-batch11r/paired-texture-all.json",
+    "sha256": "3adcf50684983d7b3551d3e2cb51bbcfcf1e233604665370c8190a1957dc05a1"
+  },
+  "textureOnReleasePixelComparison": {
+    "path": "output/035-development/candidate-batch11r/pixels-texture-against-batch10.json",
+    "sha256": "b75fd9dfaf9c4051426ff63d399e7d61fdc393aae640632173a78c2acac4c041"
+  },
+  "secondaryProductionPreparationAndReadback": [
+    {
+      "arm": "A",
+      "report": {
+        "path": "output/035-development/candidate-batch11r/second-A-1.json",
+        "sha256": "7af7c85188e4da5ddc590775145b8452a2833f065592344c7d7f3115b3357f88"
+      },
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "preparedInMs": 486.391625,
+      "comparison": {
+        "verified": true,
+        "states": 2,
+        "samplePairs": 22,
+        "rows": [
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "baselineFirstExactMs": 1125.895292,
+            "candidateFirstExactMs": 1125.895292,
+            "interactiveSHA256": "ff28845a619c844e86990195c22fad62cbb1066ed05723d27e7c088b4bb542be",
+            "settledSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "baselineFirstExactMs": 281.86975,
+            "candidateFirstExactMs": 281.86975,
+            "interactiveSHA256": "42ee445742799172284bd04160d70d3325174854e8d46767eead9b211b2349cc",
+            "settledSHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          }
+        ]
+      }
+    },
+    {
+      "arm": "A",
+      "report": {
+        "path": "output/035-development/candidate-batch11r/second-A-2.json",
+        "sha256": "97df352afc1ea1f703320a1c0dec977c0f947a951335a8d214c6b130d6d376ea"
+      },
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "preparedInMs": 479.642375,
+      "comparison": {
+        "verified": true,
+        "states": 2,
+        "samplePairs": 22,
+        "rows": [
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "baselineFirstExactMs": 1125.895292,
+            "candidateFirstExactMs": 1057.493583,
+            "interactiveSHA256": "ff28845a619c844e86990195c22fad62cbb1066ed05723d27e7c088b4bb542be",
+            "settledSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "baselineFirstExactMs": 281.86975,
+            "candidateFirstExactMs": 272.914167,
+            "interactiveSHA256": "42ee445742799172284bd04160d70d3325174854e8d46767eead9b211b2349cc",
+            "settledSHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          }
+        ]
+      }
+    },
+    {
+      "arm": "G",
+      "report": {
+        "path": "output/035-development/candidate-batch11r/second-G-1.json",
+        "sha256": "64100aea42035fd9ee5351140f23a8678670cbd2ea5248d11ef4dc500d9fecf3"
+      },
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "preparedInMs": 484.790625,
+      "comparison": {
+        "verified": true,
+        "states": 2,
+        "samplePairs": 22,
+        "rows": [
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "baselineFirstExactMs": 1125.895292,
+            "candidateFirstExactMs": 931.3035,
+            "interactiveSHA256": "ff28845a619c844e86990195c22fad62cbb1066ed05723d27e7c088b4bb542be",
+            "settledSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "baselineFirstExactMs": 281.86975,
+            "candidateFirstExactMs": 220.278708,
+            "interactiveSHA256": "42ee445742799172284bd04160d70d3325174854e8d46767eead9b211b2349cc",
+            "settledSHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          }
+        ]
+      }
+    },
+    {
+      "arm": "G",
+      "report": {
+        "path": "output/035-development/candidate-batch11r/second-G-2.json",
+        "sha256": "4764addd1191f98b37b23e2de98a09666e9ef473641cb71ad39fcc6a349c626e"
+      },
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "preparedInMs": 477.237709,
+      "comparison": {
+        "verified": true,
+        "states": 2,
+        "samplePairs": 22,
+        "rows": [
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "baselineFirstExactMs": 1125.895292,
+            "candidateFirstExactMs": 909.170208,
+            "interactiveSHA256": "ff28845a619c844e86990195c22fad62cbb1066ed05723d27e7c088b4bb542be",
+            "settledSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "baselineFirstExactMs": 281.86975,
+            "candidateFirstExactMs": 205.245834,
+            "interactiveSHA256": "42ee445742799172284bd04160d70d3325174854e8d46767eead9b211b2349cc",
+            "settledSHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          }
+        ]
+      }
+    },
+    {
+      "arm": "F",
+      "report": {
+        "path": "output/035-development/candidate-batch11r/second-F-1.json",
+        "sha256": "ab8c81400e296f8c4a5f4f91b693bc37cff051639850ade4171dd662d5d28be8"
+      },
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "preparedInMs": 489.811333,
+      "comparison": {
+        "verified": true,
+        "states": 2,
+        "samplePairs": 22,
+        "rows": [
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "baselineFirstExactMs": 1125.895292,
+            "candidateFirstExactMs": 888.177375,
+            "interactiveSHA256": "ff28845a619c844e86990195c22fad62cbb1066ed05723d27e7c088b4bb542be",
+            "settledSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "baselineFirstExactMs": 281.86975,
+            "candidateFirstExactMs": 106.406792,
+            "interactiveSHA256": "42ee445742799172284bd04160d70d3325174854e8d46767eead9b211b2349cc",
+            "settledSHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          }
+        ]
+      }
+    },
+    {
+      "arm": "F",
+      "report": {
+        "path": "output/035-development/candidate-batch11r/second-F-2.json",
+        "sha256": "cd03aaa2cfbed2b4c698185f02126112ab17b214f2defb0d99e28bb05cb04fb0"
+      },
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "preparedInMs": 468.717,
+      "comparison": {
+        "verified": true,
+        "states": 2,
+        "samplePairs": 22,
+        "rows": [
+          {
+            "control": "effects-dehaze",
+            "state": 0,
+            "baselineFirstExactMs": 1125.895292,
+            "candidateFirstExactMs": 885.007084,
+            "interactiveSHA256": "ff28845a619c844e86990195c22fad62cbb1066ed05723d27e7c088b4bb542be",
+            "settledSHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          },
+          {
+            "control": "effects-dehaze",
+            "state": 1,
+            "baselineFirstExactMs": 281.86975,
+            "candidateFirstExactMs": 122.365792,
+            "interactiveSHA256": "42ee445742799172284bd04160d70d3325174854e8d46767eead9b211b2349cc",
+            "settledSHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          }
+        ]
+      }
+    }
+  ]
+}

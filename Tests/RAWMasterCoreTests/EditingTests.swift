@@ -1,4 +1,5 @@
 import CSQLite
+import CryptoKit
 import Foundation
 import XCTest
 @testable import RAWMasterCore
@@ -61,6 +62,55 @@ final class EditingTests: XCTestCase {
     try store.statement("UPDATE assets SET data=? WHERE id=?", [try store.json(changed), asset.id])
     XCTAssertThrowsError(try store.validateEditingSource(source))
   }
+  func testEditingSourceSnapshotSeesOneWALViewAndRevalidatesAfterReAdmission() throws {
+    let writer = try LibraryStore(databaseURL: database)
+    let scope = try XCTUnwrap(store.rows("""
+      SELECT t.scope_id,printf('%!.26g',t.admitted_at) FROM lc_scope_times t JOIN lc_scopes s USING(scope_id) WHERE s.asset_id=?
+      """, [asset.id]).first)
+    func capture(_ connection: LibraryStore) throws -> EditingSourceSnapshot {
+      try connection.editingSourceSnapshot(assetID: asset.id, verifiedSHA256: source.contentSHA256, verifiedByteCount: source.byteCount)
+    }
+    try store.withReadSnapshot {
+      XCTAssertEqual(try capture(store), source)
+      try writer.statement("DELETE FROM lc_scope_times WHERE scope_id=?", [scope[0]])
+      XCTAssertThrowsError(try writer.withReadSnapshot { try capture(writer) }) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+      XCTAssertEqual(try capture(store), source)
+      try writer.statement("INSERT INTO lc_scope_times(scope_id,admitted_at) VALUES(?, CAST(? AS REAL)+1)", scope)
+      XCTAssertEqual(try capture(store), source)
+    }
+    let next = try store.withReadSnapshot { try capture(store) }
+    XCTAssertNotEqual(next.admissionFingerprint, source.admissionFingerprint)
+    XCTAssertEqual(try capture(store), next)
+    XCTAssertThrowsError(try store.validateEditingSource(source)) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+    try store.validateEditingSource(next)
+  }
+
+  func testSnapshotRejectsContradictoryAssetIdentityAndUnavailableOrChangedBytes() throws {
+    let changes: [(inout AssetRecord) -> Void] = [
+      { $0.id = UUID().uuidString }, { $0.projectID = UUID().uuidString },
+      { $0.availability = .missing }, { $0.fileSize += 1 }, { $0.contentHash = String(repeating: "a", count: 64) }
+    ]
+    for change in changes {
+      var changed = asset!
+      change(&changed)
+      try store.statement("UPDATE assets SET data=? WHERE id=?", [try store.json(changed), asset.id])
+      func capture() throws -> EditingSourceSnapshot {
+        try store.editingSourceSnapshot(assetID: asset.id, verifiedSHA256: source.contentSHA256, verifiedByteCount: source.byteCount)
+      }
+      XCTAssertThrowsError(try store.withReadSnapshot { try capture() }) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+      XCTAssertThrowsError(try capture()) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+      XCTAssertThrowsError(try store.validateEditingSource(source)) { XCTAssertEqual($0 as? EditingError, .staleSource) }
+    }
+    var legacy = asset!
+    legacy.contentHash = nil
+    try store.statement("UPDATE assets SET data=? WHERE id=?", [try store.json(legacy), asset.id])
+    let current = try store.withReadSnapshot {
+      try store.editingSourceSnapshot(assetID: asset.id, verifiedSHA256: source.contentSHA256, verifiedByteCount: source.byteCount)
+    }
+    XCTAssertTrue(current.hasSameIdentity(as: source))
+    XCTAssertNil(current.catalogContentHash)
+  }
+
   func testProvisionalLegacyAdmissionCannotOpenAPendingOrFinallyExcludedFile() async throws {
     let folder = root.appendingPathComponent("screening")
     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
@@ -91,6 +141,10 @@ final class EditingTests: XCTestCase {
     store = try LibraryStore(databaseURL: database)
     let recaptured = try store.captureEditingSourceSnapshot(assetID: asset.id)
     XCTAssertEqual(recaptured.admissionFingerprint, legacySource.admissionFingerprint)
+    let frozen = try store.withReadSnapshot {
+      try store.editingSourceSnapshot(assetID: asset.id, verifiedSHA256: recaptured.contentSHA256, verifiedByteCount: recaptured.byteCount)
+    }
+    XCTAssertEqual(frozen, recaptured)
     XCTAssertTrue(try store.photoWork(id: existing.id).source.hasSameIdentity(as: recaptured))
     try store.validateEditingSource(legacySource)
     _ = try store.appendEditingVersion(version(existing))
@@ -320,6 +374,13 @@ final class EditingTests: XCTestCase {
       assetFingerprint: "historical", oldPath: historicalRoot.appendingPathComponent("photo.RAW").path, oldPathWasAvailable: false)
     let relocation = RelocationSession(importSessionID: session.id, rootPath: historicalRoot.path, role: .managed, items: [item])
     try store.statement("INSERT INTO relocation_sessions VALUES(?,?)", [relocation.id, try store.json(relocation)])
+    let roots = try store.editingProtectedRoots()
+    let paths = Set(roots.map { Data($0.path.utf8) })
+    XCTAssertEqual(paths.count, roots.count)
+    for path in [sourceURL.path, session.sourcePath, movedRoot.path, session.destinationPath!,
+                 session.effectiveManagedRoot!, historicalRoot.path, item.oldPath] {
+      XCTAssertTrue(paths.contains(Data(path.utf8)), path)
+    }
     for protected in [sourceURL.deletingLastPathComponent(), URL(fileURLWithPath: session.destinationPath!), historicalRoot] {
       XCTAssertThrowsError(try store.configureEditingArchive(root: protected.appendingPathComponent("Archive")))
     }
@@ -333,6 +394,58 @@ final class EditingTests: XCTestCase {
     XCTAssertEqual(try Data(contentsOf: sourceURL), before)
     XCTAssertFalse(FileManager.default.fileExists(atPath: sourceURL.deletingLastPathComponent().appendingPathComponent("RestoredArchive").path))
   }
+
+  func testEditingBackupPreservesLargeContentAddressedRecipeObjects() throws {
+    _ = try store.configureEditingArchive(root: root.appendingPathComponent("Archive"))
+    var payload = Data("{\"schema\":1,\"fixture\":\"".utf8)
+    payload.append(Data(repeating: 65, count: 9 * 1024 * 1024))
+    payload.append(Data("\"}".utf8))
+    let sha = SHA256.hash(data: payload).map { String(format: "%02x", $0) }.joined()
+    let relative = "objects/\(sha.prefix(2))/\(sha)"
+    let resource = root.appendingPathComponent("LibraryResources").appendingPathComponent(relative)
+    try FileManager.default.createDirectory(at: resource.deletingLastPathComponent(), withIntermediateDirectories: true)
+    try payload.write(to: resource)
+    try store.statement("INSERT INTO lc_resources VALUES(?,?,?,?,?,NULL)",
+                        ["wb032:sha256:" + sha, "recipeResource", relative, sha, String(payload.count)])
+
+    let backup = root.appendingPathComponent("Backup")
+    let manifest = try store.backupEditingLibrary(to: backup)
+    XCTAssertEqual(manifest.formatVersion, 2)
+    XCTAssertEqual(manifest.recipeResources, [sha: Int64(payload.count)])
+    let packaged = backup.appendingPathComponent("LibraryResources").appendingPathComponent(relative)
+    XCTAssertEqual(try FileSafety.hash(packaged), sha)
+    let restoredRoot = root.appendingPathComponent("Separate Library")
+    let restored = try LibraryStore.restoreEditingLibrary(from: backup, databaseURL: restoredRoot.appendingPathComponent("library.sqlite"),
+                                                         archiveRoot: restoredRoot.appendingPathComponent("Archive"))
+    XCTAssertEqual(try restored.rows("SELECT sha256,relative_path FROM lc_resources"), [[sha, relative]])
+    XCTAssertEqual(try FileSafety.hash(restoredRoot.appendingPathComponent("LibraryResources").appendingPathComponent(relative)), sha)
+    XCTAssertTrue(try restored.rows("SELECT value FROM metadata WHERE key='editingBackupFormat'").isEmpty)
+    let conflictRoot = root.appendingPathComponent("Reserved Resource Name")
+    XCTAssertThrowsError(try LibraryStore.restoreEditingLibrary(from: backup, databaseURL: conflictRoot.appendingPathComponent("LibraryResources"),
+                                                               archiveRoot: conflictRoot.appendingPathComponent("Archive")))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: conflictRoot.path))
+
+    let manifestURL = backup.appendingPathComponent("manifest.json")
+    var downgraded = manifest
+    downgraded.formatVersion = 1
+    downgraded.recipeResources = nil
+    try JSONEncoder().encode(downgraded).write(to: manifestURL)
+    let downgradedOutput = root.appendingPathComponent("Downgraded Library")
+    XCTAssertThrowsError(try LibraryStore.restoreEditingLibrary(from: backup, databaseURL: downgradedOutput.appendingPathComponent("library.sqlite"),
+                                                               archiveRoot: downgradedOutput.appendingPathComponent("Archive")))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: downgradedOutput.path))
+    try JSONEncoder().encode(manifest).write(to: manifestURL)
+
+    payload[payload.count - 3] ^= 1
+    try payload.write(to: packaged)
+    let rejected = root.appendingPathComponent("Rejected Library")
+    XCTAssertThrowsError(try LibraryStore.restoreEditingLibrary(from: backup, databaseURL: rejected.appendingPathComponent("library.sqlite"),
+                                                               archiveRoot: rejected.appendingPathComponent("Archive")))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: rejected.appendingPathComponent("library.sqlite").path))
+    XCTAssertFalse(FileManager.default.fileExists(atPath: rejected.appendingPathComponent("Archive").path))
+    XCTAssertEqual(try FileSafety.hash(resource), sha)
+  }
+
   func testInvalidPendingPublicationIsRejectedBeforeFinalRestorePathsExist() throws {
     let work = try work(), (file, metadata) = try renderedFile()
     let archive = try store.configureEditingArchive(root: root.appendingPathComponent("Archive"))

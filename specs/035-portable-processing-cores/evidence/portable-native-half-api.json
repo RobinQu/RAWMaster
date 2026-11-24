@@ -1,0 +1,203 @@
+{
+  "scope": "macOS arm64 private-texture C ABI and synchronous Swift module. The independent C witness compares the release four-band port with Phase X's original separately loaded research library. Normal user-visible preview and official performance are measured independently by the Batch 27 editor service.",
+  "operator": "Recipe v2 source -> optional suppressed basic_v3 -> one active curves_levels_v3. A parameter rebind retains the topology and rechecks that the basic point pass has zero enable flags. The port checks native F16 source opacity and finite inputs/effects; it writes a 256-row RGBA32F band followed by the hardware linear half sampler, four ordered bands per submission.",
+  "entry": {
+    "swiftType": "RAWMasterImageKernel.NativeHalfProgram",
+    "nativeHeader": "Modules/ImageEdit/include/rawmaster_image_metal.h",
+    "optionalExports": [
+      "rm_image_metal_half_program_close_v1",
+      "rm_image_metal_half_program_open_v1",
+      "rm_image_metal_half_render_v1"
+    ],
+    "defaultRuntimeExports": 19,
+    "researchRuntimeExports": 22,
+    "defaultRuntime": {
+      "path": "output/035-development/phase-y/native-half/final/librawmaster_image.dylib",
+      "sha256": "2a21aa62cac53026e41fb71ca22e8ffa5f78e174f0abc87a3fe8573119fa1636"
+    },
+    "researchRuntime": {
+      "path": "output/035-development/phase-y/native-half/final/probe/librawmaster_image.dylib",
+      "sha256": "f65a1819d418fca8ae2609f45d43c196c301b36c2480449018d06d7c7178f7d0"
+    },
+    "historicalMode6Reference": {
+      "path": "output/035-development/phase-x/half-subgroup/seal-03/librawmaster_image.dylib",
+      "sha256": "aff88102c86c86f45068c024af50586ab68f074f2778b3f6024a0383dcf94741"
+    }
+  },
+  "memory": {
+    "ownedImageWorkLimitBytes": 536870912,
+    "additionalScratchPublicBoundBytes": 50331648,
+    "maxAccountingFormulaAt9600x6400Bytes": 44888576,
+    "matrix": {
+      "hostOutput": "actual RGBA32F half allocation, charged separately by the Swift reservation",
+      "scratch": "one full-width 256-row tile, four group-completion receipt buffers and at most 25 immutable small parameter buffers",
+      "hostSource": "existing provider-owned joined RGBA16F input; shader compiler, device/driver and final display have their own accounting"
+    }
+  },
+  "authority": {
+    "activeRevisionRequired": true,
+    "physicalResourceState": "Both private input and output must be initialized and joined before HAL import. The host retains the immutable source and exclusively owns the output through the joined call and final presentation check.",
+    "preSubmit": "All production parameter bytes live in already initialized shared Metal buffers. No mapped-at-creation staging copy is queued. The separate research port preserves its historical implementation.",
+    "submitted": "Checks run before each band is encoded, before and after submit, after drain and during result validation. Late cancellation drains up to four 256-row bands. Each band has independent counts for every native and half workgroup. The release owner receives pixels only on success and a current authority check.",
+    "deviceErrors": "The implementation checks wgpu poll, the trailing native completion status, an asynchronous device-error latch and the complete per-group records. Deliberate physical device removal during these runs was not exercised."
+  },
+  "primaryReferences": {
+    "wgpu_27_0_1_initialized_external_resource": "https://docs.rs/wgpu/27.0.1/wgpu/struct.Device.html#method.create_texture_from_hal",
+    "apple_device_buffer_contents": "https://developer.apple.com/documentation/metal/mtldevice/makebuffer(length:options:)",
+    "apple_device_texture_allocation": "https://developer.apple.com/documentation/metal/mtldevice/maketexture(descriptor:)"
+  },
+  "independentC": {
+    "status": "passed",
+    "sourceDimensions": [
+      34,
+      1030
+    ],
+    "halfDimensions": [
+      17,
+      515
+    ],
+    "nativeBands": [
+      256,
+      256,
+      256,
+      256,
+      6
+    ],
+    "allFloatComponentsComparedPerRender": 35020,
+    "referenceAndDestinationDistinct": true,
+    "initializedWithDistinctPatterns": [
+      "0x55",
+      "0xff"
+    ],
+    "reboundCases": [
+      "A",
+      "B",
+      "A"
+    ],
+    "mismatchingComponents": 0,
+    "rejections": [
+      "mixed Basic at open and at same-topology rebind",
+      "missing authority callback",
+      "native texture view",
+      "finite input with overflowing curve",
+      "non-opaque sample in the six-row tail"
+    ],
+    "preSubmitRevocations": 32,
+    "afterSubmitAndAfterJoinRevocations": [
+      7,
+      8
+    ],
+    "deviceAllocatedBytesAt0_16_32Revocations": [
+      5177344,
+      5177344,
+      5177344
+    ],
+    "successfulRetry": true
+  },
+  "hostRuntimeCompatibility": {
+    "v1_FlashRAW19b": {
+      "v1_plan_status": 0,
+      "v2_plan_status": 1,
+      "half_open_with_null_device": 2,
+      "runtime": "output/035-development/candidate-batch19b-source/RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime",
+      "sha256": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+      "exports_plan_open_v2": false,
+      "exports_native_half": false
+    },
+    "v2_before_curves": {
+      "v1_plan_status": 0,
+      "v2_plan_status": 1,
+      "half_open_with_null_device": 2,
+      "runtime": "output/035-development/candidate-batch21-verified-source/RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime",
+      "sha256": "321d93fb06fdfd82f948c3335f56ff6bed26525ef234f150fc4c6f398ac550d4",
+      "exports_plan_open_v2": true,
+      "exports_native_half": false
+    },
+    "v2_before_native_half": {
+      "v1_plan_status": 0,
+      "v2_plan_status": 0,
+      "half_open_with_null_device": 2,
+      "runtime": "output/035-development/candidate-batch26-grouped-scalars/RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime",
+      "sha256": "811f71c3489171fa8be3be6d1b8a0ca3d577bcb2c61cab7f6da919979404657e",
+      "exports_plan_open_v2": true,
+      "exports_native_half": false
+    },
+    "v2_with_native_half": {
+      "v1_plan_status": 0,
+      "v2_plan_status": 0,
+      "half_open_with_null_device": 1,
+      "runtime": "output/035-development/phase-y/native-half/final/librawmaster_image.dylib",
+      "sha256": "2a21aa62cac53026e41fb71ca22e8ffa5f78e174f0abc87a3fe8573119fa1636",
+      "exports_plan_open_v2": true,
+      "exports_native_half": true
+    }
+  },
+  "reproduceFromRepoRoot": "sh Modules/ImageEdit/tests/native-half/check_product.sh output/035-development/phase-y/native-half/final/librawmaster_image.dylib output/035-development/phase-x/half-subgroup/seal-03/librawmaster_image.dylib",
+  "freshBuild": "Build the default crate and a separate copy with --features native-half-probe. Supply both dylibs to check_product.sh to replay the fixture independently of the archived Phase X binary.",
+  "links": [
+    {
+      "path": "Modules/ImageEdit/tests/native-half/check_product.sh",
+      "sha256": "df3330677f4e13ee2c755b09afe014b667494b7acdabba0376131be89dd79eb8"
+    },
+    {
+      "path": "Modules/ImageEdit/tests/native-half/product.m",
+      "sha256": "d875dfe5d7b24c56bc51f7ef0cd73fde81ae358f9a84803a5ce320f9646dd7c7"
+    },
+    {
+      "path": "Modules/ImageEdit/tests/native-half/metal_fixture.h",
+      "sha256": "889a0842394f4d8617c9b6b4e0bd83588910d89456c4cee55c1127ba8ac0df56"
+    },
+    {
+      "path": "Modules/ImageEdit/tests/native-half/check_symbols.py",
+      "sha256": "b986d04c42ffe4c793314c6a26173f4f4f868e3066c298db177d328ff5efce9d"
+    },
+    {
+      "path": "Modules/ImageEdit/include/rawmaster_image_metal.h",
+      "sha256": "7bf7e89d67c6c20fdda3c6cc77550a39478845b1370a574c65e81e3273293053"
+    },
+    {
+      "path": "Modules/ImageEdit/Bridge/ImageEditLoader.c",
+      "sha256": "9bb79d5a6fee7e12938a352bd67c91c701942a5e49004b578163cb94d4ee286b"
+    },
+    {
+      "path": "Modules/ImageEdit/Bridge/include/ImageEditLoader.h",
+      "sha256": "18b6597c7e4ec363b2c84b16f6a17b1d9da6d64fa51b65f46ce6eafbb1aa53e5"
+    },
+    {
+      "path": "Modules/ImageEdit/Swift/RAWMasterImageKernel.swift",
+      "sha256": "ca428ad5901fa275d37239678ef5b57a9e86b43a66bd166596491f2b917c3d33"
+    },
+    {
+      "path": "Modules/ImageEdit/src/metal_surface_identity.m",
+      "sha256": "6821552545d19a98e09621dc31464c25bd5e119b82c537a6f5da4a581d1ba1b4"
+    },
+    {
+      "path": "Modules/ImageEdit/src/gpu/metal_surface/native_half.rs",
+      "sha256": "a9792cac6d6a9b026098630e2201d12fcd850d9b27a021bb293b0fbb9252d4ed"
+    },
+    {
+      "path": "Modules/ImageEdit/src/gpu/metal_surface/native_half_main.wgsl",
+      "sha256": "2a1129dc8eeda4acbd11ab57f158bbcb2356634fd547f21c5b9a93d1470b68b9"
+    },
+    {
+      "path": "output/035-development/phase-y/native-half/final/product-initialized",
+      "sha256": "38954e8e5c5780a5965a1da0634b98fbf422298d957200cf4cef78538c3b213c"
+    },
+    {
+      "path": "output/035-development/phase-y/native-half/final/product-initialized.log",
+      "sha256": "7ff18585bb28e3ca5f977f7135c07ff6d3ea6954d5efe16ba017d807cbfc4f37"
+    },
+    {
+      "path": "output/035-development/phase-y/native-half/final/abi.json",
+      "sha256": "8bd487455335978b93ffab611429c63370a1a09c4adb8af638d21ea6bae6e5e9"
+    },
+    {
+      "path": "output/035-development/phase-y/native-half/final/legacy-intake.json",
+      "sha256": "e21b2bc0f1e10a7192f5629d6699f1ac870425f69d31cd580ef748933227babf"
+    },
+    {
+      "path": "output/035-development/phase-x/half-subgroup/seal-03/verified.json",
+      "sha256": "03971a913bc80c796d81ab09895679d50cbdebd3b37b530305b06bb9060192c9"
+    }
+  ]
+}

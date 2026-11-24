@@ -1,0 +1,219 @@
+--- a/Modules/LibraryCatalog/src/scheduler/batch/directory.rs
++++ b/Modules/LibraryCatalog/src/scheduler/batch/directory.rs
+@@ -5,7 +5,7 @@
+ use crate::{resources, Result};
+ use serde::{Deserialize, Serialize};
+ use std::ffi::{CString, OsStr};
+-use std::fs::{File, OpenOptions};
++use std::fs::{File, Metadata, OpenOptions};
+ use std::io;
+ use std::os::fd::{AsRawFd, FromRawFd};
+ use std::os::unix::{
+@@ -311,12 +311,36 @@
+     }
+ }
+ 
++// This witness is used only on APFS with its persistent volume identity and nanosecond times.
++#[derive(Eq, PartialEq)]
++struct DirectoryStamp {
++    links: u64,
++    modified: (i64, i64),
++    changed: (i64, i64),
++}
++
++impl DirectoryStamp {
++    fn of(metadata: &Metadata) -> Self {
++        Self {
++            links: metadata.nlink(),
++            modified: (metadata.mtime(), metadata.mtime_nsec()),
++            changed: (metadata.ctime(), metadata.ctime_nsec()),
++        }
++    }
++}
++
++pub(super) enum Publication {
++    Linked,
++    Renamed,
++}
++
+ /// Contains a freshly checked, synced stage and its directory descriptor. SQLite code retains
+ /// this proof while waiting for a write transaction, then rechecks the name before publishing.
+ pub(super) struct Stage {
+     pub ticket: Ticket,
+     folder: File,
+     folder_local: Local,
++    synced_folder: Option<DirectoryStamp>,
+     verified: Verified,
+ }
+ const WITNESS: &str = ".workbench-ticket-witness";
+@@ -356,7 +380,13 @@
+             .ok_or("missing workbench private stage directory")?;
+         validate_stage_names(folder, file, extension)?;
+         let dir = open_at(&root.file, folder, libc::O_DIRECTORY)?;
+-        let folder_local = Local::of(&dir.metadata()?)?;
++        let metadata = dir.metadata()?;
++        let folder_local = Local::of(&metadata)?;
++        let synced_folder = root
++            .binding
++            .identity
++            .stable()
++            .then(|| DirectoryStamp::of(&metadata));
+         let folder_identity = root.stage_identity(&dir, &folder_local)?;
+         let input = open_at(&dir, file, 0)?;
+         let original = Stamp::read(&input)?;
+@@ -404,6 +434,7 @@
+             ticket,
+             folder: dir,
+             folder_local,
++            synced_folder,
+             verified,
+         })
+     }
+@@ -441,7 +472,11 @@
+         }
+         Ok(Some(value))
+     }
+-    pub fn publish(&self, root: &Root, fence: impl Fn() -> Result<()>) -> Result<bool> {
++    pub fn publish(
++        &self,
++        root: &Root,
++        fence: impl Fn() -> Result<()>,
++    ) -> Result<Option<Publication>> {
+         self.check(root)?;
+         let src = component(OsStr::new(&self.ticket.file))?;
+         let dest = component(OsStr::new(&self.ticket.filename))?;
+@@ -460,7 +495,7 @@
+         if linked != 0 {
+             let error = io::Error::last_os_error();
+             if error.kind() == io::ErrorKind::AlreadyExists {
+-                return Ok(false);
++                return Ok(None);
+             }
+             if !matches!(
+                 error.raw_os_error(),
+@@ -493,18 +528,29 @@
+             if result != 0 {
+                 let e = io::Error::last_os_error();
+                 if e.kind() == io::ErrorKind::AlreadyExists {
+-                    return Ok(false);
++                    return Ok(None);
+                 }
+                 return Err(e.into());
+             }
+-        }
+-        Ok(true)
+-    }
+-    pub fn sync_publication(&self, root: &Root) -> Result<()> {
+-        // Both descriptors still refer to the directories used for the exclusive syscall. The
+-        // SQLite lock has been released; its separately committed PREPARED receipt spans a crash.
++            return Ok(Some(Publication::Renamed));
++        }
++        Ok(Some(Publication::Linked))
++    }
++    fn source_requires_sync(&self, method: Publication) -> bool {
++        if let (Publication::Linked, Some(durable)) = (method, &self.synced_folder) {
++            if let Ok(metadata) = self.folder.metadata() {
++                return DirectoryStamp::of(&metadata) != *durable;
++            }
++        }
++        true
++    }
++    pub fn sync_publication(&self, root: &Root, method: Publication) -> Result<()> {
++        // PREPARED is already committed. Both directories were synced during this very request.
++        // A successful hard link adds an entry only in the destination. Rename changes both.
+         root.file.sync_all()?;
+-        self.folder.sync_all()?;
++        if self.source_requires_sync(method) {
++            self.folder.sync_all()?;
++        }
+         Ok(())
+     }
+ }
+@@ -624,3 +670,42 @@
+         Ok(())
+     }
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++
++    #[test]
++    fn hardlink_syncs_changed_or_unqualified_source_and_rename_always_syncs_both() -> Result<()> {
++        let temp = tempfile::tempdir()?;
++        let root = Root::open(temp.path())?;
++        let folder = format!(".rawmaster-export-{}", uuid::Uuid::new_v4());
++        let directory = temp.path().join(&folder);
++        std::fs::create_dir(&directory)?;
++        std::fs::write(directory.join("pixels.jpg"), b"joined image")?;
++        let stage = Stage::read(
++            &root,
++            &format!("{folder}/pixels.jpg"),
++            "final.jpg".into(),
++            "jpg",
++            true,
++        )?;
++        // Publish from a fresh read of the persisted ticket, as a reopened worker would.
++        let prepared = Stage::from_ticket(&root, &stage.ticket, "jpg")?.unwrap();
++        let method = prepared.publish(&root, || Ok(()))?.unwrap();
++        assert!(matches!(method, Publication::Linked));
++        assert_eq!(
++            prepared.source_requires_sync(Publication::Linked),
++            !root.binding.identity.stable()
++        );
++        assert!(prepared.source_requires_sync(Publication::Renamed));
++        prepared.sync_publication(&root, method)?;
++        std::fs::write(directory.join("retained-entry"), b"unrelated stage content")?;
++        assert!(prepared.source_requires_sync(Publication::Linked));
++        assert_eq!(
++            std::fs::read(temp.path().join("final.jpg"))?,
++            b"joined image"
++        );
++        Ok(())
++    }
++}
+--- a/Modules/LibraryCatalog/src/scheduler/batch/items.rs
++++ b/Modules/LibraryCatalog/src/scheduler/batch/items.rs
+@@ -627,6 +627,7 @@
+             root.recheck()?;
+         }
+         let mut reply = json!({});
++        let mut published_stage = None;
+         match self.action {
+             ClaimItem => {
+                 self.parent(&ctx, now)?;
+@@ -704,13 +705,15 @@
+                     }
+                     Some(Final::Conflict) => "conflict",
+                     Some(Final::Missing) => match stage.as_ref() {
+-                        Some(stage)
+-                            if stage
+-                                .publish(root, || self.owners(&ctx, super::super::now_ms()?))? =>
++                        Some(stage) => match stage
++                            .publish(root, || self.owners(&ctx, super::super::now_ms()?))?
+                         {
+-                            "published"
+-                        }
+-                        Some(_) => "conflict",
++                            Some(method) => {
++                                published_stage = Some((stage, root, method));
++                                "published"
++                            }
++                            None => "conflict",
++                        },
+                         None => "missingStage",
+                     },
+                     None => return Err("missing prepared workbench ticket".into()),
+@@ -797,10 +800,8 @@
+         }
+         reply["item"] = ctx.item.view(&ctx.parent, now);
+         tx.commit()?;
+-        if matches!(self.action, PublishItem) && reply["status"] == "published" {
+-            if let (Some(stage), Some(root)) = (stage.as_ref(), root.as_ref()) {
+-                stage.sync_publication(root)?;
+-            }
++        if let Some((stage, root, method)) = published_stage {
++            stage.sync_publication(root, method)?;
+         }
+         if matches!(self.action, AcknowledgeItem) && reply["status"] == "delivered" {
+             if let (Some(ticket), Some(root)) = (ctx.item.ticket.as_ref(), root.as_ref()) {

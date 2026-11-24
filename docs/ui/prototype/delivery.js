@@ -1,5 +1,14 @@
 'use strict';
 
+// Timers belong to the previous document. A new workbench may inspect its frozen
+// batch immediately, but publishing more files requires an explicit continuation.
+for (const job of Studio.data.jobs) {
+  if (job.photoReceipt && job.state === 'running') {
+    job.state = 'unknown';
+    job.deliveryStatus = '交付已中断';
+  }
+}
+
 function handoffDelivery(ids, source, { version, mode = 'render', companions = false } = {}) {
   const items = [];
   for (const id of ids) {
@@ -103,11 +112,21 @@ function renderDelivery(root) {
       items: ids.map((id) => Studio.exportItem(id)),
     };
   }
-  const fragment = new URLSearchParams({ selection: JSON.stringify(S.delivery) }).toString();
-  const src = '../../../specs/032-export-workspace/prototype.html#' + fragment;
-  if (S.exportKey === src) return;
+  const requested = S.openPhotoReceipt;
+  S.openPhotoReceipt = null;
   const current = $('#export-frame');
-  let next = $$('#delivery iframe').find((frame) => frame.dataset.batch === src);
+  if (!requested && current.delivery === S.delivery && current.dataset.batch === S.exportKey) return;
+  const frames = $$('#delivery iframe');
+  const live = requested ? frames.find(f => f.dataset.receipt === requested) : null;
+  const pending = !requested && S.delivery.mode !== 'original' && Studio.data.jobs.find(j => j.photoReceipt
+    && ['unknown','failed'].includes(j.state) && !frames.some(f => f.dataset.receipt === j.photoReceipt));
+  const fragment = new URLSearchParams({ selection: JSON.stringify(S.delivery) });
+  if (requested || pending) fragment.set('receipt', requested || pending.photoReceipt);
+  if (requested) fragment.set('details','1');
+  const src = live?.dataset.batch || '../../../specs/032-export-workspace/prototype.html#' + fragment;
+  const openLiveReceipt = () => live?.contentWindow.postMessage({type:'rawmaster.delivery.open',id:requested}, location.protocol === 'file:' ? '*' : location.origin);
+  if (S.exportKey === src) { openLiveReceipt(); return; }
+  let next = live || frames.find((frame) => frame.dataset.batch === src);
   if (!next) {
     if (!current.dataset.batch) next = current;
     else {
@@ -127,7 +146,7 @@ function renderDelivery(root) {
     next.dataset.batch = src;
     next.delivery = S.delivery;
     next.src = src;
-  }
+  } else { openLiveReceipt(); }
   S.exportKey = src;
 }
 function clearDelivery() {
@@ -155,10 +174,15 @@ window.addEventListener('message', (event) => {
   }
   Object.assign(j, {
     kind: m.kind,
-    state: m.running ? 'running' : m.rows.some((r) => r.state === '已取消') ? 'cancelled' : 'done',
+    state: m.photoReceipt && ['running','done','unknown','failed','cancelled'].includes(m.state) ? m.state
+      : m.running ? 'running' : m.rows.some((r) => r.state === '已取消') ? 'cancelled' : 'done',
     rows: m.rows,
     folder: m.folder,
   });
+  if (m.photoReceipt) {
+    j.photoReceipt = m.id; j.deliveryStatus = m.status; j.deliverySummary = m.summary;
+    frame.dataset.receipt = m.id;
+  } else { delete frame.dataset.receipt; }
   frame.dataset.running = String(m.running);
   Studio.save();
   if (frame.hidden && !m.running) frame.remove();
@@ -173,14 +197,17 @@ function deliveryReceipt(j) {
     factList([
       ['来源', j.delivery.source],
       ['目的地', j.folder],
-      ['状态', jobNames[j.state]],
+      ['状态', j.deliveryStatus || jobNames[j.state]],
+      ...(j.deliverySummary ? [['进度',j.deliverySummary]] : []),
     ]) + `<h4>逐项结果</h4>${j.rows.map((r) => rowCard(r.name, r.state)).join('')}`,
-    btn('完成', 'close') + btn('打开本批选片', 'reopen-delivery', j.id),
+    btn('完成', 'close') + btn(j.photoReceipt ? '查看本批交付' : '打开本批选片', 'reopen-delivery', j.id),
   );
   sheet.dataset.job = j.id;
 }
 actions['reopen-delivery'] = (id) => {
-  S.delivery = Studio.data.jobs.find((j) => j.id === id).delivery;
+  const job = Studio.data.jobs.find((j) => j.id === id);
+  S.delivery = job.delivery;
+  S.openPhotoReceipt = job.photoReceipt;
   closeSheet();
   go('export');
 };

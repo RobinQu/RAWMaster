@@ -52,17 +52,32 @@ extern "C" { namespace coreimage {
   }
 
   static func render(_ graph:CIImage,rect:CGRect,components:Int,context:CIContext,
-    request:DevelopmentDehazeTIFFPreviewV1.Request)throws->DehazeRfBufferV1{
+    request:DevelopmentDehazeTIFFPreviewV1.Request, seedUnwrittenScalar:Bool=false)throws->DehazeRfBufferV1{
     try request.requireCurrent()
     let buffer=try DehazeRfBufferV1(width:Int(rect.width),height:Int(rect.height),components:components,scope:request.scope)
-    let destination=CIRenderDestination(bitmapData:buffer.pointer,width:Int(rect.width),height:Int(rect.height),bytesPerRow:buffer.rowBytes,format:components==1 ? .Rf:(components==2 ? .RGf:.RGBAf))
-    destination.colorSpace=nil;destination.alphaMode = .none;destination.isFlipped=true;destination.isDithered=false;destination.isClamped=false
+    if seedUnwrittenScalar {
+      guard components == 1 else { throw PreviewPresentationError.allocationProtocol }
+      // Every unwritten IEEE-754 scalar must fail the joined, full-width row verification.
+      memset(buffer.pointer, 0xff, buffer.bytes)
+    }
+    let destination = bitmapDestination(buffer.pointer, rect: rect, rowBytes: buffer.rowBytes, components: components)
     let task=try context.startTask(toRender:graph,from:rect,to:destination,at:.zero)
     do{
       try request.observe(.scalarSubmitted)
       _=try task.waitUntilCompleted()
     }catch{let original=error;_=try?task.waitUntilCompleted();throw original}
     try request.observe(.scalarJoined);try request.requireCurrent();return buffer
+  }
+  static func bitmapDestination(_ pointer: UnsafeMutableRawPointer, rect: CGRect, rowBytes: Int,
+                                components: Int) -> CIRenderDestination {
+    let destination = CIRenderDestination(bitmapData: pointer, width: Int(rect.width), height: Int(rect.height),
+      bytesPerRow: rowBytes, format: components == 1 ? .Rf : (components == 2 ? .RGf : .RGBAf))
+    destination.colorSpace = nil
+    destination.alphaMode = .none
+    destination.isFlipped = true
+    destination.isDithered = false
+    destination.isClamped = false
+    return destination
   }
   static func file(_ graph:CIImage,scratch:DehazeRfScratchV1,context:CIContext,
     request:DevelopmentDehazeTIFFPreviewV1.Request,bandRows:Int=256)throws{

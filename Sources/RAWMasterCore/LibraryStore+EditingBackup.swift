@@ -1,18 +1,24 @@
 import CSQLite
 import Darwin
 import Foundation
+import RAWMasterLibrary
 
 extension LibraryStore {
+  private static let boundWorkbenchQuery = "SELECT key FROM lc_meta WHERE key GLOB 'wb032.target.v1/*' LIMIT 1"
+
   /// A standalone SQLite snapshot plus all recognized archive bytes/receipts, verified before publishing manifest.
   /// Original camera files are deliberately not copied and are never mutated.
   public func backupEditingLibrary(to directory: URL) throws -> EditingLibraryBackupManifest {
     try locked {
       let archive = try editingArchive()
       let protected = try editingProtectedRoots()
-      try FileSafety.checkTarget(directory, sources: protected + [archive.root])
+      let resourceRoot = Self.recipeResourceRoot(near: databaseURL)
+      try FileSafety.checkTarget(directory, sources: protected + [archive.root, resourceRoot])
       guard !FileManager.default.fileExists(atPath: directory.path) else { throw EditingError.unsafePath }
       try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
       return try withReadSnapshot {
+        let recipeResources = try recipeBackupResources()
+        let requiresWriterDetach = try !rows(Self.boundWorkbenchQuery).isEmpty
         let database = directory.appendingPathComponent("library.sqlite")
         var destination: OpaquePointer?
         guard sqlite3_open_v2(database.path, &destination, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_FULLMUTEX, nil) == SQLITE_OK else {
@@ -66,6 +72,9 @@ extension LibraryStore {
           try snapshot.statement("UPDATE metadata SET value=? WHERE key='editingArchiveRoot'", [backupArchive.root.path])
           _ = try snapshot.recoverEditingArchive()
           try snapshot.validateEditingArchiveReferences(archive: backupArchive)
+          if requiresWriterDetach || !recipeResources.isEmpty {
+            try snapshot.exec("INSERT INTO metadata(key,value) VALUES('editingBackupFormat','2') ON CONFLICT(key) DO UPDATE SET value=excluded.value")
+          }
           try snapshot.exec("PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode=DELETE")
           guard sqlite3_close(snapshot.db) == SQLITE_OK else { throw EditingError.incompleteBackup }
           snapshot.db = nil
@@ -81,7 +90,9 @@ extension LibraryStore {
         }
         var files: [String: String] = [:]
         for relative in relativeFiles { files[relative] = try FileSafety.hash(backupArchive.root.appendingPathComponent(relative)) }
-        let manifest = EditingLibraryBackupManifest(databaseSHA256: try FileSafety.hash(database), files: files)
+        try Self.copyRecipeResources(recipeResources, from: resourceRoot, to: Self.recipeResourceRoot(near: database), protected: protected)
+        let manifest = EditingLibraryBackupManifest(databaseSHA256: try FileSafety.hash(database), files: files,
+                                                     recipeResources: recipeResources, requiresWriterDetach: requiresWriterDetach)
         let manifestURL = directory.appendingPathComponent("manifest.json")
         let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
         try Self.synchronizeEditingDirectories(root: directory, files: files.keys.map { "archive/" + $0 })
@@ -91,6 +102,76 @@ extension LibraryStore {
         return manifest
       }
     }
+  }
+  private static func recipeResourceRoot(near database: URL) -> URL {
+    database.deletingLastPathComponent().appendingPathComponent("LibraryResources", isDirectory: true)
+  }
+  private static func recipeResourcePath(_ digest: String) throws -> String {
+    guard EditingFingerprint.isSHA256(digest) else { throw EditingError.incompleteBackup }
+    return "objects/\(digest.prefix(2))/\(digest)"
+  }
+  private func recipeBackupResources() throws -> [String: Int64] {
+    var resources: [String: Int64] = [:]
+    for row in try rows("SELECT relative_path,sha256,byte_count FROM lc_resources WHERE kind='recipeResource'") {
+      let digest = row[1]
+      guard try Self.recipeResourcePath(digest) == row[0], let count = Int64(row[2]), count >= 0,
+            resources[digest] == nil || resources[digest] == count else { throw EditingError.incompleteBackup }
+      resources[digest] = count
+    }
+    return resources
+  }
+  private static func recipeResourceURL(_ root: URL, digest: String) throws -> URL {
+    let parent = FileSafety.canonical(root.deletingLastPathComponent())
+    let object = parent.appendingPathComponent(root.lastPathComponent).appendingPathComponent(try recipeResourcePath(digest))
+    guard FileSafety.canonical(object).path == object.path else { throw EditingError.incompleteBackup }
+    return object
+  }
+  private static func copyRecipeResources(_ resources: [String: Int64], from origin: URL, to target: URL, protected: [URL]) throws {
+    guard !resources.isEmpty else { return }
+    for (digest, size) in resources {
+      let source = try recipeResourceURL(origin, digest: digest), destination = try recipeResourceURL(target, digest: digest)
+      guard try FileSafety.stat(source).size == size else { throw EditingError.incompleteBackup }
+      let copied = try FileSafety.verifiedCopy(source: source, target: destination, expectedHash: digest, protectedRoots: protected, cancel: {})
+      guard copied.0.path == destination.path else { throw EditingError.incompleteBackup }
+    }
+    try synchronizeEditingDirectories(root: target, files: resources.keys.map(recipeResourcePath))
+    try synchronizeEditingDirectories(root: target.deletingLastPathComponent(), files: [])
+  }
+  private static func publishRestoredRecipeResources(_ resources: [String: Int64], staged: URL, target: URL, protected: [URL]) throws {
+    guard !resources.isEmpty else { return }
+    try FileSafety.checkTarget(target, sources: protected)
+    let directoryFlags = O_RDONLY | O_DIRECTORY | O_NOFOLLOW
+    func openDirectory(_ name: String, at parent: Int32) throws -> Int32 {
+      guard mkdirat(parent, name, 0o755) == 0 || errno == EEXIST else { throw EditingError.incompleteBackup }
+      let fd = openat(parent, name, directoryFlags)
+      guard fd >= 0 else { throw EditingError.incompleteBackup }
+      return fd
+    }
+    let parent = open(FileSafety.canonical(target.deletingLastPathComponent()).path, directoryFlags)
+    guard parent >= 0 else { throw EditingError.incompleteBackup }
+    defer { close(parent) }
+    let resourceDirectory = try openDirectory(target.lastPathComponent, at: parent)
+    defer { close(resourceDirectory) }
+    let objects = try openDirectory("objects", at: resourceDirectory)
+    defer { close(objects) }
+    for (digest, size) in resources {
+      let source = try recipeResourceURL(staged, digest: digest)
+      let shard = try openDirectory(String(digest.prefix(2)), at: objects)
+      defer { close(shard) }
+      guard linkat(AT_FDCWD, source.path, shard, digest, 0) == 0 || errno == EEXIST else { throw EditingError.incompleteBackup }
+      let fd = openat(shard, digest, O_RDONLY | O_NOFOLLOW | O_NONBLOCK)
+      guard fd >= 0 else { throw EditingError.incompleteBackup }
+      let file = FileHandle(fileDescriptor: fd, closeOnDealloc: true)
+      defer { try? file.close() }
+      var before = Darwin.stat(), entry = Darwin.stat()
+      guard fstat(fd, &before) == 0, before.st_mode & S_IFMT == S_IFREG, before.st_size == size,
+            try FileSafety.hash(file) == digest, fsync(fd) == 0,
+            fstatat(shard, digest, &entry, AT_SYMLINK_NOFOLLOW) == 0,
+            before.st_dev == entry.st_dev, before.st_ino == entry.st_ino, before.st_size == entry.st_size,
+            before.st_mtimespec.tv_sec == entry.st_mtimespec.tv_sec, before.st_mtimespec.tv_nsec == entry.st_mtimespec.tv_nsec,
+            fsync(shard) == 0 else { throw EditingError.incompleteBackup }
+    }
+    guard fsync(objects) == 0, fsync(resourceDirectory) == 0, fsync(parent) == 0 else { throw EditingError.incompleteBackup }
   }
   private static func synchronizeEditingDirectories(root: URL, files: [String]) throws {
     var directories: Set<String> = [root.path]
@@ -158,8 +239,7 @@ extension LibraryStore {
   }
   public func editingProtectedRoots() throws -> [URL] {
     try withReadSnapshot {
-      // Preserve the existing relocation safety boundary, then extend it to managed and historical positions.
-      try protectedSourceRoots() + Self.editingRoots(sessions: loadSessions(), assets: loadAssets(), relocations: loadRelocationSessions())
+      try Self.editingRoots(sessions: loadSessions(), assets: loadAssets(), relocations: loadRelocationSessions())
     }
   }
   private static func editingRoots(sessions: [ImportSession], assets: [AssetRecord], relocations: [RelocationSession]) -> [URL] {
@@ -168,24 +248,41 @@ extension LibraryStore {
     let historicalPaths = relocations.filter { $0.committedCount > 0 }.flatMap { relocation in
       [relocation.rootPath] + relocation.items.filter { $0.status == .committed }.flatMap { [$0.oldPath, $0.selectedPath].compactMap { $0 } }
     }
-    return Array(Set(sessionPaths + assetPaths + historicalPaths)).map { URL(fileURLWithPath: $0) }
+    // Keep distinct path spellings for the publication-time symlink checks.
+    var seen = Set<Data>()
+    return (sessionPaths + assetPaths + historicalPaths)
+      .filter { seen.insert(Data($0.utf8)).inserted }
+      .map { URL(fileURLWithPath: $0) }
   }
   public static func restoreEditingLibrary(from directory: URL, databaseURL: URL, archiveRoot: URL) throws -> LibraryStore {
     let manifestURL = directory.appendingPathComponent("manifest.json")
     let manifest = try JSONDecoder().decode(EditingLibraryBackupManifest.self, from: Data(contentsOf: manifestURL))
     let sourceDatabase = directory.appendingPathComponent("library.sqlite")
-    guard manifest.formatVersion == 1, try FileSafety.hash(sourceDatabase) == manifest.databaseSHA256,
+    let recipeResources = manifest.recipeResources ?? [:]
+    let targetResources = recipeResourceRoot(near: databaseURL)
+    guard [1, 2].contains(manifest.formatVersion), manifest.formatVersion == 2 || recipeResources.isEmpty,
+      try FileSafety.hash(sourceDatabase) == manifest.databaseSHA256,
       !FileManager.default.fileExists(atPath: databaseURL.path), !FileManager.default.fileExists(atPath: archiveRoot.path),
       !FileSafety.contains(directory, databaseURL), !FileSafety.contains(directory, archiveRoot),
       !FileSafety.contains(archiveRoot, databaseURL), !FileSafety.contains(databaseURL, archiveRoot) else { throw EditingError.unsafePath }
+    if !recipeResources.isEmpty {
+      guard !FileSafety.contains(targetResources, databaseURL), !FileSafety.contains(targetResources, archiveRoot),
+            !FileSafety.contains(archiveRoot, targetResources), !FileSafety.contains(directory, targetResources) else { throw EditingError.unsafePath }
+    }
     var inspection: OpaquePointer?
     guard sqlite3_open_v2(sourceDatabase.path, &inspection, SQLITE_OPEN_READONLY | SQLITE_OPEN_FULLMUTEX, nil) == SQLITE_OK else {
       defer { sqlite3_close(inspection) }; throw DatabaseSchema.error(inspection)
     }
     let protected: [URL]
     do {
-      guard try DatabaseSchema.validate(inspection) == DatabaseSchema.version,
+      let version = try DatabaseSchema.validate(inspection)
+      guard version == 8 || version == DatabaseSchema.version,
         try DatabaseSchema.strings(inspection, "PRAGMA quick_check") == ["ok"] else { throw EditingError.incompleteBackup }
+      let backupFormat = try DatabaseSchema.strings(inspection, "SELECT value FROM metadata WHERE key='editingBackupFormat'")
+      let hasBoundWorkbench = try !DatabaseSchema.strings(inspection, Self.boundWorkbenchQuery).isEmpty
+      guard manifest.formatVersion == 2 ? backupFormat == ["2"] : (backupFormat.isEmpty && !hasBoundWorkbench) else {
+        throw EditingError.incompleteBackup
+      }
       let decoder = JSONDecoder()
       func values<T: Decodable>(_ table: String, _ type: T.Type) throws -> [T] {
         try DatabaseSchema.strings(inspection, "SELECT data FROM \(table)").map { try decoder.decode(type, from: Data($0.utf8)) }
@@ -200,10 +297,12 @@ extension LibraryStore {
     let restoreID = UUID().uuidString
     let stagedDatabase = databaseURL.deletingLastPathComponent().appendingPathComponent(".restore-\(restoreID).sqlite")
     let stagedArchive = archiveRoot.deletingLastPathComponent().appendingPathComponent(".restore-\(restoreID)", isDirectory: true)
+    let stagedResources = databaseURL.deletingLastPathComponent().appendingPathComponent(".restore-\(restoreID)-resources", isDirectory: true)
     var archivePublished = false
     defer {
       for suffix in ["", "-wal", "-shm"] { try? FileManager.default.removeItem(atPath: stagedDatabase.path + suffix) }
       if !archivePublished { try? FileManager.default.removeItem(at: stagedArchive) }
+      try? FileManager.default.removeItem(at: stagedResources)
     }
     _ = try FileSafety.verifiedCopy(source: sourceDatabase, target: stagedDatabase, expectedHash: manifest.databaseSHA256, protectedRoots: protected, cancel: {})
     let archive = try EditingArchive(root: stagedArchive, protectedRoots: protected)
@@ -222,7 +321,17 @@ extension LibraryStore {
     // No final path exists yet, so any failure leaves both final destinations absent.
     do {
       let stagedStore = try LibraryStore(databaseURL: stagedDatabase)
-      try stagedStore.statement("UPDATE metadata SET value=? WHERE key='editingArchiveRoot'", [archive.root.path])
+      if manifest.formatVersion == 2 {
+        guard try stagedStore.recipeBackupResources() == recipeResources else { throw EditingError.incompleteBackup }
+        try copyRecipeResources(recipeResources, from: recipeResourceRoot(near: sourceDatabase), to: stagedResources, protected: protected)
+      }
+      stagedStore.deviceID = try stagedStore.transaction {
+        let receipt = try stagedStore.catalogTransaction("detachRestoredWriter", LibraryEmpty())
+        guard let writer = receipt["writerID"]?.stringValue else { throw EditingError.incompleteBackup }
+        try stagedStore.statement("UPDATE metadata SET value=? WHERE key='editingArchiveRoot'", [archive.root.path])
+        try stagedStore.exec("DELETE FROM metadata WHERE key='editingBackupFormat'")
+        return writer
+      }
       _ = try stagedStore.recoverEditingArchive()
       try stagedStore.validateEditingArchiveReferences(archive: archive)
       try stagedStore.verifyRestoredRenderedExports()
@@ -232,6 +341,8 @@ extension LibraryStore {
       stagedStore.db = nil
     }
     guard try FileSafety.hash(sourceDatabase) == manifest.databaseSHA256 else { throw EditingError.incompleteBackup }
+    try publishRestoredRecipeResources(recipeResources, staged: stagedResources, target: targetResources,
+                                       protected: protected + [directory, archiveRoot])
     try FileManager.default.moveItem(at: stagedArchive, to: archiveRoot)
     archivePublished = true
     try synchronizeEditingDirectories(root: archiveRoot.deletingLastPathComponent(), files: [])

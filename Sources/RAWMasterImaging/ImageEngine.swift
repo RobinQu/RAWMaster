@@ -76,8 +76,18 @@ public extension ImageVersionExporting {
 
 public protocol ImageBatchExporting: Sendable {
   func export(work: PhotoWork, version: EditingVersion, archive: EditingArchive, directory: URL,
+              filename: String, configuration: PhotoBatchExportConfiguration, protectedURLs: [URL],
+              execution: BatchPhotoExecution, preparePublication: BatchPhotoPublication?) async throws -> URL
+}
+
+public extension ImageBatchExporting {
+  func export(work: PhotoWork, version: EditingVersion, archive: EditingArchive, directory: URL,
               filename: String, configuration: PhotoBatchExportConfiguration,
-              protectedURLs: [URL]) async throws -> URL
+              protectedURLs: [URL], preparePublication: BatchPhotoPublication? = nil) async throws -> URL {
+    try await export(work: work, version: version, archive: archive, directory: directory,
+                     filename: filename, configuration: configuration, protectedURLs: protectedURLs,
+                     execution: .init(), preparePublication: preparePublication)
+  }
 }
 
 extension PhotoBatchRenderExporter: ImageBatchExporting {}

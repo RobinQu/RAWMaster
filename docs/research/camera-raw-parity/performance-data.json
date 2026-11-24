@@ -6112,8 +6112,22 @@
             "reason": "本次输入为 RAW。该控件用于已显影图像。"
           },
           "RAWMaster": {
-            "state": "inapplicable",
-            "reason": "本次输入为 RAW。该控件用于已显影图像。"
+            "state": "measured",
+            "evidence": "evidence/rawmaster-rendered-controls.json",
+            "boundary": "已提交的已显影图像配方请求至交互帧返回；192 px sRGB 见证在计时外读取",
+            "displayBoundary": "已显影照片的 2400 px 交互帧",
+            "timing": {
+              "n": 20,
+              "medianMs": 58.31275,
+              "p95Ms": 59.769416,
+              "maxMs": 63.213375
+            },
+            "firstEditMs": 61.5875,
+            "sourcePixels": [
+              1600,
+              1067
+            ],
+            "sourceContainer": "public.jpeg"
           },
           "Camera Raw": {
             "state": "inapplicable",
@@ -10737,8 +10751,22 @@
             "evidence": "evidence/lightflow-availability.json"
           },
           "RAWMaster": {
-            "state": "inapplicable",
-            "reason": "该项针对已显影的文件。九种已显影容器和输出参考 DNG 的独立实测列在降噪表。"
+            "state": "measured",
+            "evidence": "evidence/rawmaster-rendered-controls.json",
+            "boundary": "已提交的已显影图像配方请求至交互帧返回；192 px sRGB 见证在计时外读取",
+            "displayBoundary": "已显影照片的 2400 px 交互帧",
+            "timing": {
+              "n": 20,
+              "medianMs": 191.888833,
+              "p95Ms": 199.48225,
+              "maxMs": 202.467208
+            },
+            "firstEditMs": 209.940917,
+            "sourcePixels": [
+              1600,
+              1067
+            ],
+            "sourceContainer": "public.jpeg"
           },
           "Camera Raw": {
             "state": "inapplicable",
@@ -12288,8 +12316,22 @@
             "evidence": "evidence/lightflow-availability.json"
           },
           "RAWMaster": {
-            "state": "inapplicable",
-            "reason": "该 ARW 没有设备深度通道。"
+            "state": "measured",
+            "evidence": "evidence/rawmaster-rendered-controls.json",
+            "boundary": "已提交的已显影图像配方请求至交互帧返回；192 px sRGB 见证在计时外读取",
+            "displayBoundary": "已显影照片的 2400 px 交互帧",
+            "timing": {
+              "n": 20,
+              "medianMs": 52.1967705,
+              "p95Ms": 56.486959,
+              "maxMs": 66.843792
+            },
+            "firstEditMs": 48.342708,
+            "sourcePixels": [
+              1600,
+              1067
+            ],
+            "sourceContainer": "public.heic"
           },
           "Camera Raw": {
             "state": "inapplicable",
@@ -13377,8 +13419,7 @@
         "related": 19
       },
       "RAWMaster": {
-        "measured": 158,
-        "inapplicable": 3
+        "measured": 161
       },
       "Camera Raw": {
         "measured": 102,

@@ -1,0 +1,3296 @@
+{
+  "schemaVersion": 1,
+  "device": "Apple M4 Max",
+  "os": "macOS 27.0.1 (26A434)",
+  "sourceBinding": {
+    "modeOrder": [
+      0,
+      1,
+      1,
+      0
+    ],
+    "default": true,
+    "seal": {
+      "baseCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+      "binaries": {
+        "path": "output/035-development/candidate-batch21-verified-source/binaries.sha256",
+        "sha256": "c258ec483cf051fe5917ebf2319b7a9272800142506fb806806110fcc91784fe"
+      },
+      "sourceManifest": {
+        "path": "output/035-development/candidate-batch21-verified-source/source-files.sha256",
+        "sha256": "cbe5ea39a7eddcff406b87bbf7e2cdac2322ad206454654fad03b4dd3db4807f"
+      },
+      "applicationSHA256": "4376d015e21a95ac024c779fdbac9dd904c20bd84dff104861a60deab850b643",
+      "imagingTestSHA256": "a3316d476c9bfef72eaba3f7b711122b66340cf61f71f23920567c2f38099cd0"
+    },
+    "profileProbeSHA256": "312ba649db9866bfca2c8f9f54467afa4756abd6e3912622accd9d3d44383817",
+    "tests": [
+      {
+        "path": "output/035-development/native-exact-study/verified-primary-0.log",
+        "sha256": "7569c18ffd878a9a9de1ecc1dfe7ec2b92ca7bb4f8b2db1356d79c7aea22b921",
+        "passed": 2
+      },
+      {
+        "path": "output/035-development/native-exact-study/verified-primary-1.log",
+        "sha256": "14bc8b1114d6abdd82e66c77abad7df9cb8aed3a8cda52289ac99782b03f7716",
+        "passed": 2
+      },
+      {
+        "path": "output/035-development/native-exact-study/verified-secondary-0.log",
+        "sha256": "b734c629c2b683ca43214122c856faa4c422987deacffde3ec8054ee68f5689c",
+        "passed": 2
+      },
+      {
+        "path": "output/035-development/native-exact-study/verified-secondary-1.log",
+        "sha256": "de58be4c63edf9d0e3136d635f43603c92ed4fb5e3506928680457c321c7ab43",
+        "passed": 2
+      }
+    ]
+  },
+  "nativeSharpen": {
+    "modeOrder": [
+      0,
+      1,
+      1,
+      0
+    ],
+    "default": false,
+    "seal": {
+      "baseCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+      "binaries": {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/binaries.sha256",
+        "sha256": "6aac20454ffb6d10da48b22aba23b96ded70ecd364dc7588f89ca4bf2aa50899"
+      },
+      "sourceManifest": {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/source-files.sha256",
+        "sha256": "0173e327f04840a350584e7a2dd23f5082489fef11c61a2274165e4d7fdc8d2a"
+      },
+      "applicationSHA256": "99f4a9d671c7dfd44025675d9f4f39f386437acc33bf4f1e36efa4ca69ea88d7",
+      "imagingTestSHA256": "3e49688529d1e6b52ebb15885e366bca255e113eefeb29317d3d21b0ddfcd3cf"
+    },
+    "profileProbeSHA256": "cdbf841d053154ccb78a884032bdd13f2aab853ff881e4171a25e83e95f79110",
+    "tests": [
+      {
+        "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-targeted-0.log",
+        "sha256": "7e3736239d611f8103ab433047f9d19bdca1dfe24f133bb11867406053b8e229",
+        "passed": 10
+      },
+      {
+        "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-targeted-1.log",
+        "sha256": "c2af69b5797a60c6fe1869dc098a71f48257e81470244a7c03d8c3a5337a3e0f",
+        "passed": 10
+      }
+    ],
+    "faultInjectionOnActualMetal": {
+      "path": "output/035-development/native-exact-study/mean-count-faults.json",
+      "sha256": "40fc194a06a1dd92955b26c53dfed64e4b2f1b10403a750e189e062fbfaaa41c",
+      "record": {
+        "caseResults": [
+          {
+            "accepted": true,
+            "badGroups": [],
+            "fault": "none",
+            "lastGroupResult": 981
+          },
+          {
+            "accepted": false,
+            "badGroups": [
+              33
+            ],
+            "fault": "omittedRead",
+            "lastGroupResult": 980
+          },
+          {
+            "accepted": false,
+            "badGroups": [
+              33
+            ],
+            "fault": "omittedGroup",
+            "lastGroupResult": 4294967295
+          },
+          {
+            "accepted": false,
+            "badGroups": [
+              33
+            ],
+            "fault": "unwrittenLast",
+            "lastGroupResult": 66517
+          }
+        ],
+        "device": "Apple M4 Max",
+        "pixels": 34773,
+        "shape": [
+          67,
+          519
+        ]
+      }
+    },
+    "isolatedReuseProbes": {
+      "primary-reuse-corrected-stock": {
+        "path": "output/035-development/native-exact-study/primary-reuse-corrected-stock.json",
+        "sha256": "8be1ba5ef9a2e4da140b890f22d6760e3dc796f8a337532514a80f0be23920e9",
+        "exactRows": 16,
+        "peakPhysicalFootprintBytes": 3496708376,
+        "detail-mask-noise": {
+          "count": 2,
+          "p50Ms": 374.35275,
+          "p95Ms": 382.019084
+        },
+        "detail-mask-preview": {
+          "count": 2,
+          "p50Ms": 322.210021,
+          "p95Ms": 330.696875
+        },
+        "detail-mask-sharpness": {
+          "count": 2,
+          "p50Ms": 372.106167,
+          "p95Ms": 375.0385
+        }
+      },
+      "primary-reuse-corrected-cachedContext": {
+        "path": "output/035-development/native-exact-study/primary-reuse-corrected-cachedContext.json",
+        "sha256": "2cee233ecd0254f5ccdd6c2b34f03f19647a96cdf9b7e8128b1f399ec057df81",
+        "exactRows": 16,
+        "peakPhysicalFootprintBytes": 3540814104,
+        "detail-mask-noise": {
+          "count": 2,
+          "p50Ms": 261.049271,
+          "p95Ms": 265.345375
+        },
+        "detail-mask-preview": {
+          "count": 2,
+          "p50Ms": 200.941937,
+          "p95Ms": 202.719416
+        },
+        "detail-mask-sharpness": {
+          "count": 2,
+          "p50Ms": 281.154354,
+          "p95Ms": 283.954167
+        }
+      },
+      "primary-reuse-corrected-cachedIntermediate": {
+        "path": "output/035-development/native-exact-study/primary-reuse-corrected-cachedIntermediate.json",
+        "sha256": "dd4d1b761cb3d603be6c7bc101d91397a0c38543e4131bfe786c9bf5fa31ca32",
+        "exactRows": 16,
+        "peakPhysicalFootprintBytes": 5170039136,
+        "detail-mask-noise": {
+          "count": 2,
+          "p50Ms": 334.7355415,
+          "p95Ms": 335.577
+        },
+        "detail-mask-preview": {
+          "count": 2,
+          "p50Ms": 297.8272295,
+          "p95Ms": 330.93325
+        },
+        "detail-mask-sharpness": {
+          "count": 2,
+          "p50Ms": 348.132375,
+          "p95Ms": 351.042541
+        }
+      },
+      "primary-reuse-corrected-materializedGuide": {
+        "path": "output/035-development/native-exact-study/primary-reuse-corrected-materializedGuide.json",
+        "sha256": "5e146fd2d6dab9a69e94b074404d86aec6e329937fc3a74f434ed4e915fdab92",
+        "exactRows": 4,
+        "peakPhysicalFootprintBytes": 3189360776,
+        "detail-mask-preview": {
+          "count": 2,
+          "p50Ms": 556.2448744999999,
+          "p95Ms": 570.159541
+        },
+        "detail-mask-sharpness": {
+          "count": 2,
+          "p50Ms": 630.5628335,
+          "p95Ms": 652.349334
+        }
+      },
+      "primary-reuse-boundedGuide": {
+        "path": "output/035-development/native-exact-study/primary-reuse-boundedGuide.json",
+        "sha256": "8bff633cd7bf562af76362a5a0911d700c711aa6116723dd33fc336fc2c340b5",
+        "exactRows": 8,
+        "peakPhysicalFootprintBytes": 3273804032,
+        "detail-mask-preview": {
+          "count": 4,
+          "p50Ms": 90.0169585,
+          "p95Ms": 93.0285
+        },
+        "detail-mask-sharpness": {
+          "count": 4,
+          "p50Ms": 135.55479150000002,
+          "p95Ms": 140.803916
+        },
+        "guideFaults": {
+          "cancelledAfterRealRenderThenRecovered": true,
+          "extent": [
+            67,
+            519
+          ],
+          "rejected": [
+            "NaN",
+            "positiveInfinity",
+            "negativeInfinity",
+            "aboveBound",
+            "belowBound",
+            "unwrittenLastRow"
+          ]
+        }
+      },
+      "secondary-reuse-boundedGuide": {
+        "path": "output/035-development/native-exact-study/secondary-reuse-boundedGuide.json",
+        "sha256": "67a9e60ab4fdc1116c287d7fd216899b09ff1200aef93966850ee3f053d382e5",
+        "exactRows": 8,
+        "peakPhysicalFootprintBytes": 3425978408,
+        "detail-mask-preview": {
+          "count": 4,
+          "p50Ms": 78.8056875,
+          "p95Ms": 80.601708
+        },
+        "detail-mask-sharpness": {
+          "count": 4,
+          "p50Ms": 113.979187,
+          "p95Ms": 125.512625
+        },
+        "guideFaults": {
+          "cancelledAfterRealRenderThenRecovered": true,
+          "extent": [
+            67,
+            519
+          ],
+          "rejected": [
+            "NaN",
+            "positiveInfinity",
+            "negativeInfinity",
+            "aboveBound",
+            "belowBound",
+            "unwrittenLastRow"
+          ]
+        }
+      }
+    },
+    "cancellationTestLimitation": "The telemetry-based injection can also observe a startTask error before cancellation."
+  },
+  "sources": {
+    "primary": {
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "archive": {
+        "path": "output/035-development/candidate-batch20-abi-preflight-formal/photo-operators-v2.json",
+        "sha256": "e02d1427a843426211f6bb5e47f04021d4614bd0d85fac1f05bccd47ea89c80c"
+      },
+      "sourceSize": [
+        9504,
+        6336
+      ],
+      "initialStageProfile": {
+        "path": "output/035-development/native-exact-study/primary-stock.json",
+        "sha256": "190a202cfa73530a4cf5a209c7a3ade92fb63adef331cfe74ab5106344724161"
+      },
+      "verifiedSourceBinding": {
+        "runs": [
+          {
+            "path": "output/035-development/native-exact-study/source-replay-1-primary-0.json",
+            "sha256": "faa5a073a8dfdad860f59e1603d3b2a45f99e7c720f8e1e4962537880ad83e64",
+            "mode": 0,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 115.211333,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 67.832209,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 123.212208,
+                "bindingMs": 74.057208,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 103.684084,
+                "bindingMs": 75.878625,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 133.748667,
+                "bindingMs": 78.116084,
+                "fullRGBA8SHA256": "9d989c35e1918e5396bbadc5e8b49444a7aa6918ecd9dc8dd36b78ef2e97383e"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.56525,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/source-replay-2-primary-1.json",
+            "sha256": "181902dbc50bc3a7463e134c4c24486307508e3f1abc45d64b12475faa57cb75",
+            "mode": 1,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 112.68175,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 71.120708,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 46.837584,
+                "bindingMs": 0.048125,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 26.496,
+                "bindingMs": 0.059,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 42.685542,
+                "bindingMs": 0.049875,
+                "fullRGBA8SHA256": "9d989c35e1918e5396bbadc5e8b49444a7aa6918ecd9dc8dd36b78ef2e97383e"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.623583,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/source-replay-3-primary-1.json",
+            "sha256": "307a78087d9827bedf8fde4d862056cc93612bf05bb4a03d0e352bf8ff86c888",
+            "mode": 1,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 112.215292,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 79.543208,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 53.660667,
+                "bindingMs": 0.06675,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 28.256625,
+                "bindingMs": 0.084875,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 43.318042,
+                "bindingMs": 0.092459,
+                "fullRGBA8SHA256": "9d989c35e1918e5396bbadc5e8b49444a7aa6918ecd9dc8dd36b78ef2e97383e"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.542625,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/source-replay-4-primary-0.json",
+            "sha256": "48e67e740f10687dd331a84ac2fcac5dec528462dadc8e8cba4cbcdb5e7e43f0",
+            "mode": 0,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 105.648375,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 70.88775,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 117.8515,
+                "bindingMs": 73.604625,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 104.419792,
+                "bindingMs": 75.087583,
+                "fullRGBA8SHA256": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 127.545041,
+                "bindingMs": 77.706334,
+                "fullRGBA8SHA256": "9d989c35e1918e5396bbadc5e8b49444a7aa6918ecd9dc8dd36b78ef2e97383e"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.734542,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "869893eefbbdc3cdcedec3422f9c471279f56eea748d4dcc4b16ddd62122f935"
+              }
+            ]
+          }
+        ],
+        "measuredBoundStatesByMode": {
+          "0": {
+            "bindingMs": {
+              "count": 6,
+              "p50Ms": 75.483104,
+              "p95Ms": 78.116084
+            },
+            "finalMs": {
+              "count": 6,
+              "p50Ms": 120.53185400000001,
+              "p95Ms": 133.748667
+            }
+          },
+          "1": {
+            "bindingMs": {
+              "count": 6,
+              "p50Ms": 0.062875,
+              "p95Ms": 0.092459
+            },
+            "finalMs": {
+              "count": 6,
+              "p50Ms": 43.001791999999995,
+              "p95Ms": 53.660667
+            }
+          }
+        }
+      },
+      "nativeSharpen": {
+        "profiles": [
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-1-primary-0.json",
+            "sha256": "6eaec805ad1175176876247fab29bc543b9d172663f01b131b08a5374cfd0b89",
+            "mode": 0,
+            "peakPhysicalFootprintBytes": 4323756288,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+                "finalMs": 520.363667,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+                "finalMs": 442.129333,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+                "finalMs": 326.248,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+                "finalMs": 302.006459,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "finalMs": 392.019584,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "finalMs": 391.95475,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "finalMs": 86.444833,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d",
+                "finalMs": 66.331375,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-2-primary-1.json",
+            "sha256": "588166cb1b9d4372c87e7fd1a2f15976ea59997281258f5c5cb5a272bf7b57ff",
+            "mode": 1,
+            "peakPhysicalFootprintBytes": 5610571864,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+                "finalMs": 300.577125,
+                "meanProofMs": 89.311917,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+                "finalMs": 230.889916,
+                "meanProofMs": 68.518666,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+                "finalMs": 192.936542,
+                "meanProofMs": 68.116041,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+                "finalMs": 179.660625,
+                "meanProofMs": 67.010125,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "finalMs": 426.641875,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "finalMs": 396.73425,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "finalMs": 94.339791,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d",
+                "finalMs": 65.426792,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-3-primary-1.json",
+            "sha256": "8acc1d94f99acc7e84e91ebb0f4a8a9fe2c946b144b444464968d5b3996da17f",
+            "mode": 1,
+            "peakPhysicalFootprintBytes": 5611980840,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+                "finalMs": 293.511834,
+                "meanProofMs": 82.975125,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+                "finalMs": 240.3005,
+                "meanProofMs": 68.418208,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+                "finalMs": 183.977125,
+                "meanProofMs": 74.616167,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+                "finalMs": 177.134458,
+                "meanProofMs": 65.019,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "finalMs": 435.119958,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "finalMs": 405.4335,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "finalMs": 96.605417,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d",
+                "finalMs": 66.954042,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-4-primary-0.json",
+            "sha256": "0e84dfac12fd43f4871a090c17826cbf33bf3cee566459bb65304f1a7cae90b1",
+            "mode": 0,
+            "peakPhysicalFootprintBytes": 4339501336,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+                "finalMs": 471.472833,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+                "finalMs": 397.134792,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd",
+                "finalMs": 321.974666,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+                "finalMs": 309.778917,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "finalMs": 375.25675,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "finalMs": 371.651916,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "finalMs": 78.723084,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d",
+                "finalMs": 61.769291,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          }
+        ],
+        "pairedFullReadback": [
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-1-primary-0.json",
+            "sha256": "94396f25ed8a1018f04ad8d9e2a352b1c40cf6f07376b90c5065c147f7cab1fb",
+            "mode": 0,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.410500000000001,
+              "p95Ms": 18.746042
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 83.505271,
+              "p95Ms": 406.671666
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 83.505271,
+              "p95Ms": 406.671666
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 395.713167
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 406.671666
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "ms": 338.061875
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "ms": 381.119917
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "ms": 429.36125
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "ms": 427.004167
+              },
+              {
+                "id": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 257.629667
+              },
+              {
+                "id": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 262.084042
+              },
+              {
+                "id": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 274.268375
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 957.046084
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "ms": 292.061334
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 295.499833
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 318.100042
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 0,
+                "ms": 319.346291
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 1,
+                "ms": 302.720125
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 291.974833
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 296.584792
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-2-primary-1.json",
+            "sha256": "47e820bd673c0cabdbb727535dbac0deb13dd0536d6bab0f1d30a8b3920fb828",
+            "mode": 1,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.267938,
+              "p95Ms": 19.642875
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 84.95154149999999,
+              "p95Ms": 342.817083
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 84.95154149999999,
+              "p95Ms": 342.817083
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 410.296375
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 415.596041
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "ms": 260.200916
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "ms": 266.482292
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "ms": 262.585791
+              },
+              {
+                "id": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 266.716834
+              },
+              {
+                "id": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 275.013875
+              },
+              {
+                "id": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 259.414625
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 920.00475
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "ms": 286.502
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 311.805083
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 342.817083
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 0,
+                "ms": 300.488
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 1,
+                "ms": 291.472042
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 285.619709
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 282.622875
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-3-primary-1.json",
+            "sha256": "1fd47652b40dad298d262d62d60b71071b46e7ef7926a5d54e4f91ce76c39cb1",
+            "mode": 1,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.366312499999999,
+              "p95Ms": 18.224959
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 83.1702915,
+              "p95Ms": 302.23025
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 83.1702915,
+              "p95Ms": 302.23025
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 392.23175
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 399.588917
+              },
+              {
+                "id": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 268.577625
+              },
+              {
+                "id": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 285.9305
+              },
+              {
+                "id": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 296.323334
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 976.972791
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "ms": 284.607917
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 282.28575
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 290.996833
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 0,
+                "ms": 302.23025
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 1,
+                "ms": 293.988042
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 283.866375
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 288.527
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-4-primary-0.json",
+            "sha256": "7c8c7074e4b2b0754b9c820fd489ca4bab4c1c1da69fe103610105fdb9b7820e",
+            "mode": 0,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.445208,
+              "p95Ms": 20.841208
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 83.572937,
+              "p95Ms": 415.084209
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 83.572937,
+              "p95Ms": 415.084209
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 394.697916
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 415.084209
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "ms": 351.012375
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "ms": 391.398125
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "ms": 431.715416
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "ms": 466.025
+              },
+              {
+                "id": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 269.726416
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 952.697667
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "ms": 305.747959
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 324.28575
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 330.360875
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 0,
+                "ms": 318.699333
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 1,
+                "ms": 293.889666
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 303.992833
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 311.807541
+              }
+            ]
+          }
+        ],
+        "summariesByMode": {
+          "0": {
+            "localSharpen": {
+              "count": 4,
+              "p50Ms": 456.80108299999995,
+              "p95Ms": 520.363667
+            },
+            "globalAndOverlay": {
+              "count": 4,
+              "p50Ms": 315.87679149999997,
+              "p95Ms": 326.248
+            },
+            "localNoiseControl": {
+              "count": 4,
+              "p50Ms": 383.60575,
+              "p95Ms": 392.019584
+            },
+            "peakPhysicalFootprintBytes": 4339501336
+          },
+          "1": {
+            "localSharpen": {
+              "count": 4,
+              "p50Ms": 266.906167,
+              "p95Ms": 300.577125
+            },
+            "globalAndOverlay": {
+              "count": 4,
+              "p50Ms": 181.818875,
+              "p95Ms": 192.936542
+            },
+            "localNoiseControl": {
+              "count": 4,
+              "p50Ms": 416.0376875,
+              "p95Ms": 435.119958
+            },
+            "peakPhysicalFootprintBytes": 5611980840
+          }
+        }
+      }
+    },
+    "secondary": {
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "archive": {
+        "path": "output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+        "sha256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f"
+      },
+      "sourceSize": [
+        8640,
+        5760
+      ],
+      "initialStageProfile": {
+        "path": "output/035-development/native-exact-study/secondary-stock.json",
+        "sha256": "92e7195b9fe2b777f3d0e4611fa0940eb67416a2fe27823a9c244afad43fa1a4"
+      },
+      "verifiedSourceBinding": {
+        "runs": [
+          {
+            "path": "output/035-development/native-exact-study/source-replay-1-secondary-0.json",
+            "sha256": "116293bc88ee56b13c7eea04e7658e074a4514579725804badab87cfe9a8474c",
+            "mode": 0,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 99.682208,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 71.9655,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "185769caa49bebfca4777472ad4c373b818e6f92b733fb67724ca73bd946275d"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 112.379959,
+                "bindingMs": 68.3135,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 98.43275,
+                "bindingMs": 71.255542,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 113.955792,
+                "bindingMs": 72.292834,
+                "fullRGBA8SHA256": "c8fa3a27c7512645c67d1acecc3138c2bbc9fc1cb22b4ab6290631cd19e912a0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.757875,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/source-replay-2-secondary-1.json",
+            "sha256": "a6ec5a501296354cd0fc9103fdab905c81a48d1171d2d9074f6110c59be3fd3a",
+            "mode": 1,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 93.085625,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 61.722375,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "185769caa49bebfca4777472ad4c373b818e6f92b733fb67724ca73bd946275d"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 48.768625,
+                "bindingMs": 0.068,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 24.882584,
+                "bindingMs": 0.075416,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 43.760709,
+                "bindingMs": 0.094959,
+                "fullRGBA8SHA256": "c8fa3a27c7512645c67d1acecc3138c2bbc9fc1cb22b4ab6290631cd19e912a0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.691,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/source-replay-3-secondary-1.json",
+            "sha256": "138cb7aaa8f5b7067cde4181df8f196bde056b011172b5db8a6b86b15979ecc0",
+            "mode": 1,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 104.183958,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 71.110792,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "185769caa49bebfca4777472ad4c373b818e6f92b733fb67724ca73bd946275d"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 48.924667,
+                "bindingMs": 0.076375,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 25.429125,
+                "bindingMs": 0.081834,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 38.462541,
+                "bindingMs": 0.064,
+                "fullRGBA8SHA256": "c8fa3a27c7512645c67d1acecc3138c2bbc9fc1cb22b4ab6290631cd19e912a0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.64625,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/source-replay-4-secondary-0.json",
+            "sha256": "6f544df13556785b2093c198d07c8e8e1e953fa9436344f3b2450009251ce0d2",
+            "mode": 0,
+            "rows": [
+              {
+                "id": "color-bw-treatment",
+                "state": 0,
+                "finalMs": 95.218708,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-bw-treatment",
+                "state": 1,
+                "finalMs": 65.20175,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "185769caa49bebfca4777472ad4c373b818e6f92b733fb67724ca73bd946275d"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 0,
+                "finalMs": 109.895084,
+                "bindingMs": 66.263333,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              },
+              {
+                "id": "color-wb-as-shot",
+                "state": 1,
+                "finalMs": 90.273292,
+                "bindingMs": 66.884833,
+                "fullRGBA8SHA256": "8cf14158d19c682f56b372c32a3867522e28142f3e647cb5395b447120f2abc0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 0,
+                "finalMs": 104.923291,
+                "bindingMs": 66.558458,
+                "fullRGBA8SHA256": "c8fa3a27c7512645c67d1acecc3138c2bbc9fc1cb22b4ab6290631cd19e912a0"
+              },
+              {
+                "id": "color-wb-presets",
+                "state": 1,
+                "finalMs": 0.582541,
+                "bindingMs": null,
+                "fullRGBA8SHA256": "e0edf0ea6c5aa6498d96b3bcaac0b993dac18b869c2a2c7caba6e3f85f7a6d0f"
+              }
+            ]
+          }
+        ],
+        "measuredBoundStatesByMode": {
+          "0": {
+            "bindingMs": {
+              "count": 6,
+              "p50Ms": 67.5991665,
+              "p95Ms": 72.292834
+            },
+            "finalMs": {
+              "count": 6,
+              "p50Ms": 107.4091875,
+              "p95Ms": 113.955792
+            }
+          },
+          "1": {
+            "bindingMs": {
+              "count": 6,
+              "p50Ms": 0.0758955,
+              "p95Ms": 0.094959
+            },
+            "finalMs": {
+              "count": 6,
+              "p50Ms": 41.111625000000004,
+              "p95Ms": 48.924667
+            }
+          }
+        }
+      },
+      "nativeSharpen": {
+        "profiles": [
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-1-secondary-0.json",
+            "sha256": "13c772221487e21ddc3a4668ae1e52aabf8b93b0488fa9f0b93c95ad604a2be1",
+            "mode": 0,
+            "peakPhysicalFootprintBytes": 4248275128,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+                "finalMs": 428.7385,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+                "finalMs": 341.394958,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "c5615ab767770cd9f12651c679b8663b26a16e644c0775d8ef38a1f1ae0136c7",
+                "finalMs": 293.983042,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91",
+                "finalMs": 296.461958,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "finalMs": 372.234667,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "finalMs": 370.286666,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "finalMs": 94.645916,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "bb43b9fc767a1994e514d61d120645912c6c02bd7a350d6ef08c2b16464ae797",
+                "finalMs": 85.72375,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-2-secondary-1.json",
+            "sha256": "052ba5f6af30dfea2f30c095b639a94e0baa8ea529baa518e661168219dcb2eb",
+            "mode": 1,
+            "peakPhysicalFootprintBytes": 5277321208,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+                "finalMs": 258.224583,
+                "meanProofMs": 66.960042,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+                "finalMs": 231.531583,
+                "meanProofMs": 87.216583,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "c5615ab767770cd9f12651c679b8663b26a16e644c0775d8ef38a1f1ae0136c7",
+                "finalMs": 178.599792,
+                "meanProofMs": 66.957209,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91",
+                "finalMs": 181.82175,
+                "meanProofMs": 64.798958,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "finalMs": 411.801625,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "finalMs": 369.214,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "finalMs": 86.864,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "bb43b9fc767a1994e514d61d120645912c6c02bd7a350d6ef08c2b16464ae797",
+                "finalMs": 79.971875,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-3-secondary-1.json",
+            "sha256": "a8cc95ab12707d74d08ae61f63065276df80ef22bed13b1554fe6eec2691d72b",
+            "mode": 1,
+            "peakPhysicalFootprintBytes": 5276993504,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+                "finalMs": 277.546875,
+                "meanProofMs": 72.98675,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+                "finalMs": 195.289333,
+                "meanProofMs": 69.941542,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "c5615ab767770cd9f12651c679b8663b26a16e644c0775d8ef38a1f1ae0136c7",
+                "finalMs": 168.095125,
+                "meanProofMs": 64.964625,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91",
+                "finalMs": 172.768292,
+                "meanProofMs": 61.474375,
+                "wholeFrameFiniteScans": 0
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "finalMs": 380.319083,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "finalMs": 340.869,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "finalMs": 93.261125,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "bb43b9fc767a1994e514d61d120645912c6c02bd7a350d6ef08c2b16464ae797",
+                "finalMs": 76.438875,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-profile-4-secondary-0.json",
+            "sha256": "e0187418b7d6aeeef1a43b78db97bba6fe3aa7ee8b8ee50ebf3bac7ec06744a3",
+            "mode": 0,
+            "peakPhysicalFootprintBytes": 4324509952,
+            "rows": [
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "fullRGBA8SHA256": "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+                "finalMs": 395.181041,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "fullRGBA8SHA256": "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+                "finalMs": 328.408917,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "fullRGBA8SHA256": "c5615ab767770cd9f12651c679b8663b26a16e644c0775d8ef38a1f1ae0136c7",
+                "finalMs": 274.015792,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "fullRGBA8SHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91",
+                "finalMs": 255.68125,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "fullRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "finalMs": 319.85525,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "fullRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "finalMs": 311.581167,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 0,
+                "fullRGBA8SHA256": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "finalMs": 80.541667,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              },
+              {
+                "id": "curve-point",
+                "state": 1,
+                "fullRGBA8SHA256": "bb43b9fc767a1994e514d61d120645912c6c02bd7a350d6ef08c2b16464ae797",
+                "finalMs": 67.254833,
+                "meanProofMs": null,
+                "wholeFrameFiniteScans": 1
+              }
+            ]
+          }
+        ],
+        "pairedFullReadback": [
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-1-secondary-0.json",
+            "sha256": "75d1daf38a8da292e2cbf9061947e87429006d229b0455418d4af7766bcb68c0",
+            "mode": 0,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.4311039999999995,
+              "p95Ms": 17.887375
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 82.54625,
+              "p95Ms": 361.777625
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 82.8914585,
+              "p95Ms": 361.777625
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 351.054041
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 377.952792
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "ms": 317.404167
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "ms": 337.594459
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "ms": 364.213958
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "ms": 361.777625
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 837.163209
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 291.085417
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 302.486084
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 290.921833
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 290.0985
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-2-secondary-1.json",
+            "sha256": "906084859f0a115aff60d6d94e87d7490f146265fe7317d64eda13533c4d9643",
+            "mode": 1,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.512708,
+              "p95Ms": 20.066833
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 83.576854,
+              "p95Ms": 290.353541
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 83.8731665,
+              "p95Ms": 290.353541
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 346.780541
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 345.482041
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 763.917334
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 262.569042
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 272.76375
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 290.353541
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 284.332541
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-3-secondary-1.json",
+            "sha256": "f78c7d5ccf57f98fc8ecd8c975ab421f4e95c1831700f342735a8ea0c238b9df",
+            "mode": 1,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.380146,
+              "p95Ms": 19.791084
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 81.3700005,
+              "p95Ms": 299.341917
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 82.66035450000001,
+              "p95Ms": 299.341917
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 332.813375
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 342.652375
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 790.923208
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 286.384708
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 287.849208
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 297.978542
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 299.341917
+              }
+            ]
+          },
+          {
+            "path": "output/035-development/native-exact-study/candidate-batch21-native-sharpen-joined/sharpen-full-4-secondary-0.json",
+            "sha256": "83772e36206f905e9ef000c45ed6833e8e22c0f624a58db2dfd23ec7ad8a71af",
+            "mode": 0,
+            "exactPixelDigestPairs": 814,
+            "inconclusiveWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ],
+            "firstAppearanceMs": {
+              "count": 74,
+              "p50Ms": 5.510771,
+              "p95Ms": 17.324959
+            },
+            "firstExactMs": {
+              "count": 74,
+              "p50Ms": 79.61310399999999,
+              "p95Ms": 351.0955
+            },
+            "finalMs": {
+              "count": 74,
+              "p50Ms": 81.522937,
+              "p95Ms": 351.0955
+            },
+            "aboveLightFlowFinalP95Limit": [
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "ms": 335.762917
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "ms": 363.408917
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 0,
+                "ms": 306.002667
+              },
+              {
+                "id": "detail-mask-preview",
+                "state": 1,
+                "ms": 337.549417
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 0,
+                "ms": 355.001959
+              },
+              {
+                "id": "detail-mask-sharpness",
+                "state": 1,
+                "ms": 351.0955
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "ms": 823.565834
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 0,
+                "ms": 285.066083
+              },
+              {
+                "id": "effects-mask-clarity",
+                "state": 1,
+                "ms": 289.920709
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 0,
+                "ms": 256.4625
+              },
+              {
+                "id": "effects-mask-grain",
+                "state": 1,
+                "ms": 254.931959
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 0,
+                "ms": 281.727
+              },
+              {
+                "id": "effects-mask-texture",
+                "state": 1,
+                "ms": 289.4005
+              }
+            ]
+          }
+        ],
+        "summariesByMode": {
+          "0": {
+            "localSharpen": {
+              "count": 4,
+              "p50Ms": 368.28799949999996,
+              "p95Ms": 428.7385
+            },
+            "globalAndOverlay": {
+              "count": 4,
+              "p50Ms": 283.999417,
+              "p95Ms": 296.461958
+            },
+            "localNoiseControl": {
+              "count": 4,
+              "p50Ms": 345.070958,
+              "p95Ms": 372.234667
+            },
+            "peakPhysicalFootprintBytes": 4324509952
+          },
+          "1": {
+            "localSharpen": {
+              "count": 4,
+              "p50Ms": 244.878083,
+              "p95Ms": 277.546875
+            },
+            "globalAndOverlay": {
+              "count": 4,
+              "p50Ms": 175.684042,
+              "p95Ms": 181.82175
+            },
+            "localNoiseControl": {
+              "count": 4,
+              "p50Ms": 374.7665415,
+              "p95Ms": 411.801625
+            },
+            "peakPhysicalFootprintBytes": 5277321208
+          }
+        }
+      }
+    }
+  },
+  "dehazeCoreImageErosion": {
+    "reviewedReceipt": {
+      "path": "output/035-development/native-exact-study/erosion/run-01/reviewed.json",
+      "sha256": "de57781039b68b6ac56b4e8f336ab865b5859fa753d80b8f1ee64c561ff93de2",
+      "record": {
+        "cases": {
+          "primary": {
+            "airlight": [
+              1.0001755952835083,
+              1,
+              0.7310140132904053
+            ],
+            "allThreeSupportsIdentical": true,
+            "archive": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/candidate-batch20-abi-preflight-formal/photo-operators-v2.json",
+            "archiveSHA256": "e02d1427a843426211f6bb5e47f04021d4614bd0d85fac1f05bccd47ea89c80c",
+            "changedIntegerEdgeComponents": 2448,
+            "extraBeyondIdealDisk": 0,
+            "floorAgreesOnAllChangedIntegerEdgeComponents": true,
+            "idealDiskMissing": 2552,
+            "independentReference": {
+              "nativePseudorandom": {
+                "bitwiseDifferentRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "maxAbsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "sampledPixels": 96,
+                "sourceRects": [
+                  [
+                    0,
+                    0,
+                    3,
+                    4
+                  ],
+                  [
+                    9501,
+                    6332,
+                    3,
+                    4
+                  ],
+                  [
+                    4752,
+                    3168,
+                    3,
+                    4
+                  ],
+                  [
+                    1023,
+                    255,
+                    3,
+                    4
+                  ],
+                  [
+                    2047,
+                    1023,
+                    3,
+                    4
+                  ],
+                  [
+                    16,
+                    6332,
+                    3,
+                    4
+                  ],
+                  [
+                    9501,
+                    17,
+                    3,
+                    4
+                  ],
+                  [
+                    4771,
+                    3131,
+                    3,
+                    4
+                  ]
+                ]
+              },
+              "obliqueRamps": {
+                "bitwiseDifferentRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "maxAbsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "sampledPixels": 96,
+                "sourceRects": [
+                  [
+                    0,
+                    0,
+                    3,
+                    4
+                  ],
+                  [
+                    9501,
+                    6332,
+                    3,
+                    4
+                  ],
+                  [
+                    4752,
+                    3168,
+                    3,
+                    4
+                  ],
+                  [
+                    1023,
+                    255,
+                    3,
+                    4
+                  ],
+                  [
+                    2047,
+                    1023,
+                    3,
+                    4
+                  ],
+                  [
+                    16,
+                    6332,
+                    3,
+                    4
+                  ],
+                  [
+                    9501,
+                    17,
+                    3,
+                    4
+                  ],
+                  [
+                    4771,
+                    3131,
+                    3,
+                    4
+                  ]
+                ]
+              },
+              "realNormalized": {
+                "bitwiseDifferentRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "maxAbsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "sampledPixels": 96,
+                "sourceRects": [
+                  [
+                    0,
+                    0,
+                    3,
+                    4
+                  ],
+                  [
+                    9501,
+                    6332,
+                    3,
+                    4
+                  ],
+                  [
+                    4752,
+                    3168,
+                    3,
+                    4
+                  ],
+                  [
+                    1023,
+                    255,
+                    3,
+                    4
+                  ],
+                  [
+                    2047,
+                    1023,
+                    3,
+                    4
+                  ],
+                  [
+                    16,
+                    6332,
+                    3,
+                    4
+                  ],
+                  [
+                    9501,
+                    17,
+                    3,
+                    4
+                  ],
+                  [
+                    4771,
+                    3131,
+                    3,
+                    4
+                  ]
+                ]
+              }
+            },
+            "intermediateImpulseCountsByChannel": [
+              0,
+              0,
+              0
+            ],
+            "maxErrorVsLinearRadiusLerp": 0.02799999713897705,
+            "medianErosionMinusNormalizeJoinedMS": 238.368394,
+            "medianGuideMinusErosionJoinedMS": 189.75283200000007,
+            "medianJoinedMS": {
+              "erosion": 321.2562915,
+              "guide": 511.00912350000004,
+              "normalize": 82.88789749999998
+            },
+            "phaseSourceCenters": [
+              [
+                4752,
+                3168
+              ],
+              [
+                1023,
+                255
+              ],
+              [
+                2048,
+                1024
+              ]
+            ],
+            "prefixOrder": [
+              [
+                {
+                  "CIReportedPasses": 150,
+                  "CIReportedPixels": 301086720,
+                  "arm": "normalize",
+                  "firstBandJoinedMS": 45.666,
+                  "lastBand": [
+                    0,
+                    6144,
+                    9504,
+                    192
+                  ],
+                  "medianRemainingBandJoinedMS": 2.257771,
+                  "nativeBands": 25,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "primary-prefix-0-0-normalize.json",
+                  "receiptSHA256": "950692afbe36abc73d7c8a4b583c0f6a6c3bd973ab37124d623dfde266e14dd6",
+                  "summedJoinedMS": 101.48016699999998,
+                  "summedKernelMS": 18.52575095836073,
+                  "totalFillMS": 147.313083,
+                  "wholeR32SHA256": "33b621b6ae83df5270da9ef430b81caee78a6e37bda916490afac0123512577b"
+                },
+                {
+                  "CIReportedPasses": 275,
+                  "CIReportedPixels": 793216496,
+                  "arm": "erosion",
+                  "firstBandJoinedMS": 15.629042,
+                  "lastBand": [
+                    0,
+                    6144,
+                    9504,
+                    192
+                  ],
+                  "medianRemainingBandJoinedMS": 10.6833335,
+                  "nativeBands": 25,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "primary-prefix-0-1-erosion.json",
+                  "receiptSHA256": "0d294786374b6b42f42fa42e77f239f78d0ad3af98cb98dd500feffaaf3bf45b",
+                  "summedJoinedMS": 289.508501,
+                  "summedKernelMS": 281.74224973190576,
+                  "totalFillMS": 332.504833,
+                  "wholeR32SHA256": "a50dbbe43111910ae09ef097169220985891ffcfcd53bf4a8a6b2c5a290e0185"
+                },
+                {
+                  "CIReportedPasses": 300,
+                  "CIReportedPixels": 1228568500,
+                  "arm": "guide",
+                  "firstBandJoinedMS": 21.64625,
+                  "lastBand": [
+                    0,
+                    6144,
+                    9504,
+                    192
+                  ],
+                  "medianRemainingBandJoinedMS": 19.8214995,
+                  "nativeBands": 25,
+                  "previouslyArchivedWholeR32Matches": true,
+                  "receipt": "primary-prefix-0-2-guide.json",
+                  "receiptSHA256": "db863fb6d0282f6863ffc1934d330f7f073c06f3a0c3e5b8ef8ea0e449f284f3",
+                  "summedJoinedMS": 496.972749,
+                  "summedKernelMS": 326.5149584040046,
+                  "totalFillMS": 541.339708,
+                  "wholeR32SHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+                }
+              ],
+              [
+                {
+                  "CIReportedPasses": 300,
+                  "CIReportedPixels": 1228568500,
+                  "arm": "guide",
+                  "firstBandJoinedMS": 24.069542,
+                  "lastBand": [
+                    0,
+                    6144,
+                    9504,
+                    192
+                  ],
+                  "medianRemainingBandJoinedMS": 20.683500000000002,
+                  "nativeBands": 25,
+                  "previouslyArchivedWholeR32Matches": true,
+                  "receipt": "primary-prefix-1-0-guide.json",
+                  "receiptSHA256": "c0d9536964965fc6bead3ef08a95ea36c9138442dfc45acd869442ed7feb7a30",
+                  "summedJoinedMS": 525.0454980000001,
+                  "summedKernelMS": 337.19066716730595,
+                  "totalFillMS": 571.226667,
+                  "wholeR32SHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+                },
+                {
+                  "CIReportedPasses": 275,
+                  "CIReportedPixels": 793216496,
+                  "arm": "erosion",
+                  "firstBandJoinedMS": 16.370666,
+                  "lastBand": [
+                    0,
+                    6144,
+                    9504,
+                    192
+                  ],
+                  "medianRemainingBandJoinedMS": 13.9931875,
+                  "nativeBands": 25,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "primary-prefix-1-1-erosion.json",
+                  "receiptSHA256": "1a1c4c0037155f2d06084047b728c58cc90bc33bd5d02c7039732b01d14c008c",
+                  "summedJoinedMS": 353.004082,
+                  "summedKernelMS": 340.4740809928626,
+                  "totalFillMS": 400.49775,
+                  "wholeR32SHA256": "a50dbbe43111910ae09ef097169220985891ffcfcd53bf4a8a6b2c5a290e0185"
+                },
+                {
+                  "CIReportedPasses": 150,
+                  "CIReportedPixels": 301086720,
+                  "arm": "normalize",
+                  "firstBandJoinedMS": 9.55025,
+                  "lastBand": [
+                    0,
+                    6144,
+                    9504,
+                    192
+                  ],
+                  "medianRemainingBandJoinedMS": 2.215896,
+                  "nativeBands": 25,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "primary-prefix-1-2-normalize.json",
+                  "receiptSHA256": "84ec50d7f0bec30968a795f64d9a26192d8d6f1217c9a0ad628953d08586d182",
+                  "summedJoinedMS": 64.295628,
+                  "summedKernelMS": 17.470374470576644,
+                  "totalFillMS": 110.7855,
+                  "wholeR32SHA256": "33b621b6ae83df5270da9ef430b81caee78a6e37bda916490afac0123512577b"
+                }
+              ]
+            ],
+            "radius": 76.032,
+            "realReceiptSHA256": "e28768b954f88512361e2f39d0859ce6cbc326e8b1ec57d0a4b38c6277ba7356",
+            "recipePayloadSHA256": "ba663815ec28700858b7b41de02e396d8853262f0d0cdf9f48afe5c18d771f6c",
+            "rowsWithInternalGaps": 52,
+            "sourceGrid": [
+              0,
+              0,
+              9504,
+              6336
+            ],
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "supportCount": [
+              15613,
+              15613,
+              15613
+            ],
+            "supportSHA256": "c9f7b2231a97e49f6869b9f2802b7c7e6f5a36183f5f91fe29f2add9e52e0474",
+            "syntheticReceiptSHA256": "d657d12a0f0134aa571f561aba196250f23c2bb2ba8479e97e4573264e2cd44c"
+          },
+          "secondary": {
+            "airlight": [
+              0.6701183915138245,
+              0.6763531565666199,
+              0.7139534950256348
+            ],
+            "allThreeSupportsIdentical": true,
+            "archive": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+            "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+            "changedIntegerEdgeComponents": 756,
+            "extraBeyondIdealDisk": 4,
+            "floorAgreesOnAllChangedIntegerEdgeComponents": true,
+            "idealDiskMissing": 2008,
+            "independentReference": {
+              "nativePseudorandom": {
+                "bitwiseDifferentRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "maxAbsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "sampledPixels": 96,
+                "sourceRects": [
+                  [
+                    0,
+                    0,
+                    3,
+                    4
+                  ],
+                  [
+                    8637,
+                    5756,
+                    3,
+                    4
+                  ],
+                  [
+                    4320,
+                    2880,
+                    3,
+                    4
+                  ],
+                  [
+                    1023,
+                    255,
+                    3,
+                    4
+                  ],
+                  [
+                    2047,
+                    1023,
+                    3,
+                    4
+                  ],
+                  [
+                    16,
+                    5756,
+                    3,
+                    4
+                  ],
+                  [
+                    8637,
+                    17,
+                    3,
+                    4
+                  ],
+                  [
+                    4339,
+                    2843,
+                    3,
+                    4
+                  ]
+                ]
+              },
+              "obliqueRamps": {
+                "bitwiseDifferentRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "maxAbsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "sampledPixels": 96,
+                "sourceRects": [
+                  [
+                    0,
+                    0,
+                    3,
+                    4
+                  ],
+                  [
+                    8637,
+                    5756,
+                    3,
+                    4
+                  ],
+                  [
+                    4320,
+                    2880,
+                    3,
+                    4
+                  ],
+                  [
+                    1023,
+                    255,
+                    3,
+                    4
+                  ],
+                  [
+                    2047,
+                    1023,
+                    3,
+                    4
+                  ],
+                  [
+                    16,
+                    5756,
+                    3,
+                    4
+                  ],
+                  [
+                    8637,
+                    17,
+                    3,
+                    4
+                  ],
+                  [
+                    4339,
+                    2843,
+                    3,
+                    4
+                  ]
+                ]
+              },
+              "realNormalized": {
+                "bitwiseDifferentRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "maxAbsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "sampledPixels": 96,
+                "sourceRects": [
+                  [
+                    0,
+                    0,
+                    3,
+                    4
+                  ],
+                  [
+                    8637,
+                    5756,
+                    3,
+                    4
+                  ],
+                  [
+                    4320,
+                    2880,
+                    3,
+                    4
+                  ],
+                  [
+                    1023,
+                    255,
+                    3,
+                    4
+                  ],
+                  [
+                    2047,
+                    1023,
+                    3,
+                    4
+                  ],
+                  [
+                    16,
+                    5756,
+                    3,
+                    4
+                  ],
+                  [
+                    8637,
+                    17,
+                    3,
+                    4
+                  ],
+                  [
+                    4339,
+                    2843,
+                    3,
+                    4
+                  ]
+                ]
+              }
+            },
+            "intermediateImpulseCountsByChannel": [
+              0,
+              0,
+              0
+            ],
+            "maxErrorVsLinearRadiusLerp": 0.10500001907348633,
+            "medianErosionMinusNormalizeJoinedMS": 229.8335635,
+            "medianGuideMinusErosionJoinedMS": 179.4864570000001,
+            "medianJoinedMS": {
+              "erosion": 284.6706895,
+              "guide": 464.15714650000007,
+              "normalize": 54.83712599999999
+            },
+            "phaseSourceCenters": [
+              [
+                4320,
+                2880
+              ],
+              [
+                1023,
+                255
+              ],
+              [
+                2048,
+                1024
+              ]
+            ],
+            "prefixOrder": [
+              [
+                {
+                  "CIReportedPasses": 276,
+                  "CIReportedPixels": 972467952,
+                  "arm": "guide",
+                  "firstBandJoinedMS": 15.178541,
+                  "lastBand": [
+                    0,
+                    5632,
+                    8640,
+                    128
+                  ],
+                  "medianRemainingBandJoinedMS": 19.567,
+                  "nativeBands": 23,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "secondary-prefix-0-0-guide.json",
+                  "receiptSHA256": "d8d28459476a2de14651216364c4390ae4651c00f03ae2c8c137a84e93f1346f",
+                  "summedJoinedMS": 473.56254200000006,
+                  "summedKernelMS": 311.06783263385296,
+                  "totalFillMS": 510.794458,
+                  "wholeR32SHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+                },
+                {
+                  "CIReportedPasses": 253,
+                  "CIReportedPixels": 640529104,
+                  "arm": "erosion",
+                  "firstBandJoinedMS": 13.111667,
+                  "lastBand": [
+                    0,
+                    5632,
+                    8640,
+                    128
+                  ],
+                  "medianRemainingBandJoinedMS": 13.189042,
+                  "nativeBands": 23,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "secondary-prefix-0-1-erosion.json",
+                  "receiptSHA256": "24e631075b61db86cef85ac0bb3da876602574f6e4b68441308e3482316caf8f",
+                  "summedJoinedMS": 305.51200199999994,
+                  "summedKernelMS": 412.23620949313045,
+                  "totalFillMS": 345.283708,
+                  "wholeR32SHA256": "01675b6e723500d26e66b73bee0318d19a40284b06353baed75bf100b10ca068"
+                },
+                {
+                  "CIReportedPasses": 138,
+                  "CIReportedPixels": 248832000,
+                  "arm": "normalize",
+                  "firstBandJoinedMS": 7.754792,
+                  "lastBand": [
+                    0,
+                    5632,
+                    8640,
+                    128
+                  ],
+                  "medianRemainingBandJoinedMS": 2.1326460000000003,
+                  "nativeBands": 23,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "secondary-prefix-0-2-normalize.json",
+                  "receiptSHA256": "52cd5338a363d0c0a61002ce579441b157d61d01509cf1b9daf8f4f2e669187f",
+                  "summedJoinedMS": 53.98467099999999,
+                  "summedKernelMS": 15.384250436909497,
+                  "totalFillMS": 91.870333,
+                  "wholeR32SHA256": "e0f8b81a47fc7a7930d4cffe74dc7820e0261c047f8855de22211526f14dd5af"
+                }
+              ],
+              [
+                {
+                  "CIReportedPasses": 138,
+                  "CIReportedPixels": 248832000,
+                  "arm": "normalize",
+                  "firstBandJoinedMS": 7.886459,
+                  "lastBand": [
+                    0,
+                    5632,
+                    8640,
+                    128
+                  ],
+                  "medianRemainingBandJoinedMS": 2.177833,
+                  "nativeBands": 23,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "secondary-prefix-1-0-normalize.json",
+                  "receiptSHA256": "8e81b73a4d7b04e0878cce926ac5d5ca27ff59b88c8dca239d202e49beff7d24",
+                  "summedJoinedMS": 55.68958099999999,
+                  "summedKernelMS": 15.215375693514943,
+                  "totalFillMS": 93.091,
+                  "wholeR32SHA256": "e0f8b81a47fc7a7930d4cffe74dc7820e0261c047f8855de22211526f14dd5af"
+                },
+                {
+                  "CIReportedPasses": 253,
+                  "CIReportedPixels": 640529104,
+                  "arm": "erosion",
+                  "firstBandJoinedMS": 11.873291,
+                  "lastBand": [
+                    0,
+                    5632,
+                    8640,
+                    128
+                  ],
+                  "medianRemainingBandJoinedMS": 11.557521000000001,
+                  "nativeBands": 23,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "secondary-prefix-1-1-erosion.json",
+                  "receiptSHA256": "b06ffb53e1800b59f41828c15a4bac72c3bbfbb3fb2e816d449ee51b6d88dc11",
+                  "summedJoinedMS": 263.82937699999997,
+                  "summedKernelMS": 263.16487474832684,
+                  "totalFillMS": 301.21125,
+                  "wholeR32SHA256": "01675b6e723500d26e66b73bee0318d19a40284b06353baed75bf100b10ca068"
+                },
+                {
+                  "CIReportedPasses": 276,
+                  "CIReportedPixels": 972467952,
+                  "arm": "guide",
+                  "firstBandJoinedMS": 16.046042,
+                  "lastBand": [
+                    0,
+                    5632,
+                    8640,
+                    128
+                  ],
+                  "medianRemainingBandJoinedMS": 18.479625,
+                  "nativeBands": 23,
+                  "previouslyArchivedWholeR32Matches": null,
+                  "receipt": "secondary-prefix-1-2-guide.json",
+                  "receiptSHA256": "78b597a44658e5b19b106a350ed4bcf17512376b9066ca515b4a237facf99b6e",
+                  "summedJoinedMS": 454.751751,
+                  "summedKernelMS": 313.70908534154296,
+                  "totalFillMS": 492.671167,
+                  "wholeR32SHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+                }
+              ]
+            ],
+            "radius": 69.12,
+            "realReceiptSHA256": "8d62346ac937e045ad2231eedbfe4237fb01bcc5cfce8c3b3a5dcdd4432a6470",
+            "recipePayloadSHA256": "cbcb83bb6dc38f208c9213bd99080f8132bc8fe9142dfbdd28fb1c2e7c4e028e",
+            "rowsWithInternalGaps": 46,
+            "sourceGrid": [
+              0,
+              0,
+              8640,
+              5760
+            ],
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "supportCount": [
+              13017,
+              13017,
+              13017
+            ],
+            "supportSHA256": "c5e95811036a2111925a17824a177c9b693758f4ad48220e0e71586b10f66d6e",
+            "syntheticReceiptSHA256": "04fb2029f729ea162672e7ac6b7b9ec21f26855b2e1d1f9490a39d38aea3b91e"
+          }
+        },
+        "configuration": {
+          "MorphologyProbe.swift": "67189b947e68d92c5327eaf58bd087140be48b22fcf9ab103f6565dcc4e8c7c0",
+          "RAWMasterCore.o": "cdf5a548c817583b0256580596099225a628a84b7210548b799ac2b20f1eaf0f",
+          "RAWMasterImaging.o": "9e443befe2202ab1bb23272edc143f71ca8226112af03cff545a3e57e9215462",
+          "probe": "50d503cb2a55058288864c56ab6d668fc46d642ed3e3cca3afe2038935b28655"
+        },
+        "decision": "Continue only as an isolated replacement experiment for these radii. No assertion of a public or stable Apple aperture; the stock minimum is nonconvex with row gaps. Preserve complete normalized RGBA, clamp semantics and stock Gaussian / scalar / display, and revalidate both whole sources and original fault behavior before any routing.",
+        "device": "Apple M4 Max",
+        "deviceRegistryID": 4294968440,
+        "experiment": "Existing Core Image V2 dehaze native morphological erosion before stock Gaussian and scalar conversion",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "scope": "Two known source buffers, archived effects-dehaze positive index 0, neutral WB. Isolated observation of stock graph, no replacement or speedup measured.",
+        "surface": "RGBAf with linear sRGB, cacheIntermediates false, 512 MiB context. IEEE-bit image comparisons on native RGBAf color (opaque by construction); final whole guide comparisons use top-first R32F.",
+        "timing": "Each arm ran in a fresh process with requested stock 256-row native R32F read and every-two-band clear. Three named prefixes ran in opposite orders twice. Values are joined CI tasks, separate from destination allocation/finite scan/CPU copy. Prefix differences include planner fusion and overlap.",
+        "toolchainLinkArgvSHA256": "b2ac0a8f31816f37153b9feaa96ada4d9888245711088e235624ae207b8d8a22"
+      }
+    },
+    "summary": {
+      "path": "output/035-development/native-exact-study/erosion/run-01/summary.json",
+      "sha256": "17f38ee018746bb65a1d817f165b12f411fd8a1cca37db8db70afb3922262759"
+    },
+    "source": {
+      "path": "output/035-development/native-exact-study/erosion/MorphologyProbe.swift",
+      "sha256": "67189b947e68d92c5327eaf58bd087140be48b22fcf9ab103f6565dcc4e8c7c0"
+    }
+  },
+  "defaultRelease": {
+    "sourceBindingDefault": true,
+    "candidateSharpenProofEnabled": false,
+    "summary": {
+      "path": "output/035-development/candidate-batch21-native-sharpen-joined-formal/summary.json",
+      "sha256": "736593b5e00671ac101be7d729e87b2dd5e136c36979eca9b0f5622b574aaa92"
+    },
+    "lightflowComparison": {
+      "path": "output/035-development/candidate-batch21-native-sharpen-joined-formal/lightflow-comparison.json",
+      "sha256": "dbdce1931a65c69327e274e9d856a95855733329c360ec0aa3865573e8f3e9c1",
+      "firstAppearanceMix": {
+        "first": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 7.282500000000001,
+            "p95Ms": 188.075
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 4.9326665,
+            "p95Ms": 18.730666
+          },
+          "medianLimitMs": 8.2825,
+          "p95LimitMs": 225.69,
+          "within": true
+        },
+        "firstExact": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 22.134999999999998,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 90.9962085,
+            "p95Ms": 411.146084
+          },
+          "medianLimitMs": 24.348499999999998,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        },
+        "final": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 23.5625,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 90.9962085,
+            "p95Ms": 411.146084
+          },
+          "medianLimitMs": 25.91875,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        }
+      }
+    },
+    "fullReadback": {
+      "path": "output/035-development/candidate-batch21-native-sharpen-joined-formal/photo-operators-v2.json",
+      "sha256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d",
+      "exactPixelDigestPairs": 814
+    },
+    "status": "failed",
+    "passed": false,
+    "failedStages": [
+      "interactive-comparison",
+      "control-comparison",
+      "lightflow-comparison",
+      "inspection-comparison"
+    ],
+    "failureDetails": [
+      {
+        "stage": "control-comparison",
+        "report": "control-comparison.json",
+        "failures": [
+          "detail-sharpen-amount: medianMs 6.48 > 6.03 ms",
+          "effects-glow-mask: medianMs 7.63 > 6.52 ms",
+          "effects-dehaze: medianMs 13.30 > 12.66 ms"
+        ]
+      },
+      {
+        "stage": "inspection-comparison",
+        "report": "inspection-comparison.json",
+        "failures": [
+          "light-auto p95Ms: 17.85 > 8.88 ms",
+          "light-auto-single p95Ms: 12.68 > 7.64 ms",
+          "color-floating-scopes p95Ms: 37.15 > 35.03 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "lens-blur-cat-eye: interactive median regressed 14.25%",
+          "targeted-hsl: interactive median regressed 24.55%",
+          "local-point-color: interactive median regressed 13.64%",
+          "local-light-extended: interactive median regressed 20.32%",
+          "local-hue-colorize: interactive median regressed 13.69%",
+          "local-grain: interactive median regressed 13.45%",
+          "local-curves: interactive median regressed 10.69%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      }
+    ],
+    "slowestNineFinalSamples": [
+      {
+        "id": "effects-dehaze",
+        "state": 0,
+        "ms": 1068.347291
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "state": 0,
+        "ms": 434.610583
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "state": 1,
+        "ms": 432.511791
+      },
+      {
+        "id": "detail-mask-noise",
+        "state": 1,
+        "ms": 411.146084
+      },
+      {
+        "id": "detail-mask-noise",
+        "state": 0,
+        "ms": 404.69
+      },
+      {
+        "id": "detail-mask-preview",
+        "state": 1,
+        "ms": 398.625833
+      },
+      {
+        "id": "detail-mask-preview",
+        "state": 0,
+        "ms": 351.407333
+      },
+      {
+        "id": "effects-mask-texture",
+        "state": 1,
+        "ms": 327.174833
+      },
+      {
+        "id": "effects-mask-texture",
+        "state": 0,
+        "ms": 323.156041
+      }
+    ],
+    "previousDefaultBatch20": {
+      "superResolutionComparison": {
+        "path": "output/035-development/candidate-batch20-abi-preflight-formal/super-resolution-comparison.json",
+        "sha256": "fe085322a6353c7edacecc8d9f7627719c799e1b2da416ecd8e7c59ab507b2cf",
+        "record": {
+          "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "metrics": {
+            "fitOnMs": 129.00225,
+            "fullTIFFMs": 10087.031458,
+            "exportPhysicalFootprintBytes": 3506473072,
+            "exportResidentBytes": 1380286464,
+            "exportMetalBytes": 2811674624
+          },
+          "failures": []
+        }
+      },
+      "superResolution": {
+        "path": "output/035-development/candidate-batch20-abi-preflight-formal/super-resolution.json",
+        "sha256": "6c0e5bf76b6916c9136d1ee207fa877c107ee2469e4f4388df58e6c9cbd84899",
+        "tiff16": {
+          "bits": 16,
+          "byteCount": 1926958614,
+          "colorSpace": "sRGB IEC61966-2.1",
+          "elapsedMs": 10087.031458,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sampleFormat": "unsigned",
+          "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+          "size": [
+            19008,
+            12672
+          ]
+        }
+      }
+    },
+    "defaultBatch21": {
+      "superResolutionComparison": {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined-formal/super-resolution-comparison.json",
+        "sha256": "4f21da2bdf97f1a64ad809c0514d8ce8b8706c09e023c37ecf323df5901c9a60",
+        "record": {
+          "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "metrics": {
+            "fitOnMs": 148.976584,
+            "fullTIFFMs": 9698.1685,
+            "exportPhysicalFootprintBytes": 3507062848,
+            "exportResidentBytes": 1379385344,
+            "exportMetalBytes": 2811805696
+          },
+          "failures": []
+        }
+      },
+      "superResolution": {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined-formal/super-resolution.json",
+        "sha256": "401bd794ee57fe9d8947767458261cd0fef1a297bc2e0eb64a7dcc852bcd438b",
+        "tiff16": {
+          "bits": 16,
+          "byteCount": 1926958614,
+          "colorSpace": "sRGB IEC61966-2.1",
+          "elapsedMs": 9698.1685,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sampleFormat": "unsigned",
+          "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+          "size": [
+            19008,
+            12672
+          ]
+        }
+      }
+    },
+    "sameTIFF16": true,
+    "concurrentHostWork": "One Linux validation worker limited to one CPU and one cargo job after the interactive phase."
+  },
+  "functionalRerun": {
+    "tests": [
+      {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/native-film-and-mask.log",
+        "sha256": "e824efb02fc643ed4082ad6499566e6c3dcea43f70301a6a36f49f7e00ebb6a1",
+        "passed": 27
+      },
+      {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/native-mask-interaction.log",
+        "sha256": "62163722b19db5f47a1d5466c81be1b4d1bed2b8fdf68ef3fa4b4b486b67f647",
+        "passed": 9
+      },
+      {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/native-prompt-providers.log",
+        "sha256": "b6394a3b1c631a1555d1395d8c715e79b456cf664bdb040107dbbb13cb489e34",
+        "passed": 5
+      },
+      {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/adaptive-Sky.log",
+        "sha256": "eec493eebe3d8b261ae5c2e59a720f39cd2a36421b4ef0f033068ab729b4f4af",
+        "passed": 1
+      },
+      {
+        "path": "output/035-development/candidate-batch21-native-sharpen-joined/adaptive-Subject.log",
+        "sha256": "e061a41eb731728861bf134e0a2495128a7f65bc27deea4164ed5e5c184860f6",
+        "passed": 1
+      }
+    ],
+    "acceptance": {
+      "path": "output/035-development/candidate-batch21-native-sharpen-joined/camera-raw-acceptance.json",
+      "sha256": "cbae91ac91120b7dd58b8022700bf991441cce36ce2862085abc206dbd84d5f4"
+    },
+    "candidateCameraRawMeasuredFeatures": 158,
+    "adaptive": {
+      "cases": 4,
+      "testBinarySHA256": "695627aa90c0fd5d81a56e06de0d6c43c1a81b2e7bf47a07938d0efd36e1b5e5"
+    },
+    "recordedBuild": {
+      "binarySHA256": "3e49688529d1e6b52ebb15885e366bca255e113eefeb29317d3d21b0ddfcd3cf",
+      "uiTestBinarySHA256": "695627aa90c0fd5d81a56e06de0d6c43c1a81b2e7bf47a07938d0efd36e1b5e5",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "protocol": "rawmaster-resident-control-v1",
+      "officialReleasePassed": false,
+      "officialReleaseStatus": "failed",
+      "regressionPassed": null,
+      "timingGatesRequired": null,
+      "hostedUI": null,
+      "ui": {
+        "mode": "budget-gated",
+        "boundary": "Constructed NSEvent.timestamp → native hit-test / receiver → changed focusedID publication / NSViewRepresentable update; not WindowServer presentation"
+      },
+      "featureInputs": {
+        "residentControls": 124,
+        "inspection": 33,
+        "superResolution": "measured"
+      }
+    },
+    "realLocalFluxAndMixedWorkload": {
+      "path": "output/035-development/candidate-batch21-native-sharpen-joined/verified-flux-mixed.json",
+      "sha256": "a3371b0495c81394ab1580d8977b68385063bcd672edc62a4e9e3366c9cb9327",
+      "record": {
+        "candidate": "candidate-batch21-native-sharpen-joined",
+        "sourceReceipt": "output/035-development/flux-mixed-candidate-batch21-native-sharpen-joined/receipt.json",
+        "testBinarySHA256": "695627aa90c0fd5d81a56e06de0d6c43c1a81b2e7bf47a07938d0efd36e1b5e5",
+        "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+        "provider": {
+          "actualModel": "black-forest-labs/flux-3-image-klein",
+          "mlxVersion": "0.32.4",
+          "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+          "peakMLXBytes": "8501400908",
+          "pipelineSeconds": "166.2481457919348",
+          "preset": "q8-16",
+          "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+          "seed": "8521",
+          "steps": "16",
+          "usage": "local",
+          "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+          "workerSeconds": "166.26684804202523"
+        },
+        "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+        "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+        "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+        "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+        "pixelComparison": {
+          "protectedChangedPixels": 0,
+          "protectedPixels": 786432,
+          "selectedChangedPixels": 262144,
+          "selectedPixels": 262144
+        },
+        "elapsedSeconds": 168.55544197559357,
+        "receiptSHA256": "4e87afce2e274bfac1f9217deb6736d9c7461ad13d14b6fc4ab794fa5258682d",
+        "archiveAndModelOutputFilesVerified": true,
+        "attemptsAfterReopen": 1,
+        "adoptionRevisions": [
+          0,
+          1,
+          2
+        ],
+        "archivedBitDepth": 16,
+        "fileBackedDrawMilliseconds": 15.387458,
+        "draw": {
+          "approximate": false,
+          "consumerID": "285B9413-BF22-4DF0-BD76-F483BC32DC06",
+          "drawBeganNS": 607134882906708,
+          "drawReturnedNS": 607134882943083,
+          "frameID": "C765B126-EB1E-4991-A569-4F429771CFB8",
+          "generation": 2,
+          "height": 1067,
+          "inputNS": 607134867555625,
+          "leaseID": "DA84E262-43C2-42F1-AA61-B73C2EE765A5",
+          "quality": "settled",
+          "renderedHeight": 1067,
+          "renderedWidth": 1600,
+          "revision": 3,
+          "width": 1600
+        },
+        "phaseTimelineUptimeNS": {
+          "exportCompleted": 607143046032291,
+          "exportFirstFile": 607134706880333,
+          "exportLastFile": 607143044411458,
+          "exportPrepared": 607134563703583,
+          "importCompleted": 607135228385291,
+          "importFirstFile": 607134866914708,
+          "importLastFile": 607135168284125
+        },
+        "exportSeconds": 8.482328708,
+        "firstOutputAfterPreparationSeconds": 0.14317675,
+        "appHostMaxRSSBytes": 918650880,
+        "importedRAWCount": 20,
+        "deliveryCount": 200,
+        "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+        "allPerPathReceiptsMatch": true,
+        "allFilesEqualStandaloneMain": true,
+        "bothFileWorkloadsSpanDraw": true
+      }
+    }
+  }
+}

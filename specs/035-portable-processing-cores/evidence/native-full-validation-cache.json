@@ -1,0 +1,475 @@
+{
+  "actualValidatorFaults": {
+    "archivedOriginal": {
+      "path": "output/035-development/phase-x/noise/product-faults/original.json",
+      "sha256": "bd28aa52ada7b6b96414a5cb8a0b9fc03d2277d3f096726462a2e174aed9e045"
+    },
+    "matchingFullDomainDecisions": 8,
+    "originalContext": {
+      "path": "output/035-development/phase-z/cache/product/fault-0.json",
+      "sha256": "bd28aa52ada7b6b96414a5cb8a0b9fc03d2277d3f096726462a2e174aed9e045"
+    },
+    "programSource": {
+      "path": "output/035-development/phase-z/cache/ActualProductFault.swift",
+      "sha256": "8f1b2504c8629287bc501fd1af818f6ddd60c8469154e5ce69beb207c3f58ef8"
+    },
+    "regionalCounterexample": {
+      "cacheContextAccepted": false,
+      "kernel": "rmMaskComposite",
+      "originalAccepted": true,
+      "site": "omitted-first-cell"
+    },
+    "rejectedTailNonfinite": 12,
+    "retainedContext": {
+      "path": "output/035-development/phase-z/cache/product/fault-1.json",
+      "sha256": "3f24eaf6eeb772fbd63e4d4af77826d1e78a68c1bbb13a008768dd79669372b5"
+    }
+  },
+  "defaultEnabled": false,
+  "modeFlag": "RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE",
+  "product": {
+    "aggregate": {
+      "path": "output/035-development/phase-z/product-01/verified.json",
+      "sha256": "094e0c691b19ee4f8446298b9cc9fc48e05ff221048ab70c75a65ec909912861"
+    },
+    "causalSchedule": [
+      0,
+      1,
+      1,
+      0
+    ],
+    "linkedBinary": {
+      "path": "output/035-development/phase-z/product-01/profile-settled-photo",
+      "sha256": "403024c1b18a0bb8c95b7fb85f2383d6d965ffadd731b2887ac41fa4552de5c2"
+    },
+    "matchingWholeSettledFrames": 144,
+    "profileSource": {
+      "path": "output/035-development/phase-z/product-01/profile-source.swift",
+      "sha256": "94d3d6dbbf77e1deaedb19fe39ac43993088e7d6bf99d9d7fd9464923b5e679f"
+    },
+    "rawRuns": [
+      {
+        "path": "output/035-development/phase-z/product-01/1-primary-0.json",
+        "sha256": "8187d30ed522eb1ed4ae6a254cbd06956a7fdf3202185bf8d70f4d7dd7aa73c9"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/2-primary-1.json",
+        "sha256": "c3444ca4b5dc99d946b54a78ec4ac99145830c58c92e9c747a11103f234bff74"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/3-primary-1.json",
+        "sha256": "ef799fa7100fb8b1dd18b2e257c3ad11bcb67b2ed2dde71082e6a268a6fd78bf"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/4-primary-0.json",
+        "sha256": "d70bc3b3b180a4715b2e14b39191e1dec733f82d0f0671dbf7d8f4fa5a90ed71"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/1-secondary-0.json",
+        "sha256": "dc04a7a013f1df88d298e4d8565355b5b1411ebc1bbb96ed390258b7ae7b04fc"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/2-secondary-1.json",
+        "sha256": "f356d83a0e5351de3db78947be7007ae2dd796f12a1aae4e39f5faf5401412a0"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/3-secondary-1.json",
+        "sha256": "40b8e52bbc62f9140e91345653bf4fa239171779d6c2ed527b70409e2764cf59"
+      },
+      {
+        "path": "output/035-development/phase-z/product-01/4-secondary-0.json",
+        "sha256": "7af171f74ab2c35c268e9e1b9c8622357a4e7577f8d6f4bbca5f4da5540af470"
+      }
+    ],
+    "retainedSettledFrames": 8,
+    "serialOverride": {
+      "path": "output/035-development/phase-z/product-01/forced-serial.json",
+      "sha256": "03f2f9ea7d4ece6638703c4f5033efad71182fa802dc927f4c6e64905ba5e962"
+    },
+    "sources": {
+      "primary": {
+        "operations": {
+          "curve-mask-curve": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              90.17904150000001,
+              86.165729
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              160.466021,
+              146.25204200000002
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "curve-point": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              3.4651455,
+              3.486979
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              103.427437,
+              100.36895899999999
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "detail-mask-noise": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              145.470375,
+              99.72847949999999
+            ],
+            "groupedP50Ms": [
+              189.8716665,
+              150.09425
+            ],
+            "p50Ms": [
+              349.971188,
+              277.5066875
+            ],
+            "retainsCacheWhenEnabled": true
+          },
+          "detail-nr-color-detail": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              144.422021,
+              160.895229
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              254.7144375,
+              280.3088545
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "detail-nr-lum-contrast": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              146.272479,
+              146.861625
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              250.0363955,
+              251.456167
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "effects-mask-clarity": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              132.0682915,
+              131.9621665
+            ],
+            "groupedP50Ms": [
+              115.2577085,
+              116.741708
+            ],
+            "p50Ms": [
+              263.0089375,
+              264.5100415
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "effects-mask-grain": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              61.446521000000004,
+              60.68425
+            ],
+            "groupedP50Ms": [
+              65.616354,
+              67.1183335
+            ],
+            "p50Ms": [
+              143.110104,
+              145.033291
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "effects-mask-texture": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              132.40625,
+              138.7662295
+            ],
+            "groupedP50Ms": [
+              103.0383545,
+              105.3685835
+            ],
+            "p50Ms": [
+              252.7913125,
+              262.145479
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "light-mask-exposure": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              36.049020999999996,
+              36.166271
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              74.91458349999999,
+              73.4997505
+            ],
+            "retainsCacheWhenEnabled": false
+          }
+        },
+        "photoSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "processPeakBytes": [
+          [
+            3737340496,
+            3755477584
+          ],
+          [
+            3740404352,
+            3753101976
+          ]
+        ]
+      },
+      "secondary": {
+        "operations": {
+          "curve-mask-curve": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              70.3624375,
+              70.841646
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              136.2991665,
+              123.428646
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "curve-point": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              3.50375,
+              3.559583
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              94.899771,
+              86.83129149999999
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "detail-mask-noise": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              117.56868700000001,
+              84.435125
+            ],
+            "groupedP50Ms": [
+              152.9164995,
+              128.066667
+            ],
+            "p50Ms": [
+              288.98199950000003,
+              240.513146
+            ],
+            "retainsCacheWhenEnabled": true
+          },
+          "detail-nr-color-detail": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              109.4527915,
+              106.568646
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              193.0017085,
+              193.3061245
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "detail-nr-lum-contrast": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              111.047979,
+              105.8305
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              199.806937,
+              191.2506665
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "effects-mask-clarity": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              121.306771,
+              130.072375
+            ],
+            "groupedP50Ms": [
+              117.68014600000001,
+              127.611667
+            ],
+            "p50Ms": [
+              254.303271,
+              274.27268749999996
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "effects-mask-grain": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              56.25575,
+              51.2062915
+            ],
+            "groupedP50Ms": [
+              72.251375,
+              67.51831250000001
+            ],
+            "p50Ms": [
+              145.16481199999998,
+              139.402625
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "effects-mask-texture": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              139.322604,
+              138.0476255
+            ],
+            "groupedP50Ms": [
+              110.1565,
+              110.09797850000001
+            ],
+            "p50Ms": [
+              267.7781045,
+              273.61560399999996
+            ],
+            "retainsCacheWhenEnabled": false
+          },
+          "light-mask-exposure": {
+            "allOutputSHA256Equal": true,
+            "fitP50Ms": [
+              35.098,
+              33.6168335
+            ],
+            "groupedP50Ms": null,
+            "p50Ms": [
+              77.90025,
+              77.0492295
+            ],
+            "retainsCacheWhenEnabled": false
+          }
+        },
+        "photoSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "processPeakBytes": [
+          [
+            3594029504,
+            3501967760
+          ],
+          [
+            3488450936,
+            3491875360
+          ]
+        ]
+      }
+    },
+    "verified": true
+  },
+  "schemaVersion": 1,
+  "scope": "Eligible primary verified FlashRaw at 2400px, original whole-domain grouped maximum, 512 MiB per-request CIContext on M4 Max",
+  "screen": {
+    "allOriginalScalarsAndDisplayMatch": true,
+    "measuredAbsoluteRgbaScalarRecords": 5952,
+    "renderedFrames": 96,
+    "runs": [
+      {
+        "arm": "group-clear",
+        "maxSampledAllocatedMetalBytes": 2065219584,
+        "peakPhysicalFootprintBytes": 2721384632,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/1-primary-group-clear.json",
+          "sha256": "03e3917a7162812476d5e10f93b03462b42d151854d161a34753a1effd161e00"
+        },
+        "source": "primary"
+      },
+      {
+        "arm": "retain",
+        "maxSampledAllocatedMetalBytes": 2065154048,
+        "peakPhysicalFootprintBytes": 2727954640,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/2-primary-retain.json",
+          "sha256": "78f51b93c364e7f541bd43644a103e16dff617498252110bca60efb8637720b8"
+        },
+        "source": "primary"
+      },
+      {
+        "arm": "cache-context",
+        "maxSampledAllocatedMetalBytes": 2116714496,
+        "peakPhysicalFootprintBytes": 2896218152,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/3-primary-cache-context.json",
+          "sha256": "08ff9c1582cdc6f9c735d8e4f055348bce9d02d7fe7820908e12f9881fee0c34"
+        },
+        "source": "primary"
+      },
+      {
+        "arm": "cache-node",
+        "maxSampledAllocatedMetalBytes": 4479631360,
+        "peakPhysicalFootprintBytes": 4501342320,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/4-primary-cache-node.json",
+          "sha256": "1d4fcb522dd55c3baf047997f4a0e5d4397a2c0f04a2476efa4ed8b70a2eb524"
+        },
+        "source": "primary"
+      },
+      {
+        "arm": "group-clear",
+        "maxSampledAllocatedMetalBytes": 1967226880,
+        "peakPhysicalFootprintBytes": 2721957904,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/1-secondary-group-clear.json",
+          "sha256": "4b2811ebefd6a9d2922eb76aa42a54df70fe27466d80060522533302c77dc659"
+        },
+        "source": "secondary"
+      },
+      {
+        "arm": "retain",
+        "maxSampledAllocatedMetalBytes": 1967292416,
+        "peakPhysicalFootprintBytes": 2721990648,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/2-secondary-retain.json",
+          "sha256": "deda76a8f0f7f815e8c030f893296b816f5020b8917394f6907e020ca3b29e77"
+        },
+        "source": "secondary"
+      },
+      {
+        "arm": "cache-context",
+        "maxSampledAllocatedMetalBytes": 2045345792,
+        "peakPhysicalFootprintBytes": 2803075064,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/3-secondary-cache-context.json",
+          "sha256": "b0c4043fc61658887314d0351622c2c1e7a98ad10a1650057ebf5c71b51ddd54"
+        },
+        "source": "secondary"
+      },
+      {
+        "arm": "cache-node",
+        "maxSampledAllocatedMetalBytes": 3325984768,
+        "peakPhysicalFootprintBytes": 4080404472,
+        "rawReport": {
+          "path": "output/035-development/phase-z/cache/preflight/4-secondary-cache-node.json",
+          "sha256": "e28bfbece01e283ba967c45c30f72ef80147bb230985faacb1a6e82cedc14b0c"
+        },
+        "source": "secondary"
+      }
+    ],
+    "witness": {
+      "path": "output/035-development/phase-z/cache/JoinedMaximumProbe.swift",
+      "sha256": "76fe702a43928e29b476d4dea5ff19da6194ad11be9e6e3f5dde963394114ad7"
+    }
+  },
+  "timing": "Existing edit service render and complete sRGB8 client readback. Timed and measured first-party fixture ABBA. The exact-path candidate was selected for two local denoise states on each RAW."
+}

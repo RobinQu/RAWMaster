@@ -1,0 +1,629 @@
+{
+  "schemaVersion": 1,
+  "case": "Exact hardware 2× sampler arithmetic witness",
+  "os": "27.0.1",
+  "device": "Apple M4 Max",
+  "calibration": "Metal Float32 texture, normalized sampler at the same coordinates as the existing WGSL 2x sample",
+  "groups": {
+    "uniform": {
+      "pixels": 290304,
+      "ordinarySumChangedComponents": 219690,
+      "exactRoundTiesToEvenChangedComponents": 35423,
+      "compensatedRoundTiesAwayChangedComponents": 0
+    },
+    "mixedExponents": {
+      "pixels": 290304,
+      "compensatedRoundTiesAwayChangedComponents": 16
+    }
+  },
+  "results": [
+    {
+      "size": [
+        9504,
+        256
+      ],
+      "mode": "safe",
+      "exponentSpread": 0,
+      "comparedPixels": 76032,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        75760,
+        0,
+        75712,
+        0
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        57616,
+        57432,
+        65299,
+        65348,
+        57616,
+        57432,
+        57616,
+        57432,
+        57616,
+        57432,
+        65299,
+        65348,
+        63708,
+        0,
+        57616
+      ],
+      "maxDelta": [
+        0,
+        0,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        0,
+        2.38418579e-07
+      ],
+      "wideDifferences": [
+        9324,
+        9324,
+        0,
+        0
+      ],
+      "aboveAndBelowWide": [
+        9323,
+        1
+      ]
+    },
+    {
+      "size": [
+        9504,
+        256
+      ],
+      "mode": "safe",
+      "exponentSpread": 1,
+      "comparedPixels": 76032,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        75760,
+        0,
+        75712,
+        0
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        62995,
+        62535,
+        96335,
+        95933,
+        62995,
+        62535,
+        62995,
+        62535,
+        62995,
+        62535,
+        96335,
+        95933,
+        62383,
+        0,
+        62995
+      ],
+      "maxDelta": [
+        0,
+        0,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0,
+        0.000122070312
+      ],
+      "wideDifferences": [
+        490,
+        490,
+        3,
+        3
+      ],
+      "aboveAndBelowWide": [
+        245,
+        245
+      ]
+    },
+    {
+      "size": [
+        8640,
+        256
+      ],
+      "mode": "safe",
+      "exponentSpread": 0,
+      "comparedPixels": 69120,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        68608,
+        0,
+        68528,
+        0
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        52197,
+        51994,
+        59183,
+        58809,
+        52197,
+        51994,
+        52197,
+        51994,
+        52197,
+        51994,
+        59183,
+        58809,
+        57412,
+        0,
+        52197
+      ],
+      "maxDelta": [
+        0,
+        0,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        0,
+        2.38418579e-07
+      ],
+      "wideDifferences": [
+        8372,
+        8372,
+        0,
+        0
+      ],
+      "aboveAndBelowWide": [
+        8360,
+        12
+      ]
+    },
+    {
+      "size": [
+        8640,
+        256
+      ],
+      "mode": "safe",
+      "exponentSpread": 1,
+      "comparedPixels": 69120,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        68608,
+        0,
+        68528,
+        0
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        57348,
+        57500,
+        87404,
+        87146,
+        57348,
+        57500,
+        57348,
+        57500,
+        57348,
+        57500,
+        87404,
+        87146,
+        56407,
+        0,
+        57348
+      ],
+      "maxDelta": [
+        0,
+        0,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0,
+        0.000122070312
+      ],
+      "wideDifferences": [
+        469,
+        469,
+        5,
+        5
+      ],
+      "aboveAndBelowWide": [
+        247,
+        222
+      ]
+    },
+    {
+      "size": [
+        9504,
+        192
+      ],
+      "mode": "safe",
+      "exponentSpread": 0,
+      "comparedPixels": 76032,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        75760,
+        47520,
+        75712,
+        47520
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        57671,
+        57611,
+        65185,
+        65254,
+        57671,
+        57611,
+        57671,
+        57611,
+        57671,
+        57611,
+        65185,
+        65254,
+        63994,
+        0,
+        57671
+      ],
+      "maxDelta": [
+        0,
+        0,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        0,
+        2.38418579e-07
+      ],
+      "wideDifferences": [
+        9323,
+        9323,
+        0,
+        0
+      ],
+      "aboveAndBelowWide": [
+        9316,
+        7
+      ]
+    },
+    {
+      "size": [
+        9504,
+        192
+      ],
+      "mode": "safe",
+      "exponentSpread": 1,
+      "comparedPixels": 76032,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        75760,
+        47520,
+        75712,
+        47520
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        62779,
+        62764,
+        95687,
+        95375,
+        62779,
+        62764,
+        62779,
+        62764,
+        62779,
+        62764,
+        95687,
+        95375,
+        62299,
+        0,
+        62779
+      ],
+      "maxDelta": [
+        0,
+        0,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0,
+        0.000122070312
+      ],
+      "wideDifferences": [
+        483,
+        483,
+        1,
+        1
+      ],
+      "aboveAndBelowWide": [
+        235,
+        248
+      ]
+    },
+    {
+      "size": [
+        8640,
+        128
+      ],
+      "mode": "safe",
+      "exponentSpread": 0,
+      "comparedPixels": 69120,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        68608,
+        0,
+        68528,
+        0
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        52206,
+        52075,
+        59231,
+        59001,
+        52206,
+        52075,
+        52206,
+        52075,
+        52206,
+        52075,
+        59231,
+        59001,
+        57643,
+        0,
+        52206
+      ],
+      "maxDelta": [
+        0,
+        0,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        2.38418579e-07,
+        0,
+        2.38418579e-07
+      ],
+      "wideDifferences": [
+        8404,
+        8404,
+        0,
+        0
+      ],
+      "aboveAndBelowWide": [
+        8395,
+        9
+      ]
+    },
+    {
+      "size": [
+        8640,
+        128
+      ],
+      "mode": "safe",
+      "exponentSpread": 1,
+      "comparedPixels": 69120,
+      "phase": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "phaseDifferences": [
+        68608,
+        0,
+        68528,
+        0
+      ],
+      "bitDifferences": [
+        0,
+        0,
+        57214,
+        57479,
+        87256,
+        86785,
+        57214,
+        57479,
+        57214,
+        57479,
+        57214,
+        57479,
+        87256,
+        86785,
+        56298,
+        0,
+        57214
+      ],
+      "maxDelta": [
+        0,
+        0,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0.000122070312,
+        0,
+        0.000122070312
+      ],
+      "wideDifferences": [
+        441,
+        441,
+        7,
+        7
+      ],
+      "aboveAndBelowWide": [
+        229,
+        212
+      ]
+    }
+  ],
+  "compiledHarness": {
+    "path": "output/035-development/phase-ad/sampler/sampler",
+    "sha256": "e341f5e94435d65d3b3fc64db8b297d603d1b3d64dfcbb0546c4f75cc7b40646"
+  },
+  "raw": {
+    "path": "output/035-development/phase-ad/sampler/sampler-round-away.jsonl",
+    "sha256": "bd1518c66b9a42c291a0510b41690cde98666249a935c78f4f74a7b39078540c"
+  },
+  "counterexamples": {
+    "path": "output/035-development/phase-ad/sampler/sampler-round-away.log",
+    "sha256": "39e3165ff39613fabe16dac59daabc2b8aab59e6fd1dc79e5dc238edcf9f91b7"
+  },
+  "sourceArchive": {
+    "path": "specs/035-portable-processing-cores/evidence/metal-half-rounding-sources.tar.gz",
+    "sha256": "0ff5e4c41b0bbda2ea1df40efc9f46032bf95ea0568a1dee392881d5e88ccd39"
+  },
+  "orderedWiderFields": [
+    "CPU Double nearest even",
+    "Metal compensated nearest even",
+    "CPU Double ties away",
+    "Metal compensated ties away"
+  ],
+  "reproduction": "clang++ -O2 -fobjc-arc -std=c++17 -framework Foundation -framework Metal sampler.mm -o sampler; ./sampler Sampler.metal 9504 256 safe spread",
+  "decision": "Maintain the actual hardware sample for precise frames. The residual mixed-exponent counterexamples prevent replacing it by this arithmetic."
+}

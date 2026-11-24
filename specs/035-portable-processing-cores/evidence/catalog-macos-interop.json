@@ -1,0 +1,369 @@
+{
+  "study": "Mac local APFS SQLite interoperability and live Rust workbench v10 delivery checks",
+  "dateLocal": "2026-11-23",
+  "productionIntegrated": false,
+  "performanceMeasured": false,
+  "replay": "experiments/portable-processing/catalog/macos-interop-probe/README.md",
+  "host": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "build": "26A434",
+    "cpu": "Apple M4 Max",
+    "filesystem": "local APFS, generated directories only"
+  },
+  "originalAndReproduction": [
+    {
+      "path": "output/035-development/phase-x/catalog/matrix.json",
+      "sha256": "aae4698cdd92663949bb66d56a3ac206ea3eef9dadeef3bd1bb01714165173bc",
+      "bytes": 467842
+    },
+    {
+      "path": "output/035-development/phase-x/catalog/archive.json",
+      "sha256": "a433b2d0a1b9301cc453b8854b2e47c61a56e86528abaac72044e7445f998364",
+      "bytes": 495138
+    },
+    {
+      "path": "output/035-development/phase-x/catalog/archive-build.log",
+      "sha256": "1ba4c18e4cee87208774ea20d0cd420d4b4771f19c960fb41b07741569728aaa",
+      "bytes": 240
+    }
+  ],
+  "artifactSHA256": {
+    "README.md": "2024841cd04eea058d43f2ef78bc35511272cad73a3a48def073810902407b67",
+    "build.py": "5d7ed792cfd45c1d9055bbbb237c23cd3b4d462676e83e5cd10684494952d73e",
+    "mac-proof.c": "fed205317e08b54fcb86c0ef71f30ff460557f6b698c14f9253d3105da0fc95e",
+    "private.rs": "c5fe68a1f131e728d6656935c2897ea666889104815ef18a2c9b69a811df6d86",
+    "proof.rs": "d8e2bf3b6ff369471fada1c1630c9433fc4b4eb479e20c12975b480a349931f0",
+    "run.py": "20268e092b2ee86756b8e4c816e2f28acf80feac822219781d2731c91ae01144",
+    "system-peer.c": "0630a07558295bdd38264c483257c9192211ff4d6ed9eefdd6451be0a1c7ad28"
+  },
+  "reusedSourceSHA256": {
+    "Modules/LibraryCatalog/Cargo.toml": "ad463ff1f8ad00ecc17808be947f91a43aaab0e006538fe3b81a97af66a74fd2",
+    "Modules/LibraryCatalog/Cargo.lock": "674f98fbddfac2b648c221a1b182a81a7fdea92d808c7c7231562b8cae7afbca",
+    "Modules/LibraryCatalog/src/scheduler.rs": "276b822cec0914f67546c2c3bf5e4d0fcc4a024a9c76b4091ae9de9ed0a91c4a",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs": "0087fbba7bec71022d16f480cae31f850367035c3ce1954308dae4dd463d6a16",
+    "Modules/LibraryCatalog/src/scheduler/batch/directory.rs": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd",
+    "experiments/portable-processing/catalog/transaction-filestat-probe/build.py": "5a62ffc9c00598ff3cecfae841571a772c354b29de611d5b5c06704e5bd81854",
+    "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/witness-vfs.c": "4da29abc0b682c5c29f6e91c9fc1a1b586e6501bf7592b625c7f77836d4a4dfd",
+    "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/build_native.rs": "b10ffc1512a74f8b605afa1a35a91e89c77c31f68b2161b84746e2f2275d18a6",
+    "experiments/portable-processing/catalog/queue-transaction-probe/run.py": "ea6a5acd82f8329897786be991a51ea71fb2dd70d3a81930dc750c673e3a33ad",
+    "experiments/portable-processing/catalog/queue-transaction-probe/keeper.c": "3e19982e1790f0c41af21236412e62a5f9d3ff16062a5ac523fc0be61f1ef55d",
+    "experiments/portable-processing/catalog/queue-transaction-probe/abi.h": "06df5bebff95937b02c53216ee00085568fb7e6b9d44f321418ba450fd1ef996"
+  },
+  "sqlite": {
+    "macOS": {
+      "version": 3054000,
+      "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+      "dladdr": "/usr/lib/libsqlite3.dylib",
+      "rustEqualsSystemVersionFunction": true,
+      "filestatSQLPrepareRC": 1,
+      "installedReleaseRuntimeSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20"
+    },
+    "private": {
+      "version": 3053002,
+      "sourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+      "dladdrBasename": "mac-private",
+      "rustEqualsPrivateVersionFunction": true,
+      "amalgamationSHA256": "0a409f1633283fa31a9126b11fbfd64a1991c5d30defad07e5745d4667f5e23d",
+      "libsqlite3-sys": "0.38.2",
+      "optInDefine": "SQLITE_ENABLE_FILESTAT",
+      "executed": "debug, separate executable statically linked to actual rm_library_request_v1 of the instrumented production crate",
+      "executedProgramSHA256": "551fdf66763c32629f5982f2522136fadf5b95db4a42efeccc9d0c113a84386b",
+      "alsoBuiltButNotLoadedLibrarySHA256": "cef74f779118362e90c63ad18ae73de973868366a2c63fd1ad54a954e54cb33d"
+    },
+    "directMachOLibraries": {
+      "mac-private": [
+        "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+        "/usr/lib/libiconv.2.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ],
+      "system-peer": [
+        "/usr/lib/libsqlite3.dylib",
+        "/usr/lib/libSystem.B.dylib"
+      ]
+    }
+  },
+  "interoperability": {
+    "bidirectionalBusyAndRetry": true,
+    "readSnapshotsSurvivedOtherEngineCommitBothDirections": true,
+    "kernelLocksRetainedAcrossBorrowedFDProbe": true,
+    "busyRCFromEachEngine": 5,
+    "whileOldSnapshotAndAfterRelease": {
+      "systemReaderPrivateCommit": [
+        0,
+        1
+      ],
+      "privateReaderSystemCommit": [
+        1,
+        2
+      ]
+    },
+    "independentKernelProbe": {
+      "mainSharedByte": 1073741826,
+      "shmWriterByte": 120,
+      "readBytesInspected": [
+        123,
+        124,
+        125,
+        126,
+        127
+      ],
+      "deadmanByteInspected": 128,
+      "queries": [
+        "F_GETLK",
+        "F_OFD_GETLK"
+      ],
+      "scope": "separate observer PID, both calls saw the actual active writer; the sole private owner retained main/shared + WAL write + read-slot lock across FILESTAT/fstat/libproc"
+    },
+    "sameActiveWriterCalibration": [
+      {
+        "case": "singleMapper",
+        "kernelShareMode": 2,
+        "allowed": false,
+        "sameThreeDescriptorRoles": true,
+        "originalMapBytes": 32768,
+        "vfsMappingGeneration": 2
+      },
+      {
+        "case": "mappedForeignPeer",
+        "kernelShareMode": 2,
+        "allowed": false,
+        "sameThreeDescriptorRoles": true,
+        "originalMapBytes": 32768,
+        "vfsMappingGeneration": 2
+      },
+      {
+        "case": "readOnlyMappingSameSHM",
+        "kernelShareMode": 4,
+        "allowed": true,
+        "sameThreeDescriptorRoles": true,
+        "originalMapBytes": 32768,
+        "vfsMappingGeneration": 2
+      },
+      {
+        "case": "afterUnmap",
+        "kernelShareMode": 2,
+        "allowed": false,
+        "sameThreeDescriptorRoles": true,
+        "originalMapBytes": 32768,
+        "vfsMappingGeneration": 2
+      },
+      {
+        "case": "secondSQLiteMapped",
+        "kernelShareMode": 4,
+        "allowed": true,
+        "sameThreeDescriptorRoles": true,
+        "originalMapBytes": 32768,
+        "vfsMappingGeneration": 2
+      }
+    ]
+  },
+  "queue": {
+    "cases": 9,
+    "CABIRequests": 61,
+    "transactionChecks": 148,
+    "read": 52,
+    "write": 96,
+    "actualZeroByteWALChecks": 73,
+    "phases": {
+      "read": 52,
+      "write": 51,
+      "prepare": 10,
+      "link": 13,
+      "ack": 19,
+      "rename": 3
+    },
+    "expectedRejections": {
+      "read": 1,
+      "link": 3,
+      "rename": 1,
+      "prepare": 1,
+      "ack": 1
+    },
+    "liveNameSubstitutions": 6,
+    "everySubstitutionKeptOriginalKernelSHMWriter": true,
+    "unlockedMainOrSHMSubstitutes": 3,
+    "originalTicketInodeDeliveries": 9,
+    "JPEG": {
+      "bytes": 47835,
+      "sha256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f"
+    },
+    "casesDetailed": [
+      {
+        "case": "clean-link",
+        "CABIRequests": 6,
+        "deniedPhases": [],
+        "onRejection": null,
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "case": "clean-rename",
+        "CABIRequests": 6,
+        "deniedPhases": [],
+        "onRejection": null,
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "case": "wrong-empty-WAL-pin",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "read"
+        ],
+        "onRejection": "same prepared ticket, one reservation, no final, original stage intact",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ]
+      },
+      {
+        "case": "same-byte-main-name",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "link"
+        ],
+        "onRejection": "same prepared ticket, one reservation, no final, original stage intact",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ],
+        "liveSwap": {
+          "bothSHA256": "8be35ce4b7ea6826f1e2e6d220559f2a7afac477dcd12aa8990928d5cf1df314",
+          "bothBytes": 1101824,
+          "distinctInodes": true,
+          "originalSHMWriterPIDMatchedByIndependentGETLKAndOFD": true,
+          "substituteLockByteIndependentlyUnlocked": 1073741826,
+          "originalNamesRestoredBeforeSQLiteUnwind": true
+        }
+      },
+      {
+        "case": "same-byte-WAL-name",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "link"
+        ],
+        "onRejection": "same prepared ticket, one reservation, no final, original stage intact",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ],
+        "liveSwap": {
+          "bothSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bothBytes": 0,
+          "distinctInodes": true,
+          "originalSHMWriterPIDMatchedByIndependentGETLKAndOFD": true,
+          "substituteLockByteIndependentlyUnlocked": null,
+          "originalNamesRestoredBeforeSQLiteUnwind": true
+        }
+      },
+      {
+        "case": "same-byte-SHM-name",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "link"
+        ],
+        "onRejection": "same prepared ticket, one reservation, no final, original stage intact",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ],
+        "liveSwap": {
+          "bothSHA256": "49a2dc19fefbd2fff6ad60fef13b0d065c9206fe5b7759625a8afb576bc8d2c9",
+          "bothBytes": 32768,
+          "distinctInodes": true,
+          "originalSHMWriterPIDMatchedByIndependentGETLKAndOFD": true,
+          "substituteLockByteIndependentlyUnlocked": 120,
+          "originalNamesRestoredBeforeSQLiteUnwind": true
+        }
+      },
+      {
+        "case": "rename-fence",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "rename"
+        ],
+        "onRejection": "same prepared ticket, one reservation, no final, original stage intact",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ],
+        "liveSwap": {
+          "bothSHA256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bothBytes": 0,
+          "distinctInodes": true,
+          "originalSHMWriterPIDMatchedByIndependentGETLKAndOFD": true,
+          "substituteLockByteIndependentlyUnlocked": null,
+          "originalNamesRestoredBeforeSQLiteUnwind": true
+        }
+      },
+      {
+        "case": "denied-before-prepare",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "prepare"
+        ],
+        "onRejection": "running, no ticket, zero reservations, no final, original stage intact",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ],
+        "liveSwap": {
+          "bothSHA256": "6956a90a6716daaf7dfe76c3a5d5d10d09c0172eae246b3631ae1791d3c5682a",
+          "bothBytes": 1149512,
+          "distinctInodes": true,
+          "originalSHMWriterPIDMatchedByIndependentGETLKAndOFD": true,
+          "substituteLockByteIndependentlyUnlocked": null,
+          "originalNamesRestoredBeforeSQLiteUnwind": true
+        }
+      },
+      {
+        "case": "after-publish-bad-ACK",
+        "CABIRequests": 7,
+        "deniedPhases": [
+          "ack"
+        ],
+        "onRejection": "same prepared ticket, one reservation, unchanged final",
+        "repeatedACKAndOriginalFinal": true,
+        "quickCheckForeignKeyErrorsReservations": [
+          "ok",
+          "0",
+          "0"
+        ],
+        "liveSwap": {
+          "bothSHA256": "2f2a0ad2b217d8dcb4e407ad2e519a004b8cbf670cdc7548a51d6328c1e34741",
+          "bothBytes": 32768,
+          "distinctInodes": true,
+          "originalSHMWriterPIDMatchedByIndependentGETLKAndOFD": true,
+          "substituteLockByteIndependentlyUnlocked": 120,
+          "originalNamesRestoredBeforeSQLiteUnwind": true
+        }
+      }
+    ]
+  },
+  "boundary": [
+    "Two separate macOS processes, one local mounted APFS filesystem, one controlled service-owned test directory with previously acquired, retained main/WAL/SHM handles and a live Apple keeper. No sqlite3 pointer crossed implementations.",
+    "Only the pinned experimental 3.53.2 build exports the FILESTAT SQL function used here. macOS production continues to use system SQLite. For the renamed fallback only the first link's EPERM was forced; the subsequent RENAME_EXCL syscall was real.",
+    "An independent MAP_SHARED/PROT_READ mapping of the original made this kernel report share mode 4; an equally sized identical-byte SHM replica did not. A single naturally mapped SQLite writer still had its original locks and vnode identity but mode 2, so the strict guard declined it.",
+    "fcntl/SQLite locking does not exclude later out-of-band rename in an externally writable directory. This matrix does not qualify arbitrary network volumes, security-scoped/bookmark transfer, App Sandbox/XPC packaging, first legitimate attachment creation/rebuild, checkpoint after process death, actual remount/power loss, or throughput."
+  ]
+}

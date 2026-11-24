@@ -1,0 +1,267 @@
+{
+  "aggregate": {
+    "originalFullResolutionRestoreComponentsComparedInScratch": 879869952,
+    "productionDisplayBytesCompared": 184320000,
+    "productionDisplayMismatches": 0,
+    "productionFullPlaneMismatches": 0,
+    "productionHalfFloatComponentsCompared": 659902464,
+    "totalFrozenNormalSettledFrames": 16
+  },
+  "artifacts": {
+    "fullPerformanceAndProductionWitnesses": {
+      "path": "output/035-development/dehaze-fit-w/product-01/reviewed.json",
+      "sha256": "ee8b2f8f930f76bad4dc32d67c349c75be4767be59bec850a666e78a60240708"
+    },
+    "prototypeSourceManifest": {
+      "path": "output/035-development/dehaze-fit-w/source-shas.json",
+      "sha256": "4fcdc3f9fd2e1731d3413b72bf88d3b6fadff6ea74cc40fab5ed249334c9cf45"
+    }
+  },
+  "build": {
+    "appSHA256": "c8df986c3daaad5de4afea9b321f5cb381fb01a226a85c15f8df06fa7430ab8c",
+    "binaryManifest": {
+      "path": "output/035-development/candidate-batch25-banded-native-fit/binaries.sha256",
+      "sha256": "c7225d10d1d506a6d5d41926f4511e561cf69e91bf80cd07ca04dede1305334f"
+    },
+    "fullPlaneAndFaultDriver": {
+      "path": "output/035-development/dehaze-fit-w/product-bin/probe",
+      "sha256": "6cb078a7dcbc288d52f071faba02be8a652dda50607003a09a3821b6846defe9"
+    },
+    "head": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+    "profileBinary": {
+      "path": "output/035-development/dehaze-fit-w/normal-bin/probe",
+      "sha256": "85f38bc3f8a0a81c13c195bb1ba84a3c2592d8fad19db4687de59a0402cff148"
+    },
+    "seal": "candidate-batch25-banded-native-fit",
+    "sourceManifest": {
+      "path": "output/035-development/candidate-batch25-banded-native-fit/source-files.sha256",
+      "sha256": "1aaf7b6fe7cff6fa9fa7b081a126e892f25e54b23996a6aae79fe341bef60463"
+    }
+  },
+  "cases": {
+    "primary": {
+      "cancelledSubmittedBandNumber": 8,
+      "faultActions": [
+        "foreignFinal",
+        "fullSharedBudget",
+        "cancelAfterCommit8",
+        "retry",
+        "afterJoinedFIT",
+        "retireGuideAfterCommit8",
+        "retry",
+        "loseFDafterCommit8"
+      ],
+      "faults": {
+        "path": "output/035-development/dehaze-fit-w/product-01/fault-primary.json",
+        "sha256": "a186c8ead7005a101c466fc349ab05af8f2dba9b842c382dcbc0059e33160663"
+      },
+      "nativeSize": [
+        9504,
+        6336
+      ],
+      "originalHalfAndDisplayReceipt": {
+        "path": "output/035-development/dehaze-fit-w/run-01/primary.json",
+        "sha256": "aa837ed3af06f8173be95364457a4adc7b6d22f6823c9acc74880e7b994e89fb"
+      },
+      "productionChargeBytes": 280707072,
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "rejectedVariants": [
+        {
+          "explicitFourTapDifferentDisplayPixels": 3,
+          "explicitFourTapDifferentHalfComponents": 11302037,
+          "safeMathDifferentDisplayPixels": 217,
+          "state": 0
+        },
+        {
+          "explicitFourTapDifferentDisplayPixels": 7,
+          "explicitFourTapDifferentHalfComponents": 11301483,
+          "safeMathDifferentDisplayPixels": 233,
+          "state": 1
+        }
+      ],
+      "retiredBeforePublication": true,
+      "returnedBudgetAfterEveryFaultBytes": 536870912,
+      "sixCompleteHalfAndDisplayComparisons": {
+        "path": "output/035-development/dehaze-fit-w/product-01/product-primary.json",
+        "sha256": "024489694dd079bf14cb826ad2346c05ddeb155d0addb14935adcbcf73760d7d"
+      },
+      "timing": {
+        "A": {
+          "maximumProcessPhysicalFootprintBytes": 3403467056,
+          "medianColdWarmMS": [
+            1039.2900625,
+            154.69
+          ],
+          "sampleColdWarmMS": [
+            [
+              1591.298,
+              157.657
+            ],
+            [
+              487.282,
+              151.723
+            ]
+          ],
+          "successStages": 0
+        },
+        "B": {
+          "maximumProcessPhysicalFootprintBytes": 3394111648,
+          "medianColdWarmMS": [
+            378.535354,
+            38.868354499999995
+          ],
+          "sampleColdWarmMS": [
+            [
+              375.209,
+              36.947
+            ],
+            [
+              381.862,
+              40.79
+            ]
+          ],
+          "successStages": 4
+        }
+      },
+      "verifiedRowsBeforeFailure": 1792
+    },
+    "secondary": {
+      "cancelledSubmittedBandNumber": 8,
+      "faultActions": [
+        "foreignFinal",
+        "fullSharedBudget",
+        "cancelAfterCommit8",
+        "retry",
+        "afterJoinedFIT",
+        "retireGuideAfterCommit8",
+        "retry",
+        "loseFDafterCommit8"
+      ],
+      "faults": {
+        "path": "output/035-development/dehaze-fit-w/product-01/fault-secondary.json",
+        "sha256": "9224c4d191ce8c3421cc61b7afed8fec7697f4318b3d631edc7bf5e3cc02d840"
+      },
+      "nativeSize": [
+        8640,
+        5760
+      ],
+      "originalHalfAndDisplayReceipt": {
+        "path": "output/035-development/dehaze-fit-w/run-01/secondary.json",
+        "sha256": "5dac4cbc09ea3219afa1e0a508991fe5c200f55f56553e4f42d10e720dbe8943"
+      },
+      "productionChargeBytes": 234553344,
+      "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "rejectedVariants": [
+        {
+          "explicitFourTapDifferentDisplayPixels": 10,
+          "explicitFourTapDifferentHalfComponents": 9341308,
+          "safeMathDifferentDisplayPixels": 66,
+          "state": 0
+        },
+        {
+          "explicitFourTapDifferentDisplayPixels": 10,
+          "explicitFourTapDifferentHalfComponents": 9345121,
+          "safeMathDifferentDisplayPixels": 73,
+          "state": 1
+        }
+      ],
+      "retiredBeforePublication": true,
+      "returnedBudgetAfterEveryFaultBytes": 536870912,
+      "sixCompleteHalfAndDisplayComparisons": {
+        "path": "output/035-development/dehaze-fit-w/product-01/product-secondary.json",
+        "sha256": "69259f182ed8c10711cf7d04f77727950e6091aaad14b68d3fc6922e193e9979"
+      },
+      "timing": {
+        "A": {
+          "maximumProcessPhysicalFootprintBytes": 2990409840,
+          "medianColdWarmMS": [
+            423.778,
+            130.277896
+          ],
+          "sampleColdWarmMS": [
+            [
+              427.854,
+              134.222
+            ],
+            [
+              419.702,
+              126.333
+            ]
+          ],
+          "successStages": 0
+        },
+        "B": {
+          "maximumProcessPhysicalFootprintBytes": 2918172640,
+          "medianColdWarmMS": [
+            394.6078125,
+            36.1969795
+          ],
+          "sampleColdWarmMS": [
+            [
+              478.163,
+              39.001
+            ],
+            [
+              311.053,
+              33.393
+            ]
+          ],
+          "successStages": 4
+        }
+      },
+      "verifiedRowsBeforeFailure": 1792
+    }
+  },
+  "defaultEnabled": false,
+  "eligibility": {
+    "allThreeEnvironmentSwitches": [
+      "RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION=1",
+      "RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_PROOF=1",
+      "RAWMASTER_QA_NATIVE_DEHAZE_RESTORE_HALF_FIT=1"
+    ],
+    "display": "User-visible final CIImage is the same object returned by the certified restore. Sole caller passes its original 512 MiB uncached working context to the whole 2400x1600 public estimate and final materializer. Estimated overdraw is zero, pixels = 2*N + N/4 + 2*2400*1600, exactly 29 passes at 9504x6336 or 27 at 8640x5760.",
+    "execution": "Each joined command restores a full-width 256-row private RGBA32F band, then filters to the half-size private RGBA32F output with a hardware normalized-linear sampler. Both encoders return exact write counts per threadgroup. No CPU pixels move on the production path. Fast Metal math / fast FP functions are required. The original FIT remainder performs the final scale, sRGB conversion and delivery.",
+    "ownership": "The output and Metal texture share the existing canonical-half 512 MiB process reservation through their last alias. Also reserve headroom for the original CI display target. Unsupported preflight uses stock FIT. After a submitted failure/cancel, join and throw. Never deliver a half with a failed source, guide, provider, or output count.",
+    "restore": "Original digest-locked coverage and restore programs, working linear sRGB RGBAf, physically bounded |RGB| <= 1024, |R32 scalar| <= 2, F32 airlight 0.25–16, positive finite strength <=100. Production rechecks physical half and scalar bounds inside its Metal restore.",
+    "source": "Current signed RAW capture, original EXIF 1, sole Apple M4 Max, FlashRaw 0.3.1 native bilinear private unit-alpha RGBA16F, unchanged neutral prefix. Restore's exact source and compact R32F provider/airlight must both match their live pins."
+  },
+  "host": {
+    "gpu": "Apple M4 Max",
+    "os": "macOS 27.0.1 (26A434)",
+    "sdk": "macOS 27.0, Xcode 27.0 (27A266a)",
+    "unifiedMemoryBytes": 137438953472
+  },
+  "method": {
+    "floatWitness": "An independent production driver compares six strengths 0.001,15,37.5,45,99.999,100 on each RAW with a one-task, uncropped stock linear RGBA32F half and the complete stock RGBA8 output. The public texture accessor returned nil on tagged CIImage, so the production driver consumed the returned half through a linear same-format SDK replay. The earlier controlled kernel experiment also blitted the private output directly.",
+    "scopeOfStatistics": "For these two samples per arm report medians and every timing. These results do not establish a population P95.",
+    "timing": "Eight fresh ordinary preview-service processes in counterbalanced order. Primary ABBA, secondary BAAB. Every process settled strengths 15 then 45. A and B use the same sealed object and V source-bound finite proof. Only B enables W2. Two whole-render samples per arm per state."
+  },
+  "platformMatrix": {
+    "headlessMacLinuxRust": "No dehaze restore or FIT ABI entry point is added in this phase. The qualified operation consumes the Apple Core Image graph and a private provider under the desktop request.",
+    "imageCoreABI": 1,
+    "macOSArm64Editor": "Implemented for candidate opt-in with one certified device, two native grids and the stock sRGB8 2400x1600 settled sink.",
+    "macOSMetalSurfaceABI": 1,
+    "sameSealImageRuntimeSHA256": "e57a86189e01e5694f04f1f47e94b17729fb08fc18a41a5463cb359f3572f780"
+  },
+  "primaryColdOutlier": {
+    "coldFirstAms": 1591.297875,
+    "coldLastAms": 487.28225,
+    "observation": "The first A full develop/guide/display stages were approximately 1333.1/636.4/145.8 ms, while the last A measured 237.5/232.2/151.0 ms. The first process is included; the two cold primary samples do not isolate the cold FIT benefit.",
+    "sourceReceipts": [
+      {
+        "path": "output/035-development/dehaze-fit-w/product-01/profile-0-primary-A.json",
+        "sha256": "a7033c346362315fd043cc4b72cc80c19a5b23a267d8051748b3cdbecc54d020"
+      },
+      {
+        "path": "output/035-development/dehaze-fit-w/product-01/profile-3-primary-A.json",
+        "sha256": "aee216b20ec0956e830f1228fb13e6739896770a6459289fba3527b9c4d99cf5"
+      }
+    ]
+  },
+  "priorRangeProof": {
+    "path": "output/035-development/dehaze-restore-proof-v/evidence.json",
+    "sha256": "7841485d74a6ab9d6f0d4947d9263b17f54c73dd3dec62bbf855d12c6357e0d1"
+  },
+  "schemaVersion": 1,
+  "scope": "Spec 035 Batch 25. Qualified native positive dehaze FIT on the macOS editor."
+}

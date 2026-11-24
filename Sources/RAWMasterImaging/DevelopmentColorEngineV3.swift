@@ -132,18 +132,28 @@ enum DevelopmentColorEngineV3 {
     return result
   }
   static func validateFinite(_ image: CIImage, context: CIContext = context,
+                             cacheClearCadence: DevelopmentCheckedMaximumV3.CacheClearCadence = .everyTile,
+                             region: CGRect? = nil,
+                             scalarBatching: DevelopmentCheckedMaximumV3.ScalarBatching = .disabled,
                              checkCancellation: (() throws -> Void)? = nil) throws {
-    let telemetry = ImagePerformanceTelemetry.shared.begin(operation: "显影有限值检查", stage: "全域归约", queue: "Metal GPU", boundary: .gpuCompletion)
+    let scan = region ?? image.extent
+    if region != nil {
+      guard scalarBatching != .retainForRequest, !scan.isNull, !scan.isInfinite, scan == scan.integral, image.extent.contains(scan),
+            scan.width >= 1, scan.height >= 1 else { throw DevelopmentV3Error.invalidGraph }
+    }
+    let telemetry = ImagePerformanceTelemetry.shared.begin(operation: "显影有限值检查",
+      stage: region == nil ? "全域归约" : "原生局部归约", queue: "Metal GPU", boundary: .gpuCompletion)
     var outcome = ImagePerformanceOutcome.failed
     defer { ImagePerformanceTelemetry.shared.end(telemetry, outcome: outcome,
-      pixelCount: outcome == .succeeded ? Int(image.extent.width * image.extent.height) : 0) }
+      pixelCount: outcome == .succeeded ? Int(scan.width * scan.height) : 0) }
     let mask=try DevelopmentColorEngineV2.finiteMaskForV3(image)
-    if DevelopmentCanonicalFiniteGPU.residentPhoto,
-       try DevelopmentCanonicalFiniteGPU.check(mask,domain:image.extent,context:context,cancellation:checkCancellation) {
+    if let workingBudget = DevelopmentCanonicalFiniteGPU.residentPhotoWorkingBudget,
+       try DevelopmentCanonicalFiniteGPU.check(mask,domain:image.extent,context:context,workingBudget:workingBudget,region:region,cancellation:checkCancellation) {
       outcome = .succeeded
       return
     }
-    let maximum=try DevelopmentCheckedMaximumV3.maximum(mask,domain:image.extent,context:context,checkCancellation:checkCancellation)
+    let maximum=try DevelopmentCheckedMaximumV3.maximum(mask,domain:scan,context:context,cacheClearCadence:cacheClearCadence,
+      scalarBatching:scalarBatching,checkCancellation:checkCancellation)
     guard maximum.x < 0.5 else { throw DevelopmentError.invalidEncoding }
     outcome = .succeeded
   }

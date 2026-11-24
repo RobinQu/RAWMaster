@@ -256,11 +256,7 @@ pub(super) fn restore(request: &Value) -> Result<Value> {
                 AND EXISTS(SELECT 1 FROM lc_scopes s WHERE s.file_id=lc_replicas.file_id AND s.content_id=lc_replicas.content_id)",[&root_id])?;
         }
         set_editing_root(&tx, &dest)?;
-        crate::managed_files::detach_foreign(&tx, "restored-package")?;
-        // An independently opened restore can coexist with the original library. Its future
-        // writes get a new local writer ID; all archived operation/receipt identities stay intact.
-        tx.execute("INSERT INTO metadata(key,value) VALUES('deviceID',?1) ON CONFLICT(key) DO UPDATE SET value=excluded.value",
-            [Uuid::new_v4().to_string()])?;
+        super::detach_restored_writer(&tx)?;
         tx.commit()?;
         db.execute_batch("PRAGMA wal_checkpoint(TRUNCATE); PRAGMA journal_mode=DELETE;")?;
     }

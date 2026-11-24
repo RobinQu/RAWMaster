@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-23",
+  "command": "RAWMASTER_UI_DELIVERY_EVIDENCE=specs/032-export-workspace/assets python3 scripts/check-ui-prototype.py",
+  "exitCode": 0,
+  "workbenchPassed": 31,
+  "newDeliveryScenarios": [
+    "成片中断前冻结字面名称、版本与发布票据",
+    "重开认领已发布文件、焦点及逐张离线原因",
+    "接回目标、单项写入重试与原片找回",
+    "同名同内容的外来文件保留、取消区分中断",
+    "解除占位后仍需明确继续",
+    "取消回执重开、已核验文件与键盘返回",
+    "Escape 返回任务入口、重名策略保留完整字面基名",
+    "制作任务保留原批、资料库可先换片",
+    "工作台重开原批交付、保留改选后的照片"
+  ],
+  "logSHA256": "efae7357080da9cb5f8ec65e2647f086001356aea35d5515f8bcbcb8ee643cf8",
+  "screenshots": [
+    {
+      "path": "assets/continuation-offline-light.png",
+      "sha256": "b7fe82174a87e4806e7432e52a172b2120e97a29c0eb905d34d6d038f6178d57"
+    },
+    {
+      "path": "assets/continuation-conflict-dark.png",
+      "sha256": "aba3a946450ff68ea294a3f1266d1260afc2a14c9eb4b4703afa08543c519d90"
+    }
+  ]
+}

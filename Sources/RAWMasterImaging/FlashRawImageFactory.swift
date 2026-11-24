@@ -57,6 +57,24 @@ public enum DevelopmentRAWSourcePolicy {
 }
 
 enum FlashRawImageFactory {
+  struct NativeImage {
+    let image: CIImage
+    fileprivate let textureForFiniteCheck: MTLTexture?
+
+    /// Read-only use by the native guide while the exact CIImage and its pool pin remain live.
+    func withTextureForErosion<T>(for output: CIImage, _ body: (MTLTexture) throws -> T?) rethrows -> T? {
+      guard output === image, let textureForFiniteCheck else { return nil }
+      return try body(textureForFiniteCheck)
+    }
+
+    var canCheckUploadedTexture: Bool { textureForFiniteCheck != nil }
+
+    func checkUploadedTexture(cancellation: () throws -> Void) throws -> Bool {
+      guard let textureForFiniteCheck else { return false }
+      return try FlashRawNativeFiniteCheck.check(textureForFiniteCheck, cancellation: cancellation)
+    }
+  }
+
   static func applyInputAdjustments(_ p: DevelopmentAdjustmentsV3, to image: CIImage,
                                     asShotWhiteBalance: DevelopmentAsShotWhiteBalance?, proxyScale: Double = 1) throws -> CIImage {
     let reduced = p.rawDecoder == .flashRaw031 || p.rawDetails != nil || p.aiDenoise != nil
@@ -66,6 +84,17 @@ enum FlashRawImageFactory {
 
   static func linearImage(capture: URL, rawDetails: DevelopmentRawDetails? = nil,
                           analysis: (source: DevelopmentLocalEditSourceBinding, maximumLongEdge: Int)? = nil) throws -> CIImage {
+    try makeLinearImage(capture: capture, rawDetails: rawDetails, analysis: analysis, retainNativeTexture: false).image
+  }
+
+  static func nativePreviewImage(capture: URL, rawDetails: DevelopmentRawDetails?,
+                                 retainNativeTexture: Bool) throws -> NativeImage {
+    try makeLinearImage(capture: capture, rawDetails: rawDetails, analysis: nil, retainNativeTexture: retainNativeTexture)
+  }
+
+  private static func makeLinearImage(capture: URL, rawDetails: DevelopmentRawDetails?,
+                                      analysis: (source: DevelopmentLocalEditSourceBinding, maximumLongEdge: Int)?,
+                                      retainNativeTexture: Bool) throws -> NativeImage {
     let source = try FlashRawSource.open(capture)
     guard source.decoderVersion == "0.3.1" else { throw FlashRawError.unavailable("FlashRaw 0.3.1 is required by this recipe") }
     let frame = try source.decode(output: .linearRGBF16, backend: .gpu, demosaic: source.demosaic(for: rawDetails))
@@ -96,10 +125,17 @@ enum FlashRawImageFactory {
     descriptor.storageMode = .private
     descriptor.usage = [.shaderRead, .shaderWrite]
     guard let texture = device.makeTexture(descriptor: descriptor) else { throw FlashRawError.invalidFrame("cannot allocate full-resolution texture") }
-    try FlashRawMetalConverterCache.convert(frame, into: texture, outputSize: .init(width: width, height: height))
+    let banded = try FlashRawBandedUpload.sourceCapture == capture && analysis == nil && rawDetails == nil
+      && FlashRawBandedUpload.convertIfEligible(frame, source: source, into: texture, device: device)
+    if !banded {
+      try FlashRawMetalConverterCache.convert(frame, into: texture, outputSize: .init(width: width, height: height))
+    }
     guard let image = CIImage(mtlTexture: texture, options: [.colorSpace: DevelopmentColorEngineV3.linearSRGB]) else {
       throw FlashRawError.invalidFrame("cannot create linear CIImage")
     }
-    return image.transformed(by: CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: CGFloat(height)))
+    let oriented = image.transformed(by: CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: CGFloat(height)))
+    let canCheck = retainNativeTexture && !banded && rawDetails == nil && analysis == nil && info.orientation == 1
+      && info.originX == 0 && info.originY == 0 && info.width == width && info.height == height
+    return NativeImage(image: oriented, textureForFiniteCheck: canCheck ? texture : nil)
   }
 }

@@ -1,0 +1,659 @@
+{
+  "cases": {
+    "archived-gray": {
+      "intent": "gray-sharpen-mask",
+      "observed": {
+        "primary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "f32SHA256": "1100d6ae6cd4e3f416ffc34fc54fe8600135e98f7b4d5b5830ed1325c3ad0249",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 15054336,
+          "joinedCandidateBands": 25,
+          "native": [
+            9504,
+            6336
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4",
+            "f32SHA256": "1100d6ae6cd4e3f416ffc34fc54fe8600135e98f7b4d5b5830ed1325c3ad0249",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 95148,
+            "passes": 21,
+            "pixels": 203576592
+          },
+          "planMatches": true,
+          "stockDisplaySHA256": "7db2558316893ef90492352fa9e662f8a1cbab3279fc1cc433eda6c09f0697f4"
+        },
+        "secondary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91",
+            "f32SHA256": "e49f288e161080e08eff49ae4f37332f50e595976556dc099bfd99c62ac833c2",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 12441600,
+          "joinedCandidateBands": 23,
+          "native": [
+            8640,
+            5760
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91",
+            "f32SHA256": "e49f288e161080e08eff49ae4f37332f50e595976556dc099bfd99c62ac833c2",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 86508,
+            "passes": 19,
+            "pixels": 169593744
+          },
+          "planMatches": true,
+          "stockDisplaySHA256": "217eeeb67fd2265954110a83f333d01af5839e28a53971197431e697c083ef91"
+        }
+      },
+      "sharpen": {
+        "detail": 0.25,
+        "edges": 0.22,
+        "enabled": true,
+        "falloff": 0.69,
+        "intensity": 0.75,
+        "masking": 0.6,
+        "radius": 1,
+        "visualiseMasking": true
+      }
+    },
+    "archived-rgb": {
+      "intent": "rgb-sharpen-negative-control",
+      "observed": {
+        "primary": {
+          "native": [
+            9504,
+            6336
+          ],
+          "plan": {
+            "overdraw": 95148,
+            "passes": 21,
+            "pixels": 203576592
+          },
+          "planMatches": true,
+          "stockDisplaySHA256": "50e48d24f42dad14aa751d1be16c117d4fe98a9e5963e707f233eab2f1a74ffd"
+        },
+        "secondary": {
+          "native": [
+            8640,
+            5760
+          ],
+          "plan": {
+            "overdraw": 86508,
+            "passes": 19,
+            "pixels": 169593744
+          },
+          "planMatches": true,
+          "stockDisplaySHA256": "c5615ab767770cd9f12651c679b8663b26a16e644c0775d8ef38a1f1ae0136c7"
+        }
+      },
+      "sharpen": {
+        "detail": 0.25,
+        "edges": 0.22,
+        "enabled": true,
+        "falloff": 0.69,
+        "intensity": 0.75,
+        "masking": 0.6,
+        "radius": 1,
+        "visualiseMasking": false
+      }
+    },
+    "legacy-falloff-radius": {
+      "intent": "gray-sharpen-mask",
+      "observed": {
+        "primary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "ebf27b2491a6571eb61b0873a81f96d15ef117bbb9a9660902fff30bde5a7d95",
+            "f32SHA256": "e00fcfbed084d54596e84fc8420f56f0e57e85b200c6222a37a22d37dac40a71",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 15054336,
+          "joinedCandidateBands": 25,
+          "native": [
+            9504,
+            6336
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "ebf27b2491a6571eb61b0873a81f96d15ef117bbb9a9660902fff30bde5a7d95",
+            "f32SHA256": "e00fcfbed084d54596e84fc8420f56f0e57e85b200c6222a37a22d37dac40a71",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 158700,
+            "passes": 21,
+            "pixels": 203703568
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "ebf27b2491a6571eb61b0873a81f96d15ef117bbb9a9660902fff30bde5a7d95"
+        },
+        "secondary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "d8c32feff5c3b6cedcbda9ff5bb790cc9c0695f5ebc97313a3ffbe29e82468e3",
+            "f32SHA256": "927273fa09fd83520986010fa710e54470213ec1c2116b08a4ab14bf574c50cd",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 12441600,
+          "joinedCandidateBands": 23,
+          "native": [
+            8640,
+            5760
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "d8c32feff5c3b6cedcbda9ff5bb790cc9c0695f5ebc97313a3ffbe29e82468e3",
+            "f32SHA256": "927273fa09fd83520986010fa710e54470213ec1c2116b08a4ab14bf574c50cd",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 144300,
+            "passes": 19,
+            "pixels": 169709200
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "d8c32feff5c3b6cedcbda9ff5bb790cc9c0695f5ebc97313a3ffbe29e82468e3"
+        }
+      },
+      "sharpen": {
+        "edges": 0,
+        "enabled": true,
+        "falloff": 1,
+        "intensity": 1,
+        "visualiseMasking": true
+      }
+    },
+    "maximum": {
+      "intent": "gray-sharpen-mask",
+      "observed": {
+        "primary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "c31684b52d4eb52cfd8157a34bbb66904fa2f63d909b228a45e8c616509aa751",
+            "f32SHA256": "9201a4c2216be7ca5225f1e72870ab260d98313c4198a1a926e9b87fc3e0db8d",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [
+            [
+              405,
+              383,
+              1031823663,
+              1031805144
+            ],
+            [
+              1636,
+              383,
+              1027259249,
+              1027279780
+            ]
+          ],
+          "halfChangedComponents": 63,
+          "halfChangedPixels": 21,
+          "halfPixelsCompared": 15054336,
+          "joinedCandidateBands": 25,
+          "native": [
+            9504,
+            6336
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "c31684b52d4eb52cfd8157a34bbb66904fa2f63d909b228a45e8c616509aa751",
+            "f32SHA256": "3a49bb006003f781cfe78fe71672f4dc62be4c64f2ce64b3ef3ef89906fff5a0",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 286092,
+            "passes": 21,
+            "pixels": 203957904
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "c31684b52d4eb52cfd8157a34bbb66904fa2f63d909b228a45e8c616509aa751"
+        },
+        "secondary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "12d4c4deafe720c6eb294f6afe5560ffd920a715a515679e2dc36119501cfaae",
+            "f32SHA256": "55db758c126a2fa3c3e586e0df6cb62708561a384b28489ea51f5395d67cdf9b",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [
+            [
+              3007,
+              127,
+              1057221529,
+              1057220505
+            ],
+            [
+              1785,
+              256,
+              901378937,
+              899146712
+            ]
+          ],
+          "halfChangedComponents": 117,
+          "halfChangedPixels": 39,
+          "halfPixelsCompared": 12441600,
+          "joinedCandidateBands": 23,
+          "native": [
+            8640,
+            5760
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "12d4c4deafe720c6eb294f6afe5560ffd920a715a515679e2dc36119501cfaae",
+            "f32SHA256": "4ec9b9499a6f240ab3133347853785acb00964b8e3a637c896078162b5cc827a",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 260172,
+            "passes": 19,
+            "pixels": 169940496
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "12d4c4deafe720c6eb294f6afe5560ffd920a715a515679e2dc36119501cfaae"
+        }
+      },
+      "sharpen": {
+        "detail": 1,
+        "edges": 1,
+        "enabled": true,
+        "falloff": 1,
+        "intensity": 1,
+        "masking": 1,
+        "radius": 3,
+        "visualiseMasking": true
+      }
+    },
+    "minimum": {
+      "intent": "gray-sharpen-mask",
+      "observed": {
+        "primary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "5fdff80206817e035363b4b61bf8da0ed51a62d1c674e67e78e6fbd6cbb17ba2",
+            "f32SHA256": "fe285ea15c4a69dedf2526c402d18e38286cb0ab042a8130e990315bac89917b",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 15054336,
+          "joinedCandidateBands": 25,
+          "native": [
+            9504,
+            6336
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "5fdff80206817e035363b4b61bf8da0ed51a62d1c674e67e78e6fbd6cbb17ba2",
+            "f32SHA256": "fe285ea15c4a69dedf2526c402d18e38286cb0ab042a8130e990315bac89917b",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 63408,
+            "passes": 21,
+            "pixels": 203513152
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "5fdff80206817e035363b4b61bf8da0ed51a62d1c674e67e78e6fbd6cbb17ba2"
+        },
+        "secondary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "9c9c3e65e7d17adb9dd87129c8c39cab0d80db35b6016ff697d747f9ed42cff3",
+            "f32SHA256": "82d5fb7bd03158683d8f37e9806a0363383cac39e9f1068e6d3a759f2a534bf0",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 12441600,
+          "joinedCandidateBands": 23,
+          "native": [
+            8640,
+            5760
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "9c9c3e65e7d17adb9dd87129c8c39cab0d80db35b6016ff697d747f9ed42cff3",
+            "f32SHA256": "82d5fb7bd03158683d8f37e9806a0363383cac39e9f1068e6d3a759f2a534bf0",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 57648,
+            "passes": 19,
+            "pixels": 169536064
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "9c9c3e65e7d17adb9dd87129c8c39cab0d80db35b6016ff697d747f9ed42cff3"
+        }
+      },
+      "sharpen": {
+        "detail": 0,
+        "edges": 0,
+        "enabled": true,
+        "falloff": 0,
+        "intensity": 0,
+        "masking": 0,
+        "radius": 0.5,
+        "visualiseMasking": true
+      }
+    },
+    "sparse-edges": {
+      "intent": "gray-sharpen-mask",
+      "observed": {
+        "primary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 692,
+            "displayMaxCodeDelta": 1,
+            "displaySHA256": "18b82d5c1df0b23eeffb96fe4d88d51d0a5c5e6b9565737dfafbd5b80b6755a3",
+            "f32SHA256": "839a4f2ac30054549fa4cb0d98999eb09ef91d6bb1ee679b1bacfc08a3195769",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [
+            [
+              4098,
+              0,
+              1005744817,
+              1005800805
+            ],
+            [
+              4110,
+              0,
+              961721565,
+              962295128
+            ]
+          ],
+          "halfChangedComponents": 230175,
+          "halfChangedPixels": 76725,
+          "halfPixelsCompared": 15054336,
+          "joinedCandidateBands": 25,
+          "native": [
+            9504,
+            6336
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "80e257bec2f6e2ab3e5391b0e1fcc900e334a5126ade8b2ab10bf840129da340",
+            "f32SHA256": "c6d80f9958b09e8122168e4e88004fdcffcf862096eac3cd608f4ba223ee1717",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 190512,
+            "passes": 21,
+            "pixels": 203767104
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "80e257bec2f6e2ab3e5391b0e1fcc900e334a5126ade8b2ab10bf840129da340"
+        },
+        "secondary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 300,
+            "displayMaxCodeDelta": 1,
+            "displaySHA256": "3919adae57a55452d30465878f5de0fc2e37832ca23adc5b6a88d0a653521ebf",
+            "f32SHA256": "2ec9d870161cb725d108a3991e74ba8769e4f4f99450331bc9ae757f36e0cf2b",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [
+            [
+              4096,
+              0,
+              1025004797,
+              1025002763
+            ],
+            [
+              4101,
+              0,
+              1020036210,
+              1020034937
+            ]
+          ],
+          "halfChangedComponents": 100233,
+          "halfChangedPixels": 33411,
+          "halfPixelsCompared": 12441600,
+          "joinedCandidateBands": 23,
+          "native": [
+            8640,
+            5760
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 0,
+            "displayMaxCodeDelta": 0,
+            "displaySHA256": "9da716ac4a06e4f8e8d126c82ab1087aee5be43b807772aca960c16e85a8e0ef",
+            "f32SHA256": "65b0e5fc2cd4f8a88b9c86fde35f47533ce2ce42002348c691e6d377a63baa5e",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 173232,
+            "passes": 19,
+            "pixels": 169766976
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "9da716ac4a06e4f8e8d126c82ab1087aee5be43b807772aca960c16e85a8e0ef"
+        }
+      },
+      "sharpen": {
+        "detail": 0.85,
+        "edges": 1,
+        "enabled": true,
+        "falloff": 0,
+        "intensity": 0,
+        "masking": 0.95,
+        "radius": 1.75,
+        "visualiseMasking": true
+      }
+    },
+    "synthetic-hdr-gray": {
+      "intent": "gray-sharpen-mask",
+      "observed": {
+        "primary": {
+          "candidate": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 975552,
+            "displayMaxCodeDelta": 202,
+            "displaySHA256": "595b2d8145125a169e5b304626a62ba2ba796741fa43a1e63463e0a1af4dbb4e",
+            "f32SHA256": "764b3871e006b177fed15bd265e89e55ca41346e87d5791c2cc42e209c9c0cac",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "firstNativeDifferences": [],
+          "halfChangedComponents": 0,
+          "halfChangedPixels": 0,
+          "halfPixelsCompared": 4335000,
+          "joinedCandidateBands": 14,
+          "native": [
+            5100,
+            3400
+          ],
+          "natural": {
+            "displayChangedAlpha": 0,
+            "displayChangedPixels": 975552,
+            "displayMaxCodeDelta": 202,
+            "displaySHA256": "595b2d8145125a169e5b304626a62ba2ba796741fa43a1e63463e0a1af4dbb4e",
+            "f32SHA256": "764b3871e006b177fed15bd265e89e55ca41346e87d5791c2cc42e209c9c0cac",
+            "nonGrayOutOfUnitRangeOrNonOpaqueHalfPixels": 0
+          },
+          "plan": {
+            "overdraw": 20436,
+            "passes": 9,
+            "pixels": 59771472
+          },
+          "planMatches": false,
+          "stockDisplaySHA256": "ae1225f53438113bc8e6a810ba10b5092d0f5ec05da473cf5cb7f3b86c90e7f7"
+        }
+      },
+      "sharpen": {
+        "detail": 0.25,
+        "edges": 0.22,
+        "enabled": true,
+        "falloff": 0.69,
+        "intensity": 0.75,
+        "masking": 0.6,
+        "radius": 1,
+        "visualiseMasking": true
+      }
+    }
+  },
+  "diagnosticExecutableSHA256": "26462f9104a538ce09353c0fd0e3afec5030021d5ffde82d3d1c1d69ace25e16",
+  "disposition": "Leave the existing full-domain finite validation and stock Core Image FIT in production.",
+  "faults": {
+    "cancelledAfterFirstJoin": true,
+    "faults": [
+      {
+        "at": [
+          0,
+          255
+        ],
+        "fault": "nan-transparent",
+        "halfRejected": true,
+        "stockRejected": true
+      },
+      {
+        "at": [
+          5099,
+          256
+        ],
+        "fault": "positive-inf-blue",
+        "halfRejected": true,
+        "stockRejected": true
+      },
+      {
+        "at": [
+          5099,
+          3399
+        ],
+        "fault": "negative-inf-alpha",
+        "halfRejected": true,
+        "stockRejected": true
+      }
+    ],
+    "freshRetryComplete": true,
+    "missingLastRowRejected": true
+  },
+  "producerSourceSHA256": "c9acf794ac980bfba691dd1d512e96e81645bed7cfce9e74e1acd98c6d495292",
+  "protocol": "P2-gray-sharpening-overlay-native-representation-check-v1",
+  "protocolBoundaries": {
+    "candidate": "Instrumented copy of PreviewCanonicalHalfFIT's production writer, 256-row RGBA32F native bands, exact four-component finite checks, normalized hardware 2x linear sample. Every completed half texel is compared, and the original materializer consumes it.",
+    "floatDifferences": "Counts differing 32-bit component representations, not Hamming bit counts. Coordinates in raw half-texture storage. SHA excludes Metal row padding.",
+    "limits": "One Apple GPU / OS. Additional radius-1 threshold combinations have not been tested. Other plan topologies were challenged deliberately; differences cannot demonstrate failure for the one passing parameter set.",
+    "natural": "One whole-extent scale(0.5) evaluation into an unflipped private RGBA32F texture with the same original CIContext, linear extended sRGB, premultiplied alpha and 512 MiB target. Only the joined output is streamed to disk for comparison.",
+    "plan": "Historical 512 MiB display signature is 19 or 21 planned passes, 10*W+108 overdraw and 3*N+N/4+2*2400*1600+20*W+144 processed pixels. RGB is independently excluded by recipe semantics.",
+    "realEntry": "Unmodified DevelopmentRendererV3.develop with genuine FlashRaw GPU decode and pin, followed by unmodified V3PreviewMaterializer and copyDisplayRGBA8.",
+    "timing": "Correctness workload with two materializations, streamed complete reference storage, comparisons, hashes and public estimates. Peak is process-wide diagnostic footprint. No isolated latency comparison, no ABBA, no claim on speed."
+  },
+  "reason": [
+    "Only one archived gray parameter set per real RAW passes both independent comparisons. Its public plan totals also match the RGB sharpening negative control.",
+    "An explicit radius of 3 preserves the displayed bytes but changes some native half-plane RGB values on both RAWs.",
+    "The radius-1.75 / sparse-edges case changes both native half bits and displayed bytes on both RAWs.",
+    "On independent finite half-float HDR data at 5100x3400, both explicit halfs match bitwise yet both displays differ from the original whole FIT."
+  ],
+  "sources": {
+    "primary": {
+      "archive": "output/035-development/candidate-batch17b-formal/photo-operators-v2.json",
+      "archiveSHA256": "c9817ae8fcf6276d1572060a002f2fcd01be8d76bf239222c7b11eb3e4f05809",
+      "device": "Apple M4 Max",
+      "deviceRegistryID": 4294968440,
+      "os": "Version 27.0.1 (Build 26A434)",
+      "peakDiagnosticBytes": 4212509216,
+      "raw": "acr-benchmark.ARW",
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "receipt": "overlay-primary-full1.json",
+      "receiptSHA256": "a35370f11c5664b8b53f7aa89a0c1e980f41be049301c023663e9090493c5d75"
+    },
+    "secondary": {
+      "archive": "output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+      "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+      "device": "Apple M4 Max",
+      "deviceRegistryID": 4294968440,
+      "os": "Version 27.0.1 (Build 26A434)",
+      "peakDiagnosticBytes": 3416279176,
+      "raw": "02.ARW",
+      "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "receipt": "overlay-secondary-full1.json",
+      "receiptSHA256": "d2e721885b6c0ebb801c194f9196508f63e42b30150a7b510806199225dc7b42"
+    }
+  },
+  "syntheticInput": {
+    "nativeF16": {
+      "joinedPasses": 2,
+      "joinedPixels": 34680000,
+      "plannedOverdraw": 0,
+      "plannedPasses": 2,
+      "plannedPeakMiB": 265,
+      "plannedPixels": 34680000
+    },
+    "originRGBA": [
+      -65504,
+      1,
+      65504,
+      1
+    ],
+    "shape": [
+      5100,
+      3400
+    ],
+    "shapePurpose": "different final band and threshold/edge/HDR structure"
+  },
+  "verification": "python3 output/035-development/detail-tail-study/overlay-verify.py"
+}

@@ -1,0 +1,2844 @@
+{
+  "binarySeal": {
+    "checked": 16,
+    "pathManifest": {
+      "path": "output/035-development/candidate-batch29-cross-backend/binaries.sha256",
+      "sha256": "d7dbd388275f05d7b201bafa7cd0da82b480c8e344c7b5ef27e2727b92b5bb02"
+    }
+  },
+  "buildLog": {
+    "path": "output/035-development/phase-aa/build-combined.log",
+    "sha256": "8fc3c100814ab0cce98faa18c4ee97ad1cb9c3a5b4a21cba3a2a07813c16a32d"
+  },
+  "candidate": "candidate-batch29-cross-backend",
+  "catalogSandboxXPC": {
+    "archive": {
+      "path": "output/035-development/phase-aa/catalog/archive.json",
+      "sha256": "4f29d3081887c2eb68f6637cab0ed0fcb529812b927dd4a7ffdcde226b07fc11"
+    },
+    "delivery": {
+      "bytes": 47835,
+      "checkBeforePublication": {
+        "checkpointRC": 0,
+        "done": 0,
+        "log": 0
+      },
+      "finalInode": 191216030,
+      "independentSystemSQLite": [
+        "ok",
+        "0",
+        "0"
+      ],
+      "originTicketSHA256": "4ae3f8a3692cff29655ed8bff0961e758ddad7d5375c34a52b17c8b5f877cf6b",
+      "originalStageInode": 191216030,
+      "originalTicketRetained": true,
+      "sha256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "twoIdenticalAcknowledgments": true
+    },
+    "physicalAttachments": {
+      "actualZeroByteWAL": 6,
+      "checks": 14,
+      "checksAllowed": 14,
+      "matchingEstablishedReaderLockEach": true,
+      "matchingWriterLockForWrites": true,
+      "naturalSHMMapBytes": [
+        32768
+      ],
+      "threeObjectsSameLiveAuthorizedAndNamedIdentity": true,
+      "writerChecks": 9
+    },
+    "receipt": {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-xpc.json",
+      "sha256": "71547dc864ad609936d908a2a5a3696cf478b7afafa4805d34c42e80109d103b"
+    }
+  },
+  "formalRelease": {
+    "assertionCounts": {
+      "control-comparison": 1,
+      "inspection-comparison": 1,
+      "interactive-comparison": 9,
+      "lightflow-comparison": 2,
+      "photo-operators-v2-comparison": 1
+    },
+    "cameraRaw": {
+      "path": "output/035-development/candidate-batch29-cross-backend/camera-raw-acceptance-with-flux.json",
+      "sha256": "003b4210f8fd73892eb06c05055e90cc82654c2b4efb1681e8c12a2d8584420b"
+    },
+    "cameraRawMeasuredFeatureIDs": 158,
+    "exitCode": 1,
+    "functionalTests": [
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/native-sharpen-and-dehaze.log",
+          "sha256": "c92119392a5846b5b991d5c69b2b5c0db219a508a38abb56407e4c64b5f1de29"
+        },
+        "name": "native-sharpen-and-dehaze",
+        "passed": 37
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/native-film-and-mask.log",
+          "sha256": "e297c9b0d32c8c6b4371dfeecdaea6fdfa026c494b8404f1c7cc744e0945f738"
+        },
+        "name": "native-film-and-mask",
+        "passed": 27
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/native-mask-interaction.log",
+          "sha256": "f1f9c53a2913a65f57b7b2572f1a3f7223d4ffe995a9de0b93300d4de4d790aa"
+        },
+        "name": "native-mask-interaction",
+        "passed": 9
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/native-prompt-providers.log",
+          "sha256": "7569e103366cfa9204c131f862cfeb1f1b8db815d31d5b7b4ddf2dd1ff19e17e"
+        },
+        "name": "native-prompt-providers",
+        "passed": 5
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/adaptive-Sky.log",
+          "sha256": "0aaf0934ab700bfbd7fa3d5a25042d9e268008db59bca3743bf49a7c07201cdb"
+        },
+        "name": "adaptive-Sky",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/adaptive-Subject.log",
+          "sha256": "e90e3cc7e32f8487cada0ba9b837d7c717b4eed92e7ec9e6e55171b9a86454c9"
+        },
+        "name": "adaptive-Subject",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/frozen-tone.log",
+          "sha256": "8f883fa62bb54f01223f883a3d516922c3c48a9d17c45abf0ddae5becd0f4048"
+        },
+        "name": "frozen-tone",
+        "passed": 2
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch29-cross-backend/context-lifecycle.log",
+          "sha256": "6277bdcd3fe4f31d303c73f4bfa1df0419fa7b86ecbeca7a3536a5f953a5b98c"
+        },
+        "name": "context-lifecycle",
+        "passed": 3
+      }
+    ],
+    "measuredPictures": {
+      "path": "output/035-development/candidate-batch29-cross-backend-enabled/photo-operators-v2.json",
+      "sha256": "4977998a47325ac975bb45e6e8a589f51e877b9c067238f5658dcb4d1d780308"
+    },
+    "overFinalP95Ceiling": 6,
+    "passed": false,
+    "realAdaptiveCases": 4,
+    "scores": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 73.81700000000001,
+          "n": 74,
+          "p95Ms": 287.028416
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 4.990042,
+          "n": 74,
+          "p95Ms": 25.841083
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 73.81700000000001,
+          "n": 74,
+          "p95Ms": 287.028416
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "slowest": [
+      {
+        "id": "effects-dehaze",
+        "settledMs": 313.266166,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 298.49925,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 293.850041,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 287.028416,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 271.362375,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 254.650667,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 251.341,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 249.379375,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 240.941,
+        "state": 1
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 239.034833,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 227.268667,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-preview",
+        "settledMs": 219.571291,
+        "state": 1
+      },
+      {
+        "id": "color-bw-treatment",
+        "settledMs": 217.27725,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 217.079416,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 200.876583,
+        "state": 1
+      },
+      {
+        "id": "color-mask-tint",
+        "settledMs": 177.325792,
+        "state": 0
+      }
+    ],
+    "summary": {
+      "path": "output/035-development/candidate-batch29-cross-backend-enabled/summary.json",
+      "sha256": "90846b1bfdd27c3fdc8434bff4c8cf6891288f6ee755574fa8f3c1afbc1ce345"
+    },
+    "tiff16": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 10200.604042,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "tiff16Comparison": {
+      "failures": [],
+      "metrics": {
+        "exportMetalBytes": 2811674624,
+        "exportPhysicalFootprintBytes": 3506473120,
+        "exportResidentBytes": 1379041280,
+        "fitOnMs": 128.923333,
+        "fullTIFFMs": 10200.604042
+      },
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "wholeFramePairsExact": 814
+  },
+  "frozenSemanticFilmTone": {
+    "frozenToneFixture": {
+      "cpu": {
+        "bytes": 61440000,
+        "filename": "tone-macos-cpu.rgba32fle",
+        "sha256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b"
+      },
+      "cpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 3.5762786865234375e-07,
+        "maxErrorDividedByMaxOneAbsReference": 3.2209698019869393e-07,
+        "maxNormalizedErrorVsAnalytical": 2.3657915448893618e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "gpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "metalComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "recipe": {
+        "filename": "tone-recipe.json",
+        "sha256": "45fba37c79933f41961d01af3e1bed2eabec60f197a11c5a471f44a60c9f0cca"
+      }
+    },
+    "linuxCase": {
+      "backend": "cpu",
+      "baseSHA256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4",
+      "both": 13654,
+      "extent": [
+        2400,
+        1600
+      ],
+      "firstOnly": 2054121,
+      "inputs": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "macOSCPUSHA256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b",
+      "maximumDeltaFromMacOSCPU": 0.0,
+      "neither": 1772225,
+      "protectedMismatches": 0,
+      "recipeSHA256": "45fba37c79933f41961d01af3e1bed2eabec60f197a11c5a471f44a60c9f0cca",
+      "renderMs": 60.879685,
+      "reversedBindings": true,
+      "rgbaSHA256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b",
+      "secondOnly": 0,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "linuxReplay": {
+      "path": "output/035-development/candidate-batch29-cross-backend/frozen-tone-linux.json",
+      "sha256": "179d8f075bcf374baf85758b99134198d7ffb6a417df717c9205e306759dbde7"
+    },
+    "linuxRuntimeSHA256": {
+      "path": "output/035-development/candidate-batch29-cross-backend/frozen-tone-linux.runtime.sha256",
+      "sha256": "c58934ee7ee353c313de62b8e4df3767156f19230c9923119303782b80530938"
+    },
+    "samePackageSwiftManifest": {
+      "path": "output/035-development/candidate-batch29-cross-backend/frozen-tone/manifest.json",
+      "sha256": "cd8d9038d7e02a4401b2e1d70e28cb58297735a3ae5e728a873fbd1e83fd3538"
+    }
+  },
+  "head": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "imageRuntimeSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+  "isolatedAndTargetedProduction": {
+    "catalog-macos-signed-helper": {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-signed-helper.json",
+      "sha256": "43825c19ea95578b8ac9a80abb334e7ba1af9966d266937704a7a0d897dd6098"
+    },
+    "catalog-macos-xpc": {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-xpc.json",
+      "sha256": "71547dc864ad609936d908a2a5a3696cf478b7afafa4805d34c42e80109d103b"
+    },
+    "native-dehaze-grouped-erosion": {
+      "path": "specs/035-portable-processing-cores/evidence/native-dehaze-grouped-erosion.json",
+      "sha256": "963bccd296664ea88fd64a5ab9de15db56ba257148f6a5f9c69f8da913426bb2"
+    },
+    "native-full-validation-cache": {
+      "path": "specs/035-portable-processing-cores/evidence/native-full-validation-cache.json",
+      "sha256": "5181941d961f5610a25674d406955e26234d8871d8ccef451a0b641e17bfe193"
+    }
+  },
+  "pointwiseContextReuse": {
+    "default": "off",
+    "results": {
+      "instrumentationBoundary": "from distinct PreviewEngine.render request to readable full sRGB8; sequence uses a separate interactive request before each settled one",
+      "knownRejectedBroadTrial": "specs/035-portable-processing-cores/evidence/first-exact-native-stages.json",
+      "linkedExecutable": {
+        "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/profile-settled-photo",
+        "sha256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd"
+      },
+      "matchingSamples": 1184,
+      "runtimeManifest": {
+        "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/runtime.sha256",
+        "sha256": "d49dcc9a6742fb123d76be8d4a92698d15f9ee7c4bc3a9aaa59b36b2ff386efa"
+      },
+      "schemaVersion": 1,
+      "scope": "joined primary settled at 2400, source-local, pointwise with a verified pinned input and unchanged evaluation options",
+      "sources": {
+        "primary": {
+          "native": [
+            9504,
+            6336
+          ],
+          "peakDifferenceBytes": -4571064,
+          "reuseStateIDs": [
+            [
+              "color-bw-treatment",
+              1
+            ],
+            [
+              "color-mask-hue",
+              0
+            ],
+            [
+              "color-mask-hue",
+              1
+            ],
+            [
+              "color-mask-saturation",
+              0
+            ],
+            [
+              "color-mask-saturation",
+              1
+            ],
+            [
+              "color-mask-temp",
+              0
+            ],
+            [
+              "color-mask-temp",
+              1
+            ],
+            [
+              "color-mask-tint",
+              1
+            ],
+            [
+              "color-wb-as-shot",
+              0
+            ],
+            [
+              "color-wb-as-shot",
+              1
+            ],
+            [
+              "color-wb-presets",
+              0
+            ],
+            [
+              "curve-mask-curve",
+              1
+            ],
+            [
+              "grading-balance",
+              1
+            ],
+            [
+              "grading-blending",
+              0
+            ],
+            [
+              "grading-blending",
+              1
+            ],
+            [
+              "grading-luminance",
+              1
+            ],
+            [
+              "grading-lut-amount",
+              0
+            ],
+            [
+              "grading-lut-amount",
+              1
+            ],
+            [
+              "grading-lut-manage",
+              0
+            ],
+            [
+              "grading-lut-mask",
+              0
+            ],
+            [
+              "grading-lut-mask",
+              1
+            ],
+            [
+              "grading-lut-select",
+              0
+            ],
+            [
+              "grading-lut-select",
+              1
+            ],
+            [
+              "grading-lut-stack",
+              1
+            ],
+            [
+              "grading-mask-wheels",
+              0
+            ],
+            [
+              "grading-mask-wheels",
+              1
+            ],
+            [
+              "light-clipping-indicators",
+              1
+            ],
+            [
+              "light-clipping-modifier",
+              1
+            ],
+            [
+              "light-mask-blacks",
+              0
+            ],
+            [
+              "light-mask-blacks",
+              1
+            ],
+            [
+              "light-mask-contrast",
+              0
+            ],
+            [
+              "light-mask-contrast",
+              1
+            ],
+            [
+              "light-mask-exposure",
+              0
+            ],
+            [
+              "light-mask-highlights",
+              0
+            ],
+            [
+              "light-mask-highlights",
+              1
+            ],
+            [
+              "light-mask-shadows",
+              0
+            ],
+            [
+              "light-mask-shadows",
+              1
+            ],
+            [
+              "light-mask-whites",
+              0
+            ],
+            [
+              "light-mask-whites",
+              1
+            ]
+          ],
+          "runs": [
+            {
+              "arm": 0,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 5169449624,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/1-primary-0.json",
+                "sha256": "d0d77c1f6953056b397522655812fe4919c0569ee9f593fbc05ac7a9e7d62aab"
+              },
+              "reused": 0,
+              "settled": {
+                "count": 74,
+                "p50Ms": 73.518271,
+                "p95Ms": 263.079625
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 71.085125,
+                "p95Ms": 145.819666
+              }
+            },
+            {
+              "arm": 1,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 5175675520,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/2-primary-1.json",
+                "sha256": "40fdfa3ac1ce7ee64b63223bd804c769383aecf0f6a1f7bff967e94bb3d68ceb"
+              },
+              "reused": 39,
+              "settled": {
+                "count": 74,
+                "p50Ms": 67.1670415,
+                "p95Ms": 266.365667
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 50.695166,
+                "p95Ms": 123.568375
+              }
+            },
+            {
+              "arm": 1,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 5178313416,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/3-primary-1.json",
+                "sha256": "99420877477bce5d7dd13b986b017cb10acba4d577845c7bd0ec0b48ea2709f8"
+              },
+              "reused": 39,
+              "settled": {
+                "count": 74,
+                "p50Ms": 67.17904150000001,
+                "p95Ms": 292.762625
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 51.845709,
+                "p95Ms": 128.266666
+              }
+            },
+            {
+              "arm": 0,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 5182884480,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/4-primary-0.json",
+                "sha256": "ceba50fba1886fd38917b5ce87d0f91d65301021fe09248261ed2e34d6833ded"
+              },
+              "reused": 0,
+              "settled": {
+                "count": 74,
+                "p50Ms": 77.5186665,
+                "p95Ms": 277.626417
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 75.12925,
+                "p95Ms": 152.986917
+              }
+            }
+          ],
+          "settledByArm": {
+            "0": {
+              "count": 148,
+              "p50Ms": 76.1570625,
+              "p95Ms": 272.960083
+            },
+            "1": {
+              "count": 148,
+              "p50Ms": 67.1670415,
+              "p95Ms": 279.977792
+            }
+          },
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        },
+        "secondary": {
+          "native": [
+            8640,
+            5760
+          ],
+          "peakDifferenceBytes": -475016,
+          "reuseStateIDs": [
+            [
+              "color-bw-treatment",
+              1
+            ],
+            [
+              "color-mask-hue",
+              0
+            ],
+            [
+              "color-mask-hue",
+              1
+            ],
+            [
+              "color-mask-saturation",
+              0
+            ],
+            [
+              "color-mask-saturation",
+              1
+            ],
+            [
+              "color-mask-temp",
+              0
+            ],
+            [
+              "color-mask-temp",
+              1
+            ],
+            [
+              "color-mask-tint",
+              1
+            ],
+            [
+              "color-wb-as-shot",
+              0
+            ],
+            [
+              "color-wb-as-shot",
+              1
+            ],
+            [
+              "color-wb-presets",
+              0
+            ],
+            [
+              "curve-mask-curve",
+              1
+            ],
+            [
+              "grading-balance",
+              1
+            ],
+            [
+              "grading-blending",
+              0
+            ],
+            [
+              "grading-blending",
+              1
+            ],
+            [
+              "grading-luminance",
+              1
+            ],
+            [
+              "grading-lut-amount",
+              0
+            ],
+            [
+              "grading-lut-amount",
+              1
+            ],
+            [
+              "grading-lut-manage",
+              0
+            ],
+            [
+              "grading-lut-mask",
+              0
+            ],
+            [
+              "grading-lut-mask",
+              1
+            ],
+            [
+              "grading-lut-select",
+              0
+            ],
+            [
+              "grading-lut-select",
+              1
+            ],
+            [
+              "grading-lut-stack",
+              1
+            ],
+            [
+              "grading-mask-wheels",
+              0
+            ],
+            [
+              "grading-mask-wheels",
+              1
+            ],
+            [
+              "light-clipping-indicators",
+              1
+            ],
+            [
+              "light-clipping-modifier",
+              1
+            ],
+            [
+              "light-mask-blacks",
+              0
+            ],
+            [
+              "light-mask-blacks",
+              1
+            ],
+            [
+              "light-mask-contrast",
+              0
+            ],
+            [
+              "light-mask-contrast",
+              1
+            ],
+            [
+              "light-mask-exposure",
+              0
+            ],
+            [
+              "light-mask-highlights",
+              0
+            ],
+            [
+              "light-mask-highlights",
+              1
+            ],
+            [
+              "light-mask-shadows",
+              0
+            ],
+            [
+              "light-mask-shadows",
+              1
+            ],
+            [
+              "light-mask-whites",
+              0
+            ],
+            [
+              "light-mask-whites",
+              1
+            ]
+          ],
+          "runs": [
+            {
+              "arm": 0,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 4660709776,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/1-secondary-0.json",
+                "sha256": "2f429803c9e33c5eaa261da4061695e9e31166013afdcd0b5a3ea1028b72f30a"
+              },
+              "reused": 0,
+              "settled": {
+                "count": 74,
+                "p50Ms": 79.7880625,
+                "p95Ms": 251.195
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 76.04875,
+                "p95Ms": 130.509834
+              }
+            },
+            {
+              "arm": 1,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 4661381664,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/2-secondary-1.json",
+                "sha256": "91f8d53a20737dc269ee283ee30a59e6df82a79e3fe1f27ddcf41bcafec74097"
+              },
+              "reused": 39,
+              "settled": {
+                "count": 74,
+                "p50Ms": 64.752188,
+                "p95Ms": 249.293
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 53.988667,
+                "p95Ms": 111.216833
+              }
+            },
+            {
+              "arm": 1,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 4660365832,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/3-secondary-1.json",
+                "sha256": "8aea98cc4aadef88061d1bd5f301e5fe43e54072c40a127f5e2763ad6069847a"
+              },
+              "reused": 39,
+              "settled": {
+                "count": 74,
+                "p50Ms": 62.133624999999995,
+                "p95Ms": 241.836792
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 53.212625,
+                "p95Ms": 108.176083
+              }
+            },
+            {
+              "arm": 0,
+              "binarySHA256": "886ce41eac96d6bc242fc9fef778c53515ea2e91b3f6941bc0a3cce002ad79bd",
+              "matchingFrames": 148,
+              "peakPhysicalFootprintBytes": 4661856680,
+              "report": {
+                "file": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-aa/pointwise-context-final/4-secondary-0.json",
+                "sha256": "ebad0d2f5c94cb6a8861494f741a5d9dc7d6bfe1d4adfad5d4ec2919e245e3d7"
+              },
+              "reused": 0,
+              "settled": {
+                "count": 74,
+                "p50Ms": 73.8139165,
+                "p95Ms": 246.217542
+              },
+              "settledOnActuallyReusedStates": {
+                "count": 39,
+                "p50Ms": 71.569083,
+                "p95Ms": 130.812209
+              }
+            }
+          ],
+          "settledByArm": {
+            "0": {
+              "count": 148,
+              "p50Ms": 76.113729,
+              "p95Ms": 246.217542
+            },
+            "1": {
+              "count": 148,
+              "p50Ms": 63.0347085,
+              "p95Ms": 245.214917
+            }
+          },
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+        }
+      },
+      "variant": "cacheIntermediates=false; clear before and after; up to eight requests per context instance"
+    },
+    "summary": {
+      "path": "output/035-development/phase-aa/context-abba-final-summary.json",
+      "sha256": "75be9b1bc10d77fe1513416a40acd00c8788f2da3b435e5f1727e4325826122e"
+    }
+  },
+  "productionMaskToneConformance": {
+    "backends": {
+      "linuxCpu": {
+        "log": {
+          "path": "output/035-development/phase-aa/alpha-linux-cpu.log",
+          "sha256": "53b02015de2dad6b9d1faa4de93df8a87dc1d5c81bded777f24b7ecfecfc825b"
+        },
+        "passed": 25
+      },
+      "linuxVulkan": {
+        "log": {
+          "path": "output/035-development/phase-aa/alpha-linux-vulkan.log",
+          "sha256": "448c7f2de0645c1d63c7202f0f586eb7d8158d5459a86d83480cb9843646a4b0"
+        },
+        "passed": 34
+      },
+      "macMetal": {
+        "log": {
+          "path": "output/035-development/phase-aa/combined-metal-rust.log",
+          "sha256": "62f90ca6fd95a667f5842d652fc93c535f7e1e9f026b229d57fef45bb30ad22a"
+        },
+        "passed": 34
+      }
+    },
+    "blackWhiteRounding": {
+      "path": "specs/035-portable-processing-cores/evidence/native-mask-tone-metal-rounding.json",
+      "sha256": "a4ed08c9030e0dbc43d4a480ecf1cc1959ee5d5252e886eb66d3345e231ba201"
+    },
+    "cABI": {
+      "binaries": {
+        "path": "output/035-development/candidate-batch29-cross-backend/metal-c-abi/witness-binaries.sha256",
+        "sha256": "4a1d4f4a40438430ebe6618aeb8d7c5157c482d4044dc034da5fe1f1a14496dc"
+      },
+      "receipt": {
+        "path": "output/035-development/candidate-batch29-cross-backend/metal-c-abi/c_abi.json",
+        "sha256": "56acf2600b3d0a3448cdcb9e414bc0f0321ae8241a0514b10ff4d878afc087d4"
+      },
+      "results": {
+        "abi": 1,
+        "badExtentAliasAndDescriptorRejected": true,
+        "cpuVsNativeCIMaxAbs": 1.19209289551e-07,
+        "descriptorBytes": 56,
+        "distinctViewsSameIOSurfaceRejected": true,
+        "frozenToneRoundingCases": 3,
+        "hostTextureReferencesDropped": true,
+        "incompatiblePlanRejected": true,
+        "invalidAlphaRejected": true,
+        "invalidCoverageRejected": true,
+        "lastPixelLastPlaneNaNZeroEVRejected": true,
+        "leaseReleases": 8,
+        "namedLeaseReleases": 3,
+        "namedPlaneCounts": [
+          2,
+          32
+        ],
+        "namedPostSubmitStaleAndRetry": true,
+        "namedVsNativeCIMaxAbs": 4.17232513428e-07,
+        "nonfiniteCoverageRejected": true,
+        "nonfiniteInputRejected": true,
+        "nonfiniteOutputRejected": true,
+        "postSubmitStaleStatus": 5,
+        "rawRepairThreeULPs": true,
+        "retainedAfterProgramClose": true,
+        "subnormalBufferedAndBorrowedCases": 9,
+        "validMaskedAndUnmasked": true
+      }
+    },
+    "linuxVulkanRealMaskToneEvidence": {
+      "path": "specs/035-portable-processing-cores/evidence/portable-mask-hue-vulkan.json",
+      "sha256": "7f6bf6fd981ca40a5e3f13a2c76041959cdc8de48614518f22d0c95318ad0b94"
+    },
+    "linuxVulkanRealMaskToneSample": {
+      "path": "output/035-development/phase-aa/hue/linux-production-summary.json",
+      "sha256": "e1955e2276c0a488a0247b8dd7bd4ac4f014f8557a8ee29b27877a1d8faf72a9"
+    },
+    "radial": {
+      "reports": [
+        {
+          "archiveSHA256": "cea4e8a464a02cdad82b470d3c86c26a46b0bf8108c7b38c8ff803d5566860f2",
+          "cases": [
+            {
+              "archiveSHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+              "candidateDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "color-mask-hue",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "8fd4f531e570c27a46574de84decf32d0d205298c5740c0f3ff9d349af240c35",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064"
+            },
+            {
+              "archiveSHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+              "candidateDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "color-mask-hue",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "add5f298b5cafc6fd8f2f6cb0ac8ba4c08e1ec709b8462a7293d6494bb57e232",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31"
+            },
+            {
+              "archiveSHA256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+              "candidateDisplaySHA256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "color-mask-saturation",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "79c06b40570d81a3a830d7f41265811ee009750fee1b84d8973734bb412a57d9",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+            },
+            {
+              "archiveSHA256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+              "candidateDisplaySHA256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "color-mask-saturation",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "b82fad0f51e83aa28741183796239a55aebeb3746de30878ac545fb39ce7e825",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102"
+            },
+            {
+              "archiveSHA256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+              "candidateDisplaySHA256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-blacks",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "80923c3ad3cbbf27b116fe6ccd814f8ec4a095486df6bfc83c9cb786ad279789",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682"
+            },
+            {
+              "archiveSHA256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+              "candidateDisplaySHA256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-blacks",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "7c03bfe3f7bb558a7d5237c8616edafc4750d4df66e845df9cde1b9159424222",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173"
+            },
+            {
+              "archiveSHA256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+              "candidateDisplaySHA256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-contrast",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "557d4f2fb88198d2f5ae83295bd33eab9c6f00a800ad95c320c02fd29574902a",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c"
+            },
+            {
+              "archiveSHA256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+              "candidateDisplaySHA256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-contrast",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "4dc9bfee57d05ee55815e040ebddf6c875dae87f3f7579fe7b5db61c1c027b75",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4"
+            },
+            {
+              "archiveSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+              "candidateDisplaySHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-exposure",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "6bf7077b1d22b07cbc135581dca5aa9f14d2afc1363f9c15f6e031fd2e9563d2",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258"
+            },
+            {
+              "archiveSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+              "candidateDisplaySHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-exposure",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "d90ed21bf81b8235f7fc3e4332cf2e8873d5190d68a0e1e4ca5c680634bc1b80",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746"
+            },
+            {
+              "archiveSHA256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+              "candidateDisplaySHA256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-highlights",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "9f3b03e9986896bf140456b794088e4450c07a1fedbafc2fc550be7acbb2e18e",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0"
+            },
+            {
+              "archiveSHA256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+              "candidateDisplaySHA256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-highlights",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "c219b9b7255d0d65323d6766cb8d8482ce53ec26377cfa5cc940b94030b8ea85",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818"
+            },
+            {
+              "archiveSHA256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+              "candidateDisplaySHA256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-shadows",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "1caa99464f040ec4eef5bca09a2dbe42cd03743eb0ec089a685008b540641a12",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc"
+            },
+            {
+              "archiveSHA256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+              "candidateDisplaySHA256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-shadows",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "22579bae8cc19b3b6467e5fa9f1b2ea7b058bace9dd4479ac4cd33de665c414d",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21"
+            },
+            {
+              "archiveSHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+              "candidateDisplaySHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-whites",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "96e6b8d795e3f033d90cf858d36d78213a8e5c40410532accc66bcf3bb431c3c",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc"
+            },
+            {
+              "archiveSHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff",
+              "candidateDisplaySHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 15054336
+              },
+              "id": "light-mask-whites",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 60217344
+              },
+              "sampleBytes": 819264,
+              "sampleSHA256": "4f2193a17551e21905345756b816bf58f2a2911970d0336dc25034d57934a5ea",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff"
+            }
+          ],
+          "inputSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "nativeSize": [
+            9504,
+            6336
+          ],
+          "report": {
+            "path": "output/035-development/candidate-batch29-cross-backend/native-radial/primary.json",
+            "sha256": "5b024f0f38978c27b4c6b66603f9d1d282354e9281dd65ef594c79d06fe08536"
+          },
+          "role": "primary"
+        },
+        {
+          "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+          "cases": [
+            {
+              "archiveSHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+              "candidateDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "color-mask-hue",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "04204e90fcd0a2c89e9f38ed70b9b60e804436b483ef670f7dcfeb4eae5902b7",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96"
+            },
+            {
+              "archiveSHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+              "candidateDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "color-mask-hue",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "084d264c392f93e9b696f07c1af54c0d308eb1f7126f86f1b02b84ff5e9cf2f8",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50"
+            },
+            {
+              "archiveSHA256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+              "candidateDisplaySHA256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "color-mask-saturation",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "51a68e84ff40894ff1eeb7f599c86894201faacb73aacb4572a5770361be8c3a",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+            },
+            {
+              "archiveSHA256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+              "candidateDisplaySHA256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "color-mask-saturation",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "8f6171c0a3d7383ec36b797603133ffa0e7002f07a4a4d3a7f9ae8c7d7c25e86",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435"
+            },
+            {
+              "archiveSHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+              "candidateDisplaySHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-blacks",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "26c54b250ad4fc27143eff8b3605298bf364fdef8fc992aa0cc1b2e0fe6fc57b",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a"
+            },
+            {
+              "archiveSHA256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6",
+              "candidateDisplaySHA256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-blacks",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "f27deb3a302b3057a1de48f4f85078ac765acf7777d5d807fb88c3d6e9398a52",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6"
+            },
+            {
+              "archiveSHA256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+              "candidateDisplaySHA256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-contrast",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "15162e06768cb86c74129fdc8c19da0df88e158c079487ae2718cb393a84d078",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c"
+            },
+            {
+              "archiveSHA256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+              "candidateDisplaySHA256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-contrast",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "cf7f49bc5d4e16e30349474494c23aaef93f590710ba299130bb966917031e68",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009"
+            },
+            {
+              "archiveSHA256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+              "candidateDisplaySHA256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-exposure",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "ce47d8b9c22d0403ce4cd03760c4ac259367ec3819883098317e7014b043e6b4",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c"
+            },
+            {
+              "archiveSHA256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+              "candidateDisplaySHA256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-exposure",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "6c52a54522a5a44eeee83b61837e3c4a5fff6f68a813ee8e510189eb220b9002",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442"
+            },
+            {
+              "archiveSHA256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+              "candidateDisplaySHA256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-highlights",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "5627c8ff08cfb85daaf11515afcc6a48998466e91325d0e8a513aa1fc12ac241",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45"
+            },
+            {
+              "archiveSHA256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+              "candidateDisplaySHA256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-highlights",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "de60f2d4d188473e6ba13c6690ebc86596f6c83f7f8fa4c22827a054bef59de5",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d"
+            },
+            {
+              "archiveSHA256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+              "candidateDisplaySHA256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-shadows",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "89c82ea74535e570d138bbc4a1107fb8df1b6b9d67f1c4d3358229dbfae80422",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9"
+            },
+            {
+              "archiveSHA256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+              "candidateDisplaySHA256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-shadows",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "0249e466550904f3872750f91ecbfeb7ff51d1f2e6f78f775c5c9a2de89dc12e",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef"
+            },
+            {
+              "archiveSHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+              "candidateDisplaySHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-whites",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "66a8ddfe4b6f2c7fa410abe2010b1c380a08cdfe8d9dc913da0b5ee3e8354deb",
+              "shader": "public named IOSurface C ABI",
+              "state": 0,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086"
+            },
+            {
+              "archiveSHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d",
+              "candidateDisplaySHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d",
+              "candidateVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "candidateVsStockBand": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "externalStockCoverage": true,
+              "halfRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 12441600
+              },
+              "id": "light-mask-whites",
+              "nativeRGBAf": {
+                "alphaChanges": 0,
+                "changedComponents": 0,
+                "changedPixels": 0,
+                "maxAbs": 0,
+                "nonfinitePixels": 0,
+                "over2e6Pixels": 0,
+                "pixels": 49766400
+              },
+              "sampleBytes": 753728,
+              "sampleSHA256": "5fed3863fde3e800bfc4c85bf8a15f64633d121d9ed18ed107b0d0530d67b721",
+              "shader": "public named IOSurface C ABI",
+              "state": 1,
+              "stockBandVsArchive": {
+                "alphaValues": 0,
+                "changedPixels": 0,
+                "edgePixels": 0,
+                "maxCodeDifference": 0,
+                "meanAbsoluteCodeDifference": 0
+              },
+              "stockBandedDisplaySHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d"
+            }
+          ],
+          "inputSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "nativeSize": [
+            8640,
+            5760
+          ],
+          "report": {
+            "path": "output/035-development/candidate-batch29-cross-backend/native-radial/secondary.json",
+            "sha256": "90dcde4725f16ee10d514040366d5d549fa1299d5a7212bff75ebb0a024582fd"
+          },
+          "role": "secondary"
+        }
+      ],
+      "totalStatesNativeHalfDisplayExact": 32
+    },
+    "smallAlpha": {
+      "points": 65536,
+      "receipts": [
+        {
+          "path": "output/035-development/candidate-batch29-cross-backend/metal-c-abi/alpha-integer-sample.json",
+          "sha256": "d8171a8631564b08fcdea54e8fccf14944caae0e5253cd4e5d9f97f7a5ff5778"
+        },
+        {
+          "path": "output/035-development/phase-aa/alpha-integer-sample-vulkan.json",
+          "sha256": "49b6d864a31b137eaf92ee9426f1f4b7430acf9c99e261733c3d8d9d676d40db"
+        }
+      ],
+      "records": [
+        {
+          "absoluteMaximum": 0,
+          "buildSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+          "coverageSHA256": "17faa485f5409354c6aed458c8cc8dfad1922c98532b3e0349c26f9349388261",
+          "cpuSHA256": "de4ce47d6014c58a2fae7e642b8dc4fb219100a69d02220ec170232b0752f863",
+          "differentPixels": 0,
+          "examples": [],
+          "extent": [
+            1024,
+            64
+          ],
+          "gpuSHA256": "de4ce47d6014c58a2fae7e642b8dc4fb219100a69d02220ec170232b0752f863",
+          "inputSHA256": "0dc4a653e9c3f15473989909efd12a1517f862b8dd0173929f6f172f4b991998",
+          "recipeSHA256": "490cc3b363bb8c7927bd72a34edbac1e84c133ff3134b4ea0a4c8df8100d545f"
+        },
+        {
+          "absoluteMaximum": 0,
+          "buildSHA256": "a77527b586ed081e3353c7833233c35790a6857a3d4ded1b43b3904d2a4a0591",
+          "coverageSHA256": "17faa485f5409354c6aed458c8cc8dfad1922c98532b3e0349c26f9349388261",
+          "cpuSHA256": "de4ce47d6014c58a2fae7e642b8dc4fb219100a69d02220ec170232b0752f863",
+          "differentPixels": 0,
+          "examples": [],
+          "extent": [
+            1024,
+            64
+          ],
+          "gpuSHA256": "de4ce47d6014c58a2fae7e642b8dc4fb219100a69d02220ec170232b0752f863",
+          "inputSHA256": "0dc4a653e9c3f15473989909efd12a1517f862b8dd0173929f6f172f4b991998",
+          "recipeSHA256": "490cc3b363bb8c7927bd72a34edbac1e84c133ff3134b4ea0a4c8df8100d545f"
+        }
+      ],
+      "source": {
+        "path": "output/035-development/phase-aa/alpha-sample.py",
+        "sha256": "acab5c60d0dd2787ce3b0e8a5b304cc4fddf91f1f6eaf63bd8e6ba9a64ebbc4f"
+      }
+    }
+  },
+  "publicImageABISymbols": [
+    "_rm_image_abi_version",
+    "_rm_image_exposure_gain_v1",
+    "_rm_image_filter_binding_v1",
+    "_rm_image_kernel_source_v1",
+    "_rm_image_metal_frame_bind_v1",
+    "_rm_image_metal_frame_bind_v2",
+    "_rm_image_metal_frame_close_v1",
+    "_rm_image_metal_frame_render_v1",
+    "_rm_image_metal_half_program_close_v1",
+    "_rm_image_metal_half_program_open_v1",
+    "_rm_image_metal_half_render_v1",
+    "_rm_image_metal_program_close_v1",
+    "_rm_image_metal_program_open_v1",
+    "_rm_image_metal_surface_abi_version",
+    "_rm_image_plan_close_v1",
+    "_rm_image_plan_open_v1",
+    "_rm_image_plan_open_v2",
+    "_rm_image_plan_render_v1",
+    "_rm_image_plan_render_v2"
+  ],
+  "samePackageLiveQuickPrompt": {
+    "check": {
+      "path": "output/035-development/candidate-batch29-cross-backend/verified-flux-mixed.json",
+      "sha256": "f354efdcf80888914541e4da5742485a63462813f1827fd8b2a5f1cf69afec83"
+    },
+    "metrics": {
+      "allFilesEqualStandaloneMain": true,
+      "allPerPathReceiptsMatch": true,
+      "appHostMaxRSSBytes": 937869312,
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "bothFileWorkloadsSpanDraw": true,
+      "candidate": "candidate-batch29-cross-backend",
+      "deliveryCount": 200,
+      "draw": {
+        "approximate": false,
+        "consumerID": "EC45DE73-D963-47D7-AC45-23B408FAC77C",
+        "drawBeganNS": 625155528576708,
+        "drawReturnedNS": 625155528616250,
+        "frameID": "1DDC743D-7143-4D8F-AE81-4AE7166F5427",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 625155513238375,
+        "leaseID": "9B9EDCB9-FD1A-41FF-9D67-3DC83FF69446",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "elapsedSeconds": 157.7497329711914,
+      "exportSeconds": 7.682702,
+      "fileBackedDrawMilliseconds": 15.377875,
+      "firstOutputAfterPreparationSeconds": 0.155872333,
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "importedRAWCount": 20,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 625162895855625,
+        "exportFirstFile": 625155369025958,
+        "exportLastFile": 625162894322791,
+        "exportPrepared": 625155213153625,
+        "importCompleted": 625155899996458,
+        "importFirstFile": 625155510711916,
+        "importLastFile": 625155855825041
+      },
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "155.7913967919303",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "155.80894208396785"
+      },
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch29-cross-backend/receipt.json",
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "testBinarySHA256": "14d5e90f349faa288884d46049b9c74bc5587da8236cf3a0d04a509a44dd53ff"
+    },
+    "receipt": {
+      "path": "output/035-development/flux-mixed-candidate-batch29-cross-backend/receipt.json",
+      "sha256": "b4649896701555a84c81c178fd48e412aa9225a59fc7984565e4d5fd5e5f6031"
+    }
+  },
+  "schemaVersion": 1,
+  "sourceSeal": {
+    "checked": 195,
+    "pathManifest": {
+      "path": "output/035-development/candidate-batch29-cross-backend/source-files.sha256",
+      "sha256": "bc3c73983c1671c91001bb1d7273f1083edd5de9d4fa9038cf51230b1de913f6"
+    }
+  }
+}

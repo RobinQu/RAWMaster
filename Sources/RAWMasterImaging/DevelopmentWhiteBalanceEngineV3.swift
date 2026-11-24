@@ -58,7 +58,7 @@ extern "C" { namespace coreimage {
       guard let original=asShotWhiteBalance else{throw DevelopmentV3Error.unsupportedNativeParameters}
       image=image.applyingFilter("CITemperatureAndTint",parameters:["inputNeutral":CIVector(x:CGFloat(original.temperature),y:CGFloat(original.tint)),"inputTargetNeutral":CIVector(x:t,y:v)])
     }
-    if p.light.enabled,p.light.exposure != 0 { image=image.applyingFilter("CIExposureAdjust",parameters:[kCIInputEVKey:2*p.light.exposure]) }
+    if p.light.enabled,p.light.exposure != 0 { image = try DevelopmentPortableExposure.apply(2 * p.light.exposure, to: image) }
     return image
   }
   static func applyImage(_ p: DevelopmentWhiteBalanceV3, to image: CIImage, context: CIContext, checkCancellation: (() throws -> Void)? = nil) throws -> CIImage {

@@ -1,0 +1,351 @@
+{
+  "binariesChecked": 16,
+  "binarySeal": {
+    "path": "output/035-development/candidate-batch31-finite-transport-join/binaries.sha256",
+    "sha256": "c44797f45ee5d06323b537ca293b206a36ce814fb4b8eeb6bf1f43985f2b077c"
+  },
+  "candidate": "candidate-batch31-finite-transport-join",
+  "compileInputChanges": {
+    "Sources/RAWMasterImaging/DevelopmentCanonicalFiniteGPU.swift": {
+      "after": "6a428cc7851970c21c748bfaa4b4cf24a7e83c54a39f777323e8081998c20b61",
+      "before": "e3a200c0f7e94f9c7ad6c2103ce4fcb836fdf0d73c040c21307ff19a30f34a89"
+    },
+    "Tests/RAWMasterImagingTests/CanonicalFiniteGPUTests.swift": {
+      "after": "8b189c81667523ca85960dcf33caa4a08649dc0ef5dc9302028f0e18e9855c08",
+      "before": "36cf05f6e0d98f14b7f932d2828f86943c8191ccd006803ea25f4d6657475a38"
+    }
+  },
+  "earlierCandidate": {
+    "path": "specs/035-portable-processing-cores/evidence/native-optical-snapshots-release.json",
+    "sha256": "1278b75ae024bb60103f8f6d859a815210a744b7e8cac5beff15997936e841e4"
+  },
+  "faultInjection": {
+    "abort": "Second encoder unavailable after a real Core Image task was created",
+    "actualCommandBuffersJoined": 2,
+    "log": {
+      "path": "output/035-development/candidate-batch31-finite-transport-join/finite-transport.log",
+      "sha256": "733391d448fe006777bfd66b64bbe1b0d9808017ba3a36557be41689f1c2acec"
+    },
+    "physicalDeviceLossQualification": "open",
+    "retriedInSameContext": true,
+    "testsPassed": 14
+  },
+  "formalRelease": {
+    "assertions": {
+      "inspection-comparison": 2,
+      "interactive-comparison": 9,
+      "lightflow-comparison": 2,
+      "photo-operators-v2-comparison": 1
+    },
+    "cameraRawAndAdaptive": {
+      "path": "output/035-development/candidate-batch31-finite-transport-join/camera-raw-acceptance-with-flux.json",
+      "sha256": "86b0f540c5c60be93144a41f469a7a3227077de7f28f5dce6854ed80ac9866f5"
+    },
+    "cameraRawMeasuredFeatureIDs": 158,
+    "exitCode": 1,
+    "failedStages": [
+      "interactive-comparison",
+      "photo-operators-v2-comparison",
+      "lightflow-comparison",
+      "inspection-comparison"
+    ],
+    "frames": {
+      "path": "output/035-development/candidate-batch31-finite-transport-join-enabled/photo-operators-v2.json",
+      "sha256": "5940e9d56993bccf662eafa5af5830c770e6a219c3c7cf24b099141c5d192609"
+    },
+    "nativeSuites": [
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-finite-transport-join/native-sharpen-and-dehaze.log",
+          "sha256": "e7ee1e5b98e8beff32652d9358162a02a804ecc79e03923872f81655d3dabca8"
+        },
+        "name": "native-sharpen-and-dehaze",
+        "passed": 41
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-finite-transport-join/native-film-and-mask.log",
+          "sha256": "5e79d6f405f4bb15631b1c3a7b9e46107669d256ab3d93028c141e492d4c4ab5"
+        },
+        "name": "native-film-and-mask",
+        "passed": 27
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-finite-transport-join/native-mask-interaction.log",
+          "sha256": "3eb1329e76e9c6b8506d031e256f5d343ca012efdf5ba214b67d20d5bfce783a"
+        },
+        "name": "native-mask-interaction",
+        "passed": 9
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-finite-transport-join/native-prompt-providers.log",
+          "sha256": "d58bd66ec00d4e55d85eb90680df1d07f1505a41b1aeb1467a9fdf341708f746"
+        },
+        "name": "native-prompt-providers",
+        "passed": 5
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-finite-transport-join/adaptive-Sky.log",
+          "sha256": "051b61567d693e2176cda8ec9f6c352900b2179d0d70ef0225c0ec363a7adea0"
+        },
+        "name": "adaptive-Sky",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-finite-transport-join/adaptive-Subject.log",
+          "sha256": "e13e010436f4d978f577fa75ba6e203e7f03b06a69347a32b0d88e5dfc356406"
+        },
+        "name": "adaptive-Subject",
+        "passed": 1
+      }
+    ],
+    "overFinalP95Ceiling": 6,
+    "passed": false,
+    "realAdaptiveCases": 4,
+    "scores": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 73.0700205,
+          "n": 74,
+          "p95Ms": 281.657375
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 5.590542,
+          "n": 74,
+          "p95Ms": 25.379625
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 73.0700205,
+          "n": 74,
+          "p95Ms": 281.657375
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "slowest": [
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 298.243667,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 293.914,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 284.794666,
+        "state": 1
+      },
+      {
+        "id": "effects-dehaze",
+        "settledMs": 281.657375,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 271.829667,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 264.02325,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 252.136375,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 249.4565,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 243.823167,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-preview",
+        "settledMs": 219.086459,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 215.464458,
+        "state": 0
+      },
+      {
+        "id": "color-bw-treatment",
+        "settledMs": 214.588625,
+        "state": 0
+      }
+    ],
+    "summary": {
+      "path": "output/035-development/candidate-batch31-finite-transport-join-enabled/summary.json",
+      "sha256": "7e69abfd8db3afa6eba03e939d75cf923fb5310cf1f3b63b6963498af217758b"
+    },
+    "testBuild": {
+      "path": "output/035-development/candidate-batch31-finite-transport-join-enabled/test-build.json",
+      "sha256": "cd1b2961a8836049c84aafd7690ffcd38a362a5ff9e1ac7961c40d7174cff22f"
+    },
+    "tiff16": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 9787.308042,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "tiff16Comparison": {
+      "failures": [],
+      "metrics": {
+        "exportMetalBytes": 2811674624,
+        "exportPhysicalFootprintBytes": 3504703624,
+        "exportResidentBytes": 1377484800,
+        "fitOnMs": 132.488584,
+        "fullTIFFMs": 9787.308042
+      },
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "wholeFramePairsExact": 814
+  },
+  "rustRuntimes": {
+    "RAWMasterAITests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "RAWMasterAITests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db",
+    "RAWMasterCoreTests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "RAWMasterCoreTests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db",
+    "RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "ad6090bdba06dfa600e7faa178c0de34caba7a89c28cf2e3ac8b27371ec93313",
+    "RAWMasterImagingTests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "RAWMasterImagingTests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db",
+    "RAWMasterUITests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "ad6090bdba06dfa600e7faa178c0de34caba7a89c28cf2e3ac8b27371ec93313",
+    "RAWMasterUITests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "RAWMasterUITests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+  },
+  "samePackageLiveQuickPrompt": {
+    "check": {
+      "path": "output/035-development/candidate-batch31-finite-transport-join/verified-flux-mixed.json",
+      "sha256": "5e0bfa58b1310802ebfbe694bdd8d280cb84182e2e0cfd809f1430420983b2db"
+    },
+    "metrics": {
+      "allFilesEqualStandaloneMain": true,
+      "allPerPathReceiptsMatch": true,
+      "appHostMaxRSSBytes": 987627520,
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "bothFileWorkloadsSpanDraw": true,
+      "candidate": "candidate-batch31-finite-transport-join",
+      "deliveryCount": 200,
+      "draw": {
+        "approximate": false,
+        "consumerID": "6BF4CE1B-91AB-4B39-95C9-44CD3CB24D41",
+        "drawBeganNS": 632082783531750,
+        "drawReturnedNS": 632082783578208,
+        "frameID": "73191570-F3C7-4802-B7CB-72B650C4CA99",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 632082765475250,
+        "leaseID": "657C8FAF-0AD2-4C30-AEA6-764358248F27",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "elapsedSeconds": 163.19900393486023,
+      "exportSeconds": 7.43435975,
+      "fileBackedDrawMilliseconds": 18.102958,
+      "firstOutputAfterPreparationSeconds": 0.154165583,
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "importedRAWCount": 20,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 632089892165583,
+        "exportFirstFile": 632082611971416,
+        "exportLastFile": 632089890368333,
+        "exportPrepared": 632082457805833,
+        "importCompleted": 632083085253291,
+        "importFirstFile": 632082764766250,
+        "importLastFile": 632083074043416
+      },
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "161.2982244589366",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "161.31671833293512"
+      },
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch31-finite-transport-join/receipt.json",
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "testBinarySHA256": "b06ac8e10d38c4e5dbb1b5d0fcb1fa26ce564cb79acbd3c3809ad358413db8c7"
+    },
+    "receipt": {
+      "path": "output/035-development/flux-mixed-candidate-batch31-finite-transport-join/receipt.json",
+      "sha256": "4e466715f82493e5a8ba864e7c18438db7e2e1d2b11ac3fed85d541da047e82c"
+    }
+  },
+  "schemaVersion": 1,
+  "scope": "Core Image and Metal wait on incomplete native finite-value reduction",
+  "sharedColorSoftwareVulkan": {
+    "path": "specs/035-portable-processing-cores/evidence/portable-shared-color-vulkan.json",
+    "sha256": "e2da6ecdc7c2c7e0afb44d197d33d1d9263ade6b6e1ef254c111f0b90780ca7f"
+  },
+  "sourceSeal": {
+    "path": "output/035-development/candidate-batch31-finite-transport-join/source-files.sha256",
+    "sha256": "5a43d939c6712b73438bf2d4a98f00380e8da54ec6ccce52490c7b1115055cc7"
+  },
+  "sourcesChecked": 211
+}

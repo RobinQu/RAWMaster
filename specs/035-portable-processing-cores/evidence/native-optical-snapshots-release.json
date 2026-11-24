@@ -1,0 +1,3424 @@
+{
+  "binarySeal": {
+    "checked": 16,
+    "pathManifest": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/binaries.sha256",
+      "sha256": "f0cc539ee1834829490fc9c899a080320fd3ccfa7f36e2d60ba09dc231a5ea94"
+    }
+  },
+  "buildLog": {
+    "path": "output/035-development/phase-ac/build-verified.log",
+    "sha256": "17070bb423eec675709492f012c1997fc36e58db6896db970c493b1414988c46"
+  },
+  "candidate": "candidate-batch31-optical-snapshots-verified",
+  "catalogRuntimeSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+  "formalRelease": {
+    "assertionCounts": {
+      "control-comparison": 3,
+      "interactive-comparison": 7,
+      "lightflow-comparison": 2
+    },
+    "cameraRaw": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/camera-raw-acceptance-with-flux.json",
+      "sha256": "3abc812e0f8e1ed2216dde794514993edf7c3c23c4fec9795c4be24b92cd11d3"
+    },
+    "cameraRawMeasuredFeatureIDs": 158,
+    "exitCode": 1,
+    "failedStages": [
+      "interactive-comparison",
+      "control-comparison",
+      "lightflow-comparison"
+    ],
+    "functionalTests": [
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/native-sharpen-and-dehaze.log",
+          "sha256": "dfea3c4702fe5bf18a923a0bf3a321ba81c49f1f7bc52a3e25ba497419fe0734"
+        },
+        "name": "native-sharpen-and-dehaze",
+        "passed": 41
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/native-film-and-mask.log",
+          "sha256": "8fdfd89a6c7f456c8307ee593785c7c36d3e7ceeea93a387ea482afbefaa3068"
+        },
+        "name": "native-film-and-mask",
+        "passed": 27
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/native-mask-interaction.log",
+          "sha256": "7ee688e455189526b490b91b4206187a6a4d16d96159c70820fa0037b9e8504b"
+        },
+        "name": "native-mask-interaction",
+        "passed": 9
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/native-prompt-providers.log",
+          "sha256": "d1e7be4d16ad79993d569b4bab79ee266909027eeeadc1dd4815a60bc84611bc"
+        },
+        "name": "native-prompt-providers",
+        "passed": 5
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/adaptive-Sky.log",
+          "sha256": "c99693f4c6f37cac12084771aad2807f8f1b6df3ea7cb80277edc5d7bd4ef77d"
+        },
+        "name": "adaptive-Sky",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/adaptive-Subject.log",
+          "sha256": "b76314c36a9f45a153c239b472a1e3fc6d35a3ba995e954ef47480beda698540"
+        },
+        "name": "adaptive-Subject",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/frozen-tone.log",
+          "sha256": "5433370d87d9fa774d5b3ff994d84c2a65468a06df1b9bf519c73c5f9b67c2e1"
+        },
+        "name": "frozen-tone",
+        "passed": 2
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/portable-and-noise.log",
+          "sha256": "1487f1d7d0978c9c07c645efef5785f8e1c17eae48aa741d086676f35786e62d"
+        },
+        "name": "portable-and-noise",
+        "passed": 10
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch31-optical-snapshots-verified/catalog-snapshot.log",
+          "sha256": "78e59cdd0ca9471ac76ccd2b71f1f7459716a84fcdfdfa940c96cd08b48c1ab8"
+        },
+        "name": "catalog-snapshot",
+        "passed": 28
+      }
+    ],
+    "measuredPictures": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified-enabled/photo-operators-v2.json",
+      "sha256": "c5410a4e2d64973c740f7756c28d928b688ff58293993274fbdf7fdf1898e03c"
+    },
+    "overFinalP95Ceiling": 7,
+    "passed": false,
+    "realAdaptiveCases": 4,
+    "scores": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 67.7435625,
+          "n": 74,
+          "p95Ms": 281.447125
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 5.343875000000001,
+          "n": 74,
+          "p95Ms": 23.786375
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 67.7435625,
+          "n": 74,
+          "p95Ms": 281.447125
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "slowest": [
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 651.268625,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 290.070666,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 287.357875,
+        "state": 0
+      },
+      {
+        "id": "effects-dehaze",
+        "settledMs": 281.447125,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 272.420208,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 269.721541,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 252.594666,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 252.0575,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 223.246125,
+        "state": 0
+      },
+      {
+        "id": "color-bw-treatment",
+        "settledMs": 221.294708,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 211.85325,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-preview",
+        "settledMs": 203.078583,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 182.985334,
+        "state": 1
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 180.598542,
+        "state": 1
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 167.526,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-grain",
+        "settledMs": 156.595833,
+        "state": 0
+      }
+    ],
+    "summary": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified-enabled/summary.json",
+      "sha256": "d8e7e35726ca23006208b2afe5ed3a921f585432b5492e702544b2e440f04239"
+    },
+    "testBuild": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified-enabled/test-build.json",
+      "sha256": "4590729c35ab1f0050af8957517ff3ed1c6508e26c1d96a5e96db380341f2731"
+    },
+    "tiff16": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 9809.029958,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "tiff16Comparison": {
+      "failures": [],
+      "metrics": {
+        "exportMetalBytes": 2811674624,
+        "exportPhysicalFootprintBytes": 3506931872,
+        "exportResidentBytes": 1378762752,
+        "fitOnMs": 133.817208,
+        "fullTIFFMs": 9809.029958
+      },
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "wholeFramePairsExact": 814
+  },
+  "frozenSemanticFilmTone": {
+    "frozenToneFixture": {
+      "cpu": {
+        "bytes": 61440000,
+        "filename": "tone-macos-cpu.rgba32fle",
+        "sha256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b"
+      },
+      "cpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 3.5762786865234375e-07,
+        "maxErrorDividedByMaxOneAbsReference": 3.2209698019869393e-07,
+        "maxNormalizedErrorVsAnalytical": 2.3657915448893618e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "gpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "metalComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "recipe": {
+        "filename": "tone-recipe.json",
+        "sha256": "45fba37c79933f41961d01af3e1bed2eabec60f197a11c5a471f44a60c9f0cca"
+      }
+    },
+    "linuxCase": {
+      "backend": "cpu",
+      "baseSHA256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4",
+      "both": 13654,
+      "extent": [
+        2400,
+        1600
+      ],
+      "firstOnly": 2054121,
+      "inputs": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "macOSCPUSHA256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b",
+      "maximumDeltaFromMacOSCPU": 0.0,
+      "neither": 1772225,
+      "protectedMismatches": 0,
+      "recipeSHA256": "45fba37c79933f41961d01af3e1bed2eabec60f197a11c5a471f44a60c9f0cca",
+      "renderMs": 62.052449,
+      "reversedBindings": true,
+      "rgbaSHA256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b",
+      "secondOnly": 0,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "linuxReplay": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/frozen-tone-linux.json",
+      "sha256": "ca7b7c3aab9a45ab34c165232b56bcc9e0a2f39266fa3f1918604153cca45072"
+    },
+    "linuxRuntimeSHA256": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/frozen-tone-linux.runtime.sha256",
+      "sha256": "f1c520f06ce70991f919dc4e9dd9c6e257be49c2d66d081233e0145e08d48b5f"
+    },
+    "samePackageSwiftManifest": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/frozen-tone/manifest.json",
+      "sha256": "cd8d9038d7e02a4401b2e1d70e28cb58297735a3ae5e728a873fbd1e83fd3538"
+    }
+  },
+  "head": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "imageConformance": {
+    "backends": {
+      "linuxCpu": {
+        "log": {
+          "path": "output/035-development/phase-ac/grade/revised-linux-cpu-tests.log",
+          "sha256": "537d45f4203af9956c7c257931e0f9085d3187f6ee46248ebb988580bb6c9956"
+        },
+        "passed": 27
+      },
+      "linuxSoftwareVulkan": {
+        "log": {
+          "path": "output/035-development/phase-ac/grade/revised-linux-vulkan-tests.log",
+          "sha256": "71fa0fbab6b833619bd36c28b851379daf004d0a59606495a6e7000465ab8804"
+        },
+        "passed": 37
+      },
+      "macMetal": {
+        "log": {
+          "path": "output/035-development/phase-ac/final-mac-image-tests.log",
+          "sha256": "7f29801541a1905a098e715cb2509a3994aa614a89a37edc16c5917010736d71"
+        },
+        "passed": 38
+      }
+    },
+    "cABI": {
+      "binaries": {
+        "path": "output/035-development/candidate-batch31-optical-snapshots-verified/metal-c-abi/witness-binaries.sha256",
+        "sha256": "fbe1cd77b387461d7205e4c4e1810008e7e8a777548331c9061a1395b8760438"
+      },
+      "receipt": {
+        "path": "output/035-development/candidate-batch31-optical-snapshots-verified/metal-c-abi/c_abi.json",
+        "sha256": "56acf2600b3d0a3448cdcb9e414bc0f0321ae8241a0514b10ff4d878afc087d4"
+      },
+      "results": {
+        "abi": 1,
+        "badExtentAliasAndDescriptorRejected": true,
+        "cpuVsNativeCIMaxAbs": 1.19209289551e-07,
+        "descriptorBytes": 56,
+        "distinctViewsSameIOSurfaceRejected": true,
+        "frozenToneRoundingCases": 3,
+        "hostTextureReferencesDropped": true,
+        "incompatiblePlanRejected": true,
+        "invalidAlphaRejected": true,
+        "invalidCoverageRejected": true,
+        "lastPixelLastPlaneNaNZeroEVRejected": true,
+        "leaseReleases": 8,
+        "namedLeaseReleases": 3,
+        "namedPlaneCounts": [
+          2,
+          32
+        ],
+        "namedPostSubmitStaleAndRetry": true,
+        "namedVsNativeCIMaxAbs": 4.17232513428e-07,
+        "nonfiniteCoverageRejected": true,
+        "nonfiniteInputRejected": true,
+        "nonfiniteOutputRejected": true,
+        "postSubmitStaleStatus": 5,
+        "rawRepairThreeULPs": true,
+        "retainedAfterProgramClose": true,
+        "subnormalBufferedAndBorrowedCases": 9,
+        "validMaskedAndUnmasked": true
+      }
+    },
+    "smallAlpha": {
+      "points": 65536,
+      "report": {
+        "path": "output/035-development/candidate-batch31-optical-snapshots-verified/metal-c-abi/alpha-integer-sample.json",
+        "sha256": "c2b71c8d61a84a41e17e678cfb828319fe8fb5a222515dedb45e85368a8c7538"
+      },
+      "result": {
+        "absoluteMaximum": 0,
+        "buildSHA256": "ad6090bdba06dfa600e7faa178c0de34caba7a89c28cf2e3ac8b27371ec93313",
+        "coverageSHA256": "17faa485f5409354c6aed458c8cc8dfad1922c98532b3e0349c26f9349388261",
+        "cpuSHA256": "de4ce47d6014c58a2fae7e642b8dc4fb219100a69d02220ec170232b0752f863",
+        "differentPixels": 0,
+        "examples": [],
+        "extent": [
+          1024,
+          64
+        ],
+        "gpuSHA256": "de4ce47d6014c58a2fae7e642b8dc4fb219100a69d02220ec170232b0752f863",
+        "inputSHA256": "0dc4a653e9c3f15473989909efd12a1517f862b8dd0173929f6f172f4b991998",
+        "recipeSHA256": "490cc3b363bb8c7927bd72a34edbac1e84c133ff3134b4ea0a4c8df8100d545f"
+      }
+    }
+  },
+  "imageRuntimeSHA256": "ad6090bdba06dfa600e7faa178c0de34caba7a89c28cf2e3ac8b27371ec93313",
+  "initialRegionFailure": {
+    "path": "output/035-development/candidate-batch31-optical-snapshots-final/portable-and-noise.log",
+    "sha256": "d2d3084fc9368fca49cec7bd370520748811c682ac6b1f98edfb6c9ce574d512"
+  },
+  "isolatedAndTargetedProduction": {
+    "catalog-macos-xpc": {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-xpc.json",
+      "sha256": "71547dc864ad609936d908a2a5a3696cf478b7afafa4805d34c42e80109d103b"
+    },
+    "native-raw-noise-domain": {
+      "path": "specs/035-portable-processing-cores/evidence/native-raw-noise-domain.json",
+      "sha256": "47704e28c396eb3e96f3f418f6f919c8104b970e7405fa9d9a2f700ed70ff1bc"
+    },
+    "portable-color-grading-exact": {
+      "path": "specs/035-portable-processing-cores/evidence/portable-color-grading-exact.json",
+      "sha256": "d6329ac6d38bc280b4656c208c79bf5acf216f7dec6b1a05facc6389828aca12"
+    },
+    "portable-mask-region": {
+      "path": "specs/035-portable-processing-cores/evidence/portable-mask-region.json",
+      "sha256": "d67b485bc15db04bec59e04fee59b2f2b86774acf52df3b4a855362e9578e897"
+    },
+    "workbench-snapshot-reuse": {
+      "path": "specs/035-portable-processing-cores/evidence/workbench-snapshot-reuse.json",
+      "sha256": "d433dac40e03dc4972146cd837f4e78a4709153c772e8766f69f8fba4a2ee8c2"
+    }
+  },
+  "publicImageABISymbols": [
+    "_rm_image_abi_version",
+    "_rm_image_exposure_gain_v1",
+    "_rm_image_filter_binding_v1",
+    "_rm_image_kernel_source_v1",
+    "_rm_image_metal_frame_bind_v1",
+    "_rm_image_metal_frame_bind_v2",
+    "_rm_image_metal_frame_close_v1",
+    "_rm_image_metal_frame_render_v1",
+    "_rm_image_metal_half_program_close_v1",
+    "_rm_image_metal_half_program_open_v1",
+    "_rm_image_metal_half_render_v1",
+    "_rm_image_metal_mask_half_program_open_v1",
+    "_rm_image_metal_mask_half_render_v1",
+    "_rm_image_metal_mask_region_program_open_v1",
+    "_rm_image_metal_mask_region_render_v1",
+    "_rm_image_metal_program_close_v1",
+    "_rm_image_metal_program_open_v1",
+    "_rm_image_metal_surface_abi_version",
+    "_rm_image_plan_close_v1",
+    "_rm_image_plan_open_v1",
+    "_rm_image_plan_open_v2",
+    "_rm_image_plan_render_v1",
+    "_rm_image_plan_render_v2"
+  ],
+  "realPhotoCrossover": {
+    "receipt": {
+      "path": "output/035-development/phase-ac/photo-combined-summary.json",
+      "sha256": "ee8cc6e67011e3ff6a69a866637f8c5f82156678a21893f682be435491060a4f"
+    },
+    "results": {
+      "boundary": "distinct settled request through complete sRGB8 readback",
+      "executable": {
+        "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/profile-settled-photo",
+        "sha256": "d46cdffd3000ef382f57a47219553f55928d72804ac3a3b16cdba6e988f6ddf2"
+      },
+      "protocol": "same-build native photo ABBA, 37 pairs and two fixed verified RAWs",
+      "roles": {
+        "primary": {
+          "nativeSize": [
+            9504,
+            6336
+          ],
+          "pooled": {
+            "0": {
+              "all": {
+                "maxMs": 362.501459,
+                "n": 148,
+                "p50Ms": 68.668271,
+                "p95Ms": 276.231334
+              },
+              "grading": {
+                "maxMs": 72.48325,
+                "n": 12,
+                "p50Ms": 47.00175,
+                "p95Ms": 72.48325
+              },
+              "mask": {
+                "maxMs": 201.179459,
+                "n": 32,
+                "p50Ms": 61.270312000000004,
+                "p95Ms": 89.316041
+              },
+              "maskCold": null,
+              "maskWarm": null,
+              "noise": {
+                "maxMs": 251.597041,
+                "n": 8,
+                "p50Ms": 241.51904150000001,
+                "p95Ms": 251.597041
+              },
+              "noiseCold": null,
+              "noiseWarm": null
+            },
+            "1": {
+              "all": {
+                "maxMs": 580.593292,
+                "n": 148,
+                "p50Ms": 62.2085415,
+                "p95Ms": 267.843042
+              },
+              "grading": {
+                "maxMs": 114.985584,
+                "n": 12,
+                "p50Ms": 35.4981875,
+                "p95Ms": 114.985584
+              },
+              "mask": {
+                "maxMs": 205.098791,
+                "n": 32,
+                "p50Ms": 37.6569375,
+                "p95Ms": 68.912208
+              },
+              "maskCold": {
+                "maxMs": 205.098791,
+                "n": 2,
+                "p50Ms": 137.0054995,
+                "p95Ms": 205.098791
+              },
+              "maskWarm": {
+                "maxMs": 67.29275,
+                "n": 30,
+                "p50Ms": 37.435604,
+                "p95Ms": 59.04275
+              },
+              "noise": {
+                "maxMs": 580.593292,
+                "n": 8,
+                "p50Ms": 208.4052915,
+                "p95Ms": 580.593292
+              },
+              "noiseCold": {
+                "maxMs": 580.593292,
+                "n": 4,
+                "p50Ms": 232.116083,
+                "p95Ms": 580.593292
+              },
+              "noiseWarm": {
+                "maxMs": 201.0915,
+                "n": 4,
+                "p50Ms": 163.86374949999998,
+                "p95Ms": 201.0915
+              }
+            }
+          },
+          "runs": [
+            {
+              "arm": 0,
+              "events": {
+                "grading": 0,
+                "maskCold": 0,
+                "maskWarm": 0,
+                "noise": 0,
+                "noiseCold": 0,
+                "noiseWarm": 0,
+                "stockMaskHalf": 16
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 5093935744,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/1-primary-0.json",
+                "sha256": "1336a075b2d8e1df6295b765523cc63907046b175be77affd2b4d409142c3c37"
+              },
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "successes": {
+                "grading": [],
+                "maskCold": [],
+                "maskWarm": [],
+                "noise": []
+              }
+            },
+            {
+              "arm": 1,
+              "events": {
+                "grading": 5,
+                "maskCold": 1,
+                "maskWarm": 15,
+                "noise": 4,
+                "noiseCold": 2,
+                "noiseWarm": 2,
+                "stockMaskHalf": 0
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 5360470608,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/2-primary-1.json",
+                "sha256": "3c4a6938b8b6a9ad7f9710413ea813470366b8b1614810cc308675084bad0669"
+              },
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "successes": {
+                "grading": [
+                  {
+                    "event": {
+                      "beginNs": 630966934847291,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630966968309375,
+                      "ms": 33.462084,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 114.985584,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630966997386166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630967020321958,
+                      "ms": 22.935792,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 37.6165,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630967049876916,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630967079664250,
+                      "ms": 29.787334,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 44.925417,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630967105246541,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630967131798875,
+                      "ms": 26.552334,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 37.160958,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630967169739625,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630967192256750,
+                      "ms": 22.517125,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-luminance",
+                    "settledMs": 33.835417,
+                    "state": 1
+                  }
+                ],
+                "maskCold": [
+                  {
+                    "event": {
+                      "beginNs": 630960714324416,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630960756078833,
+                      "ms": 41.754417,
+                      "operation": "PreviewPortableMaskRegionFull",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 205.098791,
+                    "state": 0
+                  }
+                ],
+                "maskWarm": [
+                  {
+                    "event": {
+                      "beginNs": 630960786811958,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630960808783333,
+                      "ms": 21.971375,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 37.015333,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630960837603708,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630960854592541,
+                      "ms": 16.988833,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 32.896,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630960884237500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630960902592333,
+                      "ms": 18.354833,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 33.950416,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630968739476875,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630968766988000,
+                      "ms": 27.511125,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 67.29275,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630968802479041,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630968824020250,
+                      "ms": 21.541209,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 40.72275,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630968856730041,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630968878664041,
+                      "ms": 21.934,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 39.187542,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630968911586958,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630968933146458,
+                      "ms": 21.5595,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 38.234,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630968965481958,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630968983953916,
+                      "ms": 18.471958,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 35.076875,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969019188291,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969039936291,
+                      "ms": 20.748,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 39.672875,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969073101125,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969091986041,
+                      "ms": 18.884916,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 35.567708,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969123999375,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969144239625,
+                      "ms": 20.24025,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 37.168166,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969176225541,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969198132500,
+                      "ms": 21.906959,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 38.756875,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969231138500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969253068125,
+                      "ms": 21.929625,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 40.608,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969285236166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969306837416,
+                      "ms": 21.60125,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 37.819833,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630969336651541,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630969358134583,
+                      "ms": 21.483042,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 37.377166,
+                    "state": 1
+                  }
+                ],
+                "noise": [
+                  {
+                    "event": {
+                      "beginNs": 630963612678125,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630964004983750,
+                      "ms": 392.305625,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 580.593292,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630964226265500,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630964226280125,
+                      "ms": 0.014625,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 174.127666,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630964413070041,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630964479577708,
+                      "ms": 66.507667,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 243.737916,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630964683390583,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630964683405291,
+                      "ms": 0.014708,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 201.0915,
+                    "state": 1
+                  }
+                ]
+              }
+            },
+            {
+              "arm": 1,
+              "events": {
+                "grading": 5,
+                "maskCold": 1,
+                "maskWarm": 15,
+                "noise": 4,
+                "noiseCold": 2,
+                "noiseWarm": 2,
+                "stockMaskHalf": 0
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 5359192632,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/3-primary-1.json",
+                "sha256": "fc25a16318af0ce23bb69d70f1b5df489cc5d68ea8d201394d9cca51167e4b10"
+              },
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "successes": {
+                "grading": [
+                  {
+                    "event": {
+                      "beginNs": 630983885331458,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630983919800500,
+                      "ms": 34.469042,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 62.606166,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630983945377458,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630983966578375,
+                      "ms": 21.200917,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 31.4605,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630983990970791,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630984013342750,
+                      "ms": 22.371959,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 33.114416,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630984038488500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630984060276333,
+                      "ms": 21.787833,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 31.994667,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630984100994416,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630984124385875,
+                      "ms": 23.391459,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 15054336,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-luminance",
+                    "settledMs": 38.277458,
+                    "state": 1
+                  }
+                ],
+                "maskCold": [
+                  {
+                    "event": {
+                      "beginNs": 630978312847000,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630978357421375,
+                      "ms": 44.574375,
+                      "operation": "PreviewPortableMaskRegionFull",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 68.912208,
+                    "state": 0
+                  }
+                ],
+                "maskWarm": [
+                  {
+                    "event": {
+                      "beginNs": 630978386834958,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630978409033833,
+                      "ms": 22.198875,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 36.953459,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630978438250375,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630978460867958,
+                      "ms": 22.617583,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 37.494042,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630978489513708,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630978509663583,
+                      "ms": 20.149875,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 34.730792,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630985712024000,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630985733301583,
+                      "ms": 21.277583,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 59.04275,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630985764480833,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630985783861791,
+                      "ms": 19.380958,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 36.055375,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630985813874041,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630985834019166,
+                      "ms": 20.145125,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 35.728084,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630985864045166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630985887099750,
+                      "ms": 23.054584,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 39.357875,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630985917200500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630985934938791,
+                      "ms": 17.738291,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 34.648458,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630985967122166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630985985790041,
+                      "ms": 18.667875,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 35.981792,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630986019994791,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630986039200416,
+                      "ms": 19.205625,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 38.386125,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630986069737166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630986092454750,
+                      "ms": 22.717584,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 38.525542,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630986122263708,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630986138351125,
+                      "ms": 16.087417,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 32.493542,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630986168748916,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630986189433000,
+                      "ms": 20.684084,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 35.970708,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630986222482166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630986241140333,
+                      "ms": 18.658167,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 38.165292,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630986271730208,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630986294746000,
+                      "ms": 23.015792,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 27394048,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 38.429667,
+                    "state": 1
+                  }
+                ],
+                "noise": [
+                  {
+                    "event": {
+                      "beginNs": 630981144467000,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630981207927541,
+                      "ms": 63.460541,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 215.719083,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630981380896166,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630981380908958,
+                      "ms": 0.012792,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 146.183167,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630981544835750,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630981606618875,
+                      "ms": 61.783125,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 220.49425,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630981785056250,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630981785071416,
+                      "ms": 0.015166,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 153.599833,
+                    "state": 1
+                  }
+                ]
+              }
+            },
+            {
+              "arm": 0,
+              "events": {
+                "grading": 0,
+                "maskCold": 0,
+                "maskWarm": 0,
+                "noise": 0,
+                "noiseCold": 0,
+                "noiseWarm": 0,
+                "stockMaskHalf": 16
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 5185063600,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/4-primary-0.json",
+                "sha256": "00ce96a22cfbba01723da44b1aa5aa74a870d513975e5868f9174e27e6f70362"
+              },
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+              "successes": {
+                "grading": [],
+                "maskCold": [],
+                "maskWarm": [],
+                "noise": []
+              }
+            }
+          ]
+        },
+        "secondary": {
+          "nativeSize": [
+            8640,
+            5760
+          ],
+          "pooled": {
+            "0": {
+              "all": {
+                "maxMs": 263.483958,
+                "n": 148,
+                "p50Ms": 68.675375,
+                "p95Ms": 238.48675
+              },
+              "grading": {
+                "maxMs": 74.503958,
+                "n": 12,
+                "p50Ms": 47.840021,
+                "p95Ms": 74.503958
+              },
+              "mask": {
+                "maxMs": 81.214041,
+                "n": 32,
+                "p50Ms": 54.720667,
+                "p95Ms": 76.462417
+              },
+              "maskCold": null,
+              "maskWarm": null,
+              "noise": {
+                "maxMs": 205.346792,
+                "n": 8,
+                "p50Ms": 195.163792,
+                "p95Ms": 205.346792
+              },
+              "noiseCold": null,
+              "noiseWarm": null
+            },
+            "1": {
+              "all": {
+                "maxMs": 298.310417,
+                "n": 148,
+                "p50Ms": 62.362353999999996,
+                "p95Ms": 241.834833
+              },
+              "grading": {
+                "maxMs": 62.897875,
+                "n": 12,
+                "p50Ms": 35.2885625,
+                "p95Ms": 62.897875
+              },
+              "mask": {
+                "maxMs": 78.583208,
+                "n": 32,
+                "p50Ms": 33.2793125,
+                "p95Ms": 77.555958
+              },
+              "maskCold": {
+                "maxMs": 78.583208,
+                "n": 2,
+                "p50Ms": 78.069583,
+                "p95Ms": 78.583208
+              },
+              "maskWarm": {
+                "maxMs": 54.08625,
+                "n": 30,
+                "p50Ms": 33.112271,
+                "p95Ms": 50.664
+              },
+              "noise": {
+                "maxMs": 210.602208,
+                "n": 8,
+                "p50Ms": 175.30591700000002,
+                "p95Ms": 210.602208
+              },
+              "noiseCold": {
+                "maxMs": 210.602208,
+                "n": 4,
+                "p50Ms": 189.875563,
+                "p95Ms": 210.602208
+              },
+              "noiseWarm": {
+                "maxMs": 163.876459,
+                "n": 4,
+                "p50Ms": 138.3057705,
+                "p95Ms": 163.876459
+              }
+            }
+          },
+          "runs": [
+            {
+              "arm": 0,
+              "events": {
+                "grading": 0,
+                "maskCold": 0,
+                "maskWarm": 0,
+                "noise": 0,
+                "noiseCold": 0,
+                "noiseWarm": 0,
+                "stockMaskHalf": 16
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 4662135232,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/1-secondary-0.json",
+                "sha256": "c34ea69cd62785ea44c667c01b52e6427205fa8a3627f6294796d889e6ad47f0"
+              },
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "successes": {
+                "grading": [],
+                "maskCold": [],
+                "maskWarm": [],
+                "noise": []
+              }
+            },
+            {
+              "arm": 1,
+              "events": {
+                "grading": 5,
+                "maskCold": 1,
+                "maskWarm": 15,
+                "noise": 4,
+                "noiseCold": 2,
+                "noiseWarm": 2,
+                "stockMaskHalf": 0
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 4835707328,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/2-secondary-1.json",
+                "sha256": "3264d30a3aa2644b166758cc1a4c34c1117209663e0903192fd9b2b1ef2d1f6f"
+              },
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "successes": {
+                "grading": [
+                  {
+                    "event": {
+                      "beginNs": 630975311961875,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630975341915750,
+                      "ms": 29.953875,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 59.138709,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630975366251666,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630975391113916,
+                      "ms": 24.86225,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 34.671958,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630975415122208,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630975436476583,
+                      "ms": 21.354375,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 31.191666,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630975460360208,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630975480530166,
+                      "ms": 20.169958,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 30.869875,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630975516739750,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630975543664958,
+                      "ms": 26.925208,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-luminance",
+                    "settledMs": 37.252042,
+                    "state": 1
+                  }
+                ],
+                "maskCold": [
+                  {
+                    "event": {
+                      "beginNs": 630970240427875,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630970284021416,
+                      "ms": 43.593541,
+                      "operation": "PreviewPortableMaskRegionFull",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 78.583208,
+                    "state": 0
+                  }
+                ],
+                "maskWarm": [
+                  {
+                    "event": {
+                      "beginNs": 630970313778125,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630970328380458,
+                      "ms": 14.602333,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 29.153375,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630970356382625,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630970372667333,
+                      "ms": 16.284708,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 30.999792,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630970401516625,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630970417453250,
+                      "ms": 15.936625,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 31.582667,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630976904357333,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630976921997791,
+                      "ms": 17.640458,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 50.664,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630976951289166,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630976965413125,
+                      "ms": 14.123959,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 29.33075,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630976994318000,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977012063625,
+                      "ms": 17.745625,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 33.309625,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977043800083,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977062369541,
+                      "ms": 18.569458,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 35.843084,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977091802208,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977108786583,
+                      "ms": 16.984375,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 32.975542,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977139175666,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977153438041,
+                      "ms": 14.262375,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 30.094125,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977182772833,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977203167250,
+                      "ms": 20.394417,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 35.875084,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977232563458,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977249736375,
+                      "ms": 17.172917,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 33.249,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977279437583,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977296999083,
+                      "ms": 17.5615,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 33.381,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977327515750,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977345610708,
+                      "ms": 18.094958,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 33.418416,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977377081333,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977396139666,
+                      "ms": 19.058333,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 37.516708,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630977427312625,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630977444767333,
+                      "ms": 17.454708,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 33.882417,
+                    "state": 1
+                  }
+                ],
+                "noise": [
+                  {
+                    "event": {
+                      "beginNs": 630972767648458,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630972826635500,
+                      "ms": 58.987042,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 191.337042,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630972981019625,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630972981033500,
+                      "ms": 0.013875,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 163.876459,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630973162388083,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630973216647416,
+                      "ms": 54.259333,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 186.735375,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630973369653083,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630973369667875,
+                      "ms": 0.014792,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 127.326625,
+                    "state": 1
+                  }
+                ]
+              }
+            },
+            {
+              "arm": 1,
+              "events": {
+                "grading": 5,
+                "maskCold": 1,
+                "maskWarm": 15,
+                "noise": 4,
+                "noiseCold": 2,
+                "noiseWarm": 2,
+                "stockMaskHalf": 0
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 4832725440,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/3-secondary-1.json",
+                "sha256": "7b85aecd00ca62eb4fb1ac90637339950c79d25d423a9c46f18c5c72f4fb59b1"
+              },
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "successes": {
+                "grading": [
+                  {
+                    "event": {
+                      "beginNs": 630992595062500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630992625762541,
+                      "ms": 30.700041,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 62.897875,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630992651677375,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630992676688833,
+                      "ms": 25.011458,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-balance",
+                    "settledMs": 35.905167,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630992703940750,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630992729037333,
+                      "ms": 25.096583,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 38.105083,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630992757365208,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630992784277000,
+                      "ms": 26.911792,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-blending",
+                    "settledMs": 39.852125,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630992820493000,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630992840429250,
+                      "ms": 19.93625,
+                      "operation": "PreviewPortableGradingHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 12441600,
+                      "queue": "Metal GPU",
+                      "stage": "便携图半幅"
+                    },
+                    "id": "grading-luminance",
+                    "settledMs": 30.364958,
+                    "state": 1
+                  }
+                ],
+                "maskCold": [
+                  {
+                    "event": {
+                      "beginNs": 630987179447125,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630987222387208,
+                      "ms": 42.940083,
+                      "operation": "PreviewPortableMaskRegionFull",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 77.555958,
+                    "state": 0
+                  }
+                ],
+                "maskWarm": [
+                  {
+                    "event": {
+                      "beginNs": 630987253679416,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630987267737916,
+                      "ms": 14.0585,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-hue",
+                    "settledMs": 30.57075,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630987298948916,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630987313690083,
+                      "ms": 14.741167,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 31.632208,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630987342608958,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630987358475125,
+                      "ms": 15.866167,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "color-mask-saturation",
+                    "settledMs": 30.122167,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994207599000,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994228906750,
+                      "ms": 21.30775,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 54.08625,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994259849333,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994275828416,
+                      "ms": 15.979083,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-blacks",
+                    "settledMs": 32.714333,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994305982500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994321942916,
+                      "ms": 15.960416,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 32.734042,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994351888625,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994369887500,
+                      "ms": 17.998875,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-contrast",
+                    "settledMs": 33.481542,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994399851500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994419061791,
+                      "ms": 19.210291,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 35.977333,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994449480708,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994470476958,
+                      "ms": 20.99625,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-exposure",
+                    "settledMs": 37.000083,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994505450458,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994522484666,
+                      "ms": 17.034208,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 37.4165,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994551383125,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994570882166,
+                      "ms": 19.499041,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-highlights",
+                    "settledMs": 35.042166,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994600677041,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994616607958,
+                      "ms": 15.930917,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 31.801291,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994645893875,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994661451541,
+                      "ms": 15.557666,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-shadows",
+                    "settledMs": 31.142834,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994691637041,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994708632166,
+                      "ms": 16.995125,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 32.193459,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630994739332208,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630994753783708,
+                      "ms": 14.4515,
+                      "operation": "PreviewPortableMaskRegionPatch",
+                      "outcome": "成功",
+                      "pixels": 23347200,
+                      "queue": "Metal GPU",
+                      "stage": "便携图局部半幅"
+                    },
+                    "id": "light-mask-whites",
+                    "settledMs": 32.615875,
+                    "state": 1
+                  }
+                ],
+                "noise": [
+                  {
+                    "event": {
+                      "beginNs": 630989773959083,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630989831106000,
+                      "ms": 57.146917,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 188.414084,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630989985543875,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630989985558291,
+                      "ms": 0.014416,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-color-detail",
+                    "settledMs": 145.122666,
+                    "state": 1
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630990150194500,
+                      "boundary": "GPU 完成",
+                      "bytes": 0,
+                      "endNs": 630990214054375,
+                      "ms": 63.859875,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "Metal GPU",
+                      "stage": "验证原生降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 210.602208,
+                    "state": 0
+                  },
+                  {
+                    "event": {
+                      "beginNs": 630990381510875,
+                      "boundary": "API 返回",
+                      "bytes": 0,
+                      "endNs": 630990381523000,
+                      "ms": 0.012125,
+                      "operation": "NativeRawNoiseDomain",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "queue": "图像引擎",
+                      "stage": "复用已验证的同一降噪输入与高斯邻域"
+                    },
+                    "id": "detail-nr-lum-contrast",
+                    "settledMs": 131.488875,
+                    "state": 1
+                  }
+                ]
+              }
+            },
+            {
+              "arm": 0,
+              "events": {
+                "grading": 0,
+                "maskCold": 0,
+                "maskWarm": 0,
+                "noise": 0,
+                "noiseCold": 0,
+                "noiseWarm": 0,
+                "stockMaskHalf": 16
+              },
+              "frames": 148,
+              "peakPhysicalFootprintBytes": 4660955560,
+              "report": {
+                "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/4-secondary-0.json",
+                "sha256": "238097c7ee393ed3ed4c348eff4179eedd81acd0bfb4920c874b82a05c5636cb"
+              },
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+              "successes": {
+                "grading": [],
+                "maskCold": [],
+                "maskWarm": [],
+                "noise": []
+              }
+            }
+          ]
+        }
+      },
+      "runtimeShaFile": {
+        "path": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/phase-ac/photo-combined/runtime.sha256",
+        "sha256": "3a5a16acd5c761e1f47ba9c42fb4af755af10080ced0ad31771af42264e25d84"
+      },
+      "schema": 1,
+      "wholeDisplayMatches": 1184
+    }
+  },
+  "samePackageLiveQuickPrompt": {
+    "check": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/verified-flux-mixed.json",
+      "sha256": "6c270d29eae1460ebe40d877d8a209bbbac014891e1fd7343d2bc57f539a68c1"
+    },
+    "metrics": {
+      "allFilesEqualStandaloneMain": true,
+      "allPerPathReceiptsMatch": true,
+      "appHostMaxRSSBytes": 934215680,
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "bothFileWorkloadsSpanDraw": true,
+      "candidate": "candidate-batch31-optical-snapshots-verified",
+      "deliveryCount": 200,
+      "draw": {
+        "approximate": false,
+        "consumerID": "1BDD26A0-4B1C-415C-8C08-2DFF335EDF27",
+        "drawBeganNS": 631356188538750,
+        "drawReturnedNS": 631356188582750,
+        "frameID": "F6E8A7CC-6F2F-46FB-BE36-E1858EE7BE8C",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 631356172883458,
+        "leaseID": "4BD26E0A-4242-421D-8F3B-FAF368BD906F",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "elapsedSeconds": 162.0804740190506,
+      "exportSeconds": 8.273477833,
+      "fileBackedDrawMilliseconds": 15.699292,
+      "firstOutputAfterPreparationSeconds": 0.159381792,
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "importedRAWCount": 20,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 631364120930541,
+        "exportFirstFile": 631356006834500,
+        "exportLastFile": 631364119094583,
+        "exportPrepared": 631355847452708,
+        "importCompleted": 631356468940541,
+        "importFirstFile": 631356172745875,
+        "importLastFile": 631356450606541
+      },
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "159.9691519999178",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "160.00862112501636"
+      },
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch31-optical-snapshots-verified/receipt.json",
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "testBinarySHA256": "1cd50518822b4b420a833551879e8b606db2d5a7afe265bc2732c8aabcbb1d76"
+    },
+    "receipt": {
+      "path": "output/035-development/flux-mixed-candidate-batch31-optical-snapshots-verified/receipt.json",
+      "sha256": "01d310deba68b15f55c47ed0cce92452a10de5fbfc3814a38f32f9f154eda1d6"
+    }
+  },
+  "schemaVersion": 1,
+  "sourceSeal": {
+    "checked": 211,
+    "pathManifest": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/source-files.sha256",
+      "sha256": "88ad132b682c8010d4650e6501f3d20578fe7279cf41502c1c634f878bbdcb41"
+    }
+  },
+  "workbenchReadSnapshot": {
+    "ledger": {
+      "path": "specs/035-portable-processing-cores/evidence/workbench-snapshot-receipts.jsonl.gz",
+      "sha256": "9e6827ba414c3ff158aaac8b8d4d675062ad51f4db662dab19eb9f54abc8464e"
+    },
+    "receipt": {
+      "path": "specs/035-portable-processing-cores/evidence/workbench-snapshot-reuse.json",
+      "sha256": "d433dac40e03dc4972146cd837f4e78a4709153c772e8766f69f8fba4a2ee8c2"
+    },
+    "result": {
+      "audited": {
+        "allTicketsArchive": {
+          "path": "specs/035-portable-processing-cores/evidence/workbench-snapshot-receipts.jsonl.gz",
+          "sha256": "9e6827ba414c3ff158aaac8b8d4d675062ad51f4db662dab19eb9f54abc8464e"
+        },
+        "archiveFormat": "One gzip JSON line per batch, holding the full final persisted item with its original serialized SHA-256, the typed source/work/version identifiers, destination identity and terminal control. No live lease token is present.",
+        "archiveTool": {
+          "path": "experiments/portable-processing/catalog/workbench-delivery-probe/pack_verified_receipts.py",
+          "sha256": "e8865296fe3ecddc6df17e6243f02e744e9fc99be935e78ee1098835728a5844"
+        },
+        "batches": 80,
+        "checks": [
+          "complete manifest SHA links to control/target/done and to every ordinal",
+          "all terminal on generation/attempt 1, all leases and names released",
+          "frozen work/version asset, project, SHA-256, actual size, file URL and recomputed sealed admission fingerprint",
+          "actual APFS target and final file UUID/inode/nanosecond birth from held fd, file SHA-256 and length",
+          "only expected final relative names, no retained stage",
+          "SQLite integrity_check and foreign_key_check",
+          "all warm and timed per-source→delivery mappings equal across arms within each of the two datasets"
+        ],
+        "databases": 8,
+        "files": 3872,
+        "offlineTool": {
+          "path": "experiments/portable-processing/catalog/workbench-delivery-probe/verify_benchmark_receipts.py",
+          "sha256": "0e248095febce5f6573d02e9fd6577aba76b3a6d1f12f67a3bedfa58211a0c39"
+        }
+      },
+      "buildIsolation": {
+        "builds": {
+          "after": {
+            "coreObjectSHA256": "7753a13754893a762209f1d1d46d2a2bffa8390c20f52fa1abf74260e529f8e1",
+            "runtimes": {
+              "rawmaster-image.runtime": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+              "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+              "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+            },
+            "xctestSHA256": "900cc88cf3b4810bb2b84fb051068155911c8063ec676c9fd594e8f8142e378e"
+          },
+          "before": {
+            "coreObjectSHA256": "c7077d8fd40b391023290fb4a27e773b181481a3771d07594274d4a8eb64bf79",
+            "runtimes": {
+              "rawmaster-image.runtime": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+              "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+              "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+            },
+            "xctestSHA256": "3b97dfb16631efc913b70e7e2deda705c2349ba61d54f8c03f2c698af78ad593"
+          }
+        },
+        "methods": "Two privately linked macOS optimized WMO Core objects, recompiled from identical core files except LibraryStore+Editing.swift. Identical compiled app entry, shared benchmark harness object and copied Batch30 sealed image, catalog and photo-export runtimes. No current candidate image work is covered.",
+        "sharedBenchmarkHarnessObjectSHA256": "a2a17ea3e4d6ed9579754847031a597ffe6596a8d4c17a3c8e7f05f2e5a1e270"
+      },
+      "checkoutBase": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+      "datasets": {
+        "main": {
+          "batches": 40,
+          "detail": {
+            "path": "output/035-development/phase-ac/workbench/main-receipts.json",
+            "sha256": "638b93d4a59406b619247776311cba0264c2e728969c28570a39ac7312e071bb"
+          },
+          "files": 1936,
+          "inputsSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+          "order": [
+            "a1",
+            "b1",
+            "b2",
+            "a2"
+          ],
+          "rounds": {
+            "a1": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.10793525,
+                  "maxRSSKiB": 240704,
+                  "totalSeconds": 0.109270375
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.153672291,
+                  "maxRSSKiB": 770176,
+                  "totalSeconds": 0.7630035
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.167272167,
+                  "maxRSSKiB": 840560,
+                  "totalSeconds": 7.028285792
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.0832125,
+                  "maxRSSKiB": 840560,
+                  "totalSeconds": 0.084761791
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.110341834,
+                  "maxRSSKiB": 840560,
+                  "totalSeconds": 0.897201375
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/main-a1/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "1c295ef41fd1f85aa98c0ba5b2009551a013ed29336225166c79f77715fa6aeb",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/main-a1/rawmaster/results.json",
+                "sha256": "db14171304ad5700f10d639ee1c84daf7cb16598cf9712578d9d01a03d9cf830"
+              }
+            },
+            "a2": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.107710666,
+                  "maxRSSKiB": 240992,
+                  "totalSeconds": 0.109148375
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.15322575,
+                  "maxRSSKiB": 826640,
+                  "totalSeconds": 1.275414958
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.171250208,
+                  "maxRSSKiB": 916960,
+                  "totalSeconds": 6.874086333
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.080998666,
+                  "maxRSSKiB": 916960,
+                  "totalSeconds": 0.08261325
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.121649333,
+                  "maxRSSKiB": 916960,
+                  "totalSeconds": 0.834263625
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/main-a2/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "b67b06c9e9db9b00c9cf0aa26a05b3d4f2c682f1a174c2810b2c2895db88884d",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/main-a2/rawmaster/results.json",
+                "sha256": "80d5d46bdc00ece3fb065059521353b01ac74aa1087f7cc93b7496bf48d065c7"
+              }
+            },
+            "b1": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.112858667,
+                  "maxRSSKiB": 242736,
+                  "totalSeconds": 0.114999292
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.15074775,
+                  "maxRSSKiB": 829360,
+                  "totalSeconds": 0.784373167
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.156385875,
+                  "maxRSSKiB": 866816,
+                  "totalSeconds": 8.588748125
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.086481667,
+                  "maxRSSKiB": 866816,
+                  "totalSeconds": 0.087992875
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.106924,
+                  "maxRSSKiB": 866816,
+                  "totalSeconds": 0.886679458
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/main-b1/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "fc96890d87959a43c4a3011444ae5e8233c32fae4796dc6ad1034e974137a870",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/main-b1/rawmaster/results.json",
+                "sha256": "87eb13d3b2470459170abc854320fc2f793c07b7e5e23b3550a46c38577f2d64"
+              }
+            },
+            "b2": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.112675583,
+                  "maxRSSKiB": 240880,
+                  "totalSeconds": 0.114129667
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.161014,
+                  "maxRSSKiB": 782432,
+                  "totalSeconds": 0.87791925
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.163032292,
+                  "maxRSSKiB": 850496,
+                  "totalSeconds": 7.008196542
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.089021834,
+                  "maxRSSKiB": 850496,
+                  "totalSeconds": 0.090478834
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.097928125,
+                  "maxRSSKiB": 850496,
+                  "totalSeconds": 0.897816
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/main-b2/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "cbd0acbd7875cbb909939cecdc404e79f83805997b6f740034568184797bb4d9",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/main-b2/rawmaster/results.json",
+                "sha256": "04c536a0283f07de43462594d90ea4d37e5b25df904a7e28ab18c8b0a111f770"
+              }
+            }
+          },
+          "sourceToFinalMappings": {
+            "jpeg-source/1": "a482b46ad1e78aaff2b3bb40d828a1352c69d95b0ae439b6cc7beff5dc45c19f",
+            "jpeg-source/20": "13246795cd706a6b1f80d3d0fe96c8d17e607f579ce3a002573c447f536ace08",
+            "jpeg-source/200": "0ff6505f986c58542d3289f1452f96fd1084d1ef006c0fe896a640bc8edeef77",
+            "raw-source/1": "c5f03c405cb98551ea6496a12f1a399e960588d91e32b6ce604b4eaa07ef241e",
+            "raw-source/20": "970998128e818d9c538f1a181d57db3aebf3f19338358d091721e38eda69df8e"
+          },
+          "twoSampleMedians": {
+            "jpeg-source/1": {
+              "after": {
+                "firstFileSeconds": 0.112767125,
+                "totalSeconds": 0.11456447950000001
+              },
+              "before": {
+                "firstFileSeconds": 0.107822958,
+                "totalSeconds": 0.109209375
+              },
+              "changePercent": {
+                "firstFileSeconds": 4.585,
+                "totalSeconds": 4.904
+              }
+            },
+            "jpeg-source/20": {
+              "after": {
+                "firstFileSeconds": 0.155880875,
+                "totalSeconds": 0.8311462085000001
+              },
+              "before": {
+                "firstFileSeconds": 0.15344902049999998,
+                "totalSeconds": 1.0192092289999999
+              },
+              "changePercent": {
+                "firstFileSeconds": 1.585,
+                "totalSeconds": -18.452
+              }
+            },
+            "jpeg-source/200": {
+              "after": {
+                "firstFileSeconds": 0.15970908350000002,
+                "totalSeconds": 7.7984723335
+              },
+              "before": {
+                "firstFileSeconds": 0.1692611875,
+                "totalSeconds": 6.9511860625
+              },
+              "changePercent": {
+                "firstFileSeconds": -5.643,
+                "totalSeconds": 12.189
+              }
+            },
+            "raw-source/1": {
+              "after": {
+                "firstFileSeconds": 0.0877517505,
+                "totalSeconds": 0.08923585449999999
+              },
+              "before": {
+                "firstFileSeconds": 0.082105583,
+                "totalSeconds": 0.0836875205
+              },
+              "changePercent": {
+                "firstFileSeconds": 6.877,
+                "totalSeconds": 6.63
+              }
+            },
+            "raw-source/20": {
+              "after": {
+                "firstFileSeconds": 0.1024260625,
+                "totalSeconds": 0.8922477289999999
+              },
+              "before": {
+                "firstFileSeconds": 0.1159955835,
+                "totalSeconds": 0.8657325
+              },
+              "changePercent": {
+                "firstFileSeconds": -11.698,
+                "totalSeconds": 3.063
+              }
+            }
+          }
+        },
+        "secondary": {
+          "batches": 40,
+          "detail": {
+            "path": "output/035-development/phase-ac/workbench/secondary-receipts.json",
+            "sha256": "223bde2b8040e9911fd50b7c665f573b9d5d1f5d508d463728cdcf5e98c0b618"
+          },
+          "files": 1936,
+          "inputsSHA256": "761b9b53c85a0ff4565f9425ec5d971be99d30237762dd5bbe4a1ab760232c00",
+          "order": [
+            "b1",
+            "a1",
+            "a2",
+            "b2"
+          ],
+          "rounds": {
+            "a1": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.077057625,
+                  "maxRSSKiB": 178480,
+                  "totalSeconds": 0.07850225
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.117153166,
+                  "maxRSSKiB": 633072,
+                  "totalSeconds": 0.625215291
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.1268345,
+                  "maxRSSKiB": 653216,
+                  "totalSeconds": 6.518316458
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.089746167,
+                  "maxRSSKiB": 653216,
+                  "totalSeconds": 0.091303917
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.129411916,
+                  "maxRSSKiB": 653216,
+                  "totalSeconds": 0.889971125
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/secondary-a1/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "83bd02c519b422af439e3e9d8b1a06cb351aa0b997b9d3e4274353b52205da03",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/secondary-a1/rawmaster/results.json",
+                "sha256": "0a4c5beba480c669d16dca48b54aa45daf78e4f388ad57c2010fd9f3397076bd"
+              }
+            },
+            "a2": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.066687167,
+                  "maxRSSKiB": 178656,
+                  "totalSeconds": 0.068291
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.108760709,
+                  "maxRSSKiB": 605456,
+                  "totalSeconds": 0.631926
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.119493333,
+                  "maxRSSKiB": 663536,
+                  "totalSeconds": 6.429337958
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.085274333,
+                  "maxRSSKiB": 663536,
+                  "totalSeconds": 0.086778833
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.108742917,
+                  "maxRSSKiB": 663536,
+                  "totalSeconds": 0.817253875
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/secondary-a2/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "13a7394e94f10120fa8ee17d8ebfe611c5780d49c8bd8f5c9bd32e0a302ef4dd",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/secondary-a2/rawmaster/results.json",
+                "sha256": "ed523bc7d058c4a2818c91bc5db283c6522868f1d9f201847602e21e738d7fb4"
+              }
+            },
+            "b1": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.066584375,
+                  "maxRSSKiB": 177200,
+                  "totalSeconds": 0.06808075
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.130769,
+                  "maxRSSKiB": 646208,
+                  "totalSeconds": 0.618225458
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.113858167,
+                  "maxRSSKiB": 674336,
+                  "totalSeconds": 6.405632292
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.086166208,
+                  "maxRSSKiB": 674336,
+                  "totalSeconds": 0.087524958
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.1217445,
+                  "maxRSSKiB": 674336,
+                  "totalSeconds": 0.85622725
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/secondary-b1/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "a66c04c22bc5cbf4ece41643b3a7c8665e46d6ef944f63631d4947dbbbbb8493",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/secondary-b1/rawmaster/results.json",
+                "sha256": "677d329516e6b1a65c8baba3c6c7758a5ff41569083f78ada053c66693dc1f75"
+              }
+            },
+            "b2": {
+              "groups": {
+                "jpeg-source/1": {
+                  "firstFileSeconds": 0.069041708,
+                  "maxRSSKiB": 177712,
+                  "totalSeconds": 0.070486125
+                },
+                "jpeg-source/20": {
+                  "firstFileSeconds": 0.12190425,
+                  "maxRSSKiB": 629440,
+                  "totalSeconds": 0.659739917
+                },
+                "jpeg-source/200": {
+                  "firstFileSeconds": 0.117202708,
+                  "maxRSSKiB": 663552,
+                  "totalSeconds": 6.330033917
+                },
+                "raw-source/1": {
+                  "firstFileSeconds": 0.088022292,
+                  "maxRSSKiB": 663552,
+                  "totalSeconds": 0.089605292
+                },
+                "raw-source/20": {
+                  "firstFileSeconds": 0.115456958,
+                  "maxRSSKiB": 663552,
+                  "totalSeconds": 0.855336833
+                }
+              },
+              "nativeStatus": {
+                "path": "output/035-development/phase-ac/workbench/secondary-b2/run.command.json",
+                "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+              },
+              "receiptsDBSHA256": "72931b9ff803415e1a624c5a23a87aaf4517ef9ad3e05cdc7be6ad5e222141ac",
+              "timings": {
+                "path": "output/035-development/phase-ac/workbench/secondary-b2/rawmaster/results.json",
+                "sha256": "5e6984eb45fd3bc1e414b6817a71b695aab91e84eaa65f685341228bb1071492"
+              }
+            }
+          },
+          "sourceToFinalMappings": {
+            "jpeg-source/1": "712d28f08a319d6de3f11866464410047565fb70f648bfb8787568e79e687c79",
+            "jpeg-source/20": "0d37eb999675b2829a34094f92e3e5568d6b37df68211fabb49d25279d670bd9",
+            "jpeg-source/200": "c8fc94f876cfe0cd900d102eca16167fc035642d6bce9ec25cac8e8a01362801",
+            "raw-source/1": "f7f96448c49fe5e89a1b49c16340fd86d608282db934bb3cdf982ff871039b93",
+            "raw-source/20": "9c48a0d7f3b99f755407a249707bacd6b26fbcba420d6c19da85c769065bd195"
+          },
+          "twoSampleMedians": {
+            "jpeg-source/1": {
+              "after": {
+                "firstFileSeconds": 0.0678130415,
+                "totalSeconds": 0.06928343749999999
+              },
+              "before": {
+                "firstFileSeconds": 0.071872396,
+                "totalSeconds": 0.073396625
+              },
+              "changePercent": {
+                "firstFileSeconds": -5.648,
+                "totalSeconds": -5.604
+              }
+            },
+            "jpeg-source/20": {
+              "after": {
+                "firstFileSeconds": 0.126336625,
+                "totalSeconds": 0.6389826875
+              },
+              "before": {
+                "firstFileSeconds": 0.1129569375,
+                "totalSeconds": 0.6285706455
+              },
+              "changePercent": {
+                "firstFileSeconds": 11.845,
+                "totalSeconds": 1.656
+              }
+            },
+            "jpeg-source/200": {
+              "after": {
+                "firstFileSeconds": 0.1155304375,
+                "totalSeconds": 6.3678331045
+              },
+              "before": {
+                "firstFileSeconds": 0.1231639165,
+                "totalSeconds": 6.4738272079999994
+              },
+              "changePercent": {
+                "firstFileSeconds": -6.198,
+                "totalSeconds": -1.637
+              }
+            },
+            "raw-source/1": {
+              "after": {
+                "firstFileSeconds": 0.08709425,
+                "totalSeconds": 0.088565125
+              },
+              "before": {
+                "firstFileSeconds": 0.08751025,
+                "totalSeconds": 0.089041375
+              },
+              "changePercent": {
+                "firstFileSeconds": -0.475,
+                "totalSeconds": -0.535
+              }
+            },
+            "raw-source/20": {
+              "after": {
+                "firstFileSeconds": 0.118600729,
+                "totalSeconds": 0.8557820414999999
+              },
+              "before": {
+                "firstFileSeconds": 0.11907741649999999,
+                "totalSeconds": 0.8536125
+              },
+              "changePercent": {
+                "firstFileSeconds": -0.4,
+                "totalSeconds": 0.254
+              }
+            }
+          }
+        }
+      },
+      "feature": "035 / B31 / normal 032 workbench neutral freeze in one established read transaction",
+      "functional": {
+        "assertions": [
+          "held reader + separate writer remove/readmit with changed real admission timestamp",
+          "contradictory asset primary key, project, availability, byte count and hash rejected on normal and snapshot paths",
+          "legacy nil catalog hash accepts independently verified source and actual admission"
+        ],
+        "failed": 0,
+        "log": {
+          "path": "output/035-development/phase-ac/workbench/editing-tests.log",
+          "sha256": "82b3fbd0afef8d79f00079c50b6b58a0b79c70f31c3737a65ee7f2186f114631"
+        },
+        "passed": 26,
+        "regressions": [
+          "testEditingSourceSnapshotSeesOneWALViewAndRevalidatesAfterReAdmission",
+          "testSnapshotRejectsContradictoryAssetIdentityAndUnavailableOrChangedBytes",
+          "testMigratedV7AdmittedWorkKeepsItsOriginalEditingFingerprint"
+        ],
+        "seconds": 1.156,
+        "suite": "RAWMasterCoreTests.EditingTests"
+      },
+      "inputs": {
+        "alternateGenerator": {
+          "path": "experiments/portable-processing/catalog/workbench-delivery-probe/alternate_inputs.py",
+          "sha256": "db0dcc5e4a4781f858102edd9a62de5c81e50f1a83736e854ba8c494f64afe24"
+        },
+        "difference": {
+          "jpeg-source": {
+            "countPerSource": 200,
+            "sharedSHA256": 0
+          },
+          "raw-source": {
+            "countPerSource": 20,
+            "sharedSHA256": 0
+          }
+        },
+        "main": "032 generated 200 distinct 4000×2666 JPEG inputs and 20 generated 2400×1600 RGGB DNGs.",
+        "secondary": "200 distinct 2048×1365 JPEG files from the same scenes, already exported by Batch29. Twenty new 2400×1600 RGGB DNG payloads use a deterministic stripe pattern with an ordinal-specific row change and the 032 TIFF header."
+      },
+      "method": {
+        "clock": "Each arm process warms, times one sample of each of 5 groups, joins shutdown, then runs VACUUM INTO on that very LibraryStore to preserve the frozen manifests/tickets for all 10 batches. Time to first reported completed file and total workbench submission wall time.",
+        "configuration": "JPEG 0.9, plain layout, no GPS, original neutral version, maximum long edge 2048, default benchmark exporter settings",
+        "entry": "RAWMasterUITests.ExportPerformanceTests/testRealWorkbenchBenchmarks via xcrun xctest",
+        "execution": "Main A/B/B/A and alternate B/A/A/B were serial in a reserved native slot. A short read-only fixture search occurred during the main sequence. No competing image benchmark was run.",
+        "scope": "Two measured samples per arm per group. This is not P95 or an across-machine throughput estimate. Historical main 4.795 s total/0.082 s first for 200 remains faster.",
+        "sizes": "JPEG 1,20,200; uncompressed DNG 1,20. Every output is a JPEG. A is the original double lookup and B is snapshot reuse."
+      },
+      "normalEntry": "AppModel.openProjectExport() → exportWorkbenchPhotos() → LibraryStore.withReadSnapshot → workbenchStoredInput → editingSourceSnapshot",
+      "platform": {
+        "arch": "arm64",
+        "chip": "Apple M4 Max",
+        "fileSystem": "internal APFS",
+        "os": "27.0.1"
+      },
+      "production": {
+        "policy": "Only two completed reads in the same locked main read transaction may supply the proof. No callback, write, global cache or cross-invocation reuse. Public source validation and standalone captures independently reload the current asset and sealed admission.",
+        "source": {
+          "path": "Sources/RAWMasterCore/LibraryStore+Editing.swift",
+          "sha256": "425977a33fa8c4e760ea1db993e10c3db8e0192bfd89f079d74a801ff358a41e"
+        },
+        "workbenchSource": {
+          "path": "Sources/RAWMaster/WorkbenchPhotoExport.swift",
+          "sha256": "6ae8d70ca993c1e0b33d0cc1fd26b225e5b3f8bf7ab9799f51bbdecf0aee8c5f"
+        }
+      },
+      "schema": 1,
+      "sqlTrace": {
+        "after": {
+          "admissionSelects": 200,
+          "assetSelects": 200
+        },
+        "before": {
+          "admissionSelects": 400,
+          "assetSelects": 400
+        },
+        "frozenArraySHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+        "observer": "sqlite3_trace_v2(SQLITE_TRACE_STMT) on the same store.db while calling the real public entry point on 200 admitted sources",
+        "report": {
+          "path": "output/035-development/phase-ac/workbench/trace.json",
+          "sha256": "ff06d955014aae2adefd9baac6d7cc0c88e59f882a8a435ef753a4de8ff87261"
+        },
+        "traceSource": {
+          "path": "experiments/portable-processing/catalog/workbench-delivery-probe/trace_snapshot.swift",
+          "sha256": "4686c44f91a66d94849b40d4aa93ba8853f4d3318de7053aa5c01163bcd29444"
+        },
+        "transactionModes": {
+          "cases": {
+            "after": {
+              "autocommit": {
+                "admissionSelects": "400",
+                "assetSelects": "400",
+                "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+                "mode": "autocommit",
+                "sources": "200"
+              },
+              "read": {
+                "admissionSelects": "200",
+                "assetSelects": "200",
+                "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+                "mode": "read",
+                "sources": "200"
+              },
+              "write": {
+                "admissionSelects": "400",
+                "assetSelects": "400",
+                "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+                "mode": "write",
+                "sources": "200"
+              }
+            },
+            "before": {
+              "autocommit": {
+                "admissionSelects": "400",
+                "assetSelects": "400",
+                "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+                "mode": "autocommit",
+                "sources": "200"
+              },
+              "read": {
+                "admissionSelects": "400",
+                "assetSelects": "400",
+                "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+                "mode": "read",
+                "sources": "200"
+              },
+              "write": {
+                "admissionSelects": "400",
+                "assetSelects": "400",
+                "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+                "mode": "write",
+                "sources": "200"
+              }
+            }
+          },
+          "report": {
+            "path": "output/035-development/phase-ac/workbench/transaction-modes.json",
+            "sha256": "3726d2a175e570e8ad73ee395b693408ae5415d8a1ce066cf88767be130a840e"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,316 @@
+{
+  "status": "passed",
+  "scope": "Eight isolated Release XCTest processes in ABBA/ABBA order. Only full AppKit exposure draws contained in the three real jobs enter the latency sample.",
+  "productionSource": "candidate-batch6",
+  "imageIODataSetting": "off/on via RAWMASTER_QA_CPU_JPEG_THUMBNAIL",
+  "inputCase": "200 fixed JPEGs, 20 Bayer reference DNGs, a fresh FlashRaw and CoreML Sky mask on another RAW",
+  "actualFilesMatchedMergedMainAndRustReceipts": 1600,
+  "results": {
+    "off": {
+      "count": 42,
+      "inputToDrawMedianMs": 17.007854000000002,
+      "inputToDrawP95Ms": 35.503167,
+      "exportMedianSeconds": 8.188693771,
+      "medianFirstPhotoMs": 120.634458,
+      "maximumReportedRSSBytes": 2596028416
+    },
+    "on": {
+      "count": 44,
+      "inputToDrawMedianMs": 17.5561665,
+      "inputToDrawP95Ms": 36.701375,
+      "exportMedianSeconds": 7.250986792000001,
+      "medianFirstPhotoMs": 141.86370799999997,
+      "maximumReportedRSSBytes": 2609168384
+    }
+  },
+  "sampleOrder": [
+    "off1",
+    "on1",
+    "on2",
+    "off2",
+    "off3",
+    "on3",
+    "on4",
+    "off4"
+  ],
+  "runs": {
+    "off1": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572443375553666,
+        "exportFirstFile": 572434575309416,
+        "exportLastFile": 572443374032416,
+        "exportPrepared": 572434459121333,
+        "importCompleted": 572434865734875,
+        "importFirstFile": 572434613907583,
+        "importLastFile": 572434850993916,
+        "maskCandidate": 572435069163166,
+        "maskRequested": 572434616230291
+      },
+      "firstPhotoMs": 116.188083,
+      "exportSeconds": 8.916432333,
+      "maskToCandidateMs": 452.932875,
+      "overlapFramesMs": [
+        16.70775,
+        19.775333,
+        16.894416,
+        39.780375,
+        21.356958,
+        15.245333,
+        19.614542,
+        16.247,
+        16.528875,
+        14.186292
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2564259840,
+        "residentBytes": 2294890496
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "on1": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572452629582375,
+        "exportFirstFile": 572445440096166,
+        "exportLastFile": 572452627881208,
+        "exportPrepared": 572445304914541,
+        "importCompleted": 572445791292500,
+        "importFirstFile": 572445488360791,
+        "importLastFile": 572445768956583,
+        "maskCandidate": 572445927482541,
+        "maskRequested": 572445488948541
+      },
+      "firstPhotoMs": 135.181625,
+      "exportSeconds": 7.324667834,
+      "maskToCandidateMs": 438.534,
+      "overlapFramesMs": [
+        17.437625,
+        16.833208,
+        16.966958,
+        36.701375,
+        23.142584,
+        14.665916,
+        14.910542,
+        19.01375,
+        19.035333,
+        14.567541,
+        15.912333,
+        22.33475
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2609168384,
+        "residentBytes": 2327216128
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "on2": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572461765794666,
+        "exportFirstFile": 572454743220125,
+        "exportLastFile": 572461764120916,
+        "exportPrepared": 572454588488916,
+        "importCompleted": 572455143801750,
+        "importFirstFile": 572454808992375,
+        "importLastFile": 572455124799875,
+        "maskCandidate": 572455249317833,
+        "maskRequested": 572454810001333
+      },
+      "firstPhotoMs": 154.731209,
+      "exportSeconds": 7.17730575,
+      "maskToCandidateMs": 439.3165,
+      "overlapFramesMs": [
+        18.643334,
+        18.431208,
+        17.694917,
+        45.3045,
+        14.773834,
+        23.009709,
+        15.705333,
+        14.694958,
+        16.038583,
+        14.907917,
+        17.674708,
+        18.771625,
+        14.9595
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2528018432,
+        "residentBytes": 2314076160
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "off2": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572471801157375,
+        "exportFirstFile": 572463861942041,
+        "exportLastFile": 572471795988708,
+        "exportPrepared": 572463722709541,
+        "importCompleted": 572464210815125,
+        "importFirstFile": 572463915186083,
+        "importLastFile": 572464162880083,
+        "maskCandidate": 572464356027500,
+        "maskRequested": 572463917806958
+      },
+      "firstPhotoMs": 139.2325,
+      "exportSeconds": 8.078447834,
+      "maskToCandidateMs": 438.220542,
+      "overlapFramesMs": [
+        15.554709,
+        14.422833,
+        18.260083,
+        38.22275,
+        19.355667,
+        15.412625,
+        13.833834,
+        16.169625,
+        14.376875,
+        18.882
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2563899392,
+        "residentBytes": 2300461056
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "off3": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572481863754250,
+        "exportFirstFile": 572473829790791,
+        "exportLastFile": 572481862017750,
+        "exportPrepared": 572473706446500,
+        "importCompleted": 572474158289375,
+        "importFirstFile": 572473863148291,
+        "importLastFile": 572474129274875,
+        "maskCandidate": 572474305938916,
+        "maskRequested": 572473863621041
+      },
+      "firstPhotoMs": 123.344291,
+      "exportSeconds": 8.15730775,
+      "maskToCandidateMs": 442.317875,
+      "overlapFramesMs": [
+        16.501625,
+        19.499542,
+        15.25,
+        35.503167,
+        21.634333,
+        21.302833,
+        17.84325,
+        17.162083,
+        17.521125,
+        15.046,
+        13.694667
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2523398144,
+        "residentBytes": 2301689856
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "on3": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572490858256375,
+        "exportFirstFile": 572483999415541,
+        "exportLastFile": 572490856717375,
+        "exportPrepared": 572483863256291,
+        "importCompleted": 572484290771000,
+        "importFirstFile": 572484037277791,
+        "importLastFile": 572484270681958,
+        "maskCandidate": 572484473107208,
+        "maskRequested": 572484038650000
+      },
+      "firstPhotoMs": 136.15925,
+      "exportSeconds": 6.995000084,
+      "maskToCandidateMs": 434.457208,
+      "overlapFramesMs": [
+        17.168583,
+        20.840125,
+        18.292125,
+        26.276834,
+        16.455833,
+        19.036209,
+        14.085375,
+        17.725375,
+        14.42375
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2537324544,
+        "residentBytes": 2321973248
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "on4": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572500566783333,
+        "exportFirstFile": 572492947329041,
+        "exportLastFile": 572500565025708,
+        "exportPrepared": 572492799760875,
+        "importCompleted": 572493289333166,
+        "importFirstFile": 572493009015375,
+        "importLastFile": 572493256320125,
+        "maskCandidate": 572493449674833,
+        "maskRequested": 572493010412625
+      },
+      "firstPhotoMs": 147.568166,
+      "exportSeconds": 7.767022458,
+      "maskToCandidateMs": 439.262208,
+      "overlapFramesMs": [
+        15.964542,
+        16.620334,
+        15.831292,
+        39.05525,
+        19.844333,
+        14.349042,
+        19.450917,
+        17.847583,
+        15.952042,
+        19.184917
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2589360128,
+        "residentBytes": 2309570560
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    },
+    "off4": {
+      "timelineUptimeNS": {
+        "exportCompleted": 572510768717458,
+        "exportFirstFile": 572502666562291,
+        "exportLastFile": 572510767300625,
+        "exportPrepared": 572502548637666,
+        "importCompleted": 572503040792666,
+        "importFirstFile": 572502729252708,
+        "importLastFile": 572502994451833,
+        "maskCandidate": 572503172744625,
+        "maskRequested": 572502732230833
+      },
+      "firstPhotoMs": 117.924625,
+      "exportSeconds": 8.220079792,
+      "maskToCandidateMs": 440.513792,
+      "overlapFramesMs": [
+        18.730167,
+        14.831958,
+        14.444709,
+        22.906958,
+        24.235042,
+        15.474375,
+        19.497583,
+        14.554583,
+        15.893167,
+        17.479208,
+        17.121292
+      ],
+      "memory": {
+        "processPeakResidentBytes": 2596028416,
+        "residentBytes": 2305228800
+      },
+      "testBinarySHA256": "1f75d5255769367a0889a42e42260a94339ac00df37522df56e40e45c7410ed7",
+      "skySHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b"
+    }
+  }
+}

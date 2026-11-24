@@ -1,0 +1,68 @@
+{
+  "applicationChange": false,
+  "faultFixture": {
+    "candidate": {
+      "path": "output/035-development/phase-y/spatial-guide/faults-01/lazy-clarity.json",
+      "sha256": "c0bd2d80a58e71c9cb92f465d3395246db972821c7df5389198554b02f9a7009"
+    },
+    "clarityComparedWords": 128,
+    "clarityDifferenceWords": 94,
+    "reference": {
+      "path": "output/035-development/phase-y/spatial-guide/faults-01/original-clarity.json",
+      "sha256": "c5bce2f7cde10a5491026f5bb1f96f889508496451300059732bcc62c4949642"
+    },
+    "scalarFinishDecisionsEqual": true,
+    "textureDifferenceWords": 0
+  },
+  "fullReview": {
+    "path": "output/035-development/phase-y/spatial-guide/reviewed.json",
+    "sha256": "1c834eb04f7981b7a815482753e7e07e83c1178ef327f69ac044586bbba63610"
+  },
+  "loadedSources": {
+    "primary": {
+      "isolatedP50ToFITMs": {
+        "A": 251.254,
+        "lazy": 288.084
+      },
+      "nativeSize": [
+        9504,
+        6336
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "states": 4,
+      "stockProof": {
+        "path": "output/035-development/phase-y/spatial-guide/full-01/00-primary.json",
+        "sha256": "6bde57d9a8053c87e395c249ad08ff1608c0fd9680cd28c6289f6a03393c4b34"
+      }
+    },
+    "secondary": {
+      "isolatedP50ToFITMs": {
+        "A": 233.676,
+        "lazy": 293.462
+      },
+      "nativeSize": [
+        8640,
+        5760
+      ],
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "states": 4,
+      "stockProof": {
+        "path": "output/035-development/phase-y/spatial-guide/full-01/01-secondary.json",
+        "sha256": "7f84d139246c6189d59951267fd8bc78e57b993284a6bbe352510f81814e6d40"
+      }
+    }
+  },
+  "ordinaryInputs": {
+    "absoluteScalarCellsExact": 224,
+    "fixedFactorMostChangedPixels": 22853,
+    "fullDisplayFramesExact": 8,
+    "maxCodeDelta": 1,
+    "nativeFloat32ComponentsExact": 1759739904
+  },
+  "run": {
+    "path": "output/035-development/phase-y/spatial-guide/summary.json",
+    "sha256": "f42c96fb391e9115944df9c3e9f6c110c0edbeed78a01bcb876cc3788a78fbc5"
+  },
+  "schemaVersion": 1,
+  "timingBoundary": "Isolated complete original renderer through final Core Image RGBA8 readback"
+}

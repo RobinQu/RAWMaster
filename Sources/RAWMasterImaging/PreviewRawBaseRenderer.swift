@@ -107,7 +107,8 @@ enum PreviewRawBaseRenderer {
                        decoderIdentity: String, decoderDefaultsFingerprint: String,
                        noiseDefaults: DevelopmentRAWNoiseReductionDefaultsV3,
                        thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
-                       grainFinalTransport: PreviewGrainFinalTransportV1.Request? = nil) throws -> PreviewPixels? {
+                       grainFinalTransport: PreviewGrainFinalTransportV1.Request? = nil,
+                       localSourceValidation: PreviewNativeSource.LocalSourceValidation? = nil) throws -> PreviewPixels? {
     try cacheAttempt {
       try DevelopmentRendererV3.validateSupport(recipe,sourceIsRAW:true)
       guard recipe.adjustmentsV3?.aiDenoise == nil else { throw RawBaseCacheError.ineligible }
@@ -151,7 +152,8 @@ enum PreviewRawBaseRenderer {
         let context = CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:memoryHint])
         defer { context.clearCaches() }
         try pool.checkpoint("v3-base-pinned")
-        let graph = try DevelopmentRendererV3.develop(capture,recipe:recipe,suppliedRawBase:pin.image,context:context,thumbnailNativeSink:thumbnailNativeSink)
+        let graph = try DevelopmentRendererV3.develop(capture,recipe:recipe,suppliedRawBase:pin.image,context:context,
+          thumbnailNativeSink:thumbnailNativeSink,localSourceValidation:localSourceValidation)
         try pool.checkpoint("v3-finite-joined")
         let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
         try pool.checkpoint("v3-owned-display-joined")

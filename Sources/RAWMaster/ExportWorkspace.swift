@@ -18,12 +18,9 @@ struct ExportWorkspace: View {
     @State private var preview: ExportPreviewPhoto?
     @State private var previewProblem: String?
     @State private var message: String?
-    @State private var running = false
-    @State private var completed = 0
-    @State private var total = 0
-    @State private var currentName = ""
-    @State private var results: [URL] = []
-    @State private var exportTask: Task<Void, Never>?
+    @State private var grantedDirectory: URL?
+    @State private var showingDeliveryDetails = false
+    @FocusState private var deliveryDetailsFocused: Bool
     @AppStorage private var directoryPath: String
     private let defaults: UserDefaults
 
@@ -35,9 +32,13 @@ struct ExportWorkspace: View {
     }
 
     private var allPresets: [ExportWorkspacePresetChoice] { ExportWorkspacePresetChoice.builtins + personal }
+    private var running: Bool { model.workbenchPhotoDelivery?.running == true }
     private var modified: Bool { values != basePreset.settings }
     private var checked: Set<String> { selection.checked }
-    private var directory: URL { URL(fileURLWithPath: directoryPath, isDirectory: true) }
+    private var directory: URL {
+        if let grantedDirectory, directoryPath == grantedDirectory.path { return grantedDirectory }
+        return URL(fileURLWithPath: directoryPath, isDirectory: true)
+    }
     private var currentPreview: ExportPreviewPhoto? {
         guard let preview, preview.assetID == selection.focusedID, preview.original == (values.mode == "original") else { return nil }
         return preview
@@ -56,7 +57,8 @@ struct ExportWorkspace: View {
     }
 
     var body: some View {
-        let assets = model.workbenchExportCandidates
+        let assets = running && model.workbenchPhotoDelivery?.resumedCount == nil
+            ? (model.workbenchPhotoDelivery?.assets ?? []) : model.workbenchExportCandidates
         let inspected = assets.first { $0.id == selection.focusedID }
         VStack(spacing: 0) {
             HStack(spacing: 0) {
@@ -76,11 +78,14 @@ struct ExportWorkspace: View {
                     .frame(width: 250)
             }.disabled(running)
             Divider()
-            if let message {
+            if let notice = message ?? model.workbenchPhotoDelivery?.message {
                 HStack {
-                    Text(message).font(.caption).textSelection(.enabled)
+                    Text(notice).font(.caption).textSelection(.enabled)
                     Spacer()
-                    Button { self.message = nil } label: { Image(systemName: "xmark") }
+                    Button {
+                        if message != nil { message = nil }
+                        else { model.workbenchPhotoDelivery?.message = nil }
+                    } label: { Image(systemName: "xmark") }
                         .buttonStyle(.plain).accessibilityLabel("关闭提示")
                 }.padding(.horizontal, 16).padding(.vertical, 6)
                 Divider()
@@ -97,6 +102,9 @@ struct ExportWorkspace: View {
         .onChange(of: assets.map(\.id), initial: true) { _, ids in selection.synchronize(ids) }
         .task(id: PreviewKey(id: inspected?.id, path: inspected?.resolvedURL.path, mode: values.mode)) {
             await loadPreview(inspected)
+        }
+        .sheet(isPresented: $showingDeliveryDetails, onDismiss: { deliveryDetailsFocused = true }) {
+            WorkbenchDeliveryHistory(initial: model.workbenchPhotoDelivery?.id.uuidString.lowercased())
         }
         .sheet(item: $styleDraft) { draft in
             if let preview = currentPreview, let inspected {
@@ -121,7 +129,6 @@ struct ExportWorkspace: View {
                 if item.sharing { pendingShare = item.preset } else { acceptImport(item.preset) }
             }
         }
-        .onDisappear { if running { exportTask?.cancel() } }
     }
 
     private var presetsBar: some View {
@@ -199,27 +206,33 @@ struct ExportWorkspace: View {
     }
 
     private func footer(_ assets: [AssetRecord]) -> some View {
-        HStack(spacing: 12) {
+        let delivery = model.workbenchPhotoDelivery
+        let displayedDirectory = running ? (delivery?.directory ?? directory) : directory
+        return HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
                 Text("输出目录").font(.caption).foregroundStyle(.secondary)
                 Button { chooseDirectory() } label: {
                     HStack(spacing: 6) {
                         Image(systemName: "folder")
-                        Text(directory.path).font(.callout).lineLimit(1).truncationMode(.middle)
+                        Text(displayedDirectory.path).font(.callout).lineLimit(1).truncationMode(.middle)
                         Image(systemName: "chevron.down").font(.caption2)
                     }
-                }.buttonStyle(.plain).disabled(running).help(directory.path)
+                }.buttonStyle(.plain).disabled(running).help(displayedDirectory.path)
                     .accessibilityIdentifier("export.workspace.destination")
             }
             Spacer()
-            if running {
+            Button("任务详情") { showingDeliveryDetails = true }
+                .focused($deliveryDetailsFocused)
+                .accessibilityIdentifier("export.workspace.deliveryDetails")
+            if let delivery, delivery.running {
                 VStack(alignment: .trailing, spacing: 2) {
-                    ProgressView(value: Double(completed), total: Double(max(1, total))).frame(width: 120)
-                    Text("\(completed)/\(total) · \(currentName)").font(.caption2).lineLimit(1)
+                    ProgressView(value: Double(delivery.completed), total: Double(max(1, delivery.total))).frame(width: 120)
+                    Text("\(delivery.completed)/\(delivery.total) · \(delivery.currentName)").font(.caption2).lineLimit(1)
+                    Text("可返回编辑，交付继续").font(.caption2).foregroundStyle(.secondary)
                 }
-                Button("取消导出") { exportTask?.cancel() }
+                Button("取消导出") { Task { await model.cancelWorkbenchPhotoDelivery() } }
             } else {
-                if !results.isEmpty {
+                if let results = delivery?.files, !results.isEmpty {
                     Button("在 Finder 显示 \(results.count) 个文件") {
                         NSWorkspace.shared.activateFileViewerSelecting(results)
                     }.font(.caption).buttonStyle(.link)
@@ -344,7 +357,10 @@ struct ExportWorkspace: View {
         panel.canChooseDirectories = true
         panel.canCreateDirectories = true
         panel.directoryURL = directory
-        if panel.runModal() == .OK, let url = panel.url { directoryPath = url.path }
+        if panel.runModal() == .OK, let url = panel.url {
+            grantedDirectory = url
+            directoryPath = url.path
+        }
     }
 
     private func rememberSubmission() {
@@ -360,7 +376,6 @@ struct ExportWorkspace: View {
         let ids = assets.filter { checked.contains($0.id) }.map(\.id)
         guard !running, !ids.isEmpty, ids.count <= AppModel.maximumWorkbenchExportCount else { return }
         message = nil
-        results = []
         if values.mode == "original" {
             let copy = values.copyMode != "manifest"
             if copy, model.exportSelection(ids: ids, formats: values.originalFormats, exactAssetIDs: ids)?.assetIDs.isEmpty != false {
@@ -380,22 +395,7 @@ struct ExportWorkspace: View {
         let destination = directory, naming = values.namingTemplate, collision = values.collision
         do { try configuration.validate() } catch { message = error.localizedDescription; return }
         rememberSubmission()
-        running = true
-        completed = 0
-        total = ids.count
-        currentName = ""
-        exportTask = Task { @MainActor in
-            do {
-                results = try await model.exportWorkbenchPhotos(directory: destination, namingTemplate: naming,
-                    configuration: configuration, includedIDs: Set(ids), collision: collision) { done, count, name in
-                    Task { @MainActor in completed = done; total = count; currentName = name }
-                }
-                message = "已写入 \(results.count) 个文件。"
-            } catch {
-                message = Task.isCancelled || error is CancellationError ? "已取消导出，已写入的文件保存在输出目录。" : error.localizedDescription
-            }
-            running = false
-            exportTask = nil
-        }
+        model.submitWorkbenchPhotoDelivery(directory: destination, naming: naming, configuration: configuration,
+            ids: Set(ids), collision: collision)
     }
 }

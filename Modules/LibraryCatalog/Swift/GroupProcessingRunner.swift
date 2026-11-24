@@ -98,6 +98,13 @@ public enum GroupProcessingRunner {
 
     public static func resume(actions: CatalogActions, jobID: String,
                               render: @escaping Renderer) async throws -> GroupProcessingResult {
+        try await ProcessingAdmission.shared.withPermit(.library, resources: .init(cpu: 1, gpu: 1, io: 1, memoryBytes: 256 << 20)) {
+            try await runAdmitted(actions: actions, jobID: jobID, render: render)
+        }
+    }
+
+    private static func runAdmitted(actions: CatalogActions, jobID: String,
+                                    render: @escaping Renderer) async throws -> GroupProcessingResult {
         let key: [String: CatalogJSON] = ["jobID": .string(jobID)]
         var run = try await call(actions, "claim", key).decoded(Run.self)
         if run.state == "rendering", let token = run.token, let frames = run.frames,

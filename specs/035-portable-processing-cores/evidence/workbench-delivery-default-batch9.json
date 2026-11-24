@@ -1,0 +1,524 @@
+{
+  "candidate": "candidate-batch9",
+  "reference": "main@1b7df6b6",
+  "binarySHA256": "620ed5342490b9acbd46569275e047be8cad8f3b0129135a8ec160937e76d030",
+  "inputManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+  "sameOutputFilesPerBuild": 968,
+  "scope": "Five fixture groups, one warm-up plus three measured runs per group on the same Apple M4 Max.",
+  "deliveries": {
+    "mergedMain": {
+      "jpeg-source/1": {
+        "secondsMedian": 0.075994375,
+        "firstSecondsMedian": 0.075907208,
+        "samples": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080539833,
+            "processMaxRSSKiB": 229120,
+            "seconds": 0.080609333
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.075364458,
+            "processMaxRSSKiB": 254048,
+            "seconds": 0.07541975
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.075907208,
+            "processMaxRSSKiB": 262736,
+            "seconds": 0.075994375
+          }
+        ]
+      },
+      "jpeg-source/20": {
+        "secondsMedian": 0.521562542,
+        "firstSecondsMedian": 0.080060208,
+        "samples": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080060208,
+            "processMaxRSSKiB": 737920,
+            "seconds": 0.541194166
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.092564083,
+            "processMaxRSSKiB": 757456,
+            "seconds": 0.521562542
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.079145916,
+            "processMaxRSSKiB": 789440,
+            "seconds": 0.505274333
+          }
+        ]
+      },
+      "jpeg-source/200": {
+        "secondsMedian": 4.795249,
+        "firstSecondsMedian": 0.081928625,
+        "samples": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.081928625,
+            "processMaxRSSKiB": 811376,
+            "seconds": 4.7169195
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.081707375,
+            "processMaxRSSKiB": 811376,
+            "seconds": 4.795249
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.084184708,
+            "processMaxRSSKiB": 816432,
+            "seconds": 4.889084375
+          }
+        ]
+      },
+      "raw-source/1": {
+        "secondsMedian": 0.059226333,
+        "firstSecondsMedian": 0.059158875,
+        "samples": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.059158875,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.059226333
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.060616709,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.060694042
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.053112792,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.053188583
+          }
+        ]
+      },
+      "raw-source/20": {
+        "secondsMedian": 0.361021083,
+        "firstSecondsMedian": 0.061162166,
+        "samples": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.061162166,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.360945416
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.062401333,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.361021083
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.058017042,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.368673292
+          }
+        ]
+      }
+    },
+    "candidate": {
+      "jpeg-source/1": {
+        "secondsMedian": 0.104205708,
+        "firstSecondsMedian": 0.102792583,
+        "samples": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.102792583,
+            "processMaxRSSKiB": 246304,
+            "seconds": 0.104205708
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.103867708,
+            "processMaxRSSKiB": 264112,
+            "seconds": 0.105137292
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.1018125,
+            "processMaxRSSKiB": 264112,
+            "seconds": 0.103098125
+          }
+        ]
+      },
+      "jpeg-source/20": {
+        "secondsMedian": 0.781852167,
+        "firstSecondsMedian": 0.141473,
+        "samples": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.141473,
+            "processMaxRSSKiB": 792832,
+            "seconds": 0.743127291
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.141357875,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.781852167
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.148821541,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.819008291
+          }
+        ]
+      },
+      "jpeg-source/200": {
+        "secondsMedian": 6.688201125,
+        "firstSecondsMedian": 0.173593167,
+        "samples": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.173593167,
+            "processMaxRSSKiB": 875888,
+            "seconds": 6.996741167
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.194393708,
+            "processMaxRSSKiB": 875888,
+            "seconds": 6.688201125
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.169190709,
+            "processMaxRSSKiB": 875888,
+            "seconds": 6.678577209
+          }
+        ]
+      },
+      "raw-source/1": {
+        "secondsMedian": 0.085300625,
+        "firstSecondsMedian": 0.083732084,
+        "samples": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.086189416,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.087715041
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.081091542,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.082548
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.083732084,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.085300625
+          }
+        ]
+      },
+      "raw-source/20": {
+        "secondsMedian": 0.885954125,
+        "firstSecondsMedian": 0.117739375,
+        "samples": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.114638291,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.896542
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.137667791,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.885954125
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.117739375,
+            "processMaxRSSKiB": 875888,
+            "seconds": 0.872437791
+          }
+        ]
+      }
+    }
+  }
+}

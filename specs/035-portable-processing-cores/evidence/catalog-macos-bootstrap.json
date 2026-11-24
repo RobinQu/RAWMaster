@@ -1,0 +1,326 @@
+{
+  "experiment": "macOS owner-created WAL/SHM and legitimate re-creation of APFS workbench attachments",
+  "recordedLocalDate": "2026-11-24",
+  "productionIntegrated": false,
+  "throughputMeasured": false,
+  "reproduction": "experiments/portable-processing/catalog/macos-interop-probe/bootstrap/README.md",
+  "host": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "osBuild": "26A434",
+    "CPU": "Apple M4 Max",
+    "filesystem": "local APFS; new service-owned 0700 directories only"
+  },
+  "reusedInteropEvidence": {
+    "path": "specs/035-portable-processing-cores/evidence/catalog-macos-interop.json",
+    "sha256": "6cca561a8feca4b6e7cfe6a77aa00582db0c39efe131f3bd8ba02c7fdf3f2a6b",
+    "bytes": 14163
+  },
+  "originalAndArchive": [
+    {
+      "path": "output/035-development/phase-y/catalog/smoke.json",
+      "sha256": "2e928b36f365c44cab94afaf6d1b789997a958102b663bb707dac08c7b4c62ff",
+      "bytes": 2338
+    },
+    {
+      "path": "output/035-development/phase-y/catalog/first.json",
+      "sha256": "3cb724b1cd1af064fef3d03560277096625e33fb4ad2a045e4c0872013675e40",
+      "bytes": 51296
+    },
+    {
+      "path": "output/035-development/phase-y/catalog/matrix.json",
+      "sha256": "7b8e416eaa9945eb7ef36476448dcd7ee0e78de54278ee16b9e53a0dc4d17f6d",
+      "bytes": 460132
+    },
+    {
+      "path": "output/035-development/phase-y/catalog/archive.json",
+      "sha256": "60618f127df09efa310440f4c04924d4a5a90ce3beec4eb64ea53734f8aa7d6d",
+      "bytes": 463576
+    }
+  ],
+  "sourceSHA256": {
+    "README.md": "99d9d9a3d328da79e3d5d051026b0ef21cc4a163c7729fb2dc160c1f2e5f4762",
+    "build.py": "02b0630074fc4c41ca49656fc0684138c8a97d538eabc20d7592079fa7069349",
+    "keeper.c": "c3f9bee2323005212b6f450758397ead40cb4de92a280804d59f8818588ce987",
+    "run.py": "c573a6c68a2db206a142ead63d9e17dcc3c8809185baef9041a7ed49d90b77d5",
+    "supervisor.py": "cf88ef8f30b8ab77ce96ee26ef8de8bce2610f22c2d1e312b971ac72bc7c8049"
+  },
+  "reusedResearchSourcesSHA256": {
+    "experiments/portable-processing/catalog/macos-interop-probe/build.py": "5d7ed792cfd45c1d9055bbbb237c23cd3b4d462676e83e5cd10684494952d73e",
+    "experiments/portable-processing/catalog/macos-interop-probe/mac-proof.c": "fed205317e08b54fcb86c0ef71f30ff460557f6b698c14f9253d3105da0fc95e",
+    "experiments/portable-processing/catalog/macos-interop-probe/private.rs": "c5fe68a1f131e728d6656935c2897ea666889104815ef18a2c9b69a811df6d86",
+    "experiments/portable-processing/catalog/macos-interop-probe/proof.rs": "d8e2bf3b6ff369471fada1c1630c9433fc4b4eb479e20c12975b480a349931f0",
+    "experiments/portable-processing/catalog/macos-interop-probe/run.py": "20268e092b2ee86756b8e4c816e2f28acf80feac822219781d2731c91ae01144",
+    "experiments/portable-processing/catalog/macos-interop-probe/system-peer.c": "0630a07558295bdd38264c483257c9192211ff4d6ed9eefdd6451be0a1c7ad28",
+    "experiments/portable-processing/catalog/transaction-filestat-probe/bootstrap/owner_io.inc": "1f0b149c174e300d754576cd5c0d2457585960f4683e9dfd29d3e09ca98267c6",
+    "experiments/portable-processing/catalog/transaction-filestat-probe/mapping/witness-vfs.c": "4da29abc0b682c5c29f6e91c9fc1a1b586e6501bf7592b625c7f77836d4a4dfd",
+    "experiments/portable-processing/catalog/queue-transaction-probe/keeper.c": "3e19982e1790f0c41af21236412e62a5f9d3ff16062a5ac523fc0be61f1ef55d",
+    "experiments/portable-processing/catalog/queue-transaction-probe/abi.h": "06df5bebff95937b02c53216ee00085568fb7e6b9d44f321418ba450fd1ef996",
+    "experiments/portable-processing/catalog/queue-transaction-probe/run.py": "ea6a5acd82f8329897786be991a51ea71fb2dd70d3a81930dc750c673e3a33ad"
+  },
+  "binaries": {
+    "shippingSystemCatalogRuntimeSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "privateRustCABIExecutableSHA256": "551fdf66763c32629f5982f2522136fadf5b95db4a42efeccc9d0c113a84386b",
+    "systemFixtureOriginSHA256": "d57dfe390a4fa0372ffdad5412c994dceca0b61b8b719989e98f9fabcaec0804",
+    "privateAttachmentKeeperSHA256": "8dc336c4b05e98fd006038863e23c7490c306d68f6f0dc5c824a5e64049087a2",
+    "privateAttachmentKeeperDirectDylibs": [
+      "/usr/lib/libSystem.B.dylib"
+    ],
+    "systemSQLiteSourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+    "privateSQLiteSourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "privateUpstreamAmalgamationBeforeRoleAdapterSHA256": "0a409f1633283fa31a9126b11fbfd64a1991c5d30defad07e5745d4667f5e23d",
+    "scopedKeeperAmalgamationAfterRoleAdapterSHA256": "29d1a437be5412d614a234590c5e19c4a0c6a2d7491035b735f679938b9d5390",
+    "compiledRoleProtocolSHA256": "757147cb78d8ea34de39f3766768f4deaf2caa40d1c63dba44bd7a7c5dad7550",
+    "compiledKeeperAndVFSUnitSHA256": "71103c8cd344d5f96aa6bcd721e6616b8bf6ec3562a9f6b997e6ba04923293df",
+    "realRequestABI": "rm_library_request_v1; same exact Rust X2 binary; private initial-attachment keeper is a different PID using a surgically instrumented copy of that pinned SQLite source."
+  },
+  "defaultAppleLastCloseControls": [
+    {
+      "additionalReadOnlyProcess": false,
+      "explicitCheckpoint": null,
+      "filesAfterNormalSystemClose": {
+        "library.sqlite": 1101824,
+        "library.sqlite-wal": 0,
+        "library.sqlite-shm": 32768
+      },
+      "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl"
+    },
+    {
+      "additionalReadOnlyProcess": true,
+      "explicitCheckpoint": null,
+      "filesAfterNormalSystemClose": {
+        "library.sqlite": 1101824,
+        "library.sqlite-wal": 0,
+        "library.sqlite-shm": 32768
+      },
+      "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl"
+    },
+    {
+      "additionalReadOnlyProcess": false,
+      "explicitCheckpoint": {
+        "checkpointRC": 0,
+        "log": 0,
+        "done": 0
+      },
+      "filesAfterNormalSystemClose": {
+        "library.sqlite": 1101824,
+        "library.sqlite-wal": 0,
+        "library.sqlite-shm": 32768
+      },
+      "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl"
+    },
+    {
+      "additionalReadOnlyProcess": true,
+      "explicitCheckpoint": {
+        "checkpointRC": 0,
+        "log": 0,
+        "done": 0
+      },
+      "filesAfterNormalSystemClose": {
+        "library.sqlite": 1101824,
+        "library.sqlite-wal": 0,
+        "library.sqlite-shm": 32768
+      },
+      "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl"
+    }
+  ],
+  "ordinarySystemOwnerMadeMissingBase": {
+    "explicitPersistValueBefore": [
+      1
+    ],
+    "valueAfter": [
+      0
+    ],
+    "allNativeLastClosesSuccessful": true,
+    "allSQLiteTRUNCATESucceededAndCountersWereZero": true,
+    "walAndShmBothNaturallyAbsentBeforeBootstrap": true
+  },
+  "archive": {
+    "passes": 9,
+    "consecutiveNativeBindingGenerationsPerCase": 2,
+    "activations": 18,
+    "exclusivelyCreatedSidecarObjects": 36,
+    "fullyRestoredTwoWayOffsetProbes": 54,
+    "independentSameInodeOFDControls": 54,
+    "everyActivationHadAPFSMainWalShmAndActualZeroByteWAL": true,
+    "activeShmBytes": [
+      32768
+    ],
+    "activeKernelShareModes": [
+      4
+    ],
+    "kernelPOSIXAndOFDPassedBeforeAndAfterReturnedFDsClosed": true,
+    "mainSharedLockOffset": 1073741826,
+    "shmWriterLockOffset": 120,
+    "actualShmReadSlots": [
+      123
+    ],
+    "systemWriterInitiallyBusyThenSuccessfullyRetried": 9,
+    "allRetiredCheckpointTuplesWereRCBusyLogDoneZero": true,
+    "independentOriginalTicketFromMainWithoutSidecars": 9,
+    "rustCABIRequests": 63,
+    "realTransactionChecks": 135,
+    "read": 54,
+    "write": 81,
+    "realZeroByteWALChecks": 60,
+    "phases": {
+      "read": 54,
+      "write": 45,
+      "prepare": 9,
+      "link": 9,
+      "ack": 18
+    },
+    "oldAuthorityRejectedBeforeEffects": 9,
+    "oldBothFDsStillPinUnlinkedInodes": true,
+    "originalStageInodeAndRepeatedACK": 9,
+    "JPEGBytes": 47835,
+    "JPEGSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f"
+  },
+  "byCase": [
+    {
+      "test": "fresh",
+      "counterexample": null,
+      "originalPreparedTicketSHA256": "01b627d938a78e1c15366721a5266a1ec11958c2592893c5e54c6ba5be7ef87c",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "empty-WAL",
+      "counterexample": {
+        "unknownEmptyEntryPreserved": "library.sqlite-wal",
+        "attachmentsRegistered": 0
+      },
+      "originalPreparedTicketSHA256": "f73612d64c0a7670daa624d58eb70f0ec4b4987f0ff9ce49f398d0fe1195028f",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "empty-SHM",
+      "counterexample": {
+        "unknownEmptyEntryPreserved": "library.sqlite-shm",
+        "attachmentsRegistered": 0
+      },
+      "originalPreparedTicketSHA256": "2bfbb1e2a0bc9a31d6fc962ccf3ae24ca1241ee12eb09c5a459d002c539cfc6f",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "partial-WAL",
+      "counterexample": {
+        "firstKeeperDenied": 54,
+        "directRoleErrno": 5,
+        "onlyCreatedWALRegistered": true,
+        "failedKeeperTerminated": true
+      },
+      "originalPreparedTicketSHA256": "af2a2ec37f286f07a05c5a76948a5ec8fa602802c1106eb11fe3bf811c004c77",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "partial-with-foreign-SHM",
+      "counterexample": {
+        "firstKeeperDenied": 54,
+        "directRoleErrno": 17,
+        "onlyCreatedWALRegistered": true,
+        "failedKeeperTerminated": true,
+        "unknownRemainingSHMKept": true
+      },
+      "originalPreparedTicketSHA256": "1e0b195c58c93b98f5a32e64a4b7d62b3b0bd17aa038f2feae255373ad992469",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "partial-same-bytes-WAL",
+      "counterexample": {
+        "firstKeeperDenied": 54,
+        "directRoleErrno": 5,
+        "onlyCreatedWALRegistered": true,
+        "failedKeeperTerminated": true,
+        "partialSameBytesReplacementDeniedWhileOriginalPinned": true
+      },
+      "originalPreparedTicketSHA256": "002808ad5f3cb9b648d238e978538a1e9e42f10282be903cda11e511cd79e776",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "old-live-reader",
+      "counterexample": {
+        "sqliteCheckpointWithReader": {
+          "rc": 5,
+          "busy": 1,
+          "log": 7,
+          "checkpointed": 4
+        },
+        "retirementRefusedWhileActualReaderAlive": true
+      },
+      "originalPreparedTicketSHA256": "73dc37afb51647ed051d0b401df8ca9cb307a8504e60bee3507ee556c3f271d6",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "live-reader-after-checkpoint",
+      "counterexample": {
+        "sqliteCheckpointWithReader": {
+          "rc": 0,
+          "busy": 0,
+          "log": 0,
+          "checkpointed": 0
+        },
+        "retirementRefusedWhileActualReaderAlive": true
+      },
+      "originalPreparedTicketSHA256": "25fd791f7a2e4750750fd79c2ec0a1249c719f8bb3dddc3816720b009f2054c6",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    },
+    {
+      "test": "published-before-generation-change",
+      "counterexample": null,
+      "originalPreparedTicketSHA256": "2fa507a643804f8488cf4f75a168396906ef92738d6258197aa98fc864d40ce5",
+      "independentlyReadTicketFromMainWithoutSidecars": true,
+      "oldPinsDenied": true,
+      "finalIntegrity": {
+        "quick": "ok",
+        "foreign": 0
+      }
+    }
+  ],
+  "limits": [
+    "OS-specific use of two separately compiled SQLite implementations and separate processes. No production integration, system-wide open hook, write to real libraries, or mount. SHA-identified v10 Rust binary unchanged from X2.",
+    "Supervisor remains live and alone controls all writable directory names and admitted processes, serializing admission and retirement; third-party rename after a check is outside this contract.",
+    "Apple system default persistent WAL was explicitly changed only by the originating connection of these freshly generated fixtures. This is not authority to delete unknown existing sidecars of an installed catalog.",
+    "OFD offset calibration is strictly for a single-threaded paused keeper with all other users of those exact open descriptions stopped. New per-connection descriptions retain independent lock ownership. Darwin DGRAM rights, inherited private socket, per-launch nonce, authorized owner and known child PID are the fixture transport.",
+    "No macOS hot-WAL recovery, failed retirement/power loss, supervisor restart, external/network/remounted storage, App Sandbox/XPC/bookmark transfer or application/service throughput is claimed. The Linux hot-WAL qualification has different OS assumptions.",
+    "These nine deliveries took the native hard-link success path. The real RENAME_EXCL fallback was qualified separately by X2."
+  ]
+}

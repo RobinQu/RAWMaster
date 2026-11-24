@@ -1,0 +1,535 @@
+{
+  "mode": "Native positive dehaze erosion with rolling rows",
+  "defaultEnabled": false,
+  "requiredSwitches": [
+    "RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION",
+    "RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION",
+    "RAWMASTER_QA_NATIVE_DEHAZE_RING_EROSION"
+  ],
+  "testedDevice": {
+    "name": "Apple M4 Max",
+    "registryID": "4294968440",
+    "os": "Version 27.0.1 (Build 26A434)"
+  },
+  "independentNumericBinary16Reference": [
+    {
+      "field": "positive-ramp",
+      "width": 39,
+      "height": 35,
+      "chunks": [
+        3,
+        8,
+        16,
+        64
+      ],
+      "uniqueOutputBits": 435,
+      "outputMinAndMaxBitPatterns": [
+        "0x3000",
+        "0x31fa"
+      ],
+      "SHA256": "7baf4930143561105077c4823d995f4c4c176e88dffdad33bf8961ad956302dc",
+      "differentBits": 0
+    },
+    {
+      "field": "negative-subnormal-ramp",
+      "width": 39,
+      "height": 35,
+      "chunks": [
+        3,
+        8,
+        16,
+        64
+      ],
+      "uniqueOutputBits": 279,
+      "outputMinAndMaxBitPatterns": [
+        "0x8087",
+        "0x81b5"
+      ],
+      "SHA256": "ffec4d51e838ad73e0e6d5a3b67a6746576072ec676cb95104e592173bd86a0b",
+      "differentBits": 0
+    },
+    {
+      "field": "signed-zero-island",
+      "width": 39,
+      "height": 35,
+      "chunks": [
+        3,
+        8,
+        16,
+        64
+      ],
+      "uniqueOutputBits": 2,
+      "outputMinAndMaxBitPatterns": [
+        "0x0",
+        "0x8000"
+      ],
+      "SHA256": "580a0986ab0974efaf00c1bfd1d97ee5544bd4b15a79590e9143db9f86dd87af",
+      "differentBits": 0
+    },
+    {
+      "field": "edge-subnormal-island",
+      "width": 39,
+      "height": 35,
+      "chunks": [
+        3,
+        8,
+        16,
+        64
+      ],
+      "uniqueOutputBits": 2,
+      "outputMinAndMaxBitPatterns": [
+        "0x1",
+        "0x8001"
+      ],
+      "SHA256": "be29aff5deed0d6162e6c29ecc7777d145aeafe9ada1e4a81a53ad092dc0f9be",
+      "differentBits": 0
+    },
+    {
+      "field": "opposed-corner-HDR",
+      "width": 39,
+      "height": 35,
+      "chunks": [
+        3,
+        8,
+        16,
+        64
+      ],
+      "uniqueOutputBits": 323,
+      "outputMinAndMaxBitPatterns": [
+        "0x4407",
+        "0xfbff"
+      ],
+      "SHA256": "4a559ccc484159e0ab72d044d0283580179eba4246e7bb510643f55a04299644",
+      "differentBits": 0
+    }
+  ],
+  "geometryAndAuthority": {
+    "tickRows": 64,
+    "ticksPerCommand": 4,
+    "concurrentCommandBuffers": 1,
+    "rangeCertificate": "First-stage native centre checks all actual opaque RGBA16F for normalized RGB magnitude <=1024 and unit alpha. Every stage writes an independent 16x16-group payload count. All joined counts, final frontiers and live source checks precede publication.",
+    "scope": "Verified current FlashRaw031 EXIF1 opaque physical RGBA16F, positive prepared dehaze, observed two native grids on macOS 27.0.1 Apple M4 Max unified with at least 32 GiB. Original positive R32F producer, restore/FIT and bounded resource checks.",
+    "observedVolume": {
+      "fileSystem": "apfs",
+      "samePhysicalVolume": true
+    }
+  },
+  "sources": {
+    "primary": {
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "grid": [
+        9504,
+        6336
+      ],
+      "nativeMinimumRGBA16FSHA256": "b1e168dadcf74fa914d89ce03efbbc9635cfdc0fa46092899412a90237d2e3cd",
+      "physicalMinimumComponents": 240869376,
+      "matchingConsecutive256RowBands": 25,
+      "guideR32SHA256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+      "allGuideScalarsCompared": 60217344,
+      "guideDifferentWords": 0,
+      "oldAndNewAllocatedBytes": [
+        518340608,
+        520486912
+      ],
+      "oldAndNewCommands": [
+        25,
+        26
+      ],
+      "oldAndNewConfirmedFinal64Strips": [
+        99,
+        99
+      ],
+      "states": [
+        {
+          "amount": 15,
+          "warm": false,
+          "linearRGBAfSHA256": "bcb91098cc3a5df3f0f0473b90e58e73e747ca1c1ad546b4e19ce2e950b99843",
+          "nativeRGBAfComponents": 240869376,
+          "stockAndW2SRGB8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf"
+        },
+        {
+          "amount": 45,
+          "warm": true,
+          "linearRGBAfSHA256": "6805d5307886864bdaef5faa7141b960246cd0b23426a59903d930516c7ced8b",
+          "nativeRGBAfComponents": 240869376,
+          "stockAndW2SRGB8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+        }
+      ],
+      "oldWrites": 773490168,
+      "newWrites": 308944296,
+      "reductionPercent": 60.058,
+      "margins": [
+        75,
+        72,
+        63,
+        36,
+        0
+      ],
+      "ringRows": [
+        70,
+        82,
+        118,
+        136
+      ],
+      "fileIdentity": {
+        "fileDevice": 16777234,
+        "inode": 184312383,
+        "sizeBytes": 69488640,
+        "mtimeNS": 1795138035006004275
+      },
+      "independentNativeMediansMS": {
+        "E4": {
+          "timedGroupLoopMS": 57.126,
+          "completedGPUIntervalsMS": 33.971,
+          "fullErosionMS": 57.374,
+          "coldAcquireIncludingGuideMS": 222.685,
+          "coldW2AndRasterMS": 45.915,
+          "coldAcquirePlusW2MS": 268.601,
+          "warmAcquirePlusW2MS": 28.932,
+          "peakBytes": 3094579372.0
+        },
+        "R4": {
+          "timedGroupLoopMS": 41.985,
+          "completedGPUIntervalsMS": 17.899,
+          "fullErosionMS": 42.275,
+          "coldAcquireIncludingGuideMS": 210.053,
+          "coldW2AndRasterMS": 46.054,
+          "coldAcquirePlusW2MS": 255.938,
+          "warmAcquirePlusW2MS": 27.608,
+          "peakBytes": 3094390896.0
+        }
+      },
+      "independentNativeSampleCountPerArm": 4,
+      "scopedFullNativeRawEvidence": [
+        {
+          "path": "output/035-development/phase-z/dehaze-scalar/erosion-submit/correctness-02/01-primary-E4-full.json",
+          "sha256": "2e3cf7aa75814ab31c72f31756f05c33c90959cc01fadd25e3763569c4628d8d"
+        },
+        {
+          "path": "output/035-development/phase-ab/dehaze-ring/initial-01/00-primary-R4-full.json",
+          "sha256": "500743c2581185fa2dd5537b0ad3f1fd8934d18dcac2fe39635eefcfc3335a2e"
+        }
+      ]
+    },
+    "secondary": {
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "grid": [
+        8640,
+        5760
+      ],
+      "nativeMinimumRGBA16FSHA256": "6e7ce270ccee560877890580a5b43434461b826e9cbea25385aefd5bc95ba8f0",
+      "physicalMinimumComponents": 199065600,
+      "matchingConsecutive256RowBands": 23,
+      "guideR32SHA256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+      "allGuideScalarsCompared": 49766400,
+      "guideDifferentWords": 0,
+      "oldAndNewAllocatedBytes": [
+        430080000,
+        429686784
+      ],
+      "oldAndNewCommands": [
+        23,
+        24
+      ],
+      "oldAndNewConfirmedFinal64Strips": [
+        90,
+        90
+      ],
+      "states": [
+        {
+          "amount": 15,
+          "warm": false,
+          "linearRGBAfSHA256": "c765bfcb6c92722eb62531fe9bfd570f5487b9f9955fabb63d61e1f5c6739486",
+          "nativeRGBAfComponents": 199065600,
+          "stockAndW2SRGB8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+        },
+        {
+          "amount": 45,
+          "warm": true,
+          "linearRGBAfSHA256": "ac72fa4112609b2099f28e6301969575b66490b4732a97f83699deebc215aaec",
+          "nativeRGBAfComponents": 199065600,
+          "stockAndW2SRGB8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+        }
+      ],
+      "oldWrites": 594994320,
+      "newWrites": 255161704,
+      "reductionPercent": 57.115,
+      "margins": [
+        68,
+        65,
+        56,
+        29,
+        0
+      ],
+      "ringRows": [
+        70,
+        82,
+        118,
+        122
+      ],
+      "fileIdentity": {
+        "fileDevice": 16777234,
+        "inode": 184449347,
+        "sizeBytes": 69582848,
+        "mtimeNS": 1792589258770527751
+      },
+      "independentNativeMediansMS": {
+        "E4": {
+          "timedGroupLoopMS": 48.096,
+          "completedGPUIntervalsMS": 27.729,
+          "fullErosionMS": 48.363,
+          "coldAcquireIncludingGuideMS": 183.114,
+          "coldW2AndRasterMS": 41.054,
+          "coldAcquirePlusW2MS": 225.495,
+          "warmAcquirePlusW2MS": 26.444,
+          "peakBytes": 2617755604.0
+        },
+        "R4": {
+          "timedGroupLoopMS": 36.335,
+          "completedGPUIntervalsMS": 16.075,
+          "fullErosionMS": 36.588,
+          "coldAcquireIncludingGuideMS": 173.018,
+          "coldW2AndRasterMS": 45.438,
+          "coldAcquirePlusW2MS": 218.455,
+          "warmAcquirePlusW2MS": 27.813,
+          "peakBytes": 2617624568.0
+        }
+      },
+      "independentNativeSampleCountPerArm": 4,
+      "scopedFullNativeRawEvidence": [
+        {
+          "path": "output/035-development/phase-z/dehaze-scalar/erosion-submit/correctness-02/02-secondary-E4-full.json",
+          "sha256": "0c5c84a474a24176ee7761c771c874cf989f3a94da2d53904fcf7f92b59b966e"
+        },
+        {
+          "path": "output/035-development/phase-ab/dehaze-ring/initial-01/01-secondary-R4-full.json",
+          "sha256": "4f9fb96e5925b515e5e5192bf1d28aa069f3fa8a88eb2ddce340b48f4451c21d"
+        }
+      ]
+    }
+  },
+  "outputSHA256Scope": "All four native RGBA16F components in physical top-row order, complete compact R32F, complete native restored RGBAf in both states and complete stock/alternative 2400x1600 sRGB8. Neither finite admission nor output was sampled.",
+  "failureAndRetry": [
+    {
+      "failure": "missWrappedRow",
+      "reportedError": "allocationProtocol",
+      "failedCommitsAndJoins": 1,
+      "metalStatusWhenScopeClosed": "none",
+      "publishedMinimumOnFailure": false,
+      "retryJoins": 26,
+      "retryAllFinalStrips": 99
+    },
+    {
+      "failure": "missFinalGroup",
+      "reportedError": "allocationProtocol",
+      "failedCommitsAndJoins": 26,
+      "metalStatusWhenScopeClosed": "none",
+      "publishedMinimumOnFailure": false,
+      "retryJoins": 26,
+      "retryAllFinalStrips": 99
+    },
+    {
+      "failure": "closeFirstInFlight",
+      "reportedError": "closed",
+      "failedCommitsAndJoins": 1,
+      "metalStatusWhenScopeClosed": "2",
+      "publishedMinimumOnFailure": false,
+      "retryJoins": 26,
+      "retryAllFinalStrips": 99
+    },
+    {
+      "failure": "cancelAfterCommit",
+      "reportedError": "CancellationError()",
+      "failedCommitsAndJoins": 2,
+      "metalStatusWhenScopeClosed": "none",
+      "publishedMinimumOnFailure": false,
+      "retryJoins": 24,
+      "retryAllFinalStrips": 90
+    }
+  ],
+  "immutableInputAndDetailedReceipts": {
+    "path": "output/035-development/phase-ab/dehaze-ring/reviewed.json",
+    "sha256": "39fc8dd7804667b16bac644ae35d4a110b7915103004af12d442a01b8e82080d"
+  },
+  "productionSourceHashes": {
+    "Sources/RAWMasterImaging/DevelopmentNativeDehazeErosion.swift": "c541af23c60da8828dbcd000123fc677bc80b53c3dd752d2dfab1a82ac81bf47",
+    "Sources/RAWMasterImaging/DevelopmentDehazeErosionRing.swift": "6d846806a4ea9689bfa605f5a12070f9ae118accd308a9a2678325909ec1c7d5",
+    "Tests/RAWMasterImagingTests/DevelopmentNativeDehazeErosionTests.swift": "326ac21571943c0b25f739132636b79c6fc6de7b02d09b8846e174f5c1fd8adc"
+  },
+  "limitations": [
+    "The first independent primary E4 process spent approximately 97 ms before its submitted, joined group loop. Both orders and all process samples are retained.",
+    "Secondary source first-order end-to-end guide acquisition reversed despite faster erosion. The warm guide retains the exact original provider; erosion is not rerun for a strength change.",
+    "The observed aperture and speed are on the recorded macOS build, GPU and two native sizes. The opt-in depends on existing validated current physical source, capacity, and original grouped native positive dehaze requirements."
+  ],
+  "sealedNativeChecks": {
+    "threeNativeErosionTestsPassed": true,
+    "totalSelectedTestsPassed": 10,
+    "bundleBinaryManifest": {
+      "path": "output/035-development/candidate-batch30-native-mask-ring/binaries.sha256",
+      "sha256": "34ab080a236991d652c92643589ef311a332402fe8c2f645c279ea92e9fa37ae"
+    },
+    "sourceManifest": {
+      "path": "output/035-development/candidate-batch30-native-mask-ring/source-files.sha256",
+      "sha256": "8e80b0a47604b6ed60c8d808df9b704e4462e422bee59c59bfce74fc8989d156"
+    },
+    "receipt": {
+      "path": "output/035-development/candidate-batch30-native-mask-ring/portable-and-ring-guards.log",
+      "sha256": "8d0b077378a6ed11c5c948ba4d64f44adc04e28bb903b8f99aa979d206a85d57"
+    }
+  },
+  "productionDispatchFaultsAndRetries": [
+    {
+      "action": "revokePriorToFirstCommit",
+      "submittedAndJoinedBeforeRejection": 0,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 99
+    },
+    {
+      "action": "encodeInFirst",
+      "submittedAndJoinedBeforeRejection": 0,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 99
+    },
+    {
+      "action": "encodeAfterFirst",
+      "submittedAndJoinedBeforeRejection": 1,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 99
+    },
+    {
+      "action": "closeFirstInFlight",
+      "submittedAndJoinedBeforeRejection": 1,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 99
+    },
+    {
+      "action": "missWrappedRow",
+      "submittedAndJoinedBeforeRejection": 1,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 99
+    },
+    {
+      "action": "cancelAfterCommit",
+      "submittedAndJoinedBeforeRejection": 2,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 90
+    },
+    {
+      "action": "missFinalGroup",
+      "submittedAndJoinedBeforeRejection": 24,
+      "failurePublished": false,
+      "sameProcessRetryFull64Strips": 90
+    }
+  ],
+  "productionShader": {
+    "instrumentation": {
+      "path": "output/035-development/phase-ab/dehaze-ring/product-witness-sources.json",
+      "sha256": "6016945458eb0c245447f9ce6e7fbe8824a84cca916c3b8bc2302ab304656cdc"
+    },
+    "physicalFullReadbacks": {
+      "primary": {
+        "path": "output/035-development/phase-ab/dehaze-ring/product-full-01/00-primary-R4-full.json",
+        "sha256": "d3c9464332fe08025c3ed727dd97ed61849cf01ba8c77e001332f0f3a2169de5"
+      },
+      "secondary": {
+        "path": "output/035-development/phase-ab/dehaze-ring/product-full-01/01-secondary-R4-full.json",
+        "sha256": "b53fe71892ffa8126a53ea7fa18b24267c9b1442be83072ab2eb4c7ef41d5077"
+      }
+    },
+    "fullSourceAndGuideMatchesOld": true
+  },
+  "actualNativeService": {
+    "withProductionPreviewService": true,
+    "all37ControlsInEachProcess": true,
+    "executionProtocol": {
+      "path": "output/035-development/phase-ab/photo-abba.sh",
+      "sha256": "69c83bb783b92e3c3de11b7ac4579f9825700b8fed7f5cc46af1ac32ecf02000"
+    },
+    "profileBinary": "5e2c7aac2c5abbac17d4a351648d63bc38018193cd0903411389010db54a6be1",
+    "imageRuntimeSHA256": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+    "outputsMatched": 16,
+    "allControllerReference": {
+      "path": "output/035-development/phase-ab/photo-abba-final.json",
+      "sha256": "2dfbcccbac6bbd6e6c7641c2be17a4741455a96fd9076394a8f72d4d8390f029"
+    },
+    "allControllerMatchingInteractiveAndSettledFrames": 1184,
+    "ringColdPositiveHits": 4,
+    "scope": "The two QA flags were toggled together. The four archived dehaze recipes all have empty localEdits.operations; the alternative mask half is absent on these dehaze states. Erosion participates once in cold candidate and zero times on every warm request. A whole-profile process peak includes other controls.",
+    "twoSourceOpposedOrderMedians": {
+      "primary": {
+        "0": {
+          "coldSettledMS": 301.941,
+          "warmSettledMS": 38.31,
+          "erosionMS": 65.06,
+          "peakBytes": 5178419852.0
+        },
+        "1": {
+          "coldSettledMS": 326.98,
+          "warmSettledMS": 37.482,
+          "erosionMS": 53.278,
+          "peakBytes": 5163018892.0
+        }
+      },
+      "secondary": {
+        "0": {
+          "coldSettledMS": 248.931,
+          "warmSettledMS": 36.699,
+          "erosionMS": 58.492,
+          "peakBytes": 4662364620.0
+        },
+        "1": {
+          "coldSettledMS": 236.186,
+          "warmSettledMS": 36.532,
+          "erosionMS": 43.072,
+          "peakBytes": 4661283300.0
+        }
+      }
+    },
+    "wholeStateMilliseconds": {
+      "primary": [
+        [
+          0,
+          302.091,
+          38.407
+        ],
+        [
+          1,
+          351.297,
+          34.598
+        ],
+        [
+          1,
+          302.663,
+          40.367
+        ],
+        [
+          0,
+          301.791,
+          38.212
+        ]
+      ],
+      "secondary": [
+        [
+          0,
+          254.961,
+          37.418
+        ],
+        [
+          1,
+          243.222,
+          39.39
+        ],
+        [
+          1,
+          229.149,
+          33.673
+        ],
+        [
+          0,
+          242.902,
+          35.979
+        ]
+      ]
+    }
+  }
+}

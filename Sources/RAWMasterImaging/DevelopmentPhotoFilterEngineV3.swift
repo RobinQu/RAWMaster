@@ -2,6 +2,7 @@ import Foundation
 import CoreImage
 import Metal
 import RAWMasterCore
+import RAWMasterImage
 
 /// An owned observed look, not Photos' private LUT/algorithm or a strict-reference PASS claim.
 /// The canonical hook is intentionally a later grant; this standalone engine is default closed.
@@ -11,7 +12,7 @@ enum DevelopmentPhotoFilterEngineV3 {
   static let alphaMinimum:Float=1.0/65535
   private static let loaded: Result<CIKernel,Error> = Result {
     guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentPhotoFilterError.unavailableDevice}
-    let kernels=try CIKernel.kernels(withMetalString:metalSource)
+    let kernels=try CIKernel.kernels(withMetalString:RAWMasterImageKernel.source(.photoFilter))
     guard let kernel=kernels.first(where:{$0.name=="rmPhotoFilterV1"}) else{throw DevelopmentPhotoFilterError.invalidGraph}
     return kernel
   }
@@ -44,22 +45,35 @@ enum DevelopmentPhotoFilterEngineV3 {
                     repairRAWTransportAlpha:Bool = false)throws->CIImage {
     try filter.validate() // Even malformed disabled/zero parameters must never bypass validation.
     guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return image}
-    let pair=try resources.pair(filter),kernel=try loaded.get()
+    let binding = try bind(filter, repairRAWTransportAlpha: repairRAWTransportAlpha)
+    let pair=try resources.pair(filter, binding: binding),kernel=try loaded.get()
     try resourceLease?(pair)
     let extent=image.extent
     guard extent.minX.isFinite,extent.minY.isFinite,extent.width.isFinite,extent.height.isFinite,
       extent.width>0,extent.height>0,!extent.isInfinite else{throw DevelopmentPhotoFilterError.invalidGraph}
-    let monochrome=filter.selection == .mono || filter.selection == .noir
-    // Endpoint flag follows actual Double100, not a rounded Floatt just below100.
-    let hdrFlag:CGFloat=monochrome ? (filter.intensity==100 ? 2:1):0
-    let params=CIVector(x:CGFloat(pair.weight),y:pair.zeroLower ? 1:0,z:hdrFlag,w:CGFloat(filter.normalizedIntensity))
-    let transport=CIVector(x:repairRAWTransportAlpha ? 1:0,y:0,z:0,w:0)
+    let params = CIVector(x: CGFloat(binding.weight), y: binding.lowerPercent == 0 ? 1 : 0,
+                          z: CGFloat(binding.hdrMode), w: CGFloat(binding.amount))
+    let transport = CIVector(x: binding.repairRawAlpha ? 1 : 0, y: 0, z: 0, w: 0)
     let atlas=CGRect(x:0,y:0,width:512,height:512)
     guard let graph=kernel.apply(extent:extent,roiCallback:{index,rect in index==0 ? rect.intersection(extent):atlas},
       arguments:[image.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params,transport]) else{throw DevelopmentPhotoFilterError.invalidGraph}
     // CI graph/texture aliases keep their actual MTLBuffer and its charge alive after pair dies.
     // No actual task is launched here; canonical callers keep their existing checked finite/join.
     return graph
+  }
+  static func bind(_ filter: DevelopmentFilterV3, repairRAWTransportAlpha: Bool = false) throws -> RAWMasterImageKernel.FilterBinding {
+    let family: RAWMasterImageKernel.FilterFamily
+    switch filter.selection {
+    case .mono, .noir: family = .classicMonochrome
+    default: family = filter.selection.isSpektrafilm ? .spektrafilm : .classicColor
+    }
+    do {
+      return try RAWMasterImageKernel.bindFilter(family, amount: filter.intensity, repairRawAlpha: repairRAWTransportAlpha)
+    } catch RAWMasterImageKernel.Failure.unavailable {
+      throw DevelopmentPhotoFilterError.unavailableDevice
+    } catch {
+      throw DevelopmentPhotoFilterError.invalidGraph
+    }
   }
   static func encode(_ value:Double)->Double {value<=0.0031308 ? 12.92*value:1.055*pow(value,1/2.4)-0.055}
   static func axis(_ index:Int)->Double {Double((65535*index+31)/63)/65535}
@@ -108,58 +122,4 @@ enum DevelopmentPhotoFilterEngineV3 {
     guard [v.x,v.y,v.z].allSatisfy(\.isFinite) else{throw DevelopmentError.invalidEncoding}
     return .init(v.x,v.y,v.z,pixel.w)
   }
-  static let metalSource = #"""
-#include <metal_stdlib>
-#include <CoreImage/CoreImage.h>
-using namespace metal;
-extern "C" { namespace coreimage {
-float rmFilterAxisV1(int k){return float((65535*k+31)/63)/65535.0;}
-float rmFilterEncodeV1(float x){return x<=.0031308?12.92*x:1.055*pow(x,1.0/2.4)-.055;}
-float3 rmFilterNodeV1(sampler table,int3 node){
- int index=node.x+64*node.y+4096*node.z;
- float2 at=float2(float(index%512)+.5,float(index/512)+.5);
- return table.sample(table.transform(at)).rgb;
-}
-float3 rmFilterCubeV1(sampler table,int3 cell,float3 f){
- float3 a=mix(rmFilterNodeV1(table,cell),rmFilterNodeV1(table,cell+int3(1,0,0)),f.x);
- float3 b=mix(rmFilterNodeV1(table,cell+int3(0,1,0)),rmFilterNodeV1(table,cell+int3(1,1,0)),f.x);
- float3 c=mix(rmFilterNodeV1(table,cell+int3(0,0,1)),rmFilterNodeV1(table,cell+int3(1,0,1)),f.x);
- float3 d=mix(rmFilterNodeV1(table,cell+int3(0,1,1)),rmFilterNodeV1(table,cell+int3(1,1,1)),f.x);
- return mix(mix(a,b,f.y),mix(c,d,f.y),f.z);
-}
-[[stitchable]] float4 rmPhotoFilterV1(sampler source,sampler lower,sampler upper,float4 params,float4 transport,destination dest){
- float4 p=source.sample(source.transform(dest.coord()));
- if(!all(isfinite(p))||p.a<0)return float4(as_type<float>(0x7fc00000u));
- if(p.a>1){
-  uint bits=as_type<uint>(p.a);
-  if(transport.x>.5&&bits>=0x3f800001u&&bits<=0x3f800003u)p.a=1;
-  else return float4(as_type<float>(0x7fc00000u));
- }
- if(p.a<1.0/65535.0)return p;
- float3 u=p.rgb/p.a;if(!all(isfinite(u)))return float4(as_type<float>(0x7fc00000u));
- float3 bounded=clamp(u,0.0,1.0);
- float3 q=float3(rmFilterEncodeV1(bounded.r),rmFilterEncodeV1(bounded.g),rmFilterEncodeV1(bounded.b));
- int3 cell=int3(clamp(floor(q*63.0),0.0,62.0));float3 f;
- for(int c=0;c<3;c++){
-  if(cell[c]>0&&q[c]<rmFilterAxisV1(cell[c]))cell[c]--;
-  if(cell[c]<62&&q[c]>rmFilterAxisV1(cell[c]+1))cell[c]++;
-  f[c]=(q[c]-rmFilterAxisV1(cell[c]))/(rmFilterAxisV1(cell[c]+1)-rmFilterAxisV1(cell[c]));
- }
- float3 delta;
- if(params.y>.5)delta=rmFilterCubeV1(upper,cell,f)*params.x;
- else if(params.x==0)delta=rmFilterCubeV1(lower,cell,f);
- else delta=mix(rmFilterCubeV1(lower,cell,f),rmFilterCubeV1(upper,cell,f),params.x);
- float3 v=u+delta;
- // Only outside the captured cube: Mono/Noir residuals lose chroma continuously withglobalt.
- // Exact100 then projects FINALv tostrictgray. Cube/lowalpha paths andSilvertone are untouched.
- if(params.z>.5&&(any(u<0.0)||any(u>1.0))){
-  float3 base=clamp(u,0.0,1.0),residual=u-base;
-  float luminance=dot(residual,float3(.2126,.7152,.0722));
-  v=base+delta+mix(residual,float3(luminance),params.w);
-  if(params.z>1.5){float y=dot(v,float3(.2126,.7152,.0722));v=float3(y);}
- }
- return float4(v*p.a,p.a); // No linearRGB clamp; actual sourcealpha is preserved.
-}
-} }
-"""#
 }

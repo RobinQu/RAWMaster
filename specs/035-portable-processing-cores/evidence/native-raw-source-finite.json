@@ -1,0 +1,1188 @@
+{
+  "schemaVersion": 1,
+  "isolated": {
+    "actualPrivateTextures": {
+      "primary": {
+        "repoPath": "output/035-development/source-proof-study/primary.json",
+        "sha256": "b70c981da3111e52fc0a26f254a22eb78c31f977d0274b59db6fbf35e65cdd3a",
+        "afterUnchangedUpload": [
+          {
+            "arm": "coreImage",
+            "ms": 148.198541
+          },
+          {
+            "arm": "metal",
+            "ms": 2.352041
+          },
+          {
+            "arm": "metal",
+            "ms": 1.785959
+          },
+          {
+            "arm": "coreImage",
+            "ms": 150.370833
+          }
+        ],
+        "decodeMs": 97.984042,
+        "device": "Apple M4 Max",
+        "independentBlit": {
+          "absoluteAbove16": 0,
+          "maximumMagnitudeF16Bits": 15693,
+          "negative": 701,
+          "nonfinite": 0,
+          "nonOpaque": 0,
+          "visited": 60217344
+        },
+        "originalUploadMs": 39.445917,
+        "os": "Version 27.0.1 (Build 26A434)",
+        "proof": {
+          "absoluteAbove16": 0,
+          "maximumMagnitudeF16Bits": 15693,
+          "negative": 701,
+          "nonfinite": 0,
+          "nonOpaque": 0,
+          "visited": 60217344
+        },
+        "readerPipelineMs": 2.172958,
+        "shape": [
+          9504,
+          6336
+        ],
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "repoPath": "output/035-development/source-proof-study/secondary.json",
+        "sha256": "33e671841f9ce1312fae05ff917f128c13b8c07d1cede8d73656210c52f558d3",
+        "afterUnchangedUpload": [
+          {
+            "arm": "coreImage",
+            "ms": 111.639917
+          },
+          {
+            "arm": "metal",
+            "ms": 2.795
+          },
+          {
+            "arm": "metal",
+            "ms": 1.690042
+          },
+          {
+            "arm": "coreImage",
+            "ms": 107.588916
+          }
+        ],
+        "decodeMs": 77.403917,
+        "device": "Apple M4 Max",
+        "independentBlit": {
+          "absoluteAbove16": 0,
+          "maximumMagnitudeF16Bits": 14944,
+          "negative": 5,
+          "nonfinite": 0,
+          "nonOpaque": 0,
+          "visited": 49766400
+        },
+        "originalUploadMs": 31.484459,
+        "os": "Version 27.0.1 (Build 26A434)",
+        "proof": {
+          "absoluteAbove16": 0,
+          "maximumMagnitudeF16Bits": 14944,
+          "negative": 5,
+          "nonfinite": 0,
+          "nonOpaque": 0,
+          "visited": 49766400
+        },
+        "readerPipelineMs": 2.070958,
+        "shape": [
+          8640,
+          5760
+        ],
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "synthetic": {
+      "repoPath": "output/035-development/source-proof-study/synthetic.json",
+      "sha256": "36ee5edc8bda1fed6d766855e0e3c1a7021a0c5767502050f244b90783dceae3",
+      "cancelAfterJoin": true,
+      "cleanRetry": {
+        "absoluteAbove16": 0,
+        "maximumMagnitudeF16Bits": 15360,
+        "negative": 0,
+        "nonfinite": 0,
+        "nonOpaque": 0,
+        "visited": 4257
+      },
+      "fixtures": [
+        {
+          "case": "negative-subnormal",
+          "eligibleFiniteOpaque": true,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 0,
+            "maximumMagnitudeF16Bits": 15360,
+            "negative": 1,
+            "nonfinite": 0,
+            "nonOpaque": 0,
+            "visited": 4257
+          },
+          "stockFinite": true
+        },
+        {
+          "case": "signed-zero",
+          "eligibleFiniteOpaque": true,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 0,
+            "maximumMagnitudeF16Bits": 15360,
+            "negative": 0,
+            "nonfinite": 0,
+            "nonOpaque": 0,
+            "visited": 4257
+          },
+          "stockFinite": true
+        },
+        {
+          "case": "maximum-finite",
+          "eligibleFiniteOpaque": true,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 1,
+            "maximumMagnitudeF16Bits": 31743,
+            "negative": 1,
+            "nonfinite": 0,
+            "nonOpaque": 0,
+            "visited": 4257
+          },
+          "stockFinite": true
+        },
+        {
+          "case": "NaN RGB",
+          "eligibleFiniteOpaque": false,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 1,
+            "maximumMagnitudeF16Bits": 31744,
+            "negative": 0,
+            "nonfinite": 1,
+            "nonOpaque": 0,
+            "visited": 4257
+          },
+          "stockFinite": false
+        },
+        {
+          "case": "+infinity B",
+          "eligibleFiniteOpaque": false,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 1,
+            "maximumMagnitudeF16Bits": 31744,
+            "negative": 0,
+            "nonfinite": 1,
+            "nonOpaque": 1,
+            "visited": 4257
+          },
+          "stockFinite": false
+        },
+        {
+          "case": "-infinity last alpha",
+          "eligibleFiniteOpaque": false,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 0,
+            "maximumMagnitudeF16Bits": 15360,
+            "negative": 0,
+            "nonfinite": 1,
+            "nonOpaque": 1,
+            "visited": 4257
+          },
+          "stockFinite": false
+        },
+        {
+          "case": "transparent finite",
+          "eligibleFiniteOpaque": false,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 0,
+            "maximumMagnitudeF16Bits": 15360,
+            "negative": 0,
+            "nonfinite": 0,
+            "nonOpaque": 1,
+            "visited": 4257
+          },
+          "stockFinite": true
+        },
+        {
+          "case": "sentinel pixel",
+          "eligibleFiniteOpaque": false,
+          "matchesIndependentBlitBits": true,
+          "proof": {
+            "absoluteAbove16": 1,
+            "maximumMagnitudeF16Bits": 31744,
+            "negative": 0,
+            "nonfinite": 1,
+            "nonOpaque": 1,
+            "visited": 4257
+          },
+          "stockFinite": false
+        }
+      ],
+      "observedUnfilledTile": {
+        "absoluteAbove16": 1024,
+        "maximumMagnitudeF16Bits": 31744,
+        "negative": 0,
+        "nonfinite": 1024,
+        "nonOpaque": 1024,
+        "visited": 4257
+      },
+      "size": [
+        129,
+        33
+      ],
+      "unwrittenRecordDetected": [
+        true,
+        true
+      ]
+    }
+  },
+  "stagedRelease": {
+    "build": "candidate-batch19-source",
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch19-source/source-files.sha256",
+      "sha256": "0b3cafcdbc73a1e278c7044829e0d810fed6e75f1aeeed4fbf55b8ba4d4c53ce"
+    },
+    "binary": {
+      "repoPath": "output/035-development/candidate-batch19-source/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+      "sha256": "e9a80ac3d1c874bda8aa8eddacc057f2722449f7dee5bccceea5e363a083b37d"
+    },
+    "targetedTests": {
+      "repoPath": "output/035-development/source-proof-study/native-01/targeted.log",
+      "sha256": "ca5d9c67e47b0de2a3eab32ae258abe580200581c1b82c90f47d7c3e42b4ec4a",
+      "passed": 53
+    },
+    "sources": {
+      "primary": {
+        "firstRequest": {
+          "coreImage": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-01-primary-0.json",
+                "sha256": "d0a4bf67c941c1f87f4e43627e1fa85691611ab2a04c075f77f961c756916adc",
+                "coldRenderMs": 562.768459,
+                "coldSourceCheckMs": 141.813042,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 60217344,
+                "comparisonRenderMs": 494.447458,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-04-primary-0.json",
+                "sha256": "29b1fa77656f88b6aadef58d3e290684b6e9023ae47a36073c686e5ccf12f0c3",
+                "coldRenderMs": 546.002709,
+                "coldSourceCheckMs": 135.513583,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 60217344,
+                "comparisonRenderMs": 491.013166,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 554.385584,
+              "p95": 562.768459
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 138.66331250000002,
+              "p95": 141.813042
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 492.730312,
+              "p95": 494.447458
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 1047.115896,
+              "p95": 1057.215917
+            }
+          },
+          "textureCheck": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-02-primary-1.json",
+                "sha256": "26594b9a8b84f460fffc70470a529df10bde4356a75f7cf696636a717eb99e21",
+                "coldRenderMs": 494.893667,
+                "coldSourceCheckMs": 88.174417,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 60217344,
+                "comparisonRenderMs": 630.656708,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 2,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-03-primary-1.json",
+                "sha256": "fcf8f3abce56df477cc6431196b4b526d41aeb7d39a7cf33e85303f2fe4dbda1",
+                "coldRenderMs": 399.1315,
+                "coldSourceCheckMs": 3.117042,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 60217344,
+                "comparisonRenderMs": 606.581583,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 2,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 447.0125835,
+              "p95": 494.893667
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 45.6457295,
+              "p95": 88.174417
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 618.6191455000001,
+              "p95": 630.656708
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 1065.6317290000002,
+              "p95": 1125.550375
+            }
+          }
+        },
+        "releaseCrossOver": {
+          "coreImage": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-01-primary-0.json",
+                "sha256": "fbbe18c80177526882cf2bdd47347229a2a3e07938ae89a17fde39cc8fe69552",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-04-primary-0.json",
+                "sha256": "988da478c2c75b2e9b4d3bc6fecce1d46fee0e2c7d69d435baab67abcf09d538",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.266125,
+                "p95": 17.513375
+              },
+              "exact": {
+                "n": 148,
+                "p50": 102.85779149999999,
+                "p95": 435.582292
+              },
+              "final": {
+                "n": 148,
+                "p50": 102.85779149999999,
+                "p95": 435.582292
+              }
+            }
+          },
+          "textureCheck": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-02-primary-1.json",
+                "sha256": "710b0f19c100a20ce4dde88bcd77dec0df2569e3a8c50c7db16d2a2804e2bb8c",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-03-primary-1.json",
+                "sha256": "f08cf8c046b07c18e2bf0df5b6559a5d006d64c8fa51a98a767e0ca5c8e13f5f",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.1192915,
+                "p95": 18.324417
+              },
+              "exact": {
+                "n": 148,
+                "p50": 101.7629165,
+                "p95": 413.989042
+              },
+              "final": {
+                "n": 148,
+                "p50": 101.7629165,
+                "p95": 413.989042
+              }
+            }
+          }
+        }
+      },
+      "secondary": {
+        "firstRequest": {
+          "coreImage": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-01-secondary-0.json",
+                "sha256": "45f6c207a9339fe3b57df405ef0cff2a99482d68bb2e44f8dc1d4804ae16bb2e",
+                "coldRenderMs": 492.943584,
+                "coldSourceCheckMs": 104.857791,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 49766400,
+                "comparisonRenderMs": 417.693583,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-04-secondary-0.json",
+                "sha256": "9359d544692635bad0203bd2b71c1386a874b294a2cc80949cbdb1ae2d999f7f",
+                "coldRenderMs": 486.454375,
+                "coldSourceCheckMs": 109.1875,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 49766400,
+                "comparisonRenderMs": 411.887708,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 489.6989795,
+              "p95": 492.943584
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 107.02264550000001,
+              "p95": 109.1875
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 414.7906455,
+              "p95": 417.693583
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 904.4896249999999,
+              "p95": 910.637167
+            }
+          },
+          "textureCheck": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-02-secondary-1.json",
+                "sha256": "c24036668bdbc23f2a3d7bc713cdd731a6be78ff9a8b538806bfaa1e83bf2fff",
+                "coldRenderMs": 393.09775,
+                "coldSourceCheckMs": 3.254625,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 49766400,
+                "comparisonRenderMs": 525.065917,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 2,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/cold-03-secondary-1.json",
+                "sha256": "ba6f69decf21329ea9583de65ab1ff3b074ad557c74d0c9321b155ed919efa9b",
+                "coldRenderMs": 376.240625,
+                "coldSourceCheckMs": 2.74425,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 49766400,
+                "comparisonRenderMs": 528.234792,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 2,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 384.6691875,
+              "p95": 393.09775
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 2.9994375,
+              "p95": 3.254625
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 526.6503545,
+              "p95": 528.234792
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 911.319542,
+              "p95": 918.163667
+            }
+          }
+        },
+        "releaseCrossOver": {
+          "coreImage": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-01-secondary-0.json",
+                "sha256": "2ee41fc5758bc488f750c51b2c2957808a15b74ab85475407800a799797d015e",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-04-secondary-0.json",
+                "sha256": "25eb9869f146d5368c4ae84dc97a3ff7eaf584e279471ba5a87b74991986a3f5",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.2283539999999995,
+                "p95": 17.212
+              },
+              "exact": {
+                "n": 148,
+                "p50": 87.58770849999999,
+                "p95": 353.912542
+              },
+              "final": {
+                "n": 148,
+                "p50": 93.31381250000001,
+                "p95": 353.912542
+              }
+            }
+          },
+          "textureCheck": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-02-secondary-1.json",
+                "sha256": "a61eb7c66ad3b4d80f638feb494ae73973d60516db143b0995ffde63af8bc583",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-01/release-03-secondary-1.json",
+                "sha256": "7f6e05cc557b4723ef505d8881bf45f1213cbae9d9f504868801a322726497cc",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.3951875000000005,
+                "p95": 16.945625
+              },
+              "exact": {
+                "n": 148,
+                "p50": 88.9945835,
+                "p95": 362.002375
+              },
+              "final": {
+                "n": 148,
+                "p50": 92.70575,
+                "p95": 362.002375
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "protocol": {
+    "working": "Apple linear extended sRGB, RGBAf; unchanged display graph and original native upload",
+    "mayReuseUploadedEvidenceOn": "Verified FlashRaw 0.3.1 primary settled FIT at 2400, orientation 1, exact pinned CIImage identity",
+    "counts": "Direct Metal and independent blit both visit all pixels. Range proof compares per-image counts, not every coordinate's rendered FP32 bits."
+  },
+  "reproduction": [
+    {
+      "repoPath": "output/035-development/source-proof-study/source-proof.swift",
+      "sha256": "de1f10351c12619a5000df394ac028f6a68ba7e55f3385f590d6f489eafb83f3"
+    },
+    {
+      "repoPath": "output/035-development/source-proof-study/native-source-replay.swift",
+      "sha256": "5b456b7b628a4860aba795d9d177f32e2374f5a01b0d3a20798ff18ec263084f"
+    },
+    {
+      "repoPath": "output/035-development/source-proof-study/run-native-proof.py",
+      "sha256": "00fd1498c579877221067a3bf9c4ce721fdae22f33c59e09749e3476740c6cac"
+    },
+    {
+      "repoPath": "output/035-development/source-proof-study/evidence.py",
+      "sha256": "4e510c6a0e4c0044ad9a1343af80ca365bea603e5785d2e4846f0df42b7723e1"
+    }
+  ],
+  "defaultRelease": {
+    "build": "candidate-batch19b-source",
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch19b-source/source-files.sha256",
+      "sha256": "abce34b45b89b9e92c7f5588f0c77d75fc6b4accc5dfdc71c83230b3ddf0fe58"
+    },
+    "binary": {
+      "repoPath": "output/035-development/candidate-batch19b-source/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+      "sha256": "b6b4bfe56600f5e0c35cd86ee17ecfffd76772736c66a90d705b741b1a59b1f7"
+    },
+    "targetedTests": {
+      "repoPath": "output/035-development/source-proof-study/native-default/targeted.log",
+      "sha256": "f9c4299ffce05a6f5be34afbe3286bf4865a47ea493c6d8ffa8637706b5882e9",
+      "passed": 53
+    },
+    "sources": {
+      "primary": {
+        "firstRequest": {
+          "coreImage": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-01-primary-0.json",
+                "sha256": "a786771bdfad073e50938497898462c56bc67d05fdef8aaad02640ddf5bca5df",
+                "coldRenderMs": 556.17275,
+                "coldSourceCheckMs": 140.335625,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 60217344,
+                "comparisonRenderMs": 506.164625,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-04-primary-0.json",
+                "sha256": "681c10aa80ea3fd167b307f3c62e1409dd0d59941cfc941eec62478ff2007f50",
+                "coldRenderMs": 553.122416,
+                "coldSourceCheckMs": 133.054792,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 60217344,
+                "comparisonRenderMs": 507.004042,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 554.6475829999999,
+              "p95": 556.17275
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 136.69520849999998,
+              "p95": 140.335625
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 506.5843335,
+              "p95": 507.004042
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 1061.2319165000001,
+              "p95": 1062.337375
+            }
+          },
+          "textureCheck": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-02-primary-1.json",
+                "sha256": "66e4f2c3096a6aad76ef5ed4b07a799eee33b1ea0f77683592d5ff6e962f6101",
+                "coldRenderMs": 477.605416,
+                "coldSourceCheckMs": 70.954417,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 60217344,
+                "comparisonRenderMs": 480.83825,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-03-primary-1.json",
+                "sha256": "72235e39579b464352a4baae0ba4d2176045ce0c840d0ab10af0ed12a966bd03",
+                "coldRenderMs": 417.818667,
+                "coldSourceCheckMs": 8.082,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 60217344,
+                "comparisonRenderMs": 494.399458,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 447.7120415,
+              "p95": 477.605416
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 39.5182085,
+              "p95": 70.954417
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 487.618854,
+              "p95": 494.399458
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 935.3308955,
+              "p95": 958.443666
+            }
+          }
+        },
+        "releaseCrossOver": {
+          "coreImage": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-01-primary-0.json",
+                "sha256": "175b1e66c5563c3076cf1aca1d7e6571dc622a1796f270cb9746192e3e72491f",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-04-primary-0.json",
+                "sha256": "de7d3d17bc725c6befdbb3cf0b8b5b390c9096c20bd70d06529004f8784b400a",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.209104,
+                "p95": 18.419583
+              },
+              "exact": {
+                "n": 148,
+                "p50": 104.342687,
+                "p95": 422.6905
+              },
+              "final": {
+                "n": 148,
+                "p50": 104.342687,
+                "p95": 422.6905
+              }
+            }
+          },
+          "textureCheck": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-02-primary-1.json",
+                "sha256": "fd70ed9c2b8ee4349cbad0a5cc037bd3c8b0b8b037a31c2980c5ed90be3a5c49",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-03-primary-1.json",
+                "sha256": "59dc2506e35dd058d536f02271b1c9fa080de48e6eb5f951f5f7286ea250c1a1",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.140104,
+                "p95": 17.899125
+              },
+              "exact": {
+                "n": 148,
+                "p50": 102.032167,
+                "p95": 427.49375
+              },
+              "final": {
+                "n": 148,
+                "p50": 102.032167,
+                "p95": 427.49375
+              }
+            }
+          }
+        }
+      },
+      "secondary": {
+        "firstRequest": {
+          "coreImage": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-01-secondary-0.json",
+                "sha256": "592fbe1fd83aec42b7f21f1c66d5eba8e3cc3f7438fba0545a5d25ecd16add14",
+                "coldRenderMs": 469.125417,
+                "coldSourceCheckMs": 103.854375,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 49766400,
+                "comparisonRenderMs": 401.025458,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-04-secondary-0.json",
+                "sha256": "793fd7f229e8cad2fc8e6b1ef79d950ddaf40dd971d53e5a7eedff33db389c45",
+                "coldRenderMs": 542.954375,
+                "coldSourceCheckMs": 111.556375,
+                "coldSourceCheck": "显影有限值检查",
+                "pixels": 49766400,
+                "comparisonRenderMs": 429.188416,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 506.039896,
+              "p95": 542.954375
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 107.705375,
+              "p95": 111.556375
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 415.106937,
+              "p95": 429.188416
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 921.146833,
+              "p95": 972.142791
+            }
+          },
+          "textureCheck": {
+            "samples": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-02-secondary-1.json",
+                "sha256": "9d69a4b5567cb10ff97b09cf064e2024103f02225c29a7f51588e93394d7411f",
+                "coldRenderMs": 376.260417,
+                "coldSourceCheckMs": 2.581375,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 49766400,
+                "comparisonRenderMs": 421.663333,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/cold-03-secondary-1.json",
+                "sha256": "971088466e70fcf1e944e54f29a1d9aa3cb464e106f1edba04961357c2989ee3",
+                "coldRenderMs": 400.983125,
+                "coldSourceCheckMs": 5.523667,
+                "coldSourceCheck": "FlashRawNativeFiniteCheck",
+                "pixels": 49766400,
+                "comparisonRenderMs": 432.559167,
+                "fullFramesMatchArchive": true,
+                "comparisonWholeChecks": 1,
+                "matchingComparisonReplay": true
+              }
+            ],
+            "coldRenderMs": {
+              "n": 2,
+              "p50": 388.62177099999997,
+              "p95": 400.983125
+            },
+            "coldSourceCheckMs": {
+              "n": 2,
+              "p50": 4.052521,
+              "p95": 5.523667
+            },
+            "comparisonRenderMs": {
+              "n": 2,
+              "p50": 427.11125000000004,
+              "p95": 432.559167
+            },
+            "coldPlusComparisonMs": {
+              "n": 2,
+              "p50": 815.733021,
+              "p95": 833.542292
+            }
+          }
+        },
+        "releaseCrossOver": {
+          "coreImage": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-01-secondary-0.json",
+                "sha256": "4b08c5f872890f26fa299628beccd5031d112abe8162e1e24e0842e360bdaeff",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-04-secondary-0.json",
+                "sha256": "7f49c05931baec379940afac0b5d7f5863173328354bd3981d658c4ae752df99",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.155625000000001,
+                "p95": 18.832584
+              },
+              "exact": {
+                "n": 148,
+                "p50": 88.193167,
+                "p95": 362.36175
+              },
+              "final": {
+                "n": 148,
+                "p50": 94.8073125,
+                "p95": 362.36175
+              }
+            }
+          },
+          "textureCheck": {
+            "runs": [
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-02-secondary-1.json",
+                "sha256": "1be79dffe5d701c9f704dba126eb1a9ed7991612cececf09a9fc4ddf19e49998",
+                "fullFramePairs": 814
+              },
+              {
+                "repoPath": "output/035-development/source-proof-study/native-default/release-03-secondary-1.json",
+                "sha256": "63c8b4193a67ec289308e89d7357b68d549ee39710899188e2a52df43baf8fb7",
+                "fullFramePairs": 814
+              }
+            ],
+            "firstAppearance": {
+              "visible": {
+                "n": 148,
+                "p50": 5.454854,
+                "p95": 18.393291
+              },
+              "exact": {
+                "n": 148,
+                "p50": 88.509708,
+                "p95": 355.715083
+              },
+              "final": {
+                "n": 148,
+                "p50": 93.34147899999999,
+                "p95": 357.892791
+              }
+            }
+          }
+        }
+      }
+    },
+    "lifecycle": {
+      "comparisonFirst": {
+        "primary": {
+          "repoPath": "output/035-development/source-proof-study/native-default/compare-first-primary.json",
+          "sha256": "9fdc3e27974c88026d684d9a3a558aeb19ac7fc4c5c69cd3478acb6181ab0512",
+          "comparisonSourceCheck": "Core Image",
+          "primaryReusedExistingProof": true
+        },
+        "secondary": {
+          "repoPath": "output/035-development/source-proof-study/native-default/compare-first-secondary.json",
+          "sha256": "ee2d2505a49f1c3d60d6530f83eac96a85809ac1ef976c73eb15b21b5b704df8",
+          "comparisonSourceCheck": "Core Image",
+          "primaryReusedExistingProof": true
+        }
+      },
+      "interactive": {
+        "primary": {
+          "coreImage": {
+            "repoPath": "output/035-development/source-proof-study/native-default/interactive-primary-0.json",
+            "sha256": "e351f6e27c77164be6a5369f3b5d612b65cce2c2ad60aaceed69e5dda7d6d10f",
+            "firstInteractiveMs": 610.091792,
+            "supersedingInteractiveMs": 28.967291,
+            "previousCompletion": "superseded",
+            "finalReplaySHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "releasedSourceBytes": true
+          },
+          "textureCheck": {
+            "repoPath": "output/035-development/source-proof-study/native-default/interactive-primary-1.json",
+            "sha256": "6fd1ba87cca8b9be99fc2b148fd1e77bf526e54e4d534c21d706557e21250551",
+            "firstInteractiveMs": 152.878,
+            "supersedingInteractiveMs": 21.983792,
+            "previousCompletion": "superseded",
+            "finalReplaySHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "releasedSourceBytes": true
+          }
+        },
+        "secondary": {
+          "coreImage": {
+            "repoPath": "output/035-development/source-proof-study/native-default/interactive-secondary-0.json",
+            "sha256": "faa09e9eebcbdb5163c9faf500c8c1cd57ba0b278fe4d2514bd836befc3d2873",
+            "firstInteractiveMs": 123.538958,
+            "supersedingInteractiveMs": 19.475208,
+            "previousCompletion": "superseded",
+            "finalReplaySHA256": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "releasedSourceBytes": true
+          },
+          "textureCheck": {
+            "repoPath": "output/035-development/source-proof-study/native-default/interactive-secondary-1.json",
+            "sha256": "354b76a631e68dd6988fa75eff272a488e58f88c022e57712b3fd286606b79b8",
+            "firstInteractiveMs": 124.104917,
+            "supersedingInteractiveMs": 21.242166,
+            "previousCompletion": "superseded",
+            "finalReplaySHA256": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "releasedSourceBytes": true
+          }
+        }
+      },
+      "overrides": {
+        "rescan": {
+          "repoPath": "output/035-development/source-proof-study/native-default/rescan.json",
+          "sha256": "e138ab9fc1ff865458655199de8c471e65d560e95ba77f1ba573fc6bff44668f",
+          "usedCoreImageForFirstSourceCheck": true
+        },
+        "force-serial": {
+          "repoPath": "output/035-development/source-proof-study/native-default/force-serial.json",
+          "sha256": "9277b9a44e0c6fb3d57578723cc478ebea895d708e5f374028574ad80c0c72a9",
+          "usedCoreImageForFirstSourceCheck": true
+        }
+      }
+    }
+  },
+  "formal": {
+    "defaultBuild": "candidate-batch19b-source",
+    "summary": {
+      "repoPath": "output/035-development/candidate-batch19b-source-formal/summary.json",
+      "sha256": "e166325025ec9ce35c4675389856f0bd782dbedf1a3952802b8f16b4a773dce1"
+    },
+    "passed": false,
+    "exit": 1,
+    "failureDetails": [
+      {
+        "stage": "inspection-comparison",
+        "report": "inspection-comparison.json",
+        "failures": [
+          "light-auto medianMs: 6.27 > 6.18 ms",
+          "mixer-tat p95Ms: 10.01 > 9.56 ms",
+          "color-floating-scopes p95Ms: 35.72 > 35.03 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "texture: interactive median regressed 12.78%",
+          "lens-blur-bokeh-anamorphic: interactive median regressed 18.32%",
+          "local-point-color: interactive median regressed 23.27%",
+          "local-grain: interactive median regressed 15.69%",
+          "local-defringe: interactive median regressed 14.18%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      },
+      {
+        "stage": "photo-operators-v2-comparison",
+        "report": "photo-operators-v2-comparison.json",
+        "failures": [
+          "color-mask-tint/final exceeded baseline. Median 1.83 ms (limit 2.75), p95 4.26 ms (limit 3.89)"
+        ]
+      }
+    ],
+    "failedAssertions": 11,
+    "baselineFullFramePairs": 814,
+    "operators": {
+      "repoPath": "output/035-development/candidate-batch19b-source-formal/photo-operators-v2.json",
+      "sha256": "e2de97d2380c47b603f4e34aa7d749325aef7e5f39c9dc2b7c51048ec745f13f"
+    },
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.282500000000001,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.2145835,
+          "p95Ms": 20.011791
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 22.134999999999998,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 99.177521,
+          "p95Ms": 409.002167
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 23.5625,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 99.177521,
+          "p95Ms": 409.002167
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "superResolution": {
+      "fitOnMs": 129.336,
+      "fullTIFFMs": 9604.795125,
+      "exportPhysicalFootprintBytes": 3504769160,
+      "exportResidentBytes": 1379106816,
+      "exportMetalBytes": 2811674624
+    },
+    "finalTIFF": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 9604.795125,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "cameraRawIDs": 158,
+    "cameraRawReport": {
+      "repoPath": "output/035-development/candidate-batch19b-source/camera-raw-acceptance.json",
+      "sha256": "44590abeab013c507c30abea0ab453ee90a9d337f7b1a361475828a7d939f96e"
+    },
+    "adaptive": {
+      "cases": 4,
+      "testBinarySHA256": "b8e38218d0184d326bbb1bcfa0dbdf1bc49534f5709f751b3b0b74e4edee1dd2"
+    },
+    "samePackageFeatureTests": {
+      "native-film-and-mask": {
+        "repoPath": "output/035-development/candidate-batch19b-source/native-film-and-mask.log",
+        "sha256": "506141b04e811513d98035edc0a74b7655d39a02bc8d9e654851cb580775076c",
+        "passed": 27
+      },
+      "native-mask-interactions": {
+        "repoPath": "output/035-development/candidate-batch19b-source/native-mask-interactions.log",
+        "sha256": "c3f081160ff679d40fc66f445af5644d095bb4cde2aa9da8d76779e8370f3f88",
+        "passed": 9
+      },
+      "native-prompt-provider": {
+        "repoPath": "output/035-development/candidate-batch19b-source/native-prompt-provider.log",
+        "sha256": "3ede1ee1ce5cdc4865021abd83e73d47a33cbe8f968f36f9343c4c1fd27c87a8",
+        "passed": 5
+      },
+      "adaptive-Sky": {
+        "repoPath": "output/035-development/candidate-batch19b-source/adaptive-Sky.log",
+        "sha256": "81f59774e338c3e553f8f4cf092130c043e1e4f51737a4a776ac553039efa343",
+        "passed": 1
+      },
+      "adaptive-Subject": {
+        "repoPath": "output/035-development/candidate-batch19b-source/adaptive-Subject.log",
+        "sha256": "670d3ea696c56484c2c3d0b0e6a83d94fd79546f789b5d6bd22563e4860cd2fa",
+        "passed": 1
+      }
+    }
+  }
+}

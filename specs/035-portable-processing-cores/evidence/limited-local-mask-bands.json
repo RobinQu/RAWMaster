@@ -1,0 +1,2151 @@
+{
+  "schemaVersion": 1,
+  "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourcePixels": [
+    9504,
+    6336
+  ],
+  "baselineOperatorReceiptSHA256": "1471e2d0320667a7f071d40f3c5a732b493ba4a4e1424ba151f2c0f34bc0b3c9",
+  "pocBinarySHA256": "5a3f5d1dd7f35583cd10c20a4d8a427fb9226ee202561aa098b1c1aa4bcbdd21",
+  "boundary": "Existing finite marker through completed serial or Metal reduction; final display uses the original lazy graph",
+  "rawPocBuild": {
+    "path": "output/035-development/first-exact-profile/small-band-mask/build.json",
+    "sha256": "fe3c9ca27f4df9f4cb5c30839b104df30b749507a1eb7e52f87da97072ab6c6a"
+  },
+  "observations": [
+    {
+      "operator": "detail-mask-noise",
+      "state": 0,
+      "canonicalDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-noise-0-serial-128.json",
+            "sha256": "95e8c78387337dbac6261fee41ae2f25c47c30fb3a3a20cf539d95da216b37d1"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 248.48575,
+          "processPeakThroughOriginalDisplayBytes": 2771568584
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-noise-0-banded-128.json",
+            "sha256": "04c21d653693d541bb2a2141bb49b62b9957f73f797f2c3ee8d6e0d856e4be71"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 37.154709,
+          "processPeakThroughOriginalDisplayBytes": 2772060128
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-noise-0-banded-64.json",
+            "sha256": "d8fef29cf0edfb12661ac91eed12e1b1034e22d34c851d5e97cb02ffd8884bd1"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 64.095667,
+          "processPeakThroughOriginalDisplayBytes": 2714027976
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-noise-0-128-banded.json",
+            "sha256": "a846ba34bb2a734992b54c7dc9ed8005f4dc4d0bc6ee9a930e1d2ef18c300110"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 35.386875,
+          "processPeakThroughOriginalDisplayBytes": 2771699680
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-noise-0-128-serial.json",
+            "sha256": "32b0260299a83298847caf354b950f6cf5465606296600a006ad5f1a296e4de2"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 242.499042,
+          "processPeakThroughOriginalDisplayBytes": 2771273696
+        }
+      ]
+    },
+    {
+      "operator": "detail-mask-noise",
+      "state": 1,
+      "canonicalDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-noise-1-serial-128.json",
+            "sha256": "b1d99680cfc64867fcaea56656e38d7dff2bbfa433c0ea030798218bc99ba2fe"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 229.399083,
+          "processPeakThroughOriginalDisplayBytes": 2770569160
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-noise-1-banded-128.json",
+            "sha256": "8982815d722ec7d14be451821c44a5d2e756695dcffeffcce5b98334b99c0810"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 38.93525,
+          "processPeakThroughOriginalDisplayBytes": 2773010448
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-noise-1-banded-64.json",
+            "sha256": "a5d85d87a38e4df025defce145bed18f39a7f1bbfc375147e9538266770292e0"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 58.920167,
+          "processPeakThroughOriginalDisplayBytes": 2714028024
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-noise-1-128-banded.json",
+            "sha256": "a9f6394b9bf432bcebc1885c21012ca889e2bb8d75e3ee21ca2990abbe9a7053"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 39.387125,
+          "processPeakThroughOriginalDisplayBytes": 2772617112
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-noise-1-128-serial.json",
+            "sha256": "8deca43c91ff17ba48b1063898d0cc7c024bec31a45d4d39a0f9fe3cfca827ec"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 227.923417,
+          "processPeakThroughOriginalDisplayBytes": 2771109856
+        }
+      ]
+    },
+    {
+      "operator": "detail-mask-sharpness",
+      "state": 0,
+      "canonicalDisplaySHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-sharpness-0-serial-128.json",
+            "sha256": "15db17c8e1696a859201cf595c0bacaf8c38cc10e3be114956529726e2c2a90a"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 236.143166,
+          "processPeakThroughOriginalDisplayBytes": 3094431688
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-sharpness-0-banded-128.json",
+            "sha256": "9599cd532f241cdfae03e037a8d238480f376c1157bd386708de998d50559f19"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 75.654042,
+          "processPeakThroughOriginalDisplayBytes": 3193145384
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-sharpness-0-banded-64.json",
+            "sha256": "579af9a77299ef55a14796d4580d33edf4f6d528ac91ba86fe8cb7306bd9a996"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 96.552375,
+          "processPeakThroughOriginalDisplayBytes": 3086665696
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-sharpness-0-128-banded.json",
+            "sha256": "ab0c0a1b1c519d7908cea31ab17aa40c329431898084b659713c1ab43e7515e1"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 73.357125,
+          "processPeakThroughOriginalDisplayBytes": 3193325536
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-sharpness-0-128-serial.json",
+            "sha256": "4b3171c3c66518a3c01325187d334a249db2d1fde6bc0aa5f1f61e16b989bbe3"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 232.215083,
+          "processPeakThroughOriginalDisplayBytes": 3095349192
+        }
+      ]
+    },
+    {
+      "operator": "detail-mask-sharpness",
+      "state": 1,
+      "canonicalDisplaySHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-sharpness-1-serial-128.json",
+            "sha256": "103e5b8a674bc56f7b4c750d74fd669fe7fa0bab0098688e667883cf276c2020"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 250.481458,
+          "processPeakThroughOriginalDisplayBytes": 3094923280
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-sharpness-1-banded-128.json",
+            "sha256": "3875cc0e1e083be93a7f22e23b2d7c81e0afc396ef7cb0b40597829199df5fd5"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 75.503875,
+          "processPeakThroughOriginalDisplayBytes": 3210446840
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/detail-mask-sharpness-1-banded-64.json",
+            "sha256": "5d0bc185807d96843c15207c7c71dad0b189d5dfc701447f6bde7346478a3242"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 90.879208,
+          "processPeakThroughOriginalDisplayBytes": 3076196272
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-sharpness-1-128-banded.json",
+            "sha256": "e0e19f6024a1b60148ba0342ba98fdf7c987be1ad553c6045394d9fdc44013d0"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 81.832667,
+          "processPeakThroughOriginalDisplayBytes": 3193423864
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-sharpness-1-128-serial.json",
+            "sha256": "39b0e678e7925c369592fa4b3f03fcffc350292b61691d6eed4f2ddfbf2cf935"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 231.421625,
+          "processPeakThroughOriginalDisplayBytes": 3094136752
+        }
+      ]
+    },
+    {
+      "operator": "effects-mask-clarity",
+      "state": 0,
+      "canonicalDisplaySHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-clarity-0-serial-128.json",
+            "sha256": "a9bbcd1a74f6125bc189445c2534f68ca4af3262b9fa5902594f3d0127c54200"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 322.213208,
+          "processPeakThroughOriginalDisplayBytes": 2917615584
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-clarity-0-banded-128.json",
+            "sha256": "346c2f646ff971cbac187d8a9f14f4afbde45fbd3ce6d1bcf8d967689bf55820"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 206.756667,
+          "processPeakThroughOriginalDisplayBytes": 3239380984
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-clarity-0-banded-64.json",
+            "sha256": "edd4dbaa23c33c6d6560fbd8bf8302a41913368ece9f09b315351a85c6f4217a"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 338.305625,
+          "processPeakThroughOriginalDisplayBytes": 3140323344
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-clarity-0-128-banded.json",
+            "sha256": "7cc5939a5b1f19840097e7e999ed7107e0976135db9fec060f0112f79e484436"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 238.161917,
+          "processPeakThroughOriginalDisplayBytes": 3241953296
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-clarity-0-128-serial.json",
+            "sha256": "f8a6fe7e248991db0a5bb98942351fd160b755c0186c309256075199c9a2f11d"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 345.191416,
+          "processPeakThroughOriginalDisplayBytes": 2917877680
+        }
+      ]
+    },
+    {
+      "operator": "effects-mask-clarity",
+      "state": 1,
+      "canonicalDisplaySHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-clarity-1-serial-128.json",
+            "sha256": "49fb464190fd4490d1896dc8710092779471b7fde4e2cb24c9d018085188e678"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 348.910959,
+          "processPeakThroughOriginalDisplayBytes": 2918418448
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-clarity-1-banded-128.json",
+            "sha256": "6cb0a3bcf6a6991f4ae5d0ceeda63023c138f563a6ae194f715f592efee13a83"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 250.080583,
+          "processPeakThroughOriginalDisplayBytes": 3240839136
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-clarity-1-banded-64.json",
+            "sha256": "359e983871b4092b460960d7c417bd5cebbc1848a65b6fb462f91faad7b9b526"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 377.312792,
+          "processPeakThroughOriginalDisplayBytes": 3130476536
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-clarity-1-128-banded.json",
+            "sha256": "cca2772e4a1fc335bd66c89b4d2e5d79a40e48cbe435b51d9d3ec1db3bf998bc"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 236.574792,
+          "processPeakThroughOriginalDisplayBytes": 3241953320
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-clarity-1-128-serial.json",
+            "sha256": "6dd7d90a70aaca4bcdc495ae81b3a9b2331ff9620f73cb53040c86a13fd4f108"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 334.095833,
+          "processPeakThroughOriginalDisplayBytes": 2918828048
+        }
+      ]
+    },
+    {
+      "operator": "effects-mask-grain",
+      "state": 0,
+      "canonicalDisplaySHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-grain-0-serial-128.json",
+            "sha256": "f5b338502365e905fb7e1594ebbdbf9a6614cb1a60b6df144c31954590a71893"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 196.679375,
+          "processPeakThroughOriginalDisplayBytes": 2474051480
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-grain-0-banded-128.json",
+            "sha256": "1406766bdffdcdf98c0b12637758eb58b935b24aaad9333b56814a8e7ac0bc0b"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 31.538792,
+          "processPeakThroughOriginalDisplayBytes": 2458175480
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-grain-0-banded-64.json",
+            "sha256": "75021b517c4b5d28985975b9a3e37c94d3428e3e84a34abb6f8c9f2ab73a66d7"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 40.753125,
+          "processPeakThroughOriginalDisplayBytes": 2435827656
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-grain-0-128-banded.json",
+            "sha256": "c07e86176a005087e439eaef7792a636767364e8970c0ac3e073363df1b3fadd"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 29.530667,
+          "processPeakThroughOriginalDisplayBytes": 2460076024
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-grain-0-128-serial.json",
+            "sha256": "89ec8f10d8db994036a0365491b05b5e8f6b65661abf4101db48f9a6ca4670b8"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 187.767708,
+          "processPeakThroughOriginalDisplayBytes": 2473559960
+        }
+      ]
+    },
+    {
+      "operator": "effects-mask-grain",
+      "state": 1,
+      "canonicalDisplaySHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-grain-1-serial-128.json",
+            "sha256": "d9582281291c8e1893fa3ce5a5ab1392f7d1b64a59b06bf92738c2d18dbdb3c1"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 199.396542,
+          "processPeakThroughOriginalDisplayBytes": 2473199488
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-grain-1-banded-128.json",
+            "sha256": "79f18d822248baf0615cd0766a74a1908e93ea1570c990fb08a9f9d56029645c"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 28.033417,
+          "processPeakThroughOriginalDisplayBytes": 2458208248
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-grain-1-banded-64.json",
+            "sha256": "2da919cb4ee65801a7342cc7997627e1e31c478bd559990c22ca281cca96286c"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 38.132875,
+          "processPeakThroughOriginalDisplayBytes": 2433157064
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-grain-1-128-banded.json",
+            "sha256": "73b3e2f99c1b79d18978b69de0806d7a59162a0390d3fd964a946871f752946b"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 29.298292,
+          "processPeakThroughOriginalDisplayBytes": 2458306480
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-grain-1-128-serial.json",
+            "sha256": "826295d9db398654c01187dd6e23c717ffc518a1b29b3d51a0de8d59a8694c70"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 189.586334,
+          "processPeakThroughOriginalDisplayBytes": 2474231728
+        }
+      ]
+    },
+    {
+      "operator": "effects-mask-texture",
+      "state": 0,
+      "canonicalDisplaySHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-texture-0-serial-128.json",
+            "sha256": "1bdd955f45aacaafa349eef56d8cfdda142bac610a2f4acc087674a9af2a31fa"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 272.570042,
+          "processPeakThroughOriginalDisplayBytes": 2856355808
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-texture-0-banded-128.json",
+            "sha256": "e37d3f58f3b04967b45494160f4f59c79189c07164dbe3a95c34a47664078aa9"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 102.614209,
+          "processPeakThroughOriginalDisplayBytes": 2958870568
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-texture-0-banded-64.json",
+            "sha256": "cea412959175faceb683e897fe0e0bd671b5056b488d887162a65f0b23b64a51"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 132.98975,
+          "processPeakThroughOriginalDisplayBytes": 2852554720
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-texture-0-128-banded.json",
+            "sha256": "6dd04e6a5061aa6987e79c6ab61ddaa83c0281d66214a9ec81e31e23740cd1fa"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 112.354792,
+          "processPeakThroughOriginalDisplayBytes": 2975664120
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-texture-0-128-serial.json",
+            "sha256": "64da5c3e72e1a65c6dfa02440c31e176025f6797465b97d356701160471c547e"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 264.288375,
+          "processPeakThroughOriginalDisplayBytes": 2856781768
+        }
+      ]
+    },
+    {
+      "operator": "effects-mask-texture",
+      "state": 1,
+      "canonicalDisplaySHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+      "reports": [
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-texture-1-serial-128.json",
+            "sha256": "f2498dc2cf3a42b7c58dfff01944d3d85fe3869b4fe41471f6bfb94afe9b18c8"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 320.389708,
+          "processPeakThroughOriginalDisplayBytes": 2856224688
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-texture-1-banded-128.json",
+            "sha256": "882752b1158951176cf82a39996a28157c1722411eab16a470f038784245d893"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 121.149209,
+          "processPeakThroughOriginalDisplayBytes": 2976352176
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask/effects-mask-texture-1-banded-64.json",
+            "sha256": "3f9602742757cc9442354a2862fd42a36b49dbabca72738c12af289882d9e4ef"
+          },
+          "transport": "banded",
+          "budgetBytes": 67108864,
+          "bandHeight": 53,
+          "checkMs": 126.159334,
+          "processPeakThroughOriginalDisplayBytes": 2851801056
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-texture-1-128-banded.json",
+            "sha256": "364bddc372c437ae4280503d4bac9baeb85f11a786734a0efc053f180759c8a0"
+          },
+          "transport": "banded",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 101.285,
+          "processPeakThroughOriginalDisplayBytes": 2957117432
+        },
+        {
+          "report": {
+            "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-texture-1-128-serial.json",
+            "sha256": "5701b42c0fdcfa83d6cd44aa0eba78e756989b4180a442ecf2bc4671c825a16b"
+          },
+          "transport": "serial",
+          "budgetBytes": 134217728,
+          "bandHeight": 108,
+          "checkMs": 263.7815,
+          "processPeakThroughOriginalDisplayBytes": 2859730984
+        }
+      ]
+    }
+  ],
+  "faults": [
+    {
+      "operator": "detail-mask-noise",
+      "state": 1,
+      "report": {
+        "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-noise-1-128-faults.json",
+        "sha256": "ececc48e05707099c30e0ba0012108244e3f1294d396bd6ff30638a7ca512f7a"
+      },
+      "bandHeight": 108,
+      "rejectedFaults": [
+        "0,0,1,0",
+        "9503,6335,3,1",
+        "1023,1024,0,2",
+        "1024,1023,2,0",
+        "4752,3131,0,0",
+        "4752,3132,1,1",
+        "4752,3133,2,2",
+        "9503,0,3,0"
+      ],
+      "cancelledAndRecovered": true,
+      "haloWitness": {
+        "bandCleanSHA256": "74448e3374ed2dedb5247998d1e8c0c0800eca0de2517142b6045f9e53bb2399",
+        "bandHeight": 108,
+        "bandRGBAfEqualsFull": true,
+        "bandStimulusSHA256": "de62b8f65bceec3b45856d1586af55e9a68d313366b4f7741a90a9938560260a",
+        "fullCleanSHA256": "74448e3374ed2dedb5247998d1e8c0c0800eca0de2517142b6045f9e53bb2399",
+        "fullStimulusSHA256": "de62b8f65bceec3b45856d1586af55e9a68d313366b4f7741a90a9938560260a",
+        "neighborContributes": true,
+        "sample": [
+          4744,
+          3132,
+          17,
+          1
+        ],
+        "stimulus": [
+          4752,
+          3131,
+          25
+        ]
+      }
+    },
+    {
+      "operator": "effects-mask-clarity",
+      "state": 1,
+      "report": {
+        "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-clarity-1-64-faults.json",
+        "sha256": "d98f34f3fc76d08c645549d1edfdcb9789e1a0613c873d3102888663f9ac7ab2"
+      },
+      "bandHeight": 53,
+      "rejectedFaults": [
+        "0,0,1,0",
+        "9503,6335,3,1",
+        "1023,1024,0,2",
+        "1024,1023,2,0",
+        "4752,3126,0,0",
+        "4752,3127,1,1",
+        "4752,3128,2,2",
+        "9503,0,3,0"
+      ],
+      "cancelledAndRecovered": true,
+      "haloWitness": {
+        "bandCleanSHA256": "08b52653041c7bf4a32ca2621f75c7888479cf7aabfbc2da3f9ca86bb408920f",
+        "bandHeight": 53,
+        "bandRGBAfEqualsFull": false,
+        "bandStimulusSHA256": "9cfdd4f7611dd80be5cbe097354618f8c247f8e661400dbc3420bdb81e557257",
+        "fullCleanSHA256": "5f5140227bc884006ca94f2d40bef3403b6477c4a6e9185d2f5ccaddb14f6407",
+        "fullStimulusSHA256": "b83be7ccd1c0daa81f5c0d12f9f97e7ec5f42b2e1b04e807f3e6bafd12f3509d",
+        "neighborContributes": true,
+        "sample": [
+          4744,
+          3127,
+          17,
+          1
+        ],
+        "stimulus": [
+          4752,
+          3126,
+          25
+        ]
+      }
+    },
+    {
+      "operator": "effects-mask-grain",
+      "state": 1,
+      "report": {
+        "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-grain-1-128-faults.json",
+        "sha256": "a7833d61daaf5290133e8106ccd7c0c613f7852f2015f31767157939aa52206a"
+      },
+      "bandHeight": 108,
+      "rejectedFaults": [
+        "0,0,1,0",
+        "9503,6335,3,1",
+        "1023,1024,0,2",
+        "1024,1023,2,0",
+        "4752,3131,0,0",
+        "4752,3132,1,1",
+        "4752,3133,2,2",
+        "9503,0,3,0"
+      ],
+      "cancelledAndRecovered": true,
+      "haloWitness": {
+        "bandCleanSHA256": "c5115579f7e073cb9875a7c996a0f8d611edadd6b2ad8024ea559ca44fb26b71",
+        "bandHeight": 108,
+        "bandRGBAfEqualsFull": true,
+        "bandStimulusSHA256": "c5115579f7e073cb9875a7c996a0f8d611edadd6b2ad8024ea559ca44fb26b71",
+        "fullCleanSHA256": "c5115579f7e073cb9875a7c996a0f8d611edadd6b2ad8024ea559ca44fb26b71",
+        "fullStimulusSHA256": "c5115579f7e073cb9875a7c996a0f8d611edadd6b2ad8024ea559ca44fb26b71",
+        "neighborContributes": false,
+        "sample": [
+          4744,
+          3132,
+          17,
+          1
+        ],
+        "stimulus": [
+          4752,
+          3131,
+          25
+        ]
+      }
+    },
+    {
+      "operator": "effects-mask-texture",
+      "state": 1,
+      "report": {
+        "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-texture-1-128-faults.json",
+        "sha256": "7c4f9a6e2a07b0613d3418b627c56f1599e7301410970c743f3de395c2819f58"
+      },
+      "bandHeight": 108,
+      "rejectedFaults": [
+        "0,0,1,0",
+        "9503,6335,3,1",
+        "1023,1024,0,2",
+        "1024,1023,2,0",
+        "4752,3131,0,0",
+        "4752,3132,1,1",
+        "4752,3133,2,2",
+        "9503,0,3,0"
+      ],
+      "cancelledAndRecovered": true,
+      "haloWitness": {
+        "bandCleanSHA256": "a75814f047bea4d9e184ad708b73373acf21c42f42485582b47fb3f2ade6e0c1",
+        "bandHeight": 108,
+        "bandRGBAfEqualsFull": false,
+        "bandStimulusSHA256": "423e726eb84679f1b8d4f2d15fe7e700e5583b89081be24655a4772d3a8eb7ba",
+        "fullCleanSHA256": "a75814f047bea4d9e184ad708b73373acf21c42f42485582b47fb3f2ade6e0c1",
+        "fullStimulusSHA256": "c1e97e8421ba75c70c8de877a3fd2973ed185ddc4a211622a40759efce36d95d",
+        "neighborContributes": true,
+        "sample": [
+          4744,
+          3132,
+          17,
+          1
+        ],
+        "stimulus": [
+          4752,
+          3131,
+          25
+        ]
+      }
+    },
+    {
+      "operator": "effects-mask-clarity",
+      "state": 1,
+      "report": {
+        "path": "output/035-development/first-exact-profile/small-band-mask-repeat/effects-mask-clarity-1-128-faults.json",
+        "sha256": "c6574a3e0c0d3923b9adf5d0dabcafd9d2409a5adb7ea1bc4a659e3392f54bd8"
+      },
+      "bandHeight": 108,
+      "rejectedFaults": [
+        "0,0,1,0",
+        "9503,6335,3,1",
+        "1023,1024,0,2",
+        "1024,1023,2,0",
+        "4752,3131,0,0",
+        "4752,3132,1,1",
+        "4752,3133,2,2",
+        "9503,0,3,0"
+      ],
+      "cancelledAndRecovered": true,
+      "haloWitness": {
+        "bandCleanSHA256": "fbbe2f6199d3004946cf00176dc40c72d280b17135a63d952e42456e6de7c124",
+        "bandHeight": 108,
+        "bandRGBAfEqualsFull": false,
+        "bandStimulusSHA256": "21236a2ec0af4bc9c9c35b4d315cd3fedaedaf8a38823d2acd2b1d3cf00b162c",
+        "fullCleanSHA256": "b80087a8a766dff87d85f6f2c1a3ff3e51a3f89ecbc3149daf483d877e2c72f5",
+        "fullStimulusSHA256": "fc62ada71d0cdc3211b9a1dac5cf044b78565962b274b80ada3eb3d573e6475b",
+        "neighborContributes": true,
+        "sample": [
+          4744,
+          3132,
+          17,
+          1
+        ],
+        "stimulus": [
+          4752,
+          3131,
+          25
+        ]
+      }
+    },
+    {
+      "operator": "detail-mask-sharpness",
+      "state": 1,
+      "report": {
+        "path": "output/035-development/first-exact-profile/small-band-mask-repeat/detail-mask-sharpness-1-128-faults.json",
+        "sha256": "c51ca9ff6ebc5063c7463652005e50f7ceea45681d846de7096010d48b9f4ab7"
+      },
+      "bandHeight": 108,
+      "rejectedFaults": [
+        "0,0,1,0",
+        "9503,6335,3,1",
+        "1023,1024,0,2",
+        "1024,1023,2,0",
+        "4752,3131,0,0",
+        "4752,3132,1,1",
+        "4752,3133,2,2",
+        "9503,0,3,0"
+      ],
+      "cancelledAndRecovered": true,
+      "haloWitness": {
+        "bandCleanSHA256": "5de1cae40688fc27095343cf6497d1c47d070dc6c2106792589d987bd9d6b780",
+        "bandHeight": 108,
+        "bandRGBAfEqualsFull": true,
+        "bandStimulusSHA256": "663749d661a1126a3c3a7f391549c705d7bd6d021511c33fd8d3f4664913297c",
+        "fullCleanSHA256": "5de1cae40688fc27095343cf6497d1c47d070dc6c2106792589d987bd9d6b780",
+        "fullStimulusSHA256": "663749d661a1126a3c3a7f391549c705d7bd6d021511c33fd8d3f4664913297c",
+        "neighborContributes": true,
+        "sample": [
+          4744,
+          3132,
+          17,
+          1
+        ],
+        "stimulus": [
+          4752,
+          3131,
+          25
+        ]
+      }
+    }
+  ],
+  "nativeNormalEntryQA": {
+    "defaultEnabled": false,
+    "reference": {
+      "path": "output/035-development/candidate-batch10-formal/photo-operators-v2.json",
+      "sha256": "1471e2d0320667a7f071d40f3c5a732b493ba4a4e1424ba151f2c0f34bc0b3c9"
+    },
+    "boundary": "Interactive plus settled requests through complete buffer readback; excludes hashes between requests",
+    "runs": [
+      {
+        "arm": "A",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "binarySHA256": "715107be4ea4663a30f620690e9d4fb638ace0987e5f078d8ac6dd4646e96343",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "report": {
+          "path": "output/035-development/first-exact-profile/local-mask-all/01-A.json",
+          "sha256": "44b059203af01b6b24553256c44458909ae7c4ef2b7969c3779ae68231d0b3ec"
+        },
+        "exactCombinedRequests": {
+          "count": 74,
+          "medianMs": 128.4846875,
+          "p95Ms": 750.4857079999999
+        },
+        "targetSettledRequests": {
+          "count": 10,
+          "medianMs": 418.14135450000003,
+          "p95Ms": 526.637083
+        },
+        "processPeakPhysicalFootprintBytes": 4682730136,
+        "selected": [
+          {
+            "operator": "detail-mask-noise",
+            "state": 0,
+            "exactCombinedRequestMs": 750.4857079999999,
+            "settledMs": 407.0355,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576676536138208,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576676784894583,
+              "ms": 248.756375,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "b85b6c94ea6f40103e91bbf7f906dfb672579a4f240fce8608c4388f5f802ae6",
+            "settledSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+          },
+          {
+            "operator": "detail-mask-noise",
+            "state": 1,
+            "exactCombinedRequestMs": 414.84562500000004,
+            "settledMs": 403.205459,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576676967416416,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576677214808583,
+              "ms": 247.392167,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "4e0434b922d4507b321f69b401f0541bff5e6e51760b3c6ed2e47f683898964f",
+            "settledSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 0,
+            "exactCombinedRequestMs": 453.37520900000004,
+            "settledMs": 426.451834,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576678289365500,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576678553745416,
+              "ms": 264.379916,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "1c212e478007152ca9a6bc9eab4c911f66493b839e008d60cb9ab02df2bedc34",
+            "settledSHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 1,
+            "exactCombinedRequestMs": 429.796542,
+            "settledMs": 409.830875,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576678745631958,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576678996410375,
+              "ms": 250.778417,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "758030409450cca2fab332f4ab7944ac83ef8ec12dd8d33824c03e43e5878303",
+            "settledSHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 0,
+            "exactCombinedRequestMs": 830.619542,
+            "settledMs": 495.031,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576683733052041,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576684084179291,
+              "ms": 351.12725,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "e04549b6232a5d2db4d0b26d638276b1098047af247a8966942256f79bcbc501",
+            "settledSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 1,
+            "exactCombinedRequestMs": 538.353125,
+            "settledMs": 526.637083,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576684255603500,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576684622775541,
+              "ms": 367.172041,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "676595d9e0ec62bcad9704b78ab8cd28381dc08046d9a46f329e8ec03306048b",
+            "settledSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 0,
+            "exactCombinedRequestMs": 641.2130420000001,
+            "settledMs": 302.63825,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576685131011541,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576685348503750,
+              "ms": 217.492209,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+            "settledSHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 1,
+            "exactCombinedRequestMs": 295.985417,
+            "settledMs": 291.932708,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576685441945166,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576685655761291,
+              "ms": 213.816125,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+            "settledSHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "exactCombinedRequestMs": 462.514666,
+            "settledMs": 449.813208,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576685756221625,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576686051621583,
+              "ms": 295.399958,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "exactCombinedRequestMs": 462.98208400000004,
+            "settledMs": 452.029667,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576686229465958,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576686526327125,
+              "ms": 296.861167,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "binarySHA256": "715107be4ea4663a30f620690e9d4fb638ace0987e5f078d8ac6dd4646e96343",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "report": {
+          "path": "output/035-development/first-exact-profile/local-mask-all/02-B.json",
+          "sha256": "618b6734aaecac168140252a20df92d1c2cf5c5d3e7bba7d8b5c6b9bdad51b3d"
+        },
+        "exactCombinedRequests": {
+          "count": 74,
+          "medianMs": 97.509771,
+          "p95Ms": 407.636791
+        },
+        "targetSettledRequests": {
+          "count": 10,
+          "medianMs": 246.419896,
+          "p95Ms": 418.867417
+        },
+        "processPeakPhysicalFootprintBytes": 5258431056,
+        "selected": [
+          {
+            "operator": "detail-mask-noise",
+            "state": 0,
+            "exactCombinedRequestMs": 212.71308399999998,
+            "settledMs": 203.607542,
+            "reduction": [
+              {
+                "beginNs": 576694047720291,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576694084068625,
+                "ms": 36.348334,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576694043982583,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576694084091291,
+              "ms": 40.108708,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "b85b6c94ea6f40103e91bbf7f906dfb672579a4f240fce8608c4388f5f802ae6",
+            "settledSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+          },
+          {
+            "operator": "detail-mask-noise",
+            "state": 1,
+            "exactCombinedRequestMs": 248.953584,
+            "settledMs": 238.245792,
+            "reduction": [
+              {
+                "beginNs": 576694277742625,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576694340200958,
+                "ms": 62.458333,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576694271430208,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576694340223500,
+              "ms": 68.793292,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "4e0434b922d4507b321f69b401f0541bff5e6e51760b3c6ed2e47f683898964f",
+            "settledSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 0,
+            "exactCombinedRequestMs": 281.441833,
+            "settledMs": 254.594,
+            "reduction": [
+              {
+                "beginNs": 576695336622333,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576695420695500,
+                "ms": 84.073167,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576695335665500,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576695420717541,
+              "ms": 85.052041,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "1c212e478007152ca9a6bc9eab4c911f66493b839e008d60cb9ab02df2bedc34",
+            "settledSHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 1,
+            "exactCombinedRequestMs": 254.766042,
+            "settledMs": 234.995292,
+            "reduction": [
+              {
+                "beginNs": 576695627504000,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576695704454166,
+                "ms": 76.950166,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576695619675000,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576695704475958,
+              "ms": 84.800958,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "758030409450cca2fab332f4ab7944ac83ef8ec12dd8d33824c03e43e5878303",
+            "settledSHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 0,
+            "exactCombinedRequestMs": 423.15125,
+            "settledMs": 411.423208,
+            "reduction": [
+              {
+                "beginNs": 576698462156958,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576698711585375,
+                "ms": 249.428417,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576698459558750,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576698711608541,
+              "ms": 252.049791,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "e04549b6232a5d2db4d0b26d638276b1098047af247a8966942256f79bcbc501",
+            "settledSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 1,
+            "exactCombinedRequestMs": 434.120958,
+            "settledMs": 418.867417,
+            "reduction": [
+              {
+                "beginNs": 576698914021625,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576699154365458,
+                "ms": 240.343833,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576698904119291,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576699154390208,
+              "ms": 250.270917,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "676595d9e0ec62bcad9704b78ab8cd28381dc08046d9a46f329e8ec03306048b",
+            "settledSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 0,
+            "exactCombinedRequestMs": 141.160542,
+            "settledMs": 130.489625,
+            "reduction": [
+              {
+                "beginNs": 576699355154083,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576699388699000,
+                "ms": 33.544917,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576699343951166,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576699388728666,
+              "ms": 44.7775,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+            "settledSHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 1,
+            "exactCombinedRequestMs": 118.836208,
+            "settledMs": 114.669458,
+            "reduction": [
+              {
+                "beginNs": 576699484564458,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576699517525250,
+                "ms": 32.960792,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576699480651875,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576699517546791,
+              "ms": 36.894916,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+            "settledSHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "exactCombinedRequestMs": 284.029291,
+            "settledMs": 273.27475,
+            "reduction": [
+              {
+                "beginNs": 576699619582708,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576699735593791,
+                "ms": 116.011083,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576699615636791,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576699735616833,
+              "ms": 119.980042,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "exactCombinedRequestMs": 307.96395900000005,
+            "settledMs": 296.91975,
+            "reduction": [
+              {
+                "beginNs": 576699922245125,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576700049670625,
+                "ms": 127.4255,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576699914303250,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576700049696541,
+              "ms": 135.393291,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "binarySHA256": "715107be4ea4663a30f620690e9d4fb638ace0987e5f078d8ac6dd4646e96343",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "report": {
+          "path": "output/035-development/first-exact-profile/local-mask-all/03-B.json",
+          "sha256": "331c7fbee6ab1bd9ff12106844da51de4a5e08cce23c5cd9846e9a62fccb88fd"
+        },
+        "exactCombinedRequests": {
+          "count": 74,
+          "medianMs": 96.02658299999999,
+          "p95Ms": 382.302416
+        },
+        "targetSettledRequests": {
+          "count": 10,
+          "medianMs": 253.121646,
+          "p95Ms": 379.862958
+        },
+        "processPeakPhysicalFootprintBytes": 5195008568,
+        "selected": [
+          {
+            "operator": "detail-mask-noise",
+            "state": 0,
+            "exactCombinedRequestMs": 198.34900000000002,
+            "settledMs": 190.110375,
+            "reduction": [
+              {
+                "beginNs": 576706622106708,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576706658977250,
+                "ms": 36.870542,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576706618630208,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576706659000625,
+              "ms": 40.370417,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "b85b6c94ea6f40103e91bbf7f906dfb672579a4f240fce8608c4388f5f802ae6",
+            "settledSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+          },
+          {
+            "operator": "detail-mask-noise",
+            "state": 1,
+            "exactCombinedRequestMs": 224.113418,
+            "settledMs": 213.799709,
+            "reduction": [
+              {
+                "beginNs": 576706838979833,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576706886561875,
+                "ms": 47.582042,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576706832982875,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576706886585875,
+              "ms": 53.603,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "4e0434b922d4507b321f69b401f0541bff5e6e51760b3c6ed2e47f683898964f",
+            "settledSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 0,
+            "exactCombinedRequestMs": 267.217,
+            "settledMs": 241.046875,
+            "reduction": [
+              {
+                "beginNs": 576707838101833,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576707921832958,
+                "ms": 83.731125,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576707837132375,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576707921855250,
+              "ms": 84.722875,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "1c212e478007152ca9a6bc9eab4c911f66493b839e008d60cb9ab02df2bedc34",
+            "settledSHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 1,
+            "exactCombinedRequestMs": 285.950292,
+            "settledMs": 265.196417,
+            "reduction": [
+              {
+                "beginNs": 576708120344416,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576708202072750,
+                "ms": 81.728334,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576708110732125,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576708202094625,
+              "ms": 91.3625,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "758030409450cca2fab332f4ab7944ac83ef8ec12dd8d33824c03e43e5878303",
+            "settledSHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 0,
+            "exactCombinedRequestMs": 382.302416,
+            "settledMs": 371.050833,
+            "reduction": [
+              {
+                "beginNs": 576710940591875,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576711168026916,
+                "ms": 227.435041,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576710935366791,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576711168049291,
+              "ms": 232.6825,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "e04549b6232a5d2db4d0b26d638276b1098047af247a8966942256f79bcbc501",
+            "settledSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 1,
+            "exactCombinedRequestMs": 393.825417,
+            "settledMs": 379.862958,
+            "reduction": [
+              {
+                "beginNs": 576711346648833,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576711558391500,
+                "ms": 211.742667,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576711337086250,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576711558418208,
+              "ms": 221.331958,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "676595d9e0ec62bcad9704b78ab8cd28381dc08046d9a46f329e8ec03306048b",
+            "settledSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 0,
+            "exactCombinedRequestMs": 142.502792,
+            "settledMs": 129.9715,
+            "reduction": [
+              {
+                "beginNs": 576711750511041,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576711783294791,
+                "ms": 32.78375,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576711739361500,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576711783315541,
+              "ms": 43.954041,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+            "settledSHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 1,
+            "exactCombinedRequestMs": 115.460667,
+            "settledMs": 111.524292,
+            "reduction": [
+              {
+                "beginNs": 576711880430250,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576711911954833,
+                "ms": 31.524583,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576711876278166,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576711911979166,
+              "ms": 35.701,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+            "settledSHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "exactCombinedRequestMs": 277.863833,
+            "settledMs": 267.305125,
+            "reduction": [
+              {
+                "beginNs": 576712010588958,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576712120273875,
+                "ms": 109.684917,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576712007596125,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576712120304958,
+              "ms": 112.708833,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "exactCombinedRequestMs": 303.015667,
+            "settledMs": 291.480875,
+            "reduction": [
+              {
+                "beginNs": 576712307549916,
+                "boundary": "GPU 完成",
+                "bytes": 2162688,
+                "endNs": 576712427150833,
+                "ms": 119.600917,
+                "operation": "NativeFiniteReduction",
+                "pixels": 60217344,
+                "queue": "Metal GPU",
+                "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+              }
+            ],
+            "maskSpan": {
+              "beginNs": 576712300392500,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576712427173250,
+              "ms": 126.78075,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "binarySHA256": "715107be4ea4663a30f620690e9d4fb638ace0987e5f078d8ac6dd4646e96343",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "report": {
+          "path": "output/035-development/first-exact-profile/local-mask-all/04-A.json",
+          "sha256": "b4ec0de34cd2606727e3491789cdf30e3690e0b6b23bba03d3e899268b5c8a5a"
+        },
+        "exactCombinedRequests": {
+          "count": 74,
+          "medianMs": 98.132437,
+          "p95Ms": 475.061667
+        },
+        "targetSettledRequests": {
+          "count": 10,
+          "medianMs": 427.1600205,
+          "p95Ms": 541.067
+        },
+        "processPeakPhysicalFootprintBytes": 4893067832,
+        "selected": [
+          {
+            "operator": "detail-mask-noise",
+            "state": 0,
+            "exactCombinedRequestMs": 405.99100000000004,
+            "settledMs": 397.284166,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576718877967791,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576719118924166,
+              "ms": 240.956375,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "b85b6c94ea6f40103e91bbf7f906dfb672579a4f240fce8608c4388f5f802ae6",
+            "settledSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+          },
+          {
+            "operator": "detail-mask-noise",
+            "state": 1,
+            "exactCombinedRequestMs": 418.460875,
+            "settledMs": 407.538958,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576719299780250,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576719545056541,
+              "ms": 245.276291,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "4e0434b922d4507b321f69b401f0541bff5e6e51760b3c6ed2e47f683898964f",
+            "settledSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 0,
+            "exactCombinedRequestMs": 475.061667,
+            "settledMs": 449.056625,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576720553176500,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576720837019458,
+              "ms": 283.842958,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "1c212e478007152ca9a6bc9eab4c911f66493b839e008d60cb9ab02df2bedc34",
+            "settledSHA256": "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9"
+          },
+          {
+            "operator": "detail-mask-sharpness",
+            "state": 1,
+            "exactCombinedRequestMs": 436.826833,
+            "settledMs": 416.353583,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576721032798333,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576721285354875,
+              "ms": 252.556542,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "758030409450cca2fab332f4ab7944ac83ef8ec12dd8d33824c03e43e5878303",
+            "settledSHA256": "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 0,
+            "exactCombinedRequestMs": 547.612292,
+            "settledMs": 534.917292,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576724125346208,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576724504246291,
+              "ms": 378.900083,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "e04549b6232a5d2db4d0b26d638276b1098047af247a8966942256f79bcbc501",
+            "settledSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824"
+          },
+          {
+            "operator": "effects-mask-clarity",
+            "state": 1,
+            "exactCombinedRequestMs": 553.607458,
+            "settledMs": 541.067,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576724688422291,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576725069800250,
+              "ms": 381.377959,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "676595d9e0ec62bcad9704b78ab8cd28381dc08046d9a46f329e8ec03306048b",
+            "settledSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 0,
+            "exactCombinedRequestMs": 316.22325,
+            "settledMs": 305.010083,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576725249729458,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576725467722583,
+              "ms": 217.993125,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "85784e022d66503248204e5b859c2176e9805b30098b547686d11cccbcbbf6bb",
+            "settledSHA256": "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71"
+          },
+          {
+            "operator": "effects-mask-grain",
+            "state": 1,
+            "exactCombinedRequestMs": 290.22045799999995,
+            "settledMs": 285.993458,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576725565957916,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576725774927375,
+              "ms": 208.969459,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "7e95ce69b1d3049d5cc507810753e8bb196a7364f4153bcd7d020a10f55183bd",
+            "settledSHA256": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "exactCombinedRequestMs": 448.910916,
+            "settledMs": 437.966458,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576725871813333,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576726161050458,
+              "ms": 289.237125,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a"
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "exactCombinedRequestMs": 458.115792,
+            "settledMs": 446.851542,
+            "reduction": [],
+            "maskSpan": {
+              "beginNs": 576726333339666,
+              "boundary": "API 返回",
+              "bytes": 0,
+              "endNs": 576726626908708,
+              "ms": 293.569042,
+              "operation": "DevelopmentMaskEngineV3.apply",
+              "pixels": 60217344,
+              "queue": "图像引擎",
+              "stage": "local-tone"
+            },
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          }
+        ]
+      }
+    ],
+    "overrideTests": {
+      "serial-override": {
+        "report": "output/035-development/first-exact-profile/local-mask-all/serial-override.json",
+        "sha256": "e9f9ec0d150ba1c4c16a8c046095216bd460c37a004f5928ee0ff0fc802c3fcb",
+        "matchedPixels": true,
+        "reductionCounts": [
+          0,
+          0
+        ]
+      },
+      "both-overrides": {
+        "report": "output/035-development/first-exact-profile/local-mask-all/both-overrides.json",
+        "sha256": "7992e8444d26cef5cc68b7328956a81be4af6567405e08e859d9e1b35fbcc2fc",
+        "matchedPixels": true,
+        "reductionCounts": [
+          1,
+          1
+        ]
+      }
+    }
+  },
+  "isolatedReleaseXCTestReadback": {
+    "off": {
+      "evidence": {
+        "path": "output/035-development/candidate-local-mask-bands/paired-photo-off.json",
+        "sha256": "7e0df60457d5ba897395bf60ae8c23479202e5d8a6e7247858870901f924d542"
+      },
+      "binarySHA256": "445504e0245c88484d21ec74cf2ad9e2956373396d3e483cefe388aeb06898ad",
+      "completeFirstChangeAndFinalMatches": 814,
+      "firstExact": {
+        "count": 74,
+        "medianMs": 103.92372950000001,
+        "p95Ms": 456.927625
+      },
+      "selectedFirstExact": {
+        "count": 10,
+        "medianMs": 450.4129375,
+        "p95Ms": 515.946666
+      },
+      "selected": {
+        "detail-mask-noise": [
+          456.927625,
+          449.52875
+        ],
+        "detail-mask-sharpness": [
+          438.833292,
+          440.14725
+        ],
+        "effects-mask-clarity": [
+          497.219459,
+          515.946666
+        ],
+        "effects-mask-grain": [
+          318.330708,
+          297.375
+        ],
+        "effects-mask-texture": [
+          451.297125,
+          453.246
+        ]
+      }
+    },
+    "on": {
+      "evidence": {
+        "path": "output/035-development/candidate-local-mask-bands/paired-photo-on.json",
+        "sha256": "e28f853a532116824a7a5748abc2285a1b6d251b6ae2e09be8435cfce34b512b"
+      },
+      "binarySHA256": "445504e0245c88484d21ec74cf2ad9e2956373396d3e483cefe388aeb06898ad",
+      "completeFirstChangeAndFinalMatches": 814,
+      "firstExact": {
+        "count": 74,
+        "medianMs": 102.54025,
+        "p95Ms": 403.023583
+      },
+      "selectedFirstExact": {
+        "count": 10,
+        "medianMs": 285.8749375,
+        "p95Ms": 407.219708
+      },
+      "selected": {
+        "detail-mask-noise": [
+          201.586667,
+          202.505209
+        ],
+        "detail-mask-sharpness": [
+          292.575458,
+          308.875708
+        ],
+        "effects-mask-clarity": [
+          407.219708,
+          405.43275
+        ],
+        "effects-mask-grain": [
+          141.441333,
+          121.679083
+        ],
+        "effects-mask-texture": [
+          283.031542,
+          288.718333
+        ]
+      }
+    }
+  },
+  "nativeScopeUnitTests": {
+    "path": "output/035-development/candidate-local-mask-bands/finite-mask-tests.log",
+    "sha256": "3a4d5817ff19d2ae5cd6909a23f1f9c511255611f95f96016e04c318ce49fd31"
+  }
+}

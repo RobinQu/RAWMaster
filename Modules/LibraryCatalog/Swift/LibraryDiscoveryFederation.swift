@@ -126,7 +126,7 @@
       let db = try database(selected)
       let (manifest, location, stamp) = try package(db, verifiedStamp: nil)
       let source = try identity(db, validateSchema: true)
-      guard let id = source["libraryID"]?.stringValue, source["schema"] == .integer(8),
+      guard let id = source["libraryID"]?.stringValue, (source["schema"] == .integer(8) || source["schema"] == .integer(9)),
         manifest == nil || manifest?.libraryID == id
       else { throw LibraryEngineError("资料库身份或版本不匹配。") }
       let data =

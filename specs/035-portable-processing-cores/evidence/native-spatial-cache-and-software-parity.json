@@ -1,0 +1,2774 @@
+{
+  "baseRevision": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "binarySeal": {
+    "path": "output/035-development/candidate-batch33-verified-opaque-region/binaries.sha256",
+    "sha256": "c51d3961e98b8cce8671a13ea0169d9bb3259f5812bdc24f9304b63e61d1eab2"
+  },
+  "candidate": "candidate-batch33-verified-opaque-region",
+  "checkedBinaries": 16,
+  "checkedCompileInputs": 212,
+  "compilerInputChanges": {
+    "Modules/ImageEdit/src/basic_v3.wgsl": {
+      "new": "bcd9e01bcad45bc28930bfd6c2ab7d6f0332da4188a0875257458c349e192ef1",
+      "old": "01e4c0e500387ec5026f975d45544a09bbf50da39c9025007876697a7104222c"
+    },
+    "Modules/ImageEdit/tests/basic_v3.rs": {
+      "new": "5c86e51f1a7e811a56945e6aa64cd92a25aec210964929ca0b7d7d670340d4fe",
+      "old": "e59ff4ffb99dcef4bb58ac0c9f10b25f94540d9403e4459b48860228f4012020"
+    },
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs": {
+      "new": "7a496bc45ffb1ae1c7c56260c06b9ecd8aac45b5c386de94ff01544597306f90",
+      "old": "195813d5797a3457c529d3a259e9cc33d60873bb776e5cec69d777e571e00f3c"
+    },
+    "Modules/LibraryCatalog/tests/scheduled_processing/workbench_item_delivery.rs": {
+      "new": "5f6e93e3664369c985691af9b38997dee86b19b6f3a5b6877a88a6c6435f0964",
+      "old": "65df899396872c0f087fd81d2105a6bc059bfd6cab900012f6e6fdbd81bd4193"
+    },
+    "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift": {
+      "new": "0f079eef65ad62c4d4ede039ed10325eba7c6f68ff9ec73210d9e72962269d2b",
+      "old": "e254b2b8a36c06140fa46afdca27e1391cd76f1073af81f8f44fedcf53ba97e7"
+    },
+    "Sources/RAWMasterImaging/DevelopmentRendererV3.swift": {
+      "new": "2d30366ba2120c0821ba63383d78ea60b8f75883e7e4b464f945e66fbebfcda1",
+      "old": "ba089cc6b163f952713d14f8faa6f0d2a7ac86527bc914ddbd9c450b3e777b3b"
+    },
+    "Sources/RAWMasterImaging/FlashRawCanonicalTexturePool.swift": {
+      "new": "7ccc9ad276576e39540d4c0e6abaf312463dd46f6714a90aa394a30d25564973",
+      "old": "a31cda94642936383b8af73d62d77946df1a4f669f1975df958cb01937b21df8"
+    },
+    "Sources/RAWMasterImaging/PreviewNativeSource.swift": {
+      "new": "83246a3e3c0937e51710dcd5b8816d2ebb6e6213ab5df9fc4517fc0c6307a9b8",
+      "old": "79365ffabb46f193fb7fd2208dd89e30d1841eb9dadfe25e17add44fa168196a"
+    },
+    "Tests/RAWMasterImagingTests/NativeGlobalFiniteProofTests.swift": {
+      "new": "a49fb8148b4f8125c54383698ff937b77fa88795b207e1871de13580d2b6fa3e",
+      "old": "ab1b478ca1482303abdb4c453df73799876ead0a542c7d7172ff3740dff68ebe"
+    },
+    "Tests/RAWMasterImagingTests/PreviewPortableMaskRegionTests.swift": {
+      "new": "ea2b9cbd5c212e97920193239680002c349c520f8238ff5327b03ecdbd08277f",
+      "old": "9cb40a3a3e3174941276d31021d2603ac66cff8e17090136ea618e8f0b13bd9b"
+    }
+  },
+  "formal": {
+    "aboveIndividualCeiling": [
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 302.509209,
+        "state": 1
+      },
+      {
+        "id": "effects-dehaze",
+        "settledMs": 271.416375,
+        "state": 0
+      }
+    ],
+    "acceptedVisualSamples": 814,
+    "adaptiveCases": 4,
+    "build": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region-enabled/test-build.json",
+      "sha256": "6ece2b90f3b8107ae53cede3e13e2c530a86190f543d148d37ddefb91975b02d"
+    },
+    "cameraRawAndAdaptive": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region/camera-raw-acceptance-with-flux.json",
+      "sha256": "2127747a98c326bc8b8e4b8ff192c4e1273cd9f47794b5337bd9aeba849ca578"
+    },
+    "cameraRawMeasuredFeatureIDs": 158,
+    "exitCode": 1,
+    "failuresByStage": {
+      "inspection-comparison": [
+        "grading-lut-import p95Ms: 12.27 > 9.34 ms"
+      ],
+      "interactive-comparison": [
+        "texture: interactive median regressed 23.92%",
+        "lens-blur-procedural: interactive median regressed 27.64%",
+        "lens-blur-bokeh-ring: interactive median regressed 14.75%",
+        "targeted-hsl: interactive median regressed 22.48%",
+        "refine-saturation: interactive median regressed 29.12%",
+        "point-curve-targeted: interactive median regressed 10.08%",
+        "point-color-samples: interactive median regressed 19.61%",
+        "local-point-color: interactive median regressed 32.19%",
+        "local-wb: interactive median regressed 16.05%",
+        "local-grain: interactive median regressed 11.58%",
+        "local-defringe: interactive median regressed 18.68%"
+      ],
+      "lightflow-comparison": [
+        "firstAppearanceMix/firstExact",
+        "firstAppearanceMix/final"
+      ]
+    },
+    "functional": {
+      "adaptive-Sky": {
+        "command": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/adaptive-Sky.command.json",
+          "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+        },
+        "passed": 1,
+        "result": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/adaptive-Sky.log",
+          "sha256": "b073f19cb753dd29ca2f45b9044c7a97df7a4aad1f6e6ea5a46511c87a35748c"
+        }
+      },
+      "adaptive-Subject": {
+        "command": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/adaptive-Subject.command.json",
+          "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+        },
+        "passed": 1,
+        "result": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/adaptive-Subject.log",
+          "sha256": "cf0192947d9f8f125a0beec719182811c3271db2c3bf239c4e97a771b8f322f8"
+        }
+      },
+      "native-film-and-mask": {
+        "command": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-film-and-mask.command.json",
+          "sha256": "1446efcdc94889cbf56fbf00a0f1bfec5734a59679c2ee818837d0aa8e642eb3"
+        },
+        "passed": 27,
+        "result": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-film-and-mask.log",
+          "sha256": "9d8627c45c66f6d09a2fdc625acdbfe3dbd73a0760e8d3406fdb1f1736844069"
+        }
+      },
+      "native-mask-interaction": {
+        "command": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-mask-interaction.command.json",
+          "sha256": "1446efcdc94889cbf56fbf00a0f1bfec5734a59679c2ee818837d0aa8e642eb3"
+        },
+        "passed": 9,
+        "result": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-mask-interaction.log",
+          "sha256": "d8979ddcba2818562166265cc0439a0ab409ec1cbf4727c50547ded6cb364e1c"
+        }
+      },
+      "native-prompt-providers": {
+        "command": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-prompt-providers.command.json",
+          "sha256": "1446efcdc94889cbf56fbf00a0f1bfec5734a59679c2ee818837d0aa8e642eb3"
+        },
+        "passed": 5,
+        "result": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-prompt-providers.log",
+          "sha256": "f638ce1bfcdcb09c39ae94fb98cfc10cd135a44170dabe918dd468894d664ba0"
+        }
+      },
+      "native-sharpen-and-dehaze": {
+        "command": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-sharpen-and-dehaze.command.json",
+          "sha256": "1446efcdc94889cbf56fbf00a0f1bfec5734a59679c2ee818837d0aa8e642eb3"
+        },
+        "passed": 41,
+        "result": {
+          "path": "output/035-development/candidate-batch33-verified-opaque-region/native-sharpen-and-dehaze.log",
+          "sha256": "3e45b63b5c73f13f5ba65a81ca5284fa48378a0ae321519b3cbb7f63eba7a5e1"
+        }
+      }
+    },
+    "images": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region-enabled/photo-operators-v2.json",
+      "sha256": "9bfd6679c1dae8ca18dc02c9a7fe05af2d58cb0e458677ec2d69073ff360fa0f"
+    },
+    "metrics": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 65.49993749999999,
+          "n": 74,
+          "p95Ms": 238.795833
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 5.1989374999999995,
+          "n": 74,
+          "p95Ms": 21.729417
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 65.49993749999999,
+          "n": 74,
+          "p95Ms": 238.795833
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "passed": false,
+    "performance": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region-enabled/lightflow-comparison.json",
+      "sha256": "95f790cc47deac715e5d7781797ca38f1774a63a25c144346b2f0c1c4c22e165"
+    },
+    "summary": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region-enabled/summary.json",
+      "sha256": "66d9d3b652943e293595a6439d47ba24c4f1ef085277480d502657e4ed43ebbc"
+    },
+    "superResolution": {
+      "failures": [],
+      "metrics": {
+        "exportMetalBytes": 2811674624,
+        "exportPhysicalFootprintBytes": 3520825480,
+        "exportResidentBytes": 1347010560,
+        "fitOnMs": 126.365542,
+        "fullTIFFMs": 9890.893958
+      },
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "tiff16": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 9890.893958,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "worst": [
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 302.509209,
+        "state": 1
+      },
+      {
+        "id": "effects-dehaze",
+        "settledMs": 271.416375,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 250.941541,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 238.795833,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 227.665041,
+        "state": 0
+      },
+      {
+        "id": "color-bw-treatment",
+        "settledMs": 223.114083,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 212.856291,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-preview",
+        "settledMs": 210.86975,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 210.321958,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 207.844375,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 206.2315,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 203.264708,
+        "state": 1
+      }
+    ]
+  },
+  "historicalSameContextFaults": {
+    "lastPassFaults": 12,
+    "omittedFirstCell": {
+      "fullAccepted": false,
+      "regionalAccepted": true
+    },
+    "recovery": {
+      "acceptedRetry": true,
+      "cancelAfterFirstJoin": true
+    },
+    "runs": [
+      {
+        "command": {
+          "path": "output/035-development/phase-ae/spatial/faults0/0.command.json",
+          "sha256": "10eb31e68da37f915df54c341f6d8bf573c64b5cda686eb94fed3f71fb6f2a72"
+        },
+        "records": {
+          "path": "output/035-development/phase-ae/spatial/faults0/0.json",
+          "sha256": "bd28aa52ada7b6b96414a5cb8a0b9fc03d2277d3f096726462a2e174aed9e045"
+        },
+        "settingAE_T2_CACHE": "0"
+      },
+      {
+        "command": {
+          "path": "output/035-development/phase-ae/spatial/faults0/1.command.json",
+          "sha256": "10eb31e68da37f915df54c341f6d8bf573c64b5cda686eb94fed3f71fb6f2a72"
+        },
+        "records": {
+          "path": "output/035-development/phase-ae/spatial/faults0/1.json",
+          "sha256": "bd28aa52ada7b6b96414a5cb8a0b9fc03d2277d3f096726462a2e174aed9e045"
+        },
+        "settingAE_T2_CACHE": "1"
+      }
+    ],
+    "shaderFaults": 8,
+    "source": {
+      "path": "output/035-development/phase-ae/spatial/AEHistoricalFault.swift",
+      "sha256": "2a7c2467313aed35e167afb92c45265b763ef0a6bc34d55fd334ee37ec018f74"
+    }
+  },
+  "imageABISymbols": [
+    "_rm_image_abi_version",
+    "_rm_image_exposure_gain_v1",
+    "_rm_image_filter_binding_v1",
+    "_rm_image_kernel_source_v1",
+    "_rm_image_metal_frame_bind_v1",
+    "_rm_image_metal_frame_bind_v2",
+    "_rm_image_metal_frame_close_v1",
+    "_rm_image_metal_frame_render_v1",
+    "_rm_image_metal_half_program_close_v1",
+    "_rm_image_metal_half_program_open_v1",
+    "_rm_image_metal_half_render_v1",
+    "_rm_image_metal_mask_half_program_open_v1",
+    "_rm_image_metal_mask_half_render_v1",
+    "_rm_image_metal_mask_region_program_open_v1",
+    "_rm_image_metal_mask_region_render_v1",
+    "_rm_image_metal_program_close_v1",
+    "_rm_image_metal_program_open_v1",
+    "_rm_image_metal_surface_abi_version",
+    "_rm_image_plan_close_v1",
+    "_rm_image_plan_open_v1",
+    "_rm_image_plan_open_v2",
+    "_rm_image_plan_render_v1",
+    "_rm_image_plan_render_v2"
+  ],
+  "isolatedSoftwareRuntimeCost": {
+    "actualSoftwareTest": {
+      "path": "output/035-development/phase-ae/vulkan/final-scoped-test.log",
+      "sha256": "f514babaa3956133951e8a6ddff55f74f757242f8f8199d1a4c99dbc88efd63c"
+    },
+    "affinityMeasurement": {
+      "latency": {
+        "basic_then_curves": {
+          "new": {
+            "maxMs": 44.289153,
+            "n": 80,
+            "p50Ms": 42.2850265,
+            "p95Ms": 43.743777
+          },
+          "old": {
+            "maxMs": 31.650926,
+            "n": 80,
+            "p50Ms": 30.343237000000002,
+            "p95Ms": 31.014258
+          }
+        },
+        "color": {
+          "new": {
+            "maxMs": 25.553166,
+            "n": 80,
+            "p50Ms": 24.4994975,
+            "p95Ms": 25.256165
+          },
+          "old": {
+            "maxMs": 15.4034,
+            "n": 80,
+            "p50Ms": 12.627895500000001,
+            "p95Ms": 13.535855
+          }
+        },
+        "curves": {
+          "new": {
+            "maxMs": 21.446243,
+            "n": 80,
+            "p50Ms": 20.566095,
+            "p95Ms": 21.117826
+          },
+          "old": {
+            "maxMs": 21.69293,
+            "n": 80,
+            "p50Ms": 20.709575,
+            "p95Ms": 21.160638
+          }
+        },
+        "light": {
+          "new": {
+            "maxMs": 26.455792,
+            "n": 80,
+            "p50Ms": 24.799768999999998,
+            "p95Ms": 25.533291
+          },
+          "old": {
+            "maxMs": 13.204896,
+            "n": 80,
+            "p50Ms": 12.124436,
+            "p95Ms": 12.997354
+          }
+        }
+      },
+      "runs": [
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 1,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  30.536393,
+                  31.023935,
+                  30.968018,
+                  30.897601,
+                  30.225685,
+                  30.186059,
+                  30.964976,
+                  30.104709,
+                  30.490563,
+                  30.450363,
+                  30.086695,
+                  30.202336,
+                  30.216749,
+                  30.071241,
+                  30.242951,
+                  29.742981,
+                  30.169718,
+                  29.736983,
+                  30.218249,
+                  30.434284
+                ],
+                "sha": "50eb9b9085f6a503f4db8b7d7d74b0bd14d9592bbdfde2b345a304b9f7c36c05"
+              },
+              "color": {
+                "ms": [
+                  12.936616,
+                  12.790524,
+                  12.874921,
+                  12.710459,
+                  12.872839,
+                  12.91987,
+                  12.739202,
+                  12.875005,
+                  12.432855,
+                  12.980148,
+                  12.579405,
+                  12.47922,
+                  12.644015,
+                  12.546537,
+                  12.361746,
+                  12.650306,
+                  12.650138,
+                  12.7125,
+                  12.422566,
+                  12.68309
+                ],
+                "sha": "1cbe73880ee93e375ac08ada30c26fd8797eb482519eeb28dc857aafe47d2357"
+              },
+              "curves": {
+                "ms": [
+                  21.108638,
+                  21.69293,
+                  21.160638,
+                  21.228346,
+                  21.017846,
+                  20.974929,
+                  20.989929,
+                  21.265304,
+                  20.729137,
+                  20.543679,
+                  20.421262,
+                  20.821637,
+                  20.515178,
+                  20.605429,
+                  20.690013,
+                  20.75197,
+                  20.860596,
+                  20.946971,
+                  20.870138,
+                  20.638846
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  12.69188,
+                  12.73558,
+                  12.997354,
+                  12.851313,
+                  12.737104,
+                  13.204896,
+                  13.11423,
+                  12.772604,
+                  12.728604,
+                  13.008646,
+                  12.676937,
+                  12.922604,
+                  12.865354,
+                  12.690895,
+                  12.48252,
+                  12.399436,
+                  12.658395,
+                  13.008146,
+                  12.985771,
+                  12.802521
+                ],
+                "sha": "f41f6c53e0c06bed9a7cf0cef7ac5ead4eefe5ff5bd2a368791b7e92cf9553db"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "old",
+            "runtime": "66e3ea95d0939d68d7b7f50207a234528a2f0a2d71ff7c66539d8f2d0f8eeb24",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-1.json",
+            "sha256": "1554771df0f4825a9c3c1c848b9d3286fead5d090c789f54140c0bfaa89a3312"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 2,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  42.688485,
+                  42.045026,
+                  42.341693,
+                  42.296443,
+                  42.27361,
+                  43.052611,
+                  43.144237,
+                  42.900361,
+                  42.618319,
+                  42.829819,
+                  42.262985,
+                  42.377527,
+                  41.815442,
+                  41.404191,
+                  40.714149,
+                  41.386192,
+                  41.141816,
+                  41.819067,
+                  42.643527,
+                  41.532858
+                ],
+                "sha": "8d9264667cfa10057107611d68f14ccff1be874965057463c32d9f2740a2427b"
+              },
+              "color": {
+                "ms": [
+                  25.492125,
+                  25.499416,
+                  24.711914,
+                  24.565207,
+                  24.146622,
+                  24.377581,
+                  24.468497,
+                  24.886915,
+                  24.91429,
+                  24.405206,
+                  24.290247,
+                  24.282789,
+                  24.295498,
+                  25.264374,
+                  24.196581,
+                  24.62879,
+                  24.459415,
+                  24.318956,
+                  24.065414,
+                  24.351289
+                ],
+                "sha": "a7e09fa099185b22f1654d29c7dfa884850cc374434b47e58b022374f59aa401"
+              },
+              "curves": {
+                "ms": [
+                  20.327949,
+                  20.708867,
+                  20.404158,
+                  20.669158,
+                  20.400408,
+                  20.665783,
+                  20.45895,
+                  20.658283,
+                  21.164617,
+                  20.667867,
+                  20.549033,
+                  20.388158,
+                  20.587825,
+                  20.615491,
+                  20.491033,
+                  20.747201,
+                  20.477741,
+                  20.607825,
+                  20.621283,
+                  20.387533
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  24.969707,
+                  24.336581,
+                  24.641707,
+                  24.582664,
+                  24.717999,
+                  24.693873,
+                  24.348665,
+                  24.730956,
+                  25.046123,
+                  24.316414,
+                  24.932415,
+                  24.059456,
+                  24.343539,
+                  24.879373,
+                  25.52775,
+                  24.213372,
+                  24.556082,
+                  24.680457,
+                  25.156499,
+                  24.543206
+                ],
+                "sha": "4f686b4f3d12d1ab02643079defce0b824814830c9644a55410259b04aac1f35"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "new",
+            "runtime": "b4082efff9f56d3454df1c0d0f3428a75208a0bb1bfbd89f7bd20ca637a0189d",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-2.json",
+            "sha256": "661886689f1e720dd39a868d06f24d59fcf27eab64a39c413812f8497a73c1fd"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 3,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  41.36165,
+                  42.48011,
+                  41.997984,
+                  41.592609,
+                  42.091026,
+                  41.4569,
+                  41.218275,
+                  41.28765,
+                  41.339817,
+                  41.333317,
+                  42.713235,
+                  42.234443,
+                  42.368485,
+                  41.808025,
+                  41.048441,
+                  41.619858,
+                  41.861776,
+                  41.690942,
+                  41.755067,
+                  42.866944
+                ],
+                "sha": "8d9264667cfa10057107611d68f14ccff1be874965057463c32d9f2740a2427b"
+              },
+              "color": {
+                "ms": [
+                  24.71479,
+                  25.553166,
+                  25.000624,
+                  24.963915,
+                  25.213332,
+                  24.624873,
+                  24.867415,
+                  24.541165,
+                  24.561373,
+                  24.326748,
+                  24.530498,
+                  24.213372,
+                  24.599957,
+                  24.565706,
+                  24.336914,
+                  24.309164,
+                  24.624832,
+                  25.256165,
+                  24.607248,
+                  24.414915
+                ],
+                "sha": "a7e09fa099185b22f1654d29c7dfa884850cc374434b47e58b022374f59aa401"
+              },
+              "curves": {
+                "ms": [
+                  19.704657,
+                  20.316282,
+                  20.455116,
+                  20.026574,
+                  19.977282,
+                  20.011407,
+                  20.641158,
+                  20.302741,
+                  20.633033,
+                  21.446243,
+                  21.156368,
+                  20.880825,
+                  21.379451,
+                  21.117826,
+                  20.763617,
+                  20.432242,
+                  20.561992,
+                  20.330366,
+                  20.568783,
+                  20.829117
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  24.601456,
+                  25.251749,
+                  24.80454,
+                  24.201664,
+                  24.323289,
+                  24.627873,
+                  24.571332,
+                  24.794998,
+                  25.418208,
+                  24.862457,
+                  24.61004,
+                  24.871749,
+                  24.358581,
+                  24.522707,
+                  24.495664,
+                  24.532164,
+                  24.491914,
+                  24.422456,
+                  24.886123,
+                  25.677
+                ],
+                "sha": "4f686b4f3d12d1ab02643079defce0b824814830c9644a55410259b04aac1f35"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "new",
+            "runtime": "b4082efff9f56d3454df1c0d0f3428a75208a0bb1bfbd89f7bd20ca637a0189d",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-3.json",
+            "sha256": "2225f912c3c2a40162bcdce10e1f6d1cc1b4f171392233cf7e12c078ac7a9a71"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 4,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  29.746465,
+                  29.705881,
+                  29.864173,
+                  29.850506,
+                  30.136549,
+                  30.114882,
+                  29.977049,
+                  29.46388,
+                  30.461174,
+                  30.138215,
+                  30.162007,
+                  29.958423,
+                  30.660341,
+                  30.042174,
+                  29.654423,
+                  29.728423,
+                  30.880508,
+                  30.67755,
+                  30.073215,
+                  30.199882
+                ],
+                "sha": "50eb9b9085f6a503f4db8b7d7d74b0bd14d9592bbdfde2b345a304b9f7c36c05"
+              },
+              "color": {
+                "ms": [
+                  12.115728,
+                  12.588104,
+                  13.185979,
+                  12.439478,
+                  12.551729,
+                  12.433395,
+                  12.404229,
+                  12.762312,
+                  13.816564,
+                  13.451563,
+                  13.535855,
+                  12.643521,
+                  12.06752,
+                  11.903228,
+                  12.432436,
+                  12.210228,
+                  12.489562,
+                  12.234728,
+                  12.274103,
+                  12.340228
+                ],
+                "sha": "1cbe73880ee93e375ac08ada30c26fd8797eb482519eeb28dc857aafe47d2357"
+              },
+              "curves": {
+                "ms": [
+                  20.487616,
+                  20.860658,
+                  20.017324,
+                  20.141282,
+                  20.575867,
+                  20.090449,
+                  20.310116,
+                  20.126199,
+                  19.857407,
+                  20.093616,
+                  20.154157,
+                  20.820242,
+                  20.436991,
+                  20.101074,
+                  20.184241,
+                  20.036407,
+                  20.030699,
+                  19.975366,
+                  20.262158,
+                  20.013532
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  12.119978,
+                  12.245686,
+                  12.293062,
+                  12.060769,
+                  11.844602,
+                  12.028853,
+                  12.068061,
+                  12.13827,
+                  12.402978,
+                  11.868185,
+                  12.323979,
+                  12.179103,
+                  11.915352,
+                  12.124144,
+                  11.747477,
+                  11.916019,
+                  12.060686,
+                  12.216061,
+                  11.829894,
+                  11.799352
+                ],
+                "sha": "f41f6c53e0c06bed9a7cf0cef7ac5ead4eefe5ff5bd2a368791b7e92cf9553db"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "old",
+            "runtime": "66e3ea95d0939d68d7b7f50207a234528a2f0a2d71ff7c66539d8f2d0f8eeb24",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-4.json",
+            "sha256": "417eb84e4f63f7ea1469bdba1e9dc696a78042c63c5141e21bfc0bbeadf15e32"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 5,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  43.008152,
+                  42.022942,
+                  41.763817,
+                  42.81311,
+                  42.947444,
+                  42.40686,
+                  41.855026,
+                  41.1874,
+                  41.359108,
+                  41.824484,
+                  42.44586,
+                  42.019192,
+                  41.691609,
+                  41.781317,
+                  41.611609,
+                  41.897984,
+                  41.85665,
+                  42.089026,
+                  42.793611,
+                  42.089901
+                ],
+                "sha": "8d9264667cfa10057107611d68f14ccff1be874965057463c32d9f2740a2427b"
+              },
+              "color": {
+                "ms": [
+                  25.095833,
+                  24.589665,
+                  23.977039,
+                  24.003039,
+                  23.905872,
+                  24.410206,
+                  23.885038,
+                  23.913997,
+                  23.918789,
+                  23.836622,
+                  23.904456,
+                  24.573498,
+                  24.600165,
+                  24.425539,
+                  23.839121,
+                  24.785165,
+                  24.297706,
+                  24.186122,
+                  24.085205,
+                  23.733122
+                ],
+                "sha": "a7e09fa099185b22f1654d29c7dfa884850cc374434b47e58b022374f59aa401"
+              },
+              "curves": {
+                "ms": [
+                  20.628283,
+                  20.414366,
+                  20.205575,
+                  20.391575,
+                  19.903032,
+                  20.133282,
+                  20.011949,
+                  20.463491,
+                  20.36845,
+                  20.253908,
+                  21.077951,
+                  20.518866,
+                  20.122741,
+                  20.4647,
+                  20.516408,
+                  20.103949,
+                  20.370825,
+                  20.310866,
+                  20.524408,
+                  20.268491
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  24.398831,
+                  24.605497,
+                  24.729539,
+                  24.73054,
+                  26.455792,
+                  25.382207,
+                  24.444915,
+                  24.729707,
+                  24.295289,
+                  24.415414,
+                  24.465706,
+                  24.642165,
+                  24.944498,
+                  24.841999,
+                  24.694831,
+                  25.440832,
+                  25.314624,
+                  24.976457,
+                  24.744831,
+                  24.49379
+                ],
+                "sha": "4f686b4f3d12d1ab02643079defce0b824814830c9644a55410259b04aac1f35"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "new",
+            "runtime": "b4082efff9f56d3454df1c0d0f3428a75208a0bb1bfbd89f7bd20ca637a0189d",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-5.json",
+            "sha256": "d8f854a8e278809254e1ac2161d31d178efc3b54f80422ad8c7147ebe07be2ab"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 6,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  30.19234,
+                  30.605133,
+                  30.413799,
+                  30.04609,
+                  29.934548,
+                  30.136924,
+                  30.343216,
+                  30.49659,
+                  30.6303,
+                  29.906382,
+                  29.91384,
+                  30.421591,
+                  30.475341,
+                  30.223924,
+                  30.470924,
+                  30.343258,
+                  30.755299,
+                  29.448214,
+                  29.813715,
+                  29.901881
+                ],
+                "sha": "50eb9b9085f6a503f4db8b7d7d74b0bd14d9592bbdfde2b345a304b9f7c36c05"
+              },
+              "color": {
+                "ms": [
+                  12.500728,
+                  12.256062,
+                  12.156978,
+                  12.331019,
+                  13.28298,
+                  12.345478,
+                  12.458853,
+                  12.302853,
+                  12.243228,
+                  12.57227,
+                  12.159228,
+                  12.236894,
+                  12.536895,
+                  12.067519,
+                  12.453561,
+                  13.256813,
+                  12.311895,
+                  12.704354,
+                  12.61227,
+                  12.203603
+                ],
+                "sha": "1cbe73880ee93e375ac08ada30c26fd8797eb482519eeb28dc857aafe47d2357"
+              },
+              "curves": {
+                "ms": [
+                  20.01874,
+                  20.110866,
+                  20.288366,
+                  20.137324,
+                  20.84045,
+                  20.198699,
+                  20.205783,
+                  20.12874,
+                  20.861742,
+                  20.615242,
+                  20.385908,
+                  20.605992,
+                  20.538408,
+                  20.395533,
+                  20.744075,
+                  20.45845,
+                  20.429616,
+                  20.956534,
+                  20.63895,
+                  20.962075
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  11.961686,
+                  12.06952,
+                  12.226645,
+                  11.873394,
+                  12.127186,
+                  11.857935,
+                  12.124728,
+                  11.826685,
+                  11.754311,
+                  12.085144,
+                  11.953561,
+                  11.876311,
+                  12.127561,
+                  11.852644,
+                  11.793644,
+                  12.031061,
+                  11.850269,
+                  12.39827,
+                  12.135228,
+                  12.119853
+                ],
+                "sha": "f41f6c53e0c06bed9a7cf0cef7ac5ead4eefe5ff5bd2a368791b7e92cf9553db"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "old",
+            "runtime": "66e3ea95d0939d68d7b7f50207a234528a2f0a2d71ff7c66539d8f2d0f8eeb24",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-6.json",
+            "sha256": "4e7b6edda341c3b2a8cb901478cfdd46896659d8331f060a6c6b763100e6dac0"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 7,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  30.748299,
+                  31.057008,
+                  31.650926,
+                  31.304592,
+                  30.658924,
+                  30.9423,
+                  30.956217,
+                  30.902174,
+                  30.836133,
+                  30.421716,
+                  30.823592,
+                  31.014258,
+                  30.211174,
+                  30.679341,
+                  30.499841,
+                  30.88105,
+                  30.818425,
+                  30.651758,
+                  30.580424,
+                  30.786133
+                ],
+                "sha": "50eb9b9085f6a503f4db8b7d7d74b0bd14d9592bbdfde2b345a304b9f7c36c05"
+              },
+              "color": {
+                "ms": [
+                  13.45998,
+                  12.888604,
+                  13.085312,
+                  12.556812,
+                  12.807646,
+                  12.65227,
+                  12.955354,
+                  12.742062,
+                  12.608895,
+                  12.836229,
+                  12.47727,
+                  13.450646,
+                  13.992439,
+                  13.956647,
+                  15.4034,
+                  13.422438,
+                  13.503563,
+                  13.181438,
+                  13.507397,
+                  13.29398
+                ],
+                "sha": "1cbe73880ee93e375ac08ada30c26fd8797eb482519eeb28dc857aafe47d2357"
+              },
+              "curves": {
+                "ms": [
+                  21.008909,
+                  20.914408,
+                  21.074034,
+                  21.118992,
+                  20.901534,
+                  20.772575,
+                  20.842742,
+                  20.936117,
+                  21.077409,
+                  20.526408,
+                  21.093284,
+                  20.7367,
+                  20.970076,
+                  21.543076,
+                  21.008242,
+                  20.755741,
+                  20.910242,
+                  20.804784,
+                  20.801909,
+                  20.882826
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  11.931603,
+                  12.480686,
+                  11.908185,
+                  11.942936,
+                  12.107769,
+                  12.195436,
+                  11.831228,
+                  11.971311,
+                  12.05327,
+                  11.900061,
+                  11.823811,
+                  12.348395,
+                  11.853894,
+                  12.728895,
+                  12.558604,
+                  11.895353,
+                  11.992644,
+                  12.480353,
+                  11.944352,
+                  12.186728
+                ],
+                "sha": "f41f6c53e0c06bed9a7cf0cef7ac5ead4eefe5ff5bd2a368791b7e92cf9553db"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "old",
+            "runtime": "66e3ea95d0939d68d7b7f50207a234528a2f0a2d71ff7c66539d8f2d0f8eeb24",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-7.json",
+            "sha256": "eb11aa3b7e04803d32ad35fded5acb765509f319a19cb751daa7b0451b3df7b0"
+          }
+        },
+        {
+          "observations": {
+            "affinity": [
+              4,
+              5,
+              6,
+              7
+            ],
+            "arm": 8,
+            "cases": {
+              "basic_then_curves": {
+                "ms": [
+                  43.413151,
+                  43.478068,
+                  43.368942,
+                  43.683902,
+                  43.178025,
+                  44.154902,
+                  43.410734,
+                  43.251651,
+                  43.146734,
+                  42.995484,
+                  42.776192,
+                  43.743777,
+                  44.289153,
+                  43.755652,
+                  43.287734,
+                  43.208817,
+                  42.718483,
+                  43.785568,
+                  43.077692,
+                  43.067067
+                ],
+                "sha": "8d9264667cfa10057107611d68f14ccff1be874965057463c32d9f2740a2427b"
+              },
+              "color": {
+                "ms": [
+                  25.038914,
+                  24.876414,
+                  25.047289,
+                  24.612789,
+                  24.322538,
+                  24.810414,
+                  24.754789,
+                  24.786622,
+                  24.826205,
+                  24.434204,
+                  24.318246,
+                  24.416871,
+                  24.801456,
+                  25.118456,
+                  24.401829,
+                  24.544913,
+                  24.427622,
+                  24.64758,
+                  24.363955,
+                  24.049038
+                ],
+                "sha": "a7e09fa099185b22f1654d29c7dfa884850cc374434b47e58b022374f59aa401"
+              },
+              "curves": {
+                "ms": [
+                  20.802449,
+                  20.535365,
+                  20.750366,
+                  20.654574,
+                  20.505782,
+                  20.671657,
+                  20.800032,
+                  20.828615,
+                  20.874574,
+                  20.915574,
+                  20.792782,
+                  20.944866,
+                  20.563407,
+                  20.571823,
+                  20.693116,
+                  20.592282,
+                  21.011116,
+                  20.734199,
+                  20.612782,
+                  20.769616
+                ],
+                "sha": "9f7efa0c47faf5fb57e5ad60f70fad2d0f82d65edb2aa131793844a495674a23"
+              },
+              "light": {
+                "ms": [
+                  24.858123,
+                  25.165249,
+                  25.26679,
+                  25.255707,
+                  25.560917,
+                  25.044499,
+                  25.340291,
+                  25.533291,
+                  25.27729,
+                  25.351165,
+                  24.839748,
+                  25.142915,
+                  24.947707,
+                  25.391124,
+                  25.282083,
+                  25.455625,
+                  25.036499,
+                  25.828583,
+                  25.174915,
+                  25.35504
+                ],
+                "sha": "4f686b4f3d12d1ab02643079defce0b824814830c9644a55410259b04aac1f35"
+              }
+            },
+            "cpuMax": "max 100000",
+            "fixture": "844b4dd7d70decbb8b07366d7509fb9495a7ec36149783f1644628fdedbd2b00",
+            "mode": "new",
+            "runtime": "b4082efff9f56d3454df1c0d0f3428a75208a0bb1bfbd89f7bd20ca637a0189d",
+            "size": [
+              512,
+              512
+            ],
+            "threads": 2
+          },
+          "report": {
+            "path": "output/035-development/phase-ae/vulkan/affinity-cost-8.json",
+            "sha256": "5fd1a9ceb06ef24d3e6ff4364288273cdc7b652387642f2490bbb51f69111c93"
+          }
+        }
+      ],
+      "script": {
+        "path": "output/035-development/phase-ae/vulkan/affinity-cost.py",
+        "sha256": "449935691ff623de0d63e69cf48ac9450d2e227e2cd32b249582c61d1503282f"
+      }
+    },
+    "medians": {
+      "basic_then_curves": {
+        "new": 68.477873,
+        "old": 13.177186500000001
+      },
+      "color": {
+        "new": 10.4190365,
+        "old": 7.382552499999999
+      },
+      "curves": {
+        "new": 13.0206445,
+        "old": 54.698769
+      },
+      "light": {
+        "new": 11.782559,
+        "old": 25.335267
+      }
+    },
+    "newRegressionExecutableSource": {
+      "path": "Modules/ImageEdit/tests/basic_v3.rs",
+      "sha256": "5c86e51f1a7e811a56945e6aa64cd92a25aec210964929ca0b7d7d670340d4fe"
+    },
+    "report": {
+      "path": "output/035-development/phase-ae/vulkan/production-cost.json",
+      "sha256": "926a0ddc4007f26df3b63d3ff2763c9bce0f9f96b3f6fcee8fbc9bd1325c4116"
+    }
+  },
+  "liveQuickPrompt": {
+    "attempts": 1,
+    "data": {
+      "allFilesEqualStandaloneMain": true,
+      "allPerPathReceiptsMatch": true,
+      "appHostMaxRSSBytes": 918634496,
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "bothFileWorkloadsSpanDraw": true,
+      "candidate": "candidate-batch33-verified-opaque-region",
+      "deliveryCount": 200,
+      "draw": {
+        "approximate": false,
+        "consumerID": "D076CCF3-215E-4076-876B-F0ED4BA2ABD2",
+        "drawBeganNS": 650513299565583,
+        "drawReturnedNS": 650513299610541,
+        "frameID": "C1D9B944-2D94-4882-A92E-5F8809021ADC",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 650513279819666,
+        "leaseID": "460812DE-80FC-4CE0-8D3F-3BD84391FCC6",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "elapsedSeconds": 149.92751598358154,
+      "exportSeconds": 7.978804083,
+      "fileBackedDrawMilliseconds": 19.790875,
+      "firstOutputAfterPreparationSeconds": 0.145557375,
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "importedRAWCount": 20,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 650520965407708,
+        "exportFirstFile": 650513132161000,
+        "exportLastFile": 650520963591333,
+        "exportPrepared": 650512986603625,
+        "importCompleted": 650513689489041,
+        "importFirstFile": 650513277754916,
+        "importLastFile": 650513681368500
+      },
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "147.95464208396152",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "147.9751588749932"
+      },
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch33-verified-opaque-region/receipt.json",
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "testBinarySHA256": "f0c88f78bf57e173ea31d5456761ffd7d3a562390308342033662a436d14322e"
+    },
+    "provider": {
+      "path": "output/035-development/flux-mixed-candidate-batch33-verified-opaque-region/receipt.json",
+      "sha256": "11e07039acb7ca5bb48f73aff6317e273d4a8505222bfaf6527b66745f590fa8"
+    },
+    "revisions": [
+      0,
+      1,
+      2
+    ],
+    "verified": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region/verified-flux-mixed.json",
+      "sha256": "ead6a0ab75bde4a25257f767f2ccb334f9732072c5c428378a4f297217a46982"
+    }
+  },
+  "macRust": {
+    "ignored": 0,
+    "log": {
+      "path": "output/035-development/phase-ae/mac-image-release.log",
+      "sha256": "8aaa013219df51ca9037065efa5a5df7b2b90fc3c9700ef8268e6933af47d713"
+    },
+    "passed": 38
+  },
+  "metalAlpha": {
+    "path": "output/035-development/candidate-batch33-verified-opaque-region/metal-c-abi/alpha-integer-sample.json",
+    "sha256": "96fac673e68ddfb1ed41a332a85d44eb8a913988cbd725b801af4300fa40fca4"
+  },
+  "metalCABI": {
+    "path": "output/035-development/candidate-batch33-verified-opaque-region/metal-c-abi/c_abi.json",
+    "sha256": "56acf2600b3d0a3448cdcb9e414bc0f0321ae8241a0514b10ff4d878afc087d4"
+  },
+  "opaqueUploadAndGeneralFinite": {
+    "command": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region/opaque-source.command.json",
+      "sha256": "241a4733f54752f860ea8344cbf01d8636d4b35b7850dcd0f776c6adc8242aee"
+    },
+    "passed": 4,
+    "result": {
+      "path": "output/035-development/candidate-batch33-verified-opaque-region/opaque-source.log",
+      "sha256": "2256fdf4848e5035b82c28c1a86bd6e62d5cf093c35fa519e0012a81b013aeca"
+    }
+  },
+  "pointwiseRegionFP32AndDisplay": {
+    "comparisons": 48,
+    "receipts": [
+      {
+        "path": "output/035-development/phase-ae/spatial/point-edges-01/1-primary-base.json",
+        "sha256": "bcb9fddd33db8b210db0d6f49d76083d5220efd7236975ec2e25ff82a09a0e52"
+      },
+      {
+        "path": "output/035-development/phase-ae/spatial/point-edges-01/2-primary-pointRegion.json",
+        "sha256": "5b293480fe660479e54ccfe534a33b9d17c4fb00f50da52f0a23a8f20ec45f03"
+      },
+      {
+        "path": "output/035-development/phase-ae/spatial/point-edges-01/1-secondary-base.json",
+        "sha256": "448eadf65c6d874be33402abfea78c0cdc6d176a298fdd4dcfdd709fdf019f2f"
+      },
+      {
+        "path": "output/035-development/phase-ae/spatial/point-edges-01/2-secondary-pointRegion.json",
+        "sha256": "186e57386478090c0c4dae3bdf0177617833e951b4e5be1a2bd136669fe34061"
+      }
+    ]
+  },
+  "previous": {
+    "path": "specs/035-portable-processing-cores/evidence/native-desktop-transport-release.json",
+    "sha256": "373e7dc5c0a4ae890049dcb5afea9570bdb62e246fa805b7fb8cec9f86cb2475"
+  },
+  "productCrossover": {
+    "events": {
+      "cache": 16,
+      "regionalPointwise": 24
+    },
+    "fullDisplaysExact": 1184,
+    "roles": {
+      "primary": {
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "resultsByArm": {
+          "0": {
+            "all": {
+              "maxMs": 290.207584,
+              "n": 148,
+              "p50Ms": 57.797354,
+              "p95Ms": 253.278958
+            },
+            "selected": {
+              "color-mask-temp": {
+                "maxMs": 139.3045,
+                "n": 4,
+                "p50Ms": 117.1206665,
+                "p95Ms": 139.3045
+              },
+              "color-mask-tint": {
+                "maxMs": 153.004875,
+                "n": 4,
+                "p50Ms": 131.377417,
+                "p95Ms": 153.004875
+              },
+              "effects-mask-clarity": {
+                "maxMs": 290.207584,
+                "n": 4,
+                "p50Ms": 272.8582295,
+                "p95Ms": 290.207584
+              },
+              "effects-mask-texture": {
+                "maxMs": 238.643083,
+                "n": 4,
+                "p50Ms": 228.975146,
+                "p95Ms": 238.643083
+              },
+              "grading-mask-wheels": {
+                "maxMs": 123.66775,
+                "n": 4,
+                "p50Ms": 120.719792,
+                "p95Ms": 123.66775
+              }
+            }
+          },
+          "1": {
+            "all": {
+              "maxMs": 270.110541,
+              "n": 148,
+              "p50Ms": 53.864875,
+              "p95Ms": 224.473542
+            },
+            "selected": {
+              "color-mask-temp": {
+                "maxMs": 132.894,
+                "n": 4,
+                "p50Ms": 116.8677705,
+                "p95Ms": 132.894
+              },
+              "color-mask-tint": {
+                "maxMs": 142.645666,
+                "n": 4,
+                "p50Ms": 128.9001455,
+                "p95Ms": 142.645666
+              },
+              "effects-mask-clarity": {
+                "maxMs": 253.263583,
+                "n": 4,
+                "p50Ms": 248.4823745,
+                "p95Ms": 253.263583
+              },
+              "effects-mask-texture": {
+                "maxMs": 194.478291,
+                "n": 4,
+                "p50Ms": 184.8021255,
+                "p95Ms": 194.478291
+              },
+              "grading-mask-wheels": {
+                "maxMs": 116.221583,
+                "n": 4,
+                "p50Ms": 115.6930625,
+                "p95Ms": 116.221583
+              }
+            }
+          }
+        },
+        "runs": [
+          {
+            "arm": 0,
+            "cachedControlIDs": [],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/1-primary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/1-primary-0.json",
+              "sha256": "eca30e8e4b776d2c0f8342e88c3f87775e1faa1b0d6c30830ade69ec1ba0cd7c"
+            },
+            "pointwiseRegionPixels": [],
+            "processPeakPhysicalFootprintBytes": 5373315448
+          },
+          {
+            "arm": 1,
+            "cachedControlIDs": [
+              "effects-mask-clarity",
+              "effects-mask-clarity",
+              "effects-mask-texture",
+              "effects-mask-texture"
+            ],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/2-primary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/2-primary-1.json",
+              "sha256": "5256630c1de1125f7a89f6561451f5d0683b50aeba8a5aec7222c941bca1b6e9"
+            },
+            "pointwiseRegionPixels": [
+              [
+                "color-mask-temp",
+                25340348
+              ],
+              [
+                "color-mask-temp",
+                25340348
+              ],
+              [
+                "color-mask-tint",
+                25340348
+              ],
+              [
+                "color-mask-tint",
+                25340348
+              ],
+              [
+                "grading-mask-wheels",
+                25340348
+              ],
+              [
+                "grading-mask-wheels",
+                25340348
+              ]
+            ],
+            "processPeakPhysicalFootprintBytes": 5372479864
+          },
+          {
+            "arm": 1,
+            "cachedControlIDs": [
+              "effects-mask-clarity",
+              "effects-mask-clarity",
+              "effects-mask-texture",
+              "effects-mask-texture"
+            ],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/3-primary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/3-primary-1.json",
+              "sha256": "485b7ef8b8ca60d68cb3ab1f2cfa5b8cccc7c509f54f1704f233f744224962db"
+            },
+            "pointwiseRegionPixels": [
+              [
+                "color-mask-temp",
+                25340348
+              ],
+              [
+                "color-mask-temp",
+                25340348
+              ],
+              [
+                "color-mask-tint",
+                25340348
+              ],
+              [
+                "color-mask-tint",
+                25340348
+              ],
+              [
+                "grading-mask-wheels",
+                25340348
+              ],
+              [
+                "grading-mask-wheels",
+                25340348
+              ]
+            ],
+            "processPeakPhysicalFootprintBytes": 5372987744
+          },
+          {
+            "arm": 0,
+            "cachedControlIDs": [],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/4-primary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/4-primary-0.json",
+              "sha256": "dd0619ce699498c8f1cff110e45442e6b2f157e6f16b756fad328cc62e258c6e"
+            },
+            "pointwiseRegionPixels": [],
+            "processPeakPhysicalFootprintBytes": 5372250488
+          }
+        ],
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "nativeSize": [
+          8640,
+          5760
+        ],
+        "resultsByArm": {
+          "0": {
+            "all": {
+              "maxMs": 256.483208,
+              "n": 148,
+              "p50Ms": 56.647708,
+              "p95Ms": 218.369375
+            },
+            "selected": {
+              "color-mask-temp": {
+                "maxMs": 114.789209,
+                "n": 4,
+                "p50Ms": 113.5264165,
+                "p95Ms": 114.789209
+              },
+              "color-mask-tint": {
+                "maxMs": 138.272958,
+                "n": 4,
+                "p50Ms": 117.7440625,
+                "p95Ms": 138.272958
+              },
+              "effects-mask-clarity": {
+                "maxMs": 256.483208,
+                "n": 4,
+                "p50Ms": 240.5695205,
+                "p95Ms": 256.483208
+              },
+              "effects-mask-texture": {
+                "maxMs": 246.774666,
+                "n": 4,
+                "p50Ms": 227.39027049999999,
+                "p95Ms": 246.774666
+              },
+              "grading-mask-wheels": {
+                "maxMs": 112.077208,
+                "n": 4,
+                "p50Ms": 101.5635,
+                "p95Ms": 112.077208
+              }
+            }
+          },
+          "1": {
+            "all": {
+              "maxMs": 243.835667,
+              "n": 148,
+              "p50Ms": 56.7696665,
+              "p95Ms": 193.081459
+            },
+            "selected": {
+              "color-mask-temp": {
+                "maxMs": 105.856625,
+                "n": 4,
+                "p50Ms": 101.66693749999999,
+                "p95Ms": 105.856625
+              },
+              "color-mask-tint": {
+                "maxMs": 121.551542,
+                "n": 4,
+                "p50Ms": 103.25004150000001,
+                "p95Ms": 121.551542
+              },
+              "effects-mask-clarity": {
+                "maxMs": 243.835667,
+                "n": 4,
+                "p50Ms": 222.133062,
+                "p95Ms": 243.835667
+              },
+              "effects-mask-texture": {
+                "maxMs": 192.366083,
+                "n": 4,
+                "p50Ms": 180.6147915,
+                "p95Ms": 192.366083
+              },
+              "grading-mask-wheels": {
+                "maxMs": 110.403667,
+                "n": 4,
+                "p50Ms": 106.076854,
+                "p95Ms": 110.403667
+              }
+            }
+          }
+        },
+        "runs": [
+          {
+            "arm": 0,
+            "cachedControlIDs": [],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/1-secondary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/1-secondary-0.json",
+              "sha256": "508738fed9f2d55fc3c07bdaf022e293c211f8748a05f45127df8de4870010e0"
+            },
+            "pointwiseRegionPixels": [],
+            "processPeakPhysicalFootprintBytes": 4829792560
+          },
+          {
+            "arm": 1,
+            "cachedControlIDs": [
+              "effects-mask-clarity",
+              "effects-mask-clarity",
+              "effects-mask-texture",
+              "effects-mask-texture"
+            ],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/2-secondary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/2-secondary-1.json",
+              "sha256": "928472c94bd3e7754cd948cb7acd6d9a4d09d3ddaaebc41cd6f40d2132f222b4"
+            },
+            "pointwiseRegionPixels": [
+              [
+                "color-mask-temp",
+                20958948
+              ],
+              [
+                "color-mask-temp",
+                20958948
+              ],
+              [
+                "color-mask-tint",
+                20958948
+              ],
+              [
+                "color-mask-tint",
+                20958948
+              ],
+              [
+                "grading-mask-wheels",
+                20958948
+              ],
+              [
+                "grading-mask-wheels",
+                20958948
+              ]
+            ],
+            "processPeakPhysicalFootprintBytes": 4832643328
+          },
+          {
+            "arm": 1,
+            "cachedControlIDs": [
+              "effects-mask-clarity",
+              "effects-mask-clarity",
+              "effects-mask-texture",
+              "effects-mask-texture"
+            ],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/3-secondary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/3-secondary-1.json",
+              "sha256": "6b292b62cf72e31249f96b2ba468ea4a310e03e20887426819408ebb4db995fb"
+            },
+            "pointwiseRegionPixels": [
+              [
+                "color-mask-temp",
+                20958948
+              ],
+              [
+                "color-mask-temp",
+                20958948
+              ],
+              [
+                "color-mask-tint",
+                20958948
+              ],
+              [
+                "color-mask-tint",
+                20958948
+              ],
+              [
+                "grading-mask-wheels",
+                20958948
+              ],
+              [
+                "grading-mask-wheels",
+                20958948
+              ]
+            ],
+            "processPeakPhysicalFootprintBytes": 4845488432
+          },
+          {
+            "arm": 0,
+            "cachedControlIDs": [],
+            "command": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/4-secondary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "mode": {
+              "path": "output/035-development/phase-ae/product/opaque-abba/4-secondary-0.json",
+              "sha256": "57555f12fed8eaa65680c0754fc8d0f88a331d421aeb8cf8231b1691ca2283f2"
+            },
+            "pointwiseRegionPixels": [],
+            "processPeakPhysicalFootprintBytes": 4830660888
+          }
+        ],
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "runner": {
+      "path": "output/035-development/phase-ae/product/opaque-abba/profile-settled-photo",
+      "sha256": "0d507e1e3fa70583f05c0efe8f690419246ce7f8a8f0d0d133f003b39e382df7"
+    },
+    "settledMatchedArchives": 592
+  },
+  "productRevocation": {
+    "parts": {
+      "path": "output/035-development/phase-ae/product/revoke-opaque/binaries.sha256",
+      "sha256": "ad1488a4972b97e86d81ef35fddee594453bd700aa0e3819b36869376bc13522"
+    },
+    "results": [
+      {
+        "command": {
+          "path": "output/035-development/phase-ae/product/revoke-opaque/primary.command.json",
+          "sha256": "10eb31e68da37f915df54c341f6d8bf573c64b5cda686eb94fed3f71fb6f2a72"
+        },
+        "receipt": {
+          "cases": [
+            {
+              "control": "effects-mask-clarity",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+              "revokedAfterJoinedDisplay": true,
+              "route": "spatial"
+            },
+            {
+              "control": "effects-mask-texture",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+              "revokedAfterJoinedDisplay": true,
+              "route": "spatial"
+            },
+            {
+              "control": "color-mask-temp",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "babbda0c49a620d0175c69065f4ebb9f5d69e90ae5d771e9de91b044486df095",
+              "revokedAfterJoinedDisplay": true,
+              "route": "pointwise"
+            },
+            {
+              "control": "grading-mask-wheels",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "ed78c1380cba50b67f3190f152de9a35a083914c296a8a2b2f95e36e7f91752a",
+              "revokedAfterJoinedDisplay": true,
+              "route": "pointwise"
+            }
+          ],
+          "fallback": {
+            "displaySHA256": "babbda0c49a620d0175c69065f4ebb9f5d69e90ae5d771e9de91b044486df095",
+            "recordedCoreImageGlobalProof": true,
+            "recordedOpaqueUploadProof": false,
+            "usedFullLocalValidation": true
+          },
+          "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        },
+        "report": {
+          "path": "output/035-development/phase-ae/product/revoke-opaque/primary.json",
+          "sha256": "88896dcf22d1457185b436e41ba548f7a68fe3f88f874ab59b5d615ac1fe5d81"
+        }
+      },
+      {
+        "command": {
+          "path": "output/035-development/phase-ae/product/revoke-opaque/secondary.command.json",
+          "sha256": "10eb31e68da37f915df54c341f6d8bf573c64b5cda686eb94fed3f71fb6f2a72"
+        },
+        "receipt": {
+          "cases": [
+            {
+              "control": "effects-mask-clarity",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+              "revokedAfterJoinedDisplay": true,
+              "route": "spatial"
+            },
+            {
+              "control": "effects-mask-texture",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+              "revokedAfterJoinedDisplay": true,
+              "route": "spatial"
+            },
+            {
+              "control": "color-mask-temp",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "e01309acd62d257a4835237d77785503859a0db5f96a12a51c19bdf5572e1e61",
+              "revokedAfterJoinedDisplay": true,
+              "route": "pointwise"
+            },
+            {
+              "control": "grading-mask-wheels",
+              "noDeliveredFrame": true,
+              "retriedOnSameSourceWorker": true,
+              "retryDisplaySHA256": "1cb799b342c198ed7ef690ffe1d623bb1ed075a992ce415aefa09d1dda5ec570",
+              "revokedAfterJoinedDisplay": true,
+              "route": "pointwise"
+            }
+          ],
+          "fallback": {
+            "displaySHA256": "e01309acd62d257a4835237d77785503859a0db5f96a12a51c19bdf5572e1e61",
+            "recordedCoreImageGlobalProof": true,
+            "recordedOpaqueUploadProof": false,
+            "usedFullLocalValidation": true
+          },
+          "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+        },
+        "report": {
+          "path": "output/035-development/phase-ae/product/revoke-opaque/secondary.json",
+          "sha256": "38208476acd439a8edb8a5827bbb4010fe84cee21e7ec8852c0d58292b77549e"
+        }
+      }
+    ]
+  },
+  "qualificationBeforeOpaqueGuard": {
+    "actualReport": {
+      "path": "output/035-development/candidate-batch33-spatial-cache-and-software-parity-enabled/lightflow-comparison.json",
+      "sha256": "9f48eadc00b0ed858988ec06c538d577385d258a48f196910c6f867d7cdf76f9"
+    },
+    "metrics": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 62.704083,
+          "n": 74,
+          "p95Ms": 251.508084
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 5.1063335,
+          "n": 74,
+          "p95Ms": 24.04825
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 62.704083,
+          "n": 74,
+          "p95Ms": 251.508084
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    }
+  },
+  "runtimes": {
+    "RAWMasterAITests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "4976baefe24a7cf9c7162edee158f80ecaa1a62bf9833dccd6c05fb93ea502a5",
+    "RAWMasterAITests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db",
+    "RAWMasterCoreTests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "4976baefe24a7cf9c7162edee158f80ecaa1a62bf9833dccd6c05fb93ea502a5",
+    "RAWMasterCoreTests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db",
+    "RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "b008a3416621afa547deb78b0462dc07f7615da64b0fe5b790893eb48bd1abc7",
+    "RAWMasterImagingTests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "4976baefe24a7cf9c7162edee158f80ecaa1a62bf9833dccd6c05fb93ea502a5",
+    "RAWMasterImagingTests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db",
+    "RAWMasterUITests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "b008a3416621afa547deb78b0462dc07f7615da64b0fe5b790893eb48bd1abc7",
+    "RAWMasterUITests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "4976baefe24a7cf9c7162edee158f80ecaa1a62bf9833dccd6c05fb93ea502a5",
+    "RAWMasterUITests.xctest/Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+  },
+  "sameBinaryPhotoOperatorsABBA": [
+    {
+      "command": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/1-0.command.json",
+        "sha256": "b5fe78bb80c746aa3a43ab47592652e5962b14be07d008a84e61588fc89f1549"
+      },
+      "phases": {
+        "final": {
+          "medianMs": 63.4704585,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 233.805875,
+          "p95Within": true
+        },
+        "first": {
+          "medianMs": 5.554229,
+          "n": 74,
+          "p50Within": true,
+          "p95Ms": 21.944167,
+          "p95Within": true
+        },
+        "firstExact": {
+          "medianMs": 63.4704585,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 233.805875,
+          "p95Within": true
+        }
+      },
+      "report": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/1-0.json",
+        "sha256": "d418cf2e2d41784c0e34557ec02e9cb3a474841d18f7cff01d982c140abddf69"
+      },
+      "testedSetting": 0,
+      "verifiedPixels": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/1-0.pixel-check.json",
+        "sha256": "291cbab8318947a26d8239ebed650d3168700b67fd2abd7465a5191e595e00ca"
+      }
+    },
+    {
+      "command": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/2-1.command.json",
+        "sha256": "b5fe78bb80c746aa3a43ab47592652e5962b14be07d008a84e61588fc89f1549"
+      },
+      "phases": {
+        "final": {
+          "medianMs": 60.095812499999994,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 236.477792,
+          "p95Within": true
+        },
+        "first": {
+          "medianMs": 5.3750420000000005,
+          "n": 74,
+          "p50Within": true,
+          "p95Ms": 22.747625,
+          "p95Within": true
+        },
+        "firstExact": {
+          "medianMs": 60.095812499999994,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 236.477792,
+          "p95Within": true
+        }
+      },
+      "report": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/2-1.json",
+        "sha256": "c4f21bc96e28915c09ef02ca1b68a49ca693a60da9e19ee2bdd2a703d4106709"
+      },
+      "testedSetting": 1,
+      "verifiedPixels": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/2-1.pixel-check.json",
+        "sha256": "291cbab8318947a26d8239ebed650d3168700b67fd2abd7465a5191e595e00ca"
+      }
+    },
+    {
+      "command": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/3-1.command.json",
+        "sha256": "b5fe78bb80c746aa3a43ab47592652e5962b14be07d008a84e61588fc89f1549"
+      },
+      "phases": {
+        "final": {
+          "medianMs": 59.9482085,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 242.483167,
+          "p95Within": true
+        },
+        "first": {
+          "medianMs": 5.1919585,
+          "n": 74,
+          "p50Within": true,
+          "p95Ms": 22.24925,
+          "p95Within": true
+        },
+        "firstExact": {
+          "medianMs": 59.9482085,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 242.483167,
+          "p95Within": true
+        }
+      },
+      "report": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/3-1.json",
+        "sha256": "e50bcda61238481e250c44c2640e9d17ab3e5202a6ff2b6d43cf8cb474b164fe"
+      },
+      "testedSetting": 1,
+      "verifiedPixels": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/3-1.pixel-check.json",
+        "sha256": "291cbab8318947a26d8239ebed650d3168700b67fd2abd7465a5191e595e00ca"
+      }
+    },
+    {
+      "command": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/4-0.command.json",
+        "sha256": "b5fe78bb80c746aa3a43ab47592652e5962b14be07d008a84e61588fc89f1549"
+      },
+      "phases": {
+        "final": {
+          "medianMs": 60.992645499999995,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 234.494292,
+          "p95Within": true
+        },
+        "first": {
+          "medianMs": 5.5198125000000005,
+          "n": 74,
+          "p50Within": true,
+          "p95Ms": 22.927875,
+          "p95Within": true
+        },
+        "firstExact": {
+          "medianMs": 60.992645499999995,
+          "n": 74,
+          "p50Within": false,
+          "p95Ms": 234.494292,
+          "p95Within": true
+        }
+      },
+      "report": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/4-0.json",
+        "sha256": "ed773bdb50aad99a1bd0922bf585704193017f4c6fcb1f42b8a7d127b48285c6"
+      },
+      "testedSetting": 0,
+      "verifiedPixels": {
+        "path": "output/035-development/phase-ae/formal-33-opaque/operator-abba/4-0.pixel-check.json",
+        "sha256": "291cbab8318947a26d8239ebed650d3168700b67fd2abd7465a5191e595e00ca"
+      }
+    }
+  ],
+  "schemaVersion": 1,
+  "sharedPrecision": {
+    "catalogFilesystemCapacity": {
+      "path": "specs/035-portable-processing-cores/evidence/workbench-filesystem-capacity.json",
+      "sha256": "c4c27a1dba0aab96bb6fd31afb0243dac75777acf92ba80030db9ae450ed4bd8"
+    },
+    "linuxRuntime": {
+      "path": "output/035-development/phase-ae/vulkan/production.so",
+      "sha256": "b4082efff9f56d3454df1c0d0f3428a75208a0bb1bfbd89f7bd20ca637a0189d"
+    },
+    "linuxSource": {
+      "path": "Modules/ImageEdit/src/basic_v3.wgsl",
+      "sha256": "bcd9e01bcad45bc28930bfd6c2ab7d6f0332da4188a0875257458c349e192ef1"
+    },
+    "linuxTests": [
+      {
+        "ignored": 11,
+        "log": {
+          "path": "output/035-development/phase-ae/vulkan/production-tests.log",
+          "sha256": "da5d7ae53d8e2cb514d792f4a13d83b6fe44179079cf9be42566b810d2d0f8aa"
+        },
+        "passed": 27
+      },
+      {
+        "ignored": 0,
+        "log": {
+          "path": "output/035-development/phase-ae/vulkan/production-ignored.log",
+          "sha256": "31cf4066763b4b161833ce3811bfbeb1ffa7b44dd610bf35ef95a885ce4b5698"
+        },
+        "passed": 11
+      }
+    ],
+    "rejectedMetalBasicPower": {
+      "replay": {
+        "path": "output/035-development/phase-ae/mac-basic-curves.json",
+        "sha256": "95600b3aaae057db67fc8732d9be6e5b0b4eaf5e926291d116a9e2edec443810"
+      },
+      "rows": [
+        [
+          "primary",
+          {
+            "differentComponents": 37779,
+            "maximumAbsolute": 2.5033950805664062e-06,
+            "over2e6Components": 7
+          },
+          {
+            "differentComponents": 35396,
+            "maximumAbsolute": 3.0994415283203125e-06,
+            "over2e6Components": 5
+          }
+        ],
+        [
+          "secondary",
+          {
+            "differentComponents": 34374,
+            "maximumAbsolute": 2.682209014892578e-06,
+            "over2e6Components": 14
+          },
+          {
+            "differentComponents": 32600,
+            "maximumAbsolute": 2.86102294921875e-06,
+            "over2e6Components": 19
+          }
+        ]
+      ]
+    },
+    "replays": [
+      {
+        "path": "output/035-development/phase-ae/vulkan/production-compat.json",
+        "sha256": "02b8b02a3178fe96c322e73aa107d3f504dc3b254b4778ebcec64938e61724f8"
+      },
+      {
+        "path": "output/035-development/phase-ae/vulkan/production-pure.json",
+        "sha256": "508f86c287deb8f509eb36107e22cfcdd40f2aa018c47c75ed1538248ce7fee8"
+      },
+      {
+        "path": "output/035-development/phase-ae/vulkan/production-compound.json",
+        "sha256": "e4c43587acd3d611c84371cdb0cdf5fc1a1957a4b7632a839f768b55b03cbd9a"
+      },
+      {
+        "path": "output/035-development/phase-ae/vulkan/production-edges.json",
+        "sha256": "98074e5167faa910b5512f0b79fbcae0baf0434fa0e0ac59ef4b0ee320027bf8"
+      },
+      {
+        "path": "output/035-development/phase-ae/vulkan/production-staged.jsonl",
+        "sha256": "86fbc13682480208b30d179150796041a5dfa7187d9d4a6035a609ad06e43b49"
+      },
+      {
+        "path": "output/035-development/phase-ae/vulkan/production-review.json",
+        "sha256": "d4a78d21a44cff5e8cba0964ff5015c560ba7b3b6e7ff77494efcd9fdea81ddc"
+      }
+    ],
+    "stagedAndIndependent": [
+      {
+        "count": 12800,
+        "cpu": "73d355a0764e0e93faf8eafb0fd02df7d606d664024008beb9871ac830a065f1",
+        "fused": "dceba28c5e7ee44fbb5b3a1ed63d468962c8f6c858bc6afc1ad8408a85dc1c10",
+        "max": 1.1920928955078125e-06,
+        "over2e6": 0,
+        "reencodedSplitMaximum": 1.1920928955078125e-06,
+        "reencodedSplitOver2e6": 0,
+        "role": "primary",
+        "separateLightColorCurves": "dceba28c5e7ee44fbb5b3a1ed63d468962c8f6c858bc6afc1ad8408a85dc1c10",
+        "separateOriginalBasicAndCurves": "dceba28c5e7ee44fbb5b3a1ed63d468962c8f6c858bc6afc1ad8408a85dc1c10",
+        "staged": "dceba28c5e7ee44fbb5b3a1ed63d468962c8f6c858bc6afc1ad8408a85dc1c10"
+      },
+      {
+        "count": 11776,
+        "cpu": "e1c3e18dfdb8871f130b67a1015384d8d3b5953af9a6c2b2d24f4a8a557961a7",
+        "fused": "c3873eb253697ad4657efd683f5bab0b3509aab0e3ce05b8ba724c67ef305cfd",
+        "max": 1.6689300537109375e-06,
+        "over2e6": 0,
+        "reencodedSplitMaximum": 1.6689300537109375e-06,
+        "reencodedSplitOver2e6": 0,
+        "role": "secondary",
+        "separateLightColorCurves": "c3873eb253697ad4657efd683f5bab0b3509aab0e3ce05b8ba724c67ef305cfd",
+        "separateOriginalBasicAndCurves": "c3873eb253697ad4657efd683f5bab0b3509aab0e3ce05b8ba724c67ef305cfd",
+        "staged": "c3873eb253697ad4657efd683f5bab0b3509aab0e3ce05b8ba724c67ef305cfd"
+      }
+    ]
+  },
+  "sourceSeal": {
+    "path": "output/035-development/candidate-batch33-verified-opaque-region/source-files.sha256",
+    "sha256": "77c0f9a3cd5bf74c77c2511c421ed942d828c1726c6e76a23dca5dc36d5ff527"
+  },
+  "spatialTrials": {
+    "data": {
+      "rawStateAndGeometryPairsExact": 32,
+      "rejectedCrops": {
+        "primary": {
+          "crop": 0,
+          "roi": 0
+        },
+        "secondary": {
+          "crop": 10,
+          "roi": 10
+        }
+      }
+    },
+    "linkedSwift": {
+      "path": "output/035-development/phase-ae/spatial/SpatialWitness.swift",
+      "sha256": "c03c819fd1e76843de5dcd5b774e05f43ee41d87313b6fc188f1fa59204ac869"
+    },
+    "proofs": [
+      {
+        "inputs": [
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-base.json",
+            "sha256": "7eb6b14190200ae288152fa8c53924a7a8462b6205e91796f30fb19c1cf5d72a"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-crop.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-crop.json",
+            "sha256": "beb1ddb818d412bc72917c1db84fe66a89375c88db26432103032d1b4f7f840a"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-pipelineCache.json",
+            "sha256": "0340334220b80b8cc2cdd4b41307722ccd358f5365857b17f0bd4a185eff6c9b"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-roi.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/primary-roi.json",
+            "sha256": "10825e1ba23c979faeed89637cded931dc40ce4563c53fdd19fc55cd76403c28"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-base.json",
+            "sha256": "596d752e836f11fc369dcbec9591e251f8a080ef0f5855f1ed0ba51d46d554a0"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-crop.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-crop.json",
+            "sha256": "d0f7ab8926dbe5d61ee29c7132a14bd1ba1d083fb7a45e1928aca6cf3c8e5d6b"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-pipelineCache.json",
+            "sha256": "c15b670a4af6c718340c43e411e8f3d53d95edc8116b13a19b18efbbca4ec54a"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-roi.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/display-00/secondary-roi.json",
+            "sha256": "260d415d8de1a27aa48f11cc10a38fe92f6f72838001d41d19ab8c5d66615004"
+          }
+        ],
+        "label": "display-00"
+      },
+      {
+        "inputs": [
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/1-primary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/1-primary-base.json",
+            "sha256": "a060d9ef7b163c3f0d3b98d94e6fe2f7c70deded88cf26c907d4a4974aace951"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/1-secondary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/1-secondary-base.json",
+            "sha256": "b02d335837616e23e70ef8936e73047e24a4f96cd875ea94a824537b955a98f6"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/2-primary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/2-primary-pipelineCache.json",
+            "sha256": "635315dcabf56c30ee116be5375003a4b0ba58b5e0728ed785a5b5bd2d580b67"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/2-secondary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/2-secondary-pipelineCache.json",
+            "sha256": "5074ba0169728245b0dce88ed36795bbbd7bffd27c3eebdd778a1f0aa8b1ae4b"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/3-primary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/3-primary-pipelineCache.json",
+            "sha256": "f4892701295bc6ba0071782d7df652ce371b15222187505ae53246452a85ae2a"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/3-secondary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/3-secondary-pipelineCache.json",
+            "sha256": "a14731332b10ace39f14394d17c6c0cd518c5ce2ac30efaa4ef0685c6effc3aa"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/4-primary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/4-primary-base.json",
+            "sha256": "76788828fe2faf653ab00e77c13ff40b5d3d667cab68bd6f7721c96ebb9fea29"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/4-secondary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-time-01/4-secondary-base.json",
+            "sha256": "80a0a5a5655aeac050d292ca25d61cd945a9a07dd6de96c5fcac2f4789dfcc09"
+          }
+        ],
+        "label": "cache-time-01"
+      },
+      {
+        "inputs": [
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/1-primary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/1-primary-base.json",
+            "sha256": "1718910b160590049727f5f1c2dca6674a16fac806ace8ab43d9abd195ef154c"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/1-secondary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/1-secondary-base.json",
+            "sha256": "f896e6a7b9b111026c76eea88dac733326ea0b2aea27541d8cfb0a8f6b7f26b5"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/2-primary-pointRegion.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/2-primary-pointRegion.json",
+            "sha256": "8570a1cc1f3e0f52fc2ece926d80fee4fddee6c06c9a0574effb6b18a33baa91"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/2-secondary-pointRegion.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/2-secondary-pointRegion.json",
+            "sha256": "6920a7b6b3596c1bd748a56c5f3499626131d86cff6fc78aff8c7cb43bea8986"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/3-primary-pointRegion.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/3-primary-pointRegion.json",
+            "sha256": "7e7688e54bfa0bd209fb576968c043e04e37c98a1912888c52629abcdb122b65"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/3-secondary-pointRegion.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/3-secondary-pointRegion.json",
+            "sha256": "5384145d8edbe843adb3aa9df94a53845f44dc28491601d92aac129b31989d33"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/4-primary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/4-primary-base.json",
+            "sha256": "f0e90023e8126cbed3c7c10caad09ad8fef53ead8cdabc6adc821f961c4d04ee"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/4-secondary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/point-time-01/4-secondary-base.json",
+            "sha256": "f7054ef54f72da49dd7072f4b4ea333053078cffc094d69d5019f32eb7877d6b"
+          }
+        ],
+        "label": "point-time-01"
+      },
+      {
+        "inputs": [
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/1-primary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/1-primary-base.json",
+            "sha256": "74102f1210401791300d4c1b47d22ce5710339c42f5e5165247873aa7eaf52e8"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/1-secondary-base.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/1-secondary-base.json",
+            "sha256": "8eca1b29369950cb17a4d2b6d0220c80a105a9e58749b64a7687fa7702aeb015"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/2-primary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/2-primary-pipelineCache.json",
+            "sha256": "bced89db4c5522371528db7824b93b7b9b61c67579e61963460a2756dc8b34af"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/2-secondary-pipelineCache.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          },
+          {
+            "path": "output/035-development/phase-ae/spatial/cache-edges-01/2-secondary-pipelineCache.json",
+            "sha256": "aa07007b84c9476dedcf5af9c8f99d92339b17bcb71ce25c83b5c3573f6b0678"
+          }
+        ],
+        "label": "cache-edges-01"
+      }
+    ],
+    "witness": {
+      "path": "output/035-development/phase-ae/spatial/witness6/witness",
+      "sha256": "ad9dc7cf8100b1aae019def5002df03e00e99c172d53f04b72bf323d561a7d46"
+    }
+  }
+}

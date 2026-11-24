@@ -1,0 +1,152 @@
+{
+  "candidate": "candidate-rc6-mixed",
+  "reference": "main-1b7df6b6/formal",
+  "summaryWorktreePath": "output/035-development/candidate-rc6-formal/summary.json",
+  "verifiedFeatureIndexWorktreePath": "output/035-development/candidate-rc6-formal/035-combined-verified.json",
+  "release": {
+    "passed": false,
+    "error": "Release image benchmark did not finish successfully",
+    "failureDetails": [
+      {
+        "stage": "control-comparison",
+        "report": "control-comparison.json",
+        "failures": [
+          "effects-glow-direction: p95Ms 11.10 > 10.57 ms",
+          "effects-dehaze: medianMs 13.23 > 12.66 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "texture: interactive median regressed 29.66%",
+          "dehaze-v1: interactive median regressed 15.69%",
+          "lens-blur-procedural: interactive median regressed 14.39%",
+          "lens-blur-bokeh-bubble: settled median regressed 25.53%",
+          "lens-blur-bokeh-anamorphic: interactive median regressed 16.25%",
+          "targeted-hsl: interactive median regressed 41.23%",
+          "point-color-samples: interactive median regressed 13.74%",
+          "local-point-color: interactive median regressed 28.62%",
+          "local-wb: settled median regressed 21.78%",
+          "local-curves: interactive median regressed 13.43%",
+          "local-grading: interactive median regressed 13.64%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      },
+      {
+        "stage": "image-pipeline",
+        "report": "image.json",
+        "failures": [
+          "canvas_1_zoom-pan: relative p95 12.02 > 8.00 ms",
+          "canvas_2_zoom-pan: relative p95 11.32 > 8.44 ms"
+        ]
+      }
+    ],
+    "baselineRun": "formal",
+    "status": "failed",
+    "failedStages": [
+      "image-pipeline",
+      "interactive-comparison",
+      "control-comparison",
+      "lightflow-comparison"
+    ]
+  },
+  "candidateBuild": {
+    "binarySHA256": "3016791c19afc8a21a17ec019646f222115f96ba8ebf2693c4c1f74b29785e20",
+    "uiTestBinarySHA256": "a5fb19386cf60ffe18b643dc635be567c8e06f93e39baabc61eb14781479ee6e",
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "protocol": "rawmaster-resident-control-v1",
+    "officialReleasePassed": false,
+    "officialReleaseStatus": "failed",
+    "regressionPassed": null,
+    "timingGatesRequired": null,
+    "hostedUI": null,
+    "ui": {
+      "mode": "budget-gated",
+      "boundary": "Constructed NSEvent.timestamp → native hit-test / receiver → changed focusedID publication / NSViewRepresentable update; not WindowServer presentation"
+    },
+    "featureInputs": {
+      "residentControls": 124,
+      "inspection": 33,
+      "superResolution": "measured"
+    }
+  },
+  "candidateMeasuredFeatureIDs": 158,
+  "candidateControlIDsOutsideFeatureCatalog": [],
+  "candidateAdaptive": {
+    "cases": 4,
+    "testBinarySHA256": "a5fb19386cf60ffe18b643dc635be567c8e06f93e39baabc61eb14781479ee6e"
+  },
+  "candidateLocalFlux": {
+    "testBinarySHA256": "a5fb19386cf60ffe18b643dc635be567c8e06f93e39baabc61eb14781479ee6e",
+    "attempts": 1,
+    "protectedPixels": 786432,
+    "selectedChangedPixels": 262144,
+    "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+    "inputMatches034": true
+  },
+  "historicalParityGate": {
+    "status": "not-qualified",
+    "required": "完整验收还需要同一输入至画面显示的计时边界，以及未覆盖项目的冷路径、暖路径和图像正确性记录。",
+    "releaseComparisonFailures": [
+      "firstAppearanceMix/firstExact",
+      "firstAppearanceMix/final"
+    ],
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.282500000000001,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.2713754999999995,
+          "p95Ms": 15.47875
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 22.134999999999998,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 96.2345835,
+          "p95Ms": 477.93775
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 23.5625,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 96.2345835,
+          "p95Ms": 477.93775
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "threeProductProcessingRows": 71,
+    "threeProductScreenRows": 6
+  }
+}

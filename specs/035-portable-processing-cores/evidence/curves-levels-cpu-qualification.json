@@ -1,0 +1,297 @@
+{
+  "schemaVersion": 1,
+  "scope": "Version 2 image graph operator curves_levels_v3. Legacy PCHIP curves and manual levels only. One independent native Float32 coefficient witness and six 2400x1600 photographic recipes on each of two RAW captures. Results refer to these cases and runtime builds.",
+  "cpuSuites": {
+    "macOS-arm64": {
+      "releaseNoDefaultFeatures": true,
+      "passed": 22,
+      "newCurvesLevelsCases": 6,
+      "log": {
+        "path": "output/035-development/phase-v/curves-levels/mac-cpu.log",
+        "sha256": "b2ad52272ad85a2b19aac10c434c66e133f2f865e14a3f1ced1d07bd34a3946e"
+      }
+    },
+    "Linux-arm64": {
+      "releaseNoDefaultFeatures": true,
+      "passed": 22,
+      "newCurvesLevelsCases": 6,
+      "log": {
+        "path": "output/035-development/phase-v/curves-levels/linux-cpu.log",
+        "sha256": "175a3070c5491ad0127107adfb70cd8041b45da89ea60daa2352b33fced716c0"
+      }
+    }
+  },
+  "prepareProof": {
+    "swiftOracle": {
+      "path": "output/035-development/phase-v/curves-levels/swift-coefficients.json",
+      "sha256": "f5264c0c55af9c89c3221a8a4208d8531b85f8c1a4a9f8ca400ae27f7305317d",
+      "source": {
+        "path": "output/035-development/phase-v/curves-levels/CoefficientWitness.swift",
+        "sha256": "d75bd9602142edbadb84a20f6a0bb4b63bad3373db1b6395e7aae602419232c4"
+      },
+      "link": {
+        "path": "output/035-development/phase-v/curves-levels/coefficient-link.sh",
+        "sha256": "386f7e4b814656dd7df51f6371d7ea167df0b6e057fb708b3548f85ddcd8076b"
+      },
+      "pchipRows": 8,
+      "levelRows": 3,
+      "collapsedLevelRows": 1
+    },
+    "decimalMidpoint": {
+      "token": "0.36062721908092499",
+      "correctBinary64Bits": 4600168102355795968,
+      "legacyBufferedBinary64Bits": 4600168102355795967,
+      "correctBinary32Bits": 1052288034,
+      "legacyBinary32Bits": 1052288033,
+      "probe": {
+        "path": "output/035-development/phase-v/curves-levels/DecimalBoundary.rs",
+        "sha256": "b4a0e067e92978689990673bfa1602d5971dadcee53829577478db9987c43aea"
+      },
+      "captured": {
+        "path": "output/035-development/phase-v/curves-levels/decimal-boundary.txt",
+        "sha256": "654b4be51ab4e87bd254ff501cc9ad3f559ff5dcaa5fb695b4c7705e78267792"
+      }
+    }
+  },
+  "crossPlatform": {
+    "systems": [
+      "macOS arm64",
+      "Linux arm64"
+    ],
+    "matchedFullFrames": 12,
+    "bytesPerFrame": 61440000,
+    "linuxRuntime": {
+      "path": "output/035-development/phase-v/curves-levels/librawmaster_image.so",
+      "sha256": "cf70d32093ec0e8881c2f5c32c3aaaaa9df238efa3dd7477149465f8f5e4cbc2"
+    },
+    "absoluteRGBTolerance": 2e-06,
+    "fullCasesMeetingTolerance": 11,
+    "alphaBitDifferences": 0,
+    "frames": {
+      "primary": [
+        {
+          "recipe": "curve-point-0",
+          "cpuRGBAMacLinuxSHA256": "2529a1ed82e90845ec02cb382eab6b3fbcdf896614f7d1c1e8592b052f5375d0",
+          "swiftReferenceSHA256": "56cecb67d1867b5b0fff8119dbcd2a00015e85d264b0cfdbf07ab9ba675b8144",
+          "maxAbsRGB": 1.0728836059570312e-06,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "curve-point-1",
+          "cpuRGBAMacLinuxSHA256": "f4e475d43232a92448381d9ebea4af818bd2c693a8aef3a5e415a6d792573916",
+          "swiftReferenceSHA256": "7cd5138ecb99c07eba900eeb623631b36616b77949062d13a7cc1b8513f5b979",
+          "maxAbsRGB": 1.0728836059570312e-06,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "curve-channels-0",
+          "cpuRGBAMacLinuxSHA256": "8863b2b32071542b803dd78919f81c30883de3d6b6d4f600b3c3d3f4d86b2bfa",
+          "swiftReferenceSHA256": "cee75815717a4672f0816814c67a4d52e4e510df1b288963ba527e1332eed6d5",
+          "maxAbsRGB": 1.0728836059570312e-06,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "curve-channels-1",
+          "cpuRGBAMacLinuxSHA256": "6d3ea146a0a202185ecb6ac29c69339637491ab7765abd188751f703ff2299d1",
+          "swiftReferenceSHA256": "02fe672df8488614f22d3f791967f6136e5d3bbb999c969f4fcca5756332e0a4",
+          "maxAbsRGB": 1.0728836059570312e-06,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "manual-levels",
+          "cpuRGBAMacLinuxSHA256": "bae9747f22aee1bc1d6f74c6ff0125f1d47114dbc927ca0c238511c2547ba9c8",
+          "swiftReferenceSHA256": "6ce12fdda270232a37c4f88aa0e342b40ea73c61a3aedc973a2dbded1312a07c",
+          "maxAbsRGB": 1.3113021850585938e-06,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "color-curves-levels",
+          "cpuRGBAMacLinuxSHA256": "602fc76c4e908dc3e7f92ce823a99f8e226e64a02db51bf5c82cdc37f5ed6d5d",
+          "swiftReferenceSHA256": "1eccd36a87746b634e216ed8a800f130c7a99cd9495017845a3f168a64919cd3",
+          "maxAbsRGB": 2.0265579223632812e-06,
+          "componentsOver2e-6": 1,
+          "alphaBitsDifferent": 0
+        }
+      ],
+      "secondary": [
+        {
+          "recipe": "curve-point-0",
+          "cpuRGBAMacLinuxSHA256": "7d7ea559020cc3d4c3d57509ce55d85fa7c38b838c9a0bc6236bdbc1c4515a9e",
+          "swiftReferenceSHA256": "95f2e2e5ed9798e8cefaf54dc48d00cb2b363c308e10e02001ad92cb9cc600a0",
+          "maxAbsRGB": 3.5762786865234375e-07,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "curve-point-1",
+          "cpuRGBAMacLinuxSHA256": "60ef2fb90771ce6d73cb56074d6c9da0effdb07881b90b9f0be7d43472db424f",
+          "swiftReferenceSHA256": "721c2ee698f0aee3183e1c8dff35d93bab77e95a1b91d1a5f16c400878b65f7c",
+          "maxAbsRGB": 3.5762786865234375e-07,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "curve-channels-0",
+          "cpuRGBAMacLinuxSHA256": "ab23d588daaa8fd73375458bb2c3ff89c1435e9fb19592f76ff609e730b3ac03",
+          "swiftReferenceSHA256": "96f7e8e0932de8e7e95324c151fce5ff6ad8a36d942a3411f1e019280b5e7797",
+          "maxAbsRGB": 3.5762786865234375e-07,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "curve-channels-1",
+          "cpuRGBAMacLinuxSHA256": "f9b4adab7ed13630632a69cadfe184bd8ecd506758253d2518794677ff716f47",
+          "swiftReferenceSHA256": "3ac2e22ee667c3e713ca175406cf3a06ee03017c9b72b6b6bb24bbee7a36366e",
+          "maxAbsRGB": 3.5762786865234375e-07,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "manual-levels",
+          "cpuRGBAMacLinuxSHA256": "7e760cef1caa48fa0f00f2041c950803e7701333bf4dfb0b0157e3a9f08ddb13",
+          "swiftReferenceSHA256": "32d2dd7d20c24564ffb0714d794f778abfdf22c6754ed5685fe61a76a569e424",
+          "maxAbsRGB": 8.344650268554688e-07,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        },
+        {
+          "recipe": "color-curves-levels",
+          "cpuRGBAMacLinuxSHA256": "1f2e2be9061c123e460f20a0c4ac800bc328c0d41bd590ec254f4410f9cf2b54",
+          "swiftReferenceSHA256": "0dcf5c69c8084794ba4200aa7fc4e3c6f57cde9b4c1dfe347badd55ca7c4b262",
+          "maxAbsRGB": 1.0132789611816406e-06,
+          "componentsOver2e-6": 0,
+          "alphaBitsDifferent": 0
+        }
+      ]
+    }
+  },
+  "compositeException": {
+    "affectedRGBComponents": 1,
+    "channel": 0,
+    "combinedCPUBits": [
+      "3fab0826",
+      "3f0e1b2c",
+      "3e01427b",
+      "3f800000"
+    ],
+    "combinedSwiftBits": [
+      "3fab0815",
+      "3f0e1b2c",
+      "3e014283",
+      "3f800000"
+    ],
+    "cpuSuffixVsStockOnSameMaterializedSwiftPoint": {
+      "alphaBitsDifferent": 0,
+      "maxAbsoluteRGB": 1.430511474609375e-06,
+      "maxScaledRGB": 1.1711013030435424e-06,
+      "rgbAbove2e-6": 0,
+      "rgbComponentBitsDifferent": 10813098
+    },
+    "cpuSuffixWithCPUPointBits": [
+      "3fab0826",
+      "3f0e1b2c",
+      "3e01427b",
+      "3f800000"
+    ],
+    "cpuSuffixWithSwiftPointBits": [
+      "3fab0815",
+      "3f0e1b28",
+      "3e01427b",
+      "3f800000"
+    ],
+    "height": 1600,
+    "id": "color-curves-levels",
+    "maxAbs": 2.0265579223632812e-06,
+    "originalCombinedMacCPUSHA256": "602fc76c4e908dc3e7f92ce823a99f8e226e64a02db51bf5c82cdc37f5ed6d5d",
+    "originalCombinedSwiftSHA256": "1eccd36a87746b634e216ed8a800f130c7a99cd9495017845a3f168a64919cd3",
+    "pointCPUBits": [
+      "3fa33921",
+      "3f2ab12e",
+      "3e3434b4",
+      "3f800000"
+    ],
+    "pointSwiftBits": [
+      "3fa33918",
+      "3f2ab12d",
+      "3e3434b8",
+      "3f800000"
+    ],
+    "rowMajorFileIndex": 1928942,
+    "sample": "primary",
+    "sourceBits": [
+      "3fa16000",
+      "3f2ac000",
+      "3e3d2000",
+      "3f800000"
+    ],
+    "sourceRGBA32fSHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+    "splitCPUVsUnbrokenCPU": {
+      "alphaBitsDifferent": 0,
+      "maxAbsoluteRGB": 0,
+      "maxScaledRGB": 0,
+      "rgbAbove2e-6": 0,
+      "rgbComponentBitsDifferent": 0
+    },
+    "splitStockVsUnbrokenStock": {
+      "alphaBitsDifferent": 0,
+      "maxAbsoluteRGB": 0,
+      "maxScaledRGB": 0,
+      "rgbAbove2e-6": 0,
+      "rgbComponentBitsDifferent": 0
+    },
+    "stockSuffixWithMaterializedSwiftPointBits": [
+      "3fab0815",
+      "3f0e1b2c",
+      "3e014283",
+      "3f800000"
+    ],
+    "width": 2400,
+    "wireSHA256": "d9d85464074c15c2d93293cfdbe8ce12c334c89a711b0a4b3af9710cc12216e4",
+    "xy": [
+      1742,
+      803
+    ]
+  },
+  "conclusion": "Both CPU platforms emit the same bytes for all twelve independent replays. On the primary color+curves+levels recipe one red component exceeds the unchanged absolute RGB tolerance. On the exact same Swift point-stage intermediate, the new curve/level suffix meets the tolerance across the entire primary frame, including the affected red component.",
+  "evidence": {
+    "portableTestsAndSources": {
+      "path": "output/035-development/phase-v/curves-levels/stage-verification.json",
+      "sha256": "e6aa4c43e12a8507865b3d9cf869c141ab4a4459eeddfb75462a47fe795703bc"
+    },
+    "linuxPhotoReplay": {
+      "path": "output/035-development/phase-v/curves-levels/linux-photo-replay.json",
+      "sha256": "19c737e653064e9d140c614f526ce8a98cdcf8da2a1ce460862d4823739b5720"
+    },
+    "linuxReplaySource": {
+      "path": "output/035-development/phase-v/curves-levels/replay-receipt.py",
+      "sha256": "740a611e8b02c0118c628725f239dcc253d582feab0fd1ca704544c771374ac0"
+    },
+    "counterexample": {
+      "path": "output/035-development/phase-v/curves-levels/counterexample.json",
+      "sha256": "7523e933971fc3c8d851fcf2d82e87d13a1456303af74237b509c8f9d1c822bc"
+    },
+    "counterexampleSource": {
+      "path": "output/035-development/phase-v/curves-levels/Counterexample.swift",
+      "sha256": "2da617957bb093c1b91b53baab8a5d986ea4cc7cd7cdd815af665c3ed868c2d5"
+    },
+    "counterexampleLink": {
+      "path": "output/035-development/phase-v/curves-levels/counter-link.sh",
+      "sha256": "42b02a0e10378c2980b05da696ad4ccce3be3ee3913206288b569910b91db47a"
+    }
+  },
+  "nativeReferenceReports": {
+    "primary": {
+      "path": "output/035-development/phase-v/curves/numeric-primary/numeric.json",
+      "sha256": "5a8c5e93f752dde5431c2f7c1ce19e275d26c074e1d0b1a71d2380ad40ff1706"
+    },
+    "secondary": {
+      "path": "output/035-development/phase-v/curves/numeric-secondary/numeric.json",
+      "sha256": "82f80f2bc00951fbf8e08c928fbb520370d9131473b41382b75019669f93fe15"
+    }
+  }
+}

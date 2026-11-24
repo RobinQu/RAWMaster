@@ -1,0 +1,1199 @@
+{
+  "schemaVersion": 1,
+  "candidate": "candidate-batch14b",
+  "gateSwitch": "RAWMASTER_QA_CANONICAL_REQUEST_CACHE",
+  "defaultEnabled": false,
+  "comparisonArchive": {
+    "repoPath": "output/035-development/candidate-batch13s-formal/photo-operators-v2.json",
+    "sha256": "ffdba70bd5bae22bd16a231340b66f27982be527d1cdba69a8d5d8dc77ace2f8"
+  },
+  "xctestExecutableSHA256": "1c3d461add09e18c534e5154b952fbb62345ae85528fa5432098b0f9aed8a862",
+  "head": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "nativeProbe": {
+    "pairedGraphRuns": {
+      "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c": [
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/01-primary-canonical.json",
+          "sha256": "59a78947d1b892dc9edaa45a4981e267d126b844209a2551ba2a580e911ab8b7",
+          "mode": "canonical",
+          "processPeakBytes": 3564570928,
+          "medianDevelopPlusDisplayMs": 62.543833500000005
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/03-primary-context.json",
+          "sha256": "83390d43eade2c4aede0edbe390965cde81852fe716f6073bca1a872f914aac1",
+          "mode": "context",
+          "processPeakBytes": 3616475488,
+          "medianDevelopPlusDisplayMs": 48.3287915
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/05-primary-context.json",
+          "sha256": "0d9c7726fd9fa59e78575db9bcc3e830368e156d2c8d86bde1c5076bf211bd39",
+          "mode": "context",
+          "processPeakBytes": 3616147784,
+          "medianDevelopPlusDisplayMs": 51.2778335
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/07-primary-canonical.json",
+          "sha256": "89488ec1c6a633b72490a874e6bcdb8a6ed6246d39e0bb98d45ccb96aa9ac153",
+          "mode": "canonical",
+          "processPeakBytes": 3564702000,
+          "medianDevelopPlusDisplayMs": 56.0898335
+        }
+      ],
+      "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f": [
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/02-secondary-canonical.json",
+          "sha256": "1d22ad7e92bdc9faa5b94b71a6671aa40997640e59d0f29d1494aaa55f336b96",
+          "mode": "canonical",
+          "processPeakBytes": 3208022248,
+          "medianDevelopPlusDisplayMs": 52.347729
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/04-secondary-context.json",
+          "sha256": "7410acc8a41dd02a4bf7d8e9b881bf1f12f5c297c5d592b9f07a91da1b3114cc",
+          "mode": "context",
+          "processPeakBytes": 3286780088,
+          "medianDevelopPlusDisplayMs": 45.630229
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/06-secondary-context.json",
+          "sha256": "0439b958503a963d5467e4bccb281e6815630735d16858ea6c50c1272ca0e878",
+          "mode": "context",
+          "processPeakBytes": 3288811704,
+          "medianDevelopPlusDisplayMs": 47.686333000000005
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/context-abba-v2/08-secondary-canonical.json",
+          "sha256": "756b60bac914dd6dbcb6445e84a08136e7ceb19a741098c600bb19d4afe568ad",
+          "mode": "canonical",
+          "processPeakBytes": 3209332944,
+          "medianDevelopPlusDisplayMs": 53.646979
+        }
+      ]
+    },
+    "isolatedNativeBoundary": {
+      "canonical": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/01-primary-canonical.json",
+        "sha256": "6b9bfbe65a79f99fe9aa6c9cdf1df990ae58f5eda4526e12dfcca4f2255d0fbd",
+        "fullFrameMatches": 4,
+        "testedFrames": 4,
+        "processPeakBytes": 2594342952,
+        "diagnosticDisplayPixels": [
+          82951680,
+          82951680,
+          82951681,
+          82951681
+        ]
+      },
+      "replay": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/02-primary-replay.json",
+        "sha256": "ef5177d991cf2ed91b6d2089b8ef446402addd1067f241795c2d0e38ce3f648d",
+        "fullFrameMatches": 4,
+        "testedFrames": 4,
+        "processPeakBytes": 2595424248,
+        "diagnosticDisplayPixels": [
+          82951680,
+          82951680,
+          82951681,
+          82951681
+        ]
+      },
+      "tiled": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/03-primary-tiled.json",
+        "sha256": "52628eb93bc233190fcbd4600ad35d3115cdd5d422e9433557a0b9232f3bb60a",
+        "fullFrameMatches": 0,
+        "testedFrames": 4,
+        "processPeakBytes": 7208798440,
+        "diagnosticDisplayPixels": [
+          1136755200,
+          1136755200,
+          1136755204,
+          1136755204
+        ]
+      },
+      "untiled": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/04-primary-untiled.json",
+        "sha256": "c3aea2d7c2e6bec26502ee004861dd9f18f71067221705b5f22fbf8cf142815a",
+        "fullFrameMatches": 4,
+        "testedFrames": 4,
+        "processPeakBytes": 5234214904,
+        "diagnosticDisplayPixels": [
+          82951680,
+          82951680,
+          82951681,
+          82951681
+        ]
+      },
+      "context": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/05-primary-context.json",
+        "sha256": "ef9df807d90efd24704ab710d9f9fe32dd35d4e4730ca9d2136d4db883b2dfa0",
+        "fullFrameMatches": 4,
+        "testedFrames": 4,
+        "processPeakBytes": 2662926376,
+        "diagnosticDisplayPixels": [
+          82951680,
+          82951680,
+          82951680,
+          82951680
+        ]
+      },
+      "uncached": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/06-primary-uncached.json",
+        "sha256": "1e275152683bb22f476ad9cbdff81c71184c7a64290281e8aea7cc9df2230bb0",
+        "fullFrameMatches": 4,
+        "testedFrames": 4,
+        "processPeakBytes": 2596931600,
+        "diagnosticDisplayPixels": [
+          82951680,
+          82951680,
+          82951681,
+          82951681
+        ]
+      },
+      "replayContext": {
+        "repoPath": "output/035-development/ci-intermediate/smoke/07-primary-replayContext.json",
+        "sha256": "76a050b5de52d0a219fa0372faef1c774fafadba7bc230c85e3dc675253c4221",
+        "fullFrameMatches": 4,
+        "testedFrames": 4,
+        "processPeakBytes": 2662352840,
+        "diagnosticDisplayPixels": [
+          82951680,
+          82951680,
+          82951680,
+          82951680
+        ]
+      }
+    }
+  },
+  "xctest": {
+    "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c": {
+      "runs": [
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/01-primary-0.json",
+          "sha256": "6c8dce33ba3e67308007cc507b0cac152bc516a972808ba25fefd5c2376a8c10",
+          "enabled": false,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.014979500000001,
+              "p95": 18.202834
+            },
+            "exact": {
+              "n": 74,
+              "p50": 96.3400625,
+              "p95": 442.8105
+            },
+            "final": {
+              "n": 74,
+              "p50": 96.3400625,
+              "p95": 442.8105
+            }
+          },
+          "inconclusiveSpatialWitness": []
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/03-primary-1.json",
+          "sha256": "4e5e4b271f081ab53929ffdf928477ad5de54e71dcb812424ea6346716fde099",
+          "enabled": true,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 6.222562,
+              "p95": 18.255625
+            },
+            "exact": {
+              "n": 74,
+              "p50": 97.820167,
+              "p95": 453.577208
+            },
+            "final": {
+              "n": 74,
+              "p50": 97.820167,
+              "p95": 453.577208
+            }
+          },
+          "inconclusiveSpatialWitness": []
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/05-primary-1.json",
+          "sha256": "e520dee0de5c9c5f9b909c09ee569484894c55144809d6ab41fec98f7f958b85",
+          "enabled": true,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 6.325417,
+              "p95": 18.453166
+            },
+            "exact": {
+              "n": 74,
+              "p50": 94.44325,
+              "p95": 471.535375
+            },
+            "final": {
+              "n": 74,
+              "p50": 94.44325,
+              "p95": 471.535375
+            }
+          },
+          "inconclusiveSpatialWitness": []
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/07-primary-0.json",
+          "sha256": "23627733c16b796f3e29acd57bd5a3dd9682eb214c445251e30329463553b7b3",
+          "enabled": false,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.0972919999999995,
+              "p95": 17.462041
+            },
+            "exact": {
+              "n": 74,
+              "p50": 101.2091045,
+              "p95": 453.85475
+            },
+            "final": {
+              "n": 74,
+              "p50": 101.2091045,
+              "p95": 453.85475
+            }
+          },
+          "inconclusiveSpatialWitness": []
+        }
+      ],
+      "pooledFirstAppearances": {
+        "off": {
+          "visible": {
+            "n": 148,
+            "p50": 5.0561045,
+            "p95": 17.462041
+          },
+          "exact": {
+            "n": 148,
+            "p50": 99.56814650000001,
+            "p95": 445.131959
+          },
+          "final": {
+            "n": 148,
+            "p50": 99.56814650000001,
+            "p95": 445.131959
+          }
+        },
+        "on": {
+          "visible": {
+            "n": 148,
+            "p50": 6.280749999999999,
+            "p95": 18.255625
+          },
+          "exact": {
+            "n": 148,
+            "p50": 97.19708349999999,
+            "p95": 466.620542
+          },
+          "final": {
+            "n": 148,
+            "p50": 97.19708349999999,
+            "p95": 466.620542
+          }
+        }
+      }
+    },
+    "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f": {
+      "runs": [
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/02-secondary-0.json",
+          "sha256": "ea130ed4dd65c52376759e54100aed083b7def186743ae1634a43e0a7832dd55",
+          "enabled": false,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.2496455,
+              "p95": 16.596584
+            },
+            "exact": {
+              "n": 74,
+              "p50": 86.6493955,
+              "p95": 405.082333
+            },
+            "final": {
+              "n": 74,
+              "p50": 90.6825205,
+              "p95": 405.082333
+            }
+          },
+          "inconclusiveSpatialWitness": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/04-secondary-1.json",
+          "sha256": "f720e25cbcb06982362b50655246074958a04346ac9648b99d78b12c0d068749",
+          "enabled": true,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 6.784979,
+              "p95": 17.400667
+            },
+            "exact": {
+              "n": 74,
+              "p50": 86.859479,
+              "p95": 426.510041
+            },
+            "final": {
+              "n": 74,
+              "p50": 97.238437,
+              "p95": 426.510041
+            }
+          },
+          "inconclusiveSpatialWitness": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/06-secondary-1.json",
+          "sha256": "b8c19bdcb23624b02faa9dbe1b174e1777d454a343cd30c0213646bb19ecfa7f",
+          "enabled": true,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 6.830520999999999,
+              "p95": 18.088333
+            },
+            "exact": {
+              "n": 74,
+              "p50": 89.741271,
+              "p95": 406.385292
+            },
+            "final": {
+              "n": 74,
+              "p50": 94.0890625,
+              "p95": 406.385292
+            }
+          },
+          "inconclusiveSpatialWitness": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/08-secondary-0.json",
+          "sha256": "0244245e0dbea53c680add49859df5cb90c0acce9c2fa212d3c264b125975f6c",
+          "enabled": false,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.1148125,
+              "p95": 17.320583
+            },
+            "exact": {
+              "n": 74,
+              "p50": 83.45054200000001,
+              "p95": 420.841417
+            },
+            "final": {
+              "n": 74,
+              "p50": 91.0681045,
+              "p95": 420.841417
+            }
+          },
+          "inconclusiveSpatialWitness": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        }
+      ],
+      "pooledFirstAppearances": {
+        "off": {
+          "visible": {
+            "n": 148,
+            "p50": 5.1997915,
+            "p95": 16.934125
+          },
+          "exact": {
+            "n": 148,
+            "p50": 85.1817295,
+            "p95": 405.082333
+          },
+          "final": {
+            "n": 148,
+            "p50": 90.6825205,
+            "p95": 405.082333
+          }
+        },
+        "on": {
+          "visible": {
+            "n": 148,
+            "p50": 6.830520999999999,
+            "p95": 17.400667
+          },
+          "exact": {
+            "n": 148,
+            "p50": 89.741271,
+            "p95": 418.877916
+          },
+          "final": {
+            "n": 148,
+            "p50": 94.4797705,
+            "p95": 418.877916
+          }
+        }
+      }
+    }
+  },
+  "cold": {
+    "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c": [
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-01-primary-0.json",
+        "sha256": "17bce82a9897b2053c1d38e23db7db5907d2d3537e313abe66ae8b3113a119b4",
+        "enabled": false,
+        "coldMsIncludingHash": 204.250125,
+        "peakProcessBytes": 2561673184,
+        "hashes": {
+          "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+          "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+        },
+        "requestCacheContexts": 0,
+        "cancelResult": "superseded"
+      },
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-03-primary-1.json",
+        "sha256": "2615c32f1656b3d2f387e050599fbb9c381fc1459cb325d774ed83a56e7f7254",
+        "enabled": true,
+        "coldMsIncludingHash": 212.265417,
+        "peakProcessBytes": 2629552072,
+        "hashes": {
+          "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+          "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+        },
+        "requestCacheContexts": 3,
+        "cancelResult": "superseded"
+      },
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-05-primary-1.json",
+        "sha256": "bfcb87abbde5300aed1416cf6ef943789264ccc78492efd83e83ca00684510ee",
+        "enabled": true,
+        "coldMsIncludingHash": 209.667166,
+        "peakProcessBytes": 2630158304,
+        "hashes": {
+          "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+          "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+        },
+        "requestCacheContexts": 3,
+        "cancelResult": "superseded"
+      },
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-07-primary-0.json",
+        "sha256": "86daa48d801e6e3b19954f78d22067b85b274df9937ff26242d573ad8c8eef3a",
+        "enabled": false,
+        "coldMsIncludingHash": 216.02025,
+        "peakProcessBytes": 2562328520,
+        "hashes": {
+          "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+          "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+        },
+        "requestCacheContexts": 0,
+        "cancelResult": "superseded"
+      }
+    ],
+    "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f": [
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-02-secondary-0.json",
+        "sha256": "db62bc65186cea2129d1946713b69d5ec2459427b8101925d006b312eb4e75df",
+        "enabled": false,
+        "coldMsIncludingHash": 179.374,
+        "peakProcessBytes": 2438236032,
+        "hashes": {
+          "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+          "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+        },
+        "requestCacheContexts": 0,
+        "cancelResult": "superseded"
+      },
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-04-secondary-1.json",
+        "sha256": "c34a18714cdb652966ee809c44c8f06cd928d977eca9b93c7ffc39c788dfbc18",
+        "enabled": true,
+        "coldMsIncludingHash": 198.83475,
+        "peakProcessBytes": 2509375312,
+        "hashes": {
+          "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+          "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+        },
+        "requestCacheContexts": 3,
+        "cancelResult": "superseded"
+      },
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-06-secondary-1.json",
+        "sha256": "a2eda1936d6f705ddd3f9033813608c8fcb485ed91192bd1ca3e77bd823a6420",
+        "enabled": true,
+        "coldMsIncludingHash": 191.39325,
+        "peakProcessBytes": 2510882712,
+        "hashes": {
+          "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+          "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+        },
+        "requestCacheContexts": 3,
+        "cancelResult": "superseded"
+      },
+      {
+        "repoPath": "output/035-development/ci-intermediate/production-lifetime/cold-08-secondary-0.json",
+        "sha256": "270dab39cacc109b513497d687f52aa9d7d597216bb0de7d37eb563500bc41f1",
+        "enabled": false,
+        "coldMsIncludingHash": 196.488333,
+        "peakProcessBytes": 2439972760,
+        "hashes": {
+          "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+          "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+        },
+        "requestCacheContexts": 0,
+        "cancelResult": "superseded"
+      }
+    ]
+  },
+  "targeted": {
+    "native-finite": {
+      "repoPath": "output/035-development/candidate-batch14b/native-finite.log",
+      "sha256": "2ccdaf14ed40f46135f0a31da208e89e684fb029b9477e2f0161d657adc5ea1b",
+      "passed": 5
+    },
+    "native-film-and-mask": {
+      "repoPath": "output/035-development/candidate-batch14b/native-film-and-mask.log",
+      "sha256": "f426f973740991b0adeb6f04a2a972ec3ad689ce259e135c83cd786825aa4bd8",
+      "passed": 27
+    },
+    "native-mask-interactions": {
+      "repoPath": "output/035-development/candidate-batch14b/native-mask-interactions.log",
+      "sha256": "eafdd656dc1993da1576f4834b4875bc5de49457812a238a3791981befe6c04e",
+      "passed": 9
+    },
+    "native-prompt-provider": {
+      "repoPath": "output/035-development/candidate-batch14b/native-prompt-provider.log",
+      "sha256": "1e687750b2a3105ea816c61541235b77fc9b1cd585e335f267696fb26213f21b",
+      "passed": 5
+    }
+  },
+  "superResolutionDiagnostics": [
+    {
+      "repoPath": "output/035-development/ci-intermediate/production/memory.json",
+      "sha256": "75064581ca87c7081d49f5c13f759e1301677c4fbd060074f2de3241372fc163",
+      "tiffSHA256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "fileBytes": 1926958614,
+      "observedPeak": {
+        "rssBytes": {
+          "peak": 1692123136,
+          "afterStartMs": 190.636167,
+          "stageBytes": null,
+          "overlaps": [
+            "FlashRaw.linearToRGBA16F",
+            "DevelopmentRendererV3.develop"
+          ]
+        },
+        "footprintBytes": {
+          "peak": 3749611632,
+          "afterStartMs": 653.133459,
+          "stageBytes": 58396182,
+          "overlaps": [
+            "导出图像"
+          ]
+        },
+        "metalBytes": {
+          "peak": 2812149760,
+          "afterStartMs": 653.133459,
+          "stageBytes": 58396182,
+          "overlaps": [
+            "导出图像"
+          ]
+        }
+      }
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/production-lifetime/memory.json",
+      "sha256": "393d1760a5829bc695b9726a9926d74a7d86114a8b6fe8231a278e1b95992b99",
+      "tiffSHA256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "fileBytes": 1926958614,
+      "observedPeak": {
+        "rssBytes": {
+          "peak": 1692303360,
+          "afterStartMs": 192.274667,
+          "stageBytes": null,
+          "overlaps": [
+            "FlashRaw.linearToRGBA16F",
+            "DevelopmentRendererV3.develop"
+          ]
+        },
+        "footprintBytes": {
+          "peak": 3751020752,
+          "afterStartMs": 813.602083,
+          "stageBytes": 58396182,
+          "overlaps": [
+            "SuperResolution.PhotoUpconv7",
+            "导出图像"
+          ]
+        },
+        "metalBytes": {
+          "peak": 2812149760,
+          "afterStartMs": 650.619708,
+          "stageBytes": 3606,
+          "overlaps": [
+            "导出图像"
+          ]
+        }
+      }
+    }
+  ],
+  "initialCandidate": {
+    "candidate": "candidate-batch14",
+    "xctestExecutableSHA256": "a985c52b077d0b4a4dc2527be0971e132a84e5a6711818ce15bf8d0988994055",
+    "xctest": {
+      "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c": {
+        "runs": [
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/01-primary-0.json",
+            "sha256": "f1fc49224616a2721ebfd138e40097d6bd89fbf27ce4985e8c89544afec285c7",
+            "enabled": false,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.347542000000001,
+                "p95": 19.529125
+              },
+              "exact": {
+                "n": 74,
+                "p50": 95.0971875,
+                "p95": 447.245417
+              },
+              "final": {
+                "n": 74,
+                "p50": 95.0971875,
+                "p95": 447.245417
+              }
+            },
+            "inconclusiveSpatialWitness": []
+          },
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/03-primary-1.json",
+            "sha256": "ecf2c6642f3ed7bae0538c2698182dca2d2d9adb75589673eaf37b94a29c9856",
+            "enabled": true,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.4893955000000005,
+                "p95": 19.778583
+              },
+              "exact": {
+                "n": 74,
+                "p50": 85.82118750000001,
+                "p95": 457.531542
+              },
+              "final": {
+                "n": 74,
+                "p50": 85.82118750000001,
+                "p95": 457.531542
+              }
+            },
+            "inconclusiveSpatialWitness": []
+          },
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/05-primary-1.json",
+            "sha256": "9e2f0f74692e2463eaf7dcff7a3e3ac9840251de815fa134d58d0824f5775958",
+            "enabled": true,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.3180415,
+                "p95": 17.852916
+              },
+              "exact": {
+                "n": 74,
+                "p50": 89.917563,
+                "p95": 484.852292
+              },
+              "final": {
+                "n": 74,
+                "p50": 89.917563,
+                "p95": 484.852292
+              }
+            },
+            "inconclusiveSpatialWitness": []
+          },
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/07-primary-0.json",
+            "sha256": "61c006df4753fb8b9d83c68035d1a48bffbda5fc56d5c2490b056f4f09736bbd",
+            "enabled": false,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.2085835,
+                "p95": 17.782708
+              },
+              "exact": {
+                "n": 74,
+                "p50": 99.877458,
+                "p95": 451.925667
+              },
+              "final": {
+                "n": 74,
+                "p50": 99.877458,
+                "p95": 451.925667
+              }
+            },
+            "inconclusiveSpatialWitness": []
+          }
+        ],
+        "pooledFirstAppearances": {
+          "off": {
+            "visible": {
+              "n": 148,
+              "p50": 5.241,
+              "p95": 17.782708
+            },
+            "exact": {
+              "n": 148,
+              "p50": 99.877458,
+              "p95": 447.245417
+            },
+            "final": {
+              "n": 148,
+              "p50": 99.877458,
+              "p95": 447.245417
+            }
+          },
+          "on": {
+            "visible": {
+              "n": 148,
+              "p50": 5.452958499999999,
+              "p95": 17.852916
+            },
+            "exact": {
+              "n": 148,
+              "p50": 88.2588755,
+              "p95": 457.531542
+            },
+            "final": {
+              "n": 148,
+              "p50": 88.2588755,
+              "p95": 457.531542
+            }
+          }
+        }
+      },
+      "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f": {
+        "runs": [
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/02-secondary-0.json",
+            "sha256": "d50f6ffc4ca4013b36c92e0e6726ce6102c0aa5942770bedc298b9cc25ef2646",
+            "enabled": false,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.245832999999999,
+                "p95": 18.444583
+              },
+              "exact": {
+                "n": 74,
+                "p50": 83.350812,
+                "p95": 414.257542
+              },
+              "final": {
+                "n": 74,
+                "p50": 88.35887500000001,
+                "p95": 414.257542
+              }
+            },
+            "inconclusiveSpatialWitness": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/04-secondary-1.json",
+            "sha256": "ae385bfe1ae04e83b74c027b11f5c562704c7a8d36925c5951fc5b093e0cb8eb",
+            "enabled": true,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.751229,
+                "p95": 17.461458
+              },
+              "exact": {
+                "n": 74,
+                "p50": 70.841729,
+                "p95": 412.852833
+              },
+              "final": {
+                "n": 74,
+                "p50": 80.8660415,
+                "p95": 412.852833
+              }
+            },
+            "inconclusiveSpatialWitness": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/06-secondary-1.json",
+            "sha256": "d2adfd3fce0735ebca0fc7447ccdec9abe061e66a9bbf16d6349f6a32c68f643",
+            "enabled": true,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.7174795,
+                "p95": 17.955917
+              },
+              "exact": {
+                "n": 74,
+                "p50": 75.23516599999999,
+                "p95": 429.800083
+              },
+              "final": {
+                "n": 74,
+                "p50": 83.617458,
+                "p95": 429.800083
+              }
+            },
+            "inconclusiveSpatialWitness": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba/08-secondary-0.json",
+            "sha256": "54ddb4b5192d02cae7f3cdda3c4ffb93c5dd506bc3166e0545818866b4bee205",
+            "enabled": false,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.2750835,
+                "p95": 18.32175
+              },
+              "exact": {
+                "n": 74,
+                "p50": 82.6675415,
+                "p95": 417.081083
+              },
+              "final": {
+                "n": 74,
+                "p50": 89.89224999999999,
+                "p95": 417.081083
+              }
+            },
+            "inconclusiveSpatialWitness": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          }
+        ],
+        "pooledFirstAppearances": {
+          "off": {
+            "visible": {
+              "n": 148,
+              "p50": 5.246833499999999,
+              "p95": 18.32175
+            },
+            "exact": {
+              "n": 148,
+              "p50": 83.100833,
+              "p95": 414.257542
+            },
+            "final": {
+              "n": 148,
+              "p50": 88.35887500000001,
+              "p95": 414.257542
+            }
+          },
+          "on": {
+            "visible": {
+              "n": 148,
+              "p50": 5.7315835,
+              "p95": 17.461458
+            },
+            "exact": {
+              "n": 148,
+              "p50": 74.361937,
+              "p95": 413.305208
+            },
+            "final": {
+              "n": 148,
+              "p50": 83.2939995,
+              "p95": 413.305208
+            }
+          }
+        }
+      }
+    },
+    "cold": {
+      "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c": [
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-01-primary-0.json",
+          "sha256": "52274d93e623fe110277cd3adb61146ea09ac1cffa9f05760e5530d428c818fe",
+          "enabled": false,
+          "coldMsIncludingHash": 223.583084,
+          "peakProcessBytes": 2561984432,
+          "hashes": {
+            "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+            "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+          },
+          "requestCacheContexts": 0,
+          "cancelResult": "superseded"
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-03-primary-1.json",
+          "sha256": "c5fd6cc11d9dc3e38d4f788e9b3acef00c45032685f26c6464e09091fef73317",
+          "enabled": true,
+          "coldMsIncludingHash": 238.315542,
+          "peakProcessBytes": 2632058896,
+          "hashes": {
+            "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+            "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+          },
+          "requestCacheContexts": 3,
+          "cancelResult": "superseded"
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-05-primary-1.json",
+          "sha256": "c894c2208e261066078a75298d634f42dae70cb8d71bc7c12fccae04bff95359",
+          "enabled": true,
+          "coldMsIncludingHash": 227.663291,
+          "peakProcessBytes": 2630895656,
+          "hashes": {
+            "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+            "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+          },
+          "requestCacheContexts": 3,
+          "cancelResult": "superseded"
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-07-primary-0.json",
+          "sha256": "2489914267dc291a25aaa1a56fe66e9ceea894ae60e4bf32783f9db12ee48234",
+          "enabled": false,
+          "coldMsIncludingHash": 209.453708,
+          "peakProcessBytes": 2563606472,
+          "hashes": {
+            "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+            "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+          },
+          "requestCacheContexts": 0,
+          "cancelResult": "superseded"
+        }
+      ],
+      "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f": [
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-02-secondary-0.json",
+          "sha256": "433ec38bb9ebee7d3b3edc1c1f0e6a1f242ee9b4d191393973a0e930da973f01",
+          "enabled": false,
+          "coldMsIncludingHash": 179.661792,
+          "peakProcessBytes": 2438465408,
+          "hashes": {
+            "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+            "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+          },
+          "requestCacheContexts": 0,
+          "cancelResult": "superseded"
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-04-secondary-1.json",
+          "sha256": "52bfe537e5b69d45afb010b0514b8082ef507dbc7c677b64aae1d8136857febc",
+          "enabled": true,
+          "coldMsIncludingHash": 184.510458,
+          "peakProcessBytes": 2510030720,
+          "hashes": {
+            "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+            "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+          },
+          "requestCacheContexts": 3,
+          "cancelResult": "superseded"
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-06-secondary-1.json",
+          "sha256": "9f7cfe0c7745d69f882dcab33f7dc1c3d6f11744c88b8c7ca9e54893f7635d0c",
+          "enabled": true,
+          "coldMsIncludingHash": 185.171458,
+          "peakProcessBytes": 2509113096,
+          "hashes": {
+            "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+            "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+          },
+          "requestCacheContexts": 3,
+          "cancelResult": "superseded"
+        },
+        {
+          "repoPath": "output/035-development/ci-intermediate/production/cold-08-secondary-0.json",
+          "sha256": "774a09e22636e0496fc631d92263f50d8923266617e130b9d05c09af58c65ccc",
+          "enabled": false,
+          "coldMsIncludingHash": 190.839042,
+          "peakProcessBytes": 2439284560,
+          "hashes": {
+            "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+            "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+          },
+          "requestCacheContexts": 0,
+          "cancelResult": "superseded"
+        }
+      ]
+    },
+    "formal": {
+      "repoPath": "output/035-development/candidate-batch14-formal/summary.json",
+      "sha256": "b7b1a130b81f672a548ebed53af2cf2d2b9ab0096a0072301c662700481f8d71"
+    }
+  },
+  "formal": {
+    "exit": 1,
+    "summary": {
+      "repoPath": "output/035-development/candidate-batch14b-formal/summary.json",
+      "sha256": "06b68f68c815dc71b8f6f193929d023c1856858bb4b681b69f4a13b9ee8e3e34"
+    },
+    "operators": {
+      "repoPath": "output/035-development/candidate-batch14b-formal/photo-operators-v2.json",
+      "sha256": "56869840637a4b279bd38afef118b5dc44165a27a4f466b1d06053bb1b910346"
+    },
+    "lightflow": {
+      "repoPath": "output/035-development/candidate-batch14b-formal/lightflow-comparison.json",
+      "sha256": "ba12e5dd3275c49fe9a7dcce2334cd9d528b225d3963d1e376f86710ecfa19a5"
+    },
+    "firstAppearance": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.282500000000001,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.2746255,
+          "p95Ms": 18.081042
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 22.134999999999998,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 100.8928335,
+          "p95Ms": 472.16725
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 23.5625,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 100.8928335,
+          "p95Ms": 472.16725
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "superResolution": {
+      "repoPath": "output/035-development/candidate-batch14b-formal/super-resolution-comparison.json",
+      "sha256": "3db7b4ec00b1d789129f98a291b4ad16d70c1ecaca8014e45c6ad747be4cc04f"
+    },
+    "cameraRawFeatureIndex": {
+      "repoPath": "output/035-development/candidate-batch14b/camera-raw-acceptance.json",
+      "sha256": "aaf4bd259ae456e9ebc57a21777962907875a27869b46576f766b52bff51f7c9"
+    },
+    "failedStages": [
+      "interactive-comparison",
+      "control-comparison",
+      "lightflow-comparison",
+      "inspection-comparison"
+    ],
+    "failureDetails": [
+      {
+        "stage": "control-comparison",
+        "report": "control-comparison.json",
+        "failures": [
+          "effects-dehaze: medianMs 12.78 > 12.66 ms"
+        ]
+      },
+      {
+        "stage": "inspection-comparison",
+        "report": "inspection-comparison.json",
+        "failures": [
+          "color-floating-scopes p95Ms: 36.13 > 35.03 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "texture: interactive median regressed 15.31%",
+          "lens-blur-cat-eye: interactive median regressed 17.43%",
+          "targeted-hsl: interactive median regressed 30.75%",
+          "local-point-color: interactive median regressed 16.81%",
+          "local-defringe: interactive median regressed 11.68%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      }
+    ]
+  },
+  "productionSources": [
+    {
+      "repoPath": "Sources/RAWMasterImaging/DevelopmentPreviewService.swift",
+      "sha256": "12b71c906ce1683ae33806189cc23ca1842330a5967153e26fe2c1dcc437bbcf"
+    },
+    {
+      "repoPath": "Sources/RAWMasterImaging/PreviewNativeSource.swift",
+      "sha256": "8bf830e49bc18018429194bb72e43d65c7120259f8f5126ee2ba273fe0a305cc"
+    }
+  ],
+  "commands": [
+    {
+      "repoPath": "output/035-development/ci-intermediate/probe.swift",
+      "sha256": "4db519c404bbbf16afd2c721c9528a47d56f886f40015c92012076abdd7bc740"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/run.sh",
+      "sha256": "0552fd203338439c97d273f0e284b3654dd5a7c6e21a2c0f696b0d5193c8729a"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/first-request.swift",
+      "sha256": "962905abd7293c18ca073ced12deafe5195a0f176a81ea37b456dfbf4674bb55"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/release-abba.sh",
+      "sha256": "6a703678615a41738540aaea67203fdcbd0b605c73676236f1e010711780a2ca"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/validate.sh",
+      "sha256": "d9a8e8d616b57cd2d38bb43d346555abe5e5b1a2800cbba59c039bac256d001f"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/validate-lifetime.sh",
+      "sha256": "3c3dd71d0c18d5a7a839b17431c918d5e3c91c160fe5caee89afd32eee322323"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/super-resolution-memory.swift",
+      "sha256": "4ac22361404951642f467852c8593863dbdde46d608f46d3b1f096d6f2361059"
+    },
+    {
+      "repoPath": "output/035-development/ci-intermediate/targeted.sh",
+      "sha256": "0bcbd245fd01b9bad6cb08f1ab49d95c7ef7545b4fc4bea061c1e88577ed15f1"
+    }
+  ]
+}

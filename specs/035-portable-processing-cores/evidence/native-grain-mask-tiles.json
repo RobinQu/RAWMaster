@@ -1,0 +1,2669 @@
+{
+  "schemaVersion": 1,
+  "defaultEnabledForGrain": false,
+  "switch": "RAWMASTER_QA_CANONICAL_GRAIN_MASK_TILES=1",
+  "candidate": "candidate-batch18-grain",
+  "sealedTestBinary": {
+    "repoPath": "output/035-development/candidate-batch18-grain/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+    "sha256": "f1d489bfb6840af26502cebcb34a904b2fc859197478b44248a6ef70258a850b"
+  },
+  "sourceManifest": {
+    "repoPath": "output/035-development/candidate-batch18-grain/source-files.sha256",
+    "sha256": "382b61893107bd0f30b86304fa8ae8c02f3fa03e3c1ee69cf542d0876fcf0b0d"
+  },
+  "targetedTests": {
+    "repoPath": "output/035-development/detail-tail-study/native-01/targeted.log",
+    "sha256": "98ed574c003f55fc5bc2ab576e4c0e3baedfc8a6def6bac009ad1bdb2eaf21c6",
+    "passed": 52
+  },
+  "isolatedGrid": {
+    "primary": {
+      "crossOver": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/01-primary-full.json",
+          "sha256": "8c36e7d0157b5e0795a3e1b07ce751a8f8e574ef3b59827b01197d0c92f88db2",
+          "transport": "full",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2944796736,
+          "originalTileCount": 70,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+            "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+            "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+            "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+            "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+            "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/02-primary-aligned.json",
+          "sha256": "990bf7f11cf0952c8a86f8bc0038d254054d0a49ee1bd0eadb91c61b859619b4",
+          "transport": "aligned",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2853718080,
+          "originalTileCount": 70,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+            "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+            "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+            "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+            "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+            "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/03-primary-aligned.json",
+          "sha256": "81545457917448c28fac5f0c02b3ea298e17ced53727dca8d6d92d7bb9a4dc63",
+          "transport": "aligned",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2860648488,
+          "originalTileCount": 70,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+            "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+            "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+            "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+            "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+            "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/04-primary-full.json",
+          "sha256": "8fde40ae3f9de35a83bbf580c53e73ff40ef148844bc4e5b9cdfb01f321a5c98",
+          "transport": "full",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2945140800,
+          "originalTileCount": 70,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "5e28506347dcc144a76b722c4b0b7bb38660b5d8190a6f05d304b6dc21ed51c9",
+            "47f27e37c1ad110d390fc6e836328c346924d7135c3d02d1eb13e3f8ca93b5e7",
+            "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+            "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+            "3bcbd4c4df65276f006a9bb7b4bb71feeb1235eaa6303cee53107dd18ece4f71",
+            "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e"
+          ]
+        }
+      ],
+      "measurements": {
+        "full": {
+          "detail-mask-noise": {
+            "scanMs": {
+              "n": 4,
+              "p50": 244.836229,
+              "p95": 247.800042
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 151.344708,
+              "p95": 151.678792
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 395.0157715,
+              "p95": 399.607125
+            }
+          },
+          "effects-mask-grain": {
+            "scanMs": {
+              "n": 4,
+              "p50": 198.369187,
+              "p95": 209.909208
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 71.9267085,
+              "p95": 77.77
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 270.400896,
+              "p95": 287.76125
+            }
+          },
+          "detail-mask-sharpness": {
+            "scanMs": {
+              "n": 4,
+              "p50": 241.10722950000002,
+              "p95": 244.7925
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 161.357271,
+              "p95": 172.679167
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 405.21583350000003,
+              "p95": 423.618542
+            }
+          },
+          "combined": {
+            "scanMs": {
+              "n": 12,
+              "p50": 240.5315625,
+              "p95": 247.800042
+            },
+            "displayAndDigestMs": {
+              "n": 12,
+              "p50": 151.344708,
+              "p95": 172.679167
+            },
+            "graphThroughDigestMs": {
+              "n": 12,
+              "p50": 391.97775,
+              "p95": 423.618542
+            }
+          }
+        },
+        "aligned": {
+          "detail-mask-noise": {
+            "scanMs": {
+              "n": 4,
+              "p50": 109.802167,
+              "p95": 116.4455
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 165.67775,
+              "p95": 174.885083
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 276.1820205,
+              "p95": 290.726209
+            }
+          },
+          "effects-mask-grain": {
+            "scanMs": {
+              "n": 4,
+              "p50": 89.38764549999999,
+              "p95": 94.916708
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 73.5322705,
+              "p95": 81.634708
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 163.9048125,
+              "p95": 171.862958
+            }
+          },
+          "detail-mask-sharpness": {
+            "scanMs": {
+              "n": 4,
+              "p50": 104.94456199999999,
+              "p95": 108.527208
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 153.24847899999997,
+              "p95": 169.800375
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 260.003333,
+              "p95": 281.580084
+            }
+          },
+          "combined": {
+            "scanMs": {
+              "n": 12,
+              "p50": 103.739729,
+              "p95": 116.4455
+            },
+            "displayAndDigestMs": {
+              "n": 12,
+              "p50": 151.2025835,
+              "p95": 174.885083
+            },
+            "graphThroughDigestMs": {
+              "n": 12,
+              "p50": 254.0731875,
+              "p95": 290.726209
+            }
+          }
+        }
+      },
+      "stockScalarWitness": {
+        "repoPath": "output/035-development/detail-tail-study/grid-witness-01/01-primary-aligned.json",
+        "sha256": "5206b6aa6a07428b1acd62ec833ea8872c0abcdff5084ed1a88234b960768a71",
+        "everyRGBA32FCellMatches": true
+      }
+    },
+    "secondary": {
+      "crossOver": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/01-secondary-full.json",
+          "sha256": "bfcadb21da5dc341ba1d6b3396c36184bdaebede234f406f6a39092dd7e45449",
+          "transport": "full",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2831271832,
+          "originalTileCount": 54,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+            "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+            "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+            "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+            "cf715f69756eaf94baff4d88b696a1db4e7b1eeac9bb1523948af4df7b686200",
+            "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/02-secondary-aligned.json",
+          "sha256": "c4de45680fafdc855f902898baf3b6bc1504f94ca2e4889865d3144a8bd8f4fc",
+          "transport": "aligned",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2717976472,
+          "originalTileCount": 54,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+            "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+            "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+            "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+            "cf715f69756eaf94baff4d88b696a1db4e7b1eeac9bb1523948af4df7b686200",
+            "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/03-secondary-aligned.json",
+          "sha256": "6a6b64480e218c13ef1dd8751061c469f05f0d3b95b76e83977efd7f11f85feb",
+          "transport": "aligned",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2718042056,
+          "originalTileCount": 54,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+            "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+            "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+            "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+            "cf715f69756eaf94baff4d88b696a1db4e7b1eeac9bb1523948af4df7b686200",
+            "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/grid-abba/04-secondary-full.json",
+          "sha256": "4ab00b1d41ad80fe2588885abe0b4cb4eb60aec2aa6e70c796a09e83d6927d30",
+          "transport": "full",
+          "exactFrames": 6,
+          "peakPhysicalBytes": 2830206920,
+          "originalTileCount": 54,
+          "selectedTileCount": 28,
+          "fullFrameDigests": [
+            "607994c12204536aee05b0dbe937038d059959d5c7140fb2965d913619f54972",
+            "6b03785a31bf7c025d1bce20403b2d36262b893112e5f55d4d0d3aad6436a051",
+            "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+            "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+            "cf715f69756eaf94baff4d88b696a1db4e7b1eeac9bb1523948af4df7b686200",
+            "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085"
+          ]
+        }
+      ],
+      "measurements": {
+        "full": {
+          "detail-mask-noise": {
+            "scanMs": {
+              "n": 4,
+              "p50": 190.0286875,
+              "p95": 203.012666
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 128.619187,
+              "p95": 132.697417
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 318.8405205,
+              "p95": 335.802792
+            }
+          },
+          "effects-mask-grain": {
+            "scanMs": {
+              "n": 4,
+              "p50": 154.1581045,
+              "p95": 156.053125
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 62.892750500000005,
+              "p95": 63.7845
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 217.19181300000002,
+              "p95": 219.91675
+            }
+          },
+          "detail-mask-sharpness": {
+            "scanMs": {
+              "n": 4,
+              "p50": 194.4235415,
+              "p95": 202.215208
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 133.953146,
+              "p95": 142.861833
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 329.98979199999997,
+              "p95": 349.327917
+            }
+          },
+          "combined": {
+            "scanMs": {
+              "n": 12,
+              "p50": 189.70295850000002,
+              "p95": 203.012666
+            },
+            "displayAndDigestMs": {
+              "n": 12,
+              "p50": 126.96460400000001,
+              "p95": 142.861833
+            },
+            "graphThroughDigestMs": {
+              "n": 12,
+              "p50": 314.88931249999996,
+              "p95": 349.327917
+            }
+          }
+        },
+        "aligned": {
+          "detail-mask-noise": {
+            "scanMs": {
+              "n": 4,
+              "p50": 102.918458,
+              "p95": 109.249041
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 131.7165625,
+              "p95": 143.562083
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 234.8873125,
+              "p95": 253.195333
+            }
+          },
+          "effects-mask-grain": {
+            "scanMs": {
+              "n": 4,
+              "p50": 84.105583,
+              "p95": 86.85475
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 61.3608125,
+              "p95": 65.526709
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 147.12408349999998,
+              "p95": 149.411875
+            }
+          },
+          "detail-mask-sharpness": {
+            "scanMs": {
+              "n": 4,
+              "p50": 111.212625,
+              "p95": 113.893375
+            },
+            "displayAndDigestMs": {
+              "n": 4,
+              "p50": 144.5897085,
+              "p95": 154.628625
+            },
+            "graphThroughDigestMs": {
+              "n": 4,
+              "p50": 259.6486455,
+              "p95": 271.987333
+            }
+          },
+          "combined": {
+            "scanMs": {
+              "n": 12,
+              "p50": 102.918458,
+              "p95": 113.893375
+            },
+            "displayAndDigestMs": {
+              "n": 12,
+              "p50": 130.69131299999998,
+              "p95": 154.628625
+            },
+            "graphThroughDigestMs": {
+              "n": 12,
+              "p50": 234.8873125,
+              "p95": 271.987333
+            }
+          }
+        }
+      },
+      "stockScalarWitness": {
+        "repoPath": "output/035-development/detail-tail-study/grid-witness-01/01-secondary-aligned.json",
+        "sha256": "ff89963ecc07947ec9a1ccb0c387603adcb6b54b2099a65e2fa16d74c72d17be",
+        "everyRGBA32FCellMatches": true
+      }
+    }
+  },
+  "syntheticFiniteCounterexample": {
+    "repoPath": "output/035-development/detail-tail-study/detail-grid-faults-witness.json",
+    "sha256": "8503f5711ca5b973cd30a9f2efb46d878afbc45046195bf8de37c2d8ed0adf13",
+    "device": "Apple M4 Max",
+    "operatorWitnesses": [
+      {
+        "fullAccepted": true,
+        "lastRetainedFaultsRejectedInBoth": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "operator": "sharpness",
+        "regionalAccepted": true
+      },
+      {
+        "fullAccepted": true,
+        "lastRetainedFaultsRejectedInBoth": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "operator": "noiseReduction",
+        "regionalAccepted": true
+      },
+      {
+        "fullAccepted": true,
+        "lastRetainedFaultsRejectedInBoth": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "operator": "grain",
+        "regionalAccepted": true
+      }
+    ],
+    "originalSourceAccepted": true,
+    "os": "Version 27.0.1 (Build 26A434)",
+    "outsideSourceFaultRejected": true,
+    "selectedCells": [
+      1024,
+      0,
+      2048,
+      2048
+    ],
+    "shaderWitnesses": [
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": false,
+        "kernel": "rmMaskComposite",
+        "outputF32Bits": [
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "regionalAccepted": false,
+        "site": "inside"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "finite": [
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": false,
+        "kernel": "rmMaskGrain",
+        "outputF32Bits": [
+          [
+            4286578688,
+            4286578688,
+            4286578688,
+            1065353216
+          ],
+          [
+            2139095040,
+            2139095040,
+            2139095040,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562753,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562751,
+            3347046399,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562751,
+            3347046399,
+            0,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": false,
+        "site": "inside"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "kernel": "rmMaskComposite",
+        "outputF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": true,
+        "site": "beyond-ellipse"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "kernel": "rmMaskGrain",
+        "outputF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": true,
+        "site": "beyond-ellipse"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": false,
+        "kernel": "rmMaskComposite",
+        "outputF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": true,
+        "site": "omitted-first-cell"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "kernel": "rmMaskGrain",
+        "outputF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": true,
+        "site": "omitted-first-cell"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "kernel": "rmMaskComposite",
+        "outputF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": true,
+        "site": "omitted-clipped-last-cell"
+      },
+      {
+        "adjustedF32Bits": [
+          [
+            4286578687,
+            2139095039,
+            0,
+            1065353216
+          ],
+          [
+            2139095038,
+            4286578686,
+            2147483648,
+            1065353216
+          ],
+          [
+            2143289345,
+            0,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            2139095040,
+            0,
+            1065353216
+          ],
+          [
+            0,
+            0,
+            4286578688,
+            1065353216
+          ],
+          [
+            1065353216,
+            3212836864,
+            0,
+            4286578688
+          ],
+          [
+            2147483648,
+            0,
+            2147483648,
+            1065353216
+          ],
+          [
+            0,
+            1065353216,
+            3212836864,
+            1065353216
+          ]
+        ],
+        "baseF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "coverage": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "finite": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ],
+        "fullAccepted": true,
+        "kernel": "rmMaskGrain",
+        "outputF32Bits": [
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3011510272,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            1073741824,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            3238002688,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            864026624,
+            1065353216
+          ],
+          [
+            1199562752,
+            3347046400,
+            0,
+            1065353216
+          ]
+        ],
+        "regionalAccepted": true,
+        "site": "omitted-clipped-last-cell"
+      }
+    ],
+    "sourceExtent": [
+      3074,
+      2050
+    ]
+  },
+  "sealedNative": {
+    "primary": {
+      "reference": {
+        "repoPath": "output/035-development/candidate-batch17b-formal/photo-operators-v2.json",
+        "sha256": "c9817ae8fcf6276d1572060a002f2fcd01be8d76bf239222c7b11eb3e4f05809"
+      },
+      "profiles": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/profile-primary-0.json",
+          "sha256": "b3722b61c5f1c92275762ab3a86229cbfbd80c4c4bcbf9b5d2a8500fcc2bc815",
+          "grainRegionEnabled": false,
+          "targetFinalFiniteMs": [
+            197.088291,
+            200.999041
+          ],
+          "neighboringOperatorsRetainedTheirTransport": true,
+          "peakPhysicalFootprintBytes": 3389131272
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/profile-primary-1.json",
+          "sha256": "51acaab22e3ec12f71568af28c161b6d844e1d3e117a0d144a2cee06b2aca5b3",
+          "grainRegionEnabled": true,
+          "targetFinalFiniteMs": [
+            80.921208,
+            86.327375
+          ],
+          "neighboringOperatorsRetainedTheirTransport": true,
+          "peakPhysicalFootprintBytes": 3377465912
+        }
+      ],
+      "cancelRetryAndComparison": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-01-primary-effects-mask-grain-0.json",
+          "sha256": "7a4234d625a36bbb052cbed0bc03cb268ce937efabcbdd9fdf6ed68c891115bf",
+          "region": false,
+          "cancellation": "superseded",
+          "retryDigest": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-02-primary-effects-mask-grain-1.json",
+          "sha256": "312e8feedbca5fdd5a25c00f0feba8f089222a5c2dd7577b3cf5cf25781ec6d4",
+          "region": true,
+          "cancellation": "superseded",
+          "retryDigest": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-03-primary-effects-mask-grain-1.json",
+          "sha256": "71d3345496f6809be44f75c7b506d2722a6c033438166888f843cacb41dabb84",
+          "region": true,
+          "cancellation": "superseded",
+          "retryDigest": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-04-primary-effects-mask-grain-0.json",
+          "sha256": "7443e3e320eeb44abf02c36d03b671356b5e5d81bddf50faf89a89d568def3a7",
+          "region": false,
+          "cancellation": "superseded",
+          "retryDigest": "eda2f44dda13104fd7f661a84938447d397fefd012c5e60f539b48c0ccfe7e8e",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        }
+      ],
+      "crossOver": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-01-primary-0.json",
+          "sha256": "5998fabc44479d1452fec4ec4cc05b1bb0a5b022deef64fdef107cc8085967ef",
+          "region": false,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.249375000000001,
+              "p95": 17.970958
+            },
+            "exact": {
+              "n": 74,
+              "p50": 100.923375,
+              "p95": 423.12525
+            },
+            "final": {
+              "n": 74,
+              "p50": 100.923375,
+              "p95": 423.12525
+            }
+          },
+          "inconclusiveSpatialWitnesses": []
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-02-primary-1.json",
+          "sha256": "76c405732462b65c34245f678261011ce2ad483d023af06d4dcda354ef844520",
+          "region": true,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.0845,
+              "p95": 17.909833
+            },
+            "exact": {
+              "n": 74,
+              "p50": 102.103458,
+              "p95": 412.005459
+            },
+            "final": {
+              "n": 74,
+              "p50": 102.103458,
+              "p95": 412.005459
+            }
+          },
+          "inconclusiveSpatialWitnesses": []
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-03-primary-1.json",
+          "sha256": "a23514f9ba39269e750976e5c7b298bac825442ad9a1756a04588b356aa61429",
+          "region": true,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.196583499999999,
+              "p95": 18.573708
+            },
+            "exact": {
+              "n": 74,
+              "p50": 103.9569375,
+              "p95": 409.227041
+            },
+            "final": {
+              "n": 74,
+              "p50": 103.9569375,
+              "p95": 409.227041
+            }
+          },
+          "inconclusiveSpatialWitnesses": []
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-04-primary-0.json",
+          "sha256": "7f27c294462be0bf11cce65133e92f3e57976c9ec1ab0c282a4594f3e66ce9b6",
+          "region": false,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.159229,
+              "p95": 17.367958
+            },
+            "exact": {
+              "n": 74,
+              "p50": 103.520438,
+              "p95": 424.201083
+            },
+            "final": {
+              "n": 74,
+              "p50": 103.520438,
+              "p95": 424.201083
+            }
+          },
+          "inconclusiveSpatialWitnesses": []
+        }
+      ],
+      "allOperatorsTiming": {
+        "disabled": {
+          "visible": {
+            "n": 148,
+            "p50": 5.2275415,
+            "p95": 17.367958
+          },
+          "exact": {
+            "n": 148,
+            "p50": 103.36575049999999,
+            "p95": 423.12525
+          },
+          "final": {
+            "n": 148,
+            "p50": 103.36575049999999,
+            "p95": 423.12525
+          }
+        },
+        "enabled": {
+          "visible": {
+            "n": 148,
+            "p50": 5.161042,
+            "p95": 17.909833
+          },
+          "exact": {
+            "n": 148,
+            "p50": 103.121958,
+            "p95": 409.227041
+          },
+          "final": {
+            "n": 148,
+            "p50": 103.121958,
+            "p95": 409.227041
+          }
+        }
+      },
+      "grainTiming": {
+        "disabled": {
+          "visible": {
+            "n": 4,
+            "p50": 6.686604,
+            "p95": 13.799042
+          },
+          "exact": {
+            "n": 4,
+            "p50": 301.61291700000004,
+            "p95": 308.958666
+          },
+          "final": {
+            "n": 4,
+            "p50": 301.61291700000004,
+            "p95": 308.958666
+          }
+        },
+        "enabled": {
+          "visible": {
+            "n": 4,
+            "p50": 6.543125,
+            "p95": 9.0875
+          },
+          "exact": {
+            "n": 4,
+            "p50": 193.1329165,
+            "p95": 212.489583
+          },
+          "final": {
+            "n": 4,
+            "p50": 193.1329165,
+            "p95": 212.489583
+          }
+        }
+      }
+    },
+    "secondary": {
+      "reference": {
+        "repoPath": "output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+        "sha256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f"
+      },
+      "profiles": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/profile-secondary-0.json",
+          "sha256": "09f69dfb34ca9bdc545d0c4c929c473ec1da8781f24ef26add484e4f3e900300",
+          "grainRegionEnabled": false,
+          "targetFinalFiniteMs": [
+            151.245041,
+            156.954416
+          ],
+          "neighboringOperatorsRetainedTheirTransport": true,
+          "peakPhysicalFootprintBytes": 3259976176
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/profile-secondary-1.json",
+          "sha256": "94c6d7b3a73f9acec11526e8bdc8a459dcb3f968fb837841c708f8dbed122443",
+          "grainRegionEnabled": true,
+          "targetFinalFiniteMs": [
+            82.887083,
+            92.625875
+          ],
+          "neighboringOperatorsRetainedTheirTransport": true,
+          "peakPhysicalFootprintBytes": 3255945712
+        }
+      ],
+      "cancelRetryAndComparison": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-01-secondary-effects-mask-grain-0.json",
+          "sha256": "81cc227abf5d663595c45f12d7101a874cf0055cf617790f79913f616a86db93",
+          "region": false,
+          "cancellation": "superseded",
+          "retryDigest": "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-02-secondary-effects-mask-grain-1.json",
+          "sha256": "7fb02f906140474bca056a641b62e6096b5bb0d7ac0bd750da72603a58fbbed0",
+          "region": true,
+          "cancellation": "superseded",
+          "retryDigest": "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-03-secondary-effects-mask-grain-1.json",
+          "sha256": "2f38b2ec14516638d364b4062b54c9b9a0cd830a013af8232d0dde0cc82e0abb",
+          "region": true,
+          "cancellation": "superseded",
+          "retryDigest": "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/cold-04-secondary-effects-mask-grain-0.json",
+          "sha256": "2858c61b0e62a407c79104db1c5188a9638018ceb5607fbc54ee6effc2cf293f",
+          "region": false,
+          "cancellation": "superseded",
+          "retryDigest": "e0a1738a97b4293a6d5d0aa02c6ab5bffce3e83d0eff9d6bfda5b9326743a085",
+          "sameComparisonAndReplayDigest": true,
+          "releasedAllSourceBytes": true
+        }
+      ],
+      "crossOver": [
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-01-secondary-0.json",
+          "sha256": "e75d513cbde84e068df067487ced03c2713d0e3d6cb741a30af0f40480b0857c",
+          "region": false,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 4.9424790000000005,
+              "p95": 17.226375
+            },
+            "exact": {
+              "n": 74,
+              "p50": 85.214541,
+              "p95": 348.343417
+            },
+            "final": {
+              "n": 74,
+              "p50": 93.41904149999999,
+              "p95": 348.343417
+            }
+          },
+          "inconclusiveSpatialWitnesses": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-02-secondary-1.json",
+          "sha256": "1a7501e79625cb133d52d679d5552c6af74b924c7b4e1b4d2de5a1cb81fdd27f",
+          "region": true,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.423417,
+              "p95": 19.172625
+            },
+            "exact": {
+              "n": 74,
+              "p50": 88.621229,
+              "p95": 351.595
+            },
+            "final": {
+              "n": 74,
+              "p50": 92.57552050000001,
+              "p95": 351.595
+            }
+          },
+          "inconclusiveSpatialWitnesses": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-03-secondary-1.json",
+          "sha256": "7cccbf30b7494c5bab41759c99f5d27d032a05a1d19a507b5051d89dd7e759e4",
+          "region": true,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.142208999999999,
+              "p95": 17.8415
+            },
+            "exact": {
+              "n": 74,
+              "p50": 83.297042,
+              "p95": 361.826
+            },
+            "final": {
+              "n": 74,
+              "p50": 91.030479,
+              "p95": 361.826
+            }
+          },
+          "inconclusiveSpatialWitnesses": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/detail-tail-study/native-01/release-04-secondary-0.json",
+          "sha256": "73a97a6cfa531da085e650853d40f7fcbaad06f7ee296a0c1bde1f4d2f98aa88",
+          "region": false,
+          "fullFramePairs": 814,
+          "first74": {
+            "visible": {
+              "n": 74,
+              "p50": 5.317437999999999,
+              "p95": 16.616709
+            },
+            "exact": {
+              "n": 74,
+              "p50": 89.673375,
+              "p95": 348.168042
+            },
+            "final": {
+              "n": 74,
+              "p50": 95.0114585,
+              "p95": 348.168042
+            }
+          },
+          "inconclusiveSpatialWitnesses": [
+            "light-mask-highlights",
+            "light-mask-whites"
+          ]
+        }
+      ],
+      "allOperatorsTiming": {
+        "disabled": {
+          "visible": {
+            "n": 148,
+            "p50": 5.1980835,
+            "p95": 16.616709
+          },
+          "exact": {
+            "n": 148,
+            "p50": 87.7038955,
+            "p95": 348.168042
+          },
+          "final": {
+            "n": 148,
+            "p50": 95.0114585,
+            "p95": 348.168042
+          }
+        },
+        "enabled": {
+          "visible": {
+            "n": 148,
+            "p50": 5.2289375,
+            "p95": 17.8415
+          },
+          "exact": {
+            "n": 148,
+            "p50": 88.1858335,
+            "p95": 355.2455
+          },
+          "final": {
+            "n": 148,
+            "p50": 92.57552050000001,
+            "p95": 355.2455
+          }
+        }
+      },
+      "grainTiming": {
+        "disabled": {
+          "visible": {
+            "n": 4,
+            "p50": 6.9219165,
+            "p95": 10.104916
+          },
+          "exact": {
+            "n": 4,
+            "p50": 244.573791,
+            "p95": 244.874625
+          },
+          "final": {
+            "n": 4,
+            "p50": 244.573791,
+            "p95": 244.874625
+          }
+        },
+        "enabled": {
+          "visible": {
+            "n": 4,
+            "p50": 6.695604,
+            "p95": 9.346584
+          },
+          "exact": {
+            "n": 4,
+            "p50": 172.05866650000002,
+            "p95": 177.368583
+          },
+          "final": {
+            "n": 4,
+            "p50": 172.05866650000002,
+            "p95": 177.368583
+          }
+        }
+      }
+    }
+  },
+  "transportOverrides": {
+    "spatial-rollback": {
+      "repoPath": "output/035-development/detail-tail-study/native-01/spatial-rollback.json",
+      "sha256": "1623d10b49f324cecca9e80a1b55e21bc610f9f4c26d6c8692ec61f63abce998",
+      "fullOriginalScan": true,
+      "usedMetalBands": false
+    },
+    "serial-precedence": {
+      "repoPath": "output/035-development/detail-tail-study/native-01/serial-precedence.json",
+      "sha256": "e4b0d0788ca32dee8ec2c035938389bd646d19bbda20159c1c4f930a0f679b51",
+      "fullOriginalScan": true,
+      "usedMetalBands": false
+    },
+    "explicit-band-precedence": {
+      "repoPath": "output/035-development/detail-tail-study/native-01/explicit-band-precedence.json",
+      "sha256": "312259598c11a2371f46166b2baace7a47d2abd60fd1b0818739b8feb5a825a5",
+      "fullOriginalScan": true,
+      "usedMetalBands": true
+    }
+  },
+  "reproduction": [
+    {
+      "repoPath": "output/035-development/detail-tail-study/run-mask-grid.py",
+      "sha256": "19bcb144072e73f32b298dbd19a5ff491a646a7917194d4a8110494cd394d7e1"
+    },
+    {
+      "repoPath": "output/035-development/detail-tail-study/detail-grid-faults.swift",
+      "sha256": "b1a73ee5b2bcd8a3bfa4f57f5f17dcf486d70953a963c2fc202b60b10b18d62e"
+    },
+    {
+      "repoPath": "output/035-development/detail-tail-study/native-detail-mask-cancel.swift",
+      "sha256": "a6f346e77c56b5b880ecb5237152b3df6d3d19bacd815cd64014ec56b2d9167a"
+    },
+    {
+      "repoPath": "output/035-development/detail-tail-study/run-native-detail.py",
+      "sha256": "3cdee6a33ef8856162a206dafba4eca2e4be654e195664ab0327075d1bfd68da"
+    },
+    {
+      "repoPath": "output/035-development/detail-tail-study/evidence.py",
+      "sha256": "5caaaf41109f0a94538d9f11682bd9138518b1dcbdabf14bf59eb7d18db6cd8b"
+    }
+  ],
+  "formal": {
+    "switchEnabled": true,
+    "summary": {
+      "repoPath": "output/035-development/candidate-batch18-grain-formal/summary.json",
+      "sha256": "dd1dacee746f02036335e47519a6116627845abe44c8f994cf2be817c8b58a8e"
+    },
+    "exitCode": 1,
+    "operators": {
+      "repoPath": "output/035-development/candidate-batch18-grain-formal/photo-operators-v2.json",
+      "sha256": "7b6f5d10644b08d03ebaea3e416437a636843b77c1a93a03014fa23b34874212"
+    },
+    "fullFramePairs": 814,
+    "failureDetails": [
+      {
+        "stage": "control-comparison",
+        "report": "control-comparison.json",
+        "failures": [
+          "detail-nr-color-detail: medianMs 7.92 > 7.78 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "exposure-color: interactive median regressed 18.88%",
+          "texture: interactive median regressed 16.16%",
+          "lens-blur-bokeh-anamorphic: interactive median regressed 13.01%",
+          "lens-blur-cat-eye: interactive median regressed 13.69%",
+          "targeted-hsl: interactive median regressed 35.68%",
+          "wb-flash-preset: interactive median regressed 17.51%",
+          "point-color-samples: interactive median regressed 11.08%",
+          "local-grain: interactive median regressed 15.31%",
+          "local-curves: interactive median regressed 11.55%",
+          "local-defringe: interactive median regressed 13.92%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      }
+    ],
+    "violatedThresholds": 13,
+    "passed": false,
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.282500000000001,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.2630415,
+          "p95Ms": 16.88825
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 22.134999999999998,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 101.2495835,
+          "p95Ms": 423.545917
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 23.5625,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 101.2495835,
+          "p95Ms": 423.545917
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "lightflowComparison": {
+      "repoPath": "output/035-development/candidate-batch18-grain-formal/lightflow-comparison.json",
+      "sha256": "61810096bbb12ef6530e71fc8c79efa55e03cd5e0d20e7428d340848552f62b8"
+    },
+    "slowestFirstExact": [
+      {
+        "ms": 969.845834,
+        "id": "effects-dehaze",
+        "state": 0
+      },
+      {
+        "ms": 438.305291,
+        "id": "detail-mask-sharpness",
+        "state": 0
+      },
+      {
+        "ms": 425.818666,
+        "id": "detail-mask-sharpness",
+        "state": 1
+      },
+      {
+        "ms": 423.545917,
+        "id": "detail-mask-noise",
+        "state": 1
+      },
+      {
+        "ms": 411.93975,
+        "id": "detail-mask-noise",
+        "state": 0
+      },
+      {
+        "ms": 409.583375,
+        "id": "detail-mask-preview",
+        "state": 1
+      },
+      {
+        "ms": 353.854083,
+        "id": "detail-mask-preview",
+        "state": 0
+      },
+      {
+        "ms": 308.076166,
+        "id": "effects-mask-clarity",
+        "state": 1
+      },
+      {
+        "ms": 300.766083,
+        "id": "effects-mask-clarity",
+        "state": 0
+      },
+      {
+        "ms": 293.709,
+        "id": "effects-mask-texture",
+        "state": 1
+      }
+    ],
+    "superResolutionMetrics": {
+      "fitOnMs": 132.765125,
+      "fullTIFFMs": 9584.663833,
+      "exportPhysicalFootprintBytes": 3752609928,
+      "exportResidentBytes": 1381548032,
+      "exportMetalBytes": 2812149760
+    },
+    "superResolutionTIFF": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 9584.663833,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "superResolutionComparison": {
+      "repoPath": "output/035-development/candidate-batch18-grain-formal/super-resolution-comparison.json",
+      "sha256": "54084ae03c77057c07d56f35f701e973d832e2921f89dc9ae032fe88578d06a1"
+    },
+    "featureIndex": {
+      "repoPath": "output/035-development/candidate-batch18-grain/camera-raw-acceptance.json",
+      "sha256": "6be354dce879009e34b4266ea401316b3c81593f74c941543bcb4516e7cbca4a"
+    },
+    "cameraRawMeasuredFeatureIDs": 158,
+    "adaptive": {
+      "cases": 4,
+      "testBinarySHA256": "0cfcfa4692fa3004f5e93771f42f097fce52d5892e905747c8e9a2a2a58ebd59"
+    },
+    "featureTests": {
+      "native-film-and-mask": {
+        "repoPath": "output/035-development/candidate-batch18-grain/native-film-and-mask.log",
+        "sha256": "feda3272bc12765907b0952bca54c1669f049f9fbc85cef2946ef0b02892e16b",
+        "passed": 27
+      },
+      "native-mask-interactions": {
+        "repoPath": "output/035-development/candidate-batch18-grain/native-mask-interactions.log",
+        "sha256": "9098b6bfb8e5fc96b1553938b833fb0a162714252c1fd92500b61ed68ded5e5b",
+        "passed": 9
+      },
+      "native-prompt-provider": {
+        "repoPath": "output/035-development/candidate-batch18-grain/native-prompt-provider.log",
+        "sha256": "9741d13c37bb88f59b711f7e58b68954768728cd292dfa2914c22d24aa0e3fba",
+        "passed": 5
+      },
+      "adaptive-Sky": {
+        "repoPath": "output/035-development/candidate-batch18-grain/adaptive-Sky.log",
+        "sha256": "7d7bb2e2c1d704d8e2a32bb3af2e59fc6618c9aafc54d3684f713569451c8131",
+        "passed": 1
+      },
+      "adaptive-Subject": {
+        "repoPath": "output/035-development/candidate-batch18-grain/adaptive-Subject.log",
+        "sha256": "e59ddeeb24a55d3422eccf5833ba0e6fdc4fbee46d795f1010b3504ae1e99e4f",
+        "passed": 1
+      }
+    },
+    "testCommand": {
+      "repoPath": "output/035-development/detail-tail-study/run-formal-grain.sh",
+      "sha256": "0c8f5bf97c05b28f9d4a4a4a8fa709051dad7a46041066f518e4173017cdb8a1"
+    }
+  }
+}

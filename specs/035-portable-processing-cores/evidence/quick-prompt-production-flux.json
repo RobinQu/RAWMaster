@@ -1,0 +1,158 @@
+{
+  "schema": 1,
+  "measuredLocalDate": "2026-11-23",
+  "base": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "scope": "Real offline regional FLUX Q8 generation through AppModel.editing and the default production EditingController provider. Public marked-lake fixture. A second isolated catalog displays its own genuinely different photograph in an AppKit window.",
+  "hardware": {
+    "chip": "Apple M4 Max",
+    "physicalMemoryBytes": 137438953472,
+    "os": "macOS 27.0.1",
+    "build": "26A434"
+  },
+  "build": {
+    "kind": "Targeted, optimized Release XCTest harness, linked after RC2 was frozen using the same RC2 production objects and the frozen UI bundle resources.",
+    "frozenRC2AppSHA256": "c9561474cf859ab73a9cdf01ef95490d16e768bfc408528caaf464e6cf7eb6e7",
+    "frozenRC2UITestSHA256": "ce2e49dcb33aa504528598020e5cb9d9c5e386e105cb8a5554da566111947e7e",
+    "executedTestBinarySHA256": "635a443fcfc84d81541645c64b6e1a7252c1ab5308421e717c28d53d6ee03aee",
+    "testSourceSHA256": "0ab73afd5fb02a996f78b068ca28fa2c952c4db93feab983d1f9ce3d928a7c1a",
+    "productionObjectSHA256": {
+      "RAWMasterLibrary.o": "e129c90ae5b05820df9163f53ef76c067371293defd072ca6f39d6474d20f58a",
+      "CLibraryCatalogABI.o": "7d2cd0078e574562df938904683c31760e88eb8a42c7df41a17904654f07ae84",
+      "RAWMasterPhotoExport.o": "8e811621cf0f2f4a4499299b05765d7644551bc6a6d759882c882483dbe79d85",
+      "RAWMasterCore.o": "c38f0a6ae8813fdd1c7f7bbc5a48405a1343987762f8cd959860719037aaca8a",
+      "CFlashRaw.o": "b0dd356585400b04ac369af50b8f6f8debe7c2451d6d882ddfd6281d77f26529",
+      "MaskAI.o": "87e7e3509e4bffd1d53626b8d94f2bca14c708c72bb5a8536d2c36a57af1c664",
+      "RAWMasterImage.o": "78aba1a7b68f354c2e3cbaa4c550ddbd4f7042d15dbb62cadc0af2fdf795c61a",
+      "CImageEditABI.o": "a9faaaf368532b8dbbc9ed46407beec5e03eeea4109fbfc95679da76da5d759f",
+      "RAWMasterImaging.o": "2d2fd1e4e1dfe5753619651463773f46769b4e0bf2dcb3652f19e26884a42126",
+      "RAWMasterAI.o": "e17e3842dd7b3abfc41459c2146f2fd57b7aa6a3a3a61728aab2b7141aa93811",
+      "RAWMaster--47EDFB17C173E1A1-testable.o": "52159321d56b6e89ff87ac484292a7ce8e2a930681a5b502d38ae14947f57fe8"
+    }
+  },
+  "nativeReceipt": {
+    "adoptionRevisions": [
+      0,
+      1,
+      2
+    ],
+    "archivedBitDepth": 16,
+    "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+    "archivedSize": [
+      1024,
+      1024
+    ],
+    "attemptID": "9078E81B-F11D-4EF4-AAFB-BB1170BF3AEE",
+    "attemptsAfterReopen": 1,
+    "basisSHA256": "65be31e87166a386b8b4ced901c2db701a795a1140930cab6ea0bde1112b00a3",
+    "candidateVersionID": "47239F8C-DE4B-4863-AA3D-76BB86BFE61F",
+    "contextTopLeftXYWH": [
+      403,
+      419,
+      621,
+      605
+    ],
+    "elapsedSeconds": 180.68713998794556,
+    "inputMatches034": true,
+    "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+    "inputSize": [
+      1024,
+      1008
+    ],
+    "jobID": "2B6B2A0E-535C-43C5-8E0F-0B7CBD0026D9",
+    "originalVersionID": "26DE0BB0-D471-4867-BBE7-DE833AFDD274",
+    "pixelComparison": {
+      "protectedChangedPixels": 0,
+      "protectedPixels": 786432,
+      "selectedChangedPixels": 262144,
+      "selectedPixels": 262144
+    },
+    "previewDuringFlux": {
+      "heldMemoryBytes": 45812984490,
+      "intentWhileWaiting": false,
+      "preSubmission": "preparing",
+      "previewSourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442",
+      "whileRunning": {
+        "approximate": false,
+        "consumerID": "A94EE6E2-FEE8-42B0-A7F0-239377D721A9",
+        "drawBeganNS": 561887066826583,
+        "drawReturnedNS": 561887066868208,
+        "frameID": "CFCD6459-D5D7-46B6-A292-E6CD3B26E429",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 561887044396250,
+        "leaseID": "6A5E3E9D-1411-4B24-9D20-4A4CFF795724",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "whileRunningMs": 22.471958,
+      "whileWaiting": {
+        "approximate": false,
+        "consumerID": "A94EE6E2-FEE8-42B0-A7F0-239377D721A9",
+        "drawBeganNS": 561887006112750,
+        "drawReturnedNS": 561887006184708,
+        "frameID": "2638E138-0778-4EF7-88F6-911FA645DF2D",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 561886954591666,
+        "leaseID": "6A5E3E9D-1411-4B24-9D20-4A4CFF795724",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 2,
+        "width": 1600
+      },
+      "whileWaitingMs": 51.593042
+    },
+    "promptSHA256": "60cea9057403fdcdaeba9699f0ff28d5c402930d9d56a7ec27d4327fb2329405",
+    "receivedSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+    "selectionTopLeftXYWH": [
+      480,
+      496,
+      512,
+      512
+    ],
+    "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+    "status": "passed",
+    "testBinarySHA256": "635a443fcfc84d81541645c64b6e1a7252c1ab5308421e717c28d53d6ee03aee",
+    "worker": {
+      "actualModel": "black-forest-labs/flux-3-image-klein",
+      "mlxVersion": "0.32.4",
+      "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+      "peakMLXBytes": "8501400908",
+      "pipelineSeconds": "179.3673993330449",
+      "preset": "q8-16",
+      "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+      "seed": "8521",
+      "steps": "16",
+      "usage": "local",
+      "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+      "workerSeconds": "179.38527991704177"
+    }
+  },
+  "independentPixelAndDatabaseVerification": {
+    "testBinarySHA256": "635a443fcfc84d81541645c64b6e1a7252c1ab5308421e717c28d53d6ee03aee",
+    "attempts": 1,
+    "protectedPixels": 786432,
+    "selectedChangedPixels": 262144,
+    "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+    "inputMatches034": true
+  },
+  "sameBytesAs034": {
+    "inputSHA256": true,
+    "receivedSHA256": true,
+    "archivedSHA256": true
+  },
+  "reference": "specs/034-quick-prompt-editing/poc/archive-results.json — FLUX region",
+  "nativeTestSeconds": 180.798,
+  "evidence": {
+    "output/035-development/flux-controller-rc2-run1/receipt.json": "bbba880a06a8e12dc6ae5b9b3093a1c2e933c5e5d640b2a65d99b3712faaeb1b",
+    "output/035-development/flux-controller-rc2-run1/independent-verification.json": "1be956ce53a87ec5c6157ca32e32e1d97e25b4223bcfa6e53bd4c11f12ea0a6b",
+    "output/035-development/flux-controller-rc2-run1.log": "e93375b1e8d954c5738b58c317a471d91a90834babef72bd4fe95f1237455b75",
+    "output/035-development/flux-controller-rc2-harness/objects.list": "8ea99393f5b2436fd3570bfb0366fb5b9955f481f76ef3840cefb3c437b4dcf6",
+    "output/035-development/flux-controller-rc2-harness/commands.json": "47eebb4e46fff718aedbaabf7eac9583c51242f64af507197be403bd22076a8a"
+  },
+  "verification": "python3 specs/035-portable-processing-cores/verify-acceptance.py --flux-dir output/035-development/flux-controller-rc2-run1"
+}

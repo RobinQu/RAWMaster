@@ -1,0 +1,915 @@
+{
+  "adapter": "llvmpipe / Vulkan / CPU, Debian Mesa 22.3.6-1+deb12u2, aarch64",
+  "cases": [
+    {
+      "case": "neutral",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "34bc28568323fe4c15aa5154eb47fecf6513a94ee9e66eb55cfd2a25d61d1127",
+      "newGpuSHA256": "34bc28568323fe4c15aa5154eb47fecf6513a94ee9e66eb55cfd2a25d61d1127",
+      "newVsCPU": {
+        "differentComponents": 0,
+        "maximumAbsolute": 0.0,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 0,
+        "maximumAbsolute": 0.0,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "34bc28568323fe4c15aa5154eb47fecf6513a94ee9e66eb55cfd2a25d61d1127",
+      "oldVsCPU": {
+        "differentComponents": 0,
+        "maximumAbsolute": 0.0,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "color": {
+              "cast": 0,
+              "saturation": 0,
+              "vibrance": 0
+            },
+            "id": "basic",
+            "image": "source",
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "f06309909d30604c752996be764a62a37cbea7aea2a6dd9ec29f48be8b49932d",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "light",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "0c7362f65aeee46b40ed218e6c5a5ef7844630c7352c6411034faf993cbf2b23",
+      "newGpuSHA256": "02b3fc1d26a65c38d8bd056977d056b4a4afd2d9dcd27b73259142dd4de68dd4",
+      "newVsCPU": {
+        "differentComponents": 28536,
+        "maximumAbsolute": 7.152557373046875e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 21988,
+        "maximumAbsolute": 1.1920928955078125e-06,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "7caaef81cc8f65f546722cc3c7de7d9bdab1657e235f21d16f0fb6125a82b8e3",
+      "oldVsCPU": {
+        "differentComponents": 32398,
+        "maximumAbsolute": 1.0728836059570312e-06,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "id": "basic",
+            "image": "source",
+            "light": {
+              "blackPoint": -0.2,
+              "brightness": 0.34,
+              "contrast": 0.52,
+              "whites": 0.45
+            },
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "b269538097aeed95177090446098e4f2d16bb25ceb15621478ede6422dd45254",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "color",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "bb7c7e8e62b06013036208f04137dc601f01106dda1d7616abff95b239177fc5",
+      "newGpuSHA256": "8908a2dae6b8f999229a1b1a9d289ed6648e02cf8138cc8651b06f98a1327490",
+      "newVsCPU": {
+        "differentComponents": 33846,
+        "maximumAbsolute": 1.1920928955078125e-06,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 26916,
+        "maximumAbsolute": 1.6689300537109375e-06,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "f8671ba8b8c8f20ab3ff7fc3a99dcaa614b471cf6e9412cdde71cfa82a5133d9",
+      "oldVsCPU": {
+        "differentComponents": 34931,
+        "maximumAbsolute": 1.1920928955078125e-06,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "color": {
+              "cast": 0.31,
+              "saturation": 0.45,
+              "vibrance": 0.34
+            },
+            "id": "basic",
+            "image": "source",
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "08fc9da9e9a1f16b0d9c4d1a15f4a3e60dcdf3862097391b8506519b740c71a0",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "monochrome",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "5967636b489f5b316b705644e02271ceb59a081ead02548614eb5962a8d3cb6e",
+      "newGpuSHA256": "218a87009176d32b4500466e6de7441d5722af25d29dd65fa8c78a086a4bf5a9",
+      "newVsCPU": {
+        "differentComponents": 33807,
+        "maximumAbsolute": 9.5367431640625e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 21351,
+        "maximumAbsolute": 1.430511474609375e-06,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "67500e41de6648f4e6ae8e6e15ebda7f3e48527a301070fdd81b7baf7da34cd1",
+      "oldVsCPU": {
+        "differentComponents": 34785,
+        "maximumAbsolute": 1.3113021850585938e-06,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "blackAndWhite": {
+              "intensity": 1,
+              "neutrals": 0.15,
+              "tone": -0.25
+            },
+            "id": "basic",
+            "image": "source",
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "df52876665281c24fdce836e623623c1a6fef20b217f71975272e197f3ba5f28",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "curves",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "dbae1c92aa423b0d45053a665283b4f680c3d45e2a97c04ea2ee9c2f657853c5",
+      "newGpuSHA256": "5c4daec84071026b28bd024b2fbee9244feb12e7e37e05af6653ebb61e896d07",
+      "newVsCPU": {
+        "differentComponents": 31528,
+        "maximumAbsolute": 7.152557373046875e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 19761,
+        "maximumAbsolute": 8.940696716308594e-07,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "11b4e8dd6e8d5ed41c2d5392f53647009923edd69f75ccced051d4ec14363aa5",
+      "oldVsCPU": {
+        "differentComponents": 32691,
+        "maximumAbsolute": 9.5367431640625e-07,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "curves": {
+              "red": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.48,
+                    "y": 0.53
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              },
+              "rgb": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.26,
+                    "y": 0.32
+                  },
+                  {
+                    "x": 0.68,
+                    "y": 0.59
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              }
+            },
+            "id": "curves-levels",
+            "image": "source",
+            "op": "curves_levels_v3"
+          }
+        ],
+        "output": "curves-levels",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "9308b732468b5377f4441c8433111f23f9451693e8ac9d14441a8e1e1c4e0d60",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "levels",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "bccba70b9915e42b6b53c212196f7e68f8b5cb35776ef3adb7843a97b47e6541",
+      "newGpuSHA256": "04036954b243fc543a459e20e7421ac8095d1b277b82ede5bac22c8f76518187",
+      "newVsCPU": {
+        "differentComponents": 31994,
+        "maximumAbsolute": 1.0728836059570312e-06,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 25894,
+        "maximumAbsolute": 1.3113021850585938e-06,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "612a70375e4ff314d5bcaef540b26b6a06bb8a950defa831dd06951da4960fa1",
+      "oldVsCPU": {
+        "differentComponents": 32649,
+        "maximumAbsolute": 1.0728836059570312e-06,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "curves": {},
+            "id": "levels",
+            "image": "source",
+            "levels": {
+              "blue": {
+                "black": 0.08,
+                "highlights": 0.77,
+                "midtones": 0.51,
+                "outputBlack": 0.04,
+                "outputWhite": 0.96,
+                "shadows": 0.24,
+                "white": 0.92
+              },
+              "luminance": {
+                "black": 0.08,
+                "highlights": 0.77,
+                "midtones": 0.51,
+                "outputBlack": 0.04,
+                "outputWhite": 0.96,
+                "shadows": 0.24,
+                "white": 0.92
+              }
+            },
+            "op": "curves_levels_v3"
+          }
+        ],
+        "output": "levels",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "08c4e6ff50e68cf1970248d75f0e72f23889e9b5cadad4fc108e59c9b0c58968",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "basic_then_curves",
+      "comparisonPixels": 12800,
+      "cpuSHA256": "73d355a0764e0e93faf8eafb0fd02df7d606d664024008beb9871ac830a065f1",
+      "newGpuSHA256": "7c98d43d94f82afc08f46f35991d93d197069f5a8ba49b275835fbb51597492a",
+      "newVsCPU": {
+        "differentComponents": 34674,
+        "maximumAbsolute": 1.5497207641601562e-06,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 30685,
+        "maximumAbsolute": 2.86102294921875e-06,
+        "over2e6Components": 7
+      },
+      "oldGpuSHA256": "2646c09828a6d976a1d779b4e8b6bead1c3d42ad5fd2747ad5ff5d2e07331f46",
+      "oldVsCPU": {
+        "differentComponents": 36257,
+        "maximumAbsolute": 2.2649765014648438e-06,
+        "over2e6Components": 8
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "color": {
+              "cast": 0.31,
+              "saturation": 0.45,
+              "vibrance": 0.34
+            },
+            "id": "basic",
+            "image": "source",
+            "light": {
+              "blackPoint": -0.2,
+              "brightness": 0.34,
+              "contrast": 0.52,
+              "whites": 0.45
+            },
+            "op": "basic_v3"
+          },
+          {
+            "curves": {
+              "red": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.48,
+                    "y": 0.53
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              },
+              "rgb": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.26,
+                    "y": 0.32
+                  },
+                  {
+                    "x": 0.68,
+                    "y": 0.59
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              }
+            },
+            "id": "curves-levels",
+            "image": "basic",
+            "op": "curves_levels_v3"
+          }
+        ],
+        "output": "curves-levels",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "d742d8a6226d99eab8114d1be97bb93696fb5613f9af949f48d0a4ee9fd4de22",
+      "sampleSHA256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a",
+      "source": "primary"
+    },
+    {
+      "case": "neutral",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "20573d8846afb10885a56ad09e3724c0b32604fb7da3e0ed36db0f6918a93708",
+      "newGpuSHA256": "20573d8846afb10885a56ad09e3724c0b32604fb7da3e0ed36db0f6918a93708",
+      "newVsCPU": {
+        "differentComponents": 0,
+        "maximumAbsolute": 0.0,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 0,
+        "maximumAbsolute": 0.0,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "20573d8846afb10885a56ad09e3724c0b32604fb7da3e0ed36db0f6918a93708",
+      "oldVsCPU": {
+        "differentComponents": 0,
+        "maximumAbsolute": 0.0,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "color": {
+              "cast": 0,
+              "saturation": 0,
+              "vibrance": 0
+            },
+            "id": "basic",
+            "image": "source",
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "f06309909d30604c752996be764a62a37cbea7aea2a6dd9ec29f48be8b49932d",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    },
+    {
+      "case": "light",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "16ad044f153f78121db03f34081376b1146be19c07165c3dab02b9e85230dc84",
+      "newGpuSHA256": "9a3b19d1394b6f6ce842b6319bff9dd9d193269cbe5c954e6363bef5bfd6d070",
+      "newVsCPU": {
+        "differentComponents": 29079,
+        "maximumAbsolute": 7.152557373046875e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 19420,
+        "maximumAbsolute": 8.344650268554688e-07,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "8a2b96f2fc17c0e185c31bb9d28755fde6e0ef6bd0a146423357c3213ac12b68",
+      "oldVsCPU": {
+        "differentComponents": 31413,
+        "maximumAbsolute": 7.152557373046875e-07,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "id": "basic",
+            "image": "source",
+            "light": {
+              "blackPoint": -0.2,
+              "brightness": 0.34,
+              "contrast": 0.52,
+              "whites": 0.45
+            },
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "b269538097aeed95177090446098e4f2d16bb25ceb15621478ede6422dd45254",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    },
+    {
+      "case": "color",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "ce721072e7009355ce3c025b1e1f060b698ea5ead12ff84e37376f72978b8449",
+      "newGpuSHA256": "11642e44ba94d5a0bdc4d46996c604b7f127638ae7ecfa79d45474b297f9e372",
+      "newVsCPU": {
+        "differentComponents": 30823,
+        "maximumAbsolute": 8.344650268554688e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 24125,
+        "maximumAbsolute": 8.344650268554688e-07,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "475f74a22d58776cc1aa2f7db307bd2812affc0a441a3fb7810de8e9beb47c82",
+      "oldVsCPU": {
+        "differentComponents": 31792,
+        "maximumAbsolute": 7.152557373046875e-07,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "color": {
+              "cast": 0.31,
+              "saturation": 0.45,
+              "vibrance": 0.34
+            },
+            "id": "basic",
+            "image": "source",
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "08fc9da9e9a1f16b0d9c4d1a15f4a3e60dcdf3862097391b8506519b740c71a0",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    },
+    {
+      "case": "monochrome",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "e7561b971540fe6ee187c05398faf1feb50d5a5a8a1b2c579bd58c815d6f5b9a",
+      "newGpuSHA256": "33f47fe6f4d41050c12a0f4d78de5114a292aea0d4160366b1dfd22789d49cce",
+      "newVsCPU": {
+        "differentComponents": 30348,
+        "maximumAbsolute": 4.76837158203125e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 19926,
+        "maximumAbsolute": 4.76837158203125e-07,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "9b65d2a5952826ce28690774364d819d785cb2e26f572269f047d8d9db3062a4",
+      "oldVsCPU": {
+        "differentComponents": 31494,
+        "maximumAbsolute": 4.76837158203125e-07,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "blackAndWhite": {
+              "intensity": 1,
+              "neutrals": 0.15,
+              "tone": -0.25
+            },
+            "id": "basic",
+            "image": "source",
+            "op": "basic_v3"
+          }
+        ],
+        "output": "basic",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "df52876665281c24fdce836e623623c1a6fef20b217f71975272e197f3ba5f28",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    },
+    {
+      "case": "curves",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "99996cc3f60b28b2c58cde1f358ed5d17440b2b112501f3c9b6226a66f91c864",
+      "newGpuSHA256": "0c6ae82189411dc3315375308e75d40f5c0cd89bcfaa618e70588f5b52bff924",
+      "newVsCPU": {
+        "differentComponents": 28193,
+        "maximumAbsolute": 3.5762786865234375e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 19716,
+        "maximumAbsolute": 3.8743019104003906e-07,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "97f53a528fd0d66c60c73d57e3dc3140c7320a3c6e9fd90df6b4cea624e2970c",
+      "oldVsCPU": {
+        "differentComponents": 29310,
+        "maximumAbsolute": 3.5762786865234375e-07,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "curves": {
+              "red": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.48,
+                    "y": 0.53
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              },
+              "rgb": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.26,
+                    "y": 0.32
+                  },
+                  {
+                    "x": 0.68,
+                    "y": 0.59
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              }
+            },
+            "id": "curves-levels",
+            "image": "source",
+            "op": "curves_levels_v3"
+          }
+        ],
+        "output": "curves-levels",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "9308b732468b5377f4441c8433111f23f9451693e8ac9d14441a8e1e1c4e0d60",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    },
+    {
+      "case": "levels",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "b367000cebfe2debdc3bda9f23b04ee074c02e7631c13266cd73dddee945cda7",
+      "newGpuSHA256": "cd516c1a2e446751a962c28754f091d3ec7e320f22b141b888a0da9eef66846b",
+      "newVsCPU": {
+        "differentComponents": 30231,
+        "maximumAbsolute": 8.344650268554688e-07,
+        "over2e6Components": 0
+      },
+      "newVsOld": {
+        "differentComponents": 22530,
+        "maximumAbsolute": 6.556510925292969e-07,
+        "over2e6Components": 0
+      },
+      "oldGpuSHA256": "80f8c218345a12e05fa328e01995245442839a238e5dffad045fbaf9fa5a074d",
+      "oldVsCPU": {
+        "differentComponents": 31044,
+        "maximumAbsolute": 7.152557373046875e-07,
+        "over2e6Components": 0
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "curves": {},
+            "id": "levels",
+            "image": "source",
+            "levels": {
+              "blue": {
+                "black": 0.08,
+                "highlights": 0.77,
+                "midtones": 0.51,
+                "outputBlack": 0.04,
+                "outputWhite": 0.96,
+                "shadows": 0.24,
+                "white": 0.92
+              },
+              "luminance": {
+                "black": 0.08,
+                "highlights": 0.77,
+                "midtones": 0.51,
+                "outputBlack": 0.04,
+                "outputWhite": 0.96,
+                "shadows": 0.24,
+                "white": 0.92
+              }
+            },
+            "op": "curves_levels_v3"
+          }
+        ],
+        "output": "levels",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "08c4e6ff50e68cf1970248d75f0e72f23889e9b5cadad4fc108e59c9b0c58968",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    },
+    {
+      "case": "basic_then_curves",
+      "comparisonPixels": 11776,
+      "cpuSHA256": "e1c3e18dfdb8871f130b67a1015384d8d3b5953af9a6c2b2d24f4a8a557961a7",
+      "newGpuSHA256": "800d39ff148d195b36d2be057011802abd0dc2788243ae88e7dc99e26956fa7b",
+      "newVsCPU": {
+        "differentComponents": 32011,
+        "maximumAbsolute": 2.3245811462402344e-06,
+        "over2e6Components": 9
+      },
+      "newVsOld": {
+        "differentComponents": 28567,
+        "maximumAbsolute": 3.6954879760742188e-06,
+        "over2e6Components": 128
+      },
+      "oldGpuSHA256": "650b9e28e6eb517fabc94a1a3996b14cdc1a4b1fc1bf4ce05414ca6dff7add03",
+      "oldVsCPU": {
+        "differentComponents": 33604,
+        "maximumAbsolute": 2.9206275939941406e-06,
+        "over2e6Components": 66
+      },
+      "recipe": {
+        "nodes": [
+          {
+            "id": "source",
+            "op": "source"
+          },
+          {
+            "color": {
+              "cast": 0.31,
+              "saturation": 0.45,
+              "vibrance": 0.34
+            },
+            "id": "basic",
+            "image": "source",
+            "light": {
+              "blackPoint": -0.2,
+              "brightness": 0.34,
+              "contrast": 0.52,
+              "whites": 0.45
+            },
+            "op": "basic_v3"
+          },
+          {
+            "curves": {
+              "red": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.48,
+                    "y": 0.53
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              },
+              "rgb": {
+                "inputBlack": 0,
+                "inputWhite": 1,
+                "points": [
+                  {
+                    "x": 0,
+                    "y": 0
+                  },
+                  {
+                    "x": 0.26,
+                    "y": 0.32
+                  },
+                  {
+                    "x": 0.68,
+                    "y": 0.59
+                  },
+                  {
+                    "x": 1,
+                    "y": 1
+                  }
+                ]
+              }
+            },
+            "id": "curves-levels",
+            "image": "basic",
+            "op": "curves_levels_v3"
+          }
+        ],
+        "output": "curves-levels",
+        "version": 2,
+        "working": "extended-linear-srgb-premul-f32"
+      },
+      "recipeSHA256": "d742d8a6226d99eab8114d1be97bb93696fb5613f9af949f48d0a4ee9fd4de22",
+      "sampleSHA256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee",
+      "source": "secondary"
+    }
+  ],
+  "comparePixels": 172032,
+  "compoundBasicThenCurves": {
+    "newVsCPU": {
+      "maximumAbsolute": 2.3245811462402344e-06,
+      "over2e6Components": 9
+    },
+    "newVsOld": {
+      "maximumAbsolute": 3.6954879760742188e-06,
+      "over2e6Components": 135
+    },
+    "oldVsCPU": {
+      "maximumAbsolute": 2.9206275939941406e-06,
+      "over2e6Components": 74
+    }
+  },
+  "containerLog": {
+    "path": "output/035-development/phase-ac/grade/shared-color-compatibility-retry.log",
+    "sha256": "f434b511286f4cde0dfa8b08e596e1259d2d455723a30f5461d7c4e4b35d9378"
+  },
+  "independent": {
+    "newVsCPU": {
+      "maximumAbsolute": 1.1920928955078125e-06,
+      "over2e6Components": 0
+    },
+    "newVsOld": {
+      "maximumAbsolute": 1.6689300537109375e-06,
+      "over2e6Components": 0
+    },
+    "oldVsCPU": {
+      "maximumAbsolute": 1.3113021850585938e-06,
+      "over2e6Components": 0
+    }
+  },
+  "inputSources": [
+    {
+      "path": "output/035-development/phase-ac/grade/compound-samples/primary.grading-balance-0.bin",
+      "sha256": "204856d25ffe56ff9e06ba1d50b521e2a3574c97d106cee501f4ff07587ef23a"
+    },
+    {
+      "path": "output/035-development/phase-ac/grade/compound-samples/secondary.grading-balance-0.bin",
+      "sha256": "bea4e5437fda466c8a15f6272a746af8b80858813bab034e0e842d16f71a79ee"
+    }
+  ],
+  "newRuntimeSHA256": "66e3ea95d0939d68d7b7f50207a234528a2f0a2d71ff7c66539d8f2d0f8eeb24",
+  "oldRuntimeSHA256": "c98e49829ede2894c732984cf6f45ce77ce0e2f6eec431aa1a3e76fb8aca6547",
+  "reference": "Same C++ float32 CPU implementation from both before and after the shared software-Vulkan sRGB encoding change",
+  "replay": "Linux aarch64 CPU and llvmpipe Vulkan using the public C raster ABI",
+  "replaySource": {
+    "path": "output/035-development/phase-ac/grade/shared-color-compatibility.py",
+    "sha256": "8e6299539efaf4c244a1dde910ff698c5dabe3cb510a88b4b8e1a33ccc53f15b"
+  },
+  "schemaVersion": 1
+}

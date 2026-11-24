@@ -17,12 +17,18 @@ private actor QuickPromptTestTransport: ProviderHTTPTransport {
   var waitStart: CheckedContinuation<Void, Never>?
   var waitFinish: CheckedContinuation<Void, Never>?
   let paused: Bool
-  init(_ response: ProviderHTTPResponse, paused: Bool = false) { self.response = response; self.paused = paused }
+  let error: URLError?
+  init(_ response: ProviderHTTPResponse, paused: Bool = false, error: URLError? = nil) {
+    self.response = response
+    self.paused = paused
+    self.error = error
+  }
   func send(_ request: URLRequest) async throws -> ProviderHTTPResponse {
     payloads.append(request)
     waitStart?.resume()
     waitStart = nil
     if paused { await withCheckedContinuation { waitFinish = $0 } }
+    if let error { throw error }
     return response
   }
   func started() async { if payloads.isEmpty { await withCheckedContinuation { waitStart = $0 } } }
@@ -119,6 +125,28 @@ final class QuickPromptProviderTests: XCTestCase {
     try JSONSerialization.data(withJSONObject: damaged).write(to: proofURL, options: .atomic)
     do { _ = try await reopened.reconcile(request, attempt: attempt); XCTFail("corrupt provider evidence") }
     catch EditingError.archiveMismatch {}
+  }
+
+  func testSeedream55OfflineAfterConfirmationReopensOriginalAttemptWithoutAnotherPOST() async throws {
+    let image = try png()
+    let (request, attempt, root) = try fixture(image)
+    let transport = QuickPromptTestTransport(try response(image), error: URLError(.notConnectedToInternet))
+    let first = cloud(root, transport)
+    do {
+      _ = try await first.edit(request, attempt: attempt, progress: { _ in })
+      XCTFail("Expected an uncertain outcome after a durable submission intent")
+    } catch AIServiceError.outcomeUnknown {}
+    let restarted = cloud(root, transport)
+    guard case .unknown = try await restarted.reconcile(request, attempt: attempt) else {
+      return XCTFail("An unreachable provider cannot confirm a result")
+    }
+    do {
+      _ = try await restarted.edit(request, attempt: attempt, progress: { _ in })
+      XCTFail("The original attempt must remain uncertain")
+    } catch AIServiceError.outcomeUnknown {}
+    let requests = await transport.payloads
+    XCTAssertEqual(requests.map(\.httpMethod), ["POST"])
+    XCTAssertEqual(try Data(contentsOf: request.inputFileURL), image)
   }
 
   func testWrongModelMissingRequestIDMultiplicityAndInvalidOrTransparentPNGStayUnknown() async throws {

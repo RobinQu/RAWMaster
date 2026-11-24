@@ -2,6 +2,7 @@ import Foundation
 import CoreImage
 import Metal
 import RAWMasterCore
+import RAWMasterImage
 
 /// Source-space, ordered local tonal and Glow layers. Subject inference is captured into the recipe;
 /// replay is deterministic. Glow style/range/spread/warmth/direction/softness are globally shared.
@@ -10,9 +11,10 @@ enum DevelopmentMaskEngineV3 {
   private struct Kernels { let layer,glowLayer,pointColor,pointColorOnly,composite,grain,sourceGrain,moire,dehaze,scopeCoverage:CIKernel }
   private static let kernels:Result<Kernels,Error>=Result {
     guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
-    let all=try CIKernel.kernels(withMetalString:metalSource)
+    let source = try RAWMasterImageKernel.source(.mask)
+    let all=try CIKernel.kernels(withMetalString:source)
     // Keep the point-cloud kernel isolated from differently parameterized layer kernels.
-    let pointAll=try CIKernel.kernels(withMetalString:metalSource)
+    let pointAll=try CIKernel.kernels(withMetalString:source)
     func get(_ name:String,kernels:[CIKernel])->CIKernel?{kernels.first(where:{$0.name==name})}
     guard let layer=get("rmMaskLayerV7",kernels:all),let glowLayer=get("rmMaskGlowLayerV7",kernels:all),
       let pointColor=get("rmMaskPointColorV7",kernels:pointAll),let pointColorOnly=get("rmMaskPointColorOnly",kernels:pointAll),let composite=get("rmMaskComposite",kernels:all),
@@ -74,9 +76,166 @@ enum DevelopmentMaskEngineV3 {
     return (CIVector(x:DevelopmentGlobalEngineV3.hue(encoded),y:sample.hue/360,z:sample.saturation/100,w:sample.luminance/70),
       CIVector(x:sample.range,y:(sample.variance ?? 0)/100,z:saturation,w:high))
   }
+  struct CanonicalValidation {
+    enum Transport {
+      case pairedTiles, metalBands, localNoiseBands, pointwiseRegion, pointwiseCompositeRegion, spatialTileRegion, groupedFull
+
+      var checksPointwiseRegion: Bool { self == .pointwiseRegion || self == .pointwiseCompositeRegion }
+    }
+    enum SpatialTileScope {
+      case disabled, textureAndClarity, includingGrain
+
+      static let current: Self = {
+        let environment = ProcessInfo.processInfo.environment
+        guard DevelopmentCanonicalFiniteGPU.enabled, environment["RAWMASTER_CANONICAL_SPATIAL_MASK_TILES"] != "0" else { return .disabled }
+        return environment["RAWMASTER_QA_CANONICAL_GRAIN_MASK_TILES"] == "1" ? .includingGrain : .textureAndClarity
+      }()
+    }
+
+    private static let pointwiseRegionEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_POINT_MASK_REGION"] == "1"
+    private static let pointwiseCompositeRegionEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_POINT_COMPOSITE_REGION"] == "1"
+    private static let localNoiseBandsEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_LOCAL_NOISE_BANDS"] == "1"
+    fileprivate static let textureRegionBandsEnabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_TEXTURE_REGION_BANDS"] == "1"
+    private static let spatialTransport: Transport? = {
+      let environment = ProcessInfo.processInfo.environment
+      if DevelopmentCanonicalFiniteGPU.enabled && environment["RAWMASTER_QA_CANONICAL_LOCAL_MASK_BANDS"] == "1" {
+        return .metalBands
+      }
+      return environment["RAWMASTER_QA_LOCAL_BAND_PAIR_CLEAR"] == "1" ? .pairedTiles : nil
+    }()
+
+    let transport: Transport
+    let scalarBatching: DevelopmentCheckedMaximumV3.ScalarBatching
+    let checkCancellation: () throws -> Void
+    init(transport: Transport, scalarBatching: DevelopmentCheckedMaximumV3.ScalarBatching = .disabled,
+         checkCancellation: @escaping () throws -> Void) {
+      self.transport = transport
+      self.scalarBatching = scalarBatching
+      self.checkCancellation = checkCancellation
+    }
+
+    static func requestedTransport(for p: DevelopmentAdjustmentsV3?) -> Transport? {
+      if DevelopmentCanonicalFiniteGPU.enabled, pointwiseRegionEnabled, let p, pointwiseLayer(p) != nil {
+        return .pointwiseRegion
+      }
+      guard let p else { return nil }
+      if DevelopmentCanonicalFiniteGPU.enabled, pointwiseCompositeRegionEnabled, pointwiseCompositeLayer(p) != nil {
+        return .pointwiseCompositeRegion
+      }
+      if let spatialTransport, spatialLayer(p, transport: spatialTransport, spatialTiles: .current) != nil {
+        return spatialTransport
+      }
+      if DevelopmentCanonicalFiniteGPU.enabled, localNoiseBandsEnabled,
+         spatialLayer(p, transport: .localNoiseBands, spatialTiles: .current) != nil {
+        return .localNoiseBands
+      }
+      if spatialLayer(p, transport: .spatialTileRegion, spatialTiles: .current) != nil { return .spatialTileRegion }
+      if DevelopmentCheckedMaximumV3.groupedScalarsEnabled, spatialLayer(p, transport: .groupedFull, spatialTiles: .current) != nil {
+        return .groupedFull
+      }
+      return nil
+    }
+
+    static func pointwiseLayer(_ p: DevelopmentAdjustmentsV3) -> DevelopmentMaskLayerV3? {
+      guard let layer = singleHardRadialLayer(p) else { return nil }
+      let a = layer.adjustments
+      let singleAdjustment: [DevelopmentMaskAdjustmentsV3] = [
+        .init(exposure:a.exposure), .init(highlights:a.highlights), .init(shadows:a.shadows), .init(saturation:a.saturation),
+        .init(contrast:a.contrast), .init(whites:a.whites), .init(blacks:a.blacks), .init(hue:a.hue,fineAdjustment:a.fineAdjustment),
+      ]
+      return singleAdjustment.contains(a) ? layer : nil
+    }
+
+    private static func pointwiseCompositeLayer(_ p: DevelopmentAdjustmentsV3) -> DevelopmentMaskLayerV3? {
+      guard let layer = singleHardRadialLayer(p) else { return nil }
+      let a = layer.adjustments
+      let singleAdjustment: [DevelopmentMaskAdjustmentsV3] = [
+        .init(temperature:a.temperature), .init(tint:a.tint), .init(grading:a.grading),
+      ]
+      return singleAdjustment.contains(a) ? layer : nil
+    }
+
+    private static func singleHardRadialLayer(_ p: DevelopmentAdjustmentsV3) -> DevelopmentMaskLayerV3? {
+      guard p.rawDecoder == .flashRaw031, p.masks.count == 1, let layer = p.masks.first,
+            layer.enabled, layer.kind == .radial, !layer.inverted, layer.feather == 0, layer.opacity == 1,
+            layer.subjectPNG == nil, layer.semanticSnapshot == nil, !layer.adjustments.isNeutral else { return nil }
+      var permitted = p.neutralForSameSource
+      permitted.masks = [layer]
+      return permitted == p ? layer : nil
+    }
+
+    static func pointwiseSupport(_ layer: DevelopmentMaskLayerV3, extent: CGRect) -> CGRect? {
+      guard extent.origin == .zero, extent == extent.integral, (1...9504).contains(extent.width),
+            (1...6336).contains(extent.height), !extent.isInfinite,
+            (0...1).contains(layer.center.x), (0...1).contains(layer.center.y),
+            (0.001...2).contains(layer.radiusX), (0.001...2).contains(layer.radiusY) else { return nil }
+      let x = CGFloat(Float(layer.center.x)), y = 1 - CGFloat(Float(layer.center.y))
+      // The radial shader still uses a 1e-5 transition at zero feather. Use the
+      // actual Float32 uniforms, expand that transition and leave room for sample
+      // centers and Float32 coordinate arithmetic before rounding outward.
+      let margin = CGFloat(32 * Float.ulpOfOne)
+      let rx = (CGFloat(Float(layer.radiusX)) * 1.00002 + margin) * extent.width + 2
+      let ry = (CGFloat(Float(layer.radiusY)) * 1.00002 + margin) * extent.height + 2
+      let region = CGRect(x:x*extent.width-rx,y:y*extent.height-ry,width:2*rx,height:2*ry).integral.intersection(extent)
+      return region.isEmpty || region == extent ? nil : region
+    }
+
+    static func qualifies(_ p: DevelopmentAdjustmentsV3, extent: CGRect, transport: Transport,
+                          spatialTiles: SpatialTileScope = .current) -> Bool {
+      if transport.checksPointwiseRegion {
+        let selected = transport == .pointwiseRegion ? pointwiseLayer(p) : pointwiseCompositeLayer(p)
+        guard let layer = selected else { return false }
+        return pointwiseSupport(layer,extent:extent) != nil
+      }
+      guard extent.origin == .zero, extent == extent.integral, extent.width >= extent.height,
+            extent.height > 0, extent.width <= 9504, extent.height <= 6336,
+            let layer = spatialLayer(p, transport: transport, spatialTiles: spatialTiles) else { return false }
+      return transport != .spatialTileRegion || spatialTileSupport(layer, extent: extent) != nil
+    }
+
+    static func spatialTileSupport(_ layer: DevelopmentMaskLayerV3, extent: CGRect, sourceGrainScale: Double? = nil) -> CGRect? {
+      // A proxy grain scale selects a different kernel and can omit the neutral tonal tail.
+      guard sourceGrainScale == nil, let support = pointwiseSupport(layer, extent: extent) else { return nil }
+      // The final tonal layer and finite mask each sample the preceding image once.
+      // Keep both footprints and use the same absolute reduction cells as the full scan.
+      let padded = support.insetBy(dx: -2, dy: -2).intersection(extent)
+      let side = DevelopmentCheckedMaximumV3.tileSide
+      let x = floor(padded.minX / side) * side, y = floor(padded.minY / side) * side
+      let region = CGRect(x: x, y: y, width: ceil(padded.maxX / side) * side - x,
+                          height: ceil(padded.maxY / side) * side - y).intersection(extent)
+      return region.isEmpty || region == extent ? nil : region
+    }
+
+    private static func spatialLayer(_ p: DevelopmentAdjustmentsV3, transport: Transport,
+                                     spatialTiles: SpatialTileScope) -> DevelopmentMaskLayerV3? {
+      guard transport != .spatialTileRegion || spatialTiles != .disabled,
+            p.rawDecoder == .flashRaw031, p.masks.count == 1, let layer = p.masks.first,
+            layer.enabled, layer.kind == .radial, layer.opacity == 1, layer.feather == 0, !layer.inverted,
+            layer.subjectPNG == nil, layer.semanticSnapshot == nil else { return nil }
+      let a = layer.adjustments
+      let texture = (a.texture ?? 0) > 0 && a == .init(texture: a.texture)
+      let clarity = (a.clarity ?? 0) > 0 && a == .init(clarity: a.clarity)
+      let grain = (a.grain ?? 0) > 0 && a == .init(grain: a.grain, grainSize: 0.25, grainRoughness: 0.5)
+      let noise = (a.noiseReduction ?? 0) > 0 && a == .init(noiseReduction: a.noiseReduction)
+      let sharpness = (a.sharpness ?? 0) > 0 && a == .init(sharpness: a.sharpness)
+      guard transport != .localNoiseBands || noise else { return nil }
+      // The canonical grain lattice produces bounded noise and composites it only at nonzero coverage.
+      // Sharpen and denoise keep their existing scan because they use the shared adjusted-image composite.
+      let grainTiles = transport == .spatialTileRegion && spatialTiles == .includingGrain && grain && (a.grain ?? 0) <= 1
+      let fullBands = (transport == .metalBands && (grain || noise || sharpness)) || transport == .localNoiseBands
+      let curves = a.curves?.enabled == true && a == .init(curves:a.curves)
+      let groupedFull = transport == .groupedFull && (grain || noise || curves)
+      guard texture || clarity || grainTiles || fullBands || groupedFull else { return nil }
+      var allowed = p.neutralForSameSource
+      allowed.masks = [layer]
+      return p == allowed ? layer : nil
+    }
+  }
+
   static func apply(_ layers:[DevelopmentMaskLayerV3],to input:CIImage,context:CIContext,
                     glow sharedGlow:DevelopmentGlowV3?=nil,optics:DevelopmentOpticsV3?=nil,
-                    checkCancellation:(()throws->Void)?=nil,deferValidation:Bool=false,scopeSelection:ScopeSelection?=nil,sourceGrainScale:Double?=nil,legacyCoverage:DevelopmentLegacyMaskOutput.Coverage?=nil)throws->CIImage {
+                    checkCancellation:(()throws->Void)?=nil,deferValidation:Bool=false,canonicalValidation:CanonicalValidation?=nil,scopeSelection:ScopeSelection?=nil,sourceGrainScale:Double?=nil,legacyCoverage:DevelopmentLegacyMaskOutput.Coverage?=nil,
+                    previewHalfFIT:PreviewCanonicalHalfFIT?=nil,nativeSharpenMean:PreviewNativeSharpenMean?=nil)throws->CIImage {
     try DevelopmentMaskLayerV3.validateLayers(layers)
     guard active(layers) else { try scopeSelection?.capture(input); return input }
     try sharedGlow?.validate()
@@ -89,6 +248,7 @@ enum DevelopmentMaskEngineV3 {
     defer{ImagePerformanceTelemetry.shared.end(telemetry,outcome:telemetryOutcome,pixelCount:pixels)}
     let kernels=try self.kernels.get()
     var image=input
+    var usedNativeSharpenMean = false
     if localDefringe {
       // Global correction is deferred only for this new path. Negative amounts restore the actual
       // pre-Defringe pixels, rather than undoing earlier local layers or adding another blur.
@@ -203,9 +363,11 @@ enum DevelopmentMaskEngineV3 {
         var local=DevelopmentAdjustmentsV3()
         if sharpness>0 { local.sharpen = .init(enabled:true,intensity:sharpness) }
         if noiseReduction>0 { local.noiseReduction = .init(enabled:true,sourceCapability:.image,nonRawAmount:noiseReduction*5) }
-        let changed=try DevelopmentGlobalEngineV3.apply(local,to:image,sourceIsRAW:false)
+        let mean = try nativeSharpenMean?.mean(for:image,at:.layer(layer.id))
+        let changed=try DevelopmentGlobalEngineV3.apply(local,to:image,sourceIsRAW:false,preparedSharpMean:mean)
         var compositeArgs=Array(args.prefix(6));compositeArgs.insert(changed,at:1)
         guard let output=kernels.composite.apply(extent:image.extent,roiCallback:maskROI(layer, subject:subject, index:2),arguments:compositeArgs)else{throw DevelopmentError.unreadable}
+        usedNativeSharpenMean = mean != nil
         image=output;args[0]=image
       }
       if sharpness<0 {
@@ -263,179 +425,61 @@ enum DevelopmentMaskEngineV3 {
         image=output
       }
     }
+    if layers.count == 1, let layer = layers.first {
+      previewHalfFIT?.bindPortableMaskGraph(input: input, layer: layer, output: image)
+    }
     // Proxy inputs and parameters are validated and arithmetic is bounded; canonical retains this operator-level gate.
-    if !deferValidation { try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:checkCancellation) }
+    if usedNativeSharpenMean {
+      // The prepared source and mean bound the pure sharpen, its composite and the neutral tail above.
+      try nativeSharpenMean?.requireCurrent()
+    } else if !deferValidation, try previewHalfFIT?.validateAndPrepare(image,using:context) != true {
+      if let canonicalValidation {
+        let check = {
+          try canonicalValidation.checkCancellation()
+          try checkCancellation?()
+        }
+        switch canonicalValidation.transport {
+        case .pairedTiles:
+          try DevelopmentColorEngineV3.validateFinite(image,context:context,cacheClearCadence:.everyTwoTiles,checkCancellation:check)
+        case .metalBands, .localNoiseBands:
+          try DevelopmentCanonicalFiniteGPU.$residentPhotoWorkingBudget.withValue(DevelopmentCanonicalFiniteGPU.spatialWorkingBudget) {
+            try DevelopmentColorEngineV3.validateFinite(image,context:context,checkCancellation:check)
+          }
+        case .pointwiseRegion, .pointwiseCompositeRegion:
+          // These transports require the checked opaque RAW source. The original
+          // hard radial blend cannot change any sample outside its support.
+          let region = layers.count == 1 ? CanonicalValidation.pointwiseSupport(layers[0],extent:image.extent) : nil
+          try DevelopmentColorEngineV3.validateFinite(image,context:context,region:region,checkCancellation:check)
+        case .groupedFull:
+          try DevelopmentColorEngineV3.validateFinite(image,context:context,
+            scalarBatching:canonicalValidation.scalarBatching,checkCancellation:check)
+        case .spatialTileRegion:
+          if layers.count == 1, let region = CanonicalValidation.spatialTileSupport(layers[0], extent: image.extent, sourceGrainScale: sourceGrainScale) {
+            try CanonicalPreviewDiagnostic.measure("validate native spatial mask tiles") {
+              let adjustments = layers[0].adjustments
+              let budget = (adjustments.texture ?? 0) > 0 && CanonicalValidation.textureRegionBandsEnabled &&
+                canonicalValidation.scalarBatching == .clearAfterGroup
+                ? DevelopmentCanonicalFiniteGPU.spatialWorkingBudget : nil
+              try DevelopmentCanonicalFiniteGPU.$residentPhotoWorkingBudget.withValue(budget) {
+                try DevelopmentColorEngineV3.validateFinite(image, context: context, cacheClearCadence: .everyTile,
+                  region: region, scalarBatching:canonicalValidation.scalarBatching, checkCancellation: canonicalValidation.checkCancellation)
+              }
+            }
+          } else {
+            try DevelopmentColorEngineV3.validateFinite(image, context: context, checkCancellation: check)
+          }
+        }
+      } else {
+        try DevelopmentColorEngineV3.validateFinite(image, context: context, checkCancellation: checkCancellation)
+      }
+    }
     telemetryOutcome = .succeeded
     return image
   }
-  private static let maskGeometryMetal = #"""
-float rmMaskSmooth(float a,float b,float x){float t=clamp((x-a)/max(b-a,1e-5),0.0,1.0);return t*t*(3-2*t);}
-float rmMaskCompute(float4 pixel,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float2 coord){
- float2 uv=float2(coord.x/range.z,1.0-coord.y/range.w);int kind=int(mode.x);float mask=0;
- if(kind==0){float2 a=line.xy,b=line.zw,d=b-a;float t=dot(uv-a,d)/max(dot(d,d),1e-6);mask=rmMaskSmooth(0.0,max(mode.w,0.001),t);}
- else if(kind==1){float d=length((uv-radial.xy)/radial.zw);mask=1.0-rmMaskSmooth(1.0-mode.w,1.0,d);}
- else if(kind==2){float3 c=clamp(pixel.rgb/pixel.a,0.0,1.0);float y=dot(c,float3(.2126,.7152,.0722));float f=max(mode.w*.5,.001);mask=rmMaskSmooth(range.x-f,range.x+f,y)*(1.0-rmMaskSmooth(range.y-f,range.y+f,y));}
- else{float4 s=subject.sample(subject.coord());mask=s.a>0?s.r/s.a:0;}
- mask=clamp(mask,0.0,1.0);if(mode.y>.5)mask=1.0-mask;return mask*mode.z;
-}
-"""#
-  private static let grainTransferMetal = #"""
-float rmMaskPointEncode(float x){float a=abs(x);return sign(x)*(a<=.0031308?12.92*a:1.055*pow(a,1.0/2.4)-.055);}
-float rmMaskPointDecode(float x){float a=abs(x);return sign(x)*(a<=.04045?a/12.92:pow((a+.055)/1.055,2.4));}
-float4 rmCompositeGrain(float4 pixel,float noise,float mask,float amount){
- if(mask<=0)return pixel;
- float3 c=pixel.rgb/pixel.a,e=float3(rmMaskPointEncode(c.r),rmMaskPointEncode(c.g),rmMaskPointEncode(c.b));
- float level=clamp(rmMaskPointEncode(dot(c,float3(.2126,.7152,.0722))),0.0,1.0);
- e+=noise*(.06*amount*mask)*(.35+sqrt(level));
- return float4(float3(rmMaskPointDecode(e.r),rmMaskPointDecode(e.g),rmMaskPointDecode(e.b))*pixel.a,pixel.a);
-}
-"""#
 
   private static let analyticalGrain:Result<CIKernel,Error> = Result {
-    let source = #"""
-    #include <metal_stdlib>
-    #include <CoreImage/CoreImage.h>
-    using namespace metal;
-    extern "C" { namespace coreimage {
-    \#(maskGeometryMetal)
-    \#(grainTransferMetal)
-    \#(DevelopmentGrainSamplingEngineV1.colorGrainLattice)
-    [[stitchable]] float4 rmAnalyticalMaskGrain(sampler src,float4 mode,float4 line,float4 radial,float4 range,float4 settings,destination dest){
-      float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));
-      if(!all(isfinite(pixel))||pixel.a<=0)return pixel;
-      float mask=rmMaskCompute(pixel,src,mode,line,radial,range,at);
-      return rmCompositeGrain(pixel,rmSourceGrainSample(at,settings),mask,settings.x);
-    }
-    } }
-    """#
+    let source = try RAWMasterImageKernel.source(.maskAnalytic)
     guard let kernel=try CIKernel.kernels(withMetalString:source).first(where:{$0.name == "rmAnalyticalMaskGrain"}) else {throw DevelopmentError.unsupportedEngine}
     return kernel
   }
-  static let metalSource=#"""
-#include <metal_stdlib>
-#include <CoreImage/CoreImage.h>
-using namespace metal;
-extern "C" { namespace coreimage {
-\#(maskGeometryMetal)
-[[stitchable]] float4 rmMaskScopeCoverage(sampler src,sampler subject,float4 mode,float4 line,float4 radial,float4 range,destination dest){
- float4 pixel=src.sample(src.coord());
- if(!all(isfinite(pixel))||pixel.a<=0)return float4(0.0);
- return float4(rmMaskCompute(pixel,subject,mode,line,radial,range,dest.coord()));
-}
-[[stitchable]] float4 rmMaskComposite(sampler src,sampler adjusted,sampler subject,float4 mode,float4 line,float4 radial,float4 range,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));float4 changed=adjusted.sample(adjusted.transform(at));
- if(!all(isfinite(pixel))||!all(isfinite(changed))||pixel.a<=0)return pixel;
- float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,at);
- return float4(mix(pixel.rgb,changed.rgb,mask),pixel.a);
-}
-\#(grainTransferMetal)
-[[stitchable]] float4 rmMaskGrain(sampler src,sampler noise,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float amount,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));float4 sample=noise.sample(noise.transform(at));
- if(!all(isfinite(pixel))||!all(isfinite(sample))||pixel.a<=0)return pixel;
- return rmCompositeGrain(pixel,sample.r,rmMaskCompute(pixel,subject,mode,line,radial,range,at),amount);
-}
-\#(DevelopmentGrainSamplingEngineV1.colorGrainLattice)
-[[stitchable]] float4 rmSourceMaskGrain(sampler src,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float4 settings,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));
- if(!all(isfinite(pixel))||pixel.a<=0)return pixel;
- return rmCompositeGrain(pixel,rmSourceGrainSample(at,settings),rmMaskCompute(pixel,subject,mode,line,radial,range,at),settings.x);
-}
-[[stitchable]] float4 rmMaskMoire(sampler src,sampler blurred,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float amount,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));float4 smooth=blurred.sample(blurred.transform(at));
- if(!all(isfinite(pixel))||!all(isfinite(smooth))||pixel.a<=0||smooth.a<=0)return pixel;
- float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,at);if(mask<=0)return pixel;
- float3 c=pixel.rgb/pixel.a,b=smooth.rgb/smooth.a;
- float y=dot(c,float3(.2126,.7152,.0722)),by=dot(b,float3(.2126,.7152,.0722));
- float3 target=float3(y)+b-float3(by);c=mix(c,target,clamp(amount*mask,0.0,1.0));
- return float4(c*pixel.a,pixel.a);
-}
-[[stitchable]] float4 rmMaskDehaze(sampler src,sampler air,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float amount,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));float4 airlight=air.sample(air.transform(at));
- if(!all(isfinite(pixel))||!all(isfinite(airlight))||pixel.a<=0||airlight.a<=0)return pixel;
- float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,at);if(mask<=0)return pixel;
- float3 u=pixel.rgb/pixel.a,a=airlight.rgb/airlight.a;
- float dark=clamp(1.0-dot(a,float3(.2126,.7152,.0722)),0.0,1.0),v=amount*mask;
- float3 j;if(v>=0){float t=clamp(1.0-.85*v*dark,.20,1.0);j=(u-a)/t+a;}
- else{float t=1.0/(1.0+.85*(-v)*dark);j=t*u+(1.0-t)*a;}
- return float4(j*pixel.a,pixel.a);
-}
-float3 rmMaskPointHSV(float3 c);
-float3 rmMaskPointRGB(float3 hsv);
-float4 rmMaskTone(float4 pixel,float mask,float4 adjustment,float4 tone,float4 color,float4 colorize){
- if(!all(isfinite(pixel))||pixel.a<=0||mask<=0)return pixel;
- float3 c=pixel.rgb/pixel.a;c*=exp2(2.0*adjustment.x*mask);
- float y=dot(c,float3(.2126,.7152,.0722));float encoded=clamp(rmMaskPointEncode(y),0.0,1.0);
- c*=1.0+.5*adjustment.y*rmMaskSmooth(.5,1.0,encoded)*mask;
- c*=1.0+.5*adjustment.z*(1.0-rmMaskSmooth(0.0,.5,encoded))*mask;
- y=dot(c,float3(.2126,.7152,.0722));encoded=rmMaskPointEncode(y);float contrast=tone.x*mask;
- if(encoded>0&&encoded<1&&contrast!=0){
-  float pivot=.55,power=exp2(1.3*contrast);
-  float target=encoded<pivot?pivot*pow(encoded/pivot,power):1.0-(1.0-pivot)*pow((1.0-encoded)/(1.0-pivot),power);
-  float decoded=rmMaskPointDecode(target);c=abs(y)>1e-8?c*(decoded/y):c+float3(decoded-y);
- }
- float black=.05*tone.z*mask;c=(c-float3(black))/(1.0-black);
- float whiteWeight=smoothstep(.45,1.0,clamp(rmMaskPointEncode(dot(c,float3(.2126,.7152,.0722))),0.0,1.0));
- c*=1.0+.35*tone.y*whiteWeight*mask;
- float hue=color.x*color.y*mask;
- if(hue!=0){
-  float3 e=float3(rmMaskPointEncode(c.r),rmMaskPointEncode(c.g),rmMaskPointEncode(c.b)),hsv=rmMaskPointHSV(e);
-  hsv.x=fract(hsv.x+hue+1.0);float3 shifted=rmMaskPointRGB(hsv);
-  c=float3(rmMaskPointDecode(shifted.r),rmMaskPointDecode(shifted.g),rmMaskPointDecode(shifted.b));
- }
- if(colorize.w>0&&color.z>0){
-  float level=clamp(dot(c,float3(.2126,.7152,.0722)),0.0,1.0);
-  c=mix(c,colorize.rgb*level,clamp(color.z*colorize.w*mask,0.0,1.0));
- }
- float gray=dot(c,float3(.2126,.7152,.0722));c=float3(gray)+(c-float3(gray))*(1.0+adjustment.w*mask);
- return float4(c*pixel.a,pixel.a);
-}
-[[stitchable]] float4 rmMaskLayerV7(sampler src,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float4 adjustment,float4 tone,float4 color,float4 colorize,destination dest){
- float4 pixel=src.sample(src.coord());float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,dest.coord());
- return rmMaskTone(pixel,mask,adjustment,tone,color,colorize);
-}
-float3 rmMaskPointHSV(float3 c){float hi=max(c.r,max(c.g,c.b)),lo=min(c.r,min(c.g,c.b)),d=hi-lo,h=0;
- if(d>1e-8){if(hi==c.r)h=(c.g-c.b)/d;else if(hi==c.g)h=2.0+(c.b-c.r)/d;else h=4.0+(c.r-c.g)/d;}
- h=h/6.0-floor(h/6.0);return float3(h,hi>1e-8?d/hi:0,hi);}
-float3 rmMaskPointRGB(float3 hsv){float3 p=abs(fract(hsv.xxx+float3(0,2.0/3.0,1.0/3.0))*6.0-3.0);
- return hsv.z*mix(float3(1),clamp(p-1.0,0.0,1.0),hsv.y);}
-float4 rmMaskPointColorPixel(float4 pixel,float mask,float4 point,float4 options){
- if(!all(isfinite(pixel))||pixel.a<=0||mask<=0)return pixel;
- float3 c=pixel.rgb/pixel.a,e=float3(rmMaskPointEncode(c.r),rmMaskPointEncode(c.g),rmMaskPointEncode(c.b));
- float3 hsv=rmMaskPointHSV(e);float d=abs(hsv.x-point.x);d=min(d,1.0-d);
- float w=mask*(1.0-smoothstep(max(.005,.2*options.x)*.3,max(.005,.2*options.x),d))*smoothstep(.015,.12,hsv.y);
- if(w>0){
-  float hd=point.x-hsv.x;hd-=floor(hd+.5);float variance=options.y;
-  hsv.x=fract(hsv.x+w*point.y+.5*w*variance*hd+1.0);
-  hsv.y=max(0.0,hsv.y*(1.0+w*point.z)+.5*w*variance*(options.z-hsv.y));
-  hsv.z+=.5*w*variance*(options.w-hsv.z);
-  float3 out=rmMaskPointRGB(hsv);float y=dot(out,float3(.2126,.7152,.0722)),u=clamp(y,0.0,1.0);
-  out+=point.w*w*.35*4*u*(1-u);
-  pixel=float4(float3(rmMaskPointDecode(out.r),rmMaskPointDecode(out.g),rmMaskPointDecode(out.b))*pixel.a,pixel.a);
- }
- return pixel;
-}
-[[stitchable]] float4 rmMaskPointColorOnly(sampler src,sampler subject,float4 mode,float4 line,float4 radial,float4 range,
- float4 point,float4 options,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));
- if(!all(isfinite(pixel))||pixel.a<=0)return pixel;
- float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,at);
- return rmMaskPointColorPixel(pixel,mask,point,options);
-}
-[[stitchable]] float4 rmMaskPointColorV7(sampler src,sampler subject,float4 mode,float4 line,float4 radial,float4 range,
- float4 adjustment,float4 tone,float4 color,float4 colorize,float4 point,float4 options,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));
- if(!all(isfinite(pixel))||pixel.a<=0)return pixel;
- float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,at);
- return rmMaskTone(rmMaskPointColorPixel(pixel,mask,point,options),mask,adjustment,tone,color,colorize);
-}
-[[stitchable]] float4 rmMaskGlowLayerV7(sampler src,sampler glow,sampler subject,float4 mode,float4 line,float4 radial,float4 range,float4 adjustment,float4 tone,float4 color,float4 colorize,destination dest){
- float2 at=dest.coord();float4 pixel=src.sample(src.transform(at));
- float4 lighted=glow.sample(glow.transform(at));
- if(!all(isfinite(pixel))||!all(isfinite(lighted))||pixel.a<=0)return pixel;
- float mask=rmMaskCompute(pixel,subject,mode,line,radial,range,at);
- float4 composited=float4(mix(pixel.rgb,lighted.rgb,mask),pixel.a);
- return rmMaskTone(composited,mask,adjustment,tone,color,colorize);
-}
-} }
-"""#
 }

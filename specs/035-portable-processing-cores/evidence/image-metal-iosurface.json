@@ -1,0 +1,294 @@
+{
+  "schema": 1,
+  "measuredLocalDate": "2026-11-23",
+  "scope": "The first two records are isolated feasibility probes; productionConfirmation is the opt-in shipping Rust executor with default macOS symbols.",
+  "productionBase": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "macOS": {
+    "chip": "Apple M4 Max",
+    "cpuCores": 16,
+    "memoryBytes": 137438953472,
+    "os": "27.0.1",
+    "build": "26A434",
+    "rust": "rustc 1.99.0-nightly (1a98b1e13 2026-08-07)",
+    "rayonThreads": 8
+  },
+  "wgpu": "27.0.1",
+  "wgpuHal": "27.0.4",
+  "metalRust": "0.32.0",
+  "primitive": {
+    "adapter": "Apple M4 Max",
+    "backend": "Metal",
+    "format": "RGBA32Float",
+    "identicalMTLTextureHandles": [
+      true,
+      true
+    ],
+    "inspection": "CPU initializes both IOSurfaces before import and reads the destination IOSurface after GPU completion solely to verify; signed/out-of-range RGB survives",
+    "nativeSurfaceIDs": [
+      415,
+      448
+    ],
+    "paddedBytesPerRow": 128,
+    "pixelMatches": 35,
+    "scope": "isolated native IOSurface -> wgpu texture load/store -> original native IOSurface; one dispatch",
+    "size": [
+      7,
+      5
+    ],
+    "tightBytesPerRow": 112,
+    "wgpuCopyOrMapReadbacks": 0,
+    "wgpuFrameUploads": 0,
+    "wrappedSurfaceIDs": [
+      415,
+      448
+    ]
+  },
+  "dag": {
+    "actualWgpuPollTimeout": true,
+    "adapter": "Apple M4 Max / Metal / IntegratedGpu",
+    "aliasRejection": true,
+    "dispatchesPerUpdate": 1,
+    "fixturePreparation": "host fills native input and mask once; output preinitialized. Existing app GPU surfaces can enter at this boundary",
+    "formats": [
+      "RGBA32Float",
+      "R32Float",
+      "RGBA32Float"
+    ],
+    "identicalMTLTextureHandles": 3,
+    "inspection": "test reads native CPU rows and explicitly asks Core Image to render into a test bitmap after the native GPU completion fence",
+    "maskF32SHA256": "1009e1ee405b89fae9f90eeb3d556376b809511b6f5e8270e539646dae31afce",
+    "maskSHA256": "c4dd3d1d32ba59b5dcee9e505958fd7f815622bb45b5ce2069ddedf73b3c2c9e",
+    "maxAbsRecoveredUnpublishedVsCPU": 1.1920928955078125e-07,
+    "nativeConsumer": "CVPixelBuffer backed by output IOSurface -> CIImage in extended linear sRGB -> test CIRenderDestination RGBAf flipped=true",
+    "nativeIOSurfaceIDs": [
+      809,
+      929,
+      994
+    ],
+    "registryID": 4294968440,
+    "registryIDFromNativeTextures": [
+      4294968440,
+      4294968440,
+      4294968440
+    ],
+    "scope": "isolated opt-in copy of production DAG compiler: surface binding specialization only",
+    "size": [
+      160,
+      107
+    ],
+    "sourceF32SHA256": "b519c238e0842dfe46b6f4c9e57df00965bd81e51ae70c2d5e90549827966383",
+    "sourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442",
+    "states": [
+      {
+        "afterSubmitCancellation": false,
+        "bottomRowF32SHA256": "3249f4d9e1b5a3bec8da87656c7cefb29a9fcb2ea4a047dfce13107d1c039d3c",
+        "coreImageSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+        "maxAbsCoreImageVsSurface": 0.0,
+        "maxAbsVerticallyReversedVsCoreImage": 1.1892070770263672,
+        "maxAbsVsCPU": 1.1920928955078125e-07,
+        "nativeTerminalFence": true,
+        "published": true,
+        "state": 0,
+        "surfaceSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+        "topRowF32SHA256": "63c622fcc65765e541239f4ff6e4cb1646088e099d9417126c04c7d4d3e10104"
+      },
+      {
+        "afterSubmitCancellation": false,
+        "bottomRowF32SHA256": "3249f4d9e1b5a3bec8da87656c7cefb29a9fcb2ea4a047dfce13107d1c039d3c",
+        "coreImageSHA256": "aac508e669dbb8686094a399f5506ed380830d1734a287da1e6e3b6b509e110e",
+        "maxAbsCoreImageVsSurface": 0.0,
+        "maxAbsVerticallyReversedVsCoreImage": 1.1892070770263672,
+        "maxAbsVsCPU": 1.1920928955078125e-07,
+        "nativeTerminalFence": true,
+        "published": true,
+        "state": 1,
+        "surfaceSHA256": "aac508e669dbb8686094a399f5506ed380830d1734a287da1e6e3b6b509e110e",
+        "topRowF32SHA256": "ab2b4e407c7ace5ac6acd205c9b8114cc0c04188740f7eaff046144d4a32f4ca"
+      },
+      {
+        "afterSubmitCancellation": true,
+        "bottomRowF32SHA256": "3249f4d9e1b5a3bec8da87656c7cefb29a9fcb2ea4a047dfce13107d1c039d3c",
+        "coreImageSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+        "maxAbsCoreImageVsSurface": 0.0,
+        "maxAbsVerticallyReversedVsCoreImage": 1.1892070770263672,
+        "maxAbsVsCPU": 1.1920928955078125e-07,
+        "nativeTerminalFence": true,
+        "published": false,
+        "state": 0,
+        "surfaceSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+        "topRowF32SHA256": "63c622fcc65765e541239f4ff6e4cb1646088e099d9417126c04c7d4d3e10104"
+      }
+    ],
+    "strides": [
+      2560,
+      640,
+      2560
+    ],
+    "timedOutFramePublished": false,
+    "timeoutNativeFenceJoined": true,
+    "wgpuFrameReadbacks": 0,
+    "wgpuFrameUploads": 0,
+    "wrappedIOSurfaceIDs": [
+      809,
+      929,
+      994
+    ]
+  },
+  "localReproduction": {
+    "primitive": "cargo run --locked --manifest-path output/035-development/iosurface-import-probe/Cargo.toml",
+    "dag": "cargo run --locked --manifest-path output/035-development/iosurface-dag-replay/Cargo.toml -- <prepared inputs> Sources/RAWMasterImaging/Resources/PhotoFilters"
+  },
+  "sources": {
+    "appleTexture": "https://developer.apple.com/documentation/metal/mtldevice/maketexture(descriptor:iosurface:plane:)",
+    "appleEvent": "https://developer.apple.com/documentation/metal/mtlsharedevent",
+    "wgpuTextureImport": "https://github.com/gfx-rs/wgpu/blob/v27.0.1/wgpu/src/api/device.rs#L310-L326",
+    "metalHAL": "https://github.com/gfx-rs/wgpu/blob/v27.0.4/wgpu-hal/src/metal/device.rs#L335-L350"
+  },
+  "productionConfirmation": {
+    "scope": "production Cargo crate; opt-in per native caller; core default buffer rendering, native presentation and performance tests have separate measurement boundaries",
+    "sourceSHA256": {
+      "Modules/ImageEdit/Cargo.toml": "7d32abc028e52ab834a53798868b689c974fbe84bf295f2f576337a56424ac24",
+      "Modules/ImageEdit/Cargo.lock": "2b86ee9258eae5956ee77ff5a4a64991c0cf9296e804c5adfa29b0ac8bbc5bb6",
+      "Modules/ImageEdit/build.rs": "434524164f65d9fa71051f1fca7cd95da502ddd85236743b3123376ae7b87380",
+      "Modules/ImageEdit/include/rawmaster_image_metal.h": "5602450a341c0afd9a46b9158094a8e13bffe7bf473a107581c8a4d11e273951",
+      "Modules/ImageEdit/src/metal_ffi.rs": "17bd98ba2c369f879a367dd540928ac99767441caae43378e4befbb08059e1d1",
+      "Modules/ImageEdit/src/gpu.rs": "be81438c658f7ed6c2c5f2e902be8738a86a7b55134c86450418ed8740685f8a",
+      "Modules/ImageEdit/src/gpu/metal_surface.rs": "c395ddc493e3676d02d6c9f35b75f52b2d58076117b3265424903176f7fd45c7",
+      "Modules/ImageEdit/src/metal_surface_identity.m": "59eb4e7622032850da84773ce9e9d6e0c82074b8d332863cc46f487f23e20e3b",
+      "Modules/ImageEdit/src/metal_bindings.wgsl": "30d38bbca1b4daac21adf1e2ed52a383661375013b01aef2afd565a8a6b38818",
+      "Modules/ImageEdit/src/point_operators.wgsl": "3d76404f5b94a156f59841527bd615fdce8bf716848aaacceafd3e0a00e9e3a3",
+      "Modules/ImageEdit/src/point_entry.wgsl": "1b31e35e3b5030d0336fba498fc5da5f336f526007eeabbf2fb842449aed0ca8",
+      "Modules/ImageEdit/tests/metal_surface_replay.rs": "4a3e99c16dc50355ea8d8e108a3a43a013f10eec100e48ba8d0aa3352dc77e1a",
+      "Modules/ImageEdit/tests/metal_surface/native.m": "48e1f3cf36ad67a2b80e5b240662d503625ef450814b86bd7c06d1e92603dad3",
+      "Modules/ImageEdit/tests/metal_surface/c_abi.m": "1165c8953542cc83e11a4be0e2f31658c987ca4dee773e14383ed6501904030b",
+      "Modules/ImageEdit/tests/metal_surface/check.sh": "95fcd8c1b24ed79d6d90048c857125c308f42e40fad4745131db484b7254a093"
+    },
+    "compiledDefaultDylibSHA256": "1e83338b0aca9a556b4069ec5b2793cd0e19a026aff5fe3086ccd02f908a399a",
+    "symbols": [
+      "rm_image_metal_frame_bind_v1",
+      "rm_image_metal_frame_close_v1",
+      "rm_image_metal_frame_render_v1",
+      "rm_image_metal_program_close_v1",
+      "rm_image_metal_program_open_v1",
+      "rm_image_metal_surface_abi_version"
+    ],
+    "reproduce": "PYTHON=<python-with-Pillow> Modules/ImageEdit/tests/metal_surface/check.sh <output-directory>",
+    "frozenPhoto": {
+      "actualWgpuPollTimeout": true,
+      "adapter": "Apple M4 Max / Metal / IntegratedGpu",
+      "aliasRejection": true,
+      "dispatchesPerUpdate": 1,
+      "fixturePreparation": "host fills native input and mask once; output preinitialized. Existing app GPU surfaces can enter at this boundary",
+      "formats": [
+        "RGBA32Float",
+        "R32Float",
+        "RGBA32Float"
+      ],
+      "hostTextureReferencesDroppedBeforeSubmit": true,
+      "identicalMTLTextureHandles": 3,
+      "inspection": "test reads native CPU rows and explicitly asks Core Image to render into a test bitmap after the native GPU completion fence",
+      "maskF32SHA256": "1009e1ee405b89fae9f90eeb3d556376b809511b6f5e8270e539646dae31afce",
+      "maskSHA256": "c4dd3d1d32ba59b5dcee9e505958fd7f815622bb45b5ce2069ddedf73b3c2c9e",
+      "maxAbsRecoveredUnpublishedVsCPU": 1.1920928955078125e-07,
+      "nativeConsumer": "CVPixelBuffer backed by output IOSurface -> CIImage in extended linear sRGB -> test CIRenderDestination RGBAf flipped=true",
+      "nativeIOSurfaceIDs": [
+        398,
+        488,
+        598
+      ],
+      "registryID": 4294968440,
+      "registryIDFromNativeTextures": [
+        4294968440,
+        4294968440,
+        4294968440
+      ],
+      "scope": "production crate, opt-in external Metal texture ports through the fused DAG compiler",
+      "size": [
+        160,
+        107
+      ],
+      "sourceF32SHA256": "b519c238e0842dfe46b6f4c9e57df00965bd81e51ae70c2d5e90549827966383",
+      "sourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442",
+      "states": [
+        {
+          "afterSubmitCancellation": false,
+          "bottomRowF32SHA256": "3249f4d9e1b5a3bec8da87656c7cefb29a9fcb2ea4a047dfce13107d1c039d3c",
+          "coreImageSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+          "maxAbsCoreImageVsSurface": 0.0,
+          "maxAbsVerticallyReversedVsCoreImage": 1.1892070770263672,
+          "maxAbsVsCPU": 1.1920928955078125e-07,
+          "nativeTerminalFence": true,
+          "published": true,
+          "state": 0,
+          "surfaceSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+          "topRowF32SHA256": "63c622fcc65765e541239f4ff6e4cb1646088e099d9417126c04c7d4d3e10104"
+        },
+        {
+          "afterSubmitCancellation": false,
+          "bottomRowF32SHA256": "3249f4d9e1b5a3bec8da87656c7cefb29a9fcb2ea4a047dfce13107d1c039d3c",
+          "coreImageSHA256": "aac508e669dbb8686094a399f5506ed380830d1734a287da1e6e3b6b509e110e",
+          "maxAbsCoreImageVsSurface": 0.0,
+          "maxAbsVerticallyReversedVsCoreImage": 1.1892070770263672,
+          "maxAbsVsCPU": 1.1920928955078125e-07,
+          "nativeTerminalFence": true,
+          "published": true,
+          "state": 1,
+          "surfaceSHA256": "aac508e669dbb8686094a399f5506ed380830d1734a287da1e6e3b6b509e110e",
+          "topRowF32SHA256": "ab2b4e407c7ace5ac6acd205c9b8114cc0c04188740f7eaff046144d4a32f4ca"
+        },
+        {
+          "afterSubmitCancellation": true,
+          "bottomRowF32SHA256": "3249f4d9e1b5a3bec8da87656c7cefb29a9fcb2ea4a047dfce13107d1c039d3c",
+          "coreImageSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+          "maxAbsCoreImageVsSurface": 0.0,
+          "maxAbsVerticallyReversedVsCoreImage": 1.1892070770263672,
+          "maxAbsVsCPU": 1.1920928955078125e-07,
+          "nativeTerminalFence": true,
+          "published": false,
+          "state": 0,
+          "surfaceSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+          "topRowF32SHA256": "63c622fcc65765e541239f4ff6e4cb1646088e099d9417126c04c7d4d3e10104"
+        }
+      ],
+      "strides": [
+        2560,
+        640,
+        2560
+      ],
+      "timedOutFramePublished": false,
+      "timeoutNativeFenceJoined": true,
+      "wgpuFrameReadbacks": 0,
+      "wgpuFrameUploads": 0,
+      "wrappedIOSurfaceIDs": [
+        398,
+        488,
+        598
+      ]
+    },
+    "independentCClient": {
+      "abi": 1,
+      "descriptorBytes": 56,
+      "cpuVsNativeCIMaxAbs": 1.19209289551e-07,
+      "validMaskedAndUnmasked": true,
+      "invalidCoverageRejected": true,
+      "invalidAlphaRejected": true,
+      "nonfiniteInputRejected": true,
+      "incompatiblePlanRejected": true,
+      "badExtentAliasAndDescriptorRejected": true,
+      "retainedAfterProgramClose": true,
+      "hostTextureReferencesDropped": true,
+      "nonfiniteCoverageRejected": true,
+      "rawRepairThreeULPs": true,
+      "nonfiniteOutputRejected": true,
+      "postSubmitStaleStatus": 5,
+      "leaseReleases": 8
+    },
+    "validation": "One shared four-byte status word per bound frame. Every thread verifies its source, coverage (when present) and final output. The host clears before submit and checks after the real GPU fence. No full-frame validation readback.",
+    "apiContract": {
+      "ingress": "Native caller attests extended-linear sRGB premultiplied top-left processed image, initialized backing and joined producer. Bind validates same MTLDevice identity and registryID, actual IOSurface plane, FourCC, bytes/pixel, row stride, allocation, sample count, usage, dimensions, and distinct storages. Empty mask on an unmasked plan binds its unused sample slot to the same input texture.",
+      "ownership": "Call plan_open with CPU for portable validation, metal_program_open with native device, frame_bind with optional host lease. The frame retains program/device/native textures after original handles close. Caller serializes frame use and retains its own native presentation lease through final consumption.",
+      "completion": "Join on a worker; post-submit cancellation or wgpu wait failure holds leases through the retained native command’s terminal status. The isolated real timeout used an unsignaled MTLSharedEvent then zero deadline, signaled the predecessor and drained. Publish requires current revision again on the app actor. GPU-rejected or stale output remains unpublished scratch.",
+      "limits": "Selected RGBA32Float / R32Float IOSurfaces only, on one unified-memory Apple Metal device tested. A lazy CIImage without pre-existing compatible storage needs separate materialization accounting. A BGRA8 destination uses the existing ICC/display conversion. Physical device loss and multi-GPU selection have source checks but lack hardware-injection results."
+    }
+  }
+}

@@ -1,0 +1,222 @@
+{
+  "schema": 1,
+  "study": "Spec 035 workbenchCatalogFile and SQLite process locks",
+  "recordedDate": "2026-11-23",
+  "fixture": "Generated v10 catalog, byte-identical second inode, one transaction owner, independent non-mutating probes before and after, rollback and independent integrity read.",
+  "kernelProbe": {
+    "commands": [
+      "F_GETLK",
+      "F_OFD_GETLK"
+    ],
+    "mainSharedOffset": 1073741826,
+    "mainSharedBytes": 510,
+    "mainReservedOffset": 1073741825,
+    "shmWriteOffset": 120,
+    "shmReadSlotOffset": 123,
+    "journalModes": [
+      "WAL",
+      "DELETE"
+    ],
+    "transactions": [
+      "READ",
+      "BEGIN IMMEDIATE"
+    ],
+    "actionOrder": [
+      "sameABI",
+      "otherABI",
+      "outsideABI",
+      "metadata",
+      "sameRawClose"
+    ],
+    "definitions": {
+      "sameABI": "Public identity query by the transaction owner on the same inode",
+      "otherABI": "Public query by the owner on a byte-identical different inode",
+      "outsideABI": "Public query in a different process on the same inode",
+      "metadata": "Metadata-only path control",
+      "sameRawClose": "Open and close another ordinary data fd in the transaction owner"
+    }
+  },
+  "linux": {
+    "kernel": "7.2.12-orbstack-00394-gbecdd6130068",
+    "arch": "aarch64",
+    "debianImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "filesystem": "overlayfs",
+    "vfs": "unix",
+    "sqlite": "3.53.2",
+    "sqliteSourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "packagedSharedArm": "The transaction owner uses the original matching rlib’s bundled SQLite. The other image is the original cdylib from the same Cargo build and is used solely to call workbenchCatalogFile.",
+    "sameCompiledRlibArm": "Owner and C ABI share the identical SQLite function pointer in one linked image.",
+    "before": {
+      "sharedLibrarySHA256": "d49d44c55f09a74167d2f9b53445a82b3123253e536e2affe75eb0a332acf7ce",
+      "rlibSHA256": "0908c365ced821155c26f8217b807bbcc434a2f28f40b0a719d2c15a8fc29bde",
+      "ownerHelperSHA256": "f7eae781a4f7159e144d7e263e72724e0fd2a9a7e0f9cfcbb318f0f8ddbf3ad0",
+      "arms": {
+        "packaged-shared": {
+          "cases": 20,
+          "sharedRetainedOfFourPerAction": [
+            0,
+            4,
+            4,
+            4,
+            0
+          ],
+          "deleteImmediateSameABIReservedRetained": false,
+          "unchangedSHMTransactionAndDatabase": 20
+        },
+        "same-compiled-rlib": {
+          "cases": 20,
+          "sharedRetainedOfFourPerAction": [
+            0,
+            4,
+            4,
+            4,
+            0
+          ],
+          "deleteImmediateSameABIReservedRetained": false,
+          "unchangedSHMTransactionAndDatabase": 20
+        }
+      },
+      "matrixReceipt": {
+        "path": "output/035-development/native-exact-study/catalog-lock/linux/receipt.json",
+        "sha256": "e341aa957bda9c7605e9dd3d37ff60b408f973da81cb2b22a385f5cad5fbd102"
+      },
+      "explicitLockCalibration": {
+        "cases": 4,
+        "sameInodePOSIXPreserved": false,
+        "sameInodeOFDPreserved": true,
+        "otherInodeBothPreserved": true,
+        "receipt": {
+          "path": "output/035-development/native-exact-study/catalog-lock/linux/after/calibration-before.json",
+          "sha256": "fff24d405946cbcee7700efa446388a68cd7fec27c807ffe4e6a0b361b8ea1f5"
+        }
+      }
+    },
+    "after": {
+      "sharedLibrarySHA256": "be8b59311a2096c439c34440e46e81f77a1f6152c839fce1e57c8c9610bd387e",
+      "rlibSHA256": "e9e1a7d45c7d5a9c60620f71eb30886a17451306bb43177e71ac2def8eb3666e",
+      "ownerHelperSHA256": "043eea84b27dc293b780242e0f9a329df47851f2206880efc0d2a3e246d10e7b",
+      "arms": {
+        "packaged-shared": {
+          "cases": 20,
+          "sharedRetainedOfFourPerAction": [
+            4,
+            4,
+            4,
+            4,
+            0
+          ],
+          "deleteImmediateSameABIReservedRetained": true,
+          "unchangedSHMTransactionAndDatabase": 20
+        },
+        "same-compiled-rlib": {
+          "cases": 20,
+          "sharedRetainedOfFourPerAction": [
+            4,
+            4,
+            4,
+            4,
+            0
+          ],
+          "deleteImmediateSameABIReservedRetained": true,
+          "unchangedSHMTransactionAndDatabase": 20
+        }
+      },
+      "matrixReceipt": {
+        "path": "output/035-development/native-exact-study/catalog-lock/linux/after/receipt.json",
+        "sha256": "3db01b97792326bf197114167e67df6a2c2e62204e4e12f981c767aec2fbb347"
+      },
+      "explicitLockCalibration": {
+        "cases": 4,
+        "sameInodePOSIXPreserved": true,
+        "sameInodeOFDPreserved": true,
+        "otherInodeBothPreserved": true,
+        "receipt": {
+          "path": "output/035-development/native-exact-study/catalog-lock/linux/after/calibration-after.json",
+          "sha256": "ade6e45a9b1b8bfbf6f271ac9a9608dc2d3631d6c772fbc884e6d8f52976910b"
+        }
+      }
+    }
+  },
+  "macOS": {
+    "system": "27.0.1",
+    "arch": "arm64",
+    "filesystem": "local APFS",
+    "sqlite": "3.54.0",
+    "sqliteSourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+    "vfs": "unix",
+    "unchangedRuntimeSHA256": "3b73774b17b0b5f5bb8f1912c127496625a4ee2588c782ea7471453f9242e595",
+    "arms": {
+      "packaged-system": {
+        "cases": 20,
+        "sharedRetainedOfFourPerAction": [
+          4,
+          4,
+          4,
+          4,
+          4
+        ],
+        "deleteImmediateSameABIReservedRetained": true,
+        "unchangedSHMTransactionAndDatabase": 20
+      }
+    },
+    "matrixReceipt": {
+      "path": "output/035-development/native-exact-study/catalog-lock/receipt.json",
+      "sha256": "eaac0945f9b8ec13f28ef80b705495e79feafa74529957499cc2d00d2c44b638"
+    },
+    "explicitLockCalibration": {
+      "cases": 4,
+      "sameInodePOSIXPreserved": false,
+      "sameInodeOFDPreserved": true,
+      "otherInodeBothPreserved": true,
+      "receipt": {
+        "path": "output/035-development/native-exact-study/catalog-lock/calibration.json",
+        "sha256": "12846fba520a3d8cf95236e389dd72b7669dc632a8b1071f53856db350fa1c90"
+      }
+    },
+    "cargoLockedOffline": {
+      "passed": 90,
+      "failed": 0,
+      "preExistingExternalFixtureSkips": 5,
+      "log": {
+        "path": "output/035-development/native-exact-study/catalog-lock/mac-candidate-cargo.log",
+        "sha256": "af442a4400d696c1c4d5c4fec5cccb1ee07088f82f2addd1543e765e7cb8f9f7"
+      }
+    }
+  },
+  "linuxRustRegression": {
+    "path": "Modules/LibraryCatalog/tests/catalog_file_identity.rs",
+    "sourceSHA256": "9a2adeb4d7044e73b23fc0257dceeb3d225e64885ac99288b747e2da1f9334ad",
+    "productionFileSHA256": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd",
+    "cargoLockedOffline": {
+      "passed": 91,
+      "failed": 0,
+      "preExistingExternalFixtureSkips": 5,
+      "log": {
+        "path": "output/035-development/native-exact-study/catalog-lock/linux/candidate-cargo.log",
+        "sha256": "50d7d226cefc291812c111154e439806abb391fa1b7435be3ad858e4d71c7b5d"
+      }
+    },
+    "unprivileged": {
+      "uid": 65534,
+      "passed": 2,
+      "includes": [
+        "readable mode 0444",
+        "unreadable mode 0000",
+        "relative or missing paths",
+        "symlink or directory",
+        "equal-content files at distinct inodes",
+        "same-name replacement",
+        "unchanged atime",
+        "kernel owner persisted in WAL and DELETE"
+      ],
+      "log": {
+        "path": "output/035-development/native-exact-study/catalog-lock/linux/after/unprivileged.log",
+        "sha256": "4b8f2521126a964d2694473b875e7758b0d3c8b18255666e74c38400a5dedc14"
+      }
+    }
+  },
+  "limits": [
+    "The regular-file lookup observes a held metadata inode. It does not establish the identity of the live SQLite main, WAL or SHM for an upcoming publication.",
+    "No inference of the original macOS locking syscall from F_GETLK. Other SQLite builds, VFSes, filesystems and older Linux/libc compatibility paths require independent validation."
+  ]
+}

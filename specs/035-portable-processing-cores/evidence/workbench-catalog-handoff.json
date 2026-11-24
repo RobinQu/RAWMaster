@@ -1,0 +1,432 @@
+{
+  "schema": 1,
+  "benchmark": "RAWMasterUITests.ExportPerformanceTests/testRealWorkbenchBenchmarks",
+  "environment": {
+    "machine": "Apple M4 Max, 128 GiB, local APFS",
+    "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "clock": "Native AppModel.exportWorkbenchPhotos through its first delivered-file progress event or joined batch return. Each process runs one unreported warmup then one timed sample per workload. No concurrent workload was scheduled in these two native windows."
+  },
+  "decision": {
+    "B": "Retain one admission-bounded off-main encode of the inline v1 command. Rust revalidates the canonical 1 MiB manifest; v2 object fallback and the separate hash/lease/publish/ACK sequence remain. Native data did not establish a first-file improvement.",
+    "C": "Reject the registered-APFS unchanged-stage-directory fullsync omission. Product source restored to full synchronization of both directories. It did not improve 20 or 200 JPEG throughput in the counterbalanced native run."
+  },
+  "builds": {
+    "A": {
+      "RAWMasterUITests": "14d5e90f349faa288884d46049b9c74bc5587da8236cf3a0d04a509a44dd53ff",
+      "rawmaster-image.runtime": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+      "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+      "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+    },
+    "B": {
+      "RAWMasterUITests": "03afbffb0ed976bf91442152962cac6cf7c8eef719640599dd6ff5f4c8dd1e12",
+      "rawmaster-image.runtime": "afa01665373b045314cf17ca8600fb53f15d7179872d83c13412b4ce94346277",
+      "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+      "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+    },
+    "C": {
+      "RAWMasterUITests": "03afbffb0ed976bf91442152962cac6cf7c8eef719640599dd6ff5f4c8dd1e12",
+      "rawmaster-image.runtime": "afa01665373b045314cf17ca8600fb53f15d7179872d83c13412b4ce94346277",
+      "rawmaster-library.runtime": "cf4ba61dc8e0ac06db33a5619ef31e4c6fff7fcc31155b93c5d31b7950b00874",
+      "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+    }
+  },
+  "native": {
+    "inlineEncoding": {
+      "order": [
+        "A",
+        "B",
+        "B",
+        "A"
+      ],
+      "timedSamplesPerArm": 2,
+      "originalInputManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "totalWarmPlusTimedOutputFiles": 1936,
+      "raw": {
+        "path": "output/035-development/phase-ab/workbench/single-encode-abba.json",
+        "sha256": "627ede00f1c27e77a0d14e24274c4d8528bc20d25685e993d1d69a328906c131"
+      },
+      "groups": {
+        "jpeg-source/1": {
+          "countPerTrial": 1,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "3d427f91fb48c5bf106a5d2aeb426ac7d8c1af1d3d4f3974d07026ccb71ca267"
+        },
+        "jpeg-source/20": {
+          "samplesBatchThenFirstSeconds": [
+            [
+              0.766248958,
+              0.140000042
+            ],
+            [
+              0.778894792,
+              0.15940225
+            ],
+            [
+              0.77217425,
+              0.145528583
+            ],
+            [
+              1.117685375,
+              0.150543916
+            ]
+          ],
+          "baselineMedianSeconds": [
+            0.9419671665,
+            0.145271979
+          ],
+          "candidateMedianSeconds": [
+            0.775534521,
+            0.1524654165
+          ],
+          "batchPercent": -17.67,
+          "firstPercent": 4.95,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "b3cc3f7259f114e0b9df81e811a88f58c66320dae8f1f2c8a961b3a21f13f6ba"
+        },
+        "jpeg-source/200": {
+          "samplesBatchThenFirstSeconds": [
+            [
+              7.572587625,
+              0.183218791
+            ],
+            [
+              7.302399625,
+              0.187633959
+            ],
+            [
+              8.590160583,
+              0.175784791
+            ],
+            [
+              8.983287666,
+              0.155337833
+            ]
+          ],
+          "baselineMedianSeconds": [
+            8.2779376455,
+            0.169278312
+          ],
+          "candidateMedianSeconds": [
+            7.9462801039999995,
+            0.181709375
+          ],
+          "batchPercent": -4.01,
+          "firstPercent": 7.34,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "f16b46d6c95589125cf7e74d0efb83c2f074ccdcb5226831a09e614a0bc0e3cd"
+        },
+        "raw-source/1": {
+          "countPerTrial": 1,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "c71cc60ca2e645af17462174ee3700bb53943913d51f23a48537630d23add4ea"
+        },
+        "raw-source/20": {
+          "countPerTrial": 20,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "35536cf793faaa26c43ea5c2933189f7bb5fbf3e2291664e082c66b4aae17780"
+        }
+      }
+    },
+    "sourceDirectorySync": {
+      "order": [
+        "C",
+        "B",
+        "B",
+        "C"
+      ],
+      "timedSamplesPerArm": 2,
+      "originalInputManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "totalWarmPlusTimedOutputFiles": 1936,
+      "raw": {
+        "path": "output/035-development/phase-ab/workbench/qualified-source-cbbc.json",
+        "sha256": "5cb88bfdebd49e093769ea2ebb2f159489e0b66c1f63d4a6bd73ec120afdc9a4"
+      },
+      "groups": {
+        "jpeg-source/1": {
+          "countPerTrial": 1,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "3d427f91fb48c5bf106a5d2aeb426ac7d8c1af1d3d4f3974d07026ccb71ca267"
+        },
+        "jpeg-source/20": {
+          "samplesBatchThenFirstSeconds": [
+            [
+              0.83862425,
+              0.14144725
+            ],
+            [
+              0.768428167,
+              0.146939875
+            ],
+            [
+              0.8197785,
+              0.148831
+            ],
+            [
+              0.81867125,
+              0.146709208
+            ]
+          ],
+          "baselineMedianSeconds": [
+            0.7941033335000001,
+            0.1478854375
+          ],
+          "candidateMedianSeconds": [
+            0.82864775,
+            0.144078229
+          ],
+          "batchPercent": 4.35,
+          "firstPercent": -2.57,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "b3cc3f7259f114e0b9df81e811a88f58c66320dae8f1f2c8a961b3a21f13f6ba"
+        },
+        "jpeg-source/200": {
+          "samplesBatchThenFirstSeconds": [
+            [
+              6.878258667,
+              0.165917125
+            ],
+            [
+              6.631302417,
+              0.165560375
+            ],
+            [
+              7.075673542,
+              0.1700635
+            ],
+            [
+              6.975438458,
+              0.155923916
+            ]
+          ],
+          "baselineMedianSeconds": [
+            6.8534879795,
+            0.1678119375
+          ],
+          "candidateMedianSeconds": [
+            6.9268485625,
+            0.1609205205
+          ],
+          "batchPercent": 1.07,
+          "firstPercent": -4.11,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "f16b46d6c95589125cf7e74d0efb83c2f074ccdcb5226831a09e614a0bc0e3cd"
+        },
+        "raw-source/1": {
+          "countPerTrial": 1,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "c71cc60ca2e645af17462174ee3700bb53943913d51f23a48537630d23add4ea"
+        },
+        "raw-source/20": {
+          "countPerTrial": 20,
+          "allFileNamesAndBytesEqual": true,
+          "inventorySHA256": "35536cf793faaa26c43ea5c2933189f7bb5fbf3e2291664e082c66b4aae17780"
+        }
+      }
+    }
+  },
+  "qualification": {
+    "unmodifiedDirectProductionABI": {
+      "input": "200 previous native output JPEGs in independent private stages. Each command reopens the real v10 queue. No Swift renderer in this diagnostic.",
+      "batchTotalOutputBytes": 82971286,
+      "stagesMs": {
+        "register": {
+          "n": 1,
+          "median": 13.983208,
+          "p95": 13.983208,
+          "sum": 13.983208,
+          "first": 13.983208,
+          "lateMedian": 13.983208
+        },
+        "claimItem": {
+          "n": 200,
+          "median": 3.668271,
+          "p95": 5.037541,
+          "sum": 740.597034,
+          "first": 4.238125,
+          "lateMedian": 4.2071455
+        },
+        "prepareItem": {
+          "n": 200,
+          "median": 9.740229,
+          "p95": 17.621041,
+          "sum": 2135.411124,
+          "first": 8.868292,
+          "lateMedian": 10.779979
+        },
+        "publishItem": {
+          "n": 200,
+          "median": 12.119667,
+          "p95": 20.177583,
+          "sum": 2643.586374,
+          "first": 10.190916,
+          "lateMedian": 12.733417
+        },
+        "acknowledgeItem": {
+          "n": 200,
+          "median": 17.748,
+          "p95": 21.669041,
+          "sum": 3644.115454,
+          "first": 16.629083,
+          "lateMedian": 19.853833
+        }
+      },
+      "raw": {
+        "path": "output/035-development/phase-ab/workbench/baseline-direct.json",
+        "sha256": "56d845d2d1edeaf097890baea5e22985b4924a201e5659b3322c8735f56c9c41"
+      }
+    },
+    "durability": {
+      "path": "Stage::from_ticket -> Stage::read -> Verified::hash and sync_all(file,directory,root), then a fresh item ownership check in the SQLite immediate transaction and an exclusive link or rename. ACK rehashes the final and checks original identity.",
+      "measuredAPFSNamespace": {
+        "path": "output/035-development/phase-ab/workbench/apfs-namespace-local.json",
+        "sha256": "1f2044dc8145f0357373a3e19ba51a357f8265f33733d91e816d6b4b733b0509"
+      },
+      "rejectedCandidateScope": "Only a stable APFS binding with an unchanged source-directory stamp after linkat skipped its second directory sync. Every rename, changed stamp or older mount retained both syncs. Cleanup stayed unchanged. Real APFS kept nlink=2 on an open but removed test directory.",
+      "candidateSourcePatch": {
+        "path": "experiments/portable-processing/catalog/workbench-delivery-probe/qualified-link.patch",
+        "sha256": "188986a93cc465e0f16316339406c727906a078a8c559f639258e2c7b8313a9f"
+      },
+      "restoredProductSource": [
+        {
+          "path": "Modules/LibraryCatalog/src/scheduler/batch/directory.rs",
+          "sha256": "8313db133d026535115f0122fb37e01baad9b555de6f87e788b78bdf7e580cbd"
+        },
+        {
+          "path": "Modules/LibraryCatalog/src/scheduler/batch/items.rs",
+          "sha256": "0087fbba7bec71022d16f480cae31f850367035c3ce1954308dae4dd463d6a16"
+        }
+      ]
+    },
+    "rejectedCandidateMacRust": {
+      "passed": 91,
+      "failed": 0,
+      "ignored": 5,
+      "raw": {
+        "path": "output/035-development/phase-ab/workbench/qualified-rust-tests.log",
+        "sha256": "831f1de023a0fdf2bb76c22ce93cc1b3364cc19ffa8c053d6276a762849b818c"
+      }
+    },
+    "separateRealPhysicalReceiptChecks": {
+      "original-20-tickets": {
+        "runtimeSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+        "count": 20,
+        "passed": true,
+        "inventorySHA256": "b3cc3f7259f114e0b9df81e811a88f58c66320dae8f1f2c8a961b3a21f13f6ba",
+        "immutableTicketThroughPreparePublishAck": true,
+        "regularFileInodeFromStage": true,
+        "digestAndLength": true,
+        "duplicateAckOrdinals": [
+          1,
+          20
+        ],
+        "allTerminal": true,
+        "integrityCheck": "ok",
+        "raw": {
+          "path": "output/035-development/phase-ab/workbench/original-20-tickets.json",
+          "sha256": "3da5148273216f72bfd2845c87cf797b4f9b9b8bb33b3c289a82ec084394e59d"
+        }
+      },
+      "qualified-20-tickets": {
+        "runtimeSHA256": "0259744428cb6d3ac9064d8a373bfe5ff5eb4327a56cc2fbcadd7a380d98fe0a",
+        "count": 20,
+        "passed": true,
+        "inventorySHA256": "b3cc3f7259f114e0b9df81e811a88f58c66320dae8f1f2c8a961b3a21f13f6ba",
+        "immutableTicketThroughPreparePublishAck": true,
+        "regularFileInodeFromStage": true,
+        "digestAndLength": true,
+        "duplicateAckOrdinals": [
+          1,
+          20
+        ],
+        "allTerminal": true,
+        "integrityCheck": "ok",
+        "raw": {
+          "path": "output/035-development/phase-ab/workbench/qualified-20-tickets.json",
+          "sha256": "aeefa00c08185c22c42b0ce104d689db5e8ab807271349545e0d564bc457d2ec"
+        }
+      },
+      "rejected-C-200-tickets": {
+        "runtimeSHA256": "cf4ba61dc8e0ac06db33a5619ef31e4c6fff7fcc31155b93c5d31b7950b00874",
+        "count": 200,
+        "passed": true,
+        "inventorySHA256": "f16b46d6c95589125cf7e74d0efb83c2f074ccdcb5226831a09e614a0bc0e3cd",
+        "immutableTicketThroughPreparePublishAck": true,
+        "regularFileInodeFromStage": true,
+        "digestAndLength": true,
+        "duplicateAckOrdinals": [
+          1,
+          200
+        ],
+        "allTerminal": true,
+        "integrityCheck": "ok",
+        "raw": {
+          "path": "output/035-development/phase-ab/workbench/rejected-C-200-tickets.json",
+          "sha256": "0b0041e705275d7e409da285a0abed97e213b54a74da406605f200584bb14da3"
+        }
+      },
+      "retained-B-200-tickets": {
+        "runtimeSHA256": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+        "count": 200,
+        "passed": true,
+        "inventorySHA256": "f16b46d6c95589125cf7e74d0efb83c2f074ccdcb5226831a09e614a0bc0e3cd",
+        "immutableTicketThroughPreparePublishAck": true,
+        "regularFileInodeFromStage": true,
+        "digestAndLength": true,
+        "duplicateAckOrdinals": [
+          1,
+          200
+        ],
+        "allTerminal": true,
+        "integrityCheck": "ok",
+        "raw": {
+          "path": "output/035-development/phase-ab/workbench/retained-B-200-tickets.json",
+          "sha256": "aaae40876df5c6f4ebeaa28a43d47927ec91160d9fe32b31c21db7ab225ee43a"
+        }
+      }
+    },
+    "receiptProbe": {
+      "path": "experiments/portable-processing/catalog/workbench-delivery-probe/verify_tickets.py",
+      "sha256": "bbf59a0f052d3dac0f2eb1e7748191c0ca86e202ec7462962f6ce8f658740653"
+    }
+  },
+  "future": {
+    "duplicateSourceReads": {
+      "scope": "Scratch Swift executable linked to the production release RAWMasterCore, one live read transaction over a copied mixed workload catalog, exact sqlite3_trace_v2 statement counts. Both arms reconstruct and hash 200 complete EditingSourceSnapshot values.",
+      "productionSelects": {
+        "assets": 400,
+        "admissions": 400
+      },
+      "candidateSelects": {
+        "assets": 200,
+        "admissions": 200
+      },
+      "frozenSourcesSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+      "raw": {
+        "path": "output/035-development/phase-ab/workbench/snapshot-probe/trace.json",
+        "sha256": "f903cf2d82589d937a8bc4b88cc15d26368954e2e97d2e8b9a61945ab37cdf82"
+      },
+      "productionChanged": false
+    }
+  },
+  "finalProduct": {
+    "tag": "candidate-batch30-native-mask-ring-final",
+    "measuredInTheseTwoCrossovers": false,
+    "components": {
+      "RAWMasterUITests": "f72a53c5de21a566b2f0534b240e67988e01e0f293c688cfff8beacbd260d9a1",
+      "rawmaster-image.runtime": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+      "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+      "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+    },
+    "catalogIdenticalToB": true,
+    "sealReceipt": {
+      "path": "output/035-development/phase-ab/freeze-selected.log",
+      "sha256": "e95c592f2b59a5a1fbe32391714a0689a1306c088f481c0d94b7f498fe17624f"
+    }
+  },
+  "limits": [
+    "A to B kept the catalog and PhotoExport runtime identical, but its full test executable and ImageEdit runtime changed. The neutral group exercised the existing JPEG route; its timing is a package comparison, not an isolated Swift-only causal effect. B to C held the entire sealed UI bundle constant apart from the catalog runtime.",
+    "Two timed samples per arm in each crossover, on one machine; these measurements do not establish population-wide speed or P95. Earlier main 4.795s/0.082s was a separate historical baseline.",
+    "The native test removes its temporary catalog at teardown. Native payload and count verification is separate from the per-receipt C ABI replay.",
+    "The APFS diagnostic tests close/process interruption, not power removal or a physical external device. Informal clocks that wrote a trace to the same disk were excluded from performance attribution."
+  ]
+}

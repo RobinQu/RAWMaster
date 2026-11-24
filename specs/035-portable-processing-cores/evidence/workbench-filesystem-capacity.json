@@ -1,0 +1,280 @@
+{
+  "schema": 1,
+  "topic": "Spec 035 B; real kernel ENOSPC before PREPARED, during no-replace publication, and after publication before ACK",
+  "verified": true,
+  "mode": "6 primary baseline cases (3 observed, 3 plain); final observed 3-case replay includes pinned stage-file FD and a controlled identical-content foreign destination after cancellation.",
+  "environment": {
+    "kernel": "7.2.12-orbstack-00394-gbecdd6130068",
+    "arch": "Linux arm64",
+    "uid": 65534,
+    "containerImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "baseFilesystem": "read-only",
+    "network": "none, pull never",
+    "capabilities": "none, no-new-privileges",
+    "cpu": 1,
+    "memoryMiB": 160,
+    "privateVolumes": {
+      "catalog": "24 MiB tmpfs / 512 inodes",
+      "delivery": "3 MiB tmpfs / 48 inodes"
+    },
+    "child": "one fresh process per call of the existing rm_library_request_v1; no SQL mutation in observer",
+    "SQLite": "AD Linux Rust crate bundled SQLite 3.53.2. Independent Python readback uses Debian SQLite 3.40.1. Only the standalone fixture is set to WAL, reproducing normal LibraryStore open."
+  },
+  "inputs": {
+    "catalogRuntimeSHA256": "8a02287619dbeab9042fa86636265260202bb801464b3128abe782a2857730d5",
+    "standaloneCatalogSHA256": "67915d31f9c3f0d72cc31ab7b4fec28c05956acf977b8c96275b4aebdc4e12fd",
+    "JPEG_SHA256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840",
+    "bundledSQLiteSourceIDFromActualSO": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "jpegBytes": 277225,
+    "historicalBatches": 10,
+    "historicalItems": 484,
+    "historicalWbRows": 524,
+    "sortedHistoricalRowsSHA256": "ef7843c9a6d6d1cd5d5a7d0133e75d0a6d03c4ddfe61732a7e78344555e13f92"
+  },
+  "localArtifacts": {
+    "observed.json": {
+      "path": "output/035-development/phase-ae/catalog/observed.json",
+      "sha256": "559f097d334d24afa6fe1cfef331a02b724481b89caa1af662a73df4ec61394c",
+      "bytes": 7108
+    },
+    "plain.json": {
+      "path": "output/035-development/phase-ae/catalog/plain.json",
+      "sha256": "ac919243c66feffafd7d8cebf2b160646c7e236b8cffaa755e7ae460498c3212",
+      "bytes": 6934
+    },
+    "observed-final.json": {
+      "path": "output/035-development/phase-ae/catalog/observed-final.json",
+      "sha256": "8b2048c8ac11e0a55daebe9e2218f8b4c27bba71969a82563dccc3a432453640",
+      "bytes": 7695
+    },
+    "run.sh": {
+      "path": "output/035-development/phase-ae/catalog/run.sh",
+      "sha256": "9b9a3b53d897fd4cf9e421dfe61fe062a754294b8c67eea1ef306e68501082fc",
+      "bytes": 1445
+    },
+    "probe.py": {
+      "path": "output/035-development/phase-ae/catalog/probe.py",
+      "sha256": "5cd275bb731973031b3f1c760b7d3278fd5bbffb6aff72ccd9fe60afd4e0cd84",
+      "bytes": 12773
+    },
+    "observer.c": {
+      "path": "output/035-development/phase-ae/catalog/observer.c",
+      "sha256": "72e710d084e10fced6bedae59ec313d0e60d498e5d3f35859af4a3d688f970b9",
+      "bytes": 1852
+    }
+  },
+  "contracts": [
+    "Each existing kernel file operation is forwarded unchanged. The optional dedicated child observer logs errno and basename only. The plain arm has no preload and returned the same error, ledger, generation and terminal result in all three cases.",
+    "Active WAL was initially 0 bytes after checkpoint (busy/log/checkpointed = 0/0/0), with a 32768-byte SHM and a keeper read transaction. The failure-state reader was a newly opened independent connection, while the production ABI invocation had exited.",
+    "Database exhaustion was independently calibrated by a one-byte write returning ENOSPC. Target inode exhaustion was calibrated by a real link returning ENOSPC while 2863104 data bytes were available.",
+    "Final receipt SHA-256, length, inode and device match the original JPEG stage. A pre-existing sibling, 10 historical manifests and 484 historical items (all 524 wb032 rows) were unchanged. Final integrity and foreign-key checks passed for every database."
+  ],
+  "cases": [
+    {
+      "kind": "prepare-db-full",
+      "operation": "prepareItem",
+      "failure": {
+        "error": "database or disk is full"
+      },
+      "failedNativeCalls": [
+        "FS pwrite64 errno=28 file=catalog.sqlite-wal"
+      ],
+      "fill": {
+        "before": {
+          "blockBytes": 4096,
+          "totalBytes": 25165824,
+          "availableBytes": 20156416,
+          "totalInodes": 512,
+          "availableInodes": 507
+        },
+        "full": {
+          "blockBytes": 4096,
+          "totalBytes": 25165824,
+          "availableBytes": 0,
+          "totalInodes": 512,
+          "availableInodes": 505
+        },
+        "independentOneByteErrno": 28
+      },
+      "keeper": {
+        "checkpoint": [
+          0,
+          0,
+          0
+        ],
+        "walBytes": 0,
+        "shmBytes": 32768
+      },
+      "independentReadStateOnFailure": "running",
+      "reservationsAfterFailure": 0,
+      "doneAfterFailure": null,
+      "originalStage": {
+        "device": 107,
+        "inode": 4,
+        "links": 1,
+        "bytes": 277225,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840"
+      },
+      "terminalFile": {
+        "device": 107,
+        "inode": 4,
+        "links": 1,
+        "bytes": 277225,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840"
+      },
+      "nextGeneration": 2,
+      "terminalPhase": "done",
+      "terminalReservations": 0,
+      "sameBytesControl": null,
+      "originalHeldStageFDConfirmed": true,
+      "originalHeldStageFinalLinkCount": 1,
+      "duplicateAck": true,
+      "staleOwnerDenied": true
+    },
+    {
+      "kind": "publish-inodes-full",
+      "operation": "publishItem",
+      "failure": {
+        "error": "No space left on device (os error 28)"
+      },
+      "failedNativeCalls": [
+        "FS linkat errno=28 file=J000.jpg"
+      ],
+      "fill": {
+        "before": {
+          "blockBytes": 4096,
+          "totalBytes": 3145728,
+          "availableBytes": 2863104,
+          "totalInodes": 48,
+          "availableInodes": 43
+        },
+        "full": {
+          "blockBytes": 4096,
+          "totalBytes": 3145728,
+          "availableBytes": 2863104,
+          "totalInodes": 48,
+          "availableInodes": 0
+        },
+        "independentLinkErrno": 28
+      },
+      "keeper": {
+        "checkpoint": [
+          0,
+          0,
+          0
+        ],
+        "walBytes": 0,
+        "shmBytes": 32768
+      },
+      "independentReadStateOnFailure": "prepared",
+      "reservationsAfterFailure": 1,
+      "doneAfterFailure": null,
+      "originalStage": {
+        "device": 107,
+        "inode": 8,
+        "links": 1,
+        "bytes": 277225,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840"
+      },
+      "terminalFile": {
+        "device": 107,
+        "inode": 8,
+        "links": 1,
+        "bytes": 277225,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840"
+      },
+      "nextGeneration": 2,
+      "terminalPhase": "done",
+      "terminalReservations": 0,
+      "sameBytesControl": null,
+      "originalHeldStageFDConfirmed": true,
+      "originalHeldStageFinalLinkCount": 1,
+      "duplicateAck": true,
+      "staleOwnerDenied": true
+    },
+    {
+      "kind": "ack-db-full",
+      "operation": "acknowledgeItem",
+      "failure": {
+        "error": "database or disk is full"
+      },
+      "failedNativeCalls": [
+        "FS pwrite64 errno=28 file=catalog.sqlite-wal"
+      ],
+      "fill": {
+        "before": {
+          "blockBytes": 4096,
+          "totalBytes": 25165824,
+          "availableBytes": 20156416,
+          "totalInodes": 512,
+          "availableInodes": 507
+        },
+        "full": {
+          "blockBytes": 4096,
+          "totalBytes": 25165824,
+          "availableBytes": 0,
+          "totalInodes": 512,
+          "availableInodes": 505
+        },
+        "independentOneByteErrno": 28
+      },
+      "keeper": {
+        "checkpoint": [
+          0,
+          0,
+          0
+        ],
+        "walBytes": 0,
+        "shmBytes": 32768
+      },
+      "independentReadStateOnFailure": "prepared",
+      "reservationsAfterFailure": 1,
+      "doneAfterFailure": null,
+      "originalStage": {
+        "device": 107,
+        "inode": 55,
+        "links": 1,
+        "bytes": 277225,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840"
+      },
+      "terminalFile": {
+        "device": 107,
+        "inode": 55,
+        "links": 1,
+        "bytes": 277225,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840"
+      },
+      "nextGeneration": 1,
+      "terminalPhase": "cancelled",
+      "terminalReservations": 0,
+      "sameBytesControl": {
+        "foreignInode": 58,
+        "sha256": "da849cfa7a4041b9ed9cfa58fc0c0ddc52c78bbb3cf63cdc6f8a364b7e862840",
+        "status": "conflict",
+        "originalTicketUntouched": true,
+        "foreignFilePreserved": true
+      },
+      "originalHeldStageFDConfirmed": true,
+      "originalHeldStageFinalLinkCount": 1,
+      "duplicateAck": true,
+      "staleOwnerDenied": true
+    }
+  ],
+  "sourceReferences": [
+    "Sources/RAWMasterCore/LibraryStore.swift:74",
+    "Modules/LibraryCatalog/src/ffi.rs:33",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs:701",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs:723",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs:755",
+    "Modules/LibraryCatalog/src/scheduler/batch/items.rs:834",
+    "Modules/LibraryCatalog/src/scheduler/batch/directory.rs:444",
+    "Modules/LibraryCatalog/src/scheduler/batch/directory.rs:563",
+    "Sources/RAWMaster/WorkbenchPhotoExport.swift:64"
+  ],
+  "limits": [
+    "The real Linux catalog ABI reports a nonzero result and an error string, without exporting the extended SQLite error code for its closed handle. The failure-layer syscall observed on both database paths was pwrite64(...catalog.sqlite-wal) = -1/ENOSPC.",
+    "No physical drive was filled. A private Linux tmpfs exercises actual kernel byte/inode exhaustion, not APFS device writeback, unplug/reattach, ENOSPC during fsync, power loss or materialization of persistent Powerbox grants.",
+    "Service filesystem/worker recovery contract tested independently of a SwiftUI retry action, photo encoder, model or signed production service. Throughput was not measured.",
+    "The first plain/observed sequences predate the held-FD/foreign-final strengthening. The final observed receipt alone credits those added assertions."
+  ]
+}

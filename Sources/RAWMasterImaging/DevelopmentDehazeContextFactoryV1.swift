@@ -34,8 +34,11 @@ enum DevelopmentDehazeContextFactoryV1 {
         let properties=CGImageSourceCopyPropertiesAtIndex(source,0,nil) as? [CFString:Any] else { throw DevelopmentError.unreadable }
       size=image.extent.size;orientation=(properties[kCGImagePropertyOrientation] as? Int) ?? 1;decoder="image-io";defaults=nil
     }
-    let fingerprint=try decoderFingerprint(decoder:decoder,originalDefaults:defaults,orientation:orientation,size:size)
-    let binding=DevelopmentLocalEditSourceBinding(sourceContentID:try RenderFiles.hash(capture),exifOrientation:orientation,
+    let fingerprint = try CanonicalPreviewDiagnostic.measure("dehaze decoder contract") {
+      try decoderFingerprint(decoder:decoder,originalDefaults:defaults,orientation:orientation,size:size)
+    }
+    let digest = try CanonicalPreviewDiagnostic.measure("hash dehaze capture bytes") { try RenderFiles.hash(capture) }
+    let binding=DevelopmentLocalEditSourceBinding(sourceContentID:digest,exifOrientation:orientation,
       orientedWidth:Int(size.width),orientedHeight:Int(size.height))
     guard try PreviewFileStamp.read(capture)==before else { throw DevelopmentPreviewError.sourceInvalidated }
     let result=DevelopmentDehazeContextV1(source:binding,sourceGeneration:generation,decoderContractFingerprint:fingerprint)

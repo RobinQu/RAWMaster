@@ -4,8 +4,9 @@ import CoreImage
 import Metal
 import Darwin
 import RAWMasterCore
+import RAWMasterLibrary
 
-/// Process-wide preview coordinator. Canonical save/export/provider input services remain independent.
+/// Process-wide preview coordinator. Native GPU work shares admission with export and library work.
 public actor DevelopmentPreviewService: ImageEngineMonitoring {
   public static let shared = DevelopmentPreviewService()
   private struct Lease {
@@ -93,6 +94,14 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var latestRecipeFingerprint: [PreviewConsumerID:String] = [:]
   private struct Cached { let pixels: PreviewPixels; let sourceKey: String; let settledRecipeFingerprint: String?; var use: UInt64;var nativeProfileSemantic=false }
   private let ioQueue = DispatchQueue(label: "RAWMaster.preview.capture", qos: .userInitiated)
+  private static let qaCanonicalRequestCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_REQUEST_CACHE"] == "1"
+  private static let qaCanonicalHalfFIT = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_HALF_FIT"] == "1"
+  private enum CanonicalHalfFIT: String {
+    case coreImage = "qa-native-half-fit-v1"
+    case portable = "qa-portable-point-half-fit-v1"
+    case frozenMask = "qa-portable-frozen-mask-half-fit-v1"
+    case grading = "qa-portable-grading-half-fit-v1"
+  }
   private var policy = PreviewResourcePolicy.default
   private var rawBasePool: PreviewRawBasePool?
   private let analysisImages = DevelopmentAnalysisImageCache()
@@ -133,6 +142,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var quietWakeID: UUID?
   private var pressure: DispatchSourceMemoryPressure?
   private let interactiveProxyPool=PreviewInteractiveProxyPool()
+  private let portableMetalPrograms = PreviewPortableMetalPrograms()
   private func qaLifecycle(_ kind:PreviewQALifecycleTrace.Kind,_ phase:PreviewQALifecycleTrace.Phase,id:UUID,
                            request:DevelopmentPreviewRequest?,sourceID:UUID?,raw:RawBaseStatisticsSnapshot?=nil,
                            receipt:PreviewNativePointwiseReceiptV1?=nil,frameID:UUID?=nil,ipEmitNS:UInt64?=nil,
@@ -226,6 +236,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     self.rawBasePool = policy.rawBaseCacheBytes > 0 ? PreviewRawBasePool(byteBudget:policy.rawBaseCacheBytes):nil
     self.rawBaseStatsVersion = 0
     interactiveProxyPool.retire();interactivePresentation?.closeAndRetire()
+    portableMetalPrograms.removeAll()
     interactivePresentation=(policy.interactiveEvaluation != .canonical || grainFinalTransportEnabled || qaBrilliancePublicV1 || qaDehazeTIFFPreview) ? PreviewPresentationScope():nil
     self.policy = policy
   }
@@ -284,10 +295,14 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
                   return (reusable, after)
                 }
                 // capture hashes the complete copied bytes once, with bounded autorelease chunks.
-                let captured = try RenderFiles.capture(snapshot)
+                let verifyRAW = !isArtifact && PhotoRenderer.rawExtensions.contains(snapshot.sourceLocation.pathExtension.lowercased())
+                  && DevelopmentResidentDehazeGuide.canVerifyCapture(memoryLimit: memory)
+                let verified = verifyRAW ? try RenderFiles.verifiedPreviewCapture(snapshot) : nil
+                let captured = try verified?.url ?? RenderFiles.capture(snapshot)
                 do {
                   let after = try PreviewFileStamp.read(snapshot.sourceLocation)
                   guard before == after else { throw DevelopmentPreviewError.sourceInvalidated }
+                  if let verified { return (try PreviewNativeSource.openVerifiedRAW(verified, memoryLimit: memory), after) }
                   try FileManager.default.setAttributes([.posixPermissions: 0o400], ofItemAtPath: captured.path)
                   return (try PreviewNativeSource(capture: captured, byteCount: snapshot.byteCount, artifact: isArtifact, memoryLimit: memory), after)
                 } catch { try? FileManager.default.removeItem(at: captured.deletingLastPathComponent()); throw error }
@@ -550,10 +565,9 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let interactivePlan=try prepareInteractivePlan(request,sourceKey:lease.key)
     let nativePointwisePlan=try prepareNativePointwisePlan(request,sourceKey:lease.key)
     let outputKey = try pixelKey(request, sourceKey: lease.key,interactivePlan:interactivePlan,nativePointwisePlan:nativePointwisePlan)
-    if var hit = cache[outputKey],canReplayInteractive(interactivePlan,nativePointwisePlan:nativePointwisePlan,pixels:hit.pixels) {
-      tick &+= 1; hit.use = tick; cache[outputKey] = hit; stats.cacheHits += 1
-      recordNativeProfileCacheHit(nativePointwisePlan)
-      mailbox.complete(work, result: .success(frame(request, key: outputKey, pixels: hit.pixels,sharedFITRequested:requestsSharedFIT(nativePointwisePlan),bitmapReplay:true)))
+    if let hit = replayBitmap(request, sourceKey: lease.key, outputKey: outputKey,
+      interactivePlan: interactivePlan, nativePointwisePlan: nativePointwisePlan) {
+      mailbox.complete(work, result: .success(frame(request, key: hit.key, pixels: hit.pixels,sharedFITRequested:requestsSharedFIT(nativePointwisePlan),bitmapReplay:true)))
       markComparisonOwed(request, channelID: mailbox.id)
       return
     }
@@ -571,11 +585,10 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let interactivePlan=try prepareInteractivePlan(request,sourceKey:lease.key)
     let nativePointwisePlan=try prepareNativePointwisePlan(request,sourceKey:lease.key)
     let outputKey = try pixelKey(request, sourceKey: lease.key,interactivePlan:interactivePlan,nativePointwisePlan:nativePointwisePlan)
-    if var hit = cache[outputKey],canReplayInteractive(interactivePlan,nativePointwisePlan:nativePointwisePlan,pixels:hit.pixels) {
-      tick &+= 1; hit.use = tick; cache[outputKey] = hit; stats.cacheHits += 1
-      recordNativeProfileCacheHit(nativePointwisePlan)
+    if let hit = replayBitmap(request, sourceKey: lease.key, outputKey: outputKey,
+      interactivePlan: interactivePlan, nativePointwisePlan: nativePointwisePlan) {
       markComparisonOwed(request)
-      return frame(request, key: outputKey, pixels: hit.pixels,sharedFITRequested:requestsSharedFIT(nativePointwisePlan),bitmapReplay:true)
+      return frame(request, key: hit.key, pixels: hit.pixels,sharedFITRequested:requestsSharedFIT(nativePointwisePlan),bitmapReplay:true)
     }
     guard !criticalPressure else { throw DevelopmentPreviewError.memoryBudgetExceeded }
     let token = UUID()
@@ -709,10 +722,9 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     }
     do { try checkStamp(item.request.sessionID) }
     catch { deliver(item, .failure(error)); refreshChannels(); pump(); return }
-    if var hit = cache[item.outputKey],canReplayInteractive(item.interactivePlan,nativePointwisePlan:item.nativePointwisePlan,pixels:hit.pixels) {
-      tick &+= 1; hit.use = tick; cache[item.outputKey] = hit; stats.cacheHits += 1
-      recordNativeProfileCacheHit(item.nativePointwisePlan)
-      deliver(item, .success(frame(item.request, key: item.outputKey, pixels: hit.pixels,sharedFITRequested:requestsSharedFIT(item.nativePointwisePlan),bitmapReplay:true)))
+    if let hit = replayBitmap(item.request, sourceKey: item.key, outputKey: item.outputKey,
+      interactivePlan: item.interactivePlan, nativePointwisePlan: item.nativePointwisePlan) {
+      deliver(item, .success(frame(item.request, key: hit.key, pixels: hit.pixels,sharedFITRequested:requestsSharedFIT(item.nativePointwisePlan),bitmapReplay:true)))
       markComparisonOwed(item.request, channelID: item.channelID, deliveryEnabled: item.deliveryEnabled)
       refreshChannels(); pump(); return
     }
@@ -749,11 +761,13 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     qaLifecycle(.render,.admitted,id:item.token,request:request,sourceID:native.captureID)
     let thumbnailHook=makeThumbnailSettledHook(item,native:native)
     let proxyPool=interactiveProxyPool,scope=interactivePresentation,memoryLimit=policy.contextMemoryLimitMiB
+    let metalPrograms = portableMetalPrograms
     // One canonical operation preserves this admitted source owner/key, pool policy and thumbnail hook.
     // Managed fallback and ordinary canonical rendering invoke the same operation exactly once.
     let grainTransportRequested=requestsGrainFinalTransport(request,sourceKey:item.key)
     let newBrilliance=DevelopmentBrilliancePublicV1.active(request.recipe)
     let dehazeRequested=requestsDehazeTIFF(request,sourceKey:item.key)
+    let halfFIT = request.quality == .settled ? canonicalHalfFIT(request,sourceKey:item.key) : nil
     let dehazeObserver=qaDehazeTIFFObserverForTesting
     let canonicalRender:()throws->PreviewPixels = {
       let brillianceRequest:DevelopmentBrilliancePublicV1.Request?
@@ -773,8 +787,62 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
         guard let scope else{throw PreviewPresentationError.allocationProtocol}
         dehazeRequest = .init(scope:scope,check:{try item.interactiveCancellation.check();try native.validateCaptureAuthority()},observer:dehazeObserver)
       }else{dehazeRequest=nil}
+      let localMaskValidation: DevelopmentMaskEngineV3.CanonicalValidation?
+      if request.role == .primary, request.quality == .settled, request.viewport.maxPixel == 2400,
+         let transport = DevelopmentMaskEngineV3.CanonicalValidation.requestedTransport(for: request.recipe.adjustmentsV3) {
+        localMaskValidation = .init(transport: transport, checkCancellation: { try item.interactiveCancellation.check() })
+      } else {
+        localMaskValidation = nil
+      }
+      let spatialScan: DevelopmentCanonicalFiniteGPU.SpatialRequest?
+      if request.role == .primary, request.quality == .settled, request.viewport.maxPixel == 2400,
+         let adjustments = request.recipe.adjustmentsV3 {
+        spatialScan = DevelopmentCanonicalFiniteGPU.spatialRequest(adjustments) { try item.interactiveCancellation.check() }
+      } else {
+        spatialScan = nil
+      }
+      let checkDehazeTexture: (() throws -> Void)?
+      if DevelopmentResidentDehazeGuide.sharedTextureRequested || DevelopmentResidentDehazeGuide.directTextureRequested, memoryLimit == 512,
+         request.role == .primary, request.quality == .settled, request.viewport.maxPixel == 2400,
+         DevelopmentDehazeEngineV3.usesPositiveV2(request.recipe.adjustmentsV3?.advancedDetail) {
+        checkDehazeTexture = { try item.interactiveCancellation.check(); try native.validateCaptureAuthority() }
+      } else {
+        checkDehazeTexture = nil
+      }
+      let checkCanonicalCache: (() throws -> Void)?
+      let primaryFIT = request.role == .primary && request.quality == .settled && request.viewport.maxPixel == 2400
+      if Self.qaCanonicalRequestCache && primaryFIT {
+        checkCanonicalCache = { try item.interactiveCancellation.check() }
+      } else {
+        checkCanonicalCache = nil
+      }
+      let checkCanonicalHalfFIT: (() throws -> Void)?
+      let portableHalfFITRequest: PreviewPortableHalfFIT.Request?
+      if let halfFIT {
+        checkCanonicalHalfFIT = { try item.interactiveCancellation.check(); try native.validateCaptureAuthority() }
+        portableHalfFITRequest = halfFIT != .coreImage ? checkCanonicalHalfFIT.map {
+          .init(programs:metalPrograms,revision:request.revision,checkAuthority:$0)
+        } : nil
+      } else {
+        checkCanonicalHalfFIT = nil
+        portableHalfFITRequest = nil
+      }
+      let nativeFiniteCheck: FlashRawNativeFiniteCheck.Request?
+      let comparisonFIT = request.role == .comparison && request.quality == .settled && request.viewport.maxPixel == 2400
+      if FlashRawNativeFiniteCheck.enabled, native.hasRAWFilter, primaryFIT || comparisonFIT {
+        nativeFiniteCheck = .init(mayCheckTexture: primaryFIT, checkAuthority: {
+          try item.interactiveCancellation.check()
+          try native.validateCaptureAuthority()
+        })
+      } else {
+        nativeFiniteCheck = nil
+      }
       return try native.render(recipe:request.recipe,maxPixel:request.viewport.maxPixel,rawBasePool:pool,sourceKey:item.key,
-        thumbnailNativeSink:thumbnailHook.map{$0.consume},grainFinalTransport:grainTransport,brillianceFinalTransport:brillianceRequest,dehazeTIFFRequest:dehazeRequest)
+        localMaskValidation:localMaskValidation,thumbnailNativeSink:thumbnailHook.map{$0.consume},grainFinalTransport:grainTransport,
+        brillianceFinalTransport:brillianceRequest,dehazeTIFFRequest:dehazeRequest,spatialScan:spatialScan,
+        checkDehazeTexture:checkDehazeTexture,checkCanonicalCache:checkCanonicalCache,
+        checkCanonicalHalfFIT:checkCanonicalHalfFIT,portableHalfFITRequest:portableHalfFITRequest,nativeFiniteCheck:nativeFiniteCheck,
+        localSourceCancellation:item.interactiveCancellation)
     }
     // Look up the full canonical key, including source, viewport, recipe and active filter resources.
     // Only a settled primary result can supply a revisited value. The reverse lookup never occurs.
@@ -786,7 +854,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
         request.recipe.adjustmentsV3.map({ PreviewInteractiveDetailGuide.isPureSharpen($0,maskPreview:true) }) == true),
        item.nativePointwisePlan == nil, let fingerprint = latestRecipeFingerprint[request.consumerID],
        cache.values.contains(where: { $0.sourceKey == item.key && $0.settledRecipeFingerprint == fingerprint }),
-       let exactKey = try? pixelKey(request,sourceKey:item.key), let exact = cache[exactKey], exact.settledRecipeFingerprint == fingerprint,
+       let exactKey = try? pixelKey(request,sourceKey:item.key,settledHalfFITReplay:true), let exact = cache[exactKey], exact.settledRecipeFingerprint == fingerprint,
        !exact.pixels.managedPresentation, exact.pixels.approximation == nil {
       settledDisplay = (exactKey,exact.pixels)
     } else { settledDisplay = nil }
@@ -802,7 +870,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
           try native.validateCaptureAuthority()
           try item.interactiveCancellation.check()
         }) { return replay }
-        return try native.renderInteractiveProxy(recipe:request.recipe,maxPixel:request.viewport.maxPixel,plan:plan,pool:proxyPool,scope:scope,rawBasePool:pool,memoryLimit:memoryLimit,cancellation:item.interactiveCancellation)
+        return try native.renderInteractiveProxy(recipe:request.recipe,maxPixel:request.viewport.maxPixel,plan:plan,pool:proxyPool,programs:metalPrograms,scope:scope,rawBasePool:pool,memoryLimit:memoryLimit,cancellation:item.interactiveCancellation)
       }
       return try canonicalRender()
     }
@@ -810,27 +878,35 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       let telemetry = ImagePerformanceTelemetry.shared
       let backend = native.hasRAWFilter ? "RAW" : "图像"
       let token = telemetry.begin(operation: "生成预览", stage: backend + " · " + request.quality.rawValue, queue: Self.queueName(request))
-      let result = await Task.detached(priority: .userInitiated) { () -> (Result<PreviewPixels, Error>, RawBaseStatisticsSnapshot?,PreviewQALifecycleTrace.IPPacket?) in
-        PreviewQALifecycleTrace.record(.render,.entered,id:item.token,request:request,sourceID:native.captureID)
-        defer { PreviewQALifecycleTrace.record(.render,.returned,id:item.token,request:request,sourceID:native.captureID) }
-        let qaIPTiming=PreviewQALifecycleTrace.makeIPTiming(id:item.token,eligible:request.quality == .interactive && item.nativePointwisePlan?.fallback == nil && item.nativePointwisePlan?.canonicalFullChecks == false && pool != nil)
-        func packet(_ result:Result<PreviewPixels,Error>)->PreviewQALifecycleTrace.IPPacket? {
-          let succeeded:Bool;if case .success=result{succeeded=true}else{succeeded=false}
-          return qaIPTiming?.finish(successful:succeeded)
+      let result: (Result<PreviewPixels, Error>, RawBaseStatisticsSnapshot?, PreviewQALifecycleTrace.IPPacket?)
+      do {
+        result = try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1), presentation: true) {
+          try item.interactiveCancellation.check()
+          return await Task.detached(priority: .userInitiated) {
+            PreviewQALifecycleTrace.record(.render,.entered,id:item.token,request:request,sourceID:native.captureID)
+            defer { PreviewQALifecycleTrace.record(.render,.returned,id:item.token,request:request,sourceID:native.captureID) }
+            let qaIPTiming=PreviewQALifecycleTrace.makeIPTiming(id:item.token,eligible:request.quality == .interactive && item.nativePointwisePlan?.fallback == nil && item.nativePointwisePlan?.canonicalFullChecks == false && pool != nil)
+            func packet(_ result:Result<PreviewPixels,Error>)->PreviewQALifecycleTrace.IPPacket? {
+              let succeeded:Bool;if case .success=result{succeeded=true}else{succeeded=false}
+              return qaIPTiming?.finish(successful:succeeded)
+            }
+            if let pool {
+              return pool.withWorker {
+                let v2Eligible = request.recipe.schemaVersion == 2 && request.recipe.color?.isNeutral == false && native.hasRAWFilter
+                let v3Eligible = PreviewRawBaseRenderer.v3CacheEligible(request.recipe,sourceIsRAW:native.hasRAWFilter)
+                if request.quality == .detail && !v2Eligible && !v3Eligible { pool.evictUnpinned() }
+                let rendered = Result { try DevelopmentDehazeNativeResources.run {
+                  try renderNative(qaIPTiming)
+                } }
+                return (rendered,pool.statistics,packet(rendered))
+              }
+            }
+            let rendered=Result { try DevelopmentDehazeNativeResources.run { try renderNative(qaIPTiming) } };return (rendered,nil,packet(rendered))
+          }.value
         }
-        if let pool {
-          return pool.withWorker {
-            let v2Eligible = request.recipe.schemaVersion == 2 && request.recipe.color?.isNeutral == false && native.hasRAWFilter
-            let v3Eligible = PreviewRawBaseRenderer.v3CacheEligible(request.recipe,sourceIsRAW:native.hasRAWFilter)
-            if request.quality == .detail && !v2Eligible && !v3Eligible { pool.evictUnpinned() }
-            let rendered = Result { try DevelopmentDehazeNativeResources.run {
-              try renderNative(qaIPTiming)
-            } }
-            return (rendered,pool.statistics,packet(rendered))
-          }
-        }
-        let rendered=Result { try DevelopmentDehazeNativeResources.run { try renderNative(qaIPTiming) } };return (rendered,nil,packet(rendered))
-      }.value
+      } catch {
+        result = (.failure(error), nil, nil)
+      }
       telemetry.end(token, result: result.0) { Int($0.outputSize.width * $0.outputSize.height) }
       await self.finish(token:item.token,result:result.0,rawStatistics:result.1,thumbnailHook:thumbnailHook,qaIPPacket:result.2)
     }
@@ -1199,6 +1275,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private func clearCaches() {
     analysisImages.clear()
     interactiveProxyPool.retire()
+    portableMetalPrograms.removeAll()
     thumbnailProxy?.value.surface.retire();thumbnailProxy=nil;thumbnailProxyScope=nil
     rawBaseClearRequested = true
     for value in cache.values{value.pixels.presentationTicket?.markRetired()}
@@ -1269,7 +1346,17 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       let native=sources[sourceKey]?.native,let lease=leases[request.sessionID],case .raw=lease.source else{return false}
     return PreviewGrainFinalTransportV1.eligible(recipe:request.recipe,sourceIsRAW:native.hasRAWFilter,artifact:native.artifact,maxPixel:request.viewport.maxPixel)
   }
-  private func pixelKey(_ request: DevelopmentPreviewRequest, sourceKey: String,interactivePlan:PreviewInteractivePlan?=nil,nativePointwisePlan:PreviewNativePointwisePlanV1?=nil,naturalSharedFITOverride:Bool?=nil,canonicalSharedFITOverride:Bool?=nil) throws -> String {
+  private func canonicalHalfFIT(_ request: DevelopmentPreviewRequest, sourceKey: String) -> CanonicalHalfFIT? {
+    guard Self.qaCanonicalHalfFIT || PreviewPortableHalfFIT.enabled || PreviewPortableMaskTone.enabled || PreviewPortableGrading.enabled,
+          renderOverride == nil, request.role == .primary,
+          request.viewport.maxPixel == 2400, let adjustments = request.recipe.adjustmentsV3,
+          let native = sources[sourceKey]?.native else { return nil }
+    if PreviewPortableHalfFIT.enabled, native.qualifiesPortableHalfFITRecipe(adjustments) { return .portable }
+    if PreviewPortableMaskTone.enabled, native.qualifiesPortableMaskHalfFIT(adjustments) { return .frozenMask }
+    if PreviewPortableGrading.enabled, native.qualifiesPortableGradingHalfFIT(adjustments) { return .grading }
+    return Self.qaCanonicalHalfFIT && native.qualifiesHalfFITRecipe(adjustments) ? .coreImage : nil
+  }
+  private func pixelKey(_ request: DevelopmentPreviewRequest, sourceKey: String,interactivePlan:PreviewInteractivePlan?=nil,nativePointwisePlan:PreviewNativePointwisePlanV1?=nil,naturalSharedFITOverride:Bool?=nil,canonicalSharedFITOverride:Bool?=nil,settledHalfFITReplay:Bool=false) throws -> String {
     let encoder = JSONEncoder(); encoder.outputFormatting = [.sortedKeys]
     // Interactive and settled are both the same canonical P1 pixels, so share cache.
     var pixelRecipe=request.recipe
@@ -1298,7 +1385,9 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let dehazeCoverageSuffix=DevelopmentDehazeEngineV3.rawPositiveV2CoverageSuffix(request.recipe.adjustmentsV3?.advancedDetail,
       sourceIsRAW:sources[sourceKey]?.native.hasRAWFilter == true) +
       (requestsDehazeTIFF(request,sourceKey:sourceKey) ? "":DevelopmentDehazeNativeRfV1.keySuffix(request.recipe.adjustmentsV3?.advancedDetail))
-    return digest(Data((sourceKey + ":canonical-v1:" + String(request.viewport.maxPixel) + ":"+suffix+proxySuffix+grainInputSuffix+grainTransportSuffix+dehazeCoverageSuffix+brillianceSuffix+brillianceNativeSuffix+dehazeTIFFSuffix).utf8) + data)
+    let halfFITQuality = request.quality == .settled || (settledHalfFITReplay && request.quality == .interactive)
+    let halfFITSuffix = halfFITQuality ? canonicalHalfFIT(request,sourceKey:sourceKey).map { "/" + $0.rawValue } ?? "" : ""
+    return digest(Data((sourceKey + ":canonical-v1:" + String(request.viewport.maxPixel) + ":"+suffix+proxySuffix+grainInputSuffix+grainTransportSuffix+dehazeCoverageSuffix+brillianceSuffix+brillianceNativeSuffix+dehazeTIFFSuffix+halfFITSuffix).utf8) + data)
   }
   private func requestsDehazeTIFF(_ request:DevelopmentPreviewRequest,sourceKey:String)->Bool{
     guard qaDehazeTIFFPreview,policy.contextMemoryLimitMiB==512,renderOverride==nil,
@@ -1423,6 +1512,30 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     }
     return plan==nil || pixels.managedPresentation
   }
+
+  private func replayBitmap(_ request: DevelopmentPreviewRequest, sourceKey: String, outputKey: String,
+                            interactivePlan: PreviewInteractivePlan?, nativePointwisePlan: PreviewNativePointwisePlanV1?)
+      -> (key: String, pixels: PreviewPixels)? {
+    var key = outputKey
+    // A canonical interactive request can read an existing exact primary frame.
+    // Its normal admission key remains the destination for any new render.
+    if Self.qaCanonicalHalfFIT || PreviewPortableHalfFIT.enabled, request.quality == .interactive, request.role == .primary,
+       interactivePlan == nil, nativePointwisePlan == nil,
+       let exact = try? pixelKey(request,sourceKey:sourceKey,settledHalfFITReplay:true), exact != outputKey,
+       let existing = cache[exact], let fingerprint = existing.settledRecipeFingerprint,
+       fingerprint == latestRecipeFingerprint[request.consumerID], existing.pixels.approximation == nil {
+      key = exact
+    }
+    guard var hit = cache[key], canReplayInteractive(interactivePlan,nativePointwisePlan:nativePointwisePlan,pixels:hit.pixels)
+      else { return nil }
+    tick &+= 1
+    hit.use = tick
+    cache[key] = hit
+    stats.cacheHits += 1
+    recordNativeProfileCacheHit(nativePointwisePlan)
+    return (key, hit.pixels)
+  }
+
   /// Read-only access to the actual service scope; tests exercise real reservation retirement.
   func presentationScopeForTesting()->PreviewPresentationScope? { interactivePresentation }
   func interactiveProxyStatisticsForTesting()->PreviewInteractiveProxyPool.Statistics {

@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "scope": "Same Swift host and two catalog runtimes, actual APFS import and export",
+  "compileInputs": [
+    {
+      "path": "Modules/LibraryCatalog/src/scheduler/batch/items.rs",
+      "sha256": "195813d5797a3457c529d3a259e9cc33d60873bb776e5cec69d777e571e00f3c"
+    },
+    {
+      "path": "Modules/LibraryCatalog/tests/scheduled_processing/workbench_item_delivery.rs",
+      "sha256": "65df899396872c0f087fd81d2105a6bc059bfd6cab900012f6e6fdbd81bd4193"
+    }
+  ],
+  "runtimeAndHost": {
+    "host": "b06ac8e10d38c4e5dbb1b5d0fcb1fa26ce564cb79acbd3c3809ad358413db8c7",
+    "before": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+    "after": "388c97cedb199a77b74157b1d57810fbdf8426776bb9c15c35680fc3cd88f52e"
+  },
+  "immediateClaim": true,
+  "matchedRustRegressionTests": 33,
+  "rustLog": {
+    "path": "output/035-development/phase-ad/workbench/rust-scheduled-processing-retry.log",
+    "sha256": "7ba573631f8c98d51e51bc477384ece816c14b4935be00e8fd05c2f8e5798afc"
+  },
+  "sqlitePlanAndCounter": {
+    "path": "output/035-development/phase-ad/workbench/sql-qualification.json",
+    "sha256": "6bcac329e1c6e3bc8a7247a145e813a797cf6b8fcf354142a9cd03ac033f4fc5"
+  },
+  "forwardOrderOneItemAhead": {
+    "sqlVmBefore": 226903,
+    "sqlVmCandidate": 65723,
+    "oldRowsWithJSONPredicates": 20100,
+    "candidateTypedRows": 200,
+    "candidateFullScans": 1,
+    "completionCount": 1
+  },
+  "normal": {
+    "main": {
+      "order": [
+        "a1",
+        "b1",
+        "b2",
+        "a2"
+      ],
+      "audit": {
+        "path": "output/035-development/phase-ad/workbench/normal-main-audit.json",
+        "sha256": "d5cd9e1d7ac9bcd04d3b62ff517d2db1f3deb1b8af59261cf4fe579f798cf63a"
+      },
+      "rounds": {
+        "a1": {
+          "seconds": 6.759419583,
+          "firstPhotoSeconds": 0.166895125,
+          "processMaxRSSKiB": 863136
+        },
+        "a2": {
+          "seconds": 7.245930833,
+          "firstPhotoSeconds": 0.183463291,
+          "processMaxRSSKiB": 900816
+        },
+        "b1": {
+          "seconds": 7.189461333,
+          "firstPhotoSeconds": 0.174268167,
+          "processMaxRSSKiB": 886304
+        },
+        "b2": {
+          "seconds": 6.746903208,
+          "firstPhotoSeconds": 0.160697458,
+          "processMaxRSSKiB": 859824
+        }
+      },
+      "medians": {
+        "a": {
+          "seconds": 7.002675207999999,
+          "firstPhotoSeconds": 0.175179208
+        },
+        "b": {
+          "seconds": 6.9681822705,
+          "firstPhotoSeconds": 0.1674828125
+        }
+      },
+      "previousPhysicalOutputsMatched": true
+    },
+    "secondary": {
+      "order": [
+        "b1",
+        "a1",
+        "a2",
+        "b2"
+      ],
+      "audit": {
+        "path": "output/035-development/phase-ad/workbench/normal-secondary-audit.json",
+        "sha256": "1d9b6a0608619f6f1199c11029ec9f18ac72a439149ae2ac87184ce7608c3645"
+      },
+      "rounds": {
+        "a1": {
+          "seconds": 6.353490208,
+          "firstPhotoSeconds": 0.1263325,
+          "processMaxRSSKiB": 657600
+        },
+        "a2": {
+          "seconds": 6.178418583,
+          "firstPhotoSeconds": 0.109743083,
+          "processMaxRSSKiB": 649024
+        },
+        "b1": {
+          "seconds": 7.421177958,
+          "firstPhotoSeconds": 0.165216083,
+          "processMaxRSSKiB": 663888
+        },
+        "b2": {
+          "seconds": 6.619984,
+          "firstPhotoSeconds": 0.1162205,
+          "processMaxRSSKiB": 666496
+        }
+      },
+      "medians": {
+        "a": {
+          "seconds": 6.2659543955,
+          "firstPhotoSeconds": 0.11803779149999999
+        },
+        "b": {
+          "seconds": 7.020580979,
+          "firstPhotoSeconds": 0.1407182915
+        }
+      },
+      "previousPhysicalOutputsMatched": true
+    }
+  },
+  "physicalVerification": {
+    "databases": 8,
+    "batches": 80,
+    "files": 3872,
+    "allTickets": {
+      "path": "specs/035-portable-processing-cores/evidence/workbench-terminal-rows-tickets.jsonl.gz",
+      "sha256": "fce82bba03a6c0dd8d2978841eab276ea52c058f2401bee9b2f30b55a5ce2e11"
+    }
+  },
+  "isolatedLibraryActionReplay": {
+    "before": {
+      "receipt": [
+        {
+          "path": "output/035-development/phase-ad/workbench/direct-a1.json",
+          "sha256": "6057116bccafb45869f14bce5ae769ed0534829bf3ca9cd240ee8f357d0544f6"
+        },
+        {
+          "path": "output/035-development/phase-ad/workbench/direct-a2.json",
+          "sha256": "9e9921f8b5f4a74406999289bc1999083aba74d0c2433dac2a9851865991f5d7"
+        }
+      ],
+      "publicCABI": {
+        "claimItem": {
+          "n": 400,
+          "p50ms": 4.459125
+        },
+        "acknowledgeItem": {
+          "n": 400,
+          "p50ms": 19.022999499999997
+        }
+      }
+    },
+    "after": {
+      "receipt": [
+        {
+          "path": "output/035-development/phase-ad/workbench/direct-b1.json",
+          "sha256": "e743e0b4f98bc092dfd1d86a10000fd04fab9048c6b450c301ad5a8c4e1a034f"
+        },
+        {
+          "path": "output/035-development/phase-ad/workbench/direct-b2.json",
+          "sha256": "a61e5612aba83feb66a4677df3c41bf0f502024e48e13f9039844816054d0d37"
+        }
+      ],
+      "publicCABI": {
+        "claimItem": {
+          "n": 400,
+          "p50ms": 4.493145999999999
+        },
+        "acknowledgeItem": {
+          "n": 400,
+          "p50ms": 19.470333
+        }
+      }
+    }
+  }
+}

@@ -64,6 +64,10 @@ public final class LibraryStore: @unchecked Sendable {
               try statement("INSERT OR REPLACE INTO metadata(key,value) VALUES('libraryMigration.v8',?)", [try json(rehearsal)])
             }
           }
+          _ = try catalogTransaction("upgradeScheduler", LibraryEmpty())
+          guard try DatabaseSchema.validate(db) == DatabaseSchema.version, try rows("PRAGMA foreign_key_check").isEmpty else {
+            throw LibraryError.database("资料库升级未通过一致性校验")
+          }
           catalogInstalled = true
         }
       }

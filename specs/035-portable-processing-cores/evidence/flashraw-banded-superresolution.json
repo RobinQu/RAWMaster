@@ -1,0 +1,562 @@
+{
+  "schemaVersion": 1,
+  "candidate": "candidate-batch15",
+  "priorCandidate": {
+    "repoPath": "output/035-development/candidate-batch14b-formal/super-resolution.json",
+    "sha256": "4da5499fa9500ff804e32891a1369e664a86b1e7255d3fac84a66c7fcdbedb6c"
+  },
+  "gateBaseline": {
+    "repoPath": "output/035-development/main-1b7df6b6/formal/super-resolution.json",
+    "sha256": "85a8c5f0555ba75e58e6ea269865eabad36137c0d857ce8cd74874a2c8ecd6e9"
+  },
+  "gitHead": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "flag": "RAWMASTER_QA_SUPER_RESOLUTION_BANDED_UPLOAD",
+  "defaultEnabled": false,
+  "imagingTestBinary": {
+    "repoPath": "output/035-development/candidate-batch15/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+    "sha256": "3f71bd750801dcc319ad31dc88ea18210da5d5918bd8dab037434ef40a55877c"
+  },
+  "source": [
+    {
+      "repoPath": "Sources/RAWMasterImaging/DevelopmentService.swift",
+      "sha256": "0689e3428ed59e8c965b307e9613c7f1b1589abab4f5675cfc43de58747db4ec"
+    },
+    {
+      "repoPath": "Sources/RAWMasterImaging/FlashRawSource.swift",
+      "sha256": "37b9051472094821d9f404ba8c4d05fed176536891d023f6b41196480d351e70"
+    },
+    {
+      "repoPath": "Sources/RAWMasterImaging/FlashRawImageFactory.swift",
+      "sha256": "06a427e8100f8058ae33c78926d0de964c2ff08f565efa309acdaddb4c1039e7"
+    },
+    {
+      "repoPath": "Sources/RAWMasterImaging/FlashRawMetalConverter.swift",
+      "sha256": "b9b5c2bb153dbadcd53c8558f0499fd89563d55c5b3882ad2b95a75c16e3d2da"
+    }
+  ],
+  "nativeTexture": {
+    "abba-01": {
+      "repoPath": "output/035-development/flash-band-upload/abba-01/summary.json",
+      "sha256": "c2f443fe0cb63fe6ae12a6642354a0ea38aad81e82bd70d1370d3c3c749a7ef6"
+    },
+    "synthetic-01": {
+      "repoPath": "output/035-development/flash-band-upload/synthetic-01/summary.json",
+      "sha256": "edf80dc645c8fa811968f1af089018399102b8e9a304dc2cbf8a1d61238b8211"
+    },
+    "faults-01": {
+      "repoPath": "output/035-development/flash-band-upload/faults-01/summary.json",
+      "sha256": "9901d0345e979101eebb11046b82dab23069913fb52ff87b95c0a5a33d19862f"
+    }
+  },
+  "nativeTIFF": {
+    "primary": [
+      {
+        "repoPath": "output/035-development/flash-band-upload/native-01/primary-1-0.json",
+        "sha256": "4d01cd1eaeecab851e30529d88b9e482d224065bd0fd87e158d4f8cb6b20c2f6",
+        "enabled": false,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "artifact": {
+          "size": [
+            19008,
+            12672
+          ],
+          "byteCount": 1926958614,
+          "bits": 16,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+          "sampleFormat": "unsigned",
+          "colorSpace": "sRGB IEC61966-2.1"
+        },
+        "elapsedMs": 9132.058625,
+        "officialBoundaryMemory": {
+          "metalBytes": 2812149760,
+          "physicalFootprintBytes": 3751348384,
+          "residentBytes": 1379057664
+        },
+        "gate": {
+          "repoPath": "output/035-development/flash-band-upload/native-01/primary-1-0-comparison.json",
+          "sha256": "03c1df6b102cdec0a049e83db4e44fada7071eca419046ae9db6605997d0a531",
+          "failures": []
+        }
+      },
+      {
+        "repoPath": "output/035-development/flash-band-upload/native-01/primary-2-1.json",
+        "sha256": "2a984fc8d91cc7485f0f6137e0cd7dbb35d2437229b77fcc9330bd2bc17fafaf",
+        "enabled": true,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "artifact": {
+          "size": [
+            19008,
+            12672
+          ],
+          "byteCount": 1926958614,
+          "bits": 16,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+          "sampleFormat": "unsigned",
+          "colorSpace": "sRGB IEC61966-2.1"
+        },
+        "elapsedMs": 9493.352084,
+        "officialBoundaryMemory": {
+          "metalBytes": 2812149760,
+          "physicalFootprintBytes": 3752003720,
+          "residentBytes": 1380368384
+        },
+        "gate": {
+          "repoPath": "output/035-development/flash-band-upload/native-01/primary-2-1-comparison.json",
+          "sha256": "07d3bc70ee475a7f627d77ece76efcbba214bfc1f62fe8aacef4b412a34ca64d",
+          "failures": []
+        }
+      },
+      {
+        "repoPath": "output/035-development/flash-band-upload/native-01/primary-3-1.json",
+        "sha256": "61c70a41fc56d18ae6aeb8023444268f97984fb33f0dd8a2cdf4ed252542beab",
+        "enabled": true,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "artifact": {
+          "size": [
+            19008,
+            12672
+          ],
+          "byteCount": 1926958614,
+          "bits": 16,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+          "sampleFormat": "unsigned",
+          "colorSpace": "sRGB IEC61966-2.1"
+        },
+        "elapsedMs": 9230.938083,
+        "officialBoundaryMemory": {
+          "metalBytes": 2812149760,
+          "physicalFootprintBytes": 3750906040,
+          "residentBytes": 1378861056
+        },
+        "gate": {
+          "repoPath": "output/035-development/flash-band-upload/native-01/primary-3-1-comparison.json",
+          "sha256": "29abbeeb27e607e61db377126e4c6568d82fd64548911a82f9c0baba58f7bd21",
+          "failures": []
+        }
+      },
+      {
+        "repoPath": "output/035-development/flash-band-upload/native-01/primary-4-0.json",
+        "sha256": "071ca5245000e48668160f35f324e39abd989b712d7dfc05a0e43614ff702354",
+        "enabled": false,
+        "nativeSize": [
+          9504,
+          6336
+        ],
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "artifact": {
+          "size": [
+            19008,
+            12672
+          ],
+          "byteCount": 1926958614,
+          "bits": 16,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+          "sampleFormat": "unsigned",
+          "colorSpace": "sRGB IEC61966-2.1"
+        },
+        "elapsedMs": 9288.390833,
+        "officialBoundaryMemory": {
+          "metalBytes": 2812149760,
+          "physicalFootprintBytes": 3751676016,
+          "residentBytes": 1405288448
+        },
+        "gate": {
+          "repoPath": "output/035-development/flash-band-upload/native-01/primary-4-0-comparison.json",
+          "sha256": "9e72e321dc5e490e1f8c8c97f3ef81b7536b50403d8fb2f804aa3e99274cb2f5",
+          "failures": []
+        }
+      }
+    ],
+    "secondary": [
+      {
+        "repoPath": "output/035-development/flash-band-upload/native-01/secondary-1-0.json",
+        "sha256": "e11f950d354b935be2a69a28bfa8aa6484a6aab9e448f0d1e27c1de08a426cce",
+        "enabled": false,
+        "nativeSize": [
+          8640,
+          5760
+        ],
+        "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "artifact": {
+          "size": [
+            17280,
+            11520
+          ],
+          "byteCount": 1592528382,
+          "bits": 16,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sha256": "62ac66913252357ab02a484c329a3923ae613df3e68b664387e395a97a1c1da8",
+          "sampleFormat": "unsigned",
+          "colorSpace": "sRGB IEC61966-2.1"
+        },
+        "elapsedMs": 7793.837459,
+        "officialBoundaryMemory": {
+          "metalBytes": 2308063232,
+          "physicalFootprintBytes": 3220539384,
+          "residentBytes": 1180336128
+        }
+      },
+      {
+        "repoPath": "output/035-development/flash-band-upload/native-01/secondary-2-1.json",
+        "sha256": "ae75ff612d875efad4875a32d0c4a48ea8fea3c5ce5ee8955e8718f10517485d",
+        "enabled": true,
+        "nativeSize": [
+          8640,
+          5760
+        ],
+        "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "artifact": {
+          "size": [
+            17280,
+            11520
+          ],
+          "byteCount": 1592528382,
+          "bits": 16,
+          "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+          "sha256": "62ac66913252357ab02a484c329a3923ae613df3e68b664387e395a97a1c1da8",
+          "sampleFormat": "unsigned",
+          "colorSpace": "sRGB IEC61966-2.1"
+        },
+        "elapsedMs": 7604.906375,
+        "officialBoundaryMemory": {
+          "metalBytes": 2308194304,
+          "physicalFootprintBytes": 3216197672,
+          "residentBytes": 1177452544
+        }
+      }
+    ]
+  },
+  "timeCorrelatedMemory": [
+    {
+      "repoPath": "output/035-development/flash-band-upload/native-01/timeline-5-0.json",
+      "sha256": "9dbd04ae1e49846a9122ca63341da8c789ed35c620cb4c1b0b6bf76bcc8418a7",
+      "enabled": false,
+      "sampleIntervalMs": 5,
+      "uploadEvent": {
+        "bytes": 481738752,
+        "endNs": 590151288839291,
+        "operation": "FlashRaw.linearToRGBA16F",
+        "pixels": 60217344,
+        "stage": "F16 上传 · 原生方向",
+        "startNs": 590151253297208
+      },
+      "uploadMs": 35.542083,
+      "elapsedMs": 9291.895958,
+      "rssPeakExportBytes": 1692270592,
+      "rssPeakUploadBytes": 1692270592,
+      "physicalPeakExportBytes": 3750643824,
+      "metalPeakExportBytes": 2812149760,
+      "binarySHA256": "0c6e0e41a55583e96b1ed1d2eafb7c475502259d6115044a01b6847add248169"
+    },
+    {
+      "repoPath": "output/035-development/flash-band-upload/native-01/timeline-6-1.json",
+      "sha256": "fbd386cc94b3f8e201265326442e349ad7d7b1540f5df2fb229137c515634f54",
+      "enabled": true,
+      "sampleIntervalMs": 5,
+      "uploadEvent": {
+        "bytes": 361304064,
+        "endNs": 590161548470666,
+        "operation": "FlashRaw.linearToRGBA16F.banded",
+        "pixels": 60217344,
+        "stage": "F16 分带上传 · 超分辨率 TIFF",
+        "startNs": 590161527540291
+      },
+      "uploadMs": 20.930375,
+      "elapsedMs": 9430.218417,
+      "rssPeakExportBytes": 1370554368,
+      "rssPeakUploadBytes": 1346240512,
+      "physicalPeakExportBytes": 3751102624,
+      "metalPeakExportBytes": 2812149760,
+      "binarySHA256": "0c6e0e41a55583e96b1ed1d2eafb7c475502259d6115044a01b6847add248169"
+    },
+    {
+      "repoPath": "output/035-development/flash-band-upload/native-01/timeline-7-1.json",
+      "sha256": "dbc86db80f781a2d11e26aabd7c9c632ab5510dc939aa71caa3450c5e5588431",
+      "enabled": true,
+      "sampleIntervalMs": 5,
+      "uploadEvent": {
+        "bytes": 361304064,
+        "endNs": 590171770812875,
+        "operation": "FlashRaw.linearToRGBA16F.banded",
+        "pixels": 60217344,
+        "stage": "F16 分带上传 · 超分辨率 TIFF",
+        "startNs": 590171744180833
+      },
+      "uploadMs": 26.632042,
+      "elapsedMs": 9542.857917,
+      "rssPeakExportBytes": 1370406912,
+      "rssPeakUploadBytes": 1345765376,
+      "physicalPeakExportBytes": 3751446664,
+      "metalPeakExportBytes": 2812149760,
+      "binarySHA256": "0c6e0e41a55583e96b1ed1d2eafb7c475502259d6115044a01b6847add248169"
+    },
+    {
+      "repoPath": "output/035-development/flash-band-upload/native-01/timeline-8-0.json",
+      "sha256": "016df8d4757b504304953c4aab2515a74617bc317a9396554732c2465f787b7f",
+      "enabled": false,
+      "sampleIntervalMs": 5,
+      "uploadEvent": {
+        "bytes": 481738752,
+        "endNs": 590182206624833,
+        "operation": "FlashRaw.linearToRGBA16F",
+        "pixels": 60217344,
+        "stage": "F16 上传 · 原生方向",
+        "startNs": 590182170083416
+      },
+      "uploadMs": 36.541417,
+      "elapsedMs": 9736.199416,
+      "rssPeakExportBytes": 1693368320,
+      "rssPeakUploadBytes": 1693368320,
+      "physicalPeakExportBytes": 3751626864,
+      "metalPeakExportBytes": 2812149760,
+      "binarySHA256": "0c6e0e41a55583e96b1ed1d2eafb7c475502259d6115044a01b6847add248169"
+    }
+  ],
+  "failedExportAndRetry": {
+    "repoPath": "output/035-development/flash-band-upload/native-01/cancel-and-retry.json",
+    "sha256": "f2130be41d921531b54e159d5a88e69fdfee9c3b7286a04d5f5cf076c82acfd9",
+    "destinationEmpty": true,
+    "observedBandedUpload": true,
+    "returnedCancellation": true
+  },
+  "commands": [
+    {
+      "repoPath": "output/035-development/flash-band-upload/run.py",
+      "sha256": "70030a167c0d87ee8484915a72435a2b852e973bbe6f2674901327a0a143dd50"
+    },
+    {
+      "repoPath": "output/035-development/flash-band-upload/probe.swift",
+      "sha256": "f693b86590d87a273267979035dea3719be9d25f8d4daa34cec3b9f298ba15fc"
+    },
+    {
+      "repoPath": "output/035-development/flash-band-upload/export-abba.sh",
+      "sha256": "2fa499cb7c142f965840cda8487eab5756293f75fb9dc93e3a4d94f7f807e1ef"
+    },
+    {
+      "repoPath": "output/035-development/flash-band-upload/export-timeline.swift",
+      "sha256": "f35b04e5e5a3ef4a8e1cd87680aaee0b5b98afd19b9b94efe4e2453fba677d83"
+    }
+  ],
+  "rollout": {
+    "candidate": "candidate-batch15b",
+    "defaultEnabledForAdmittedRecipes": true,
+    "definition": {
+      "repoPath": "Sources/RAWMasterImaging/FlashRawMetalConverter.swift",
+      "sha256": "d4a5a6c765633418b39cb61d538998ba24887c6be1942d2763e5488f0ecf8373"
+    },
+    "default": {
+      "repoPath": "output/035-development/flash-band-upload/batch15b-default/default.json",
+      "sha256": "363e26f41f0c7071d6b800672936bd6bb7058f18ed4f0c22fffd4b99ad0ccd56",
+      "usesBandedUpload": true,
+      "uploadEvent": {
+        "bytes": 361304064,
+        "endNs": 590440886191833,
+        "operation": "FlashRaw.linearToRGBA16F.banded",
+        "pixels": 60217344,
+        "stage": "F16 分带上传 · 超分辨率 TIFF",
+        "startNs": 590440865445333
+      },
+      "rssPeakExportBytes": 1369948160,
+      "physicalPeakExportBytes": 3691825240,
+      "metalPeakExportBytes": 2807955456,
+      "elapsedMs": 10124.572709,
+      "cancelAndRetry": {
+        "destinationEmpty": true,
+        "observedBandedUpload": true,
+        "returnedCancellation": true
+      },
+      "tiffSHA256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87"
+    },
+    "forcedWholeFrame": {
+      "repoPath": "output/035-development/flash-band-upload/batch15b-default/rollback.json",
+      "sha256": "37cf72c79af33870694d5d518f1e3bed71d7f5fdf2a9da5e91fecab53a5bf5bc",
+      "usesBandedUpload": false,
+      "uploadEvent": {
+        "bytes": 481738752,
+        "endNs": 590451901416458,
+        "operation": "FlashRaw.linearToRGBA16F",
+        "pixels": 60217344,
+        "stage": "F16 上传 · 原生方向",
+        "startNs": 590451867562625
+      },
+      "rssPeakExportBytes": 1692598272,
+      "physicalPeakExportBytes": 3751381128,
+      "metalPeakExportBytes": 2812149760,
+      "elapsedMs": 9893.121667,
+      "cancelAndRetry": {},
+      "tiffSHA256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87"
+    },
+    "release": {
+      "exit": 1,
+      "summary": {
+        "repoPath": "output/035-development/candidate-batch15b-formal/summary.json",
+        "sha256": "170e0e027b608b2e67b5a56aba3df6e6c4c3295c5015168e6367bf06fa9a723e"
+      },
+      "failedStages": [
+        "image-pipeline",
+        "interactive-comparison",
+        "lightflow-comparison",
+        "inspection-comparison"
+      ],
+      "failureDetails": [
+        {
+          "stage": "inspection-comparison",
+          "report": "inspection-comparison.json",
+          "failures": [
+            "light-clipping-modifier p95Ms: 13.36 > 9.65 ms",
+            "light-auto p95Ms: 9.81 > 8.88 ms",
+            "color-floating-scopes medianMs: 30.83 > 29.90 ms"
+          ]
+        },
+        {
+          "stage": "interactive-comparison",
+          "report": "interactive-comparison.json",
+          "failures": [
+            "texture: interactive median regressed 29.28%",
+            "dehaze-v1: interactive median regressed 18.00%",
+            "dehaze-v2: interactive median regressed 18.77%",
+            "lens-blur-bokeh-bubble: interactive median regressed 22.34%",
+            "targeted-hsl: interactive median regressed 36.03%",
+            "clipping-shadows: interactive median regressed 11.76%",
+            "point-color-samples: interactive median regressed 10.83%",
+            "local-point-color: interactive median regressed 27.28%",
+            "local-light-extended: interactive median regressed 14.48%",
+            "local-dehaze: interactive median regressed 13.81%",
+            "local-defringe: interactive median regressed 10.17%",
+            "global-sharpen-detail: interactive median regressed 20.16%"
+          ]
+        },
+        {
+          "stage": "lightflow-comparison",
+          "report": "lightflow-comparison.json",
+          "failures": [
+            "firstAppearanceMix/firstExact",
+            "firstAppearanceMix/final"
+          ]
+        },
+        {
+          "stage": "image-pipeline",
+          "report": "image.json",
+          "failures": [
+            "canvas_1_zoom-pan: relative p95 8.28 > 8.00 ms"
+          ]
+        }
+      ],
+      "superResolution": {
+        "repoPath": "output/035-development/candidate-batch15b-formal/super-resolution-comparison.json",
+        "sha256": "06e5876ca70612ac425064f3a2e4bb44e13a90e65cc278f153d2f65c460c9c49",
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "metrics": {
+          "fitOnMs": 123.997334,
+          "fullTIFFMs": 9647,
+          "exportPhysicalFootprintBytes": 3751151776,
+          "exportResidentBytes": 1379024896,
+          "exportMetalBytes": 2812149760
+        },
+        "failures": []
+      },
+      "lightflow": {
+        "repoPath": "output/035-development/candidate-batch15b-formal/lightflow-comparison.json",
+        "sha256": "d29389850eb86ed0a0e4175e552251125534d424868ada64e9325e3efdc8c626"
+      },
+      "cameraRawFeatureIndex": {
+        "repoPath": "output/035-development/candidate-batch15b/camera-raw-acceptance.json",
+        "sha256": "55dcb198c79f98acf0589667b2992e5bebb3b3c48418a202de67e701c22e12d5"
+      },
+      "firstAppearanceMix": {
+        "first": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 7.282500000000001,
+            "p95Ms": 188.075
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 5.663958,
+            "p95Ms": 17.523666
+          },
+          "medianLimitMs": 8.2825,
+          "p95LimitMs": 225.69,
+          "within": true
+        },
+        "firstExact": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 22.134999999999998,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 100.6612915,
+            "p95Ms": 485.411333
+          },
+          "medianLimitMs": 24.348499999999998,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        },
+        "final": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 23.5625,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 100.6612915,
+            "p95Ms": 485.411333
+          },
+          "medianLimitMs": 25.91875,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        }
+      }
+    },
+    "commands": [
+      {
+        "repoPath": "output/035-development/flash-band-upload/validate-default.sh",
+        "sha256": "e86583b90db16e2861c2ecf12ea436b4a39e82f945ba719fb71f200df26f21dd"
+      }
+    ]
+  },
+  "postReviewCancellationGuard": {
+    "source": {
+      "repoPath": "Sources/RAWMasterImaging/FlashRawMetalConverter.swift",
+      "sha256": "5239be7cdd9f178d528e79ca7b0984eccbe3a7f38b0fecf633882fd02262de9c"
+    },
+    "targetBuildLog": {
+      "repoPath": "output/035-development/flash-band-upload/cancel-gate-build.log",
+      "sha256": "076edcf73bce9416c940d56e8f425d7de86dfc49d007c8db511fd3972221ece9"
+    },
+    "linkedDiagnostic": {
+      "repoPath": "output/035-development/flash-band-upload/diagnostic-bin-final/probe",
+      "sha256": "5caa8e74d2ed82c9326f9e22cabdc9fa8b81602b0dd186c8933abef16c38651f"
+    },
+    "nativeReplay": {
+      "repoPath": "output/035-development/flash-band-upload/final-cancel-check.json",
+      "sha256": "b72dccedc87186e64eb428a419db35899503ea6bc1ecb2fb6f032da63b577597"
+    },
+    "checks": {
+      "destinationEmpty": true,
+      "observedBandedUpload": true,
+      "returnedCancellation": true
+    },
+    "tiffSHA256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+    "formalReleaseSnapshot": "candidate-batch15b"
+  }
+}

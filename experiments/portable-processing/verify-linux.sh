@@ -6,7 +6,7 @@ state="$root/output/035"
 mkdir -p "$state/linux-cargo-registry"
 mode=${1:-cpu}
 if [[ $# -gt 0 ]]; then shift; fi
-case "$mode" in cpu|vulkan|batch|raw) ;; *) echo 'expected cpu, vulkan, batch or raw' >&2; exit 2 ;; esac
+case "$mode" in cpu|vulkan|batch|raw|production-raw) ;; *) echo 'expected cpu, vulkan, batch, raw or production-raw' >&2; exit 2 ;; esac
 result=$(mktemp -d "$state/linux-$mode.XXXXXX")
 engine="rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea"
 mounts=(--mount "type=bind,source=$root,target=/repo,readonly"
@@ -23,7 +23,7 @@ if [[ "$mode" == batch ]]; then
         work_args+=("/input/$i")
         i=$((i+1))
     done
-elif [[ "$mode" == raw ]]; then
+elif [[ "$mode" == raw || "$mode" == production-raw ]]; then
     [[ $# == 1 && -f "$1" ]] || { echo 'raw requires the Spec 027 Sony fixture' >&2; exit 2; }
     photo=$(cd "$(dirname "$1")" && pwd)/$(basename "$1")
     mounts+=(--mount "type=bind,source=$photo,target=/input.ARW,readonly")
@@ -44,7 +44,7 @@ docker run --rm "${mounts[@]}" -e CARGO_TARGET_DIR=/state/linux-image-target \
         shift
         cargo run --release --locked --no-default-features --bin batch-replay -- \
             examples/local-look.json /results/pixels "$@" > /results/run.json ;;
-    raw)
+    raw|production-raw)
         echo "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c  /input.ARW" | sha256sum -c -
         archive=/repo/output/tools/flashraw-0.3.1.tar.gz
         if [ ! -r "$archive" ]; then
@@ -56,10 +56,16 @@ docker run --rm "${mounts[@]}" -e CARGO_TARGET_DIR=/state/linux-image-target \
         tar -xzf "$archive" -C /tmp/flashraw --strip-components=1
         cargo build --locked --release --manifest-path /tmp/flashraw/Cargo.toml -p flashraw-capi \
             --no-default-features --target-dir /state/linux-flashraw-target
-        cargo build --release --locked --no-default-features
-        cc -std=c11 -O2 -I/repo/Sources/CFlashRaw/include -Iinclude /repo/Sources/CFlashRaw/CFlashRaw.c \
+        if [ "$1" = production-raw ]; then
+            cargo build --release --locked --no-default-features --manifest-path /repo/Modules/ImageEdit/Cargo.toml
+            set -- -DRAWMASTER_PRODUCTION -I/repo/Modules/ImageEdit/include -lrawmaster_image
+        else
+            cargo build --release --locked --no-default-features
+            set -- -Iinclude -lrawmaster_image_poc
+        fi
+        cc -std=c11 -O2 -I/repo/Sources/CFlashRaw/include /repo/Sources/CFlashRaw/CFlashRaw.c \
             examples/raw-ingress.c -L/state/linux-image-target/release -Wl,-rpath,/state/linux-image-target/release \
-            -lrawmaster_image_poc -ldl -lm -o /tmp/raw-ingress
+            "$@" -ldl -lm -o /tmp/raw-ingress
         /tmp/raw-ingress /input.ARW /state/linux-flashraw-target/release/libflashraw_capi.so \
             /results/crop.rgba32fle > /results/run.json
         sha256sum /results/crop.rgba32fle ;;

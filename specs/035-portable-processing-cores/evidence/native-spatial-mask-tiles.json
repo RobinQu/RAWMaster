@@ -1,0 +1,3382 @@
+{
+  "schemaVersion": 1,
+  "baseline": {
+    "primary": {
+      "repoPath": "output/035-development/spatial-mask-study/primary-baseline.json",
+      "sha256": "345f8aa1b034690e9230723a2a43c4c7f96b1e2e7ca6deb2c52cadf1a94b97b4",
+      "exactIsolatedFrames": 16,
+      "targetMaskFiniteMs": {
+        "n": 4,
+        "p50": 331.206229,
+        "p95": 357.336208
+      },
+      "targetCGImageMs": {
+        "n": 4,
+        "p50": 142.0837295,
+        "p95": 149.492208
+      }
+    },
+    "secondary": {
+      "repoPath": "output/035-development/spatial-mask-study/secondary-baseline.json",
+      "sha256": "7f68636e71dcc87dd7fd629e5c92855e2ee7310b8a9dd5e34d9c67b788f6c44e",
+      "exactIsolatedFrames": 16,
+      "targetMaskFiniteMs": {
+        "n": 4,
+        "p50": 250.7462915,
+        "p95": 277.1735
+      },
+      "targetCGImageMs": {
+        "n": 4,
+        "p50": 123.066625,
+        "p95": 131.544
+      }
+    }
+  },
+  "spatialBranchROICounterexample": {
+    "primary": {
+      "repoPath": "output/035-development/spatial-mask-study/roi-primary-witness1.json",
+      "sha256": "c7a0c88fbf5dbc2ce7b24ca987fde54b0c174b446455d7d91b7650bf15f8209f",
+      "cases": [
+        {
+          "id": "effects-mask-clarity",
+          "state": 0,
+          "referenceSHA256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 19997027,
+                "passes": 80,
+                "peakMiB": 403,
+                "pixels": 414069928
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 19997027,
+                "passes": 80,
+                "peakMiB": 403,
+                "pixels": 414069928
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 6073,
+              "firstTopLeftXYDelta": [
+                [
+                  1173,
+                  321,
+                  1
+                ],
+                [
+                  1250,
+                  321,
+                  1
+                ],
+                [
+                  1273,
+                  323,
+                  1
+                ],
+                [
+                  1301,
+                  323,
+                  1
+                ],
+                [
+                  1066,
+                  326,
+                  1
+                ],
+                [
+                  1248,
+                  326,
+                  1
+                ],
+                [
+                  1142,
+                  328,
+                  1
+                ],
+                [
+                  1247,
+                  328,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "ca18cefeac84d373232e9f6615d9ba879b4a7a301a9d4eed55e626c970cdc8b4",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 13787923,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 265073480
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 4201,
+              "firstTopLeftXYDelta": [
+                [
+                  1269,
+                  323,
+                  1
+                ],
+                [
+                  1273,
+                  323,
+                  1
+                ],
+                [
+                  1301,
+                  323,
+                  1
+                ],
+                [
+                  1135,
+                  324,
+                  1
+                ],
+                [
+                  1100,
+                  325,
+                  1
+                ],
+                [
+                  1066,
+                  326,
+                  1
+                ],
+                [
+                  1218,
+                  326,
+                  1
+                ],
+                [
+                  1248,
+                  326,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "02291cd057414f842741592bde952c97a72988b00904b983ea46b9cb32f266ee",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 13631067,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 264937556
+              }
+            }
+          }
+        },
+        {
+          "id": "effects-mask-clarity",
+          "state": 1,
+          "referenceSHA256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 19997027,
+                "passes": 80,
+                "peakMiB": 403,
+                "pixels": 414069928
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 19997027,
+                "passes": 80,
+                "peakMiB": 403,
+                "pixels": 414069928
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 22090,
+              "firstTopLeftXYDelta": [
+                [
+                  1142,
+                  321,
+                  1
+                ],
+                [
+                  1250,
+                  321,
+                  1
+                ],
+                [
+                  1135,
+                  322,
+                  1
+                ],
+                [
+                  1160,
+                  322,
+                  1
+                ],
+                [
+                  1185,
+                  322,
+                  1
+                ],
+                [
+                  1209,
+                  322,
+                  1
+                ],
+                [
+                  1258,
+                  322,
+                  1
+                ],
+                [
+                  1260,
+                  322,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "9c6b4fb54f7d11928d0c450237701c87eeb31b073bf94fd7855c9cdb40e08481",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 13787923,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 265073480
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 15375,
+              "firstTopLeftXYDelta": [
+                [
+                  1191,
+                  321,
+                  1
+                ],
+                [
+                  1174,
+                  322,
+                  1
+                ],
+                [
+                  1181,
+                  322,
+                  1
+                ],
+                [
+                  1185,
+                  322,
+                  1
+                ],
+                [
+                  1209,
+                  322,
+                  1
+                ],
+                [
+                  1258,
+                  322,
+                  1
+                ],
+                [
+                  1290,
+                  322,
+                  1
+                ],
+                [
+                  1125,
+                  323,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "2d75687eb68312ee3fccd9146440d47277f8856a5f23d385e97460018800d2e9",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 13631067,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 264937556
+              }
+            }
+          }
+        },
+        {
+          "id": "effects-mask-texture",
+          "state": 0,
+          "referenceSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1326371,
+                "passes": 80,
+                "peakMiB": 350,
+                "pixels": 386095528
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1326371,
+                "passes": 80,
+                "peakMiB": 350,
+                "pixels": 386095528
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 3289,
+              "firstTopLeftXYDelta": [
+                [
+                  1135,
+                  322,
+                  1
+                ],
+                [
+                  1292,
+                  323,
+                  1
+                ],
+                [
+                  1218,
+                  326,
+                  1
+                ],
+                [
+                  1293,
+                  326,
+                  1
+                ],
+                [
+                  1226,
+                  328,
+                  1
+                ],
+                [
+                  1065,
+                  329,
+                  1
+                ],
+                [
+                  1155,
+                  329,
+                  1
+                ],
+                [
+                  1168,
+                  329,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "d83fdbcc3cebcbb9e69074242c3a95656e42d904a67c4776fb38a7760dac6fd4",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 991891,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 246005768
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 1485,
+              "firstTopLeftXYDelta": [
+                [
+                  1193,
+                  323,
+                  1
+                ],
+                [
+                  1104,
+                  325,
+                  1
+                ],
+                [
+                  1205,
+                  326,
+                  1
+                ],
+                [
+                  1293,
+                  326,
+                  1
+                ],
+                [
+                  1215,
+                  328,
+                  1
+                ],
+                [
+                  1226,
+                  328,
+                  1
+                ],
+                [
+                  1065,
+                  329,
+                  1
+                ],
+                [
+                  1072,
+                  329,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "86f8c0e617a6b04ecf5d82523742b2cd465c6d84250b9230f5362e48ac1a3475",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 846315,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 245881124
+              }
+            }
+          }
+        },
+        {
+          "id": "effects-mask-texture",
+          "state": 1,
+          "referenceSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1326371,
+                "passes": 80,
+                "peakMiB": 350,
+                "pixels": 386095528
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1326371,
+                "passes": 80,
+                "peakMiB": 350,
+                "pixels": 386095528
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 11615,
+              "firstTopLeftXYDelta": [
+                [
+                  1206,
+                  320,
+                  1
+                ],
+                [
+                  1253,
+                  321,
+                  1
+                ],
+                [
+                  1255,
+                  321,
+                  1
+                ],
+                [
+                  1118,
+                  323,
+                  1
+                ],
+                [
+                  1118,
+                  324,
+                  1
+                ],
+                [
+                  1202,
+                  324,
+                  1
+                ],
+                [
+                  1218,
+                  324,
+                  1
+                ],
+                [
+                  1280,
+                  324,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "a143645db6f5bdaaa9f4b5bef6bddd1aebaf87afbaa2f1434182fc7f7bd90c82",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 991891,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 246005768
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 5501,
+              "firstTopLeftXYDelta": [
+                [
+                  1206,
+                  320,
+                  1
+                ],
+                [
+                  1255,
+                  321,
+                  1
+                ],
+                [
+                  1118,
+                  323,
+                  1
+                ],
+                [
+                  1244,
+                  323,
+                  1
+                ],
+                [
+                  1116,
+                  324,
+                  1
+                ],
+                [
+                  1202,
+                  324,
+                  1
+                ],
+                [
+                  1280,
+                  324,
+                  1
+                ],
+                [
+                  1100,
+                  325,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "75a8f318cc1dd13320ca754a1e18997573561980a5b049b28936b2f6cd83a0f8",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 846315,
+                "passes": 80,
+                "peakMiB": 300,
+                "pixels": 245881124
+              }
+            }
+          }
+        }
+      ],
+      "syntheticCases": [
+        {
+          "name": "base-nan-hidden",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "base-positive-inf",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "base-negative-inf",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "changed-nan-outside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "changed-inf-inside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "finite-HDR",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "finite-opposite-extremes-outside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "signed-zero-outside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        }
+      ]
+    },
+    "secondary": {
+      "repoPath": "output/035-development/spatial-mask-study/roi-secondary-witness1.json",
+      "sha256": "e5a5ac981fb9cd00381567e4505c5ed909b14baa52700e8827da9bf64550027a",
+      "cases": [
+        {
+          "id": "effects-mask-clarity",
+          "state": 0,
+          "referenceSHA256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 16508099,
+                "passes": 80,
+                "peakMiB": 333,
+                "pixels": 343512616
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 16508099,
+                "passes": 80,
+                "peakMiB": 333,
+                "pixels": 343512616
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 8703,
+              "firstTopLeftXYDelta": [
+                [
+                  1190,
+                  321,
+                  1
+                ],
+                [
+                  1221,
+                  321,
+                  1
+                ],
+                [
+                  1118,
+                  322,
+                  1
+                ],
+                [
+                  1142,
+                  322,
+                  1
+                ],
+                [
+                  1215,
+                  322,
+                  1
+                ],
+                [
+                  1233,
+                  322,
+                  1
+                ],
+                [
+                  1140,
+                  325,
+                  1
+                ],
+                [
+                  1152,
+                  326,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "ba4e4cab13b230e121dc24082720c46e52764de1e0fd8b1049e38bffb9b6aba6",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 6273191,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 215342164
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 6945,
+              "firstTopLeftXYDelta": [
+                [
+                  1190,
+                  321,
+                  1
+                ],
+                [
+                  1118,
+                  322,
+                  1
+                ],
+                [
+                  1142,
+                  322,
+                  1
+                ],
+                [
+                  1212,
+                  322,
+                  1
+                ],
+                [
+                  1215,
+                  322,
+                  1
+                ],
+                [
+                  1233,
+                  322,
+                  1
+                ],
+                [
+                  1140,
+                  325,
+                  1
+                ],
+                [
+                  1214,
+                  325,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "3e4c69391bff2e8f7114a7c7e5e60a5e8bead3d843f1ab32f1a341aff22291ef",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 6192615,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 215280624
+              }
+            }
+          }
+        },
+        {
+          "id": "effects-mask-clarity",
+          "state": 1,
+          "referenceSHA256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 16508099,
+                "passes": 80,
+                "peakMiB": 333,
+                "pixels": 343512616
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 16508099,
+                "passes": 80,
+                "peakMiB": 333,
+                "pixels": 343512616
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 31739,
+              "firstTopLeftXYDelta": [
+                [
+                  1215,
+                  320,
+                  1
+                ],
+                [
+                  1173,
+                  321,
+                  1
+                ],
+                [
+                  1221,
+                  321,
+                  1
+                ],
+                [
+                  1137,
+                  322,
+                  1
+                ],
+                [
+                  1141,
+                  322,
+                  1
+                ],
+                [
+                  1173,
+                  322,
+                  1
+                ],
+                [
+                  1184,
+                  322,
+                  1
+                ],
+                [
+                  1219,
+                  322,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "6c9297c691a8b30cd2e1d812ed640739b0ded670b0cb04e22a9845a72f4952f6",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 6273191,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 215342164
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 25030,
+              "firstTopLeftXYDelta": [
+                [
+                  1206,
+                  320,
+                  1
+                ],
+                [
+                  1212,
+                  320,
+                  1
+                ],
+                [
+                  1217,
+                  320,
+                  1
+                ],
+                [
+                  1219,
+                  320,
+                  1
+                ],
+                [
+                  1228,
+                  320,
+                  1
+                ],
+                [
+                  1173,
+                  321,
+                  1
+                ],
+                [
+                  1137,
+                  322,
+                  1
+                ],
+                [
+                  1141,
+                  322,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "4bfda6550e9d7b123387886798e3b2e7133af3e03649cdec96fdd945dd00b137",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 6192615,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 215280624
+              }
+            }
+          }
+        },
+        {
+          "id": "effects-mask-texture",
+          "state": 0,
+          "referenceSHA256": "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1100991,
+                "passes": 56,
+                "peakMiB": 479,
+                "pixels": 320427556
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1100991,
+                "passes": 56,
+                "peakMiB": 479,
+                "pixels": 320427556
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 3807,
+              "firstTopLeftXYDelta": [
+                [
+                  1144,
+                  322,
+                  1
+                ],
+                [
+                  1213,
+                  324,
+                  1
+                ],
+                [
+                  1237,
+                  327,
+                  1
+                ],
+                [
+                  1301,
+                  327,
+                  1
+                ],
+                [
+                  1197,
+                  329,
+                  1
+                ],
+                [
+                  1367,
+                  329,
+                  1
+                ],
+                [
+                  1149,
+                  330,
+                  1
+                ],
+                [
+                  1167,
+                  330,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "ead0fa2b48e02d329e6f2747488dd100f3017ee0d0f41ca7e60898bc3442372c",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 481447,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 204373076
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 2779,
+              "firstTopLeftXYDelta": [
+                [
+                  1144,
+                  322,
+                  1
+                ],
+                [
+                  1237,
+                  327,
+                  1
+                ],
+                [
+                  1314,
+                  327,
+                  1
+                ],
+                [
+                  1197,
+                  329,
+                  1
+                ],
+                [
+                  1367,
+                  329,
+                  1
+                ],
+                [
+                  1149,
+                  330,
+                  1
+                ],
+                [
+                  1167,
+                  330,
+                  1
+                ],
+                [
+                  1348,
+                  330,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "d4473e6d4884ce2fc1048c5851b8164c8abeb38552193573b3720281d8dab787",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 404967,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 204315632
+              }
+            }
+          }
+        },
+        {
+          "id": "effects-mask-texture",
+          "state": 1,
+          "referenceSHA256": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+          "arms": {
+            "original": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1100991,
+                "passes": 56,
+                "peakMiB": 479,
+                "pixels": 320427556
+              }
+            },
+            "guardedFull": {
+              "alphaChanges": 0,
+              "changedPixels": 0,
+              "firstTopLeftXYDelta": [],
+              "maximumCodeDifference": 0,
+              "outsideProjectedSupport": 0,
+              "sha256": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+              "nativeWindowsEqual": true,
+              "displayEstimate": {
+                "overdraw": 1100991,
+                "passes": 56,
+                "peakMiB": 479,
+                "pixels": 320427556
+              }
+            },
+            "guardedROI": {
+              "alphaChanges": 0,
+              "changedPixels": 14025,
+              "firstTopLeftXYDelta": [
+                [
+                  1157,
+                  321,
+                  1
+                ],
+                [
+                  1123,
+                  322,
+                  1
+                ],
+                [
+                  1130,
+                  322,
+                  1
+                ],
+                [
+                  1232,
+                  322,
+                  1
+                ],
+                [
+                  1233,
+                  322,
+                  1
+                ],
+                [
+                  1221,
+                  323,
+                  1
+                ],
+                [
+                  1262,
+                  323,
+                  1
+                ],
+                [
+                  1266,
+                  323,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "81575b3d2d12ee804c2c2987db354de518676e5ed682d99ea3a43353d40e21ab",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 481447,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 204373076
+              }
+            },
+            "guardedCrop": {
+              "alphaChanges": 0,
+              "changedPixels": 10181,
+              "firstTopLeftXYDelta": [
+                [
+                  1157,
+                  321,
+                  1
+                ],
+                [
+                  1241,
+                  321,
+                  1
+                ],
+                [
+                  1123,
+                  322,
+                  1
+                ],
+                [
+                  1130,
+                  322,
+                  1
+                ],
+                [
+                  1262,
+                  323,
+                  1
+                ],
+                [
+                  1266,
+                  323,
+                  1
+                ],
+                [
+                  1153,
+                  324,
+                  1
+                ],
+                [
+                  1172,
+                  324,
+                  1
+                ]
+              ],
+              "maximumCodeDifference": 1,
+              "outsideProjectedSupport": 0,
+              "sha256": "52602d4e8b3ae2afb78d108f13d867114db24794b33d424c761c1b3cdba5e3bb",
+              "nativeWindowsEqual": false,
+              "displayEstimate": {
+                "overdraw": 404967,
+                "passes": 40,
+                "peakMiB": 461,
+                "pixels": 204315632
+              }
+            }
+          }
+        }
+      ],
+      "syntheticCases": [
+        {
+          "name": "base-nan-hidden",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "base-positive-inf",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "base-negative-inf",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": false,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "changed-nan-outside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "changed-inf-inside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "finite-HDR",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "finite-opposite-extremes-outside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        },
+        {
+          "name": "signed-zero-outside",
+          "variants": [
+            {
+              "arm": "original",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedFull",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedROI",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            },
+            {
+              "arm": "guardedCrop",
+              "finiteAccepted": true,
+              "nativeBytesEqualOriginal": true
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "stockGrid": {
+    "primary": {
+      "crossOver": [
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/01-primary-full.json",
+          "sha256": "06c7139597723d6fa802e81a8c93555ad5b60505aace51c3258c0d6fccd55c1c",
+          "arm": "full",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 323.6614165,
+            "p95": 360.413084
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 470.3982915,
+            "p95": 533.756542
+          },
+          "wholeProcessPeakPhysicalBytes": 2721040424,
+          "wholeProcessMaximumRSSBytes": 1566834688,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/02-primary-aligned.json",
+          "sha256": "b7b83c0fa8da938b44cfbe2336f3d28144589fb2d5f5b188ab5d80fa612fa844",
+          "arm": "aligned",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 125.83966649999999,
+            "p95": 138.48775
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 264.6146665,
+            "p95": 288.794
+          },
+          "wholeProcessPeakPhysicalBytes": 2656110608,
+          "wholeProcessMaximumRSSBytes": 1566179328,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/03-primary-aligned.json",
+          "sha256": "471e4cf864ec9ef452a4041480062004423526ff43c0eb4a5043055bb2342e64",
+          "arm": "aligned",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 125.349146,
+            "p95": 134.69475
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 273.400229,
+            "p95": 296.133708
+          },
+          "wholeProcessPeakPhysicalBytes": 2642069544,
+          "wholeProcessMaximumRSSBytes": 1565671424,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/04-primary-full.json",
+          "sha256": "2eed2e407a6021e4e59fbe5b12ab8f29535f32da980142dcdb3d82e80b0e630a",
+          "arm": "full",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 297.3574165,
+            "p95": 329.611375
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 439.160708,
+            "p95": 484.538209
+          },
+          "wholeProcessPeakPhysicalBytes": 2720237608,
+          "wholeProcessMaximumRSSBytes": 1566162944,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        }
+      ],
+      "otherTransportsScreen": [
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-budget-sweep/01-primary-paired.json",
+          "sha256": "a1352742d52df2ddfdf2f5062d1a3f87a622bbdd9ea81a13f56f2a8ee87334c5",
+          "arm": "paired",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 115.5668335,
+            "p95": 126.25275
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 262.34608349999996,
+            "p95": 296.043667
+          },
+          "wholeProcessPeakPhysicalBytes": 2637285392,
+          "wholeProcessMaximumRSSBytes": 1566638080,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-budget-sweep/02-primary-gpu64.json",
+          "sha256": "4620453456c58da1d5bf80270e048df4b9761e5cb9abfe93245feb3d66983cdb",
+          "arm": "gpu64",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 124.377646,
+            "p95": 179.940667
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 284.07125,
+            "p95": 347.006291
+          },
+          "wholeProcessPeakPhysicalBytes": 3148318736,
+          "wholeProcessMaximumRSSBytes": 1565917184,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-budget-sweep/03-primary-gpu128.json",
+          "sha256": "cc38f6fddb3663b077033151cb49eb198f88a9b7db9ec47ac6585bd38d8899b0",
+          "arm": "gpu128",
+          "originalTileCount": 70,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 85.639521,
+            "p95": 119.402375
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 231.8153125,
+            "p95": 279.178917
+          },
+          "wholeProcessPeakPhysicalBytes": 3257632664,
+          "wholeProcessMaximumRSSBytes": 1566228480,
+          "fullFrameDigests": [
+            "79af3769ce979d1ed5d6b52a0b97957919071dbb2a89db6d7f695cf4c157e824",
+            "730a6cd9c9a3a39380fd5c3bdbf56b220331e6c27003f09f88b0ec179d4e93ba",
+            "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e"
+          ]
+        }
+      ],
+      "stockCellWitness": {
+        "repoPath": "output/035-development/spatial-mask-study/grid-witness-primary.json",
+        "sha256": "4604fc55065cf52a9a1dfff17f7ffb0402a7361a6f07e5308da1672475d97f5f",
+        "originalCellsPerRecipe": 70,
+        "retainedCellsPerRecipe": 28,
+        "completeRGBA32FScalarValueMatch": true
+      }
+    },
+    "secondary": {
+      "crossOver": [
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/01-secondary-full.json",
+          "sha256": "52183eabaf26e219d9c8d73e13b2d939e950cfa4d113996ac2240e4d4ca819b4",
+          "arm": "full",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 239.65420799999998,
+            "p95": 281.711959
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 374.27466649999997,
+            "p95": 416.547916
+          },
+          "wholeProcessPeakPhysicalBytes": 2723678128,
+          "wholeProcessMaximumRSSBytes": 1307672576,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/02-secondary-aligned.json",
+          "sha256": "03a1e9747b44fe0714773e83c3a2694fca4d442c90360e8cd46ab7e57501a97c",
+          "arm": "aligned",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 129.227667,
+            "p95": 135.594917
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 261.163625,
+            "p95": 276.571667
+          },
+          "wholeProcessPeakPhysicalBytes": 2610923392,
+          "wholeProcessMaximumRSSBytes": 1307508736,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/03-secondary-aligned.json",
+          "sha256": "250241a9757871a90ece2a17b6331e49aac982f006ebfa0c3997ec4b669a9f16",
+          "arm": "aligned",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 125.38360399999999,
+            "p95": 131.502333
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 257.377167,
+            "p95": 275.486875
+          },
+          "wholeProcessPeakPhysicalBytes": 2589247408,
+          "wholeProcessMaximumRSSBytes": 1307590656,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-abba-01/04-secondary-full.json",
+          "sha256": "3129b14baa557a9826f99f31b0c4b50cb0ca7bbbcdeec028f355a6ec2de77e91",
+          "arm": "full",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 238.835875,
+            "p95": 263.555208
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 372.5061045,
+            "p95": 396.93025
+          },
+          "wholeProcessPeakPhysicalBytes": 2723153936,
+          "wholeProcessMaximumRSSBytes": 1306918912,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        }
+      ],
+      "otherTransportsScreen": [
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-budget-sweep/01-secondary-paired.json",
+          "sha256": "95c3905240a3baa3eb2652f510c49181ffad34ad6556b7bd02a5be8b005fc047",
+          "arm": "paired",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 115.06643700000001,
+            "p95": 125.087917
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 256.151292,
+            "p95": 274.575042
+          },
+          "wholeProcessPeakPhysicalBytes": 2584479616,
+          "wholeProcessMaximumRSSBytes": 1307262976,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-budget-sweep/02-secondary-gpu64.json",
+          "sha256": "45f1489595084b7d44f05e50969ab65e01e036a4c627d091e6452ff6d4e7ae23",
+          "arm": "gpu64",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 119.9397085,
+            "p95": 172.694958
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 264.23645849999997,
+            "p95": 327.918458
+          },
+          "wholeProcessPeakPhysicalBytes": 2935982000,
+          "wholeProcessMaximumRSSBytes": 1307803648,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        },
+        {
+          "repoPath": "output/035-development/spatial-mask-study/grid-budget-sweep/03-secondary-gpu128.json",
+          "sha256": "ddcf7d22b2413bbc535357863f55bcf2c06ebfe5f64bf822c261eff5f71348d0",
+          "arm": "gpu128",
+          "originalTileCount": 54,
+          "retainedTileCount": 28,
+          "retainedPixels": 29360128,
+          "scanMs": {
+            "n": 4,
+            "p50": 97.913771,
+            "p95": 124.501541
+          },
+          "graphThroughSHA256Ms": {
+            "n": 4,
+            "p50": 252.652667,
+            "p95": 296.681292
+          },
+          "wholeProcessPeakPhysicalBytes": 3060647880,
+          "wholeProcessMaximumRSSBytes": 1307361280,
+          "fullFrameDigests": [
+            "dace88bb0558d7edc65016ab5a9ee67ffcde75e044f0755a53d8a3be1a7c321f",
+            "9c7271f2455c04c75a2a3119846e3443cee014e824f8c5998eb05a7875c9c77a",
+            "b81502365cebbf9de096031bab86211962752cf47eb7bf4da527c24f2ae63c84",
+            "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580"
+          ]
+        }
+      ],
+      "stockCellWitness": {
+        "repoPath": "output/035-development/spatial-mask-study/grid-witness-secondary.json",
+        "sha256": "8d4ebf8a98ec60510794df0ae473600a933a0c4c9893540d62993be9c7b61f1c",
+        "originalCellsPerRecipe": 54,
+        "retainedCellsPerRecipe": 28,
+        "completeRGBA32FScalarValueMatch": true
+      }
+    }
+  },
+  "syntheticGridEvidence": {
+    "repoPath": "output/035-development/spatial-mask-study/grid-faults.json",
+    "sha256": "89c8943ebc34d42d6c8ecec332377a9f30beddae0830076f0bbadcb72353c44a",
+    "badSourceOutsideRegionRejectedAtFullBoundary": true,
+    "cancelledAfterFirstNativeJoin": true,
+    "coverageWitnesses": [
+      {
+        "fixture": "both-1024-edges",
+        "highestOmittedCoverage": 0,
+        "highestRetainedCoverage": 1,
+        "omittedTiles": 8,
+        "retainedTiles": 4,
+        "validExtremesInFullAndRegionalScan": true
+      },
+      {
+        "fixture": "upper-right-partial-cells",
+        "highestOmittedCoverage": 0,
+        "highestRetainedCoverage": 1,
+        "omittedTiles": 8,
+        "retainedTiles": 4,
+        "validExtremesInFullAndRegionalScan": true
+      },
+      {
+        "fixture": "lower-left-sensor-edge",
+        "highestOmittedCoverage": 0,
+        "highestRetainedCoverage": 1,
+        "omittedTiles": 11,
+        "retainedTiles": 1,
+        "validExtremesInFullAndRegionalScan": true
+      },
+      {
+        "fixture": "upper-left-sensor-edge",
+        "highestOmittedCoverage": 0,
+        "highestRetainedCoverage": 1,
+        "omittedTiles": 10,
+        "retainedTiles": 2,
+        "validExtremesInFullAndRegionalScan": true
+      },
+      {
+        "fixture": "lower-right-sensor-edge",
+        "highestOmittedCoverage": 0,
+        "highestRetainedCoverage": 1,
+        "omittedTiles": 10,
+        "retainedTiles": 2,
+        "validExtremesInFullAndRegionalScan": true
+      }
+    ],
+    "device": "Apple M4 Max",
+    "recovered": true,
+    "retainedLastPixelFaults": [
+      "NaN RGB",
+      "-Inf alpha",
+      "+Inf RGB with alpha zero"
+    ],
+    "retainedLastPixelRejectedFullAndRegional": [
+      true,
+      true,
+      true
+    ],
+    "source": [
+      3074,
+      2050
+    ],
+    "unwrittenScalarRejected": true
+  },
+  "reproduction": [
+    {
+      "repoPath": "output/035-development/spatial-mask-study/run-baseline.py",
+      "sha256": "f171cb2a6e9551b51045e8a6b968ff75c0d2889cfd7329dd15ed745f7887c86c"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/roi-probe.swift",
+      "sha256": "f178db3f43d487361a3e22687caf54fa255ba86cf735b145738534dca39a3953"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/roi-run.py",
+      "sha256": "e1469cb3097958f4d8639901274b4ba1469a88e0e3ac440f83db621e7f41f1f1"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/region-probe.swift",
+      "sha256": "15d2ae883dbaf4c5558312c8a936db5e4587d59829f2c2642aad95f03b483946"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/run-grid-abba.py",
+      "sha256": "9ed4de1e7bc55cd50ef6ba6389a8fdd7799416d702ad8ea61f78444124cc22af"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/grid-faults.swift",
+      "sha256": "c9aaba557bde0250b31ec67a57660a6423f2c69165a25d6592593751b179b6d8"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/validate-native-mask.py",
+      "sha256": "b4afe51ff9bb080ad96e931c8409b3dd9285336ae4c1eabd55cbeb0a1d1f6fcf"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/native-mask-cancel.swift",
+      "sha256": "51bce19232ae320efdd4b01e955938b173f840a56245bd3282c19ac7e5ec910c"
+    },
+    {
+      "repoPath": "output/035-development/spatial-mask-study/evidence.py",
+      "sha256": "6959ae7595030b2660c54c6531167e478de180b3d501b175db0d94566da533a2"
+    }
+  ],
+  "nativeTrial": {
+    "candidate": "candidate-batch17",
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch17/source-files.sha256",
+      "sha256": "7f418e19808999e4516b64e7fe8c4b2aea4140792082d8056ea01ce748053c07"
+    },
+    "defaultEnabled": false,
+    "switch": "RAWMASTER_QA_CANONICAL_SPATIAL_MASK_TILES",
+    "targeted": {
+      "repoPath": "output/035-development/spatial-mask-study/native-01/targeted.log",
+      "sha256": "bf7f42af9f97838fcbd6135ac6ccf02f39f116261f3286dc261b4f2e018fcc66",
+      "passed": 51
+    },
+    "sources": {
+      "primary": {
+        "uniqueSettled": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/profile-primary-0.json",
+            "sha256": "6a64b18e50124a168c724214f2ccdf91a31018f4c3b616ba083b27d3c20d1035",
+            "enabled": false,
+            "actualRegionalScans": 0,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 472.33195850000004,
+              "p95": 1424.685459
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 312.1381665,
+              "p95": 332.075542
+            },
+            "wholeProcessPeakPhysicalBytes": 3126217056
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/profile-primary-1.json",
+            "sha256": "c38a9d30ab01744575f272eac7193f9af60f479d5995bd50a02e64dd04bac456",
+            "enabled": true,
+            "actualRegionalScans": 4,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 298.39445850000004,
+              "p95": 568.725084
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 139.504417,
+              "p95": 149.0475
+            },
+            "wholeProcessPeakPhysicalBytes": 3106490648
+          }
+        ],
+        "coldCancelCompare": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-01-primary-0.json",
+            "sha256": "54e9ac8ec83dd5bca5d9229b41cc3d286f5ea41df4b9cc79a3dc9bb2d302a27b",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-02-primary-1.json",
+            "sha256": "d1fc2f4820694225ebd112a6d93c3f69f88b2c097917c556d2da9753097d0e9f",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-03-primary-1.json",
+            "sha256": "76fac496761c4c86dd73de5f052c6239e11f75557f780d2f775cd534ff12eda0",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-04-primary-0.json",
+            "sha256": "c74f13ad7129fa399adb57f91b81270e7fd74d4066ac18f4cccf4d29534cafb3",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          }
+        ],
+        "sealedCrossOver": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-01-primary-0.json",
+            "sha256": "857a966d50137246c5e805d137df3118cbe5682df3f6c6f15ed3acf1f26a1ccc",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.068728999999999,
+                "p95": 18.01425
+              },
+              "exact": {
+                "n": 74,
+                "p50": 102.7055,
+                "p95": 477.75075
+              },
+              "final": {
+                "n": 74,
+                "p50": 102.7055,
+                "p95": 477.75075
+              }
+            },
+            "missingSpatialWitnesses": []
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-02-primary-1.json",
+            "sha256": "03f13315728ae40c0d02bba96bd682984a07bd34ca3ef2745141af5ab919c170",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.075646,
+                "p95": 17.298875
+              },
+              "exact": {
+                "n": 74,
+                "p50": 99.304333,
+                "p95": 434.015208
+              },
+              "final": {
+                "n": 74,
+                "p50": 99.304333,
+                "p95": 434.015208
+              }
+            },
+            "missingSpatialWitnesses": []
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-03-primary-1.json",
+            "sha256": "dd0c89f5056e84cd3293f94fb8704093b26565e182584c1d112d908580fdea66",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.122666499999999,
+                "p95": 17.915542
+              },
+              "exact": {
+                "n": 74,
+                "p50": 101.8872085,
+                "p95": 408.958625
+              },
+              "final": {
+                "n": 74,
+                "p50": 101.8872085,
+                "p95": 408.958625
+              }
+            },
+            "missingSpatialWitnesses": []
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-04-primary-0.json",
+            "sha256": "8950bb8379c6af8ac9c10b4ff11d636ce7ca5e4436fcac07f57e788f17285e13",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.013,
+                "p95": 18.194459
+              },
+              "exact": {
+                "n": 74,
+                "p50": 95.5772705,
+                "p95": 537.236666
+              },
+              "final": {
+                "n": 74,
+                "p50": 95.5772705,
+                "p95": 537.236666
+              }
+            },
+            "missingSpatialWitnesses": []
+          }
+        ],
+        "pooledTiming": {
+          "disabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.016729,
+              "p95": 18.01425
+            },
+            "exact": {
+              "n": 148,
+              "p50": 97.5295625,
+              "p95": 503.127292
+            },
+            "final": {
+              "n": 148,
+              "p50": 97.5295625,
+              "p95": 503.127292
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.093249999999999,
+              "p95": 17.298875
+            },
+            "exact": {
+              "n": 148,
+              "p50": 101.54706250000001,
+              "p95": 412.777416
+            },
+            "final": {
+              "n": 148,
+              "p50": 101.54706250000001,
+              "p95": 412.777416
+            }
+          }
+        },
+        "targetTiming": {
+          "disabled": {
+            "visible": {
+              "n": 8,
+              "p50": 12.939625,
+              "p95": 14.252041
+            },
+            "exact": {
+              "n": 8,
+              "p50": 540.4915415,
+              "p95": 551.3175
+            },
+            "final": {
+              "n": 8,
+              "p50": 540.4915415,
+              "p95": 551.3175
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 8,
+              "p50": 12.1067915,
+              "p95": 13.63125
+            },
+            "exact": {
+              "n": 8,
+              "p50": 308.801521,
+              "p95": 327.547208
+            },
+            "final": {
+              "n": 8,
+              "p50": 308.801521,
+              "p95": 327.547208
+            }
+          }
+        }
+      },
+      "secondary": {
+        "uniqueSettled": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/profile-secondary-0.json",
+            "sha256": "953bc1a3b295d70cfebf7658b94637b563d8009e7479c28d18e4bf255025101d",
+            "enabled": false,
+            "actualRegionalScans": 0,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 417.33106250000003,
+              "p95": 678.266
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 266.148188,
+              "p95": 296.76175
+            },
+            "wholeProcessPeakPhysicalBytes": 3018606848
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/profile-secondary-1.json",
+            "sha256": "74e10771cf0ff1f7141a749216992d15f024040997921f1cb4f7a469eb89b009",
+            "enabled": true,
+            "actualRegionalScans": 4,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 271.7012295,
+              "p95": 486.99475
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 128.87533299999998,
+              "p95": 134.905125
+            },
+            "wholeProcessPeakPhysicalBytes": 2987591888
+          }
+        ],
+        "coldCancelCompare": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-01-secondary-0.json",
+            "sha256": "e5424ab37f0b6e9400050827d4690b298318768ed6b6723a94b510cf198cbbfa",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-02-secondary-1.json",
+            "sha256": "b472a3df78158e627a420f623daa67432be5c382377fd4a8f9d754426c28f98a",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-03-secondary-1.json",
+            "sha256": "7e39e65bfe16d7e61b49cd56dd79a02731afa018815052450a1cbf4a4d5a97de",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/cold-04-secondary-0.json",
+            "sha256": "9fbc12baa9e9912f37e6fcb3e7602ffe5cc72357f4dbdda61c6432e9f532d119",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          }
+        ],
+        "sealedCrossOver": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-01-secondary-0.json",
+            "sha256": "aead9e46be04510e85261f029fb53a8d25b72b1c1898e111f43cd3df6e5fe9e0",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.2785,
+                "p95": 18.532042
+              },
+              "exact": {
+                "n": 74,
+                "p50": 85.7045415,
+                "p95": 414.054416
+              },
+              "final": {
+                "n": 74,
+                "p50": 88.9779585,
+                "p95": 414.054416
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-02-secondary-1.json",
+            "sha256": "38407ff4dbfffa98cca5d996846eb53aa34f520456dc817df0ee60611951f642",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.200749500000001,
+                "p95": 18.021208
+              },
+              "exact": {
+                "n": 74,
+                "p50": 84.69593750000001,
+                "p95": 342.550958
+              },
+              "final": {
+                "n": 74,
+                "p50": 90.356875,
+                "p95": 342.550958
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-03-secondary-1.json",
+            "sha256": "cef6628f821b876c923efd55643fb403c4a9128cbdf53b55467ff8076b2216a5",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.0182705,
+                "p95": 17.170416
+              },
+              "exact": {
+                "n": 74,
+                "p50": 87.7289375,
+                "p95": 351.778333
+              },
+              "final": {
+                "n": 74,
+                "p50": 94.6622915,
+                "p95": 351.778333
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-01/release-04-secondary-0.json",
+            "sha256": "8390214af79841b699e43b06eba8fd1d41455a646ab2b7f2410a6857b6e0eec8",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.2168125,
+                "p95": 18.27675
+              },
+              "exact": {
+                "n": 74,
+                "p50": 83.344479,
+                "p95": 417.452459
+              },
+              "final": {
+                "n": 74,
+                "p50": 89.13275,
+                "p95": 417.452459
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          }
+        ],
+        "pooledTiming": {
+          "disabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.224438,
+              "p95": 18.27675
+            },
+            "exact": {
+              "n": 148,
+              "p50": 85.087583,
+              "p95": 414.054416
+            },
+            "final": {
+              "n": 148,
+              "p50": 88.9779585,
+              "p95": 414.054416
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.100979000000001,
+              "p95": 17.170416
+            },
+            "exact": {
+              "n": 148,
+              "p50": 84.8052085,
+              "p95": 345.79
+            },
+            "final": {
+              "n": 148,
+              "p50": 93.280604,
+              "p95": 345.79
+            }
+          }
+        },
+        "targetTiming": {
+          "disabled": {
+            "visible": {
+              "n": 8,
+              "p50": 11.8417715,
+              "p95": 12.953625
+            },
+            "exact": {
+              "n": 8,
+              "p50": 433.620313,
+              "p95": 468.871042
+            },
+            "final": {
+              "n": 8,
+              "p50": 433.620313,
+              "p95": 468.871042
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 8,
+              "p50": 11.776875,
+              "p95": 12.959667
+            },
+            "exact": {
+              "n": 8,
+              "p50": 286.8481875,
+              "p95": 311.396125
+            },
+            "final": {
+              "n": 8,
+              "p50": 286.8481875,
+              "p95": 311.396125
+            }
+          }
+        }
+      }
+    }
+  },
+  "nativeDefault": {
+    "candidate": "candidate-batch17b",
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch17b/source-files.sha256",
+      "sha256": "41f6bb705ebe69e04e65d8c31a264bf7b51824270771940d90c40648e5ebe5c9"
+    },
+    "defaultEnabled": true,
+    "switch": "RAWMASTER_CANONICAL_SPATIAL_MASK_TILES",
+    "targeted": {
+      "repoPath": "output/035-development/spatial-mask-study/native-default/targeted.log",
+      "sha256": "bcf76b7145a895493c45660c5cc3158e1d23961cde0dfa45f516d06bde474cec",
+      "passed": 51
+    },
+    "sources": {
+      "primary": {
+        "uniqueSettled": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/profile-primary-0.json",
+            "sha256": "ea59a4e9991787308a32ae91ff9c4cd7bd9bca37b1e1478657430e559e536669",
+            "enabled": false,
+            "actualRegionalScans": 0,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 454.5627915,
+              "p95": 1424.959458
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 302.349,
+              "p95": 333.276375
+            },
+            "wholeProcessPeakPhysicalBytes": 3129493856
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/profile-primary-1.json",
+            "sha256": "f2c0d73b61cc8989358f6967be3140ea14004208dd9a6e2c84a29cff56284ecf",
+            "enabled": true,
+            "actualRegionalScans": 4,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 290.64479200000005,
+              "p95": 559.807708
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 135.7534375,
+              "p95": 139.90025
+            },
+            "wholeProcessPeakPhysicalBytes": 3106769176
+          }
+        ],
+        "coldCancelCompare": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-01-primary-0.json",
+            "sha256": "073744ae5bedb7126db33f81cd12dd3090e3fdfe302816076f73f4e558be08b1",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-02-primary-1.json",
+            "sha256": "dab5864fe8d2364548c74674e4a9e28b24da5a902147f8affc9ff30cef437614",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-03-primary-1.json",
+            "sha256": "6c5b605c0e8d775dfea93b25e39b2e67e3ebb95356631b77598f19b7d825e785",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-04-primary-0.json",
+            "sha256": "621a368e76f12fa49d95ebb93f5930017066c0bce25ff3173c79217a2ed85d43",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          }
+        ],
+        "sealedCrossOver": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-01-primary-0.json",
+            "sha256": "f9c6d5205f733bf12f7c085786d272ac7e354c89dc0163f78fd43691febea71c",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.4081665,
+                "p95": 18.813959
+              },
+              "exact": {
+                "n": 74,
+                "p50": 102.66047900000001,
+                "p95": 485.485041
+              },
+              "final": {
+                "n": 74,
+                "p50": 102.66047900000001,
+                "p95": 485.485041
+              }
+            },
+            "missingSpatialWitnesses": []
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-02-primary-1.json",
+            "sha256": "e3a124da91d69347165d8fef1b03bf3de23d081d3bd69993f9dca78b014dea96",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 4.934020500000001,
+                "p95": 25.777291
+              },
+              "exact": {
+                "n": 74,
+                "p50": 101.9448745,
+                "p95": 418.203125
+              },
+              "final": {
+                "n": 74,
+                "p50": 101.9448745,
+                "p95": 418.203125
+              }
+            },
+            "missingSpatialWitnesses": []
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-03-primary-1.json",
+            "sha256": "ad536f602415cbfd24d44056f4b1d31be28ad1e8b06390ee236e04cd0dd76be7",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.13725,
+                "p95": 15.511875
+              },
+              "exact": {
+                "n": 74,
+                "p50": 101.574646,
+                "p95": 406.679167
+              },
+              "final": {
+                "n": 74,
+                "p50": 101.574646,
+                "p95": 406.679167
+              }
+            },
+            "missingSpatialWitnesses": []
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-04-primary-0.json",
+            "sha256": "e723d3f7cfb48c204015b88a6c53b517f4813592bb9aba9ff35ce06aab637714",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.0411045,
+                "p95": 19.704
+              },
+              "exact": {
+                "n": 74,
+                "p50": 99.09225,
+                "p95": 486.393
+              },
+              "final": {
+                "n": 74,
+                "p50": 99.09225,
+                "p95": 486.393
+              }
+            },
+            "missingSpatialWitnesses": []
+          }
+        ],
+        "pooledTiming": {
+          "disabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.282646,
+              "p95": 18.813959
+            },
+            "exact": {
+              "n": 148,
+              "p50": 102.66047900000001,
+              "p95": 485.485041
+            },
+            "final": {
+              "n": 148,
+              "p50": 102.66047900000001,
+              "p95": 485.485041
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.0412915,
+              "p95": 16.2875
+            },
+            "exact": {
+              "n": 148,
+              "p50": 101.9448745,
+              "p95": 413.236708
+            },
+            "final": {
+              "n": 148,
+              "p50": 101.9448745,
+              "p95": 413.236708
+            }
+          }
+        },
+        "targetTiming": {
+          "disabled": {
+            "visible": {
+              "n": 8,
+              "p50": 12.1330415,
+              "p95": 12.763792
+            },
+            "exact": {
+              "n": 8,
+              "p50": 502.15,
+              "p95": 542.260542
+            },
+            "final": {
+              "n": 8,
+              "p50": 502.15,
+              "p95": 542.260542
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 8,
+              "p50": 12.350625,
+              "p95": 13.09325
+            },
+            "exact": {
+              "n": 8,
+              "p50": 295.5033545,
+              "p95": 313.375708
+            },
+            "final": {
+              "n": 8,
+              "p50": 295.5033545,
+              "p95": 313.375708
+            }
+          }
+        }
+      },
+      "secondary": {
+        "uniqueSettled": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/profile-secondary-0.json",
+            "sha256": "dad4053c9c3ed7f9a21d2221625a685ef93e139e29200bce1b69229dab21a61a",
+            "enabled": false,
+            "actualRegionalScans": 0,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 400.27885449999997,
+              "p95": 620.685917
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 253.40947899999998,
+              "p95": 272.08225
+            },
+            "wholeProcessPeakPhysicalBytes": 3017804032
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/profile-secondary-1.json",
+            "sha256": "dc6c5743ac0c3135ab18f55c084dbdf72be197b8b33d2caaf8e21625adb351e0",
+            "enabled": true,
+            "actualRegionalScans": 4,
+            "targetSettledAndReadbackMs": {
+              "n": 4,
+              "p50": 288.115354,
+              "p95": 502.887417
+            },
+            "targetFinalFiniteMs": {
+              "n": 4,
+              "p50": 137.290417,
+              "p95": 139.537875
+            },
+            "wholeProcessPeakPhysicalBytes": 2988951736
+          }
+        ],
+        "coldCancelCompare": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-01-secondary-0.json",
+            "sha256": "d7310510ffe31afea59c85ac3b51ef850e07c29a3d32ee3f6add6e685bd98ee8",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-02-secondary-1.json",
+            "sha256": "0a9d8e643ac676b4f94f00db9b438b03839ddcab7b9f31a33a6e55a0b76fc3c3",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-03-secondary-1.json",
+            "sha256": "f364be4644c088686b70483ee6d674a1d0a450e6a62b6aa4a311a81aff4816cf",
+            "enabled": true,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/cold-04-secondary-0.json",
+            "sha256": "7d39b0bc9e8d4a90c0cd9bdbb98fd980c66c9d6cf484f9a5fad872622a287c3c",
+            "enabled": false,
+            "regionObserved": true,
+            "retryDigest": "cf8f0b5055a78d72efe68814976796fb92853ca0bad9e1436f4c5724a01a7580",
+            "comparisonFollowedByPrimaryCacheReplay": true
+          }
+        ],
+        "sealedCrossOver": [
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-01-secondary-0.json",
+            "sha256": "8a9fe0468505821ba191542848171dbacd50ed89e6cde2a43011dfc8ed6aee17",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.2158750000000005,
+                "p95": 17.643167
+              },
+              "exact": {
+                "n": 74,
+                "p50": 92.805604,
+                "p95": 420.067708
+              },
+              "final": {
+                "n": 74,
+                "p50": 95.5230835,
+                "p95": 420.067708
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-02-secondary-1.json",
+            "sha256": "e08292975c3449ca1660892dd33cc80892806fbf22fca42dbb2fa5654104323e",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.473021,
+                "p95": 18.618666
+              },
+              "exact": {
+                "n": 74,
+                "p50": 91.546854,
+                "p95": 346.189166
+              },
+              "final": {
+                "n": 74,
+                "p50": 96.517646,
+                "p95": 346.189166
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-03-secondary-1.json",
+            "sha256": "ab9af9a1f5fac9a936cf7d8c5838c85e7f6bf455623bbbd8e365b80ad8054369",
+            "enabled": true,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.323437500000001,
+                "p95": 17.439208
+              },
+              "exact": {
+                "n": 74,
+                "p50": 84.820896,
+                "p95": 351.217833
+              },
+              "final": {
+                "n": 74,
+                "p50": 91.5248335,
+                "p95": 351.217833
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          },
+          {
+            "repoPath": "output/035-development/spatial-mask-study/native-default/release-04-secondary-0.json",
+            "sha256": "08cab6a8c71de6eaeb4e49f7b95408951432a976cd097046628ccba89fa098fb",
+            "enabled": false,
+            "fullFramePairs": 814,
+            "first74": {
+              "visible": {
+                "n": 74,
+                "p50": 5.3708124999999995,
+                "p95": 18.025666
+              },
+              "exact": {
+                "n": 74,
+                "p50": 87.961813,
+                "p95": 411.914708
+              },
+              "final": {
+                "n": 74,
+                "p50": 91.400104,
+                "p95": 411.914708
+              }
+            },
+            "missingSpatialWitnesses": [
+              "light-mask-highlights",
+              "light-mask-whites"
+            ]
+          }
+        ],
+        "pooledTiming": {
+          "disabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.2474795,
+              "p95": 17.643167
+            },
+            "exact": {
+              "n": 148,
+              "p50": 90.1717085,
+              "p95": 411.914708
+            },
+            "final": {
+              "n": 148,
+              "p50": 94.0339995,
+              "p95": 411.914708
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 148,
+              "p50": 5.363875,
+              "p95": 17.439208
+            },
+            "exact": {
+              "n": 148,
+              "p50": 86.3149375,
+              "p95": 346.189166
+            },
+            "final": {
+              "n": 148,
+              "p50": 96.517646,
+              "p95": 346.189166
+            }
+          }
+        },
+        "targetTiming": {
+          "disabled": {
+            "visible": {
+              "n": 8,
+              "p50": 12.4885415,
+              "p95": 12.907916
+            },
+            "exact": {
+              "n": 8,
+              "p50": 423.915833,
+              "p95": 444.932375
+            },
+            "final": {
+              "n": 8,
+              "p50": 423.915833,
+              "p95": 444.932375
+            }
+          },
+          "enabled": {
+            "visible": {
+              "n": 8,
+              "p50": 11.883042,
+              "p95": 14.019792
+            },
+            "exact": {
+              "n": 8,
+              "p50": 291.76824999999997,
+              "p95": 315.529375
+            },
+            "final": {
+              "n": 8,
+              "p50": 291.76824999999997,
+              "p95": 315.529375
+            }
+          }
+        }
+      }
+    },
+    "explicitOverrides": [
+      {
+        "repoPath": "output/035-development/spatial-mask-study/native-default/force-serial.json",
+        "sha256": "7006ab093dee9b603b441f1b32c825a21e8b5f4180aac6b50eb3973502085eea",
+        "override": "force-serial",
+        "actualFullNativeValidation": true,
+        "usedMetalBandCheck": false
+      },
+      {
+        "repoPath": "output/035-development/spatial-mask-study/native-default/explicit-metal-band.json",
+        "sha256": "41367e8eab97dc1b301ba73ebfd3a883bc6e4e5e7060512177ca99e643115c54",
+        "override": "explicit-metal-band",
+        "actualFullNativeValidation": true,
+        "usedMetalBandCheck": true
+      }
+    ],
+    "formal": {
+      "summary": {
+        "repoPath": "output/035-development/candidate-batch17b-formal/summary.json",
+        "sha256": "6eb414c8e3882695877fd89578073c493e5ec98af4beeae01fe8eb32be44a223"
+      },
+      "passed": false,
+      "exit": 1,
+      "failedStages": [
+        "interactive-comparison",
+        "control-comparison",
+        "lightflow-comparison",
+        "inspection-comparison"
+      ],
+      "failureDetails": [
+        {
+          "stage": "control-comparison",
+          "report": "control-comparison.json",
+          "failures": [
+            "effects-glow-direction: p95Ms 10.59 > 10.57 ms",
+            "color-mask-tint: medianMs 5.22 > 5.19 ms",
+            "blur-boost: medianMs 11.62 > 11.43 ms"
+          ]
+        },
+        {
+          "stage": "inspection-comparison",
+          "report": "inspection-comparison.json",
+          "failures": [
+            "optics-defringe-picker p95Ms: 8.66 > 8.24 ms"
+          ]
+        },
+        {
+          "stage": "interactive-comparison",
+          "report": "interactive-comparison.json",
+          "failures": [
+            "dehaze-v2: interactive median regressed 10.74%",
+            "lens-blur-device-depth: interactive median regressed 18.76%",
+            "lens-blur-bokeh-bubble: interactive median regressed 28.02%",
+            "lens-blur-bokeh-ring: interactive median regressed 11.97%",
+            "lens-blur-bokeh-anamorphic: interactive median regressed 10.24%",
+            "targeted-hsl: interactive median regressed 35.74%",
+            "clipping-highlights: interactive median regressed 14.41%",
+            "local-point-color: interactive median regressed 19.69%",
+            "local-light-extended: interactive median regressed 10.02%",
+            "local-grain: interactive median regressed 12.90%"
+          ]
+        },
+        {
+          "stage": "lightflow-comparison",
+          "report": "lightflow-comparison.json",
+          "failures": [
+            "firstAppearanceMix/firstExact",
+            "firstAppearanceMix/final"
+          ]
+        }
+      ],
+      "violatedThresholds": 16,
+      "operators": {
+        "repoPath": "output/035-development/candidate-batch17b-formal/photo-operators-v2.json",
+        "sha256": "c9817ae8fcf6276d1572060a002f2fcd01be8d76bf239222c7b11eb3e4f05809"
+      },
+      "fullFramePairs": 814,
+      "lightflowComparison": {
+        "repoPath": "output/035-development/candidate-batch17b-formal/lightflow-comparison.json",
+        "sha256": "2339e162e782d009459a1a2bd1740dfd7f8038b1f92f4322b5512eb219ba1834"
+      },
+      "firstAppearanceMix": {
+        "first": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 7.282500000000001,
+            "p95Ms": 188.075
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 5.2368545,
+            "p95Ms": 20.456542
+          },
+          "medianLimitMs": 8.2825,
+          "p95LimitMs": 225.69,
+          "within": true
+        },
+        "firstExact": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 22.134999999999998,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 100.594,
+            "p95Ms": 409.147875
+          },
+          "medianLimitMs": 24.348499999999998,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        },
+        "final": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 23.5625,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 100.594,
+            "p95Ms": 409.147875
+          },
+          "medianLimitMs": 25.91875,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        }
+      },
+      "featureIndex": {
+        "repoPath": "output/035-development/candidate-batch17b/camera-raw-acceptance.json",
+        "sha256": "124e5bf223970fd6caa37b854181b75909c3b4281df5425ff4e48b1ca5629264"
+      },
+      "featureIDsWithMeasurements": 158,
+      "superResolutionMetrics": {
+        "fitOnMs": 130.455583,
+        "fullTIFFMs": 9440.19375,
+        "exportPhysicalFootprintBytes": 3751807160,
+        "exportResidentBytes": 1380401152,
+        "exportMetalBytes": 2812149760
+      },
+      "superResolutionPassed": true,
+      "superResolutionComparison": {
+        "repoPath": "output/035-development/candidate-batch17b-formal/super-resolution-comparison.json",
+        "sha256": "24705d699f5e81236fa91222582a057bd43a3991a02da9146c7d4aa74a5c46cb"
+      },
+      "superResolutionTIFF": {
+        "bits": 16,
+        "byteCount": 1926958614,
+        "colorSpace": "sRGB IEC61966-2.1",
+        "elapsedMs": 9440.19375,
+        "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+        "sampleFormat": "unsigned",
+        "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+        "size": [
+          19008,
+          12672
+        ]
+      }
+    },
+    "aiFeatureValidation": {
+      "targeted": {
+        "native-film-and-mask": {
+          "repoPath": "output/035-development/candidate-batch17b/native-film-and-mask.log",
+          "sha256": "a28ad51458afe3bff387353c1c916b01479e3a41cb36e4d11ce6f940e64f4a1e",
+          "passed": 27
+        },
+        "native-mask-interactions": {
+          "repoPath": "output/035-development/candidate-batch17b/native-mask-interactions.log",
+          "sha256": "6a43e8fde75fab694bac170c870ab6c46c6398f93fb6a02e9fcea33655c23e4d",
+          "passed": 9
+        },
+        "native-prompt-provider": {
+          "repoPath": "output/035-development/candidate-batch17b/native-prompt-provider.log",
+          "sha256": "4d1e3db7edad8e4dd85878f95b39ff2a81bfd2895ed122a60409a68068631a6a",
+          "passed": 5
+        },
+        "adaptive-Sky": {
+          "repoPath": "output/035-development/candidate-batch17b/adaptive-Sky.log",
+          "sha256": "baf71a552d2f76f736582c177a3a8bd0a9801230104c1394b12ddce338f5f6a7",
+          "passed": 1
+        },
+        "adaptive-Subject": {
+          "repoPath": "output/035-development/candidate-batch17b/adaptive-Subject.log",
+          "sha256": "a7350be59ec1f9cfe64fa1d6524cae943ba35a2cbe711d6b1cd059715892d93e",
+          "passed": 1
+        }
+      },
+      "adaptive": {
+        "cases": 4,
+        "testBinarySHA256": "87d496bbf13bfabccd9361aa67e9b0469f1d773ced033ab118b2dec906a55976"
+      },
+      "localFlux": {
+        "testBinarySHA256": "87d496bbf13bfabccd9361aa67e9b0469f1d773ced033ab118b2dec906a55976",
+        "attempts": 1,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+        "inputMatches034": true
+      },
+      "mixedWorkload": {
+        "repoPath": "output/035-development/candidate-batch17b/verified-flux-mixed.json",
+        "sha256": "60b58f9bdfe2d6c40b3b4cee7eb092b0d6b41347868459f6cc1d77350507998f",
+        "deliveryCount": 200,
+        "importedRAWCount": 20,
+        "fileBackedDrawMilliseconds": 16.300042,
+        "pixelComparison": {
+          "protectedChangedPixels": 0,
+          "protectedPixels": 786432,
+          "selectedChangedPixels": 262144,
+          "selectedPixels": 262144
+        },
+        "matchesQueueReceiptsAndStandaloneMain": true
+      },
+      "commands": {
+        "repoPath": "output/035-development/spatial-mask-study/validate-ai.sh",
+        "sha256": "fc9e27efa69982de7056fdfba6ef655dbd6d1b93cbb76817ba80d6251343faa5"
+      }
+    }
+  }
+}

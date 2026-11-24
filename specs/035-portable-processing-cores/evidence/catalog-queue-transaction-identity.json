@@ -1,0 +1,269 @@
+{
+  "schema": 1,
+  "study": "Spec 035 macOS workbench Queue attachment identity",
+  "scope": "Isolated observation of the shipping catalog C ABI; progress-handler denials occur before the file syscall.",
+  "recordedDate": "2026-11-23",
+  "host": {
+    "macOS": "27.0.1",
+    "architecture": "arm64",
+    "filesystem": "local APFS"
+  },
+  "runtime": {
+    "path": ".build/release/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime",
+    "sha256": "3b73774b17b0b5f5bb8f1912c127496625a4ee2588c782ea7471453f9242e595",
+    "abi": 1,
+    "sqlite": "3.54.0",
+    "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+    "sqliteIdentityFunctionMatches": true
+  },
+  "fixture": {
+    "schemaVersion": 10,
+    "origin": "Synthetic canonical v8 installed and upgraded through the shipped transaction ABI",
+    "journalMode": "WAL",
+    "encodedFixture": "docs/research/camera-raw-parity/assets/history-proxy.jpg",
+    "encodedBytes": 47835,
+    "encodedSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f"
+  },
+  "replay": "experiments/portable-processing/catalog/queue-transaction-probe/README.md",
+  "rawReceipt": {
+    "path": "output/035-development/queue-transaction-study/verified.json",
+    "bytes": 440342,
+    "sha256": "10a3a49fcb4b65edff1b348d145abdb80327250544adf6f41812f3db2cba7d5e"
+  },
+  "observation": {
+    "callbacks": "SQLITE_CONFIG_SQLLOG open event and connection-local SQLITE_TRACE_ROW on the natural catalog identity query",
+    "systemCallOverride": false,
+    "activeMap": "Real WAL xFetch(0,1), cap 0 to 4096 for this WAL only, then xUnfetch and restore",
+    "main": "Unique surviving descriptor from scoped native open and contemporaneous vnode and path checks",
+    "shm": "Natural page 0, complete file-backed 32768-byte range at file offset 0, current reader/writer locks",
+    "zeroByteWal": "Unique size classes are reported only as inference. Decoy native canary uses the same xFileSize method and reports physical size 1 as 0."
+  },
+  "totals": {
+    "cases": 9,
+    "productionABICalls": 99,
+    "readContexts": 99,
+    "writeContexts": 66,
+    "nonNullWalBorrows": 96,
+    "successfulMatchingReleases": 96,
+    "successfulNullWalBorrows": 12,
+    "walCapChanges": 54,
+    "walCapRestorations": 54,
+    "guardedRefusals": 6,
+    "sameTicketRecoveryAfterRefusal": 6,
+    "independentDeliveredAndRepeatedAck": 9
+  },
+  "firstPublishCases": [
+    {
+      "case": "passive-live",
+      "walBytes": 1161872,
+      "sizeClass": 1,
+      "walKernelMappingBytes": 0,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 16,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": false,
+      "progressInterrupts": 0,
+      "result": "published then acknowledged"
+    },
+    {
+      "case": "mapped-live",
+      "walBytes": 1161872,
+      "sizeClass": 1,
+      "walKernelMappingBytes": 16384,
+      "walDirectlyMatchesTrusted": true,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 16,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 0,
+      "result": "published then acknowledged"
+    },
+    {
+      "case": "empty-native",
+      "walBytes": 0,
+      "sizeClass": 1,
+      "walKernelMappingBytes": 0,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 8,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": false,
+      "progressInterrupts": 0,
+      "result": "published then acknowledged"
+    },
+    {
+      "case": "empty-strict",
+      "walBytes": 0,
+      "sizeClass": 1,
+      "walKernelMappingBytes": 0,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 8,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 1,
+      "result": "refused then same ticket delivered"
+    },
+    {
+      "case": "empty-extra-zero",
+      "walBytes": 0,
+      "sizeClass": 2,
+      "walKernelMappingBytes": 0,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 8,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 1,
+      "result": "refused then same ticket delivered",
+      "physicalAndNativeCanaryBytes": [
+        0,
+        0
+      ]
+    },
+    {
+      "case": "empty-extra-one",
+      "walBytes": 0,
+      "sizeClass": 2,
+      "walKernelMappingBytes": 0,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 8,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 1,
+      "result": "refused then same ticket delivered",
+      "physicalAndNativeCanaryBytes": [
+        1,
+        0
+      ]
+    },
+    {
+      "case": "wal-copy-return",
+      "walBytes": 1161872,
+      "sizeClass": 1,
+      "walKernelMappingBytes": 16384,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 16,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 1,
+      "result": "refused then same ticket delivered",
+      "sameByteNameExchange": {
+        "role": "wal",
+        "originalNameDuringContext": true,
+        "openedSetRestoredBeforeInterrupt": true,
+        "originalNameRestoredAfterClose": true,
+        "originalMainAndWalUnchanged": true
+      }
+    },
+    {
+      "case": "shm-copy-return",
+      "walBytes": 1161872,
+      "sizeClass": 1,
+      "walKernelMappingBytes": 16384,
+      "walDirectlyMatchesTrusted": true,
+      "shmMappingMatchesTrusted": false,
+      "sharedLockMask": 16,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 1,
+      "result": "refused then same ticket delivered",
+      "sameByteNameExchange": {
+        "role": "shm",
+        "originalNameDuringContext": true,
+        "openedSetRestoredBeforeInterrupt": true,
+        "originalNameRestoredAfterClose": true,
+        "originalMainAndWalUnchanged": true
+      }
+    },
+    {
+      "case": "empty-copy-return",
+      "walBytes": 0,
+      "sizeClass": 2,
+      "walKernelMappingBytes": 0,
+      "walDirectlyMatchesTrusted": false,
+      "shmMappingMatchesTrusted": true,
+      "sharedLockMask": 8,
+      "exclusiveLockMask": 1,
+      "diagnosticGuard": true,
+      "progressInterrupts": 1,
+      "result": "refused then same ticket delivered",
+      "physicalAndNativeCanaryBytes": [
+        0,
+        0
+      ],
+      "sameByteNameExchange": {
+        "role": "wal",
+        "originalNameDuringContext": true,
+        "openedSetRestoredBeforeInterrupt": true,
+        "originalNameRestoredAfterClose": true,
+        "originalMainAndWalUnchanged": true
+      }
+    }
+  ],
+  "independentLedgerChecks": {
+    "observer": "The fixture keeper read lc_meta and lc_workbench_names directly on another system SQLite connection.",
+    "preparedReservationCount": 1,
+    "publishedStateBeforeAck": "prepared",
+    "deliveredReservationCount": 0,
+    "immutableTicketUnchanged": true,
+    "stageAndDeliveredSameInodeBeforeAck": true,
+    "stageRemovedAfterAck": true,
+    "allDeliveredSHA256Identical": true
+  },
+  "realWalWritesInFirstNativeFlow": [
+    [
+      "register",
+      2
+    ],
+    [
+      "claimItem",
+      2
+    ],
+    [
+      "prepareItem",
+      3
+    ],
+    [
+      "publishItem",
+      0
+    ],
+    [
+      "acknowledgeItem",
+      4
+    ],
+    [
+      "acknowledgeItem",
+      0
+    ]
+  ],
+  "limits": [
+    "No integrated just-before-link/rename production attachment fence.",
+    "Unique-descriptor matching is confined to the single-connection test process; it does not prove a physical empty WAL in the host.",
+    "The initial main/WAL/SHM pins came from the fixture before its controlled exchanges; earlier substitutions and filesystem changes after the last check are outside the evidence.",
+    "Local APFS, one Apple SQLite build, and a pre-encoded fixture. No renderer or throughput measurement."
+  ],
+  "replaySourceSHA256": {
+    "Modules/LibraryCatalog/include/rawmaster_library.h": "93566d373b731c98015e6bdd1497355c317feda3a4e1bec632fb024b4a81813d",
+    "Modules/LibraryCatalog/src/authority/legacy_v7_reference.sql": "a3f6c3a458a0ff1fa200d8c55d25a1632db7b0dea454c8d175c8fd4a98e5031a",
+    "experiments/portable-processing/catalog/attachment-probe/passive-vfs/identity.h": "0d94a06683db39fb16dcf439e5192d431224f514a85e0adde20d4fff8ae70273",
+    "experiments/portable-processing/catalog/attachment-probe/passive-vfs/inspector.c": "7cefe886efc3d56062cefa5e99a3ab5dd80c4ef3f5e76b455969a74d6e3837c0",
+    "experiments/portable-processing/catalog/queue-transaction-probe/README.md": "8031d0e7f261ef01361bcfdad2d250da62ee8d8a093ab6a0b72c867f4ed560c4",
+    "experiments/portable-processing/catalog/queue-transaction-probe/abi.h": "06df5bebff95937b02c53216ee00085568fb7e6b9d44f321418ba450fd1ef996",
+    "experiments/portable-processing/catalog/queue-transaction-probe/keeper.c": "3e19982e1790f0c41af21236412e62a5f9d3ff16062a5ac523fc0be61f1ef55d",
+    "experiments/portable-processing/catalog/queue-transaction-probe/observe.c": "a84cf05b775d5aa5f9feaf092fec3e0fc3d7d5f746ec6ac9f4bfd96e023516ac",
+    "experiments/portable-processing/catalog/queue-transaction-probe/observer-vfs.inc": "c98338748b59f5ec666e59603ca66e571a6de4045a8801c8a986636c26915bf5",
+    "experiments/portable-processing/catalog/queue-transaction-probe/run.py": "ea6a5acd82f8329897786be991a51ea71fb2dd70d3a81930dc750c673e3a33ad"
+  },
+  "archiveReplay": {
+    "path": "output/035-development/catalog-queue-replay/receipt.json",
+    "bytes": 440349,
+    "sha256": "7cdffc43a682ac52657b7e15f00e0f583076e12e5ccdc4943a5d337e573f1fc8",
+    "cases": 9,
+    "actualABIRequests": 99,
+    "diagnosticRefusals": 6
+  }
+}

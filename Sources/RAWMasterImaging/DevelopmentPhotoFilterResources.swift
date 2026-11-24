@@ -4,6 +4,7 @@ import CryptoKit
 import Metal
 import Darwin
 import RAWMasterCore
+import RAWMasterImage
 
 enum DevelopmentPhotoFilterError: Error, Equatable, Sendable {
   case catalogUnavailable, invalidCatalog, invalidPayload, unavailableFilter, unavailableDevice, budgetUnavailable, invalidGraph
@@ -328,8 +329,11 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
       if let owner=cache.removeValue(forKey:key){used-=owner.bytes};recent.removeValue(forKey:key)
     }
   }
-  func pair(_ filter:DevelopmentFilterV3)throws->Pair {
+  func pair(_ filter: DevelopmentFilterV3) throws -> Pair {
     try filter.validate()
+    return try pair(filter, binding: DevelopmentPhotoFilterEngineV3.bind(filter))
+  }
+  func pair(_ filter: DevelopmentFilterV3, binding: RAWMasterImageKernel.FilterBinding) throws -> Pair {
     guard filter.enabled,filter.selection != .original,filter.intensity>0 else{throw DevelopmentPhotoFilterError.unavailableFilter}
     lock.lock();defer{lock.unlock()}
     guard let root else{throw DevelopmentPhotoFilterError.catalogUnavailable}
@@ -337,11 +341,8 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
     let family = Family(filter.selection)
     let directory = family.directory(in: root)
     let catalog=try catalog(family,validating:filter.selection);guard let verified=catalog.valid[filter.selection] else{throw DevelopmentPhotoFilterError.unavailableFilter}
-    let percents=family.intensities
-    let high=percents.first(where:{Double($0)>=filter.intensity}) ?? 100
-    let low=percents.last(where:{Double($0)<filter.intensity}) ?? 0
-    let exact=Double(high)==filter.intensity
-    let lowerPercent=exact ? high:(low==0 ? high:low)
+    let high = binding.upperPercent
+    let lowerPercent = binding.lowerPercent == 0 ? high : binding.lowerPercent
     let needed=Set([lowerPercent,high])
     let records=verified.look.planes.filter{needed.contains($0.intensityPercent)}
     func key(_ p:DevelopmentPhotoFilterPayload)->String{"\(device.registryID):\(p.sha256)"}
@@ -362,8 +363,8 @@ final class DevelopmentPhotoFilterResourceStore: @unchecked Sendable {
         let a=cache[key(lowRecord)],let b=cache[key(highRecord)] else{throw DevelopmentPhotoFilterError.invalidPayload}
       a.published();b.published()
       // Below the first endpoint both references share the atlas and strength blends from zero.
-      let weight:Float=exact ? 0:Float((filter.intensity-Double(low))/Double(high-low))
-      return .init(lower:a,upper:b,weight:weight,zeroLower:low==0 && !exact,version:catalog.version)
+      return .init(lower: a, upper: b, weight: binding.weight, zeroLower: binding.lowerPercent == 0,
+                   version: catalog.version)
     }catch{
       for k in created{cache.removeValue(forKey:k);recent.removeValue(forKey:k)}
       throw error // No wait/spin for a CI graph retained by this very caller.

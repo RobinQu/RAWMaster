@@ -1,0 +1,3551 @@
+{
+  "schemaVersion": 1,
+  "scope": "Authentic archived RAW, same ring-banded erosion and old guide display. Full numerical replay is distinct from the exclusive timing pass.",
+  "diagnosticExecutable": {
+    "path": "output/035-development/phase-ad/dehaze/bin-a/probe",
+    "sha256": "e5b1dbf77442439e23cb7eb1f8a7820f172251a93b93cb4bb770afacc3732f2c"
+  },
+  "sourceManifest": {
+    "path": "output/035-development/phase-ad/dehaze/bin-a/seal.json",
+    "sha256": "88d04435dd3a8616e9cafa4317b33a444649cf36b6fd6e70c9083c88d3ae9421"
+  },
+  "modeDescriptions": {
+    "R4": "Original per-band scalar destination and copy on the current ring",
+    "P0": "Two disjoint direct bands started in sequence before joins",
+    "P2": "Two disjoint direct bands started by two callers sharing one unchanged CIContext"
+  },
+  "functional": [
+    {
+      "scene": "primary",
+      "mode": "P0",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/00-primary-P0-full.cmd.json",
+        "sha256": "b470c21e1c706027f3a16bd64253559dc415a18d696929431c9ec80ed9aa11c5"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/00-primary-P0-full.json",
+        "sha256": "ae27e455831bb1cfe8c5859a82babe19e76549c3c0f78574da59d3cb7746ac0c"
+      },
+      "cold": {
+        "acquireMS": 622.990625,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.033,
+          "clearMS": 0.060333000000000005,
+          "computeReportedKernelMS": 39.18791632167995,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4597510000000002,
+          "sampledAllocatedBytes": 2259206144,
+          "seedMS": 12.766036000000001,
+          "startWallMS": 130.950458,
+          "submitted": 25,
+          "sumStartMS": 123.99479299999999
+        },
+        "amount": 15,
+        "coldGuideMatchesArchive": true,
+        "coldGuideR32": {
+          "bands": 25,
+          "firstPhysicalBits": 1023653910,
+          "lastPhysicalBits": 984167753,
+          "sha256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+          "values": 60217344
+        },
+        "commandGPUMS": 0,
+        "committedBands": 25,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 656,
+          "commits": 26,
+          "completedGPUIntervalsMS": 21.353041636757553,
+          "countsVerificationAndAuthorityMS": 2.039917,
+          "encoderAndAuthorityMS": 2.9715450000000003,
+          "fullErosionMS": 465.872208,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 1.2058749562129378,
+          "original64Rows": true,
+          "rawPrivateMinimum": {
+            "bandSHA": [
+              "f778dd8c2d7c0c19727f9d41063fd62a2d4b32485d91d2b635e86f4fba4ae3f1",
+              "58896f15fd9f26b3834f2a264892a1868f371abdb720331fa76cbc8421a74db6",
+              "e7755af5af6a419eb770f8e729a845ee53f472e603dc96a8aa74ada14458982e",
+              "845b1103d35e6f90ab984c3cd72233f5c283591be1a198e6f556e15e3835600b",
+              "599e6987176cbbccd14dc6de8f08de9da49a8a0162d19653d99a4e7730409219",
+              "cfde6ba895ad04cfa29b2b7243bf1ad75ba8cc2f9e55dec68ec3a3762c25b846",
+              "744b595f3a65d4b5e44d90bdf22a73e1f8a9ee548c66c747e57d79af6620c6bb",
+              "bcf84a2e19f7641d6256b25af6b152978a8d4dc33dcfcefc0025139e2789b2fb",
+              "09d1c6121948745837ce8e937390f8e43b509880b00a67058cc8e867e07cbe3c",
+              "8ec00138013671cdc4e9d8c725c6a65ef118347e579ea1d8e219fb32645417b6",
+              "7298073d3dd85e5205ef958315f380e9467458cb435381778e575991b3fca57f",
+              "56b7fdfe146a0b70987266addeda588c2c6fa06e628974a8147fffb431d1d6b9",
+              "cfde08f3e6b0279e030168c0457676737af818db7792b32ba16dc997f6a51a84",
+              "63309f4d8b6bf7ede49785dffb15f787a57638ae5fcbb344fb71f5d6a758b9da",
+              "af53cc500721875f35004965935d9f688bc190f9af263e8dd2c16a8fb0ea369a",
+              "70077642109eca613efb67d2595f795b32050021e563db85ed85b6eeaf6ada2d",
+              "ee932f7aef443fd7df8c4290cd4308aaca0d2dbb19fa10b0c93811a4ecbfa923",
+              "f038e8ed9a5e7b371ab38712873de5739bd6a35115e2bd7f132361973fef1c6d",
+              "b8af09235b4d17f8c1c2a85f1b9edb06b38c1fd0e520515c3a7b7088649716a8",
+              "146a46fd4644c1d57e082589af35ae2dd3a812f590ac6fe24d55c99f22302d1f",
+              "0d1a7dfaf5452153840c4b3b6921c83d95cec6e252ecce152753165d8cb294f3",
+              "9246ac3f1eb97ff3090f5c300899a9c14d63b330060b1aa1cae72fb608729009",
+              "02572b03fbf92014d9cca78d6a82a7b8a72c0036e26d4e55ad415fe1fff01e02",
+              "cb74a99bec1d8d41e7e2b43ae09acc31a5c34c84874cf9d399f90373fe379e05",
+              "3b31d2ac2ce5ff5bcf9f04610d3d58335678f41562559d1c41cd071fd6fde0a1"
+            ],
+            "physicalNativeYOrder": "MTLTexture origin (0,0), consecutive 256-row bands, RGBA half bits without conversion",
+            "readbackAndHashMS": 314.904916,
+            "rgba16fValues": 240869376,
+            "sha256": "b1e168dadcf74fa914d89ce03efbbc9635cfdc0fa46092899412a90237d2e3cd"
+          },
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 37.857086,
+          "timedGroupLoopMS": 358.951416,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 153.593833,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 25,
+          "components": 240869376,
+          "firstBits": [
+            1007756100,
+            1007125270,
+            1003401102,
+            1065353216
+          ],
+          "lastBits": [
+            1022718664,
+            1027994383,
+            1035110518,
+            1065353216
+          ],
+          "sha256": "bcb91098cc3a5df3f0f0473b90e58e73e747ca1c1ad546b4e19ce2e950b99843",
+          "tailRows": 192
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "pixelDiff": {
+          "hasStockReferenceBytes": false
+        },
+        "processPeakBytes": 2963687488,
+        "providerBuffer": {
+          "bands": 25,
+          "firstPhysicalBits": 1023653910,
+          "lastPhysicalBits": 984167753,
+          "sha256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+          "values": 60217344
+        },
+        "scalarFills": 1,
+        "stockFITDigest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 25,
+        "W2AndRasterMS": 177.189167,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.492875,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.033,
+          "clearMS": 0.060333000000000005,
+          "computeReportedKernelMS": 39.18791632167995,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4597510000000002,
+          "sampledAllocatedBytes": 2259206144,
+          "seedMS": 12.766036000000001,
+          "startWallMS": 130.950458,
+          "submitted": 25,
+          "sumStartMS": 123.99479299999999
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 25,
+          "components": 240869376,
+          "firstBits": [
+            1007643083,
+            1007012160,
+            1003294409,
+            1065353216
+          ],
+          "lastBits": [
+            1016541979,
+            1025020364,
+            1034572551,
+            1065353216
+          ],
+          "sha256": "6805d5307886864bdaef5faa7141b960246cd0b23426a59903d930516c7ced8b",
+          "tailRows": 192
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3609397648,
+        "providerBuffer": {
+          "bands": 25,
+          "firstPhysicalBits": 1023653910,
+          "lastPhysicalBits": 984167753,
+          "sha256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+          "values": 60217344
+        },
+        "scalarFills": 0,
+        "stockFITDigest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 34.127666,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "primary",
+      "mode": "P2",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/01-primary-P2-full.cmd.json",
+        "sha256": "cd40bdea33683cd64da24d92814e93dbaab4d460c58c28c034b318ea09ae42c0"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/01-primary-P2-full.json",
+        "sha256": "5c0aa61cf4a45344350d5b29965cad91444eb53f3c95628544b4345afafb8a4a"
+      },
+      "cold": {
+        "acquireMS": 554.197375,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 71.18908400000001,
+          "blockingWaitMS": 0.03462600000000001,
+          "clearMS": 0.08662500000000001,
+          "computeReportedKernelMS": 47.75108373723924,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 4.523667,
+          "sampledAllocatedBytes": 2259206144,
+          "seedMS": 14.266420000000002,
+          "startWallMS": 139.35654,
+          "submitted": 25,
+          "sumStartMS": 210.545624
+        },
+        "amount": 15,
+        "coldGuideMatchesArchive": true,
+        "coldGuideR32": {
+          "bands": 25,
+          "firstPhysicalBits": 1023653910,
+          "lastPhysicalBits": 984167753,
+          "sha256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+          "values": 60217344
+        },
+        "commandGPUMS": 0,
+        "committedBands": 25,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 656,
+          "commits": 26,
+          "completedGPUIntervalsMS": 24.52995826024562,
+          "countsVerificationAndAuthorityMS": 2.279751,
+          "encoderAndAuthorityMS": 3.596874,
+          "fullErosionMS": 375.921916,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 1.1232499964535236,
+          "original64Rows": true,
+          "rawPrivateMinimum": {
+            "bandSHA": [
+              "f778dd8c2d7c0c19727f9d41063fd62a2d4b32485d91d2b635e86f4fba4ae3f1",
+              "58896f15fd9f26b3834f2a264892a1868f371abdb720331fa76cbc8421a74db6",
+              "e7755af5af6a419eb770f8e729a845ee53f472e603dc96a8aa74ada14458982e",
+              "845b1103d35e6f90ab984c3cd72233f5c283591be1a198e6f556e15e3835600b",
+              "599e6987176cbbccd14dc6de8f08de9da49a8a0162d19653d99a4e7730409219",
+              "cfde6ba895ad04cfa29b2b7243bf1ad75ba8cc2f9e55dec68ec3a3762c25b846",
+              "744b595f3a65d4b5e44d90bdf22a73e1f8a9ee548c66c747e57d79af6620c6bb",
+              "bcf84a2e19f7641d6256b25af6b152978a8d4dc33dcfcefc0025139e2789b2fb",
+              "09d1c6121948745837ce8e937390f8e43b509880b00a67058cc8e867e07cbe3c",
+              "8ec00138013671cdc4e9d8c725c6a65ef118347e579ea1d8e219fb32645417b6",
+              "7298073d3dd85e5205ef958315f380e9467458cb435381778e575991b3fca57f",
+              "56b7fdfe146a0b70987266addeda588c2c6fa06e628974a8147fffb431d1d6b9",
+              "cfde08f3e6b0279e030168c0457676737af818db7792b32ba16dc997f6a51a84",
+              "63309f4d8b6bf7ede49785dffb15f787a57638ae5fcbb344fb71f5d6a758b9da",
+              "af53cc500721875f35004965935d9f688bc190f9af263e8dd2c16a8fb0ea369a",
+              "70077642109eca613efb67d2595f795b32050021e563db85ed85b6eeaf6ada2d",
+              "ee932f7aef443fd7df8c4290cd4308aaca0d2dbb19fa10b0c93811a4ecbfa923",
+              "f038e8ed9a5e7b371ab38712873de5739bd6a35115e2bd7f132361973fef1c6d",
+              "b8af09235b4d17f8c1c2a85f1b9edb06b38c1fd0e520515c3a7b7088649716a8",
+              "146a46fd4644c1d57e082589af35ae2dd3a812f590ac6fe24d55c99f22302d1f",
+              "0d1a7dfaf5452153840c4b3b6921c83d95cec6e252ecce152753165d8cb294f3",
+              "9246ac3f1eb97ff3090f5c300899a9c14d63b330060b1aa1cae72fb608729009",
+              "02572b03fbf92014d9cca78d6a82a7b8a72c0036e26d4e55ad415fe1fff01e02",
+              "cb74a99bec1d8d41e7e2b43ae09acc31a5c34c84874cf9d399f90373fe379e05",
+              "3b31d2ac2ce5ff5bcf9f04610d3d58335678f41562559d1c41cd071fd6fde0a1"
+            ],
+            "physicalNativeYOrder": "MTLTexture origin (0,0), consecutive 256-row bands, RGBA half bits without conversion",
+            "readbackAndHashMS": 324.088416,
+            "rgba16fValues": 240869376,
+            "sha256": "b1e168dadcf74fa914d89ce03efbbc9635cfdc0fa46092899412a90237d2e3cd"
+          },
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 44.169830999999995,
+          "timedGroupLoopMS": 375.537667,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 164.935791,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 25,
+          "components": 240869376,
+          "firstBits": [
+            1007756100,
+            1007125270,
+            1003401102,
+            1065353216
+          ],
+          "lastBits": [
+            1022718664,
+            1027994383,
+            1035110518,
+            1065353216
+          ],
+          "sha256": "bcb91098cc3a5df3f0f0473b90e58e73e747ca1c1ad546b4e19ce2e950b99843",
+          "tailRows": 192
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "pixelDiff": {
+          "hasStockReferenceBytes": false
+        },
+        "processPeakBytes": 2962147440,
+        "providerBuffer": {
+          "bands": 25,
+          "firstPhysicalBits": 1023653910,
+          "lastPhysicalBits": 984167753,
+          "sha256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+          "values": 60217344
+        },
+        "scalarFills": 1,
+        "stockFITDigest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 25,
+        "W2AndRasterMS": 58.987667,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 3.003292,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 71.18908400000001,
+          "blockingWaitMS": 0.03462600000000001,
+          "clearMS": 0.08662500000000001,
+          "computeReportedKernelMS": 47.75108373723924,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 4.523667,
+          "sampledAllocatedBytes": 2259206144,
+          "seedMS": 14.266420000000002,
+          "startWallMS": 139.35654,
+          "submitted": 25,
+          "sumStartMS": 210.545624
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 25,
+          "components": 240869376,
+          "firstBits": [
+            1007643083,
+            1007012160,
+            1003294409,
+            1065353216
+          ],
+          "lastBits": [
+            1016541979,
+            1025020364,
+            1034572551,
+            1065353216
+          ],
+          "sha256": "6805d5307886864bdaef5faa7141b960246cd0b23426a59903d930516c7ced8b",
+          "tailRows": 192
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3620653432,
+        "providerBuffer": {
+          "bands": 25,
+          "firstPhysicalBits": 1023653910,
+          "lastPhysicalBits": 984167753,
+          "sha256": "7399d63815b7dea2cf3e237718481bf5b002f51cbf449a8faa7703ee021a1098",
+          "values": 60217344
+        },
+        "scalarFills": 0,
+        "stockFITDigest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 35.736417,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "P2",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/02-secondary-P2-full.cmd.json",
+        "sha256": "a503628b89d46c23c97d8d1cf748367a0c86a648552eed776708621669c2b519"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/02-secondary-P2-full.json",
+        "sha256": "a8cc1cceca2139ad6b92dd6f9cd9b46f2e1929e50f96cd18c806eed2caa29a79"
+      },
+      "cold": {
+        "acquireMS": 432.85375,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 53.270709000000004,
+          "blockingWaitMS": 0.022791000000000002,
+          "clearMS": 0.059999,
+          "computeReportedKernelMS": 32.33237413223833,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.805043,
+          "sampledAllocatedBytes": 1861910528,
+          "seedMS": 11.166748,
+          "startWallMS": 106.48229099999998,
+          "submitted": 23,
+          "sumStartMS": 159.753
+        },
+        "amount": 15,
+        "coldGuideMatchesArchive": true,
+        "coldGuideR32": {
+          "bands": 23,
+          "firstPhysicalBits": 1057049024,
+          "lastPhysicalBits": 1016017221,
+          "sha256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+          "values": 49766400
+        },
+        "commandGPUMS": 0,
+        "committedBands": 23,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 603,
+          "commits": 24,
+          "completedGPUIntervalsMS": 14.646874857135117,
+          "countsVerificationAndAuthorityMS": 1.690667,
+          "encoderAndAuthorityMS": 2.2527499999999994,
+          "fullErosionMS": 299.301958,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.9814583463594317,
+          "original64Rows": true,
+          "rawPrivateMinimum": {
+            "bandSHA": [
+              "e5a7ff4717d2c133d2c7f76ff85c23a71adea11962e84ea8fdf596a74f822020",
+              "12bd69719d050952a32fb8f4af9cf2a70420d4e4a9eef7ec08d9c8aa195a8117",
+              "5bbe14ff0f2ea5d652e23224959bdd692b6986b5e99195c4d08c87951c224c7e",
+              "c63522d50a42befcbb34ff934ffde3ab683ab4604c33ab3c41a288ab30a7ca5d",
+              "a6bc8141b2b29f6d81822834f4918c6809d18e55d331ac699cf8766afea96a65",
+              "b9a02170394651e4897e59f464c624c2b1c48d447b48b1a956464a7e30fef6dd",
+              "f661416ba3134aee8df8fe98deda6c3b4210aa031934f700facc03ab9ea57857",
+              "319676d7a557a237778f89b1afb1507bb3761684f3d69231a272daee863062ec",
+              "fcacf4279165584ef072e82417dc472887d4b13e88dd27cfb3fcdc0d99f2ba12",
+              "07cc7521043e9e334e15fa4095a2b69e6802ec29decf5d91d214aa3433558c7c",
+              "7d27a533be6a61096c7679d5f7f901a6c6b7e1e040c3b0b8c550bf4909a44174",
+              "4190876f39e9b605b61cf41919c7f75c7dd6faf8bca2aa5a22ae622e24921250",
+              "800cf378e89f342f4eff8be001ab1a66602928b66429d84ce8d4469a009236af",
+              "fae0d421c59fe4e5d0bc27c413d56a81241f68616239e62fc54f04b4ffd4e364",
+              "257ac74d6b412396d90391dc42267544fdb5ae16b5908343e0be86586f41e89f",
+              "220bbec35686d8803a7f4282a14671902df773b320f1e78ce351e2cd34bd7594",
+              "2c7700e011bb9097dd81dc7003f809726798c9ecba823af5c6fff8a69e2f1ad5",
+              "6c797b827a6116fe85c3ddc35780f0eabc0373442ba4d40dfad6613dc924b626",
+              "e806c14f13281a8af61f58393eab393d2994596079e2f851f972361bfe3d355a",
+              "efafcd2eba0d2024f1929ce5c27fed40b75e90dadfabf153247af47b5bef4497",
+              "1934ae64efd03fe480f267c3c75eb1879aa2425dfb0603872bab55129812ce2b",
+              "19fb0a5e886edf595781ce1da22183285e0f3ced63ff27ffa8ea0794150fab9e",
+              "e4c243b39c3e49432826ddc0b508b32043d28a5a0dda0a9cb95e3852970a26c5"
+            ],
+            "physicalNativeYOrder": "MTLTexture origin (0,0), consecutive 256-row bands, RGBA half bits without conversion",
+            "readbackAndHashMS": 263.0445,
+            "rgba16fValues": 199065600,
+            "sha256": "6e7ce270ccee560877890580a5b43434461b826e9cbea25385aefd5bc95ba8f0"
+          },
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 30.924958000000004,
+          "timedGroupLoopMS": 298.989625,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 127.175,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 23,
+          "components": 199065600,
+          "firstBits": [
+            1021187853,
+            1023986621,
+            1018966341,
+            1065353216
+          ],
+          "lastBits": [
+            1059674394,
+            1059655361,
+            1060706347,
+            1065353216
+          ],
+          "sha256": "c765bfcb6c92722eb62531fe9bfd570f5487b9f9955fabb63d61e1f5c6739486",
+          "tailRows": 128
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "pixelDiff": {
+          "hasStockReferenceBytes": false
+        },
+        "processPeakBytes": 2497202024,
+        "providerBuffer": {
+          "bands": 23,
+          "firstPhysicalBits": 1057049024,
+          "lastPhysicalBits": 1016017221,
+          "sha256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+          "values": 49766400
+        },
+        "scalarFills": 1,
+        "stockFITDigest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 23,
+        "W2AndRasterMS": 57.09025,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 3.413291,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 53.270709000000004,
+          "blockingWaitMS": 0.022791000000000002,
+          "clearMS": 0.059999,
+          "computeReportedKernelMS": 32.33237413223833,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.805043,
+          "sampledAllocatedBytes": 1861910528,
+          "seedMS": 11.166748,
+          "startWallMS": 106.48229099999998,
+          "submitted": 23,
+          "sumStartMS": 159.753
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 23,
+          "components": 199065600,
+          "firstBits": [
+            1019848488,
+            1023223919,
+            1017425656,
+            1065353216
+          ],
+          "lastBits": [
+            1059655240,
+            1059531073,
+            1060939340,
+            1065353216
+          ],
+          "sha256": "ac72fa4112609b2099f28e6301969575b66490b4732a97f83699deebc215aaec",
+          "tailRows": 128
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3145697440,
+        "providerBuffer": {
+          "bands": 23,
+          "firstPhysicalBits": 1057049024,
+          "lastPhysicalBits": 1016017221,
+          "sha256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+          "values": 49766400
+        },
+        "scalarFills": 0,
+        "stockFITDigest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 29.854125,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "P0",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/03-secondary-P0-full.cmd.json",
+        "sha256": "ca301cf0d2efdf059f84e0b99a20cb1beb88ac73b1ac5f727377ea5bc4a51191"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-functional-01/03-secondary-P0-full.json",
+        "sha256": "eb1027f2090222479cf3c85b4e3d64c838fb4faeb5b5519304f2a173b3d31ac4"
+      },
+      "cold": {
+        "acquireMS": 483.706667,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.025044000000000004,
+          "clearMS": 0.073167,
+          "computeReportedKernelMS": 40.022375411354005,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4629179999999997,
+          "sampledAllocatedBytes": 1861910528,
+          "seedMS": 11.720501,
+          "startWallMS": 120.665624,
+          "submitted": 23,
+          "sumStartMS": 114.07049799999999
+        },
+        "amount": 15,
+        "coldGuideMatchesArchive": true,
+        "coldGuideR32": {
+          "bands": 23,
+          "firstPhysicalBits": 1057049024,
+          "lastPhysicalBits": 1016017221,
+          "sha256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+          "values": 49766400
+        },
+        "commandGPUMS": 0,
+        "committedBands": 23,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 603,
+          "commits": 24,
+          "completedGPUIntervalsMS": 18.07529153302312,
+          "countsVerificationAndAuthorityMS": 8.461292,
+          "encoderAndAuthorityMS": 3.2666259999999996,
+          "fullErosionMS": 327.666417,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.860749976709485,
+          "original64Rows": true,
+          "rawPrivateMinimum": {
+            "bandSHA": [
+              "e5a7ff4717d2c133d2c7f76ff85c23a71adea11962e84ea8fdf596a74f822020",
+              "12bd69719d050952a32fb8f4af9cf2a70420d4e4a9eef7ec08d9c8aa195a8117",
+              "5bbe14ff0f2ea5d652e23224959bdd692b6986b5e99195c4d08c87951c224c7e",
+              "c63522d50a42befcbb34ff934ffde3ab683ab4604c33ab3c41a288ab30a7ca5d",
+              "a6bc8141b2b29f6d81822834f4918c6809d18e55d331ac699cf8766afea96a65",
+              "b9a02170394651e4897e59f464c624c2b1c48d447b48b1a956464a7e30fef6dd",
+              "f661416ba3134aee8df8fe98deda6c3b4210aa031934f700facc03ab9ea57857",
+              "319676d7a557a237778f89b1afb1507bb3761684f3d69231a272daee863062ec",
+              "fcacf4279165584ef072e82417dc472887d4b13e88dd27cfb3fcdc0d99f2ba12",
+              "07cc7521043e9e334e15fa4095a2b69e6802ec29decf5d91d214aa3433558c7c",
+              "7d27a533be6a61096c7679d5f7f901a6c6b7e1e040c3b0b8c550bf4909a44174",
+              "4190876f39e9b605b61cf41919c7f75c7dd6faf8bca2aa5a22ae622e24921250",
+              "800cf378e89f342f4eff8be001ab1a66602928b66429d84ce8d4469a009236af",
+              "fae0d421c59fe4e5d0bc27c413d56a81241f68616239e62fc54f04b4ffd4e364",
+              "257ac74d6b412396d90391dc42267544fdb5ae16b5908343e0be86586f41e89f",
+              "220bbec35686d8803a7f4282a14671902df773b320f1e78ce351e2cd34bd7594",
+              "2c7700e011bb9097dd81dc7003f809726798c9ecba823af5c6fff8a69e2f1ad5",
+              "6c797b827a6116fe85c3ddc35780f0eabc0373442ba4d40dfad6613dc924b626",
+              "e806c14f13281a8af61f58393eab393d2994596079e2f851f972361bfe3d355a",
+              "efafcd2eba0d2024f1929ce5c27fed40b75e90dadfabf153247af47b5bef4497",
+              "1934ae64efd03fe480f267c3c75eb1879aa2425dfb0603872bab55129812ce2b",
+              "19fb0a5e886edf595781ce1da22183285e0f3ced63ff27ffa8ea0794150fab9e",
+              "e4c243b39c3e49432826ddc0b508b32043d28a5a0dda0a9cb95e3852970a26c5"
+            ],
+            "physicalNativeYOrder": "MTLTexture origin (0,0), consecutive 256-row bands, RGBA half bits without conversion",
+            "readbackAndHashMS": 282.684208,
+            "rgba16fValues": 199065600,
+            "sha256": "6e7ce270ccee560877890580a5b43434461b826e9cbea25385aefd5bc95ba8f0"
+          },
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 31.553791999999994,
+          "timedGroupLoopMS": 327.263667,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 145.644542,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 23,
+          "components": 199065600,
+          "firstBits": [
+            1021187853,
+            1023986621,
+            1018966341,
+            1065353216
+          ],
+          "lastBits": [
+            1059674394,
+            1059655361,
+            1060706347,
+            1065353216
+          ],
+          "sha256": "c765bfcb6c92722eb62531fe9bfd570f5487b9f9955fabb63d61e1f5c6739486",
+          "tailRows": 128
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "pixelDiff": {
+          "hasStockReferenceBytes": false
+        },
+        "processPeakBytes": 2498136008,
+        "providerBuffer": {
+          "bands": 23,
+          "firstPhysicalBits": 1057049024,
+          "lastPhysicalBits": 1016017221,
+          "sha256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+          "values": 49766400
+        },
+        "scalarFills": 1,
+        "stockFITDigest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 23,
+        "W2AndRasterMS": 47.794416,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.531708,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.025044000000000004,
+          "clearMS": 0.073167,
+          "computeReportedKernelMS": 40.022375411354005,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4629179999999997,
+          "sampledAllocatedBytes": 1861910528,
+          "seedMS": 11.720501,
+          "startWallMS": 120.665624,
+          "submitted": 23,
+          "sumStartMS": 114.07049799999999
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "guideMatchesOriginal": true,
+        "nativeMatchesOriginal": true,
+        "nativeRestore": {
+          "bands": 23,
+          "components": 199065600,
+          "firstBits": [
+            1019848488,
+            1023223919,
+            1017425656,
+            1065353216
+          ],
+          "lastBits": [
+            1059655240,
+            1059531073,
+            1060939340,
+            1065353216
+          ],
+          "sha256": "ac72fa4112609b2099f28e6301969575b66490b4732a97f83699deebc215aaec",
+          "tailRows": 128
+        },
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3146188984,
+        "providerBuffer": {
+          "bands": 23,
+          "firstPhysicalBits": 1057049024,
+          "lastPhysicalBits": 1016017221,
+          "sha256": "607427197087926f022de2ffe94488feef2eef05e81acbb194117cf93891b49f",
+          "values": 49766400
+        },
+        "scalarFills": 0,
+        "stockFITDigest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "stockFITEqualsOriginal": true,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 29.828167,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    }
+  ],
+  "timings": [
+    {
+      "scene": "primary",
+      "mode": "R4",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/00-primary-R4-time.cmd.json",
+        "sha256": "9280fb84245930f6dee8e4aeb924c4e943bd80504d20c11b77205c08b4d4bbe0"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/00-primary-R4-time.json",
+        "sha256": "3d50d8147a22de3dcc1e9907e16ee26e7424b0cd815f6cd2dc18666b8dd2b400"
+      },
+      "cold": {
+        "acquireMS": 235.120625,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 554,
+          "commits": 26,
+          "completedGPUIntervalsMS": 18.164416658692062,
+          "countsVerificationAndAuthorityMS": 2.166583,
+          "encoderAndAuthorityMS": 2.808914,
+          "fullErosionMS": 41.050458,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 1.0084167588502169,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 34.578458,
+          "timedGroupLoopMS": 40.743833,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 182.182291,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2953758808,
+        "scalarFills": 1,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 57.267875,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 2.67,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3096709256,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 29.06,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "primary",
+      "mode": "P0",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/01-primary-P0-time.cmd.json",
+        "sha256": "9391fdc7e23724f3bd0e12bb753e960e2086e9466b8d297c1b249b8de591d4f9"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/01-primary-P0-time.json",
+        "sha256": "d81d335124892780f220014958ba76d175c54a6a569508dd93a8bcf747107e12"
+      },
+      "cold": {
+        "acquireMS": 214.94075,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.02996100000000001,
+          "clearMS": 0.07041599999999999,
+          "computeReportedKernelMS": 34.54429178964347,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4666250000000005,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 13.868042999999998,
+          "startWallMS": 138.249499,
+          "submitted": 25,
+          "sumStartMS": 130.541002
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 25,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 606,
+          "commits": 26,
+          "completedGPUIntervalsMS": 23.041291744448245,
+          "countsVerificationAndAuthorityMS": 1.9992109999999998,
+          "encoderAndAuthorityMS": 2.7915400000000004,
+          "fullErosionMS": 44.958917,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 1.3732915977016091,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 38.74020899999999,
+          "timedGroupLoopMS": 44.551125,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 161.901833,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2944092224,
+        "scalarFills": 1,
+        "successfulJoins": 25,
+        "W2AndRasterMS": 59.999,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.428292,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.02996100000000001,
+          "clearMS": 0.07041599999999999,
+          "computeReportedKernelMS": 34.54429178964347,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4666250000000005,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 13.868042999999998,
+          "startWallMS": 138.249499,
+          "submitted": 25,
+          "sumStartMS": 130.541002
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3087026312,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 28.403458,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "primary",
+      "mode": "P2",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/02-primary-P2-time.cmd.json",
+        "sha256": "ef8f688d88d85486789c16e945cc8b576cf34412583d0c40e260abf1dabd24fb"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/02-primary-P2-time.json",
+        "sha256": "2bdb5d411a0bc2e19d7a941fc540a21893762593b9c3835262c0588bf1073172"
+      },
+      "cold": {
+        "acquireMS": 199.299667,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 65.647749,
+          "blockingWaitMS": 0.03454100000000001,
+          "clearMS": 0.076292,
+          "computeReportedKernelMS": 30.23754246532917,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4110009999999997,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 13.342749,
+          "startWallMS": 129.422752,
+          "submitted": 25,
+          "sumStartMS": 195.07050099999998
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 25,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 606,
+          "commits": 26,
+          "completedGPUIntervalsMS": 14.307708479464054,
+          "countsVerificationAndAuthorityMS": 2.169832,
+          "encoderAndAuthorityMS": 2.8925,
+          "fullErosionMS": 37.293583,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 0.6669999565929174,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 30.961165000000005,
+          "timedGroupLoopMS": 36.93725,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 153.216875,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2942847016,
+        "scalarFills": 1,
+        "successfulJoins": 25,
+        "W2AndRasterMS": 50.204875,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 2.290875,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 65.647749,
+          "blockingWaitMS": 0.03454100000000001,
+          "clearMS": 0.076292,
+          "computeReportedKernelMS": 30.23754246532917,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4110009999999997,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 13.342749,
+          "startWallMS": 129.422752,
+          "submitted": 25,
+          "sumStartMS": 195.07050099999998
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3085699184,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 27.715959,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "primary",
+      "mode": "P2",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/03-primary-P2-time.cmd.json",
+        "sha256": "12af2a64923d1a8d76fe12f5cfcdfc5c64a96073da62864ec892b061d78d2cd8"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/03-primary-P2-time.json",
+        "sha256": "276372f880f1bdbc851d11d9b96cf84ed67fd6326c2330686841eac440063473"
+      },
+      "cold": {
+        "acquireMS": 204.751083,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 62.87529000000001,
+          "blockingWaitMS": 0.033913000000000006,
+          "clearMS": 0.067832,
+          "computeReportedKernelMS": 30.06712405476719,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.338707999999999,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 12.986415,
+          "startWallMS": 125.532501,
+          "submitted": 25,
+          "sumStartMS": 188.40779099999997
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 25,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 606,
+          "commits": 26,
+          "completedGPUIntervalsMS": 13.41583312023431,
+          "countsVerificationAndAuthorityMS": 2.4322459999999997,
+          "encoderAndAuthorityMS": 3.199207,
+          "fullErosionMS": 39.15,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 0.668874941766262,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 30.080455,
+          "timedGroupLoopMS": 36.908125,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 149.273542,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2942109760,
+        "scalarFills": 1,
+        "successfulJoins": 25,
+        "W2AndRasterMS": 58.283834,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.4755,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 62.87529000000001,
+          "blockingWaitMS": 0.033913000000000006,
+          "clearMS": 0.067832,
+          "computeReportedKernelMS": 30.06712405476719,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.338707999999999,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 12.986415,
+          "startWallMS": 125.532501,
+          "submitted": 25,
+          "sumStartMS": 188.40779099999997
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3084994696,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 31.779417,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "primary",
+      "mode": "P0",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/04-primary-P0-time.cmd.json",
+        "sha256": "03d6a6f70528b736d2bce1e621189f1ad806d7ffb840ae53833988901376b741"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/04-primary-P0-time.json",
+        "sha256": "56b8e54d740917563c4eca34ec33f7d5d72267527f0950a66e8e3fd011f59c27"
+      },
+      "cold": {
+        "acquireMS": 203.469833,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.031585,
+          "clearMS": 0.060539,
+          "computeReportedKernelMS": 30.31995869241655,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4658759999999997,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 13.151585,
+          "startWallMS": 133.20608199999998,
+          "submitted": 25,
+          "sumStartMS": 126.264038
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 25,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 606,
+          "commits": 26,
+          "completedGPUIntervalsMS": 13.472833321429789,
+          "countsVerificationAndAuthorityMS": 2.065496,
+          "encoderAndAuthorityMS": 2.5748739999999994,
+          "fullErosionMS": 36.013666,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 0.7089166902005672,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 30.191293000000005,
+          "timedGroupLoopMS": 35.71375,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 158.94775,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2942863424,
+        "scalarFills": 1,
+        "successfulJoins": 25,
+        "W2AndRasterMS": 52.118625,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.932584,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 175,
+          "actualPixels": 471236648,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.031585,
+          "clearMS": 0.060539,
+          "computeReportedKernelMS": 30.31995869241655,
+          "coveredRows": 6336,
+          "groupDetails": [],
+          "groups": 13,
+          "joined": 25,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.4658759999999997,
+          "sampledAllocatedBytes": 2239741952,
+          "seedMS": 13.151585,
+          "startWallMS": 133.20608199999998,
+          "submitted": 25,
+          "sumStartMS": 126.264038
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3085846664,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 28.074667,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "primary",
+      "mode": "R4",
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "extent": [
+        9504,
+        6336
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/05-primary-R4-time.cmd.json",
+        "sha256": "2281f3de70c8030f7b3c67132d01dae86fdc46cec060fb86fab10f9afa7582d8"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/05-primary-R4-time.json",
+        "sha256": "1ab095935adc4c6f0e0ba5a4eaae01766d45df72b53b70ac722a35e667f8f2e2"
+      },
+      "cold": {
+        "acquireMS": 209.775875,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 520486912,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 554,
+          "commits": 26,
+          "completedGPUIntervalsMS": 13.543083332479,
+          "countsVerificationAndAuthorityMS": 2.24671,
+          "encoderAndAuthorityMS": 2.807959,
+          "fullErosionMS": 36.389417,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 26,
+          "maximumOneCommandGPUIntervalMS": 0.7178332889452577,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              62615844,
+              62519040,
+              62229060,
+              61363008,
+              60217344
+            ],
+            "finalFrontier": [
+              6411,
+              6408,
+              6399,
+              6372,
+              6336
+            ],
+            "firstTick": -192,
+            "margins": [
+              75,
+              72,
+              63,
+              36,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              7421952,
+              7421952,
+              9895936,
+              12288000,
+              483360768,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              136
+            ],
+            "stageWidths": [
+              9654,
+              9648,
+              9630,
+              9576,
+              9504
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 29.895125,
+          "timedGroupLoopMS": 36.090542,
+          "verifiedSlabs": 99
+        },
+        "fillMS": 163.620125,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2952710184,
+        "scalarFills": 1,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 53.68125,
+        "W2Digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 1.956416,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 140,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 3095644272,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 30.851542,
+        "W2Digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "P2",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/06-secondary-P2-time.cmd.json",
+        "sha256": "e2ccb9f58730fb0f8c73d006edeb020cf25874f438696e2adb03497fa343df8c"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/06-secondary-P2-time.json",
+        "sha256": "ac539685309733c27d673018b02ba4a2f5ca6d4c050fe5f3759e7d2715e1da95"
+      },
+      "cold": {
+        "acquireMS": 161.856125,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 50.09325000000001,
+          "blockingWaitMS": 0.025166000000000008,
+          "clearMS": 0.05629299999999999,
+          "computeReportedKernelMS": 25.352874188683927,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.016253,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 10.689792000000002,
+          "startWallMS": 99.413458,
+          "submitted": 23,
+          "sumStartMS": 149.50670799999997
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 23,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 557,
+          "commits": 24,
+          "completedGPUIntervalsMS": 15.547416638582945,
+          "countsVerificationAndAuthorityMS": 1.775375,
+          "encoderAndAuthorityMS": 2.42775,
+          "fullErosionMS": 35.628709,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.8562083821743727,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 30.065751,
+          "timedGroupLoopMS": 35.331667,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 119.614583,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2478114688,
+        "scalarFills": 1,
+        "successfulJoins": 23,
+        "W2AndRasterMS": 45.741667,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.442875,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 50.09325000000001,
+          "blockingWaitMS": 0.025166000000000008,
+          "clearMS": 0.05629299999999999,
+          "computeReportedKernelMS": 25.352874188683927,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 3.016253,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 10.689792000000002,
+          "startWallMS": 99.413458,
+          "submitted": 23,
+          "sumStartMS": 149.50670799999997
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2604238768,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 25.886083,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "P0",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/07-secondary-P0-time.cmd.json",
+        "sha256": "b289884a074d5f9df2202acea4cd29ef6290142395251f925d37c516eb38d17e"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/07-secondary-P0-time.json",
+        "sha256": "b4f345f54a141de107e72bd42eb4ce0d2aaf84efcb7f84ad8422ce2b23762f91"
+      },
+      "cold": {
+        "acquireMS": 166.888667,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.021209000000000002,
+          "clearMS": 0.060333,
+          "computeReportedKernelMS": 25.39066760800779,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 2.807043,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 11.301872999999997,
+          "startWallMS": 106.131918,
+          "submitted": 23,
+          "sumStartMS": 99.884501
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 23,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 557,
+          "commits": 24,
+          "completedGPUIntervalsMS": 15.272583346813917,
+          "countsVerificationAndAuthorityMS": 1.913791,
+          "encoderAndAuthorityMS": 2.498585000000001,
+          "fullErosionMS": 33.93325,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 1.0010417317971587,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 28.29733600000001,
+          "timedGroupLoopMS": 33.641125,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 125.766334,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2477868952,
+        "scalarFills": 1,
+        "successfulJoins": 23,
+        "W2AndRasterMS": 46.685875,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.449542,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.021209000000000002,
+          "clearMS": 0.060333,
+          "computeReportedKernelMS": 25.39066760800779,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 2.807043,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 11.301872999999997,
+          "startWallMS": 106.131918,
+          "submitted": 23,
+          "sumStartMS": 99.884501
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2604124104,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 26.698125,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "R4",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/08-secondary-R4-time.cmd.json",
+        "sha256": "9f6bb96e777b5a3cfceb840e442ed6011188cb05e7bdfc437ace67097bd3dc2a"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/08-secondary-R4-time.json",
+        "sha256": "4fcea853d0a5c5b71af406dd25d0784e51d3d6356ce2daddd2d5c65d754d288e"
+      },
+      "cold": {
+        "acquireMS": 169.812917,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 509,
+          "commits": 24,
+          "completedGPUIntervalsMS": 15.231250086799264,
+          "countsVerificationAndAuthorityMS": 1.78521,
+          "encoderAndAuthorityMS": 2.478002,
+          "fullErosionMS": 35.974875,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.9150833357125521,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 30.39425200000001,
+          "timedGroupLoopMS": 35.656709,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 129.83275,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2492974976,
+        "scalarFills": 1,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 40.68225,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.449209,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2619197384,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 24.645541,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "R4",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/09-secondary-R4-time.cmd.json",
+        "sha256": "68882282c48d0c761a2983e014f2e6bc773ecfc912d8d9d66ec1edc633e17f19"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/09-secondary-R4-time.json",
+        "sha256": "68df0331efea15a21fa30a3ff0d72cc82fdd718a0ce5057d64e6b95fc9799aac"
+      },
+      "cold": {
+        "acquireMS": 167.52875,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 509,
+          "commits": 24,
+          "completedGPUIntervalsMS": 15.420874813571572,
+          "countsVerificationAndAuthorityMS": 1.80796,
+          "encoderAndAuthorityMS": 2.339249,
+          "fullErosionMS": 35.536166,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.8619166910648346,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 29.998168999999997,
+          "timedGroupLoopMS": 35.196292,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 129.700416,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2490926952,
+        "scalarFills": 1,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 43.814,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 2.383167,
+        "additionalAllocation": 0,
+        "ADStages": {},
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2617182128,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 25.409417,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "P0",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/10-secondary-P0-time.cmd.json",
+        "sha256": "f82c188a11c524d77736e528ec8b00388f00343e80599b2e5bae56fe8995d434"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/10-secondary-P0-time.json",
+        "sha256": "aaf84325dfc0470725f42137a0485a749418d6d252107ef9d802041d0a85cd80"
+      },
+      "cold": {
+        "acquireMS": 163.3205,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.019835000000000005,
+          "clearMS": 0.060955999999999996,
+          "computeReportedKernelMS": 26.920084725134075,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 2.8558339999999998,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 11.058246999999998,
+          "startWallMS": 104.53066799999998,
+          "submitted": 23,
+          "sumStartMS": 98.549503
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 23,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 557,
+          "commits": 24,
+          "completedGPUIntervalsMS": 14.064874267205596,
+          "countsVerificationAndAuthorityMS": 1.6836240000000002,
+          "encoderAndAuthorityMS": 2.3479609999999993,
+          "fullErosionMS": 35.110959,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.9482083842158318,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 29.757916999999996,
+          "timedGroupLoopMS": 34.8135,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 123.639542,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2477901744,
+        "scalarFills": 1,
+        "successfulJoins": 23,
+        "W2AndRasterMS": 45.755,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.468708,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 0,
+          "blockingWaitMS": 0.019835000000000005,
+          "clearMS": 0.060955999999999996,
+          "computeReportedKernelMS": 26.920084725134075,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 2.8558339999999998,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 11.058246999999998,
+          "startWallMS": 104.53066799999998,
+          "submitted": 23,
+          "sumStartMS": 98.549503
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2477901744,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 29.28025,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    },
+    {
+      "scene": "secondary",
+      "mode": "P2",
+      "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "extent": [
+        8640,
+        5760
+      ],
+      "command": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/11-secondary-P2-time.cmd.json",
+        "sha256": "e7eb10761b67de17612562953bcd982dbe39e8a866289b616200a6e8ee9103a7"
+      },
+      "steps": {
+        "path": "output/035-development/phase-ad/dehaze/pair-timed-01/11-secondary-P2-time.json",
+        "sha256": "0358bf945cce1bf7e9d6a4604d66a057fd951f5b4171f7be86dd7755372a69f2"
+      },
+      "cold": {
+        "acquireMS": 153.980083,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 47.865876,
+          "blockingWaitMS": 0.018499000000000005,
+          "clearMS": 0.05712400000000001,
+          "computeReportedKernelMS": 24.497832520864904,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 2.806292,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 10.839624,
+          "startWallMS": 95.831374,
+          "submitted": 23,
+          "sumStartMS": 143.69725
+        },
+        "amount": 15,
+        "commandGPUMS": 0,
+        "committedBands": 23,
+        "erosion": {
+          "actualAllocatedBytes": 429686784,
+          "actualFlagAllocatedBytes": 98304,
+          "checkedCalls": 557,
+          "commits": 24,
+          "completedGPUIntervalsMS": 15.168916550464928,
+          "countsVerificationAndAuthorityMS": 1.743334,
+          "encoderAndAuthorityMS": 2.350291,
+          "fullErosionMS": 35.293416,
+          "groupLimit": 4,
+          "hazardsTracked": true,
+          "joins": 24,
+          "maximumOneCommandGPUIntervalMS": 0.8703749626874924,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {
+            "acknowledgedPixelsPerStage": [
+              51743296,
+              51655300,
+              51391744,
+              50604964,
+              49766400
+            ],
+            "finalFrontier": [
+              5828,
+              5825,
+              5816,
+              5789,
+              5760
+            ],
+            "firstTick": -192,
+            "margins": [
+              68,
+              65,
+              56,
+              29,
+              0
+            ],
+            "ownedBytesPerTextureThenFlags": [
+              6782976,
+              6782976,
+              8978432,
+              8912896,
+              398131200,
+              98304
+            ],
+            "productShaderUnmodified": true,
+            "ringRows": [
+              70,
+              82,
+              118,
+              122
+            ],
+            "stageWidths": [
+              8776,
+              8770,
+              8752,
+              8698,
+              8640
+            ]
+          },
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 29.71816599999999,
+          "timedGroupLoopMS": 34.883125,
+          "verifiedSlabs": 90
+        },
+        "fillMS": 114.966375,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2478000048,
+        "scalarFills": 1,
+        "successfulJoins": 23,
+        "W2AndRasterMS": 44.209625,
+        "W2Digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+        "W2EqualsOriginal": true,
+        "warm": false,
+        "ZStages": {}
+      },
+      "warm": {
+        "acquireMS": 0.487791,
+        "additionalAllocation": 0,
+        "ADStages": {
+          "actualPasses": 161,
+          "actualPixels": 381699908,
+          "actualStartOverlapMS": 47.865876,
+          "blockingWaitMS": 0.018499000000000005,
+          "clearMS": 0.05712400000000001,
+          "computeReportedKernelMS": 24.497832520864904,
+          "coveredRows": 5760,
+          "groupDetails": [],
+          "groups": 12,
+          "joined": 23,
+          "maxAuthorizedJobs": 2,
+          "rowValidationMS": 2.806292,
+          "sampledAllocatedBytes": 1844215808,
+          "seedMS": 10.839624,
+          "startWallMS": 95.831374,
+          "submitted": 23,
+          "sumStartMS": 143.69725
+        },
+        "amount": 45,
+        "commandGPUMS": 0,
+        "committedBands": 0,
+        "erosion": {
+          "actualAllocatedBytes": 0,
+          "actualFlagAllocatedBytes": 0,
+          "checkedCalls": 130,
+          "commits": 0,
+          "completedGPUIntervalsMS": 0,
+          "countsVerificationAndAuthorityMS": 0,
+          "encoderAndAuthorityMS": 0,
+          "fullErosionMS": 0,
+          "groupLimit": 4,
+          "hazardsTracked": false,
+          "joins": 0,
+          "maximumOneCommandGPUIntervalMS": 0,
+          "original64Rows": true,
+          "rawPrivateMinimum": {},
+          "ring": {},
+          "statusAtFirstCommitClosure": "none",
+          "submitToCompletionMS": 0,
+          "timedGroupLoopMS": 0,
+          "verifiedSlabs": 0
+        },
+        "fillMS": 0,
+        "phases": {
+          "CIKernelCompileMS": 0,
+          "CIKernelExecutionMS": 0,
+          "CIPasses": 0,
+          "CIPixels": 0,
+          "clearMS": 0,
+          "clears": 0,
+          "faultJoins": 0,
+          "joinedWaitMS": 0,
+          "maxInFlight": 0,
+          "rowVerificationMS": 0,
+          "seedMS": 0,
+          "startMS": 0
+        },
+        "processPeakBytes": 2604337120,
+        "scalarFills": 0,
+        "successfulJoins": 0,
+        "W2AndRasterMS": 24.426209,
+        "W2Digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+        "W2EqualsOriginal": true,
+        "warm": true,
+        "ZStages": {}
+      }
+    }
+  ],
+  "measurements": {
+    "primary": {
+      "R4": {
+        "fillMs": 172.901208,
+        "coldGuideMs": 222.44825,
+        "coldGuideAndDisplayProbeMs": 277.92281249999996,
+        "peakPhysicalFootprintBytes": 2953758808
+      },
+      "P0": {
+        "fillMs": 160.42479150000003,
+        "coldGuideMs": 209.2052915,
+        "coldGuideAndDisplayProbeMs": 265.264104,
+        "peakPhysicalFootprintBytes": 2944092224
+      },
+      "P2": {
+        "fillMs": 151.2452085,
+        "coldGuideMs": 202.025375,
+        "coldGuideAndDisplayProbeMs": 256.26972950000004,
+        "peakPhysicalFootprintBytes": 2942847016
+      }
+    },
+    "secondary": {
+      "R4": {
+        "fillMs": 129.766583,
+        "coldGuideMs": 168.67083350000001,
+        "coldGuideAndDisplayProbeMs": 210.9189585,
+        "peakPhysicalFootprintBytes": 2492974976
+      },
+      "P0": {
+        "fillMs": 124.702938,
+        "coldGuideMs": 165.1045835,
+        "coldGuideAndDisplayProbeMs": 211.325021,
+        "peakPhysicalFootprintBytes": 2477901744
+      },
+      "P2": {
+        "fillMs": 117.290479,
+        "coldGuideMs": 157.918104,
+        "coldGuideAndDisplayProbeMs": 202.89375,
+        "peakPhysicalFootprintBytes": 2478114688
+      }
+    }
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "candidate": "candidate-batch12m",
+  "commit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "sourceSnapshot": {
+    "path": "output/035-development/candidate-batch12m/source-files.sha256",
+    "sha256": "7124d89f37be9da2f3977ae7f857f5a15d022b8acc9eb038d4e12f550d48c0db"
+  },
+  "sourceChangesFromBatch12": [
+    {
+      "path": "Sources/RAWMasterImaging/DevelopmentSemanticMaskService.swift",
+      "sha256": "9f01bf101b516586c0ede70cc6ca64b45d8a59a8a1229e6492be8a5166d997ec"
+    },
+    {
+      "path": "Tests/RAWMasterImagingTests/DevelopmentSemanticMaskTests.swift",
+      "sha256": "934720e635614a69dd1f2888680f84f1cfbfa68283d1eb6af46e8e7d844061a2"
+    },
+    {
+      "path": "Tests/RAWMasterUITests/EditingMaskCanvasOwnershipTests.swift",
+      "sha256": "46f2a66c497f9f7b8946d5f34c07195b31413ff2fc4cba11ae127282eef69ea4"
+    }
+  ],
+  "testSuites": [
+    {
+      "testProduct": "RAWMasterImagingTests",
+      "binary": {
+        "path": "output/035-development/candidate-batch12m/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+        "sha256": "ddeba31376f72fc3f526dd10dfbd644f061a8c61b4095685b584cfde90c04182"
+      },
+      "passed": 27,
+      "skipped": 0,
+      "log": {
+        "path": "output/035-development/candidate-batch12m/native-film-and-mask.log",
+        "sha256": "e35b9751b37e560a2ab727cf27f1cf3659704d224911032ca5a20fb4abc5d121"
+      },
+      "command": {
+        "path": "output/035-development/candidate-batch12m/native-film-and-mask.command.json",
+        "sha256": "3499f60e84db00bc2df57bc3ffc79aa66eb8cfe35b18557d137e079bf4a90dce"
+      }
+    },
+    {
+      "testProduct": "RAWMasterUITests",
+      "binary": {
+        "path": "output/035-development/candidate-batch12m/RAWMasterUITests.xctest/Contents/MacOS/RAWMasterUITests",
+        "sha256": "5b8425bfdd7e939e8f72e2ef23931ef00e52c64d2bd877a46ec129f8d65138fb"
+      },
+      "passed": 9,
+      "skipped": 0,
+      "log": {
+        "path": "output/035-development/candidate-batch12m/native-mask-interactions.log",
+        "sha256": "8aa901b0f50d96344fe8b7ae4f532bedf7d5f2384aa81bd9c2d69422f2c1df8e"
+      },
+      "command": {
+        "path": "output/035-development/candidate-batch12m/native-mask-interactions.command.json",
+        "sha256": "3499f60e84db00bc2df57bc3ffc79aa66eb8cfe35b18557d137e079bf4a90dce"
+      }
+    },
+    {
+      "testProduct": "RAWMasterAITests",
+      "binary": {
+        "path": "output/035-development/candidate-batch12m/RAWMasterAITests.xctest/Contents/MacOS/RAWMasterAITests",
+        "sha256": "01e2c000e45c93f82e1bae0fa86c63f8856e009fcf316bc5348b7bd429d5d5a3"
+      },
+      "passed": 5,
+      "skipped": 0,
+      "log": {
+        "path": "output/035-development/candidate-batch12m/native-prompt-provider.log",
+        "sha256": "4cb39b13a0de7ae08248a9deeeb3ac3234ffa690baa244489ed555bcd9b0720b"
+      },
+      "command": {
+        "path": "output/035-development/candidate-batch12m/native-prompt-provider.command.json",
+        "sha256": "3499f60e84db00bc2df57bc3ffc79aa66eb8cfe35b18557d137e079bf4a90dce"
+      }
+    },
+    {
+      "testProduct": "RAWMasterImagingTests",
+      "binary": {
+        "path": "output/035-development/candidate-batch12m/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+        "sha256": "ddeba31376f72fc3f526dd10dfbd644f061a8c61b4095685b584cfde90c04182"
+      },
+      "passed": 31,
+      "skipped": 1,
+      "log": {
+        "path": "output/035-development/candidate-batch12m/native-focused-with-raw.log",
+        "sha256": "88d29d9ca0fb1e63a3f46b3b383ec1672394bcc80dfd3480de0e431bfeed99ea"
+      },
+      "command": {
+        "path": "output/035-development/candidate-batch12m/native-focused-with-raw.command.json",
+        "sha256": "3499f60e84db00bc2df57bc3ffc79aa66eb8cfe35b18557d137e079bf4a90dce"
+      }
+    },
+    {
+      "testProduct": "RAWMasterImagingTests",
+      "binary": {
+        "path": "output/035-development/candidate-batch12m/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+        "sha256": "ddeba31376f72fc3f526dd10dfbd644f061a8c61b4095685b584cfde90c04182"
+      },
+      "passed": 11,
+      "skipped": 0,
+      "log": {
+        "path": "output/035-development/candidate-batch12m/native-direct.log",
+        "sha256": "a05650a693b3ba36c1ba34299fa94e95479d16a753d0a2e6e283341c4c8035bb"
+      },
+      "command": {
+        "path": "output/035-development/candidate-batch12m/native-direct.command.json",
+        "sha256": "3499f60e84db00bc2df57bc3ffc79aa66eb8cfe35b18557d137e079bf4a90dce"
+      }
+    }
+  ],
+  "priorReproductions": [
+    {
+      "path": "output/035-development/candidate-batch12/native-film-and-mask-fixtures.log",
+      "sha256": "30e9522046ba282484eb2e2040dd5e9c9d080c842dcc0a01524d8b60b62dc177"
+    },
+    {
+      "path": "output/035-development/candidate-batch12/native-mask-interactions-fixtures.log",
+      "sha256": "b06ffc4b457c1c774078f1963e42d801b64a4cb8616f02683c14937c9c728baa"
+    }
+  ],
+  "filmFixtures": {
+    "referenceComparison": {
+      "path": "output/035-development/candidate-batch12m/film-references/native-vs-direct.json",
+      "sha256": "158aadd6059eb8df50b008816b16331469960f12423c3bd8ed340653331c0b21"
+    },
+    "measurements": {
+      "person": {
+        "spektraPortra400Endura": {
+          "max": 1,
+          "mean": 0.02140625,
+          "p99": 1
+        },
+        "spektraVelvia100": {
+          "max": 2,
+          "mean": 0.026927083333333334,
+          "p99": 1
+        },
+        "spektraVision250D2383": {
+          "max": 1,
+          "mean": 0.028394097222222223,
+          "p99": 1
+        }
+      },
+      "snow": {
+        "spektraPortra400Endura": {
+          "max": 1,
+          "mean": 0.034869791666666664,
+          "p99": 1
+        },
+        "spektraVelvia100": {
+          "max": 1,
+          "mean": 0.03180555555555555,
+          "p99": 1
+        },
+        "spektraVision250D2383": {
+          "max": 1,
+          "mean": 0.03825520833333333,
+          "p99": 1
+        }
+      }
+    },
+    "twoFilmOutputs": [
+      {
+        "path": "output/035-development/candidate-batch12m/film-references/person-native.png",
+        "sha256": "24401ef5ffb0a19ea06f15161532c8fe0d883d0e876ac9dc6ec44a53fa1356db"
+      },
+      {
+        "path": "output/035-development/candidate-batch12m/film-references/snow-native.png",
+        "sha256": "15aed48dfb1a31088b10c257077bffd541167b4609153b0fd177bb8809e8c8f9"
+      }
+    ]
+  },
+  "nativeFixtureManifest": {
+    "path": "specs/031-preset-browser/evidence/camera-raw-integration/inputs.json",
+    "sha256": "d362034181cd68f510e5f01f25bbedb2e44637bf6a3644577f334c08c6e308d6"
+  },
+  "formal": {
+    "status": "failed",
+    "passed": false,
+    "baselineCompared": true,
+    "failureDetails": [
+      {
+        "stage": "control-comparison",
+        "report": "control-comparison.json",
+        "failures": [
+          "effects-dehaze: medianMs 13.11 > 12.66 ms"
+        ]
+      },
+      {
+        "stage": "inspection-comparison",
+        "report": "inspection-comparison.json",
+        "failures": [
+          "light-auto-single p95Ms: 8.89 > 7.64 ms",
+          "color-floating-scopes p95Ms: 39.41 > 35.03 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "lens-blur-cat-eye: interactive median regressed 12.18%",
+          "targeted-hsl: interactive median regressed 34.39%",
+          "point-color-samples: interactive median regressed 12.62%",
+          "local-point-color: interactive median regressed 14.91%",
+          "local-light-extended: interactive median regressed 30.40%",
+          "local-defringe: interactive median regressed 11.42%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      }
+    ],
+    "baselineRun": "formal",
+    "failedStages": [
+      "interactive-comparison",
+      "control-comparison",
+      "lightflow-comparison",
+      "inspection-comparison"
+    ]
+  },
+  "testBuild": {
+    "build": "Release",
+    "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "testBinariesSHA256": {
+      "RAWMasterImagingTests": "ddeba31376f72fc3f526dd10dfbd644f061a8c61b4095685b584cfde90c04182",
+      "RAWMasterUITests": "5b8425bfdd7e939e8f72e2ef23931ef00e52c64d2bd877a46ec129f8d65138fb"
+    },
+    "bundledRuntimesSHA256": {
+      "RAWMasterImagingTests": {
+        "Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+        "Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "6b86eaf163b06f63d75283566f0c8892826774d5e026b883e3ba0e61afaf04eb",
+        "Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+      },
+      "RAWMasterUITests": {
+        "Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+        "Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "6b86eaf163b06f63d75283566f0c8892826774d5e026b883e3ba0e61afaf04eb",
+        "Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+      }
+    },
+    "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "lightflow": {
+    "first": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 7.282500000000001,
+        "p95Ms": 188.075
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 4.9533545,
+        "p95Ms": 18.134208
+      },
+      "medianLimitMs": 8.2825,
+      "p95LimitMs": 225.69,
+      "within": true
+    },
+    "firstExact": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 22.134999999999998,
+        "p95Ms": 210.225
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 99.4323955,
+        "p95Ms": 519.348375
+      },
+      "medianLimitMs": 24.348499999999998,
+      "p95LimitMs": 252.26999999999998,
+      "within": false
+    },
+    "final": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 23.5625,
+        "p95Ms": 210.225
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 99.4323955,
+        "p95Ms": 519.348375
+      },
+      "medianLimitMs": 25.91875,
+      "p95LimitMs": 252.26999999999998,
+      "within": false
+    }
+  },
+  "formalSourceReport": {
+    "path": "output/035-development/candidate-batch12m-formal/summary.json",
+    "sha256": "d2e9243c137e7acfb895d3799d1cfe2b33e33cfd282b290da4d8f0793001839f"
+  },
+  "previousDisplayReadback": {
+    "path": "output/035-development/candidate-batch12-formal/photo-operators-v2.json",
+    "sha256": "230cf76f9ed7dbf67a219827e839c39347cbac662eb4f67049d046a665fadd55"
+  },
+  "displayReadback": {
+    "path": "output/035-development/candidate-batch12m-formal/photo-operators-v2.json",
+    "sha256": "d25d0aaffbc2db37f0ccc873098c19ef05601efa356327275f7af22668e69025"
+  },
+  "matchedDisplayFramePairs": 814,
+  "verifiedCombinedFeatures": {
+    "path": "output/035-development/candidate-batch12m-formal/035-combined-verified.json",
+    "sha256": "0d3123ca0b87f278b4275ca94f3b2de86e1b225e28edf4abd4019b4b4eb34dc9"
+  },
+  "cameraRawMeasuredFeatures": 158,
+  "realAdaptive": {
+    "cases": 4,
+    "testBinarySHA256": "5b8425bfdd7e939e8f72e2ef23931ef00e52c64d2bd877a46ec129f8d65138fb"
+  },
+  "realLocalFlux": {
+    "testBinarySHA256": "5b8425bfdd7e939e8f72e2ef23931ef00e52c64d2bd877a46ec129f8d65138fb",
+    "attempts": 1,
+    "protectedPixels": 786432,
+    "selectedChangedPixels": 262144,
+    "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+    "inputMatches034": true
+  },
+  "mixedFlux": {
+    "path": "specs/035-portable-processing-cores/evidence/mixed-workload-flux-batch12m.json",
+    "sha256": "0c3a3ed85491bc64e08d3910c4889c2c4acc9270452752629025e0b05ccc3e16"
+  }
+}

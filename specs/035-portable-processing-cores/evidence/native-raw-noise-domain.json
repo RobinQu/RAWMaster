@@ -1,0 +1,978 @@
+{
+  "scope": "Batch 31 AC, native pure positive global RAW luminance contrast or color detail, linear extended sRGB RGBAf FIT 2400, QA only",
+  "environment": {
+    "os": "macOS 27.0.1 (26A434)",
+    "gpu": "Apple M4 Max",
+    "applicationMemoryLimitMiB": 512,
+    "validatorBudgetMiB": 128,
+    "minimumSystemRAMGiB": 32,
+    "flag": "RAWMASTER_QA_NATIVE_RAW_NOISE_DOMAIN=1"
+  },
+  "productionSources": {
+    "PreviewNativeNoiseDomain": {
+      "path": "Sources/RAWMasterImaging/PreviewNativeNoiseDomain.swift",
+      "sha256": "d7bc617346112b823397462f68277bdd38a7051875d2e418e6f7ddf5bd71e316"
+    },
+    "DevelopmentGlobalEngineV3": {
+      "path": "Sources/RAWMasterImaging/DevelopmentGlobalEngineV3.swift",
+      "sha256": "86a212176f0be6472e27cdccc38b172906014bf3d2d101deee7b1fe4ab2eadae"
+    },
+    "DevelopmentCanonicalFiniteGPU": {
+      "path": "Sources/RAWMasterImaging/DevelopmentCanonicalFiniteGPU.swift",
+      "sha256": "e3a200c0f7e94f9c7ad6c2103ce4fcb836fdf0d73c040c21307ff19a30f34a89"
+    },
+    "FlashRawCanonicalTexturePool": {
+      "path": "Sources/RAWMasterImaging/FlashRawCanonicalTexturePool.swift",
+      "sha256": "a31cda94642936383b8af73d62d77946df1a4f669f1975df958cb01937b21df8"
+    },
+    "DevelopmentRendererV3": {
+      "path": "Sources/RAWMasterImaging/DevelopmentRendererV3.swift",
+      "sha256": "ba089cc6b163f952713d14f8faa6f0d2a7ac86527bc914ddbd9c450b3e777b3b"
+    },
+    "PreviewNativeSource": {
+      "path": "Sources/RAWMasterImaging/PreviewNativeSource.swift",
+      "sha256": "cd96e49754c2690ec9939d4b511251f4f099986a9493ba2535917e9a800e8c17"
+    }
+  },
+  "unitTests": {
+    "path": "Tests/RAWMasterImagingTests/PreviewNativeNoiseDomainTests.swift",
+    "sha256": "6659f33033a66b645f3e7bcd686c0c0ff93d3cad1e125720a4345dc67d8b889d"
+  },
+  "noiseAndLumaMSLSHA256": "98b2fefbfb31539ac11550ff1bd409e08ca4a86afb297756e83773ac51193617",
+  "admission": "The existing physical FlashRaw upload check keeps its false-to-original-path contract. The new three-input Metal validation distinguishes explicit out-of-domain from incomplete render/transport failure, drains all submitted bands and never issues a certificate on failure. Actual FIT publication still rechecks the live worker, verified file and pin.",
+  "codes": {
+    "0xa0": "all 1024-or-tail input predicate texels valid",
+    "0xa1": "every texel rendered; one or more outside the certificate; perform original validation",
+    "0x00/0xa2/0xa3/other": "incomplete write or invalid transport code throws, including combined failure types"
+  },
+  "tools": {
+    "prepare.py": {
+      "path": "output/035-development/phase-ac/global-noise/prepare.py",
+      "sha256": "e6087cccfacddd6a7f2a79ef012d3eb72cdc827fa41097035f288947f316ec93"
+    },
+    "Body.swift": {
+      "path": "output/035-development/phase-ac/global-noise/Body.swift",
+      "sha256": "1132339ae79ececae96a33d957ffb180ed72c3bf76c961e53f25d3f075b4b940"
+    },
+    "run.py": {
+      "path": "output/035-development/phase-ac/global-noise/run.py",
+      "sha256": "85bc8021e4db904505745bafb86dc81294e585633ba34d29f53bdfc3912ef27f"
+    },
+    "three-input-faults.py": {
+      "path": "output/035-development/phase-ac/global-noise/three-input-faults.py",
+      "sha256": "bf05c624507d5ec072a1eb22e7ab7be1ca497858084f2e129f03b035baf1c192"
+    },
+    "ProductOwner.swift": {
+      "path": "output/035-development/phase-ac/global-noise/ProductOwner.swift",
+      "sha256": "2ffec005b9338d914871f997381995b0a86986ded2f7bdf43dd1edb14474d491"
+    },
+    "run-product.py": {
+      "path": "output/035-development/phase-ac/global-noise/run-product.py",
+      "sha256": "0f48c29a9972e45c11d9206893c3c93fe8bcdcaee14586659d975e447d0becaf"
+    },
+    "full-product.py": {
+      "path": "output/035-development/phase-ac/global-noise/full-product.py",
+      "sha256": "0f70655914928ea3922513e615a4250ca75158aa5cb6081f9d7035b3fc62c049"
+    },
+    "run-fields.py": {
+      "path": "output/035-development/phase-ac/global-noise/run-fields.py",
+      "sha256": "6910609e792542edb28612db915047ded54b762146852da7672c09f1876b263b"
+    },
+    "collect-service.py": {
+      "path": "output/035-development/phase-ac/global-noise/collect-service.py",
+      "sha256": "b8181ade70a4204ff84fe1a454bec72f08e7f976ed5486d0d25fffcbb3095507"
+    }
+  },
+  "fixtures": {
+    "primary": {
+      "RAW": {
+        "basename": "acr-benchmark.ARW",
+        "sha256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "size": [
+          9504,
+          6336
+        ]
+      },
+      "archivedRecipes": {
+        "path": "output/035-development/candidate-batch30-native-mask-ring-final-enabled/photo-operators-v2.json",
+        "sha256": "cec1492a7deb837786657275a0a843e8811444685cc4b6db73764da16360fa26"
+      },
+      "displayArms": [
+        "A",
+        "fork",
+        "shared",
+        "half",
+        "bound"
+      ],
+      "checkedDisplays": 20,
+      "readbacks": [
+        {
+          "id": "detail-nr-color-detail",
+          "state": 0,
+          "recipeSHA256": "e1c02bdd721b7e75d00bbf19706974ec0fbb812207d7c8bdafd22ffe5e67e604",
+          "nativeRGBAf": {
+            "sha256": "3e5cbb4ee69da37a03eb8f8ff5e278a44be8959acd2a2a8fa4d0d776dbef87b7",
+            "components": 240869376,
+            "nativeBands": 25,
+            "lastRows": 192
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "81cf1f88013a6c5e67b38bfd6a62dd04577ddc6ca00effbc76a36952d644ab43",
+            "pixels": 15054336,
+            "planeBytes": 240869376,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+          "reusedPair": false,
+          "proofAuthorityCalls": 61
+        },
+        {
+          "id": "detail-nr-color-detail",
+          "state": 1,
+          "recipeSHA256": "096835bce4e8a054e3844cdd4e6b8422ba8416156ea552303327812436f1fa4d",
+          "nativeRGBAf": {
+            "sha256": "1c56b39a02e287f4271a347ac85c20027d836a6f528b26dbc31302140f33780b",
+            "components": 240869376,
+            "nativeBands": 25,
+            "lastRows": 192
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "cb4423cd9cb05ec6b26786a4432ba9b985976d812efaba3f2a47ff752be1f3e8",
+            "pixels": 15054336,
+            "planeBytes": 240869376,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+          "reusedPair": true,
+          "proofAuthorityCalls": 2
+        },
+        {
+          "id": "detail-nr-lum-contrast",
+          "state": 0,
+          "recipeSHA256": "0d6a4d22fb0d3057c41eefa36b553b8fe357b1fe89a2a3efb839fe27be28ede0",
+          "nativeRGBAf": {
+            "sha256": "a50666462025a81468bcccdbf74856088d1707dfbc9a0e8e2ef6a4e5b7f98f10",
+            "components": 240869376,
+            "nativeBands": 25,
+            "lastRows": 192
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "9f4ef8536fd22586f675c7db1624320ec5be44d79fbe77c41a856422c1084779",
+            "pixels": 15054336,
+            "planeBytes": 240869376,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+          "reusedPair": false,
+          "proofAuthorityCalls": 61
+        },
+        {
+          "id": "detail-nr-lum-contrast",
+          "state": 1,
+          "recipeSHA256": "03b3bb86af6460a4bec0c4ba910f626ab58736b9960d7ab925c664b8f8862710",
+          "nativeRGBAf": {
+            "sha256": "c793bb82539386253f5e6314603fd91b336eb09de09be978252f92ded02f51d7",
+            "components": 240869376,
+            "nativeBands": 25,
+            "lastRows": 192
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "3f50a65f5aeace7b27e3a6f3e9ca22bf54af966581013ca0be51f2563f39377d",
+            "pixels": 15054336,
+            "planeBytes": 240869376,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+          "reusedPair": true,
+          "proofAuthorityCalls": 2
+        }
+      ],
+      "planner": {
+        "overdraw": 1028408,
+        "peakMegabytes": 422,
+        "pixels": 325071332,
+        "reportedPasses": 53
+      },
+      "realOwnership": {
+        "identicalTextureDistinctSourceRejected": true,
+        "postInstallRevocationRolledBack": true,
+        "retiredRejected": true,
+        "revokedAtJoinedCheck": 4,
+        "sameKeyReloadRevalidated": true,
+        "successfulRetrySHA": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+      },
+      "raw": {
+        "screen": {
+          "path": "output/035-development/phase-ac/global-noise/screen-01/00-primary.json",
+          "sha256": "8c71ae1fddaa0ac5cd5e007cf734e011c482ae7c057e701bf08873083da8334a"
+        },
+        "nativeAndHalf": {
+          "path": "output/035-development/phase-ac/global-noise/full-01/00-primary.json",
+          "sha256": "572f28357a66648d57513cbe24e991520f04ac79d935dc1ee7ea06f8741dea93"
+        },
+        "owner": {
+          "path": "output/035-development/phase-ac/global-noise/product-01/01-primary.json",
+          "sha256": "51ce4eedf3b51cc257229de66e4de6209779893940cb8da3714eac7e65c59cdf"
+        },
+        "ownerCommand": {
+          "path": "output/035-development/phase-ac/global-noise/product-01/01-primary.cmd.json",
+          "sha256": "5899b0913541733e448ae9c0845c5083438607d84a4800ebb904988e7b6831a7"
+        }
+      },
+      "linkedProductionFieldComparison": {
+        "nativeBandDigestsAllAgree": true,
+        "nativeRGBAfAllWordsAgreeBySHA": true,
+        "halfRGBAfAllWordsAgreeBySHA": true,
+        "displayAllRGBA8AgreeBySHA": true,
+        "evidence": {
+          "path": "output/035-development/phase-ac/global-noise/product-fields-01/primary.json",
+          "sha256": "fa010187b4f7d2d09c5e7eb3becb2d30b06583f0abb71517e1c8644c0c7815be"
+        },
+        "command": {
+          "path": "output/035-development/phase-ac/global-noise/product-fields-01/primary.cmd.json",
+          "sha256": "eb6c8ae8b77ca49aa7ee67511054c3b336515fdf1d5d7c163be134574c2cd6e9"
+        }
+      }
+    },
+    "secondary": {
+      "RAW": {
+        "basename": "02.ARW",
+        "sha256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "size": [
+          8640,
+          5760
+        ]
+      },
+      "archivedRecipes": {
+        "path": "output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+        "sha256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f"
+      },
+      "displayArms": [
+        "A",
+        "fork",
+        "shared",
+        "half",
+        "bound"
+      ],
+      "checkedDisplays": 20,
+      "readbacks": [
+        {
+          "id": "detail-nr-color-detail",
+          "state": 0,
+          "recipeSHA256": "e1c02bdd721b7e75d00bbf19706974ec0fbb812207d7c8bdafd22ffe5e67e604",
+          "nativeRGBAf": {
+            "sha256": "f5764fa6380b3618f524106ba9cd4afbf50fa9105700048fb746d9d401c3da1e",
+            "components": 199065600,
+            "nativeBands": 23,
+            "lastRows": 128
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "ebbfdd74e50221bd94da650a137658b8d1487f75439a2a17590f9049e7f5fb96",
+            "pixels": 12441600,
+            "planeBytes": 199065600,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+          "reusedPair": false,
+          "proofAuthorityCalls": 51
+        },
+        {
+          "id": "detail-nr-color-detail",
+          "state": 1,
+          "recipeSHA256": "096835bce4e8a054e3844cdd4e6b8422ba8416156ea552303327812436f1fa4d",
+          "nativeRGBAf": {
+            "sha256": "66b45ff248a8fe16b9c601bc2d20cb382f5d6333dc9be9e5f82131967bd8198e",
+            "components": 199065600,
+            "nativeBands": 23,
+            "lastRows": 128
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "bb798e4c3866da49a00b40c7b905361af4e2a964c481949ba8ec28b4d5b562f3",
+            "pixels": 12441600,
+            "planeBytes": 199065600,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+          "reusedPair": true,
+          "proofAuthorityCalls": 2
+        },
+        {
+          "id": "detail-nr-lum-contrast",
+          "state": 0,
+          "recipeSHA256": "0d6a4d22fb0d3057c41eefa36b553b8fe357b1fe89a2a3efb839fe27be28ede0",
+          "nativeRGBAf": {
+            "sha256": "cee88dcece5ffadc4f2790f19b55db89916fbd113688fd3e30b295300a004cc5",
+            "components": 199065600,
+            "nativeBands": 23,
+            "lastRows": 128
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "4832e72599e3138967d8e911777a0992ab0c5dbbc10d0d394c7568b89b30bbc0",
+            "pixels": 12441600,
+            "planeBytes": 199065600,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+          "reusedPair": false,
+          "proofAuthorityCalls": 51
+        },
+        {
+          "id": "detail-nr-lum-contrast",
+          "state": 1,
+          "recipeSHA256": "03b3bb86af6460a4bec0c4ba910f626ab58736b9960d7ab925c664b8f8862710",
+          "nativeRGBAf": {
+            "sha256": "0a7d578e3657cc2b933ebce3eba4e261d9ad0aa6503a541f64188139ac93c82e",
+            "components": 199065600,
+            "nativeBands": 23,
+            "lastRows": 128
+          },
+          "halfRGBAf": {
+            "halfF32SHA256": "117be4ad5df0297cbc7505ed56e2faabca5bd4394dcfc41fbf70e28c2c92e834",
+            "pixels": 12441600,
+            "planeBytes": 199065600,
+            "differentPixels": 0,
+            "differentComponentBits": 0
+          },
+          "displayRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+          "reusedPair": true,
+          "proofAuthorityCalls": 2
+        }
+      ],
+      "planner": {
+        "overdraw": 935096,
+        "peakMegabytes": 398,
+        "pixels": 270090404,
+        "reportedPasses": 51
+      },
+      "realOwnership": {
+        "identicalTextureDistinctSourceRejected": true,
+        "postInstallRevocationRolledBack": true,
+        "retiredRejected": true,
+        "revokedAtJoinedCheck": 4,
+        "sameKeyReloadRevalidated": true,
+        "successfulRetrySHA": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a"
+      },
+      "raw": {
+        "screen": {
+          "path": "output/035-development/phase-ac/global-noise/screen-01/01-secondary.json",
+          "sha256": "c21175c6ebc7e4b31046fa411678dc8d09a435a4cc8dc8e17b227e15b79c8221"
+        },
+        "nativeAndHalf": {
+          "path": "output/035-development/phase-ac/global-noise/full-01/01-secondary.json",
+          "sha256": "57d4919533fc554eef41a63e6ea40d57b71f8dc20f83742e21be17486af73845"
+        },
+        "owner": {
+          "path": "output/035-development/phase-ac/global-noise/product-01/02-secondary.json",
+          "sha256": "3dac8d6cda5bdd237031adf2f4b4073be68ec6d4282bde1f7611563c2cb8ba15"
+        },
+        "ownerCommand": {
+          "path": "output/035-development/phase-ac/global-noise/product-01/02-secondary.cmd.json",
+          "sha256": "7230a0869749936ce7df20c6251aa944955f123a1322c94dafc21bf84957cb9a"
+        }
+      },
+      "linkedProductionFieldComparison": {
+        "nativeBandDigestsAllAgree": true,
+        "nativeRGBAfAllWordsAgreeBySHA": true,
+        "halfRGBAfAllWordsAgreeBySHA": true,
+        "displayAllRGBA8AgreeBySHA": true,
+        "evidence": {
+          "path": "output/035-development/phase-ac/global-noise/product-fields-01/secondary.json",
+          "sha256": "7f827769e1c629d403e000688826ddee098586773d9b8e3ed825156cd4a28afd"
+        },
+        "command": {
+          "path": "output/035-development/phase-ac/global-noise/product-fields-01/secondary.cmd.json",
+          "sha256": "4552a4b9faeb2586b36827e706c18e2f049d6e45a13ffb405159f81c20ebd61f"
+        }
+      }
+    }
+  },
+  "validations": {
+    "injectedOperands": {
+      "orders": [
+        "forward",
+        "reverse"
+      ],
+      "sourceOperands": [
+        "raw sensor (outside original graph direct read)",
+        "actual FlashRaw base",
+        "actual Gaussian guide"
+      ],
+      "controls": 2,
+      "decisions": 48,
+      "matches": 48,
+      "originalRejected": 28,
+      "outsideBoundOriginalAccepts": 16,
+      "transportRejected": true,
+      "faults": {
+        "afterJoined": 2,
+        "cancelled": true,
+        "cancelledPublished": false,
+        "omittedPublished": false,
+        "omittedRowRejected": true,
+        "retryCompleted": true
+      },
+      "raw": {
+        "path": "output/035-development/phase-ac/global-noise/product-01/00-three-input.json",
+        "sha256": "69a06c3be4f1f212d44fb4d6379d713107c1fe09a2739484ef126b3772dbc5e0"
+      },
+      "command": {
+        "path": "output/035-development/phase-ac/global-noise/product-01/00-three-input.cmd.json",
+        "sha256": "174d89a39714f7eb30bab55ebbff494278289e6cf99c535edda41d6a84c1ab5f"
+      }
+    },
+    "earlyPairOnlyControls": {
+      "raw": {
+        "path": "output/035-development/phase-ac/global-noise/fault-01.json",
+        "sha256": "d374a2901881cc125d0949b5b3f3c5d7952f98c00a11ac63580191ad083d323c"
+      },
+      "decisions": 40,
+      "matches": 40
+    }
+  },
+  "linkedUnitTests": {
+    "suite": "PreviewNativeNoiseDomainTests",
+    "passed": 3,
+    "raw": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/portable-and-noise.log",
+      "sha256": "1487f1d7d0978c9c07c645efef5785f8e1c17eae48aa741d086676f35786e62d"
+    }
+  },
+  "normalService": {
+    "boundary": "same linked verified release, primary settled request to full canonical sRGB8 display, two ordered strengths per operator per run",
+    "order": [
+      "off",
+      "on",
+      "on",
+      "off"
+    ],
+    "simultaneousDisjointFamilies": [
+      "portable grading",
+      "portable radial mask region",
+      "native RAW noise domain"
+    ],
+    "releaseExecutable": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/RAWMaster",
+      "sha256": "4faa9777d0878d36dd6f42f3e5c853b622cfdb3da06fae22a7ff4954f49e1289"
+    },
+    "linkManifest": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/binaries.sha256",
+      "sha256": "f0cc539ee1834829490fc9c899a080320fd3ccfa7f36e2d60ba09dc231a5ea94"
+    },
+    "sourceManifest": {
+      "path": "output/035-development/candidate-batch31-optical-snapshots-verified/source-files.sha256",
+      "sha256": "88ad132b682c8010d4650e6501f3d20578fe7279cf41502c1c634f878bbdcb41"
+    },
+    "allFamiliesSummary": {
+      "path": "output/035-development/phase-ac/photo-combined-summary.json",
+      "sha256": "ee8cc6e67011e3ff6a69a866637f8c5f82156678a21893f682be435491060a4f"
+    },
+    "allFamiliesDisplayMatches": 1184,
+    "runner": {
+      "path": "output/035-development/phase-ac/photo-combined/profile-settled-photo",
+      "sha256": "d46cdffd3000ef382f57a47219553f55928d72804ac3a3b16cdba6e988f6ddf2"
+    },
+    "profileSource": {
+      "path": "scripts/performance/profile-settled-photo.swift",
+      "sha256": "5c53310829a8f4eff0b083495a83e47020055f864fa0cd161a800efbf41d7b0f"
+    },
+    "perSource": {
+      "primary": {
+        "runs": [
+          {
+            "arm": "off",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/1-primary-0.json",
+              "sha256": "1336a075b2d8e1df6295b765523cc63907046b175be77affd2b4d409142c3c37"
+            },
+            "processPeakBytesAll37Operators": 5093935744,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 247.528875,
+                "validationMs": 80.819,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 228.072542,
+                "validationMs": 72.324167,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 251.591125,
+                "validationMs": 75.083166,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 251.597041,
+                "validationMs": 76.901458,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+              }
+            ]
+          },
+          {
+            "arm": "on",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/2-primary-1.json",
+              "sha256": "3c4a6938b8b6a9ad7f9710413ea813470366b8b1614810cc308675084bad0669"
+            },
+            "processPeakBytesAll37Operators": 5360470608,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 580.593292,
+                "validationMs": 392.305625,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 174.127666,
+                "validationMs": 0.014625,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 243.737916,
+                "validationMs": 66.507667,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 201.0915,
+                "validationMs": 0.014708,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+              }
+            ]
+          },
+          {
+            "arm": "on",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/3-primary-1.json",
+              "sha256": "fc25a16318af0ce23bb69d70f1b5df489cc5d68ea8d201394d9cca51167e4b10"
+            },
+            "processPeakBytesAll37Operators": 5359192632,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 215.719083,
+                "validationMs": 63.460541,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 146.183167,
+                "validationMs": 0.012792,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 220.49425,
+                "validationMs": 61.783125,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 153.599833,
+                "validationMs": 0.015166,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+              }
+            ]
+          },
+          {
+            "arm": "off",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/4-primary-0.json",
+              "sha256": "00ce96a22cfbba01723da44b1aa5aa74a870d513975e5868f9174e27e6f70362"
+            },
+            "processPeakBytesAll37Operators": 5185063600,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 235.509208,
+                "validationMs": 73.708917,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 219.907333,
+                "validationMs": 70.008542,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 232.538625,
+                "validationMs": 68.489708,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 249.347083,
+                "validationMs": 77.606083,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e"
+              }
+            ]
+          }
+        ],
+        "all148FramesPerRunEqual": true,
+        "ms": {
+          "off": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 241.519,
+              "p95Ms": 251.5911,
+              "maxMs": 251.5911
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 238.7098,
+              "p95Ms": 251.597,
+              "maxMs": 251.597
+            },
+            "all": {
+              "n": 8,
+              "p50Ms": 241.519,
+              "p95Ms": 251.597,
+              "maxMs": 251.597
+            }
+          },
+          "on": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 232.1161,
+              "p95Ms": 580.5933,
+              "maxMs": 580.5933
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 163.8637,
+              "p95Ms": 201.0915,
+              "maxMs": 201.0915
+            },
+            "all": {
+              "n": 8,
+              "p50Ms": 208.4053,
+              "p95Ms": 580.5933,
+              "maxMs": 580.5933
+            }
+          }
+        },
+        "validationMs": {
+          "off": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 74.396,
+              "p95Ms": 80.819,
+              "maxMs": 80.819
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 74.6128,
+              "p95Ms": 77.6061,
+              "maxMs": 77.6061
+            }
+          },
+          "on": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 64.9841,
+              "p95Ms": 392.3056,
+              "maxMs": 392.3056
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 0.0147,
+              "p95Ms": 0.0152,
+              "maxMs": 0.0152
+            }
+          }
+        }
+      },
+      "secondary": {
+        "runs": [
+          {
+            "arm": "off",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/1-secondary-0.json",
+              "sha256": "c34ea69cd62785ea44c667c01b52e6427205fa8a3627f6294796d889e6ad47f0"
+            },
+            "processPeakBytesAll37Operators": 4662135232,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 183.763125,
+                "validationMs": 57.6355,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 184.639,
+                "validationMs": 54.934667,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 181.485375,
+                "validationMs": 54.058833,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 205.346792,
+                "validationMs": 72.622917,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a"
+              }
+            ]
+          },
+          {
+            "arm": "on",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/2-secondary-1.json",
+              "sha256": "3264d30a3aa2644b166758cc1a4c34c1117209663e0903192fd9b2b1ef2d1f6f"
+            },
+            "processPeakBytesAll37Operators": 4835707328,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 191.337042,
+                "validationMs": 58.987042,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 163.876459,
+                "validationMs": 0.013875,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 186.735375,
+                "validationMs": 54.259333,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 127.326625,
+                "validationMs": 0.014792,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a"
+              }
+            ]
+          },
+          {
+            "arm": "on",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/3-secondary-1.json",
+              "sha256": "7b85aecd00ca62eb4fb1ac90637339950c79d25d423a9c46f18c5c72f4fb59b1"
+            },
+            "processPeakBytesAll37Operators": 4832725440,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 188.414084,
+                "validationMs": 57.146917,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 145.122666,
+                "validationMs": 0.014416,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 210.602208,
+                "validationMs": 63.859875,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 131.488875,
+                "validationMs": 0.012125,
+                "completedBandScans": 0,
+                "exactRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a"
+              }
+            ]
+          },
+          {
+            "arm": "off",
+            "rawReport": {
+              "path": "output/035-development/phase-ac/photo-combined/4-secondary-0.json",
+              "sha256": "238097c7ee393ed3ed4c348eff4179eedd81acd0bfb4920c874b82a05c5636cb"
+            },
+            "processPeakBytesAll37Operators": 4660955560,
+            "states": [
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 0,
+                "ms": 194.740875,
+                "validationMs": 59.189416,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f"
+              },
+              {
+                "operator": "detail-nr-color-detail",
+                "state": 1,
+                "ms": 195.586709,
+                "validationMs": 54.25925,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 0,
+                "ms": 199.188375,
+                "validationMs": 56.817417,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8"
+              },
+              {
+                "operator": "detail-nr-lum-contrast",
+                "state": 1,
+                "ms": 196.965542,
+                "validationMs": 57.212041,
+                "completedBandScans": 1,
+                "exactRGBA8SHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a"
+              }
+            ]
+          }
+        ],
+        "all148FramesPerRunEqual": true,
+        "ms": {
+          "off": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 189.252,
+              "p95Ms": 199.1884,
+              "maxMs": 199.1884
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 196.2761,
+              "p95Ms": 205.3468,
+              "maxMs": 205.3468
+            },
+            "all": {
+              "n": 8,
+              "p50Ms": 195.1638,
+              "p95Ms": 205.3468,
+              "maxMs": 205.3468
+            }
+          },
+          "on": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 189.8756,
+              "p95Ms": 210.6022,
+              "maxMs": 210.6022
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 138.3058,
+              "p95Ms": 163.8765,
+              "maxMs": 163.8765
+            },
+            "all": {
+              "n": 8,
+              "p50Ms": 175.3059,
+              "p95Ms": 210.6022,
+              "maxMs": 210.6022
+            }
+          }
+        },
+        "validationMs": {
+          "off": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 57.2265,
+              "p95Ms": 59.1894,
+              "maxMs": 59.1894
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 56.0734,
+              "p95Ms": 72.6229,
+              "maxMs": 72.6229
+            }
+          },
+          "on": {
+            "cold": {
+              "n": 4,
+              "p50Ms": 58.067,
+              "p95Ms": 63.8599,
+              "maxMs": 63.8599
+            },
+            "warm": {
+              "n": 4,
+              "p50Ms": 0.0141,
+              "p95Ms": 0.0148,
+              "maxMs": 0.0148
+            }
+          }
+        }
+      }
+    }
+  }
+}

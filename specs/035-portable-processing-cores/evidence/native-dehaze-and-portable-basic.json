@@ -1,0 +1,2344 @@
+{
+  "schemaVersion": 1,
+  "guardedRelease": {
+    "baseCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+    "sourceManifest": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded/source-files.sha256",
+      "sha256": "229d662d74718b521cb9bbdb6b007184b1e39a0e13cd78750ebbea645e6b00ca"
+    },
+    "binaryManifest": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded/binaries.sha256",
+      "sha256": "827ccf5a117448081b416ab9cd278730699517efb65881d34ce14a80172b292d"
+    },
+    "applicationSHA256": "474ad04e5640a0a7c03f439ae94d3f102e05196bdebbe2692528669a0355b406",
+    "imagingTestsSHA256": "c2282d654dacc175adc3b68c5c69ab3afd687f2be9190e470e0a98ce9e6bcf9a",
+    "productionImageRuntimeSHA256": "f33f02059133f58505a13fc04e4e3b751f289c955ba23294d37f8506159b1c24"
+  },
+  "targetedNativeTests": {
+    "path": "output/035-development/tail-refine/guarded-native/targeted.log",
+    "sha256": "17d1e8914573b13285a3ceef34b2b978748d036d0947533d5cffa59992b1a495",
+    "passed": 18
+  },
+  "basicPointAdjustments": {
+    "previewDefaultEnabled": false,
+    "numericWitness": {
+      "path": "output/035-development/tail-refine/basic/native-basic.json",
+      "sha256": "cef79da0fc27af60d01b481aea0769d2d2d31ea36be2a4a634fbff7fe1383377",
+      "record": {
+        "cases": [
+          {
+            "backends": {
+              "cpu": {
+                "applyWithReadbackMS": 61.443875,
+                "linearComparedToV3": {
+                  "alphaBitsDifferent": 0,
+                  "maxAbsoluteRGB": 1.0728836059570312e-06,
+                  "maxScaledRGB": 9.5367431640625e-07,
+                  "rgbAbove2e-6": 0,
+                  "rgbComponentBitsDifferent": 10638422
+                },
+                "rgba8ComparedToV3": {
+                  "changedComponents": 136,
+                  "maximumCodeDifference": 1,
+                  "sha256": "05d38ee25df9d65a41a9055e575eec698c11433c74d16e62754ec6031c77a237"
+                },
+                "rgba32fSHA256": "350e3eff409ca5cdd73cf19d7ed58c86df60615109b7d82e318e1cda2d21f913"
+              },
+              "metalBuffer": {
+                "applyWithReadbackMS": 18.450666,
+                "linearComparedToV3": {
+                  "alphaBitsDifferent": 0,
+                  "maxAbsoluteRGB": 0,
+                  "maxScaledRGB": 0,
+                  "rgbAbove2e-6": 0,
+                  "rgbComponentBitsDifferent": 0
+                },
+                "rgba8ComparedToV3": {
+                  "changedComponents": 0,
+                  "maximumCodeDifference": 0,
+                  "sha256": "f49075d480af75d62956651daeb2efee2b62f43b6c24afa03c32138906283e54"
+                },
+                "rgba32fSHA256": "011413e3fc4fd07143aead803727a2ba746c338b0bd2b8aec4e92e5df5af18b4"
+              }
+            },
+            "id": "light-and-whites",
+            "rawFrameSHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+            "swiftV3JoinedReadbackMs": 20.225833,
+            "swiftV3RGBA8SHA256": "f49075d480af75d62956651daeb2efee2b62f43b6c24afa03c32138906283e54",
+            "swiftV3RGBA32fSHA256": "011413e3fc4fd07143aead803727a2ba746c338b0bd2b8aec4e92e5df5af18b4",
+            "wireRecipeSHA256": "78ed23a238ec777e10c9fff31c3348257ad96a67966c62393ce53e029e37bc2b",
+            "wireRecipe": {
+              "path": "output/035-development/tail-refine/basic/light-and-whites.json",
+              "sha256": "78ed23a238ec777e10c9fff31c3348257ad96a67966c62393ce53e029e37bc2b"
+            },
+            "linuxCPUByteExactToMacCPU": true
+          },
+          {
+            "backends": {
+              "cpu": {
+                "applyWithReadbackMS": 118.529875,
+                "linearComparedToV3": {
+                  "alphaBitsDifferent": 0,
+                  "maxAbsoluteRGB": 1.6689300537109375e-06,
+                  "maxScaledRGB": 1.4196446045389166e-06,
+                  "rgbAbove2e-6": 0,
+                  "rgbComponentBitsDifferent": 11249979
+                },
+                "rgba8ComparedToV3": {
+                  "changedComponents": 231,
+                  "maximumCodeDifference": 1,
+                  "sha256": "a96825c4801a285cb3db1d24cef3a49e1cf6215a9380d4b499fea6094d549159"
+                },
+                "rgba32fSHA256": "087c02d2a91192df09c2d8d139a23de71c5de04f9dca159e4787909bd277f377"
+              },
+              "metalBuffer": {
+                "applyWithReadbackMS": 16.502208,
+                "linearComparedToV3": {
+                  "alphaBitsDifferent": 0,
+                  "maxAbsoluteRGB": 0,
+                  "maxScaledRGB": 0,
+                  "rgbAbove2e-6": 0,
+                  "rgbComponentBitsDifferent": 0
+                },
+                "rgba8ComparedToV3": {
+                  "changedComponents": 0,
+                  "maximumCodeDifference": 0,
+                  "sha256": "e4fce68aaff72f34152b01e11cb5b079f11ee89e4ce5011e9bab0a416bc3a104"
+                },
+                "rgba32fSHA256": "f574b080572a1a7dff0cf6e9a1285181e516cd276c1a086adeef4a59d39e9f1d"
+              }
+            },
+            "id": "saturation-vibrance-cast",
+            "rawFrameSHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+            "swiftV3JoinedReadbackMs": 11.252084,
+            "swiftV3RGBA8SHA256": "e4fce68aaff72f34152b01e11cb5b079f11ee89e4ce5011e9bab0a416bc3a104",
+            "swiftV3RGBA32fSHA256": "f574b080572a1a7dff0cf6e9a1285181e516cd276c1a086adeef4a59d39e9f1d",
+            "wireRecipeSHA256": "3944c95c4a0ce682d16a23a335d80d7950d9f9c8adae7e3774caf4627b3e13cb",
+            "wireRecipe": {
+              "path": "output/035-development/tail-refine/basic/saturation-vibrance-cast.json",
+              "sha256": "3944c95c4a0ce682d16a23a335d80d7950d9f9c8adae7e3774caf4627b3e13cb"
+            },
+            "linuxCPUByteExactToMacCPU": true
+          },
+          {
+            "backends": {
+              "cpu": {
+                "applyWithReadbackMS": 192.788708,
+                "linearComparedToV3": {
+                  "alphaBitsDifferent": 0,
+                  "maxAbsoluteRGB": 2.562999725341797e-06,
+                  "maxScaledRGB": 2.562999725341797e-06,
+                  "rgbAbove2e-6": 27,
+                  "rgbComponentBitsDifferent": 11329332
+                },
+                "rgba8ComparedToV3": {
+                  "changedComponents": 516,
+                  "maximumCodeDifference": 1,
+                  "sha256": "f0c871addd07ec713f9968b06090814f7568dfc0ebb53fd9dc2c39f4e14d7953"
+                },
+                "rgba32fSHA256": "7d23a1d958ac069b2d9f6a8f609b413fa8d7c4e42b05197751b0c10dbd862216"
+              },
+              "metalBuffer": {
+                "applyWithReadbackMS": 16.889583,
+                "linearComparedToV3": {
+                  "alphaBitsDifferent": 0,
+                  "maxAbsoluteRGB": 0,
+                  "maxScaledRGB": 0,
+                  "rgbAbove2e-6": 0,
+                  "rgbComponentBitsDifferent": 0
+                },
+                "rgba8ComparedToV3": {
+                  "changedComponents": 0,
+                  "maximumCodeDifference": 0,
+                  "sha256": "4e1ab3bea411978feae1ba4d3be6f93661d6b82ca9bb595eca903faba2d257a2"
+                },
+                "rgba32fSHA256": "b0657b80af7e7636eb87135e2588daf092678220aae0bc88b85da632c757fe20"
+              }
+            },
+            "id": "light-color-and-monochrome",
+            "rawFrameSHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+            "swiftV3JoinedReadbackMs": 11.378125,
+            "swiftV3RGBA8SHA256": "4e1ab3bea411978feae1ba4d3be6f93661d6b82ca9bb595eca903faba2d257a2",
+            "swiftV3RGBA32fSHA256": "b0657b80af7e7636eb87135e2588daf092678220aae0bc88b85da632c757fe20",
+            "wireRecipeSHA256": "0823a9f07efbed577d5a971334759e2b21a3d615ba92d8a09ab6a658061a60df",
+            "wireRecipe": {
+              "path": "output/035-development/tail-refine/basic/light-color-and-monochrome.json",
+              "sha256": "0823a9f07efbed577d5a971334759e2b21a3d615ba92d8a09ab6a658061a60df"
+            },
+            "linuxCPUByteExactToMacCPU": true
+          }
+        ],
+        "height": 1600,
+        "originManifestSHA256": "bbcd1c9efdf686fb2cb648b14e318038f8ee38d08cdbc4873ce15a5c497ddebd",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "width": 2400
+      }
+    },
+    "linuxReplay": {
+      "path": "output/035-development/tail-refine/basic/linux-replay.log",
+      "sha256": "02d3448bfd6ac430ae6bdb9eaddfe6861f8e00df45e708a0ee7db3b4e5535cfa"
+    },
+    "linuxSharedLibrary": {
+      "path": "output/035-development/tail-refine/basic/librawmaster_image.basic-linux-cpu.so",
+      "sha256": "edafdf3123aa8d750c42ae5c699c70eac1b7d1d194ca5b44ed2042cb0e8adbc4"
+    },
+    "rustTests": {
+      "mac-cpu.log": {
+        "path": "output/035-development/tail-refine/basic/mac-cpu.log",
+        "sha256": "59a24a41c691e7ae5f9e3afe323427e7c8fb9a0a7ac3aef5e1bbfa4fe37925b1",
+        "passed": 16
+      },
+      "linux-cpu.log": {
+        "path": "output/035-development/tail-refine/basic/linux-cpu.log",
+        "sha256": "3d488e6f8172acda11377faca4ca78b8d76be4d80c6518c522130589830a20e7",
+        "passed": 16
+      },
+      "linux-vulkan.log": {
+        "path": "output/035-development/tail-refine/basic/linux-vulkan.log",
+        "sha256": "cea2c58b9dbad1a8fda68a939f47e606da6eeb80396779ba2b17adfd12b7f163",
+        "passed": 3
+      }
+    },
+    "nativeSwiftTests": {
+      "path": "output/035-development/tail-refine/basic/native-targeted.log",
+      "sha256": "1ee0721d6db7bfd116c5800a6067a6756723134e8b3ae6f04528ba7c8bddf6f6",
+      "passed": 5
+    },
+    "proxy": {
+      "0": {
+        "path": "output/035-development/tail-refine/basic/proxy-0.json",
+        "sha256": "1559db0c62099f33e398d1674d7dcc35c5399976823bd496429348c594e83a30",
+        "probeSHA256": "cfaae7bde65aeb50ba5a40738c02a44bf1fa6369f2161dc1292f68674777bb5b",
+        "states": [
+          {
+            "id": "color-bw-treatment",
+            "state": 0,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 150.904583,
+            "digest": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52"
+          },
+          {
+            "id": "color-bw-treatment",
+            "state": 0,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 125.390708,
+            "digest": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+          },
+          {
+            "id": "color-bw-treatment",
+            "state": 1,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 6.943917,
+            "digest": "9a353678df2f123387d1dafc635c4997047979dcc91ea2abea82bb99b2e380bb"
+          },
+          {
+            "id": "color-bw-treatment",
+            "state": 1,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 75.528833,
+            "digest": "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5"
+          },
+          {
+            "id": "curve-point",
+            "state": 0,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 5.399292,
+            "digest": "f30cde6013c07331df7029e9094928745c26637d8e6e9e3bda6ca1b77ec6b12e"
+          },
+          {
+            "id": "curve-point",
+            "state": 0,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 82.799417,
+            "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187"
+          },
+          {
+            "id": "curve-point",
+            "state": 1,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 4.657375,
+            "digest": "e8b6d9affd10e94541b3a48827da77ef386bf6fc9eb9fbaa25709978b4ea6c1e"
+          },
+          {
+            "id": "curve-point",
+            "state": 1,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 78.751,
+            "digest": "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d"
+          }
+        ]
+      },
+      "1": {
+        "path": "output/035-development/tail-refine/basic/proxy-1.json",
+        "sha256": "4eb01b01f73a1f1071599369b05e37dd71b5f251bcea1e4bb3c7e64f45d49fe9",
+        "probeSHA256": "cfaae7bde65aeb50ba5a40738c02a44bf1fa6369f2161dc1292f68674777bb5b",
+        "states": [
+          {
+            "id": "color-bw-treatment",
+            "state": 0,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 155.965541,
+            "digest": "99fe072b660d6dfcc309a26a60b2d3a4b216aac56ecf03d375507cbf0f265e52"
+          },
+          {
+            "id": "color-bw-treatment",
+            "state": 0,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 122.935417,
+            "digest": "8a19d53600245deb615a30a8d1d861fe88a732e9951e502c396ed1367a5f4b2b"
+          },
+          {
+            "id": "color-bw-treatment",
+            "state": 1,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 135.152625,
+            "digest": "9a353678df2f123387d1dafc635c4997047979dcc91ea2abea82bb99b2e380bb"
+          },
+          {
+            "id": "color-bw-treatment",
+            "state": 1,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 78.604667,
+            "digest": "bafe8fef5cece3bbc798dcd4a81d9e296529cff7345f356d1e800db70495a0d5"
+          },
+          {
+            "id": "curve-point",
+            "state": 0,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 5.34975,
+            "digest": "f30cde6013c07331df7029e9094928745c26637d8e6e9e3bda6ca1b77ec6b12e"
+          },
+          {
+            "id": "curve-point",
+            "state": 0,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 84.271375,
+            "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187"
+          },
+          {
+            "id": "curve-point",
+            "state": 1,
+            "quality": "interactive",
+            "approximate": true,
+            "ms": 4.558333,
+            "digest": "e8b6d9affd10e94541b3a48827da77ef386bf6fc9eb9fbaa25709978b4ea6c1e"
+          },
+          {
+            "id": "curve-point",
+            "state": 1,
+            "quality": "settled",
+            "approximate": false,
+            "ms": 77.046083,
+            "digest": "6d269fb52ca577c8b7cd5d5def3fadeabee9a481098b2ca6d3e71751f9b7d73d"
+          }
+        ]
+      }
+    },
+    "proxyTrace": {
+      "0": {
+        "path": "output/035-development/tail-refine/basic/proxy-0.log",
+        "sha256": "7b14b0df7352d4accb398792aa1e832d56555cd0b1d3366bddac5a5baecc871e",
+        "actualBorrowedMetalStageMS": []
+      },
+      "1": {
+        "path": "output/035-development/tail-refine/basic/proxy-1.log",
+        "sha256": "cfdb611b896810e8cd5418ee513f4e236b437f77a90a09624213870fb7bbf855",
+        "actualBorrowedMetalStageMS": [
+          132.199709
+        ]
+      }
+    },
+    "proxyAndRealWitnessBuild": {
+      "baseCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+      "sourceManifest": {
+        "path": "output/035-development/candidate-batch22-portable-basic-dehaze/source-files.sha256",
+        "sha256": "8c9412b8c4f91ba9cbd9d119e41a40081bb06fdce7a1b127e4b2cebe1e713b6d"
+      },
+      "binaryManifest": {
+        "path": "output/035-development/candidate-batch22-portable-basic-dehaze/binaries.sha256",
+        "sha256": "3e96e848af56f9ae35d8c779bf9f9ef5e0260296f19e17ca5bbce87ace3af113"
+      },
+      "applicationSHA256": "6b33b1732a191716abedee6b61cd4b7341d6687bec777f4fa079a39317fe13f8",
+      "imagingTestsSHA256": "08ba64da8c3e736627c9e876890a9b5cc637ed17f563b38fb4ffa43a2d0103c4",
+      "productionImageRuntimeSHA256": "f33f02059133f58505a13fc04e4e3b751f289c955ba23294d37f8506159b1c24"
+    }
+  },
+  "noiseExploration": {
+    "wholeFrameMaterialization": [
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-primary-primary-adjusted32.json",
+        "sha256": "a0b322628a8f523cea7f502878e874a55378fbba68d17cac04127c4956a653c2",
+        "record": {
+          "archiveSHA256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d",
+          "device": "Apple M4 Max",
+          "extent": [
+            9504,
+            6336
+          ],
+          "mode": "adjusted32",
+          "rows": [
+            {
+              "archiveSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "changedComponents": 0,
+              "displayMs": 88.73133299999995,
+              "explicitPhysicalBytes": 963952640,
+              "halfRoundTripDifferentPixels": 60097616,
+              "materializeMs": 70.513917,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "physicallyInspectedPixels": 60217344,
+              "processPeakBytesAtDisplay": 3919136712,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 995.6365,
+              "validationMs": 836.39125
+            },
+            {
+              "archiveSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "changedComponents": 0,
+              "displayMs": 63.13937499999997,
+              "explicitPhysicalBytes": 963952640,
+              "halfRoundTripDifferentPixels": 60107151,
+              "materializeMs": 74.573416,
+              "maxCodeDifference": 0,
+              "outputSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "physicallyInspectedPixels": 60217344,
+              "processPeakBytesAtDisplay": 4000696336,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 908.326208,
+              "validationMs": 770.613417
+            }
+          ],
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-primary-primary-smallBands.json",
+        "sha256": "58af8f09a9fcf3d8bbd5e4d37fe267ff90ebecbc6b32fd88593ca07d49fffe54",
+        "record": {
+          "archiveSHA256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d",
+          "device": "Apple M4 Max",
+          "extent": [
+            9504,
+            6336
+          ],
+          "mode": "smallBands",
+          "rows": [
+            {
+              "archiveSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "changedComponents": 0,
+              "displayMs": 143.005875,
+              "materializeMs": 4.2e-05,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "processPeakBytesAtDisplay": 2749564752,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 202.21825,
+              "validationMs": 59.212333
+            },
+            {
+              "archiveSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "changedComponents": 0,
+              "displayMs": 157.65020800000002,
+              "materializeMs": 4.2e-05,
+              "maxCodeDifference": 0,
+              "outputSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "processPeakBytesAtDisplay": 2905524192,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 213.284667,
+              "validationMs": 55.634417
+            }
+          ],
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-primary-primary-stock.json",
+        "sha256": "6ae10e6cc07865e252d104dd9e35f8870d0a94347378f9bd2c34d43cde4f7d6a",
+        "record": {
+          "archiveSHA256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d",
+          "device": "Apple M4 Max",
+          "extent": [
+            9504,
+            6336
+          ],
+          "mode": "stock",
+          "rows": [
+            {
+              "archiveSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "changedComponents": 0,
+              "displayMs": 160.189084,
+              "materializeMs": 4.2e-05,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "processPeakBytesAtDisplay": 2522154976,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 398.349084,
+              "validationMs": 238.159958
+            },
+            {
+              "archiveSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "changedComponents": 0,
+              "displayMs": 142.79533400000003,
+              "materializeMs": 0,
+              "maxCodeDifference": 0,
+              "outputSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "processPeakBytesAtDisplay": 2552776696,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 379.609209,
+              "validationMs": 236.813875
+            }
+          ],
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-primary-primary-terminal32.json",
+        "sha256": "60b7ac389ccb9f3ed6f02bb2747c6cf4c82e9207e6f69c113f9937e58b06a8d7",
+        "record": {
+          "archiveSHA256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d",
+          "device": "Apple M4 Max",
+          "extent": [
+            9504,
+            6336
+          ],
+          "faults": {
+            "cancelledAfterTaskCreation": true,
+            "rejected": [
+              "negativeInfinity",
+              "positiveInfinity",
+              "NaN",
+              "alphaNotOpaque",
+              "missingLastRow",
+              "missingLastRead"
+            ],
+            "resumed": true,
+            "verified": 34773
+          },
+          "mode": "terminal32",
+          "rows": [
+            {
+              "archiveSHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+              "changedComponents": 1079,
+              "displayMs": 54.089917,
+              "explicitPhysicalBytes": 963952640,
+              "halfRoundTripDifferentPixels": 19744824,
+              "materializeMs": 115.764458,
+              "maxCodeDifference": 1,
+              "outputSHA256": "37d04ef995684d9547bbca7c6686345cf516f66bc51c297f15dd4c6f85f6a7c7",
+              "physicallyInspectedPixels": 60217344,
+              "processPeakBytesAtDisplay": 4773938976,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 169.8545,
+              "validationMs": 0.000125
+            },
+            {
+              "archiveSHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+              "changedComponents": 1045,
+              "displayMs": 34.77175,
+              "explicitPhysicalBytes": 963952640,
+              "halfRoundTripDifferentPixels": 19753951,
+              "materializeMs": 119.607792,
+              "maxCodeDifference": 1,
+              "outputSHA256": "d3e3aac316cc92785dc30908f5ec71c1d659d16d9bb28152245dffdd2fdd2239",
+              "physicallyInspectedPixels": 60217344,
+              "processPeakBytesAtDisplay": 4996122544,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 70,
+              "totalMs": 154.37975,
+              "validationMs": 0.000208
+            }
+          ],
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-secondary-secondary-adjusted32.json",
+        "sha256": "1f69c1d4f08428fbd9c4f16bac67b917c2bc23c0bac1086291dc96f7781ac820",
+        "record": {
+          "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+          "device": "Apple M4 Max",
+          "extent": [
+            8640,
+            5760
+          ],
+          "mode": "adjusted32",
+          "rows": [
+            {
+              "archiveSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "changedComponents": 0,
+              "displayMs": 74.90754100000004,
+              "explicitPhysicalBytes": 796655616,
+              "halfRoundTripDifferentPixels": 49236301,
+              "materializeMs": 60.975708,
+              "maxCodeDifference": 0,
+              "outputSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "physicallyInspectedPixels": 49766400,
+              "processPeakBytesAtDisplay": 3373614904,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 674.839541,
+              "validationMs": 538.956292
+            },
+            {
+              "archiveSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "changedComponents": 0,
+              "displayMs": 56.95908399999996,
+              "explicitPhysicalBytes": 796655616,
+              "halfRoundTripDifferentPixels": 49749581,
+              "materializeMs": 67.529041,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "physicallyInspectedPixels": 49766400,
+              "processPeakBytesAtDisplay": 3458090856,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 687.833625,
+              "validationMs": 563.3455
+            }
+          ],
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-secondary-secondary-smallBands.json",
+        "sha256": "4ea189889e8ccd9d2c317b17e4920a90b0fdb37f63875df27e0afb09ef68f69a",
+        "record": {
+          "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+          "device": "Apple M4 Max",
+          "extent": [
+            8640,
+            5760
+          ],
+          "mode": "smallBands",
+          "rows": [
+            {
+              "archiveSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "changedComponents": 0,
+              "displayMs": 130.511291,
+              "materializeMs": 0.000125,
+              "maxCodeDifference": 0,
+              "outputSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "processPeakBytesAtDisplay": 2644805408,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 167.1805,
+              "validationMs": 36.669084
+            },
+            {
+              "archiveSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "changedComponents": 0,
+              "displayMs": 107.78975,
+              "materializeMs": 0,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "processPeakBytesAtDisplay": 2855831424,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 141.47575,
+              "validationMs": 33.686
+            }
+          ],
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-secondary-secondary-stock.json",
+        "sha256": "3802e3b4e7a077f3f2f791b33ec09cd6b463abeb4704b9a490da96cd5109b83a",
+        "record": {
+          "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+          "device": "Apple M4 Max",
+          "extent": [
+            8640,
+            5760
+          ],
+          "mode": "stock",
+          "rows": [
+            {
+              "archiveSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "changedComponents": 0,
+              "displayMs": 125.44287499999999,
+              "materializeMs": 0,
+              "maxCodeDifference": 0,
+              "outputSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "processPeakBytesAtDisplay": 2451294080,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 311.364917,
+              "validationMs": 185.922042
+            },
+            {
+              "archiveSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "changedComponents": 0,
+              "displayMs": 117.36470799999998,
+              "materializeMs": 0,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "processPeakBytesAtDisplay": 2485372848,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 300.718083,
+              "validationMs": 183.353375
+            }
+          ],
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+        }
+      },
+      {
+        "path": "output/035-development/tail-refine/noise/corrected-secondary-secondary-terminal32.json",
+        "sha256": "ed3edfb2a6ef70fc4b0b660c5ea042a7d2a24031e10f8904710dcc76654b3b6d",
+        "record": {
+          "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+          "device": "Apple M4 Max",
+          "extent": [
+            8640,
+            5760
+          ],
+          "faults": {
+            "cancelledAfterTaskCreation": true,
+            "rejected": [
+              "negativeInfinity",
+              "positiveInfinity",
+              "NaN",
+              "alphaNotOpaque",
+              "missingLastRow",
+              "missingLastRead"
+            ],
+            "resumed": true,
+            "verified": 34773
+          },
+          "mode": "terminal32",
+          "rows": [
+            {
+              "archiveSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "changedComponents": 0,
+              "displayMs": 46.94149999999999,
+              "explicitPhysicalBytes": 796655616,
+              "halfRoundTripDifferentPixels": 16238472,
+              "materializeMs": 98.830083,
+              "maxCodeDifference": 0,
+              "outputSHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+              "physicallyInspectedPixels": 49766400,
+              "processPeakBytesAtDisplay": 4175529712,
+              "state": 0,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 145.771708,
+              "validationMs": 0.000125
+            },
+            {
+              "archiveSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "changedComponents": 0,
+              "displayMs": 33.16795800000001,
+              "explicitPhysicalBytes": 796655616,
+              "halfRoundTripDifferentPixels": 16409298,
+              "materializeMs": 100.770084,
+              "maxCodeDifference": 0,
+              "outputSHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+              "physicallyInspectedPixels": 49766400,
+              "processPeakBytesAtDisplay": 4491200384,
+              "state": 1,
+              "stockRgbaTileScalarsMatch": true,
+              "tileCount": 54,
+              "totalMs": 133.938375,
+              "validationMs": 0.000333
+            }
+          ],
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "sourceSHA256After": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+        }
+      }
+    ],
+    "tileReplay": {
+      "path": "output/035-development/tail-refine/noise-tiles/summary.json",
+      "sha256": "908ed4b5020291a70a67040b9b7bd9f40ce87bfab6a85581cea4844b5b29b3e1",
+      "record": {
+        "decision": "reject. Preserve the stock full finite graph and original FIT in production.",
+        "comparison": "RGBAf of the unchanged final mask graph rendered to private 1024x1024 scratch in original absolute partition order (or full width x256 control). Four native RGBAf reads counted for each output using the same normalised linear MTL sampler on its respective physical scratch extent. Only 16-byte-per-pixel half-width/half-height output is held. Original four 1200x800 sRGB8 FIT windows reassembled, then all 15,360,000 bytes compared to the canonical display. Checked width/height are even. Every real arm also independently blits every half-plane byte in 64-row batches for SHA-256.",
+        "restrictions": "The physical texture size, local normalised sampler, CI request shape, and cache-clearing cadence vary between arms. This study does not isolate the causal subdivision or prove which CI instruction caused a difference. It compares full native finite decisions and complete half-size RGBAf fingerprints. No preserved byte-for-byte full native RGBAf comparison between the real arms. CPU blit/hash contributes to the reported full transport clock, whereas halfWriteAndValidationMs ends at the last completed group check. Two states shared a process per role; do not interpret cumulative process high-water as separate arm peaks.",
+        "faults": {
+          "extent": [
+            3074,
+            2050
+          ],
+          "counterexample": [
+            {
+              "site": "omitted-first-cell",
+              "kernel": "rmMaskComposite",
+              "fullAccepted": false,
+              "fullBandAccepted": true,
+              "rgba256Accepted": true,
+              "rgba1024Accepted": true,
+              "coverage": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              "finite": [
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            }
+          ],
+          "interpretation": "At the zero-coverage origin the original 1024 finiteMask→CIAreaMaximum graph rejected the injected intermediate. A direct eight-pixel isolated row returned finite at all locations, and both complete native RGBAf readouts accepted. The injected adjusted-image branch exercises the shared stock mask kernels, while the independent final-component faults use the real CINoiseReduction mask operator.",
+          "directFinalNaNInfinityCases": 12,
+          "allThreeRejectedEveryDirectFault": true,
+          "droppedLastNativeRowRejected": true,
+          "cancelAfterFirstSuccessfulJoin": true,
+          "retryAccepted": true,
+          "receipt": {
+            "path": "fault-1.json",
+            "sha256": "bd28aa52ada7b6b96414a5cb8a0b9fc03d2277d3f096726462a2e174aed9e045"
+          }
+        },
+        "fixtures": {
+          "primary": {
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "sourceCoveredBySealedArchive": true,
+            "archiveSHA256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d",
+            "receipts": [
+              {
+                "path": "primary.json",
+                "sha256": "8647a1dfedf835beb952c8e83b39b2995bf00bd6ad74c94f43c857d19b495ab9"
+              },
+              {
+                "path": "primary.command.json",
+                "sha256": "4578582c7f9be1c67e72da18376fa26a9a4eeff41dec1770269a8d70e9fb645b"
+              }
+            ],
+            "rows": [
+              {
+                "state": 0,
+                "stockDisplaySHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1",
+                "contrasted": {
+                  "tileGrid": {
+                    "changedPixels": 1769,
+                    "maxCodeDifference": 1,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "193bb6f27a9ebded546eebf7966ff029f1147c1261a0038b569cd60b69953ac7",
+                    "witnessPlaneBytes": 240869376,
+                    "verifiedNativePixels": 60217344,
+                    "joinedGPUCommands": 70,
+                    "scratchBytes": 16777216,
+                    "halfStorageBytes": 241680384,
+                    "groupFlagBytes": 475136,
+                    "halfWriteAndValidationMs": 122.0135,
+                    "digest": "b6250cb104963c2fc20e019b04e05b5fe2280b776804eb2037537f59f15b4a37"
+                  },
+                  "bandGrid": {
+                    "changedPixels": 0,
+                    "maxCodeDifference": 0,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "4b8d77b4dee731c3076dffb697f9af5138d6a5d713311ae8ce027f1211ab7b7f",
+                    "witnessPlaneBytes": 240869376,
+                    "verifiedNativePixels": 60217344,
+                    "joinedGPUCommands": 25,
+                    "scratchBytes": 38928384,
+                    "halfStorageBytes": 241680384,
+                    "groupFlagBytes": 475136,
+                    "halfWriteAndValidationMs": 114.921666,
+                    "digest": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+                  }
+                }
+              },
+              {
+                "state": 1,
+                "stockDisplaySHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1",
+                "contrasted": {
+                  "tileGrid": {
+                    "changedPixels": 2607,
+                    "maxCodeDifference": 1,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "a6a6b0bbedca5f32bc983cabf560bd0396dab2f3aa765b444d1948309076a125",
+                    "witnessPlaneBytes": 240869376,
+                    "verifiedNativePixels": 60217344,
+                    "joinedGPUCommands": 70,
+                    "scratchBytes": 16777216,
+                    "halfStorageBytes": 241680384,
+                    "groupFlagBytes": 475136,
+                    "halfWriteAndValidationMs": 125.022708,
+                    "digest": "b32c7c7b5c117960f76456318a6c95713c330c998ab2441746d5fff6007410b5"
+                  },
+                  "bandGrid": {
+                    "changedPixels": 0,
+                    "maxCodeDifference": 0,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "76305fcccedaadfd8dfb998ef2d8128410717016ef20f51998cd71cd799828de",
+                    "witnessPlaneBytes": 240869376,
+                    "verifiedNativePixels": 60217344,
+                    "joinedGPUCommands": 25,
+                    "scratchBytes": 38928384,
+                    "halfStorageBytes": 241680384,
+                    "groupFlagBytes": 475136,
+                    "halfWriteAndValidationMs": 105.591625,
+                    "digest": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+                  }
+                }
+              }
+            ]
+          },
+          "secondary": {
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "sourceCoveredBySealedArchive": true,
+            "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+            "receipts": [
+              {
+                "path": "secondary.json",
+                "sha256": "5eabb5013356a0b874edf4590484e99debd44cf264005fd242f2dae12085feac"
+              },
+              {
+                "path": "secondary.command.json",
+                "sha256": "7a799adb719625317201b0d6916e9ca3a9ff213e11ffe504104383c02d4cbbe0"
+              }
+            ],
+            "rows": [
+              {
+                "state": 0,
+                "stockDisplaySHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc",
+                "contrasted": {
+                  "bandGrid": {
+                    "changedPixels": 0,
+                    "maxCodeDifference": 0,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "d5cee4d032c97c0d587064e7378c6ab6926aa792c6d16b8e886807a2c4148bc1",
+                    "witnessPlaneBytes": 199065600,
+                    "verifiedNativePixels": 49766400,
+                    "joinedGPUCommands": 23,
+                    "scratchBytes": 35389440,
+                    "halfStorageBytes": 199065600,
+                    "groupFlagBytes": 393216,
+                    "halfWriteAndValidationMs": 91.221666,
+                    "digest": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc"
+                  },
+                  "tileGrid": {
+                    "changedPixels": 1298,
+                    "maxCodeDifference": 1,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "55c141900159d9fa13ec3aa9e8177fca9597402a8946c739211be50389dc0b59",
+                    "witnessPlaneBytes": 199065600,
+                    "verifiedNativePixels": 49766400,
+                    "joinedGPUCommands": 54,
+                    "scratchBytes": 16777216,
+                    "halfStorageBytes": 199065600,
+                    "groupFlagBytes": 393216,
+                    "halfWriteAndValidationMs": 111.796416,
+                    "digest": "9ae870100bff3246a41bb88e88a3fa8ddabed555f8c76b4b525f15976eb42da7"
+                  }
+                }
+              },
+              {
+                "state": 1,
+                "stockDisplaySHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e",
+                "contrasted": {
+                  "bandGrid": {
+                    "changedPixels": 0,
+                    "maxCodeDifference": 0,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "f3935f1cf1ccf5c5bf38f5d50309fcc4020f4d47edbd01e8d4c1d76c886127d3",
+                    "witnessPlaneBytes": 199065600,
+                    "verifiedNativePixels": 49766400,
+                    "joinedGPUCommands": 23,
+                    "scratchBytes": 35389440,
+                    "halfStorageBytes": 199065600,
+                    "groupFlagBytes": 393216,
+                    "halfWriteAndValidationMs": 90.9025,
+                    "digest": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e"
+                  },
+                  "tileGrid": {
+                    "changedPixels": 2217,
+                    "maxCodeDifference": 1,
+                    "alphaValues": 0,
+                    "edgePixels": 0,
+                    "halfF32SHA256": "c8c70ba4c901426dcbcdf68bedd5c6be2aafde765acb7d97b68bd0d6b26ab86f",
+                    "witnessPlaneBytes": 199065600,
+                    "verifiedNativePixels": 49766400,
+                    "joinedGPUCommands": 54,
+                    "scratchBytes": 16777216,
+                    "halfStorageBytes": 199065600,
+                    "groupFlagBytes": 393216,
+                    "halfWriteAndValidationMs": 107.031375,
+                    "digest": "9a4913190145a44dd4798d3cf806905763b66e31a565fcc1ae1ebf405151aba1"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "seals": [
+          {
+            "path": "NoiseTiles.swift",
+            "sha256": "d4a4a4863711da659fe677441316da4d816182264b42771671ddf5edabbc101b"
+          },
+          {
+            "path": "bin/probe",
+            "sha256": "46246e17734a57e0685a9961b7d3789d5c656ad9677a68004e3a99e2cec1f04c"
+          },
+          {
+            "path": "assemble.py",
+            "sha256": "7a7a16949245f18a3e41e7a4e5587f4eb3ab840ce185c70bd636ce5a6a5a110e"
+          },
+          {
+            "path": "link.sh",
+            "sha256": "61a3acf0db96c6b0e25a4fa87c6f6d2dca012aa7e325c0989d91a26483a71528"
+          },
+          {
+            "path": "run.py",
+            "sha256": "dee944470fade9629a68bcd68f65e3f705e3196e10d6be5cdd998eb6cadf2dc6"
+          },
+          {
+            "path": "review.py",
+            "sha256": "9e221176a934adf7102dc0f603c2cfc5d95718a99b12c0a9f904b6d53187a5f2"
+          }
+        ],
+        "run": [
+          "zsh output/035-development/tail-refine/noise-tiles/link.sh",
+          "python3 output/035-development/tail-refine/noise-tiles/run.py fault",
+          "python3 output/035-development/tail-refine/noise-tiles/run.py real",
+          "python3 output/035-development/tail-refine/noise-tiles/review.py"
+        ],
+        "device": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)"
+      }
+    },
+    "productionRoute": "original validation and FIT"
+  },
+  "nativeDehazeErosion": {
+    "defaultEnabled": false,
+    "prototype": {
+      "path": "output/035-development/tail-refine/erosion/prototype-reviewed.json",
+      "sha256": "56768b47d4394f9165a08edd519ca7074580d5111faa103ff24ca4a32578111e",
+      "record": {
+        "apertureExportBinary": "0879be2591964f611bbb4c4edee5dc15e5fd7438fde47cf16cf0e0a9a2193909",
+        "cases": {
+          "primary": {
+            "ABBAmedianMS": {
+              "guide": 575.631854,
+              "half-guide": 215.3829995
+            },
+            "ABBAmedianSavedMS": 360.2488545,
+            "aperturesFileSHA256": "7fd4fbf57ac389d1e5409c13a841554986e768175e1bfa13650bba5213d9a5bb",
+            "costSamples": [
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "guide",
+                "file": "run-half-abba/00-primary-guide.json",
+                "fullCostMS": 588.045958,
+                "metal": {},
+                "receiptSHA256": "95ffc8839b7bc176cac629aaf974e6ae43fc245876feaa7a5ee22d865a81b68d",
+                "stockR32FillMS": 588.045958,
+                "wholeR32": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-guide",
+                "file": "run-half-abba/01-primary-half-guide.json",
+                "fullCostMS": 215.82679100000001,
+                "metal": {
+                  "actualAdditionalBytes": 527892480,
+                  "borrowedOriginalAllocatedBytes": 483360768,
+                  "halfSlabJoinedMS": 44.636708,
+                  "kernelOutputPixels": 541217232,
+                  "metalGPUTimeMS": 24.043291457928717,
+                  "nativeOpaqueFiniteProofMS": 2.973333,
+                  "outputAllocatedBytes": 483360768,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.08025,
+                  "scratchAllocatedBytes": [
+                    22265856,
+                    22265856
+                  ],
+                  "slabRows": 128,
+                  "slabs": 50
+                },
+                "receiptSHA256": "3406ae834cb8ca2eaee5fec76f54022fbfed5ba794d7203311359272bb4d6cdd",
+                "stockR32FillMS": 168.1365,
+                "wholeR32": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-guide",
+                "file": "run-half-abba/02-primary-half-guide.json",
+                "fullCostMS": 214.939208,
+                "metal": {
+                  "actualAdditionalBytes": 527892480,
+                  "borrowedOriginalAllocatedBytes": 483360768,
+                  "halfSlabJoinedMS": 42.404958,
+                  "kernelOutputPixels": 541217232,
+                  "metalGPUTimeMS": 22.24820852279663,
+                  "nativeOpaqueFiniteProofMS": 3.042,
+                  "outputAllocatedBytes": 483360768,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.169459,
+                  "scratchAllocatedBytes": [
+                    22265856,
+                    22265856
+                  ],
+                  "slabRows": 128,
+                  "slabs": 50
+                },
+                "receiptSHA256": "ff6fc45fd54a75e84cb75ebca66ee1402fc7583ed95f3bdbff659f86d33b5495",
+                "stockR32FillMS": 169.322791,
+                "wholeR32": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "guide",
+                "file": "run-half-abba/03-primary-guide.json",
+                "fullCostMS": 563.21775,
+                "metal": {},
+                "receiptSHA256": "22424c9e75ebdd0321e9bbc06a93e606591bbf194e4ecd573786205811b9a80c",
+                "stockR32FillMS": 563.21775,
+                "wholeR32": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-erosion",
+                "file": "run-half-abba/08-primary-half-erosion.json",
+                "fullCostMS": 151.903916,
+                "metal": {
+                  "actualAdditionalBytes": 527892480,
+                  "borrowedOriginalAllocatedBytes": 483360768,
+                  "halfSlabJoinedMS": 44.644791,
+                  "kernelOutputPixels": 541217232,
+                  "metalGPUTimeMS": 23.74433306977153,
+                  "nativeOpaqueFiniteProofMS": 8.77625,
+                  "outputAllocatedBytes": 483360768,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.089167,
+                  "scratchAllocatedBytes": [
+                    22265856,
+                    22265856
+                  ],
+                  "slabRows": 128,
+                  "slabs": 50
+                },
+                "receiptSHA256": "89bcf4d288cf5d42f93913b8c18a92ae0e53e5020ab1f3a8423f9d6c8a4e20f6",
+                "stockR32FillMS": 98.393708,
+                "wholeR32": "a50dbbe43111910ae09ef097169220985891ffcfcd53bf4a8a6b2c5a290e0185"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-guide",
+                "file": "run-half1/00-primary-half-guide.json",
+                "fullCostMS": 340.946501,
+                "metal": {
+                  "actualAdditionalBytes": 527892480,
+                  "borrowedOriginalAllocatedBytes": 483360768,
+                  "halfSlabJoinedMS": 46.496209,
+                  "kernelOutputPixels": 541217232,
+                  "metalGPUTimeMS": 26.50595793966204,
+                  "nativeOpaqueFiniteProofMS": 2.643458,
+                  "outputAllocatedBytes": 483360768,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 117.329459,
+                  "scratchAllocatedBytes": [
+                    22265856,
+                    22265856
+                  ],
+                  "slabRows": 128,
+                  "slabs": 50
+                },
+                "receiptSHA256": "0ce712ae0a6d7d60dadd5760ab93df79734035c607ba333a068dc1936b88379b",
+                "stockR32FillMS": 174.477375,
+                "wholeR32": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+              }
+            ],
+            "cpuCompleteApertureProof": {
+              "64vs128SlabAllComponentMismatches": 0,
+              "checkedCPUGrid": [
+                229,
+                191
+              ],
+              "comparisonComponents": 576,
+              "decomposedOnly": 0,
+              "directBitMismatches": 0,
+              "directSampledCoordinates": 144,
+              "factors": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  9,
+                  6
+                ],
+                [
+                  27,
+                  19
+                ],
+                [
+                  36,
+                  25
+                ]
+              ],
+              "finiteRealSourcePrecondition": "physical RGBA16F finite and alpha exactly +1; bare RGB stage; size and orientation must match",
+              "fullSupportSHA256": "c9f7b2231a97e49f6869b9f2802b7c7e6f5a36183f5f91fe29f2add9e52e0474",
+              "intermediateMaximumHalo": 75,
+              "intersection": 15613,
+              "observedOnly": 0,
+              "outputHalfBitsSHA256": "dfa122dea3c23efdf4182f9fc4d10a0fb555e1a55a62fd051421f75745efc35b",
+              "perStageSupportCount": [
+                9,
+                61,
+                481,
+                3961,
+                15613
+              ],
+              "radius": 76.032,
+              "sumRadius": 76
+            },
+            "phase": "original Stock g; candidate half-guide h. Primary ghhg, secondary hggh.",
+            "sourceGrid": [
+              0,
+              0,
+              9504,
+              6336
+            ],
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "strictIntegerHalfMinCost": "five stages, each reads nine existing half channel tuples; only the original texture is clamped, intermediate extents include remaining offsets"
+          },
+          "secondary": {
+            "ABBAmedianMS": {
+              "guide": 492.85012500000005,
+              "half-guide": 187.4841045
+            },
+            "ABBAmedianSavedMS": 305.36602050000005,
+            "aperturesFileSHA256": "35203dfdd398e9447935cf806f34cc901beb6da75034e9db57653c48417c5ed1",
+            "costSamples": [
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-guide",
+                "file": "run-half-abba/04-secondary-half-guide.json",
+                "fullCostMS": 190.370167,
+                "metal": {
+                  "actualAdditionalBytes": 438829056,
+                  "borrowedOriginalAllocatedBytes": 398131200,
+                  "halfSlabJoinedMS": 34.992542,
+                  "kernelOutputPixels": 423168840,
+                  "metalGPUTimeMS": 17.984667094424367,
+                  "nativeOpaqueFiniteProofMS": 2.786875,
+                  "outputAllocatedBytes": 398131200,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.107708,
+                  "scratchAllocatedBytes": [
+                    20348928,
+                    20348928
+                  ],
+                  "slabRows": 128,
+                  "slabs": 45
+                },
+                "receiptSHA256": "df29d6a9e9bda2c13beb9b830e88e05707a7bdbc90838cfb6170f917234aa632",
+                "stockR32FillMS": 152.483042,
+                "wholeR32": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "guide",
+                "file": "run-half-abba/05-secondary-guide.json",
+                "fullCostMS": 505.04725,
+                "metal": {},
+                "receiptSHA256": "d405c6c45b00c4077c7939f467938bc8781b40798a24c38ce067d9093a96187f",
+                "stockR32FillMS": 505.04725,
+                "wholeR32": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "guide",
+                "file": "run-half-abba/06-secondary-guide.json",
+                "fullCostMS": 480.653,
+                "metal": {},
+                "receiptSHA256": "11832bd58f02d747e6d672e4e465c47dc9482a8258d90f0b6ef632d206fc938a",
+                "stockR32FillMS": 480.653,
+                "wholeR32": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-guide",
+                "file": "run-half-abba/07-secondary-half-guide.json",
+                "fullCostMS": 184.598042,
+                "metal": {
+                  "actualAdditionalBytes": 438829056,
+                  "borrowedOriginalAllocatedBytes": 398131200,
+                  "halfSlabJoinedMS": 33.319708,
+                  "kernelOutputPixels": 423168840,
+                  "metalGPUTimeMS": 17.19308295287192,
+                  "nativeOpaqueFiniteProofMS": 4.677209,
+                  "outputAllocatedBytes": 398131200,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.103125,
+                  "scratchAllocatedBytes": [
+                    20348928,
+                    20348928
+                  ],
+                  "slabRows": 128,
+                  "slabs": 45
+                },
+                "receiptSHA256": "8370d8a233413c00ce966700f7b30a9933f88027f8bb0c911470894ed00edab8",
+                "stockR32FillMS": 146.498,
+                "wholeR32": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-erosion",
+                "file": "run-half-abba/09-secondary-half-erosion.json",
+                "fullCostMS": 126.449542,
+                "metal": {
+                  "actualAdditionalBytes": 438829056,
+                  "borrowedOriginalAllocatedBytes": 398131200,
+                  "halfSlabJoinedMS": 38.293042,
+                  "kernelOutputPixels": 423168840,
+                  "metalGPUTimeMS": 21.088208653964102,
+                  "nativeOpaqueFiniteProofMS": 4.236625,
+                  "outputAllocatedBytes": 398131200,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.06325,
+                  "scratchAllocatedBytes": [
+                    20348928,
+                    20348928
+                  ],
+                  "slabRows": 128,
+                  "slabs": 45
+                },
+                "receiptSHA256": "944a27042a5566adac5b912444930c2ea9cda6f8015f1522d10589fe60d5a6b5",
+                "stockR32FillMS": 83.856625,
+                "wholeR32": "01675b6e723500d26e66b73bee0318d19a40284b06353baed75bf100b10ca068"
+              },
+              {
+                "agreesWithArchivedStock": true,
+                "arm": "half-guide",
+                "file": "run-half1/01-secondary-half-guide.json",
+                "fullCostMS": 180.477,
+                "metal": {
+                  "actualAdditionalBytes": 438829056,
+                  "borrowedOriginalAllocatedBytes": 398131200,
+                  "halfSlabJoinedMS": 36.01775,
+                  "kernelOutputPixels": 423168840,
+                  "metalGPUTimeMS": 19.265249837189913,
+                  "nativeOpaqueFiniteProofMS": 2.742125,
+                  "outputAllocatedBytes": 398131200,
+                  "physicalOrientation": "original native factory flip",
+                  "pipelineCompileMS": 0.06725,
+                  "scratchAllocatedBytes": [
+                    20348928,
+                    20348928
+                  ],
+                  "slabRows": 128,
+                  "slabs": 45
+                },
+                "receiptSHA256": "7a84a19948160cfcfb87d751a77ac9cca32c5c6e8db2eb4310f843bde440f63f",
+                "stockR32FillMS": 141.649875,
+                "wholeR32": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+              }
+            ],
+            "cpuCompleteApertureProof": {
+              "64vs128SlabAllComponentMismatches": 0,
+              "checkedCPUGrid": [
+                229,
+                191
+              ],
+              "comparisonComponents": 576,
+              "decomposedOnly": 0,
+              "directBitMismatches": 0,
+              "directSampledCoordinates": 144,
+              "factors": [
+                [
+                  1,
+                  1
+                ],
+                [
+                  3,
+                  2
+                ],
+                [
+                  9,
+                  6
+                ],
+                [
+                  27,
+                  19
+                ],
+                [
+                  29,
+                  21
+                ]
+              ],
+              "finiteRealSourcePrecondition": "physical RGBA16F finite and alpha exactly +1; bare RGB stage; size and orientation must match",
+              "fullSupportSHA256": "c5e95811036a2111925a17824a177c9b693758f4ad48220e0e71586b10f66d6e",
+              "intermediateMaximumHalo": 68,
+              "intersection": 13017,
+              "observedOnly": 0,
+              "outputHalfBitsSHA256": "dcd7c880cace77fac4986b25f08977cad575d3121848d838d3c7e62c8e45572e",
+              "perStageSupportCount": [
+                9,
+                61,
+                481,
+                3961,
+                13017
+              ],
+              "radius": 69.12,
+              "sumRadius": 69
+            },
+            "phase": "original Stock g; candidate half-guide h. Primary ghhg, secondary hggh.",
+            "sourceGrid": [
+              0,
+              0,
+              8640,
+              5760
+            ],
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "strictIntegerHalfMinCost": "five stages, each reads nine existing half channel tuples; only the original texture is clamped, intermediate extents include remaining offsets"
+          }
+        },
+        "coldCost": "First candidate process recorded compilation of fresh Metal program separately; later processes reused driver compilation cache. Total below incorporates proof, program compilation, actual Metal allocation/commands and stock scalar plane fill, excludes RAW decode, graph creation, final SHA and preview FIT.",
+        "cpuReferenceSHA256": "df06367d178c22deccea7c543199f93a468e929cff3c8e2c8743356f324baa4d",
+        "fixtureProvenance": "/Users/robinqu/.codex/worktrees/portable-processing/RAWMaster/output/035-development/native-exact-study/erosion/run-01/reviewed.json",
+        "half128Binary": "a6b5ab088b55500d7c1a65ac9e8c628591b25bcb197442caf7c82dec05ae114d",
+        "half128Source": "0dd94ea846fda2a775c33b2f2bf0c5eabaab8f396bd3e167f1fa4c34f9ae7d58",
+        "scope": "Standalone direct original texture. R32 comparisons do not alone prove all pre-luma RGB bits or actual SwiftUI display. Timed 128-row prototype predates production 64-row counted-stage implementation. Trial remains opt-in.",
+        "sourceApertureReferenceSHA256": "de57781039b68b6ac56b4e8f336ab865b5859fa753d80b8f1ee64c561ff93de2"
+      }
+    },
+    "exactHalfOrderAndHaloModel": {
+      "path": "output/035-development/tail-refine/erosion/cpu-proof.json",
+      "sha256": "df06367d178c22deccea7c543199f93a468e929cff3c8e2c8743356f324baa4d",
+      "record": {
+        "airlightModel": [
+          {
+            "airF32": 0.25,
+            "finiteOrderedInputCount": 63488,
+            "stockArithmeticModelSignedZeroBits": [
+              0,
+              0
+            ]
+          },
+          {
+            "airF32": 0.7310140132904053,
+            "finiteOrderedInputCount": 63488,
+            "stockArithmeticModelSignedZeroBits": [
+              0,
+              0
+            ]
+          },
+          {
+            "airF32": 1.0,
+            "finiteOrderedInputCount": 63488,
+            "stockArithmeticModelSignedZeroBits": [
+              0,
+              0
+            ]
+          },
+          {
+            "airF32": 1.0001755952835083,
+            "finiteOrderedInputCount": 63488,
+            "stockArithmeticModelSignedZeroBits": [
+              0,
+              0
+            ]
+          },
+          {
+            "airF32": 16.0,
+            "finiteOrderedInputCount": 63488,
+            "stockArithmeticModelSignedZeroBits": [
+              0,
+              0
+            ]
+          }
+        ],
+        "cpuModel": "unsigned half total order; independent numpy direct exhaustive aperture vs five 9-tap Minkowski stages, clamp raw once and extend all intermediate halos",
+        "finiteHalfBitPatterns": 63488,
+        "fixtures": {
+          "primary": {
+            "64vs128SlabAllComponentMismatches": 0,
+            "checkedCPUGrid": [
+              229,
+              191
+            ],
+            "comparisonComponents": 576,
+            "decomposedOnly": 0,
+            "directBitMismatches": 0,
+            "directSampledCoordinates": 144,
+            "factors": [
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ],
+              [
+                9,
+                6
+              ],
+              [
+                27,
+                19
+              ],
+              [
+                36,
+                25
+              ]
+            ],
+            "finiteRealSourcePrecondition": "physical RGBA16F finite and alpha exactly +1; bare RGB stage; size and orientation must match",
+            "fullSupportSHA256": "c9f7b2231a97e49f6869b9f2802b7c7e6f5a36183f5f91fe29f2add9e52e0474",
+            "intermediateMaximumHalo": 75,
+            "intersection": 15613,
+            "observedOnly": 0,
+            "outputHalfBitsSHA256": "dfa122dea3c23efdf4182f9fc4d10a0fb555e1a55a62fd051421f75745efc35b",
+            "perStageSupportCount": [
+              9,
+              61,
+              481,
+              3961,
+              15613
+            ],
+            "radius": 76.032,
+            "sumRadius": 76
+          },
+          "secondary": {
+            "64vs128SlabAllComponentMismatches": 0,
+            "checkedCPUGrid": [
+              229,
+              191
+            ],
+            "comparisonComponents": 576,
+            "decomposedOnly": 0,
+            "directBitMismatches": 0,
+            "directSampledCoordinates": 144,
+            "factors": [
+              [
+                1,
+                1
+              ],
+              [
+                3,
+                2
+              ],
+              [
+                9,
+                6
+              ],
+              [
+                27,
+                19
+              ],
+              [
+                29,
+                21
+              ]
+            ],
+            "finiteRealSourcePrecondition": "physical RGBA16F finite and alpha exactly +1; bare RGB stage; size and orientation must match",
+            "fullSupportSHA256": "c5e95811036a2111925a17824a177c9b693758f4ad48220e0e71586b10f66d6e",
+            "intermediateMaximumHalo": 68,
+            "intersection": 13017,
+            "observedOnly": 0,
+            "outputHalfBitsSHA256": "dcd7c880cace77fac4986b25f08977cad575d3121848d838d3c7e62c8e45572e",
+            "perStageSupportCount": [
+              9,
+              61,
+              481,
+              3961,
+              13017
+            ],
+            "radius": 69.12,
+            "sumRadius": 69
+          }
+        },
+        "isDeviceShaderProof": false
+      }
+    },
+    "isolated64RowColorProofs": {
+      "primary": {
+        "path": "output/035-development/tail-refine/erosion/run-four/primary.json",
+        "sha256": "07f1a313fcff6efbf2742082a556afb468869105545f5b24e30000acda8e4d80",
+        "nativeRGBACheck": {
+          "candidateBlockOrderSHA": "0a536763d8ef89a11ea480858a38d0f782969f81525cea184367ed12bedfd5ef",
+          "components": 240869376,
+          "differentRGBA": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "examples": [],
+          "grid": [
+            9504,
+            6336
+          ],
+          "identicalComponents": 240869376,
+          "nativeRowsPerRead": 256,
+          "rowsWithDifferences": [],
+          "stockBlockOrderSHA": "0a536763d8ef89a11ea480858a38d0f782969f81525cea184367ed12bedfd5ef"
+        },
+        "completeR32SHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f"
+      },
+      "secondary": {
+        "path": "output/035-development/tail-refine/erosion/run-four/secondary.json",
+        "sha256": "13e638933eb6cdebb16363864185a07abb8c98871a0c26c596794324018643a7",
+        "nativeRGBACheck": {
+          "candidateBlockOrderSHA": "030cbe0320160698538b04923f0babc6e045e30d71d4192dabde0619bd51e0a7",
+          "components": 199065600,
+          "differentRGBA": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "examples": [],
+          "grid": [
+            8640,
+            5760
+          ],
+          "identicalComponents": 199065600,
+          "nativeRowsPerRead": 256,
+          "rowsWithDifferences": [],
+          "stockBlockOrderSHA": "030cbe0320160698538b04923f0babc6e045e30d71d4192dabde0619bd51e0a7"
+        },
+        "completeR32SHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40"
+      }
+    },
+    "nativeApplicationProfile": {
+      "primary": {
+        "sourceArchive": {
+          "path": "output/035-development/candidate-batch21-native-sharpen-joined-formal/photo-operators-v2.json",
+          "sha256": "7da08306378fde56d254cbc7db75e90b7d213743b265dbf8414078bf0223b98d"
+        },
+        "rawProfiles": [
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-1-primary-0.json",
+            "sha256": "9b923b3d7641bb2616ec275ef2d30651537319478b85f0dec63f9c1925bd28e3",
+            "arm": 0,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 1010.619,
+                "wholeRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                "guideAcquireOrFillMS": 600.143334
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 273.551917,
+                "wholeRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                "guideAcquireOrFillMS": 0.002458
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 399.105,
+                "wholeRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 408.466708,
+                "wholeRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+              }
+            ],
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 4014065872
+          },
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-2-primary-1.json",
+            "sha256": "274b19f74cf948a665c65f7b267c47d95bd0f70c191444887a94603115c3dd83",
+            "arm": 1,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 864.852292,
+                "wholeRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                "halfErosionJoined": {
+                  "ms": 70.418583,
+                  "bytes": 518094848,
+                  "pixels": 60217344
+                },
+                "guideAcquireOrFillMS": 485.860459
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 257.454583,
+                "wholeRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                "guideAcquireOrFillMS": 0.056792
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 405.827083,
+                "wholeRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 416.303875,
+                "wholeRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+              }
+            ],
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 3646703968
+          },
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-3-primary-1.json",
+            "sha256": "f84835a3ab3fe4b625b1463e0a239a7eb4fc74ee67ff3c12ece709964723aeee",
+            "arm": 1,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 734.854834,
+                "wholeRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                "halfErosionJoined": {
+                  "ms": 65.261709,
+                  "bytes": 518094848,
+                  "pixels": 60217344
+                },
+                "guideAcquireOrFillMS": 336.257792
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 280.114875,
+                "wholeRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                "guideAcquireOrFillMS": 0.0545
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 418.615292,
+                "wholeRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 424.702666,
+                "wholeRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+              }
+            ],
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 3648588128
+          },
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-4-primary-0.json",
+            "sha256": "db4e7ad139b3459ab0053279b358fba38700c1577943569d078c249f51d43024",
+            "arm": 0,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 994.38025,
+                "wholeRGBA8SHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                "guideAcquireOrFillMS": 600.458792
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 273.457042,
+                "wholeRGBA8SHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                "guideAcquireOrFillMS": 0.003125
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 410.895125,
+                "wholeRGBA8SHA256": "ae9a03dbb26d319161cd26155980f6bf1d2e2e53bd19ab8165a05e2d2beaa8e1"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 417.53225,
+                "wholeRGBA8SHA256": "d7798f2ce8581c7adea6fa8024aa229afc827fefd225ff7a858e02160eb905b1"
+              }
+            ],
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 4010543288
+          }
+        ],
+        "summaryByMode": {
+          "0": {
+            "coldSettledMsP50": 1002.499625,
+            "coldGuideMsP50": 600.301063,
+            "warmSettledMsP50": 273.5044795,
+            "maximumProfilePhysicalFootprintBytes": 4014065872
+          },
+          "1": {
+            "coldSettledMsP50": 799.853563,
+            "coldGuideMsP50": 411.0591255,
+            "warmSettledMsP50": 268.78472899999997,
+            "maximumProfilePhysicalFootprintBytes": 3648588128
+          }
+        }
+      },
+      "secondary": {
+        "sourceArchive": {
+          "path": "output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+          "sha256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f"
+        },
+        "rawProfiles": [
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-1-secondary-0.json",
+            "sha256": "75f95a759b5f089ae03939dc80ea6d56a599473af3d7476a793ba122ed9400b2",
+            "arm": 0,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 831.145417,
+                "wholeRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                "guideAcquireOrFillMS": 523.23775
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 204.256958,
+                "wholeRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                "guideAcquireOrFillMS": 0.002458
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 336.23675,
+                "wholeRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 346.793959,
+                "wholeRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e"
+              }
+            ],
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 3571517456
+          },
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-2-secondary-1.json",
+            "sha256": "69723167465d6311511a49e50e8271fcf20b1cadfd64f370badeeb79a9acef9b",
+            "arm": 1,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 622.018166,
+                "wholeRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                "halfErosionJoined": {
+                  "ms": 56.322833,
+                  "bytes": 429867008,
+                  "pixels": 49766400
+                },
+                "guideAcquireOrFillMS": 289.198458
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 208.142375,
+                "wholeRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                "guideAcquireOrFillMS": 0.052041
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 362.952833,
+                "wholeRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 379.3965,
+                "wholeRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e"
+              }
+            ],
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 3332491520
+          },
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-3-secondary-1.json",
+            "sha256": "48a0f05d13bcc1ad008456caec2d9412013fc9d53239bcc56a4316e8677b1761",
+            "arm": 1,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 601.413583,
+                "wholeRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                "halfErosionJoined": {
+                  "ms": 59.714584,
+                  "bytes": 429867008,
+                  "pixels": 49766400
+                },
+                "guideAcquireOrFillMS": 287.355042
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 209.695041,
+                "wholeRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                "guideAcquireOrFillMS": 0.05175
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 344.788375,
+                "wholeRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 346.613417,
+                "wholeRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e"
+              }
+            ],
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 3335047448
+          },
+          {
+            "path": "output/035-development/tail-refine/guarded-native/dehaze-4-secondary-0.json",
+            "sha256": "2bc847156f777d21e9a3743f49a96067e287e959932d1952b63442e9b84e3489",
+            "arm": 0,
+            "rows": [
+              {
+                "id": "effects-dehaze",
+                "state": 0,
+                "settledMs": 844.137834,
+                "wholeRGBA8SHA256": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                "guideAcquireOrFillMS": 532.1355
+              },
+              {
+                "id": "effects-dehaze",
+                "state": 1,
+                "settledMs": 227.461167,
+                "wholeRGBA8SHA256": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                "guideAcquireOrFillMS": 0.002875
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 0,
+                "settledMs": 325.011625,
+                "wholeRGBA8SHA256": "b0f6bea5870136458c877b5e60940f040133c47b2da5b62199d26f7419a8f9dc"
+              },
+              {
+                "id": "detail-mask-noise",
+                "state": 1,
+                "settledMs": 350.528334,
+                "wholeRGBA8SHA256": "ceb054762b44811228a9ab82f60d19b7f58ea806c445e64305c4f171ae1d051e"
+              }
+            ],
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+            "probeSHA256": "a45fc7cde7e6baf5967b6c1b6d122dd4809ed0e9f35b0ca3a758b052d3734258",
+            "peakPhysicalFootprintBytes": 3571238880
+          }
+        ],
+        "summaryByMode": {
+          "0": {
+            "coldSettledMsP50": 837.6416254999999,
+            "coldGuideMsP50": 527.686625,
+            "warmSettledMsP50": 215.8590625,
+            "maximumProfilePhysicalFootprintBytes": 3571517456
+          },
+          "1": {
+            "coldSettledMsP50": 611.7158744999999,
+            "coldGuideMsP50": 288.27675,
+            "warmSettledMsP50": 208.91870799999998,
+            "maximumProfilePhysicalFootprintBytes": 3335047448
+          }
+        }
+      }
+    },
+    "realAuthorityTests": {
+      "path": "output/035-development/tail-refine/erosion/product-faults/reviewed.json",
+      "sha256": "073e9a6f382411061e293f41707faf16cf55a619eb378089160978d644999d48",
+      "record": {
+        "binarySHA256": "fad918478494701556e280008e41f60759e3ec288ae5a363b62c7d16a9c7f4e0",
+        "cases": {
+          "primary": {
+            "evidence": {
+              "cancelledWarmHitPreservesCompletedGuide": true,
+              "device": "Apple M4 Max",
+              "foreignGraphDeclined": true,
+              "lateCancellation": {
+                "afterFills": 1,
+                "authorityCalls": 66,
+                "beforeFills": 1,
+                "joinedSlabsAtInjection": 20,
+                "remainingBytes": 481738752,
+                "remainingPinBytes": 481738752,
+                "whileMetalStageActive": 60
+              },
+              "lateColdPublicationWithdrawn": {
+                "fills": 1,
+                "remainingBytes": 0
+              },
+              "nativeGrid": [
+                9504,
+                6336
+              ],
+              "overBudgetBeforeSubmission": true,
+              "retryUsedProductionHalfErosion": true,
+              "revokedDuringSlabs": {
+                "authorityCalls": 66,
+                "fills": 0,
+                "joinedSlabsAtInjection": 20,
+                "pinnedBytes": 0,
+                "residentBytes": 0,
+                "whileMetalStageActive": 60
+              },
+              "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+            },
+            "receiptSHA256": "4f30484f5df667d0950016c69cb545f2ccc0789399e131912d2eef7f1d72270c"
+          },
+          "secondary": {
+            "evidence": {
+              "cancelledWarmHitPreservesCompletedGuide": true,
+              "device": "Apple M4 Max",
+              "foreignGraphDeclined": true,
+              "lateCancellation": {
+                "afterFills": 1,
+                "authorityCalls": 66,
+                "beforeFills": 1,
+                "joinedSlabsAtInjection": 20,
+                "remainingBytes": 398131200,
+                "remainingPinBytes": 398131200,
+                "whileMetalStageActive": 60
+              },
+              "lateColdPublicationWithdrawn": {
+                "fills": 1,
+                "remainingBytes": 0
+              },
+              "nativeGrid": [
+                8640,
+                5760
+              ],
+              "overBudgetBeforeSubmission": true,
+              "retryUsedProductionHalfErosion": true,
+              "revokedDuringSlabs": {
+                "authorityCalls": 66,
+                "fills": 0,
+                "joinedSlabsAtInjection": 20,
+                "pinnedBytes": 0,
+                "residentBytes": 0,
+                "whileMetalStageActive": 60
+              },
+              "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+            },
+            "receiptSHA256": "a66bd2067a2a7272a8c641b65812179cb79d248273e59748f54a9ca70585004d"
+          }
+        },
+        "guardedSourceSealSHA256": "229d662d74718b521cb9bbdb6b007184b1e39a0e13cd78750ebbea645e6b00ca",
+        "productImagingObjectSHA256": "fe3b887d6aebafb1cc0bb2986519c2db6933dee3c5a520aa8ca3d60c9d0d2a75",
+        "scope": "Production native dehaze engine, provider/pin and worker authority functions with controlled closure. Real FD capture copy removal is confined to this harness. Test uses completed Metal stage checkpoints, not asynchronous timing. Each per-slab callback runs prior to encoding, before commit and after wait; the 60th active callback is the 20th completed GPU slab.",
+        "sourceSHA256": "243ef2ff975970072677f8b5b956033ca48f9f9aafaa1ca5daba2474577559c7"
+      }
+    }
+  },
+  "catalogFilestatProof": {
+    "path": "specs/035-portable-processing-cores/evidence/catalog-transaction-filestat.json",
+    "sha256": "4b1fef12ddc58c0ceefc9ee63354f1f1e8e9e36f1a99abf177033294deb5b936"
+  },
+  "candidateReleaseGates": {
+    "defaultSetting": false,
+    "enabledSwitch": "RAWMASTER_QA_NATIVE_DEHAZE_HALF_EROSION=1",
+    "summary": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded-erosion-formal/summary.json",
+      "sha256": "74813c012ab73933accf79765e2ccc465c16b934e1a8e1a63149f387edd33795"
+    },
+    "status": "failed",
+    "passed": false,
+    "failedStages": [
+      "image-pipeline",
+      "interactive-comparison",
+      "lightflow-comparison",
+      "inspection-comparison"
+    ],
+    "failures": [
+      {
+        "stage": "inspection-comparison",
+        "report": "inspection-comparison.json",
+        "failures": [
+          "light-auto medianMs: 6.26 > 6.18 ms",
+          "light-auto p95Ms: 12.81 > 8.88 ms",
+          "light-auto-single medianMs: 5.88 > 5.85 ms",
+          "light-auto-single p95Ms: 9.58 > 7.64 ms",
+          "mixer-point-swatches p95Ms: 11.83 > 9.70 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "lens-blur-bokeh-ring: interactive median regressed 11.63%",
+          "lens-blur-bokeh-anamorphic: interactive median regressed 10.72%",
+          "local-glow: interactive median regressed 10.99%",
+          "point-variance: interactive median regressed 15.71%",
+          "targeted-hsl: interactive median regressed 32.92%",
+          "point-curve-targeted: interactive median regressed 14.37%",
+          "point-color-samples: interactive median regressed 21.42%",
+          "local-point-color: interactive median regressed 28.94%",
+          "local-light-extended: interactive median regressed 10.46%",
+          "local-hue-colorize: interactive median regressed 14.09%",
+          "local-grading: interactive median regressed 10.91%",
+          "global-sharpen-mask-preview: interactive median regressed 42.77%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      },
+      {
+        "stage": "image-pipeline",
+        "report": "image.json",
+        "failures": [
+          "canvas_1_zoom-pan: relative p95 19.46 > 8.00 ms"
+        ]
+      }
+    ],
+    "readback": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded-erosion-formal/photo-operators-v2.json",
+      "sha256": "8a6e297f63479632f87b13358b8211849b8e4a7684ded86cb479b4007159ecdc"
+    },
+    "exactReadbackDigestPairs": 814,
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.282500000000001,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.3518335,
+          "p95Ms": 18.7875
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 22.134999999999998,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 85.8827705,
+          "p95Ms": 402.132959
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 23.5625,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 85.8827705,
+          "p95Ms": 402.132959
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "worstDehazeFinalMS": 682.49525,
+    "superResolutionTIFF16": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded-erosion-formal/super-resolution.json",
+      "sha256": "3401db30130446ab131282d6386b56c752e43fce461c77dd6ef2c35bb0570799",
+      "output": {
+        "bits": 16,
+        "byteCount": 1926958614,
+        "colorSpace": "sRGB IEC61966-2.1",
+        "elapsedMs": 10002.004917,
+        "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+        "sampleFormat": "unsigned",
+        "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+        "size": [
+          19008,
+          12672
+        ]
+      },
+      "matchesPreviousOutput": true
+    },
+    "canvasZoomPanRemeasurement": [
+      {
+        "path": "output/035-development/tail-refine/canvas-crossover/canvas-1-0.json",
+        "sha256": "56d9238406e034b7c4193573752c1c8e721eaecbbb139d02e0f954b28ee7de71",
+        "mode": 0,
+        "pipelineStatus": "failed",
+        "gate": {
+          "baselineP95Milliseconds": 3.83575,
+          "maxLimitMilliseconds": 100,
+          "metric": "canvas_1_zoom-pan",
+          "p95LimitMilliseconds": 33.333,
+          "passed": true,
+          "relativeP95LimitMilliseconds": 8
+        },
+        "p95Ms": 5.355041,
+        "sampleCount": 30
+      },
+      {
+        "path": "output/035-development/tail-refine/canvas-crossover/canvas-2-1.json",
+        "sha256": "32a46882b555d82079921d1a229e6f6f80901bd32b566620aec89c70501a4a27",
+        "mode": 1,
+        "pipelineStatus": "failed",
+        "gate": {
+          "baselineP95Milliseconds": 3.83575,
+          "maxLimitMilliseconds": 100,
+          "metric": "canvas_1_zoom-pan",
+          "p95LimitMilliseconds": 33.333,
+          "passed": false,
+          "relativeP95LimitMilliseconds": 8
+        },
+        "p95Ms": 8.367167,
+        "sampleCount": 30
+      },
+      {
+        "path": "output/035-development/tail-refine/canvas-crossover/canvas-3-1.json",
+        "sha256": "77d27af207eb9c04f12645c8130d1491613d1c9d8a69e90b31aa98c0e392c15e",
+        "mode": 1,
+        "pipelineStatus": "passed",
+        "gate": {
+          "baselineP95Milliseconds": 3.83575,
+          "maxLimitMilliseconds": 100,
+          "metric": "canvas_1_zoom-pan",
+          "p95LimitMilliseconds": 33.333,
+          "passed": true,
+          "relativeP95LimitMilliseconds": 8
+        },
+        "p95Ms": 5.776333,
+        "sampleCount": 30
+      },
+      {
+        "path": "output/035-development/tail-refine/canvas-crossover/canvas-4-0.json",
+        "sha256": "9d49d6eb839a9c5868b61c04ba2a63f914863ec9a4157ee48117fc31a39735b1",
+        "mode": 0,
+        "pipelineStatus": "failed",
+        "gate": {
+          "baselineP95Milliseconds": 3.83575,
+          "maxLimitMilliseconds": 100,
+          "metric": "canvas_1_zoom-pan",
+          "p95LimitMilliseconds": 33.333,
+          "passed": true,
+          "relativeP95LimitMilliseconds": 8
+        },
+        "p95Ms": 4.721417,
+        "sampleCount": 30
+      }
+    ]
+  },
+  "functional": {
+    "index": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded/camera-raw-acceptance.json",
+      "sha256": "25f089ff246592a6060cdd5b63b0f300ac4b75cd2bda9ab09f077a1c0266f1a5"
+    },
+    "measuredIDs": 158,
+    "adaptive": {
+      "cases": 4,
+      "testBinarySHA256": "8cd63e6aa76fe98244c5515b0d42d68e86a33eb35ac203631b9f254bb28299a3"
+    },
+    "tests": [
+      {
+        "path": "output/035-development/candidate-batch22-dehaze-guarded/native-film-and-mask.log",
+        "sha256": "e46e079c34c0856f9ddb18545a2b2f70dec5ecb76372487daf795b8507c20950",
+        "passed": 27
+      },
+      {
+        "path": "output/035-development/candidate-batch22-dehaze-guarded/native-mask-interaction.log",
+        "sha256": "0f2b0852d11fe2cfe71f325f3a7e3402b410f0d64cdb99f81b1f310daf0c57a2",
+        "passed": 9
+      },
+      {
+        "path": "output/035-development/candidate-batch22-dehaze-guarded/native-prompt-providers.log",
+        "sha256": "d41faf7c35d1c3cd941ebab26620e0ade1a0c039d63cc3d924c249fcc081f8ec",
+        "passed": 5
+      },
+      {
+        "path": "output/035-development/candidate-batch22-dehaze-guarded/adaptive-Sky.log",
+        "sha256": "053f77e6f47f295b735c26ca395c73f9164609de623c6f0ae267a159824e338f",
+        "passed": 1
+      },
+      {
+        "path": "output/035-development/candidate-batch22-dehaze-guarded/adaptive-Subject.log",
+        "sha256": "67ecd02cbc639209d992f95405ca9a72ff44dd4ff6eef97248243ba7678b13c6",
+        "passed": 1
+      }
+    ]
+  }
+}

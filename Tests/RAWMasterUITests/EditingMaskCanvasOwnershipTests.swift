@@ -142,12 +142,18 @@ private actor DelayedMaskReply {
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceThumbnailMaxPixelSize: 512
         ] as CFDictionary))
-        let photo = fixture.root.appending(path: "person.png")
+        let sourceDirectory = fixture.root.appending(path: "mask-originals", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: sourceDirectory, withIntermediateDirectories: true)
+        let photo = sourceDirectory.appending(path: "person.png")
         let destination = try XCTUnwrap(CGImageDestinationCreateWithURL(photo as CFURL, UTType.png.identifier as CFString, 1, nil))
         CGImageDestinationAddImage(destination, thumbnail, nil)
         XCTAssertTrue(CGImageDestinationFinalize(destination))
-        let asset = try fixture.store.register(.init(sessionID: fixture.assets[0].sessionID, projectID: fixture.assets[0].projectID,
-            sourcePath: photo.path, fileSize: Int64(try Data(contentsOf: photo).count), importState: .ready))
+        let imported = try await ImportService(store: fixture.store).importDirectory(
+            source: sourceDirectory, destination: nil, projectName: "Native Mask QA", mode: .reference, progress: { _ in })
+        XCTAssertEqual(imported.completed, 1)
+        let asset = try XCTUnwrap(fixture.store.loadAssets().first {
+            $0.sessionID == imported.id && $0.projectID == imported.projectID && $0.sourcePath == FileSafety.canonical(photo).path
+        })
         let model = AppModel(libraryURL: fixture.library, defaults: fixture.defaults)
         let (editing, context) = try await open(model, asset: asset)
         let input = editing.developmentMaskInput

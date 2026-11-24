@@ -107,6 +107,36 @@ final class DevelopmentSemanticMaskTests: XCTestCase {
         XCTAssertEqual(verified?.orientedWidth, correct.orientedWidth); XCTAssertEqual(verified?.orientedHeight, correct.orientedHeight)
     }
 
+    func testCancelledInstanceLookupOnlyUnloadsAnalysisForItsOwnSource() async throws {
+        let directory = FileManager.default.temporaryDirectory.appending(path: UUID().uuidString)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let active = directory.appending(path: "active.png")
+        let other = directory.appending(path: "other.png")
+        try DevelopmentMaskBitmap(width: 24, height: 16, values: Array(repeating: 73, count: 384)).png().write(to: active)
+        try DevelopmentMaskBitmap(width: 24, height: 16, values: Array(repeating: 89, count: 384)).png().write(to: other)
+        let service = DevelopmentSemanticMaskService()
+        let activeSource = try binding(active)
+        _ = try await service.generate(capture: active, source: activeSource, target: .brush)
+        let initial = await service.analysisDiagnostics(for: activeSource.sourceContentID)
+        for (url, source, retainsAnalysis) in [(other, try binding(other), true), (active, activeSource, false)] {
+            let lookup = Task {
+                withUnsafeCurrentTask { task in
+                    if let task { task.cancel() }
+                }
+                return try await service.instanceOptions(capture: url, source: source)
+            }
+            do {
+                _ = try await lookup.value
+                XCTFail("Cancelled instance lookup returned a result")
+            } catch is CancellationError {}
+            let retained = await service.retainsAnalysisResources
+            XCTAssertEqual(retained, retainsAnalysis)
+        }
+        let final = await service.analysisDiagnostics(for: activeSource.sourceContentID)
+        XCTAssertEqual(final, initial)
+    }
+
     func testFrozenMatteTileEdgesMatchWholeImageAndBound61MPSourceROI() throws {
         let w = 359, h = 211, smallWidth = 37, smallHeight = 25
         let values = (0..<(smallWidth*smallHeight)).map { i in
