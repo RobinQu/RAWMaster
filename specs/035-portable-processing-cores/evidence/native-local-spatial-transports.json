@@ -1,0 +1,830 @@
+{
+  "schemaVersion": 1,
+  "initialFullWidthWithOtherBitmapTrials": {
+    "count": 1184,
+    "results": {
+      "primary": {
+        "trace": [
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/1-primary-0.json",
+              "sha256": "b24b867da3d15d2a68cbc81c4f6eb2f4e89a71bd92c3200e242f56f3dae572de"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/1-primary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/2-primary-1.json",
+              "sha256": "63c4534aacd6a45da568785da113d7270388dd5bb264a81170cc7ca84e9c9548"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/2-primary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/3-primary-1.json",
+              "sha256": "bae568bd1dd074ab95a0cd1cc462c7fea5f55b3ab1ef192e451ff111f36e87c1"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/3-primary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/4-primary-0.json",
+              "sha256": "69a5d7424a2bc3b6ff43f326510b08effa20c2563e076e6df7b994a9be1fe62a"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/4-primary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          }
+        ],
+        "measurements": {
+          "0": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 262.544,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 280.095708,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 279.15325,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 311.185917,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 256.962292,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 261.487291,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 256.5605,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 265.128,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 287.057583,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 286.11575,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 277.852708,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 280.832583,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ]
+          },
+          "1": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 395.898625,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 236.854792
+              },
+              {
+                "settledMs": 419.636167,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 235.172208
+              },
+              {
+                "settledMs": 331.31075,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 201.539834
+              },
+              {
+                "settledMs": 383.8765,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 223.005083
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 267.618125,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 106.777458
+              },
+              {
+                "settledMs": 272.507916,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 108.715666
+              },
+              {
+                "settledMs": 245.020916,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 102.9895
+              },
+              {
+                "settledMs": 261.779792,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 106.670333
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 198.436291,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 38.556792
+              },
+              {
+                "settledMs": 207.532792,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 43.48425
+              },
+              {
+                "settledMs": 196.508667,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 36.325
+              },
+              {
+                "settledMs": 195.746333,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 38.039375
+              }
+            ]
+          }
+        },
+        "p50ms": {
+          "0": {
+            "effects-mask-clarity": 279.624479,
+            "effects-mask-texture": 259.22479150000004,
+            "detail-mask-noise": 283.4741665
+          },
+          "1": {
+            "effects-mask-clarity": 389.8875625,
+            "effects-mask-texture": 264.6989585,
+            "detail-mask-noise": 197.47247900000002
+          }
+        }
+      },
+      "secondary": {
+        "trace": [
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/1-secondary-0.json",
+              "sha256": "50014aac865493582c1f8d63f877bba15e47bf3d280143568162d94c6b0f47bb"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/1-secondary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/2-secondary-1.json",
+              "sha256": "5a79917e7b0c64e56b479b3dacb5d0202360f799f6dd257b623d4ecc37ff5d52"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/2-secondary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/3-secondary-1.json",
+              "sha256": "335d82dba0cba872688886a0d200e7b2954589cbbb3b09f19aaebd6581f10629"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/3-secondary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          },
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/4-secondary-0.json",
+              "sha256": "dfef7ae3de00d33f709322bc5bbc7d215aec1958a0e17d5dbfb64e5ca901ca30"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/joint-32/4-secondary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          }
+        ],
+        "measurements": {
+          "0": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 235.948042,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 250.53175,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 244.734791,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 259.977666,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 243.942417,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 243.8525,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 263.539375,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 268.929583,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 231.478542,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 235.5795,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 239.714958,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 241.814042,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ]
+          },
+          "1": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 281.740084,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 163.447041
+              },
+              {
+                "settledMs": 317.882459,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 177.888167
+              },
+              {
+                "settledMs": 304.326416,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 174.761542
+              },
+              {
+                "settledMs": 333.057334,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 174.781375
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 226.629667,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 87.454292
+              },
+              {
+                "settledMs": 239.163291,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 86.163917
+              },
+              {
+                "settledMs": 239.343208,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 89.664667
+              },
+              {
+                "settledMs": 246.826833,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 97.909917
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 179.100041,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 33.648125
+              },
+              {
+                "settledMs": 174.278708,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 37.523292
+              },
+              {
+                "settledMs": 192.057667,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 37.173958
+              },
+              {
+                "settledMs": 196.953125,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 38.178375
+              }
+            ]
+          }
+        },
+        "p50ms": {
+          "0": {
+            "effects-mask-clarity": 247.63327049999998,
+            "effects-mask-texture": 253.74089600000002,
+            "detail-mask-noise": 237.64722899999998
+          },
+          "1": {
+            "effects-mask-clarity": 311.1044375,
+            "effects-mask-texture": 239.25324949999998,
+            "detail-mask-noise": 185.578854
+          }
+        }
+      }
+    },
+    "host": {
+      "path": "output/035-development/phase-ad/bitmap/joint-32/profile-settled-photo",
+      "sha256": "7557f6a9a70718861add2ba6e5d38783b1d152ddf4ae877cf881a71f0fdba427"
+    }
+  },
+  "isolatedRegionOnlySwitch": {
+    "count": 96,
+    "results": {
+      "primary": {
+        "trace": [
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/1-primary-0.json",
+              "sha256": "063c70a2d14bb2242586931d6f13bb42d31d8981be74afa6052b977c11b62dc6"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/1-primary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/2-primary-1.json",
+              "sha256": "e6d552fc6475bc1acac069dfd7f929e4dbbcb25babe7364112ac6dd32178e228"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/2-primary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/3-primary-1.json",
+              "sha256": "646225c06d2e54158f595b9a174f6b21b80f28348f3e603a6028e5a38bd3359b"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/3-primary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/4-primary-0.json",
+              "sha256": "20491263e3ec2d0426d832d7cd758dfe3e0608e1434a56781e4f22ce98ade8a1"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/4-primary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          }
+        ],
+        "measurements": {
+          "0": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 368.164792,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 253.588459,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 338.887458,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 252.002875,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 241.86875,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 239.212667,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 236.553125,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 233.6685,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 235.004542,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 42.615083
+              },
+              {
+                "settledMs": 198.081166,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 43.918208
+              },
+              {
+                "settledMs": 188.89825,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 38.468541
+              },
+              {
+                "settledMs": 206.366584,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 50.118167
+              }
+            ]
+          },
+          "1": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 348.811542,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 100.900916
+              },
+              {
+                "settledMs": 258.327167,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 96.786584
+              },
+              {
+                "settledMs": 372.644875,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 117.080833
+              },
+              {
+                "settledMs": 296.93025,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 115.539583
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 222.002875,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 58.742083
+              },
+              {
+                "settledMs": 213.298625,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 54.165542
+              },
+              {
+                "settledMs": 243.509875,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 67.752292
+              },
+              {
+                "settledMs": 225.421916,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 58.402
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 215.594209,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 49.130209
+              },
+              {
+                "settledMs": 223.128541,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 55.695834
+              },
+              {
+                "settledMs": 229.463542,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 62.454125
+              },
+              {
+                "settledMs": 202.246875,
+                "nativeReducedPixels": 60217344,
+                "nativeReductionMs": 35.194042
+              }
+            ]
+          }
+        },
+        "p50ms": {
+          "0": {
+            "effects-mask-clarity": 296.2379585,
+            "effects-mask-texture": 237.88289600000002,
+            "detail-mask-noise": 202.223875
+          },
+          "1": {
+            "effects-mask-clarity": 322.870896,
+            "effects-mask-texture": 223.7123955,
+            "detail-mask-noise": 219.361375
+          }
+        }
+      },
+      "secondary": {
+        "trace": [
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/1-secondary-0.json",
+              "sha256": "d164428f046e7d7febcb913539e16cc150ff0a15facd152e17e721433fed826f"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/1-secondary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/2-secondary-1.json",
+              "sha256": "257706289b5620ac30419e92bdc9bafc30b03cb4be65cc1313ddd23517c31f2b"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/2-secondary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          },
+          {
+            "arm": 1,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/3-secondary-1.json",
+              "sha256": "157c6c1b7d2b6d4ba20f333dd81a5063bee4aa542e3db7dca84480e9e95567d4"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/3-secondary-1.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          },
+          {
+            "arm": 0,
+            "trace": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/4-secondary-0.json",
+              "sha256": "3fe042eb7d309c798ae8a13ccc978a0255067ec516ecce71fca8dfd8e0c97101"
+            },
+            "exit": {
+              "path": "output/035-development/phase-ad/bitmap/roi-32/4-secondary-0.command.json",
+              "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+            },
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          }
+        ],
+        "measurements": {
+          "0": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 304.860792,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 262.242167,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 299.396125,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 234.222,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 249.783375,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 241.952334,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 237.17325,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              },
+              {
+                "settledMs": 249.094917,
+                "nativeReducedPixels": 0,
+                "nativeReductionMs": null
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 176.647042,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 43.90025
+              },
+              {
+                "settledMs": 177.047708,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 32.975833
+              },
+              {
+                "settledMs": 177.949917,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 41.3
+              },
+              {
+                "settledMs": 189.085416,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 40.484167
+              }
+            ]
+          },
+          "1": {
+            "effects-mask-clarity": [
+              {
+                "settledMs": 307.21325,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 98.922625
+              },
+              {
+                "settledMs": 250.833459,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 97.6445
+              },
+              {
+                "settledMs": 278.552708,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 90.704166
+              },
+              {
+                "settledMs": 227.073041,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 92.733666
+              }
+            ],
+            "effects-mask-texture": [
+              {
+                "settledMs": 213.479,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 57.766584
+              },
+              {
+                "settledMs": 228.031916,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 53.024375
+              },
+              {
+                "settledMs": 210.457458,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 53.449167
+              },
+              {
+                "settledMs": 209.594375,
+                "nativeReducedPixels": 29360128,
+                "nativeReductionMs": 59.214625
+              }
+            ],
+            "detail-mask-noise": [
+              {
+                "settledMs": 213.698541,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 46.162375
+              },
+              {
+                "settledMs": 192.49625,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 45.346625
+              },
+              {
+                "settledMs": 164.916709,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 29.028083
+              },
+              {
+                "settledMs": 176.755208,
+                "nativeReducedPixels": 49766400,
+                "nativeReductionMs": 44.651959
+              }
+            ]
+          }
+        },
+        "p50ms": {
+          "0": {
+            "effects-mask-clarity": 280.819146,
+            "effects-mask-texture": 245.5236255,
+            "detail-mask-noise": 177.49881249999999
+          },
+          "1": {
+            "effects-mask-clarity": 264.6930835,
+            "effects-mask-texture": 211.968229,
+            "detail-mask-noise": 184.625729
+          }
+        }
+      }
+    },
+    "host": {
+      "path": "output/035-development/phase-ad/bitmap/roi-32/profile-settled-photo",
+      "sha256": "8f3c4577198b87156127373653e4738bd895d6aeff01bfc6bc88b4505ee65e4e"
+    }
+  },
+  "decision": "Use the full-width scan for pure local noise. Use the original absolute region for the texture GPU finite check. Clarity retained its established tile validator."
+}

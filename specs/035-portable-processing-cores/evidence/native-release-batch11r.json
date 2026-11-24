@@ -1,0 +1,179 @@
+{
+  "candidate": "candidate-batch11r",
+  "referenceCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "testBuild": {
+    "build": "Release",
+    "system": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "testBinariesSHA256": {
+      "RAWMasterImagingTests": "cc01068941695dc01cc7c48e68a1438d004428024151cada2685f345ea7dbac3",
+      "RAWMasterUITests": "48767e259853732c287e96d1c2900ecb7bb30c247711db46b586d4a15bec86a3"
+    },
+    "bundledRuntimesSHA256": {
+      "RAWMasterImagingTests": {
+        "Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+        "Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "6b86eaf163b06f63d75283566f0c8892826774d5e026b883e3ba0e61afaf04eb",
+        "Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+      },
+      "RAWMasterUITests": {
+        "Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+        "Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime": "6b86eaf163b06f63d75283566f0c8892826774d5e026b883e3ba0e61afaf04eb",
+        "Contents/Resources/PhotoExport_RAWMasterPhotoExport.bundle/Contents/Resources/rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+      }
+    },
+    "flashRawLibrarySHA256": "f8d79149d1c5689720200b9381c5442395eee0c2f8a08e5ff5b3956cd5d49d32"
+  },
+  "release": {
+    "passed": false,
+    "error": "Release image benchmark did not finish successfully",
+    "failureDetails": [
+      {
+        "stage": "control-comparison",
+        "report": "control-comparison.json",
+        "failures": [
+          "blur-boost: medianMs 12.15 > 11.43 ms"
+        ]
+      },
+      {
+        "stage": "inspection-comparison",
+        "report": "inspection-comparison.json",
+        "failures": [
+          "light-clipping-modifier p95Ms: 11.65 > 9.65 ms"
+        ]
+      },
+      {
+        "stage": "interactive-comparison",
+        "report": "interactive-comparison.json",
+        "failures": [
+          "dehaze-v1: interactive median regressed 10.84%",
+          "targeted-hsl: interactive median regressed 17.29%",
+          "point-color-samples: interactive median regressed 15.74%",
+          "local-point-color: interactive median regressed 19.49%",
+          "global-sharpen-detail: interactive median regressed 19.69%",
+          "global-sharpen-mask-preview: interactive median regressed 11.43%"
+        ]
+      },
+      {
+        "stage": "lightflow-comparison",
+        "report": "lightflow-comparison.json",
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ]
+      },
+      {
+        "stage": "panel-readback-comparison",
+        "report": "panel-readback-comparison.json",
+        "failures": [
+          "effects-pcv-feather exceeds its baseline latency limits"
+        ]
+      },
+      {
+        "stage": "super-resolution-comparison",
+        "report": "super-resolution-comparison.json",
+        "failures": [
+          "exportResidentBytes: 1380892672.0 -> 1701740544.0"
+        ]
+      },
+      {
+        "stage": "image-pipeline",
+        "report": "image.json",
+        "failures": [
+          "canvas_2_fit: relative p95 12.42 > 8.00 ms"
+        ]
+      }
+    ],
+    "baselineRun": "formal",
+    "status": "failed",
+    "failedStages": [
+      "image-pipeline",
+      "interactive-comparison",
+      "control-comparison",
+      "panel-readback-comparison",
+      "lightflow-comparison",
+      "inspection-comparison",
+      "super-resolution-comparison"
+    ]
+  },
+  "lightflowMix": {
+    "first": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 7.282500000000001,
+        "p95Ms": 188.075
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 5.219875,
+        "p95Ms": 18.1395
+      },
+      "medianLimitMs": 8.2825,
+      "p95LimitMs": 225.69,
+      "within": true
+    },
+    "firstExact": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 22.134999999999998,
+        "p95Ms": 210.225
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 102.13787500000001,
+        "p95Ms": 465.345208
+      },
+      "medianLimitMs": 24.348499999999998,
+      "p95LimitMs": 252.26999999999998,
+      "within": false
+    },
+    "final": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 23.5625,
+        "p95Ms": 210.225
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 102.13787500000001,
+        "p95Ms": 465.345208
+      },
+      "medianLimitMs": 25.91875,
+      "p95LimitMs": 252.26999999999998,
+      "within": false
+    }
+  },
+  "candidateMeasuredFeatureIDs": 158,
+  "combinedFeatureVerification": {
+    "path": "output/035-development/candidate-batch11r-formal/035-combined-verified.json",
+    "sha256": "2db07ee377f682e90d4343b66f5d238ad3e0614488ac77b90ca5a9c06afff7f3"
+  },
+  "adaptive": {
+    "cases": 4,
+    "testBinarySHA256": "48767e259853732c287e96d1c2900ecb7bb30c247711db46b586d4a15bec86a3"
+  },
+  "localFlux": {
+    "testBinarySHA256": "48767e259853732c287e96d1c2900ecb7bb30c247711db46b586d4a15bec86a3",
+    "attempts": 1,
+    "protectedPixels": 786432,
+    "selectedChangedPixels": 262144,
+    "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+    "inputMatches034": true
+  },
+  "mixedFlux": {
+    "path": "specs/035-portable-processing-cores/evidence/mixed-workload-flux-batch11r.json",
+    "sha256": "9b72ddf697320042f6c70a8cefb9b3a2c25bc788adeaf0c8579655a40c81d882"
+  },
+  "photoOperatorsAgainstBatch10": {
+    "path": "output/035-development/candidate-batch11r-formal/pixels-against-batch10.json",
+    "sha256": "bfe7e910806b9abd3718edd81046784fc0f4b24bea155c9ccbcc75f7510d7a2e"
+  },
+  "firstAppearanceStatesWithExactInteractiveAndSettledPixels": 74,
+  "completeInitialAndWarmPairsMatchingPreviousRelease": 814,
+  "nativeDehazeAndSharpen": {
+    "path": "specs/035-portable-processing-cores/evidence/native-dehaze-sharpen-transport.json",
+    "sha256": "6c07efdb1d618e1a4b2cd217764cac1256865519e66668555a95a7def860ea97"
+  },
+  "sameBundlePerformanceDiagnostics": {
+    "path": "specs/035-portable-processing-cores/evidence/native-preview-release-diagnostics.json",
+    "sha256": "a741c728a1294d3ca6dd3d3b0dc11dc2667782bc06b2910996bdb859e609a449"
+  }
+}

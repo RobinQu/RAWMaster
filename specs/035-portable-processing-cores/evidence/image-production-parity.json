@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "scope": "Debug pixel/ABI correctness. Native app and Release latency have independent acceptance procedures.",
+  "baseGitCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "productionSourceSHA256": {
+    "Modules/ImageEdit/Cargo.lock": "5f1332f3d68df045cdf3f236b3b1afe54f60fcd84161001795ae3de07b1fa414",
+    "Modules/ImageEdit/Cargo.toml": "a05ef872c3fd4c46f003671714355732153f96fef8e75b31e39aad5dd16701be",
+    "Modules/ImageEdit/build.rs": "7dbbdb480e38f9212bb2b83ae1f4e364d3dd520f59cedfa0f2f45b55925c8675",
+    "Modules/ImageEdit/include/rawmaster_image.h": "5c610efc0853c8389d1693c633ce64e876afcf8cd32961f1b14428dbad083cdd",
+    "Modules/ImageEdit/shaders/color_grain_lattice.ci.metal": "1d80e245400e6fc5c1adfd8bfec1d4c6cb75f1c8c8a7c255f1e700a2dcd37551",
+    "Modules/ImageEdit/shaders/exposure.ci.metal": "ef82b42b008615259945dbe1184d7f22ecf2cfa9b75f8687709e7a40f942f98b",
+    "Modules/ImageEdit/shaders/mask.ci.metal": "4692881e5d49ec6fe86b4b2196768bb45c8c55bf11769f3d838765041c68f55b",
+    "Modules/ImageEdit/shaders/mask_analytic.ci.metal": "b3be273909272fe806fde47e7c8da329b32b1f66b188573ac1b642ffae08c0cd",
+    "Modules/ImageEdit/shaders/mask_geometry.ci.metal": "1cc4195840897f12c08a42f378202795ba8f5ab39b70be4ca91a301efc74a7c1",
+    "Modules/ImageEdit/shaders/mask_grain_transfer.ci.metal": "7e12b3e45468b0a8b3c58a711e31ba3cb161c500514beeed7135ebbb1c55f58c",
+    "Modules/ImageEdit/shaders/photo_filter.ci.metal": "734cf464319ad3b9c0301eb1d39402e8c9dff3b61df7aaf32637a914ed50611e",
+    "Modules/ImageEdit/src/ffi.rs": "3c334d4117f5ac7123f0e505ddd180d10b8917344dac68fca5574490dcd0c817",
+    "Modules/ImageEdit/src/filters.rs": "3539d3bae1df6b96626244bee9e413874a539c8d4e5383d8bc70986466cbb189",
+    "Modules/ImageEdit/src/gpu.rs": "9872c2abd598dc31b25964f210a92afe42084d3fb0f5867fce9d29fc3f2df0e5",
+    "Modules/ImageEdit/src/graph.rs": "e3335718ca90b1cf1a0304f32ae7d99139a6a83094c4673ea3906b715c4d6d1c",
+    "Modules/ImageEdit/src/kernels.wgsl": "ba62e4f5112a862570fc80288667e5eed4a8db0150b1838fe57202b3f2871377",
+    "Modules/ImageEdit/src/lib.rs": "9a8c9780257202b0f3c4b3783fa76cf37545e039887d924af55059a5fc84707b",
+    "Modules/ImageEdit/src/reference.cpp": "46c2b418764617da7b60ceb6f611cd691d2e8293fcdfa8033b35e7e0ddd97a4b",
+    "Modules/ImageEdit/tests/contract.rs": "2a90c84b196e130a5530056060b9f61bf1b6e41cf11d1f99bef0c5837e7fc7b9",
+    "Modules/ImageEdit/tests/local-look.json": "82b747ee3cad5011bd78b5dd554b4d5aba981791989d4989d1dc55e1bdaf4366",
+    "Modules/ImageEdit/tests/photo_filter.rs": "8c4d8ec36ee5cbb77f833fc49a06cba91f791629913464956c2fef332a7a2a26",
+    "Modules/ImageEdit/tests/replay_mask.py": "42adf6b561792e7c965099cd3906a1b932c37cfd3b5c9e71f40bf28f52fb46e4"
+  },
+  "native": {
+    "os": "27.0.1",
+    "build": "26A434",
+    "rust": "rustc 1.99.0-nightly (1a98b1e13 2026-08-07)",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "adapter": "Apple M4 Max / Metal / IntegratedGpu"
+  },
+  "linux": {
+    "image": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "arch": "aarch64",
+    "rust": "1.100.0 (0ef1bc386 2026-11-09)",
+    "compiler": "Debian GCC 12.2.0-14+deb12u1",
+    "vulkanPackage": "libvulkan1 1.3.239.0-1; mesa-vulkan-drivers 22.3.6-1+deb12u2",
+    "adapter": "llvmpipe (LLVM 15.0.6, 128 bits) / Vulkan / Cpu"
+  },
+  "fixture": {
+    "sourceSHA256": "503aa25139ab5cabccdc919c4e76643b97e51cf202643766d9606ad36406c442",
+    "maskSHA256": "c4dd3d1d32ba59b5dcee9e505958fd7f815622bb45b5ce2069ddedf73b3c2c9e",
+    "modelSHA256": "e6df30d2fa120b86364e0b5158a278f4550fd9f1ebeda3ec342683da55872f7d",
+    "sampling": "top-left oriented matched (x,y)=(4+10i,4+10j); JPEG is tagged sRGB; inverse sRGB EOTF, alpha 1; mask grey/255",
+    "size": [
+      160,
+      107
+    ],
+    "sourceF32SHA256": "b519c238e0842dfe46b6f4c9e57df00965bd81e51ae70c2d5e90549827966383",
+    "maskF32SHA256": "1009e1ee405b89fae9f90eeb3d556376b809511b6f5e8270e539646dae31afce"
+  },
+  "recipe": "shared global +0.25 EV, masked -1.25 EV through frozen coverage, real Vivid 37.5, coverage blend back over global",
+  "comparison": "68,480 linear premultiplied RGBA32F components compared in each execution. Independent masked exposure in double and branched composition from CPU filter; separate eight-corner double LUT oracle on frozen probes.",
+  "results": {
+    "macOS_arm64_CPU_only": {
+      "zeroExact": 13329,
+      "fractional": 3791,
+      "changedCovered": 3791,
+      "maxMaskedAbsError": 1.751285327866725e-07,
+      "maxBranchedLutAbsError": 6.259619667048355e-08,
+      "rgbaOutputSHA256": "5d0798c89e442478789136c5be1181dd4365e35ddcc92387ec48587cce26ad56",
+      "channelsDifferentFromMacCPU": 0,
+      "maxAbsAllChannelsVsMacCPU": 0.0,
+      "testsPassed": 10,
+      "oracleMaxAbs": {
+        "CPU": 1.1920929e-07
+      },
+      "debugLibrarySHA256": "d01da62bcb090b4092776a58f2b68f8084e1cb349a5e13f3fd6dedbe1a2ef105",
+      "localRunReport": "image-mask-macos-cpu.json",
+      "localTestLog": "production-image-cpu.log",
+      "localRGBAF32LE": "macos-cpu.rgba"
+    },
+    "macOS_arm64_Metal": {
+      "zeroExact": 13329,
+      "fractional": 3791,
+      "changedCovered": 3791,
+      "maxMaskedAbsError": 1.8967135106962019e-07,
+      "maxBranchedLutAbsError": 8.791786854089878e-08,
+      "rgbaOutputSHA256": "69c77deaa62b05f4484f07d921f1274ae27c8eb273de4900353f7e63358f337b",
+      "channelsDifferentFromMacCPU": 3989,
+      "maxAbsAllChannelsVsMacCPU": 1.1920928955078125e-07,
+      "testsPassed": 12,
+      "oracleMaxAbs": {
+        "CPU": 1.1920929e-07,
+        "GPU": 1.1920929e-07
+      },
+      "debugLibrarySHA256": "62e0c97fb328cd0d1ad744634756a888125df4f201acb254bedbbbd22d424f8a",
+      "localRunReport": "image-mask-metal.json",
+      "localTestLog": "production-image-metal.log",
+      "localRGBAF32LE": "metal.rgba"
+    },
+    "linux_arm64_CPU_only": {
+      "zeroExact": 13329,
+      "fractional": 3791,
+      "changedCovered": 3791,
+      "maxMaskedAbsError": 1.751285327866725e-07,
+      "maxBranchedLutAbsError": 6.259619667048355e-08,
+      "rgbaOutputSHA256": "5d0798c89e442478789136c5be1181dd4365e35ddcc92387ec48587cce26ad56",
+      "channelsDifferentFromMacCPU": 0,
+      "maxAbsAllChannelsVsMacCPU": 0.0,
+      "testsPassed": 10,
+      "oracleMaxAbs": {
+        "CPU": 1.1920929e-07
+      },
+      "debugLibrarySHA256": "7d24c4d4f26d936b1440afdcb3ccbe6e05f9d6d9435e4f34546052c141d5787a",
+      "localRunReport": "linux-image/cpu-mask.json",
+      "localTestLog": "linux-image/cpu-tests.log",
+      "localRGBAF32LE": "linux-image/linux-cpu.rgba"
+    },
+    "linux_arm64_software_Vulkan": {
+      "zeroExact": 13329,
+      "fractional": 3791,
+      "changedCovered": 3791,
+      "maxMaskedAbsError": 1.7127791429594197e-07,
+      "maxBranchedLutAbsError": 9.896397656916633e-08,
+      "rgbaOutputSHA256": "9a450e0400682f6e8490027c41c16ba2332e610056a51745c97e3c23764f451f",
+      "channelsDifferentFromMacCPU": 4197,
+      "maxAbsAllChannelsVsMacCPU": 1.1920928955078125e-07,
+      "testsPassed": 12,
+      "oracleMaxAbs": {
+        "CPU": 1.1920929e-07,
+        "GPU": 1.4901161e-07
+      },
+      "debugLibrarySHA256": "cc94ad9a065d7216ddd1c1753918df9a4ed9f680d4516316ef86607ec28ef90d",
+      "localRunReport": "linux-image/vulkan-mask.json",
+      "localTestLog": "linux-image/vulkan-tests.log",
+      "localRGBAF32LE": "linux-image/vulkan.rgba"
+    }
+  },
+  "reproduce": {
+    "crate": "Modules/ImageEdit",
+    "prepare": "python3 tests/replay_mask.py prepare <inputs>",
+    "buildCPU": "cargo build --locked --no-default-features",
+    "cpuTests": "cargo test --locked --no-default-features -- --test-threads=1 --nocapture",
+    "buildGPU": "cargo build --locked",
+    "gpuTests": "cargo test --locked -- --include-ignored --test-threads=1 --nocapture",
+    "replay": "python3 tests/replay_mask.py verify <inputs> <built-library> cpu|gpu --pixels <float-buffer>"
+  }
+}

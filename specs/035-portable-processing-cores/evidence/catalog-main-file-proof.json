@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "passed": 12,
+  "total": 12,
+  "host": {
+    "macOS": "27.0.1",
+    "kernel": "27.0.0",
+    "architecture": "arm64"
+  },
+  "captured": {
+    "repoPath": "output/035-development/catalog-main-file-replay/receipt.json",
+    "sha256": "8f267ae5799191c8bd1761885359d8b348e6f366804609d173006c513416728d"
+  },
+  "inputs": [
+    {
+      "repoPath": "experiments/portable-processing/catalog/main-file-probe/run.py",
+      "sha256": "b041e2cf29336d68faf65ce68bc97b3a47938610027c04aab0d826166ba70d87"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/main-file-probe/catalog_handle.c",
+      "sha256": "dbd674d577ddccfde690c978269ce7255c09d30fda473cc256cd263c54b6fcdb"
+    }
+  ],
+  "scopedTo": "macOS system SQLite main VFS mapping in an exclusive READ/WRITE transaction, same-volume isolated APFS fixture",
+  "sqliteEvidence": {
+    "event": "environment",
+    "case": "read",
+    "systemSQLite": "3.54.0",
+    "sqliteSourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+    "sqliteSDKVersion": "3.54.0",
+    "vfs": "unix",
+    "vfsNameRC": 0,
+    "filesystem": "apfs",
+    "originalMmapLimit": 0,
+    "activeMmapLimit": 4096
+  },
+  "cases": [
+    {
+      "name": "read",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true
+      }
+    },
+    {
+      "name": "write",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true
+      }
+    },
+    {
+      "name": "no-txn",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "noTransactionNoFetch": true
+      }
+    },
+    {
+      "name": "no-mmap",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "nullHasNoUnfetch": true
+      }
+    },
+    {
+      "name": "injected-proc-reject",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "faultWithValidMappingReleased": true
+      }
+    },
+    {
+      "name": "folder-before-open",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "decoyAtCurrentPath": true
+      }
+    },
+    {
+      "name": "folder-after-open",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "openFileMoved": true
+      }
+    },
+    {
+      "name": "folder-after-verified",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "openFileMoved": true
+      }
+    },
+    {
+      "name": "folder-decoy-return",
+      "journalMode": "wal",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "pathRestoredActualHandleIsDecoy": true
+      }
+    },
+    {
+      "name": "file-before-open",
+      "journalMode": "delete",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "decoyAtCurrentPath": true
+      }
+    },
+    {
+      "name": "file-after-open",
+      "journalMode": "delete",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "openFileMoved": true
+      }
+    },
+    {
+      "name": "file-decoy-return",
+      "journalMode": "delete",
+      "assertions": {
+        "positiveProofWhenExpected": true,
+        "firstProofBeforeSwap": true,
+        "resourceAndMarkerGuard": true,
+        "restoredMapLimit": true,
+        "perConnectionLimitApplied": true,
+        "bothPhysicalCatalogsUnchanged": true,
+        "everyBorrowReleased": true,
+        "mappedRegular100ByteRange": true,
+        "pathRestoredActualHandleIsDecoy": true
+      }
+    }
+  ]
+}

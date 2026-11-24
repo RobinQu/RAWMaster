@@ -1,0 +1,792 @@
+{
+  "reference": {
+    "path": "output/035-development/candidate-batch11r-formal/photo-operators-v2.json",
+    "sha256": "08f5366fbfe3690be3e74726a2257f5113074c3eb0b67bfe1ee5cea17b7eedc2"
+  },
+  "experimentalCrossover": [
+    {
+      "arm": "A",
+      "report": {
+        "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/1-A-combined.json",
+        "sha256": "572872f525d1b250c6b0e19dedc8da8e70fac27bcbc89306e7c25ff42a4f6e89"
+      },
+      "matchedFullInteractiveAndSettledPairs": 814,
+      "firstAppearance": {
+        "first": {
+          "n": 74,
+          "medianMs": 5.123437,
+          "p95Ms": 18.737916
+        },
+        "firstExact": {
+          "n": 74,
+          "medianMs": 102.27562499999999,
+          "p95Ms": 483.356208
+        },
+        "final": {
+          "n": 74,
+          "medianMs": 102.27562499999999,
+          "p95Ms": 483.356208
+        }
+      },
+      "exactAbove252_27ms": 17,
+      "slowestExact": [
+        {
+          "control": "effects-dehaze",
+          "state": 0,
+          "first": 15.619084,
+          "firstExact": 937.57425,
+          "final": 937.57425
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 1,
+          "first": 11.056625,
+          "firstExact": 512.461625,
+          "final": 512.461625
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 0,
+          "first": 11.88675,
+          "firstExact": 500.347459,
+          "final": 500.347459
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 1,
+          "first": 11.918042,
+          "firstExact": 483.356208,
+          "final": 483.356208
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 0,
+          "first": 12.650458,
+          "firstExact": 482.055625,
+          "final": 482.055625
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 0,
+          "first": 25.318958,
+          "firstExact": 433.075708,
+          "final": 433.075708
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 1,
+          "first": 18.737916,
+          "firstExact": 416.247833,
+          "final": 416.247833
+        },
+        {
+          "control": "detail-mask-preview",
+          "state": 1,
+          "first": 83.68475,
+          "firstExact": 412.476708,
+          "final": 412.476708
+        },
+        {
+          "control": "detail-mask-noise",
+          "state": 1,
+          "first": 10.29075,
+          "firstExact": 411.670375,
+          "final": 411.670375
+        },
+        {
+          "control": "detail-mask-noise",
+          "state": 0,
+          "first": 11.199667,
+          "firstExact": 399.788792,
+          "final": 399.788792
+        }
+      ]
+    },
+    {
+      "arm": "X",
+      "report": {
+        "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/2-X-combined.json",
+        "sha256": "4034ee1417967e0f9603dfeac319072ee4159a8631801d49af5f93699f09e411"
+      },
+      "matchedFullInteractiveAndSettledPairs": 814,
+      "firstAppearance": {
+        "first": {
+          "n": 74,
+          "medianMs": 5.120187,
+          "p95Ms": 17.633167
+        },
+        "firstExact": {
+          "n": 74,
+          "medianMs": 99.57879199999999,
+          "p95Ms": 307.285625
+        },
+        "final": {
+          "n": 74,
+          "medianMs": 99.57879199999999,
+          "p95Ms": 307.285625
+        }
+      },
+      "exactAbove252_27ms": 11,
+      "slowestExact": [
+        {
+          "control": "effects-dehaze",
+          "state": 0,
+          "first": 16.169292,
+          "firstExact": 819.271125,
+          "final": 819.271125
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 1,
+          "first": 12.052583,
+          "firstExact": 442.183583,
+          "final": 442.183583
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 0,
+          "first": 11.474958,
+          "firstExact": 424.798333,
+          "final": 424.798333
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 0,
+          "first": 13.634792,
+          "firstExact": 307.285625,
+          "final": 307.285625
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 1,
+          "first": 12.340042,
+          "firstExact": 305.379875,
+          "final": 305.379875
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 0,
+          "first": 17.633167,
+          "firstExact": 281.160875,
+          "final": 281.160875
+        },
+        {
+          "control": "detail-mask-preview",
+          "state": 1,
+          "first": 85.332167,
+          "firstExact": 279.170542,
+          "final": 279.170542
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "state": 0,
+          "first": 12.133375,
+          "firstExact": 278.452334,
+          "final": 278.452334
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 1,
+          "first": 18.975125,
+          "firstExact": 264.158083,
+          "final": 264.158083
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "state": 1,
+          "first": 9.592333,
+          "firstExact": 262.988208,
+          "final": 262.988208
+        }
+      ]
+    },
+    {
+      "arm": "X",
+      "report": {
+        "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/3-X-combined.json",
+        "sha256": "35dbcb853e1b24ffc7222ebd905292c01388323098d64ec78aa97a8781bb4618"
+      },
+      "matchedFullInteractiveAndSettledPairs": 814,
+      "firstAppearance": {
+        "first": {
+          "n": 74,
+          "medianMs": 5.181125,
+          "p95Ms": 18.557584
+        },
+        "firstExact": {
+          "n": 74,
+          "medianMs": 98.6121245,
+          "p95Ms": 327.432042
+        },
+        "final": {
+          "n": 74,
+          "medianMs": 98.6121245,
+          "p95Ms": 327.432042
+        }
+      },
+      "exactAbove252_27ms": 8,
+      "slowestExact": [
+        {
+          "control": "effects-dehaze",
+          "state": 0,
+          "first": 15.642875,
+          "firstExact": 904.296833,
+          "final": 904.296833
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 1,
+          "first": 11.162125,
+          "firstExact": 452.949166,
+          "final": 452.949166
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 0,
+          "first": 12.5005,
+          "firstExact": 424.658417,
+          "final": 424.658417
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 1,
+          "first": 13.804917,
+          "firstExact": 327.432042,
+          "final": 327.432042
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 0,
+          "first": 28.162583,
+          "firstExact": 296.458375,
+          "final": 296.458375
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 0,
+          "first": 14.521375,
+          "firstExact": 296.305,
+          "final": 296.305
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 1,
+          "first": 18.557584,
+          "firstExact": 280.5415,
+          "final": 280.5415
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "state": 0,
+          "first": 11.07775,
+          "firstExact": 274.623375,
+          "final": 274.623375
+        },
+        {
+          "control": "detail-nr-lum-contrast",
+          "state": 1,
+          "first": 9.297666,
+          "firstExact": 246.947625,
+          "final": 246.947625
+        },
+        {
+          "control": "detail-nr-color-detail",
+          "state": 0,
+          "first": 11.020542,
+          "firstExact": 246.670834,
+          "final": 246.670834
+        }
+      ]
+    },
+    {
+      "arm": "A",
+      "report": {
+        "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/4-A-combined.json",
+        "sha256": "8754b6e50e7ccd6dbde9dfd17b33918447d470585125acb517a21843f7941e00"
+      },
+      "matchedFullInteractiveAndSettledPairs": 814,
+      "firstAppearance": {
+        "first": {
+          "n": 74,
+          "medianMs": 5.2075,
+          "p95Ms": 16.810292
+        },
+        "firstExact": {
+          "n": 74,
+          "medianMs": 98.885521,
+          "p95Ms": 514.507542
+        },
+        "final": {
+          "n": 74,
+          "medianMs": 98.885521,
+          "p95Ms": 514.507542
+        }
+      },
+      "exactAbove252_27ms": 18,
+      "slowestExact": [
+        {
+          "control": "effects-dehaze",
+          "state": 0,
+          "first": 14.581417,
+          "firstExact": 967.723417,
+          "final": 967.723417
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 1,
+          "first": 11.769625,
+          "firstExact": 559.430958,
+          "final": 559.430958
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 1,
+          "first": 11.670291,
+          "firstExact": 533.127083,
+          "final": 533.127083
+        },
+        {
+          "control": "effects-mask-clarity",
+          "state": 0,
+          "first": 12.449334,
+          "firstExact": 514.507542,
+          "final": 514.507542
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 0,
+          "first": 26.1035,
+          "firstExact": 457.440417,
+          "final": 457.440417
+        },
+        {
+          "control": "effects-mask-texture",
+          "state": 0,
+          "first": 12.871375,
+          "firstExact": 453.561541,
+          "final": 453.561541
+        },
+        {
+          "control": "detail-mask-sharpness",
+          "state": 1,
+          "first": 16.810292,
+          "firstExact": 438.890125,
+          "final": 438.890125
+        },
+        {
+          "control": "detail-mask-noise",
+          "state": 1,
+          "first": 11.050041,
+          "firstExact": 409.99375,
+          "final": 409.99375
+        },
+        {
+          "control": "detail-mask-noise",
+          "state": 0,
+          "first": 9.338917,
+          "firstExact": 403.423125,
+          "final": 403.423125
+        },
+        {
+          "control": "detail-mask-preview",
+          "state": 1,
+          "first": 76.034959,
+          "firstExact": 400.504959,
+          "final": 400.504959
+        }
+      ]
+    }
+  ],
+  "defaultDehazeCrossover": [
+    {
+      "arm": "A",
+      "canvas": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/1-A-zoom.json",
+          "sha256": "6244b8eac9fe88fb8b95c9c558f2e46308ff2cca34ce2cc6d1a31088123f184c"
+        },
+        "status": "failed",
+        "failure": "Error Domain=ImagePerformance Code=4 \"canvas_1_zoom-pan: p95=8.019042ms, max=8.240208ms exceeded declared limits\" UserInfo={NSLocalizedDescription=canvas_1_zoom-pan: p95=8.019042ms, max=8.240208ms exceeded declared limits}",
+        "metrics": [
+          {
+            "name": "canvas_1_fit",
+            "p50Milliseconds": 0.29325,
+            "p95Milliseconds": 0.39575,
+            "maxMilliseconds": 46.850208
+          },
+          {
+            "name": "canvas_1_zoom-pan",
+            "p50Milliseconds": 3.565958,
+            "p95Milliseconds": 8.019042,
+            "maxMilliseconds": 8.240208
+          },
+          {
+            "name": "canvas_2_fit",
+            "p50Milliseconds": 0.316417,
+            "p95Milliseconds": 2.189875,
+            "maxMilliseconds": 35.914208
+          },
+          {
+            "name": "canvas_2_zoom-pan",
+            "p50Milliseconds": 3.580833,
+            "p95Milliseconds": 7.582125,
+            "maxMilliseconds": 8.133709
+          },
+          {
+            "name": "canvas_4_fit",
+            "p50Milliseconds": 0.624958,
+            "p95Milliseconds": 2.593792,
+            "maxMilliseconds": 4.857
+          },
+          {
+            "name": "canvas_4_zoom-pan",
+            "p50Milliseconds": 6.916291,
+            "p95Milliseconds": 10.460959,
+            "maxMilliseconds": 10.524583
+          }
+        ]
+      },
+      "superResolution": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/1-A-super-resolution.json",
+          "sha256": "a2ec47c9cd689d1cbde545b1d9a6fc6feb452d8c163b94435207e55db2c442de"
+        },
+        "comparison": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/1-A-super-resolution-comparison.json",
+          "sha256": "3d86087f159d93701d21212294404edc370f89190087ed02ed3c4c3687fdcbea"
+        },
+        "residentBytes": 1378336768,
+        "failures": []
+      }
+    },
+    {
+      "arm": "G",
+      "canvas": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/2-G-zoom.json",
+          "sha256": "e2865ba6342e297e9b118db3dc20111fb8bbaeefecc521108e97e764d6243e32"
+        },
+        "status": "passed",
+        "failure": null,
+        "metrics": [
+          {
+            "name": "canvas_1_fit",
+            "p50Milliseconds": 0.240584,
+            "p95Milliseconds": 0.313541,
+            "maxMilliseconds": 40.289333
+          },
+          {
+            "name": "canvas_1_zoom-pan",
+            "p50Milliseconds": 3.407792,
+            "p95Milliseconds": 3.7935,
+            "maxMilliseconds": 5.450041
+          },
+          {
+            "name": "canvas_2_fit",
+            "p50Milliseconds": 0.306125,
+            "p95Milliseconds": 0.361791,
+            "maxMilliseconds": 35.982542
+          },
+          {
+            "name": "canvas_2_zoom-pan",
+            "p50Milliseconds": 3.520458,
+            "p95Milliseconds": 5.365625,
+            "maxMilliseconds": 6.521042
+          },
+          {
+            "name": "canvas_4_fit",
+            "p50Milliseconds": 0.607459,
+            "p95Milliseconds": 1.114417,
+            "maxMilliseconds": 2.607292
+          },
+          {
+            "name": "canvas_4_zoom-pan",
+            "p50Milliseconds": 7.022791,
+            "p95Milliseconds": 9.180541,
+            "maxMilliseconds": 9.746958
+          }
+        ]
+      },
+      "superResolution": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/2-G-super-resolution.json",
+          "sha256": "873500435b929f1698cc83fe8200999a3aa850b2c7cb7bc45d59a4efb2350053"
+        },
+        "comparison": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/2-G-super-resolution-comparison.json",
+          "sha256": "d739d40763054fd1783231bd42574b0a1cc046c2e9c1f517e60f5cf96f49462c"
+        },
+        "residentBytes": 1378402304,
+        "failures": []
+      }
+    },
+    {
+      "arm": "G",
+      "canvas": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/3-G-zoom.json",
+          "sha256": "1bd49a64bcd50bfcc92d72e6fa1a792027d23c31ac9b6b014ee96e7edcf39350"
+        },
+        "status": "failed",
+        "failure": "Error Domain=ImagePerformance Code=4 \"canvas_4_zoom-pan: p95=14.691208ms, max=16.335292ms exceeded declared limits\" UserInfo={NSLocalizedDescription=canvas_4_zoom-pan: p95=14.691208ms, max=16.335292ms exceeded declared limits}",
+        "metrics": [
+          {
+            "name": "canvas_1_fit",
+            "p50Milliseconds": 0.244917,
+            "p95Milliseconds": 2.455334,
+            "maxMilliseconds": 40.487417
+          },
+          {
+            "name": "canvas_1_zoom-pan",
+            "p50Milliseconds": 3.528125,
+            "p95Milliseconds": 6.3385,
+            "maxMilliseconds": 6.363291
+          },
+          {
+            "name": "canvas_2_fit",
+            "p50Milliseconds": 0.315792,
+            "p95Milliseconds": 4.059209,
+            "maxMilliseconds": 35.733042
+          },
+          {
+            "name": "canvas_2_zoom-pan",
+            "p50Milliseconds": 3.747292,
+            "p95Milliseconds": 7.824125,
+            "maxMilliseconds": 9.10775
+          },
+          {
+            "name": "canvas_4_fit",
+            "p50Milliseconds": 0.628916,
+            "p95Milliseconds": 2.900666,
+            "maxMilliseconds": 4.959
+          },
+          {
+            "name": "canvas_4_zoom-pan",
+            "p50Milliseconds": 8.175916,
+            "p95Milliseconds": 14.691208,
+            "maxMilliseconds": 16.335292
+          }
+        ]
+      },
+      "superResolution": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/3-G-super-resolution.json",
+          "sha256": "20d45ea29e4ca49a8253a0472b57bb52bfaca4d0f43e5f68e22b8992fa77966d"
+        },
+        "comparison": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/3-G-super-resolution-comparison.json",
+          "sha256": "f71b8c30e18b39302a55257a3e98d7d6fda6ef2d34eac24f14d25139712752b7"
+        },
+        "residentBytes": 1639284736,
+        "failures": []
+      }
+    },
+    {
+      "arm": "A",
+      "canvas": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/4-A-zoom.json",
+          "sha256": "0a5f94a98731a22dc8db5ba133f1dc1e9acc2906f9511650d13b14af883d2507"
+        },
+        "status": "passed",
+        "failure": null,
+        "metrics": [
+          {
+            "name": "canvas_1_fit",
+            "p50Milliseconds": 0.241542,
+            "p95Milliseconds": 2.500042,
+            "maxMilliseconds": 40.523708
+          },
+          {
+            "name": "canvas_1_zoom-pan",
+            "p50Milliseconds": 3.441291,
+            "p95Milliseconds": 4.179833,
+            "maxMilliseconds": 5.621708
+          },
+          {
+            "name": "canvas_2_fit",
+            "p50Milliseconds": 0.315834,
+            "p95Milliseconds": 2.746791,
+            "maxMilliseconds": 35.926708
+          },
+          {
+            "name": "canvas_2_zoom-pan",
+            "p50Milliseconds": 3.590875,
+            "p95Milliseconds": 4.779042,
+            "maxMilliseconds": 6.25175
+          },
+          {
+            "name": "canvas_4_fit",
+            "p50Milliseconds": 0.61275,
+            "p95Milliseconds": 0.659708,
+            "maxMilliseconds": 1.029
+          },
+          {
+            "name": "canvas_4_zoom-pan",
+            "p50Milliseconds": 7.244792,
+            "p95Milliseconds": 11.88625,
+            "maxMilliseconds": 13.490083
+          }
+        ]
+      },
+      "superResolution": {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/4-A-super-resolution.json",
+          "sha256": "2c70df21419eb56a4e5d1cd6110b30611a6fded62af6e6126ed063445fcdc5d8"
+        },
+        "comparison": {
+          "path": "output/035-development/dehaze-sharpen-stages/release-diagnostics/4-A-super-resolution-comparison.json",
+          "sha256": "16501bde45fbe3003ad9cee09f452ffabc1d026a9719b47e19af134788e8bb1e"
+        },
+        "residentBytes": 1378467840,
+        "failures": []
+      }
+    }
+  ],
+  "directPositiveDehazeGuideProducerPoC": {
+    "matchedProcessRuns": [
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/first-1-provider.json",
+          "sha256": "b60515dc3815541667f2d7c82e63a86a26ade88094b8d7189ba20d4ccf15314c"
+        },
+        "mode": "provider",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "topOriginR32FSHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f",
+        "producerMilliseconds": 596.647333,
+        "independentR32ReadbackMilliseconds": 325.147833,
+        "processPeakByProducerJoinBytes": 3540879328
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/first-2-bands.json",
+          "sha256": "6a5063503c71c7a7886011b7026030a5a89bb76eee0edfba9945793e1498c4d5"
+        },
+        "mode": "bands",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "topOriginR32FSHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f",
+        "producerMilliseconds": 513.282917,
+        "independentR32ReadbackMilliseconds": 102.403,
+        "processPeakByProducerJoinBytes": 3557279496
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/first-3-bands.json",
+          "sha256": "512038351696f5afb38ee4cb336ff8e6cbd000a7e2443ff445620498806f529d"
+        },
+        "mode": "bands",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "topOriginR32FSHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f",
+        "producerMilliseconds": 518.417417,
+        "independentR32ReadbackMilliseconds": 102.193625,
+        "processPeakByProducerJoinBytes": 3557230392
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/first-4-provider.json",
+          "sha256": "ecbb566e522048183abbacae0932375fe6cdd0b6c94d4e53c56db17f82107c3f"
+        },
+        "mode": "provider",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "topOriginR32FSHA256": "230554ff99e67a50280ab500a81d1f00338265422fcb79240fc924d47da19d9f",
+        "producerMilliseconds": 543.818042,
+        "independentR32ReadbackMilliseconds": 317.385917,
+        "processPeakByProducerJoinBytes": 3540142000
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/second-1-provider.json",
+          "sha256": "55aa058f81ddbf9d37bcaea53c084a50679a652a7bec6eff151d6d12eb1fc851"
+        },
+        "mode": "provider",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "topOriginR32FSHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40",
+        "producerMilliseconds": 502.615292,
+        "independentR32ReadbackMilliseconds": 277.107542,
+        "processPeakByProducerJoinBytes": 3114256256
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/second-2-bands.json",
+          "sha256": "432d4b497cf97ac7b0a9dc7cbcae131526696cc200507208c807a84d8a53ab86"
+        },
+        "mode": "bands",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "topOriginR32FSHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40",
+        "producerMilliseconds": 438.146542,
+        "independentR32ReadbackMilliseconds": 86.352833,
+        "processPeakByProducerJoinBytes": 3113567864
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/second-3-bands.json",
+          "sha256": "1cb72457b8de34c746fc35b509ccfeb0a46bb1b094b394f2b5deebe88837cf2f"
+        },
+        "mode": "bands",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "topOriginR32FSHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40",
+        "producerMilliseconds": 444.954375,
+        "independentR32ReadbackMilliseconds": 87.116,
+        "processPeakByProducerJoinBytes": 3111929416
+      },
+      {
+        "report": {
+          "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/second-4-provider.json",
+          "sha256": "a7d863624e5dfa52dfd700ca0eb3548f8d23bdc0a3cca8bb2bb83042c2687bfa"
+        },
+        "mode": "provider",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "topOriginR32FSHA256": "4ac001c89be02eaee3f9e1265e49d768f3ca02947ef6b3e8569bb858fb98ae40",
+        "producerMilliseconds": 496.702542,
+        "independentR32ReadbackMilliseconds": 276.615209,
+        "processPeakByProducerJoinBytes": 3113338704
+      }
+    ],
+    "matchedRenderedFrames": 16,
+    "independentShortTailFixture": {
+      "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/canary.json",
+      "sha256": "c3246f1ed9ee347b9d968b6229837d8490d052eb85344d2ec6c8f16aabe13277"
+    },
+    "wholeTextureDispatchRejected": {
+      "report": {
+        "path": "output/035-development/dehaze-sharpen-stages/direct-guide-native/whole.json",
+        "sha256": "9ba89b20780a42852bb9a2d2cf57157c370bb90a4407d22dd6f59e5597e162bc"
+      },
+      "producerMilliseconds": 272.756542,
+      "reason": "Full R32F digest mismatch for both vertical orders, with all samples written"
+    },
+    "nativeProbeSHA256": "522ab5397ee9c71155bf958a26457c866eb3ed52a54324de4870a97b955c229f"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "version": "035.4",
+  "baselineCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "packagedApp": "output/035-development/RAWMaster-035.app",
+  "sha256": {
+    "app": "b8a24101c45be6a8951bd727f359ee9996bf9e3203209660d34eb81988444b7b",
+    "image": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+    "catalog": "49e5b2c14f2681a1cf8e3cc30d2d3c86dcde66517f82736f0e5c3ef88c7f96ab"
+  },
+  "appMachOUUID": "E82C594A-BB1D-3883-AFD0-D69148C42045",
+  "seal": "codesign --verify --deep --strict",
+  "adhocSignature": true,
+  "isolatedStartup": {
+    "bundleIdentity": "io.robinqu.RAWMaster.spec035Smoke",
+    "librarySchema": 9,
+    "rustImageLoaded": true,
+    "rustCatalogLoaded": true,
+    "runtimeBytesMatchPackage": true,
+    "appLinkUUIDMatchesPackage": true
+  },
+  "releaseTestBinariesSHA256": {
+    "RAWMasterImagingTests": "36500c27a9201c188507c6bc96d16abf6b479ba87fa104d2ccab66c4d7dc73af",
+    "RAWMasterUITests": "eb05203d2dcc64c7b90d6025a38d81d8a80f79a897e51191625a8d67010fefd0"
+  },
+  "formalAcceptanceSummarySHA256": "964abcd301015f740872dc2eb9b1e89bde524b6085e2cc4983f28f6e205e3a59"
+}

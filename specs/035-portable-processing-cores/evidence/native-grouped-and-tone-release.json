@@ -1,0 +1,482 @@
+{
+  "binarySeal": {
+    "checked": 16,
+    "pathManifest": {
+      "path": "output/035-development/candidate-batch28-grouped-work/binaries.sha256",
+      "sha256": "ea27529a4314360a6158e5dc89c05ad520c4006cc92e7f740a2fcb70503a0168"
+    }
+  },
+  "buildLog": {
+    "path": "output/035-development/phase-z/build-release-tonal.log",
+    "sha256": "40bc1677307928a92a6e1e7e11230cef6ca97e6c404a90454c849ddf924c6cab"
+  },
+  "candidate": "candidate-batch28-grouped-work",
+  "formalRelease": {
+    "assertionCounts": {
+      "inspection-comparison": 1,
+      "interactive-comparison": 4,
+      "lightflow-comparison": 2,
+      "photo-denoise-comparison": 2,
+      "photo-operators-v2-comparison": 1
+    },
+    "cameraRaw": {
+      "path": "output/035-development/candidate-batch28-grouped-work/camera-raw-acceptance-with-flux.json",
+      "sha256": "50832edf122c866e9d3e46b25e06c75c7f746f8389e4d3b7c00072e1adf8f3e7"
+    },
+    "cameraRawMeasuredFeatureIDs": 158,
+    "exitCode": 1,
+    "functionalTests": [
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/native-sharpen-and-dehaze.log",
+          "sha256": "ebdb6036e77824f6c523a6565537dd70bad928d9fcf1e25a587e3e1c4d9b4815"
+        },
+        "name": "native-sharpen-and-dehaze",
+        "passed": 36
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/native-film-and-mask.log",
+          "sha256": "d875752fb30ddb272367d932ac736bc28b224e0523f3aeb85d2e6361b5cc3ede"
+        },
+        "name": "native-film-and-mask",
+        "passed": 27
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/native-mask-interaction.log",
+          "sha256": "abca3923c241d96daca021d8a1306537c595388e0e0f09553b0ed8cdfb506bb8"
+        },
+        "name": "native-mask-interaction",
+        "passed": 9
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/native-prompt-providers.log",
+          "sha256": "1858979a730bb5dcd6a3c88dfa17c956a0a7d479a5915edc161b55680dbfb539"
+        },
+        "name": "native-prompt-providers",
+        "passed": 5
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/adaptive-Sky.log",
+          "sha256": "ec2d6d2017b4b3d774a997d21a61baa6ce08ed42b41505d2603f599633161b81"
+        },
+        "name": "adaptive-Sky",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/adaptive-Subject.log",
+          "sha256": "55a0cfbee5a8f31ac6b8892d1cbbe5bad4e7fbd864cd747490333a468193c525"
+        },
+        "name": "adaptive-Subject",
+        "passed": 1
+      },
+      {
+        "log": {
+          "path": "output/035-development/candidate-batch28-grouped-work/frozen-tone.log",
+          "sha256": "b1e699e7400a3c331ee30a23d5d703460b6cfdbc1ad94d67929d74fbbf890191"
+        },
+        "name": "frozen-tone",
+        "passed": 2
+      }
+    ],
+    "measuredPictures": {
+      "path": "output/035-development/candidate-batch28-grouped-work-enabled/photo-operators-v2.json",
+      "sha256": "cea4e8a464a02cdad82b470d3c86c26a46b0bf8108c7b38c8ff803d5566860f2"
+    },
+    "overFinalP95Ceiling": 8,
+    "passed": false,
+    "realAdaptiveCases": 4,
+    "scores": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 82.036625,
+          "n": 74,
+          "p95Ms": 281.214042
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 5.093999500000001,
+          "n": 74,
+          "p95Ms": 25.532916
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 82.036625,
+          "n": 74,
+          "p95Ms": 281.214042
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "slowest": [
+      {
+        "id": "effects-dehaze",
+        "settledMs": 317.647792,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 294.831791,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-noise",
+        "settledMs": 292.44325,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 281.214042,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 265.370708,
+        "state": 0
+      },
+      {
+        "id": "effects-mask-clarity",
+        "settledMs": 264.553583,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 256.04575,
+        "state": 1
+      },
+      {
+        "id": "effects-mask-texture",
+        "settledMs": 255.820625,
+        "state": 1
+      },
+      {
+        "id": "detail-nr-lum-contrast",
+        "settledMs": 249.067542,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 243.288167,
+        "state": 0
+      },
+      {
+        "id": "detail-nr-color-detail",
+        "settledMs": 226.199792,
+        "state": 1
+      },
+      {
+        "id": "color-bw-treatment",
+        "settledMs": 223.768166,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-preview",
+        "settledMs": 215.603709,
+        "state": 1
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 214.255292,
+        "state": 0
+      },
+      {
+        "id": "detail-mask-sharpness",
+        "settledMs": 199.950833,
+        "state": 1
+      },
+      {
+        "id": "color-mask-tint",
+        "settledMs": 165.464792,
+        "state": 1
+      }
+    ],
+    "summary": {
+      "path": "output/035-development/candidate-batch28-grouped-work-enabled/summary.json",
+      "sha256": "d7543b9b3fa5028cb87830dda07cccae57f2372bd50745579e7f6b20e78fa681"
+    },
+    "tiff16": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 10025.328,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    },
+    "tiff16Comparison": {
+      "failures": [],
+      "metrics": {
+        "exportMetalBytes": 2811805696,
+        "exportPhysicalFootprintBytes": 3505801352,
+        "exportResidentBytes": 1377173504,
+        "fitOnMs": 138.82675,
+        "fullTIFFMs": 10025.328
+      },
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "wholeFramePairsExact": 814
+  },
+  "frozenSemanticFilmTone": {
+    "frozenToneFixture": {
+      "cpu": {
+        "bytes": 61440000,
+        "filename": "tone-macos-cpu.rgba32fle",
+        "sha256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b"
+      },
+      "cpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 3.5762786865234375e-07,
+        "maxErrorDividedByMaxOneAbsReference": 3.2209698019869393e-07,
+        "maxNormalizedErrorVsAnalytical": 2.3657915448893618e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "gpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "metalComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "recipe": {
+        "filename": "tone-recipe.json",
+        "sha256": "45fba37c79933f41961d01af3e1bed2eabec60f197a11c5a471f44a60c9f0cca"
+      }
+    },
+    "linuxCase": {
+      "backend": "cpu",
+      "baseSHA256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4",
+      "both": 13654,
+      "extent": [
+        2400,
+        1600
+      ],
+      "firstOnly": 2054121,
+      "inputs": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "macOSCPUSHA256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b",
+      "maximumDeltaFromMacOSCPU": 0.0,
+      "neither": 1772225,
+      "protectedMismatches": 0,
+      "recipeSHA256": "45fba37c79933f41961d01af3e1bed2eabec60f197a11c5a471f44a60c9f0cca",
+      "renderMs": 64.918366,
+      "reversedBindings": true,
+      "rgbaSHA256": "2f901ddfec450e3602f18f3f90b3c2e2e17c690c3754d268e75636befd733d0b",
+      "secondOnly": 0,
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    "linuxReplay": {
+      "path": "output/035-development/candidate-batch28-grouped-work/frozen-tone-linux.json",
+      "sha256": "f23375c22130f5e263f2380596aa133ae990776d3bc9c0778fe60c0b2968f6b7"
+    },
+    "linuxRuntimeSHA256": {
+      "path": "output/035-development/candidate-batch28-grouped-work/frozen-tone-linux.runtime.sha256",
+      "sha256": "c58934ee7ee353c313de62b8e4df3767156f19230c9923119303782b80530938"
+    },
+    "samePackageSwiftManifest": {
+      "path": "output/035-development/candidate-batch28-grouped-work/frozen-tone/manifest.json",
+      "sha256": "cd8d9038d7e02a4401b2e1d70e28cb58297735a3ae5e728a873fbd1e83fd3538"
+    }
+  },
+  "head": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "imageRuntimeSHA256": "5f626f97068ecbc48c01936a10fa268534bcde279613f8e499d24523350babda",
+  "isolatedAndTargetedProduction": {
+    "catalog-macos-signed-helper": {
+      "path": "specs/035-portable-processing-cores/evidence/catalog-macos-signed-helper.json",
+      "sha256": "43825c19ea95578b8ac9a80abb334e7ba1af9966d266937704a7a0d897dd6098"
+    },
+    "native-dehaze-grouped-erosion": {
+      "path": "specs/035-portable-processing-cores/evidence/native-dehaze-grouped-erosion.json",
+      "sha256": "963bccd296664ea88fd64a5ab9de15db56ba257148f6a5f9c69f8da913426bb2"
+    },
+    "native-full-validation-cache": {
+      "path": "specs/035-portable-processing-cores/evidence/native-full-validation-cache.json",
+      "sha256": "5181941d961f5610a25674d406955e26234d8871d8ccef451a0b641e17bfe193"
+    }
+  },
+  "productionMaskToneConformance": {
+    "path": "specs/035-portable-processing-cores/evidence/portable-local-mask-tone.json",
+    "sha256": "737e76810e5dce9083250391a27534f0d1736913e72d2e613446cb9a6c9631e3"
+  },
+  "publicImageABISymbols": [
+    "_rm_image_abi_version",
+    "_rm_image_exposure_gain_v1",
+    "_rm_image_filter_binding_v1",
+    "_rm_image_kernel_source_v1",
+    "_rm_image_metal_frame_bind_v1",
+    "_rm_image_metal_frame_bind_v2",
+    "_rm_image_metal_frame_close_v1",
+    "_rm_image_metal_frame_render_v1",
+    "_rm_image_metal_half_program_close_v1",
+    "_rm_image_metal_half_program_open_v1",
+    "_rm_image_metal_half_render_v1",
+    "_rm_image_metal_program_close_v1",
+    "_rm_image_metal_program_open_v1",
+    "_rm_image_metal_surface_abi_version",
+    "_rm_image_plan_close_v1",
+    "_rm_image_plan_open_v1",
+    "_rm_image_plan_open_v2",
+    "_rm_image_plan_render_v1",
+    "_rm_image_plan_render_v2"
+  ],
+  "samePackageLiveQuickPrompt": {
+    "check": {
+      "path": "output/035-development/candidate-batch28-grouped-work/verified-flux-mixed.json",
+      "sha256": "fa7d9dc53758baf3d1cf75ab47d8885bb679aa93daffadea9abccff47c491507"
+    },
+    "metrics": {
+      "allFilesEqualStandaloneMain": true,
+      "allPerPathReceiptsMatch": true,
+      "appHostMaxRSSBytes": 971096064,
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "bothFileWorkloadsSpanDraw": true,
+      "candidate": "candidate-batch28-grouped-work",
+      "deliveryCount": 200,
+      "draw": {
+        "approximate": false,
+        "consumerID": "737D1A05-7BBB-459B-AA81-C7B93D59E396",
+        "drawBeganNS": 622978982971291,
+        "drawReturnedNS": 622978983008166,
+        "frameID": "E04AAE91-7468-45AD-8F17-4A8BD6FBAF51",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 622978966030958,
+        "leaseID": "F51CCBF0-F6FE-49B2-AB9D-4D8D455970E6",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "elapsedSeconds": 157.46203696727753,
+      "exportSeconds": 8.670402292,
+      "fileBackedDrawMilliseconds": 16.977208,
+      "firstOutputAfterPreparationSeconds": 0.159970584,
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "importedRAWCount": 20,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 622987322390458,
+        "exportFirstFile": 622978811958750,
+        "exportLastFile": 622987320554500,
+        "exportPrepared": 622978651988166,
+        "importCompleted": 622979211072791,
+        "importFirstFile": 622978963423583,
+        "importLastFile": 622979172882333
+      },
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "155.1982017919654",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "155.2188933750149"
+      },
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch28-grouped-work/receipt.json",
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "testBinarySHA256": "6720f27c8c17e6f0a4594c99bf35a1013111eb6a249c0fd6fd4cc73816c86691"
+    },
+    "receipt": {
+      "path": "output/035-development/flux-mixed-candidate-batch28-grouped-work/receipt.json",
+      "sha256": "e85be9ed5235ead3fc8c9b83e8add8a000b6e82df1654ed6f466a1b5e613ae0d"
+    }
+  },
+  "schemaVersion": 1,
+  "sourceSeal": {
+    "checked": 195,
+    "pathManifest": {
+      "path": "output/035-development/candidate-batch28-grouped-work/source-files.sha256",
+      "sha256": "3deed5a62ef0d5385c781a8e088dae1203d1e011aa0be25a20db27afb3938d08"
+    }
+  }
+}

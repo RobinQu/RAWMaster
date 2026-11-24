@@ -1,0 +1,662 @@
+{
+  "schemaVersion": 1,
+  "host": {
+    "macOS": "27.0.1",
+    "architecture": "arm64",
+    "systemSQLite": "3.54.0",
+    "sourceID": "2026-04-09 12:25:13 8fa8248e303219400c646a885e36dfc52eae33d83f4412e3f369b2be5373aapl",
+    "vfsVersion": 3
+  },
+  "originalTrial": {
+    "repoPath": "output/035-development/catalog-attachment-study/passive-vfs/initial-14-cases.json",
+    "sha256": "d851690e3bb347f37e9549e8f962eb0401730d2634268b79bc388c01ef5e5c7d"
+  },
+  "strengthenedTrial": {
+    "repoPath": "output/035-development/catalog-attachment-study/passive-vfs/verified-14-cases.json",
+    "sha256": "3e5aaf33afa6e5b6fc7ba083791bfb87d2d0ca047a40c33228169ebb4d0b1ea2"
+  },
+  "archivedSourceReplay": {
+    "repoPath": "output/035-development/catalog-attachment-passive-replay/receipt.json",
+    "sha256": "4693bf88515bbf757cfc72cbd7a071ddb3dac118ed6eba6e696b022750fbba39"
+  },
+  "reproduction": [
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/passive-vfs/gate.c",
+      "sha256": "def8783a35c7f146cef0f9ca6f517deb14f71f082dde0417ad89a2ca1afc896c"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/passive-vfs/identity.h",
+      "sha256": "0d94a06683db39fb16dcf439e5192d431224f514a85e0adde20d4fff8ae70273"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/passive-vfs/inspector.c",
+      "sha256": "7cefe886efc3d56062cefa5e99a3ab5dd80c4ef3f5e76b455969a74d6e3837c0"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/passive-vfs/worker.c",
+      "sha256": "cf092fdf9a1556c5d77bca00d7428ee5d5bf9de0dfe6091ccb0eabe9f76eeda1"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/passive-vfs/run.py",
+      "sha256": "efac595a19091bd8d7d3e4fae95a7ad79d86b99ce15504d5e500905041ee0d9d"
+    },
+    {
+      "repoPath": "experiments/portable-processing/catalog/attachment-probe/passive-vfs/README.md",
+      "sha256": "39391c41f40a20f987da6ec1c51720a91810970d7cdd81a7223c1a1a006dacf7"
+    }
+  ],
+  "totals": {
+    "casesPassed": 14,
+    "activeObservations": 28,
+    "mainVerified": 28,
+    "walWitnessed": 26,
+    "shmWitnessed": 24,
+    "attachmentAuthorityAccepted": 11,
+    "rejected": 17
+  },
+  "scope": "Single native connection, previously pinned fixture identity, current active local transaction. System unix VFS and APFS.",
+  "cases": [
+    {
+      "name": "read-wal",
+      "transaction": "read",
+      "fixture": "dirty",
+      "swap": "",
+      "when": "never",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": true
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "write-wal",
+      "transaction": "write",
+      "fixture": "dirty",
+      "swap": "",
+      "when": "never",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "read-empty",
+      "transaction": "read",
+      "fixture": "empty",
+      "swap": "",
+      "when": "never",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 8,
+          "exclusiveMask": 0,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 8,
+          "exclusiveMask": 0,
+          "attachmentsVerified": true
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "from-main"
+      ],
+      "passed": true
+    },
+    {
+      "name": "write-empty",
+      "transaction": "write",
+      "fixture": "empty",
+      "swap": "",
+      "when": "never",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 8,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 8,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "from-main"
+      ],
+      "passed": true
+    },
+    {
+      "name": "wal-before",
+      "transaction": "read",
+      "fixture": "dirty",
+      "swap": "wal",
+      "when": "before",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "shm-before",
+      "transaction": "read",
+      "fixture": "dirty",
+      "swap": "shm",
+      "when": "before",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": false,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": false,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "wal-after",
+      "transaction": "write",
+      "fixture": "dirty",
+      "swap": "wal",
+      "when": "after",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "shm-after",
+      "transaction": "write",
+      "fixture": "dirty",
+      "swap": "shm",
+      "when": "after",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "both-after",
+      "transaction": "write",
+      "fixture": "dirty",
+      "swap": "wal shm",
+      "when": "after",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": true
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 1,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "wal-return",
+      "transaction": "read",
+      "fixture": "dirty",
+      "swap": "wal",
+      "when": "return",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": true,
+          "shmMatchesTrusted": true,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "shm-return",
+      "transaction": "read",
+      "fixture": "dirty",
+      "swap": "shm",
+      "when": "return",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "both-return",
+      "transaction": "read",
+      "fixture": "dirty",
+      "swap": "wal shm",
+      "when": "return",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": true,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 16,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "only-in-wal"
+      ],
+      "passed": true
+    },
+    {
+      "name": "exclusive-heap",
+      "transaction": "read",
+      "fixture": "empty",
+      "swap": "",
+      "when": "never",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": false,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 0,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": true,
+          "shmWitness": false,
+          "walMatchesCurrent": true,
+          "walMatchesTrusted": true,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 0,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "from-main"
+      ],
+      "passed": true
+    },
+    {
+      "name": "rollback",
+      "transaction": "read",
+      "fixture": "empty",
+      "swap": "",
+      "when": "never",
+      "proofs": [
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": false,
+          "shmWitness": false,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 0,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        },
+        {
+          "mainWitness": true,
+          "mainAuthorized": true,
+          "walWitness": false,
+          "shmWitness": false,
+          "walMatchesCurrent": false,
+          "walMatchesTrusted": false,
+          "shmMatchesCurrent": false,
+          "shmMatchesTrusted": false,
+          "sharedMask": 0,
+          "exclusiveMask": 0,
+          "attachmentsVerified": false
+        }
+      ],
+      "exactOpenedSetRestored": true,
+      "bothSidesSHAAndSizeStableDuringObservation": true,
+      "restoredAfterRollback": true,
+      "afterNormalCloseLogical": [
+        "same-writer",
+        "from-main"
+      ],
+      "passed": true
+    }
+  ]
+}

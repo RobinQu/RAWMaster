@@ -1,0 +1,2929 @@
+{
+  "schema": 1,
+  "scope": {
+    "kind": "Analysis of the local points in rmMaskLayerV7 with exact frozen Float32 coverage; released v2 graph operator mask_tone_v3.",
+    "source": "Two independently verified Sony RAW captures, pinned FlashRaw 0.3.1 original EXIF 1 opaque native RGBA16F, macOS 27.0.1 Apple M4 Max. All color math is extended-linear sRGB FP32 with signed sRGB inside the original operator. No GPU timing claims.",
+    "operatorInput": "Headless named Float32 plane in [0,1]. The analytic ellipse is a separately measured producer. Zero feather still has a 1e-5 transition after normalized distance 1. No use of Gray8, polygon approximations, or early finite checks for composed graphs.",
+    "reference": "Normal DevelopmentRendererV3.develop plus V3PreviewMaterializer 2400. For every state the independent stock absolute native RGBAf bands and their unmodified hardware .5 sampler have the archived final sRGB8 digest.",
+    "display": "2400x1600 archive, both states of eight production controls. The standalone Rust/Naga WGSL kernel and hardware sampler compared every native and half pixel including alpha and rejected nonfinite participation.",
+    "productionNote": "The v2 grammar is additive. Public v2 CPU and attached GPU consume the normal borrowed covered frame through existing named-mask ABI. The existing canonical private source/curves half API retains its narrower contract.",
+    "strictSourceBounds": "Only the original opaque finite half source permits the finite bound stated here: max |component| 65504, exposure up to 16x, black denominator >=0.9, active tone divides only by |luma|>1e-8, signed hue divides only for hi>1e-8. Arbitrary finite FP32 input with subnormal alpha can overflow on unpremultiplication; the CPU returns an error for that case; see the positive subnormal Metal counterexample.",
+    "CICacheCorrection": "A diagnostic trying to write stock RGB and coverage from separate CI graphs using a single context produced a zero stock control. It was excluded. Accepted runs use separate real contexts/queues, and independently reject the run unless stock native-band FIT is the archived native-render display."
+  },
+  "wireExample": {
+    "version": 2,
+    "working": "extended-linear-srgb-premul-f32",
+    "output": "tone",
+    "nodes": [
+      {
+        "id": "tone",
+        "op": "mask_tone_v3",
+        "image": "native",
+        "mask": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+        "control": "exposure",
+        "amount": 0.125
+      },
+      {
+        "id": "native",
+        "op": "source"
+      },
+      {
+        "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+        "op": "mask"
+      }
+    ]
+  },
+  "witness": {
+    "states": 32,
+    "independentNativeAndHalfAndDisplayBitwise": 32,
+    "productionIOSurfaceExactStates": 26,
+    "productionIOSurfaceCompletedStates": 32,
+    "productionRasterSampleCount": 393216,
+    "namedMetalBitwiseAllABISamples": true,
+    "macosVsLinuxCPUSHA256All32": true,
+    "cpuMaxAbsOnNativeSamples": 1.60933e-06,
+    "linuxVulkanOver2eMinus6": [
+      [
+        "primary",
+        "color-mask-hue",
+        1,
+        1
+      ]
+    ],
+    "linuxVulkanCounterexample": {
+      "backend": "Mesa llvmpipe 22.3.6 software Vulkan, Linux arm64",
+      "role": "primary",
+      "control": "hue",
+      "amount": 0.45,
+      "nativeBottomOriginXY": [
+        6943,
+        3213
+      ],
+      "rawStraightRGBA": [
+        1.15625,
+        0.66064453125,
+        0.21923828125,
+        1.0
+      ],
+      "coverage": 1,
+      "channel": "green",
+      "stock": 0.8009037971496582,
+      "vulkan": 0.8009058833122253,
+      "absoluteDifference": 2.086162567138672e-06,
+      "extractedSingleRecord": {
+        "coordinate": [
+          6943,
+          3213
+        ],
+        "source": [
+          1.15625,
+          0.66064453125,
+          0.21923828125,
+          1.0
+        ],
+        "coverage": 1.0,
+        "nativeExpected": [
+          0.2192382514476776,
+          0.8009037971496582,
+          1.1562498807907104,
+          1.0
+        ],
+        "macMetal": [
+          0.2192382514476776,
+          0.8009037971496582,
+          1.1562498807907104,
+          1.0
+        ],
+        "linuxCPUAndMacCPU": [
+          0.2192382514476776,
+          0.8009053468704224,
+          1.1562498807907104,
+          1.0
+        ],
+        "mesaLlvmPipe": [
+          0.21923837065696716,
+          0.8009058833122253,
+          1.1562504768371582,
+          1.0
+        ],
+        "fixtureRecordIndex": 6436,
+        "recordSHA256": "002633924bdf2f012c9a41adc676ae1e2fca828d05d069a256d8ca7708864781",
+        "upstreamRecordFileSHA256": "add5f298b5cafc6fd8f2f6cb0ac8ba4c08e1ec709b8462a7293d6494bb57e232",
+        "sourceFormat": "linear-sRGB Float32 physical source values expanded exactly from opaque RGBA16F",
+        "wire": {
+          "version": 2,
+          "working": "extended-linear-srgb-premul-f32",
+          "output": "tone",
+          "nodes": [
+            {
+              "id": "tone",
+              "op": "mask_tone_v3",
+              "image": "native",
+              "mask": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+              "control": "hue",
+              "amount": 0.45
+            },
+            {
+              "id": "native",
+              "op": "source"
+            },
+            {
+              "id": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+              "op": "mask"
+            }
+          ]
+        },
+        "observed": "Full public C ABI replay used 12800 samples. Single-record term extracted offline. The one-pixel dispatch was not independently rerun."
+      }
+    }
+  },
+  "rejectedControls": {
+    "nativeAnalyticCoverage": {
+      "photo": "primary",
+      "operation": "local exposure",
+      "nativeRGBAPixelsDifferentByState": [
+        117,
+        117
+      ],
+      "halfRGBAPixelsDifferentByState": [
+        117,
+        117
+      ],
+      "finalPixelsDifferentByState": [
+        0,
+        1
+      ],
+      "evidence": {
+        "path": "output/035-development/phase-z/radial-port/sanity/primary.json",
+        "sha256": "937da84a2cb6d25f14595e15d0bca34d966364283a7dc95dab5f03edb0d22c29"
+      }
+    },
+    "hueFractRewrite": {
+      "primary": [
+        {
+          "state": 0,
+          "nativeDiffPixels": 23985,
+          "halfDiffPixels": 21692
+        },
+        {
+          "state": 1,
+          "nativeDiffPixels": 23949,
+          "halfDiffPixels": 21615
+        }
+      ],
+      "secondary": [
+        {
+          "state": 0,
+          "nativeDiffPixels": 104325,
+          "halfDiffPixels": 92614
+        },
+        {
+          "state": 1,
+          "nativeDiffPixels": 107053,
+          "halfDiffPixels": 94756
+        }
+      ]
+    }
+  },
+  "performanceBoundary": {
+    "measuredReference": {
+      "path": "output/035-development/candidate-batch27-portable-half-initialized-enabled/photo-operators-v2.json",
+      "sha256": "70099dbd7dbb826e4a108058307828e59c05d3a9a1d71d57e557916774962676"
+    },
+    "actualFirstExactMedianMs": 81.9687295,
+    "targeted16StatesMedianMs": 74.9286665,
+    "counterfactualAll16ZeroMsMixMedianMs": 81.396875,
+    "officialLimitMs": 24.3485,
+    "interpretation": "Counterfactual only. The stored planes and GPU host routing carry costs. The median remains above the gate even at zero cost for all 16 states."
+  },
+  "tests": {
+    "CPUAndDefaultMac": 24,
+    "LinuxNoGPU": 24,
+    "newMacGPUFusedStaged": 1,
+    "syntheticCPUCases": {
+      "finiteCases": 56832,
+      "zeroIdentityCases": 18944,
+      "fractionalZeroFeatherRing": true
+    },
+    "syntheticLinuxCases": {
+      "finiteCases": 56832,
+      "zeroIdentityCases": 18944,
+      "fractionalZeroFeatherRing": true
+    }
+  },
+  "artifacts": [
+    {
+      "path": "output/035-development/phase-z/radial-port/frozen-both/primary.json",
+      "sha256": "548657ab1c424c6a3c4eb0b6efd6feae11ef30a0444652861a0df1ed6676eed2"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/frozen-literal-hue/primary.json",
+      "sha256": "0554764831fd77a7666fde7bcd09d9b33c979494e3042f1a7305c212d4a3349b"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/public-surfaces/primary.json",
+      "sha256": "75d8252defd225270b753b7bde71e3b7f0fa0608164a369b55455cddbe83ac0b"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/frozen-both/secondary.json",
+      "sha256": "86345ccf9017b6bdb4902cb8907b83dc45cbff2fe2347f4795ab32e377c30c3c"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/frozen-literal-hue/secondary.json",
+      "sha256": "9a6ef02fbf171a0ab8ce17ce44738067e5d2dca63c3528b4c5f32acdc02916e8"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/public-surfaces/secondary.json",
+      "sha256": "ac3a1d66391e88b25ad7a1a66200d45c6c8050383c1c7bcddf42b9067db2a2fd"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/bin/mac-product.dylib",
+      "sha256": "dc32321f4db6641769522a6c7f0ecc84e8543e0514a5a73512831960dd70bba8"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/bin/product-linux-cpu.so",
+      "sha256": "fe65d95c5614e0a1e2b103ba9bfac5e93571edd722ecaf3217c56f67012b25c5"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/bin/product-linux-gpu.so",
+      "sha256": "392f5b1e20b39c273127dda5ce150bea7b1e99a224a4ce2b646515a100a3de12"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/product-mac-tests.log",
+      "sha256": "68a6a850cb6ea06769252b43c3a351730d8dcfc2cd1d337a88ea3ab5dcd8955d"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/product-linux-tests.log",
+      "sha256": "4d63007d30018dc322db25b5c74f6de5849dd7e1cc94fcdefaf1d0a302d608aa"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/linux-product.log",
+      "sha256": "c1de171bba6e8795a3a3ec16f24caf98e0445759262c065519c3fb47803b0474"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/intake.tsv",
+      "sha256": "daf9f08531371d722b1321c5d5e2410d9955d5358b6f12815193a5b6141ed58a"
+    }
+  ],
+  "productSources": [
+    {
+      "path": "Modules/ImageEdit/src/graph.rs",
+      "sha256": "0e317b6792dd70591199f6f3801888ba78a66b28f5bafd6e274861f3e28631b7"
+    },
+    {
+      "path": "Modules/ImageEdit/src/reference.cpp",
+      "sha256": "9b1675da6c90d350ba3be572ca36095c80c6fd53b36234cc8bf74e34b56baefb"
+    },
+    {
+      "path": "Modules/ImageEdit/src/gpu.rs",
+      "sha256": "b70a8ac9108222f0e76334353b0a56eb97c7a751ee6cbba3ee75eb41b9adc730"
+    },
+    {
+      "path": "Modules/ImageEdit/src/mask_tone_v3.wgsl",
+      "sha256": "05703205c206fac71015d04378f6226783b5470732274b03b7ec82c1965321a8"
+    },
+    {
+      "path": "Modules/ImageEdit/tests/mask_tone_v3.rs",
+      "sha256": "5a69332cf4998986754d4d9c0a99ff322609553ea5b7cd453df03b88e8ee6799"
+    }
+  ],
+  "states": [
+    {
+      "photo": "primary",
+      "operator": "color-mask-hue",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+      "sampleFixtureSHA256": "8fd4f531e570c27a46574de84decf32d0d205298c5740c0f3ff9d349af240c35",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3775,
+          "maxAbs": 7.15256e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0fa48604f3796477f0c000342d66c990dd6f9d7df7c430a659962ded6c33f036"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "36bebb7bf235de6c648c36b77b791e3434b6aec8f3dddbc617add599d4d23d58"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3775,
+          "maxAbs": 7.15256e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0fa48604f3796477f0c000342d66c990dd6f9d7df7c430a659962ded6c33f036"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 3770,
+          "maxAbs": 1.07288e-06,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "2227be7ccae44e82858c520ac80632abdac8619925bf982727bf7162653d9ad8"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+        "stockBandedDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "color-mask-hue",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+      "sampleFixtureSHA256": "add5f298b5cafc6fd8f2f6cb0ac8ba4c08e1ec709b8462a7293d6494bb57e232",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3778,
+          "maxAbs": 1.60933e-06,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "30eb88eff3b9c29c727bf65418887ce14b22d1debd03209bd9f24979d427e9db"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "9399f0891b0a2a9ef6b2caeac4163acb3a0432ae7539a23d019dd432785b82fa"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3778,
+          "maxAbs": 1.60933e-06,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "30eb88eff3b9c29c727bf65418887ce14b22d1debd03209bd9f24979d427e9db"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 3770,
+          "maxAbs": 2.08616e-06,
+          "over2e6": 1,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "7a8171bc82cedd0264b0b6c40b2b91b31aeb85190359b945e905f4b5289a3ff3"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+        "stockBandedDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "color-mask-saturation",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+      "sampleFixtureSHA256": "79c06b40570d81a3a830d7f41265811ee009750fee1b84d8973734bb412a57d9",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 486,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "4d4685b8232b184681ab6deb6c6f6519fbb298b381a627e7224715ee9b072d27"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "74739b727c7ec239c87d60730bede61aba0499fc27420bfe8e8b4b2d6aa01226"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 486,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "4d4685b8232b184681ab6deb6c6f6519fbb298b381a627e7224715ee9b072d27"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 1291,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "8575ebf24a199af3b9fb32b046ad8b4413050ead38f8499d638a2d1ff5c50c9e"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+        "stockBandedDisplaySHA256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "color-mask-saturation",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+      "sampleFixtureSHA256": "b82fad0f51e83aa28741183796239a55aebeb3746de30878ac545fb39ce7e825",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 1062,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "5029381ba28d2a93ade883542967ed78591f387d99247d1c1c22af9a8795fda5"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "381bae7e51e95669c636c1507696a1e38b2c983ef2ecdf6d970d86a53dbc837a"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 1062,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "5029381ba28d2a93ade883542967ed78591f387d99247d1c1c22af9a8795fda5"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 2043,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d2f1d0d5c7c4daa2ab38f0e35f47698844be2f57551196a925e0031cd083682a"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+        "stockBandedDisplaySHA256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-blacks",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+      "sampleFixtureSHA256": "80923c3ad3cbbf27b116fe6ccd814f8ec4a095486df6bfc83c9cb786ad279789",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 1864,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "9828bea9e8b8818d65610fa81064ba1fd23617431a65f730d046a56e16db5a63"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "985b9b2addcabcb850811e388d03fd271ee53911cec1175d400fe9bce6a604f0"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 1864,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "9828bea9e8b8818d65610fa81064ba1fd23617431a65f730d046a56e16db5a63"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 1864,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d5e800313eb551a2e2bf31c8c20a7af1a6a01fe4ca60661226d2527ee9925c9d"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 15956081,
+          "changedPixels": 8096323,
+          "maxAbs": 5.960464477539063e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 4041155,
+          "changedPixels": 2046445,
+          "maxAbs": 5.960464477539063e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 6,
+          "edgePixels": 0,
+          "maxCodeDifference": 1,
+          "meanAbsoluteCodeDifference": 3.90625e-07
+        },
+        "candidateDisplaySHA256": "a9327585a365e25b5678df49b48dda8c270ea03ddc4cd9e7d1a67e0be435805c",
+        "stockBandedDisplaySHA256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-blacks",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+      "sampleFixtureSHA256": "7c03bfe3f7bb558a7d5237c8616edafc4750d4df66e845df9cde1b9159424222",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 1566,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "e9aec5cb008beaf6e93c7747a959036e9bc612338633a0d49af183a56be9f051"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "37fdb1d074c1ea3b536c49292bfcb2f24115d2a80c3c4e6561fb2ba225a5ff34"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 1566,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "e9aec5cb008beaf6e93c7747a959036e9bc612338633a0d49af183a56be9f051"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 1566,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "682d172229e8dbf51c9737dbf080ffdbecde5819517fe8369654d6a97f528f8c"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 23491797,
+          "changedPixels": 8835202,
+          "maxAbs": 2.9802322387695312e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 5921455,
+          "changedPixels": 2215437,
+          "maxAbs": 1.1175870895385742e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 2,
+          "edgePixels": 0,
+          "maxCodeDifference": 1,
+          "meanAbsoluteCodeDifference": 1.3020833333333334e-07
+        },
+        "candidateDisplaySHA256": "1b5047ecc8a8ebf831873903b680c491c53642982c4ff21e5d06d5dc31d4b7a1",
+        "stockBandedDisplaySHA256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-contrast",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+      "sampleFixtureSHA256": "557d4f2fb88198d2f5ae83295bd33eab9c6f00a800ad95c320c02fd29574902a",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3569,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "34c425737bdc8f623cc8d8db9c9ec8098a721ec9a8512d27d4618ae79d149f18"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "5efad9fbcecf1072e30665272ff8f7c8678853d89874a42acca837abe9652d3e"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3569,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "34c425737bdc8f623cc8d8db9c9ec8098a721ec9a8512d27d4618ae79d149f18"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 3360,
+          "maxAbs": 4.17233e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "4ac33e6048e4b2941ea3e29d0ac630f92dbdbf75de8d3080cff31d73195e52c5"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+        "stockBandedDisplaySHA256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-contrast",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+      "sampleFixtureSHA256": "4dc9bfee57d05ee55815e040ebddf6c875dae87f3f7579fe7b5db61c1c027b75",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3553,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "bbbe8fa9d7302fbb64758dd03a0d36b21a7753212d7fd6c79494e54f080cc866"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "61e02c7e172024b8f6dac72df54c6ac2de3ef56b4973c1394ac6e72398604b90"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3553,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "bbbe8fa9d7302fbb64758dd03a0d36b21a7753212d7fd6c79494e54f080cc866"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 3295,
+          "maxAbs": 6.55651e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "5de605af924060313b2141c484608094aa2a28a12d17a3e2142abad6eb58445c"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+        "stockBandedDisplaySHA256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-exposure",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+      "sampleFixtureSHA256": "6bf7077b1d22b07cbc135581dca5aa9f14d2afc1363f9c15f6e031fd2e9563d2",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3751,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "819ad7fca80fe0c568eaacca8d9af1e49d1257596323678f45d9bbfc07fc2a1e"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "15defb57db05a96927ae19397c68f1c82cd62dfed386ce4e54ff63795a82da27"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 3751,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "819ad7fca80fe0c568eaacca8d9af1e49d1257596323678f45d9bbfc07fc2a1e"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 3772,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "afd3cd643e25a4f3d739393731a3c5dee611f3d15903f279438661eb0a9f042a"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+        "stockBandedDisplaySHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-exposure",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+      "sampleFixtureSHA256": "d90ed21bf81b8235f7fc3e4332cf2e8873d5190d68a0e1e4ca5c680634bc1b80",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 33,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d48ed0d32846048dbe0dffe6e98aa13f825dda43fe5fdc97c4c964b32adcc63f"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "7f176d4dfab8a1c8d5151b994396d5ffc321047ddc2115a6626ebf853aaf4519"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 33,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d48ed0d32846048dbe0dffe6e98aa13f825dda43fe5fdc97c4c964b32adcc63f"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 3759,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "8f7969273f1c650aff58c3fe19c42b0fb84d9d38a6246be8e58cdc8b73f1354e"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+        "stockBandedDisplaySHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-highlights",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+      "sampleFixtureSHA256": "9f3b03e9986896bf140456b794088e4450c07a1fedbafc2fc550be7acbb2e18e",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 27,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "6822017a0dd0f3994c9a0fda20b4342b7259581dd390c0f52bfd672ecd6f89cb"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "83f32056c37255ef8448ddd0628d2d054f9b5590ee1b52b8746713a9c865fc90"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 27,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "6822017a0dd0f3994c9a0fda20b4342b7259581dd390c0f52bfd672ecd6f89cb"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 34,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "6cdadc12bcf874c1b475877bdee8ed589a233f4ad36ad2676a2393071f7ddb0b"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+        "stockBandedDisplaySHA256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-highlights",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+      "sampleFixtureSHA256": "c219b9b7255d0d65323d6766cb8d8482ce53ec26377cfa5cc940b94030b8ea85",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 60,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "c4b29ef8abcc68dd75e085ddb01f37047abd3b01f2ab113bc5e500cf73e48d27"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "885fb97fa11caa4a51b3f1cc842ea63b7563a2bbdc2012043b6709e850cd2bb9"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 60,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "c4b29ef8abcc68dd75e085ddb01f37047abd3b01f2ab113bc5e500cf73e48d27"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 108,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "a1d7da45825c6eb54e3f3bf819a8a9d8d855d5a8ad7dac35e58527d593fe8181"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+        "stockBandedDisplaySHA256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-shadows",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+      "sampleFixtureSHA256": "1caa99464f040ec4eef5bca09a2dbe42cd03743eb0ec089a685008b540641a12",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 140,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "512e67f120b9798772d3b41aa14906fae3cf020dd9991c8672d2435da19a1d37"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "24d5e8667c5573bf54a3fc1026f5c9bd99606770c03f5e5350742d44e9b9371a"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 140,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "512e67f120b9798772d3b41aa14906fae3cf020dd9991c8672d2435da19a1d37"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 119,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "554b6cdf62547e4ad74dc6965aa76756a650b836259720563b10ba771a0495ed"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+        "stockBandedDisplaySHA256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-shadows",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+      "sampleFixtureSHA256": "22579bae8cc19b3b6467e5fa9f1b2ea7b058bace9dd4479ac4cd33de665c414d",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 468,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "a44faa259fef05cdaca24059852e779fb3839e9dcaf71f3e2e5150537f9bb8d1"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "b05df89f5f35665e7662ff82ba513b9030e07638bd4434da796e40032d5ffd77"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 468,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "a44faa259fef05cdaca24059852e779fb3839e9dcaf71f3e2e5150537f9bb8d1"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 430,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "bee7c82aa90a203b830156d8e9c68402af26097b8ae9059c3afa8c9fc8df88d1"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+        "stockBandedDisplaySHA256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-whites",
+      "state": 0,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+      "sampleFixtureSHA256": "96e6b8d795e3f033d90cf858d36d78213a8e5c40410532accc66bcf3bb431c3c",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 12,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "7fd13025a4448cd3127a0675b8d4af5e66e4c6e176d982c6095b4ce7ccc0ca58"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "3f8368c161daa32260e9f1b820bb2a4df344333f8cd3a9558888c1a19f463edc"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 12,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "7fd13025a4448cd3127a0675b8d4af5e66e4c6e176d982c6095b4ce7ccc0ca58"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 23,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "24578d37728e464e202b59129ec1fd5f0bb48c3fdc087414b3b6cb2c63d7766a"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+        "stockBandedDisplaySHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc"
+      }
+    },
+    {
+      "photo": "primary",
+      "operator": "light-mask-whites",
+      "state": 1,
+      "nativePixelCount": 60217344,
+      "halfPixelCount": 15054336,
+      "archivedDisplaySHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff",
+      "sampleFixtureSHA256": "4f2193a17551e21905345756b816bf58f2a2911970d0336dc25034d57934a5ea",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 12800,
+          "changedPixels": 69,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0d1b1a628fa83769183319daa9c23cca0bf32e72131b2d4a92387aaaf96f4174"
+        },
+        "mac-gpu": {
+          "pixels": 12800,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "2d20bf97870bf76af087046e245d7392e6e17f8fe1db1592127dd2b29dcf7c5f"
+        },
+        "linux-cpu": {
+          "pixels": 12800,
+          "changedPixels": 69,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0d1b1a628fa83769183319daa9c23cca0bf32e72131b2d4a92387aaaf96f4174"
+        },
+        "linux-vulkan": {
+          "pixels": 12800,
+          "changedPixels": 88,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "633d1e93b41a96ddc27d457159591e9edd89c124e2d97444aa35a6d96a1e6c8e"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 60217344
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 15054336
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff",
+        "stockBandedDisplaySHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "color-mask-hue",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+      "sampleFixtureSHA256": "04204e90fcd0a2c89e9f38ed70b9b60e804436b483ef670f7dcfeb4eae5902b7",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3440,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "297ad0f7db93e2a5ecf6f3d324bbc3351f8b3477b4ab8e22b5c17eb1cab4de5c"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "c45381a207d9ac33e231fdf94fa5dacb0b2f2863e41731c6f72bdd0f19500138"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3440,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "297ad0f7db93e2a5ecf6f3d324bbc3351f8b3477b4ab8e22b5c17eb1cab4de5c"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 3437,
+          "maxAbs": 5.96046e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "afbafd0681aee3043cef2f96f70d0d90797da7061dc2267977bc760edcb86b30"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+        "stockBandedDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "color-mask-hue",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+      "sampleFixtureSHA256": "084d264c392f93e9b696f07c1af54c0d308eb1f7126f86f1b02b84ff5e9cf2f8",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3439,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "19e8ca87a7b4e90267268aaf8ceb7b29c9e8a0ab1d6789b3dbdedb2295f186be"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "907d414d5fc0d7e318bb90cfbc5af8d338c11510b9983c4626b6795bf7cdc608"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3439,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "19e8ca87a7b4e90267268aaf8ceb7b29c9e8a0ab1d6789b3dbdedb2295f186be"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 3443,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "6359f337b773e061451d5e42cd3365c5f2c12f0399ca62785e84443e62a94adb"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+        "stockBandedDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "color-mask-saturation",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+      "sampleFixtureSHA256": "51a68e84ff40894ff1eeb7f599c86894201faacb73aacb4572a5770361be8c3a",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 464,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "3f4f588c34e986000725416148e00b022504094de64d35e5ced155bffb8f5b2c"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "6c83689e113c2d6337b62f8ff604f4d243c8ba3c94607b0b7fd9efcd05d2c35d"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 464,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "3f4f588c34e986000725416148e00b022504094de64d35e5ced155bffb8f5b2c"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 1020,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "93e0582e62f45d0ab29443cc350feecba394812d674d6791f4b9b5999a4f221e"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+        "stockBandedDisplaySHA256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "color-mask-saturation",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+      "sampleFixtureSHA256": "8f6171c0a3d7383ec36b797603133ffa0e7002f07a4a4d3a7f9ae8c7d7c25e86",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 986,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "ec305a8adfa98720baad031fe2f8773dc9742fc6d9a7f585a192f7625dcd73db"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "7a7575f3fbfcc934466fd5c1c0dfb11b4a19aefdd052a154f67ef656ae431f2c"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 986,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "ec305a8adfa98720baad031fe2f8773dc9742fc6d9a7f585a192f7625dcd73db"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 1592,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "5f2b0b203af174884e5fca8552bfe0568ad16bbbfeefdf5000149dff4f03ec22"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+        "stockBandedDisplaySHA256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-blacks",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+      "sampleFixtureSHA256": "26c54b250ad4fc27143eff8b3605298bf364fdef8fc992aa0cc1b2e0fe6fc57b",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 1807,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "03b285ee20bbfec5206d422b9c06822c5d6174f92b34a9b35c9beff09ad82a52"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0d7e8147399f82a89d72a540d7f16d2c0c4510af24c569ad6d08da26aa2de421"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 1807,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "03b285ee20bbfec5206d422b9c06822c5d6174f92b34a9b35c9beff09ad82a52"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 1806,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d5b8fd11ddbea5c22a4afd94815921c829eb0a1e6283dcb332ccbcf1f30687d1"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 745584,
+          "changedPixels": 521211,
+          "maxAbs": 2.9802322387695312e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 218655,
+          "changedPixels": 153150,
+          "maxAbs": 2.9802322387695312e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+        "stockBandedDisplaySHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-blacks",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6",
+      "sampleFixtureSHA256": "f27deb3a302b3057a1de48f4f85078ac765acf7777d5d807fb88c3d6e9398a52",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 1382,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "4dde7fdb74c78c8610e33445846d4946431fa4c2ee86413a0c31f8245b20bcdb"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d88e600c43ef7dbf81b4e3fe037554678721e54be47e00deeb40f50d49816046"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 1382,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "4dde7fdb74c78c8610e33445846d4946431fa4c2ee86413a0c31f8245b20bcdb"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 1382,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "1acd6fb82e55afacfe05721a158527f6c0aeb1aa62c025dafac6177a9a9f0e62"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 12620188,
+          "changedPixels": 8727260,
+          "maxAbs": 1.4901161193847656e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 3109878,
+          "changedPixels": 2166451,
+          "maxAbs": 7.450580596923828e-09,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 2,
+          "edgePixels": 0,
+          "maxCodeDifference": 1,
+          "meanAbsoluteCodeDifference": 1.3020833333333334e-07
+        },
+        "candidateDisplaySHA256": "1b67f81444a8a9142b4994427a93f14dcf987ba33d40be648f2f734e53e33c2f",
+        "stockBandedDisplaySHA256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-contrast",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+      "sampleFixtureSHA256": "15162e06768cb86c74129fdc8c19da0df88e158c079487ae2718cb393a84d078",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3311,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0f1db58f6501c7f45ef3553cddc9a3804cdc7e6c76738ed970c6cad8b45d3c84"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "644f3abc4ae12eef9a87a760e13d300a145c5b93004cca195c9d698bf8bf39b4"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3311,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "0f1db58f6501c7f45ef3553cddc9a3804cdc7e6c76738ed970c6cad8b45d3c84"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 3101,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "41518b5cccc4ff3428adea9e05741ba61f86c089cdcb18c318919cb07c52c817"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+        "stockBandedDisplaySHA256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-contrast",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+      "sampleFixtureSHA256": "cf7f49bc5d4e16e30349474494c23aaef93f590710ba299130bb966917031e68",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3336,
+          "maxAbs": 4.17233e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "14fa37f0d275fd971578eb1ffb484dd929c10bdbd3a8134ac99dec3f65460352"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "cbed2bb686de4f7f65a92fc624222b82bf6e686230549c5c8fafe2982a74a640"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3336,
+          "maxAbs": 4.17233e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "14fa37f0d275fd971578eb1ffb484dd929c10bdbd3a8134ac99dec3f65460352"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 3097,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "7eda29e97aff14b25eaa256946727fa3c377867c1a54c0b1d97f7081c1a09ecb"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+        "stockBandedDisplaySHA256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-exposure",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+      "sampleFixtureSHA256": "ce47d8b9c22d0403ce4cd03760c4ac259367ec3819883098317e7014b043e6b4",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3427,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "63c99a86af71a49c95f95a3a7ba72b0fe14de21630756d5256af3178c6ac9bb0"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "fa21496584694a7a34babc7ec7ec495175314fa8e9bbe5630ec2aca59532f5e9"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 3427,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "63c99a86af71a49c95f95a3a7ba72b0fe14de21630756d5256af3178c6ac9bb0"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 3439,
+          "maxAbs": 1.78814e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "ea01fee4166e4f69d6834b2a6e7dbff1352c09547ee1eb7043a8130d76991977"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+        "stockBandedDisplaySHA256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-exposure",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+      "sampleFixtureSHA256": "6c52a54522a5a44eeee83b61837e3c4a5fff6f68a813ee8e510189eb220b9002",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 29,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "dea4c326ffebf68cf7741ec7b1f06eb49b364c4a67b633f1a719270df8ebc69d"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "fb64a278badc2f1c8b11ae59c998deb1147273beac7b3f743d25e270ecca26c6"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 29,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "dea4c326ffebf68cf7741ec7b1f06eb49b364c4a67b633f1a719270df8ebc69d"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 3420,
+          "maxAbs": 1.78814e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "c719c68b3a3d475aca7264b3bf4b9071cf630b5cd8cc83ec8fcc5164894d0d87"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+        "stockBandedDisplaySHA256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-highlights",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+      "sampleFixtureSHA256": "5627c8ff08cfb85daaf11515afcc6a48998466e91325d0e8a513aa1fc12ac241",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 17,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d286599fda4bb69b028f37530b474c3964685e13eb9726700f0f7e0470fb72fe"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "2c6d04b61d4e08a628144d295e459dd46964123217d1aa1779ee3163743a95e3"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 17,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d286599fda4bb69b028f37530b474c3964685e13eb9726700f0f7e0470fb72fe"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 32,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d733ada6f2f321468c8e4e51fd17c17ad179af54306b61c8c7b9ba51a8d79262"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+        "stockBandedDisplaySHA256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-highlights",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+      "sampleFixtureSHA256": "de60f2d4d188473e6ba13c6690ebc86596f6c83f7f8fa4c22827a054bef59de5",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 64,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "3018de538ffeaa457d16ea23c03d04d07fc7ee59bae92c1c97bc688e98400450"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "c9d3fa878a3c842adfd42b5e627dde77f3519b3255fb05beab8499fc6e103c2f"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 64,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "3018de538ffeaa457d16ea23c03d04d07fc7ee59bae92c1c97bc688e98400450"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 103,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "4f90a3000ffe56f4ec451408c0be190904bac7a4521a21fe1b6bf7f007d13137"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+        "stockBandedDisplaySHA256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-shadows",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+      "sampleFixtureSHA256": "89c82ea74535e570d138bbc4a1107fb8df1b6b9d67f1c4d3358229dbfae80422",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 222,
+          "maxAbs": 1.49012e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d926ee6a930e5a319bc19c702d588291637c387166c9cf2536264b768780ce06"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "9d4646d94ef32d8fc846e65fb9b9520b24f7bbed538d8ba6d30a8e647ac4b3a1"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 222,
+          "maxAbs": 1.49012e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "d926ee6a930e5a319bc19c702d588291637c387166c9cf2536264b768780ce06"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 191,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "95063566cfae3e54415b7e4eeba71f7aa7edb710b6ea4c853cb64c354197e460"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+        "stockBandedDisplaySHA256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-shadows",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+      "sampleFixtureSHA256": "0249e466550904f3872750f91ecbfeb7ff51d1f2e6f78f775c5c9a2de89dc12e",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 795,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "1d67c9d9b429eb4bc3aa00188aae60ffbc24baa59ed47b3c29e490647f86a4e8"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "6da3fca3e1376fae5b2098a7548da5ae8ef42cc1427f6ca5e2ce54686ab1a4c3"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 795,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "1d67c9d9b429eb4bc3aa00188aae60ffbc24baa59ed47b3c29e490647f86a4e8"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 686,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "c7cda6b2ff8235867f2848bf568f8d2c99b62a0f81e45e2c74bd962b8c29e16d"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 0,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+        "stockBandedDisplaySHA256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-whites",
+      "state": 0,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+      "sampleFixtureSHA256": "66a8ddfe4b6f2c7fa410abe2010b1c380a08cdfe8d9dc913da0b5ee3e8354deb",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 11,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "8af6645a892e0a5473f87184c347ef71cdf6f0905683bb1b24de5dda71624b01"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "63e3b9431f224fe871ba4fc34d98b3c938aaea7f7d7cde0f4fb36ff125168fdd"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 11,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "8af6645a892e0a5473f87184c347ef71cdf6f0905683bb1b24de5dda71624b01"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 15,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "03c637553d2e8ca2042a7129953e4b8e57dacf01c4872be25e1186764dfac717"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 3,
+          "changedPixels": 1,
+          "maxAbs": 1.1920928955078125e-07,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 2,
+          "changedPixels": 1,
+          "maxAbs": 5.960464477539063e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+        "stockBandedDisplaySHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086"
+      }
+    },
+    {
+      "photo": "secondary",
+      "operator": "light-mask-whites",
+      "state": 1,
+      "nativePixelCount": 49766400,
+      "halfPixelCount": 12441600,
+      "archivedDisplaySHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d",
+      "sampleFixtureSHA256": "5fed3863fde3e800bfc4c85bf8a15f64633d121d9ed18ed107b0d0530d67b721",
+      "abiSamples": {
+        "mac-cpu": {
+          "pixels": 11776,
+          "changedPixels": 52,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "01a95a46f82cb0b6a79d689e7f8ae713f7bbda7cf8acea4202015a9ed7d9e5ce"
+        },
+        "mac-gpu": {
+          "pixels": 11776,
+          "changedPixels": 0,
+          "maxAbs": 0,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "f8ddb488de77bb2321b1c8ae8c5e1605fa33e4c0421c9aaf8892f32c5254fe49"
+        },
+        "linux-cpu": {
+          "pixels": 11776,
+          "changedPixels": 52,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "01a95a46f82cb0b6a79d689e7f8ae713f7bbda7cf8acea4202015a9ed7d9e5ce"
+        },
+        "linux-vulkan": {
+          "pixels": 11776,
+          "changedPixels": 63,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0,
+          "outputSHA256": "5b464442044c7c8a55032edf20be4ce56fa9b45598085b155e2a5f8c399da771"
+        }
+      },
+      "publicMetalFullFrame": {
+        "nativeRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 3,
+          "changedPixels": 1,
+          "maxAbs": 1.1920928955078125e-07,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 49766400
+        },
+        "halfRGBAf": {
+          "alphaChanges": 0,
+          "changedComponents": 2,
+          "changedPixels": 1,
+          "maxAbs": 5.960464477539063e-08,
+          "nonfinitePixels": 0,
+          "over2e6Pixels": 0,
+          "pixels": 12441600
+        },
+        "candidateVsArchive": {
+          "alphaValues": 0,
+          "changedPixels": 0,
+          "edgePixels": 0,
+          "maxCodeDifference": 0,
+          "meanAbsoluteCodeDifference": 0
+        },
+        "candidateDisplaySHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d",
+        "stockBandedDisplaySHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d"
+      }
+    }
+  ],
+  "methodSources": [
+    {
+      "path": "output/035-development/phase-z/radial-port/compiler/src/main.rs",
+      "sha256": "3384c9b6ff68164f5a9f77860c1a7c6ba1b8657a5494e7978bfab94377eac8b4"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/radial.wgsl",
+      "sha256": "cdc7e4105670353db6b96a7ad90681f8fc7a8fa0dcf7a22bb01db0e15b1e286a"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/radial-frozen-hue.wgsl",
+      "sha256": "ac630cfb12acf92c91f8e0ce87ba26013e419aefd3e086e17a1ca5c4a6465e8a"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/radial_cpu.cpp",
+      "sha256": "e63bd560b6c4fdb5d9d12114c53ef4be1258d3d19db5a1cf57668b0463b63453"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/measure.metal",
+      "sha256": "dded8f582d566753fcf66c5d67f9889a18e7588c7b6d1b25890fa5306277ae0d"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/intake.py",
+      "sha256": "58f7c8353ec0750131b983b6d11ee8254ec410aa8bf93cd7d6be3927945e1982"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/replay-node.cpp",
+      "sha256": "64f94ab3a5ecd97ee84b4ff43f885e51a8738e0a1471921bd3abbd971614ae8c"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/node-replay.sh",
+      "sha256": "d2cc9501dbef224cd809777359963b20e1df808b47e73500f0fdafc3d9e553e1"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/linux-product.sh",
+      "sha256": "a6c369978114e84ea6d99c8e1bff4e0ae605389c7e424349a2a1e5f6efcedec0"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/run.sh",
+      "sha256": "01b819e54cf73b1d11bef2540f223fddaa331175690a34709e618068614dfaad"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/build.sh",
+      "sha256": "f17089f9be37ded906d870435fad716828dd3e92b7efc6dc9406033a1f03c5eb"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/RadialWitness.swift",
+      "sha256": "49c1241fb81bc1bbfd35786bbbd35a89ad4de0197c2ab2b6169bde1808783e74"
+    },
+    {
+      "path": "output/035-development/phase-z/radial-port/iosurface/port.mm",
+      "sha256": "cd599bc4f73eb7c4f0fe1022c3c35b1ddc2d2b21e2bbf1ac3d4616b4ad427ffe"
+    }
+  ],
+  "package": {
+    "sealedRuntime": {
+      "path": "output/035-development/candidate-batch28-grouped-work/RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime",
+      "sha256": "5f626f97068ecbc48c01936a10fa268534bcde279613f8e499d24523350babda"
+    },
+    "sourceSnapshot": {
+      "path": "output/035-development/candidate-batch28-grouped-work/source-files.sha256",
+      "sha256": "3deed5a62ef0d5385c781a8e088dae1203d1e011aa0be25a20db27afb3938d08"
+    },
+    "binarySnapshot": {
+      "path": "output/035-development/candidate-batch28-grouped-work/binaries.sha256",
+      "sha256": "ea27529a4314360a6158e5dc89c05ad520c4006cc92e7f740a2fcb70503a0168"
+    },
+    "isolatedExperimentSources": {
+      "path": "specs/035-portable-processing-cores/evidence/portable-local-mask-tone-sources.tar.gz",
+      "sha256": "cf1f1d86e6ef490f6103391ea08124d87b4fda635fbfc942415c063212e94712"
+    }
+  },
+  "publicMetalVerdict": {
+    "nativeBitwiseStates": 26,
+    "halfBitwiseStates": 26,
+    "displayBitwiseStates": 29,
+    "totalStates": 32,
+    "maximumNativeAbsoluteError": 1.1920928955078125e-07,
+    "over2eMinus6": 0,
+    "worstFinalCodeDifference": 1,
+    "nonfiniteAndAlphaChanges": 0,
+    "differentStates": [
+      {
+        "role": "primary",
+        "control": "light-mask-blacks",
+        "state": 0,
+        "nativeChangedPixels": 8096323,
+        "nativeMaxAbs": 5.960464477539063e-08,
+        "countOver2eMinus6": 0,
+        "halfChangedPixels": 2046445,
+        "finalChangedPixels": 6,
+        "maxFinalCodeDifference": 1
+      },
+      {
+        "role": "primary",
+        "control": "light-mask-blacks",
+        "state": 1,
+        "nativeChangedPixels": 8835202,
+        "nativeMaxAbs": 2.9802322387695312e-08,
+        "countOver2eMinus6": 0,
+        "halfChangedPixels": 2215437,
+        "finalChangedPixels": 2,
+        "maxFinalCodeDifference": 1
+      },
+      {
+        "role": "secondary",
+        "control": "light-mask-blacks",
+        "state": 0,
+        "nativeChangedPixels": 521211,
+        "nativeMaxAbs": 2.9802322387695312e-08,
+        "countOver2eMinus6": 0,
+        "halfChangedPixels": 153150,
+        "finalChangedPixels": 0,
+        "maxFinalCodeDifference": 0
+      },
+      {
+        "role": "secondary",
+        "control": "light-mask-blacks",
+        "state": 1,
+        "nativeChangedPixels": 8727260,
+        "nativeMaxAbs": 1.4901161193847656e-08,
+        "countOver2eMinus6": 0,
+        "halfChangedPixels": 2166451,
+        "finalChangedPixels": 2,
+        "maxFinalCodeDifference": 1
+      },
+      {
+        "role": "secondary",
+        "control": "light-mask-whites",
+        "state": 0,
+        "nativeChangedPixels": 1,
+        "nativeMaxAbs": 1.1920928955078125e-07,
+        "countOver2eMinus6": 0,
+        "halfChangedPixels": 1,
+        "finalChangedPixels": 0,
+        "maxFinalCodeDifference": 0
+      },
+      {
+        "role": "secondary",
+        "control": "light-mask-whites",
+        "state": 1,
+        "nativeChangedPixels": 1,
+        "nativeMaxAbs": 1.1920928955078125e-07,
+        "countOver2eMinus6": 0,
+        "halfChangedPixels": 1,
+        "finalChangedPixels": 0,
+        "maxFinalCodeDifference": 0
+      }
+    ],
+    "handles": "Two independent successful process exits. Each native band bound the real v2 IOSurface frame, joined its render, called frame close and rechecked the source owner. The loops executed 16*(25+23)=768 bands. All 32 plans/programs and the per-height IOSurface owners have scoped destructors. Counts from fixed geometry and code, not an allocation-leak measurement.",
+    "observedBlackPixel": {
+      "photo": "primary",
+      "nativeBottomOriginXY": [
+        3927,
+        1326
+      ],
+      "sourceRGBA": [
+        0.0121307373046875,
+        0.007965087890625,
+        0.004146575927734375,
+        1.0
+      ],
+      "coverage": 0.11701232194900513,
+      "nativeExpected": [
+        0.012996924109756947,
+        0.008834927342832088,
+        0.0050197625532746315,
+        1.0
+      ],
+      "publicIOSurface": [
+        0.012996924109756947,
+        0.008834927342832088,
+        0.005019763018935919,
+        1.0
+      ],
+      "recordIndex": 2715,
+      "inputAndTargetBytesEqualAcrossIndependentProcess": true,
+      "originalControlSampleSHA256": "80923c3ad3cbbf27b116fe6ccd814f8ec4a095486df6bfc83c9cb786ad279789",
+      "productionSurfaceSampleSHA256": "ee95ca0a688b9501fe24378d001360d9a6a58df680d2f4c292f9874ee3540540"
+    }
+  },
+  "extendedF32Counterexample": {
+    "sourceRGBBits": [
+      "0x7f7fffff",
+      "0x3f800000",
+      "0x3f800000"
+    ],
+    "alphaBits": "0x00000001",
+    "coverage": 1,
+    "operation": "exposure",
+    "amount": 0.125,
+    "macCPUStatus": 3,
+    "macMetalBufferStatus": 0,
+    "macMetalResult": "input RGBA bits unchanged",
+    "normalSmallestAlphaBits": "0x00800000 at coverage 1 returns 3 on both; coverage 0 preserves source bits",
+    "scope": "The finite opaque FlashRaw fixtures are unaffected. Cross-runtime error identity for extremely small positive alpha outside the established source domain is unproven. Route this domain to CPU when deterministic rejection is required.",
+    "cpuReceipt": {
+      "path": "output/035-development/phase-z/radial-port/product-extreme-cpu.json",
+      "sha256": "6aebc4e2dd84db6c37c09e374c6154ebafab4f98f4c8247b53d1ebb9c96d3a6c"
+    },
+    "metalReceipt": {
+      "path": "output/035-development/phase-z/radial-port/product-extreme-metal.json",
+      "sha256": "6f45565c5e1d81d2f51cc56649cce959831c12aabad74a66428560f1314999ee"
+    }
+  }
+}

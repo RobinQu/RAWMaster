@@ -1,0 +1,242 @@
+{
+  "testBinarySHA256": "2af20663b68d7cabc11d1e393ec303a621b106e50e5232094b877157062ed1cd",
+  "build": "candidate-batch7",
+  "matchedPhysicalFilesAgainstMain": 968,
+  "warmTrialsByFixture": {
+    "jpeg-source/1": [
+      {
+        "bytes": 277225,
+        "container": "files",
+        "count": 1,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.10873125,
+        "processMaxRSSKiB": 239600,
+        "seconds": 0.110032875
+      },
+      {
+        "bytes": 277225,
+        "container": "files",
+        "count": 1,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.122227584,
+        "processMaxRSSKiB": 252544,
+        "seconds": 0.123591417
+      },
+      {
+        "bytes": 277225,
+        "container": "files",
+        "count": 1,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.10471725,
+        "processMaxRSSKiB": 252544,
+        "seconds": 0.106153833
+      }
+    ],
+    "jpeg-source/20": [
+      {
+        "bytes": 8151320,
+        "container": "files",
+        "count": 20,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.159095375,
+        "processMaxRSSKiB": 805664,
+        "seconds": 0.822469834
+      },
+      {
+        "bytes": 8151320,
+        "container": "files",
+        "count": 20,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.143489667,
+        "processMaxRSSKiB": 812384,
+        "seconds": 0.779504958
+      },
+      {
+        "bytes": 8151320,
+        "container": "files",
+        "count": 20,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.16028275,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.795914625
+      }
+    ],
+    "jpeg-source/200": [
+      {
+        "bytes": 82971286,
+        "container": "files",
+        "count": 200,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.155089167,
+        "processMaxRSSKiB": 900432,
+        "seconds": 7.047209084
+      },
+      {
+        "bytes": 82971286,
+        "container": "files",
+        "count": 200,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.185332208,
+        "processMaxRSSKiB": 900432,
+        "seconds": 6.6709475
+      },
+      {
+        "bytes": 82971286,
+        "container": "files",
+        "count": 200,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.171750417,
+        "processMaxRSSKiB": 900432,
+        "seconds": 7.764512083
+      }
+    ],
+    "raw-source/1": [
+      {
+        "bytes": 98124,
+        "container": "files",
+        "count": 1,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.08415875,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.085537542
+      },
+      {
+        "bytes": 98124,
+        "container": "files",
+        "count": 1,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.096778292,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.098396083
+      },
+      {
+        "bytes": 98124,
+        "container": "files",
+        "count": 1,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.094998292,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.09636275
+      }
+    ],
+    "raw-source/20": [
+      {
+        "bytes": 1962480,
+        "container": "files",
+        "count": 20,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.112366833,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.878313083
+      },
+      {
+        "bytes": 1962480,
+        "container": "files",
+        "count": 20,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.11884475,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.855761291
+      },
+      {
+        "bytes": 1962480,
+        "container": "files",
+        "count": 20,
+        "dimensionsAndICC": [
+          [
+            2048,
+            1365,
+            true
+          ]
+        ],
+        "firstPhotoSeconds": 0.108389875,
+        "processMaxRSSKiB": 900432,
+        "seconds": 0.817756166
+      }
+    ]
+  }
+}

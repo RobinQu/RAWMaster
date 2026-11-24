@@ -1,0 +1,1490 @@
+{
+  "evidence": "Portable mask_tone_v3 hue on software Vulkan / Phase AA",
+  "contract": {
+    "working": "extended-linear-srgb-premul-f32",
+    "absolutePerComponentBudget": 2e-06,
+    "higherPrecisionReference": "IEEE binary64 standard signed sRGB transfer with exponent 1/2.4; ULP counts compared against nearest binary32. Extended-F32 rows are stratified and deliberately include HDR bins near Float.max.",
+    "iosurfaceGate": "Every native and half Float32 component and the whole 2400 sRGB8 raster compared to native on both photographs.",
+    "authority": "v2 named frozen scalar coverage in stock C ABI render slots. Original CI computes matching captured coverage. Two independent masks or analytic/radial shader geometry are outside the measured hue change."
+  },
+  "scope": {
+    "adapters": "Only active wgpu Backend::Vulkan with DeviceType::Cpu receives specialization. No device-name or OS selection. Evidence covers llvmpipe, Mesa 22.3.6/LLVM15.0.6 on Linux arm64. App Metal hardware keeps the original transfer.",
+    "scalar": "Positive nonlinear magnitudes use sqrt(sqrt(a)) times cbrt(sqrt(a)), with one Newton iteration for the cubic root. Sign, toe, NaN/Inf routing and hue angles are preserved. For 0.0031308<a<=Float.max all sqrt, cube-root estimate, squared estimate and correction stay normal and representable. The independent full extended input test below measures the transfer itself, not a promise of absolute 2e-6 at arbitrary HDR magnitudes.",
+    "cpu": "Existing C++ arithmetic with -ffp-contract=off and the Rust-pinned libm 0.2.16 powf path. The CPU received no hue arithmetic change. All 32 candidate CPU outputs compared byte-for-byte with both previous macOS and arm64 Linux CPU outputs."
+  },
+  "software": {
+    "containerImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "adapterReport": {
+      "file": "output/035-development/phase-aa/hue/driver/vulkaninfo.txt",
+      "sha256": "1da10bcab3d44bbd8c675dd4ab056345c29e0dde04867c694b061916af49a00e"
+    },
+    "priorLinuxGpuRuntime": {
+      "file": "output/035-development/phase-z/radial-port/bin/product-linux-gpu.so",
+      "sha256": "392f5b1e20b39c273127dda5ce150bea7b1e99a224a4ce2b646515a100a3de12"
+    },
+    "independentCandidateLinuxRuntime": {
+      "file": "output/035-development/phase-aa/hue/driver/production.so",
+      "sha256": "a77527b586ed081e3353c7833233c35790a6857a3d4ded1b43b3904d2a4a0591"
+    },
+    "commonReleaseLinuxRuntime": {
+      "file": "output/035-development/phase-aa/librawmaster_image-vulkan.so",
+      "sha256": "a77527b586ed081e3353c7833233c35790a6857a3d4ded1b43b3904d2a4a0591"
+    },
+    "macDiagnosticRuntime": {
+      "file": "output/035-development/phase-aa/hue/driver/research.dylib",
+      "sha256": "cfc9b4c03cd42c455ace87c3a7e7bbcf064eb3b0ca3754e961f36bff19d66d03"
+    },
+    "linuxDiagnosticRuntime": {
+      "file": "output/035-development/phase-aa/hue/driver/research.so",
+      "sha256": "015b2968f5d5487793678482d96ecbe1b43a5cef3c75d90f30d4189381daeb4f"
+    }
+  },
+  "singleRealPixel": {
+    "xyNativeBottomOrigin": [
+      6943,
+      3213
+    ],
+    "source": [
+      1.15625,
+      0.66064453125,
+      0.21923828125,
+      1.0
+    ],
+    "coverage": 1.0,
+    "frozenMaskId": "8F2D8A0A-20B6-41FC-A326-018358E549A4",
+    "amount": 0.45,
+    "ancestorRecord": {
+      "fileSHA256": "add5f298b5cafc6fd8f2f6cb0ac8ba4c08e1ec709b8462a7293d6494bb57e232",
+      "index": 6436,
+      "recordSHA256": "002633924bdf2f012c9a41adc676ae1e2fca828d05d069a256d8ca7708864781"
+    },
+    "native": {
+      "values": [
+        0.2192382514476776,
+        0.8009037971496582,
+        1.1562498807907104,
+        1.0
+      ],
+      "channelBits": [
+        "3e607ffe",
+        "3f4d0808",
+        "3f93ffff",
+        "3f800000"
+      ],
+      "maxAbsToPhoto": 0.0
+    },
+    "priorVulkanOnePixelCABI": {
+      "values": [
+        0.21923837065696716,
+        0.8009058833122253,
+        1.1562504768371582,
+        1.0
+      ],
+      "channelBits": [
+        "3e608006",
+        "3f4d082b",
+        "3f940004",
+        "3f800000"
+      ],
+      "maxAbsToPhoto": 2.086162567138672e-06
+    },
+    "candidateVulkanOnePixelCABI": {
+      "values": [
+        0.21923834085464478,
+        0.8009055852890015,
+        1.1562501192092896,
+        1.0
+      ],
+      "channelBits": [
+        "3e608004",
+        "3f4d0826",
+        "3f940001",
+        "3f800000"
+      ],
+      "maxAbsToPhoto": 1.7881393432617188e-06
+    },
+    "actualAppleMetalCABI": {
+      "values": [
+        0.2192382514476776,
+        0.8009037971496582,
+        1.1562498807907104,
+        1.0
+      ],
+      "channelBits": [
+        "3e607ffe",
+        "3f4d0808",
+        "3f93ffff",
+        "3f800000"
+      ],
+      "maxAbsToPhoto": 0.0
+    },
+    "actualCPU": {
+      "values": [
+        0.2192382514476776,
+        0.8009053468704224,
+        1.1562498807907104,
+        1.0
+      ],
+      "channelBits": [
+        "3e607ffe",
+        "3f4d0822",
+        "3f93ffff",
+        "3f800000"
+      ],
+      "maxAbsToPhoto": 1.5497207641601562e-06
+    },
+    "fp64LawApproximationGreen": 0.8009051306915003
+  },
+  "diagnosticCheckpoints": {
+    "method": "Independent public C ABI shader variants returned one internal value at a time. This identifies the divergence; intact production RAW output is measured separately.",
+    "signedSrgb": {
+      "metal": [
+        1.0657893419265747,
+        0.8326444625854492,
+        0.5055756568908691,
+        1.0
+      ],
+      "llvmpipe": [
+        1.0657895803451538,
+        0.8326443433761597,
+        0.5055757164955139,
+        1.0
+      ]
+    },
+    "hsv": {
+      "metal": [
+        0.09730478376150131,
+        0.5256326198577881,
+        1.0657893419265747,
+        1.0
+      ],
+      "llvmpipe": [
+        0.09730469435453415,
+        0.5256326794624329,
+        1.0657895803451538,
+        1.0
+      ]
+    },
+    "wrappedHue": {
+      "metal": 0.5473048686981201,
+      "llvmpipe": 0.547304630279541
+    },
+    "encodedResult": {
+      "metal": [
+        0.5055757164955139,
+        0.9067841172218323,
+        1.0657893419265747,
+        1.0
+      ],
+      "llvmpipe": [
+        0.5055757761001587,
+        0.9067850708961487,
+        1.0657895803451538,
+        1.0
+      ]
+    },
+    "fmaObservation": "16 direct-FMA, phase or intrinsic-spelling variants left the original full output of this exposed pixel unchanged."
+  },
+  "transferGrid": {
+    "totalInputValues": 82446,
+    "finiteHalfBitPatterns": 63488,
+    "additionalF32": "Every binary32 exponent 0..254 with both signs, low and high mantissas, seeded random mantissas and values around transfer/other cutoffs. Includes Float.max and signed zero.",
+    "original": {
+      "nonlinearF16": {
+        "count": 49964,
+        "maxUlp": 9,
+        "p95Ulp": 3,
+        "meanUlp": 1.1894964374349533,
+        "exact": 13948,
+        "maxAbs": 4.1682431216827354e-05,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.003223419189453125,
+        "nonfinite": 0
+      },
+      "extendedF32": {
+        "count": 60138,
+        "maxUlp": 46,
+        "p95Ulp": 9,
+        "meanUlp": 2.164604742425754,
+        "exact": 14894,
+        "maxAbs": 34188581286.0,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 2.291797805849924e+27,
+        "nonfinite": 0
+      },
+      "linearHDR2": {
+        "count": 19992,
+        "maxUlp": 9,
+        "p95Ulp": 3,
+        "meanUlp": 1.125450180072029,
+        "exact": 6044,
+        "maxAbs": 2.9341821994322004e-07,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.003223419189453125,
+        "nonfinite": 0
+      },
+      "linearToe": {
+        "count": 22308,
+        "maxUlp": 1,
+        "p95Ulp": 1,
+        "meanUlp": 0.06517841133225749,
+        "exact": 20854,
+        "maxAbs": 2.086162569081562e-09,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": -0.0,
+        "nonfinite": 0
+      }
+    },
+    "cubeRootRefinement": {
+      "nonlinearF16": {
+        "count": 49964,
+        "maxUlp": 7,
+        "p95Ulp": 2,
+        "meanUlp": 0.9067328476503083,
+        "exact": 16436,
+        "maxAbs": 2.331911733222114e-05,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.004863739013671875,
+        "nonfinite": 0
+      },
+      "extendedF32": {
+        "count": 60138,
+        "maxUlp": 7,
+        "p95Ulp": 2,
+        "meanUlp": 0.8845987561940869,
+        "exact": 20246,
+        "maxAbs": 2778342610.0,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.004863739013671875,
+        "nonfinite": 0
+      },
+      "linearHDR2": {
+        "count": 19992,
+        "maxUlp": 7,
+        "p95Ulp": 3,
+        "meanUlp": 1.0662765106042418,
+        "exact": 5848,
+        "maxAbs": 2.7825860393626556e-07,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.004863739013671875,
+        "nonfinite": 0
+      },
+      "linearToe": {
+        "count": 22308,
+        "maxUlp": 1,
+        "p95Ulp": 1,
+        "meanUlp": 0.06517841133225749,
+        "exact": 20854,
+        "maxAbs": 2.086162569081562e-09,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": -0.0,
+        "nonfinite": 0
+      }
+    },
+    "excludedReciprocalPower": {
+      "nonlinearF16": {
+        "count": 49964,
+        "maxUlp": 10,
+        "p95Ulp": 5,
+        "meanUlp": 1.9530461932591465,
+        "exact": 7058,
+        "maxAbs": 5.792085494249477e-05,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.00321197509765625,
+        "nonfinite": 0
+      },
+      "extendedF32": {
+        "count": 60138,
+        "maxUlp": 49,
+        "p95Ulp": 10,
+        "meanUlp": 2.930809138980345,
+        "exact": 7747,
+        "maxAbs": 36336064934.0,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 2.291797805849924e+27,
+        "nonfinite": 0
+      },
+      "linearHDR2": {
+        "count": 19992,
+        "maxUlp": 10,
+        "p95Ulp": 4,
+        "meanUlp": 1.6409563825530211,
+        "exact": 3849,
+        "maxAbs": 3.4822118621935516e-07,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": 0.00321197509765625,
+        "nonfinite": 0
+      },
+      "linearToe": {
+        "count": 22308,
+        "maxUlp": 1,
+        "p95Ulp": 1,
+        "meanUlp": 0.06517841133225749,
+        "exact": 20854,
+        "maxAbs": 2.086162569081562e-09,
+        "incorrectNonzeroSigns": 0,
+        "worstInput": -0.0,
+        "nonfinite": 0
+      }
+    },
+    "forcedApplePhotoSamples": {
+      "baseline": {
+        "over": 0,
+        "max": 0,
+        "per": {},
+        "changed": 0
+      },
+      "newtonen": {
+        "over": 0,
+        "max": 1.66893e-06,
+        "per": {},
+        "changed": 27099
+      }
+    }
+  },
+  "sourceAndReproduction": {
+    "archive": {
+      "file": "specs/035-portable-processing-cores/evidence/portable-mask-hue-vulkan-sources.tar.gz",
+      "sha256": "e93993e5dd017a1a01d652687dde8cfb01a77d8ba37c69f96325b7f95b5b11b1"
+    },
+    "shader": {
+      "file": "Modules/ImageEdit/src/mask_tone_v3.wgsl",
+      "sha256": "88ba274442354fcf58a997e8760c2327e5d89ceda6184542228afe2bdc67613b"
+    },
+    "selection": {
+      "file": "Modules/ImageEdit/src/gpu.rs",
+      "sha256": "c4ab5e8d8ae3cc2e451216ad296f4d565f08cd0ed0c0c7adbcc7c7eb016f123c"
+    },
+    "regression": {
+      "file": "Modules/ImageEdit/tests/mask_tone_v3.rs",
+      "sha256": "e92d44d3dd7c510c95b82fad3ac6784e067f4ed827f048908610e6355e551c3b"
+    },
+    "differentialHarness": "portable-local-mask-tone-sources.tar.gz preserves the frozen-record producer, C ABI replay executable source, generated shader and input recipe files. Store separately measured stock, candidate and independently built runtime receipts with each sample.",
+    "commands": [
+      "python3 case.py /path/to/librawmaster_image.so production",
+      "cargo test --locked --release --manifest-path Modules/ImageEdit/Cargo.toml --test mask_tone_v3 -- masked_hue_matches_the_native_hdr_pixel --ignored",
+      "RADIAL_FROZEN=/path/to/radial-port python3 samples.py /path/to/librawmaster_image.so all production"
+    ]
+  },
+  "sampledCABI": {
+    "stateCount": 32,
+    "samplePixels": 393216,
+    "over2e6Before": 1,
+    "over2e6After": 0,
+    "maxAbsAfter": 1.78814e-06,
+    "maxAbsCPU": 1.60933e-06,
+    "cpuMatchesPreviousMacLinux": 32,
+    "zeroCoverageOrAlphaDifferences": 0,
+    "hueSamples": 49152,
+    "rows": [
+      {
+        "case": "primary.color-mask-hue-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-literal-hue/primary.color-mask-hue-0.bin",
+          "sha256": "8fd4f531e570c27a46574de84decf32d0d205298c5740c0f3ff9d349af240c35"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.color-mask-hue-0.json",
+          "sha256": "229c97342e21ee096316d4c3aa62ff8ba0cacf448c08c36c895866acdfa0d496"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "ec741f3bb0507c21a5793159862ea9f6918ab535239b5a76e47a90fed7987d0c",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 3776,
+          "changedComponents": 10387,
+          "maxAbs": 8.34465e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "0fa48604f3796477f0c000342d66c990dd6f9d7df7c430a659962ded6c33f036",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.color-mask-hue-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-literal-hue/primary.color-mask-hue-1.bin",
+          "sha256": "add5f298b5cafc6fd8f2f6cb0ac8ba4c08e1ec709b8462a7293d6494bb57e232"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.color-mask-hue-1.json",
+          "sha256": "8cca8b71f3b99ae5354c5dc2cb2de6bb57b5a46505ada81e260a8a6ca5f0492d"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "28bc4ed4ce5666302c8b342c3c33012f54e6131bc7d14eada5c9ca69e8d38744",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 3776,
+          "changedComponents": 10469,
+          "maxAbs": 1.78814e-06,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "30eb88eff3b9c29c727bf65418887ce14b22d1debd03209bd9f24979d427e9db",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.color-mask-saturation-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.color-mask-saturation-0.bin",
+          "sha256": "79c06b40570d81a3a830d7f41265811ee009750fee1b84d8973734bb412a57d9"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.color-mask-saturation-0.json",
+          "sha256": "3c8dc3ff1cdce310ac2493e018ef7e73ae969c60af50e16cf0bf8bf15c38bd77"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "8575ebf24a199af3b9fb32b046ad8b4413050ead38f8499d638a2d1ff5c50c9e",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 1291,
+          "changedComponents": 1512,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "4d4685b8232b184681ab6deb6c6f6519fbb298b381a627e7224715ee9b072d27",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.color-mask-saturation-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.color-mask-saturation-1.bin",
+          "sha256": "b82fad0f51e83aa28741183796239a55aebeb3746de30878ac545fb39ce7e825"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.color-mask-saturation-1.json",
+          "sha256": "681d2cf6730c78b8c2259abcfe5f1bd91ac94a53eab934ec03f529f4be67de02"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "d2f1d0d5c7c4daa2ab38f0e35f47698844be2f57551196a925e0031cd083682a",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 2043,
+          "changedComponents": 2893,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "5029381ba28d2a93ade883542967ed78591f387d99247d1c1c22af9a8795fda5",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-blacks-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-blacks-0.bin",
+          "sha256": "80923c3ad3cbbf27b116fe6ccd814f8ec4a095486df6bfc83c9cb786ad279789"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-blacks-0.json",
+          "sha256": "610d2866f184e5479bcbea5bdc7545af7e4e9586b33a353cc1a2ef1d1d2b3f49"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "d5e800313eb551a2e2bf31c8c20a7af1a6a01fe4ca60661226d2527ee9925c9d",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 1864,
+          "changedComponents": 2315,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "9828bea9e8b8818d65610fa81064ba1fd23617431a65f730d046a56e16db5a63",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-blacks-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-blacks-1.bin",
+          "sha256": "7c03bfe3f7bb558a7d5237c8616edafc4750d4df66e845df9cde1b9159424222"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-blacks-1.json",
+          "sha256": "5e7d3b61a94b3dbb20338e1a789de00e93c0bbed95098cf32fa04aef51659488"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "682d172229e8dbf51c9737dbf080ffdbecde5819517fe8369654d6a97f528f8c",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 1566,
+          "changedComponents": 1854,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "e9aec5cb008beaf6e93c7747a959036e9bc612338633a0d49af183a56be9f051",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-contrast-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-contrast-0.bin",
+          "sha256": "557d4f2fb88198d2f5ae83295bd33eab9c6f00a800ad95c320c02fd29574902a"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-contrast-0.json",
+          "sha256": "67eafa6e01f528ec46649b0a193d9f0f17edbd319ba94c729cf66076faec56de"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "4ac33e6048e4b2941ea3e29d0ac630f92dbdbf75de8d3080cff31d73195e52c5",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 3360,
+          "changedComponents": 9810,
+          "maxAbs": 4.17233e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "34c425737bdc8f623cc8d8db9c9ec8098a721ec9a8512d27d4618ae79d149f18",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-contrast-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-contrast-1.bin",
+          "sha256": "4dc9bfee57d05ee55815e040ebddf6c875dae87f3f7579fe7b5db61c1c027b75"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-contrast-1.json",
+          "sha256": "2e1b14a9fa427509785d87ea63c483c19e86eb39073a021ea1fd74ccea3d3161"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "5de605af924060313b2141c484608094aa2a28a12d17a3e2142abad6eb58445c",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 3295,
+          "changedComponents": 9790,
+          "maxAbs": 6.55651e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "bbbe8fa9d7302fbb64758dd03a0d36b21a7753212d7fd6c79494e54f080cc866",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-exposure-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-exposure-0.bin",
+          "sha256": "6bf7077b1d22b07cbc135581dca5aa9f14d2afc1363f9c15f6e031fd2e9563d2"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-exposure-0.json",
+          "sha256": "0e9c3189f993b8cb8c8c51fae4506eee19516b1745cb01c85d7f6c6d6f8aff8e"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "afd3cd643e25a4f3d739393731a3c5dee611f3d15903f279438661eb0a9f042a",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 3772,
+          "changedComponents": 11034,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "819ad7fca80fe0c568eaacca8d9af1e49d1257596323678f45d9bbfc07fc2a1e",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-exposure-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-exposure-1.bin",
+          "sha256": "d90ed21bf81b8235f7fc3e4332cf2e8873d5190d68a0e1e4ca5c680634bc1b80"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-exposure-1.json",
+          "sha256": "2c44c1d405a6df4f26761a7f9a1eaa9c94e55dcfe5a9684f8500522cee7b1898"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "8f7969273f1c650aff58c3fe19c42b0fb84d9d38a6246be8e58cdc8b73f1354e",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 3759,
+          "changedComponents": 9431,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "d48ed0d32846048dbe0dffe6e98aa13f825dda43fe5fdc97c4c964b32adcc63f",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-highlights-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-highlights-0.bin",
+          "sha256": "9f3b03e9986896bf140456b794088e4450c07a1fedbafc2fc550be7acbb2e18e"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-highlights-0.json",
+          "sha256": "af23def73699b16bbd516fa32014f5d011ea397184dea5b36401aaba6abeb728"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "6cdadc12bcf874c1b475877bdee8ed589a233f4ad36ad2676a2393071f7ddb0b",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 34,
+          "changedComponents": 95,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "6822017a0dd0f3994c9a0fda20b4342b7259581dd390c0f52bfd672ecd6f89cb",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-highlights-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-highlights-1.bin",
+          "sha256": "c219b9b7255d0d65323d6766cb8d8482ce53ec26377cfa5cc940b94030b8ea85"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-highlights-1.json",
+          "sha256": "648ca47ffedc92cc0f807556cd37c7fdabf6fbb83ea3a9d6bb8f07c38fc398ce"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "a1d7da45825c6eb54e3f3bf819a8a9d8d855d5a8ad7dac35e58527d593fe8181",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 108,
+          "changedComponents": 315,
+          "maxAbs": 2.38419e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "c4b29ef8abcc68dd75e085ddb01f37047abd3b01f2ab113bc5e500cf73e48d27",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-shadows-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-shadows-0.bin",
+          "sha256": "1caa99464f040ec4eef5bca09a2dbe42cd03743eb0ec089a685008b540641a12"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-shadows-0.json",
+          "sha256": "b6660d7e12246bb7d5291036530bd2e5a7819afbdc7355774239339b85128ab6"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "554b6cdf62547e4ad74dc6965aa76756a650b836259720563b10ba771a0495ed",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 119,
+          "changedComponents": 326,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "512e67f120b9798772d3b41aa14906fae3cf020dd9991c8672d2435da19a1d37",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-shadows-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-shadows-1.bin",
+          "sha256": "22579bae8cc19b3b6467e5fa9f1b2ea7b058bace9dd4479ac4cd33de665c414d"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-shadows-1.json",
+          "sha256": "c81eb25b8d74536fab9e432e6b1341e2d5de45ff43e013fa7980fe4accaded35"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "bee7c82aa90a203b830156d8e9c68402af26097b8ae9059c3afa8c9fc8df88d1",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 430,
+          "changedComponents": 1239,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "a44faa259fef05cdaca24059852e779fb3839e9dcaf71f3e2e5150537f9bb8d1",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-whites-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-whites-0.bin",
+          "sha256": "96e6b8d795e3f033d90cf858d36d78213a8e5c40410532accc66bcf3bb431c3c"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-whites-0.json",
+          "sha256": "495596ea5abb8c24cc27a118e20c125238c10f250d687caf19a8c45beed23349"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "24578d37728e464e202b59129ec1fd5f0bb48c3fdc087414b3b6cb2c63d7766a",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 23,
+          "changedComponents": 64,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "7fd13025a4448cd3127a0675b8d4af5e66e4c6e176d982c6095b4ce7ccc0ca58",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "primary.light-mask-whites-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/primary.light-mask-whites-1.bin",
+          "sha256": "4f2193a17551e21905345756b816bf58f2a2911970d0336dc25034d57934a5ea"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/primary.light-mask-whites-1.json",
+          "sha256": "5e77ff7f868572349eeff94e7ebdf4c7bd02ba4ceb32453f018464e98a23e44f"
+        },
+        "sampleCount": 12800,
+        "partialCoverage": 45,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "633d1e93b41a96ddc27d457159591e9edd89c124e2d97444aa35a6d96a1e6c8e",
+          "pixels": 12800,
+          "partial": 45,
+          "changedPixels": 88,
+          "changedComponents": 256,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "0d1b1a628fa83769183319daa9c23cca0bf32e72131b2d4a92387aaaf96f4174",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.color-mask-hue-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-literal-hue/secondary.color-mask-hue-0.bin",
+          "sha256": "04204e90fcd0a2c89e9f38ed70b9b60e804436b483ef670f7dcfeb4eae5902b7"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.color-mask-hue-0.json",
+          "sha256": "229c97342e21ee096316d4c3aa62ff8ba0cacf448c08c36c895866acdfa0d496"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "c963d5f95c172b26a4aab3df30597df9e89f69b8e45aff7ae4563897927d8309",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 3454,
+          "changedComponents": 9567,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "297ad0f7db93e2a5ecf6f3d324bbc3351f8b3477b4ab8e22b5c17eb1cab4de5c",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.color-mask-hue-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-literal-hue/secondary.color-mask-hue-1.bin",
+          "sha256": "084d264c392f93e9b696f07c1af54c0d308eb1f7126f86f1b02b84ff5e9cf2f8"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.color-mask-hue-1.json",
+          "sha256": "8cca8b71f3b99ae5354c5dc2cb2de6bb57b5a46505ada81e260a8a6ca5f0492d"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "91b0bca72a2ad57cf64eca23b10f4ee23f73ee55df0030580c4e018b40c2f3ec",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 3454,
+          "changedComponents": 9598,
+          "maxAbs": 5.96046e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "19e8ca87a7b4e90267268aaf8ceb7b29c9e8a0ab1d6789b3dbdedb2295f186be",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.color-mask-saturation-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.color-mask-saturation-0.bin",
+          "sha256": "51a68e84ff40894ff1eeb7f599c86894201faacb73aacb4572a5770361be8c3a"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.color-mask-saturation-0.json",
+          "sha256": "3c8dc3ff1cdce310ac2493e018ef7e73ae969c60af50e16cf0bf8bf15c38bd77"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "93e0582e62f45d0ab29443cc350feecba394812d674d6791f4b9b5999a4f221e",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 1020,
+          "changedComponents": 1178,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "3f4f588c34e986000725416148e00b022504094de64d35e5ced155bffb8f5b2c",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.color-mask-saturation-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.color-mask-saturation-1.bin",
+          "sha256": "8f6171c0a3d7383ec36b797603133ffa0e7002f07a4a4d3a7f9ae8c7d7c25e86"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.color-mask-saturation-1.json",
+          "sha256": "681d2cf6730c78b8c2259abcfe5f1bd91ac94a53eab934ec03f529f4be67de02"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "5f2b0b203af174884e5fca8552bfe0568ad16bbbfeefdf5000149dff4f03ec22",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 1592,
+          "changedComponents": 2306,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "ec305a8adfa98720baad031fe2f8773dc9742fc6d9a7f585a192f7625dcd73db",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-blacks-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-blacks-0.bin",
+          "sha256": "26c54b250ad4fc27143eff8b3605298bf364fdef8fc992aa0cc1b2e0fe6fc57b"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-blacks-0.json",
+          "sha256": "610d2866f184e5479bcbea5bdc7545af7e4e9586b33a353cc1a2ef1d1d2b3f49"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "d5b8fd11ddbea5c22a4afd94815921c829eb0a1e6283dcb332ccbcf1f30687d1",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 1806,
+          "changedComponents": 2277,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "03b285ee20bbfec5206d422b9c06822c5d6174f92b34a9b35c9beff09ad82a52",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-blacks-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-blacks-1.bin",
+          "sha256": "f27deb3a302b3057a1de48f4f85078ac765acf7777d5d807fb88c3d6e9398a52"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-blacks-1.json",
+          "sha256": "5e7d3b61a94b3dbb20338e1a789de00e93c0bbed95098cf32fa04aef51659488"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "1acd6fb82e55afacfe05721a158527f6c0aeb1aa62c025dafac6177a9a9f0e62",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 1382,
+          "changedComponents": 1643,
+          "maxAbs": 5.96046e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "4dde7fdb74c78c8610e33445846d4946431fa4c2ee86413a0c31f8245b20bcdb",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-contrast-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-contrast-0.bin",
+          "sha256": "15162e06768cb86c74129fdc8c19da0df88e158c079487ae2718cb393a84d078"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-contrast-0.json",
+          "sha256": "67eafa6e01f528ec46649b0a193d9f0f17edbd319ba94c729cf66076faec56de"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "41518b5cccc4ff3428adea9e05741ba61f86c089cdcb18c318919cb07c52c817",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 3101,
+          "changedComponents": 9111,
+          "maxAbs": 3.57628e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "0f1db58f6501c7f45ef3553cddc9a3804cdc7e6c76738ed970c6cad8b45d3c84",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-contrast-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-contrast-1.bin",
+          "sha256": "cf7f49bc5d4e16e30349474494c23aaef93f590710ba299130bb966917031e68"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-contrast-1.json",
+          "sha256": "2e1b14a9fa427509785d87ea63c483c19e86eb39073a021ea1fd74ccea3d3161"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "7eda29e97aff14b25eaa256946727fa3c377867c1a54c0b1d97f7081c1a09ecb",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 3097,
+          "changedComponents": 9145,
+          "maxAbs": 4.76837e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "14fa37f0d275fd971578eb1ffb484dd929c10bdbd3a8134ac99dec3f65460352",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-exposure-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-exposure-0.bin",
+          "sha256": "ce47d8b9c22d0403ce4cd03760c4ac259367ec3819883098317e7014b043e6b4"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-exposure-0.json",
+          "sha256": "0e9c3189f993b8cb8c8c51fae4506eee19516b1745cb01c85d7f6c6d6f8aff8e"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "ea01fee4166e4f69d6834b2a6e7dbff1352c09547ee1eb7043a8130d76991977",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 3439,
+          "changedComponents": 10049,
+          "maxAbs": 1.78814e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "63c99a86af71a49c95f95a3a7ba72b0fe14de21630756d5256af3178c6ac9bb0",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-exposure-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-exposure-1.bin",
+          "sha256": "6c52a54522a5a44eeee83b61837e3c4a5fff6f68a813ee8e510189eb220b9002"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-exposure-1.json",
+          "sha256": "2c44c1d405a6df4f26761a7f9a1eaa9c94e55dcfe5a9684f8500522cee7b1898"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "c719c68b3a3d475aca7264b3bf4b9071cf630b5cd8cc83ec8fcc5164894d0d87",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 3420,
+          "changedComponents": 8375,
+          "maxAbs": 1.78814e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "dea4c326ffebf68cf7741ec7b1f06eb49b364c4a67b633f1a719270df8ebc69d",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-highlights-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-highlights-0.bin",
+          "sha256": "5627c8ff08cfb85daaf11515afcc6a48998466e91325d0e8a513aa1fc12ac241"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-highlights-0.json",
+          "sha256": "af23def73699b16bbd516fa32014f5d011ea397184dea5b36401aaba6abeb728"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "d733ada6f2f321468c8e4e51fd17c17ad179af54306b61c8c7b9ba51a8d79262",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 32,
+          "changedComponents": 96,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "d286599fda4bb69b028f37530b474c3964685e13eb9726700f0f7e0470fb72fe",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-highlights-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-highlights-1.bin",
+          "sha256": "de60f2d4d188473e6ba13c6690ebc86596f6c83f7f8fa4c22827a054bef59de5"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-highlights-1.json",
+          "sha256": "648ca47ffedc92cc0f807556cd37c7fdabf6fbb83ea3a9d6bb8f07c38fc398ce"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "4f90a3000ffe56f4ec451408c0be190904bac7a4521a21fe1b6bf7f007d13137",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 103,
+          "changedComponents": 309,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "3018de538ffeaa457d16ea23c03d04d07fc7ee59bae92c1c97bc688e98400450",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-shadows-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-shadows-0.bin",
+          "sha256": "89c82ea74535e570d138bbc4a1107fb8df1b6b9d67f1c4d3358229dbfae80422"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-shadows-0.json",
+          "sha256": "b6660d7e12246bb7d5291036530bd2e5a7819afbdc7355774239339b85128ab6"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "95063566cfae3e54415b7e4eeba71f7aa7edb710b6ea4c853cb64c354197e460",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 191,
+          "changedComponents": 537,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "d926ee6a930e5a319bc19c702d588291637c387166c9cf2536264b768780ce06",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-shadows-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-shadows-1.bin",
+          "sha256": "0249e466550904f3872750f91ecbfeb7ff51d1f2e6f78f775c5c9a2de89dc12e"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-shadows-1.json",
+          "sha256": "c81eb25b8d74536fab9e432e6b1341e2d5de45ff43e013fa7980fe4accaded35"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "c7cda6b2ff8235867f2848bf568f8d2c99b62a0f81e45e2c74bd962b8c29e16d",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 686,
+          "changedComponents": 1996,
+          "maxAbs": 2.98023e-08,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "1d67c9d9b429eb4bc3aa00188aae60ffbc24baa59ed47b3c29e490647f86a4e8",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-whites-0",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-whites-0.bin",
+          "sha256": "66a8ddfe4b6f2c7fa410abe2010b1c380a08cdfe8d9dc913da0b5ee3e8354deb"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-whites-0.json",
+          "sha256": "495596ea5abb8c24cc27a118e20c125238c10f250d687caf19a8c45beed23349"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "03c637553d2e8ca2042a7129953e4b8e57dacf01c4872be25e1186764dfac717",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 15,
+          "changedComponents": 45,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "8af6645a892e0a5473f87184c347ef71cdf6f0905683bb1b24de5dda71624b01",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      },
+      {
+        "case": "secondary.light-mask-whites-1",
+        "sample": {
+          "file": "output/035-development/phase-z/radial-port/frozen-both/secondary.light-mask-whites-1.bin",
+          "sha256": "5fed3863fde3e800bfc4c85bf8a15f64633d121d9ed18ed107b0d0530d67b721"
+        },
+        "wire": {
+          "file": "output/035-development/phase-z/radial-port/intake/secondary.light-mask-whites-1.json",
+          "sha256": "5e77ff7f868572349eeff94e7ebdf4c7bd02ba4ceb32453f018464e98a23e44f"
+        },
+        "sampleCount": 11776,
+        "partialCoverage": 32,
+        "softwareVulkan": {
+          "sourceOutputSHA256": "5b464442044c7c8a55032edf20be4ce56fa9b45598085b155e2a5f8c399da771",
+          "pixels": 11776,
+          "partial": 32,
+          "changedPixels": 63,
+          "changedComponents": 189,
+          "maxAbs": 1.19209e-07,
+          "over2e6": 0,
+          "alphaDifferences": 0,
+          "outsideDifferences": 0
+        },
+        "cpuOutputSHA256": "01a95a46f82cb0b6a79d689e7f8ae713f7bbda7cf8acea4202015a9ed7d9e5ce",
+        "cpuMatchesPreviousMacAndLinuxBytes": true,
+        "equalOnIndependentLinuxBuild": true
+      }
+    ]
+  },
+  "rawReceipts": [
+    {
+      "file": "output/035-development/phase-aa/hue/stock-single.json",
+      "sha256": "2e94257080e20f9adb28879213a4833ee7047ea01f696eacb17b056fb3a3e4b1"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-production-tests.log",
+      "sha256": "bb470a3cdc4c9cc8e51ee90bd4bf074d0c3d605585135474992a16adc663ec4f"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-production-pixel.json",
+      "sha256": "2e52d26df986147cf0e391e01fbfcdb3b791183a33c05b545ef00778b2da1f9c"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-production-summary.json",
+      "sha256": "e1955e2276c0a488a0247b8dd7bd4ac4f014f8557a8ee29b27877a1d8faf72a9"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-sample-production/summary.json",
+      "sha256": "75016ce9e997eebbd51d65d5e8d3db1fdf4b126de942cc4a001274b8ea27bc99"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-independent-seal-summary.json",
+      "sha256": "86fc0254b06590f52661d78d7196c5b40864e9bd7641f6954707531cd5690635"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-independent-seal-pixel.json",
+      "sha256": "94532e406a5b3756affa919029937eebd4f651f6d9ceaffcc3c0d5efe73585f0"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-cpu-pixel.json",
+      "sha256": "d95f74b59c0742debf71e496e47b40d5031829ba5c90a2b8245f031895540ad8"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-cpu-summary.json",
+      "sha256": "ffdf07a9ed69bf92a678f794533abd14ca90f5e675983e31a866ab6a138f0ab2"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-variants.json",
+      "sha256": "a5dc415a2346de501aedbfa8a44fc247c15c246a6e26f70e13a6244065cc1afb"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/mac-phases.json",
+      "sha256": "1388eaebf29cbdf269751d8793d4490a520adcfa046e4fc895385a990804c72b"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-small.json",
+      "sha256": "bffb5450229d05a3a0b887eae9b9e55aa2736cb3ed6cb87525442486e18ab48e"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-trials.json",
+      "sha256": "aed175508ab0788fd7e841ab341e6b4d214c96640a76c7798935f6ada2606fc7"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/accuracy-linux.json",
+      "sha256": "36e3f41c2d1cb3f1461ddf2b27180a5a8d24a72b39ceda96acbb34e7f5e3e8d2"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/mac-research-sample.json",
+      "sha256": "97094260eb4aeb03a98bd81d82848a7946db4f403c0e2984178bd103f604c5db"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/linux-sample-baseline/summary.json",
+      "sha256": "ac7bfc15a2f56acf60a47a6f5da7dd7a795d71e1cf0dc92f571bcf2a4f659758"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/darwin-sample-baseline/summary.json",
+      "sha256": "9990568a6f1511c1aaa1d40abf9093855a447dcd7852d6e4c66493d45bc06761"
+    },
+    {
+      "file": "output/035-development/phase-aa/hue/darwin-sample-newtonen/summary.json",
+      "sha256": "9371bb9ce7b5b14294e20404f35e403c018022f3efada09a049ca175c910648a"
+    }
+  ],
+  "completeAppleRawHue": [
+    {
+      "role": "primary",
+      "state": 0,
+      "device": "Apple M4 Max",
+      "inputSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "runtimeSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+      "nativeSize": [
+        9504,
+        6336
+      ],
+      "native": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 60217344
+      },
+      "half": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 15054336
+      },
+      "display": {
+        "alphaValues": 0,
+        "changedPixels": 0,
+        "edgePixels": 0,
+        "maxCodeDifference": 0,
+        "meanAbsoluteCodeDifference": 0
+      },
+      "actualDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+      "archiveDisplaySHA256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+      "report": {
+        "file": "output/035-development/candidate-batch29-cross-backend/native-radial/primary.json",
+        "sha256": "5b024f0f38978c27b4c6b66603f9d1d282354e9281dd65ef594c79d06fe08536"
+      }
+    },
+    {
+      "role": "primary",
+      "state": 1,
+      "device": "Apple M4 Max",
+      "inputSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "runtimeSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+      "nativeSize": [
+        9504,
+        6336
+      ],
+      "native": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 60217344
+      },
+      "half": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 15054336
+      },
+      "display": {
+        "alphaValues": 0,
+        "changedPixels": 0,
+        "edgePixels": 0,
+        "maxCodeDifference": 0,
+        "meanAbsoluteCodeDifference": 0
+      },
+      "actualDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+      "archiveDisplaySHA256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+      "report": {
+        "file": "output/035-development/candidate-batch29-cross-backend/native-radial/primary.json",
+        "sha256": "5b024f0f38978c27b4c6b66603f9d1d282354e9281dd65ef594c79d06fe08536"
+      }
+    },
+    {
+      "role": "secondary",
+      "state": 0,
+      "device": "Apple M4 Max",
+      "inputSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "runtimeSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+      "nativeSize": [
+        8640,
+        5760
+      ],
+      "native": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 49766400
+      },
+      "half": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 12441600
+      },
+      "display": {
+        "alphaValues": 0,
+        "changedPixels": 0,
+        "edgePixels": 0,
+        "maxCodeDifference": 0,
+        "meanAbsoluteCodeDifference": 0
+      },
+      "actualDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+      "archiveDisplaySHA256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+      "report": {
+        "file": "output/035-development/candidate-batch29-cross-backend/native-radial/secondary.json",
+        "sha256": "90dcde4725f16ee10d514040366d5d549fa1299d5a7212bff75ebb0a024582fd"
+      }
+    },
+    {
+      "role": "secondary",
+      "state": 1,
+      "device": "Apple M4 Max",
+      "inputSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "runtimeSHA256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a",
+      "nativeSize": [
+        8640,
+        5760
+      ],
+      "native": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 49766400
+      },
+      "half": {
+        "alphaChanges": 0,
+        "changedComponents": 0,
+        "changedPixels": 0,
+        "maxAbs": 0,
+        "nonfinitePixels": 0,
+        "over2e6Pixels": 0,
+        "pixels": 12441600
+      },
+      "display": {
+        "alphaValues": 0,
+        "changedPixels": 0,
+        "edgePixels": 0,
+        "maxCodeDifference": 0,
+        "meanAbsoluteCodeDifference": 0
+      },
+      "actualDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+      "archiveDisplaySHA256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+      "report": {
+        "file": "output/035-development/candidate-batch29-cross-backend/native-radial/secondary.json",
+        "sha256": "90dcde4725f16ee10d514040366d5d549fa1299d5a7212bff75ebb0a024582fd"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1105 @@
+{
+  "test": "RAWMasterUITests.ExportPerformanceTests/testRealWorkbenchBenchmarks",
+  "rounds": {
+    "export-rc5": {
+      "build": "candidate-rc5",
+      "testBinarySHA256": "0a3de38e94b95c61e003c9f4f7faa147a36c5e453eed7adfe676a41c6ad1e52b",
+      "catalogRuntimeSHA256": "514a26a892438a88ad39eb776b384f3d201aa8e41aa7bfaf7ba61a98b4491bf9",
+      "resultsWorktreePath": "output/035-development/export-rc5/rawmaster/results.json",
+      "groups": {
+        "jpeg-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.085020166,
+              "processMaxRSSKiB": 242624,
+              "seconds": 0.085068583
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.082941125,
+              "processMaxRSSKiB": 262352,
+              "seconds": 0.082982333
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.0837975,
+              "processMaxRSSKiB": 263744,
+              "seconds": 0.08383875
+            }
+          ],
+          "medianTotalSeconds": 0.08383875,
+          "medianFirstFileSeconds": 0.0837975,
+          "maxRSSKiB": 263744
+        },
+        "jpeg-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.114381542,
+              "processMaxRSSKiB": 733680,
+              "seconds": 0.639451375
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.108764583,
+              "processMaxRSSKiB": 762944,
+              "seconds": 0.646873708
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.112531875,
+              "processMaxRSSKiB": 797232,
+              "seconds": 0.654126125
+            }
+          ],
+          "medianTotalSeconds": 0.646873708,
+          "medianFirstFileSeconds": 0.112531875,
+          "maxRSSKiB": 797232
+        },
+        "jpeg-source/200": {
+          "warmTrials": [
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.126385458,
+              "processMaxRSSKiB": 820736,
+              "seconds": 5.722578208
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.128759041,
+              "processMaxRSSKiB": 829024,
+              "seconds": 5.747057416
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.13228525,
+              "processMaxRSSKiB": 829024,
+              "seconds": 6.341008375
+            }
+          ],
+          "medianTotalSeconds": 5.747057416,
+          "medianFirstFileSeconds": 0.128759041,
+          "maxRSSKiB": 829024
+        },
+        "raw-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.062683125,
+              "processMaxRSSKiB": 829024,
+              "seconds": 0.062742875
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.061978333,
+              "processMaxRSSKiB": 829024,
+              "seconds": 0.062029958
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.067351416,
+              "processMaxRSSKiB": 829024,
+              "seconds": 0.067404208
+            }
+          ],
+          "medianTotalSeconds": 0.062742875,
+          "medianFirstFileSeconds": 0.062683125,
+          "maxRSSKiB": 829024
+        },
+        "raw-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.073872958,
+              "processMaxRSSKiB": 829024,
+              "seconds": 0.588664583
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.075453333,
+              "processMaxRSSKiB": 829024,
+              "seconds": 0.548159666
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.0729085,
+              "processMaxRSSKiB": 829024,
+              "seconds": 0.658342
+            }
+          ],
+          "medianTotalSeconds": 0.588664583,
+          "medianFirstFileSeconds": 0.073872958,
+          "maxRSSKiB": 829024
+        }
+      }
+    },
+    "export-main-rc5-session": {
+      "build": "main-1b7df6b6",
+      "testBinarySHA256": "367919fa0da88dc9d73c2c47069694e30cb12f6753e82b18d79405cb1c3e9416",
+      "catalogRuntimeSHA256": "2e959e743327765f85ce7635898069a125b40818d2e2d4f00b83d8c5b7ca0af7",
+      "resultsWorktreePath": "output/035-development/export-main-rc5-session/rawmaster/results.json",
+      "groups": {
+        "jpeg-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.080539833,
+              "processMaxRSSKiB": 229120,
+              "seconds": 0.080609333
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.075364458,
+              "processMaxRSSKiB": 254048,
+              "seconds": 0.07541975
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.075907208,
+              "processMaxRSSKiB": 262736,
+              "seconds": 0.075994375
+            }
+          ],
+          "medianTotalSeconds": 0.075994375,
+          "medianFirstFileSeconds": 0.075907208,
+          "maxRSSKiB": 262736
+        },
+        "jpeg-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.080060208,
+              "processMaxRSSKiB": 737920,
+              "seconds": 0.541194166
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.092564083,
+              "processMaxRSSKiB": 757456,
+              "seconds": 0.521562542
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.079145916,
+              "processMaxRSSKiB": 789440,
+              "seconds": 0.505274333
+            }
+          ],
+          "medianTotalSeconds": 0.521562542,
+          "medianFirstFileSeconds": 0.080060208,
+          "maxRSSKiB": 789440
+        },
+        "jpeg-source/200": {
+          "warmTrials": [
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.081928625,
+              "processMaxRSSKiB": 811376,
+              "seconds": 4.7169195
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.081707375,
+              "processMaxRSSKiB": 811376,
+              "seconds": 4.795249
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.084184708,
+              "processMaxRSSKiB": 816432,
+              "seconds": 4.889084375
+            }
+          ],
+          "medianTotalSeconds": 4.795249,
+          "medianFirstFileSeconds": 0.081928625,
+          "maxRSSKiB": 816432
+        },
+        "raw-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.059158875,
+              "processMaxRSSKiB": 816432,
+              "seconds": 0.059226333
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.060616709,
+              "processMaxRSSKiB": 816432,
+              "seconds": 0.060694042
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.053112792,
+              "processMaxRSSKiB": 816432,
+              "seconds": 0.053188583
+            }
+          ],
+          "medianTotalSeconds": 0.059226333,
+          "medianFirstFileSeconds": 0.059158875,
+          "maxRSSKiB": 816432
+        },
+        "raw-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.061162166,
+              "processMaxRSSKiB": 816432,
+              "seconds": 0.360945416
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.062401333,
+              "processMaxRSSKiB": 816432,
+              "seconds": 0.361021083
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.058017042,
+              "processMaxRSSKiB": 816432,
+              "seconds": 0.368673292
+            }
+          ],
+          "medianTotalSeconds": 0.361021083,
+          "medianFirstFileSeconds": 0.061162166,
+          "maxRSSKiB": 816432
+        }
+      }
+    },
+    "export-rc4-rc5-session": {
+      "build": "candidate-rc4",
+      "testBinarySHA256": "eb05203d2dcc64c7b90d6025a38d81d8a80f79a897e51191625a8d67010fefd0",
+      "catalogRuntimeSHA256": "49e5b2c14f2681a1cf8e3cc30d2d3c86dcde66517f82736f0e5c3ef88c7f96ab",
+      "resultsWorktreePath": "output/035-development/export-rc4-rc5-session/rawmaster/results.json",
+      "groups": {
+        "jpeg-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.093904709,
+              "processMaxRSSKiB": 252864,
+              "seconds": 0.093974042
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.097158333,
+              "processMaxRSSKiB": 252864,
+              "seconds": 0.097227291
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.097764667,
+              "processMaxRSSKiB": 274848,
+              "seconds": 0.097845875
+            }
+          ],
+          "medianTotalSeconds": 0.097227291,
+          "medianFirstFileSeconds": 0.097158333,
+          "maxRSSKiB": 274848
+        },
+        "jpeg-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.123700875,
+              "processMaxRSSKiB": 765136,
+              "seconds": 0.795423375
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.115262583,
+              "processMaxRSSKiB": 765136,
+              "seconds": 0.791321083
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.12301,
+              "processMaxRSSKiB": 775536,
+              "seconds": 0.798962417
+            }
+          ],
+          "medianTotalSeconds": 0.795423375,
+          "medianFirstFileSeconds": 0.12301,
+          "maxRSSKiB": 775536
+        },
+        "jpeg-source/200": {
+          "warmTrials": [
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.140617083,
+              "processMaxRSSKiB": 805360,
+              "seconds": 7.270101917
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.137886333,
+              "processMaxRSSKiB": 809104,
+              "seconds": 7.166644125
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.141559459,
+              "processMaxRSSKiB": 843568,
+              "seconds": 6.925450292
+            }
+          ],
+          "medianTotalSeconds": 7.166644125,
+          "medianFirstFileSeconds": 0.140617083,
+          "maxRSSKiB": 843568
+        },
+        "raw-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.068642833,
+              "processMaxRSSKiB": 843568,
+              "seconds": 0.068737166
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.077346583,
+              "processMaxRSSKiB": 843568,
+              "seconds": 0.077421
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.076218166,
+              "processMaxRSSKiB": 843568,
+              "seconds": 0.07629325
+            }
+          ],
+          "medianTotalSeconds": 0.07629325,
+          "medianFirstFileSeconds": 0.076218166,
+          "maxRSSKiB": 843568
+        },
+        "raw-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.089117042,
+              "processMaxRSSKiB": 843568,
+              "seconds": 0.638374958
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.099289666,
+              "processMaxRSSKiB": 843568,
+              "seconds": 0.645464166
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.105060625,
+              "processMaxRSSKiB": 843568,
+              "seconds": 0.680002458
+            }
+          ],
+          "medianTotalSeconds": 0.645464166,
+          "medianFirstFileSeconds": 0.099289666,
+          "maxRSSKiB": 843568
+        }
+      }
+    },
+    "export-rc5-repeat": {
+      "build": "candidate-rc5",
+      "testBinarySHA256": "0a3de38e94b95c61e003c9f4f7faa147a36c5e453eed7adfe676a41c6ad1e52b",
+      "catalogRuntimeSHA256": "514a26a892438a88ad39eb776b384f3d201aa8e41aa7bfaf7ba61a98b4491bf9",
+      "resultsWorktreePath": "output/035-development/export-rc5-repeat/rawmaster/results.json",
+      "groups": {
+        "jpeg-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.084084875,
+              "processMaxRSSKiB": 252448,
+              "seconds": 0.084128417
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.094102083,
+              "processMaxRSSKiB": 254208,
+              "seconds": 0.094155333
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.08713375,
+              "processMaxRSSKiB": 254208,
+              "seconds": 0.087184
+            }
+          ],
+          "medianTotalSeconds": 0.087184,
+          "medianFirstFileSeconds": 0.08713375,
+          "maxRSSKiB": 254208
+        },
+        "jpeg-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.112673958,
+              "processMaxRSSKiB": 811232,
+              "seconds": 0.680898875
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.120049833,
+              "processMaxRSSKiB": 811232,
+              "seconds": 0.672999
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.113634917,
+              "processMaxRSSKiB": 811232,
+              "seconds": 0.666363667
+            }
+          ],
+          "medianTotalSeconds": 0.672999,
+          "medianFirstFileSeconds": 0.113634917,
+          "maxRSSKiB": 811232
+        },
+        "jpeg-source/200": {
+          "warmTrials": [
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.126954417,
+              "processMaxRSSKiB": 823712,
+              "seconds": 5.675949375
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.134078917,
+              "processMaxRSSKiB": 828016,
+              "seconds": 6.125580667
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.1393935,
+              "processMaxRSSKiB": 828016,
+              "seconds": 6.127748458
+            }
+          ],
+          "medianTotalSeconds": 6.125580667,
+          "medianFirstFileSeconds": 0.134078917,
+          "maxRSSKiB": 828016
+        },
+        "raw-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.065564417,
+              "processMaxRSSKiB": 828016,
+              "seconds": 0.065606958
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.067127417,
+              "processMaxRSSKiB": 828016,
+              "seconds": 0.067173209
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.063500791,
+              "processMaxRSSKiB": 828016,
+              "seconds": 0.06354775
+            }
+          ],
+          "medianTotalSeconds": 0.065606958,
+          "medianFirstFileSeconds": 0.065564417,
+          "maxRSSKiB": 828016
+        },
+        "raw-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.098330833,
+              "processMaxRSSKiB": 828016,
+              "seconds": 0.649886875
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.075850459,
+              "processMaxRSSKiB": 828016,
+              "seconds": 0.635735875
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.093446208,
+              "processMaxRSSKiB": 828016,
+              "seconds": 0.618174292
+            }
+          ],
+          "medianTotalSeconds": 0.635735875,
+          "medianFirstFileSeconds": 0.093446208,
+          "maxRSSKiB": 828016
+        }
+      }
+    }
+  },
+  "outputs": {
+    "jpeg-source/1": {
+      "allTrialsIdentical": true,
+      "countPerTrial": 1,
+      "inventorySHA256": "3d427f91fb48c5bf106a5d2aeb426ac7d8c1af1d3d4f3974d07026ccb71ca267"
+    },
+    "jpeg-source/20": {
+      "allTrialsIdentical": true,
+      "countPerTrial": 20,
+      "inventorySHA256": "b3cc3f7259f114e0b9df81e811a88f58c66320dae8f1f2c8a961b3a21f13f6ba"
+    },
+    "jpeg-source/200": {
+      "allTrialsIdentical": true,
+      "countPerTrial": 200,
+      "inventorySHA256": "f16b46d6c95589125cf7e74d0efb83c2f074ccdcb5226831a09e614a0bc0e3cd"
+    },
+    "raw-source/1": {
+      "allTrialsIdentical": true,
+      "countPerTrial": 1,
+      "inventorySHA256": "c71cc60ca2e645af17462174ee3700bb53943913d51f23a48537630d23add4ea"
+    },
+    "raw-source/20": {
+      "allTrialsIdentical": true,
+      "countPerTrial": 20,
+      "inventorySHA256": "35536cf793faaa26c43ea5c2933189f7bb5fbf3e2291664e082c66b4aae17780"
+    }
+  },
+  "inputManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb"
+}

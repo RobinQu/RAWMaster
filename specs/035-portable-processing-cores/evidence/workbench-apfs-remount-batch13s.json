@@ -1,0 +1,303 @@
+{
+  "candidate": "candidate-batch13s",
+  "sameMacOSBinariesAsRemountRuns": true,
+  "catalogSchema": 10,
+  "testUIBinary": {
+    "path": "output/035-development/candidate-batch13s/RAWMasterUITests.xctest/Contents/MacOS/RAWMasterUITests",
+    "sha256": "7cb251d5777611c464e696bf9d1c384409e62ce2525b9fadb43a04014d54d763"
+  },
+  "catalogRuntime": {
+    "path": "output/035-development/candidate-batch13s/RAWMasterUITests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime",
+    "sha256": "3b73774b17b0b5f5bb8f1912c127496625a4ee2588c782ea7471453f9242e595"
+  },
+  "physicalExternalUnplugTested": false,
+  "hypotheses": {
+    "sameKnownAPFSVolumeAfterDeviceChange": true,
+    "historicalV9WithoutRecordedVolumeAfterDeviceChange": false
+  },
+  "apfsCases": {
+    "published": {
+      "firstDirectory": {
+        "device": 16777246,
+        "inode": 18,
+        "birth": 1795417791023321113
+      },
+      "afterMountDirectory": {
+        "device": 16777250,
+        "inode": 18,
+        "birth": 1795417791023321113
+      },
+      "catalogBefore": {
+        "device": 16777234,
+        "inode": 190768953,
+        "birth": 1795417791105708385
+      },
+      "catalogAfterMount": {
+        "device": 16777234,
+        "inode": 190768953,
+        "birth": 1795417791105708385
+      },
+      "volumeUUID": "5F794EBE-174C-4446-8C02-716EFCE8893A",
+      "targetGranted": true,
+      "phase": "done",
+      "generation": 3,
+      "previouslyPublishedUnchanged": {
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 20,
+          "birth": 1795417792328225431
+        },
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 24,
+          "birth": 1795417792495179899
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/volume-remount-native/case-published-final/evidence.json",
+        "sha256": "3d9d41343c2af8cfeee30ee3482d2f87149fca5663ddd6da3f0796a574b43b70"
+      },
+      "nativeLog": {
+        "path": "output/035-development/volume-remount-native/case-published-final/reopen.log",
+        "sha256": "2f2894d78fdd3a1bbdaa3ec0cf1c0900ba4e4726f932c6856cef86806bea36d8"
+      },
+      "nativeReceipt": {
+        "path": "output/035-development/volume-remount-native/case-published-final/native-receipt.json",
+        "sha256": "f38960f1feb386b748d81e9f3e34332810bf282710af5c20a873a548129b2d5e"
+      }
+    },
+    "prepared-relocated": {
+      "firstDirectory": {
+        "device": 16777246,
+        "inode": 18,
+        "birth": 1795417814345954707
+      },
+      "afterMountDirectory": {
+        "device": 16777250,
+        "inode": 18,
+        "birth": 1795417814345954707
+      },
+      "catalogBefore": {
+        "device": 16777234,
+        "inode": 190769508,
+        "birth": 1795417814422581713
+      },
+      "catalogAfterMount": {
+        "device": 16777234,
+        "inode": 190769508,
+        "birth": 1795417814422581713
+      },
+      "volumeUUID": "EA194819-B2D3-4527-8060-6ED155D69875",
+      "targetGranted": true,
+      "phase": "done",
+      "generation": 2,
+      "previouslyPublishedUnchanged": {
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 20,
+          "birth": 1795417814542605924
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/volume-remount-native/case-prepared-relocated-final/evidence.json",
+        "sha256": "a481ef9506e2386d1ee4a744f03dd83dd1df534c941b4d3d9dddc254537d07d4"
+      },
+      "nativeLog": {
+        "path": "output/035-development/volume-remount-native/case-prepared-relocated-final/reopen.log",
+        "sha256": "ebd864944a4471159f10283a6e12f7c9f2dab21c89fd541ef8c5cc7aece726f7"
+      },
+      "nativeReceipt": {
+        "path": "output/035-development/volume-remount-native/case-prepared-relocated-final/native-receipt.json",
+        "sha256": "d181030957970ec82ee1b72b9ab5f185e2929327efd0b81afcc9f8ca7d0df43f"
+      }
+    },
+    "catalog-on-volume": {
+      "firstDirectory": {
+        "device": 16777246,
+        "inode": 18,
+        "birth": 1795417985591379009
+      },
+      "afterMountDirectory": {
+        "device": 16777250,
+        "inode": 18,
+        "birth": 1795417985591379009
+      },
+      "catalogBefore": {
+        "device": 16777246,
+        "inode": 20,
+        "birth": 1795417985663878420
+      },
+      "catalogAfterMount": {
+        "device": 16777250,
+        "inode": 20,
+        "birth": 1795417985663878420
+      },
+      "volumeUUID": "6A61FCF2-8F96-4491-B02D-667DBCE00A79",
+      "targetGranted": true,
+      "phase": "done",
+      "generation": 3,
+      "previouslyPublishedUnchanged": {
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 35,
+          "birth": 1795417985801590139
+        },
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 39,
+          "birth": 1795417985869435578
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/volume-remount-native/case-catalog-on-volume-retry/evidence.json",
+        "sha256": "185678037be776715726d58833bb9444400f52e412915c12550536aeefae0f67"
+      },
+      "nativeLog": {
+        "path": "output/035-development/volume-remount-native/case-catalog-on-volume-retry/reopen.log",
+        "sha256": "fd8dc8d6f9d5719d65e8e6887ba5408b8c233a570cd62e62449144b66f2ad0a4"
+      },
+      "nativeReceipt": {
+        "path": "output/035-development/volume-remount-native/case-catalog-on-volume-retry/native-receipt.json",
+        "sha256": "42c4dc216daf34707474b6d124bf12cc7982f612cd6220b5a9e8ee7d578fb7ee"
+      }
+    },
+    "legacy-same": {
+      "firstDirectory": {
+        "device": 16777250,
+        "inode": 19,
+        "birth": 1795417840082386308
+      },
+      "afterMountDirectory": {
+        "device": 16777250,
+        "inode": 19,
+        "birth": 1795417840082386308
+      },
+      "catalogBefore": {
+        "device": 16777234,
+        "inode": 190769649,
+        "birth": 1795417840167592380
+      },
+      "catalogAfterMount": {
+        "device": 16777234,
+        "inode": 190769649,
+        "birth": 1795417840167592380
+      },
+      "volumeUUID": "52D0E355-DD62-44B6-9FAD-A24C2A0EC04C",
+      "targetGranted": true,
+      "phase": "done",
+      "generation": 3,
+      "previouslyPublishedUnchanged": {
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 26,
+          "birth": 1795417840327823828
+        },
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 30,
+          "birth": 1795417840388444415
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/volume-remount-native/case-legacy-same-final/evidence.json",
+        "sha256": "8561289b100d5ce82eaa91ddd58ebfa395b4fbd5b7b4e6bc7cf2441333a2b867"
+      },
+      "nativeLog": {
+        "path": "output/035-development/volume-remount-native/case-legacy-same-final/reopen.log",
+        "sha256": "0821d2ba68002d16773737f704011796cb8f9d25a880cc4001746c57951fd995"
+      },
+      "nativeReceipt": {
+        "path": "output/035-development/volume-remount-native/case-legacy-same-final/native-receipt.json",
+        "sha256": "960f9df61e2836433964cc69f15ed8f12fd84a26c318c3e987cd200276b73e08"
+      }
+    },
+    "legacy-changed": {
+      "firstDirectory": {
+        "device": 16777250,
+        "inode": 19,
+        "birth": 1795417847230027435
+      },
+      "afterMountDirectory": {
+        "device": 16777254,
+        "inode": 19,
+        "birth": 1795417847230027435
+      },
+      "catalogBefore": {
+        "device": 16777234,
+        "inode": 190769735,
+        "birth": 1795417847308862406
+      },
+      "catalogAfterMount": {
+        "device": 16777234,
+        "inode": 190769735,
+        "birth": 1795417847308862406
+      },
+      "volumeUUID": "5438B83B-4DD8-4D53-9E82-8A485F1F46D5",
+      "targetGranted": false,
+      "phase": "interrupted",
+      "generation": 1,
+      "previouslyPublishedUnchanged": {
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 26,
+          "birth": 1795417847430687538
+        },
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 30,
+          "birth": 1795417847486611653
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/volume-remount-native/case-legacy-changed-final/evidence.json",
+        "sha256": "368be9117058e1f0599279f62d747304c01b9576363011425a1f8fe074148dad"
+      },
+      "nativeLog": {
+        "path": "output/035-development/volume-remount-native/case-legacy-changed-final/reopen.log",
+        "sha256": "ed4eb130ccd6de296de89584cc84fb9a93d8555c96280d84de953867b59bd1f0"
+      },
+      "nativeReceipt": null
+    }
+  },
+  "macRust": {
+    "passed": 90,
+    "ignored": 5,
+    "log": {
+      "path": "output/035-development/volume-remount-native/rust-tests-final.log",
+      "sha256": "19a962419a53e3bedca9dba321f7839f1cb5cd3707feeffbb6ed52b7a378f066"
+    }
+  },
+  "linuxRust": {
+    "passed": 89,
+    "ignored": 5,
+    "log": {
+      "path": "output/035-development/volume-remount-native/linux-rust-bundled.log",
+      "sha256": "71a8e28da372a3f481ab7aeca7c48b750c1f1bae86d21d733126d87a6d6a02a5"
+    }
+  },
+  "linuxSystemSQLiteRejection": {
+    "path": "output/035-development/volume-remount-native/linux-rust.log",
+    "sha256": "043b3f5f8c74ec7b99909540c1944ec6caaa3b98487d0f9e363691c0e1f35245"
+  },
+  "linuxSQLite": "3.53.2 bundled",
+  "macFeatures": {
+    "path": "output/035-development/volume-remount-native/macos-features.txt",
+    "sha256": "27fb549a552183feea4727300204662784f39ec1a65ae9c3504ee1d228ac10b5"
+  },
+  "linuxFeatures": {
+    "path": "output/035-development/volume-remount-native/linux-features.txt",
+    "sha256": "cebe9069bb26aa593253fd9deaf41e30246eb9d49558692b7127a095565767e3"
+  },
+  "nativeV8Migration": {
+    "path": "output/035-development/candidate-batch13s/native-catalog.log",
+    "sha256": "5365c55bb814ef4a2a5d0847e04d04979b5e6e7aaa1048f9c1a82ee03aa8d4d0"
+  },
+  "mountHarness": {
+    "path": "output/035-development/volume-remount-native/verify-remount.py",
+    "sha256": "250270f9125c056b6f9ed148e768d327c51842a7ec8a6e1bc400a6590d78d8cd"
+  },
+  "browser": {
+    "path": "output/035-development/volume-remount-l0/verification.json",
+    "sha256": "f848dd92837c170bbd4bbb43947f52f1ec25455e763be41531530d16bd7df2db"
+  }
+}

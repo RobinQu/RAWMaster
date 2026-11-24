@@ -1,0 +1,1378 @@
+{
+  "schemaVersion": 1,
+  "scope": "two verified FlashRaw RAW sources, 2400x1600 sRGB8, macOS 27.0.1 and Apple M4 Max",
+  "appleTraceDocumentation": "https://developer.apple.com/videos/play/wwdc2020/10089/",
+  "sourcePlans": {
+    "primary": {
+      "programGraph": {
+        "repoPath": "output/035-development/fit-pass-study/primary-tree.log",
+        "sha256": "acaf923a790c8d10b1cad9414c4ad89690b5cbe693ed2d2b83b80e837823d062"
+      },
+      "matchedTrace": {
+        "repoPath": "output/035-development/fit-pass-study/primary-tree.json",
+        "sha256": "a6c8ac1d62c7c38cd3616274f3d4b824f7e2195562b991f1e838ae4f80456c84"
+      },
+      "nativeSize": [
+        9504,
+        6336
+      ],
+      "halfSize": [
+        4752,
+        3168
+      ],
+      "nativeHalfUpload": {
+        "repoPath": "output/035-development/fit-pass-study/primary-half.json",
+        "sha256": "10f0dc045567db72897c34d732147d0c522420c07b04d68312a361bbff75a87f"
+      },
+      "noFlipExactFrames": 4,
+      "writeAndReadFlipChangedPixels": [
+        3743,
+        5053,
+        3074,
+        3229
+      ]
+    },
+    "secondary": {
+      "programGraph": {
+        "repoPath": "output/035-development/fit-pass-study/secondary-tree.log",
+        "sha256": "93d5728c5f9c6ebe01913a83ee1785ed23ac61d13afeb30bdedbe2c05939c4af"
+      },
+      "matchedTrace": {
+        "repoPath": "output/035-development/fit-pass-study/secondary-tree.json",
+        "sha256": "e6b80c7e7d6485f8d9101a8a1b11091d78ef0d3acfd270622ac0be238d3a331a"
+      },
+      "nativeSize": [
+        8640,
+        5760
+      ],
+      "halfSize": [
+        4320,
+        2880
+      ],
+      "nativeHalfUpload": {
+        "repoPath": "output/035-development/fit-pass-study/secondary-half.json",
+        "sha256": "587e7eae828660ad794a9c18fcf55d4b17f6794d39e4add784b1142a6f19f2e5"
+      },
+      "noFlipExactFrames": 4,
+      "writeAndReadFlipChangedPixels": [
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "nativeHalfWitness": {
+    "primary": {
+      "receipt": {
+        "repoPath": "output/035-development/fit-pass-study/primary-bands-witness.json",
+        "sha256": "7c95dfdc080afaa90d4d54a7300c86c9bfbc00aa2a8bfe3e583d65ce1ce2ee72"
+      },
+      "states": 16,
+      "exactFullF32PlanesComparedToDirectHalf": 12,
+      "faults": {
+        "cancelledAfterFirstJoin": true,
+        "legacyRejected": [
+          "0,255 kind=1",
+          "1025,256 kind=2",
+          "1025,513 kind=3",
+          "0,512 kind=4"
+        ],
+        "rejected": [
+          "0,255 kind=1",
+          "1025,256 kind=2",
+          "1025,513 kind=3",
+          "0,512 kind=4",
+          "last native row omitted"
+        ],
+        "successfulRetry": true
+      }
+    },
+    "secondary": {
+      "receipt": {
+        "repoPath": "output/035-development/fit-pass-study/secondary-bands-witness.json",
+        "sha256": "dc3b2abcaab886f24a766f16a22a4b07643666620e987bd493ea824ea95d4243"
+      },
+      "states": 16,
+      "exactFullF32PlanesComparedToDirectHalf": 12,
+      "faults": {
+        "cancelledAfterFirstJoin": true,
+        "legacyRejected": [
+          "0,255 kind=1",
+          "1025,256 kind=2",
+          "1025,513 kind=3",
+          "0,512 kind=4"
+        ],
+        "rejected": [
+          "0,255 kind=1",
+          "1025,256 kind=2",
+          "1025,513 kind=3",
+          "0,512 kind=4",
+          "last native row omitted"
+        ],
+        "successfulRetry": true
+      }
+    }
+  },
+  "sourceMatrix": {
+    "primary": {
+      "receipt": {
+        "repoPath": "output/035-development/fit-pass-study/primary-plan-matrix.json",
+        "sha256": "d8c486fab38a80b9dd8cc37922391a35fac93df07ef888af51ecee5a073d1dae"
+      },
+      "states": 66,
+      "digestMatch": {
+        "neither": 11,
+        "whole": 38,
+        "grid": 17
+      }
+    },
+    "secondary": {
+      "receipt": {
+        "repoPath": "output/035-development/fit-pass-study/secondary-plan-matrix-real.json",
+        "sha256": "774f74143f0534ec035cd95794620caf67aebb8ed2a5fc3f554e904cebbefd55"
+      },
+      "states": 66,
+      "digestMatch": {
+        "neither": 9,
+        "both": 57
+      }
+    }
+  },
+  "primaryTailReproduction": {
+    "repoPath": "output/035-development/fit-pass-study/primary-grid.json",
+    "sha256": "34afbb50706462e113b76ed48736df6c7e53f4390292236798226d0f3e090536"
+  },
+  "commandsSource": [
+    {
+      "repoPath": "output/035-development/fit-pass-study/half-fit.swift",
+      "sha256": "88fd5251369a7d5ecf931bf8062db00de5685a8dad0f65cc227b18565c9b586d"
+    },
+    {
+      "repoPath": "output/035-development/fit-pass-study/half-bands.swift",
+      "sha256": "8c61dd941745a30a7fce142b78040c7987d6f796eaa57c92addc2006f0932bfe"
+    },
+    {
+      "repoPath": "output/035-development/fit-pass-study/half-tail.swift",
+      "sha256": "53d1a48ef3caea3887a4d2201728b6b0eac126c0ece954bdf6a57bd6fee7fdbb"
+    },
+    {
+      "repoPath": "output/035-development/fit-pass-study/half-plan.swift",
+      "sha256": "69df86fa64968e93d214185524d918da7ad4b7768c6b35fdfafe1bbfda6572d9"
+    }
+  ],
+  "nativeTrial": {
+    "frozenCandidate": "candidate-batch16b",
+    "defaultEnabled": false,
+    "switch": "RAWMASTER_QA_CANONICAL_HALF_FIT",
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch16b/source-files.sha256",
+      "sha256": "1f952eb095d648c9ae9f1a78f9ec2ddf423fd25f2daa4a1e8b2be7bbf944cb87"
+    },
+    "xctestExecutable": {
+      "repoPath": "output/035-development/candidate-batch16b/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+      "sha256": "407fb0c0cc5b7bcb22041aeb6116c867a16bf7bc82aa032fe8a137f26a335018"
+    },
+    "earlierCandidateWarmReplayRegression": {
+      "primary": [
+        {
+          "repoPath": "output/035-development/fit-pass-study/native-01/release-03-primary-1.json",
+          "sha256": "9c22d96a92965f29eca04427509bf4bf80b0d7a459df7fce1583c431c9398d66",
+          "warmFirstReadbackChanges": {
+            "color-mask-hue": 20,
+            "color-mask-saturation": 20,
+            "curve-channels": 20,
+            "curve-point": 20,
+            "light-mask-blacks": 20,
+            "light-mask-contrast": 20,
+            "light-mask-exposure": 20,
+            "light-mask-highlights": 20,
+            "light-mask-shadows": 20,
+            "light-mask-whites": 20
+          },
+          "finalChanges": 0
+        },
+        {
+          "repoPath": "output/035-development/fit-pass-study/native-01/release-05-primary-1.json",
+          "sha256": "a8db269a999d0e8d303ef0fce66df5e49a23da34ee5f4bded0d4081a45bb2cfe",
+          "warmFirstReadbackChanges": {
+            "color-mask-hue": 20,
+            "color-mask-saturation": 20,
+            "curve-channels": 20,
+            "curve-point": 20,
+            "light-mask-blacks": 20,
+            "light-mask-contrast": 20,
+            "light-mask-exposure": 20,
+            "light-mask-highlights": 20,
+            "light-mask-shadows": 20,
+            "light-mask-whites": 20
+          },
+          "finalChanges": 0
+        }
+      ],
+      "secondary": [
+        {
+          "repoPath": "output/035-development/fit-pass-study/native-01/release-04-secondary-1.json",
+          "sha256": "c6a82d901a4869aac484458d485b880c31760ec6e61703ff54bc21a57bc5e4dc",
+          "warmFirstReadbackChanges": {
+            "color-mask-hue": 20,
+            "color-mask-saturation": 20,
+            "curve-channels": 20,
+            "curve-point": 20,
+            "light-mask-blacks": 20,
+            "light-mask-contrast": 20,
+            "light-mask-exposure": 20,
+            "light-mask-highlights": 20,
+            "light-mask-shadows": 20,
+            "light-mask-whites": 20
+          },
+          "finalChanges": 0
+        },
+        {
+          "repoPath": "output/035-development/fit-pass-study/native-01/release-06-secondary-1.json",
+          "sha256": "98e0f70ef6d5f43830e854db5752de7705361affe3a0adebf2f3cfb8be83ffd2",
+          "warmFirstReadbackChanges": {
+            "color-mask-hue": 20,
+            "color-mask-saturation": 20,
+            "curve-channels": 20,
+            "curve-point": 20,
+            "light-mask-blacks": 20,
+            "light-mask-contrast": 20,
+            "light-mask-exposure": 20,
+            "light-mask-highlights": 20,
+            "light-mask-shadows": 20,
+            "light-mask-whites": 20
+          },
+          "finalChanges": 0
+        }
+      ]
+    },
+    "commands": [
+      {
+        "repoPath": "output/035-development/fit-pass-study/validate-native.sh",
+        "sha256": "a909f0b593a684ac21bfb1edd17e6be6913875abf23062417713ced7a30bb74b"
+      },
+      {
+        "repoPath": "output/035-development/fit-pass-study/profile-half-fit.swift",
+        "sha256": "b3ad27d8babb07983f16c5d1de267602f163807497ea8b8451881bebdfeb4ad7"
+      },
+      {
+        "repoPath": "output/035-development/fit-pass-study/cold-half-fit.swift",
+        "sha256": "1e5fd9ba98a0046ad2ddc9e5d0b035ea97ef20814aae33340b75d38f1b66901f"
+      },
+      {
+        "repoPath": "output/035-development/fit-pass-study/summarize-native.py",
+        "sha256": "876591cbd4d6dcbc86386d78cd8f27e98d20e1818837d9600f9630873b423de2"
+      },
+      {
+        "repoPath": "output/035-development/fit-pass-study/targeted.sh",
+        "sha256": "c99634d871f790d28bdd230319262362deb175b49e87394f28908ee0533fad1e"
+      }
+    ],
+    "sources": {
+      "primary": {
+        "uniqueSettledRequests": [
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/profile-primary-0.json",
+            "sha256": "c7166b337a186adc15743d7980aac1a7c4dbe80fe0a1c681453cca736094c16b",
+            "optIn": false,
+            "qualifiedReadbacks": 6,
+            "fallbackReadbacks": 6,
+            "successfulHalfFIT": 0,
+            "qualifiedRequestAndReadbackMs": {
+              "n": 6,
+              "p50": 67.5575,
+              "p95": 409.821125
+            },
+            "qualifiedSRGBReadbackMs": {
+              "n": 6,
+              "p50": 35.307916500000005,
+              "p95": 37.901
+            },
+            "qualifiedHalfFITMs": null,
+            "wholeProcessPeakPhysicalBytes": 3046901776
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/profile-primary-1.json",
+            "sha256": "9ee144b293c9bdd5c7e69495d3e109f86ffc337a3154f6dfc6c2c24ec3b8a9b5",
+            "optIn": true,
+            "qualifiedReadbacks": 6,
+            "fallbackReadbacks": 6,
+            "successfulHalfFIT": 6,
+            "qualifiedRequestAndReadbackMs": {
+              "n": 6,
+              "p50": 45.2078125,
+              "p95": 196.023917
+            },
+            "qualifiedSRGBReadbackMs": {
+              "n": 6,
+              "p50": 3.3536875,
+              "p95": 3.817167
+            },
+            "qualifiedHalfFITMs": {
+              "n": 6,
+              "p50": 26.046354,
+              "p95": 29.170917
+            },
+            "wholeProcessPeakPhysicalBytes": 3046443000
+          }
+        ],
+        "coldAndCancellation": [
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-01-primary-0.json",
+            "sha256": "401e198c66946b96810da4dc67c5688b8d9e1be85dedd069734793da317524ce",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-01-primary-0.log",
+              "sha256": "09c7b86b49644e8fec2d215358eeccdcf68bae89f2e15c3a1b63d258852cef0b"
+            },
+            "optIn": false,
+            "coldMsIncludingHash": 221.03075,
+            "peakPhysicalAtFirstReadbackBytes": 2526152648,
+            "wholeProcessMaximumRSSBytes": 1595047936,
+            "wholeProcessIncludesRoleChecks": false,
+            "fullFrameDigests": {
+              "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+              "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [],
+            "roleOrders": [],
+            "warmInteractive": {}
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-03-primary-1.json",
+            "sha256": "95f83f9a1f90c8e30daac61fa9e67442af80fb86daba6caccb40e497300d577b",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-03-primary-1.log",
+              "sha256": "16f4f57dd28fb7a1e0e7d798b6018dd63c85c039e46ff7acaa74a8477342b0dd"
+            },
+            "optIn": true,
+            "coldMsIncludingHash": 331.66625,
+            "peakPhysicalAtFirstReadbackBytes": 2442954672,
+            "wholeProcessMaximumRSSBytes": 1595637760,
+            "wholeProcessIncludesRoleChecks": true,
+            "fullFrameDigests": {
+              "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+              "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [
+              "取消",
+              "成功"
+            ],
+            "roleOrders": [
+              {
+                "first": {
+                  "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "expected": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "halfFIT": true,
+                  "key": "b3423b540258fb7a68d3a7753d68971232f0caf85150e0e7d22ea59d81dcbf10",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 32.439125,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "order": "primary,comparison",
+                "second": {
+                  "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "expected": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "halfFIT": false,
+                  "key": "491d414595aad237ba0e4c354b921b8806a950ec74f18f69288bec39994a4b2c",
+                  "passed": true,
+                  "spans": []
+                },
+                "separateKeys": true
+              },
+              {
+                "first": {
+                  "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "expected": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "halfFIT": false,
+                  "key": "f9fcc0024ef02619170b6d50485a314529be42b4103690ca11afdc44d3694566",
+                  "passed": true,
+                  "spans": []
+                },
+                "order": "comparison,primary",
+                "second": {
+                  "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "expected": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "halfFIT": true,
+                  "key": "b6997e2191fa21b63b5bfdf597bab24c9a664ab09f2ee0e7946a1fade11b3e93",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 30.789917,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "separateKeys": true
+              }
+            ],
+            "warmInteractive": {
+              "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+              "mode": "proxy",
+              "passed": true,
+              "performedNoNewNativeRender": true,
+              "reusedPrimaryKey": true
+            }
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-05-primary-1.json",
+            "sha256": "7c9abfbd808ce308657d40cbe44a776075c068a175e15dc14cdc3bb59d65f52d",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-05-primary-1.log",
+              "sha256": "5a4a0c2455044f5e0cdc9e499d3413c56c7c79a03a2049d90c6e3df8e3fb4d33"
+            },
+            "optIn": true,
+            "coldMsIncludingHash": 197.151667,
+            "peakPhysicalAtFirstReadbackBytes": 2442364752,
+            "wholeProcessMaximumRSSBytes": 1595260928,
+            "wholeProcessIncludesRoleChecks": true,
+            "fullFrameDigests": {
+              "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+              "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [
+              "取消",
+              "成功"
+            ],
+            "roleOrders": [
+              {
+                "first": {
+                  "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "expected": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "halfFIT": true,
+                  "key": "b3423b540258fb7a68d3a7753d68971232f0caf85150e0e7d22ea59d81dcbf10",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 25.601875,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "order": "primary,comparison",
+                "second": {
+                  "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "expected": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                  "halfFIT": false,
+                  "key": "491d414595aad237ba0e4c354b921b8806a950ec74f18f69288bec39994a4b2c",
+                  "passed": true,
+                  "spans": []
+                },
+                "separateKeys": true
+              },
+              {
+                "first": {
+                  "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "expected": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "halfFIT": false,
+                  "key": "f9fcc0024ef02619170b6d50485a314529be42b4103690ca11afdc44d3694566",
+                  "passed": true,
+                  "spans": []
+                },
+                "order": "comparison,primary",
+                "second": {
+                  "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "expected": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                  "halfFIT": true,
+                  "key": "b6997e2191fa21b63b5bfdf597bab24c9a664ab09f2ee0e7946a1fade11b3e93",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 26.137875,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 60217344,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "separateKeys": true
+              }
+            ],
+            "warmInteractive": {
+              "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+              "mode": "proxy",
+              "passed": true,
+              "performedNoNewNativeRender": true,
+              "reusedPrimaryKey": true
+            }
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-07-primary-0.json",
+            "sha256": "2d5e3fd566004aa79edf5d556ce92793b3e9bb43baea171bfeefead407ad905a",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-07-primary-0.log",
+              "sha256": "9ae1fc3226f20faabfcc6a141390d6866b46ced72d0ee11801af4ff00f0085e5"
+            },
+            "optIn": false,
+            "coldMsIncludingHash": 225.498417,
+            "peakPhysicalAtFirstReadbackBytes": 2526431200,
+            "wholeProcessMaximumRSSBytes": 1594982400,
+            "wholeProcessIncludesRoleChecks": false,
+            "fullFrameDigests": {
+              "cold": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+              "retry": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [],
+            "roleOrders": [],
+            "warmInteractive": {}
+          }
+        ],
+        "canonicalInteractiveReplay": {
+          "repoPath": "output/035-development/fit-pass-study/native-02/interaction-canonical-primary.json",
+          "sha256": "5da0b51fb0431987846856095fd3f8210f35fca056a7c455b37d211b0848352b",
+          "warmInteractive": {
+            "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "mode": "canonical",
+            "passed": true,
+            "performedNoNewNativeRender": true,
+            "reusedPrimaryKey": true
+          },
+          "roleOrders": [
+            {
+              "first": {
+                "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "expected": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "halfFIT": true,
+                "key": "b3423b540258fb7a68d3a7753d68971232f0caf85150e0e7d22ea59d81dcbf10",
+                "passed": true,
+                "spans": [
+                  {
+                    "ms": 26.439458,
+                    "op": "NativeHalfFIT",
+                    "outcome": "成功",
+                    "pixels": 60217344,
+                    "stage": "全幅有限校验与半幅生成"
+                  }
+                ]
+              },
+              "order": "primary,comparison",
+              "second": {
+                "digest": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "expected": "f6da489a65e4443dc3d0b756950bd43dcbe31f6b3ecbcb9da848e08997771187",
+                "halfFIT": false,
+                "key": "491d414595aad237ba0e4c354b921b8806a950ec74f18f69288bec39994a4b2c",
+                "passed": true,
+                "spans": []
+              },
+              "separateKeys": true
+            },
+            {
+              "first": {
+                "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                "expected": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                "halfFIT": false,
+                "key": "f9fcc0024ef02619170b6d50485a314529be42b4103690ca11afdc44d3694566",
+                "passed": true,
+                "spans": []
+              },
+              "order": "comparison,primary",
+              "second": {
+                "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                "expected": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+                "halfFIT": true,
+                "key": "b6997e2191fa21b63b5bfdf597bab24c9a664ab09f2ee0e7946a1fade11b3e93",
+                "passed": true,
+                "spans": [
+                  {
+                    "ms": 26.44475,
+                    "op": "NativeHalfFIT",
+                    "outcome": "成功",
+                    "pixels": 60217344,
+                    "stage": "全幅有限校验与半幅生成"
+                  }
+                ]
+              },
+              "separateKeys": true
+            }
+          ]
+        },
+        "crossOver": {
+          "archive": {
+            "repoPath": "output/035-development/candidate-batch15b-formal/photo-operators-v2.json",
+            "sha256": "20e0595a7910f41fbdef0302eca5332750c27ca88112aa618f786cf1babadf98"
+          },
+          "runs": [
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-01-primary-0.json",
+              "sha256": "d5a5367b01bb5a70ea99d52afee581ff25d856e8de3b85ab2bce5e5a039226db",
+              "optIn": false,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.086437500000001,
+                  "p95": 18.39525
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 99.6335205,
+                  "p95": 473.49575
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 99.6335205,
+                  "p95": 473.49575
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": []
+            },
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-03-primary-1.json",
+              "sha256": "e77d5a773541fd1fcde5dd76405b44306323b2b5071ca4d25055c47f4a1a8665",
+              "optIn": true,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.2015835,
+                  "p95": 18.342166
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 100.210625,
+                  "p95": 462.77775
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 100.210625,
+                  "p95": 462.77775
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": []
+            },
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-05-primary-1.json",
+              "sha256": "2e8b29f5f7bf85f8bd9dfe9488b719f7e08d04215cdacf7e2d70e64b9e6e8865",
+              "optIn": true,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.116479,
+                  "p95": 17.629167
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 99.4868125,
+                  "p95": 453.482833
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 99.4868125,
+                  "p95": 453.482833
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": []
+            },
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-07-primary-0.json",
+              "sha256": "32a1a3f52d19acc0a9f077d82b34b1f862dd5ed61b0a3c0034ec040afbd51524",
+              "optIn": false,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.0493334999999995,
+                  "p95": 17.882625
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 101.024396,
+                  "p95": 488.044125
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 101.024396,
+                  "p95": 488.044125
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": []
+            }
+          ],
+          "pooledFirstAppearances": {
+            "disabled": {
+              "visible": {
+                "n": 148,
+                "p50": 5.086437500000001,
+                "p95": 17.882625
+              },
+              "exact": {
+                "n": 148,
+                "p50": 99.7335415,
+                "p95": 486.963458
+              },
+              "final": {
+                "n": 148,
+                "p50": 99.7335415,
+                "p95": 486.963458
+              }
+            },
+            "enabled": {
+              "visible": {
+                "n": 148,
+                "p50": 5.175271499999999,
+                "p95": 17.629167
+              },
+              "exact": {
+                "n": 148,
+                "p50": 100.210625,
+                "p95": 453.482833
+              },
+              "final": {
+                "n": 148,
+                "p50": 100.210625,
+                "p95": 453.482833
+              }
+            }
+          }
+        }
+      },
+      "secondary": {
+        "uniqueSettledRequests": [
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/profile-secondary-0.json",
+            "sha256": "d0c08063a116793843d9a557789f61fdc3f751af8f90041cf8df2c7262ab658f",
+            "optIn": false,
+            "qualifiedReadbacks": 6,
+            "fallbackReadbacks": 6,
+            "successfulHalfFIT": 0,
+            "qualifiedRequestAndReadbackMs": {
+              "n": 6,
+              "p50": 64.2449585,
+              "p95": 70.990792
+            },
+            "qualifiedSRGBReadbackMs": {
+              "n": 6,
+              "p50": 32.049854499999995,
+              "p95": 37.118375
+            },
+            "qualifiedHalfFITMs": null,
+            "wholeProcessPeakPhysicalBytes": 2862254384
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/profile-secondary-1.json",
+            "sha256": "9c9f97352a2b7ffc4c7bf13eac4574666f0a18a64f8c6d9b7de94136c8e0c6a0",
+            "optIn": true,
+            "qualifiedReadbacks": 6,
+            "fallbackReadbacks": 6,
+            "successfulHalfFIT": 6,
+            "qualifiedRequestAndReadbackMs": {
+              "n": 6,
+              "p50": 38.2969585,
+              "p95": 57.500166
+            },
+            "qualifiedSRGBReadbackMs": {
+              "n": 6,
+              "p50": 3.298812,
+              "p95": 3.760625
+            },
+            "qualifiedHalfFITMs": {
+              "n": 6,
+              "p50": 19.428417,
+              "p95": 26.173084
+            },
+            "wholeProcessPeakPhysicalBytes": 2870610296
+          }
+        ],
+        "coldAndCancellation": [
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-02-secondary-0.json",
+            "sha256": "e319bed62bf96603f42ee637913618320b3ff2705988a77d1692228afd5296bd",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-02-secondary-0.log",
+              "sha256": "da8be495f7d64f0f02d4fabd5c2939e127509dd6843e5386bcdd7370518914f0"
+            },
+            "optIn": false,
+            "coldMsIncludingHash": 195.076292,
+            "peakPhysicalAtFirstReadbackBytes": 2403190536,
+            "wholeProcessMaximumRSSBytes": 1336524800,
+            "wholeProcessIncludesRoleChecks": false,
+            "fullFrameDigests": {
+              "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+              "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [],
+            "roleOrders": [],
+            "warmInteractive": {}
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-04-secondary-1.json",
+            "sha256": "ddf5bc38e72e07c1f7ed4c9255c2a911e3cc0efc4e5d07d6a1dfc9696264983a",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-04-secondary-1.log",
+              "sha256": "618c2c5cf47e6ea32ee70940b91af6e767e894da1770ef25e6256ef78fcfa599"
+            },
+            "optIn": true,
+            "coldMsIncludingHash": 164.368583,
+            "peakPhysicalAtFirstReadbackBytes": 2054555376,
+            "wholeProcessMaximumRSSBytes": 1336590336,
+            "wholeProcessIncludesRoleChecks": true,
+            "fullFrameDigests": {
+              "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+              "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [
+              "取消",
+              "成功"
+            ],
+            "roleOrders": [
+              {
+                "first": {
+                  "digest": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "expected": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "halfFIT": true,
+                  "key": "f1590adadbeb0f4d7816aec1426a7b8dfeb1c3894c8ef23196192c1f58eeeaa8",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 23.922125,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "order": "primary,comparison",
+                "second": {
+                  "digest": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "expected": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "halfFIT": false,
+                  "key": "b2ee31cbd8055e6d94364a681d1241ecbd27bf58b9bfc9d96137ae447077c54e",
+                  "passed": true,
+                  "spans": []
+                },
+                "separateKeys": true
+              },
+              {
+                "first": {
+                  "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "expected": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "halfFIT": false,
+                  "key": "43de87cdd9ef406ff60efe840b660ef6393603f07e7d388f1caffef3d5569de2",
+                  "passed": true,
+                  "spans": []
+                },
+                "order": "comparison,primary",
+                "second": {
+                  "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "expected": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "halfFIT": true,
+                  "key": "75a9bb38f23bfcf54b543972a49c7490f22c23700ede19b97225e41d6f2e69c3",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 28.771666,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "separateKeys": true
+              }
+            ],
+            "warmInteractive": {
+              "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+              "mode": "proxy",
+              "passed": true,
+              "performedNoNewNativeRender": true,
+              "reusedPrimaryKey": true
+            }
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-06-secondary-1.json",
+            "sha256": "d3e18c792e8319c0659381f2eeb5ef23ccdb0e6aab4d182b79859574f62d919d",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-06-secondary-1.log",
+              "sha256": "f601e2738d51958010c48830f2e46cee3f337012a7be78bf0a7d711384018694"
+            },
+            "optIn": true,
+            "coldMsIncludingHash": 173.684958,
+            "peakPhysicalAtFirstReadbackBytes": 2019837776,
+            "wholeProcessMaximumRSSBytes": 1337196544,
+            "wholeProcessIncludesRoleChecks": true,
+            "fullFrameDigests": {
+              "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+              "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [
+              "取消",
+              "成功"
+            ],
+            "roleOrders": [
+              {
+                "first": {
+                  "digest": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "expected": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "halfFIT": true,
+                  "key": "f1590adadbeb0f4d7816aec1426a7b8dfeb1c3894c8ef23196192c1f58eeeaa8",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 21.172125,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "order": "primary,comparison",
+                "second": {
+                  "digest": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "expected": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                  "halfFIT": false,
+                  "key": "b2ee31cbd8055e6d94364a681d1241ecbd27bf58b9bfc9d96137ae447077c54e",
+                  "passed": true,
+                  "spans": []
+                },
+                "separateKeys": true
+              },
+              {
+                "first": {
+                  "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "expected": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "halfFIT": false,
+                  "key": "43de87cdd9ef406ff60efe840b660ef6393603f07e7d388f1caffef3d5569de2",
+                  "passed": true,
+                  "spans": []
+                },
+                "order": "comparison,primary",
+                "second": {
+                  "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "expected": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                  "halfFIT": true,
+                  "key": "75a9bb38f23bfcf54b543972a49c7490f22c23700ede19b97225e41d6f2e69c3",
+                  "passed": true,
+                  "spans": [
+                    {
+                      "ms": 26.230375,
+                      "op": "NativeHalfFIT",
+                      "outcome": "成功",
+                      "pixels": 49766400,
+                      "stage": "全幅有限校验与半幅生成"
+                    }
+                  ]
+                },
+                "separateKeys": true
+              }
+            ],
+            "warmInteractive": {
+              "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+              "mode": "proxy",
+              "passed": true,
+              "performedNoNewNativeRender": true,
+              "reusedPrimaryKey": true
+            }
+          },
+          {
+            "repoPath": "output/035-development/fit-pass-study/native-02/cold-08-secondary-0.json",
+            "sha256": "1dde64c977f6e7c99a2ec8e7d5a75d334f9334caad348c6b2b394b680876389d",
+            "timeLog": {
+              "repoPath": "output/035-development/fit-pass-study/native-02/cold-08-secondary-0.log",
+              "sha256": "94bc33adfa0b36c168993d015829392832cb94d4b9c227119fe3c5ee0a4aee8a"
+            },
+            "optIn": false,
+            "coldMsIncludingHash": 189.294541,
+            "peakPhysicalAtFirstReadbackBytes": 2404206368,
+            "wholeProcessMaximumRSSBytes": 1337409536,
+            "wholeProcessIncludesRoleChecks": false,
+            "fullFrameDigests": {
+              "cold": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+              "retry": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae"
+            },
+            "cancelResult": "superseded",
+            "halfFITSpanOutcomes": [],
+            "roleOrders": [],
+            "warmInteractive": {}
+          }
+        ],
+        "canonicalInteractiveReplay": {
+          "repoPath": "output/035-development/fit-pass-study/native-02/interaction-canonical-secondary.json",
+          "sha256": "92323145cd07dca9dbb068eca78b358eb8e926557211431e794d367a10aa76db",
+          "warmInteractive": {
+            "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+            "mode": "canonical",
+            "passed": true,
+            "performedNoNewNativeRender": true,
+            "reusedPrimaryKey": true
+          },
+          "roleOrders": [
+            {
+              "first": {
+                "digest": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "expected": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "halfFIT": true,
+                "key": "f1590adadbeb0f4d7816aec1426a7b8dfeb1c3894c8ef23196192c1f58eeeaa8",
+                "passed": true,
+                "spans": [
+                  {
+                    "ms": 22.704625,
+                    "op": "NativeHalfFIT",
+                    "outcome": "成功",
+                    "pixels": 49766400,
+                    "stage": "全幅有限校验与半幅生成"
+                  }
+                ]
+              },
+              "order": "primary,comparison",
+              "second": {
+                "digest": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "expected": "3e78455014f7803eaab1bf8f109721c1baf09965b6ac45cc2a4f324a20b8ea17",
+                "halfFIT": false,
+                "key": "b2ee31cbd8055e6d94364a681d1241ecbd27bf58b9bfc9d96137ae447077c54e",
+                "passed": true,
+                "spans": []
+              },
+              "separateKeys": true
+            },
+            {
+              "first": {
+                "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                "expected": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                "halfFIT": false,
+                "key": "43de87cdd9ef406ff60efe840b660ef6393603f07e7d388f1caffef3d5569de2",
+                "passed": true,
+                "spans": []
+              },
+              "order": "comparison,primary",
+              "second": {
+                "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                "expected": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+                "halfFIT": true,
+                "key": "75a9bb38f23bfcf54b543972a49c7490f22c23700ede19b97225e41d6f2e69c3",
+                "passed": true,
+                "spans": [
+                  {
+                    "ms": 26.570708,
+                    "op": "NativeHalfFIT",
+                    "outcome": "成功",
+                    "pixels": 49766400,
+                    "stage": "全幅有限校验与半幅生成"
+                  }
+                ]
+              },
+              "separateKeys": true
+            }
+          ]
+        },
+        "crossOver": {
+          "archive": {
+            "repoPath": "output/035-development/ci-intermediate/xctest-abba-lifetime/02-secondary-0.json",
+            "sha256": "ea130ed4dd65c52376759e54100aed083b7def186743ae1634a43e0a7832dd55"
+          },
+          "runs": [
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-02-secondary-0.json",
+              "sha256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+              "optIn": false,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.0651045,
+                  "p95": 17.265291
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 89.4163755,
+                  "p95": 421.035458
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 93.90658350000001,
+                  "p95": 421.035458
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": [
+                "light-mask-highlights",
+                "light-mask-whites"
+              ]
+            },
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-04-secondary-1.json",
+              "sha256": "b077d9919bef8f14c392c7bdc2e92fde003ad167b2b2c47dbec41eebe3c0057f",
+              "optIn": true,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.282667,
+                  "p95": 17.39125
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 77.75520900000001,
+                  "p95": 409.298916
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 84.6499375,
+                  "p95": 409.298916
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": [
+                "light-mask-highlights",
+                "light-mask-whites"
+              ]
+            },
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-06-secondary-1.json",
+              "sha256": "3d840be63dd626ccdc9d2d4c271c7ca17012ed1aaa03003e0a6672276da6328c",
+              "optIn": true,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.213917,
+                  "p95": 16.63475
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 87.50539549999999,
+                  "p95": 398.372792
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 92.6270625,
+                  "p95": 398.372792
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": [
+                "light-mask-highlights",
+                "light-mask-whites"
+              ]
+            },
+            {
+              "repoPath": "output/035-development/fit-pass-study/native-02/release-08-secondary-0.json",
+              "sha256": "533df01c2497ae93e72a107e2533879e7ea31e61a51829199397e79d756c7cc6",
+              "optIn": false,
+              "first74": {
+                "visible": {
+                  "n": 74,
+                  "p50": 5.6163955,
+                  "p95": 18.031583
+                },
+                "exact": {
+                  "n": 74,
+                  "p50": 83.655875,
+                  "p95": 429.837417
+                },
+                "final": {
+                  "n": 74,
+                  "p50": 90.69889599999999,
+                  "p95": 429.837417
+                }
+              },
+              "fullFramePairs": 814,
+              "inconclusiveSpatialWitnesses": [
+                "light-mask-highlights",
+                "light-mask-whites"
+              ]
+            }
+          ],
+          "pooledFirstAppearances": {
+            "disabled": {
+              "visible": {
+                "n": 148,
+                "p50": 5.325042,
+                "p95": 17.265291
+              },
+              "exact": {
+                "n": 148,
+                "p50": 86.6225215,
+                "p95": 421.035458
+              },
+              "final": {
+                "n": 148,
+                "p50": 93.49275,
+                "p95": 421.035458
+              }
+            },
+            "enabled": {
+              "visible": {
+                "n": 148,
+                "p50": 5.264979500000001,
+                "p95": 16.63475
+              },
+              "exact": {
+                "n": 148,
+                "p50": 86.65364600000001,
+                "p95": 399.729625
+              },
+              "final": {
+                "n": 148,
+                "p50": 89.3367495,
+                "p95": 399.729625
+              }
+            }
+          }
+        }
+      }
+    },
+    "formalDefault": {
+      "summary": {
+        "repoPath": "output/035-development/candidate-batch16b-formal/summary.json",
+        "sha256": "03eb1431d49f6a5badb890dcaeac2897dab34a3ed23d868bb4945044d8e7b754"
+      },
+      "passed": false,
+      "photoOperators": {
+        "repoPath": "output/035-development/candidate-batch16b-formal/photo-operators-v2.json",
+        "sha256": "40277f18457f441f65bf70e17f38cdf80392f35bbb91412b710ddb1ad086dcc4"
+      },
+      "fullFramePairs": 814,
+      "lightflowComparison": {
+        "repoPath": "output/035-development/candidate-batch16b-formal/lightflow-comparison.json",
+        "sha256": "d619268ee188822aeaa5c5a525e79c8ab2ef82906fa27b42956c0359ccd8ae64"
+      },
+      "firstAppearanceMix": {
+        "first": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 7.282500000000001,
+            "p95Ms": 188.075
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 5.116645999999999,
+            "p95Ms": 18.746084
+          },
+          "medianLimitMs": 8.2825,
+          "p95LimitMs": 225.69,
+          "within": true
+        },
+        "firstExact": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 22.134999999999998,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 101.821729,
+            "p95Ms": 487.633458
+          },
+          "medianLimitMs": 24.348499999999998,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        },
+        "final": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 23.5625,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 101.821729,
+            "p95Ms": 487.633458
+          },
+          "medianLimitMs": 25.91875,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        }
+      },
+      "failureDetails": [
+        {
+          "stage": "control-comparison",
+          "report": "control-comparison.json",
+          "failures": [
+            "detail-sharpen-radius: medianMs 8.96 > 8.84 ms"
+          ]
+        },
+        {
+          "stage": "inspection-comparison",
+          "report": "inspection-comparison.json",
+          "failures": [
+            "light-auto-single p95Ms: 7.90 > 7.64 ms",
+            "curve-tat-point p95Ms: 10.21 > 9.09 ms",
+            "color-floating-scopes medianMs: 30.23 > 29.90 ms"
+          ]
+        },
+        {
+          "stage": "interactive-comparison",
+          "report": "interactive-comparison.json",
+          "failures": [
+            "texture: interactive median regressed 17.77%",
+            "dehaze-v1: interactive median regressed 17.68%",
+            "point-color-samples: interactive median regressed 15.01%",
+            "local-point-color: interactive median regressed 17.32%",
+            "global-sharpen-detail: interactive median regressed 24.74%"
+          ]
+        },
+        {
+          "stage": "lightflow-comparison",
+          "report": "lightflow-comparison.json",
+          "failures": [
+            "firstAppearanceMix/firstExact",
+            "firstAppearanceMix/final"
+          ]
+        }
+      ],
+      "failedStages": [
+        "interactive-comparison",
+        "control-comparison",
+        "lightflow-comparison",
+        "inspection-comparison"
+      ],
+      "violatedThresholds": 11,
+      "superResolutionComparison": {
+        "repoPath": "output/035-development/candidate-batch16b-formal/super-resolution-comparison.json",
+        "sha256": "afbf5bdbd715c379217a87efa475dbc3d6c5edbdebb9a9aae688345ab557baed"
+      },
+      "superResolutionMetrics": {
+        "fitOnMs": 126.614,
+        "fullTIFFMs": 9790.740584,
+        "exportPhysicalFootprintBytes": 3751217288,
+        "exportResidentBytes": 1378369536,
+        "exportMetalBytes": 2812149760
+      },
+      "superResolutionTIFF": {
+        "bits": 16,
+        "byteCount": 1926958614,
+        "colorSpace": "sRGB IEC61966-2.1",
+        "elapsedMs": 9790.740584,
+        "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+        "sampleFormat": "unsigned",
+        "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+        "size": [
+          19008,
+          12672
+        ]
+      },
+      "featureIndex": {
+        "repoPath": "output/035-development/candidate-batch16b/camera-raw-acceptance.json",
+        "sha256": "dcb645262f0acc49c590b27dfe34686484a5a2c872cb35769b1a6e4628a62ab6"
+      },
+      "featureIDsWithMeasurements": 158,
+      "targetedPreviewTests": {
+        "repoPath": "output/035-development/fit-pass-study/native-02/default-preview-tests.log",
+        "sha256": "4e7580dd5ad89a0f49e1defb111ee311eaf31452343ef9227668d7fe95cb81c4",
+        "passed": 50
+      }
+    }
+  }
+}

@@ -531,11 +531,13 @@
         "tone"
       ],
       "codeRefs": [
-        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132"
+        "Sources/RAWMaster/PhotosResolvedWhiteBalanceControls.swift:65-132",
+        "Tests/RAWMasterImagingTests/RenderedFileControlPerformanceTests.swift:51-83",
+        "docs/research/camera-raw-parity/evidence/rawmaster-rendered-controls.json:1-40"
       ],
       "priority": "P0",
-      "evidenceLevel": "static-code",
-      "acceptance": "在 RawMaster 中完成“Temperature — JPEG/TIFF”的可预览、可保存、可撤销与导出验证；补充对应自动化测试，并记录验证版本。"
+      "evidenceLevel": "native-two-state-pixels-timing-jpeg-tiff",
+      "acceptance": "在 RawMaster 中完成“Temperature — JPEG/TIFF”的可预览、可保存、可撤销与导出验证。已显影 JPEG 与 TIFF 用同一配方各取 ±28 偏移，20 次暖态全程给出不同且稳定的 sRGB 见证。计时与见证由统一发布脚本生成。"
     },
     {
       "id": "color-tint",
@@ -1175,7 +1177,7 @@
       "codeRefs": [
         "Sources/RAWMaster/PhotosDehazeControls.swift:11-53",
         "Sources/RAWMasterCore/DevelopmentMaskModelsV3.swift:10-85",
-        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:8-325",
+        "Sources/RAWMasterImaging/DevelopmentMaskEngineV3.swift:225-231",
         "Sources/RAWMaster/PhotosMaskControls.swift:89-95",
         "Tests/RAWMasterImagingTests/DevelopmentMaskDehazeV3Tests.swift:1-48",
         "Tests/RAWMasterUITests/PhotosMaskWorkflowTests.swift:28-58"
@@ -2402,13 +2404,15 @@
       "codeRefs": [
         "Sources/RAWMasterImaging/DevelopmentPhotoDenoise.swift:61-79",
         "Tests/RAWMasterImagingTests/DevelopmentPhotoDenoiseTests.swift:33-100",
+        "Tests/RAWMasterImagingTests/RenderedFileControlPerformanceTests.swift:85-102",
         "docs/research/camera-raw-parity/evidence/photo-denoise.json:1-65",
+        "docs/research/camera-raw-parity/evidence/rawmaster-rendered-controls.json:1-40",
         "Sources/RAWMasterImaging/Resources/PhotoDenoise/NOTICE.txt:1-9",
         "docs/research/camera-raw-parity/evidence/output-referred-dng.json:1-22"
       ],
       "priority": "P1",
-      "evidenceLevel": "native-import-preview-persistence-export-ten-formats",
-      "acceptance": "十类文件通过真实解码、保留配方、恢复原图和 TIFF16 输出。由同一实拍 JPEG 制作的两份 16 位 LinearRaw DNG 仅色度参考标记不同，同时验证正常目录导入、源域、37 次交互与逐像素采样。"
+      "evidenceLevel": "native-import-preview-persistence-export-ten-formats-timed-control",
+      "acceptance": "十类文件通过真实解码、保留配方、恢复原图和 TIFF16 输出。由同一实拍 JPEG 制作的两份 16 位 LinearRaw DNG 仅色度参考标记不同，同时验证正常目录导入、源域、37 次交互与逐像素采样。相机 JPEG 的降噪强度另以 0 与 100 两态取 20 次暖态计时和不同 sRGB 见证。"
     },
     {
       "id": "detail-raw-details",
@@ -3264,15 +3268,17 @@
         "Sources/RAWMasterImaging/DevelopmentDeviceDepthV1.swift:6-79",
         "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:17-66",
         "Sources/RAWMasterImaging/DevelopmentLensBlurEngineV3.swift:73-113",
-        "Sources/RAWMaster/EditingController.swift:2149-2180",
+        "Sources/RAWMaster/EditingController.swift:3024-3056",
         "Sources/RAWMaster/PhotosLensBlurControls.swift:39-60",
         "Tests/RAWMasterImagingTests/DevelopmentDeviceDepthV1Tests.swift:10-55",
         "Tests/RAWMasterImagingTests/DevelopmentLensBlurEngineV3Tests.swift:92-112",
-        "Tests/RAWMasterUITests/PhotosDeviceDepthWorkflowTests.swift:5-30"
+        "Tests/RAWMasterImagingTests/RenderedFileControlPerformanceTests.swift:104-139",
+        "Tests/RAWMasterUITests/PhotosDeviceDepthWorkflowTests.swift:5-30",
+        "docs/research/camera-raw-parity/evidence/rawmaster-rendered-controls.json:1-40"
       ],
       "priority": "P1",
-      "evidenceLevel": "automated-test-real-heic-and-pixels",
-      "acceptance": "真实 HEIC 写入／读取、方向、归一化、缩放与无深度拒绝通过。Circle／Ring 实际失焦、焦点保护、Alpha、加载／移除、撤销／重做及持久化测试通过。"
+      "evidenceLevel": "automated-test-real-heic-and-pixels-timed-control",
+      "acceptance": "真实 HEIC 写入／读取、方向、归一化、缩放与无深度拒绝通过。Circle／Ring 实际失焦、焦点保护、Alpha、加载／移除、撤销／重做及持久化测试通过。带实测深度附属数据的 HEIC 另以两个焦点位置取 20 次暖态计时和不同 sRGB 见证。"
     },
     {
       "id": "light-mask-exposure",

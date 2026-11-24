@@ -1,0 +1,257 @@
+{
+  "actualDevice": {
+    "exactFullR32FGuide": true,
+    "exactFullRGBA16FMinimum": true,
+    "exactFullRGBAfRestoreBothAmounts": true,
+    "faultsAndRetries": 6,
+    "oldAndNewSubmissions": [
+      [
+        99,
+        25
+      ],
+      [
+        90,
+        23
+      ]
+    ],
+    "sourceSizes": [
+      [
+        9504,
+        6336
+      ],
+      [
+        8640,
+        5760
+      ]
+    ]
+  },
+  "defaultEnabled": false,
+  "independentNative": {
+    "path": "output/035-development/phase-z/dehaze-scalar/reviewed.json",
+    "sha256": "fd58aae7594cc0ff02737f7044db50169cd1d5023e45735b0168dac0f2fe570e"
+  },
+  "nativeGroupTests": [
+    {
+      "flag": "0",
+      "passed": 24,
+      "receipt": {
+        "path": "output/035-development/phase-z/native-groups-0.log",
+        "sha256": "c9e93cde8c73a18fc41abe98607c3bdeccebf0aa3b70ec362c3959c350f8353b"
+      }
+    },
+    {
+      "flag": "1",
+      "passed": 24,
+      "receipt": {
+        "path": "output/035-development/phase-z/native-groups-1.log",
+        "sha256": "71ef1fcff675841c88b59c25d88c5bf2a8ef94b341ad2fca1250f81811af1b7a"
+      }
+    }
+  ],
+  "productSwitch": "RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION",
+  "rejectedGaussianWidening": {
+    "path": "output/035-development/phase-z/dehaze-scalar/wide-reviewed.json",
+    "sha256": "f0d62cab1eb4b0fd73b209abd6b135711b2d4cc0b01bfa2cb846159f277a7a28"
+  },
+  "sameApplicationABBA": {
+    "binary": {
+      "path": "output/035-development/phase-z/product-dehaze-01/profile-settled-photo",
+      "sha256": "5ec3653c1f2b9231c3174f46cc8f726c3426343989444d4d4271d69fe96fae3a"
+    },
+    "dehazeSettledImagesExact": 16,
+    "modeOrder": [
+      0,
+      1,
+      1,
+      0
+    ],
+    "profileSource": {
+      "path": "scripts/performance/profile-settled-photo.swift",
+      "sha256": "5c53310829a8f4eff0b083495a83e47020055f864fa0cd161a800efbf41d7b0f"
+    },
+    "rawRuns": [
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/1-primary-0.json",
+        "sha256": "920ca89b95ba9ecb2048598fee86b32d3f79b7f5f3aa98be52014a1c402a296f"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/2-primary-1.json",
+        "sha256": "951fee167dae76a471f33269fc818881166bfd26058b553bea01706df7fd3c8e"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/3-primary-1.json",
+        "sha256": "01d74f6b4b0fb6b1a3dfcbd92a32c1c3d43ea2882df002fd82b1ef8b7b1fd8ab"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/4-primary-0.json",
+        "sha256": "674474bb6fa46e5a8f785d37c82a9d000e018095707960d034af7a68fc0582d4"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/1-secondary-0.json",
+        "sha256": "404c43e60a7ef42a65fbed1c196b86816bcefc9d3b86256eaebd456af3975ba1"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/2-secondary-1.json",
+        "sha256": "a50d97f8a5f754dc857f0121605dd213290d59b723d41abee9f7f9e6ed3e0975"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/3-secondary-1.json",
+        "sha256": "3f7320fdb7fbbabb1c52930b7dd025e410d05715e40f277a3998e6f0b412cb25"
+      },
+      {
+        "path": "output/035-development/phase-z/product-dehaze-01/4-secondary-0.json",
+        "sha256": "78965f7eaa370d1f7ce9b647a66a7fdd2bfe743d9c68f81dc86edf30e8ad8c51"
+      }
+    ],
+    "sources": {
+      "primary": {
+        "additionalFlagBytes": 245760,
+        "archiveDisplaySHA256s": [
+          [
+            0,
+            "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf"
+          ],
+          [
+            1,
+            "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7"
+          ]
+        ],
+        "coldSettledP50Ms": [
+          384.3402085,
+          277.625812
+        ],
+        "erosionP50Ms": [
+          73.54293799999999,
+          59.8324375
+        ],
+        "samplesByArm": [
+          [
+            {
+              "erosionBytes": 518094848,
+              "erosionMs": 69.897459,
+              "fullSettledMs": [
+                473.400083,
+                33.769375
+              ],
+              "peakPhysicalBytes": 3900099032,
+              "photoSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+            },
+            {
+              "erosionBytes": 518094848,
+              "erosionMs": 77.188417,
+              "fullSettledMs": [
+                295.280334,
+                36.326333
+              ],
+              "peakPhysicalBytes": 3899935264,
+              "photoSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+            }
+          ],
+          [
+            {
+              "erosionBytes": 518340608,
+              "erosionMs": 61.929125,
+              "fullSettledMs": [
+                279.917541,
+                37.517416
+              ],
+              "peakPhysicalBytes": 3899623872,
+              "photoSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+            },
+            {
+              "erosionBytes": 518340608,
+              "erosionMs": 57.73575,
+              "fullSettledMs": [
+                275.334083,
+                41.746167
+              ],
+              "peakPhysicalBytes": 3899853296,
+              "photoSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+            }
+          ]
+        ],
+        "warmSettledP50Ms": [
+          35.047854,
+          39.6317915
+        ]
+      },
+      "secondary": {
+        "additionalFlagBytes": 212992,
+        "archiveDisplaySHA256s": [
+          [
+            0,
+            "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a"
+          ],
+          [
+            1,
+            "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a"
+          ]
+        ],
+        "coldSettledP50Ms": [
+          251.0545415,
+          222.9695205
+        ],
+        "erosionP50Ms": [
+          58.316208,
+          51.1406255
+        ],
+        "samplesByArm": [
+          [
+            {
+              "erosionBytes": 429867008,
+              "erosionMs": 58.477416,
+              "fullSettledMs": [
+                266.558625,
+                36.835125
+              ],
+              "peakPhysicalBytes": 3645131104,
+              "photoSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+            },
+            {
+              "erosionBytes": 429867008,
+              "erosionMs": 58.155,
+              "fullSettledMs": [
+                235.550458,
+                36.975209
+              ],
+              "peakPhysicalBytes": 3645147416,
+              "photoSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+            }
+          ],
+          [
+            {
+              "erosionBytes": 430080000,
+              "erosionMs": 51.298542,
+              "fullSettledMs": [
+                219.461208,
+                31.97525
+              ],
+              "peakPhysicalBytes": 3644295448,
+              "photoSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+            },
+            {
+              "erosionBytes": 430080000,
+              "erosionMs": 50.982709,
+              "fullSettledMs": [
+                226.477833,
+                33.613916
+              ],
+              "peakPhysicalBytes": 3645180184,
+              "photoSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+            }
+          ]
+        ],
+        "warmSettledP50Ms": [
+          36.905167,
+          32.794583
+        ]
+      }
+    },
+    "verified": true,
+    "verifiedSummary": {
+      "path": "output/035-development/phase-z/product-dehaze-01/verified.json",
+      "sha256": "d59c0c8e979243cb4f3d96846a37f3334c6c40cddf345c1aa5b2f39aaf362955"
+    }
+  },
+  "schemaVersion": 1
+}

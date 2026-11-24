@@ -1,0 +1,201 @@
+{
+  "schemaVersion": 1,
+  "scope": "Release basic_v3 CPU arithmetic investigation, one 2400x1600 original RAW-derived premultiplied linear Float32 frame. Acceptance uses maximum absolute linear RGB error per component of 2e-6 and bitwise alpha. Display code equality is a separate criterion.",
+  "workingFrame": {
+    "sourceRAWSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "rgba32fSHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+    "width": 2400,
+    "height": 1600,
+    "rgbComponentsPerCase": 11520000
+  },
+  "decision": "Rejected isolated arithmetic change. The original three recipes clear the numerical limit in the trial. A valid additional recipe, obtained by removing monochrome from the composite recipe, has one red component over the unchanged limit. Production reference.cpp, version handling and ABI retain their prior behavior.",
+  "systems": {
+    "releasedCPU": "The existing macOS arm64 and independent Linux arm64 release C ABI produced identical full Float32 streams for the original three recipes. New prefix reference and original prefix CPU comparison are macOS only.",
+    "isolatedTrial": "macOS arm64 CPU using an isolated C++ basic_v3 arithmetic copy at -O3 -ffp-contract=off with the application libm dependency. No Linux candidate certification was attempted after the independent macOS holdout failed.",
+    "reference": "Production Swift V3 kernel and joined RGBAf linear readback. The three regenerated original references match the earlier sealed outputs byte-for-byte. The additional prefix uses the same full-size witness and working source."
+  },
+  "fullFrameCases": [
+    {
+      "recipe": "light-and-whites",
+      "isAdditionalPrefix": false,
+      "referenceF32SHA256": "011413e3fc4fd07143aead803727a2ba746c338b0bd2b8aec4e92e5df5af18b4",
+      "releasedCPU": {
+        "outputSHA256": "350e3eff409ca5cdd73cf19d7ed58c86df60615109b7d82e318e1cda2d21f913",
+        "rgbAbove2e-6": 0,
+        "maxAbsoluteRGB": 1.0728836059570312e-06,
+        "alphaBitsDifferent": 0
+      },
+      "isolatedMacCPU": {
+        "rgbAbove2e-6": 0,
+        "maxAbsoluteRGB": 1.0728836059570312e-06,
+        "differentRGBComponents": 10503438
+      }
+    },
+    {
+      "recipe": "saturation-vibrance-cast",
+      "isAdditionalPrefix": false,
+      "referenceF32SHA256": "f574b080572a1a7dff0cf6e9a1285181e516cd276c1a086adeef4a59d39e9f1d",
+      "releasedCPU": {
+        "outputSHA256": "087c02d2a91192df09c2d8d139a23de71c5de04f9dca159e4787909bd277f377",
+        "rgbAbove2e-6": 0,
+        "maxAbsoluteRGB": 1.6689300537109375e-06,
+        "alphaBitsDifferent": 0
+      },
+      "isolatedMacCPU": {
+        "rgbAbove2e-6": 0,
+        "maxAbsoluteRGB": 1.430511474609375e-06,
+        "differentRGBComponents": 11238053
+      }
+    },
+    {
+      "recipe": "light-and-color-prefix",
+      "isAdditionalPrefix": true,
+      "referenceF32SHA256": "b0c9b0d5355aa70a12872a588ba14d751c7d5d7fecac47b5f57ddda4e5d9526f",
+      "releasedCPU": {
+        "outputSHA256": "bbfe7070be11334765d157555382d86905b28eb2b2367ffac69df7b2564a194b",
+        "rgbAbove2e-6": 3,
+        "maxAbsoluteRGB": 2.1457672119140625e-06,
+        "alphaBitsDifferent": 0
+      },
+      "isolatedMacCPU": {
+        "rgbAbove2e-6": 1,
+        "maxAbsoluteRGB": 2.1457672119140625e-06,
+        "differentRGBComponents": 11151106
+      }
+    },
+    {
+      "recipe": "light-color-and-monochrome",
+      "isAdditionalPrefix": false,
+      "referenceF32SHA256": "b0657b80af7e7636eb87135e2588daf092678220aae0bc88b85da632c757fe20",
+      "releasedCPU": {
+        "outputSHA256": "7d23a1d958ac069b2d9f6a8f609b413fa8d7c4e42b05197751b0c10dbd862216",
+        "rgbAbove2e-6": 27,
+        "maxAbsoluteRGB": 2.562999725341797e-06,
+        "alphaBitsDifferent": 0
+      },
+      "isolatedMacCPU": {
+        "rgbAbove2e-6": 0,
+        "maxAbsoluteRGB": 1.8477439880371094e-06,
+        "differentRGBComponents": 11241012
+      }
+    }
+  ],
+  "independentPrefixCounterexample": {
+    "zeroBasedFilePixel": 1976846,
+    "xyInStoredRowOrder": [
+      1646,
+      823
+    ],
+    "channel": "R",
+    "inputRGBA32fBits": [
+      "0x3fa0a000",
+      "0x3f304000",
+      "0x3e39e000",
+      "0x3f800000"
+    ],
+    "swiftRGBA32fBits": [
+      "0x3ff2e2d6",
+      "0x3f762855",
+      "0x3e3a5069",
+      "0x3f800000"
+    ],
+    "trialRGBA32fBits": [
+      "0x3ff2e2e8",
+      "0x3f76285a",
+      "0x3e3a506a",
+      "0x3f800000"
+    ],
+    "referenceRed": 1.8975474834442139,
+    "trialRed": 1.8975496292114258,
+    "absoluteRedError": 2.1457672119140625e-06
+  },
+  "stageIsolation": {
+    "releasedCompositeAffectedPixels": 9,
+    "affectedRGBComponents": 27,
+    "affectedFileIndices": [
+      1597586,
+      1626401,
+      1628804,
+      1631243,
+      1633660,
+      1660082,
+      1669550,
+      1880962,
+      1943340
+    ],
+    "grayAtNegativeToneInputRangeForNineOriginalPixels": [
+      0.9994930028915405,
+      0.9999947547912598
+    ],
+    "stockCPUBlackAndWhiteOnExactSwiftLightColorPrefix": {
+      "rgbAbove2e-6": 0,
+      "maxAbsoluteRGB": 1.3113021850585938e-06,
+      "alphaBitsDifferent": 0
+    },
+    "sameOperandNativeTrace": {
+      "sampledPixels": 8192,
+      "rawColorMonochromeDotProductsEach": 8192,
+      "legacyDifferencesInOrder": [
+        1737,
+        1826,
+        1786
+      ],
+      "tracedDifferencesForTwoExplicitFMAsInOrder": [
+        0,
+        0,
+        0
+      ],
+      "exactOrder": "multiply red by red weight, FMA green, FMA blue",
+      "comparison": "The instrumented 256x32 kernel agrees with the full production output on all nine original affected pixels. Across the entire 8192-pixel sample there are small shape-dependent differences; full-frame acceptance uses the uninstrumented Swift reference.",
+      "traceFinalVsFullMaxAbsoluteRGB": 3.5762786865234375e-07,
+      "traceFinalVsFullRGBComponentsDifferent": 165
+    },
+    "interpretation": "An input error of a few ULP before the decreasing-exponent tone shoulder near 1 is amplified. Matching dot-product rounding in isolation does not establish complete arithmetic equivalence, including the signed sRGB and contrast powers."
+  },
+  "artifacts": {
+    "sealedEvidence": {
+      "path": "specs/035-portable-processing-cores/evidence/native-dehaze-and-portable-basic.json",
+      "sha256": "05d6f65fe2a8f8666431891dd5c0d1011a2fbde5e455d564c884bfd5e6fb2c41"
+    },
+    "earlierNative": {
+      "path": "output/035-development/tail-refine/basic/native-basic.json",
+      "sha256": "cef79da0fc27af60d01b481aea0769d2d2d31ea36be2a4a634fbff7fe1383377"
+    },
+    "earlierLinuxReplay": {
+      "path": "output/035-development/tail-refine/basic/linux-replay.log",
+      "sha256": "02d3448bfd6ac430ae6bdb9eaddfe6861f8e00df45e708a0ee7db3b4e5535cfa"
+    },
+    "regeneratedReferences": {
+      "path": "output/035-development/phase-u/basic-cpu/swift-refs.json",
+      "sha256": "656f40d3e34ebf5bec82c30b05656fba269f5b7f0c4d29c3e3d0f019f1782e74"
+    },
+    "macOSTrialArms": {
+      "path": "output/035-development/phase-u/basic-cpu/full-forms-764.json",
+      "sha256": "d20794fb6df53a93351cf1c2c72d222a1113b355e263670801ef44ebed3a7498"
+    },
+    "failingPixelsAndStages": {
+      "path": "output/035-development/phase-u/basic-cpu/original-outliers.json",
+      "sha256": "f82d23ca8d9b3078a626881c6815e54ebfa4d77488d77d100fd2adc1f415f702"
+    },
+    "nativeOps": {
+      "path": "output/035-development/phase-u/basic-cpu/ops.log",
+      "sha256": "b50246ea6d45649b48cec4d6c96582dd05f5a4c6db921705ef03ad2ccd8f2f0a"
+    },
+    "swiftTraceSource": {
+      "path": "output/035-development/phase-u/basic-cpu/Trace.swift",
+      "sha256": "bb5efa1b868691c583050adf8ac558ff598a164a405496f3fa19e52b3f365de2"
+    },
+    "trialCpp": {
+      "path": "output/035-development/phase-u/basic-cpu/forms.cpp",
+      "sha256": "47976e8210807b5c3da16fe14aa5867405126c3aac6dd37621063f1cee5cc9d6"
+    },
+    "trialArithmeticLibm": {
+      "path": "output/035-development/phase-u/basic-cpu/powlib.rs",
+      "sha256": "7677a69a6bd17586148a1fdff54e8262044c1893b371c01f1ee9e6adc04fc5c2"
+    },
+    "fullRGBComparison": {
+      "path": "output/035-development/phase-u/basic-cpu/full-probe.py",
+      "sha256": "be3f69d92537a86bb97f56b90009911a269c6dbaaa5455759e40f3d922646f02"
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "baselineCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "candidate": "RC3",
+  "testBinarySHA256": "28a08c767f75f878bdb323209f3d995c7f84b2ca1b0d506697cd022897327e90",
+  "imageRuntimeSHA256": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+  "test": "RAWMasterUITests.EditingInteractionPerformanceTests/testOptInRealRAWCompoundEditingCanvasPerformance",
+  "hardware": "Apple M4 Max / macOS arm64",
+  "sourceDimensions": [
+    9504,
+    6336
+  ],
+  "boundary": "programmatic recipe commit to accepted native AppKit draw return; interactive burst, one separate settled draw",
+  "runs": [
+    {
+      "path": "core-image",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "proxySize": [
+        2400,
+        1600
+      ],
+      "coldDrawMs": 106.857459,
+      "warmDraw": {
+        "count": 7,
+        "p50Ms": 8.6955,
+        "p95Ms": 10.486667
+      },
+      "interactiveDrawSamplesMs": [
+        106.857459,
+        8.047292,
+        6.932583,
+        8.846291,
+        10.486667,
+        10.415167,
+        7.494708,
+        8.6955
+      ],
+      "settledDrawSamplesMs": [
+        245.797375
+      ],
+      "joinedPortableFrames": 0,
+      "portablePhaseSamplesMs": [],
+      "coreImageFallbackFrames": 0,
+      "reportSHA256": "9df70c433528486a6b9b65c2cd0e81a3a911c4a2064b3a1dc71b99f2a02eac2b",
+      "traceSHA256": "39fb08fad88af62e7d663d6c83ad2100c3e337b75ede1a8ba94ffebd71edf27c"
+    },
+    {
+      "path": "metal",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "proxySize": [
+        2400,
+        1600
+      ],
+      "coldDrawMs": 217.383625,
+      "warmDraw": {
+        "count": 7,
+        "p50Ms": 8.268458,
+        "p95Ms": 9.512958
+      },
+      "interactiveDrawSamplesMs": [
+        217.383625,
+        8.268458,
+        9.512958,
+        7.746916,
+        9.221667,
+        7.128708,
+        9.049375,
+        7.027583
+      ],
+      "settledDrawSamplesMs": [
+        241.079958
+      ],
+      "joinedPortableFrames": 8,
+      "portablePhaseSamplesMs": [
+        118.66925,
+        3.54775,
+        3.480541,
+        3.487458,
+        3.536542,
+        3.457167,
+        3.474459,
+        3.450792
+      ],
+      "coreImageFallbackFrames": 0,
+      "reportSHA256": "531e9ff21ecf7e777c526c4d31a372195b7bd7f145920f3c760d771c401beb8c",
+      "traceSHA256": "42c687ef8ebf462f00d15bdfbc07e28cd713037a78445ea9868316d4b5b85e02"
+    }
+  ]
+}

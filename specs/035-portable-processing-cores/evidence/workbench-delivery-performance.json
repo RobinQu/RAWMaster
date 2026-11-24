@@ -1,0 +1,559 @@
+{
+  "inputManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+  "test": "RAWMasterUITests.ExportPerformanceTests/testRealWorkbenchBenchmarks",
+  "conditions": "One warmup, three recorded trials from the same sources; Photoshop/LightFlow are outside this file comparison",
+  "warmOutputComparison": {
+    "jpeg-source/1": {
+      "filesCompared": 1,
+      "allFilesIdentical": true
+    },
+    "jpeg-source/20": {
+      "filesCompared": 20,
+      "allFilesIdentical": true
+    },
+    "jpeg-source/200": {
+      "filesCompared": 200,
+      "allFilesIdentical": true
+    },
+    "raw-source/1": {
+      "filesCompared": 1,
+      "allFilesIdentical": true
+    },
+    "raw-source/20": {
+      "filesCompared": 20,
+      "allFilesIdentical": true
+    }
+  },
+  "runs": {
+    "main-1b7df6b6": {
+      "testBinarySHA256": "367919fa0da88dc9d73c2c47069694e30cb12f6753e82b18d79405cb1c3e9416",
+      "groups": {
+        "jpeg-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.074159,
+              "processMaxRSSKiB": 240272,
+              "seconds": 0.0742535
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.072924167,
+              "processMaxRSSKiB": 251376,
+              "seconds": 0.072990875
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.073169708,
+              "processMaxRSSKiB": 260800,
+              "seconds": 0.073237083
+            }
+          ],
+          "medianTotalSeconds": 0.073237083,
+          "medianFirstFileSeconds": 0.073169708,
+          "warmOutputInventorySHA256": "6ebfedf6cff2dd74bc8fee9e59bf6c685dd3742338d008d05e3b2ba9db49cdc6"
+        },
+        "jpeg-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.077113333,
+              "processMaxRSSKiB": 772048,
+              "seconds": 0.491759416
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.07867225,
+              "processMaxRSSKiB": 788864,
+              "seconds": 0.492957459
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.076717917,
+              "processMaxRSSKiB": 788864,
+              "seconds": 0.496853208
+            }
+          ],
+          "medianTotalSeconds": 0.492957459,
+          "medianFirstFileSeconds": 0.077113333,
+          "warmOutputInventorySHA256": "e6455b9101ddca6e9dde01c1fb86c4d4467e099d653cc0c3068a7123aded9204"
+        },
+        "jpeg-source/200": {
+          "warmTrials": [
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.079358167,
+              "processMaxRSSKiB": 806048,
+              "seconds": 4.719747709
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.08032225,
+              "processMaxRSSKiB": 806048,
+              "seconds": 4.647187834
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.080766792,
+              "processMaxRSSKiB": 806048,
+              "seconds": 4.728826375
+            }
+          ],
+          "medianTotalSeconds": 4.719747709,
+          "medianFirstFileSeconds": 0.08032225,
+          "warmOutputInventorySHA256": "108cddab0bc954ab3c298d7b09eb3c2a88de4061b7daf7098d5c4d4defb9f06b"
+        },
+        "raw-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.053788125,
+              "processMaxRSSKiB": 806048,
+              "seconds": 0.053853541
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.05618375,
+              "processMaxRSSKiB": 806048,
+              "seconds": 0.056267334
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.059233209,
+              "processMaxRSSKiB": 806048,
+              "seconds": 0.059301709
+            }
+          ],
+          "medianTotalSeconds": 0.056267334,
+          "medianFirstFileSeconds": 0.05618375,
+          "warmOutputInventorySHA256": "2f3ed6bf201c96321286bbf6075de5b2bf0162aa3f0d6380bdce9f758e929f53"
+        },
+        "raw-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.057771,
+              "processMaxRSSKiB": 806048,
+              "seconds": 0.361677791
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.059824542,
+              "processMaxRSSKiB": 806048,
+              "seconds": 0.357746583
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.058778208,
+              "processMaxRSSKiB": 806048,
+              "seconds": 0.377460042
+            }
+          ],
+          "medianTotalSeconds": 0.361677791,
+          "medianFirstFileSeconds": 0.058778208,
+          "warmOutputInventorySHA256": "7022f450181e4dd05085c82edd2e4bc31fd038e4442a967a95c9bafb6bc7da5a"
+        }
+      }
+    },
+    "candidate-rc4": {
+      "testBinarySHA256": "eb05203d2dcc64c7b90d6025a38d81d8a80f79a897e51191625a8d67010fefd0",
+      "groups": {
+        "jpeg-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.0910235,
+              "processMaxRSSKiB": 251664,
+              "seconds": 0.091102
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.0986325,
+              "processMaxRSSKiB": 261792,
+              "seconds": 0.098702209
+            },
+            {
+              "bytes": 277225,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.10917775,
+              "processMaxRSSKiB": 261792,
+              "seconds": 0.109269042
+            }
+          ],
+          "medianTotalSeconds": 0.098702209,
+          "medianFirstFileSeconds": 0.0986325,
+          "warmOutputInventorySHA256": "6ebfedf6cff2dd74bc8fee9e59bf6c685dd3742338d008d05e3b2ba9db49cdc6"
+        },
+        "jpeg-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.118663334,
+              "processMaxRSSKiB": 764528,
+              "seconds": 0.802809084
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.119178666,
+              "processMaxRSSKiB": 764528,
+              "seconds": 0.77494125
+            },
+            {
+              "bytes": 8151320,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.122248208,
+              "processMaxRSSKiB": 781440,
+              "seconds": 0.805554083
+            }
+          ],
+          "medianTotalSeconds": 0.802809084,
+          "medianFirstFileSeconds": 0.119178666,
+          "warmOutputInventorySHA256": "e6455b9101ddca6e9dde01c1fb86c4d4467e099d653cc0c3068a7123aded9204"
+        },
+        "jpeg-source/200": {
+          "warmTrials": [
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.135570542,
+              "processMaxRSSKiB": 796064,
+              "seconds": 7.15493675
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.135022042,
+              "processMaxRSSKiB": 816816,
+              "seconds": 7.607198375
+            },
+            {
+              "bytes": 82971286,
+              "container": "files",
+              "count": 200,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.138273583,
+              "processMaxRSSKiB": 816816,
+              "seconds": 7.560372917
+            }
+          ],
+          "medianTotalSeconds": 7.560372917,
+          "medianFirstFileSeconds": 0.135570542,
+          "warmOutputInventorySHA256": "108cddab0bc954ab3c298d7b09eb3c2a88de4061b7daf7098d5c4d4defb9f06b"
+        },
+        "raw-source/1": {
+          "warmTrials": [
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.076184208,
+              "processMaxRSSKiB": 816816,
+              "seconds": 0.076268625
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.069391167,
+              "processMaxRSSKiB": 816816,
+              "seconds": 0.06946325
+            },
+            {
+              "bytes": 98124,
+              "container": "files",
+              "count": 1,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.071521084,
+              "processMaxRSSKiB": 816816,
+              "seconds": 0.071592375
+            }
+          ],
+          "medianTotalSeconds": 0.071592375,
+          "medianFirstFileSeconds": 0.071521084,
+          "warmOutputInventorySHA256": "2f3ed6bf201c96321286bbf6075de5b2bf0162aa3f0d6380bdce9f758e929f53"
+        },
+        "raw-source/20": {
+          "warmTrials": [
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.086816625,
+              "processMaxRSSKiB": 816816,
+              "seconds": 0.614010792
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.087722416,
+              "processMaxRSSKiB": 816816,
+              "seconds": 0.579388958
+            },
+            {
+              "bytes": 1962480,
+              "container": "files",
+              "count": 20,
+              "dimensionsAndICC": [
+                [
+                  2048,
+                  1365,
+                  true
+                ]
+              ],
+              "firstPhotoSeconds": 0.086377875,
+              "processMaxRSSKiB": 816816,
+              "seconds": 0.61772475
+            }
+          ],
+          "medianTotalSeconds": 0.614010792,
+          "medianFirstFileSeconds": 0.086816625,
+          "warmOutputInventorySHA256": "7022f450181e4dd05085c82edd2e4bc31fd038e4442a967a95c9bafb6bc7da5a"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,718 @@
+{
+  "budgetCounterexample": {
+    "actualStandaloneAllocated": 131301376,
+    "additionalBytes": 8192,
+    "corrected": "reserve the standalone VM-page rounding and verify allocatedSize within the unchanged 512 MiB boundary",
+    "heapReports": 131293184,
+    "limitBytes": 536870912,
+    "originalResult": "first sealed cold request returned nil",
+    "path": "standalone-buffer-page.log",
+    "vmPageBytes": 16384
+  },
+  "compiledOptIn": "RAWMASTER_QA_PORTABLE_MASK_REGION_HALF_FIT=1 with RAWMASTER_QA_PORTABLE_MASK_HALF_FIT=1",
+  "contractTests": "rect-rust.log",
+  "diagnosticRuntimeSHA256": "c924d8ab43691cc881b61508e4e63b2e01e3a6fe3c2c793312d7d22215c54bb4",
+  "globalReceiptOnlyWhenPatchOnlyIsZero": true,
+  "inputs": {
+    "primary": {
+      "cold": 1,
+      "compactCoverageAllocatedBytes": 110100480,
+      "completeHalf": "also compared on production C interface without a diagnostic native target",
+      "exclusiveOutputAllocatedBytes": 241680384,
+      "faults": [
+        {
+          "misalignedY": 1,
+          "oddOrigin": 1,
+          "outside": 1,
+          "sourceAsMask": 1,
+          "unknownMode": 1,
+          "unwrittenOrNaN": 3,
+          "withdrawAfterSubmission": 5,
+          "wrongNamedPlane": 1
+        },
+        {
+          "misalignedY": 1,
+          "oddOrigin": 1,
+          "outside": 1,
+          "partialReceiptLeavesPoisonedExterior": 0,
+          "sourceAsMask": 1,
+          "unknownMode": 1,
+          "unwrittenOrNaN": 3,
+          "withdrawAfterSubmission": 5,
+          "wrongNamedPlane": 1
+        }
+      ],
+      "finalRGBA8Digests": [
+        {
+          "id": "color-mask-hue",
+          "sha256": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+          "state": 0
+        },
+        {
+          "id": "color-mask-hue",
+          "sha256": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+          "state": 1
+        },
+        {
+          "id": "color-mask-saturation",
+          "sha256": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+          "state": 0
+        },
+        {
+          "id": "color-mask-saturation",
+          "sha256": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+          "state": 1
+        },
+        {
+          "id": "light-mask-blacks",
+          "sha256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+          "state": 0
+        },
+        {
+          "id": "light-mask-blacks",
+          "sha256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+          "state": 1
+        },
+        {
+          "id": "light-mask-contrast",
+          "sha256": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+          "state": 0
+        },
+        {
+          "id": "light-mask-contrast",
+          "sha256": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+          "state": 1
+        },
+        {
+          "id": "light-mask-exposure",
+          "sha256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+          "state": 0
+        },
+        {
+          "id": "light-mask-exposure",
+          "sha256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+          "state": 1
+        },
+        {
+          "id": "light-mask-highlights",
+          "sha256": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+          "state": 0
+        },
+        {
+          "id": "light-mask-highlights",
+          "sha256": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+          "state": 1
+        },
+        {
+          "id": "light-mask-shadows",
+          "sha256": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+          "state": 0
+        },
+        {
+          "id": "light-mask-shadows",
+          "sha256": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+          "state": 1
+        },
+        {
+          "id": "light-mask-whites",
+          "sha256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+          "state": 0
+        },
+        {
+          "id": "light-mask-whites",
+          "sha256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff",
+          "state": 1
+        }
+      ],
+      "fractionalEdgeValues": 366,
+      "immutableExteriorAllocatedBytes": 131301376,
+      "maxRustScratch": 50331648,
+      "nativeCounters": 963477504,
+      "nativePixels": 60217344,
+      "nativeStatus": "diagnostic physical band; cold-validated source exterior retained for the warm native witness",
+      "patchFraction": 0.4549195660306771,
+      "patchNativePixels": 27394048,
+      "physicalHalfPixelComparisons": 240869376,
+      "realScopeShapes": 5,
+      "rectangle": [
+        1408,
+        1024,
+        6688,
+        4096
+      ],
+      "scopePixelComparisons": 301086720,
+      "shapeTransitions": [
+        {
+          "archive": true,
+          "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+          "warm": false,
+          "workRect": [
+            1408,
+            1024,
+            6688,
+            4096
+          ]
+        },
+        {
+          "archive": true,
+          "digest": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+          "warm": true,
+          "workRect": [
+            1408,
+            1024,
+            6688,
+            4096
+          ]
+        },
+        {
+          "archive": false,
+          "digest": "05bed1aa34e81e674fa2dd4e7ae417914394a5284b514f9221413b2e45e6f7ef",
+          "warm": false,
+          "workRect": [
+            0,
+            256,
+            3072,
+            1280
+          ]
+        },
+        {
+          "archive": false,
+          "digest": "af27ac2e15b65b8fe51deedfb5a4c508b58aa79fd496b76bc8a939d8f1461c0f",
+          "warm": true,
+          "workRect": [
+            0,
+            256,
+            3072,
+            1280
+          ]
+        },
+        {
+          "archive": true,
+          "digest": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+          "warm": false,
+          "workRect": [
+            1408,
+            1024,
+            6688,
+            4096
+          ]
+        },
+        {
+          "archive": true,
+          "digest": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+          "warm": true,
+          "workRect": [
+            1408,
+            1024,
+            6688,
+            4096
+          ]
+        }
+      ],
+      "size": [
+        9504,
+        6336
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "warm": 15
+    },
+    "secondary": {
+      "cold": 1,
+      "compactCoverageAllocatedBytes": 93388800,
+      "completeHalf": "also compared on production C interface without a diagnostic native target",
+      "exclusiveOutputAllocatedBytes": 199065600,
+      "faults": [
+        {
+          "misalignedY": 1,
+          "oddOrigin": 1,
+          "outside": 1,
+          "sourceAsMask": 1,
+          "unknownMode": 1,
+          "unwrittenOrNaN": 3,
+          "withdrawAfterSubmission": 5,
+          "wrongNamedPlane": 1
+        },
+        {
+          "misalignedY": 1,
+          "oddOrigin": 1,
+          "outside": 1,
+          "partialReceiptLeavesPoisonedExterior": 0,
+          "sourceAsMask": 1,
+          "unknownMode": 1,
+          "unwrittenOrNaN": 3,
+          "withdrawAfterSubmission": 5,
+          "wrongNamedPlane": 1
+        }
+      ],
+      "finalRGBA8Digests": [
+        {
+          "id": "color-mask-hue",
+          "sha256": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+          "state": 0
+        },
+        {
+          "id": "color-mask-hue",
+          "sha256": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+          "state": 1
+        },
+        {
+          "id": "color-mask-saturation",
+          "sha256": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+          "state": 0
+        },
+        {
+          "id": "color-mask-saturation",
+          "sha256": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+          "state": 1
+        },
+        {
+          "id": "light-mask-blacks",
+          "sha256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+          "state": 0
+        },
+        {
+          "id": "light-mask-blacks",
+          "sha256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6",
+          "state": 1
+        },
+        {
+          "id": "light-mask-contrast",
+          "sha256": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+          "state": 0
+        },
+        {
+          "id": "light-mask-contrast",
+          "sha256": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+          "state": 1
+        },
+        {
+          "id": "light-mask-exposure",
+          "sha256": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+          "state": 0
+        },
+        {
+          "id": "light-mask-exposure",
+          "sha256": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+          "state": 1
+        },
+        {
+          "id": "light-mask-highlights",
+          "sha256": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+          "state": 0
+        },
+        {
+          "id": "light-mask-highlights",
+          "sha256": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+          "state": 1
+        },
+        {
+          "id": "light-mask-shadows",
+          "sha256": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+          "state": 0
+        },
+        {
+          "id": "light-mask-shadows",
+          "sha256": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+          "state": 1
+        },
+        {
+          "id": "light-mask-whites",
+          "sha256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+          "state": 0
+        },
+        {
+          "id": "light-mask-whites",
+          "sha256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d",
+          "state": 1
+        }
+      ],
+      "fractionalEdgeValues": 363,
+      "immutableExteriorAllocatedBytes": 105676800,
+      "maxRustScratch": 50331648,
+      "nativeCounters": 796262400,
+      "nativePixels": 49766400,
+      "nativeStatus": "diagnostic physical band; cold-validated source exterior retained for the warm native witness",
+      "patchFraction": 0.4691358024691358,
+      "patchNativePixels": 23347200,
+      "physicalHalfPixelComparisons": 199065600,
+      "realScopeShapes": 5,
+      "rectangle": [
+        1280,
+        1024,
+        6080,
+        3840
+      ],
+      "scopePixelComparisons": 248832000,
+      "shapeTransitions": [
+        {
+          "archive": true,
+          "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+          "warm": false,
+          "workRect": [
+            1280,
+            1024,
+            6080,
+            3840
+          ]
+        },
+        {
+          "archive": true,
+          "digest": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+          "warm": true,
+          "workRect": [
+            1280,
+            1024,
+            6080,
+            3840
+          ]
+        },
+        {
+          "archive": false,
+          "digest": "ea5f9490c948942ed4b84f2d5db552ec548456f1fdd2ffb63ed16816d55cd3e6",
+          "warm": false,
+          "workRect": [
+            0,
+            256,
+            2784,
+            1280
+          ]
+        },
+        {
+          "archive": false,
+          "digest": "d309fae095491a065c1da7e8034f8248a6e4a43d82cf39a1ba17d4caecf34dff",
+          "warm": true,
+          "workRect": [
+            0,
+            256,
+            2784,
+            1280
+          ]
+        },
+        {
+          "archive": true,
+          "digest": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+          "warm": false,
+          "workRect": [
+            1280,
+            1024,
+            6080,
+            3840
+          ]
+        },
+        {
+          "archive": true,
+          "digest": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+          "warm": true,
+          "workRect": [
+            1280,
+            1024,
+            6080,
+            3840
+          ]
+        }
+      ],
+      "size": [
+        8640,
+        5760
+      ],
+      "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "warm": 15
+    }
+  },
+  "nativeLifecycleTest": "Test Case '-[RAWMasterImagingTests.PreviewPortableMaskRegionTests testExteriorRequiresCompletedDisplaySameCaptureOriginalAndGeometry]' passed (0.437 seconds).",
+  "normalEntry": {
+    "distinctFrames": 296,
+    "frames": 1184,
+    "otherFrames": 1056,
+    "reference": "same sealed helper and eight independent processes, reversible ABBA toggles for disjoint target families; baseline uses the previously shipped full named-mask capability",
+    "runtimeSHA256": "ad6090bdba06dfa600e7faa178c0de34caba7a89c28cf2e3ac8b27371ec93313",
+    "sources": {
+      "primary": {
+        "arms": {
+          "0": {
+            "byEvent": {
+              "PreviewPortableMaskHalfFIT": {
+                "frameP50MS": 61.270312000000004,
+                "n": 32,
+                "stageP50MS": 42.622104
+              }
+            },
+            "byOperationP50": {
+              "color-mask-hue": 64.938146,
+              "color-mask-saturation": 61.507000000000005,
+              "light-mask-blacks": 64.2592915,
+              "light-mask-contrast": 61.396917,
+              "light-mask-exposure": 57.879833500000004,
+              "light-mask-highlights": 58.9574165,
+              "light-mask-shadows": 60.9887705,
+              "light-mask-whites": 64.435042
+            },
+            "events": {
+              "PreviewPortableMaskHalfFIT": 32
+            },
+            "p50MS": 61.270312000000004,
+            "p95NearestMS": 89.316041,
+            "peaks": [
+              5093935744,
+              5185063600
+            ],
+            "runs": [
+              {
+                "index": "1",
+                "receiptSHA256": "1336a075b2d8e1df6295b765523cc63907046b175be77affd2b4d409142c3c37"
+              },
+              {
+                "index": "4",
+                "receiptSHA256": "00ce96a22cfbba01723da44b1aa5aa74a870d513975e5868f9174e27e6f70362"
+              }
+            ],
+            "samples": 32,
+            "stageP50MS": 42.622104,
+            "successfulPixelCounts": [
+              15054336
+            ]
+          },
+          "1": {
+            "byEvent": {
+              "PreviewPortableMaskRegionFull": {
+                "frameP50MS": 137.0054995,
+                "n": 2,
+                "stageP50MS": 43.164395999999996
+              },
+              "PreviewPortableMaskRegionPatch": {
+                "frameP50MS": 37.435604,
+                "n": 30,
+                "stageP50MS": 21.0127915
+              }
+            },
+            "byOperationP50": {
+              "color-mask-hue": 52.9637705,
+              "color-mask-saturation": 34.340604,
+              "light-mask-blacks": 49.88275,
+              "light-mask-contrast": 38.710771,
+              "light-mask-exposure": 35.5293335,
+              "light-mask-highlights": 37.7771455,
+              "light-mask-shadows": 37.363791500000005,
+              "light-mask-whites": 37.992562500000005
+            },
+            "events": {
+              "PreviewPortableMaskRegionFull": 2,
+              "PreviewPortableMaskRegionPatch": 30
+            },
+            "p50MS": 37.6569375,
+            "p95NearestMS": 68.912208,
+            "peaks": [
+              5360470608,
+              5359192632
+            ],
+            "runs": [
+              {
+                "index": "2",
+                "receiptSHA256": "3c4a6938b8b6a9ad7f9710413ea813470366b8b1614810cc308675084bad0669"
+              },
+              {
+                "index": "3",
+                "receiptSHA256": "fc25a16318af0ce23bb69d70f1b5df489cc5d68ea8d201394d9cca51167e4b10"
+              }
+            ],
+            "samples": 32,
+            "stageP50MS": 21.380312500000002,
+            "successfulPixelCounts": [
+              27394048,
+              60217344
+            ]
+          }
+        },
+        "hostSHA256": "d46cdffd3000ef382f57a47219553f55928d72804ac3a3b16cdba6e988f6ddf2",
+        "sha": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+      },
+      "secondary": {
+        "arms": {
+          "0": {
+            "byEvent": {
+              "PreviewPortableMaskHalfFIT": {
+                "frameP50MS": 54.720667,
+                "n": 32,
+                "stageP50MS": 37.14675
+              }
+            },
+            "byOperationP50": {
+              "color-mask-hue": 65.602375,
+              "color-mask-saturation": 53.9630625,
+              "light-mask-blacks": 63.035104000000004,
+              "light-mask-contrast": 57.202021,
+              "light-mask-exposure": 54.594187500000004,
+              "light-mask-highlights": 54.655646000000004,
+              "light-mask-shadows": 52.9666045,
+              "light-mask-whites": 53.8158335
+            },
+            "events": {
+              "PreviewPortableMaskHalfFIT": 32
+            },
+            "p50MS": 54.720667,
+            "p95NearestMS": 76.462417,
+            "peaks": [
+              4662135232,
+              4660955560
+            ],
+            "runs": [
+              {
+                "index": "1",
+                "receiptSHA256": "c34ea69cd62785ea44c667c01b52e6427205fa8a3627f6294796d889e6ad47f0"
+              },
+              {
+                "index": "4",
+                "receiptSHA256": "238097c7ee393ed3ed4c348eff4179eedd81acd0bfb4920c874b82a05c5636cb"
+              }
+            ],
+            "samples": 32,
+            "stageP50MS": 37.14675,
+            "successfulPixelCounts": [
+              12441600
+            ]
+          },
+          "1": {
+            "byEvent": {
+              "PreviewPortableMaskRegionFull": {
+                "frameP50MS": 78.069583,
+                "n": 2,
+                "stageP50MS": 43.266812
+              },
+              "PreviewPortableMaskRegionPatch": {
+                "frameP50MS": 33.112271,
+                "n": 30,
+                "stageP50MS": 17.0146665
+              }
+            },
+            "byOperationP50": {
+              "color-mask-hue": 54.063354000000004,
+              "color-mask-saturation": 31.2912295,
+              "light-mask-blacks": 41.6891665,
+              "light-mask-contrast": 33.3955835,
+              "light-mask-exposure": 34.4764375,
+              "light-mask-highlights": 35.458625,
+              "light-mask-shadows": 32.591145499999996,
+              "light-mask-whites": 33.249145999999996
+            },
+            "events": {
+              "PreviewPortableMaskRegionFull": 2,
+              "PreviewPortableMaskRegionPatch": 30
+            },
+            "p50MS": 33.2793125,
+            "p95NearestMS": 77.555958,
+            "peaks": [
+              4835707328,
+              4832725440
+            ],
+            "runs": [
+              {
+                "index": "2",
+                "receiptSHA256": "3264d30a3aa2644b166758cc1a4c34c1117209663e0903192fd9b2b1ef2d1f6f"
+              },
+              {
+                "index": "3",
+                "receiptSHA256": "7b85aecd00ca62eb4fb1ac90637339950c79d25d423a9c46f18c5c72f4fb59b1"
+              }
+            ],
+            "samples": 32,
+            "stageP50MS": 17.103562500000002,
+            "successfulPixelCounts": [
+              23347200,
+              49766400
+            ]
+          }
+        },
+        "hostSHA256": "d46cdffd3000ef382f57a47219553f55928d72804ac3a3b16cdba6e988f6ddf2",
+        "sha": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+      }
+    },
+    "targetSettled": 128
+  },
+  "olderRuntimes": [
+    {
+      "compactMaskCapability": false,
+      "fullMaskCapability": true,
+      "gradingSettled": 4,
+      "hostSHA256": "d46cdffd3000ef382f57a47219553f55928d72804ac3a3b16cdba6e988f6ddf2",
+      "maskSettled": 4,
+      "maskStockFiniteChecks": true,
+      "receiptSHA256": "bced7a3107f3df1ba892602fb1f8e8b0009cb4eed20c2172f6f400b1f629c7a3",
+      "release": "candidate-batch30-native-mask-ring",
+      "runtimeSHA256": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+      "settledArchiveMatches": 8,
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    },
+    {
+      "compactMaskCapability": false,
+      "fullMaskCapability": false,
+      "gradingSettled": 4,
+      "hostSHA256": "d46cdffd3000ef382f57a47219553f55928d72804ac3a3b16cdba6e988f6ddf2",
+      "maskSettled": 4,
+      "maskStockFiniteChecks": true,
+      "receiptSHA256": "a8d08f9efbc131f92a8d8ba7a1c1b6ee8ae80ca7ed9d61911395911c4fba6177",
+      "release": "candidate-batch19b-source",
+      "runtimeSHA256": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+      "settledArchiveMatches": 8,
+      "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+    }
+  ],
+  "phase": 31,
+  "releaseCRuntimeSHA256": "ade6a1b667092f034a2d896cd7a282af25d82e6a4c826c7dbc32cd15a86ffa94",
+  "reportScope": "32 real source/state pairs; 12 geometry frames and four fault/retry frames are separate. Timers from diagnostic or concurrent builds are excluded.",
+  "reproduction": {
+    "archive": "portable-mask-region-sources.tar.gz",
+    "rawReceipts": {
+      "all32/primary.json": "f9f646b9e26ac178948adf6746dfc79c0106ca4665fdd1124f06ef27c41da48b",
+      "all32/secondary.json": "efff2c6a77879676a65510d675b40e4471d73bcf13d9a48bcc7ce06c435d6860",
+      "legacy/candidate-batch19b-source/preview.json": "a8d08f9efbc131f92a8d8ba7a1c1b6ee8ae80ca7ed9d61911395911c4fba6177",
+      "legacy/candidate-batch30-native-mask-ring/preview.json": "bced7a3107f3df1ba892602fb1f8e8b0009cb4eed20c2172f6f400b1f629c7a3",
+      "legacy/verified.json": "9e2918930316d10100e0397bfdd32cecc1dee86a3ea872998f3719a2abf2023d",
+      "normal-raw/1-primary-0.json": "1336a075b2d8e1df6295b765523cc63907046b175be77affd2b4d409142c3c37",
+      "normal-raw/1-secondary-0.json": "c34ea69cd62785ea44c667c01b52e6427205fa8a3627f6294796d889e6ad47f0",
+      "normal-raw/2-primary-1.json": "3c4a6938b8b6a9ad7f9710413ea813470366b8b1614810cc308675084bad0669",
+      "normal-raw/2-secondary-1.json": "3264d30a3aa2644b166758cc1a4c34c1117209663e0903192fd9b2b1ef2d1f6f",
+      "normal-raw/3-primary-1.json": "fc25a16318af0ce23bb69d70f1b5df489cc5d68ea8d201394d9cca51167e4b10",
+      "normal-raw/3-secondary-1.json": "7b85aecd00ca62eb4fb1ac90637339950c79d25d423a9c46f18c5c72f4fb59b1",
+      "normal-raw/4-primary-0.json": "00ce96a22cfbba01723da44b1aa5aa74a870d513975e5868f9174e27e6f70362",
+      "normal-raw/4-secondary-0.json": "238097c7ee393ed3ed4c348eff4179eedd81acd0bfb4920c874b82a05c5636cb",
+      "normal.json": "d34f60520787d241c791cab09aad678e068d871744be370ef9ebea39bb64c52c",
+      "product-all32/primary.json": "1b13da822ca45ee266595dc2f01946cb7aca8e7c2f54e1ce4b68fa859fff1356",
+      "product-all32/secondary.json": "3eb6b41d2001b365d752108de874f130b507ffdd9fe511bd34590248ac707577",
+      "product-faults/primary.json": "c9cf33cc48acd94ed05453113568e91fdca39a7337b032d647e31ae081f853b5",
+      "product-faults/secondary.json": "fcb5625dd806e3930183f4fd0ee0a7273a5754e4336b833f81f2d31a342bf453",
+      "product-shape/primary.json": "d617703fefcf0a53738e8c0dd2615fae3ce96b9a5e08d4a980fdd86261900acc",
+      "product-shape/secondary.json": "9dd96b656eafb40de355a55ebe95466ad8a8c9a6121bc9048cbf55c828e4e4d4",
+      "scope/primary.json": "c93f65c1a36f6cfe178b9ba59fc9c5b35619e982897741cdbcbfc9dada46b907",
+      "scope/secondary.json": "24a353b968e586974e01436cb326437ba00a8a50c286c435dcc0eeaedf71cf82",
+      "scope32/primary.json": "af0547ae5a117229aa97e9be37caaa28c5151eebf47a70fed17a85f617452990",
+      "scope32/secondary.json": "f9504bec2a7cd277f10f919da2516e2bf314d05272e5e30336c23c889626b6e2",
+      "sealed-all32/primary.json": "bdb57d1fb6fa387960132cf00b9558a4ac180bca8e9b25b89cb77449664699ad",
+      "sealed-all32/secondary.json": "524e5e2e2a645944c502ace21f11651f28bc14f7fc3fd131a26cf70231ac2b50"
+    },
+    "sha256": "12f5a8a8bf271082ddffbbfb9ccdbd4353ec26dcdf88b1b6ff50f29823a95d78"
+  },
+  "scope": "verified opaque FlashRaw native input, EXIF1, original extent, Apple M4 Max, ordinary primary settled 2400, isolated named hard radial control",
+  "sealedInterface": {
+    "archiveFrames": 32,
+    "physicalHalfPixelComparisons": 439934976,
+    "runtimeSHA256": "ad6090bdba06dfa600e7faa178c0de34caba7a89c28cf2e3ac8b27371ec93313"
+  },
+  "sourceSeals": {
+    "Modules/ImageEdit/Bridge/ImageEditLoader.c": "f959bac849020c16c7a8b8da1f2c0f1e382e4d06b77e313c809de019fbe8cc80",
+    "Modules/ImageEdit/Bridge/include/ImageEditLoader.h": "bc13bd1e41610c1257671f0aefc2586505c758d7ab1a76dfb3e49305c7ee8b11",
+    "Modules/ImageEdit/Swift/RAWMasterImageKernel.swift": "30f25aa90657fadad22bbcd3e8685721d742a7675072b74bb5be57b8dead41b7",
+    "Modules/ImageEdit/include/rawmaster_image_metal.h": "5d71ace09b96345bdc10acb349cf7f7645b983124bcc772639714010bac746b0",
+    "Modules/ImageEdit/src/gpu/metal_surface/native_half.rs": "e2c19795280f6909eb61e74cd7c03d666cf85ac64e2d00c077d369ae3fcf0e11",
+    "Modules/ImageEdit/src/gpu/metal_surface/native_half_mask_region.wgsl": "ea7cfcc813c9e0986371fd357b3d114b9cc2b283d1dd51e125cb13eb3cf3a977",
+    "Sources/RAWMasterImaging/PreviewCanonicalHalfFIT.swift": "e4daa74ec570598fcd65e60a573a287ebeb311b0b08e9ab96e56fe149b1daeed",
+    "Sources/RAWMasterImaging/PreviewNativeSource.swift": "cd96e49754c2690ec9939d4b511251f4f099986a9493ba2535917e9a800e8c17",
+    "Sources/RAWMasterImaging/PreviewPortableHalfFIT.swift": "7a1c8c8ca85ea564c5c867bbe402296197cbf36278479478f0bc952dfc048bc1",
+    "Sources/RAWMasterImaging/PreviewPortableMaskRegion.swift": "f6a70ed9b8ba980ecb2ca58e05d29977a931139337c267467b3b3e7285b14365",
+    "Sources/RAWMasterImaging/PreviewPortableMaskTone.swift": "a06369ef4a8d98152dd6d7081ef273a58781e5d1802aaa6775623427be5c4067",
+    "Tests/RAWMasterImagingTests/PreviewPortableMaskRegionTests.swift": "9cb40a3a3e3174941276d31021d2603ac66cff8e17090136ea618e8f0b13bd9b"
+  },
+  "wire": [
+    "rm_image_metal_mask_region_program_open_v1",
+    "rm_image_metal_mask_region_render_v1"
+  ]
+}

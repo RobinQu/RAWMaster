@@ -1,0 +1,495 @@
+{
+  "candidate": "candidate-batch12",
+  "commit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "environment": "macOS APFS on two workspace-owned sparse disk images per case",
+  "physicalExternalHardwareQualified": false,
+  "checkpoint": "file 2 published; item not acknowledged",
+  "authenticAPFSVolumeWithChangedDeviceResumes": false,
+  "uiBinary": {
+    "path": "output/035-development/candidate-batch12/RAWMasterUITests.xctest/Contents/MacOS/RAWMasterUITests",
+    "sha256": "4f4181826bc5c063d6abac1cfc2a23b60c61dd052866ac892f78e130a981f140"
+  },
+  "catalogRuntime": {
+    "path": "output/035-development/candidate-batch12/RAWMasterUITests.xctest/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle/Contents/Resources/rawmaster-library.runtime",
+    "sha256": "6b86eaf163b06f63d75283566f0c8892826774d5e026b883e3ba0e61afaf04eb"
+  },
+  "cases": [
+    {
+      "mode": "same",
+      "stDevChanged": false,
+      "directoryBefore": {
+        "device": 16777246,
+        "inode": 19,
+        "birth": 1795414721320590418
+      },
+      "directoryAfter": {
+        "device": 16777246,
+        "inode": 19,
+        "birth": 1795414721320590418
+      },
+      "volumeUUID": "4F54145B-F13B-40AA-B828-29C0038488E4",
+      "samePathDecoyUUID": "1DB9C711-A9F9-4EF4-9BB7-266AA88D0984",
+      "native": "done",
+      "batchBefore": {
+        "batchID": "30ed3bc3-2a88-4f62-b433-2cb3a64c5ca8",
+        "createdAtMs": 1795414721511,
+        "generation": 1,
+        "itemCount": 3,
+        "leaseUntilMs": 1795414739511,
+        "manifestSHA256": "f7dd20e34d4419099db80161d84253e911d485689cfa0f9a1201798468497fdd",
+        "phase": "running"
+      },
+      "batchAfter": {
+        "batchID": "30ed3bc3-2a88-4f62-b433-2cb3a64c5ca8",
+        "createdAtMs": 1795414721511,
+        "generation": 3,
+        "itemCount": 3,
+        "leaseUntilMs": null,
+        "manifestSHA256": "f7dd20e34d4419099db80161d84253e911d485689cfa0f9a1201798468497fdd",
+        "phase": "done"
+      },
+      "itemReceiptsBefore": [
+        {
+          "attempt": 1,
+          "byteCount": 163409,
+          "filename": "station.v2-0.edit-0001.jpg",
+          "generation": 1,
+          "ordinal": 1,
+          "reason": null,
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "state": "delivered"
+        },
+        {
+          "attempt": 1,
+          "byteCount": 162920,
+          "filename": "station.v2-1.edit-0002.jpg",
+          "generation": 1,
+          "ordinal": 2,
+          "reason": null,
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "state": "prepared"
+        },
+        {
+          "attempt": 0,
+          "byteCount": null,
+          "filename": null,
+          "generation": 0,
+          "ordinal": 3,
+          "reason": null,
+          "sha256": null,
+          "state": "pending"
+        }
+      ],
+      "itemReceiptsAfter": [
+        {
+          "attempt": 1,
+          "byteCount": 163409,
+          "filename": "station.v2-0.edit-0001.jpg",
+          "generation": 1,
+          "ordinal": 1,
+          "reason": null,
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "state": "delivered"
+        },
+        {
+          "attempt": 1,
+          "byteCount": 162920,
+          "filename": "station.v2-1.edit-0002.jpg",
+          "generation": 1,
+          "ordinal": 2,
+          "reason": null,
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "state": "delivered"
+        },
+        {
+          "attempt": 1,
+          "byteCount": 159773,
+          "filename": "station.v2-2.edit-0003.jpg",
+          "generation": 3,
+          "ordinal": 3,
+          "reason": null,
+          "sha256": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886",
+          "state": "delivered"
+        }
+      ],
+      "filesAlreadyPublished": {
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 30,
+          "birth": 1795414721600489173
+        },
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 26,
+          "birth": 1795414721540758289
+        }
+      },
+      "filesAfter": {
+        "station.v2-2.edit-0003.jpg": {
+          "sha256": "aefcb7af76ea9e7b2c111c48cb14df583e8fffac8119066226a603b8089ea886",
+          "inode": 38,
+          "birth": 1795414739779530426
+        },
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 30,
+          "birth": 1795414721600489173
+        },
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 26,
+          "birth": 1795414721540758289
+        }
+      },
+      "checks": {
+        "initialCheck": {
+          "status": 0,
+          "result": {
+            "valid": true
+          }
+        },
+        "unavailableCheck": {
+          "status": 1,
+          "result": {
+            "error": "No such file or directory (os error 2)"
+          }
+        },
+        "replacementCheck": {
+          "status": 1,
+          "result": {
+            "error": "workbench target is no longer the original directory"
+          }
+        },
+        "remountedCheck": {
+          "status": 0,
+          "result": {
+            "valid": true
+          }
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/pointwise-first-exact/apfs-remount-same-v3/evidence.json",
+        "sha256": "bac0a5895bda119d19119a15dad825557cf0e031224d9f76c479c3e09f2dc6cb"
+      },
+      "nativeResumeLog": {
+        "path": "output/035-development/pointwise-first-exact/apfs-remount-same-v3/reopen.log",
+        "sha256": "e6c3760fcb1312d9f6de4e02bde0bc976c4a4e3c7904816c784d1c6e19f6dcd5"
+      },
+      "nativeSuccessReceipt": {
+        "path": "output/035-development/pointwise-first-exact/apfs-remount-same-v3/native-receipt.json",
+        "sha256": "f37499731013448bbf618b519a3cfcc04da071697f1509051e5584a4a9064269"
+      }
+    },
+    {
+      "mode": "changed",
+      "stDevChanged": true,
+      "directoryBefore": {
+        "device": 16777246,
+        "inode": 19,
+        "birth": 1795414743053758887
+      },
+      "directoryAfter": {
+        "device": 16777250,
+        "inode": 19,
+        "birth": 1795414743053758887
+      },
+      "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+      "samePathDecoyUUID": "E77E3714-D957-45EB-9968-B28237E99EF4",
+      "native": "targetOffline",
+      "batchBefore": {
+        "batchID": "d36b1300-c7e8-46ef-93fb-cf0afb2cbc53",
+        "createdAtMs": 1795414743236,
+        "generation": 1,
+        "itemCount": 3,
+        "leaseUntilMs": 1795414761236,
+        "manifestSHA256": "c677c504e50c3fd223d52fa27537001ce604930474c1255332c402a713772190",
+        "phase": "running"
+      },
+      "batchAfter": {
+        "batchID": "d36b1300-c7e8-46ef-93fb-cf0afb2cbc53",
+        "createdAtMs": 1795414743236,
+        "generation": 1,
+        "itemCount": 3,
+        "leaseUntilMs": null,
+        "manifestSHA256": "c677c504e50c3fd223d52fa27537001ce604930474c1255332c402a713772190",
+        "phase": "interrupted"
+      },
+      "itemReceiptsBefore": [
+        {
+          "attempt": 1,
+          "byteCount": 163409,
+          "filename": "station.v2-0.edit-0001.jpg",
+          "generation": 1,
+          "ordinal": 1,
+          "reason": null,
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "state": "delivered"
+        },
+        {
+          "attempt": 1,
+          "byteCount": 162920,
+          "filename": "station.v2-1.edit-0002.jpg",
+          "generation": 1,
+          "ordinal": 2,
+          "reason": null,
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "state": "prepared"
+        },
+        {
+          "attempt": 0,
+          "byteCount": null,
+          "filename": null,
+          "generation": 0,
+          "ordinal": 3,
+          "reason": null,
+          "sha256": null,
+          "state": "pending"
+        }
+      ],
+      "itemReceiptsAfter": [
+        {
+          "attempt": 1,
+          "byteCount": 163409,
+          "filename": "station.v2-0.edit-0001.jpg",
+          "generation": 1,
+          "ordinal": 1,
+          "reason": null,
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "state": "delivered"
+        },
+        {
+          "attempt": 1,
+          "byteCount": 162920,
+          "filename": "station.v2-1.edit-0002.jpg",
+          "generation": 1,
+          "ordinal": 2,
+          "reason": null,
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "state": "prepared"
+        },
+        {
+          "attempt": 0,
+          "byteCount": null,
+          "filename": null,
+          "generation": 0,
+          "ordinal": 3,
+          "reason": null,
+          "sha256": null,
+          "state": "pending"
+        }
+      ],
+      "filesAlreadyPublished": {
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 30,
+          "birth": 1795414743320541822
+        },
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 26,
+          "birth": 1795414743260731229
+        }
+      },
+      "filesAfter": {
+        "station.v2-1.edit-0002.jpg": {
+          "sha256": "e60607e8adef33f9cd42090329e49a09a6e132e4d8eabe33ef98bbee6e38a779",
+          "inode": 30,
+          "birth": 1795414743320541822
+        },
+        "station.v2-0.edit-0001.jpg": {
+          "sha256": "eef9b360ba3c014fb11d99cb7c1c6f7be1c118530e219766afea06c54ab6caf6",
+          "inode": 26,
+          "birth": 1795414743260731229
+        }
+      },
+      "checks": {
+        "initialCheck": {
+          "status": 0,
+          "result": {
+            "valid": true
+          }
+        },
+        "unavailableCheck": {
+          "status": 1,
+          "result": {
+            "error": "No such file or directory (os error 2)"
+          }
+        },
+        "replacementCheck": {
+          "status": 1,
+          "result": {
+            "error": "workbench target is no longer the original directory"
+          }
+        },
+        "remountedCheck": {
+          "status": 1,
+          "result": {
+            "error": "workbench target is no longer the original directory"
+          }
+        }
+      },
+      "receipt": {
+        "path": "output/035-development/pointwise-first-exact/apfs-remount-change-v3/evidence.json",
+        "sha256": "d83cee079f832d2f1007fd86611456b81768f945c6e8cfbc83d203eb7948079a"
+      },
+      "nativeResumeLog": {
+        "path": "output/035-development/pointwise-first-exact/apfs-remount-change-v3/reopen.log",
+        "sha256": "93507fd477cda503c7853ad8bd5fab3a8ecf5909a43e3afaada36343aa1e1de4"
+      },
+      "nativeSuccessReceipt": null
+    }
+  ],
+  "nativeFixture": {
+    "path": "Tests/RAWMasterUITests/WorkbenchContinuation035Tests.swift",
+    "sha256": "1daa7db52de4d88f2fb8d7f5ec14ec159017d588bb5bfb50f734c6b71ddba491"
+  },
+  "mountHarness": {
+    "path": "output/035-development/pointwise-first-exact/apfs-remount.py",
+    "sha256": "93a026dee008d1c792fdeaf32590fccfc1c3bc62554543e811d181c107579dd3"
+  },
+  "darwinBirthtimeReadback": {
+    "path": "output/035-development/pointwise-first-exact/apfs-identity.c",
+    "sha256": "43f8ade015c1e339e9ba6dec22f01c901850fc737c0f12a5ceb04f7d3e52ca27"
+  },
+  "pinnedDescriptorVolumeUUIDProbe": {
+    "scope": "read-only native fgetattrlist with ATTR_VOL_UUID on the same private APFS volumes",
+    "observations": {
+      "macOSAPFSReadOnly": true,
+      "original": {
+        "mountUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+        "descriptors": {
+          "volumeRoot": {
+            "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+            "local": true,
+            "fsid": [
+              16777246,
+              26
+            ],
+            "device": 16777246,
+            "inode": 2,
+            "birthSeconds": 1795414740,
+            "birthNanoseconds": 550648789
+          },
+          "outputDirectory": {
+            "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+            "local": true,
+            "fsid": [
+              16777246,
+              26
+            ],
+            "device": 16777246,
+            "inode": 19,
+            "birthSeconds": 1795414743,
+            "birthNanoseconds": 53758887
+          },
+          "alreadyPublishedFile": {
+            "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+            "local": true,
+            "fsid": [
+              16777246,
+              26
+            ],
+            "device": 16777246,
+            "inode": 26,
+            "birthSeconds": 1795414743,
+            "birthNanoseconds": 260731229
+          }
+        }
+      },
+      "replacement": {
+        "mountUUID": "E77E3714-D957-45EB-9968-B28237E99EF4",
+        "descriptors": {
+          "volumeRoot": {
+            "volumeUUID": "E77E3714-D957-45EB-9968-B28237E99EF4",
+            "local": true,
+            "fsid": [
+              16777246,
+              26
+            ],
+            "device": 16777246,
+            "inode": 2,
+            "birthSeconds": 1795414741,
+            "birthNanoseconds": 644334086
+          },
+          "outputDirectory": {
+            "volumeUUID": "E77E3714-D957-45EB-9968-B28237E99EF4",
+            "local": true,
+            "fsid": [
+              16777246,
+              26
+            ],
+            "device": 16777246,
+            "inode": 18,
+            "birthSeconds": 1795414744,
+            "birthNanoseconds": 387790768
+          },
+          "alreadyPublishedFile": {
+            "volumeUUID": "E77E3714-D957-45EB-9968-B28237E99EF4",
+            "local": true,
+            "fsid": [
+              16777246,
+              26
+            ],
+            "device": 16777246,
+            "inode": 20,
+            "birthSeconds": 1795414743,
+            "birthNanoseconds": 262183690
+          }
+        }
+      },
+      "remounted": {
+        "mountUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+        "descriptors": {
+          "volumeRoot": {
+            "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+            "local": true,
+            "fsid": [
+              16777250,
+              26
+            ],
+            "device": 16777250,
+            "inode": 2,
+            "birthSeconds": 1795414740,
+            "birthNanoseconds": 550648789
+          },
+          "outputDirectory": {
+            "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+            "local": true,
+            "fsid": [
+              16777250,
+              26
+            ],
+            "device": 16777250,
+            "inode": 19,
+            "birthSeconds": 1795414743,
+            "birthNanoseconds": 53758887
+          },
+          "alreadyPublishedFile": {
+            "volumeUUID": "D5F9EC42-7FCC-4F84-BDA0-966E204AB44C",
+            "local": true,
+            "fsid": [
+              16777250,
+              26
+            ],
+            "device": 16777250,
+            "inode": 26,
+            "birthSeconds": 1795414743,
+            "birthNanoseconds": 260731229
+          }
+        }
+      }
+    },
+    "receipt": {
+      "path": "output/035-development/pointwise-first-exact/apfs-descriptor-volume-v1/receipt.json",
+      "sha256": "f52214772319892a66625989005782b2beff757e775b1b88e1fe3395f46cccd5"
+    },
+    "CProbe": {
+      "path": "output/035-development/pointwise-first-exact/apfs-volume-identity.c",
+      "sha256": "58dba0970fc369bba6a2de39408dcfc035768b5a7ed064183d2863ef4a7567f8"
+    },
+    "mountHarness": {
+      "path": "output/035-development/pointwise-first-exact/apfs-volume-probe.py",
+      "sha256": "500a515c3e983127b227e5387485bc6e3eb896fba9f9db274e08c25804d07bd7"
+    }
+  }
+}

@@ -1,0 +1,734 @@
+{
+  "recordedOrder": [
+    "main-quiet-1",
+    "rc5-quiet-1",
+    "rc5-quiet-2",
+    "main-quiet-2",
+    "rc5-trace-1",
+    "main-trace-1",
+    "main-trace-2",
+    "rc5-trace-2"
+  ],
+  "test": "RAWMasterImagingTests.EditingInteractivePerformanceTests/testOptInRealRAWInteractivePerformanceAndSettledError",
+  "builds": {
+    "main-quiet-1": {
+      "build": "main-1b7df6b6",
+      "binarySHA256": "77d4f40fb555a0ed471140d1d8ffa12088dd4a4954eb868c15aa6e0643306f26",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          141.208875,
+          1.720917,
+          1.521167
+        ],
+        "targeted-hsl": [
+          4.559125,
+          3.680459,
+          3.923834
+        ],
+        "local-curves": [
+          8.673,
+          6.089,
+          6.341417
+        ]
+      },
+      "traceSamples": null,
+      "reportWorktreePath": "output/035-development/preview-main-quiet-1/interactive-performance.json"
+    },
+    "rc5-quiet-1": {
+      "build": "candidate-rc5",
+      "binarySHA256": "1a49aa19a2502a3a6640fe0c48c9f88e96cb57cb7c44ef2f0381540f066afc59",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          134.491709,
+          1.857917,
+          1.544375
+        ],
+        "targeted-hsl": [
+          5.32175,
+          4.221291,
+          4.4585
+        ],
+        "local-curves": [
+          8.695666,
+          6.73025,
+          6.105584
+        ]
+      },
+      "traceSamples": null,
+      "reportWorktreePath": "output/035-development/preview-rc5-quiet-1/interactive-performance.json"
+    },
+    "rc5-quiet-2": {
+      "build": "candidate-rc5",
+      "binarySHA256": "1a49aa19a2502a3a6640fe0c48c9f88e96cb57cb7c44ef2f0381540f066afc59",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          160.619959,
+          1.735042,
+          1.606
+        ],
+        "targeted-hsl": [
+          4.347416,
+          3.570125,
+          3.133542
+        ],
+        "local-curves": [
+          7.95525,
+          6.6085,
+          6.297792
+        ]
+      },
+      "traceSamples": null,
+      "reportWorktreePath": "output/035-development/preview-rc5-quiet-2/interactive-performance.json"
+    },
+    "main-quiet-2": {
+      "build": "main-1b7df6b6",
+      "binarySHA256": "77d4f40fb555a0ed471140d1d8ffa12088dd4a4954eb868c15aa6e0643306f26",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          142.896291,
+          1.6175,
+          1.450583
+        ],
+        "targeted-hsl": [
+          4.692625,
+          4.883459,
+          4.613375
+        ],
+        "local-curves": [
+          8.147833,
+          7.140791,
+          6.868125
+        ]
+      },
+      "traceSamples": null,
+      "reportWorktreePath": "output/035-development/preview-main-quiet-2/interactive-performance.json"
+    },
+    "rc5-trace-1": {
+      "build": "candidate-rc5",
+      "binarySHA256": "1a49aa19a2502a3a6640fe0c48c9f88e96cb57cb7c44ef2f0381540f066afc59",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          145.259959,
+          1.659667,
+          1.435333
+        ],
+        "targeted-hsl": [
+          4.658333,
+          3.859417,
+          4.315667
+        ],
+        "local-curves": [
+          8.647917,
+          7.117083,
+          7.410833
+        ]
+      },
+      "traceSamples": {
+        "neutral": [
+          {
+            "context-device": 3.451333,
+            "proxy-input-lookup": 0.055708,
+            "reserve-frame": 0.111625,
+            "base-ready": 117.544792,
+            "suffix-rendered-once": 0.273958,
+            "suffix-joined": 0.018459,
+            "joined-validation-and-output": 21.232666,
+            "output-materialized": 0.030917
+          },
+          {
+            "context-device": 0.001042,
+            "proxy-input-lookup": 0.024416,
+            "reserve-frame": 0.023834,
+            "base-ready": 0.003833,
+            "suffix-rendered-once": 0.143375,
+            "suffix-joined": 0.014833,
+            "joined-validation-and-output": 0.861875,
+            "output-materialized": 0.012334
+          },
+          {
+            "context-device": 0.000459,
+            "proxy-input-lookup": 0.017,
+            "reserve-frame": 0.019291,
+            "base-ready": 0.003167,
+            "suffix-rendered-once": 0.111375,
+            "suffix-joined": 0.012333,
+            "joined-validation-and-output": 0.81,
+            "output-materialized": 0.007125
+          }
+        ],
+        "targeted-hsl": [
+          {
+            "context-device": 0.001,
+            "proxy-input-lookup": 0.044375,
+            "reserve-frame": 0.026458,
+            "base-ready": 0.007125,
+            "suffix-rendered-once": 2.635084,
+            "suffix-joined": 0.04525,
+            "joined-validation-and-output": 0.835,
+            "output-materialized": 0.007
+          },
+          {
+            "context-device": 0.0005,
+            "proxy-input-lookup": 0.020084,
+            "reserve-frame": 0.025916,
+            "base-ready": 0.005042,
+            "suffix-rendered-once": 2.2085,
+            "suffix-joined": 0.045,
+            "joined-validation-and-output": 0.938708,
+            "output-materialized": 0.009959
+          },
+          {
+            "context-device": 0.000666,
+            "proxy-input-lookup": 0.030042,
+            "reserve-frame": 0.028042,
+            "base-ready": 0.004708,
+            "suffix-rendered-once": 2.553542,
+            "suffix-joined": 0.056291,
+            "joined-validation-and-output": 0.90975,
+            "output-materialized": 0.0165
+          }
+        ],
+        "local-curves": [
+          {
+            "context-device": 0.001417,
+            "proxy-input-lookup": 0.0485,
+            "reserve-frame": 0.038458,
+            "base-ready": 0.003709,
+            "suffix-rendered-once": 4.937125,
+            "suffix-joined": 0.082458,
+            "joined-validation-and-output": 2.015667,
+            "output-materialized": 0.024583
+          },
+          {
+            "context-device": 0.000875,
+            "proxy-input-lookup": 0.022042,
+            "reserve-frame": 0.021916,
+            "base-ready": 0.003167,
+            "suffix-rendered-once": 4.1015,
+            "suffix-joined": 0.049708,
+            "joined-validation-and-output": 2.050167,
+            "output-materialized": 0.018458
+          },
+          {
+            "context-device": 0.000916,
+            "proxy-input-lookup": 0.022875,
+            "reserve-frame": 0.023084,
+            "base-ready": 0.002958,
+            "suffix-rendered-once": 4.776917,
+            "suffix-joined": 0.062541,
+            "joined-validation-and-output": 1.70525,
+            "output-materialized": 0.0135
+          }
+        ]
+      },
+      "reportWorktreePath": "output/035-development/preview-rc5-trace-1/interactive-performance.json"
+    },
+    "main-trace-1": {
+      "build": "main-1b7df6b6",
+      "binarySHA256": "77d4f40fb555a0ed471140d1d8ffa12088dd4a4954eb868c15aa6e0643306f26",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          149.374208,
+          1.753166,
+          1.533167
+        ],
+        "targeted-hsl": [
+          4.741291,
+          4.493959,
+          3.888542
+        ],
+        "local-curves": [
+          8.168583,
+          7.141875,
+          7.204416
+        ]
+      },
+      "traceSamples": {
+        "neutral": [
+          {
+            "context-device": 4.024166,
+            "proxy-input-lookup": 0.07825,
+            "reserve-frame": 0.129,
+            "base-ready": 123.252709,
+            "suffix-rendered-once": 0.310083,
+            "suffix-joined": 0.018292,
+            "joined-validation-and-output": 18.933458,
+            "output-materialized": 0.031792
+          },
+          {
+            "context-device": 0.00075,
+            "proxy-input-lookup": 0.021292,
+            "reserve-frame": 0.023708,
+            "base-ready": 0.004083,
+            "suffix-rendered-once": 0.146667,
+            "suffix-joined": 0.014625,
+            "joined-validation-and-output": 0.936458,
+            "output-materialized": 0.012417
+          },
+          {
+            "context-device": 0.000708,
+            "proxy-input-lookup": 0.02225,
+            "reserve-frame": 0.019458,
+            "base-ready": 0.003334,
+            "suffix-rendered-once": 0.116958,
+            "suffix-joined": 0.015125,
+            "joined-validation-and-output": 0.870167,
+            "output-materialized": 0.005708
+          }
+        ],
+        "targeted-hsl": [
+          {
+            "context-device": 0.001041,
+            "proxy-input-lookup": 0.044,
+            "reserve-frame": 0.028542,
+            "base-ready": 0.004667,
+            "suffix-rendered-once": 2.554625,
+            "suffix-joined": 0.04175,
+            "joined-validation-and-output": 1.071125,
+            "output-materialized": 0.013583
+          },
+          {
+            "context-device": 0.000584,
+            "proxy-input-lookup": 0.026458,
+            "reserve-frame": 0.023042,
+            "base-ready": 0.003541,
+            "suffix-rendered-once": 2.952375,
+            "suffix-joined": 0.062375,
+            "joined-validation-and-output": 0.778292,
+            "output-materialized": 0.006958
+          },
+          {
+            "context-device": 0.000625,
+            "proxy-input-lookup": 0.028959,
+            "reserve-frame": 0.031166,
+            "base-ready": 0.005417,
+            "suffix-rendered-once": 2.169042,
+            "suffix-joined": 0.047833,
+            "joined-validation-and-output": 0.97,
+            "output-materialized": 0.010625
+          }
+        ],
+        "local-curves": [
+          {
+            "context-device": 0.001209,
+            "proxy-input-lookup": 0.049875,
+            "reserve-frame": 0.042791,
+            "base-ready": 0.004709,
+            "suffix-rendered-once": 4.673666,
+            "suffix-joined": 0.073292,
+            "joined-validation-and-output": 1.94725,
+            "output-materialized": 0.029125
+          },
+          {
+            "context-device": 0.000834,
+            "proxy-input-lookup": 0.025041,
+            "reserve-frame": 0.022167,
+            "base-ready": 0.003333,
+            "suffix-rendered-once": 4.09525,
+            "suffix-joined": 0.079042,
+            "joined-validation-and-output": 2.100375,
+            "output-materialized": 0.012417
+          },
+          {
+            "context-device": 0.001,
+            "proxy-input-lookup": 0.024959,
+            "reserve-frame": 0.022333,
+            "base-ready": 0.003417,
+            "suffix-rendered-once": 4.060083,
+            "suffix-joined": 0.070917,
+            "joined-validation-and-output": 2.229791,
+            "output-materialized": 0.009834
+          }
+        ]
+      },
+      "reportWorktreePath": "output/035-development/preview-main-trace-1/interactive-performance.json"
+    },
+    "main-trace-2": {
+      "build": "main-1b7df6b6",
+      "binarySHA256": "77d4f40fb555a0ed471140d1d8ffa12088dd4a4954eb868c15aa6e0643306f26",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          128.05875,
+          1.661417,
+          1.359416
+        ],
+        "targeted-hsl": [
+          4.687625,
+          3.769375,
+          3.557542
+        ],
+        "local-curves": [
+          8.941291,
+          7.377166,
+          7.288791
+        ]
+      },
+      "traceSamples": {
+        "neutral": [
+          {
+            "context-device": 3.396209,
+            "proxy-input-lookup": 0.049166,
+            "reserve-frame": 0.103959,
+            "base-ready": 110.8525,
+            "suffix-rendered-once": 0.270791,
+            "suffix-joined": 0.02175,
+            "joined-validation-and-output": 11.014709,
+            "output-materialized": 0.023833
+          },
+          {
+            "context-device": 0.00075,
+            "proxy-input-lookup": 0.021042,
+            "reserve-frame": 0.023125,
+            "base-ready": 0.003708,
+            "suffix-rendered-once": 0.13725,
+            "suffix-joined": 0.01425,
+            "joined-validation-and-output": 0.922084,
+            "output-materialized": 0.005416
+          },
+          {
+            "context-device": 0.000541,
+            "proxy-input-lookup": 0.016542,
+            "reserve-frame": 0.018667,
+            "base-ready": 0.00325,
+            "suffix-rendered-once": 0.113583,
+            "suffix-joined": 0.012167,
+            "joined-validation-and-output": 0.7705,
+            "output-materialized": 0.004666
+          }
+        ],
+        "targeted-hsl": [
+          {
+            "context-device": 0.001292,
+            "proxy-input-lookup": 0.050667,
+            "reserve-frame": 0.027458,
+            "base-ready": 0.004583,
+            "suffix-rendered-once": 2.630334,
+            "suffix-joined": 0.039,
+            "joined-validation-and-output": 0.900333,
+            "output-materialized": 0.008375
+          },
+          {
+            "context-device": 0.000708,
+            "proxy-input-lookup": 0.016625,
+            "reserve-frame": 0.019584,
+            "base-ready": 0.003208,
+            "suffix-rendered-once": 2.283125,
+            "suffix-joined": 0.04325,
+            "joined-validation-and-output": 0.846917,
+            "output-materialized": 0.008333
+          },
+          {
+            "context-device": 0.0005,
+            "proxy-input-lookup": 0.018584,
+            "reserve-frame": 0.020666,
+            "base-ready": 0.003375,
+            "suffix-rendered-once": 2.038375,
+            "suffix-joined": 0.02575,
+            "joined-validation-and-output": 0.831,
+            "output-materialized": 0.013584
+          }
+        ],
+        "local-curves": [
+          {
+            "context-device": 0.000834,
+            "proxy-input-lookup": 0.044875,
+            "reserve-frame": 0.04,
+            "base-ready": 0.003666,
+            "suffix-rendered-once": 5.371917,
+            "suffix-joined": 0.063625,
+            "joined-validation-and-output": 1.985083,
+            "output-materialized": 0.015792
+          },
+          {
+            "context-device": 0.000917,
+            "proxy-input-lookup": 0.026333,
+            "reserve-frame": 0.022875,
+            "base-ready": 0.003417,
+            "suffix-rendered-once": 4.361417,
+            "suffix-joined": 0.062916,
+            "joined-validation-and-output": 2.079125,
+            "output-materialized": 0.008209
+          },
+          {
+            "context-device": 0.000834,
+            "proxy-input-lookup": 0.017291,
+            "reserve-frame": 0.019292,
+            "base-ready": 0.002958,
+            "suffix-rendered-once": 4.255459,
+            "suffix-joined": 0.053125,
+            "joined-validation-and-output": 2.136791,
+            "output-materialized": 0.02375
+          }
+        ]
+      },
+      "reportWorktreePath": "output/035-development/preview-main-trace-2/interactive-performance.json"
+    },
+    "rc5-trace-2": {
+      "build": "candidate-rc5",
+      "binarySHA256": "1a49aa19a2502a3a6640fe0c48c9f88e96cb57cb7c44ef2f0381540f066afc59",
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "records": {
+        "neutral": [
+          136.391458,
+          1.835667,
+          1.494584
+        ],
+        "targeted-hsl": [
+          4.710625,
+          3.774834,
+          4.122541
+        ],
+        "local-curves": [
+          8.560417,
+          7.092792,
+          6.628833
+        ]
+      },
+      "traceSamples": {
+        "neutral": [
+          {
+            "context-device": 4.703625,
+            "proxy-input-lookup": 0.075625,
+            "reserve-frame": 0.119208,
+            "base-ready": 111.200375,
+            "suffix-rendered-once": 0.284083,
+            "suffix-joined": 0.021584,
+            "joined-validation-and-output": 17.461875,
+            "output-materialized": 0.029333
+          },
+          {
+            "context-device": 0.000958,
+            "proxy-input-lookup": 0.023792,
+            "reserve-frame": 0.026875,
+            "base-ready": 0.0035,
+            "suffix-rendered-once": 0.1445,
+            "suffix-joined": 0.014625,
+            "joined-validation-and-output": 1.020833,
+            "output-materialized": 0.011958
+          },
+          {
+            "context-device": 0.000583,
+            "proxy-input-lookup": 0.02425,
+            "reserve-frame": 0.023083,
+            "base-ready": 0.003709,
+            "suffix-rendered-once": 0.125166,
+            "suffix-joined": 0.014209,
+            "joined-validation-and-output": 0.798916,
+            "output-materialized": 0.006167
+          }
+        ],
+        "targeted-hsl": [
+          {
+            "context-device": 0.001084,
+            "proxy-input-lookup": 0.040916,
+            "reserve-frame": 0.027959,
+            "base-ready": 0.004125,
+            "suffix-rendered-once": 2.724791,
+            "suffix-joined": 0.047917,
+            "joined-validation-and-output": 0.86075,
+            "output-materialized": 0.008333
+          },
+          {
+            "context-device": 0.000542,
+            "proxy-input-lookup": 0.02475,
+            "reserve-frame": 0.023833,
+            "base-ready": 0.004083,
+            "suffix-rendered-once": 2.242042,
+            "suffix-joined": 0.046333,
+            "joined-validation-and-output": 0.821125,
+            "output-materialized": 0.009167
+          },
+          {
+            "context-device": 0.000666,
+            "proxy-input-lookup": 0.026459,
+            "reserve-frame": 0.031416,
+            "base-ready": 0.00425,
+            "suffix-rendered-once": 2.3675,
+            "suffix-joined": 0.04,
+            "joined-validation-and-output": 0.98175,
+            "output-materialized": 0.01025
+          }
+        ],
+        "local-curves": [
+          {
+            "context-device": 0.001,
+            "proxy-input-lookup": 0.041333,
+            "reserve-frame": 0.031667,
+            "base-ready": 0.003958,
+            "suffix-rendered-once": 4.86175,
+            "suffix-joined": 0.067667,
+            "joined-validation-and-output": 2.203833,
+            "output-materialized": 0.01025
+          },
+          {
+            "context-device": 0.000917,
+            "proxy-input-lookup": 0.029125,
+            "reserve-frame": 0.02175,
+            "base-ready": 0.003416,
+            "suffix-rendered-once": 4.057125,
+            "suffix-joined": 0.054625,
+            "joined-validation-and-output": 2.103167,
+            "output-materialized": 0.019542
+          },
+          {
+            "context-device": 0.001084,
+            "proxy-input-lookup": 0.018583,
+            "reserve-frame": 0.023083,
+            "base-ready": 0.005084,
+            "suffix-rendered-once": 3.679791,
+            "suffix-joined": 0.071167,
+            "joined-validation-and-output": 2.071625,
+            "output-materialized": 0.00875
+          }
+        ]
+      },
+      "reportWorktreePath": "output/035-development/preview-rc5-trace-2/interactive-performance.json"
+    }
+  },
+  "summary": {
+    "main": {
+      "quiet": {
+        "neutral": {
+          "medianMs": 1.6692084999999999
+        },
+        "targeted-hsl": {
+          "medianMs": 4.58625
+        },
+        "local-curves": {
+          "medianMs": 7.004458
+        }
+      },
+      "trace": {
+        "neutral": {
+          "medianMs": 1.7072915,
+          "phaseMedianMs": {
+            "context-device": 0.00075,
+            "proxy-input-lookup": 0.021771,
+            "reserve-frame": 0.0234165,
+            "base-ready": 0.0038954999999999997,
+            "suffix-rendered-once": 0.1419585,
+            "suffix-joined": 0.014875,
+            "joined-validation-and-output": 0.929271,
+            "output-materialized": 0.0090625
+          }
+        },
+        "targeted-hsl": {
+          "medianMs": 4.191250500000001,
+          "phaseMedianMs": {
+            "context-device": 0.0006665,
+            "proxy-input-lookup": 0.027708499999999997,
+            "reserve-frame": 0.02525,
+            "base-ready": 0.004062,
+            "suffix-rendered-once": 2.418875,
+            "suffix-joined": 0.042499999999999996,
+            "joined-validation-and-output": 0.8736250000000001,
+            "output-materialized": 0.009500000000000001
+          }
+        },
+        "local-curves": {
+          "medianMs": 7.332978499999999,
+          "phaseMedianMs": {
+            "context-device": 0.0008755,
+            "proxy-input-lookup": 0.025687,
+            "reserve-frame": 0.022604,
+            "base-ready": 0.003417,
+            "suffix-rendered-once": 4.308438000000001,
+            "suffix-joined": 0.067271,
+            "joined-validation-and-output": 2.08975,
+            "output-materialized": 0.014104499999999999
+          }
+        }
+      }
+    },
+    "rc5": {
+      "quiet": {
+        "neutral": {
+          "medianMs": 1.7964795
+        },
+        "targeted-hsl": {
+          "medianMs": 4.2843535
+        },
+        "local-curves": {
+          "medianMs": 6.6693750000000005
+        }
+      },
+      "trace": {
+        "neutral": {
+          "medianMs": 1.7476669999999999,
+          "phaseMedianMs": {
+            "context-device": 0.001,
+            "proxy-input-lookup": 0.024333,
+            "reserve-frame": 0.025354500000000002,
+            "base-ready": 0.003771,
+            "suffix-rendered-once": 0.1439375,
+            "suffix-joined": 0.014729,
+            "joined-validation-and-output": 0.941354,
+            "output-materialized": 0.012146
+          }
+        },
+        "targeted-hsl": {
+          "medianMs": 4.219104,
+          "phaseMedianMs": {
+            "context-device": 0.000666,
+            "proxy-input-lookup": 0.028250499999999998,
+            "reserve-frame": 0.0272085,
+            "base-ready": 0.004479,
+            "suffix-rendered-once": 2.460521,
+            "suffix-joined": 0.0457915,
+            "joined-validation-and-output": 0.88525,
+            "output-materialized": 0.009563
+          }
+        },
+        "local-curves": {
+          "medianMs": 7.263958000000001,
+          "phaseMedianMs": {
+            "context-device": 0.0009584999999999999,
+            "proxy-input-lookup": 0.026000000000000002,
+            "reserve-frame": 0.0230835,
+            "base-ready": 0.0035625,
+            "suffix-rendered-once": 4.4392084999999994,
+            "suffix-joined": 0.065104,
+            "joined-validation-and-output": 2.060896,
+            "output-materialized": 0.015979
+          }
+        }
+      }
+    }
+  },
+  "quality": {
+    "neutral": {
+      "width": 2400,
+      "height": 1600,
+      "settledWidth": 2400,
+      "settledHeight": 1600,
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels"
+    },
+    "targeted-hsl": {
+      "width": 2400,
+      "height": 1600,
+      "settledWidth": 2400,
+      "settledHeight": 1600,
+      "maximumChannelError": 22,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels"
+    },
+    "local-curves": {
+      "width": 2400,
+      "height": 1600,
+      "settledWidth": 2400,
+      "settledHeight": 1600,
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels"
+    }
+  }
+}

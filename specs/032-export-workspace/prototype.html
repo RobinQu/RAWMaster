@@ -82,7 +82,13 @@
     #jobrows {list-style:none;padding:0;margin:15px 0}
     #jobrows li {display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}
     #jobrows small {display:block;color:var(--sub);font-size:12px}
-    #job-actions {display:flex;flex-wrap:wrap;gap:8px}
+    #job-actions,#job-demo .actions {display:flex;flex-wrap:wrap;gap:8px}
+    #job-summary,#job-reason,#job-demo {margin-top:8px}
+    #job-demo .actions {margin:8px 0 0;justify-content:flex-start}
+    #job-demo summary {color:var(--sub);cursor:pointer}
+    #jobrows .row-state {flex:none;text-align:right;max-width:43%}
+    #jobrows .row-state button {display:block;margin-top:4px}
+    #job-summary:empty,#job-reason:empty {display:none}
     #save-form {display:grid;gap:12px}
     #save-form label {display:grid;gap:4px}
     .stage {position:relative}
@@ -255,14 +261,24 @@
 </dialog>
 <dialog id="job" aria-labelledby="job-title">
   <div class="between"><h2 id="job-title">任务详情</h2><button id="close-job">返回面板</button></div>
-  <p class="small" id="job-note"></p><ul id="jobrows"></ul>
+  <p class="small" id="job-note"></p>
+  <p id="job-summary" class="num" role="status"></p><p id="job-reason" class="small warn" role="status"></p>
+  <ul id="jobrows"></ul>
   <nav id="job-pages" aria-label="任务结果翻页" hidden>
     <button id="job-prev" aria-label="上一页任务">上一页</button>
     <label>第 <input type="number" id="job-page" aria-label="跳至任务页" min="1" step="1"> / <span id="job-pages-total"></span> 页</label>
     <button id="job-next" aria-label="下一页任务">下一页</button>
     <span id="job-range" class="small"></span>
   </nav>
-  <div id="job-actions"><button id="cancel-job">取消待办</button><button id="retry">重试可处理项</button></div>
+  <div id="job-actions"><button id="cancel-job">取消待办</button>
+    <button id="job-volume" hidden>接回原目标目录</button><button id="recheck-job" hidden>重新核对文件</button>
+    <button id="retry">重试可处理项</button></div>
+  <details id="job-demo" hidden><summary>模拟中断与故障</summary><div class="actions">
+    <button id="interrupt-job">模拟退出并重开</button><button id="disconnect-job">断开目标目录</button>
+    <button id="mount-other" hidden>同路径挂载另一卷</button><button id="mount-original" hidden>原卷以新设备号重挂</button>
+    <button id="fail-job">模拟一项写入失败</button><button id="conflict-job">模拟同名文件占位</button>
+    <button id="restore-conflict" hidden>模拟占位文件已移走</button>
+  </div><p id="mount-observation" class="small muted" hidden></p></details>
 </dialog>
 <dialog id="save-dialog" aria-labelledby="save-title">
   <form id="save-form"><h2 id="save-title">新建导出预设</h2>
@@ -392,7 +408,7 @@
     const cfgError = settings.error;
     const version = photo.versions[photo.choice];
     const ready = inputAvailable(photo,mode);
-    let name = photo.name;
+    let name = photo.name, baseName = name;
     let facts = '原始文件字节 · 保留原有元数据';
     let state = ready ? '待执行' : '待找回';
     let composition=null;
@@ -401,6 +417,7 @@
       const values = {name:photo.name.replace(/\.[^.]+$/,''),index:String(sequence).padStart(4,'0'),date:exportDate,captureDate:photo.date};
       const stem = settings.template.replace(/\{(name|index|date|captureDate)\}/g,(_,key)=>values[key]).trim();
       name = stem + '.' + ext;
+      baseName = name;
       if (used.has(name) && settings.collision === 'skip') state = '按重名策略跳过';
       else {
         const baseName = name;
@@ -423,7 +440,7 @@
       const filter = settings.copyFilter;
       if ((filter === 'raw' && !raw) || (filter === 'jpeg' && raw)) state = '不匹配交付格式';
     }
-    return {index,name,facts,version,composition,metadata:metadataSummary(photo,settings),state:cfgError ? '设置待修正' : state};
+    return {index,name,baseName,facts,version,composition,metadata:metadataSummary(photo,settings),state:cfgError ? '设置待修正' : state};
   }
   function planningSettings() {
     const size = byId('size').value;
@@ -511,6 +528,7 @@
     }
     button.disabled = Boolean(selection.overLimit || validateSettings() || job?.running || (manifest ? !plan.length : !ready));
     byId('show-job').disabled = !job;
+    byId('show-job').textContent = job?.photoReceipt && !job.running && !['done','cancelled'].includes(job.phase) ? '任务详情 · 待处理' : '任务详情';
     drawList();
   }
   const jobPageSize = 24;
@@ -524,8 +542,17 @@
     jobPage = Math.min(pages - 1,Math.max(0,jobPage));
     const start = jobPage * jobPageSize;
     const end = Math.min(job.items.length,start + jobPageSize);
-    byId('job-title').textContent = job.running ? '正在模拟交付' : '本批交付结果';
-    byId('job-note').textContent = job.directory + ' · ' + job.recipe + ' · 模拟任务';
+    const photoBatch = job.photoReceipt === 1;
+    byId('job-title').textContent = photoBatch ? PhotoDelivery.state(job)[1] : job.running ? '正在模拟交付' : '本批交付结果';
+    byId('job-note').textContent = [photoBatch ? job.source : '',job.directory,job.recipe,job.running ? '可返回编辑，交付继续' : '模拟任务'].filter(Boolean).join(' · ');
+    byId('job-summary').textContent = photoBatch ? PhotoDelivery.summary(job) : '';
+    byId('job-reason').textContent = !photoBatch ? '' : job.storageIssue ? '本机存储不可用，重开后可能无法读取本批。'
+      : job.phase === 'cancelled' ? '本批已结束。已交付的文件保留在原目录。'
+      : !job.volumeOnline ? '接回提交时使用的输出目录，然后继续。'
+      : job.items.some(r => r.state === '同名文件待核对') ? '同名文件与本批票据不符。请核对原目录中的文件，再重新核对。'
+      : job.items.some(r => r.state === '已交付文件缺失') ? '已交付文件在原目录中缺失。找回原文件后可重新核对。'
+      : job.items.some(r => r.state === '写入失败') ? '写入未完成。可沿用原版本、文件名和目标目录重试。'
+      : job.phase === 'interrupted' ? '继续时沿用本批提交的版本、名称和原目标目录。' : '';
     if (drawnPage !== jobPage) {
       const rows = document.createDocumentFragment();
       for (const row of job.items.slice(start,end)) {
@@ -534,9 +561,17 @@
         const name = document.createElement('strong'); name.textContent = row.name;
         const info = document.createElement('small');
         const imprint = row.composition && job.settings?.layout.mark !== 'off' ? imprintSummary(job.settings.layout,row.composition.lines) : null;
-        info.textContent = [job.mode === 'render' ? row.version?.label : null,row.facts,row.metadata,imprint].filter(Boolean).join(' · ');
+        info.textContent = [photoBatch ? row.sourceName : null,job.mode === 'render' ? row.version?.label : null,row.facts,row.metadata,imprint].filter(Boolean).join(' · ');
         group.append(name,info);
-        li.append(group,document.createElement('span'));
+        const status = document.createElement('span'); status.className = 'row-state';
+        status.append(document.createElement('span'));
+        if (photoBatch) {
+          const reconnect = document.createElement('button'); reconnect.className = 'link-button'; reconnect.textContent = '接回原片';
+          reconnect.setAttribute('aria-label','接回 ' + row.sourceName); reconnect.hidden = true;
+          reconnect.onclick = () => { PhotoDelivery.reconnectInput(job,row); byId('retry').disabled ? byId('close-job').focus() : byId('retry').focus(); };
+          status.append(reconnect);
+        }
+        li.append(group,status);
         rows.append(li);
       }
       list.replaceChildren(rows);
@@ -552,12 +587,35 @@
     }
     for (let index = start; index < end; index++) {
       const value = job.items[index].state;
-      const state = list.children[index - start].lastElementChild;
+      const row = job.items[index], li = list.children[index - start], status = li.lastElementChild, state = status.firstElementChild;
+      const label = li.querySelector('strong');
+      if (label.textContent !== row.name) label.textContent = row.name;
       if (state.textContent !== value) state.textContent = value;
-      state.classList.toggle('warn',value === '待找回');
+      state.classList.toggle('warn',['待找回','写入失败','同名文件待核对','已交付文件缺失'].includes(value));
+      if (photoBatch) status.lastElementChild.hidden = job.running || job.phase === 'cancelled' || value !== '待找回';
     }
-    byId('cancel-job').hidden = !job.running;
-    byId('retry').hidden = job.running || !job.items.some(canRetry);
+    byId('job-demo').hidden = !photoBatch;
+    byId('job-volume').hidden = !photoBatch || job.volumeOnline;
+    byId('recheck-job').hidden = !photoBatch || job.running || !job.volumeOnline || ['done','cancelled'].includes(job.phase);
+    byId('cancel-job').textContent = photoBatch ? '取消本批交付' : '取消待办';
+    byId('cancel-job').hidden = photoBatch ? ['cancelled','done'].includes(job.phase) : !job.running;
+    const retry = byId('retry');
+    if (photoBatch) {
+      const n = job.items.filter(r => PhotoDelivery.canRun(job,r)).length;
+      retry.hidden = job.running || ['done','cancelled'].includes(job.phase);
+      retry.disabled = !n;
+      retry.textContent = (job.items.some(r => r.state === '写入失败') ? '重试' : '继续') + '未完成项' + (n ? '（' + n + '）' : '');
+      byId('interrupt-job').disabled = !job.running;
+      byId('disconnect-job').disabled = !job.volumeOnline || ['done','cancelled'].includes(job.phase);
+      byId('mount-other').hidden = byId('mount-original').hidden = job.volumeOnline;
+      byId('mount-observation').hidden = job.volumeOnline || !job.reconnectIssue;
+      byId('mount-observation').textContent = job.reconnectIssue || '';
+      byId('fail-job').disabled = !job.running || !!job.failNext;
+      byId('conflict-job').disabled = !job.running || !job.items.some(r => r.state === '处理中' && !PhotoDelivery.fileAt(job,r.name));
+      byId('restore-conflict').hidden = !job.items.some(r => r.state === '同名文件待核对' && PhotoDelivery.fileAt(job,r.name)?.fixture);
+    } else {
+      retry.textContent = '重试可处理项'; retry.hidden = job.running || !job.items.some(canRetry); retry.disabled = false;
+    }
   }
   function canRetry(row) {
     return row.state === '已取消' || (row.state === '待找回' && inputAvailable(photos[row.index],job.mode,row.version));
@@ -566,6 +624,8 @@
     if (!handoff || window.parent === window) return;
     window.parent.postMessage({type:'rawmaster.delivery.receipt', id:job.id, running:job.running,
       kind:job.mode==='render'?'成片导出':'原件交付', folder:job.directory,
+      ...(job.photoReceipt ? {photoReceipt:1, state:PhotoDelivery.state(job)[0],
+        status:PhotoDelivery.state(job)[1], summary:PhotoDelivery.summary(job)} : {}),
       rows:job.items.map(({name,state})=>({name,state}))}, location.protocol==='file:'?'*':location.origin);
   }
   function runNext() {
@@ -601,7 +661,14 @@
     job = {id:crypto.randomUUID?.() ?? String(Date.now()),mode,folder,directory:folderNames[folder] + (mode === 'original' ? ' / RAWMaster精选' : ''),
       recipe:mode === 'render' ? byId('format').selectedOptions[0].textContent+' · '+styleName(layout) : '原件清单',
       settings:currentSettings(),items,running:true};
-    byId('job').showModal(); refresh(); publishJob(); runNext();
+    if (mode === 'render') {
+      PhotoDelivery.freeze(job);
+      const params = new URLSearchParams(location.hash.slice(1));
+      params.set('receipt',job.id); params.delete('details');
+      history.replaceState(null,'','#' + params);
+    }
+    byId('job').showModal(); refresh(); publishJob();
+    if (job.photoReceipt) PhotoDelivery.run(job); else runNext();
   }
   function switchMode(value) {
     if (mode===value) return;
@@ -634,7 +701,12 @@
     if (Object.hasOwn(folderNames,directory)) byId('folder').value=directory;
   } catch {}
   byId('version').onchange = () => { photos[focus].choice = Number(byId('version').value); selection.changed(); };
-  byId('reconnect').onclick = () => { photos[focus].online = true; selection.changed(); if (job) showJob(); };
+  byId('reconnect').onclick = () => {
+    const photo = photos[focus]; photo.online = true; selection.changed();
+    const row = job?.photoReceipt && job.items.find(r => r.asset === PhotoDelivery.assetKey(photo));
+    if (row && !job.running && job.phase !== 'cancelled') PhotoDelivery.reconnectInput(job,row);
+    else if (job) showJob();
+  };
   byId('submit').onclick = submit;
   byId('show-job').onclick = () => { byId('job').showModal(); showJob(); };
   byId('job-prev').onclick = () => { jobPage--; showJob(); };
@@ -647,17 +719,56 @@
   byId('job-page').onchange = jumpToJobPage;
   byId('job-page').onkeydown = event => { if (event.key === 'Enter') jumpToJobPage(); };
   byId('close-job').onclick = () => byId('job').close();
+  byId('job').addEventListener('close', () => byId('show-job').focus());
   byId('cancel-job').onclick = () => {
+    if (job.photoReceipt) { PhotoDelivery.stop(job,'cancelled'); byId('close-job').focus(); return; }
     clearTimeout(timer);
     for (const row of job.items) if (['待执行','处理中'].includes(row.state)) row.state = '已取消';
     job.running = false; showJob(); refresh(); publishJob();
   };
   byId('retry').onclick = () => {
+    if (job.photoReceipt) { PhotoDelivery.resume(job); byId('close-job').focus(); return; }
     for (const row of job.items) if (canRetry(row)) row.state = '待执行';
     taskCursor = 0;
     job.running = true; refresh(); publishJob(); runNext();
   };
 </script>
+<script src="workspace-delivery.js"></script>
 <script src="workspace-controls.js"></script>
+<script>
+  const receiptParams = new URLSearchParams(location.hash.slice(1));
+  PhotoDelivery.restoreView();
+  const restoredBatch = PhotoDelivery.load(receiptParams.get('receipt'));
+  if (restoredBatch) {
+    job = restoredBatch; refresh(); publishJob();
+    if (receiptParams.has('details')) { byId('job').showModal(); showJob(); }
+  }
+  byId('interrupt-job').onclick = () => {
+    // End the old runner without acknowledging its in-flight file. The new document reconciles it.
+    clearTimeout(timer);
+    const params = new URLSearchParams(location.hash.slice(1)); params.set('receipt',job.id);
+    params.set('details','1');
+    history.replaceState(null,'','#' + params); location.reload();
+  };
+  byId('disconnect-job').onclick = () => { PhotoDelivery.stop(job,'offline'); byId('job-volume').focus(); };
+  for (const id of ['mount-other','mount-original']) {
+    byId(id).onclick = () => { PhotoDelivery.offerMount(job,id === 'mount-original'); byId('job-volume').focus(); };
+  }
+  byId('job-volume').onclick = () => {
+    if (!PhotoDelivery.reconnectVolume(job)) { byId('job-volume').focus(); return; }
+    (byId('retry').disabled || byId('retry').hidden ? byId('close-job') : byId('retry')).focus();
+  };
+  byId('fail-job').onclick = () => { job.failNext = true; PhotoDelivery.update(); };
+  byId('conflict-job').onclick = () => { PhotoDelivery.collide(job); byId('recheck-job').focus(); };
+  byId('restore-conflict').onclick = () => { PhotoDelivery.restoreForeign(job); byId('recheck-job').focus(); };
+  byId('recheck-job').onclick = () => { PhotoDelivery.verify(job); PhotoDelivery.update(); };
+  window.addEventListener('message',event => {
+    if (event.source !== window.parent || (location.protocol !== 'file:' && event.origin !== location.origin)) return;
+    if (event.data?.type === 'rawmaster.delivery.open' && event.data.id === job?.id) {
+      if (!byId('job').open) byId('job').showModal();
+      showJob(); byId('close-job').focus();
+    }
+  });
+</script>
 </body>
 </html>

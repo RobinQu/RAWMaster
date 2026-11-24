@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "tracking": "Spec 035 Batch 32",
+  "boundary": "Same app preview entry, original graphics flags common, one new final-bitmap switch in ABBA",
+  "binary": {
+    "path": "output/035-development/phase-ad/bitmap/same-host-01/profile-settled-photo",
+    "sha256": "59376e041a321f6e29822dd02c3ca53bf1125c66742f159b27ba01c40509db85"
+  },
+  "originalProductionBuild": {
+    "path": "output/035-development/candidate-batch32-owned-bitmap-preflight/source-files.sha256",
+    "sha256": "3fd69cddcdb30611c2bc306b2eac17aaf1c98bc531854efbe4f7fc3abc89a891"
+  },
+  "testLog": {
+    "path": "output/035-development/candidate-batch32-owned-bitmap-preflight/owned-bitmap.log",
+    "sha256": "0a1b18293f8457f9b1b9534308819d7714d609ef818830e6219b607161998fe5"
+  },
+  "controlledFullDisplayReadbacks": 1184,
+  "runs": {
+    "primary": {
+      "wholeFramesCompared": 592,
+      "traces": [
+        {
+          "arm": 0,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 0,
+          "peakBytes": 5301013024,
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/1-primary-0.json",
+            "sha256": "4c2a66a0236e912ffe4a10c32ffbb69b2bd05b1c972ab22020dcb0e00425d2ce"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/1-primary-0.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        },
+        {
+          "arm": 1,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 70,
+          "peakBytes": 5377624416,
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/2-primary-1.json",
+            "sha256": "b84c6482f74aa084456b9003b4d7d38a2a30f5f71ac01977608ee37013e90cc5"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/2-primary-1.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        },
+        {
+          "arm": 1,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 70,
+          "peakBytes": 5361994272,
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/3-primary-1.json",
+            "sha256": "1f94ac111d0ba408fb571d216e5bd2680393dcbdff2c90a2b25fe6a60e7e16cd"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/3-primary-1.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        },
+        {
+          "arm": 0,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 0,
+          "peakBytes": 5378280088,
+          "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/4-primary-0.json",
+            "sha256": "6f79c25677168571c04ea5c541e0b55bb34e14876386b5bcbf5418fa9e98339b"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/4-primary-0.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        }
+      ],
+      "scores": {
+        "0": {
+          "settled": {
+            "n": 148,
+            "p50ms": 64.51597899999999,
+            "p95ms": 269.903292
+          },
+          "displayProducer": {
+            "n": 140,
+            "p50ms": 29.611459000000004,
+            "p95ms": 135.75008300000002
+          },
+          "peakFootprintBytes": [
+            5301013024,
+            5378280088
+          ]
+        },
+        "1": {
+          "settled": {
+            "n": 148,
+            "p50ms": 58.362958500000005,
+            "p95ms": 261.577625
+          },
+          "displayProducer": {
+            "n": 140,
+            "p50ms": 27.798603999999997,
+            "p95ms": 133.65
+          },
+          "peakFootprintBytes": [
+            5377624416,
+            5361994272
+          ]
+        }
+      }
+    },
+    "secondary": {
+      "wholeFramesCompared": 592,
+      "traces": [
+        {
+          "arm": 0,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 0,
+          "peakBytes": 4847372784,
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/1-secondary-0.json",
+            "sha256": "53bf5616da5d661b126fc03cac30fc941d964d8515baca3d210ae3336283bcc4"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/1-secondary-0.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        },
+        {
+          "arm": 1,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 70,
+          "peakBytes": 4849682736,
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/2-secondary-1.json",
+            "sha256": "db0a65de5821e4717ad3beb953f451cb34a536c1c23a3bc1e78942262f7edc2f"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/2-secondary-1.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        },
+        {
+          "arm": 1,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 70,
+          "peakBytes": 4834642200,
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/3-secondary-1.json",
+            "sha256": "c87cca2ab1f1cffff0e86fe35a82cf46dcdad330a4c10a5f683e24fd98e29d89"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/3-secondary-1.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        },
+        {
+          "arm": 0,
+          "fullFrameReadbacks": 148,
+          "newDisplayTasks": 0,
+          "peakBytes": 4834642344,
+          "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+          "trace": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/4-secondary-0.json",
+            "sha256": "9ed58d96dfdd4bb86277cd92899cf98c5c32407918b32cc76ee4bf0c1114d6bb"
+          },
+          "execution": {
+            "path": "output/035-development/phase-ad/bitmap/same-host-01/4-secondary-0.command.json",
+            "sha256": "e19812ccf5469df0e2a1c513dfd31e27881f3e2545ea51e1777b41233cc32424"
+          }
+        }
+      ],
+      "scores": {
+        "0": {
+          "settled": {
+            "n": 148,
+            "p50ms": 63.593728999999996,
+            "p95ms": 236.033291
+          },
+          "displayProducer": {
+            "n": 140,
+            "p50ms": 30.6058545,
+            "p95ms": 117.17800000000001
+          },
+          "peakFootprintBytes": [
+            4847372784,
+            4834642344
+          ]
+        },
+        "1": {
+          "settled": {
+            "n": 148,
+            "p50ms": 58.8102495,
+            "p95ms": 236.614208
+          },
+          "displayProducer": {
+            "n": 140,
+            "p50ms": 26.3787295,
+            "p95ms": 113.559875
+          },
+          "peakFootprintBytes": [
+            4849682736,
+            4834642200
+          ]
+        }
+      }
+    }
+  }
+}

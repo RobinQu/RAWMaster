@@ -1,0 +1,2260 @@
+{
+  "schemaVersion": 1,
+  "sealedBuild": {
+    "baseCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+    "binaries": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/binaries.sha256",
+      "sha256": "152322bea652954c845f565317dfd8e17030d84b77fc4f7a44f21a77b4c61873"
+    },
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/source-files.sha256",
+      "sha256": "176299753c4c33600bcb5d623141a0b18097e91dea1bef78dcfd9331a01cd28e"
+    },
+    "imagingTestBinary": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/RAWMasterImagingTests.xctest/Contents/MacOS/RAWMasterImagingTests",
+      "sha256": "5c09569ddeaf5a4805d297037a08ee67980243856dbc9302c5028396920dd957"
+    },
+    "uiTestBinary": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/RAWMasterUITests.xctest/Contents/MacOS/RAWMasterUITests",
+      "sha256": "a7752d074ee897a13e4307a7ad46351666201d7fa3dfae8208786de66346ceac"
+    }
+  },
+  "frozenSources": {
+    "repoPath": "output/035-development/multi-mask-study/frozen/bindings.json",
+    "sha256": "d057dddf387df34fee0b582a944f605764152febaaf6babd1854fa0e92b8e4bc",
+    "snapshots": [
+      {
+        "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+        "role": "sky",
+        "height": 1024,
+        "width": 1536,
+        "receiptSHA256": "2d859ffd2c7093d87cbd7d6366f275a9c266b0909ccee6b7a6889f012d0cac1e",
+        "workJSONSHA256": "38374753f4837ec48000459fd0080fb4a3b2d3c2edaaaa2552cb15d724c3bfb1",
+        "snapshot": {
+          "height": 1024,
+          "analysisDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+          "modelHashes": [
+            "bdbe3961a13d75fe259f4bbc5d93dc8e4b5fe130c599acd6009ae1f382d6bc5d"
+          ],
+          "target": "sky",
+          "width": 1536,
+          "source": {
+            "orientedHeight": 6336,
+            "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "orientedWidth": 9504,
+            "exifOrientation": 1
+          },
+          "generator": "efficientvit-b2-ade20k-v1",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "prompt": []
+        }
+      },
+      {
+        "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+        "role": "subject",
+        "height": 1024,
+        "width": 1536,
+        "receiptSHA256": "3ddfd83891049bcb949d6325a67cf2814c7efba1ca304ab0386ff88d468d5235",
+        "workJSONSHA256": "64b0bc091407f93a11903dddd655bd0ca49f9cb223b6bbb62fd3a13f3104590a",
+        "snapshot": {
+          "height": 1024,
+          "modelHashes": [],
+          "source": {
+            "orientedHeight": 6336,
+            "sourceContentID": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+            "orientedWidth": 9504,
+            "exifOrientation": 1
+          },
+          "generator": "vision-foreground-r1-v1",
+          "target": "subject",
+          "prompt": [],
+          "width": 1536,
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "analysisDecoder": "flashraw-0.3.1-linear-srgb-bilinear"
+        }
+      }
+    ]
+  },
+  "native": {
+    "repoPath": "output/035-development/multi-mask-study/native-source-bound/manifest.json",
+    "sha256": "74393d1cba45f2d7b1e1505e5ff10385fe4a1007d57af36e40bbe5fda7dba7f5",
+    "base": {
+      "bytes": 61440000,
+      "filename": "common-base.rgba32fle",
+      "sha256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4"
+    },
+    "cpu": {
+      "bytes": 61440000,
+      "filename": "macos-cpu.rgba32fle",
+      "sha256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527"
+    },
+    "cpuComparison": {
+      "alphaOne": true,
+      "coveredChanged": 2067775,
+      "finite": true,
+      "maxAbs": 3.5762786865234375e-07,
+      "maxErrorDividedByMaxOneAbsReference": 3.2209698019869393e-07,
+      "maxNormalizedErrorVsAnalytical": 2.3657915448893618e-07,
+      "overlap": 13654,
+      "protected": 1772225,
+      "protectedBitDifferences": 0,
+      "skyOnly": 2054121,
+      "subjectOnly": 0,
+      "tolerance": 2e-05
+    },
+    "decoder": "FlashRaw 0.3.1 full-sensor GPU linear RGB F16 / bilinear; EXIF1 oriented preview sampled once",
+    "film": {
+      "amount": 37.5,
+      "filename": "Spektrafilm/spektraVelvia100-100.delta64.rgba32f",
+      "look": "spektraVelvia100",
+      "sha256": "68009686b2f669f888bdb701cf1177ccd949ca9acb8a74f6ec3544a5ab3ca45d"
+    },
+    "frame": {
+      "bytes": 61440000,
+      "filename": "source.rgba32fle",
+      "sha256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89"
+    },
+    "gpu": {
+      "bytes": 61440000,
+      "filename": "macos-gpu.rgba32fle",
+      "sha256": "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5"
+    },
+    "gpuComparison": {
+      "alphaOne": true,
+      "coveredChanged": 2067775,
+      "finite": true,
+      "maxAbs": 3.5762786865234375e-07,
+      "maxErrorDividedByMaxOneAbsReference": 3.2209709388553165e-07,
+      "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+      "overlap": 13654,
+      "protected": 1772225,
+      "protectedBitDifferences": 0,
+      "skyOnly": 2054121,
+      "subjectOnly": 0,
+      "tolerance": 2e-05
+    },
+    "height": 1600,
+    "layout": "top-down extended-linear-sRGB premultiplied RGBA32F/R32F little-endian",
+    "legacyComparison": {
+      "alphaOne": true,
+      "coveredChanged": 2067775,
+      "finite": true,
+      "maxAbs": 3.5762786865234375e-07,
+      "maxErrorDividedByMaxOneAbsReference": 3.2209709388553165e-07,
+      "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+      "overlap": 13654,
+      "protected": 1772225,
+      "protectedBitDifferences": 0,
+      "skyOnly": 2054121,
+      "subjectOnly": 0,
+      "tolerance": 2e-05
+    },
+    "metal": {
+      "bytes": 61440000,
+      "filename": "macos-metal.rgba32fle",
+      "sha256": "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5"
+    },
+    "metalComparison": {
+      "alphaOne": true,
+      "coveredChanged": 2067775,
+      "finite": true,
+      "maxAbs": 0,
+      "maxErrorDividedByMaxOneAbsReference": 0,
+      "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+      "overlap": 13654,
+      "protected": 1772225,
+      "protectedBitDifferences": 0,
+      "skyOnly": 2054121,
+      "subjectOnly": 0,
+      "tolerance": 2e-05
+    },
+    "planes": [
+      {
+        "bytes": 15360000,
+        "filename": "sky.r32fle",
+        "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+        "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+        "role": "sky",
+        "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+      },
+      {
+        "bytes": 15360000,
+        "filename": "subject.r32fle",
+        "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+        "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+        "role": "subject",
+        "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+      }
+    ],
+    "recipe": {
+      "filename": "recipe.json",
+      "sha256": "948395245dc80bc22be3df65b41e79820e7c75a041cc60fe5e7ec3a200e5b193"
+    },
+    "reference": {
+      "bytes": 61440000,
+      "filename": "legacy-ci.rgba32fle",
+      "sha256": "2ef9d3b09f821b916d3b350ff4f4fe8a4b42389d290ee26e54a1312d3c83532e"
+    },
+    "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+    "width": 2400
+  },
+  "independentPixelReview": {
+    "repoPath": "output/035-development/multi-mask-study/independent-native.json",
+    "sha256": "3c631f9dc9aa56b246f2424ee3abaf03099a49936b8fa0536c06beabdf5088a0",
+    "manifestSHA256": "74393d1cba45f2d7b1e1505e5ff10385fe4a1007d57af36e40bbe5fda7dba7f5",
+    "grid": [
+      2400,
+      1600
+    ],
+    "cpuBitwiseProtectedPixels": 1772225,
+    "cpuProtectedDifferences": 0,
+    "independentPNGSampling": {
+      "sky": {
+        "samples": 4144,
+        "maxAbsVsPNGCenterBilinear": 0.00019608404122040124,
+        "maxAbsIfVerticallyReversed": 0.9960784316062927
+      },
+      "subject": {
+        "samples": 4144,
+        "maxAbsVsPNGCenterBilinear": 0.0005078284113978482,
+        "maxAbsIfVerticallyReversed": 1.0000000000000002
+      }
+    }
+  },
+  "rustAndNativeTests": {
+    "macOSRust": {
+      "repoPath": "output/035-development/multi-mask-study/macos-rust-tests.log",
+      "sha256": "7b8abd126798b01625c2749e977707322551e74f83adbccd40b936b2d73e73bc",
+      "passed": 18
+    },
+    "linuxArm64RustCPU": {
+      "repoPath": "output/035-development/multi-mask-study/linux-cpu-build.log",
+      "sha256": "cb6ea5f5212d584f43e1efb7a69b212f1490f09ad37256ef61d157a03e951905",
+      "passed": 14
+    },
+    "linuxArm64SoftwareVulkan": {
+      "repoPath": "output/035-development/multi-mask-study/linux/replay.log",
+      "sha256": "63f7240f2114303fff2ffd2d0c4a26c705b7153b3e839d4cc9af361a0516e2ed",
+      "passed": 2
+    },
+    "nativeXCTest": {
+      "repoPath": "output/035-development/multi-mask-study/swift-native-source-bound.log",
+      "sha256": "df0b8e3ff6c60a4ce082b9c563eef13359889e9c589b07b296010f59359c365d",
+      "passed": 2
+    },
+    "metalABI": {
+      "repoPath": "output/035-development/multi-mask-study/metal-abi/c_abi.json",
+      "sha256": "bc653d96a4064af40d8ac525b85c83057ad0308a0bc6c4d7d366e9947ecffc9b",
+      "abi": 1,
+      "descriptorBytes": 56,
+      "cpuVsNativeCIMaxAbs": 1.19209289551e-07,
+      "validMaskedAndUnmasked": true,
+      "invalidCoverageRejected": true,
+      "invalidAlphaRejected": true,
+      "nonfiniteInputRejected": true,
+      "incompatiblePlanRejected": true,
+      "badExtentAliasAndDescriptorRejected": true,
+      "retainedAfterProgramClose": true,
+      "hostTextureReferencesDropped": true,
+      "nonfiniteCoverageRejected": true,
+      "rawRepairThreeULPs": true,
+      "nonfiniteOutputRejected": true,
+      "postSubmitStaleStatus": 5,
+      "leaseReleases": 8,
+      "namedPlaneCounts": [
+        2,
+        32
+      ],
+      "namedVsNativeCIMaxAbs": 4.17232513428e-07,
+      "lastPixelLastPlaneNaNZeroEVRejected": true,
+      "distinctViewsSameIOSurfaceRejected": true,
+      "namedPostSubmitStaleAndRetry": true,
+      "namedLeaseReleases": 3
+    },
+    "namedMetalDeadline": {
+      "repoPath": "output/035-development/multi-mask-study/metal-abi/named-timeout.json",
+      "sha256": "3fdc64ef3c106c96e7ee0fa42b83a36a492132b8bced08902d29a123d22291b6",
+      "borrowedBackings": 4,
+      "coverageSurfaceIDs": [
+        860,
+        986
+      ],
+      "drainedScratchSHA256": "95aa57a014f78a3599bd7758e9932f21320b01d59809d23c773c4eb35f6650c4",
+      "maxAbsVsCPUAfterDrain": 2.384185791015625e-07,
+      "maxAbsVsCPUAfterRetryThroughCoreImage": 7.152557373046875e-07,
+      "nativeDeviceRegistryID": 4294968440,
+      "previousPublishedSHA256BeforeAndAfter": "62de7d16426e13b86f21db9c3584b63b285747c0a7d45ff58932fa9bc3f9d079",
+      "publishedSurfaceID": 987,
+      "realWgpuTimeout": true,
+      "retriedCoreImageSHA256": "62de7d16426e13b86f21db9c3584b63b285747c0a7d45ff58932fa9bc3f9d079",
+      "shape": [
+        9,
+        5
+      ],
+      "test": "named_surface_timeout_drains_before_retry",
+      "timedOutScratchComparedBeforeRetry": true,
+      "timeoutPublished": false,
+      "unpublishedSurfaceID": 977
+    }
+  },
+  "linuxABI": {
+    "rustContainer": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "softwareVulkanDriver": "Mesa lavapipe 22.3.6-1+deb12u2",
+    "cpu": {
+      "repoPath": "output/035-development/multi-mask-study/linux/cpu.json",
+      "sha256": "d8eec974e0d2fd1b87e8319773243d5570ee4d1ab209a69266d96ea8a9eda964",
+      "backend": "cpu",
+      "extent": [
+        2400,
+        1600
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "recipeSHA256": "948395245dc80bc22be3df65b41e79820e7c75a041cc60fe5e7ec3a200e5b193",
+      "rgbaSHA256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+      "baseSHA256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4",
+      "macOSCPUSHA256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+      "renderMs": 44.251771,
+      "reversedBindings": true,
+      "inputs": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "neither": 1772225,
+      "firstOnly": 2054121,
+      "secondOnly": 0,
+      "both": 13654,
+      "protectedMismatches": 0,
+      "maximumDeltaFromMacOSCPU": 0.0
+    },
+    "softwareVulkan": {
+      "repoPath": "output/035-development/multi-mask-study/linux/vulkan.json",
+      "sha256": "b373fe2d1941ec841650c567eebfba67805993ef063e265ad792fd46304410f8",
+      "backend": "gpu",
+      "extent": [
+        2400,
+        1600
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "recipeSHA256": "948395245dc80bc22be3df65b41e79820e7c75a041cc60fe5e7ec3a200e5b193",
+      "rgbaSHA256": "7bcbb22ead4300030ce4381ba98dd667b34994758006fff9eba59cc862b3e225",
+      "baseSHA256": "2e4e5adfa2287e67a5df161e74ad622a6012cfc30d0bac7d35b93b2b391f227d",
+      "macOSCPUSHA256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+      "renderMs": 175.18633,
+      "reversedBindings": true,
+      "inputs": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "neither": 1772225,
+      "firstOnly": 2054121,
+      "secondOnly": 0,
+      "both": 13654,
+      "protectedMismatches": 0,
+      "maximumDeltaFromMacOSCPU": 8.344650268554688e-07
+    },
+    "finalCPU": {
+      "repoPath": "output/035-development/multi-mask-study/linux/final-cpu.json",
+      "sha256": "a80b7feaf560a0bd80749588e10f0de06bbbf40055aaedaea38cafd84b84d1fd",
+      "backend": "cpu",
+      "extent": [
+        2400,
+        1600
+      ],
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "recipeSHA256": "948395245dc80bc22be3df65b41e79820e7c75a041cc60fe5e7ec3a200e5b193",
+      "rgbaSHA256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+      "baseSHA256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4",
+      "macOSCPUSHA256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+      "renderMs": 54.015461,
+      "reversedBindings": true,
+      "inputs": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "neither": 1772225,
+      "firstOnly": 2054121,
+      "secondOnly": 0,
+      "both": 13654,
+      "protectedMismatches": 0,
+      "maximumDeltaFromMacOSCPU": 0.0
+    }
+  },
+  "sameDeviceBenchmark": {
+    "workload": "same 2400x1600 input and frozen planes, film amount alternates 37.5 and 43.75; comparisons outside timers",
+    "command": "gpu_performance INPUT FILTERS 3 21 ORDER Metal --named-coverage",
+    "runs": [
+      {
+        "repoPath": "output/035-development/multi-mask-study/gpu-fused-first.json",
+        "sha256": "e80f57a0f865b026e27ec0600c204944e902ecfe07f05bee4da047c718f902ab",
+        "atlasReceipt": {
+          "amount": 37.5,
+          "filename": "Spektrafilm/spektraVelvia100-100.delta64.rgba32f",
+          "look": "spektraVelvia100",
+          "sha256": "68009686b2f669f888bdb701cf1177ccd949ca9acb8a74f6ec3544a5ab3ca45d"
+        },
+        "benchmarkBinarySHA256": "eac2359f70acd8d6e0e11b50ed48349a4ec833f3a8e020424d8e69f2ed7de598",
+        "budgetBytes": 268435456,
+        "cpuOracleSHA256": [
+          "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+          "68362c9e5931164f260692fd0708e4b6d15ecb901c96a335f7fdedb3a9f49e6d"
+        ],
+        "decoder": "FlashRaw 0.3.1 full-sensor GPU linear RGB F16 / bilinear; EXIF1 oriented preview sampled once",
+        "extent": [
+          2400,
+          1600
+        ],
+        "frameValidationMs": 2.1467080000000003,
+        "gpuAdapter": "Apple M4 Max / Metal / IntegratedGpu",
+        "gpuOpenMs": 11.312166,
+        "order": "fused-first",
+        "planeReceipts": [
+          {
+            "bytes": 15360000,
+            "filename": "sky.r32fle",
+            "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+            "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+            "role": "sky",
+            "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+          },
+          {
+            "bytes": 15360000,
+            "filename": "subject.r32fle",
+            "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+            "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+            "role": "subject",
+            "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+          }
+        ],
+        "plans": [
+          {
+            "nodes": [
+              {
+                "id": "src",
+                "op": "source"
+              },
+              {
+                "amount": 37.5,
+                "id": "film",
+                "image": "src",
+                "look": "spektraVelvia100",
+                "op": "photo_filter"
+              },
+              {
+                "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "mask"
+              },
+              {
+                "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "mask"
+              },
+              {
+                "ev": 0.75,
+                "id": "sky-ev",
+                "image": "film",
+                "mask": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "masked_exposure"
+              },
+              {
+                "ev": -1.25,
+                "id": "subject-ev",
+                "image": "sky-ev",
+                "mask": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "masked_exposure"
+              }
+            ],
+            "output": "subject-ev",
+            "version": 2,
+            "working": "extended-linear-srgb-premul-f32"
+          },
+          {
+            "nodes": [
+              {
+                "id": "src",
+                "op": "source"
+              },
+              {
+                "amount": 43.75,
+                "id": "film",
+                "image": "src",
+                "look": "spektraVelvia100",
+                "op": "photo_filter"
+              },
+              {
+                "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "mask"
+              },
+              {
+                "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "mask"
+              },
+              {
+                "ev": 0.75,
+                "id": "sky-ev",
+                "image": "film",
+                "mask": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "masked_exposure"
+              },
+              {
+                "ev": -1.25,
+                "id": "subject-ev",
+                "image": "sky-ev",
+                "mask": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "masked_exposure"
+              }
+            ],
+            "output": "subject-ev",
+            "version": 2,
+            "working": "extended-linear-srgb-premul-f32"
+          }
+        ],
+        "productionGPUExecutorSHA256": "2b44b60b791e02fbdacc67c0adcd41f99d510cffd9ef7697824f3ccb5d27d60d",
+        "results": {
+          "fused": {
+            "atlasBufferBytes": 4194304,
+            "compileAndJoinMs": 64.56370799999999,
+            "dispatchesPerTile": 1,
+            "explicitBytesWithReadback": 219234608,
+            "explicitResidentBytes": 157794608,
+            "firstUpdateSubmitReadbackMs": [
+              17.204125,
+              10.498125
+            ],
+            "frameUploadBytesPerFreshBind": 92160000,
+            "freshBindUploadRenderReadback": {
+              "p50Ms": 18.921332999999997,
+              "p95Ms": 20.779458,
+              "samplesMs": [
+                19.194833000000003,
+                18.806292,
+                19.153084,
+                18.412583,
+                18.807875000000003,
+                18.921332999999997,
+                18.662625,
+                20.598833,
+                18.640166,
+                19.092624999999998,
+                18.750208,
+                18.727082999999997,
+                21.852667,
+                20.083541,
+                20.058042,
+                18.961334,
+                20.779458,
+                20.65375,
+                18.210957999999998,
+                17.947833,
+                17.506207999999997
+              ]
+            },
+            "freshRenderTiles": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "fullFrameReadbackBytes": 61440000,
+            "initialBindAndJoinMs": 7.686833,
+            "maxAbsVsCPUByState": [
+              3.5762786865234375e-07,
+              3.5762786865234375e-07
+            ],
+            "parameterUploadBytesPerResidentUpdate": 304,
+            "readbackAfterCompletion": {
+              "p50Ms": 7.871708,
+              "p95Ms": 8.25675,
+              "samplesMs": [
+                6.421333000000001,
+                8.373625,
+                8.005291,
+                7.7294160000000005,
+                8.25675,
+                7.906583,
+                7.995541,
+                6.418209,
+                7.830375,
+                7.882583,
+                7.724916,
+                7.954292,
+                8.100334,
+                6.172042,
+                7.302084000000001,
+                8.133417,
+                7.601916,
+                7.871708,
+                6.40875,
+                7.951,
+                7.824249999999999
+              ]
+            },
+            "residentParameterWriteCPU": {
+              "p50Ms": 0.055333,
+              "p95Ms": 0.082458,
+              "samplesMs": [
+                0.082458,
+                0.070666,
+                0.065542,
+                0.062875,
+                0.048209,
+                0.059458,
+                0.055916,
+                0.05025,
+                0.052375,
+                0.050417000000000003,
+                0.050708,
+                0.060875000000000005,
+                0.050083,
+                0.049208,
+                0.048708,
+                0.10366600000000001,
+                0.055333,
+                0.059834,
+                0.061375,
+                0.048625,
+                0.053667
+              ]
+            },
+            "residentUpdateSubmitComplete": {
+              "p50Ms": 1.6220830000000002,
+              "p95Ms": 3.1195,
+              "samplesMs": [
+                1.653458,
+                1.647875,
+                1.63675,
+                1.633083,
+                1.601542,
+                1.622875,
+                1.612708,
+                3.163583,
+                3.1195,
+                1.6171250000000001,
+                1.6055,
+                1.6280000000000001,
+                1.611042,
+                1.6220830000000002,
+                1.600792,
+                1.697375,
+                1.60425,
+                1.621792,
+                1.622917,
+                1.596833,
+                1.614875
+              ]
+            },
+            "residentUpdateThroughReadback": {
+              "p50Ms": 9.5295,
+              "p95Ms": 10.021583,
+              "samplesMs": [
+                8.074833,
+                10.021583,
+                9.642125,
+                9.362625,
+                9.858375,
+                9.5295,
+                9.608333,
+                9.581917,
+                10.950041,
+                9.499792,
+                9.330458,
+                9.582375,
+                9.711457999999999,
+                7.794167,
+                8.902958,
+                9.830874999999999,
+                9.206249999999999,
+                9.493542000000001,
+                8.031666999999999,
+                9.547916,
+                9.439167
+              ]
+            },
+            "rgbaStorageSlotsIncludingSource": 2,
+            "statesInSampleOrder": [
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "verifiedOutputSHA256": [
+              "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5",
+              "a0a5bfc81c6aacfaacee8fff98e0ba152fc0d2fd1dbc7d860ac4bfa222f687af"
+            ]
+          },
+          "staged": {
+            "atlasBufferBytes": 4194304,
+            "compileAndJoinMs": 28.972291000000002,
+            "dispatchesPerTile": 3,
+            "explicitBytesWithReadback": 280674608,
+            "explicitResidentBytes": 219234608,
+            "firstUpdateSubmitReadbackMs": [
+              13.29625,
+              8.826167
+            ],
+            "frameUploadBytesPerFreshBind": 92160000,
+            "freshBindUploadRenderReadback": {
+              "p50Ms": 23.977583,
+              "p95Ms": 25.207792,
+              "samplesMs": [
+                23.453542000000002,
+                23.979958,
+                23.313792,
+                24.911541999999997,
+                24.400000000000002,
+                23.848582999999998,
+                23.484,
+                25.655625,
+                23.127625,
+                23.721541,
+                24.743083,
+                24.422292000000002,
+                25.207792,
+                23.517291999999998,
+                23.954542,
+                24.917292,
+                23.75825,
+                23.977583,
+                24.012124999999997,
+                23.388875,
+                24.485917
+              ]
+            },
+            "freshRenderTiles": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "fullFrameReadbackBytes": 61440000,
+            "initialBindAndJoinMs": 7.082,
+            "maxAbsVsCPUByState": [
+              3.5762786865234375e-07,
+              3.5762786865234375e-07
+            ],
+            "parameterUploadBytesPerResidentUpdate": 304,
+            "readbackAfterCompletion": {
+              "p50Ms": 7.365667,
+              "p95Ms": 8.006833,
+              "samplesMs": [
+                6.374750000000001,
+                8.182083,
+                6.035875,
+                6.624792,
+                6.479208,
+                7.465417,
+                7.086958,
+                7.346834,
+                7.667208,
+                7.770542,
+                7.9334169999999995,
+                5.776083000000001,
+                8.006833,
+                7.365667,
+                7.484375,
+                5.9782079999999995,
+                6.092417,
+                6.580417,
+                7.8167089999999995,
+                7.886291999999999,
+                7.778625
+              ]
+            },
+            "residentParameterWriteCPU": {
+              "p50Ms": 0.056375,
+              "p95Ms": 0.07475,
+              "samplesMs": [
+                0.052666,
+                0.050708,
+                0.07083400000000001,
+                0.054167,
+                0.054875,
+                0.057,
+                0.051208000000000004,
+                0.079875,
+                0.060583,
+                0.07475,
+                0.049957999999999995,
+                0.06245800000000001,
+                0.054041,
+                0.064125,
+                0.053958,
+                0.056375,
+                0.052416000000000004,
+                0.060041000000000004,
+                0.049957999999999995,
+                0.059417,
+                0.065375
+              ]
+            },
+            "residentUpdateSubmitComplete": {
+              "p50Ms": 3.14425,
+              "p95Ms": 3.173125,
+              "samplesMs": [
+                3.148291,
+                3.1375830000000002,
+                1.6563750000000002,
+                3.14,
+                3.1435,
+                3.159458,
+                3.14425,
+                1.67175,
+                3.173125,
+                3.185709,
+                3.142583,
+                3.160208,
+                3.153291,
+                3.1718330000000003,
+                3.144083,
+                3.157,
+                3.1350409999999997,
+                3.1515,
+                3.122541,
+                3.1462920000000003,
+                2.757333
+              ]
+            },
+            "residentUpdateThroughReadback": {
+              "p50Ms": 10.536166,
+              "p95Ms": 11.16025,
+              "samplesMs": [
+                9.523166,
+                11.319749999999999,
+                7.692334000000001,
+                9.764834,
+                9.622792,
+                10.625041999999999,
+                10.231375,
+                9.01875,
+                10.840375,
+                10.956375000000001,
+                11.076167,
+                8.936375,
+                11.16025,
+                10.537583,
+                10.628708000000001,
+                9.135292,
+                9.2275,
+                9.732,
+                10.939291,
+                11.032667,
+                10.536166
+              ]
+            },
+            "rgbaStorageSlotsIncludingSource": 3,
+            "statesInSampleOrder": [
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "verifiedOutputSHA256": [
+              "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5",
+              "a0a5bfc81c6aacfaacee8fff98e0ba152fc0d2fd1dbc7d860ac4bfa222f687af"
+            ]
+          }
+        },
+        "samplesPerSeries": 21,
+        "schema": 1,
+        "sourceF32SHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "tolerance": 0.00019999999494757503,
+        "twoPlanParseAndVerifyMs": 16.416875,
+        "warmupsPerSeries": 3
+      },
+      {
+        "repoPath": "output/035-development/multi-mask-study/gpu-staged-first.json",
+        "sha256": "752dd06fde845da103a4f3921a3449050cb36c475784922f5aebfb208fd10c14",
+        "atlasReceipt": {
+          "amount": 37.5,
+          "filename": "Spektrafilm/spektraVelvia100-100.delta64.rgba32f",
+          "look": "spektraVelvia100",
+          "sha256": "68009686b2f669f888bdb701cf1177ccd949ca9acb8a74f6ec3544a5ab3ca45d"
+        },
+        "benchmarkBinarySHA256": "eac2359f70acd8d6e0e11b50ed48349a4ec833f3a8e020424d8e69f2ed7de598",
+        "budgetBytes": 268435456,
+        "cpuOracleSHA256": [
+          "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527",
+          "68362c9e5931164f260692fd0708e4b6d15ecb901c96a335f7fdedb3a9f49e6d"
+        ],
+        "decoder": "FlashRaw 0.3.1 full-sensor GPU linear RGB F16 / bilinear; EXIF1 oriented preview sampled once",
+        "extent": [
+          2400,
+          1600
+        ],
+        "frameValidationMs": 1.823042,
+        "gpuAdapter": "Apple M4 Max / Metal / IntegratedGpu",
+        "gpuOpenMs": 11.070458,
+        "order": "staged-first",
+        "planeReceipts": [
+          {
+            "bytes": 15360000,
+            "filename": "sky.r32fle",
+            "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+            "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+            "role": "sky",
+            "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+          },
+          {
+            "bytes": 15360000,
+            "filename": "subject.r32fle",
+            "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+            "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+            "role": "subject",
+            "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+          }
+        ],
+        "plans": [
+          {
+            "nodes": [
+              {
+                "id": "src",
+                "op": "source"
+              },
+              {
+                "amount": 37.5,
+                "id": "film",
+                "image": "src",
+                "look": "spektraVelvia100",
+                "op": "photo_filter"
+              },
+              {
+                "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "mask"
+              },
+              {
+                "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "mask"
+              },
+              {
+                "ev": 0.75,
+                "id": "sky-ev",
+                "image": "film",
+                "mask": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "masked_exposure"
+              },
+              {
+                "ev": -1.25,
+                "id": "subject-ev",
+                "image": "sky-ev",
+                "mask": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "masked_exposure"
+              }
+            ],
+            "output": "subject-ev",
+            "version": 2,
+            "working": "extended-linear-srgb-premul-f32"
+          },
+          {
+            "nodes": [
+              {
+                "id": "src",
+                "op": "source"
+              },
+              {
+                "amount": 43.75,
+                "id": "film",
+                "image": "src",
+                "look": "spektraVelvia100",
+                "op": "photo_filter"
+              },
+              {
+                "id": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "mask"
+              },
+              {
+                "id": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "mask"
+              },
+              {
+                "ev": 0.75,
+                "id": "sky-ev",
+                "image": "film",
+                "mask": "e2efe8bb-9550-4247-8f76-e344f26b8de6",
+                "op": "masked_exposure"
+              },
+              {
+                "ev": -1.25,
+                "id": "subject-ev",
+                "image": "sky-ev",
+                "mask": "186bb8b9-8620-44a6-ada2-81be35a7f284",
+                "op": "masked_exposure"
+              }
+            ],
+            "output": "subject-ev",
+            "version": 2,
+            "working": "extended-linear-srgb-premul-f32"
+          }
+        ],
+        "productionGPUExecutorSHA256": "2b44b60b791e02fbdacc67c0adcd41f99d510cffd9ef7697824f3ccb5d27d60d",
+        "results": {
+          "fused": {
+            "atlasBufferBytes": 4194304,
+            "compileAndJoinMs": 1.021459,
+            "dispatchesPerTile": 1,
+            "explicitBytesWithReadback": 219234608,
+            "explicitResidentBytes": 157794608,
+            "firstUpdateSubmitReadbackMs": [
+              10.893999999999998,
+              8.692458
+            ],
+            "frameUploadBytesPerFreshBind": 92160000,
+            "freshBindUploadRenderReadback": {
+              "p50Ms": 18.683625,
+              "p95Ms": 19.935875,
+              "samplesMs": [
+                18.739709,
+                19.782125,
+                18.363,
+                19.683708000000003,
+                20.834208,
+                18.441833000000003,
+                17.925250000000002,
+                18.610916000000003,
+                18.260167,
+                18.953167,
+                18.911084000000002,
+                17.994208,
+                17.947582999999998,
+                18.186417,
+                19.468084,
+                18.066916,
+                19.473416,
+                18.683625,
+                18.179917,
+                19.146834000000002,
+                19.935875
+              ]
+            },
+            "freshRenderTiles": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "fullFrameReadbackBytes": 61440000,
+            "initialBindAndJoinMs": 7.803042,
+            "maxAbsVsCPUByState": [
+              3.5762786865234375e-07,
+              3.5762786865234375e-07
+            ],
+            "parameterUploadBytesPerResidentUpdate": 304,
+            "readbackAfterCompletion": {
+              "p50Ms": 7.859625,
+              "p95Ms": 8.194583,
+              "samplesMs": [
+                8.251167,
+                7.51025,
+                7.853667,
+                8.093667,
+                6.479167,
+                7.662709,
+                8.133834,
+                7.859625,
+                7.591125,
+                8.107417,
+                8.046583,
+                7.86625,
+                7.824416000000001,
+                7.940708,
+                7.912333,
+                7.778875,
+                7.602666999999999,
+                6.619166,
+                8.194583,
+                7.062125,
+                8.013083
+              ]
+            },
+            "residentParameterWriteCPU": {
+              "p50Ms": 0.05450000000000001,
+              "p95Ms": 0.069708,
+              "samplesMs": [
+                0.053791,
+                0.05725,
+                0.050832999999999996,
+                0.062,
+                0.057624999999999996,
+                0.059084,
+                0.049375,
+                0.04625,
+                0.050583,
+                0.049708,
+                0.059917000000000005,
+                0.053333,
+                0.058,
+                0.05450000000000001,
+                0.045791000000000005,
+                0.056084,
+                0.051375000000000004,
+                0.069708,
+                0.054792,
+                0.052166000000000004,
+                0.08675
+              ]
+            },
+            "residentUpdateSubmitComplete": {
+              "p50Ms": 1.621958,
+              "p95Ms": 3.170958,
+              "samplesMs": [
+                1.630125,
+                1.6103750000000001,
+                1.610291,
+                1.638542,
+                1.619208,
+                1.63025,
+                1.60175,
+                1.600125,
+                1.621958,
+                1.610125,
+                3.1407499999999997,
+                1.60875,
+                3.170958,
+                3.124333,
+                1.604125,
+                3.14625,
+                1.616875,
+                1.64375,
+                1.613708,
+                3.285208,
+                1.668042
+              ]
+            },
+            "residentUpdateThroughReadback": {
+              "p50Ms": 9.681166999999999,
+              "p95Ms": 11.065125,
+              "samplesMs": [
+                9.881375,
+                9.120708,
+                9.464041,
+                9.732249999999999,
+                8.0985,
+                9.293,
+                9.735666,
+                9.459833000000001,
+                9.213083000000001,
+                9.717625,
+                11.187375,
+                9.475124999999998,
+                10.9955,
+                11.065125,
+                9.5165,
+                10.925167,
+                9.219625,
+                8.263,
+                9.808333000000001,
+                10.347415999999999,
+                9.681166999999999
+              ]
+            },
+            "rgbaStorageSlotsIncludingSource": 2,
+            "statesInSampleOrder": [
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "verifiedOutputSHA256": [
+              "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5",
+              "a0a5bfc81c6aacfaacee8fff98e0ba152fc0d2fd1dbc7d860ac4bfa222f687af"
+            ]
+          },
+          "staged": {
+            "atlasBufferBytes": 4194304,
+            "compileAndJoinMs": 1.613958,
+            "dispatchesPerTile": 3,
+            "explicitBytesWithReadback": 280674608,
+            "explicitResidentBytes": 219234608,
+            "firstUpdateSubmitReadbackMs": [
+              18.374709,
+              12.07
+            ],
+            "frameUploadBytesPerFreshBind": 92160000,
+            "freshBindUploadRenderReadback": {
+              "p50Ms": 23.109083,
+              "p95Ms": 24.619458,
+              "samplesMs": [
+                24.619458,
+                25.993916,
+                22.907416,
+                23.060917,
+                22.794249999999998,
+                22.563959,
+                22.828875,
+                22.427084,
+                22.800042,
+                23.986667,
+                23.954292,
+                23.495666,
+                23.407,
+                23.218292,
+                23.129834,
+                22.212625,
+                22.562833,
+                23.109083,
+                22.611333000000002,
+                23.160625,
+                24.036417
+              ]
+            },
+            "freshRenderTiles": [
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2,
+              2
+            ],
+            "fullFrameReadbackBytes": 61440000,
+            "initialBindAndJoinMs": 7.624167,
+            "maxAbsVsCPUByState": [
+              3.5762786865234375e-07,
+              3.5762786865234375e-07
+            ],
+            "parameterUploadBytesPerResidentUpdate": 304,
+            "readbackAfterCompletion": {
+              "p50Ms": 7.423082999999999,
+              "p95Ms": 8.207249999999998,
+              "samplesMs": [
+                7.936208000000001,
+                7.594792,
+                7.423082999999999,
+                6.305375000000001,
+                6.617541999999999,
+                6.2865,
+                6.21175,
+                8.079459,
+                8.207249999999998,
+                6.64175,
+                6.1867909999999995,
+                6.305209,
+                7.6061250000000005,
+                8.056834,
+                5.814042000000001,
+                8.064958,
+                8.093167,
+                7.490417,
+                8.333,
+                6.051291,
+                6.336292
+              ]
+            },
+            "residentParameterWriteCPU": {
+              "p50Ms": 0.055958999999999995,
+              "p95Ms": 0.071709,
+              "samplesMs": [
+                0.049499999999999995,
+                0.067,
+                0.0535,
+                0.040583,
+                0.055958999999999995,
+                0.055125,
+                0.047166,
+                0.06875,
+                0.061958000000000006,
+                0.08320799999999999,
+                0.050207999999999996,
+                0.06708299999999999,
+                0.056417,
+                0.042249999999999996,
+                0.069875,
+                0.0645,
+                0.054792,
+                0.071709,
+                0.054333000000000006,
+                0.06125,
+                0.050374999999999996
+              ]
+            },
+            "residentUpdateSubmitComplete": {
+              "p50Ms": 3.157125,
+              "p95Ms": 3.195417,
+              "samplesMs": [
+                2.904791,
+                3.186958,
+                3.123708,
+                3.160541,
+                1.634042,
+                3.16875,
+                3.114916,
+                3.195417,
+                3.157125,
+                3.1901669999999998,
+                3.138708,
+                3.184,
+                2.92825,
+                3.175834,
+                3.17525,
+                3.1852500000000004,
+                3.150167,
+                3.199875,
+                3.144333,
+                2.691083,
+                3.128667
+              ]
+            },
+            "residentUpdateThroughReadback": {
+              "p50Ms": 10.534541999999998,
+              "p95Ms": 11.364416,
+              "samplesMs": [
+                10.841125,
+                10.781875,
+                10.546875,
+                9.466000000000001,
+                8.251625,
+                9.455417,
+                9.32675,
+                11.275208,
+                11.364416,
+                9.831958,
+                9.325583,
+                9.489457999999999,
+                10.534541999999998,
+                11.23275,
+                8.989375,
+                11.250334,
+                11.243417,
+                10.690375,
+                11.477416,
+                8.742458,
+                9.465042
+              ]
+            },
+            "rgbaStorageSlotsIncludingSource": 3,
+            "statesInSampleOrder": [
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1,
+              0,
+              1
+            ],
+            "verifiedOutputSHA256": [
+              "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5",
+              "a0a5bfc81c6aacfaacee8fff98e0ba152fc0d2fd1dbc7d860ac4bfa222f687af"
+            ]
+          }
+        },
+        "samplesPerSeries": 21,
+        "schema": 1,
+        "sourceF32SHA256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "tolerance": 0.00019999999494757503,
+        "twoPlanParseAndVerifyMs": 16.477542,
+        "warmupsPerSeries": 3
+      }
+    ]
+  },
+  "legacyHostAndRuntimeMatrix": {
+    "repoPath": "output/035-development/multi-mask-study/host-runtime-compatibility.json",
+    "sha256": "4be82f23c910823f4a91abf588681e8283c2c1ed596267f5a9e7bfdddbd476a1",
+    "boundary": "Independent processes loaded the sealed Swift test binary C bridge and the nominated runtime. CPU extent 1x1.",
+    "sourceRGBA": [
+      0.125,
+      0.25,
+      0.5,
+      1.0
+    ],
+    "coverageInputsInOrder": [
+      null,
+      0.375,
+      "NaN"
+    ],
+    "checkedResultFields": [
+      "status",
+      "firstOutputComponent"
+    ],
+    "hostSHA256": {
+      "19b": "b6b4bfe56600f5e0c35cd86ee17ecfffd76772736c66a90d705b741b1a59b1f7",
+      "20": "c1dcd25b3b3486570359ecd5c7022443e9ca16ac0f712ed0b86ada48eef7876a"
+    },
+    "runtimeSHA256": {
+      "19b": "d0b8abcc0da87759f1252e4e06a108757e428449a7fff7732762e10755d72b05",
+      "20": "5cf4ffe4d8c51e23c6a8df0158cb5e82c411b8d9889de51cb0d78e880a15a8b9"
+    },
+    "hostRuntimePairs": [
+      {
+        "host": "19b",
+        "runtime": "19b",
+        "openV1": 0,
+        "positionalIdentityV1": [
+          [
+            0,
+            0.125
+          ],
+          [
+            0,
+            0.125
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "positionalMaskedPlus1V1": [
+          [
+            1,
+            -13
+          ],
+          [
+            0,
+            0.16210494935512543
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "v2IdentityOpen": 1
+      },
+      {
+        "host": "19b",
+        "runtime": "20",
+        "openV1": 0,
+        "positionalIdentityV1": [
+          [
+            0,
+            0.125
+          ],
+          [
+            0,
+            0.125
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "positionalMaskedPlus1V1": [
+          [
+            1,
+            -13
+          ],
+          [
+            0,
+            0.16210494935512543
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "v2IdentityOpen": 1
+      },
+      {
+        "host": "20",
+        "runtime": "19b",
+        "openV1": 0,
+        "positionalIdentityV1": [
+          [
+            0,
+            0.125
+          ],
+          [
+            0,
+            0.125
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "positionalMaskedPlus1V1": [
+          [
+            1,
+            -13
+          ],
+          [
+            0,
+            0.16210494935512543
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "v2IdentityOpen": 1
+      },
+      {
+        "host": "20",
+        "runtime": "20",
+        "openV1": 0,
+        "positionalIdentityV1": [
+          [
+            0,
+            0.125
+          ],
+          [
+            0,
+            0.125
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "positionalMaskedPlus1V1": [
+          [
+            1,
+            -13
+          ],
+          [
+            0,
+            0.16210494935512543
+          ],
+          [
+            1,
+            -13
+          ]
+        ],
+        "v2IdentityOpen": 0
+      }
+    ],
+    "namedEmptyFromNewHostToOldRuntime": [
+      2,
+      -13
+    ],
+    "namedEmptyFromNewHostToNewRuntimeWithV1OrV2": [
+      0,
+      0.125
+    ],
+    "positionalV2WithAnyCoverage": [
+      1,
+      -13
+    ]
+  },
+  "officialRelease": {
+    "summary": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound-formal/summary.json",
+      "sha256": "5bebe66a0539f9b6e4f83ccef5d7f6f11f9b54b7d7192cdfe5903b26f07d553e",
+      "status": "failed",
+      "passed": false,
+      "baselineCompared": true,
+      "failureDetails": [
+        {
+          "stage": "control-comparison",
+          "report": "control-comparison.json",
+          "failures": [
+            "blur-boost: medianMs 11.51 > 11.43 ms",
+            "blur-visualize-depth: medianMs 10.76 > 10.49 ms",
+            "blur-refine-focus: p95Ms 19.73 > 19.35 ms",
+            "blur-refine-blur: medianMs 15.42 > 14.58 ms",
+            "blur-refine-amount: medianMs 18.43 > 16.49 ms",
+            "blur-brush-size: medianMs 16.80 > 16.43 ms"
+          ]
+        },
+        {
+          "stage": "interactive-comparison",
+          "report": "interactive-comparison.json",
+          "failures": [
+            "lens-blur-bokeh-anamorphic: interactive median regressed 16.72%",
+            "targeted-hsl: interactive median regressed 25.57%",
+            "clipping-highlights: interactive median regressed 11.87%",
+            "local-point-color: interactive median regressed 10.00%",
+            "local-grading: interactive median regressed 11.99%",
+            "global-sharpen-detail: interactive median regressed 24.68%",
+            "global-sharpen-mask-preview: interactive median regressed 25.86%"
+          ]
+        },
+        {
+          "stage": "lightflow-comparison",
+          "report": "lightflow-comparison.json",
+          "failures": [
+            "firstAppearanceMix/firstExact",
+            "firstAppearanceMix/final"
+          ]
+        }
+      ],
+      "baselineRun": "formal",
+      "failedStages": [
+        "interactive-comparison",
+        "control-comparison",
+        "lightflow-comparison"
+      ]
+    },
+    "exitCode": 1,
+    "featureIndex": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/camera-raw-acceptance.json",
+      "sha256": "f6b80e58d632e7fc866732965c0a9cc305deac616ec625e84065c58332ef24df"
+    },
+    "cameraRawMeasuredIDs": 158,
+    "cameraRawIndexedIDs": 161,
+    "samePackageTests": {
+      "native-film-and-mask": {
+        "repoPath": "output/035-development/candidate-batch20-source-bound/native-film-and-mask.log",
+        "sha256": "6d688638c406e69573b6921597f2adf3682bc357a7ba927f542d19c56aa8924c",
+        "passed": 27
+      },
+      "native-mask-interactions": {
+        "repoPath": "output/035-development/candidate-batch20-source-bound/native-mask-interactions.log",
+        "sha256": "22327fc6a84a0db5cfa203d261663e266dd4335103d000f383c45724ab0890bb",
+        "passed": 9
+      },
+      "native-prompt-provider": {
+        "repoPath": "output/035-development/candidate-batch20-source-bound/native-prompt-provider.log",
+        "sha256": "1c8427c4081b59c8f007e4fa446733474383ad0b13d035f0daac4d49800c2487",
+        "passed": 5
+      },
+      "adaptive-Sky": {
+        "repoPath": "output/035-development/candidate-batch20-source-bound/adaptive-Sky.log",
+        "sha256": "0daa227f2e8c7f35936aa98b602a19fc29ae6818db93c45309f774f8497f7be4",
+        "passed": 1
+      },
+      "adaptive-Subject": {
+        "repoPath": "output/035-development/candidate-batch20-source-bound/adaptive-Subject.log",
+        "sha256": "e1267e20525c8d6db4e093e042c91704823dd13ece1421d9c7f9ce14ab64dad8",
+        "passed": 1
+      }
+    },
+    "initialFixturePathAttempt": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/first-fixture-path-attempt/native-film-and-mask.log",
+      "sha256": "971a56a47c849915eeb1f92ed9d3ed1a62c673683e31f799d4228ec265a71d57"
+    },
+    "adaptive": {
+      "cases": 4,
+      "testBinarySHA256": "a7752d074ee897a13e4307a7ad46351666201d7fa3dfae8208786de66346ceac"
+    },
+    "localFlux": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/verified-local-flux.json",
+      "sha256": "42e5be958bfce5525290a0949c61ade7e66b47025d5f4d0f0230d8184126c1ea",
+      "testBinarySHA256": "a7752d074ee897a13e4307a7ad46351666201d7fa3dfae8208786de66346ceac",
+      "attempts": 1,
+      "protectedPixels": 786432,
+      "selectedChangedPixels": 262144,
+      "archivedSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "inputMatches034": true
+    },
+    "fluxMixedWorkload": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound/verified-flux-mixed.json",
+      "sha256": "0ee8e0e2e382a033d3e22705097c746103f10db705a6b755c95b6a5babe67d28",
+      "candidate": "candidate-batch20-source-bound",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch20/receipt.json",
+      "testBinarySHA256": "a7752d074ee897a13e4307a7ad46351666201d7fa3dfae8208786de66346ceac",
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "161.66966608294751",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "161.6876349580707"
+      },
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "elapsedSeconds": 164.0028998851776,
+      "fileBackedDrawMilliseconds": 17.37675,
+      "draw": {
+        "approximate": false,
+        "consumerID": "EBCD9900-4F73-4DC9-BB7F-F82CBF881C70",
+        "drawBeganNS": 603821336589458,
+        "drawReturnedNS": 603821336631958,
+        "frameID": "2B44C1FF-617F-4A97-AE11-0A22EBAEBE62",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 603821319255208,
+        "leaseID": "232D103C-2E49-4917-A002-D982C7BACE9F",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 603829333154291,
+        "exportFirstFile": 603821167128083,
+        "exportLastFile": 603829331336583,
+        "exportPrepared": 603821002838291,
+        "importCompleted": 603821575513500,
+        "importFirstFile": 603821316541833,
+        "importLastFile": 603821566518250
+      },
+      "exportSeconds": 8.330316,
+      "firstOutputAfterPreparationSeconds": 0.164289792,
+      "appHostMaxRSSBytes": 926613504,
+      "importedRAWCount": 20,
+      "deliveryCount": 200,
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "allPerPathReceiptsMatch": true,
+      "allFilesEqualStandaloneMain": true,
+      "bothFileWorkloadsSpanDraw": true
+    },
+    "operators": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound-formal/photo-operators-v2.json",
+      "sha256": "86f35cea27b7642c97ea00be561aea816a0ededd8830a7817b615dbcff8e54be"
+    },
+    "archiveOperators": {
+      "repoPath": "output/035-development/candidate-batch19b-source-formal/photo-operators-v2.json",
+      "sha256": "e2de97d2380c47b603f4e34aa7d749325aef7e5f39c9dc2b7c51048ec745f13f"
+    },
+    "matchingFirstAndFinalFramePairs": 814,
+    "lightFlowReport": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound-formal/lightflow-comparison.json",
+      "sha256": "f928b673031415fab3f1b32943a82db086ebefbdef34c34d2e9429a047d395c2"
+    },
+    "firstAppearanceMix": {
+      "first": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 7.282500000000001,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 5.2239795,
+          "p95Ms": 19.774375
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 22.134999999999998,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 100.29204150000001,
+          "p95Ms": 435.005875
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "final": {
+        "LightFlow": {
+          "n": 74,
+          "medianMs": 23.5625,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "n": 74,
+          "medianMs": 100.29204150000001,
+          "p95Ms": 435.005875
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "superResolution": {
+      "repoPath": "output/035-development/candidate-batch20-source-bound-formal/super-resolution-comparison.json",
+      "sha256": "3c0b916e48710b9937266005ea26eb48a9802fb9f10f7f8e0d839a85942d7e15",
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "metrics": {
+        "fitOnMs": 132.7315,
+        "fullTIFFMs": 9529.865291,
+        "exportPhysicalFootprintBytes": 3505834120,
+        "exportResidentBytes": 1378582528,
+        "exportMetalBytes": 2811674624
+      },
+      "failures": []
+    },
+    "finalTIFF": {
+      "bits": 16,
+      "byteCount": 1926958614,
+      "colorSpace": "sRGB IEC61966-2.1",
+      "elapsedMs": 9529.865291,
+      "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+      "sampleFormat": "unsigned",
+      "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+      "size": [
+        19008,
+        12672
+      ]
+    }
+  },
+  "legacyABIPreflight": {
+    "binaries": {
+      "repoPath": "output/035-development/candidate-batch20-abi-preflight/binaries.sha256",
+      "sha256": "adb32976d2c92d7c6846d30b16d7f53a076818d8d216fb079177e7485e6e7412"
+    },
+    "sourceManifest": {
+      "repoPath": "output/035-development/candidate-batch20-abi-preflight/source-files.sha256",
+      "sha256": "741f4e78a53c895b4d5c413a37e39c517287d058a8ab0bf98e170768676a9416"
+    },
+    "nativeXCTest": {
+      "repoPath": "output/035-development/multi-mask-study/swift-native-abi-preflight.log",
+      "sha256": "9e35445121041c573374c1fa25580e115db6d57f78249d130981058cfa6d183f",
+      "passed": 5
+    },
+    "macOSRust": {
+      "repoPath": "output/035-development/multi-mask-study/macos-rust-final.log",
+      "sha256": "311ba37007e1144846449698eb3898f20b71131cd0e4b91c93926ddbede164df",
+      "passed": 18
+    },
+    "linuxArm64RustCPU": {
+      "repoPath": "output/035-development/multi-mask-study/linux/final-cpu.log",
+      "sha256": "dc81e85ba47253da25ac3513e8da55bdda3479f5733a8ba0862835388b8cac16",
+      "passed": 14
+    },
+    "newlySavedAdaptiveBindings": {
+      "repoPath": "output/035-development/multi-mask-study/fresh-adaptive-fixtures/bindings.json",
+      "sha256": "59b3c47954f9640cb3b5a536b95466a0b4522a5fc220a597ed4d16c3471545f7"
+    },
+    "nativeFixtureWithNewLayerIDs": {
+      "repoPath": "output/035-development/multi-mask-study/native-abi-preflight/manifest.json",
+      "sha256": "bbcd1c9efdf686fb2cb648b14e318038f8ee38d08cdbc4873ce15a5c497ddebd",
+      "base": {
+        "bytes": 61440000,
+        "filename": "common-base.rgba32fle",
+        "sha256": "e373ec706083c9dd3676a7c898204a603a6c33f404db14dd26902eb8b1c23de4"
+      },
+      "cpu": {
+        "bytes": 61440000,
+        "filename": "macos-cpu.rgba32fle",
+        "sha256": "0fd167f4b7712191019335f6d5b024f97de783ace855d0217b6ff7965f1bc527"
+      },
+      "cpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 3.5762786865234375e-07,
+        "maxErrorDividedByMaxOneAbsReference": 3.2209698019869393e-07,
+        "maxNormalizedErrorVsAnalytical": 2.3657915448893618e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "decoder": "FlashRaw 0.3.1 full-sensor GPU linear RGB F16 / bilinear; EXIF1 oriented preview sampled once",
+      "film": {
+        "amount": 37.5,
+        "filename": "Spektrafilm/spektraVelvia100-100.delta64.rgba32f",
+        "look": "spektraVelvia100",
+        "sha256": "68009686b2f669f888bdb701cf1177ccd949ca9acb8a74f6ec3544a5ab3ca45d"
+      },
+      "frame": {
+        "bytes": 61440000,
+        "filename": "source.rgba32fle",
+        "sha256": "0dd76d48686fd56233da94efcfcc67ac97c08a4fba2b9da0fc0ee78553679e89"
+      },
+      "gpu": {
+        "bytes": 61440000,
+        "filename": "macos-gpu.rgba32fle",
+        "sha256": "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5"
+      },
+      "gpuComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 3.5762786865234375e-07,
+        "maxErrorDividedByMaxOneAbsReference": 3.2209709388553165e-07,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "height": 1600,
+      "layout": "top-down extended-linear-sRGB premultiplied RGBA32F/R32F little-endian",
+      "legacyComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 3.5762786865234375e-07,
+        "maxErrorDividedByMaxOneAbsReference": 3.2209709388553165e-07,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "metal": {
+        "bytes": 61440000,
+        "filename": "macos-metal.rgba32fle",
+        "sha256": "2b499fec57f5a5b37085e9dd21e2cf9a2ed3e7566b8afaaf585c22b23935d0f5"
+      },
+      "metalComparison": {
+        "alphaOne": true,
+        "coveredChanged": 2067775,
+        "finite": true,
+        "maxAbs": 0,
+        "maxErrorDividedByMaxOneAbsReference": 0,
+        "maxNormalizedErrorVsAnalytical": 2.384185791015625e-07,
+        "overlap": 13654,
+        "protected": 1772225,
+        "protectedBitDifferences": 0,
+        "skyOnly": 2054121,
+        "subjectOnly": 0,
+        "tolerance": 2e-05
+      },
+      "planes": [
+        {
+          "bytes": 15360000,
+          "filename": "sky.r32fle",
+          "id": "e6248e12-1acd-440d-94ba-ad1b3c5633e7",
+          "pngSHA256": "88dcf52f4afc7c23e5ccabfa8abea0f214bd78fb743308daba2a080ff568b08b",
+          "role": "sky",
+          "sha256": "63daeb23c1d403f4c36970e56e7d8ff80f84b2f4a5b3c12b8992a6c9c88e6a23"
+        },
+        {
+          "bytes": 15360000,
+          "filename": "subject.r32fle",
+          "id": "e9de7679-f626-4050-a856-8820cbe19262",
+          "pngSHA256": "2cc832d98dbf43aa3339af0fa2b2cd77c147175c603dc9c9e8d08f7f66038028",
+          "role": "subject",
+          "sha256": "9af78f11aff376dac817d48478d4f0704b5e96204d01853458be18c8b0bfbb4a"
+        }
+      ],
+      "recipe": {
+        "filename": "recipe.json",
+        "sha256": "8368c46f601662d447b465f29f0f27da8285e03d9a250312f05912f589cf4e8e"
+      },
+      "reference": {
+        "bytes": 61440000,
+        "filename": "legacy-ci.rgba32fle",
+        "sha256": "2ef9d3b09f821b916d3b350ff4f4fe8a4b42389d290ee26e54a1312d3c83532e"
+      },
+      "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "width": 2400
+    },
+    "formal": {
+      "exitCode": 1,
+      "summary": {
+        "repoPath": "output/035-development/candidate-batch20-abi-preflight-formal/summary.json",
+        "sha256": "0e81e10712fc5cd913d38c97edeaa6b4f55b06da89535e6c2d990c3d24224b10",
+        "status": "failed",
+        "passed": false,
+        "baselineCompared": true,
+        "failureDetails": [
+          {
+            "stage": "control-comparison",
+            "report": "control-comparison.json",
+            "failures": [
+              "effects-dehaze: medianMs 12.95 > 12.66 ms"
+            ]
+          },
+          {
+            "stage": "inspection-comparison",
+            "report": "inspection-comparison.json",
+            "failures": [
+              "light-auto-single p95Ms: 8.32 > 7.64 ms",
+              "color-floating-scopes medianMs: 30.78 > 29.90 ms",
+              "color-floating-scopes p95Ms: 36.81 > 35.03 ms"
+            ]
+          },
+          {
+            "stage": "interactive-comparison",
+            "report": "interactive-comparison.json",
+            "failures": [
+              "texture: interactive median regressed 15.43%",
+              "lens-blur-procedural: interactive median regressed 12.50%",
+              "lens-blur-bokeh-ring: interactive median regressed 16.50%",
+              "lens-blur-bokeh-anamorphic: interactive median regressed 27.03%",
+              "refine-saturation: interactive median regressed 18.38%",
+              "defringe: interactive median regressed 10.70%",
+              "point-color-samples: interactive median regressed 15.29%",
+              "local-point-color: interactive median regressed 10.90%",
+              "local-defringe: interactive median regressed 13.34%",
+              "global-sharpen-detail: interactive median regressed 22.41%"
+            ]
+          },
+          {
+            "stage": "lightflow-comparison",
+            "report": "lightflow-comparison.json",
+            "failures": [
+              "firstAppearanceMix/firstExact",
+              "firstAppearanceMix/final"
+            ]
+          },
+          {
+            "stage": "panel-readback-comparison",
+            "report": "panel-readback-comparison.json",
+            "failures": [
+              "detail-sharpen-detail exceeds its baseline latency limits"
+            ]
+          }
+        ],
+        "baselineRun": "formal",
+        "failedStages": [
+          "interactive-comparison",
+          "control-comparison",
+          "panel-readback-comparison",
+          "lightflow-comparison",
+          "inspection-comparison"
+        ]
+      },
+      "firstAppearanceMix": {
+        "first": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 7.282500000000001,
+            "p95Ms": 188.075
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 5.5171455,
+            "p95Ms": 18.090125
+          },
+          "medianLimitMs": 8.2825,
+          "p95LimitMs": 225.69,
+          "within": true
+        },
+        "firstExact": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 22.134999999999998,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 102.356854,
+            "p95Ms": 416.659
+          },
+          "medianLimitMs": 24.348499999999998,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        },
+        "final": {
+          "LightFlow": {
+            "n": 74,
+            "medianMs": 23.5625,
+            "p95Ms": 210.225
+          },
+          "RAWMaster": {
+            "n": 74,
+            "medianMs": 102.356854,
+            "p95Ms": 416.659
+          },
+          "medianLimitMs": 25.91875,
+          "p95LimitMs": 252.26999999999998,
+          "within": false
+        }
+      },
+      "lightFlowReport": {
+        "repoPath": "output/035-development/candidate-batch20-abi-preflight-formal/lightflow-comparison.json",
+        "sha256": "d5db0a0127d1ffe77095d1969491f48bb2d5fdad900a6759ec43a306267b6010"
+      },
+      "featureIndex": {
+        "repoPath": "output/035-development/candidate-batch20-abi-preflight/camera-raw-acceptance.json",
+        "sha256": "6ceec193d41a86a6b54ac87a84962a1cdd95e72a4ae71e032756f71fee826472"
+      },
+      "cameraRawMeasuredIDs": 158,
+      "operators": {
+        "repoPath": "output/035-development/candidate-batch20-abi-preflight-formal/photo-operators-v2.json",
+        "sha256": "e02d1427a843426211f6bb5e47f04021d4614bd0d85fac1f05bccd47ea89c80c"
+      },
+      "matchingFirstAndFinalFramePairs": 814,
+      "superResolution": {
+        "repoPath": "output/035-development/candidate-batch20-abi-preflight-formal/super-resolution-comparison.json",
+        "sha256": "fe085322a6353c7edacecc8d9f7627719c799e1b2da416ecd8e7c59ab507b2cf",
+        "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "metrics": {
+          "fitOnMs": 129.00225,
+          "fullTIFFMs": 10087.031458,
+          "exportPhysicalFootprintBytes": 3506473072,
+          "exportResidentBytes": 1380286464,
+          "exportMetalBytes": 2811674624
+        },
+        "failures": []
+      },
+      "finalTIFF": {
+        "bits": 16,
+        "byteCount": 1926958614,
+        "colorSpace": "sRGB IEC61966-2.1",
+        "elapsedMs": 10087.031458,
+        "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+        "sampleFormat": "unsigned",
+        "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+        "size": [
+          19008,
+          12672
+        ]
+      }
+    }
+  }
+}

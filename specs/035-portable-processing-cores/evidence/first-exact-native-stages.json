@@ -1,0 +1,3485 @@
+{
+  "schemaVersion": 1,
+  "releaseBaseline": {
+    "path": "output/035-development/candidate-batch9-formal/photo-operators-v2.json",
+    "sha256": "348fb1c2ebc22da5f8454a1f4aaadafc54fb43b4595ac9a4dd68d7e194f4bb9e"
+  },
+  "formalBatch9FirstAppearance": {
+    "first": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 7.282500000000001,
+        "p95Ms": 188.075
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 5.3644165,
+        "p95Ms": 22.826541
+      },
+      "medianLimitMs": 8.2825,
+      "p95LimitMs": 225.69,
+      "within": true
+    },
+    "firstExact": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 22.134999999999998,
+        "p95Ms": 210.225
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 101.121458,
+        "p95Ms": 517.472458
+      },
+      "medianLimitMs": 24.348499999999998,
+      "p95LimitMs": 252.26999999999998,
+      "within": false
+    },
+    "final": {
+      "LightFlow": {
+        "n": 74,
+        "medianMs": 23.5625,
+        "p95Ms": 210.225
+      },
+      "RAWMaster": {
+        "n": 74,
+        "medianMs": 101.121458,
+        "p95Ms": 517.472458
+      },
+      "medianLimitMs": 25.91875,
+      "p95LimitMs": 252.26999999999998,
+      "within": false
+    }
+  },
+  "boundary": "ImageEngines.editing native request through full readable 2400x1600 sRGB; exact sums exclude time between distinct requests",
+  "qualification": "Full RGBA8 SHA-256 against the matching source A release; also require native settled metadata",
+  "contextReuse": {
+    "adopted": false,
+    "runs": [
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/smoke/01-A.json",
+          "sha256": "7570bc71bb9085ae492199258baff640b69f2abfc4ac3b91475808a21f22c391"
+        },
+        "binarySHA256": "b8f5e21d49211fda39c4a2342f743e44e1f5df9e267f4e1de337a4e38eb5a276",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 12,
+        "matchingSettledFrames": 12,
+        "firstExactWithoutInterrequestHash": {
+          "count": 12,
+          "medianMs": 446.9172295,
+          "p95Ms": 2473.478333
+        },
+        "settledRequestToReadback": {
+          "count": 12,
+          "medianMs": 394.6610625,
+          "p95Ms": 2127.796625
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 3831319096,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 1002.376209,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 534.712833,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.011209,
+              "create context": 4.322125,
+              "scale graph": 0.004125,
+              "create sRGB8 CGImage": 36.281958,
+              "copy into owned CGImage": 2.725042,
+              "wrap NSBitmapImageRep": 0.034792,
+              "clear after render": 0.010208
+            },
+            "allFiniteMs": 398.842,
+            "nativeReduction": [
+              {
+                "milliseconds": 21.890625,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.238584,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 69.823542,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.008,
+              "create context": 8.151917,
+              "scale graph": 0.003875,
+              "create sRGB8 CGImage": 37.738834,
+              "copy into owned CGImage": 2.293959,
+              "wrap NSBitmapImageRep": 0.028333,
+              "clear after render": 0.010834
+            },
+            "allFiniteMs": 13.290875,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.209167,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 361.041542,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 78.505417,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.009167,
+              "create context": 8.135,
+              "scale graph": 0.003375,
+              "create sRGB8 CGImage": 36.199875,
+              "copy into owned CGImage": 2.320667,
+              "wrap NSBitmapImageRep": 0.020416,
+              "clear after render": 0.008208
+            },
+            "allFiniteMs": 27.948208,
+            "nativeReduction": [
+              {
+                "milliseconds": 9.713625,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              },
+              {
+                "milliseconds": 13.900458,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 4.076,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 77.246,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.008666,
+              "create context": 9.370875,
+              "scale graph": 0.004792,
+              "create sRGB8 CGImage": 37.02775,
+              "copy into owned CGImage": 2.513583,
+              "wrap NSBitmapImageRep": 0.020584,
+              "clear after render": 0.009125
+            },
+            "allFiniteMs": 19.918666,
+            "nativeReduction": [
+              {
+                "milliseconds": 15.218208,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 335.563792,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 77.09725,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.00875,
+              "create context": 8.043667,
+              "scale graph": 0.003791,
+              "create sRGB8 CGImage": 37.466333,
+              "copy into owned CGImage": 2.415959,
+              "wrap NSBitmapImageRep": 0.019042,
+              "clear after render": 0.007834
+            },
+            "allFiniteMs": 25.262916,
+            "nativeReduction": [
+              {
+                "milliseconds": 21.651375,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 3.905292,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 67.624709,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.00775,
+              "create context": 8.406625,
+              "scale graph": 0.004709,
+              "create sRGB8 CGImage": 37.216875,
+              "copy into owned CGImage": 2.197459,
+              "wrap NSBitmapImageRep": 0.016125,
+              "clear after render": 0.008583
+            },
+            "allFiniteMs": 15.906667,
+            "nativeReduction": [
+              {
+                "milliseconds": 11.194083,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 348.086375,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 444.163167,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.009167,
+              "create context": 7.735709,
+              "scale graph": 0.007,
+              "create sRGB8 CGImage": 142.582875,
+              "copy into owned CGImage": 2.324875,
+              "wrap NSBitmapImageRep": 0.017167,
+              "clear after render": 0.007917
+            },
+            "allFiniteMs": 286.845459,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 11.384,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 442.9035,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.011541,
+              "create context": 10.70525,
+              "scale graph": 0.003584,
+              "create sRGB8 CGImage": 138.205,
+              "copy into owned CGImage": 2.25925,
+              "wrap NSBitmapImageRep": 0.018209,
+              "clear after render": 0.007042
+            },
+            "allFiniteMs": 286.231166,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 345.681708,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 2127.796625,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.006916,
+              "create context": 11.843,
+              "scale graph": 0.00525,
+              "create sRGB8 CGImage": 133.025708,
+              "copy into owned CGImage": 2.430917,
+              "wrap NSBitmapImageRep": 0.018,
+              "clear after render": 0.008292
+            },
+            "allFiniteMs": 147.309375,
+            "nativeReduction": [
+              {
+                "milliseconds": 147.19675,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 12.674875,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 346.418625,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.008375,
+              "create context": 6.990084,
+              "scale graph": 0.012042,
+              "create sRGB8 CGImage": 133.700834,
+              "copy into owned CGImage": 2.358792,
+              "wrap NSBitmapImageRep": 0.018,
+              "clear after render": 0.007458
+            },
+            "allFiniteMs": 118.742375,
+            "nativeReduction": [
+              {
+                "milliseconds": 118.639666,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 664.505584,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 484.190167,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.011916,
+              "create context": 6.9705,
+              "scale graph": 0.004542,
+              "create sRGB8 CGImage": 153.45175,
+              "copy into owned CGImage": 2.298542,
+              "wrap NSBitmapImageRep": 0.019125,
+              "clear after render": 0.008042
+            },
+            "allFiniteMs": 315.196125,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 11.259416,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 490.985916,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.01075,
+              "create context": 12.729417,
+              "scale graph": 0.004583,
+              "create sRGB8 CGImage": 143.142791,
+              "copy into owned CGImage": 2.301333,
+              "wrap NSBitmapImageRep": 0.01625,
+              "clear after render": 0.008917
+            },
+            "allFiniteMs": 328.176333,
+            "nativeReduction": []
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/smoke/02-B.json",
+          "sha256": "0077fc220f72eb31a57437f724cd99fcc5c9fddc5ac2a4e6990505ff5a601a79"
+        },
+        "binarySHA256": "b8f5e21d49211fda39c4a2342f743e44e1f5df9e267f4e1de337a4e38eb5a276",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 12,
+        "matchingSettledFrames": 12,
+        "firstExactWithoutInterrequestHash": {
+          "count": 12,
+          "medianMs": 322.415083,
+          "p95Ms": 1061.266251
+        },
+        "settledRequestToReadback": {
+          "count": 12,
+          "medianMs": 243.15577050000002,
+          "p95Ms": 1044.718417
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 5006051896,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 144.282375,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 152.639083,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.023709,
+              "create context": 3.434916,
+              "scale graph": 0.003167,
+              "create sRGB8 CGImage": 36.436042,
+              "copy into owned CGImage": 2.436834,
+              "wrap NSBitmapImageRep": 0.032459,
+              "clear after render": 0.008292
+            },
+            "allFiniteMs": 26.435584,
+            "nativeReduction": [
+              {
+                "milliseconds": 22.296917,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.320334,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 51.584959,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.006042,
+              "reuse context": 0.000416,
+              "scale graph": 0.004125,
+              "create sRGB8 CGImage": 30.053041,
+              "copy into owned CGImage": 2.398083,
+              "wrap NSBitmapImageRep": 0.024375,
+              "clear after render": 0.008792
+            },
+            "allFiniteMs": 11.301333,
+            "nativeReduction": [
+              {
+                "milliseconds": 11.222875,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 8.3395,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 51.942333,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.009292,
+              "reuse context": 0.000375,
+              "scale graph": 0.003292,
+              "create sRGB8 CGImage": 28.536583,
+              "copy into owned CGImage": 2.108,
+              "wrap NSBitmapImageRep": 0.016583,
+              "clear after render": 0.00725
+            },
+            "allFiniteMs": 16.854208,
+            "nativeReduction": [
+              {
+                "milliseconds": 3.328292,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              },
+              {
+                "milliseconds": 8.7585,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 4.173417,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 47.338625,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.007417,
+              "reuse context": 0.000459,
+              "scale graph": 0.003167,
+              "create sRGB8 CGImage": 28.235,
+              "copy into owned CGImage": 2.199667,
+              "wrap NSBitmapImageRep": 0.017125,
+              "clear after render": 0.007417
+            },
+            "allFiniteMs": 13.732459,
+            "nativeReduction": [
+              {
+                "milliseconds": 8.938625,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 4.611875,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 53.093417,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.007125,
+              "reuse context": 0.000458,
+              "scale graph": 0.003042,
+              "create sRGB8 CGImage": 28.95025,
+              "copy into owned CGImage": 2.215125,
+              "wrap NSBitmapImageRep": 0.018459,
+              "clear after render": 0.006958
+            },
+            "allFiniteMs": 14.174333,
+            "nativeReduction": [
+              {
+                "milliseconds": 9.390875,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 4.045875,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 50.722458,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.006917,
+              "reuse context": 0.000375,
+              "scale graph": 0.003875,
+              "create sRGB8 CGImage": 28.593583,
+              "copy into owned CGImage": 2.496208,
+              "wrap NSBitmapImageRep": 0.014375,
+              "clear after render": 0.006916
+            },
+            "allFiniteMs": 16.630084,
+            "nativeReduction": [
+              {
+                "milliseconds": 11.86475,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 16.477083,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 698.435,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.007583,
+              "reuse context": 0.000459,
+              "scale graph": 0.003708,
+              "create sRGB8 CGImage": 131.490791,
+              "copy into owned CGImage": 2.395917,
+              "wrap NSBitmapImageRep": 0.016583,
+              "clear after render": 0.006375
+            },
+            "allFiniteMs": 561.09275,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 13.732292,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 893.019875,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.008166,
+              "reuse context": 0.000375,
+              "scale graph": 0.005042,
+              "create sRGB8 CGImage": 137.290041,
+              "copy into owned CGImage": 2.336958,
+              "wrap NSBitmapImageRep": 0.015625,
+              "clear after render": 0.006875
+            },
+            "allFiniteMs": 749.635,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 16.547834,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 1044.718417,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.008834,
+              "reuse context": 0.000333,
+              "scale graph": 0.004292,
+              "create sRGB8 CGImage": 127.212458,
+              "copy into owned CGImage": 2.247958,
+              "wrap NSBitmapImageRep": 0.019416,
+              "clear after render": 0.007791
+            },
+            "allFiniteMs": 154.813,
+            "nativeReduction": [
+              {
+                "milliseconds": 142.60925,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 14.23625,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 333.672458,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.006875,
+              "reuse context": 0.000458,
+              "scale graph": 0.007125,
+              "create sRGB8 CGImage": 126.439041,
+              "copy into owned CGImage": 2.355292,
+              "wrap NSBitmapImageRep": 0.019083,
+              "clear after render": 0.007292
+            },
+            "allFiniteMs": 122.163375,
+            "nativeReduction": [
+              {
+                "milliseconds": 122.063917,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 12.181125,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 714.228084,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.006458,
+              "reuse context": 0.000458,
+              "scale graph": 0.005041,
+              "create sRGB8 CGImage": 147.329916,
+              "copy into owned CGImage": 2.303208,
+              "wrap NSBitmapImageRep": 0.018792,
+              "clear after render": 0.007
+            },
+            "allFiniteMs": 561.153125,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 11.707708,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 1042.966709,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.007583,
+              "reuse context": 0.000375,
+              "scale graph": 0.014791,
+              "create sRGB8 CGImage": 149.161958,
+              "copy into owned CGImage": 2.547209,
+              "wrap NSBitmapImageRep": 0.016625,
+              "clear after render": 0.007958
+            },
+            "allFiniteMs": 887.515209,
+            "nativeReduction": []
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/smoke/03-B.json",
+          "sha256": "90660e9458d6e1f7c9659de5133782d7c27b9617ff8302312cf55becbd5c94ec"
+        },
+        "binarySHA256": "b8f5e21d49211fda39c4a2342f743e44e1f5df9e267f4e1de337a4e38eb5a276",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 12,
+        "matchingSettledFrames": 12,
+        "firstExactWithoutInterrequestHash": {
+          "count": 12,
+          "medianMs": 325.7534995,
+          "p95Ms": 1106.051042
+        },
+        "settledRequestToReadback": {
+          "count": 12,
+          "medianMs": 243.63706200000001,
+          "p95Ms": 1090.076209
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 5004020256,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 148.456375,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 150.763416,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.010583,
+              "create context": 3.455667,
+              "scale graph": 0.002875,
+              "create sRGB8 CGImage": 34.6195,
+              "copy into owned CGImage": 2.431625,
+              "wrap NSBitmapImageRep": 0.03525,
+              "clear after render": 0.008084
+            },
+            "allFiniteMs": 23.684917,
+            "nativeReduction": [
+              {
+                "milliseconds": 22.798167,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.001542,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 46.517041,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.006875,
+              "reuse context": 0.000459,
+              "scale graph": 0.00175,
+              "create sRGB8 CGImage": 26.962125,
+              "copy into owned CGImage": 2.255709,
+              "wrap NSBitmapImageRep": 0.0205,
+              "clear after render": 0.00675
+            },
+            "allFiniteMs": 9.728,
+            "nativeReduction": [
+              {
+                "milliseconds": 9.657291,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 5.105625,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 53.7985,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.00975,
+              "reuse context": 0.000292,
+              "scale graph": 0.001541,
+              "create sRGB8 CGImage": 27.0295,
+              "copy into owned CGImage": 2.338708,
+              "wrap NSBitmapImageRep": 0.016625,
+              "clear after render": 0.007667
+            },
+            "allFiniteMs": 16.95175,
+            "nativeReduction": [
+              {
+                "milliseconds": 3.582709,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              },
+              {
+                "milliseconds": 8.344458,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 4.338083,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 46.382458,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.008459,
+              "reuse context": 0.000333,
+              "scale graph": 0.002875,
+              "create sRGB8 CGImage": 27.274167,
+              "copy into owned CGImage": 2.257292,
+              "wrap NSBitmapImageRep": 0.018042,
+              "clear after render": 0.007667
+            },
+            "allFiniteMs": 13.736417,
+            "nativeReduction": [
+              {
+                "milliseconds": 8.937083,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 4.417375,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 47.4375,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.006334,
+              "reuse context": 0.000417,
+              "scale graph": 0.003583,
+              "create sRGB8 CGImage": 27.109666,
+              "copy into owned CGImage": 2.359542,
+              "wrap NSBitmapImageRep": 0.0145,
+              "clear after render": 0.007083
+            },
+            "allFiniteMs": 14.659666,
+            "nativeReduction": [
+              {
+                "milliseconds": 9.727292,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 3.8235,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 45.719042,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.00625,
+              "reuse context": 0.000417,
+              "scale graph": 0.002625,
+              "create sRGB8 CGImage": 28.236458,
+              "copy into owned CGImage": 2.320292,
+              "wrap NSBitmapImageRep": 0.014792,
+              "clear after render": 0.007417
+            },
+            "allFiniteMs": 12.28475,
+            "nativeReduction": [
+              {
+                "milliseconds": 7.967709,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 16.779583,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 665.74325,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.006208,
+              "reuse context": 0.000416,
+              "scale graph": 0.004,
+              "create sRGB8 CGImage": 142.692542,
+              "copy into owned CGImage": 2.240541,
+              "wrap NSBitmapImageRep": 0.015833,
+              "clear after render": 0.006708
+            },
+            "allFiniteMs": 517.194791,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 14.556791,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 928.584625,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.007083,
+              "reuse context": 0.000375,
+              "scale graph": 0.004875,
+              "create sRGB8 CGImage": 129.069541,
+              "copy into owned CGImage": 2.315042,
+              "wrap NSBitmapImageRep": 0.016708,
+              "clear after render": 0.00675
+            },
+            "allFiniteMs": 793.917417,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 15.974833,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 1090.076209,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.007459,
+              "reuse context": 0.000417,
+              "scale graph": 0.005375,
+              "create sRGB8 CGImage": 131.816625,
+              "copy into owned CGImage": 2.32425,
+              "wrap NSBitmapImageRep": 0.018834,
+              "clear after render": 0.008125
+            },
+            "allFiniteMs": 167.302667,
+            "nativeReduction": [
+              {
+                "milliseconds": 153.108667,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 15.7765,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 336.510708,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.006625,
+              "reuse context": 0.000375,
+              "scale graph": 0.004917,
+              "create sRGB8 CGImage": 128.763375,
+              "copy into owned CGImage": 2.281208,
+              "wrap NSBitmapImageRep": 0.017041,
+              "clear after render": 0.00725
+            },
+            "allFiniteMs": 121.239084,
+            "nativeReduction": [
+              {
+                "milliseconds": 121.148875,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 15.153625,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 782.186375,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.009333,
+              "reuse context": 0.000375,
+              "scale graph": 0.005125,
+              "create sRGB8 CGImage": 172.575583,
+              "copy into owned CGImage": 2.573291,
+              "wrap NSBitmapImageRep": 0.016792,
+              "clear after render": 0.007958
+            },
+            "allFiniteMs": 603.588959,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 12.218667,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 1062.482458,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.008583,
+              "reuse context": 0.0005,
+              "scale graph": 0.019792,
+              "create sRGB8 CGImage": 159.787833,
+              "copy into owned CGImage": 2.324375,
+              "wrap NSBitmapImageRep": 0.016458,
+              "clear after render": 0.007417
+            },
+            "allFiniteMs": 896.629708,
+            "nativeReduction": []
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/smoke/04-A.json",
+          "sha256": "91e16d19467cb171e784de152892c0626e779911764ac7f39757ae4c8c67450d"
+        },
+        "binarySHA256": "b8f5e21d49211fda39c4a2342f743e44e1f5df9e267f4e1de337a4e38eb5a276",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 12,
+        "matchingSettledFrames": 12,
+        "firstExactWithoutInterrequestHash": {
+          "count": 12,
+          "medianMs": 332.038292,
+          "p95Ms": 1138.6383739999999
+        },
+        "settledRequestToReadback": {
+          "count": 12,
+          "medianMs": 249.5563335,
+          "p95Ms": 1122.440958
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4349987384,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 149.63075,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 158.506792,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.010292,
+              "create context": 6.547917,
+              "scale graph": 0.004417,
+              "create sRGB8 CGImage": 38.475208,
+              "copy into owned CGImage": 2.529459,
+              "wrap NSBitmapImageRep": 0.032125,
+              "clear after render": 0.011542
+            },
+            "allFiniteMs": 22.279667,
+            "nativeReduction": [
+              {
+                "milliseconds": 19.262417,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.344917,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 74.927417,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.007125,
+              "create context": 9.809708,
+              "scale graph": 0.002958,
+              "create sRGB8 CGImage": 41.753583,
+              "copy into owned CGImage": 2.305958,
+              "wrap NSBitmapImageRep": 0.02175,
+              "clear after render": 0.008083
+            },
+            "allFiniteMs": 12.260625,
+            "nativeReduction": [
+              {
+                "milliseconds": 12.169583,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 5.396625,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 85.421792,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.007875,
+              "create context": 8.459375,
+              "scale graph": 0.003084,
+              "create sRGB8 CGImage": 38.883792,
+              "copy into owned CGImage": 2.348333,
+              "wrap NSBitmapImageRep": 0.021375,
+              "clear after render": 0.013833
+            },
+            "allFiniteMs": 26.636583,
+            "nativeReduction": [
+              {
+                "milliseconds": 11.523334,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              },
+              {
+                "milliseconds": 10.291125,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 4.048666,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 67.51725,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.007834,
+              "create context": 8.249958,
+              "scale graph": 0.00325,
+              "create sRGB8 CGImage": 36.104875,
+              "copy into owned CGImage": 2.266583,
+              "wrap NSBitmapImageRep": 0.016042,
+              "clear after render": 0.007083
+            },
+            "allFiniteMs": 17.159292,
+            "nativeReduction": [
+              {
+                "milliseconds": 12.768125,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 4.713542,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 69.745709,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.007875,
+              "create context": 8.230708,
+              "scale graph": 0.004125,
+              "create sRGB8 CGImage": 36.732209,
+              "copy into owned CGImage": 2.346042,
+              "wrap NSBitmapImageRep": 0.01675,
+              "clear after render": 0.008875
+            },
+            "allFiniteMs": 18.493416,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.498458,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 3.902125,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 67.808792,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.008667,
+              "create context": 8.067167,
+              "scale graph": 0.007041,
+              "create sRGB8 CGImage": 36.19875,
+              "copy into owned CGImage": 2.168708,
+              "wrap NSBitmapImageRep": 0.014917,
+              "clear after render": 0.006875
+            },
+            "allFiniteMs": 17.244416,
+            "nativeReduction": [
+              {
+                "milliseconds": 12.525292,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 16.775,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 438.041792,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.008542,
+              "create context": 7.63475,
+              "scale graph": 0.004,
+              "create sRGB8 CGImage": 144.884792,
+              "copy into owned CGImage": 2.373917,
+              "wrap NSBitmapImageRep": 0.017791,
+              "clear after render": 0.009459
+            },
+            "allFiniteMs": 278.692417,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 12.155083,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 444.752041,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.0105,
+              "create context": 10.948542,
+              "scale graph": 0.004584,
+              "create sRGB8 CGImage": 141.634041,
+              "copy into owned CGImage": 2.306958,
+              "wrap NSBitmapImageRep": 0.017667,
+              "clear after render": 0.008042
+            },
+            "allFiniteMs": 284.292375,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 16.197416,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 1122.440958,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.00825,
+              "create context": 10.812167,
+              "scale graph": 0.005833,
+              "create sRGB8 CGImage": 134.077708,
+              "copy into owned CGImage": 2.572208,
+              "wrap NSBitmapImageRep": 0.020875,
+              "clear after render": 0.008541
+            },
+            "allFiniteMs": 149.717833,
+            "nativeReduction": [
+              {
+                "milliseconds": 149.630958,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 15.333167,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 340.605875,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.00925,
+              "create context": 7.06125,
+              "scale graph": 0.005708,
+              "create sRGB8 CGImage": 128.507667,
+              "copy into owned CGImage": 2.377333,
+              "wrap NSBitmapImageRep": 0.016,
+              "clear after render": 0.007875
+            },
+            "allFiniteMs": 117.211917,
+            "nativeReduction": [
+              {
+                "milliseconds": 117.0745,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 12.478875,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 513.969667,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.009209,
+              "create context": 6.914416,
+              "scale graph": 0.005459,
+              "create sRGB8 CGImage": 151.874542,
+              "copy into owned CGImage": 2.515333,
+              "wrap NSBitmapImageRep": 0.01775,
+              "clear after render": 0.008417
+            },
+            "allFiniteMs": 346.525292,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 11.69125,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 502.93625,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.008208,
+              "create context": 14.808291,
+              "scale graph": 0.004166,
+              "create sRGB8 CGImage": 134.096416,
+              "copy into owned CGImage": 2.238375,
+              "wrap NSBitmapImageRep": 0.016125,
+              "clear after render": 0.008042
+            },
+            "allFiniteMs": 347.028833,
+            "nativeReduction": []
+          }
+        ]
+      }
+    ]
+  },
+  "directOwnedBitmap": {
+    "adopted": false,
+    "runs": [
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/bitmap-all/01-A.json",
+          "sha256": "68e728f7149f8e52926c2142d1973273a9a7072ef034e3ada0324765a743a6e9"
+        },
+        "binarySHA256": "fd6882aa2376b118a7f122b5eea7117ce8946f9e593a8ba4c786740653119a7f",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 125.80993699999999,
+          "p95Ms": 759.219083
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 93.291021,
+          "p95Ms": 498.626
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4457335328,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 4.561125,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 70.968791,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.007333,
+              "create context": 7.382792,
+              "scale graph": 0.002792,
+              "create sRGB8 CGImage": 39.135083,
+              "copy into owned CGImage": 2.389458,
+              "wrap NSBitmapImageRep": 0.021,
+              "clear after render": 0.009042
+            },
+            "allFiniteMs": 13.309208,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.216958,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.029042,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 72.63075,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.008291,
+              "create context": 8.243292,
+              "scale graph": 0.002792,
+              "create sRGB8 CGImage": 35.907292,
+              "copy into owned CGImage": 2.300458,
+              "wrap NSBitmapImageRep": 0.016,
+              "clear after render": 0.008041
+            },
+            "allFiniteMs": 17.400542,
+            "nativeReduction": [
+              {
+                "milliseconds": 17.3175,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 327.685125,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 485.991625,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.008333,
+              "create context": 12.170375,
+              "scale graph": 0.005084,
+              "create sRGB8 CGImage": 149.122792,
+              "copy into owned CGImage": 2.35625,
+              "wrap NSBitmapImageRep": 0.017416,
+              "clear after render": 0.009292
+            },
+            "allFiniteMs": 317.614333,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 11.193958,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 477.877458,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.011083,
+              "create context": 13.143459,
+              "scale graph": 0.004333,
+              "create sRGB8 CGImage": 137.93975,
+              "copy into owned CGImage": 2.470041,
+              "wrap NSBitmapImageRep": 0.01725,
+              "clear after render": 0.008083
+            },
+            "allFiniteMs": 319.284167,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 341.943125,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 2106.308917,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.009083,
+              "create context": 14.940583,
+              "scale graph": 0.005417,
+              "create sRGB8 CGImage": 127.497917,
+              "copy into owned CGImage": 2.475625,
+              "wrap NSBitmapImageRep": 0.019917,
+              "clear after render": 0.008292
+            },
+            "allFiniteMs": 150.689208,
+            "nativeReduction": [
+              {
+                "milliseconds": 150.6005,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 12.295833,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 345.740125,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.007791,
+              "create context": 7.014042,
+              "scale graph": 0.006083,
+              "create sRGB8 CGImage": 131.903833,
+              "copy into owned CGImage": 2.630709,
+              "wrap NSBitmapImageRep": 0.018,
+              "clear after render": 0.008625
+            },
+            "allFiniteMs": 120.1465,
+            "nativeReduction": [
+              {
+                "milliseconds": 120.060083,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 13.786667,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 462.7745,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.008375,
+              "create context": 7.352625,
+              "scale graph": 0.015125,
+              "create sRGB8 CGImage": 143.955542,
+              "copy into owned CGImage": 2.319167,
+              "wrap NSBitmapImageRep": 0.01725,
+              "clear after render": 0.007917
+            },
+            "allFiniteMs": 304.852625,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 11.557834,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 461.670084,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.007458,
+              "create context": 10.286042,
+              "scale graph": 0.004458,
+              "create sRGB8 CGImage": 138.57175,
+              "copy into owned CGImage": 2.42825,
+              "wrap NSBitmapImageRep": 0.016083,
+              "clear after render": 0.007625
+            },
+            "allFiniteMs": 305.420708,
+            "nativeReduction": []
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 325.593709,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 72.902458,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.007625,
+              "create context": 8.268334,
+              "scale graph": 0.002959,
+              "create sRGB8 CGImage": 36.666292,
+              "copy into owned CGImage": 2.39425,
+              "wrap NSBitmapImageRep": 0.016417,
+              "clear after render": 0.008542
+            },
+            "allFiniteMs": 21.051875,
+            "nativeReduction": [
+              {
+                "milliseconds": 17.3645,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 3.906125,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 66.173166,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.008167,
+              "create context": 8.167,
+              "scale graph": 0.004583,
+              "create sRGB8 CGImage": 36.133583,
+              "copy into owned CGImage": 2.466917,
+              "wrap NSBitmapImageRep": 0.016417,
+              "clear after render": 0.008708
+            },
+            "allFiniteMs": 15.136542,
+            "nativeReduction": [
+              {
+                "milliseconds": 11.385666,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 4.361458,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 72.554125,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.007167,
+              "create context": 8.308083,
+              "scale graph": 0.002959,
+              "create sRGB8 CGImage": 38.955583,
+              "copy into owned CGImage": 2.287541,
+              "wrap NSBitmapImageRep": 0.0185,
+              "clear after render": 0.008833
+            },
+            "allFiniteMs": 18.755083,
+            "nativeReduction": [
+              {
+                "milliseconds": 15.05275,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 3.9755,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 73.26725,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.008625,
+              "create context": 9.705583,
+              "scale graph": 0.00375,
+              "create sRGB8 CGImage": 35.329,
+              "copy into owned CGImage": 2.455167,
+              "wrap NSBitmapImageRep": 0.019208,
+              "clear after render": 0.008417
+            },
+            "allFiniteMs": 21.557916,
+            "nativeReduction": [
+              {
+                "milliseconds": 17.635,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/bitmap-all/02-B.json",
+          "sha256": "cf9586a8820a537fa73932973e4fab75860fd170e7988383848787577dadd976"
+        },
+        "binarySHA256": "fd6882aa2376b118a7f122b5eea7117ce8946f9e593a8ba4c786740653119a7f",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 100.28595899999999,
+          "p95Ms": 504.49529199999995
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 96.318563,
+          "p95Ms": 492.444625
+        },
+        "ownedBitmapDestinations": 70,
+        "processPeakPhysicalFootprintBytes": 4535945760,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 4.78375,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 67.062,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.008125,
+              "create context": 7.795292,
+              "scale graph": 0.003167,
+              "join owned sRGB8 bitmap destination": 37.77175,
+              "wrap NSBitmapImageRep": 0.016083,
+              "clear after render": 0.005458
+            },
+            "allFiniteMs": 13.529916,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.431875,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.050875,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 70.669208,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.008292,
+              "create context": 9.564416,
+              "scale graph": 0.003625,
+              "join owned sRGB8 bitmap destination": 38.373625,
+              "wrap NSBitmapImageRep": 0.018375,
+              "clear after render": 0.006834
+            },
+            "allFiniteMs": 14.768625,
+            "nativeReduction": [
+              {
+                "milliseconds": 14.683208,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 21.297708,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 466.041,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.007458,
+              "create context": 12.760792,
+              "scale graph": 0.003875,
+              "join owned sRGB8 bitmap destination": 140.582042,
+              "wrap NSBitmapImageRep": 0.016584,
+              "clear after render": 0.005042
+            },
+            "allFiniteMs": 308.523792,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 14.2585,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 456.239416,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.00725,
+              "create context": 13.126584,
+              "scale graph": 0.004709,
+              "join owned sRGB8 bitmap destination": 131.667625,
+              "wrap NSBitmapImageRep": 0.014417,
+              "clear after render": 0.004792
+            },
+            "allFiniteMs": 307.022583,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 22.868041,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 1094.612333,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.007458,
+              "create context": 12.855834,
+              "scale graph": 0.00525,
+              "join owned sRGB8 bitmap destination": 136.118166,
+              "wrap NSBitmapImageRep": 0.018875,
+              "clear after render": 0.0065
+            },
+            "allFiniteMs": 159.561541,
+            "nativeReduction": [
+              {
+                "milliseconds": 147.112667,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 13.718917,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 355.832959,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.009917,
+              "create context": 7.339583,
+              "scale graph": 0.005083,
+              "join owned sRGB8 bitmap destination": 134.149459,
+              "wrap NSBitmapImageRep": 0.016917,
+              "clear after render": 0.007209
+            },
+            "allFiniteMs": 125.969417,
+            "nativeReduction": [
+              {
+                "milliseconds": 125.890542,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 12.078875,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 464.019792,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.008833,
+              "create context": 7.542209,
+              "scale graph": 0.004375,
+              "join owned sRGB8 bitmap destination": 137.499916,
+              "wrap NSBitmapImageRep": 0.016584,
+              "clear after render": 0.006125
+            },
+            "allFiniteMs": 313.565416,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 12.050667,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 492.444625,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.007708,
+              "create context": 10.664166,
+              "scale graph": 0.004166,
+              "join owned sRGB8 bitmap destination": 156.043709,
+              "wrap NSBitmapImageRep": 0.016916,
+              "clear after render": 0.008167
+            },
+            "allFiniteMs": 320.899667,
+            "nativeReduction": []
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 6.748959,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 70.157417,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.008125,
+              "create context": 8.459917,
+              "scale graph": 0.003125,
+              "join owned sRGB8 bitmap destination": 39.602667,
+              "wrap NSBitmapImageRep": 0.015625,
+              "clear after render": 0.00575
+            },
+            "allFiniteMs": 17.859417,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.536417,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 4.006375,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 68.947375,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.007583,
+              "create context": 8.687167,
+              "scale graph": 0.00425,
+              "join owned sRGB8 bitmap destination": 38.276917,
+              "wrap NSBitmapImageRep": 0.015542,
+              "clear after render": 0.005375
+            },
+            "allFiniteMs": 17.793916,
+            "nativeReduction": [
+              {
+                "milliseconds": 12.871333,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 4.257166,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 72.528666,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.0085,
+              "create context": 8.31525,
+              "scale graph": 0.003625,
+              "join owned sRGB8 bitmap destination": 39.931917,
+              "wrap NSBitmapImageRep": 0.0145,
+              "clear after render": 0.00525
+            },
+            "allFiniteMs": 20.179208,
+            "nativeReduction": [
+              {
+                "milliseconds": 15.448583,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 4.190625,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 78.4295,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.007375,
+              "create context": 13.565834,
+              "scale graph": 0.003708,
+              "join owned sRGB8 bitmap destination": 41.066208,
+              "wrap NSBitmapImageRep": 0.0165,
+              "clear after render": 0.005958
+            },
+            "allFiniteMs": 19.799,
+            "nativeReduction": [
+              {
+                "milliseconds": 15.199959,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/bitmap-all/03-B.json",
+          "sha256": "863e7e65f30032088a052ac4d0f3c120306d514df5d58c8c08e5b717cbdb9377"
+        },
+        "binarySHA256": "fd6882aa2376b118a7f122b5eea7117ce8946f9e593a8ba4c786740653119a7f",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 96.30587399999999,
+          "p95Ms": 511.57183299999997
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 91.20668699999999,
+          "p95Ms": 498.961083
+        },
+        "ownedBitmapDestinations": 70,
+        "processPeakPhysicalFootprintBytes": 4479699512,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 5.4175,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 72.469916,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.009583,
+              "create context": 7.809833,
+              "scale graph": 0.003875,
+              "join owned sRGB8 bitmap destination": 37.507375,
+              "wrap NSBitmapImageRep": 0.01575,
+              "clear after render": 0.005917
+            },
+            "allFiniteMs": 19.725958,
+            "nativeReduction": [
+              {
+                "milliseconds": 19.636208,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.213,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 68.300959,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.007334,
+              "create context": 8.511209,
+              "scale graph": 0.003916,
+              "join owned sRGB8 bitmap destination": 37.206584,
+              "wrap NSBitmapImageRep": 0.014208,
+              "clear after render": 0.006125
+            },
+            "allFiniteMs": 14.045041,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.950917,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 13.166916,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 450.120291,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.006042,
+              "create context": 12.188958,
+              "scale graph": 0.004125,
+              "join owned sRGB8 bitmap destination": 141.942083,
+              "wrap NSBitmapImageRep": 0.015458,
+              "clear after render": 0.005209
+            },
+            "allFiniteMs": 292.120792,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 13.267208,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 461.794458,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.006625,
+              "create context": 13.058375,
+              "scale graph": 0.003833,
+              "join owned sRGB8 bitmap destination": 131.838625,
+              "wrap NSBitmapImageRep": 0.014167,
+              "clear after render": 0.004917
+            },
+            "allFiniteMs": 312.146167,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 17.693167,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 1152.116292,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.007125,
+              "create context": 12.721917,
+              "scale graph": 0.006416,
+              "join owned sRGB8 bitmap destination": 132.418834,
+              "wrap NSBitmapImageRep": 0.0185,
+              "clear after render": 0.006083
+            },
+            "allFiniteMs": 183.484041,
+            "nativeReduction": [
+              {
+                "milliseconds": 169.4385,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 15.10925,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 333.409166,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.006833,
+              "create context": 7.132416,
+              "scale graph": 0.005375,
+              "join owned sRGB8 bitmap destination": 124.336542,
+              "wrap NSBitmapImageRep": 0.015667,
+              "clear after render": 0.006333
+            },
+            "allFiniteMs": 117.580083,
+            "nativeReduction": [
+              {
+                "milliseconds": 117.48575,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 11.393875,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 446.327083,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.007959,
+              "create context": 7.257291,
+              "scale graph": 0.011042,
+              "join owned sRGB8 bitmap destination": 138.692,
+              "wrap NSBitmapImageRep": 0.0165,
+              "clear after render": 0.004834
+            },
+            "allFiniteMs": 294.967541,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 10.667459,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 465.131792,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.006625,
+              "create context": 10.316125,
+              "scale graph": 0.00475,
+              "join owned sRGB8 bitmap destination": 145.814208,
+              "wrap NSBitmapImageRep": 0.016375,
+              "clear after render": 0.006667
+            },
+            "allFiniteMs": 304.08375,
+            "nativeReduction": []
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 4.814166,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 65.86025,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.006708,
+              "create context": 8.578292,
+              "scale graph": 0.004542,
+              "join owned sRGB8 bitmap destination": 35.990333,
+              "wrap NSBitmapImageRep": 0.014209,
+              "clear after render": 0.005708
+            },
+            "allFiniteMs": 16.984542,
+            "nativeReduction": [
+              {
+                "milliseconds": 12.826584,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 3.85575,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 66.399958,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.00675,
+              "create context": 8.24375,
+              "scale graph": 0.003958,
+              "join owned sRGB8 bitmap destination": 36.348541,
+              "wrap NSBitmapImageRep": 0.013917,
+              "clear after render": 0.005375
+            },
+            "allFiniteMs": 17.9395,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.194458,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 4.055916,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 71.259333,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.007208,
+              "create context": 8.378083,
+              "scale graph": 0.003958,
+              "join owned sRGB8 bitmap destination": 38.657125,
+              "wrap NSBitmapImageRep": 0.016083,
+              "clear after render": 0.006084
+            },
+            "allFiniteMs": 19.932541,
+            "nativeReduction": [
+              {
+                "milliseconds": 15.284083,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 4.171958,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 73.447667,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.008,
+              "create context": 8.594333,
+              "scale graph": 0.003375,
+              "join owned sRGB8 bitmap destination": 39.0025,
+              "wrap NSBitmapImageRep": 0.01425,
+              "clear after render": 0.005292
+            },
+            "allFiniteMs": 21.64425,
+            "nativeReduction": [
+              {
+                "milliseconds": 16.97975,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/bitmap-all/04-A.json",
+          "sha256": "101db1129de9933427726ccc5bb5b941fe7f206dfb88a9d563fd6cacfc994731"
+        },
+        "binarySHA256": "fd6882aa2376b118a7f122b5eea7117ce8946f9e593a8ba4c786740653119a7f",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 103.3628545,
+          "p95Ms": 519.771417
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 98.94750049999999,
+          "p95Ms": 506.022167
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4479191608,
+        "focusedStates": [
+          {
+            "operator": "curve-channels",
+            "state": 0,
+            "firstMs": 4.380292,
+            "firstSHA256": "0b8c503db2e6dfc981416a6db3b6a519812df36b611ac51ccf7df4a5e702967b",
+            "settledMs": 67.073791,
+            "settledSHA256": "50af239f67731b138c4c247c74313873244e395f1176fa16be9c3134d7a58a99",
+            "stages": {
+              "clear before render": 0.007042,
+              "create context": 7.635333,
+              "scale graph": 0.002833,
+              "create sRGB8 CGImage": 35.629542,
+              "copy into owned CGImage": 2.223417,
+              "wrap NSBitmapImageRep": 0.013667,
+              "clear after render": 0.006708
+            },
+            "allFiniteMs": 13.525125,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.442041,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "curve-channels",
+            "state": 1,
+            "firstMs": 4.21275,
+            "firstSHA256": "82ce068f4df336bfc0017ffbc0acb5aefa67e757e3796394d7c59ebd4ef78538",
+            "settledMs": 70.93475,
+            "settledSHA256": "ba4765d6a27314c74bb9c0b00dd2b60213fe60d690dd9caac542c05866454e57",
+            "stages": {
+              "clear before render": 0.00725,
+              "create context": 9.915166,
+              "scale graph": 0.002791,
+              "create sRGB8 CGImage": 37.088792,
+              "copy into owned CGImage": 2.275459,
+              "wrap NSBitmapImageRep": 0.020458,
+              "clear after render": 0.010542
+            },
+            "allFiniteMs": 12.907042,
+            "nativeReduction": [
+              {
+                "milliseconds": 12.833792,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 12.476084,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 483.872542,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.007792,
+              "create context": 12.350916,
+              "scale graph": 0.005084,
+              "create sRGB8 CGImage": 145.172166,
+              "copy into owned CGImage": 2.3595,
+              "wrap NSBitmapImageRep": 0.018292,
+              "clear after render": 0.008167
+            },
+            "allFiniteMs": 319.805916,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 10.087791,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 461.745083,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.010041,
+              "create context": 12.714959,
+              "scale graph": 0.00425,
+              "create sRGB8 CGImage": 134.0045,
+              "copy into owned CGImage": 2.341833,
+              "wrap NSBitmapImageRep": 0.017166,
+              "clear after render": 0.007708
+            },
+            "allFiniteMs": 307.824791,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 0,
+            "firstMs": 11.721708,
+            "firstSHA256": "6a1628bfb72461302c3c148723ff9d22a514215a69bd1dd08953b3cbc9b7e902",
+            "settledMs": 1165.258417,
+            "settledSHA256": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+            "stages": {
+              "clear before render": 0.007375,
+              "create context": 12.992792,
+              "scale graph": 0.005209,
+              "create sRGB8 CGImage": 132.471917,
+              "copy into owned CGImage": 2.361541,
+              "wrap NSBitmapImageRep": 0.020084,
+              "clear after render": 0.008708
+            },
+            "allFiniteMs": 193.168417,
+            "nativeReduction": [
+              {
+                "milliseconds": 179.979834,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-dehaze",
+            "state": 1,
+            "firstMs": 12.490958,
+            "firstSHA256": "d002555b88dafc9fe89b2b9bbe980e47e70947a9ed07467a9070bc72cc052037",
+            "settledMs": 352.268916,
+            "settledSHA256": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+            "stages": {
+              "clear before render": 0.007875,
+              "create context": 6.956958,
+              "scale graph": 0.005458,
+              "create sRGB8 CGImage": 132.947083,
+              "copy into owned CGImage": 2.470791,
+              "wrap NSBitmapImageRep": 0.018375,
+              "clear after render": 0.009042
+            },
+            "allFiniteMs": 124.175875,
+            "nativeReduction": [
+              {
+                "milliseconds": 124.065,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 0,
+            "firstMs": 13.475041,
+            "firstSHA256": "d3a9dc806c4842084c496a0f12c5ca06248750bdd01e696befe8c1ae7f6da8de",
+            "settledMs": 496.280291,
+            "settledSHA256": "f806139b9f6668501f815ebdb5dcaf4bf5a52097bb2feb14c7c8a3c397069e4a",
+            "stages": {
+              "clear before render": 0.007084,
+              "create context": 7.940916,
+              "scale graph": 0.004959,
+              "create sRGB8 CGImage": 150.505042,
+              "copy into owned CGImage": 2.591,
+              "wrap NSBitmapImageRep": 0.018667,
+              "clear after render": 0.007875
+            },
+            "allFiniteMs": 329.370875,
+            "nativeReduction": []
+          },
+          {
+            "operator": "effects-mask-texture",
+            "state": 1,
+            "firstMs": 12.468875,
+            "firstSHA256": "f0cc6f1147a0c8034762e286b2df6c1577cb756ef365336dfd917fe622136c40",
+            "settledMs": 514.275,
+            "settledSHA256": "d23d5cc478cdb08008e2666d664a144fa675405ec6578cf9df44c04371469d8e",
+            "stages": {
+              "clear before render": 0.006125,
+              "create context": 10.603792,
+              "scale graph": 0.00775,
+              "create sRGB8 CGImage": 156.01525,
+              "copy into owned CGImage": 2.594458,
+              "wrap NSBitmapImageRep": 0.0185,
+              "clear after render": 0.011375
+            },
+            "allFiniteMs": 339.971959,
+            "nativeReduction": []
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 0,
+            "firstMs": 5.86475,
+            "firstSHA256": "b2bf7b993157c65385e912e666349d9f0d9fcbdccdb7427bb9a805dcb1490688",
+            "settledMs": 86.880875,
+            "settledSHA256": "1da6c8a98df9ab8fe80e0b93f413b5e5c5ab9f050aadaffe5ec0c269927cc460",
+            "stages": {
+              "clear before render": 0.010375,
+              "create context": 9.283708,
+              "scale graph": 0.005291,
+              "create sRGB8 CGImage": 45.720208,
+              "copy into owned CGImage": 2.609875,
+              "wrap NSBitmapImageRep": 0.019291,
+              "clear after render": 0.014209
+            },
+            "allFiniteMs": 24.42075,
+            "nativeReduction": [
+              {
+                "milliseconds": 19.191417,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "grading-lut-amount",
+            "state": 1,
+            "firstMs": 4.47275,
+            "firstSHA256": "8c21fe9f04e2805d3a2e65d8e97f1d85930d28fb0cd01bda8908bf3a49783317",
+            "settledMs": 73.901959,
+            "settledSHA256": "c19e5d5085b9150708c4ff622e25df26ece7e958e3914f7cc6a14a6f93559c84",
+            "stages": {
+              "clear before render": 0.014041,
+              "create context": 8.472709,
+              "scale graph": 0.003541,
+              "create sRGB8 CGImage": 40.705583,
+              "copy into owned CGImage": 2.603375,
+              "wrap NSBitmapImageRep": 0.01925,
+              "clear after render": 0.009125
+            },
+            "allFiniteMs": 17.768334,
+            "nativeReduction": [
+              {
+                "milliseconds": 13.528417,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 0,
+            "firstMs": 3.858375,
+            "firstSHA256": "c296c21a5233e417cf94e3aea52b77a600b62df9318d5dac38dec336761821c4",
+            "settledMs": 71.735209,
+            "settledSHA256": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+            "stages": {
+              "clear before render": 0.005667,
+              "create context": 7.480458,
+              "scale graph": 0.00325,
+              "create sRGB8 CGImage": 36.177042,
+              "copy into owned CGImage": 2.30475,
+              "wrap NSBitmapImageRep": 0.015583,
+              "clear after render": 0.006875
+            },
+            "allFiniteMs": 21.685417,
+            "nativeReduction": [
+              {
+                "milliseconds": 17.775292,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          },
+          {
+            "operator": "light-mask-exposure",
+            "state": 1,
+            "firstMs": 3.854917,
+            "firstSHA256": "f45617a1e3d6a1069220d86e2ac41f71ec8ab123dade82f0b4fa8ee5dc9897d4",
+            "settledMs": 74.599459,
+            "settledSHA256": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+            "stages": {
+              "clear before render": 0.006792,
+              "create context": 8.384,
+              "scale graph": 0.004125,
+              "create sRGB8 CGImage": 37.291042,
+              "copy into owned CGImage": 2.41575,
+              "wrap NSBitmapImageRep": 0.016166,
+              "clear after render": 0.007584
+            },
+            "allFiniteMs": 22.416125,
+            "nativeReduction": [
+              {
+                "milliseconds": 18.340958,
+                "pixels": 60217344,
+                "scratchBytes": 4980736
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "syntheticEqualityAndRetainedProof": {
+      "path": "output/035-development/first-exact-profile/bitmap-all/bitmap-alpha.log",
+      "sha256": "cff89cecc2c3318c9326ffe21cd4164ba084816632f0bbc47174d74cb1ccf670"
+    }
+  },
+  "pureRawNoise": {
+    "workspaceBudgetBytes": 134217728,
+    "testsOnPrimary": [
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-all/01-A.json",
+          "sha256": "2e39489a7d01857ab3c691704a1adba97ea155f80625a3b137679f6303429089"
+        },
+        "binarySHA256": "e22d4877dded6f6109840151acc80dae802e40adf1c2a3e4d0b1ab10a5c9ef13",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 131.49102,
+          "p95Ms": 843.2984160000001
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 98.8415,
+          "p95Ms": 504.03175
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4457581088,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 344.709208,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 539.805625,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.009459,
+              "create context": 12.399875,
+              "scale graph": 0.004542,
+              "create sRGB8 CGImage": 162.634,
+              "copy into owned CGImage": 2.479208,
+              "wrap NSBitmapImageRep": 0.02175,
+              "clear after render": 0.010667
+            },
+            "allFiniteMs": 357.290375,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 10.947041,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 504.03175,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.00875,
+              "create context": 14.51875,
+              "scale graph": 0.005583,
+              "create sRGB8 CGImage": 140.480459,
+              "copy into owned CGImage": 2.5445,
+              "wrap NSBitmapImageRep": 0.019791,
+              "clear after render": 0.009792
+            },
+            "allFiniteMs": 341.113875,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 10.576083,
+            "firstSHA256": "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+            "settledMs": 499.191375,
+            "settledSHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+            "stages": {
+              "clear before render": 0.007458,
+              "create context": 12.533458,
+              "scale graph": 0.004542,
+              "create sRGB8 CGImage": 148.248375,
+              "copy into owned CGImage": 2.5525,
+              "wrap NSBitmapImageRep": 0.016292,
+              "clear after render": 0.00775
+            },
+            "allFiniteMs": 330.939083,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 10.612166,
+            "firstSHA256": "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+            "settledMs": 487.468583,
+            "settledSHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+            "stages": {
+              "clear before render": 0.008458,
+              "create context": 12.528833,
+              "scale graph": 0.004875,
+              "create sRGB8 CGImage": 152.31825,
+              "copy into owned CGImage": 2.351541,
+              "wrap NSBitmapImageRep": 0.01675,
+              "clear after render": 0.007667
+            },
+            "allFiniteMs": 315.366417,
+            "nativeReduction": []
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-all/02-B.json",
+          "sha256": "49bb81fd7f365d74fc623f0bb6d19cffcec5c21909cb10b119ec80f31566ce27"
+        },
+        "binarySHA256": "e22d4877dded6f6109840151acc80dae802e40adf1c2a3e4d0b1ab10a5c9ef13",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 99.521416,
+          "p95Ms": 493.78333399999997
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 96.04460399999999,
+          "p95Ms": 481.299084
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4893592120,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 12.464208,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 262.037417,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.009333,
+              "create context": 12.330334,
+              "scale graph": 0.004958,
+              "create sRGB8 CGImage": 142.510584,
+              "copy into owned CGImage": 2.375125,
+              "wrap NSBitmapImageRep": 0.016292,
+              "clear after render": 0.008167
+            },
+            "allFiniteMs": 91.8735,
+            "nativeReduction": [
+              {
+                "milliseconds": 90.740875,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 9.695166,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 246.328667,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.007583,
+              "create context": 12.242459,
+              "scale graph": 0.008041,
+              "create sRGB8 CGImage": 133.003042,
+              "copy into owned CGImage": 2.452292,
+              "wrap NSBitmapImageRep": 0.018666,
+              "clear after render": 0.007834
+            },
+            "allFiniteMs": 85.703584,
+            "nativeReduction": [
+              {
+                "milliseconds": 78.256291,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 9.542125,
+            "firstSHA256": "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+            "settledMs": 269.878167,
+            "settledSHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+            "stages": {
+              "clear before render": 0.008125,
+              "create context": 12.615375,
+              "scale graph": 0.00425,
+              "create sRGB8 CGImage": 150.586583,
+              "copy into owned CGImage": 2.385,
+              "wrap NSBitmapImageRep": 0.017334,
+              "clear after render": 0.008459
+            },
+            "allFiniteMs": 90.698958,
+            "nativeReduction": [
+              {
+                "milliseconds": 81.77975,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 9.540667,
+            "firstSHA256": "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+            "settledMs": 260.238333,
+            "settledSHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+            "stages": {
+              "clear before render": 0.008334,
+              "create context": 12.805833,
+              "scale graph": 0.010292,
+              "create sRGB8 CGImage": 152.477166,
+              "copy into owned CGImage": 2.509041,
+              "wrap NSBitmapImageRep": 0.017333,
+              "clear after render": 0.007166
+            },
+            "allFiniteMs": 88.090333,
+            "nativeReduction": [
+              {
+                "milliseconds": 78.864584,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-all/03-B.json",
+          "sha256": "de8d199c91096dfe49677ab7a282f80837a5228110c1bd4d53d81ef8858ffd98"
+        },
+        "binarySHA256": "e22d4877dded6f6109840151acc80dae802e40adf1c2a3e4d0b1ab10a5c9ef13",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 102.3172705,
+          "p95Ms": 478.510958
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 98.379604,
+          "p95Ms": 467.671
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4802694024,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 10.962084,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 242.10075,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.006667,
+              "create context": 12.020417,
+              "scale graph": 0.004375,
+              "create sRGB8 CGImage": 138.697792,
+              "copy into owned CGImage": 2.227542,
+              "wrap NSBitmapImageRep": 0.0145,
+              "clear after render": 0.006167
+            },
+            "allFiniteMs": 83.821125,
+            "nativeReduction": [
+              {
+                "milliseconds": 82.843625,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 9.142208,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 242.298375,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.007792,
+              "create context": 12.334459,
+              "scale graph": 0.0045,
+              "create sRGB8 CGImage": 131.188875,
+              "copy into owned CGImage": 2.732458,
+              "wrap NSBitmapImageRep": 0.016166,
+              "clear after render": 0.008167
+            },
+            "allFiniteMs": 83.02325,
+            "nativeReduction": [
+              {
+                "milliseconds": 74.882167,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 10.584708,
+            "firstSHA256": "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+            "settledMs": 260.557417,
+            "settledSHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+            "stages": {
+              "clear before render": 0.011417,
+              "create context": 12.669583,
+              "scale graph": 0.005292,
+              "create sRGB8 CGImage": 144.205541,
+              "copy into owned CGImage": 2.439458,
+              "wrap NSBitmapImageRep": 0.017292,
+              "clear after render": 0.007708
+            },
+            "allFiniteMs": 87.66,
+            "nativeReduction": [
+              {
+                "milliseconds": 78.668166,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 9.388083,
+            "firstSHA256": "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+            "settledMs": 240.483625,
+            "settledSHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+            "stages": {
+              "clear before render": 0.00825,
+              "create context": 12.879459,
+              "scale graph": 0.003667,
+              "create sRGB8 CGImage": 138.11325,
+              "copy into owned CGImage": 2.28475,
+              "wrap NSBitmapImageRep": 0.014834,
+              "clear after render": 0.006708
+            },
+            "allFiniteMs": 82.829958,
+            "nativeReduction": [
+              {
+                "milliseconds": 73.884791,
+                "pixels": 60217344,
+                "scratchBytes": 2162688
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-all/04-A.json",
+          "sha256": "f76843a86693f8dab7a168f741c9a7408e6f6f2a22c6946aa429ac46da19de7b"
+        },
+        "binarySHA256": "e22d4877dded6f6109840151acc80dae802e40adf1c2a3e4d0b1ab10a5c9ef13",
+        "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "sourceSize": [
+          9504,
+          6336
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 74,
+        "matchingSettledFrames": 74,
+        "firstExactWithoutInterrequestHash": {
+          "count": 74,
+          "medianMs": 102.2156665,
+          "p95Ms": 495.95966699999997
+        },
+        "settledRequestToReadback": {
+          "count": 74,
+          "medianMs": 97.564896,
+          "p95Ms": 485.997167
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 4476930688,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 11.489208,
+            "firstSHA256": "16b5d5ee192b2caf8ce769bf6633c19a5c5e5ce0749b5c94473f48383c7b8326",
+            "settledMs": 474.210375,
+            "settledSHA256": "316d06a4b961a4d67acfb56883c4ec926135237e8ebdad9d0f5329f8d07d2c34",
+            "stages": {
+              "clear before render": 0.008167,
+              "create context": 12.207,
+              "scale graph": 0.005833,
+              "create sRGB8 CGImage": 145.411625,
+              "copy into owned CGImage": 2.654291,
+              "wrap NSBitmapImageRep": 0.016791,
+              "clear after render": 0.008416
+            },
+            "allFiniteMs": 309.388292,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 10.552541,
+            "firstSHA256": "c6a19d8248b280f78cb3672f14f3a5d7d66c90e6875e112bcfcccbaea16d819b",
+            "settledMs": 470.609125,
+            "settledSHA256": "14c595883701945f3207986603be73cbfb2c4f56b8c7ad118c8892e5695ed457",
+            "stages": {
+              "clear before render": 0.007542,
+              "create context": 12.54025,
+              "scale graph": 0.004209,
+              "create sRGB8 CGImage": 133.748958,
+              "copy into owned CGImage": 2.352,
+              "wrap NSBitmapImageRep": 0.015917,
+              "clear after render": 0.00625
+            },
+            "allFiniteMs": 317.127459,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 9.9625,
+            "firstSHA256": "5696be00d15ded2d5034fec34ddce231cfeaff75665a21fb2bf427e022d1d868",
+            "settledMs": 485.997167,
+            "settledSHA256": "8301ba5d4e8736426d104cb0b3b77bb27596256bcec80899c7d69b879f548086",
+            "stages": {
+              "clear before render": 0.007459,
+              "create context": 12.79025,
+              "scale graph": 0.004917,
+              "create sRGB8 CGImage": 150.173208,
+              "copy into owned CGImage": 2.466334,
+              "wrap NSBitmapImageRep": 0.017333,
+              "clear after render": 0.007375
+            },
+            "allFiniteMs": 315.785875,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 9.834584,
+            "firstSHA256": "52638c92f1bb326924b9df51a1592270affb5076046a89b42e73a91f42f9b4b7",
+            "settledMs": 462.610333,
+            "settledSHA256": "6bac8ded265f0dc19f23cc9dbf03d59fcff4d23462aecda5694cf2419666ef9e",
+            "stages": {
+              "clear before render": 0.006041,
+              "create context": 12.351541,
+              "scale graph": 0.004125,
+              "create sRGB8 CGImage": 142.257083,
+              "copy into owned CGImage": 2.608541,
+              "wrap NSBitmapImageRep": 0.017,
+              "clear after render": 0.007584
+            },
+            "allFiniteMs": 300.378375,
+            "nativeReduction": []
+          }
+        ]
+      }
+    ],
+    "testsOnSecondRAW": [
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-extra/01-B.json",
+          "sha256": "c637e41a8ef18d3e0d05d2330dc7f4823e79465cf7ccc7c79385d2829133c6ee"
+        },
+        "binarySHA256": "7ec89937d7921c895d888dd603e53da183678287ec2f410c16e01dc8f2826b96",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 6,
+        "matchingSettledFrames": 6,
+        "firstExactWithoutInterrequestHash": {
+          "count": 6,
+          "medianMs": 205.6595625,
+          "p95Ms": 262.753166
+        },
+        "settledRequestToReadback": {
+          "count": 6,
+          "medianMs": 192.4079165,
+          "p95Ms": 200.124
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 3203794984,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 11.501375,
+            "firstSHA256": "2e8a8de653e0d8e413562690c4f8cdcbd7b558aa25f546e016bb7dca42dddc05",
+            "settledMs": 193.631458,
+            "settledSHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+            "stages": {
+              "clear before render": 0.007792,
+              "create context": 9.758333,
+              "scale graph": 0.007459,
+              "create sRGB8 CGImage": 104.9235,
+              "copy into owned CGImage": 2.156833,
+              "wrap NSBitmapImageRep": 0.017334,
+              "clear after render": 0.007042
+            },
+            "allFiniteMs": 64.652167,
+            "nativeReduction": [
+              {
+                "milliseconds": 59.445083,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 9.295916,
+            "firstSHA256": "138589188010c83d2b6ade9e2bc92aaa966d9111a7167b3a5497d0283d1bfe3c",
+            "settledMs": 191.184375,
+            "settledSHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+            "stages": {
+              "clear before render": 0.006792,
+              "create context": 13.486125,
+              "scale graph": 0.004041,
+              "create sRGB8 CGImage": 108.008958,
+              "copy into owned CGImage": 2.20075,
+              "wrap NSBitmapImageRep": 0.016375,
+              "clear after render": 0.007667
+            },
+            "allFiniteMs": 62.773917,
+            "nativeReduction": [
+              {
+                "milliseconds": 55.426125,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 9.740166,
+            "firstSHA256": "e49b04b933c8df927830ae604d2ab9e281819a872a4528dee52d68d2c36d876b",
+            "settledMs": 200.124,
+            "settledSHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+            "stages": {
+              "clear before render": 0.007208,
+              "create context": 11.935,
+              "scale graph": 0.003792,
+              "create sRGB8 CGImage": 111.921542,
+              "copy into owned CGImage": 2.26525,
+              "wrap NSBitmapImageRep": 0.016041,
+              "clear after render": 0.006833
+            },
+            "allFiniteMs": 61.859791,
+            "nativeReduction": [
+              {
+                "milliseconds": 54.158167,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 9.429292,
+            "firstSHA256": "700f94f3a83159b172b59eedad336ac1380ce774840ec31cc8434a68a93518fb",
+            "settledMs": 196.757,
+            "settledSHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+            "stages": {
+              "clear before render": 0.008,
+              "create context": 12.517542,
+              "scale graph": 0.008042,
+              "create sRGB8 CGImage": 111.200333,
+              "copy into owned CGImage": 2.149834,
+              "wrap NSBitmapImageRep": 0.014333,
+              "clear after render": 0.006833
+            },
+            "allFiniteMs": 66.746709,
+            "nativeReduction": [
+              {
+                "milliseconds": 58.319,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-extra/02-A.json",
+          "sha256": "ea10f57413d77a0cc134ad1ef651b36ace79e8d549efbc50ed6ba9ae7168d6b8"
+        },
+        "binarySHA256": "7ec89937d7921c895d888dd603e53da183678287ec2f410c16e01dc8f2826b96",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 6,
+        "matchingSettledFrames": 6,
+        "firstExactWithoutInterrequestHash": {
+          "count": 6,
+          "medianMs": 395.26358300000004,
+          "p95Ms": 404.00800000000004
+        },
+        "settledRequestToReadback": {
+          "count": 6,
+          "medianMs": 383.56566699999996,
+          "p95Ms": 393.392083
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 3262334968,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 13.6995,
+            "firstSHA256": "2e8a8de653e0d8e413562690c4f8cdcbd7b558aa25f546e016bb7dca42dddc05",
+            "settledMs": 388.513417,
+            "settledSHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+            "stages": {
+              "clear before render": 0.009042,
+              "create context": 9.659292,
+              "scale graph": 0.005167,
+              "create sRGB8 CGImage": 113.505583,
+              "copy into owned CGImage": 2.2415,
+              "wrap NSBitmapImageRep": 0.018375,
+              "clear after render": 0.008542
+            },
+            "allFiniteMs": 258.924667,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 11.554791,
+            "firstSHA256": "138589188010c83d2b6ade9e2bc92aaa966d9111a7167b3a5497d0283d1bfe3c",
+            "settledMs": 389.95375,
+            "settledSHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+            "stages": {
+              "clear before render": 0.007833,
+              "create context": 12.247375,
+              "scale graph": 0.005875,
+              "create sRGB8 CGImage": 111.746375,
+              "copy into owned CGImage": 2.333042,
+              "wrap NSBitmapImageRep": 0.023166,
+              "clear after render": 0.007959
+            },
+            "allFiniteMs": 258.858666,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 10.615917,
+            "firstSHA256": "e49b04b933c8df927830ae604d2ab9e281819a872a4528dee52d68d2c36d876b",
+            "settledMs": 393.392083,
+            "settledSHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+            "stages": {
+              "clear before render": 0.009833,
+              "create context": 12.953625,
+              "scale graph": 0.004708,
+              "create sRGB8 CGImage": 110.561584,
+              "copy into owned CGImage": 2.271625,
+              "wrap NSBitmapImageRep": 0.016958,
+              "clear after render": 0.008042
+            },
+            "allFiniteMs": 262.927875,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 10.400708,
+            "firstSHA256": "700f94f3a83159b172b59eedad336ac1380ce774840ec31cc8434a68a93518fb",
+            "settledMs": 378.617917,
+            "settledSHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+            "stages": {
+              "clear before render": 0.008541,
+              "create context": 12.5185,
+              "scale graph": 0.003542,
+              "create sRGB8 CGImage": 108.4245,
+              "copy into owned CGImage": 2.147542,
+              "wrap NSBitmapImageRep": 0.015791,
+              "clear after render": 0.006708
+            },
+            "allFiniteMs": 251.133958,
+            "nativeReduction": []
+          }
+        ]
+      },
+      {
+        "arm": "A",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-extra/03-A.json",
+          "sha256": "3cf344f072e0a1d89b6efb00e4a78bb305026bfb747e9937c3ceb7a834c4e6ca"
+        },
+        "binarySHA256": "7ec89937d7921c895d888dd603e53da183678287ec2f410c16e01dc8f2826b96",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 6,
+        "matchingSettledFrames": 6,
+        "firstExactWithoutInterrequestHash": {
+          "count": 6,
+          "medianMs": 422.48058349999997,
+          "p95Ms": 429.012375
+        },
+        "settledRequestToReadback": {
+          "count": 6,
+          "medianMs": 410.49975,
+          "p95Ms": 416.01425
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 3260434400,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 14.678792,
+            "firstSHA256": "2e8a8de653e0d8e413562690c4f8cdcbd7b558aa25f546e016bb7dca42dddc05",
+            "settledMs": 412.49175,
+            "settledSHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+            "stages": {
+              "clear before render": 0.008125,
+              "create context": 10.055959,
+              "scale graph": 0.00475,
+              "create sRGB8 CGImage": 117.047,
+              "copy into owned CGImage": 2.263375,
+              "wrap NSBitmapImageRep": 0.020083,
+              "clear after render": 0.006792
+            },
+            "allFiniteMs": 278.859666,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 12.998125,
+            "firstSHA256": "138589188010c83d2b6ade9e2bc92aaa966d9111a7167b3a5497d0283d1bfe3c",
+            "settledMs": 416.01425,
+            "settledSHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+            "stages": {
+              "clear before render": 0.009791,
+              "create context": 15.026791,
+              "scale graph": 0.009,
+              "create sRGB8 CGImage": 118.8665,
+              "copy into owned CGImage": 2.188416,
+              "wrap NSBitmapImageRep": 0.01675,
+              "clear after render": 0.008625
+            },
+            "allFiniteMs": 274.808,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 10.35375,
+            "firstSHA256": "e49b04b933c8df927830ae604d2ab9e281819a872a4528dee52d68d2c36d876b",
+            "settledMs": 414.6675,
+            "settledSHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+            "stages": {
+              "clear before render": 0.00775,
+              "create context": 12.448167,
+              "scale graph": 0.004792,
+              "create sRGB8 CGImage": 117.573458,
+              "copy into owned CGImage": 2.424833,
+              "wrap NSBitmapImageRep": 0.017125,
+              "clear after render": 0.009208
+            },
+            "allFiniteMs": 277.439416,
+            "nativeReduction": []
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 11.432167,
+            "firstSHA256": "700f94f3a83159b172b59eedad336ac1380ce774840ec31cc8434a68a93518fb",
+            "settledMs": 408.50775,
+            "settledSHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+            "stages": {
+              "clear before render": 0.007917,
+              "create context": 12.755917,
+              "scale graph": 0.004958,
+              "create sRGB8 CGImage": 115.717709,
+              "copy into owned CGImage": 2.178625,
+              "wrap NSBitmapImageRep": 0.018167,
+              "clear after render": 0.005416
+            },
+            "allFiniteMs": 272.881083,
+            "nativeReduction": []
+          }
+        ]
+      },
+      {
+        "arm": "B",
+        "report": {
+          "path": "output/035-development/first-exact-profile/noise-extra/04-B.json",
+          "sha256": "3f8a5af5d840b34b293781bdb3122dc4f95a24b3ac5bec109bd77543d050303f"
+        },
+        "binarySHA256": "7ec89937d7921c895d888dd603e53da183678287ec2f410c16e01dc8f2826b96",
+        "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "sourceSize": [
+          8640,
+          5760
+        ],
+        "gpu": "Apple M4 Max",
+        "os": "Version 27.0.1 (Build 26A434)",
+        "matchingInteractiveFrames": 6,
+        "matchingSettledFrames": 6,
+        "firstExactWithoutInterrequestHash": {
+          "count": 6,
+          "medianMs": 200.01552,
+          "p95Ms": 263.17558299999996
+        },
+        "settledRequestToReadback": {
+          "count": 6,
+          "medianMs": 187.283646,
+          "p95Ms": 191.256166
+        },
+        "ownedBitmapDestinations": 0,
+        "processPeakPhysicalFootprintBytes": 3202320376,
+        "focusedStates": [
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 0,
+            "firstMs": 13.292625,
+            "firstSHA256": "2e8a8de653e0d8e413562690c4f8cdcbd7b558aa25f546e016bb7dca42dddc05",
+            "settledMs": 191.200584,
+            "settledSHA256": "12b7a0f7c0b83a290393f1e70faa6ae7d178e0c6af7a863b682056d0c4bec67f",
+            "stages": {
+              "clear before render": 0.006083,
+              "create context": 9.567083,
+              "scale graph": 0.010167,
+              "create sRGB8 CGImage": 108.490916,
+              "copy into owned CGImage": 2.243458,
+              "wrap NSBitmapImageRep": 0.018,
+              "clear after render": 0.006542
+            },
+            "allFiniteMs": 67.187625,
+            "nativeReduction": [
+              {
+                "milliseconds": 62.156292,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-color-detail",
+            "state": 1,
+            "firstMs": 9.498042,
+            "firstSHA256": "138589188010c83d2b6ade9e2bc92aaa966d9111a7167b3a5497d0283d1bfe3c",
+            "settledMs": 185.042459,
+            "settledSHA256": "997f0d16f5c19dfe6d840201bddf6c590fbf32a9a0e452303165d159045697a3",
+            "stages": {
+              "clear before render": 0.008042,
+              "create context": 12.105791,
+              "scale graph": 0.003667,
+              "create sRGB8 CGImage": 104.681666,
+              "copy into owned CGImage": 2.279416,
+              "wrap NSBitmapImageRep": 0.015875,
+              "clear after render": 0.007
+            },
+            "allFiniteMs": 61.992917,
+            "nativeReduction": [
+              {
+                "milliseconds": 53.7565,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 0,
+            "firstMs": 9.332375,
+            "firstSHA256": "e49b04b933c8df927830ae604d2ab9e281819a872a4528dee52d68d2c36d876b",
+            "settledMs": 189.524833,
+            "settledSHA256": "59fbb9d35ceb1a34194105aaf70c381f6e956636dd0df33dca5c8c225739e2a8",
+            "stages": {
+              "clear before render": 0.006583,
+              "create context": 11.7985,
+              "scale graph": 0.003208,
+              "create sRGB8 CGImage": 106.928625,
+              "copy into owned CGImage": 2.322083,
+              "wrap NSBitmapImageRep": 0.016542,
+              "clear after render": 0.007416
+            },
+            "allFiniteMs": 64.007125,
+            "nativeReduction": [
+              {
+                "milliseconds": 56.959333,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          },
+          {
+            "operator": "detail-nr-lum-contrast",
+            "state": 1,
+            "firstMs": 9.917666,
+            "firstSHA256": "700f94f3a83159b172b59eedad336ac1380ce774840ec31cc8434a68a93518fb",
+            "settledMs": 191.256166,
+            "settledSHA256": "d748240c1a8345e27937c0305411fa7b973d7da487242324103cd5f2a6c5a99a",
+            "stages": {
+              "clear before render": 0.00675,
+              "create context": 11.789709,
+              "scale graph": 0.004708,
+              "create sRGB8 CGImage": 109.074625,
+              "copy into owned CGImage": 2.27025,
+              "wrap NSBitmapImageRep": 0.016542,
+              "clear after render": 0.008
+            },
+            "allFiniteMs": 64.080541,
+            "nativeReduction": [
+              {
+                "milliseconds": 56.445167,
+                "pixels": 49766400,
+                "scratchBytes": 2146304
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "bandEdgeAndCancellation": {
+      "path": "output/035-development/first-exact-profile/noise-extra/noise-faults.log",
+      "sha256": "26b4dac29b596f345e9969a38205e3ae2f2a87778ba69324246882c98c62e305"
+    }
+  }
+}

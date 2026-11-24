@@ -1,0 +1,1123 @@
+{
+  "inputManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+  "workloads": {
+    "export-main": {
+      "jpeg-source/1": {
+        "secondsMedian": 0.073237083,
+        "firstMedian": 0.073169708,
+        "samples": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.074159,
+            "processMaxRSSKiB": 240272,
+            "seconds": 0.0742535
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.072924167,
+            "processMaxRSSKiB": 251376,
+            "seconds": 0.072990875
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.073169708,
+            "processMaxRSSKiB": 260800,
+            "seconds": 0.073237083
+          }
+        ]
+      },
+      "jpeg-source/20": {
+        "secondsMedian": 0.492957459,
+        "firstMedian": 0.077113333,
+        "samples": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.077113333,
+            "processMaxRSSKiB": 772048,
+            "seconds": 0.491759416
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.07867225,
+            "processMaxRSSKiB": 788864,
+            "seconds": 0.492957459
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.076717917,
+            "processMaxRSSKiB": 788864,
+            "seconds": 0.496853208
+          }
+        ]
+      },
+      "jpeg-source/200": {
+        "secondsMedian": 4.719747709,
+        "firstMedian": 0.08032225,
+        "samples": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.079358167,
+            "processMaxRSSKiB": 806048,
+            "seconds": 4.719747709
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.08032225,
+            "processMaxRSSKiB": 806048,
+            "seconds": 4.647187834
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080766792,
+            "processMaxRSSKiB": 806048,
+            "seconds": 4.728826375
+          }
+        ]
+      },
+      "raw-source/1": {
+        "secondsMedian": 0.056267334,
+        "firstMedian": 0.05618375,
+        "samples": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.053788125,
+            "processMaxRSSKiB": 806048,
+            "seconds": 0.053853541
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.05618375,
+            "processMaxRSSKiB": 806048,
+            "seconds": 0.056267334
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.059233209,
+            "processMaxRSSKiB": 806048,
+            "seconds": 0.059301709
+          }
+        ]
+      },
+      "raw-source/20": {
+        "secondsMedian": 0.361677791,
+        "firstMedian": 0.058778208,
+        "samples": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.057771,
+            "processMaxRSSKiB": 806048,
+            "seconds": 0.361677791
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.059824542,
+            "processMaxRSSKiB": 806048,
+            "seconds": 0.357746583
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.058778208,
+            "processMaxRSSKiB": 806048,
+            "seconds": 0.377460042
+          }
+        ]
+      }
+    },
+    "export-rc7": {
+      "jpeg-source/1": {
+        "secondsMedian": 0.08111575,
+        "firstMedian": 0.081071792,
+        "samples": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080935875,
+            "processMaxRSSKiB": 230208,
+            "seconds": 0.080978083
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.085911666,
+            "processMaxRSSKiB": 256448,
+            "seconds": 0.085959666
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.081071792,
+            "processMaxRSSKiB": 271408,
+            "seconds": 0.08111575
+          }
+        ]
+      },
+      "jpeg-source/20": {
+        "secondsMedian": 0.633792625,
+        "firstMedian": 0.114118292,
+        "samples": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.110483041,
+            "processMaxRSSKiB": 725648,
+            "seconds": 0.633792625
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.119369834,
+            "processMaxRSSKiB": 815680,
+            "seconds": 0.682775292
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.114118292,
+            "processMaxRSSKiB": 815680,
+            "seconds": 0.619297417
+          }
+        ]
+      },
+      "jpeg-source/200": {
+        "secondsMedian": 5.9755835,
+        "firstMedian": 0.130779958,
+        "samples": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.129686625,
+            "processMaxRSSKiB": 820000,
+            "seconds": 5.7226855
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.131109583,
+            "processMaxRSSKiB": 823760,
+            "seconds": 6.140463833
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.130779958,
+            "processMaxRSSKiB": 823760,
+            "seconds": 5.9755835
+          }
+        ]
+      },
+      "raw-source/1": {
+        "secondsMedian": 0.061561875,
+        "firstMedian": 0.061512166,
+        "samples": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.067068584,
+            "processMaxRSSKiB": 823760,
+            "seconds": 0.067118834
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.061512166,
+            "processMaxRSSKiB": 823760,
+            "seconds": 0.061561875
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.061459334,
+            "processMaxRSSKiB": 823760,
+            "seconds": 0.061506042
+          }
+        ]
+      },
+      "raw-source/20": {
+        "secondsMedian": 0.618174375,
+        "firstMedian": 0.093656541,
+        "samples": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.093656541,
+            "processMaxRSSKiB": 823760,
+            "seconds": 0.630921583
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.099262667,
+            "processMaxRSSKiB": 823760,
+            "seconds": 0.618174375
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.078240083,
+            "processMaxRSSKiB": 823760,
+            "seconds": 0.526948375
+          }
+        ]
+      }
+    },
+    "export-batch3": {
+      "jpeg-source/1": {
+        "secondsMedian": 0.160111042,
+        "firstMedian": 0.158472,
+        "samples": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.157956208,
+            "processMaxRSSKiB": 252624,
+            "seconds": 0.159444041
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.165112083,
+            "processMaxRSSKiB": 252624,
+            "seconds": 0.166739375
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.158472,
+            "processMaxRSSKiB": 265824,
+            "seconds": 0.160111042
+          }
+        ]
+      },
+      "jpeg-source/20": {
+        "secondsMedian": 1.282996292,
+        "firstMedian": 0.566491125,
+        "samples": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.603827042,
+            "processMaxRSSKiB": 710528,
+            "seconds": 1.286600584
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.566491125,
+            "processMaxRSSKiB": 765184,
+            "seconds": 1.250285875
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.540550292,
+            "processMaxRSSKiB": 765184,
+            "seconds": 1.282996292
+          }
+        ]
+      },
+      "jpeg-source/200": {
+        "secondsMedian": 12.317442125,
+        "firstMedian": 4.027256167,
+        "samples": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 4.5438905,
+            "processMaxRSSKiB": 850944,
+            "seconds": 12.317442125
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 4.027256167,
+            "processMaxRSSKiB": 850944,
+            "seconds": 12.278843125
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 3.890336125,
+            "processMaxRSSKiB": 850944,
+            "seconds": 12.351807334
+          }
+        ]
+      },
+      "raw-source/1": {
+        "secondsMedian": 0.132660209,
+        "firstMedian": 0.13093425,
+        "samples": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.126563208,
+            "processMaxRSSKiB": 850944,
+            "seconds": 0.128097041
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.13093425,
+            "processMaxRSSKiB": 850944,
+            "seconds": 0.132660209
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.132768167,
+            "processMaxRSSKiB": 850944,
+            "seconds": 0.134326625
+          }
+        ]
+      },
+      "raw-source/20": {
+        "secondsMedian": 1.248839666,
+        "firstMedian": 0.530310166,
+        "samples": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.533577042,
+            "processMaxRSSKiB": 850944,
+            "seconds": 1.226385542
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.530310166,
+            "processMaxRSSKiB": 850944,
+            "seconds": 1.248839666
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.492065625,
+            "processMaxRSSKiB": 850944,
+            "seconds": 1.266060041
+          }
+        ]
+      }
+    },
+    "export-main-rc5-session": {
+      "jpeg-source/1": {
+        "secondsMedian": 0.075994375,
+        "firstMedian": 0.075907208,
+        "samples": [
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080539833,
+            "processMaxRSSKiB": 229120,
+            "seconds": 0.080609333
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.075364458,
+            "processMaxRSSKiB": 254048,
+            "seconds": 0.07541975
+          },
+          {
+            "bytes": 277225,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.075907208,
+            "processMaxRSSKiB": 262736,
+            "seconds": 0.075994375
+          }
+        ]
+      },
+      "jpeg-source/20": {
+        "secondsMedian": 0.521562542,
+        "firstMedian": 0.080060208,
+        "samples": [
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.080060208,
+            "processMaxRSSKiB": 737920,
+            "seconds": 0.541194166
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.092564083,
+            "processMaxRSSKiB": 757456,
+            "seconds": 0.521562542
+          },
+          {
+            "bytes": 8151320,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.079145916,
+            "processMaxRSSKiB": 789440,
+            "seconds": 0.505274333
+          }
+        ]
+      },
+      "jpeg-source/200": {
+        "secondsMedian": 4.795249,
+        "firstMedian": 0.081928625,
+        "samples": [
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.081928625,
+            "processMaxRSSKiB": 811376,
+            "seconds": 4.7169195
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.081707375,
+            "processMaxRSSKiB": 811376,
+            "seconds": 4.795249
+          },
+          {
+            "bytes": 82971286,
+            "container": "files",
+            "count": 200,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.084184708,
+            "processMaxRSSKiB": 816432,
+            "seconds": 4.889084375
+          }
+        ]
+      },
+      "raw-source/1": {
+        "secondsMedian": 0.059226333,
+        "firstMedian": 0.059158875,
+        "samples": [
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.059158875,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.059226333
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.060616709,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.060694042
+          },
+          {
+            "bytes": 98124,
+            "container": "files",
+            "count": 1,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.053112792,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.053188583
+          }
+        ]
+      },
+      "raw-source/20": {
+        "secondsMedian": 0.361021083,
+        "firstMedian": 0.061162166,
+        "samples": [
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.061162166,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.360945416
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.062401333,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.361021083
+          },
+          {
+            "bytes": 1962480,
+            "container": "files",
+            "count": 20,
+            "dimensionsAndICC": [
+              [
+                2048,
+                1365,
+                true
+              ]
+            ],
+            "firstPhotoSeconds": 0.058017042,
+            "processMaxRSSKiB": 816432,
+            "seconds": 0.368673292
+          }
+        ]
+      }
+    }
+  },
+  "jpegFilesByteMatchedAcrossBuilds": 1936,
+  "machine": "Apple M4 Max, macOS 27.0.1",
+  "systemTrace": {
+    "traceWorktreePath": "output/035-development/export-batch3-syscalls/system-call.trace",
+    "matchedRelease": "candidate-batch3",
+    "jpeg200WallSeconds": 13.650176125,
+    "jpeg200FirstSeconds": 5.242649708,
+    "inferredWarm200WindowNs": [
+      18237389792,
+      31887565917
+    ],
+    "publicationCount": 484,
+    "first200CpuWeightMs": {
+      "stage_recipe": 771.0,
+      "raster": 170.0,
+      "all_other_application": 88.0,
+      "register_manifest": 36.0,
+      "export_other": 32.0,
+      "catalog_other": 24.0,
+      "path_protection": 21.0,
+      "output_encode": 15.0,
+      "prepare_item": 5.0,
+      "source_capture": 4.0,
+      "unknown": 4.0,
+      "publish_item": 3.0,
+      "ack_item": 1.0,
+      "catalog_schema": 1.0,
+      "source_recheck": 1.0
+    },
+    "warm200CpuWeightMs": {
+      "raster": 8167.0,
+      "all_other_application": 1312.0,
+      "catalog_other": 1083.0,
+      "output_encode": 991.0,
+      "path_protection": 932.0,
+      "stage_recipe": 771.0,
+      "publish_item": 387.0,
+      "prepare_item": 323.0,
+      "source_capture": 224.0,
+      "export_other": 174.0,
+      "ack_item": 167.0,
+      "source_recheck": 146.0,
+      "catalog_schema": 96.0,
+      "register_manifest": 36.0,
+      "unknown": 11.0,
+      "claim_item": 5.0
+    },
+    "selectedSyscallsAllFiveGroups": [
+      {
+        "stage": "publish_item",
+        "call": "linkat",
+        "count": 484,
+        "durationTotalMs": 583.398045,
+        "durationP50Ms": 0.2921665,
+        "durationP95Ms": 4.100916
+      },
+      {
+        "stage": "publish_item",
+        "call": "open",
+        "count": 1452,
+        "durationTotalMs": 56.663942,
+        "durationP50Ms": 0.018625,
+        "durationP95Ms": 0.043916
+      },
+      {
+        "stage": "stage_recipe",
+        "call": "fsync",
+        "count": 494,
+        "durationTotalMs": 30.263921,
+        "durationP50Ms": 0.04875,
+        "durationP95Ms": 0.090833
+      },
+      {
+        "stage": "stage_recipe",
+        "call": "open",
+        "count": 3467,
+        "durationTotalMs": 215.965998,
+        "durationP50Ms": 0.036125,
+        "durationP95Ms": 0.178958
+      },
+      {
+        "stage": "stage_recipe",
+        "call": "renameatx_np",
+        "count": 494,
+        "durationTotalMs": 96.23964,
+        "durationP50Ms": 0.161792,
+        "durationP95Ms": 0.371292
+      }
+    ]
+  }
+}

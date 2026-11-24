@@ -1,0 +1,757 @@
+{
+  "schema": "035-mask-tone-rounding-v1",
+  "sourceRoles": [
+    {
+      "role": "primary",
+      "shape": [
+        9504,
+        6336
+      ],
+      "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+      "archiveSHA256": "70099dbd7dbb826e4a108058307828e59c05d3a9a1d71d57e557916774962676",
+      "sealedReport": {
+        "path": "output/035-development/phase-z/radial-port/public-surfaces/primary.json",
+        "sha256": "75d8252defd225270b753b7bde71e3b7f0fa0608164a369b55455cddbe83ac0b"
+      },
+      "candidateReport": {
+        "path": "output/035-development/phase-aa/black-white/whole-bw-fma-01/primary.json",
+        "sha256": "725f70f0286254f01e5bd726a613a77340e4433e1fc4e95046d17964ec7ddd12"
+      },
+      "candidateCommand": {
+        "path": "output/035-development/phase-aa/black-white/whole-bw-fma-01/primary.cmd.json",
+        "sha256": "1145852dbcb4dcf09252a6a9353f219f44aae073858a91f15aa756ffb043a129"
+      }
+    },
+    {
+      "role": "secondary",
+      "shape": [
+        8640,
+        5760
+      ],
+      "rawSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+      "archiveSHA256": "31c7a13d4ff076a4b2168321e04804f945bec3bcce8fd753d8640c6a8f4d2d4f",
+      "sealedReport": {
+        "path": "output/035-development/phase-z/radial-port/public-surfaces/secondary.json",
+        "sha256": "ac3a1d66391e88b25ad7a1a66200d45c6c8050383c1c7bcddf42b9067db2a2fd"
+      },
+      "candidateReport": {
+        "path": "output/035-development/phase-aa/black-white/whole-bw-fma-01/secondary.json",
+        "sha256": "73cb3141c9bd6456d6c25f733b9d098d36cf62c703c7e075eb98e68a496ebcec"
+      },
+      "candidateCommand": {
+        "path": "output/035-development/phase-aa/black-white/whole-bw-fma-01/secondary.cmd.json",
+        "sha256": "9b9fc568e4bbe8cd63c01f13dae50434fffd8809683c869937f2ba4cef389b23"
+      }
+    }
+  ],
+  "checkedStates": [
+    {
+      "role": "primary",
+      "control": "blacks",
+      "state": 0,
+      "amount": -0.15,
+      "checks": {
+        "nativePixels": 60217344,
+        "halfPixels": 15054336,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        8096323,
+        2046445,
+        6
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682"
+    },
+    {
+      "role": "primary",
+      "control": "blacks",
+      "state": 1,
+      "amount": -0.55,
+      "checks": {
+        "nativePixels": 60217344,
+        "halfPixels": 15054336,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        8835202,
+        2215437,
+        2
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173"
+    },
+    {
+      "role": "primary",
+      "control": "whites",
+      "state": 0,
+      "amount": 0.15,
+      "checks": {
+        "nativePixels": 60217344,
+        "halfPixels": 15054336,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc"
+    },
+    {
+      "role": "primary",
+      "control": "whites",
+      "state": 1,
+      "amount": 0.55,
+      "checks": {
+        "nativePixels": 60217344,
+        "halfPixels": 15054336,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff"
+    },
+    {
+      "role": "secondary",
+      "control": "blacks",
+      "state": 0,
+      "amount": -0.15,
+      "checks": {
+        "nativePixels": 49766400,
+        "halfPixels": 12441600,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        521211,
+        153150,
+        0
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a"
+    },
+    {
+      "role": "secondary",
+      "control": "blacks",
+      "state": 1,
+      "amount": -0.55,
+      "checks": {
+        "nativePixels": 49766400,
+        "halfPixels": 12441600,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        8727260,
+        2166451,
+        2
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6"
+    },
+    {
+      "role": "secondary",
+      "control": "whites",
+      "state": 0,
+      "amount": 0.15,
+      "checks": {
+        "nativePixels": 49766400,
+        "halfPixels": 12441600,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        1,
+        1,
+        0
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086"
+    },
+    {
+      "role": "secondary",
+      "control": "whites",
+      "state": 1,
+      "amount": 0.55,
+      "checks": {
+        "nativePixels": 49766400,
+        "halfPixels": 12441600,
+        "sRGBPixels": 3840000
+      },
+      "sealedDifferentPixelsNativeHalfSRGB": [
+        1,
+        1,
+        0
+      ],
+      "candidateDifferentPixelsNativeHalfSRGB": [
+        0,
+        0,
+        0
+      ],
+      "stockSRGBSHA256": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d"
+    }
+  ],
+  "host": "Apple M4 Max; normal B28 macOS 27.0.1 FlashRaw 0.3.1 native upload and verified captures; original core-image extended-linear-sRGB RGBAf, frozen R32 coverage and full final 2400x1600 sRGB8 route.",
+  "runtimeSHA256": {
+    "B28Sealed": "5f626f97068ecbc48c01936a10fa268534bcde279613f8e499d24523350babda",
+    "isolatedCandidate": "ed9b487f430d9ca90eaf65252c5e626c33bb8aa004acf408cb363309b2f0fb92"
+  },
+  "transport": "Public C ABI for an immutable RGBA32F input and named R32F mask; 25/23 native 256-row bands per state, held until the joined frame returns. Actual stock full-frame SHA is read independently at each case. Diffs compare all four native and all four half float components by bits, all four display bytes per pixel.",
+  "modelLimit": "Single-precision software order of products is a diagnostic witness. Apple private compiler IR/instruction ordering has not been observed. The independently compiled public IOSurface and buffered tests establish the actual output.",
+  "change": "Explicit fma(-black_scale, mask, input) and fma(-black_scale, mask, 1) and separately rounded fma(.35, whites, 0) before the existing white luminance and coverage chain. No new parameters, F32 format, recipe serialization or ABI.",
+  "realPixelRegression": [
+    {
+      "sample": {
+        "path": "output/035-development/phase-z/radial-port/public-surfaces/primary.light-mask-blacks-0.bin",
+        "sha256": "ee95ca0a688b9501fe24378d001360d9a6a58df680d2f4c292f9874ee3540540"
+      },
+      "record": 2715,
+      "nativeXY": [
+        3927,
+        1326
+      ],
+      "coverage": "3defa428",
+      "sourceRGBA": [
+        "3c46c000",
+        "3c028000",
+        "3b87e000",
+        "3f800000"
+      ],
+      "coreImageRGBA": [
+        "3c54f10d",
+        "3c10c05f",
+        "3ba47cd2",
+        "3f800000"
+      ],
+      "batch28IOSurfaceRGBA": [
+        "3c54f10d",
+        "3c10c05f",
+        "3ba47cd3",
+        "3f800000"
+      ]
+    },
+    {
+      "sample": {
+        "path": "output/035-development/phase-aa/black-white/white-source-01/secondary.light-mask-whites-0.misses.bin",
+        "sha256": "64dbbb0cd977c0945181bd9a473efbbb19033192f51a799c54fb6ef60ab3f874"
+      },
+      "record": 0,
+      "nativeXY": [
+        6388,
+        4140
+      ],
+      "coverage": "3f7ff90b",
+      "sourceRGBA": [
+        "3f1f4000",
+        "3f216000",
+        "3f2ac000",
+        "3f800000"
+      ],
+      "coreImageRGBA": [
+        "3f256da3",
+        "3f27a2be",
+        "3f315fdb",
+        "3f800000"
+      ],
+      "batch28IOSurfaceRGBA": [
+        "3f256da2",
+        "3f27a2bd",
+        "3f315fd9",
+        "3f800000"
+      ]
+    },
+    {
+      "sample": {
+        "path": "output/035-development/phase-aa/black-white/white-source-01/secondary.light-mask-whites-1.misses.bin",
+        "sha256": "0d6505cc3bdd35d340372520579d0399b3b86aa1b166a0f0a534fff1b36e7153"
+      },
+      "record": 0,
+      "nativeXY": [
+        5766,
+        4397
+      ],
+      "coverage": "3e426542",
+      "sourceRGBA": [
+        "3f1ca000",
+        "3f228000",
+        "3f2ae000",
+        "3f800000"
+      ],
+      "coreImageRGBA": [
+        "3f20dcf2",
+        "3f26e5a5",
+        "3f2f7fa8",
+        "3f800000"
+      ],
+      "batch28IOSurfaceRGBA": [
+        "3f20dcf4",
+        "3f26e5a6",
+        "3f2f7fa9",
+        "3f800000"
+      ]
+    }
+  ],
+  "publicRegressionSource": {
+    "path": "Modules/ImageEdit/tests/metal_surface/c_abi.m",
+    "sha256": "2c1beedb329a8b13d17b522de4f1882eb7f549ecc31cd140142751f5d65eba8b"
+  },
+  "sourceClassification": {
+    "path": "output/035-development/phase-aa/black-white/cpu-rounding-model.json",
+    "sha256": "9db7c8f90f64c37f1146ef786b6fa185bf5d747167016db994bbee8c6c3ac267"
+  },
+  "blackProbeBaseline": {
+    "path": "output/035-development/phase-aa/black-white/screening/sealed.json",
+    "sha256": "115b5ffe001fa0b2c1a2e49ffc229bc15220a725adf46f6ba0a0f086813d61be"
+  },
+  "blackProbeFMA": {
+    "path": "output/035-development/phase-aa/black-white/screening/fma.json",
+    "sha256": "795c78d71dddb2d50cc657461a6cea660d1e7d6f2d89f1dd907a364ff0141516"
+  },
+  "whiteOrderTrials": {
+    "sealed": {
+      "path": "output/035-development/phase-aa/black-white/white-spots-01/sealed.json",
+      "sha256": "1868eea32fc9bb39796a10edd37bbe2dba11a20ccef98382107b0ba9e9a3528c"
+    },
+    "fma": {
+      "path": "output/035-development/phase-aa/black-white/white-spots-01/fma.json",
+      "sha256": "1d0e4bb2687db2578e9770f50af59987ff843df88506ef0b6b725d93fe5d4993"
+    },
+    "whiteAcross": {
+      "path": "output/035-development/phase-aa/black-white/white-spots-01/whiteAcross.json",
+      "sha256": "6b1f761a3b919a19e3ade1a8dc0547236194d20f28c8b0f252571b6bffd737ff"
+    },
+    "whiteWithin": {
+      "path": "output/035-development/phase-aa/black-white/white-spots-01/whiteWithin.json",
+      "sha256": "c1f62b874edbee460af8b182fdeb1bb89c2cd6acf96c2d7a21c2c7e3b167a0da"
+    },
+    "whitePreparedPlain": {
+      "path": "output/035-development/phase-aa/black-white/white-spots-01/whitePreparedPlain.json",
+      "sha256": "4e4920f2907bb7512a424e46597e21b15cbb2c278c00bc120d2f7a709d52b2bc"
+    }
+  },
+  "whiteRoundedScale": {
+    "path": "output/035-development/phase-aa/black-white/white-spots-02/whiteFmaUnit.json",
+    "sha256": "1420efbcb5557eb58eabd70bf7c19707df17bbfeb2c9c122bafe13e37e5cf304"
+  },
+  "publicRegressionReceipt": {
+    "path": "output/035-development/phase-aa/black-white/checked-abi/c_abi.json",
+    "sha256": "56acf2600b3d0a3448cdcb9e414bc0f0321ae8241a0514b10ff4d878afc087d4"
+  },
+  "commands": [
+    "Modules/ImageEdit/tests/metal_surface/check.sh output/035-development/metal-rounding-replay",
+    "Run the full RAW witness from evidence/portable-local-mask-tone-sources.tar.gz using frozen coverage, Z3_PRODUCT_C_ABI=1 and the sealed runtime under test. Select light-mask-blacks,light-mask-whites for both RAWs."
+  ],
+  "synthetic": {
+    "CIKernelSourceSHA256": "262a0e83141c7f3b2d7a9e82868ca82eed717065b012f17e1b80eabb8748df4e",
+    "counts": [
+      {
+        "amount": -2,
+        "control": "blacks",
+        "pixels": 2048,
+        "referenceMax": 32,
+        "referenceMin": -16,
+        "sample": "hdr-blacks-0",
+        "samplesSHA": "dbda919086ea862375f1e8b27a235ff3241220bb0e28894790ba372c36707a4b",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 24,
+            "differentComponents": 35,
+            "maxAbsolute": 4.76837158203e-07,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8157,
+            "alpha": 0,
+            "firstXY": [
+              92,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": -1,
+        "control": "blacks",
+        "pixels": 2048,
+        "referenceMax": 32,
+        "referenceMin": -16,
+        "sample": "hdr-blacks-1",
+        "samplesSHA": "39c55030c1e5030f878b384bcdd3f4db89600c9ff0e6ccfb735449d97b623ce0",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 17,
+            "differentComponents": 20,
+            "maxAbsolute": 3.81469726562e-06,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8172,
+            "alpha": 0,
+            "firstXY": [
+              212,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": 1,
+        "control": "blacks",
+        "pixels": 2048,
+        "referenceMax": 33.6315803527832,
+        "referenceMin": -16.894739151000977,
+        "sample": "hdr-blacks-3",
+        "samplesSHA": "6f71e42de6a394ec2e1b75bbf2b795128b43891849ee0718d058a6d6fc5cb4e4",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 18,
+            "differentComponents": 22,
+            "maxAbsolute": 1.90734863281e-06,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8170,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": 2,
+        "control": "blacks",
+        "pixels": 2048,
+        "referenceMax": 35.4444465637207,
+        "referenceMin": -17.888891220092773,
+        "sample": "hdr-blacks-4",
+        "samplesSHA": "debfcab494e1d28e4173e377829d4bb744d8501fe8fca74a71d72e86ead91760",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 26,
+            "differentComponents": 36,
+            "maxAbsolute": 1.90734863281e-06,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8156,
+            "alpha": 0,
+            "firstXY": [
+              43,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": -1,
+        "control": "whites",
+        "pixels": 2048,
+        "referenceMax": 32,
+        "referenceMin": -16,
+        "sample": "hdr-whites-0",
+        "samplesSHA": "7fef6b307426c2d16293fcfcea2b2a435327a1e64b0dd8ba8ac72679fb59003d",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": -0.55,
+        "control": "whites",
+        "pixels": 2048,
+        "referenceMax": 32,
+        "referenceMin": -16,
+        "sample": "hdr-whites-1",
+        "samplesSHA": "21d39739c1e8c66b4c8991a43b5ca384e1197932cd90448777c547422c7b5001",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 14,
+            "differentComponents": 32,
+            "maxAbsolute": 1.90734863281e-06,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8160,
+            "alpha": 0,
+            "firstXY": [
+              228,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": 0.55,
+        "control": "whites",
+        "pixels": 2048,
+        "referenceMax": 38.15999984741211,
+        "referenceMin": -19.080001831054688,
+        "sample": "hdr-whites-3",
+        "samplesSHA": "f7030705a997aa64c2db7dedfb0cd712e6f64c1088021ba92f3745fdeb96a77e",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 10,
+            "differentComponents": 24,
+            "maxAbsolute": 3.81469726562e-06,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8168,
+            "alpha": 0,
+            "firstXY": [
+              168,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      },
+      {
+        "amount": 1,
+        "control": "whites",
+        "pixels": 2048,
+        "referenceMax": 43.20000076293945,
+        "referenceMin": -21.600000381469727,
+        "sample": "hdr-whites-4",
+        "samplesSHA": "dd4c1b8246085c3a67881035e8253eb7653427e364c167431c8f9b65b782fd84",
+        "results": {
+          "old": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          },
+          "candidate": {
+            "pixels": 2048,
+            "differentPixels": 0,
+            "differentComponents": 0,
+            "maxAbsolute": 0,
+            "archiveDifferentComponents": 0,
+            "componentsAgreeWithSealedSurface": 8192,
+            "alpha": 0,
+            "firstXY": [
+              0,
+              0
+            ]
+          }
+        }
+      }
+    ],
+    "device": "Apple M4 Max",
+    "referenceWrapper": "extern \"C\" { namespace coreimage {\n  [[stitchable]] float4 aaFrozenBlackWhite(sampler photo,sampler coverage,float4 adjustment,float4 tone,float4 color,float4 colorize) {\n    float4 px=photo.sample(photo.coord());\n    return rmMaskTone(px,coverage.sample(coverage.coord()).r,adjustment,tone,color,colorize);\n  }\n}}"
+  },
+  "combinedRelease": {
+    "runtime": {
+      "path": "output/035-development/candidate-batch29-cross-backend/RAWMasterImagingTests.xctest/Contents/Resources/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime",
+      "sha256": "8bc1206d1d2c92bc9491ea4c059fb31d2a88972fbb10efac988e75c399ad451a"
+    },
+    "publicIOSurface": [
+      {
+        "role": "primary",
+        "source": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+        "verifiedNativeHalfDisplayStates": 16,
+        "receipt": {
+          "path": "output/035-development/candidate-batch29-cross-backend/native-radial/primary.json",
+          "sha256": "5b024f0f38978c27b4c6b66603f9d1d282354e9281dd65ef594c79d06fe08536"
+        },
+        "stockDisplayMatches": {
+          "color-mask-hue-0": "e613eedb08a1bc704e545a76ae453e0e8cc4da60e63728bc6ed87809e243b064",
+          "color-mask-hue-1": "52b8db90a6326e08cbf27d143d05c4cc2801f51b3331b8a2f6ccd9c36185bd31",
+          "color-mask-saturation-0": "540809a85d53fe01a8603bdb54d7d6a327cb7ecb45d5cf9f50f91bba28742c45",
+          "color-mask-saturation-1": "0a78322ab0af55b8bf03adf68d21a0e2014652d9aa07fbf524f554642493b102",
+          "light-mask-blacks-0": "d4db7930ac4c876b145d33c1a2c62160c5a11a49aacc7cf6482e38df9cdce682",
+          "light-mask-blacks-1": "3dbe15e4f3f29ba36166353d9f033c4a665a521bcc60f0cce5f62d0f31630173",
+          "light-mask-contrast-0": "c5db1341e1fb580050e00f0718f45d6d94a4c9eac1ceefea2e97f6d28adc723c",
+          "light-mask-contrast-1": "34585d8cffddc8944f3b060a269f2de59e1b0d7d9fa735a7dc5a21d9194159f4",
+          "light-mask-exposure-0": "bbdb0a29e7f9f3e037d532b6776e50ec242aa240ba68eb9d8575bf702f1a7258",
+          "light-mask-exposure-1": "8df54ff659da3b54a18dbf6a8466576f0976976b84eaa2048618d242a88cd746",
+          "light-mask-highlights-0": "c929cf1f24f93af0da7622998d003991cd94eef7328fae62f47bf993b35443d0",
+          "light-mask-highlights-1": "afcc6df9d93b97ab14ed495c5f36e432f1b90f368cd5785a9c9c9c8e07e8e818",
+          "light-mask-shadows-0": "d3e78a7f29864bb5192c2f6a4d30fb3d8d97802e85fc433bc4c371305cb8b6dc",
+          "light-mask-shadows-1": "624b1d69dff57d3f9e2876a28733c7795d72f48e511c58a31814a221f1300d21",
+          "light-mask-whites-0": "ac9f6d01a0c409b7fb666d7a78a71f773e73a5751039bca6abcea0dd2ff29cbc",
+          "light-mask-whites-1": "4a04495afe35045581d3dc7b5c8bf7171628fbfe9629d380e63fc9dbd14ba9ff"
+        }
+      },
+      {
+        "role": "secondary",
+        "source": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+        "verifiedNativeHalfDisplayStates": 16,
+        "receipt": {
+          "path": "output/035-development/candidate-batch29-cross-backend/native-radial/secondary.json",
+          "sha256": "90dcde4725f16ee10d514040366d5d549fa1299d5a7212bff75ebb0a024582fd"
+        },
+        "stockDisplayMatches": {
+          "color-mask-hue-0": "230ffc6094163e3ac6b684fd7cf2b4c8c3c4fed40890da11646b2394027a3a96",
+          "color-mask-hue-1": "9047db1b150dcfdb8b636f5033bc227bd4e531641e27dd0ae6db31a2c9c76a50",
+          "color-mask-saturation-0": "15761dec977eff3099d641f36f9311f62641e99676a309d9f2b1e0fdd393bbae",
+          "color-mask-saturation-1": "ba325fc797936a88d5dd982f38066ba097225d8fbf4472a60d6b89effeb12435",
+          "light-mask-blacks-0": "3e2dff980392911ffcb2399b1ec36e65b70a1c37ae42c362ef0ec4384f38a12a",
+          "light-mask-blacks-1": "75e9b6b2ddd8afeaa2a08b07d89a619b8f91965084099fc8b7e1147f4864c1d6",
+          "light-mask-contrast-0": "38624c8f773006744a32f81a39aa5846acb4ae95e0ad59e17a9353eb6e58756c",
+          "light-mask-contrast-1": "b5f155adb302d32ab3ac6c75f428f5456ecb405c422ba09f631ae906fdc02009",
+          "light-mask-exposure-0": "8324bb3fed43eb0324606d97a74da76d6deb9fb4c7b39d2eace92376d09bb88c",
+          "light-mask-exposure-1": "d1a63280a251c86f4b60d1335f668ef7b0a359fdd78a8243a4860658eecce442",
+          "light-mask-highlights-0": "3cee14600cf6d1d8d785612eb888a3305bb720b86a02cbe36d40c4f8e3769e45",
+          "light-mask-highlights-1": "26c04eb42e78b00517abd95045a51d210a557b1db92a212dd0a115b9b0c6769d",
+          "light-mask-shadows-0": "c6055d99e0850c2c48017b712cc6c2fbbe6b657c19e3fb6386216b120ba1dbb9",
+          "light-mask-shadows-1": "e1416e1bcb854f21b61df8f198a4ca661f1b2ea65539ff84ea2e5943d5db93ef",
+          "light-mask-whites-0": "5019059d7db62d5e9ce0a94db78d7f55430dbd671a0250ad55f709e288de9086",
+          "light-mask-whites-1": "8af87b1917ce892b0c18587547aed68728484e6fbfdb0edb500aedc4c24f883d"
+        }
+      }
+    ],
+    "macBuffered": {
+      "cases": 32,
+      "originalHashMatches": 32,
+      "pixels": 393216,
+      "differentNativeComponents": 0,
+      "receipt": {
+        "path": "output/035-development/phase-aa/black-white/sealed-buffer-01/summary.json",
+        "sha256": "d9c3d9230399dc6e0be03908c1ef16b80fe5ef575a95c1c5787cdbc4eda1e3b5"
+      }
+    },
+    "publicNamedABIRegression": {
+      "actualKnownRoundingCases": 3,
+      "receipt": {
+        "path": "output/035-development/candidate-batch29-cross-backend/metal-c-abi/c_abi.json",
+        "sha256": "56acf2600b3d0a3448cdcb9e414bc0f0321ae8241a0514b10ff4d878afc087d4"
+      }
+    }
+  }
+}

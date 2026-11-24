@@ -1,0 +1,271 @@
+{
+  "experiment": "Linux owner-created catalog WAL/SHM bootstrapping on the v10 workbench",
+  "recordedLocalDate": "2026-11-23",
+  "productionIntegration": false,
+  "sourceTreeBase": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "replay": "experiments/portable-processing/catalog/transaction-filestat-probe/bootstrap/README.md",
+  "platform": {
+    "runtime": "Linux-7.2.12-orbstack-00394-gbecdd6130068-aarch64-with-glibc2.36",
+    "dockerImage": "rust@sha256:ade39a710ef85f3506cffcfec3e8a24ba090badef1dff2fb798f71d878833fea",
+    "cpuQuota": 1,
+    "cargoJobs": 1,
+    "profile": "debug --locked --offline",
+    "catalogSchema": 10,
+    "existingRequestABI": "rm_library_request_v1",
+    "existingBorrowedMigrationABI": "rm_library_transaction_v1",
+    "sqliteSourceID": "2026-06-03 19:12:13 d6e03d8c777cfa2d35e3b60d8ec3e0187f3e9f99d8e2ee9cac695fd6fcdf1a24",
+    "rusqlite": "0.40.1",
+    "libsqlite3-sys": "0.38.2",
+    "upstreamAmalgamationSHA256": "0a409f1633283fa31a9126b11fbfd64a1991c5d30defad07e5745d4667f5e23d",
+    "experimentAmalgamationSHA256": "78f628b0b056251fa9765a51e7223c93b02bd64911f207c94f5c8e3885b7435e",
+    "upstreamOptIn": "SQLITE_ENABLE_FILESTAT",
+    "experimentChange": "Thread-local descriptor handoff in copied Unix sqlite3.c, named natural SHM VFS, proof in the existing Queue transaction; generated v10 catalogs on container-native /tmp.",
+    "stressOrTimingMeasurement": false
+  },
+  "binaries": {
+    "runtimeSHA256": "881269d97cfb32bafb7560b333922837c5eb36e34b9b7ead075c911d34a645f5",
+    "keeperSHA256": "4690a059cba95eccd1eace764c67349ffb92714aa451795021851e9ff297c00e"
+  },
+  "receipts": {
+    "smoke.json": {
+      "path": "output/035-development/vcat-owner/smoke.json",
+      "SHA256": "6c889dc31576e76dcdb659e2f5763147ef7e1907e4c73f24ed7408fcce7c89e4",
+      "scenarios": 1
+    },
+    "lifecycle.json": {
+      "path": "output/035-development/vcat-owner/lifecycle.json",
+      "SHA256": "ba159e80e798868866b5425df7afca33c52b45287ef83cf202e1f210f67b8b60",
+      "scenarios": 10
+    },
+    "strengthened.json": {
+      "path": "output/035-development/vcat-owner/strengthened.json",
+      "SHA256": "0eee809040a6c3523448776733dde1728fb7f770394d39df74eb55321e4be560",
+      "scenarios": 14
+    },
+    "archive.json": {
+      "path": "output/035-development/vcat-owner/archive.json",
+      "SHA256": "e4092b55a9c751f5470e656325f557b627f3e1b1edd3ae058682d484c2b2c184",
+      "scenarios": 15
+    }
+  },
+  "runs": "Four progressively strengthened fixture runs on the same recorded debug library. Final archive used the tracked Python driver and that sealed native build; its earlier archive's C/Rust inputs match the native inputs byte for byte. No instrumented app build or native timing in this study.",
+  "sourceSHA256": {
+    "README.md": "e087e43f151d3619bfe35c3492e18fd11fd36e144b8eeac3eaddb0e1e3a4e7cb",
+    "broker.py": "17224bb520294f3e17fe3edc9b51bb433d84a5d4c7715c7c59e866c815274221",
+    "build.py": "af0e5b994f935196a62175e72b3685bb6c2cce3a942147278d3fff9411ed6b9b",
+    "child.py": "67eb4ca2b0083ab3637d56249a314fd64b6eaf8397af9859935d265fd286c886",
+    "owner-keeper.rs": "acf4c2bea1e3a3c070302553dc94ec0d7dc6841aa17e008686a698d56afe626c",
+    "owner_io.inc": "1f0b149c174e300d754576cd5c0d2457585960f4683e9dfd29d3e09ca98267c6",
+    "owner_loss.py": "acd8dfd7c9c441b9b8fe2a6b3cea4ba1cb1c52d3953aacabd694bcce7b77f1b5",
+    "protocol-check.py": "9c5a9acd71094dd5ed29040d76eedc0f561c97fb3734e7599129a9df56766dd4",
+    "run.py": "fb3b0b27d206e5b6b2e29ecf58347da9b56b26f8212a68763ffe23f47e5d250c"
+  },
+  "archiveFacts": {
+    "scenariosPassed": 15,
+    "successfulCAbiDeliveryAndDuplicateACK": 14,
+    "withheldAfterActualSupervisorAndKeeperExit": 1,
+    "knownKeeperActivationsRecordedInDeliveryCases": 18,
+    "allRecordedActivations": {
+      "txnState": "SQLITE_TXN_WRITE (2)",
+      "walBytes": 0,
+      "naturalSHMMappingBytes": 32768,
+      "fileStatReadMask": 8,
+      "fileStatExclusiveMask": 1,
+      "sameOpenFileDescriptionForEachOf": [
+        "main",
+        "wal",
+        "shm"
+      ],
+      "sameInodeIndependentOpenMatched": false,
+      "independentNativeLocksOnKeeperPID": [
+        {
+          "offset": 1073741826,
+          "type": "read",
+          "keeperPIDMatched": true
+        },
+        {
+          "offset": 120,
+          "type": "write",
+          "keeperPIDMatched": true
+        },
+        {
+          "offset": 123,
+          "type": "read",
+          "keeperPIDMatched": true
+        }
+      ]
+    },
+    "deliveryCasesOnly": {
+      "CAbiCalls": 86,
+      "ownerApprovalsAtExistingTransactionCheckpoints": 199,
+      "checkpointEvents": {
+        "read": 71,
+        "write": 71,
+        "prepare": 14,
+        "link": 14,
+        "ack": 28,
+        "rename": 1
+      },
+      "checkpointEventsWithEmptyRealWAL": 85,
+      "deliveredBytesEach": 47835,
+      "deliveredSHA256Each": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f",
+      "receiptReservedNamesAfterACK": 0,
+      "quickCheck": "ok",
+      "foreignKeyViolations": 0
+    }
+  },
+  "cases": [
+    {
+      "scenario": "ordinary-link",
+      "observed": "Genuine previously absent attachments, one original link publication and duplicate ACK.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "ordinary-rename",
+      "observed": "Existing hard-link failure fixture exercises the actual exclusive rename fallback and duplicate ACK.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "preexisting-empty-WAL",
+      "observed": "Existing empty WAL at cold open remained untouched; retry after fixture owner removal.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [
+        17
+      ],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "preexisting-empty-SHM",
+      "observed": "Existing empty SHM at cold open remained untouched before either attachment was issued.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [
+        17
+      ],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "between-exclusive",
+      "observed": "Another fixture entry appeared after own WAL creation; SHM exclusive grant refused, first WAL remained independently held.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [
+        1,
+        17
+      ],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "partial-owner-retry",
+      "observed": "Injected SHM-open I/O failure left only own WAL, reused by the same owner.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [
+        5
+      ],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "different-durable-writer",
+      "observed": "All three physical descriptors were proven; divergent expected writer denied activation before publication. The fixture explicitly restores the valid expectation.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "graceful-recreation",
+      "observed": "Drained old workers/keeper and checkpointed, retired attachments in exclusive namespace, created two new inodes, resumed same prepared ticket.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 2,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "live-name-mismatch",
+      "observed": "Existing keeper retained its real SHM mapping. A different current SHM entry made the next queue command fail without publication.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [
+        116
+      ],
+      "CAbiRejections": 1
+    },
+    {
+      "scenario": "revoke-before-effect",
+      "observed": "Revoked immediately before the first exclusive file operation, preserving vacant final and original stage/receipt.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 2,
+      "observedDeniedErrnos": [
+        125
+      ],
+      "CAbiRejections": 1
+    },
+    {
+      "scenario": "foreign-entry-during-unwind",
+      "observed": "Kept an existing foreign SHM through native close and administrative retirement rejection; no WAL removed as collateral.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 2,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "real-channel-loss-after-WAL",
+      "observed": "Real IPC shutdown after first real WAL fd, before issuing SHM; same owner reused its held WAL.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "private-protocol-order",
+      "observed": "Wrong nonce, SHM-first, extra/missing SCM_RIGHTS and existing rollback journal all rejected with no foreign deletion.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 1,
+      "observedDeniedErrnos": [
+        17
+      ],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "socket-EOF-while-keeper-alive",
+      "observed": "Socket EOF alone could not retire. The original keeper pidfd was still unsignaled, both witnesses retained. Waiting for the exact child to exit allowed a new epoch.",
+      "deliveredWithDuplicateACK": true,
+      "activationsRecorded": 2,
+      "observedDeniedErrnos": [],
+      "CAbiRejections": 0
+    },
+    {
+      "scenario": "owner-exit-unwitnessed-restart",
+      "observed": "Original supervisor actually exited and its live keeper pidfd became signaled. New supervisor received only original main+directory. It refused unknown sidecars and an independent checked copy preserved the prepared ticket and its reservation.",
+      "deliveredWithDuplicateACK": false,
+      "observedDeniedErrnos": [
+        17
+      ],
+      "preservedCheckpointedTicketAndOneReservation": true,
+      "oldKeeperTerminated": true,
+      "heldDirectoryAndMain": true,
+      "foreignBytesAndInodesAfterAttemptUnchanged": true,
+      "sourceStageSHA256": "0972071801e5a6d7229a107b0e7aab40ff7724fa811c5d8a4c275e932b50616f"
+    }
+  ],
+  "limitations": [
+    "Single supervisor is the exclusive namespace manager for a generated local directory with mode 0700. Conditional removal by inode in an arbitrarily mutable directory is unsupported.",
+    "Pending bootstrap may create its own sidecars before detecting a mismatched catalog writer inside the live SQLite transaction. Export side effects require activation.",
+    "A private fixture uses an inherited socket/nonce and environment to configure the worker; release must bind capability inside the trusted executor, pin its SQLite backend and define supervisor restart/drain policy.",
+    "Process-death fixture explicitly checkpointed the catalog and retained a zero-byte WAL before exiting. Recovery of committed but uncheckpointed frames without the original live witness is not established.",
+    "Limited to actual Linux AArch64 FILESTAT/Procfs and kernel primitives in this runtime. Apple SQLite, security-scoped bookmarks, external volumes, hot rollback, power loss and end-to-end throughput were not measured."
+  ],
+  "references": [
+    "https://github.com/torvalds/linux/blob/v6.11/fs/fcntl.c#L311-L324",
+    "https://man7.org/linux/man-pages/man7/unix.7.html",
+    "https://www.sqlite.org/c3ref/c_fcntl_begin_atomic_write.html"
+  ]
+}

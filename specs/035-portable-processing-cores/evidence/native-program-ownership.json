@@ -1,0 +1,1663 @@
+{
+  "formalDefaultRun": {
+    "adaptiveRealRAWReplays": 4,
+    "baselineReport": {
+      "path": "output/035-development/candidate-batch22-dehaze-guarded-erosion-formal/photo-operators-v2.json",
+      "sha256": "8a6e297f63479632f87b13358b8211849b8e4a7684ded86cb479b4007159ecdc"
+    },
+    "cameraRawAcceptance": {
+      "path": "output/035-development/candidate-batch23-preview-ownership/camera-raw-acceptance.json",
+      "sha256": "61f49fe3f253f906f9768f400f45e52bb91ea520bcdc978c5d7a644118b0216b"
+    },
+    "cameraRawAcceptanceWithLiveFLUX": {
+      "path": "output/035-development/candidate-batch23-preview-ownership/camera-raw-acceptance-with-flux.json",
+      "sha256": "26df524ae2eba9f59ff79ae3dcb9c31c2cd759711798e3b0cec1bde74ac4e9ad"
+    },
+    "cameraRawMeasuredIDs": 158,
+    "comparison": {
+      "path": "output/035-development/candidate-batch23-preview-ownership-formal/lightflow-comparison.json",
+      "sha256": "4b34121edf44e6843e78ddefe8d1664847f851a8fbb38b9d5d95b28fedd51bf4"
+    },
+    "displayReadbackPairs": 814,
+    "failedStages": [
+      "image-pipeline",
+      "interactive-comparison",
+      "control-comparison",
+      "display-readback-comparison",
+      "lightflow-comparison",
+      "inspection-comparison",
+      "photo-denoise-comparison"
+    ],
+    "failureDetails": [
+      {
+        "failures": [
+          "detail-nr-color-detail: medianMs 8.12 > 7.78 ms",
+          "blur-boost: medianMs 11.78 > 11.43 ms",
+          "blur-visualize-depth: medianMs 10.59 > 10.49 ms",
+          "blur-refine-focus: p95Ms 21.11 > 19.35 ms",
+          "blur-refine-amount: medianMs 16.64 > 16.49 ms",
+          "blur-brush-size: medianMs 16.94 > 16.43 ms",
+          "grading-lut-stack: medianMs 6.64 > 6.60 ms",
+          "grading-lut-stack: p95Ms 10.61 > 8.16 ms"
+        ],
+        "report": "control-comparison.json",
+        "stage": "control-comparison"
+      },
+      {
+        "failures": [
+          "repeated/color-saturation exceeds its baseline latency limits"
+        ],
+        "report": "display-readback-comparison.json",
+        "stage": "display-readback-comparison"
+      },
+      {
+        "failures": [
+          "grading-lut-import p95Ms: 14.51 > 9.34 ms",
+          "light-auto medianMs: 8.25 > 6.18 ms",
+          "light-auto p95Ms: 8.98 > 8.88 ms",
+          "light-auto-single p95Ms: 10.08 > 7.64 ms",
+          "color-wb-picker medianMs: 74.20 > 72.63 ms",
+          "color-wb-picker p95Ms: 82.15 > 81.75 ms",
+          "optics-defringe-picker medianMs: 7.83 > 6.46 ms",
+          "optics-defringe-picker p95Ms: 9.03 > 8.24 ms",
+          "mixer-tat medianMs: 7.99 > 6.62 ms",
+          "color-floating-scopes medianMs: 37.27 > 29.90 ms",
+          "color-floating-scopes p95Ms: 62.22 > 35.03 ms"
+        ],
+        "report": "inspection-comparison.json",
+        "stage": "inspection-comparison"
+      },
+      {
+        "failures": [
+          "dehaze-v1: interactive median regressed 17.63%",
+          "dehaze-v2: interactive median regressed 18.38%",
+          "lens-blur-procedural: interactive median regressed 11.61%",
+          "lens-blur-device-depth: interactive median regressed 11.97%",
+          "lens-blur-bokeh-five-blade: interactive median regressed 18.45%",
+          "lens-blur-bokeh-five-blade: settled median regressed 22.93%",
+          "local-glow: interactive median regressed 10.50%",
+          "targeted-hsl: interactive median regressed 36.30%",
+          "clipping-shadows: interactive median regressed 17.55%",
+          "clipping-highlights: interactive median regressed 17.79%",
+          "point-color-samples: interactive median regressed 22.01%",
+          "local-point-color: interactive median regressed 19.12%",
+          "local-point-color: settled median regressed 21.65%",
+          "local-light-extended: interactive median regressed 18.24%",
+          "local-wb: interactive median regressed 21.90%",
+          "local-grain: interactive median regressed 16.17%",
+          "local-grading: interactive median regressed 16.09%",
+          "local-defringe: interactive median regressed 21.15%",
+          "global-sharpen-detail: interactive median regressed 15.83%",
+          "global-sharpen-mask-preview: interactive median regressed 16.51%"
+        ],
+        "report": "interactive-comparison.json",
+        "stage": "interactive-comparison"
+      },
+      {
+        "failures": [
+          "firstAppearanceMix/firstExact",
+          "firstAppearanceMix/final"
+        ],
+        "report": "lightflow-comparison.json",
+        "stage": "lightflow-comparison"
+      },
+      {
+        "failures": [
+          "public.tiff/new medianMs 10.78 -> 12.06 ms"
+        ],
+        "report": "photo-denoise-comparison.json",
+        "stage": "photo-denoise-comparison"
+      },
+      {
+        "failures": [
+          "canvas_1_zoom-pan: relative p95 22.05 > 8.00 ms",
+          "canvas_4_zoom-pan: relative p95 15.84 > 14.47 ms"
+        ],
+        "report": "image.json",
+        "stage": "image-pipeline"
+      }
+    ],
+    "firstAppearanceMix": {
+      "final": {
+        "LightFlow": {
+          "medianMs": 23.5625,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 92.50343799999999,
+          "n": 74,
+          "p95Ms": 412.10575
+        },
+        "medianLimitMs": 25.91875,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      },
+      "first": {
+        "LightFlow": {
+          "medianMs": 7.282500000000001,
+          "n": 74,
+          "p95Ms": 188.075
+        },
+        "RAWMaster": {
+          "medianMs": 5.241208,
+          "n": 74,
+          "p95Ms": 18.744292
+        },
+        "medianLimitMs": 8.2825,
+        "p95LimitMs": 225.69,
+        "within": true
+      },
+      "firstExact": {
+        "LightFlow": {
+          "medianMs": 22.134999999999998,
+          "n": 74,
+          "p95Ms": 210.225
+        },
+        "RAWMaster": {
+          "medianMs": 92.50343799999999,
+          "n": 74,
+          "p95Ms": 412.10575
+        },
+        "medianLimitMs": 24.348499999999998,
+        "p95LimitMs": 252.26999999999998,
+        "within": false
+      }
+    },
+    "passed": false,
+    "qualifiedSourcesRetest": {
+      "passedTests": 2,
+      "path": "output/035-development/candidate-batch23-preview-ownership/native-preview-source-retest.log",
+      "sha256": "15be187656c1ef803fbbb66e80ed01d88b3137d152ee6b4376a03bc94ad0e7d9",
+      "skippedTests": 0
+    },
+    "rawReport": {
+      "path": "output/035-development/candidate-batch23-preview-ownership-formal/photo-operators-v2.json",
+      "sha256": "c4b3da7344e5f76409759f6c954778ac79e8b39778c371e677da609ce3cf5ac6"
+    },
+    "status": "failed",
+    "summary": {
+      "path": "output/035-development/candidate-batch23-preview-ownership-formal/summary.json",
+      "sha256": "747805e654902c672a6721566ba66c5d7b07167a9202aba95fa26587e06d543a"
+    },
+    "superResolutionTIFF16": {
+      "matchesPrevious": true,
+      "normalExportPeakRSSBytes": 1379745792,
+      "output": {
+        "bits": 16,
+        "byteCount": 1926958614,
+        "colorSpace": "sRGB IEC61966-2.1",
+        "elapsedMs": 10056.185917,
+        "iccSHA256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
+        "sampleFormat": "unsigned",
+        "sha256": "ea7a1972a56d81588ab8396004db045f6adc6aa1fe633f5932138c2ae20c1f87",
+        "size": [
+          19008,
+          12672
+        ]
+      },
+      "path": "output/035-development/candidate-batch23-preview-ownership-formal/super-resolution.json",
+      "sha256": "3574a70215c96b7e398f83df0fd484acbc099a26d2c753d1b57e7c996b45dd58"
+    },
+    "testBuild": {
+      "path": "output/035-development/candidate-batch23-preview-ownership-formal/test-build.json",
+      "sha256": "099933e9785a522c99c431d024ff0f1f6f1f4833572f9648a47d278278b71e19"
+    },
+    "tests": {
+      "adaptive-Sky": {
+        "passedTests": 1,
+        "path": "output/035-development/candidate-batch23-preview-ownership/adaptive-Sky.log",
+        "sha256": "b61df97fe9d732a36a2a848cdc4b90bfcc565a885d6acf14a5602479601864e2",
+        "skippedTests": 0
+      },
+      "adaptive-Subject": {
+        "passedTests": 1,
+        "path": "output/035-development/candidate-batch23-preview-ownership/adaptive-Subject.log",
+        "sha256": "5aa905fcede47449329c70bca89129a7abee42bbe805bfc34aaf20ff937fff12",
+        "skippedTests": 0
+      },
+      "native-film-and-mask": {
+        "passedTests": 27,
+        "path": "output/035-development/candidate-batch23-preview-ownership/native-film-and-mask.log",
+        "sha256": "328160b65590587c3ce39e814b7481479393fdf5538d5263170efdc1b98e4445",
+        "skippedTests": 0
+      },
+      "native-mask-interaction": {
+        "passedTests": 9,
+        "path": "output/035-development/candidate-batch23-preview-ownership/native-mask-interaction.log",
+        "sha256": "9879ae6b06408be873440672a18fd595e15ca87a5d60ca991c1545bb24e40598",
+        "skippedTests": 0
+      },
+      "native-preview-backends": {
+        "passedTests": 26,
+        "path": "output/035-development/candidate-batch23-preview-ownership/native-preview-backends.log",
+        "sha256": "5ae15548c364f79dfb57d44df13d8a1774233d4fc4f0dc1608456f06f180b229",
+        "skippedTests": 2
+      },
+      "native-prompt-providers": {
+        "passedTests": 5,
+        "path": "output/035-development/candidate-batch23-preview-ownership/native-prompt-providers.log",
+        "sha256": "72e9ace824b24a636d12c1ad65c55b65608dce4fcf5706b9e700f6a3a4fdc867",
+        "skippedTests": 0
+      }
+    }
+  },
+  "portableMetalPointPrograms": {
+    "actualNormalServiceCrossover": {
+      "path": "output/035-development/portable-program-u/comparison.json",
+      "sha256": "d6ee9241a60c8b3ae9661ba4153c1321ed766cfe70a2e3a98f38fd4e2cd8b86b"
+    },
+    "beforeAndAfterPhotoAndPressure": [
+      {
+        "arm": "baseline",
+        "binarySHA256": "7f459ce758b898c60a9a4824c4fbcbf1d99bac8bb26a3c0d9c9c485ec547e841",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 609435648,
+        "deviceBytesAfterClosingPhoto": [
+          609435648,
+          609435648
+        ],
+        "deviceBytesAfterMemoryPressure": 609435648,
+        "enabled": true,
+        "id": "01-baseline-primary",
+        "peakProcessFootprintBytes": 1735854192
+      },
+      {
+        "arm": "candidate",
+        "binarySHA256": "cf60f6697640c4e8c1fe8812f305b588490c1f55c57b2951a8f4b22047905a37",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 609435648,
+        "deviceBytesAfterClosingPhoto": [
+          610484224,
+          610484224
+        ],
+        "deviceBytesAfterMemoryPressure": 609435648,
+        "enabled": true,
+        "id": "02-candidate-primary",
+        "peakProcessFootprintBytes": 1763657816
+      },
+      {
+        "arm": "candidate",
+        "binarySHA256": "cf60f6697640c4e8c1fe8812f305b588490c1f55c57b2951a8f4b22047905a37",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 1007894528,
+        "deviceBytesAfterClosingPhoto": [
+          501432320,
+          1008943104
+        ],
+        "deviceBytesAfterMemoryPressure": 1007894528,
+        "enabled": true,
+        "id": "03-candidate-secondary",
+        "peakProcessFootprintBytes": 2630011664
+      },
+      {
+        "arm": "baseline",
+        "binarySHA256": "7f459ce758b898c60a9a4824c4fbcbf1d99bac8bb26a3c0d9c9c485ec547e841",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 1007894528,
+        "deviceBytesAfterClosingPhoto": [
+          500383744,
+          1007894528
+        ],
+        "deviceBytesAfterMemoryPressure": 1007894528,
+        "enabled": true,
+        "id": "04-baseline-secondary",
+        "peakProcessFootprintBytes": 2606844784
+      },
+      {
+        "arm": "candidate",
+        "binarySHA256": "cf60f6697640c4e8c1fe8812f305b588490c1f55c57b2951a8f4b22047905a37",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 609435648,
+        "deviceBytesAfterClosingPhoto": [
+          610484224,
+          610484224
+        ],
+        "deviceBytesAfterMemoryPressure": 609435648,
+        "enabled": true,
+        "id": "05-candidate-primary",
+        "peakProcessFootprintBytes": 1764362328
+      },
+      {
+        "arm": "baseline",
+        "binarySHA256": "7f459ce758b898c60a9a4824c4fbcbf1d99bac8bb26a3c0d9c9c485ec547e841",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 609435648,
+        "deviceBytesAfterClosingPhoto": [
+          609435648,
+          609435648
+        ],
+        "deviceBytesAfterMemoryPressure": 609435648,
+        "enabled": true,
+        "id": "06-baseline-primary",
+        "peakProcessFootprintBytes": 1734576264
+      },
+      {
+        "arm": "baseline",
+        "binarySHA256": "7f459ce758b898c60a9a4824c4fbcbf1d99bac8bb26a3c0d9c9c485ec547e841",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 1007894528,
+        "deviceBytesAfterClosingPhoto": [
+          500383744,
+          1007894528
+        ],
+        "deviceBytesAfterMemoryPressure": 1007894528,
+        "enabled": true,
+        "id": "07-baseline-secondary",
+        "peakProcessFootprintBytes": 2730396480
+      },
+      {
+        "arm": "candidate",
+        "binarySHA256": "cf60f6697640c4e8c1fe8812f305b588490c1f55c57b2951a8f4b22047905a37",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 1007894528,
+        "deviceBytesAfterClosingPhoto": [
+          501432320,
+          1008943104
+        ],
+        "deviceBytesAfterMemoryPressure": 1007894528,
+        "enabled": true,
+        "id": "08-candidate-secondary",
+        "peakProcessFootprintBytes": 2629208848
+      },
+      {
+        "arm": "baseline",
+        "binarySHA256": "7f459ce758b898c60a9a4824c4fbcbf1d99bac8bb26a3c0d9c9c485ec547e841",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 609435648,
+        "deviceBytesAfterClosingPhoto": [
+          609435648,
+          609435648
+        ],
+        "deviceBytesAfterMemoryPressure": 609435648,
+        "enabled": false,
+        "id": "09-baseline-default",
+        "peakProcessFootprintBytes": 1763690632
+      },
+      {
+        "arm": "candidate",
+        "binarySHA256": "cf60f6697640c4e8c1fe8812f305b588490c1f55c57b2951a8f4b22047905a37",
+        "closedRevisionRejected": true,
+        "deviceBytesAfterCloseAll": 609435648,
+        "deviceBytesAfterClosingPhoto": [
+          609435648,
+          609435648
+        ],
+        "deviceBytesAfterMemoryPressure": 609435648,
+        "enabled": false,
+        "id": "10-candidate-default",
+        "peakProcessFootprintBytes": 1796458632
+      }
+    ],
+    "crossoverCounts": {
+      "defaultFrames": 24,
+      "distinctSourceRecipePairs": 8,
+      "enabledFrames": 96,
+      "sameAsDefaultAcrossSourcesAndRecipes": 4
+    },
+    "defaultEnabled": false,
+    "displayPixelsVsDefault": {
+      "path": "output/035-development/portable-program-u/pixels-comparison.json",
+      "record": {
+        "sourceGroups": [
+          {
+            "controls": [
+              {
+                "changedComponentsRGBA": [
+                  2,
+                  2,
+                  5,
+                  0
+                ],
+                "changedPixels": 9,
+                "control": "light",
+                "defaultSHA256": "b796420c2eae3ce6f94e027f89a6223e0176723bf63e96cdfaf864fd495d3113",
+                "maximumCodeDifferenceRGBA": [
+                  1,
+                  1,
+                  1,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "8bed6fd14483420bcbf87cbc318910f12c40e0f9659b53941b2c9115d6c60698"
+              },
+              {
+                "changedComponentsRGBA": [
+                  1,
+                  1,
+                  1,
+                  0
+                ],
+                "changedPixels": 1,
+                "control": "composite",
+                "defaultSHA256": "1ebd9281db69c2918f983d8eb421ad4a82d0a10719b13586fe31a007dcf9cf83",
+                "maximumCodeDifferenceRGBA": [
+                  1,
+                  1,
+                  1,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "7e15f38b7e631ac93f868650cdf05ab0e27358cc870785a6e295b051891986f9"
+              },
+              {
+                "changedComponentsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "changedPixels": 0,
+                "control": "exposure",
+                "defaultSHA256": "b2a3df2679c973a09b1e6cc92cf431ced0b7f152d3551fca74b438e255fffec1",
+                "maximumCodeDifferenceRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "b2a3df2679c973a09b1e6cc92cf431ced0b7f152d3551fca74b438e255fffec1"
+              },
+              {
+                "changedComponentsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "changedPixels": 0,
+                "control": "lower-exposure",
+                "defaultSHA256": "94bdd0ed9933a88fe4d90d91c286215887a8de6725276a44388a86204b8d26ed",
+                "maximumCodeDifferenceRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "94bdd0ed9933a88fe4d90d91c286215887a8de6725276a44388a86204b8d26ed"
+              }
+            ],
+            "round": 0,
+            "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          {
+            "controls": [
+              {
+                "changedComponentsRGBA": [
+                  4,
+                  3,
+                  2,
+                  0
+                ],
+                "changedPixels": 9,
+                "control": "light",
+                "defaultSHA256": "56589c29e4698739b836c8afa48ee5d6ab8cffe6d38fb1657f30e46cd7b4e6ee",
+                "maximumCodeDifferenceRGBA": [
+                  1,
+                  1,
+                  1,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "648245bddafe219d5a1384ac16db6899cd7f3a69a1dae0878adbaecdecc49974"
+              },
+              {
+                "changedComponentsRGBA": [
+                  2,
+                  2,
+                  2,
+                  0
+                ],
+                "changedPixels": 2,
+                "control": "composite",
+                "defaultSHA256": "e5ac3fd417abb70574b872bfb454156bb601c00988b410f15335a68e75ba9767",
+                "maximumCodeDifferenceRGBA": [
+                  1,
+                  1,
+                  1,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "fc141cf71f80b71097780bd1fff1c3311b77539912f0daf88cb817f850447895"
+              },
+              {
+                "changedComponentsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "changedPixels": 0,
+                "control": "exposure",
+                "defaultSHA256": "320f557737d7d6e0083d98e484a4d745380e5a1f62f1f1d09a3dcfa930cfc676",
+                "maximumCodeDifferenceRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "320f557737d7d6e0083d98e484a4d745380e5a1f62f1f1d09a3dcfa930cfc676"
+              },
+              {
+                "changedComponentsRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "changedPixels": 0,
+                "control": "lower-exposure",
+                "defaultSHA256": "77a2c937b8d08e4831feefbef603ac1064fd1afb8050a2f80e49cab3bd8c741e",
+                "maximumCodeDifferenceRGBA": [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                "pixels": 3840000,
+                "portableSHA256": "77a2c937b8d08e4831feefbef603ac1064fd1afb8050a2f80e49cab3bd8c741e"
+              }
+            ],
+            "round": 1,
+            "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          }
+        ],
+        "version": 1
+      },
+      "sha256": "ca11f06dd08f3f2de52918346febbb684d8c0efcfb4495bb09de3cda5709d0eb"
+    },
+    "displayWitnessSource": {
+      "path": "output/035-development/portable-program-u/PixelWitness.swift",
+      "sha256": "1b6b349c971ea878d4f8d1778130abf69431f1c7f21366358fe071acceba00d3"
+    },
+    "firstBuildSmoke": {
+      "parallelHostBuild": true,
+      "path": "output/035-development/portable-program-u/baseline-smoke.json",
+      "phaseLog": {
+        "path": "output/035-development/portable-program-u/baseline-smoke.log",
+        "sha256": "13cc36fb39531baa73de121078ee34dcb39abbbc9c8b2217f8ef1923ac786fab"
+      },
+      "sha256": "e07946c0a6ffe62b734571b2459c490032a59005b596f0035ac54ada992e5459"
+    },
+    "pointStageAndFrameTiming": [
+      {
+        "arm": "baseline",
+        "control": "light",
+        "medianPortableMS": 7.337917,
+        "medianRenderMS": 182.85752050000002,
+        "round": 0
+      },
+      {
+        "arm": "baseline",
+        "control": "composite",
+        "medianPortableMS": 3.0905835,
+        "medianRenderMS": 5.228979,
+        "round": 0
+      },
+      {
+        "arm": "baseline",
+        "control": "exposure",
+        "medianPortableMS": 4.2393955,
+        "medianRenderMS": 6.234208000000001,
+        "round": 0
+      },
+      {
+        "arm": "baseline",
+        "control": "lower-exposure",
+        "medianPortableMS": 2.9955,
+        "medianRenderMS": 4.931313,
+        "round": 0
+      },
+      {
+        "arm": "baseline",
+        "control": "light",
+        "medianPortableMS": 6.9053125,
+        "medianRenderMS": 109.9118125,
+        "round": 1
+      },
+      {
+        "arm": "baseline",
+        "control": "composite",
+        "medianPortableMS": 3.0048125,
+        "medianRenderMS": 5.2130205,
+        "round": 1
+      },
+      {
+        "arm": "baseline",
+        "control": "exposure",
+        "medianPortableMS": 4.0947715,
+        "medianRenderMS": 6.212,
+        "round": 1
+      },
+      {
+        "arm": "baseline",
+        "control": "lower-exposure",
+        "medianPortableMS": 2.9664165000000002,
+        "medianRenderMS": 4.866333,
+        "round": 1
+      },
+      {
+        "arm": "baseline",
+        "control": "light",
+        "medianPortableMS": 7.144625,
+        "medianRenderMS": 92.4717085,
+        "round": 2
+      },
+      {
+        "arm": "baseline",
+        "control": "composite",
+        "medianPortableMS": 3.0114375,
+        "medianRenderMS": 4.9679585,
+        "round": 2
+      },
+      {
+        "arm": "baseline",
+        "control": "exposure",
+        "medianPortableMS": 4.100271,
+        "medianRenderMS": 6.099083500000001,
+        "round": 2
+      },
+      {
+        "arm": "baseline",
+        "control": "lower-exposure",
+        "medianPortableMS": 2.974479,
+        "medianRenderMS": 4.9281875,
+        "round": 2
+      },
+      {
+        "arm": "candidate",
+        "control": "light",
+        "medianPortableMS": 7.5322915,
+        "medianRenderMS": 183.21922899999998,
+        "round": 0
+      },
+      {
+        "arm": "candidate",
+        "control": "composite",
+        "medianPortableMS": 3.0973755,
+        "medianRenderMS": 5.274146,
+        "round": 0
+      },
+      {
+        "arm": "candidate",
+        "control": "exposure",
+        "medianPortableMS": 4.398229000000001,
+        "medianRenderMS": 6.4947085,
+        "round": 0
+      },
+      {
+        "arm": "candidate",
+        "control": "lower-exposure",
+        "medianPortableMS": 2.999604,
+        "medianRenderMS": 5.056875,
+        "round": 0
+      },
+      {
+        "arm": "candidate",
+        "control": "light",
+        "medianPortableMS": 5.777333,
+        "medianRenderMS": 111.955625,
+        "round": 1
+      },
+      {
+        "arm": "candidate",
+        "control": "composite",
+        "medianPortableMS": 3.0370835,
+        "medianRenderMS": 5.1576255,
+        "round": 1
+      },
+      {
+        "arm": "candidate",
+        "control": "exposure",
+        "medianPortableMS": 3.0347085,
+        "medianRenderMS": 5.0445835,
+        "round": 1
+      },
+      {
+        "arm": "candidate",
+        "control": "lower-exposure",
+        "medianPortableMS": 3.0247504999999997,
+        "medianRenderMS": 4.9871669999999995,
+        "round": 1
+      },
+      {
+        "arm": "candidate",
+        "control": "light",
+        "medianPortableMS": 6.9331245,
+        "medianRenderMS": 94.3584795,
+        "round": 2
+      },
+      {
+        "arm": "candidate",
+        "control": "composite",
+        "medianPortableMS": 3.0561670000000003,
+        "medianRenderMS": 5.129958500000001,
+        "round": 2
+      },
+      {
+        "arm": "candidate",
+        "control": "exposure",
+        "medianPortableMS": 4.177667,
+        "medianRenderMS": 6.108916499999999,
+        "round": 2
+      },
+      {
+        "arm": "candidate",
+        "control": "lower-exposure",
+        "medianPortableMS": 3.01375,
+        "medianRenderMS": 5.0088545,
+        "round": 2
+      }
+    ],
+    "precompiledProgramCountLimit": 2,
+    "testDriver": {
+      "path": "output/035-development/portable-program-u/run.sh",
+      "sha256": "7c52482818e3d6bf608b029a68b942396e9694bc89d2453fb31620f169b01a6d"
+    },
+    "testLink": {
+      "path": "output/035-development/portable-program-u/link.sh",
+      "sha256": "40525393d17088cb1b13d854f05a47a08ce9444209e5dc082daaa8a7d1c7eaac"
+    },
+    "testSource": {
+      "path": "output/035-development/portable-program-u/Witness.swift",
+      "sha256": "a2ce5932f923521b955216349960f3dabf34d71b2fe4025cf0dfa1f921750304"
+    }
+  },
+  "positiveDehazeAuthority": {
+    "defaultEnabled": false,
+    "submissionPublicationAndWarmPin": {
+      "path": "output/035-development/tail-refine/dehaze-authority-u/boundary-results/reviewed.json",
+      "record": {
+        "binarySHA": "90921767e6805e58cbeec0e251e205be346ed7b03b681f260da767d4051b844f",
+        "buildBImagingSHA": "16bce9b1d0e27bd1af11a5ad380c56a14957fd729514458008cc6e077ad5b9c3",
+        "cases": {
+          "primary": {
+            "cases": [
+              {
+                "afterFills": 0,
+                "afterPinned": 0,
+                "afterResident": 0,
+                "beforePinned": 0,
+                "beforeResident": 0,
+                "fault": "afterSubmit",
+                "fullCallbacks": 307,
+                "gotImage": false,
+                "joinedProducerSymbol": true,
+                "legacyChecksAfterHalf": 1,
+                "newHits": 0,
+                "previousFills": 0,
+                "stackDepth": 13
+              },
+              {
+                "afterFills": 1,
+                "afterPinned": 0,
+                "afterResident": 0,
+                "beforePinned": 0,
+                "beforeResident": 0,
+                "fault": "coldPublication",
+                "fullCallbacks": 408,
+                "gotImage": false,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 6388,
+                "newHits": 0,
+                "previousFills": 0,
+                "stackDepth": 6
+              },
+              {
+                "afterFills": 2,
+                "afterPinned": 240877568,
+                "afterResident": 240877568,
+                "beforePinned": 0,
+                "beforeResident": 0,
+                "fault": "none",
+                "fullCallbacks": 408,
+                "gotImage": true,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 6389,
+                "newHits": 0,
+                "previousFills": 1,
+                "stackDepth": 0
+              },
+              {
+                "afterFills": 2,
+                "afterPinned": 0,
+                "afterResident": 240877568,
+                "beforePinned": 0,
+                "beforeResident": 240877568,
+                "fault": "warmPin",
+                "fullCallbacks": 4,
+                "gotImage": false,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 0,
+                "newHits": 1,
+                "previousFills": 2,
+                "stackDepth": 6
+              },
+              {
+                "afterFills": 2,
+                "afterPinned": 240877568,
+                "afterResident": 240877568,
+                "beforePinned": 0,
+                "beforeResident": 240877568,
+                "fault": "none",
+                "fullCallbacks": 4,
+                "gotImage": true,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 0,
+                "newHits": 1,
+                "previousFills": 2,
+                "stackDepth": 0
+              }
+            ],
+            "rawSHA": "382027fccde679c0047664ad52b08ac7f783576483f86cd4c6556f9e3b2c2435",
+            "sourceSHA": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+          },
+          "secondary": {
+            "cases": [
+              {
+                "afterFills": 0,
+                "afterPinned": 0,
+                "afterResident": 0,
+                "beforePinned": 0,
+                "beforeResident": 0,
+                "fault": "afterSubmit",
+                "fullCallbacks": 280,
+                "gotImage": false,
+                "joinedProducerSymbol": true,
+                "legacyChecksAfterHalf": 1,
+                "newHits": 0,
+                "previousFills": 0,
+                "stackDepth": 13
+              },
+              {
+                "afterFills": 1,
+                "afterPinned": 0,
+                "afterResident": 0,
+                "beforePinned": 0,
+                "beforeResident": 0,
+                "fault": "coldPublication",
+                "fullCallbacks": 373,
+                "gotImage": false,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 5808,
+                "newHits": 0,
+                "previousFills": 0,
+                "stackDepth": 6
+              },
+              {
+                "afterFills": 2,
+                "afterPinned": 199065600,
+                "afterResident": 199065600,
+                "beforePinned": 0,
+                "beforeResident": 0,
+                "fault": "none",
+                "fullCallbacks": 373,
+                "gotImage": true,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 5809,
+                "newHits": 0,
+                "previousFills": 1,
+                "stackDepth": 0
+              },
+              {
+                "afterFills": 2,
+                "afterPinned": 0,
+                "afterResident": 199065600,
+                "beforePinned": 0,
+                "beforeResident": 199065600,
+                "fault": "warmPin",
+                "fullCallbacks": 4,
+                "gotImage": false,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 0,
+                "newHits": 1,
+                "previousFills": 2,
+                "stackDepth": 6
+              },
+              {
+                "afterFills": 2,
+                "afterPinned": 199065600,
+                "afterResident": 199065600,
+                "beforePinned": 0,
+                "beforeResident": 199065600,
+                "fault": "none",
+                "fullCallbacks": 4,
+                "gotImage": true,
+                "joinedProducerSymbol": false,
+                "legacyChecksAfterHalf": 0,
+                "newHits": 1,
+                "previousFills": 2,
+                "stackDepth": 0
+              }
+            ],
+            "rawSHA": "9d27dbb0963dabc0691314c5de3588fa7e672a739d50e03716f76f022083c5a8",
+            "sourceSHA": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f"
+          }
+        },
+        "protocol": "Real signed source and provider in the B build. Submitted observer throws before the renderer's wait; shared scalar render catch joins before propagation. No row copy or cache publication on that error. Separate warm/late-cold revocation follows actual pool hit/fill counters. GPU timing not used.",
+        "sourceSHA": "3c2e1768e11dd204e107e042b87718fbecbd9e4a98cdfd5a934eb12b114436f9"
+      },
+      "sha256": "134da5f1b61d3044b2da4013c12b85c04b4502527ecd30fb44dddbe59b6d55f0"
+    },
+    "unstressedWindow": {
+      "path": "output/035-development/tail-refine/dehaze-authority-u/run-02/reviewed.json",
+      "record": {
+        "cases": {
+          "primary": {
+            "faults": {
+              "A": {
+                "rawSHA": "0c6d582b621070c2c95c20fe93a472941ce435c255c4e9a5db5548136d2672c1",
+                "report": {
+                  "alreadyPublishedWarm": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 0,
+                    "afterHalfLegacyChecks": 0,
+                    "beforeFills": 1,
+                    "elapsedMS": 0.14525,
+                    "fullCallbackMS": 0.111167,
+                    "fullChecks": 5,
+                    "kind": "warm",
+                    "legacyChecks": 2,
+                    "newHits": 1,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "build": "A",
+                  "changedCaptureDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 37,
+                    "afterHalfLegacyChecks": 35,
+                    "beforeFills": 0,
+                    "elapsedMS": 87.84825,
+                    "fullCallbackMS": 7.589704,
+                    "fullChecks": 341,
+                    "kind": "fd",
+                    "legacyChecks": 36,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 35
+                  },
+                  "coldRetry": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 6391,
+                    "afterHalfLegacyChecks": 6389,
+                    "beforeFills": 0,
+                    "elapsedMS": 320.6535,
+                    "fullCallbackMS": 77.844689,
+                    "fullChecks": 6695,
+                    "kind": "cold",
+                    "legacyChecks": 6390,
+                    "newHits": 0,
+                    "newResidentBytes": 240877568,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "device": "Apple M4 Max",
+                  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+                  "sourceSize": [
+                    9504,
+                    6336
+                  ],
+                  "sumScope": "Normal filled source+declared owner. Real asynchronous item or FD revocation was acknowledged synchronously at native private-copy row 32. No timings use this instrumented witness.",
+                  "supersededDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 37,
+                    "afterHalfLegacyChecks": 35,
+                    "beforeFills": 0,
+                    "elapsedMS": 92.975583,
+                    "fullCallbackMS": 7.524827,
+                    "fullChecks": 341,
+                    "kind": "item",
+                    "legacyChecks": 36,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 35
+                  }
+                }
+              },
+              "B": {
+                "rawSHA": "1fae99164ecec6bb95ebe7ccde418bd40d1fb2c45669442e6bd322f039fff9e4",
+                "report": {
+                  "alreadyPublishedWarm": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 0,
+                    "afterHalfLegacyChecks": 0,
+                    "beforeFills": 1,
+                    "elapsedMS": 0.146916,
+                    "fullCallbackMS": 0.112957,
+                    "fullChecks": 5,
+                    "kind": "warm",
+                    "legacyChecks": 2,
+                    "newHits": 1,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "build": "B",
+                  "changedCaptureDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 5,
+                    "afterHalfLegacyChecks": 258,
+                    "beforeFills": 0,
+                    "elapsedMS": 94.212791,
+                    "fullCallbackMS": 7.625885,
+                    "fullChecks": 309,
+                    "kind": "fd",
+                    "legacyChecks": 259,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 258
+                  },
+                  "coldRetry": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 105,
+                    "afterHalfLegacyChecks": 6389,
+                    "beforeFills": 0,
+                    "elapsedMS": 261.901,
+                    "fullCallbackMS": 10.788917,
+                    "fullChecks": 409,
+                    "kind": "cold",
+                    "legacyChecks": 6390,
+                    "newHits": 0,
+                    "newResidentBytes": 240877568,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "device": "Apple M4 Max",
+                  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+                  "sourceSize": [
+                    9504,
+                    6336
+                  ],
+                  "sumScope": "Normal filled source+declared owner. Real asynchronous item or FD revocation was acknowledged synchronously at native private-copy row 32. No timings use this instrumented witness.",
+                  "supersededDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 5,
+                    "afterHalfLegacyChecks": 258,
+                    "beforeFills": 0,
+                    "elapsedMS": 93.139834,
+                    "fullCallbackMS": 6.162868,
+                    "fullChecks": 309,
+                    "kind": "item",
+                    "legacyChecks": 259,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 258
+                  }
+                }
+              }
+            },
+            "medians": {
+              "A": {
+                "coldExactMS": 772.2731045,
+                "coldGuideMS": 347.3874165,
+                "warmExactMS": 284.143875
+              },
+              "B": {
+                "coldExactMS": 652.1434375,
+                "coldGuideMS": 244.913354,
+                "warmExactMS": 305.0314585
+              }
+            },
+            "samples": {
+              "A": [
+                {
+                  "actualBinarySHA": "aa9e79916d227e79eca5204e8431211763df633bb0307396f928f87f58ea808f",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3648670000,
+                  "rawFile": "profile-0-primary-A.json",
+                  "rawSHA": "1cae50fcc3238852a6a662e051ece15c256b199dd26aa6abedb3346f8d412a37",
+                  "recordedAt": "2026-11-23T14:01:07Z",
+                  "sourceSHA": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+                  "states": [
+                    {
+                      "cgImageMS": 139.579083,
+                      "completeMS": 789.458084,
+                      "digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                      "guideFillMS": 355.444125,
+                      "metalSlabMS": 71.211875,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 157.495834
+                    },
+                    {
+                      "cgImageMS": 141.451375,
+                      "completeMS": 289.65875,
+                      "digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 129.677834
+                    }
+                  ]
+                },
+                {
+                  "actualBinarySHA": "aa9e79916d227e79eca5204e8431211763df633bb0307396f928f87f58ea808f",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3649718576,
+                  "rawFile": "profile-3-primary-A.json",
+                  "rawSHA": "bdca7210ffd1c7c91713796d3635d1f1ba964ca5eb134bb4a92633f28442b0e5",
+                  "recordedAt": "2026-11-23T14:01:17Z",
+                  "sourceSHA": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+                  "states": [
+                    {
+                      "cgImageMS": 146.767958,
+                      "completeMS": 755.088125,
+                      "digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                      "guideFillMS": 339.330708,
+                      "metalSlabMS": 68.715125,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 149.707625
+                    },
+                    {
+                      "cgImageMS": 132.476875,
+                      "completeMS": 278.629,
+                      "digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 128.24
+                    }
+                  ]
+                }
+              ],
+              "B": [
+                {
+                  "actualBinarySHA": "a7d36da4f62870e1e0427e6dfe21381892a52c73dd008efdaa2b6b891b9ec793",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3648260400,
+                  "rawFile": "profile-1-primary-B.json",
+                  "rawSHA": "abe54621bcf5a488baeefaf3c45ffc9d5a855ab34c89475445f7c911dbae6858",
+                  "recordedAt": "2026-11-23T14:01:10Z",
+                  "sourceSHA": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+                  "states": [
+                    {
+                      "cgImageMS": 136.217875,
+                      "completeMS": 627.597584,
+                      "digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                      "guideFillMS": 245.538667,
+                      "metalSlabMS": 63.790416,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 144.656375
+                    },
+                    {
+                      "cgImageMS": 147.04625,
+                      "completeMS": 295.225167,
+                      "digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 130.143083
+                    }
+                  ]
+                },
+                {
+                  "actualBinarySHA": "a7d36da4f62870e1e0427e6dfe21381892a52c73dd008efdaa2b6b891b9ec793",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3649538376,
+                  "rawFile": "profile-2-primary-B.json",
+                  "rawSHA": "895a78dbe3c4630512e76cb6bfdcbc8861c09cd90b1fe2001315c74f12858381",
+                  "recordedAt": "2026-11-23T14:01:13Z",
+                  "sourceSHA": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+                  "states": [
+                    {
+                      "cgImageMS": 147.841167,
+                      "completeMS": 676.689291,
+                      "digest": "4aa8c707ab787020c344cdd08a522c1b398481d635f33acd777c4ab8b2c52eaf",
+                      "guideFillMS": 244.288041,
+                      "metalSlabMS": 65.261833,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 150.077833
+                    },
+                    {
+                      "cgImageMS": 143.069875,
+                      "completeMS": 314.83775,
+                      "digest": "3bece7baafe3811b73a7175034519817292a24a198b4b3ce369bf03731439ac7",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 145.350125
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "secondary": {
+            "faults": {
+              "A": {
+                "rawSHA": "db49066926a159ae936e39b7cd24eb4d980deea65ac791fa794e36e1a107dcea",
+                "report": {
+                  "alreadyPublishedWarm": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 0,
+                    "afterHalfLegacyChecks": 0,
+                    "beforeFills": 1,
+                    "elapsedMS": 0.148417,
+                    "fullCallbackMS": 0.118541,
+                    "fullChecks": 5,
+                    "kind": "warm",
+                    "legacyChecks": 2,
+                    "newHits": 1,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "build": "A",
+                  "changedCaptureDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 37,
+                    "afterHalfLegacyChecks": 35,
+                    "beforeFills": 0,
+                    "elapsedMS": 83.894584,
+                    "fullCallbackMS": 7.88642,
+                    "fullChecks": 314,
+                    "kind": "fd",
+                    "legacyChecks": 36,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 35
+                  },
+                  "coldRetry": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 5811,
+                    "afterHalfLegacyChecks": 5809,
+                    "beforeFills": 0,
+                    "elapsedMS": 269.408583,
+                    "fullCallbackMS": 70.935536,
+                    "fullChecks": 6088,
+                    "kind": "cold",
+                    "legacyChecks": 5810,
+                    "newHits": 0,
+                    "newResidentBytes": 199065600,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "device": "Apple M4 Max",
+                  "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+                  "sourceSize": [
+                    8640,
+                    5760
+                  ],
+                  "sumScope": "Normal filled source+declared owner. Real asynchronous item or FD revocation was acknowledged synchronously at native private-copy row 32. No timings use this instrumented witness.",
+                  "supersededDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 37,
+                    "afterHalfLegacyChecks": 35,
+                    "beforeFills": 0,
+                    "elapsedMS": 77.684709,
+                    "fullCallbackMS": 6.081912,
+                    "fullChecks": 314,
+                    "kind": "item",
+                    "legacyChecks": 36,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 35
+                  }
+                }
+              },
+              "B": {
+                "rawSHA": "fdca8a8ffb0c26328f794b90ce85f363776a0ac1a2efd9886507f07a0a84699a",
+                "report": {
+                  "alreadyPublishedWarm": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 0,
+                    "afterHalfLegacyChecks": 0,
+                    "beforeFills": 1,
+                    "elapsedMS": 0.139958,
+                    "fullCallbackMS": 0.106334,
+                    "fullChecks": 5,
+                    "kind": "warm",
+                    "legacyChecks": 2,
+                    "newHits": 1,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "build": "B",
+                  "changedCaptureDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 5,
+                    "afterHalfLegacyChecks": 258,
+                    "beforeFills": 0,
+                    "elapsedMS": 78.698833,
+                    "fullCallbackMS": 6.932046,
+                    "fullChecks": 282,
+                    "kind": "fd",
+                    "legacyChecks": 259,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 258
+                  },
+                  "coldRetry": {
+                    "afterFills": 1,
+                    "afterHalfFullChecks": 97,
+                    "afterHalfLegacyChecks": 5809,
+                    "beforeFills": 0,
+                    "elapsedMS": 210.916083,
+                    "fullCallbackMS": 9.374111,
+                    "fullChecks": 374,
+                    "kind": "cold",
+                    "legacyChecks": 5810,
+                    "newHits": 0,
+                    "newResidentBytes": 199065600,
+                    "revocationAtLegacyCheck": null,
+                    "revocationDetectedAtLegacyCheck": null
+                  },
+                  "device": "Apple M4 Max",
+                  "sourceSHA256": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+                  "sourceSize": [
+                    8640,
+                    5760
+                  ],
+                  "sumScope": "Normal filled source+declared owner. Real asynchronous item or FD revocation was acknowledged synchronously at native private-copy row 32. No timings use this instrumented witness.",
+                  "supersededDuringPrivateCopy": {
+                    "afterFills": 0,
+                    "afterHalfFullChecks": 5,
+                    "afterHalfLegacyChecks": 258,
+                    "beforeFills": 0,
+                    "elapsedMS": 86.837792,
+                    "fullCallbackMS": 6.250284,
+                    "fullChecks": 282,
+                    "kind": "item",
+                    "legacyChecks": 259,
+                    "newHits": 0,
+                    "newResidentBytes": 0,
+                    "revocationAtLegacyCheck": 35,
+                    "revocationDetectedAtLegacyCheck": 258
+                  }
+                }
+              }
+            },
+            "medians": {
+              "A": {
+                "coldExactMS": 622.7360625,
+                "coldGuideMS": 284.2895205,
+                "warmExactMS": 211.9976045
+              },
+              "B": {
+                "coldExactMS": 578.3851875,
+                "coldGuideMS": 233.4606045,
+                "warmExactMS": 215.1784585
+              }
+            },
+            "samples": {
+              "A": [
+                {
+                  "actualBinarySHA": "aa9e79916d227e79eca5204e8431211763df633bb0307396f928f87f58ea808f",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3223161016,
+                  "rawFile": "profile-1-secondary-A.json",
+                  "rawSHA": "4075defe8f7076be32ba96bd6f291900a71d302610b558d0dfed2f2369679c6a",
+                  "recordedAt": "2026-11-23T14:01:12Z",
+                  "sourceSHA": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+                  "states": [
+                    {
+                      "cgImageMS": 101.150708,
+                      "completeMS": 627.952708,
+                      "digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                      "guideFillMS": 287.493375,
+                      "metalSlabMS": 59.048792,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 132.681125
+                    },
+                    {
+                      "cgImageMS": 95.871042,
+                      "completeMS": 210.605834,
+                      "digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 93.917
+                    }
+                  ]
+                },
+                {
+                  "actualBinarySHA": "aa9e79916d227e79eca5204e8431211763df633bb0307396f928f87f58ea808f",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3222947976,
+                  "rawFile": "profile-2-secondary-A.json",
+                  "rawSHA": "a9c54cc80cf9dd94877d0560598f851bbacf9b245a2c4601a8441ce0ac176d79",
+                  "recordedAt": "2026-11-23T14:01:15Z",
+                  "sourceSHA": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+                  "states": [
+                    {
+                      "cgImageMS": 103.090167,
+                      "completeMS": 617.519417,
+                      "digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                      "guideFillMS": 281.085666,
+                      "metalSlabMS": 52.5775,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 131.883458
+                    },
+                    {
+                      "cgImageMS": 101.569083,
+                      "completeMS": 213.389375,
+                      "digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 92.567875
+                    }
+                  ]
+                }
+              ],
+              "B": [
+                {
+                  "actualBinarySHA": "a7d36da4f62870e1e0427e6dfe21381892a52c73dd008efdaa2b6b891b9ec793",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3225061464,
+                  "rawFile": "profile-0-secondary-B.json",
+                  "rawSHA": "8f10f2e4048d9823648f47e9d2c400bf338cc41e2c9be32e0e29ba7482bfe3cd",
+                  "recordedAt": "2026-11-23T14:01:08Z",
+                  "sourceSHA": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+                  "states": [
+                    {
+                      "cgImageMS": 104.266917,
+                      "completeMS": 602.633834,
+                      "digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                      "guideFillMS": 256.33,
+                      "metalSlabMS": 100.084917,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 132.468583
+                    },
+                    {
+                      "cgImageMS": 100.214083,
+                      "completeMS": 215.836208,
+                      "digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 94.246416
+                    }
+                  ]
+                },
+                {
+                  "actualBinarySHA": "a7d36da4f62870e1e0427e6dfe21381892a52c73dd008efdaa2b6b891b9ec793",
+                  "gpu": "Apple M4 Max",
+                  "os": "Version 27.0.1 (Build 26A434)",
+                  "processPeakPhysicalFootprintBytes": 3222325408,
+                  "rawFile": "profile-3-secondary-B.json",
+                  "rawSHA": "dade44bd83fb50f65cb7240d79b123fa17566b5ba845dbd730b4ba2a7ef59091",
+                  "recordedAt": "2026-11-23T14:01:18Z",
+                  "sourceSHA": "4e7e80f4e34e3f9d2b77c93c4c0864fb2a8b950df69e615b5e99b7bad6a9739f",
+                  "states": [
+                    {
+                      "cgImageMS": 99.393958,
+                      "completeMS": 554.136541,
+                      "digest": "67bed2f92dac4f87fad10592264ed8d14ed0a58e7fb447836059933abe09a50a",
+                      "guideFillMS": 210.591209,
+                      "metalSlabMS": 59.538708,
+                      "nativeFills": 2,
+                      "nativeHits": 0,
+                      "state": 0,
+                      "timedFiniteMS": 126.956458
+                    },
+                    {
+                      "cgImageMS": 99.306667,
+                      "completeMS": 214.520709,
+                      "digest": "69acc93d012c2a96debdb2269975f32661b44beb5c6ddbae39f967da5b6c049a",
+                      "guideFillMS": null,
+                      "metalSlabMS": null,
+                      "nativeFills": 0,
+                      "nativeHits": 2,
+                      "state": 1,
+                      "timedFiniteMS": 97.389292
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "comparison": "Both implementations use same strict half-erosion certificate and setting; opposite traversal on the two sources. Uninstrumented render engine archives first exact separately from warmed guide / second strength.",
+        "scope": "Independent legacy check receives a real, different thread item/FD revocation at row 32 inside unpublished memory. The witness adds counters and filesystem timing; its wall time is not a benchmark."
+      },
+      "sha256": "f6ead20a677574e0b115321e473eb35d4a28148fe04333c26db9c9877a0ff3d9"
+    },
+    "usedExistingHalfErosionCertificate": true
+  },
+  "quickPromptFLUXQ8OnSameRelease": {
+    "path": "output/035-development/candidate-batch23-preview-ownership/verified-flux-mixed.json",
+    "record": {
+      "adoptionRevisions": [
+        0,
+        1,
+        2
+      ],
+      "allFilesEqualStandaloneMain": true,
+      "allPerPathReceiptsMatch": true,
+      "appHostMaxRSSBytes": 975831040,
+      "archiveAndModelOutputFilesVerified": true,
+      "archivedBitDepth": 16,
+      "archivedOutputSHA256": "338118fa916caecee108f22915cfd6bc378f920bcb9d52b78c4e9eafd4fb959b",
+      "attemptsAfterReopen": 1,
+      "bothFileWorkloadsSpanDraw": true,
+      "candidate": "candidate-batch23-preview-ownership",
+      "deliveryCount": 200,
+      "draw": {
+        "approximate": false,
+        "consumerID": "5BFB674D-A7D0-41C0-AA03-045C59EF6228",
+        "drawBeganNS": 611395280278916,
+        "drawReturnedNS": 611395280319083,
+        "frameID": "2621E5B6-26EE-4026-8BE0-B517E61941B1",
+        "generation": 2,
+        "height": 1067,
+        "inputNS": 611395255616208,
+        "leaseID": "53106D0F-0512-45F3-805D-C53BBE050A8D",
+        "quality": "settled",
+        "renderedHeight": 1067,
+        "renderedWidth": 1600,
+        "revision": 3,
+        "width": 1600
+      },
+      "elapsedSeconds": 176.1911679506302,
+      "exportSeconds": 9.246179,
+      "fileBackedDrawMilliseconds": 24.702875,
+      "firstOutputAfterPreparationSeconds": 0.169635583,
+      "fixtureManifestSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "importedRAWCount": 20,
+      "inputSHA256": "2256f27433ff1e088df0638fc066606982009251f7669ae637d6cc9de3b06fb9",
+      "mixedOutputInventorySHA256": "e6256fbcc5c37a283e9f9dc352a99b04f1524b6ed942e49561e6b1d4be28f6a4",
+      "phaseTimelineUptimeNS": {
+        "exportCompleted": 611404178758833,
+        "exportFirstFile": 611395102215416,
+        "exportLastFile": 611404176944625,
+        "exportPrepared": 611394932579833,
+        "importCompleted": 611395558213375,
+        "importFirstFile": 611395252994125,
+        "importLastFile": 611395533646583
+      },
+      "pixelComparison": {
+        "protectedChangedPixels": 0,
+        "protectedPixels": 786432,
+        "selectedChangedPixels": 262144,
+        "selectedPixels": 262144
+      },
+      "provider": {
+        "actualModel": "black-forest-labs/flux-3-image-klein",
+        "mlxVersion": "0.32.4",
+        "modelRevision": "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c",
+        "peakMLXBytes": "8501400908",
+        "pipelineSeconds": "173.50014254206326",
+        "preset": "q8-16",
+        "runtimeRevision": "a8a400745949770d4de3b18c31684169da4b0af5",
+        "seed": "8521",
+        "steps": "16",
+        "usage": "local",
+        "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+        "workerSeconds": "173.54097491595894"
+      },
+      "providerOutputSHA256": "111dd624a56096d63d04bde241d55692763f03d8e3a609dbb63b4c92dbac7a8e",
+      "receiptSHA256": "d8a46bee6458b2e326c1559613bf7bc29418bdb2e1ae5caa3189a85cd117535b",
+      "sourceReceipt": "output/035-development/flux-mixed-candidate-batch23-preview-ownership/receipt.json",
+      "sourceSHA256": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+      "testBinarySHA256": "b4ba065ba0c334e40a699303fcc4f8c18cf419668d6426f0d39d0400dee52378"
+    },
+    "sha256": "219f7c4ee293e6bff8cf37cd9f537066e896c529219e602f574afa2fcabc47a7"
+  },
+  "schemaVersion": 1,
+  "sealedRelease": {
+    "applicationSHA256": "adedded1a71fab74668e0724f700d7043130fe13c577e7de51d685ae62a49535",
+    "baseCommit": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+    "binaryManifest": {
+      "path": "output/035-development/candidate-batch23-preview-ownership/binaries.sha256",
+      "sha256": "27c7a55c1443650f4b6ca55e0cac08a10398685b7e2e3a88a78366cf06d0bfdc"
+    },
+    "imagingTestsSHA256": "42571f3e0dccee4406066f367609b8987b0d3de24f968a5b74701f1a0a2cded4",
+    "productionImageRuntimeSHA256": "f33f02059133f58505a13fc04e4e3b751f289c955ba23294d37f8506159b1c24",
+    "requiredSwiftInputs": {
+      "path": "output/035-development/portable-program-u/swift-build-inputs.sha256",
+      "sha256": "52a836bc503d1fae32b424d490a83d203c0dd790f238e14e30319fed4f45d37d"
+    },
+    "sourceManifest": {
+      "path": "output/035-development/candidate-batch23-preview-ownership/source-files.sha256",
+      "sha256": "08cf2ec825d2bfc0b896dbc5a4c644dd65a637dd138faab8e85956a2fe73921c"
+    }
+  }
+}

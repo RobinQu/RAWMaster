@@ -1,0 +1,692 @@
+{
+  "schema": 1,
+  "feature": "035 / B31 / normal 032 workbench neutral freeze in one established read transaction",
+  "checkoutBase": "1b7df6b61434f243cc98a17fbcaa7d91d0e88b30",
+  "platform": {
+    "chip": "Apple M4 Max",
+    "arch": "arm64",
+    "fileSystem": "internal APFS",
+    "os": "27.0.1"
+  },
+  "normalEntry": "AppModel.openProjectExport() → exportWorkbenchPhotos() → LibraryStore.withReadSnapshot → workbenchStoredInput → editingSourceSnapshot",
+  "production": {
+    "source": {
+      "path": "Sources/RAWMasterCore/LibraryStore+Editing.swift",
+      "sha256": "425977a33fa8c4e760ea1db993e10c3db8e0192bfd89f079d74a801ff358a41e"
+    },
+    "workbenchSource": {
+      "path": "Sources/RAWMaster/WorkbenchPhotoExport.swift",
+      "sha256": "6ae8d70ca993c1e0b33d0cc1fd26b225e5b3f8bf7ab9799f51bbdecf0aee8c5f"
+    },
+    "policy": "Only two completed reads in the same locked main read transaction may supply the proof. No callback, write, global cache or cross-invocation reuse. Public source validation and standalone captures independently reload the current asset and sealed admission."
+  },
+  "functional": {
+    "suite": "RAWMasterCoreTests.EditingTests",
+    "passed": 26,
+    "failed": 0,
+    "seconds": 1.156,
+    "log": {
+      "path": "output/035-development/phase-ac/workbench/editing-tests.log",
+      "sha256": "82b3fbd0afef8d79f00079c50b6b58a0b79c70f31c3737a65ee7f2186f114631"
+    },
+    "regressions": [
+      "testEditingSourceSnapshotSeesOneWALViewAndRevalidatesAfterReAdmission",
+      "testSnapshotRejectsContradictoryAssetIdentityAndUnavailableOrChangedBytes",
+      "testMigratedV7AdmittedWorkKeepsItsOriginalEditingFingerprint"
+    ],
+    "assertions": [
+      "held reader + separate writer remove/readmit with changed real admission timestamp",
+      "contradictory asset primary key, project, availability, byte count and hash rejected on normal and snapshot paths",
+      "legacy nil catalog hash accepts independently verified source and actual admission"
+    ]
+  },
+  "sqlTrace": {
+    "observer": "sqlite3_trace_v2(SQLITE_TRACE_STMT) on the same store.db while calling the real public entry point on 200 admitted sources",
+    "before": {
+      "assetSelects": 400,
+      "admissionSelects": 400
+    },
+    "after": {
+      "assetSelects": 200,
+      "admissionSelects": 200
+    },
+    "frozenArraySHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe",
+    "report": {
+      "path": "output/035-development/phase-ac/workbench/trace.json",
+      "sha256": "ff06d955014aae2adefd9baac6d7cc0c88e59f882a8a435ef753a4de8ff87261"
+    },
+    "traceSource": {
+      "path": "experiments/portable-processing/catalog/workbench-delivery-probe/trace_snapshot.swift",
+      "sha256": "4686c44f91a66d94849b40d4aa93ba8853f4d3318de7053aa5c01163bcd29444"
+    },
+    "transactionModes": {
+      "report": {
+        "path": "output/035-development/phase-ac/workbench/transaction-modes.json",
+        "sha256": "3726d2a175e570e8ad73ee395b693408ae5415d8a1ce066cf88767be130a840e"
+      },
+      "cases": {
+        "before": {
+          "read": {
+            "mode": "read",
+            "sources": "200",
+            "assetSelects": "400",
+            "admissionSelects": "400",
+            "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe"
+          },
+          "autocommit": {
+            "mode": "autocommit",
+            "sources": "200",
+            "assetSelects": "400",
+            "admissionSelects": "400",
+            "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe"
+          },
+          "write": {
+            "mode": "write",
+            "sources": "200",
+            "assetSelects": "400",
+            "admissionSelects": "400",
+            "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe"
+          }
+        },
+        "after": {
+          "read": {
+            "mode": "read",
+            "sources": "200",
+            "assetSelects": "200",
+            "admissionSelects": "200",
+            "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe"
+          },
+          "autocommit": {
+            "mode": "autocommit",
+            "sources": "200",
+            "assetSelects": "400",
+            "admissionSelects": "400",
+            "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe"
+          },
+          "write": {
+            "mode": "write",
+            "sources": "200",
+            "assetSelects": "400",
+            "admissionSelects": "400",
+            "frozenSHA256": "d8201d9020cbaae585bc4a2da12d911960eeee3868c7f1b87d81ee21b37071fe"
+          }
+        }
+      }
+    }
+  },
+  "buildIsolation": {
+    "methods": "Two privately linked macOS optimized WMO Core objects, recompiled from identical core files except LibraryStore+Editing.swift. Identical compiled app entry, shared benchmark harness object and copied Batch30 sealed image, catalog and photo-export runtimes. No current candidate image work is covered.",
+    "builds": {
+      "before": {
+        "coreObjectSHA256": "c7077d8fd40b391023290fb4a27e773b181481a3771d07594274d4a8eb64bf79",
+        "xctestSHA256": "3b97dfb16631efc913b70e7e2deda705c2349ba61d54f8c03f2c698af78ad593",
+        "runtimes": {
+          "rawmaster-image.runtime": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+          "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+          "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+        }
+      },
+      "after": {
+        "coreObjectSHA256": "7753a13754893a762209f1d1d46d2a2bffa8390c20f52fa1abf74260e529f8e1",
+        "xctestSHA256": "900cc88cf3b4810bb2b84fb051068155911c8063ec676c9fd594e8f8142e378e",
+        "runtimes": {
+          "rawmaster-image.runtime": "9dadafec17e7e3947db70f4fab957ae5f60ef885c9a486a5c605b42de4caf5d2",
+          "rawmaster-library.runtime": "1a78c936c3e65bf3c360b9920d53b0dc569de18a00d87caf022447203d1b0c20",
+          "rawmaster-photo-export.runtime": "10ae50d978c4507fb85e515065c054d171dbf7be5e9d0f36823d458c48aaf2db"
+        }
+      }
+    },
+    "sharedBenchmarkHarnessObjectSHA256": "a2a17ea3e4d6ed9579754847031a597ffe6596a8d4c17a3c8e7f05f2e5a1e270"
+  },
+  "method": {
+    "entry": "RAWMasterUITests.ExportPerformanceTests/testRealWorkbenchBenchmarks via xcrun xctest",
+    "configuration": "JPEG 0.9, plain layout, no GPS, original neutral version, maximum long edge 2048, default benchmark exporter settings",
+    "clock": "Each arm process warms, times one sample of each of 5 groups, joins shutdown, then runs VACUUM INTO on that very LibraryStore to preserve the frozen manifests/tickets for all 10 batches. Time to first reported completed file and total workbench submission wall time.",
+    "sizes": "JPEG 1,20,200; uncompressed DNG 1,20. Every output is a JPEG. A is the original double lookup and B is snapshot reuse.",
+    "execution": "Main A/B/B/A and alternate B/A/A/B were serial in a reserved native slot. A short read-only fixture search occurred during the main sequence. No competing image benchmark was run.",
+    "scope": "Two measured samples per arm per group. This is not P95 or an across-machine throughput estimate. Historical main 4.795 s total/0.082 s first for 200 remains faster."
+  },
+  "inputs": {
+    "main": "032 generated 200 distinct 4000×2666 JPEG inputs and 20 generated 2400×1600 RGGB DNGs.",
+    "secondary": "200 distinct 2048×1365 JPEG files from the same scenes, already exported by Batch29. Twenty new 2400×1600 RGGB DNG payloads use a deterministic stripe pattern with an ordinal-specific row change and the 032 TIFF header.",
+    "alternateGenerator": {
+      "path": "experiments/portable-processing/catalog/workbench-delivery-probe/alternate_inputs.py",
+      "sha256": "db0dcc5e4a4781f858102edd9a62de5c81e50f1a83736e854ba8c494f64afe24"
+    },
+    "difference": {
+      "jpeg-source": {
+        "countPerSource": 200,
+        "sharedSHA256": 0
+      },
+      "raw-source": {
+        "countPerSource": 20,
+        "sharedSHA256": 0
+      }
+    }
+  },
+  "audited": {
+    "batches": 80,
+    "files": 3872,
+    "databases": 8,
+    "checks": [
+      "complete manifest SHA links to control/target/done and to every ordinal",
+      "all terminal on generation/attempt 1, all leases and names released",
+      "frozen work/version asset, project, SHA-256, actual size, file URL and recomputed sealed admission fingerprint",
+      "actual APFS target and final file UUID/inode/nanosecond birth from held fd, file SHA-256 and length",
+      "only expected final relative names, no retained stage",
+      "SQLite integrity_check and foreign_key_check",
+      "all warm and timed per-source→delivery mappings equal across arms within each of the two datasets"
+    ],
+    "offlineTool": {
+      "path": "experiments/portable-processing/catalog/workbench-delivery-probe/verify_benchmark_receipts.py",
+      "sha256": "0e248095febce5f6573d02e9fd6577aba76b3a6d1f12f67a3bedfa58211a0c39"
+    },
+    "allTicketsArchive": {
+      "path": "specs/035-portable-processing-cores/evidence/workbench-snapshot-receipts.jsonl.gz",
+      "sha256": "9e6827ba414c3ff158aaac8b8d4d675062ad51f4db662dab19eb9f54abc8464e"
+    },
+    "archiveFormat": "One gzip JSON line per batch, holding the full final persisted item with its original serialized SHA-256, the typed source/work/version identifiers, destination identity and terminal control. No live lease token is present.",
+    "archiveTool": {
+      "path": "experiments/portable-processing/catalog/workbench-delivery-probe/pack_verified_receipts.py",
+      "sha256": "e8865296fe3ecddc6df17e6243f02e744e9fc99be935e78ee1098835728a5844"
+    }
+  },
+  "datasets": {
+    "main": {
+      "order": [
+        "a1",
+        "b1",
+        "b2",
+        "a2"
+      ],
+      "detail": {
+        "path": "output/035-development/phase-ac/workbench/main-receipts.json",
+        "sha256": "638b93d4a59406b619247776311cba0264c2e728969c28570a39ac7312e071bb"
+      },
+      "inputsSHA256": "f4b9932a70fd5378032b13babcd9ffa3599235da9338f49fe0485b7c211547bb",
+      "batches": 40,
+      "files": 1936,
+      "sourceToFinalMappings": {
+        "jpeg-source/1": "a482b46ad1e78aaff2b3bb40d828a1352c69d95b0ae439b6cc7beff5dc45c19f",
+        "raw-source/20": "970998128e818d9c538f1a181d57db3aebf3f19338358d091721e38eda69df8e",
+        "jpeg-source/20": "13246795cd706a6b1f80d3d0fe96c8d17e607f579ce3a002573c447f536ace08",
+        "jpeg-source/200": "0ff6505f986c58542d3289f1452f96fd1084d1ef006c0fe896a640bc8edeef77",
+        "raw-source/1": "c5f03c405cb98551ea6496a12f1a399e960588d91e32b6ce604b4eaa07ef241e"
+      },
+      "twoSampleMedians": {
+        "jpeg-source/1": {
+          "before": {
+            "totalSeconds": 0.109209375,
+            "firstFileSeconds": 0.107822958
+          },
+          "after": {
+            "totalSeconds": 0.11456447950000001,
+            "firstFileSeconds": 0.112767125
+          },
+          "changePercent": {
+            "totalSeconds": 4.904,
+            "firstFileSeconds": 4.585
+          }
+        },
+        "jpeg-source/20": {
+          "before": {
+            "totalSeconds": 1.0192092289999999,
+            "firstFileSeconds": 0.15344902049999998
+          },
+          "after": {
+            "totalSeconds": 0.8311462085000001,
+            "firstFileSeconds": 0.155880875
+          },
+          "changePercent": {
+            "totalSeconds": -18.452,
+            "firstFileSeconds": 1.585
+          }
+        },
+        "jpeg-source/200": {
+          "before": {
+            "totalSeconds": 6.9511860625,
+            "firstFileSeconds": 0.1692611875
+          },
+          "after": {
+            "totalSeconds": 7.7984723335,
+            "firstFileSeconds": 0.15970908350000002
+          },
+          "changePercent": {
+            "totalSeconds": 12.189,
+            "firstFileSeconds": -5.643
+          }
+        },
+        "raw-source/1": {
+          "before": {
+            "totalSeconds": 0.0836875205,
+            "firstFileSeconds": 0.082105583
+          },
+          "after": {
+            "totalSeconds": 0.08923585449999999,
+            "firstFileSeconds": 0.0877517505
+          },
+          "changePercent": {
+            "totalSeconds": 6.63,
+            "firstFileSeconds": 6.877
+          }
+        },
+        "raw-source/20": {
+          "before": {
+            "totalSeconds": 0.8657325,
+            "firstFileSeconds": 0.1159955835
+          },
+          "after": {
+            "totalSeconds": 0.8922477289999999,
+            "firstFileSeconds": 0.1024260625
+          },
+          "changePercent": {
+            "totalSeconds": 3.063,
+            "firstFileSeconds": -11.698
+          }
+        }
+      },
+      "rounds": {
+        "a1": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.109270375,
+              "firstFileSeconds": 0.10793525,
+              "maxRSSKiB": 240704
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.7630035,
+              "firstFileSeconds": 0.153672291,
+              "maxRSSKiB": 770176
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 7.028285792,
+              "firstFileSeconds": 0.167272167,
+              "maxRSSKiB": 840560
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.084761791,
+              "firstFileSeconds": 0.0832125,
+              "maxRSSKiB": 840560
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.897201375,
+              "firstFileSeconds": 0.110341834,
+              "maxRSSKiB": 840560
+            }
+          },
+          "receiptsDBSHA256": "1c295ef41fd1f85aa98c0ba5b2009551a013ed29336225166c79f77715fa6aeb",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/main-a1/rawmaster/results.json",
+            "sha256": "db14171304ad5700f10d639ee1c84daf7cb16598cf9712578d9d01a03d9cf830"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/main-a1/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        },
+        "b1": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.114999292,
+              "firstFileSeconds": 0.112858667,
+              "maxRSSKiB": 242736
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.784373167,
+              "firstFileSeconds": 0.15074775,
+              "maxRSSKiB": 829360
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 8.588748125,
+              "firstFileSeconds": 0.156385875,
+              "maxRSSKiB": 866816
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.087992875,
+              "firstFileSeconds": 0.086481667,
+              "maxRSSKiB": 866816
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.886679458,
+              "firstFileSeconds": 0.106924,
+              "maxRSSKiB": 866816
+            }
+          },
+          "receiptsDBSHA256": "fc96890d87959a43c4a3011444ae5e8233c32fae4796dc6ad1034e974137a870",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/main-b1/rawmaster/results.json",
+            "sha256": "87eb13d3b2470459170abc854320fc2f793c07b7e5e23b3550a46c38577f2d64"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/main-b1/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        },
+        "b2": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.114129667,
+              "firstFileSeconds": 0.112675583,
+              "maxRSSKiB": 240880
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.87791925,
+              "firstFileSeconds": 0.161014,
+              "maxRSSKiB": 782432
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 7.008196542,
+              "firstFileSeconds": 0.163032292,
+              "maxRSSKiB": 850496
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.090478834,
+              "firstFileSeconds": 0.089021834,
+              "maxRSSKiB": 850496
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.897816,
+              "firstFileSeconds": 0.097928125,
+              "maxRSSKiB": 850496
+            }
+          },
+          "receiptsDBSHA256": "cbd0acbd7875cbb909939cecdc404e79f83805997b6f740034568184797bb4d9",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/main-b2/rawmaster/results.json",
+            "sha256": "04c536a0283f07de43462594d90ea4d37e5b25df904a7e28ab18c8b0a111f770"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/main-b2/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        },
+        "a2": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.109148375,
+              "firstFileSeconds": 0.107710666,
+              "maxRSSKiB": 240992
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 1.275414958,
+              "firstFileSeconds": 0.15322575,
+              "maxRSSKiB": 826640
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 6.874086333,
+              "firstFileSeconds": 0.171250208,
+              "maxRSSKiB": 916960
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.08261325,
+              "firstFileSeconds": 0.080998666,
+              "maxRSSKiB": 916960
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.834263625,
+              "firstFileSeconds": 0.121649333,
+              "maxRSSKiB": 916960
+            }
+          },
+          "receiptsDBSHA256": "b67b06c9e9db9b00c9cf0aa26a05b3d4f2c682f1a174c2810b2c2895db88884d",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/main-a2/rawmaster/results.json",
+            "sha256": "80d5d46bdc00ece3fb065059521353b01ac74aa1087f7cc93b7496bf48d065c7"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/main-a2/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        }
+      }
+    },
+    "secondary": {
+      "order": [
+        "b1",
+        "a1",
+        "a2",
+        "b2"
+      ],
+      "detail": {
+        "path": "output/035-development/phase-ac/workbench/secondary-receipts.json",
+        "sha256": "223bde2b8040e9911fd50b7c665f573b9d5d1f5d508d463728cdcf5e98c0b618"
+      },
+      "inputsSHA256": "761b9b53c85a0ff4565f9425ec5d971be99d30237762dd5bbe4a1ab760232c00",
+      "batches": 40,
+      "files": 1936,
+      "sourceToFinalMappings": {
+        "jpeg-source/200": "c8fc94f876cfe0cd900d102eca16167fc035642d6bce9ec25cac8e8a01362801",
+        "raw-source/1": "f7f96448c49fe5e89a1b49c16340fd86d608282db934bb3cdf982ff871039b93",
+        "raw-source/20": "9c48a0d7f3b99f755407a249707bacd6b26fbcba420d6c19da85c769065bd195",
+        "jpeg-source/20": "0d37eb999675b2829a34094f92e3e5568d6b37df68211fabb49d25279d670bd9",
+        "jpeg-source/1": "712d28f08a319d6de3f11866464410047565fb70f648bfb8787568e79e687c79"
+      },
+      "twoSampleMedians": {
+        "jpeg-source/1": {
+          "before": {
+            "totalSeconds": 0.073396625,
+            "firstFileSeconds": 0.071872396
+          },
+          "after": {
+            "totalSeconds": 0.06928343749999999,
+            "firstFileSeconds": 0.0678130415
+          },
+          "changePercent": {
+            "totalSeconds": -5.604,
+            "firstFileSeconds": -5.648
+          }
+        },
+        "jpeg-source/20": {
+          "before": {
+            "totalSeconds": 0.6285706455,
+            "firstFileSeconds": 0.1129569375
+          },
+          "after": {
+            "totalSeconds": 0.6389826875,
+            "firstFileSeconds": 0.126336625
+          },
+          "changePercent": {
+            "totalSeconds": 1.656,
+            "firstFileSeconds": 11.845
+          }
+        },
+        "jpeg-source/200": {
+          "before": {
+            "totalSeconds": 6.4738272079999994,
+            "firstFileSeconds": 0.1231639165
+          },
+          "after": {
+            "totalSeconds": 6.3678331045,
+            "firstFileSeconds": 0.1155304375
+          },
+          "changePercent": {
+            "totalSeconds": -1.637,
+            "firstFileSeconds": -6.198
+          }
+        },
+        "raw-source/1": {
+          "before": {
+            "totalSeconds": 0.089041375,
+            "firstFileSeconds": 0.08751025
+          },
+          "after": {
+            "totalSeconds": 0.088565125,
+            "firstFileSeconds": 0.08709425
+          },
+          "changePercent": {
+            "totalSeconds": -0.535,
+            "firstFileSeconds": -0.475
+          }
+        },
+        "raw-source/20": {
+          "before": {
+            "totalSeconds": 0.8536125,
+            "firstFileSeconds": 0.11907741649999999
+          },
+          "after": {
+            "totalSeconds": 0.8557820414999999,
+            "firstFileSeconds": 0.118600729
+          },
+          "changePercent": {
+            "totalSeconds": 0.254,
+            "firstFileSeconds": -0.4
+          }
+        }
+      },
+      "rounds": {
+        "b1": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.06808075,
+              "firstFileSeconds": 0.066584375,
+              "maxRSSKiB": 177200
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.618225458,
+              "firstFileSeconds": 0.130769,
+              "maxRSSKiB": 646208
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 6.405632292,
+              "firstFileSeconds": 0.113858167,
+              "maxRSSKiB": 674336
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.087524958,
+              "firstFileSeconds": 0.086166208,
+              "maxRSSKiB": 674336
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.85622725,
+              "firstFileSeconds": 0.1217445,
+              "maxRSSKiB": 674336
+            }
+          },
+          "receiptsDBSHA256": "a66c04c22bc5cbf4ece41643b3a7c8665e46d6ef944f63631d4947dbbbbb8493",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/secondary-b1/rawmaster/results.json",
+            "sha256": "677d329516e6b1a65c8baba3c6c7758a5ff41569083f78ada053c66693dc1f75"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/secondary-b1/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        },
+        "a1": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.07850225,
+              "firstFileSeconds": 0.077057625,
+              "maxRSSKiB": 178480
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.625215291,
+              "firstFileSeconds": 0.117153166,
+              "maxRSSKiB": 633072
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 6.518316458,
+              "firstFileSeconds": 0.1268345,
+              "maxRSSKiB": 653216
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.091303917,
+              "firstFileSeconds": 0.089746167,
+              "maxRSSKiB": 653216
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.889971125,
+              "firstFileSeconds": 0.129411916,
+              "maxRSSKiB": 653216
+            }
+          },
+          "receiptsDBSHA256": "83bd02c519b422af439e3e9d8b1a06cb351aa0b997b9d3e4274353b52205da03",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/secondary-a1/rawmaster/results.json",
+            "sha256": "0a4c5beba480c669d16dca48b54aa45daf78e4f388ad57c2010fd9f3397076bd"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/secondary-a1/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        },
+        "a2": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.068291,
+              "firstFileSeconds": 0.066687167,
+              "maxRSSKiB": 178656
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.631926,
+              "firstFileSeconds": 0.108760709,
+              "maxRSSKiB": 605456
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 6.429337958,
+              "firstFileSeconds": 0.119493333,
+              "maxRSSKiB": 663536
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.086778833,
+              "firstFileSeconds": 0.085274333,
+              "maxRSSKiB": 663536
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.817253875,
+              "firstFileSeconds": 0.108742917,
+              "maxRSSKiB": 663536
+            }
+          },
+          "receiptsDBSHA256": "13a7394e94f10120fa8ee17d8ebfe611c5780d49c8bd8f5c9bd32e0a302ef4dd",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/secondary-a2/rawmaster/results.json",
+            "sha256": "ed523bc7d058c4a2818c91bc5db283c6522868f1d9f201847602e21e738d7fb4"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/secondary-a2/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        },
+        "b2": {
+          "groups": {
+            "jpeg-source/1": {
+              "totalSeconds": 0.070486125,
+              "firstFileSeconds": 0.069041708,
+              "maxRSSKiB": 177712
+            },
+            "jpeg-source/20": {
+              "totalSeconds": 0.659739917,
+              "firstFileSeconds": 0.12190425,
+              "maxRSSKiB": 629440
+            },
+            "jpeg-source/200": {
+              "totalSeconds": 6.330033917,
+              "firstFileSeconds": 0.117202708,
+              "maxRSSKiB": 663552
+            },
+            "raw-source/1": {
+              "totalSeconds": 0.089605292,
+              "firstFileSeconds": 0.088022292,
+              "maxRSSKiB": 663552
+            },
+            "raw-source/20": {
+              "totalSeconds": 0.855336833,
+              "firstFileSeconds": 0.115456958,
+              "maxRSSKiB": 663552
+            }
+          },
+          "receiptsDBSHA256": "72931b9ff803415e1a624c5a23a87aaf4517ef9ad3e05cdc7be6ad5e222141ac",
+          "timings": {
+            "path": "output/035-development/phase-ac/workbench/secondary-b2/rawmaster/results.json",
+            "sha256": "5e6984eb45fd3bc1e414b6817a71b695aab91e84eaa65f685341228bb1071492"
+          },
+          "nativeStatus": {
+            "path": "output/035-development/phase-ac/workbench/secondary-b2/run.command.json",
+            "sha256": "1bce74a8ee8a9404a7e60f4b405c984b6796b962931fef5656d2797ed964595e"
+          }
+        }
+      }
+    }
+  }
+}

@@ -89,7 +89,8 @@ const RMPhotos = (() => {
               v.h > 0 &&
               v.h <= 100000,
           )
-          .map((v) => ({
+          .map((v, index) => ({
+            id: typeof v.id === 'string' ? v.id.slice(0, 100) : String(index),
             label: v.label,
             w: v.w,
             h: v.h,
@@ -99,6 +100,7 @@ const RMPhotos = (() => {
         if (!versions.length) versions.push({ label: '原始版本', w: p.w, h: p.h });
         result.push({
           ...p,
+          id: item.id,
           name: typeof item.name === 'string' ? item.name.slice(0, 100) : p.name,
           date: p.date.replaceAll('-', ''),
           online: item.online === true,
