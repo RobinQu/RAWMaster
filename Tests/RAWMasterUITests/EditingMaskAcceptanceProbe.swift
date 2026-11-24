@@ -154,7 +154,7 @@ extension EditingInteractionPerformanceTests {
     }
 
     @MainActor static func exportReopenedMask(library: URL, workID: String, layer: DevelopmentMaskLayerV3,
-                                              output: URL, report: inout [String: Any]) async throws {
+                                              output: URL, report: inout [String: Any], expectsBrighter: Bool = true) async throws {
         let store = try LibraryStore(databaseURL: library)
         let work = try store.photoWork(id: workID)
         let recipe = try Self.required(work.liveRecipe)
@@ -216,8 +216,12 @@ extension EditingInteractionPerformanceTests {
         report["pixelComparison"] = difference
         Self.gate((difference["protectedPixels"] ?? 0) > 0 && difference["protectedMaximumRGBA16Difference"] == 0,
             "mask.samePrefixProtectedPixelsExact", &report)
-        Self.gate((difference["selectedPixels"] ?? 0) > 0 && (difference["selectedBrighterPixels"] ?? 0) > 0 &&
-            (difference["selectedRGBSumGain"] ?? 0) > 0, "mask.nonemptySelectionBrighter", &report)
+        if expectsBrighter {
+            Self.gate((difference["selectedPixels"] ?? 0) > 0 && (difference["selectedBrighterPixels"] ?? 0) > 0 &&
+                (difference["selectedRGBSumGain"] ?? 0) > 0, "mask.nonemptySelectionBrighter", &report)
+        } else {
+            Self.gate((difference["selectedChangedRGBPixels"] ?? 0) > 0, "mask.selectionChangesRGB", &report)
+        }
     }
 
     // The fresh work has identity geometry. A subject layer reads only its frozen Gray8 and opacity.
@@ -237,7 +241,7 @@ extension EditingInteractionPerformanceTests {
         var pixels = [SIMD4<UInt16>](repeating: .zero, count: width * rowsPerTile)
         var comparison = pixels
         var matte = [Float](repeating: 0, count: width * rowsPerTile)
-        var outside = 0, outsideMax = 0, inside = 0, brighter = 0, gain = 0
+        var outside = 0, outsideMax = 0, inside = 0, changed = 0, brighter = 0, gain = 0
         for y in stride(from: 0, to: height, by: rowsPerTile) {
             try Task.checkCancellation()
             let rows = min(rowsPerTile, height - y)
@@ -258,6 +262,7 @@ extension EditingInteractionPerformanceTests {
                     }
                 } else if matte[i] >= 0.5 {
                     inside += 1
+                    if a.x != b.x || a.y != b.y || a.z != b.z { changed += 1 }
                     let delta = Int(a.x) + Int(a.y) + Int(a.z) - Int(b.x) - Int(b.y) - Int(b.z)
                     gain += delta
                     if delta > 0 { brighter += 1 }
@@ -265,6 +270,6 @@ extension EditingInteractionPerformanceTests {
             }
         }
         return ["protectedPixels": outside, "protectedMaximumRGBA16Difference": outsideMax, "selectedPixels": inside,
-                "selectedBrighterPixels": brighter, "selectedRGBSumGain": gain]
+                "selectedChangedRGBPixels": changed, "selectedBrighterPixels": brighter, "selectedRGBSumGain": gain]
     }
 }

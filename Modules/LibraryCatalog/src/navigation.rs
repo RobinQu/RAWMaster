@@ -12,7 +12,7 @@ pub(crate) fn open_reader(catalog: &Path) -> Result<Connection> {
     db.busy_timeout(Duration::from_secs(3))?;
     db.pragma_update(None, "query_only", true)?;
     let version: i64 = db.query_row("PRAGMA user_version", [], |r| r.get(0))?;
-    if version != crate::CATALOG_SCHEMA_VERSION {
+    if !crate::readable_schema(version) {
         return Err(format!("Unsupported library version {version}").into());
     }
     Ok(db)

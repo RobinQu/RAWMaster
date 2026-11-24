@@ -3,6 +3,7 @@ import Foundation
 import ImageIO
 import MaskAI
 import RAWMasterCore
+import RAWMasterLibrary
 import Vision
 
 public struct DevelopmentMaskCandidate: Sendable {
@@ -157,23 +158,48 @@ public actor DevelopmentSemanticMaskService {
     instances = nil
     client.releaseResources()
   }
+  private func releaseAnalysisResourcesIfCurrent(
+    _ source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?
+  ) {
+    if activeSource == source && activeRawDecoder == rawDecoder { releaseAnalysisResources() }
+  }
+
+  private nonisolated func withAnalysisPermit<T: Sendable>(
+    source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?,
+    operation: @Sendable (MaskCancellation) async throws -> T
+  ) async throws -> T {
+    let stop = MaskCancellation()
+    return try await withTaskCancellationHandler {
+      let result: Result<T, Error>
+      do {
+        result = try await ProcessingAdmission.shared.withPermit(.editing, resources: .init(cpu: 1, gpu: 1, memoryBytes: 256 << 20)) {
+          // Admitted operations clean up on the analysis actor before releasing the permit.
+          do { return .success(try await operation(stop)) }
+          catch { return .failure(error) }
+        }
+      } catch is CancellationError {
+        await releaseAnalysisResourcesIfCurrent(source, rawDecoder: rawDecoder)
+        throw CancellationError()
+      }
+      return try result.get()
+    } onCancel: {
+      stop.cancel()
+    }
+  }
+
   public nonisolated func generate(
     capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget,
     prompt: [DevelopmentSourcePoint] = [], rawDecoder: DevelopmentRAWDecoder? = nil
   ) async throws -> DevelopmentMaskCandidate {
-    let stop = MaskCancellation()
-    return try await withTaskCancellationHandler {
-      try await compute(
-        capture: capture, source: source, target: target, prompt: prompt, rawDecoder: rawDecoder, stop: stop)
-    } onCancel: {
-      stop.cancel()
+    try await withAnalysisPermit(source: source, rawDecoder: rawDecoder) { stop in
+      try await self.compute(capture: capture, source: source, target: target, prompt: prompt, rawDecoder: rawDecoder, stop: stop)
     }
   }
   private func compute(
     capture: URL, source: DevelopmentLocalEditSourceBinding, target: DevelopmentSemanticTarget,
     prompt: [DevelopmentSourcePoint], rawDecoder: DevelopmentRAWDecoder?, stop: MaskCancellation
   ) throws -> DevelopmentMaskCandidate {
-    defer { if stop.native.isCancelled { releaseAnalysisResources() } }
+    defer { if stop.native.isCancelled { releaseAnalysisResourcesIfCurrent(source, rawDecoder: rawDecoder) } }
     try prompt.forEach { try $0.validate() }
     try admit(capture, source: source, rawDecoder: rawDecoder, stop: stop)
     let component: DevelopmentMaskModelPack.Component?
@@ -411,18 +437,15 @@ public actor DevelopmentSemanticMaskService {
   public nonisolated func instanceOptions(capture: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder? = nil)
     async throws -> [InstanceOption]
   {
-    let stop = MaskCancellation()
-    return try await withTaskCancellationHandler {
-      try await listInstances(capture: capture, source: source, rawDecoder: rawDecoder, stop: stop)
-    } onCancel: {
-      stop.cancel()
+    try await withAnalysisPermit(source: source, rawDecoder: rawDecoder) { stop in
+      try await self.listInstances(capture: capture, source: source, rawDecoder: rawDecoder, stop: stop)
     }
   }
 
   private func listInstances(
     capture: URL, source: DevelopmentLocalEditSourceBinding, rawDecoder: DevelopmentRAWDecoder?, stop: MaskCancellation
   ) throws -> [InstanceOption] {
-    defer { if stop.native.isCancelled { releaseAnalysisResources() } }
+    defer { if stop.native.isCancelled { releaseAnalysisResourcesIfCurrent(source, rawDecoder: rawDecoder) } }
     try admit(capture, source: source, rawDecoder: rawDecoder, stop: stop)
     let input = try prepare(capture, source: source, rawDecoder: rawDecoder, stop: stop)
     let (_, obs) = try observation(for: input, stop: stop)

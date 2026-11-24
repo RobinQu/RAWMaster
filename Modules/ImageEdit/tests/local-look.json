@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "working": "extended-linear-srgb-premul-f32",
+  "output": "result",
+  "nodes": [
+    {"id":"result", "op":"blend", "base":"global", "layer":"look", "mask":"coverage"},
+    {"id":"look", "op":"matrix", "image":"local", "rows":[[1.06,0.03,0.01],[0.02,0.98,0.0],[0.0,0.02,0.91]]},
+    {"id":"global", "op":"exposure", "image":"original", "ev":0.25},
+    {"id":"local", "op":"exposure", "image":"original", "ev":-0.5},
+    {"id":"coverage", "op":"mask"},
+    {"id":"original", "op":"source"}
+  ]
+}

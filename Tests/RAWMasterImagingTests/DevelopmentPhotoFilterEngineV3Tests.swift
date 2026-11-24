@@ -4,6 +4,7 @@ import ImageIO
 import CryptoKit
 import Metal
 import RAWMasterCore
+import RAWMasterImage
 @testable import RAWMasterImaging
 
 final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
@@ -142,7 +143,7 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
     let root=try fixture();defer{try? FileManager.default.removeItem(at:root)}
     let store=DevelopmentPhotoFilterResourceStore(resourceRoot:root),context=context();defer{store.trimReady();context.clearCaches()}
     let pair=try store.pair(.init(enabled:true,selection:.vivid,intensity:100))
-    let shader=DevelopmentPhotoFilterEngineV3.metalSource + #"""
+    let shader=try RAWMasterImageKernel.source(.photoFilter) + #"""
     extern "C" { namespace coreimage {
     [[stitchable]] float4 rmFilterNodeProbe(sampler table,float4 node,destination dest){return float4(rmFilterNodeV1(table,int3(node.xyz)),1);}
     } }
@@ -251,7 +252,7 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
       try autoreleasepool {
         let store=DevelopmentPhotoFilterResourceStore(resourceRoot:root),context=context();defer{store.trimReady();context.clearCaches()}
         let source=image(input,width:input.count,height:1)
-        for amount in [0.0,37,100] {
+        for amount: Double in [0,37,100] {
           let graph=try DevelopmentPhotoFilterEngineV3.apply(.init(enabled:true,selection:look,intensity:amount),to:source,resources:store)
           if amount==0{XCTAssertTrue(graph === source)}
           let actual=try read(graph,context:context)
@@ -270,7 +271,7 @@ final class DevelopmentPhotoFilterEngineV3Tests:XCTestCase {
           // Identical cube data withcolorflagoff must preserve this inside-cube pixel bit-for-bit.
           if amount != 0 {
             let pair=try store.pair(.init(enabled:true,selection:look,intensity:amount))
-            let kernel=try XCTUnwrap(CIKernel.kernels(withMetalString:DevelopmentPhotoFilterEngineV3.metalSource).first(where:{$0.name=="rmPhotoFilterV1"}))
+            let kernel=try XCTUnwrap(CIKernel.kernels(withMetalString:RAWMasterImageKernel.source(.photoFilter)).first(where:{$0.name=="rmPhotoFilterV1"}))
             let params=CIVector(x:CGFloat(pair.weight),y:pair.zeroLower ? 1:0,z:0,w:CGFloat(amount/100))
             let baseline=try XCTUnwrap(kernel.apply(extent:source.extent,roiCallback:{index,rect in index==0 ? rect:CGRect(x:0,y:0,width:512,height:512)},arguments:[source.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params,CIVector(x:0,y:0,z:0,w:0)]))
             let color=try read(baseline,context:context)

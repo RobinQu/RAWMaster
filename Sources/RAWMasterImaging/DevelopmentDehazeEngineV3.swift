@@ -54,10 +54,25 @@ enum DevelopmentDehazeEngineV3 {
       // Native RAW may carry finite upper coverage. Preserve its straight color before
       // both strict operators; malformed values still reach their original rejection.
       let input:CIImage
-      if rawPositiveV2CoverageSuffix(parameters,sourceIsRAW:sourceIsRAW).isEmpty { input=image }
-      else { input=try PreviewFITCoverageV1.normalize(image,extent:image.extent) }
-      if let guide = try residentGuide?.acquire(input:input,positive:true,airlight:prepared.airlight,
+      let proofInput: DevelopmentDehazeRestoreProof.NativeInput?
+      if rawPositiveV2CoverageSuffix(parameters,sourceIsRAW:sourceIsRAW).isEmpty {
+        input=image; proofInput=nil
+      } else if DevelopmentDehazeRestoreProof.enabled, let residentGuide, residentGuide.mayCertifyRestore, checkedInput === image {
+        let pair = try DevelopmentDehazeRestoreProof.NativeInput(normalizing:image)
+        input=pair.normalized; proofInput=pair
+      } else {
+        input=try PreviewFITCoverageV1.normalize(image,extent:image.extent); proofInput=nil
+      }
+      if let guide = try residentGuide?.acquire(input:input,checkedSource:sourceIsRAW && checkedInput === image ? image : nil,
+                                                positive:true,airlight:prepared.airlight,
                                                 size:sourceSize,check:checkCancellation) {
+        if let proofInput, let residentGuide,
+           let restored = try residentGuide.certifiedRestore(proofInput,guide:guide,airlight:prepared.airlight,
+                                                            amount:value.amount,context:context) {
+          try Task.checkCancellation()
+          try checkCancellation?()
+          return restored
+        }
         result = try DevelopmentDehazeRfTransportV1.restoreNative(input,guide,airlight:prepared.airlight,amount:value.amount)
       } else if let bounded=try DevelopmentDehazeNativeRfV1.apply(.positiveV2,to:input,airlight:prepared.airlight,
         sourceSize:sourceSize,amount:value.amount,context:context,checkCancellation:checkCancellation){result=bounded}
@@ -80,7 +95,12 @@ enum DevelopmentDehazeEngineV3 {
         result=try applyGuide(to:input,guide:guide,airlight:prepared.airlight,amount:value.amount)
       }
     }
-    try DevelopmentColorEngineV3.validateFinite(result,context:context,checkCancellation:checkCancellation);return result
+    let finalCheck: (() throws -> Void)?
+    if let residentGuide, residentGuide.usesHalfErosion {
+      finalCheck = { try checkCancellation?(); try residentGuide.check() }
+    } else { finalCheck = checkCancellation }
+    try DevelopmentColorEngineV3.validateFinite(result,context:context,checkCancellation:finalCheck)
+    return result
   }
   static func makeGuide(_ image:CIImage,airlight:DevelopmentDehazeAirlightV1)throws->CIImage {
     try airlight.validate()

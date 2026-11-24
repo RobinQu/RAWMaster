@@ -54,7 +54,7 @@ import RAWMasterCore
                     let digest=SHA256.hash(data:Data(bytesNoCopy:buffer.baseAddress!,count:buffer.count,deallocator:.none)).map{String(format:"%02x",$0)}.joined()
                     let samples=ImagePerformanceTelemetry.shared.snapshot().recent.reversed()
                     let fields:[[String:Any]]=samples.map { s in
-                        ["operation":s.operation,"stage":s.stage,"queue":s.queue,"boundary":s.boundary.rawValue,
+                        ["operation":s.operation,"stage":s.stage,"queue":s.queue,"boundary":s.boundary.rawValue,"outcome":s.outcome.rawValue,
                          "pixels":s.pixelCount,"bytes":s.byteCount,"ms":s.durationMilliseconds,
                          "beginNs":s.startedAtNanoseconds,"endNs":s.endedAtNanoseconds]
                     }
@@ -72,10 +72,15 @@ import RAWMasterCore
         await engine.close(session.id)
         let report:[String:Any]=["schemaVersion":1,"protocol":"unique-recipe-canonical-stage-profile-v1","sourceSHA256":expected,
             "sourceSHA256After":try RenderFiles.hash(raw),"baselineSHA256":try RenderFiles.hash(record),"pixels":[2400,1600],
-            "sourceSize":[9504,6336],"binarySHA256":try RenderFiles.hash(URL(fileURLWithPath:CommandLine.arguments[0])),
+            "sourceSize":[session.orientedNativeSize.width,session.orientedNativeSize.height],
+            "binarySHA256":try RenderFiles.hash(URL(fileURLWithPath:CommandLine.arguments[0])),
             "recordedAt":ISO8601DateFormatter().string(from:Date()),"verified":passed,"operations":results,
             "serialFiniteOverride":ProcessInfo.processInfo.environment["RAWMASTER_CANONICAL_SERIAL_FINITE"] == "1",
+            "serialRawNoiseOverride":ProcessInfo.processInfo.environment["RAWMASTER_CANONICAL_RAW_NOISE_BANDS"] == "0",
             "rescanResidentGlobalOverride":ProcessInfo.processInfo.environment["RAWMASTER_RESCAN_RESIDENT_GLOBAL_FINITE"] == "1",
+            "portableHalfFITRequested":ProcessInfo.processInfo.environment["RAWMASTER_QA_PORTABLE_CANONICAL_HALF_FIT"] == "1",
+            "fullValidationCacheRequested":ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"] == "1",
+            "groupedDehazeErosionRequested":ProcessInfo.processInfo.environment["RAWMASTER_QA_NATIVE_DEHAZE_GROUPED_EROSION"] == "1",
             "nativeDehazeGuideAllowed":ProcessInfo.processInfo.environment["RAWMASTER_NATIVE_DEHAZE_GUIDE"] != "0",
             "processPeakPhysicalFootprintBytes":try processPeakFootprint(),
             "os":ProcessInfo.processInfo.operatingSystemVersionString,"gpu":MTLCreateSystemDefaultDevice()?.name ?? "unknown"]

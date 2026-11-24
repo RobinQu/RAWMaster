@@ -251,45 +251,56 @@ public actor LibraryDiscoveryWorker {
         let runnableKind = kind ?? (faceAvailable ? nil : "scene")
         var count = 0
         while !Task.isCancelled {
-            var filter: [String: CatalogJSON] = ["leaseSeconds": .integer(300)]
-            if let runnableKind { filter["kind"] = .string(runnableKind) }
-            let next = try await actions.perform("discover.claim", filter)
-            if next["job"] == .null {
-                let pending = try await actions.read("discovery", ["op": .string("pending")])
-                let due = pending["kinds"]?.arrayValue?.compactMap(\.stringValue) ?? []
-                if due.contains(where: { runnableKind == nil || $0 == runnableKind }) {
-                    let sync = runnableKind.map { ["kind": CatalogJSON.string($0)] } ?? [:]
-                    _ = try await actions.perform("discover.sync", sync)
-                    continue
-                }
-                return count
+            // The ONNX provider runs on CPU. Keep each request to one photo so editing can proceed between photos.
+            let result = try await ProcessingAdmission.shared.withPermit(.library,
+                resources: .init(cpu: 1, io: 1, memoryBytes: 192 << 20)) {
+                try await self.processNext(actions: actions, kind: runnableKind)
             }
-            guard let job = next["job"], let input = job["input"],
-                  let type = job["kind"]?.stringValue, let id = job["jobID"], let lease = job["lease"],
-                  let version = job["inputVersion"] else { return count }
-            var fields: [String: CatalogJSON] = ["jobID": id, "lease": lease, "inputVersion": version]
-            do {
-                let dir = try temporary()
-                defer { try? FileManager.default.removeItem(at: dir) }
-                let proxy = try await proxy(input, database: actions.database, dir: dir)
-                try Task.checkCancellation()
-                let computed = try invoke(["version": .integer(1), "op": .string(type), "proxy": .string(proxy.path)])
-                guard case let .object(result) = computed else { throw DiscoveryError("模型返回格式无效。") }
-                if case .string(let sha) = result["proxySHA256"] {
-                    try retainProxy(proxy, database: actions.database, sha: sha)
-                }
-                fields.merge(result) { _, new in new }
-                let status = try await actions.perform("discover.finish", fields)
-                if status["status"] == .string("done") { count += 1 }
-            } catch is CancellationError {
-                _ = try await actions.perform("discover.stop", ["jobID": id])
-                throw CancellationError()
-            } catch {
-                _ = try await actions.perform("discover.fail", ["jobID": id, "lease": lease,
-                    "error": .string(String(error.localizedDescription.prefix(2000)))])
-            }
+            guard let result else { break }
+            count += result
         }
         return count
+    }
+
+    private func processNext(actions: CatalogActions, kind runnableKind: String?) async throws -> Int? {
+        var filter: [String: CatalogJSON] = ["leaseSeconds": .integer(300)]
+        if let runnableKind { filter["kind"] = .string(runnableKind) }
+        let next = try await actions.perform("discover.claim", filter)
+        if next["job"] == .null {
+            let pending = try await actions.read("discovery", ["op": .string("pending")])
+            let due = pending["kinds"]?.arrayValue?.compactMap(\.stringValue) ?? []
+            if due.contains(where: { runnableKind == nil || $0 == runnableKind }) {
+                let sync = runnableKind.map { ["kind": CatalogJSON.string($0)] } ?? [:]
+                _ = try await actions.perform("discover.sync", sync)
+                return 0
+            }
+            return nil
+        }
+        guard let job = next["job"], let input = job["input"],
+              let type = job["kind"]?.stringValue, let id = job["jobID"], let lease = job["lease"],
+              let version = job["inputVersion"] else { return nil }
+        var fields: [String: CatalogJSON] = ["jobID": id, "lease": lease, "inputVersion": version]
+        do {
+            let dir = try temporary()
+            defer { try? FileManager.default.removeItem(at: dir) }
+            let proxy = try await proxy(input, database: actions.database, dir: dir)
+            try Task.checkCancellation()
+            let computed = try invoke(["version": .integer(1), "op": .string(type), "proxy": .string(proxy.path)])
+            guard case let .object(result) = computed else { throw DiscoveryError("模型返回格式无效。") }
+            if case .string(let sha) = result["proxySHA256"] {
+                try retainProxy(proxy, database: actions.database, sha: sha)
+            }
+            fields.merge(result) { _, new in new }
+            let status = try await actions.perform("discover.finish", fields)
+            return status["status"] == .string("done") ? 1 : 0
+        } catch is CancellationError {
+            _ = try await actions.perform("discover.stop", ["jobID": id, "lease": lease])
+            throw CancellationError()
+        } catch {
+            _ = try await actions.perform("discover.fail", ["jobID": id, "lease": lease,
+                "error": .string(String(error.localizedDescription.prefix(2000)))])
+        }
+        return 0
     }
 }
 #endif

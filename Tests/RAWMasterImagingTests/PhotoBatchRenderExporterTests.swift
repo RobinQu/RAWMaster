@@ -6,6 +6,43 @@ import RAWMasterCore
 @testable import RAWMasterImaging
 
 final class PhotoBatchRenderExporterTests:XCTestCase{
+    func testCompressedThumbnailInputLimitAndReleaseOnFailure() async throws {
+        let root = FileManager.default.temporaryDirectory.appending(path: "jpeg-backing-" + UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let file = root.appending(path: "encoded.jpg")
+        let count = Int64(2 << 20)
+        try Data(repeating: 0xA0, count: Int(count)).write(to: file)
+        XCTAssertEqual(NeutralJPEGInput.retainedBytes, 0)
+
+        var inputs = [NeutralJPEGInput]()
+        for _ in 0..<4 {
+            let input = try XCTUnwrap(NeutralJPEGInput.capture(file: file, byteCount: count))
+            XCTAssertEqual(CFDataGetLength(input.data), Int(count))
+            inputs.append(input)
+        }
+        XCTAssertEqual(NeutralJPEGInput.retainedBytes, 8 << 20)
+        XCTAssertNil(try NeutralJPEGInput.capture(file: file, byteCount: count))
+        inputs.removeAll()
+        XCTAssertEqual(NeutralJPEGInput.retainedBytes, 0)
+        XCTAssertNil(try NeutralJPEGInput.capture(file: file, byteCount: count + 1))
+        XCTAssertThrowsError(try NeutralJPEGInput.capture(file: file, byteCount: count - 1))
+        XCTAssertEqual(NeutralJPEGInput.retainedBytes, 0)
+
+        let (stream, control) = AsyncStream<Void>.makeStream()
+        let cancelled = Task {
+            for await _ in stream {}
+            return try NeutralJPEGInput.capture(file: file, byteCount: count)
+        }
+        cancelled.cancel()
+        control.finish()
+        do {
+            _ = try await cancelled.value
+            XCTFail("A cancelled stage acquired compressed backing")
+        } catch is CancellationError {}
+        XCTAssertEqual(NeutralJPEGInput.retainedBytes, 0)
+    }
+
     func testRealRecipeResizeQualityNamingAndNoOverwrite()async throws{
         let root=FileManager.default.temporaryDirectory.appendingPathComponent("batch-export-"+UUID().uuidString)
         try FileManager.default.createDirectory(at:root,withIntermediateDirectories:true);defer{try?FileManager.default.removeItem(at:root)}
@@ -26,6 +63,20 @@ final class PhotoBatchRenderExporterTests:XCTestCase{
         await XCTAssertThrowsErrorAsync(try await exporter.export(work:work,version:version,archive:archive,directory:output,filename:"{name}-0001",configuration:configuration))
         XCTAssertThrowsError(try PhotoBatchExportConfiguration(format:.jpeg8,maximumLongEdge:32).validate())
         XCTAssertThrowsError(try PhotoBatchExportConfiguration(format:.jpeg8,jpegQuality:0).validate())
+
+        let protectedAlias = root.appendingPathComponent("protected-alias")
+        try FileManager.default.createSymbolicLink(at: protectedAlias, withDestinationURL: archiveRoot)
+        do {
+            _ = try await exporter.export(work: work, version: version, archive: archive, directory: output,
+                filename: "blocked", configuration: configuration, protectedURLs: [protectedAlias],
+                preparePublication: { _, _ in
+                    try FileManager.default.removeItem(at: protectedAlias)
+                    try FileManager.default.createSymbolicLink(at: protectedAlias, withDestinationURL: output)
+                    return { XCTFail("A retargeted protected alias must prevent publication") }
+                })
+            XCTFail("Expected the protected destination error")
+        } catch DevelopmentError.protectedDestination {}
+        XCTAssertFalse(FileManager.default.fileExists(atPath: output.appendingPathComponent("blocked.jpg").path))
     }
 }
 

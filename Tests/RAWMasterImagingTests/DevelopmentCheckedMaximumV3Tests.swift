@@ -15,9 +15,10 @@ final class DevelopmentCheckedMaximumV3Tests: XCTestCase {
     CIImage(bitmapData:pixels.withUnsafeBytes { Data($0) },bytesPerRow:width*16,size:.init(width:width,height:height),format:.RGBAf,colorSpace:DevelopmentColorEngineV3.linearSRGB)
       .transformed(by:.init(translationX:origin.x,y:origin.y))
   }
-  private func context() throws -> CIContext {
+  private func context(cacheIntermediates: Bool = false) throws -> CIContext {
     guard MTLCreateSystemDefaultDevice() != nil else { throw XCTSkip("Actual Core Image GPU device unavailable") }
-    return CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:512])
+    return CIContext(options:[.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,.workingFormat:CIFormat.RGBAf.rawValue,
+                              .cacheIntermediates:cacheIntermediates,.memoryTarget:512])
   }
   private func whole(_ graph: CIImage,domain: CGRect,context: CIContext, mapping: DevelopmentCheckedMaximumV3.WholeMapping = .automaticExtent) throws -> SIMD4<Float> {
     let reduced=graph.applyingFilter("CIAreaMaximum",parameters:[kCIInputExtentKey:CIVector(cgRect:domain)])
@@ -75,6 +76,88 @@ final class DevelopmentCheckedMaximumV3Tests: XCTestCase {
     }
     XCTAssertEqual(n,2);exact(value,.init(-5,-3,-3,-1))
   }
+
+  func testGroupedCoreImageValidationJoinsBeforeRetryAndIncludesTheLastCell() throws {
+    let ci = try context()
+    defer { ci.clearCaches() }
+    let width = 12 * 1024 + 2, height = 3
+    var pixels = [SIMD4<Float>](repeating:.init(-0.5, -0.75, -0.125, 1), count:width * height)
+    pixels[1024] = .zero
+    pixels[pixels.count - 1] = .init(0.75, 0.875, 2, 1)
+    let graph = image(pixels, width, height)
+    let original = try DevelopmentCheckedMaximumV3.maximum(graph,domain:graph.extent,context:ci)
+    XCTAssertGreaterThan(original.z, 1.5)
+    let modes: [DevelopmentCheckedMaximumV3.ScalarBatching] = [.clearAfterGroup, .retainForRequest]
+    for mode in modes {
+      for revokeAt in [2, 13] {
+        let cached = mode == .retainForRequest
+        let requestContext = try context(cacheIntermediates:cached)
+        var checks = 0
+        XCTAssertThrowsError(try DevelopmentCheckedMaximumV3.maximum(graph,domain:graph.extent,context:requestContext,scalarBatching:mode,
+          checkCancellation:{
+            if checks == revokeAt { throw CancellationError() }
+            checks += 1
+          })) { XCTAssertTrue($0 is CancellationError) }
+        XCTAssertEqual(checks, revokeAt)
+        requestContext.clearCaches()
+        let recoveryContext = try context(cacheIntermediates:cached)
+        defer { recoveryContext.clearCaches() }
+        let recovered = try DevelopmentCheckedMaximumV3.maximum(graph,domain:graph.extent,context:recoveryContext,scalarBatching:mode)
+        exact(recovered, original)
+      }
+    }
+  }
+  func testRetainedFullValidationRejectsRegionalSubmission() throws {
+    let ci = try context(cacheIntermediates:true)
+    defer { ci.clearCaches() }
+    let graph = CIImage(color:.black).cropped(to:CGRect(x:0,y:0,width:4,height:3))
+    XCTAssertThrowsError(try DevelopmentColorEngineV3.validateFinite(graph,context:ci,
+      region:CGRect(x:0,y:0,width:2,height:3),scalarBatching:.retainForRequest)) { error in
+        guard case DevelopmentV3Error.invalidGraph = error else { return XCTFail(String(describing:error)) }
+    }
+  }
+  func testPairedClearsOnlyOnSecondAndFinalJoinedTiles() throws {
+    var count = 0, clearedAfter = [Int]()
+    let value = try DevelopmentCheckedMaximumV3.maximum(domain: CGRect(x: 0, y: 0, width: 2049, height: 1),
+      cacheClearCadence: .everyTwoTiles, cleanupAfterTile: { clearedAfter.append(count) }) { _, pointer in
+        count += 1
+        self.put(.init(Float(count), -2, 3, 1), pointer)
+      }
+    XCTAssertEqual(clearedAfter, [2, 3])
+    exact(value, .init(3, -2, 3, 1))
+  }
+
+  func testPairedClearsImmediatelyOnEveryCancellationBoundary() {
+    for stop in 0..<6 {
+      var checks = 0, writes = 0, clearedAfter = [Int]()
+      XCTAssertThrowsError(try DevelopmentCheckedMaximumV3.maximum(domain: CGRect(x: 0, y: 0, width: 2049, height: 1),
+        cacheClearCadence: .everyTwoTiles, checkCancellation: {
+          defer { checks += 1 }
+          if checks == stop { throw CancellationError() }
+        }, cleanupAfterTile: { clearedAfter.append(writes) }) { _, pointer in
+          writes += 1
+          self.put(.init(repeating: 0), pointer)
+        }) { XCTAssertTrue($0 is CancellationError) }
+      let expected = [[],[1],[1],[2],[2],[2,3]][stop]
+      XCTAssertEqual(clearedAfter, expected)
+    }
+  }
+
+  func testPairedFirstTileWriterFailureAndPoisonAreClearedBeforeReturn() {
+    for poison in [false,true] {
+      var writes = 0, clears = 0
+      let original = NSError(domain: "pair-clear-writer", code: 1)
+      XCTAssertThrowsError(try DevelopmentCheckedMaximumV3.maximum(domain: CGRect(x: 0, y: 0, width: 1025, height: 1),
+        cacheClearCadence: .everyTwoTiles, cleanupAfterTile: { clears += 1 }) { _, pointer in
+          writes += 1
+          if !poison { throw original }
+          self.put(.init(.nan, 0, 0, 1), pointer)
+        }) { if !poison { XCTAssertTrue(($0 as NSError) === original) } }
+      XCTAssertEqual(writes, 1)
+      XCTAssertEqual(clears, 1)
+    }
+  }
+
   func testS3CleanupFollowsWriterPoolExitBeforePostCheckAndNextTile() throws {
     var events=[String](),checks=0,writes=0,clears=0
     let result=try DevelopmentCheckedMaximumV3.maximum(domain:.init(x:0,y:0,width:1025,height:1),checkCancellation:{

@@ -347,7 +347,7 @@ final class PreviewInteractiveProxyTests:XCTestCase {
     let plan=try native.interactivePlan(recipe:neutral(),sourceKey:"source",generation:1,verifiedContentID:source.contentSHA256,maxPixel:2400)
     let pool=PreviewInteractiveProxyPool(),ledger=PreviewPresentationLedger(),scope=PreviewPresentationScope(ledgerForTesting:ledger)
     let cancellation=DevelopmentAnalysisCancellation();cancellation.cancel()
-    XCTAssertThrowsError(try native.renderInteractiveProxy(recipe:neutral(),maxPixel:2400,plan:plan,pool:pool,scope:scope,rawBasePool:nil,memoryLimit:512,cancellation:cancellation))
+    XCTAssertThrowsError(try native.renderInteractiveProxy(recipe:neutral(),maxPixel:2400,plan:plan,pool:pool,programs:PreviewPortableMetalPrograms(),scope:scope,rawBasePool:nil,memoryLimit:512,cancellation:cancellation))
     XCTAssertEqual(pool.statistics(ledger:ledger).fills,0);XCTAssertEqual(ledger.statistics.chargedCPUBytes,0)
   }
   func testInteractiveDehazeRequiresCurrentPreparationBeforeProxyRendering()async throws {

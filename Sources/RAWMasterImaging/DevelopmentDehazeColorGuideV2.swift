@@ -26,15 +26,32 @@ enum DevelopmentDehazeColorGuideV2 {
 
   static func guide(_ image: CIImage, airlight: DevelopmentDehazeAirlightV1,
                     sourceSize: DevelopmentPixelSize) throws -> CIImage {
+    let normalized = try normalizedGuide(image, airlight: airlight)
+    let radius = max(1, Double(min(sourceSize.width,sourceSize.height))*DevelopmentSpatialEngineV3.radiusFraction)
+    return blurred(neighborhoodMinimum(normalized, radius: radius), radius: radius)
+  }
+
+  /// This input already contains exact opaque per-channel native minima.
+  static func guide(afterNativeMinimum image: CIImage, airlight: DevelopmentDehazeAirlightV1,
+                    sourceSize: DevelopmentPixelSize) throws -> CIImage {
+    let checked = try PreviewFITCoverageV1.normalize(image, extent: image.extent)
+    let normalized = try normalizedGuide(checked, airlight: airlight)
+    let radius = max(1, Double(min(sourceSize.width,sourceSize.height))*DevelopmentSpatialEngineV3.radiusFraction)
+    return blurred(normalized, radius: radius)
+  }
+
+  private static func normalizedGuide(_ image: CIImage, airlight: DevelopmentDehazeAirlightV1) throws -> CIImage {
     let air = CIVector(x: airlight.red, y: airlight.green, z: airlight.blue, w: 0)
     guard let normalized = try loaded.get().guide.apply(extent: image.extent,
       roiCallback: { _, rect in rect }, arguments: [image.samplingNearest(), air]) else {
       throw DevelopmentV3Error.invalidGraph
     }
-    let radius = max(1, Double(min(sourceSize.width,sourceSize.height))*DevelopmentSpatialEngineV3.radiusFraction)
-    return neighborhoodMinimum(normalized, radius: radius).clampedToExtent()
-      .applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: max(0.5,radius/2)])
-      .cropped(to: image.extent)
+    return normalized
+  }
+
+  private static func blurred(_ eroded: CIImage, radius: Double) -> CIImage {
+    eroded.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: max(0.5,radius/2)])
+      .cropped(to: eroded.extent)
   }
 
   static func restore(_ image: CIImage, guide: CIImage, airlight: DevelopmentDehazeAirlightV1,

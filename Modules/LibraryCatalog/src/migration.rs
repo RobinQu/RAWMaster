@@ -63,7 +63,8 @@ pub fn preview(backup: &Path) -> Result<Value> {
     let tx = copy.transaction()?;
     let before = signature(&tx)?;
     domains::install(&tx)?;
-    crate::validate_catalog_objects(&tx)?;
+    tx.pragma_update(None, "user_version", 8)?;
+    crate::upgrade_scheduler(&tx)?;
     let quick: String = tx.query_row("PRAGMA quick_check", [], |row| row.get(0))?;
     let broken: bool = tx.query_row(
         "SELECT EXISTS(SELECT 1 FROM pragma_foreign_key_check)",

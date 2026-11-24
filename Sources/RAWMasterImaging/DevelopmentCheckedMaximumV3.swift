@@ -7,6 +7,11 @@ import Darwin
 enum DevelopmentCheckedMaximumV3 {
   static let transportVersion = "checked-maximum-integral1024-clear-after-join-fractional-whole-v3"
   static let tileSide: CGFloat = 1024
+  enum CacheClearCadence { case everyTile, everyTwoTiles }
+  enum ScalarBatching { case disabled, clearAfterGroup, retainForRequest }
+  static let groupedScalarsEnabled = DevelopmentCanonicalFiniteGPU.enabled &&
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_GROUPED_SCALARS"] == "1"
+  private static let scalarGroupSize = 12
 
   struct ScalarRecordBudget {
     static let limit=1024
@@ -50,6 +55,7 @@ enum DevelopmentCheckedMaximumV3 {
       let index,count:Int
       let started:UInt64
       var phase="pre-write-check",writerStarted:UInt64?,writerElapsed:UInt64?
+      var clearPerformed: Bool?
       var clearStarted:UInt64?,clearElapsed:UInt64?,beforeClear:UInt64?,afterClear:UInt64?
     }
     let id=UUID().uuidString
@@ -77,11 +83,20 @@ enum DevelopmentCheckedMaximumV3 {
     }
     func beforeClear() {
       guard tile != nil else { return }
+      tile?.clearPerformed = true
       tile?.beforeClear=Self.footprint();tile?.clearStarted=DispatchTime.now().uptimeNanoseconds
     }
     func afterClear() {
       guard let start=tile?.clearStarted else { return }
       tile?.clearElapsed=DispatchTime.now().uptimeNanoseconds-start;tile?.afterClear=Self.footprint()
+    }
+    func retainedAfterJoin() {
+      guard tile != nil else { return }
+      let footprint = Self.footprint()
+      tile?.clearPerformed = false
+      tile?.clearElapsed = 0
+      tile?.beforeClear = footprint
+      tile?.afterClear = footprint
     }
     func finishTile(success:Bool) {
       guard let tile else { return };self.tile=nil
@@ -90,6 +105,7 @@ enum DevelopmentCheckedMaximumV3 {
         "success":success,"closedPhase":success ? "success":tile.phase+"-error",
         "tileStartedUptimeNanoseconds":tile.started,"closedUptimeNanoseconds":DispatchTime.now().uptimeNanoseconds,
         "writerElapsedNanoseconds":scalar(tile.writerElapsed),"clearElapsedNanoseconds":scalar(tile.clearElapsed),
+        "clearPerformed":tile.clearPerformed.map { $0 as Any } ?? NSNull(),
         "beforeClearPhysFootprintBytes":scalar(tile.beforeClear),"afterClearPhysFootprintBytes":scalar(tile.afterClear),
         "measurementScope":"joined-tile-boundaries-not-continuous-task-peak"])
     }
@@ -138,16 +154,15 @@ enum DevelopmentCheckedMaximumV3 {
   }
 
   static func maximum(_ graph: CIImage, domain: CGRect, context: CIContext,
-                      wholeMapping: WholeMapping = .automaticExtent,
+                      wholeMapping: WholeMapping = .automaticExtent, cacheClearCadence: CacheClearCadence = .everyTile,
+                      scalarBatching: ScalarBatching = .disabled,
                       checkCancellation: (() throws -> Void)? = nil) throws -> SIMD4<Float> {
-    _ = try Partition(domain:domain) // same finite/domain/overflow rejection before either path
+    let partition = try Partition(domain:domain) // same finite/domain/overflow rejection before either path
     var scalars:ScalarValidation?
     func writeAndJoin(_ rect: CGRect,_ pointer: UnsafeMutableRawPointer,_ mapping: WholeMapping) throws {
       try autoreleasepool {
-        let reduced=graph.applyingFilter("CIAreaMaximum",parameters:[kCIInputExtentKey:CIVector(cgRect:rect)])
-        let destination=CIRenderDestination(bitmapData:pointer,width:1,height:1,bytesPerRow:16,format:.RGBAf)
-        destination.colorSpace=DevelopmentColorEngineV3.linearSRGB;destination.alphaMode = .premultiplied
-        destination.isFlipped=true;destination.isClamped=false;destination.isDithered=false
+        let reduced = reducedImage(graph, rect)
+        let destination = scalarDestination(pointer)
         let task: CIRenderTask
         scalars?.phase("start")
         switch mapping {
@@ -171,11 +186,100 @@ enum DevelopmentCheckedMaximumV3 {
       return try checkedJoinedPixel(checkCancellation:checkCancellation) { try writeAndJoin(domain,$0,wholeMapping) }
     }
     scalars=ScalarValidation.enabled()
+    if scalarBatching != .disabled, scalars == nil, cacheClearCadence == .everyTile, partition.count > 1 {
+      return try groupedMaximum(graph, partition:partition, context:context, cacheLifetime:scalarBatching,
+        checkCancellation:checkCancellation)
+    }
     return try streamedMaximum(domain:domain,checkCancellation:checkCancellation,
-                               cleanupAfterTile:{ context.clearCaches() },scalars:scalars) { rect,pointer in
+                               cleanupAfterTile:{ context.clearCaches() },cadence:cacheClearCadence,scalars:scalars) { rect,pointer in
       // Integral streaming retains the S1 mapping, independently of the fractional caller path.
       try writeAndJoin(rect,pointer,.automaticExtent)
     }
+  }
+
+  private static func reducedImage(_ graph: CIImage, _ rect: CGRect) -> CIImage {
+    graph.applyingFilter("CIAreaMaximum", parameters: [kCIInputExtentKey: CIVector(cgRect:rect)])
+  }
+
+  private static func scalarDestination(_ pointer: UnsafeMutableRawPointer) -> CIRenderDestination {
+    let destination = CIRenderDestination(bitmapData:pointer, width:1, height:1, bytesPerRow:16, format:.RGBAf)
+    destination.colorSpace = DevelopmentColorEngineV3.linearSRGB
+    destination.alphaMode = .premultiplied
+    destination.isFlipped = true
+    destination.isClamped = false
+    destination.isDithered = false
+    return destination
+  }
+
+  private static func requireFinite(_ pixel: SIMD4<Float>) throws {
+    guard pixel.x.isFinite, pixel.y.isFinite, pixel.z.isFinite, pixel.w.isFinite else {
+      throw DevelopmentError.invalidEncoding
+    }
+  }
+
+  private static func combined(_ previous: SIMD4<Float>?, _ pixel: SIMD4<Float>) -> SIMD4<Float> {
+    guard let previous else { return pixel } // preserve the first maximum even when all components are negative
+    return .init(max(previous.x,pixel.x), max(previous.y,pixel.y), max(previous.z,pixel.z), max(previous.w,pixel.w))
+  }
+
+  /// The original per-cell Core Image graph, mapping and scalar format are retained.
+  /// The owner clears a retained request context after the display or on error.
+  private static func groupedMaximum(_ graph: CIImage, partition: Partition, context: CIContext,
+                                     cacheLifetime: ScalarBatching,
+                                     checkCancellation: (() throws -> Void)?) throws -> SIMD4<Float> {
+    let telemetry = ImagePerformanceTelemetry.shared.begin(operation:"DevelopmentCheckedMaximumV3.groupedMaximum",
+      stage:cacheLifetime == .retainForRequest ? "原生分组归约 · 请求内缓存" : "原生分组归约",
+      queue:"Metal GPU", boundary:.gpuCompletion)
+    var outcome = ImagePerformanceOutcome.failed
+    defer { ImagePerformanceTelemetry.shared.end(telemetry, outcome:outcome) }
+    func check() throws { try Task.checkCancellation(); try checkCancellation?() }
+    var iterator = partition
+    let capacity = min(scalarGroupSize, partition.count)
+    let result = try withUnsafeTemporaryAllocation(of:SIMD4<Float>.self, capacity:capacity) { storage in
+      storage.initialize(repeating:.init(repeating:.nan))
+      defer { storage.deinitialize() }
+      var maximum: SIMD4<Float>?
+      while let first = iterator.next() {
+        var rectangles = [first]
+        while rectangles.count < capacity, let rect = iterator.next() { rectangles.append(rect) }
+        defer { if cacheLifetime == .clearAfterGroup { context.clearCaches() } }
+        try autoreleasepool {
+          var pending: [(image: CIImage, destination: CIRenderDestination, task: CIRenderTask)] = []
+          pending.reserveCapacity(rectangles.count)
+          var failure: Error?
+          do {
+            for (index, rect) in rectangles.enumerated() {
+              try check()
+              storage[index] = .init(repeating:.nan)
+              let pointer = UnsafeMutableRawPointer(storage.baseAddress!.advanced(by:index))
+              let reduced = reducedImage(graph, rect)
+              let destination = scalarDestination(pointer)
+              let task = try context.startTask(toRender:reduced, to:destination)
+              pending.append((reduced, destination, task))
+            }
+          } catch { failure = error }
+          for item in pending {
+            do { _ = try item.task.waitUntilCompleted() }
+            catch {
+              _ = try? item.task.waitUntilCompleted()
+              if failure == nil { failure = error }
+            }
+          }
+          // Even a later start/cancellation error keeps all accepted GPU jobs and borrowed slots alive through the join.
+          withExtendedLifetime(pending) {}
+          if let failure { throw failure }
+          try check()
+          for index in rectangles.indices {
+            try requireFinite(storage[index])
+            maximum = combined(maximum, storage[index])
+          }
+        }
+      }
+      guard let maximum else { throw DevelopmentV3Error.invalidGraph }
+      return maximum
+    }
+    outcome = .succeeded
+    return result
   }
 
   private static func checkedJoinedPixel(checkCancellation: (() throws -> Void)?,
@@ -185,7 +289,7 @@ enum DevelopmentCheckedMaximumV3 {
     try withUnsafeMutableBytes(of:&pixel) { bytes in try writeAndJoin(bytes.baseAddress!) }
     // Revocation cannot release a submitted pointer early; the writer has actually joined.
     try Task.checkCancellation();try checkCancellation?()
-    guard pixel.x.isFinite,pixel.y.isFinite,pixel.z.isFinite,pixel.w.isFinite else { throw DevelopmentError.invalidEncoding }
+    try requireFinite(pixel)
     return pixel
   }
 
@@ -193,37 +297,47 @@ enum DevelopmentCheckedMaximumV3 {
   /// A poison result can never count as a successful maximum, even for alpha0 graphs.
   /// Cleanup runs after the writer's scopes unwind, before post-join validation or the next tile.
   /// It also runs after a start failure (no task submitted) or an error whose task was joined.
-  static func maximum(domain: CGRect, checkCancellation: (() throws -> Void)? = nil,
+  static func maximum(domain: CGRect, cacheClearCadence: CacheClearCadence = .everyTile, checkCancellation: (() throws -> Void)? = nil,
                       cleanupAfterTile: (() -> Void)? = nil,
                       writeAndJoin: (CGRect,UnsafeMutableRawPointer) throws -> Void) throws -> SIMD4<Float> {
-    try streamedMaximum(domain:domain,checkCancellation:checkCancellation,cleanupAfterTile:cleanupAfterTile,scalars:nil,writeAndJoin:writeAndJoin)
+    try streamedMaximum(domain:domain,checkCancellation:checkCancellation,cleanupAfterTile:cleanupAfterTile,cadence:cacheClearCadence,scalars:nil,writeAndJoin:writeAndJoin)
   }
   private static func streamedMaximum(domain: CGRect,checkCancellation: (() throws -> Void)?,
-                                      cleanupAfterTile: (() -> Void)?,scalars:ScalarValidation?,
+                                      cleanupAfterTile: (() -> Void)?,cadence:CacheClearCadence,scalars:ScalarValidation?,
                                       writeAndJoin: (CGRect,UnsafeMutableRawPointer) throws -> Void) throws -> SIMD4<Float> {
     let partition=try Partition(domain:domain)
     var result: SIMD4<Float>?
+    var owesCleanup = false
+    func clearIfNeeded() {
+      guard owesCleanup else { return }
+      scalars?.beforeClear()
+      cleanupAfterTile?()
+      scalars?.afterClear()
+      owesCleanup = false
+    }
+    defer { clearIfNeeded() }
     for (index,rect) in partition.enumerated() {
       guard !rect.isEmpty,rect.width > 0,rect.height > 0,rect.width <= tileSide,rect.height <= tileSide else { throw DevelopmentV3Error.invalidGraph }
       scalars?.beginTile(index:index,count:partition.count)
       let pixel:SIMD4<Float>
+      let clearNow = cadence == .everyTile || (index + 1).isMultiple(of: 2) || index + 1 == partition.count
       do {
         pixel=try checkedJoinedPixel(checkCancellation:checkCancellation) { pointer in
-          // The production writer's autoreleasepool and wait/error-join have exited first.
-          defer {
-            scalars?.beforeClear();cleanupAfterTile?();scalars?.afterClear()
-          }
+          owesCleanup = true
+          // The writer always returns or throws after rejoining and releasing the scalar destination.
+          defer { if clearNow { clearIfNeeded() } }
           scalars?.beginWriter()
           defer { scalars?.endWriter() }
           try writeAndJoin(rect,pointer)
         }
+        if !clearNow { scalars?.retainedAfterJoin() }
         scalars?.finishTile(success:true)
       } catch {
+        // A failed start, a rejoined write error, a nonfinite scalar or revocation also flushes a previous retained tile.
+        clearIfNeeded()
         scalars?.finishTile(success:false);throw error
       }
-      if let previous=result {
-        result = .init(max(previous.x,pixel.x),max(previous.y,pixel.y),max(previous.z,pixel.z),max(previous.w,pixel.w))
-      } else { result=pixel } // zero would be wrong for an all-negative finite field
+      result = combined(result, pixel)
     }
     guard let result else { throw DevelopmentV3Error.invalidGraph };return result
   }

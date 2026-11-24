@@ -157,7 +157,7 @@ pub fn claim(db: &Connection, b: &Value) -> Result<Value> {
         .unwrap_or(120);
     loop {
         let row:Option<(String,String,String,String,String)>=db.query_row("SELECT job_id,work_id,kind,input_version,model FROM lc_discover_jobs WHERE
-    (state='queued' OR(state='running' AND lease_until<unixepoch())) AND (?1 IS NULL OR kind=?1) ORDER BY rowid LIMIT 1",[kind],
+    (state='queued' OR(state='running' AND lease_until<=unixepoch())) AND (?1 IS NULL OR kind=?1) ORDER BY rowid LIMIT 1",[kind],
     |r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?,r.get(4)?))).optional()?;
         let Some((id, work, k, version, m)) = row else {
             return Ok(json!({"job":null}));
@@ -195,6 +195,15 @@ pub fn stop(db: &Connection, b: &Value) -> Result<Value> {
     if let Some(k) = kind {
         model(k)?;
     }
+    if let Some(lease) = b.get("lease").map(|_| field(b, "lease")).transpose()? {
+        let job = id.ok_or("leased cancellation requires jobID")?;
+        let count = db.execute(
+            "UPDATE lc_discover_jobs SET state='stopped',lease=NULL,lease_until=NULL
+            WHERE job_id=?1 AND state='running' AND lease=?2 AND lease_until>unixepoch()",
+            params![job, lease],
+        )?;
+        return Ok(json!({"stopped":count}));
+    }
     if id.is_none() && work.is_none() && kind.is_none() {
         db.execute(
             "UPDATE lc_discover_state SET paused=1,revision=revision+1 WHERE id=1 AND paused=0",
@@ -207,7 +216,7 @@ pub fn stop(db: &Connection, b: &Value) -> Result<Value> {
 pub fn finish(db: &Connection, b: &Value, fail: bool) -> Result<Value> {
     let id = field(b, "jobID")?;
     let lease = field(b, "lease")?;
-    let row:Option<(String,String,String,String)>=db.query_row("SELECT work_id,kind,input_version,model FROM lc_discover_jobs WHERE job_id=? AND lease=? AND state='running' AND lease_until>=unixepoch()",params![id,lease],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).optional()?;
+    let row:Option<(String,String,String,String)>=db.query_row("SELECT work_id,kind,input_version,model FROM lc_discover_jobs WHERE job_id=? AND lease=? AND state='running' AND lease_until>unixepoch()",params![id,lease],|r|Ok((r.get(0)?,r.get(1)?,r.get(2)?,r.get(3)?))).optional()?;
     let Some((work, k, version, m)) = row else {
         return Ok(json!({"status":"expired"}));
     };
@@ -343,7 +352,7 @@ pub fn pending(db: &Connection) -> Result<Value> {
             due.push(k);
         }
     }
-    let ready:bool=db.query_row("SELECT EXISTS(SELECT 1 FROM lc_discover_jobs WHERE state='queued' OR (state='running' AND lease_until<unixepoch()))",[],|r|r.get(0))?;
+    let ready:bool=db.query_row("SELECT EXISTS(SELECT 1 FROM lc_discover_jobs WHERE state='queued' OR (state='running' AND lease_until<=unixepoch()))",[],|r|r.get(0))?;
     Ok(json!({"kinds":due,"queued":ready,"watermark":tip}))
 }
 pub fn sync(db: &Connection, body: &Value) -> Result<Value> {

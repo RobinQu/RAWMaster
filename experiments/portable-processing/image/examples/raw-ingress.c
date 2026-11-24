@@ -2,7 +2,13 @@
 // The fixed Sony ROI has orientation 1. This probe exercises that versioned input contract.
 #include "CFlashRaw.h"
 #include "flashraw.h"
+#ifdef RAWMASTER_PRODUCTION
+#include "rawmaster_image.h"
+typedef RMImagePlan RawIngressPlan;
+#else
 #include "image_probe.h"
+typedef RmiPlan RawIngressPlan;
+#endif
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,8 +22,11 @@ int main(int argc, char **argv) {
     int status = 1;
     rm_flashraw_context *decoder = rm_flashraw_open(argv[1], argv[2], error, sizeof(error));
     rm_flashraw_frame *frame = NULL;
-    RmiPlan *plan = NULL;
-    float *rgba = NULL, *mask = NULL, *out = NULL;
+    RawIngressPlan *plan = NULL;
+    float *rgba = NULL, *out = NULL;
+#ifndef RAWMASTER_PRODUCTION
+    float *mask = NULL;
+#endif
     if (!decoder || rm_flashraw_decode(decoder, FLASHRAW_BACKEND_CPU_SIMD, FLASHRAW_OUTPUT_LINEAR_RGB_F32,
         FLASHRAW_DEMOSAIC_AUTO, 1, x, y, w, h, &frame, error, sizeof(error)) != 0) {
         fprintf(stderr, "decode: %s\n", error);
@@ -31,14 +40,23 @@ int main(int argc, char **argv) {
         info.output_format != FLASHRAW_OUTPUT_LINEAR_RGB_F32 || bytes != n*3*sizeof(float)) {
         fprintf(stderr, "unexpected decoder frame layout or orientation\n"); goto done;
     }
-    rgba = malloc(n*4*sizeof(float)); out = malloc(n*4*sizeof(float)); mask = calloc(n, sizeof(float));
-    if (!rgba || !out || !mask) goto done;
+    rgba = malloc(n*4*sizeof(float)); out = malloc(n*4*sizeof(float));
+    if (!rgba || !out) goto done;
     for (size_t i = 0; i < n; ++i) {
         memcpy(rgba+4*i, rgb+3*i, 3*sizeof(float)); rgba[4*i+3] = 1;
     }
     const char *graph = "{\"version\":1,\"working\":\"extended-linear-srgb-premul-f32\",\"output\":\"e\","
         "\"nodes\":[{\"id\":\"s\",\"op\":\"source\"},{\"id\":\"e\",\"op\":\"exposure\",\"image\":\"s\",\"ev\":1}]}";
-    if (rmi_open_v1(graph, strlen(graph), RMI_CPU, &plan) || rmi_render_v1(plan, w, h, rgba, 4*n, mask, n, out, 4*n)) {
+#ifdef RAWMASTER_PRODUCTION
+    int image_error = rm_image_abi_version() != 1 ||
+        rm_image_plan_open_v1((const uint8_t *)graph, strlen(graph), NULL, 0, RM_IMAGE_CPU, &plan) ||
+        rm_image_plan_render_v1(plan, w, h, rgba, 4*n, NULL, 0, out, 4*n);
+#else
+    mask = calloc(n, sizeof(float));
+    int image_error = !mask || rmi_open_v1(graph, strlen(graph), RMI_CPU, &plan) ||
+        rmi_render_v1(plan, w, h, rgba, 4*n, mask, n, out, 4*n);
+#endif
+    if (image_error) {
         fprintf(stderr, "image ABI rejected decoded frame\n"); goto done;
     }
     float peak = 0, max_error = 0;
@@ -59,7 +77,12 @@ int main(int argc, char **argv) {
         rm_flashraw_version(decoder), x,y,w,h,info.orientation,max_error,peak,4*n*sizeof(float));
     status = 0;
 done:
-    rmi_close_v1(plan); free(out); free(mask); free(rgba);
+#ifdef RAWMASTER_PRODUCTION
+    rm_image_plan_close_v1(plan);
+#else
+    rmi_close_v1(plan); free(mask);
+#endif
+    free(out); free(rgba);
     if (frame) rm_flashraw_frame_free(frame);
     if (decoder) rm_flashraw_close(decoder);
     return status;

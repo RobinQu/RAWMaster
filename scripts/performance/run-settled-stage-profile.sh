@@ -24,15 +24,28 @@ if (( $# < 4 )); then
 fi
 repo="${0:A:h:h:h}"
 scratch="${RAWMASTER_PERF_BUILD_PATH:-$repo/.build}"
+scratch="${scratch:A}"
 products="$scratch/release"
-module_map="$scratch/out/Intermediates.noindex/GeneratedModuleMaps/CFlashRaw.modulemap"
+module_maps="$scratch/out/Intermediates.noindex/GeneratedModuleMaps"
 work="$(mktemp -d "${TMPDIR:-/tmp}/rawmaster-settled-stage.XXXXXX")"
 trap 'rm -rf -- "$work"' EXIT
-ln -s "$products/RAWMaster_RAWMasterImaging.bundle" "$work/RAWMaster_RAWMasterImaging.bundle"
+for bundle in RAWMaster_RAWMasterImaging RAWMaster_RAWMasterCore ImageEdit_RAWMasterImage \
+              LibraryCatalog_RAWMasterLibrary PhotoExport_RAWMasterPhotoExport; do
+  ln -s "$products/$bundle.bundle" "$work/$bundle.bundle"
+done
+map_flags=()
+for module in CFlashRaw CImageEditABI CLibraryCatalogABI; do
+  map_flags+=(-Xcc "-fmodule-map-file=$module_maps/$module.modulemap")
+done
+objects=()
+for module in RAWMasterImaging RAWMasterCore RAWMasterImage RAWMasterLibrary RAWMasterPhotoExport \
+              MaskAI CFlashRaw CImageEditABI CLibraryCatalogABI; do
+  objects+=("$products/$module.o")
+done
 swiftc -O -parse-as-library -swift-version 5 -target "$(uname -m)-apple-macos15.0" \
-  -I "$products" -I "$repo/Sources/CSQLite" -Xcc "-fmodule-map-file=$module_map" \
-  "$repo/scripts/performance/$program.swift" "$products/RAWMasterImaging.o" \
-  "$products/RAWMasterCore.o" "$products/CFlashRaw.o" -lsqlite3 -o "$work/$program"
+  -I "$products" -I "$repo/Sources/CSQLite" -I "$repo/experiments/MaskAI/Sources/CONNXRuntime" \
+  "${map_flags[@]}" "$repo/scripts/performance/$program.swift" "${objects[@]}" \
+  -lsqlite3 -lz -framework AVKit -o "$work/$program"
 if [[ -n "$rescan_output" ]]; then
   before_args=("$@")
   before_args[$output_index]="$rescan_output"

@@ -189,7 +189,7 @@ pub fn execute(catalog: &Path, r: &Value) -> Result<Value> {
         "renew" => {
             let jid = job_id(r)?;
             let token = required(r, "token")?;
-            if c.execute("UPDATE lc_proc_jobs SET lease_until=?3 WHERE job_id=?1 AND token=?2 AND state IN ('preparing','rendering')",params![jid,token,time()?+300])?!=1{return Err("Rendering attempt is no longer active".into());}
+            if c.execute("UPDATE lc_proc_jobs SET lease_until=?3 WHERE job_id=?1 AND token=?2 AND state IN ('preparing','rendering') AND lease_until>unixepoch()",params![jid,token,time()?+300])?!=1{return Err("Rendering attempt is no longer active".into());}
             Ok(json!({"renewed":true}))
         }
         "cancel" | "fail" => {

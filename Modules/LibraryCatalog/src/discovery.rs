@@ -136,12 +136,13 @@ pub fn read(db: &Connection, body: &Value) -> Result<Value> {
             if body["validateSchema"] == true {
                 crate::validate_catalog_objects(db)?;
             }
+            let schema: i64 = db.pragma_query_value(None, "user_version", |r| r.get(0))?;
             let id: String =
                 db.query_row("SELECT value FROM lc_meta WHERE key='libraryID'", [], |r| {
                     r.get(0)
                 })?;
             Ok(
-                json!({"libraryID":id,"schema":crate::CATALOG_SCHEMA_VERSION,"watermark":cache::tip(db)?,"consent":settings(db)?}),
+                json!({"libraryID":id,"schema":schema,"watermark":cache::tip(db)?,"consent":settings(db)?}),
             )
         }
         "jobs" => jobs::state(db),

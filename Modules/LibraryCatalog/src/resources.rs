@@ -53,17 +53,19 @@ pub fn object_path(digest: &str) -> Result<PathBuf> {
 
 fn directory(path: &Path) -> Result<()> {
     match fs::create_dir(path) {
-        Ok(()) => File::open(path.parent().ok_or("Missing directory parent")?)?.sync_all()?,
+        Ok(()) => (),
         Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => (),
         Err(e) => return Err(e.into()),
     }
     if !fs::symlink_metadata(path)?.is_dir() {
         return Err("Expected a real storage directory".into());
     }
+    // A concurrent creator may have made the directory visible before syncing its parent.
+    File::open(path.parent().ok_or("Missing directory parent")?)?.sync_all()?;
     Ok(())
 }
 
-fn open_regular(path: &Path) -> Result<File> {
+pub(crate) fn open_regular(path: &Path) -> Result<File> {
     let mut options = OpenOptions::new();
     options.read(true);
     #[cfg(unix)]
@@ -78,7 +80,10 @@ fn open_regular(path: &Path) -> Result<File> {
     Ok(file)
 }
 
-fn transfer(mut source: File, mut destination: impl Write) -> Result<(String, i64)> {
+pub(crate) fn transfer(
+    mut source: impl Read,
+    mut destination: impl Write,
+) -> Result<(String, i64)> {
     let mut hash = Sha256::new();
     let mut buffer = vec![0; 256 * 1024];
     let mut total = 0_i64;
@@ -104,6 +109,38 @@ pub fn stage(
     kind: &str,
     source_asset_id: Option<String>,
 ) -> Result<Resource> {
+    stage_object(catalog, input, id, kind, source_asset_id, None)
+}
+
+pub(crate) fn stage_expected(
+    catalog: &Path,
+    input: &Path,
+    id: &str,
+    digest: &str,
+    byte_count: i64,
+) -> Result<Resource> {
+    object_path(digest)?;
+    if byte_count <= 0 {
+        return Err("Invalid resource size".into());
+    }
+    stage_object(
+        catalog,
+        input,
+        id,
+        "recipeResource",
+        None,
+        Some((digest, byte_count)),
+    )
+}
+
+fn stage_object(
+    catalog: &Path,
+    input: &Path,
+    id: &str,
+    kind: &str,
+    source_asset_id: Option<String>,
+    expected: Option<(&str, i64)>,
+) -> Result<Resource> {
     if id.is_empty()
         || !matches!(
             kind,
@@ -125,22 +162,35 @@ pub fn stage(
     let objects = base.join("objects");
     directory(&objects)?;
     let mut temp = NamedTempFile::new_in(&objects)?;
-    let (sha256, byte_count) = transfer(open_regular(input)?, temp.as_file_mut())?;
+    let file = open_regular(input)?;
+    if let Some((_, n)) = expected {
+        if file.metadata()?.len() != n as u64 {
+            return Err("Resource has a different size".into());
+        }
+    }
+    let limit = expected.map_or(u64::MAX, |(_, n)| n as u64 + 1);
+    let (sha256, byte_count) = transfer(file.take(limit), temp.as_file_mut())?;
+    if expected.is_some_and(|(sha, n)| sha256 != sha || byte_count != n) {
+        return Err("Resource has a different size or SHA-256".into());
+    }
     temp.as_file().sync_all()?;
     let relative = object_path(&sha256)?;
     let target = base.join(&relative);
     let parent = target.parent().ok_or("Missing object root")?;
     directory(parent)?;
     match temp.persist_noclobber(&target) {
-        Ok(_) => File::open(parent)?.sync_all()?,
+        Ok(_) => (),
         Err(e) if e.error.kind() == std::io::ErrorKind::AlreadyExists => {
-            let (found, size) = transfer(open_regular(&target)?, std::io::sink())?;
+            let existing = open_regular(&target)?;
+            let (found, size) = transfer(&existing, std::io::sink())?;
             if found != sha256 || size != byte_count {
                 return Err("Stored resource failed verification".into());
             }
+            existing.sync_all()?;
         }
         Err(e) => return Err(e.error.into()),
     }
+    File::open(parent)?.sync_all()?;
     Ok(Resource {
         resource_id: id.into(),
         kind: kind.into(),

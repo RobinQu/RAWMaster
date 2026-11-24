@@ -417,3 +417,106 @@ fn coverage_distinguishes_eligible_from_verified_and_unplugged_generations() -> 
     );
     Ok(())
 }
+
+#[test]
+fn v9_restore_invalidates_active_workers_and_does_not_read_source_workstation_export_paths(
+) -> Result<()> {
+    let mut l = Library::new()?;
+    let tx =
+        l.db.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+    rawmaster_library::transaction(&tx, &json!({"operation":"upgradeScheduler"}))?;
+    tx.commit()?;
+    let schedule = |path: &Path, body: Value| {
+        rawmaster_library::request(path, &json!({"operation":"scheduler","request":body}))
+    };
+    for key in ["export-1", "export-2"] {
+        schedule(
+            &l.db_path,
+            json!({"op":"submit","key":key,"lane":"export","resource":"io","payload":{},"replaySafe":true}),
+        )?;
+    }
+    let running = schedule(&l.db_path, json!({"op":"claim","key":"export-1"}))?;
+    let stage = l.root.join("staged.jpg");
+    fs::write(&stage, b"staged source-only bytes")?;
+    let final_path = l.root.join("source-output.jpg");
+    schedule(
+        &l.db_path,
+        json!({"op":"prepareExternal","key":"export-1","token":running["token"],"stage":stage,"destination":final_path}),
+    )?;
+    let safe = schedule(&l.db_path, json!({"op":"claim","key":"export-2"}))?;
+    schedule(
+        &l.db_path,
+        json!({"op":"submit","key":"export-unprepared","lane":"export","resource":"io",
+        "payload":{"destination":l.root.join("future-external.jpg")},"replaySafe":true}),
+    )?;
+    assert_eq!(
+        schedule(&l.db_path, json!({"op":"check","key":"export-1","token":running["token"]}))?,
+        true
+    );
+    // The generic queue schema is identical in v9. Seal it in that exact format so the
+    // restore must revoke its old leases before a v10 host ever opens the restored copy.
+    l.db.execute_batch("BEGIN IMMEDIATE;
+        DROP TRIGGER lc_workbench_writer_insert;
+        DROP TRIGGER lc_workbench_writer_update;
+        DROP TABLE lc_workbench_names;
+        PRAGMA user_version=9;
+        COMMIT;")?;
+    let pkg = l.root.join("catalog-package");
+    let copy = l.root.join("restored-library");
+    assert_eq!(l.backup("catalog", &pkg)?["state"], "complete");
+    let restored = l.restore(&pkg, &copy)?;
+    let copied = Path::new(restored["libraryPath"].as_str().unwrap());
+    let mut copy_db = Connection::open(copied)?;
+    assert_eq!(copy_db.pragma_query_value(None,"user_version",|row| row.get::<_, i64>(0))?, 9);
+    assert_eq!(
+        copy_db.query_row("SELECT state,prepared_detached,token FROM lc_task_jobs WHERE job_key='export-1'", [],
+            |row| Ok((row.get::<_,String>(0)?,row.get::<_,i64>(1)?,row.get::<_,Option<String>>(2)?)))?,
+        ("reconcile".into(), 1, None)
+    );
+    let tx = copy_db.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+    rawmaster_library::transaction(&tx, &json!({"operation":"upgradeScheduler"}))?;
+    tx.commit()?;
+    assert_eq!(
+        schedule(copied, json!({"op":"status","key":"export-unprepared"}))?["state"],
+        "reconcile"
+    );
+    assert!(schedule(copied, json!({"op":"claim","key":"export-unprepared"}))?.is_null());
+    assert_eq!(
+        l.db.query_row("SELECT state FROM lc_task_jobs WHERE job_key='export-unprepared'",[],|row| row.get::<_,String>(0))?,
+        "queued"
+    );
+    assert_eq!(
+        schedule(copied, json!({"op":"status","key":"export-2"}))?["state"],
+        "queued"
+    );
+    assert!(schedule(
+        copied,
+        json!({"op":"check","key":"export-2","token":safe["token"]})
+    )
+    .is_err());
+    assert_eq!(
+        schedule(copied, json!({"op":"status","key":"export-1"}))?["state"],
+        "reconcile"
+    );
+    assert_eq!(
+        schedule(
+            copied,
+            json!({"op":"preparedExternalTasks","lane":"export","keyPrefix":"export-","limit":64})
+        )?,
+        json!([])
+    );
+    assert!(schedule(
+        copied,
+        json!({"op":"verifyPrepared","key":"export-1","destination":false})
+    )
+    .is_err());
+    assert!(
+        schedule(copied, json!({"op":"preparedExternal","key":"export-1"}))?["sha256"].is_string()
+    );
+    assert_eq!(
+        l.db.query_row("SELECT token FROM lc_task_jobs WHERE job_key='export-1'",[],|row| row.get::<_,String>(0))?,
+        running["token"].as_str().unwrap()
+    );
+    assert!(stage.is_file() && !final_path.exists());
+    Ok(())
+}

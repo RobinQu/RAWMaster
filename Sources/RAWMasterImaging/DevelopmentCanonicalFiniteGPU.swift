@@ -6,10 +6,14 @@ import RAWMasterCore
 
 /// Checks every native sample of the existing binary finite mask in bounded, ordered Metal command buffers.
 enum DevelopmentCanonicalFiniteGPU {
-  @TaskLocal static var residentPhoto = false
+  @TaskLocal static var residentPhotoWorkingBudget: Int?
   static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_CANONICAL_SERIAL_FINITE"] != "1"
   static let scratchLimit = 128 * 1024 * 1024
-  private static let workingSetLimit = 512 * 1024 * 1024
+  static let workingSetLimit = 512 * 1024 * 1024
+  static let spatialWorkingBudget = 128 * 1024 * 1024
+  static let sharpenWorkingBudget = 64 * 1024 * 1024
+  private static let rawNoiseBands = ProcessInfo.processInfo.environment["RAWMASTER_CANONICAL_RAW_NOISE_BANDS"] != "0"
+  private static let sharpenBands = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SHARPEN_BANDS"] == "1"
   private static let maxInFlight = 2
   private static let workingBytesPerPixel = 64
   private static let lock = NSLock()
@@ -45,6 +49,43 @@ enum DevelopmentCanonicalFiniteGPU {
       allowed.masks = p.masks
     }
     return p == allowed
+  }
+
+  enum SharpenOutput: String {
+    case photo = "validate sharpened RGB"
+    case maskingOverlay = "validate sharpening mask"
+  }
+
+  struct SpatialRequest {
+    let workingBudget: Int
+    let sharpenOutput: SharpenOutput?
+    let checkCancellation: () throws -> Void
+  }
+
+  static func spatialRequest(_ p: DevelopmentAdjustmentsV3, checkCancellation: @escaping () throws -> Void) -> SpatialRequest? {
+    if let budget = rawNoiseWorkingBudget(p) {
+      return .init(workingBudget: budget, sharpenOutput: nil, checkCancellation: checkCancellation)
+    }
+    guard enabled, sharpenBands, let output = pureSharpenOutput(p) else { return nil }
+    return .init(workingBudget: sharpenWorkingBudget, sharpenOutput: output, checkCancellation: checkCancellation)
+  }
+
+  static func pureSharpenOutput(_ p: DevelopmentAdjustmentsV3) -> SharpenOutput? {
+    if PreviewInteractiveDetailGuide.isPureSharpen(p) { return .photo }
+    if PreviewInteractiveDetailGuide.isPureSharpen(p, maskPreview: true) { return .maskingOverlay }
+    return nil
+  }
+
+  /// Qualified separately from the pointwise paths. The graph can include the fixed
+  /// Gaussian detail branch in addition to FlashRaw's nine-tap input filter.
+  static func rawNoiseWorkingBudget(_ p: DevelopmentAdjustmentsV3) -> Int? {
+    let noise = p.noiseReduction
+    guard enabled, rawNoiseBands, p.rawDecoder == .flashRaw031, noise.enabled,
+          noise.sourceCapability == .raw, noise.nonRawAmount == 0,
+          noise.luminanceNoise != 0 || noise.colorNoise != 0 || noise.detail != 0 else { return nil }
+    var allowed = p.neutralForSameSource
+    allowed.noiseReduction = noise
+    return allowed == p ? spatialWorkingBudget : nil
   }
 
   private struct Pipeline {
@@ -102,7 +143,10 @@ enum DevelopmentCanonicalFiniteGPU {
 
     func join() throws {
       command.waitUntilCompleted()
-      guard command.status == .completed else { throw command.error ?? DevelopmentError.invalidEncoding }
+      guard command.status == .completed else {
+        _ = try? render.waitUntilCompleted()
+        throw command.error ?? DevelopmentError.invalidEncoding
+      }
       _ = try render.waitUntilCompleted()
     }
   }
@@ -119,7 +163,8 @@ enum DevelopmentCanonicalFiniteGPU {
 
   private static func encode(_ region: CGRect, groupOffset: Int, coded: CIImage,
                              context: CIContext, mask: MTLTexture, flags: MTLBuffer,
-                             pipeline: Pipeline) throws -> SubmittedBand {
+                             pipeline: Pipeline,
+                             makeReductionEncoder: (MTLCommandBuffer) -> MTLComputeCommandEncoder?) throws -> SubmittedBand {
     guard let command = pipeline.queue.makeCommandBuffer() else { throw DevelopmentError.invalidEncoding }
     let clear = MTLRenderPassDescriptor()
     clear.colorAttachments[0].texture = mask
@@ -136,7 +181,13 @@ enum DevelopmentCanonicalFiniteGPU {
     destination.isDithered = false
     destination.isClamped = false
     let render = try context.startTask(toRender: coded, from: region, to: destination, at: .zero)
-    guard let compute = command.makeComputeCommandEncoder() else { throw DevelopmentError.invalidEncoding }
+    let band = SubmittedBand(command: command, render: render)
+    guard let compute = makeReductionEncoder(command) else {
+      // Core Image has already recorded work in this buffer, but the band can no longer produce flags.
+      command.commit()
+      try? band.join()
+      throw DevelopmentError.invalidEncoding
+    }
     let width = Int(region.width), height = Int(region.height)
     var dimensions = SIMD4<UInt32>(UInt32(width), UInt32(height), UInt32(groupOffset), 0)
     compute.setComputePipelineState(pipeline.reduce)
@@ -146,7 +197,21 @@ enum DevelopmentCanonicalFiniteGPU {
     compute.dispatchThreadgroups(.init(width: (width * height + 1023) / 1024, height: 1, depth: 1),
                                  threadsPerThreadgroup: .init(width: 128, height: 1, depth: 1))
     compute.endEncoding()
-    return SubmittedBand(command: command, render: render)
+    return band
+  }
+
+  /// A joined explicit predicate miss can use the ordinary validator. Malformed texels
+  /// and incomplete group flags are transport failures even when another group reported a miss.
+  static func checkedPredicateCodes(_ codes: UnsafeBufferPointer<UInt8>) throws -> Bool {
+    var inside = true
+    for code in codes {
+      switch code {
+      case 0xa0: break
+      case 0xa1: inside = false
+      default: throw DevelopmentError.invalidEncoding
+      }
+    }
+    return inside
   }
 
   /// A false result leaves the caller's original checked-tile path available. The 128 MiB
@@ -154,11 +219,16 @@ enum DevelopmentCanonicalFiniteGPU {
   /// intermediate surfaces. All committed work is joined before a cancellation or an error escapes.
   static func check(_ finiteMask: CIImage, domain: CGRect, context: CIContext,
                     budget: Int = scratchLimit, workingBudget: Int = workingSetLimit,
+                    region: CGRect? = nil, allowPredicateMiss: Bool = false,
+                    makeReductionEncoder: (MTLCommandBuffer) -> MTLComputeCommandEncoder? = { $0.makeComputeCommandEncoder() },
                     cancellation: (() throws -> Void)? = nil) throws -> Bool {
     guard !domain.isNull, !domain.isInfinite, domain == finiteMask.extent, domain.origin == .zero,
           domain == domain.integral, (1...16_384).contains(domain.width), (1...16_384).contains(domain.height),
           budget > 0, workingBudget > 0, let pipeline else { return false }
-    let width = Int(domain.width), height = Int(domain.height)
+    let scan = region ?? domain
+    guard !scan.isNull, !scan.isInfinite, scan == scan.integral, domain.contains(scan),
+          scan.width >= 1, scan.height >= 1 else { return false }
+    let width = Int(scan.width), height = Int(scan.height)
     let workingBytes = min(workingSetLimit, workingBudget)
     // Leave a page-aligned allocation for the result buffer. Two adjacent bands
     // can overlap CPU encoding and GPU work on a single hazard-tracked Metal queue.
@@ -200,7 +270,8 @@ enum DevelopmentCanonicalFiniteGPU {
     var offset = 0
     var outcome = ImagePerformanceOutcome.failed
     let token = ImagePerformanceTelemetry.shared.begin(operation: "NativeFiniteReduction",
-      stage: "原生宽度分带 · 标记、并行归约与 GPU 完成", queue: "Metal GPU", boundary: .gpuCompletion)
+      stage: region == nil ? "原生宽度分带 · 标记、并行归约与 GPU 完成" : "原生局部区域 · 标记、并行归约与 GPU 完成",
+      queue: "Metal GPU", boundary: .gpuCompletion)
     defer {
       // A failed or cancelled earlier command cannot abandon the other in-flight band.
       for band in pending { try? band.join() }
@@ -213,9 +284,10 @@ enum DevelopmentCanonicalFiniteGPU {
         try cancellation?()
       }
       let rows = min(bandHeight, height - y)
-      let region = CGRect(x: 0, y: y, width: width, height: rows)
+      let band = CGRect(x: scan.minX, y: scan.minY + CGFloat(y), width: CGFloat(width), height: CGFloat(rows))
       let next = try autoreleasepool {
-        try encode(region, groupOffset: offset, coded: coded, context: context, mask: mask, flags: flags, pipeline: pipeline)
+        try encode(band, groupOffset: offset, coded: coded, context: context, mask: mask, flags: flags,
+                   pipeline: pipeline, makeReductionEncoder: makeReductionEncoder)
       }
       next.command.commit()
       pending.append(next)
@@ -226,9 +298,14 @@ enum DevelopmentCanonicalFiniteGPU {
     try cancellation?()
     // The texture is zero-cleared and every group flag starts at zero. Only 0xa0 is a
     // completed group of valid codes. Missing, partially written, and invalid pixels fail.
-    guard offset == groups, UnsafeBufferPointer(start: bytes, count: groups).allSatisfy({ $0 == 0xa0 }) else {
-      throw DevelopmentError.invalidEncoding
+    guard offset == groups else { throw DevelopmentError.invalidEncoding }
+    let codes = UnsafeBufferPointer(start: bytes, count: groups)
+    if allowPredicateMiss {
+      let inside = try checkedPredicateCodes(codes)
+      outcome = .succeeded
+      return inside
     }
+    guard codes.allSatisfy({ $0 == 0xa0 }) else { throw DevelopmentError.invalidEncoding }
     outcome = .succeeded
     return true
   }

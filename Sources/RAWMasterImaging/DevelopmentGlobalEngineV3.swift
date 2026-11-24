@@ -26,7 +26,8 @@ enum DevelopmentGlobalEngineV3 {
     max(0.5,768.0*(0.0002+0.0018*falloff))
   }
   static func prewarm(){_ = try? loaded.get(); _ = DevelopmentPointColorKernelV3.kernel}
-  static func apply(_ p: DevelopmentAdjustmentsV3, to input: CIImage, sourceIsRAW: Bool, preparedSharpMean:CIImage? = nil) throws -> CIImage {
+  static func apply(_ p: DevelopmentAdjustmentsV3, to input: CIImage, sourceIsRAW: Bool, preparedSharpMean:CIImage? = nil,
+                    noiseDomain: PreviewNativeNoiseDomain? = nil) throws -> CIImage {
     try p.validate(); try p.noiseReduction.validate(for:sourceIsRAW ? .raw:.image)
     var image = try DevelopmentOpticsEngineV3.apply(p.optics,to:input)
     let extent = input.extent, short = min(extent.width,extent.height)
@@ -104,9 +105,11 @@ enum DevelopmentGlobalEngineV3 {
     }
     let luminanceContrast=p.noiseReduction.luminanceContrast ?? 0,colorDetail=p.noiseReduction.colorDetail ?? 0
     if p.noiseReduction.enabled,luminanceContrast != 0 || colorDetail != 0 {
-      let local=image.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:1.5]).cropped(to:extent)
+      let local = noiseDomain?.gaussian(for: image, controls: p.noiseReduction) ?? noiseDetailGaussian(image, extent: extent)
+      let uniforms = CIVector(x: luminanceContrast, y: colorDetail, z: 0, w: 0)
       guard let result=try loaded.get().noiseDetail.apply(extent:extent,roiCallback:{ _,r in r },
-        arguments:[image,local,CIVector(x:luminanceContrast,y:colorDetail,z:0,w:0)])else{throw DevelopmentError.unreadable}
+        arguments:[image,local,uniforms])else{throw DevelopmentError.unreadable}
+      noiseDomain?.bind(input: image, gaussian: local, controls: p.noiseReduction, uniforms: uniforms, output: result)
       image=result
     }
     if p.sharpen.enabled, p.sharpen.intensity != 0, p.sharpen.visualiseMasking != true {
@@ -127,6 +130,10 @@ enum DevelopmentGlobalEngineV3 {
     }
     return image
   }
+  static func noiseDetailGaussian(_ image: CIImage, extent: CGRect? = nil) -> CIImage {
+    image.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: 1.5]).cropped(to: extent ?? image.extent)
+  }
+
   static func sharpeningMean(_ image:CIImage,radius:Double) throws -> CIImage {
     guard let guide = try loaded.get().guide.apply(extent:image.extent,roiCallback:{ _,r in r },arguments:[image,0.0]) else { throw DevelopmentError.unreadable }
     return guide.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius]).cropped(to:image.extent)
@@ -140,15 +147,15 @@ enum DevelopmentGlobalEngineV3 {
     return result
   }
   /// Final ephemeral visualization before geometry. It never doubles as the actual sharpen operation.
-  static func applySharpenMaskPreview(_ p:DevelopmentAdjustmentsV3,to image:CIImage,sourceToImageScale:Double=1)throws->CIImage {
+  static func applySharpenMaskPreview(_ p:DevelopmentAdjustmentsV3,to image:CIImage,sourceToImageScale:Double=1,
+                                      preparedSharpMean:CIImage?=nil)throws->CIImage {
     let s=p.sharpen
     guard s.enabled,s.visualiseMasking == true else{return image}
     let extent=image.extent
     guard extent.width.isFinite,extent.height.isFinite,extent.width>0,extent.height>0,sourceToImageScale>0,sourceToImageScale<=1 else{throw DevelopmentV3Error.invalidGraph}
     let k=try loaded.get()
-    guard let guide=k.guide.apply(extent:extent,roiCallback:{_,r in r},arguments:[image,0.0])else{throw DevelopmentError.unreadable}
     let radius=(s.radius ?? sharpenRadiusInNativePixels(falloff:s.falloff))*sourceToImageScale
-    let mean=guide.clampedToExtent().applyingFilter("CIGaussianBlur",parameters:[kCIInputRadiusKey:radius]).cropped(to:extent)
+    let mean=try preparedSharpMean ?? sharpeningMean(image,radius:radius)
     let advanced=CIVector(x:s.detail ?? 0,y:s.masking ?? 0,z:s.radius != nil || s.detail != nil || s.masking != nil ? 1:0,w:1)
     guard let result=k.sharp.apply(extent:extent,roiCallback:{_,r in r},arguments:[image,mean,CIVector(x:0,y:s.edges,z:s.falloff,w:0),advanced])else{throw DevelopmentError.unreadable}
     return result

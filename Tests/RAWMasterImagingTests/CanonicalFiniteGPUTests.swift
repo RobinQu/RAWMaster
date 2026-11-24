@@ -1,9 +1,78 @@
 import CoreImage
 import Metal
+import RAWMasterCore
 import XCTest
 @testable import RAWMasterImaging
 
 final class CanonicalFiniteGPUTests:XCTestCase {
+    func testEncoderFailureDrainsBothBandsBeforeRetry() throws {
+        guard let device = MTLCreateSystemDefaultDevice(), device.hasUnifiedMemory else {
+            throw XCTSkip("A unified Metal GPU is required")
+        }
+        let extent = CGRect(x: 0, y: 0, width: 1024, height: 4)
+        let cleanMask = CIImage(color: CIColor(red: 0, green: 0, blue: 0, alpha: 1)).cropped(to: extent)
+        let context = DevelopmentColorEngineV3.makeContext()
+        let oneRowBudget = 648 * 1024
+        var commands = [MTLCommandBuffer]()
+        XCTAssertThrowsError(try DevelopmentCanonicalFiniteGPU.check(cleanMask, domain: extent, context: context,
+            workingBudget: oneRowBudget, makeReductionEncoder: { command in
+                commands.append(command)
+                return commands.count == 2 ? nil : command.makeComputeCommandEncoder()
+            })) { error in
+                guard case DevelopmentError.invalidEncoding = error else {
+                    return XCTFail("Expected the incomplete reduction to fail, received \(error)")
+                }
+            }
+        XCTAssertEqual(commands.count, 2)
+        XCTAssertTrue(commands.allSatisfy { $0.status == .completed })
+        XCTAssertTrue(try DevelopmentCanonicalFiniteGPU.check(cleanMask, domain: extent, context: context,
+            workingBudget: oneRowBudget))
+    }
+
+    func testSharpenValidationSelectsOnlyTheChangedOutput() {
+        var recipe = DevelopmentAdjustmentsV3()
+        recipe.rawDecoder = .flashRaw031
+        recipe.sharpen = .init(enabled: true, intensity: 0.75, radius: 1, masking: 0.6, visualiseMasking: false)
+        XCTAssertEqual(DevelopmentCanonicalFiniteGPU.pureSharpenOutput(recipe), .photo)
+
+        recipe.sharpen.visualiseMasking = true
+        recipe.sharpen.intensity = 0
+        XCTAssertEqual(DevelopmentCanonicalFiniteGPU.pureSharpenOutput(recipe), .maskingOverlay)
+        var rotated = recipe
+        rotated.geometry.clockwiseQuarterTurns = 1
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.pureSharpenOutput(rotated))
+        var withExposure = recipe
+        withExposure.light = .init(enabled: true, exposure: 0.25)
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.pureSharpenOutput(withExposure))
+        recipe.sharpen.visualiseMasking = false
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.pureSharpenOutput(recipe))
+    }
+
+    func testRawNoiseBandsRequireAnOtherwiseNeutralFlashRawRecipe() throws {
+        guard DevelopmentCanonicalFiniteGPU.enabled,
+              ProcessInfo.processInfo.environment["RAWMASTER_CANONICAL_RAW_NOISE_BANDS"] != "0" else {
+            throw XCTSkip("RAW noise bands disabled for this run")
+        }
+        var pure = DevelopmentAdjustmentsV3()
+        pure.rawDecoder = .flashRaw031
+        pure.noiseReduction = .init(enabled:true, luminanceNoise:0.7, detail:0.5, luminanceContrast:0.7)
+        XCTAssertEqual(DevelopmentCanonicalFiniteGPU.rawNoiseWorkingBudget(pure), 128 * 1024 * 1024)
+
+        var rotated = pure
+        rotated.geometry.clockwiseQuarterTurns = 1
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.rawNoiseWorkingBudget(rotated))
+        var withExposure = pure
+        withExposure.light.enabled = true
+        withExposure.light.exposure = 0.25
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.rawNoiseWorkingBudget(withExposure))
+        var legacyDecoder = pure
+        legacyDecoder.rawDecoder = nil
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.rawNoiseWorkingBudget(legacyDecoder))
+        var disabled = pure
+        disabled.noiseReduction.enabled = false
+        XCTAssertNil(DevelopmentCanonicalFiniteGPU.rawNoiseWorkingBudget(disabled))
+    }
+
     func testFullMaskCoversEveryTailAndPreservesTheExistingFiniteSemantics() throws {
         let extent=CGRect(x:0,y:0,width:2051,height:1031)
         let source="""
@@ -63,5 +132,30 @@ final class CanonicalFiniteGPUTests:XCTestCase {
         XCTAssertEqual(calls,2)
         let malformed=CIImage(color:CIColor(red:0.4,green:0,blue:0,alpha:1)).cropped(to:extent)
         XCTAssertThrowsError(try DevelopmentCanonicalFiniteGPU.check(malformed,domain:extent,context:context))
+
+        let region=CGRect(x:211,y:207,width:337,height:633)
+        let regionBudget=8*1024*1024
+        let outOfRegion=try field(0,0,1,0,0)
+        XCTAssertThrowsError(try DevelopmentColorEngineV3.validateFinite(outOfRegion,context:context))
+        for (x,y,kind) in [(211,207,1),(547,207,2),(211,839,3),(547,839,1),(379,839,2)] {
+            let image=try field(x,y,kind,2,1)
+            let mask=try DevelopmentColorEngineV2.finiteMaskForV3(image)
+            XCTAssertThrowsError(try DevelopmentCanonicalFiniteGPU.check(mask,domain:extent,context:context,
+                workingBudget:regionBudget,region:region))
+            XCTAssertThrowsError(try DevelopmentColorEngineV3.validateFinite(image,context:context,region:region))
+        }
+        let sourceMask=try DevelopmentColorEngineV2.finiteMaskForV3(outOfRegion)
+        XCTAssertTrue(try DevelopmentCanonicalFiniteGPU.check(sourceMask,domain:extent,context:context,
+            workingBudget:regionBudget,region:region))
+        try DevelopmentColorEngineV3.validateFinite(outOfRegion,context:context,region:region)
+        var regionChecks=0
+        XCTAssertThrowsError(try DevelopmentCanonicalFiniteGPU.check(validPixel,domain:extent,context:context,
+            workingBudget:regionBudget,region:region,cancellation:{
+                regionChecks+=1
+                if regionChecks==2 { throw CancellationError() }
+            })) { XCTAssertTrue($0 is CancellationError) }
+        XCTAssertEqual(regionChecks,2)
+        XCTAssertTrue(try DevelopmentCanonicalFiniteGPU.check(validPixel,domain:extent,context:context,
+            workingBudget:regionBudget,region:region))
     }
 }

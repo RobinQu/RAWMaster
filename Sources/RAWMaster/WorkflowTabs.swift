@@ -14,6 +14,8 @@ enum WorkbenchWorkflow: String, CaseIterable {
 }
 
 extension AppModel {
+    var canOpenWorkbenchExport: Bool { workbenchExportStore != nil }
+
     var activeWorkbenchWorkflow: WorkbenchWorkflow {
         if exportWorkspacePresented || showExport || editing?.showExport == true || editing?.showDraftExportChoice == true { return .export }
         return isNativeEditing ? .edit : .library
@@ -42,7 +44,11 @@ extension AppModel {
                 if canOpenNativeEditing { openNativeEditing() }
             }
         case .export:
-            guard canExport, !exportWorkspacePresented else { return }
+            guard canOpenWorkbenchExport, !exportWorkspacePresented else { return }
+            if workbenchPhotoDelivery?.running == true || !canExport {
+                exportWorkspacePresented = true
+                return
+            }
             if case .selection = workbenchExportContext {
                 // An explicit multi-selection is captured before opening the workspace.
             } else if isNativeEditing {
@@ -67,7 +73,7 @@ extension AppModel {
             let next = (current + (reverse ? -step : step) + workflows.count * 2) % workflows.count
             let candidate = workflows[next]
             if candidate == .edit && !isNativeEditing && !canOpenNativeEditing && focusedAsset == nil { continue }
-            if candidate == .export && !canExport { continue }
+            if candidate == .export && !canOpenWorkbenchExport { continue }
             activateWorkflow(candidate)
             return
         }
@@ -98,7 +104,7 @@ struct WorkflowTabs: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(workflow == .edit && !model.isNativeEditing && !model.canOpenNativeEditing && model.focusedAsset == nil
-                    || workflow == .export && !model.canExport)
+                    || workflow == .export && !model.canOpenWorkbenchExport)
                 .accessibilityLabel(workflow.title)
                 .accessibilityIdentifier("workflow." + workflow.rawValue)
                 .accessibilityAddTraits(selected ? .isSelected : [])

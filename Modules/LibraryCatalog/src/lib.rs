@@ -13,8 +13,13 @@ pub mod organization;
 pub mod processing;
 pub mod query;
 pub mod resources;
+pub mod scheduler;
 mod selection;
-pub const CATALOG_SCHEMA_VERSION: i64 = 8;
+pub const CATALOG_SCHEMA_VERSION: i64 = 10;
+
+pub fn readable_schema(version: i64) -> bool {
+    (8..=CATALOG_SCHEMA_VERSION).contains(&version)
+}
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
 use rusqlite::Connection;
@@ -49,6 +54,8 @@ pub fn request(catalog: &Path, envelope: &Value) -> Result<Value> {
                 inspection::read(&tx, body)
             }
         }
+        Some("scheduler") => scheduler::execute(catalog, body),
+        Some("workbenchCatalogFile") => scheduler::batch::catalog_file_identity(catalog),
         Some("groupProcessing") => processing::execute(catalog, body),
         Some("lightroom") => lightroom::execute(catalog, body),
         Some("managedFiles") => managed_files::execute(catalog, body),
@@ -60,26 +67,64 @@ pub fn request(catalog: &Path, envelope: &Value) -> Result<Value> {
 
 /// All library-owned SQL objects are identified from the packaged schema.
 pub fn schema_objects() -> Result<Vec<String>> {
-    let mut names = authority::object_names()?;
-    names.push(resources::TABLE.into());
-    names.extend(domains::names()?);
-    names.sort();
-    Ok(names)
+    domains::names(CATALOG_SCHEMA_VERSION)
 }
 
 pub fn validate_catalog_objects(db: &Connection) -> Result<Vec<String>> {
-    authority::validate_schema(db)?;
-    resources::validate(db)?;
-    domains::validate(db)?;
-    let allowed = schema_objects()?;
-    let mut statement = db.prepare("SELECT name FROM sqlite_schema WHERE name GLOB 'lc_*'")?;
-    for row in statement.query_map([], |row| row.get::<_, String>(0))? {
-        let name = row?;
-        if allowed.binary_search(&name).is_err() {
-            return Err(format!("Unknown catalog schema object: {name}").into());
-        }
+    domains::names(validated_schema_version(db, false)?)
+}
+
+fn validated_schema_version(db: &Connection, current_only: bool) -> Result<i64> {
+    // Observe user_version and its registered definitions in the same SQLite snapshot.
+    // Migrations and backup verification may already own a transaction on this handle.
+    let snapshot = db
+        .is_autocommit()
+        .then(|| rusqlite::Transaction::new_unchecked(db, rusqlite::TransactionBehavior::Deferred))
+        .transpose()?;
+    let version: i64 = db.pragma_query_value(None, "user_version", |r| r.get(0))?;
+    if current_only && version != CATALOG_SCHEMA_VERSION {
+        return Err("scheduler requires an upgraded library".into());
     }
-    Ok(allowed)
+    domains::validate(db, version)?;
+    if let Some(snapshot) = snapshot {
+        snapshot.commit()?;
+    }
+    Ok(version)
+}
+
+fn require_scheduler_schema(db: &Connection) -> Result<()> {
+    validated_schema_version(db, true)?;
+    Ok(())
+}
+
+/// Only install on the exact previous trusted catalog. The owning host backs up before migration.
+fn upgrade_scheduler(db: &Connection) -> Result<()> {
+    let version: i64 = db.pragma_query_value(None, "user_version", |r| r.get(0))?;
+    if version == CATALOG_SCHEMA_VERSION {
+        return require_scheduler_schema(db);
+    }
+    if !matches!(version, 8 | 9) {
+        return Err("scheduler migration requires a version 8 or 9 library".into());
+    }
+    domains::validate(db, version)?;
+    db.execute_batch("SAVEPOINT lc_scheduler_migration")?;
+    let upgraded = (|| -> Result<()> {
+        if version == 8 {
+            authority::normalize_v8_sync(db)?;
+            db.execute_batch(scheduler::SCHEMA)?;
+        }
+        db.execute_batch(scheduler::batch::SCHEMA_V10)?;
+        if version == 9 {
+            scheduler::batch::migrate_v9(db)?;
+        }
+        db.pragma_update(None, "user_version", CATALOG_SCHEMA_VERSION)?;
+        require_scheduler_schema(db)
+    })();
+    if upgraded.is_err() {
+        db.execute_batch("ROLLBACK TO lc_scheduler_migration")?;
+    }
+    db.execute_batch("RELEASE lc_scheduler_migration")?;
+    upgraded
 }
 
 pub fn transaction(db: &Connection, envelope: &Value) -> Result<Value> {
@@ -95,6 +140,41 @@ pub fn transaction(db: &Connection, envelope: &Value) -> Result<Value> {
         "install" => {
             domains::install(db)?;
             Ok(json!({"installed": true}))
+        }
+        "upgradeScheduler" => {
+            upgrade_scheduler(db)?;
+            Ok(json!({"schema":CATALOG_SCHEMA_VERSION}))
+        }
+        "detachRestoredWriter" => Ok(json!({"writerID":backup::detach_restored_writer(db)?})),
+        "taskForReceipt" | "completeVerifiedTask" => {
+            let body = &envelope["request"];
+            let key = body["key"].as_str().ok_or("missing task key")?;
+            if op == "taskForReceipt" {
+                scheduler::for_receipt(db, key)
+            } else {
+                scheduler::complete_verified(
+                    db,
+                    key,
+                    body["receipt"].as_str().ok_or("missing verified receipt")?,
+                )
+            }
+        }
+        "checkTaskLease" | "finishTaskReceipt" => {
+            let r = &envelope["request"];
+            let key = r["key"].as_str().ok_or("missing task key")?;
+            let token = r["token"].as_str().ok_or("missing lease token")?;
+            if op == "checkTaskLease" {
+                scheduler::check(db, key, token)
+            } else {
+                scheduler::finish_receipt(
+                    db,
+                    key,
+                    token,
+                    r["receipt"]
+                        .as_str()
+                        .ok_or("missing authoritative receipt")?,
+                )
+            }
         }
         "flushLegacy" => {
             authority::flush_legacy(db)?;

@@ -9,7 +9,7 @@ public actor RenderExportService {
     let protected = protectedURLs + [work.source.sourceLocation, archive.root]
     if let artifact = version.artifact {
       let input = try archive.artifactURL(artifact)
-      return try await renderingTask {
+      return try await renderingTask(lane: .export) {
         guard try RenderFiles.hash(input) == artifact.sha256 else { throw EditingError.archiveMismatch }
         guard let image = CIImage(contentsOf: input, options: [.applyOrientationProperty: true]) else { throw DevelopmentError.unreadable }
         let preparation: RenderPublicationPreparation?

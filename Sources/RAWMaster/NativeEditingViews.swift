@@ -350,7 +350,8 @@ struct EditingJobsSheet: View {
             Text("任务独立于当前照片。结果保存后仍需检查并明确采用。").font(.caption).foregroundStyle(.secondary)
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 12) {
-                    if editing.jobs.isEmpty && editing.renderedExports.isEmpty { Text("暂无制作任务或导出记录").foregroundStyle(.secondary).padding(.vertical, 24) }
+                    if editing.jobs.isEmpty && editing.renderedExports.isEmpty { Text("暂无单张制作任务或导出记录").foregroundStyle(.secondary).padding(.vertical, 24) }
+                    WorkbenchDeliveryHistoryList()
                     ForEach(editing.jobs) { job in
                         VStack(alignment: .leading, spacing: 5) {
                             Text("照片 " + String(job.request.source.assetID.prefix(8)) + " · " + job.createdAt.formatted(date: .abbreviated, time: .shortened)).font(.caption).foregroundStyle(.secondary)

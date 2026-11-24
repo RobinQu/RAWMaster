@@ -1,3 +1,4 @@
+import CSQLite
 import Foundation
 
 private struct LiveDevelopmentStateCommand: Codable {
@@ -56,12 +57,16 @@ extension LibraryStore {
   public func editingSourceSnapshot(assetID: String, verifiedSHA256: String, verifiedByteCount: Int64) throws -> EditingSourceSnapshot {
     try locked {
       let asset = try asset(assetID)
+      guard asset.id == assetID else { throw EditingError.staleSource }
       let admitted = try editingAdmission(assetID: assetID, projectID: asset.projectID, sha256: verifiedSHA256, byteCount: verifiedByteCount)
       let source = EditingSourceSnapshot(projectID: asset.projectID, assetID: asset.id,
         contentSHA256: verifiedSHA256, byteCount: verifiedByteCount,
         admissionFingerprint: admitted, sourceLocation: asset.resolvedURL,
         catalogContentHash: asset.contentHash)
-      try validateEditingSource(source)
+      // Both reads above share the Workbench's held main-database snapshot. Standalone reads
+      // can span another writer's commit and must recheck both the asset and its admission.
+      let sameSnapshot = sqlite3_get_autocommit(db) == 0 && sqlite3_txn_state(db, "main") == SQLITE_TXN_READ
+      try validateEditingSource(source, assetFromSnapshot: sameSnapshot ? asset : nil)
       return source
     }
   }
@@ -72,14 +77,15 @@ extension LibraryStore {
   /// The caller must hash actual input bytes off-main immediately before input capture/render.
   /// This guard checks current catalogue content metadata and the actual persisted admission only.
   public func validateEditingSource(_ source: EditingSourceSnapshot) throws {
-    try locked {
-      guard EditingFingerprint.isSHA256(source.contentSHA256), source.byteCount > 0, source.sourceLocation.isFileURL else { throw EditingError.invalidSource }
-      let asset = try asset(source.assetID)
-      guard asset.projectID == source.projectID, asset.fileSize == source.byteCount, asset.availability == .available,
-        asset.contentHash.map({ $0.lowercased() == source.contentSHA256 }) ?? true,
-        source.catalogContentHash.map({ $0.lowercased() == source.contentSHA256 }) ?? true else { throw EditingError.staleSource }
-      try validateAdmission(source)
-    }
+    try locked { try validateEditingSource(source, assetFromSnapshot: nil) }
+  }
+  private func validateEditingSource(_ source: EditingSourceSnapshot, assetFromSnapshot: AssetRecord?) throws {
+    guard EditingFingerprint.isSHA256(source.contentSHA256), source.byteCount > 0, source.sourceLocation.isFileURL else { throw EditingError.invalidSource }
+    let asset = try assetFromSnapshot ?? self.asset(source.assetID)
+    guard asset.id == source.assetID, asset.projectID == source.projectID, asset.fileSize == source.byteCount,
+      asset.availability == .available, asset.contentHash.map({ $0.lowercased() == source.contentSHA256 }) ?? true,
+      source.catalogContentHash.map({ $0.lowercased() == source.contentSHA256 }) ?? true else { throw EditingError.staleSource }
+    if assetFromSnapshot == nil { try validateAdmission(source) }
   }
   func commandResult<T: Decodable>(id: String, fingerprint: String, action: String, type: T.Type) throws -> T? {
     guard !id.isEmpty else { throw EditingError.commandConflict }

@@ -205,7 +205,9 @@ def main():
               assert(el('#focus-name',doc).textContent==='DSC_0712.ARW','second file');
               assert(el('#version',doc).selectedOptions[0].textContent==='初修 2','chosen draft');
               await wait(()=>all('img',doc).some(i=>i.complete&&i.naturalWidth));tap('#edit-layout',doc);assert(el('#layout-dialog',doc).open,'watermark dialog');tap('#cancel-layout',doc);
-              tap('#submit',doc);assert(el('#job',doc).open,'job');tap('#cancel-job',doc);assert(!el('#retry',doc).hidden,'retry');tap('#retry',doc);
+              tap('#submit',doc);assert(el('#job',doc).open,'job');const cancelled=f.contentWindow.location.hash;
+              tap('#cancel-job',doc);assert(el('#retry',doc).hidden&&el('#job-title',doc).textContent.includes('已取消'),'cancel ends this batch');
+              tap('#close-job',doc);tap('#submit',doc);assert(f.contentWindow.location.hash!==cancelled,'new submission gets its own receipt');
               await wait(()=>el('#job-title',doc).textContent==='本批交付结果');
               act('workflow','library');await page('.contact-grid');act('goto','settings/general');await page('[name=theme]');
               set('[name=theme]','light');assert(document.documentElement.dataset.theme==='light','theme');set('[name=theme]','dark');
@@ -233,6 +235,21 @@ def main():
               assert(modal().textContent.includes('DJI_0348.JPG')&&modal().textContent.includes('清单'),'receipt preserved');act('close',null,modal());
               await hash('library/project/river');act('photo','r1');act('multi');act('photo','r1');act('workflow','export');
               assert(modal().open&&modal().textContent.includes('选择导出范围'),'no implicit focused export');act('close',null,modal());act('multi');
+            """)
+            scenario("成片交付跨视图继续", """
+              await hash('library/project/river');await page('.contact-grid');act('photo','r1');act('workflow','export');
+              await wait(()=>el('#export-frame')?.contentDocument?.querySelector('#submit')?.checkVisibility());
+              const frame=el('#export-frame'),doc=frame.contentDocument;
+              await wait(()=>!el('#submit',doc).disabled);tap('#submit',doc);
+              await wait(()=>frame.dataset.running==='true');assert(el('#job-note',doc).textContent.includes('交付继续'),'background delivery status');
+              const name=el('#jobrows strong',doc).textContent;tap('#close-job',doc);
+              await wait(()=>doc.activeElement===el('#show-job',doc));
+              act('workflow','library');await page('.contact-grid');
+              act('goto','jobs');await page('.jobs-page');
+              await wait(()=>all('.jobs-page .record').some(row=>row.textContent.includes('成片导出')&&row.textContent.includes('已完成')));
+              const rows=all('.jobs-page .record').filter(row=>row.textContent.includes('成片导出'));
+              act('job-detail',null,rows[0]);assert(modal().textContent.includes(name),'same rendered file after navigation');
+              act('close',null,modal());
             """)
             scenario("本机 AI 准备、取消、重试与独立候选", """
               await hash('edit/retouch');assert(el('.smart-panel')&&!el('.agent-panel'),'old retouch link opens smart presets');
@@ -402,6 +419,167 @@ def main():
               assert(el('#submit').textContent==='输出清单'&&!el('#submit').disabled,'manifest with offline inputs');
               assert(document.documentElement.scrollWidth<=innerWidth,'narrow export overflow');
             """)
+            if not editing_only:
+                scenario("成片中断前冻结字面名称、版本与发布票据", """
+                  tap('#render');set('#folder','client');set('#template','{name}.proof-{index}');
+                  tap('#asset-rows .asset:nth-child(2) button');
+                  tap('#submit');await wait(()=>job.items[0].state==='待核验');
+                  const first=job.items[0];sessionStorage.setItem('qa.photo',JSON.stringify({id:job.id,
+                    names:job.items.map(r=>r.name),versions:job.items.map(r=>r.versionID),file:first.ticket.fileID,
+                    folder:job.directory,focus:el('#focus-name').textContent}));
+                  const saved=JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.batch.'+job.id));
+                  assert(saved.running&&saved.items[0].state==='待核验'&&!saved.items[0].acknowledged,'last persisted state before exit');
+                  el('#job-demo').open=true;setTimeout(()=>el('#interrupt-job').click(),50);
+                """)
+                scenario("重开认领已发布文件、焦点及逐张离线原因", """
+                  const before=JSON.parse(sessionStorage.getItem('qa.photo'));
+                  await wait(()=>job?.phase==='interrupted'&&el('#job').open&&!job.running);
+                  assert(job.id===before.id&&JSON.stringify(job.items.map(r=>r.name))===JSON.stringify(before.names),'same literal names and batch');
+                  assert(job.directory===before.folder&&JSON.stringify(job.items.map(r=>r.versionID))===JSON.stringify(before.versions),'same folder and versions');
+                  assert(job.items[0].state==='已核验'&&PhotoDelivery.fileAt(job,job.items[0].name).fileID===before.file,'published before ACK');
+                  assert(job.items[1].state==='待继续'&&job.items[2].state==='待找回'&&el('#retry').textContent.includes('1'),'pending vs offline');
+                  assert(el('#focus-name').textContent===before.focus&&el('#selected').textContent==='3 / 3','original view');
+                  tap('#close-job');await wait(()=>document.activeElement===el('#show-job'));set('#folder','pictures');set('#template','new-{index}');tap('#show-job');
+                  el('#job-demo').open=true;tap('#disconnect-job');assert(el('#retry').disabled&&document.activeElement===el('#job-volume'),'offline focus and blocked action');
+                  assert(document.documentElement.scrollWidth<=innerWidth&&el('#job').getBoundingClientRect().right<=innerWidth&&matchMedia('(prefers-color-scheme:light)').matches,'narrow light');
+                """)
+                evidence = os.environ.get("RAWMASTER_UI_DELIVERY_EVIDENCE")
+                if evidence:
+                    folder = Path(evidence)
+                    folder.mkdir(parents=True, exist_ok=True)
+                    browser("screenshot", str(folder / "continuation-offline-light.png"))
+                browser("click", "#mount-other")
+                browser("press", "Enter")
+                scenario("窄窗同路径另一卷授权失败，焦点留在接回操作", """
+                  assert(!job.volumeOnline&&!job.running&&el('#job-title').textContent.includes('离线'),'foreign volume remains offline');
+                  assert(el('#job-reason').textContent==='接回提交时使用的输出目录，然后继续。'&&el('#mount-observation').textContent.includes('另一卷')&&document.activeElement===el('#job-volume')&&el('#retry').disabled,'native offline message, simulation evidence, focus and blocked write');
+                  assert(job.target.device===job.offeredTarget.device&&job.target.directoryID===job.offeredTarget.directoryID&&job.target.volumeID!==job.offeredTarget.volumeID,'another volume at the same path even with the same directory and device numbers');
+                  assert(PhotoDelivery.targetIssue(job.target,{...job.target,directoryID:'other-directory'}).includes('目录不符'),'original volume with a substituted directory also fails');
+                  assert(matchMedia('(prefers-color-scheme:light)').matches&&el('#job').getBoundingClientRect().right<=innerWidth,'compact light');
+                """)
+                if evidence:
+                    browser("screenshot", str(folder / "volume-substitute-light.png"))
+                browser("reload")
+                scenario("接回目标、单项写入重试与原片找回", """
+                  const before=JSON.parse(sessionStorage.getItem('qa.photo'));
+                  await wait(()=>el('#job').open&&job.id===before.id);
+                  assert(!job.volumeOnline&&job.directory===before.folder&&el('#folder').value==='pictures','new draft and frozen destination');
+                  assert(el('#job-reason').textContent.includes('接回提交时使用的输出目录')&&job.reconnectIssue.includes('另一卷'),'reopen keeps the failed grant');
+                  el('#job-demo').open=true;tap('#mount-original');assert(!job.volumeOnline&&el('#retry').disabled,'mount change alone does not grant access');
+                  tap('#job-volume');assert(!job.running&&el('#retry').textContent.includes('1')&&document.activeElement===el('#retry'),'explicit resume after reconnect');
+                  tap('#retry');el('#job-demo').open=true;tap('#fail-job');
+                  await wait(()=>!job.running&&job.items[1].state==='写入失败');
+                  assert(job.items[0].state==='已核验'&&el('#retry').textContent.includes('重试'),'retain first result after failure');
+                  tap('#jobrows li:nth-child(3) button');assert(!job.running&&el('#retry').textContent.includes('2'),'relink one frozen source');
+                  tap('#retry');await wait(()=>job.phase==='done');
+                  assert(job.items.every(r=>r.state==='已核验')&&JSON.stringify(job.items.map(r=>r.name))===JSON.stringify(before.names),'frozen outputs');
+                  assert(PhotoDelivery.fileAt(job,job.items[0].name).fileID===before.file,'already verified output kept');
+                """)
+                browser("set", "media", "dark")
+                browser("set", "viewport", "1180", "760")
+                scenario("同名同内容的外来文件保留、取消区分中断", """
+                  tap('#close-job');set('#template','{name}.v3-{index}');tap('#submit');
+                  await wait(()=>job.items[0].state==='已核验'&&job.items[1].state==='处理中');
+                  el('#job-demo').open=true;tap('#conflict-job');
+                  const row=job.items[1],foreign=PhotoDelivery.fileAt(job,row.name);
+                  assert(!job.running&&row.state==='同名文件待核对'&&foreign.content===row.ticket.content&&foreign.fileID!==row.ticket.fileID,'reject identical bytes from another writer');
+                  tap('#recheck-job');assert(PhotoDelivery.fileAt(job,row.name).fileID===foreign.fileID,'retain conflicting file');
+                  assert(matchMedia('(prefers-color-scheme:dark)').matches&&el('#job').getBoundingClientRect().right<=innerWidth,'desktop dark');
+                  sessionStorage.setItem('qa.cancel',JSON.stringify({id:job.id,name:job.items[0].name,file:job.items[0].ticket.fileID}));
+                """)
+                if evidence:
+                    browser("screenshot", str(folder / "continuation-conflict-dark.png"))
+                scenario("解除占位后仍需明确继续", """
+                  tap('#restore-conflict');assert(!job.running&&job.items[1].state==='待继续','new work requires action');
+                  const name=job.items[1].name;tap('#retry');assert(job.items[1].name===name,'prepared name fixed');
+                  tap('#cancel-job');assert(job.phase==='cancelled'&&el('#retry').hidden,'terminal cancellation');
+                """)
+                browser("reload")
+                scenario("取消回执重开、已核验文件与键盘返回", """
+                  const saved=JSON.parse(sessionStorage.getItem('qa.cancel'));
+                  await wait(()=>job?.id===saved.id);if(!el('#job').open)tap('#show-job');
+                  assert(job.phase==='cancelled'&&!job.running&&el('#retry').hidden,'remains cancelled on reload');
+                  assert(job.items[0].state==='已核验'&&PhotoDelivery.fileAt(job,saved.name).fileID===saved.file,'completed file kept');
+                  el('#close-job').focus();
+                """)
+                browser("press","Tab")
+                browser("press","Escape")
+                scenario("Escape 返回任务入口、重名策略保留完整字面基名", """
+                  await wait(()=>!el('#job').open&&document.activeElement===el('#show-job'));
+                  const before=JSON.parse(sessionStorage.getItem('qa.photo'));
+                  set('#folder','client');set('#template','{name}.proof-{index}');set('#collision','skip');
+                  assert(el('#submit').disabled&&el('#count').textContent.includes('跳过 3 张'),'original skip policy');
+                  set('#collision','rename');tap('#submit');
+                  assert(job.items.every((r,i)=>before.names[i].endsWith('.jpg')&&r.name===before.names[i].slice(0,-4)+'-2.jpg'),'preserve dots and ordinal while allocating suffix');
+                  assert(PhotoDelivery.fileAt(job,before.names[0]).fileID===before.file,'foreign result kept');
+                  tap('#cancel-job');
+                """)
+                browser("open",host+ENTRY)
+                scenario("制作任务保留原批、资料库可先换片", """
+                  await hash('library/project/river');await page('.contact-grid');
+                  if(el('[data-act=multi]').getAttribute('aria-pressed')==='true')act('multi');
+                  act('photo','r1');act('multi');act('photo','b1');act('multi');act('workflow','export');
+                  await wait(()=>el('#export-frame')?.contentDocument?.querySelector('#submit')?.checkVisibility());
+                  const frame=el('#export-frame'),doc=frame.contentDocument;
+                  set('#template','submit.{name}.{index}',doc);tap('#submit',doc);
+                  await wait(()=>frame.dataset.receipt);const id=frame.dataset.receipt;
+                  const record=()=>JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.batch.'+id));
+                  await wait(()=>record()?.items[0].state==='待核验');
+                  const pending=record();assert(pending.items.length===2&&!pending.items[0].acknowledged,'published before acknowledgement');
+                  el('#job-demo',doc).open=true;tap('#disconnect-job',doc);tap('#close-job',doc);
+                  act('workflow','library');await page('.contact-grid');act('photo','m1');act('goto','jobs');await page('.jobs-page');
+                  await wait(()=>Studio.data.jobs.find(j=>j.photoReceipt===id)?.state==='unknown');
+                  sessionStorage.setItem('qa.job',JSON.stringify({id,context:activeIDs(),focus:Studio.data.work,name:pending.items[0].name,
+                    first:pending.items[0].ticket,names:pending.items.map(r=>r.name),versions:pending.items.map(r=>r.versionID)}));
+                """)
+                browser("reload")
+                scenario("从制作任务重开，授权同路径的另一卷仍保留原票据", """
+                  const saved=JSON.parse(sessionStorage.getItem('qa.job'));await page('.jobs-page');
+                  const receipt='delivery-'+saved.id;act('job-detail',receipt);assert(modal().textContent.includes(saved.name),'prior receipt');
+                  act('reopen-delivery',receipt,modal());await wait(()=>el('#export-frame')?.contentDocument?.querySelector('#job')?.open);
+                  const frame=el('#export-frame'),doc=frame.contentDocument;assert(frame.dataset.receipt===saved.id&&el('#jobrows strong',doc).textContent===saved.name,'exact task');
+                  render();assert(el('#export-frame')===frame&&el('#job',doc).open,'normal redraw retains the receipt and its focus');
+                  el('#job-demo',doc).open=true;tap('#mount-other',doc);assert(doc.activeElement===el('#job-volume',doc),'authorize the offered directory');
+                """)
+                browser("press","Enter")
+                scenario("另一卷授权后不认领已发布文件，也不开始余项", """
+                  const saved=JSON.parse(sessionStorage.getItem('qa.job')),doc=el('#export-frame').contentDocument;
+                  const batch=JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.batch.'+saved.id)),first=batch.items[0];
+                  const file=JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.studio.file.'+batch.folder+'/'+saved.name));
+                  assert(!batch.volumeOnline&&!batch.running&&!first.acknowledged&&first.state==='待核验'&&!batch.items[1].ticket,'no reads claimed and no second write');
+                  assert(first.ticket.fileID===saved.first.fileID&&file.fileID===saved.first.fileID&&file.content===saved.first.content,'original ticket and published file survive');
+                  assert(el('#job-reason',doc).textContent==='接回提交时使用的输出目录，然后继续。'&&el('#mount-observation',doc).textContent.includes('另一卷')&&doc.activeElement===el('#job-volume',doc)&&el('#retry',doc).disabled,'native message and focus');
+                  assert(matchMedia('(prefers-color-scheme:dark)').matches&&el('#job',doc).getBoundingClientRect().right<=doc.documentElement.clientWidth,'wide dark');
+                """)
+                if evidence:
+                    browser("screenshot", str(folder / "volume-substitute-dark.png"))
+                scenario("从同一任务接回以新设备号重挂的原卷", """
+                  const saved=JSON.parse(sessionStorage.getItem('qa.job')),frame=el('#export-frame'),doc=frame.contentDocument;
+                  assert(frame.dataset.receipt===saved.id&&el('#job',doc).open&&doc.activeElement===el('#job-volume',doc),'same task and failed grant still focused');
+                  el('#job-demo',doc).open=true;tap('#mount-original',doc);
+                  const batch=JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.batch.'+saved.id));
+                  assert(!batch.volumeOnline&&!batch.running&&batch.target.device!==batch.offeredTarget.device,'remount alone cannot authorize');
+                  assert(batch.target.volumeID===batch.offeredTarget.volumeID&&batch.target.directoryID===batch.offeredTarget.directoryID,'same stable identities');
+                  assert(el('#retry',doc).disabled&&doc.activeElement===el('#job-volume',doc),'grant requires explicit action');
+                """)
+                browser("press","Space")
+                scenario("核对原卷先认领待核验文件，仍等待明确继续", """
+                  const saved=JSON.parse(sessionStorage.getItem('qa.job')),doc=el('#export-frame').contentDocument;
+                  const record=()=>JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.batch.'+saved.id));
+                  const batch=record();assert(batch.volumeOnline&&!batch.running&&batch.items[0].state==='已核验'&&batch.items[0].ticket.fileID===saved.first.fileID,'adopt only the published file');
+                  assert(batch.items[1].state==='待继续'&&!batch.items[1].ticket&&doc.activeElement===el('#retry',doc),'pending item still has no ticket');
+                  await new Promise(ok=>setTimeout(ok,1100));assert(!record().running&&!record().items[1].ticket,'no automatic write across the simulated publication deadline');
+                """)
+                if evidence:
+                    browser("screenshot", str(folder / "volume-original-dark.png"))
+                scenario("明确继续余项并返回资料库改选后的照片", """
+                  const saved=JSON.parse(sessionStorage.getItem('qa.job')),doc=el('#export-frame').contentDocument;
+                  const record=()=>JSON.parse(localStorage.getItem('rawmaster.export.delivery.v1.batch.'+saved.id));
+                  tap('#retry',doc);await wait(()=>el('#job-title',doc).textContent==='本批交付结果');
+                  const done=record();assert(done.items.every(r=>r.acknowledged)&&JSON.stringify(done.items.map(r=>r.name))===JSON.stringify(saved.names)&&JSON.stringify(done.items.map(r=>r.versionID))===JSON.stringify(saved.versions),'frozen names and versions');
+                  tap('#close-job',doc);act('workflow','library');await page('.contact-grid');
+                  assert(JSON.stringify(activeIDs())===JSON.stringify(saved.context)&&Studio.data.work===saved.focus,'browse selection and focus preserved');
+                """)
             errors = browser("errors")
             if errors:
                 raise AssertionError(errors)

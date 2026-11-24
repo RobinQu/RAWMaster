@@ -147,6 +147,11 @@ fi
 codesign --force --sign - "$app/Contents/Helpers/rawmaster-group-render"
 mkdir -p "$app/Contents/Frameworks"
 cp "$catalog_runtime" "$app/Contents/Frameworks/librawmaster_library.dylib"
+image_runtime="$binary_dir/ImageEdit_RAWMasterImage.bundle/Contents/Resources/rawmaster-image.runtime"
+test -f "$image_runtime"
+/usr/bin/codesign --verify "$image_runtime"
+cp "$image_runtime" "$app/Contents/Frameworks/librawmaster_image.dylib"
+/usr/bin/codesign --verify "$app/Contents/Frameworks/librawmaster_image.dylib"
 ditto "$catalog_bundle" "$app/Contents/Resources/LibraryCatalog_RAWMasterLibrary.bundle"
 imaging_resources="$binary_dir/RAWMaster_RAWMasterImaging.bundle"
 if [[ ! -d "$imaging_resources" ]]; then

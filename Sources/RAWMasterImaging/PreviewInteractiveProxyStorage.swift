@@ -93,6 +93,16 @@ final class PreviewInteractiveProxyStorage {
     joined = true
     try check()
   }
+  func fill(from source: PreviewInteractiveProxyStorage, check: () throws -> Void,
+            render: (MTLTexture, MTLTexture) throws -> Void) throws {
+    try check()
+    try ticket.requireOpenAdmission()
+    guard layout.float, layout == source.layout, let texture else { throw PreviewPresentationError.invalidLayout }
+    joined = false
+    try source.withJoinedTexture { try render($0, texture) }
+    try check()
+    joined = true
+  }
   fileprivate func fillValidatedDisplay(from source:MTLTexture, validation:PreviewPresentationReservation,
                                          graph:CIImage,context:CIContext,postCrop:PreviewMetalPostCrop?,check:()throws->Void) throws {
     try ticket.requireOpenAdmission()

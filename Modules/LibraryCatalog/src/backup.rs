@@ -24,6 +24,18 @@ use std::time::Duration;
 use tempfile::NamedTempFile;
 use uuid::Uuid;
 
+/// A restored copy retains history and starts with its own writer identity and leases.
+pub(crate) fn detach_restored_writer(db: &Connection) -> Result<String> {
+    if db.is_autocommit() {
+        return Err("restore requires a catalog write transaction".into());
+    }
+    crate::managed_files::detach_foreign(db, "restored-package")?;
+    crate::scheduler::detach_restored_workers(db)?;
+    let writer = Uuid::new_v4().to_string();
+    db.execute("INSERT INTO metadata(key,value) VALUES('deviceID',?1) ON CONFLICT(key) DO UPDATE SET value=excluded.value", [&writer])?;
+    Ok(writer)
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 enum Mode {

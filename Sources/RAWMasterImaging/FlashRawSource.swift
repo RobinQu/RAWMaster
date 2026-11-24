@@ -208,7 +208,7 @@ final class FlashRawSource {
 }
 
 extension FlashRawFrame {
-  func linearMetalBuffer(device: MTLDevice) throws -> MTLBuffer {
+  func linearRGBF16Data() throws -> Data {
     guard info.outputFormat == FlashRawOutput.linearRGBF16.rawValue,
           info.channels == 3, info.sampleType == 4, info.source == 0, !info.incomplete,
           info.width > 0, info.height > 0 else {
@@ -220,6 +220,11 @@ extension FlashRawFrame {
     guard !areaOverflow, !byteOverflow, length == bytes.count else {
       throw FlashRawError.invalidFrame("linear F16 buffer length disagrees with its dimensions")
     }
+    return bytes
+  }
+
+  func linearMetalBuffer(device: MTLDevice) throws -> MTLBuffer {
+    let bytes = try linearRGBF16Data()
     return try bytes.withUnsafeBytes { raw in
       guard let address = raw.baseAddress else { throw FlashRawError.invalidFrame("missing linear pixels") }
       guard let buffer = device.makeBuffer(bytes: address, length: raw.count, options: .storageModeShared) else {

@@ -145,6 +145,14 @@ fn frozen_order_alternate_content_recovery_and_reverse_links() -> Result<()> {
         "UPDATE lc_proc_jobs SET lease_until=0 WHERE job_id=?1",
         [&jid],
     )?;
+    // An expired holder cannot revive or end its attempt, even while no successor has claimed it.
+    for action in ["renew", "fail", "checkpoint"] {
+        assert!(processing::execute(
+            &path,
+            &json!({"action":action,"jobID":jid,"token":orphan["token"]})
+        )
+        .is_err());
+    }
     let ready = processing::execute(&path, &json!({"action":"claim","jobID":jid}))?;
     assert_ne!(orphan["token"], ready["token"]);
     let frames = ready["frames"].as_array().unwrap();
@@ -175,6 +183,16 @@ fn frozen_order_alternate_content_recovery_and_reverse_links() -> Result<()> {
         ready["receiptPath"].as_str().unwrap(),
         serde_json::to_vec(&receipt)?,
     )?;
+    db.execute(
+        "UPDATE lc_proc_jobs SET lease_until=0 WHERE job_id=?1",
+        [&jid],
+    )?;
+    assert!(processing::execute(
+        &path,
+        &json!({"action":"checkpoint","jobID":jid,"token":ready["token"]})
+    )
+    .is_err());
+    // A fresh claim can independently validate that durable on-disk marker and original frozen digests.
     let staged = processing::execute(&path, &json!({"action":"claim","jobID":jid}))?;
     assert_eq!(staged["state"], "staged");
     let published = processing::execute(&path, &json!({"action":"publish","jobID":jid}))?;

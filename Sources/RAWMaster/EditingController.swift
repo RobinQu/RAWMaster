@@ -5,6 +5,7 @@ import SwiftUI
 import RAWMasterCore
 import RAWMasterImaging
 import RAWMasterAI
+import RAWMasterLibrary
 
 /// Native presentation and orchestration. Catalogue selection/decisions never enter this controller.
 @MainActor final class EditingController: ObservableObject {
@@ -1026,12 +1027,32 @@ import RAWMasterAI
         try Task.checkCancellation()
         guard !shuttingDown else { throw CancellationError() }
         let database = store, hook = archivePublicationHook
-        return try await Task.detached(priority: .utility) {
+        let receipt = try await Task.detached(priority: .utility) {
             try hook?(version.kind)
             let liveArchive = try database.editingArchive()
-            let receipt = try liveArchive.publish(fileURL: file, version: version, jobID: job?.id, attemptID: job?.currentAttempt.id, runID: job?.currentAttempt.runID)
-            return try database.commitArchivePublication(receipt)
+            return try liveArchive.publish(fileURL: file, version: version, jobID: job?.id,
+                                           attemptID: job?.currentAttempt.id, runID: job?.currentAttempt.runID)
         }.value
+        guard let job, job.request.quickPrompt != nil else {
+            return try await Task.detached(priority: .utility) { try database.commitArchivePublication(receipt) }.value
+        }
+        // The provider receipt and immutable archive bytes already exist. This job can only
+        // register the existing bytes, including after a crash before catalog publication.
+        let scheduler = CatalogTaskQueue(database: database.databaseURL)
+        return try await scheduler.withLease(key: "quick-prompt-archive-" + receipt.id,
+            lane: "editing", resource: "io", payload: .object([
+                "archiveReceipt": .string(receipt.id), "attempt": .string(job.currentAttempt.id),
+                "request": .string(job.requestFingerprint)
+            ]), replaySafe: true, restore: { versionID in
+                guard versionID == receipt.version.id else { throw EditingError.archiveMismatch }
+                return try database.editingVersion(id: versionID)
+            }) { lease in
+                let published = try database.publishCatalogTask(lease) {
+                    let value = try database.commitArchivePublication(receipt)
+                    return (value, value.id)
+                }
+                return (published, published.id)
+            }
     }
     func refreshWork() async {
         guard let id = work?.id else { return }
@@ -1139,6 +1160,12 @@ import RAWMasterAI
 
     func hasWorkbenchExport(for assetID: String) -> Bool { workbenchExport?.assetID == assetID }
 
+    func takeWorkbenchExportInput(for assets: Set<String>) -> (assetID: String, input: Task<(PhotoWork, EditingVersion), Error>)? {
+        guard let workbenchExport, assets.contains(workbenchExport.assetID) else { return nil }
+        self.workbenchExport = nil
+        return workbenchExport
+    }
+
     func closeWorkbenchExport() {
         workbenchExport?.input.cancel()
         workbenchExport = nil
@@ -1199,17 +1226,40 @@ import RAWMasterAI
             await refreshRenderedExports(); throw CancellationError()
         }
         let service = exportService, archive = archive
-        let task = Task<RenderedPhoto, Error> {
-            let protected = try await Task.detached { try database.editingProtectedRoots() }.value
-            try Task.checkCancellation()
-            let output = try await service.export(work: current, version: version, archive: archive, destination: plan.targetURL,
-                format: format, protectedURLs: protected, preparePublication: { staged, target, artifact in
-                    guard target.standardizedFileURL == plan.targetURL.standardizedFileURL else { throw EditingError.unsafePath }
-                    _ = try database.prepareRenderedExport(id: plan.id, artifact: artifact, stagingURL: staged)
-                })
+        let scheduler = CatalogTaskQueue(database: database.databaseURL)
+        let exportTaskKey = "rendered-export-" + plan.id
+        let recover: @Sendable () async throws -> RenderedPhoto? = {
             let completed = try await Task.detached { try database.completeRenderedExport(id: plan.id) }.value
-            guard completed.state == .succeeded else { throw EditingError.archiveMismatch }
-            return output
+            guard completed.state == .succeeded, let artifact = completed.preparedArtifact else { return nil }
+            return RenderedPhoto(fileURL: completed.targetURL, artifact: artifact)
+        }
+        let task = Task<RenderedPhoto, Error> {
+            try await scheduler.withLease(key: exportTaskKey, lane: "export", resource: "gpu", payload: .object([
+                "receipt": .string(plan.id), "version": .string(version.id), "source": .string(version.source.contentSHA256),
+                "format": .string(format.rawValue)
+            ]), replaySafe: false, restore: { id in
+                guard id == plan.id, let existing = try await recover() else { throw EditingError.archiveMismatch }
+                return existing
+            }, classify: { _ in .uncertain }, recoverOutstanding: {
+                guard let existing = try await recover() else { return nil }
+                return (existing, plan.id)
+            }) { lease in
+                let protected = try await Task.detached { try database.editingProtectedRoots() }.value
+                try Task.checkCancellation()
+                let output = try await service.export(work: current, version: version, archive: archive, destination: plan.targetURL,
+                    format: format, protectedURLs: protected, preparePublication: { staged, target, artifact in
+                        guard target.standardizedFileURL == plan.targetURL.standardizedFileURL else { throw EditingError.unsafePath }
+                        _ = try database.withCatalogTaskFence(lease) {
+                            try database.prepareRenderedExport(id: plan.id, artifact: artifact, stagingURL: staged)
+                        }
+                    })
+                let completed = try database.publishCatalogTask(lease) {
+                    let receipt = try database.completeRenderedExport(id: plan.id)
+                    guard receipt.state == .succeeded else { throw EditingError.archiveMismatch }
+                    return (receipt, receipt.id)
+                }
+                return (output, completed.id)
+            }
         }
         exportTasks[plan.id] = task
         do {
@@ -1232,7 +1282,20 @@ import RAWMasterAI
         let database = store
         do {
             renderedExports = try await Task.detached(priority: .utility) {
-                if reconcile { return try database.reconcileRenderedExports() }
+                if reconcile {
+                    let records = try database.reconcileRenderedExports()
+                    for record in records where record.state == .succeeded {
+                        let _: Bool? = try database.completeVerifiedCatalogTask(key: "rendered-export-" + record.id) { frozen in
+                            guard frozen["receipt"] == .string(record.id), frozen["version"] == .string(record.versionID),
+                                  frozen["format"] == .string(record.format.rawValue),
+                                  try database.renderedExport(id: record.id).state == .succeeded else { return nil }
+                            let version = try database.editingVersion(id: record.versionID)
+                            guard frozen["source"] == .string(version.source.contentSHA256) else { return nil }
+                            return (true, record.id)
+                        }
+                    }
+                    return records
+                }
                 return try database.loadRenderedExports()
             }.value.sorted { $0.createdAt > $1.createdAt }
         } catch { message = "部分导出记录需要核对，现有文件不会被覆盖。" }
@@ -1662,14 +1725,16 @@ import RAWMasterAI
                 try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
                 let preparing = try await transition(job, to: .preparing)
                 try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
-                let submitted = try await transition(preparing, to: .submitting)
-                try Task.checkCancellation(); guard !shuttingDown else { throw CancellationError() }
-                let progressReceiver = self
-                let output = try await provider.edit(submitted.request, attempt: submitted.currentAttempt) { [weak progressReceiver] progress in
-                    Task { @MainActor in
-                        guard let receiver = progressReceiver else { return }
-                        receiver.startOperation { await receiver.receive(progress, job: submitted) }
-                    }
+                let (submitted, output): (ProcessingJob, AIEditOutput)
+                if LocalFluxProvider.matches(preparing.request.profile) {
+                    // The worker joins its MLX process before the permit can be reused.
+                    // A cancelled wait leaves the attempt in the pre-submission state.
+                    let reserved = min(10 << 30, ProcessingAdmission.shared.capacity.memoryBytes)
+                    (submitted, output) = try await ProcessingAdmission.shared.withPermit(
+                        .editing, resources: .init(cpu: 1, gpu: 1, memoryBytes: reserved)
+                    ) { try await self.submitProvider(provider, job: preparing) }
+                } else {
+                    (submitted, output) = try await submitProvider(provider, job: preparing)
                 }
                 returnedBytes = true; unrecordedOutputs[job.currentAttempt.id] = output
                 let owned = try await recordOutput(output, job: submitted)
@@ -1697,6 +1762,23 @@ import RAWMasterAI
             await refreshJobs(); await refreshWork()
         }
     }
+    private func submitProvider(_ provider: any AIEditingProvider, job: ProcessingJob)
+        async throws -> (ProcessingJob, AIEditOutput)
+    {
+        try Task.checkCancellation()
+        guard !shuttingDown else { throw CancellationError() }
+        let submitted = try await transition(job, to: .submitting)
+        try Task.checkCancellation()
+        guard !shuttingDown else { throw CancellationError() }
+        let output = try await provider.edit(submitted.request, attempt: submitted.currentAttempt) { [weak self] progress in
+            Task { @MainActor in
+                guard let self else { return }
+                self.startOperation { await self.receive(progress, job: submitted) }
+            }
+        }
+        return (submitted, output)
+    }
+
     func scheduleQueuedJobs() {
         guard !shuttingDown else { return }
         for next in jobs.reversed() where next.state == .queued && tasks[next.id] == nil { run(next) }
@@ -1895,7 +1977,24 @@ import RAWMasterAI
         guard !shuttingDown else { return }
         defer { recoveringStartup = false }
         let database = store
-        do { _ = try await Task.detached { try database.recoverEditingArchive() }.value } catch { message = "部分制作结果需要核对，归档文件已保留。" }
+        do {
+            try await Task.detached {
+                let receipts = try database.recoverEditingArchive()
+                for receipt in receipts {
+                    guard let jobID = receipt.jobID, let attemptID = receipt.attemptID else { continue }
+                    let job = try database.processingJob(id: jobID)
+                    guard job.request.quickPrompt != nil else { continue }
+                    let _: Bool? = try database.completeVerifiedCatalogTask(key: "quick-prompt-archive-" + receipt.id) { frozen in
+                        guard frozen["archiveReceipt"] == .string(receipt.id), frozen["attempt"] == .string(attemptID),
+                              frozen["request"] == .string(job.requestFingerprint) else { return nil }
+                        let current = try database.processingJob(id: jobID)
+                        guard current.attempts.contains(where: { $0.id == attemptID && $0.resultVersionID == receipt.version.id })
+                        else { return nil }
+                        return (true, receipt.version.id)
+                    }
+                }
+            }.value
+        } catch { message = "部分制作结果需要核对，归档文件已保留。" }
         await refreshJobs()
         for job in jobs {
             guard !shuttingDown else { return }

@@ -238,7 +238,11 @@ public struct EditingLibraryBackupManifest: Codable, Equatable, Sendable {
   public var databaseSHA256: String
   public var files: [String: String]
   public var createdAt: Date
-  public init(databaseSHA256: String, files: [String: String], createdAt: Date = Date()) {
-    self.formatVersion = 1; self.databaseSHA256 = databaseSHA256; self.files = files; self.createdAt = createdAt
+  public var recipeResources: [String: Int64]?
+  public init(databaseSHA256: String, files: [String: String], createdAt: Date = Date(), recipeResources: [String: Int64] = [:],
+              requiresWriterDetach: Bool = false) {
+    self.formatVersion = recipeResources.isEmpty && !requiresWriterDetach ? 1 : 2
+    self.databaseSHA256 = databaseSHA256; self.files = files; self.createdAt = createdAt
+    self.recipeResources = recipeResources.isEmpty ? nil : recipeResources
   }
 }

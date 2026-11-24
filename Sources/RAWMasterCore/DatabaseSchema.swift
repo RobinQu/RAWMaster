@@ -3,7 +3,7 @@ import Foundation
 import RAWMasterLibrary
 
 enum DatabaseSchema {
-  static let version = 8
+  static let version = 10
   static let columns: [String: Set<String>] = [
     "projects": ["id", "data"], "sessions": ["id", "data"],
     "assets": ["id", "session_id", "source_path", "data", "revision"],
@@ -38,7 +38,7 @@ enum DatabaseSchema {
       throw LibraryError.invalid("资料库版本 \(found) 高于本程序支持的版本 \(version)，未修改原库")
     }
     let owned: Set<String>
-    if found == 8, let db {
+    if found >= 8, let db {
       struct CatalogObjects: Decodable { let valid: Bool; let objects: [String] }
       let reply = try LibraryEngine.shared().transaction("validate", on: db, payload: LibraryEmpty(), as: CatalogObjects.self)
       guard reply.valid else { throw LibraryError.invalid("无法验证资料库目录结构") }

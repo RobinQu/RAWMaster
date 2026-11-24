@@ -1,18 +1,41 @@
 import AppKit
 import CoreImage
+import Darwin
 import Metal
 import RAWMasterCore
+
+enum CanonicalPreviewDiagnostic {
+  private static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_STAGE_TIMING"] == "1"
+
+  static func measure<T>(_ stage: String, _ body: () throws -> T) rethrows -> T {
+    guard enabled else { return try body() }
+    let telemetry = ImagePerformanceTelemetry.shared
+    let token = telemetry.begin(operation: "CanonicalPreviewDiagnostic", stage: stage, queue: "稳定预览")
+    do {
+      let result = try body()
+      telemetry.end(token)
+      return result
+    } catch {
+      telemetry.end(token, result: Result<T, Error>.failure(error))
+      throw error
+    }
+  }
+}
 
 /// Default clients retain the original CPU transport. The independently opted-in
 /// A0 route changes only final display storage, after the same finite-validated
 /// full-quality graph. It never asks the caller to rebuild RAW on display failure.
 enum V3PreviewMaterializer {
+  static let writesOwnedBitmap = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_OWNED_BITMAP"] == "1"
+
   static func materialize(_ graph: DevelopedV3Graph, context: CIContext, maxPixel: Int,
                           presentation: PreviewPresentationScope? = nil,
                           device: (any MTLDevice)? = nil, observation: ((String) -> Void)? = nil,
                           managedOutput:PreviewInteractiveManagedOutput? = nil,
                           managedFallbackReason:String? = nil,managedCheck:(()throws->Void)? = nil,
-                          grainFinalTransport:PreviewGrainFinalTransportV1.Request? = nil,brillianceFinalTransport:DevelopmentBrilliancePublicV1.Request? = nil,dehazeTIFFInvocation:DevelopmentDehazeTIFFInvocationV1? = nil) throws -> PreviewPixels {
+                          grainFinalTransport:PreviewGrainFinalTransportV1.Request? = nil,brillianceFinalTransport:DevelopmentBrilliancePublicV1.Request? = nil,dehazeTIFFInvocation:DevelopmentDehazeTIFFInvocationV1? = nil,
+                          checkedLinearHalf:CIImage? = nil,
+                          ownedBitmapAuthority: (() throws -> Void)? = nil) throws -> PreviewPixels {
     if graph.dehazeTIFFRequestID != nil {
       guard let invocation=dehazeTIFFInvocation,grainFinalTransport==nil,brillianceFinalTransport==nil,
         managedOutput==nil,presentation==nil else{throw PreviewPresentationError.unsupported}
@@ -58,7 +81,11 @@ enum V3PreviewMaterializer {
     }
     let size=graph.canonicalSize, longEdge=max(size.width,size.height)
     let limit=maxPixel <= 0 ? longEdge:CGFloat(max(64,min(4096,maxPixel)))
-    let image=graph.displayImage(scale:min(1,limit/longEdge))
+    let image = CanonicalPreviewDiagnostic.measure("scale graph") {
+      let scale = min(1, limit/longEdge)
+      if let checkedLinearHalf { return checkedLinearHalf.transformed(by:.init(scaleX:scale*2,y:scale*2)) }
+      return graph.displayImage(scale:scale)
+    }
     if let presentation {
       try presentation.requireOpenAdmission()
       // Do not infer CGImage canvas rounding for fractional extents or translate
@@ -74,13 +101,77 @@ enum V3PreviewMaterializer {
       return .init(image:value.image,nativeSize:graph.canonicalSize,
         outputSize:CGSize(width:value.layout.width,height:value.layout.height),bytes:value.actualAllocationBytes)
     }
-    guard let cg = context.createCGImage(image,from:image.extent,format:.RGBA8,colorSpace:PhotoRenderer.sRGB,deferred:false),
-      let owned = CGContext(data:nil,width:cg.width,height:cg.height,bitsPerComponent:8,bytesPerRow:cg.width*4,
-        space:PhotoRenderer.sRGB,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue) else { throw DevelopmentError.unreadable }
-    owned.setBlendMode(.copy); owned.interpolationQuality = .none
-    owned.draw(cg,in:CGRect(x:0,y:0,width:cg.width,height:cg.height))
-    guard let compact = owned.makeImage() else { throw DevelopmentError.unreadable }
-    let bitmap = NSBitmapImageRep(cgImage:compact), result = NSImage(size:CGSize(width:cg.width,height:cg.height)); result.addRepresentation(bitmap)
-    return .init(image:result,nativeSize:graph.canonicalSize,outputSize:CGSize(width:cg.width,height:cg.height),bytes:bitmap.bytesPerRow*bitmap.pixelsHigh)
+    let bounds = image.extent
+    if let ownedBitmapAuthority, bounds == CGRect(x: 0, y: 0, width: 2400, height: 1600),
+       let compact = try CanonicalPreviewDiagnostic.measure("render owned sRGB8 bitmap", {
+         try renderOwnedBitmap(image, context: context, checkAuthority: ownedBitmapAuthority)
+       }) {
+      return wrap(compact, nativeSize: graph.canonicalSize)
+    }
+    let cg = try CanonicalPreviewDiagnostic.measure("create sRGB8 CGImage") {
+      guard let cg = context.createCGImage(image,from:bounds,format:.RGBA8,colorSpace:PhotoRenderer.sRGB,deferred:false) else {
+        throw DevelopmentError.unreadable
+      }
+      return cg
+    }
+    let compact = try CanonicalPreviewDiagnostic.measure("copy into owned CGImage") {
+      guard let owned = CGContext(data:nil,width:cg.width,height:cg.height,bitsPerComponent:8,bytesPerRow:cg.width*4,
+        space:PhotoRenderer.sRGB,bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue) else {
+        throw DevelopmentError.unreadable
+      }
+      owned.setBlendMode(.copy); owned.interpolationQuality = .none
+      owned.draw(cg,in:CGRect(x:0,y:0,width:cg.width,height:cg.height))
+      guard let compact = owned.makeImage() else { throw DevelopmentError.unreadable }
+      return compact
+    }
+    return wrap(compact, nativeSize: graph.canonicalSize)
+  }
+
+  private static func wrap(_ compact: CGImage, nativeSize: CGSize) -> PreviewPixels {
+    CanonicalPreviewDiagnostic.measure("wrap NSBitmapImageRep") {
+      let bitmap = NSBitmapImageRep(cgImage:compact)
+      let outputSize = CGSize(width: compact.width, height: compact.height)
+      let result = NSImage(size: outputSize)
+      result.addRepresentation(bitmap)
+      return .init(image:result,nativeSize:nativeSize,outputSize:outputSize,bytes:bitmap.bytesPerRow*bitmap.pixelsHigh)
+    }
+  }
+
+  private static func renderOwnedBitmap(_ image: CIImage, context: CIContext,
+                                        checkAuthority: () throws -> Void) throws -> CGImage? {
+    try Task.checkCancellation()
+    try checkAuthority()
+    let width = Int(image.extent.width), height = Int(image.extent.height)
+    let rowBytes = width * 4, byteCount = rowBytes * height
+    var allocation: UnsafeMutableRawPointer?
+    guard posix_memalign(&allocation, 64, byteCount) == 0, let bytes = allocation else { return nil }
+    var ownsBytes = true
+    defer { if ownsBytes { free(bytes) } }
+
+    try autoreleasepool {
+      let destination = CIRenderDestination(bitmapData: bytes, width: width, height: height, bytesPerRow: rowBytes, format: .RGBA8)
+      destination.alphaMode = .premultiplied
+      destination.colorSpace = PhotoRenderer.sRGB
+      destination.isFlipped = true
+      destination.isDithered = false
+      try checkAuthority()
+      let task = try context.startTask(toRender: image, from: image.extent, to: destination, at: .zero)
+      do { _ = try task.waitUntilCompleted() }
+      catch {
+        _ = try? task.waitUntilCompleted()
+        throw error
+      }
+    }
+    try Task.checkCancellation()
+    try checkAuthority()
+    guard let provider = CGDataProvider(dataInfo: nil, data: bytes, size: byteCount, releaseData: { _, data, _ in
+      free(UnsafeMutableRawPointer(mutating: data))
+    }) else { throw DevelopmentError.unreadable }
+    ownsBytes = false
+    let info = CGBitmapInfo.byteOrder32Big.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue))
+    guard let result = CGImage(width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 32,
+      bytesPerRow: rowBytes, space: PhotoRenderer.sRGB, bitmapInfo: info, provider: provider,
+      decode: nil, shouldInterpolate: true, intent: .defaultIntent) else { throw DevelopmentError.unreadable }
+    return result
   }
 }

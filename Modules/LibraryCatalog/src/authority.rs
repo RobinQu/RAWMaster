@@ -125,19 +125,23 @@ fn definitions(db: &Connection) -> Result<BTreeMap<String, Definition>> {
     Ok(entries.collect::<rusqlite::Result<_>>()?)
 }
 
-fn build_definitions() -> Result<BTreeMap<String, Definition>> {
+pub(crate) fn reference_database() -> Result<Connection> {
     let reference = Connection::open_in_memory()?;
     reference.execute_batch(migration::LEGACY_REFERENCE)?;
     reference.execute_batch(SCHEMA_SQL)?;
     reference.execute_batch(&journal_sql())?;
-    definitions(&reference)
+    Ok(reference)
 }
 
 fn trusted_definitions() -> Result<&'static BTreeMap<String, Definition>> {
     static EXPECTED: OnceLock<std::result::Result<BTreeMap<String, Definition>, String>> =
         OnceLock::new();
     EXPECTED
-        .get_or_init(|| build_definitions().map_err(|e| e.to_string()))
+        .get_or_init(|| {
+            reference_database()
+                .and_then(|db| definitions(&db))
+                .map_err(|e| e.to_string())
+        })
         .as_ref()
         .map_err(|e| e.clone().into())
 }
@@ -145,10 +149,48 @@ pub fn object_names() -> Result<Vec<String>> {
     Ok(trusted_definitions()?.keys().cloned().collect())
 }
 
+// The shipped library-033 v8 snapshot stores this exact trigger with a space after WHEN.
+// Keep v9 strict. Never normalize arbitrary catalog SQL when deciding whether opening it is safe.
+const V8_SYNC_NAME: &str = "lc_sync_asset_update";
+const V8_SYNC_DDL: &str = concat!(
+    "CREATE TRIGGER lc_sync_asset_update AFTER UPDATE ON assets WHEN \n",
+    "  json_extract(OLD.data,'$.fileSize','$.contentHash','$.availability','$.importState','$.effectiveSourcePath','$.currentPath','$.effectiveManagedPath','$.relativePath')\n",
+    "  IS NOT json_extract(NEW.data,'$.fileSize','$.contentHash','$.availability','$.importState','$.effectiveSourcePath','$.currentPath','$.effectiveManagedPath','$.relativePath')\n",
+    "  BEGIN INSERT INTO lc_touch_asset VALUES(NEW.id); END"
+);
+
+pub(crate) fn matches_historical_sync(name: &str, kind: &str, owner: &str, sql: &str) -> bool {
+    name == V8_SYNC_NAME && kind == "trigger" && owner == "assets" && sql == V8_SYNC_DDL
+}
+
+pub(crate) fn normalize_v8_sync(db: &Connection) -> Result<()> {
+    let sql: String = db.query_row(
+        "SELECT sql FROM sqlite_schema WHERE name=?1",
+        [V8_SYNC_NAME],
+        |r| r.get(0),
+    )?;
+    if sql == V8_SYNC_DDL {
+        let ddl = &trusted_definitions()?
+            .get(V8_SYNC_NAME)
+            .ok_or("missing trusted synchronization trigger")?
+            .2;
+        db.execute_batch("DROP TRIGGER lc_sync_asset_update")?;
+        db.execute_batch(ddl)?;
+    }
+    Ok(())
+}
+
 pub fn validate_schema(db: &Connection) -> Result<()> {
     let actual = definitions(db)?;
     for (name, expected) in trusted_definitions()? {
         if actual.get(name) != Some(expected) {
+            if actual
+                .get(name)
+                .is_some_and(|(kind, owner, sql)| matches_historical_sync(name, kind, owner, sql))
+                && db.pragma_query_value(None, "user_version", |r| r.get::<_, i64>(0))? == 8
+            {
+                continue;
+            }
             return Err(format!("unrecognized or missing catalog definition: {name}").into());
         }
     }

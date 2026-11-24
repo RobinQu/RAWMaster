@@ -132,6 +132,12 @@ final class AppModel: ObservableObject {
     @Published var timelapseIsRunning = false
     @Published var workbenchExportContext: WorkbenchExportContext = .project
     @Published var requestedWorkbenchExportMode: WorkbenchExportMode?
+    @Published var workbenchPhotoDelivery: WorkbenchPhotoDelivery?
+    var workbenchPhotoDeliveryTask: Task<Void, Never>?
+    var workbenchActiveLease: WorkbenchDeliveryCatalog.Lease?
+    var workbenchExplicitCancellation: String?
+    var workbenchDeliveryCheckpoint: (@Sendable (Int, WorkbenchDeliveryCheckpoint) -> Void)?
+    var workbenchExecutionEpoch = UUID()
     @Published var externalEditorPreparing = false
     @Published var showGroups = false
     @Published var groupEditingID: String?
@@ -212,7 +218,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var runningImportSessionID: String?
     @Published private(set) var sessionTask: SessionTaskState?
     let libraryURL: URL
-    private let defaults: UserDefaults
+    let defaults: UserDefaults
 
     init(libraryURL overrideURL: URL? = nil, defaults: UserDefaults = .standard, postIngest: ImportPostIngestCallback? = nil,
          regroupAnalyzer: AutomaticGroupingAnalyzer? = nil, editingPreviewBackend: (any EditingPreviewBackend)? = nil,

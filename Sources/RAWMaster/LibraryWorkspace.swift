@@ -43,6 +43,7 @@ final class ApplicationLibrarySession: ObservableObject {
         model.catalogGrid?.cancel()
         let previous = model
         Task {
+            await previous.stopWorkbenchPhotoDelivery()
             await previous.editing?.shutdown(finishPreviews:false)
             await previous.editingServices?.shutdown()
         }

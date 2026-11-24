@@ -110,8 +110,9 @@ fn safe_resource_path(value: &str) -> Result<()> {
 
 impl Inventory {
     pub fn from_snapshot(db: &Connection, source_catalog: &Path, mode: Mode) -> Result<Self> {
-        if db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))? != 8 {
-            return Err("package operations require a supported v8 catalog".into());
+        if !crate::readable_schema(db.query_row("PRAGMA user_version", [], |r| r.get::<_, i64>(0))?)
+        {
+            return Err("package operations require a supported catalog".into());
         }
         crate::validate_catalog_objects(db)?;
         if db.query_row("SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE type IN ('view','trigger') AND name NOT GLOB 'lc_*')",[],|r|r.get::<_,bool>(0))? {
