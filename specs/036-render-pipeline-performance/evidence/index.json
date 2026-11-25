@@ -103,6 +103,12 @@
       "name": "advanced-detail-freeze-probe",
       "scope": "ROI feasibility: windowed freeze and guide-blur rect independence at native scale",
       "sha256": "672655925a162bf1cabd1aa9ad3fc075f8ed966143d06a2986d7647c22a16c57"
+    },
+    {
+      "file": "advanced-detail-guide-window-probe.json",
+      "name": "advanced-detail-guide-window-probe",
+      "scope": "Operator rewrite research: guide freeze over window+halo, byte-exactness gate",
+      "sha256": "9e753209956315115fdaab5f3927ef66c841c5555815ea9d4f5254b6c1897dec"
     }
   ]
 }

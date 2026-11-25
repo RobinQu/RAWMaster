@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "build": "release",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "source": "Sony ILCE-7RM5 ARW, 9504x6336",
+  "probe": "RAWMASTER_ADVANCED_FREEZE_PROBE=1 swift test -c release --filter AdvancedDetailWindowFreezeProbe",
+  "method": "every materialization uses a fresh CIContext so no render cache can serve one request from another",
+  "window": [2400, 1600],
+  "results": {
+    "guideBlurWholeVsWindow": { "maxAbsDiff": 0.0 },
+    "guideTextureRoundTrip": { "halos": [0, 8, 32], "maxAbsDiff": 0.0, "differingComponents": 0, "totalComponents": 15360000 },
+    "bandFromFrozenGuides": {
+      "texture": { "maxAbsDiff": 1.6279519e-05, "differingComponents": [3957, 15009], "haloRange": [0, 64], "note": "halo=0 is an exact same-size pass-through; halo>=2 diverges" },
+      "clarity": { "maxAbsDiff": 0.00069999903, "differingComponents": 11110000, "haloRange": [0, 110] }
+    }
+  },
+  "interpretation": "Guide values and their texture round-trip are exact, but rmAdvancedBandV1 output still depends on the extent of its image inputs. The kernel is same-coordinate and its ROI callback is identity, so this is Core Image's internal tiling of the band graph, not the kernel math. A byte-exact windowed advanced-detail operator therefore requires owning the band composition as well, not only the guide freeze."
+}
