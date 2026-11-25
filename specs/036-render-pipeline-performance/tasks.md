@@ -52,7 +52,8 @@
 - [ ] **`rawDetails` 的 AHD 代价。** 选 RAW 细节算法时解码从 43.5 ms 升到 118.9 ms（2.7×）；需要确认这条只在显式选择时生效，且 UI 有可见的代价提示。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。
-- [ ] **把窗口接到画布。** 窗口位图只覆盖画布一部分，需要：`ImageCanvas` 增加 `window` 与 `canvasPixelSize`（`pixelSize` 仍按整幅算，位图绘进 `window` 子矩形）；`ZoomableImageView` 透传；画布把可见矩形（`destination ∩ bounds` 归一化）报给控制器；控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅在可见矩形越出当前窗口时重发 `.detail`，越界期间继续绘制旧位图。必须用真实窗口走查平移、缩放、叠加层与吸管后再默认开启；回退开关 `RAWMASTER_DETAIL_WINDOW=0`。
+- [x] **把窗口接到画布。** `ImageCanvas` 增加 `window` 与 `canvasPixelSize`：`pixelSize` 仍按整幅画布算（缩放、命中、叠加层坐标不变），位图绘进 `window` 对应的子矩形；`ZoomableImageView` 透传并发布可见窗口。控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅当可见矩形越出当前窗口时重发 `.detail`，并合并 120 ms 内的连续平移。窗口帧不再能充当整幅缩略图见证，吸管取样时请求整幅帧。
+- [ ] **真实窗口走查。** 平移、缩放、叠加层、吸管、裁切在窗口帧上的视觉与手感仍需桌面签收；几何与绘制由 `ImageViewportWindowGeometryTests` 覆盖（含「位图只绘进窗口子矩形」）。
 - [ ] **窗口化后把有限值扫描也收窄。** 现在窗口帧仍整幅扫描。收窄要审计 `thumbnailCanonicalWitness` 与 `FlashRawNativeFiniteCheck` 的复用域，因为证明会从「整幅有限」变成「显示窗口有限」。
 - [ ] **1:1 的算子成本。** `texture` 约 0.3 s、`dehaze` 约 1.5 s 是整幅邻域／全局归约，只能逐算子做邻域分解与分带，与传输层无关。
 - [ ] **Linux。** 本规格只覆盖 macOS。

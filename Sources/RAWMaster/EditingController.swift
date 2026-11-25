@@ -299,6 +299,10 @@ import RAWMasterLibrary
     private var previewGestureID: UUID?
     private var lastPreviewAdjustmentInput: EditingPreviewInput?
     private var settledPreviewTask: Task<Void, Never>?
+    /// Canvas window a 1:1 frame should cover. `nil` materializes the whole canvas.
+    private(set) var detailWindow: CGRect?
+    private var lastVisibleDetailWindow: CGRect?
+    private var detailWindowTask: Task<Void, Never>?
     private var sourceRevalidationTask: Task<Void, Never>?
     private var focusTask: Task<Void, Never>?
     private var startupTask: Task<Void, Never>?
@@ -741,6 +745,12 @@ import RAWMasterLibrary
     func requestDetailPreview(nativeEvent: Bool = false) {
         guard !shuttingDown, !detailPreviewRequested, !(cropEditing && stage == .development) else { return }
         detailPreviewRequested = true
+        // Seed the window from the visible rect the canvas just published, so the first 1:1
+        // frame is already scoped instead of rendering the whole canvas and then re-rendering.
+        if detailWindow == nil, let visible = lastVisibleDetailWindow {
+            detailWindow = ImageViewportGeometry.quantized(
+                ImageViewportGeometry.servedWindow(visible: visible, margin: 0.5), steps: 32)
+        }
         setActualPixels(true, nativeEvent: nativeEvent)
     }
     func resetRecipe(nativeEvent: Bool = false) {
@@ -805,6 +815,28 @@ import RAWMasterLibrary
         }
         stage = .development; selectVersion(version, continueEditing: true)
     }
+    /// The 1:1 canvas reports which part of the canvas it can see. Ask for a bitmap that covers
+    /// it plus a margin, so panning within the margin never re-renders.
+    func updateDetailVisibleWindow(_ visible: CGRect) {
+        // Keep the last report even while the canvas is not yet in native pixels: the entry
+        // gesture publishes it before it asks for a detail frame.
+        guard stage == .development, sourceReady else { return }
+        lastVisibleDetailWindow = visible
+        guard actualPixels, !previewInteracting else { return }
+        let desired = ImageViewportGeometry.quantized(
+            ImageViewportGeometry.servedWindow(visible: visible, margin: 0.5), steps: 32)
+        let served = previews.primary.frame?.window
+        if let served, ImageViewportGeometry.window(served, covers: visible) { return }
+        guard desired != detailWindow else { return }
+        detailWindow = desired
+        // Coalesce a burst of pan steps into one request.
+        detailWindowTask?.cancel()
+        detailWindowTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 120_000_000)
+            guard !Task.isCancelled, let self, self.actualPixels else { return }
+            self.requestPreview(input: .capture(control: "detail-window", phase: "discrete"))
+        }
+    }
     func requestPreview(input: EditingPreviewInput? = nil) {
         let isolated=isolatedDevelopmentSlot,clipping=developmentClippingPreview
         if filterHoverToken != nil { cancelDevelopmentFilterHover() }
@@ -835,6 +867,7 @@ import RAWMasterLibrary
         }
         let overlayOnly = cropEditing && previewControls == ["crop"]
         let quality: PreviewQuality = actualPixels ? .detail : (previewInteracting && !overlayOnly ? .interactive : .settled)
+
         let presentationID = developmentPreviewPresentationID
         let draftPresentation: EditingDraftPresentation? = editingDraft && !actualPixels && CaptureFileFormat.isRAW(work.source.sourceLocation.lastPathComponent)
             ? .init(focusID: focusGeneration, workID: work.id, draftParentID: draftParentID, selectedVersionID: selectedVersionID,
@@ -846,7 +879,8 @@ import RAWMasterLibrary
                 previews.primary.submit(try .init(source: source, recipe: .init(), quality: quality, presentationID: presentationID), input: input)
             } else if sourceReady {
                 let intent = try EditingPreviewIntent(source: .raw(work.source), recipe: currentRecipe, quality: quality,
-                    draftPresentation: draftPresentation, presentationID: presentationID)
+                    draftPresentation: draftPresentation, presentationID: presentationID,
+                    detailWindow: quality == .detail && developmentPicker == nil ? detailWindow : nil)
                 if !previews.primary.reuseForPresentation(intent, input: input) {
                     previews.primary.submit(intent, input: input,
                         duplicateReason: cropEditing && ["crop", "crop-number", "crop-aspect"].contains(input.control) ? "overlay-only" : nil,
@@ -3117,6 +3151,9 @@ import RAWMasterLibrary
               targetedActive || picker.recipeFingerprint == (try? EditingFingerprint.of(recipe)),
               let frame = previews.primary.frame, targetedActive || frame.revision == previews.primary.currentRevision,
               frame.generation == picker.context.sourceGeneration, targetedActive || frame.quality != .interactive,
+              // A windowed bitmap covers only part of the canvas; sampling it as the whole frame
+              // would read the wrong texel. Wait for the whole-canvas frame the picker requests.
+              frame.window == nil,
               targetedActive || previews.primary.frameRecipe == recipe,
               previews.primary.framePresentationID == developmentPreviewPresentationID,
               let source = developmentSession.source,
