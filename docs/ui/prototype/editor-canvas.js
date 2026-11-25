@@ -44,8 +44,12 @@ function dock() {
 // See specs/036-render-pipeline-performance/spec.md.
 function resolutionChip() {
   const native = '原生 9504 × 6336';
+  // 1:1 renders only the visible window of the canvas (plus a pan margin); FIT renders the
+  // whole frame at the canvas size. See specs/036-render-pipeline-performance/spec.md.
   return `<small class="pane-label canvas-resolution" aria-live="polite">${
-    S.pixelView ? '原生像素 ' + '9504 × 6336' : '预览 2400 × 1600 · ' + native
+    S.pixelView
+      ? '原生像素 9504 × 6336 · 视口 2400 × 1600'
+      : '预览 2400 × 1600 · ' + native
   }</small>`;
 }
 function compareMenu() {  const refs = [
