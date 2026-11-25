@@ -61,17 +61,34 @@ public struct DevelopmentRGBMatrixV3: Codable, Equatable, Sendable {
     let a = values
     guard a.count == 9, a.allSatisfy({ $0.isFinite && abs($0) <= 16 }) else { throw EditingError.invalidRecipe }
     let inverse = try Self.inverse(a)
-    let norm = (0..<3).map { r in (0..<3).reduce(0.0) { $0+abs(a[r*3+$1]) } }.max()!
-    let inverseNorm = (0..<3).map { r in (0..<3).reduce(0.0) { $0+abs(inverse[r*3+$1]) } }.max()!
+    let norm = Self.rowSumNorm(a), inverseNorm = Self.rowSumNorm(inverse)
     guard norm*inverseNorm <= 1024 else { throw EditingError.invalidRecipe }
   }
   public func applying(to rgb: DevelopmentSampledColorV3) throws -> DevelopmentSampledColorV3 {
     try validate(); try rgb.validate(); let v = Self.apply(values,[rgb.red,rgb.green,rgb.blue])
     return .init(red:v[0],green:v[1],blue:v[2])
   }
-  static func apply(_ a: [Double], _ v: [Double]) -> [Double] { (0..<3).map { r in (0..<3).reduce(0.0) { $0+a[r*3+$1]*v[$1] } } }
+  static func apply(_ a: [Double], _ v: [Double]) -> [Double] {
+    (0..<3).map { (r: Int) -> Double in
+      (0..<3).reduce(0.0) { (sum: Double, k: Int) -> Double in sum+a[r*3+k]*v[k] }
+    }
+  }
+  static func rowSumNorm(_ m: [Double]) -> Double {
+    var maximum = 0.0
+    for r in 0..<3 {
+      var sum = 0.0
+      for k in 0..<3 { sum += abs(m[r*3+k]) }
+      maximum = max(maximum, sum)
+    }
+    return maximum
+  }
   static func multiply(_ a: [Double], _ b: [Double]) -> [Double] {
-    (0..<9).map { i in (0..<3).reduce(0.0) { $0+a[(i/3)*3+$1]*b[$1*3+i%3] } }
+    (0..<9).map { (i: Int) -> Double in
+      let row = (i/3)*3, column = i%3
+      return (0..<3).reduce(0.0) { (sum: Double, k: Int) -> Double in
+        sum+a[row+k]*b[k*3+column]
+      }
+    }
   }
   static func inverse(_ a: [Double]) throws -> [Double] {
     guard a.count == 9 else { throw EditingError.invalidRecipe }

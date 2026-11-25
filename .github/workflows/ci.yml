@@ -11,7 +11,10 @@ permissions:
 
 jobs:
   regression:
-    runs-on: macos-26
+    # The imaging code uses macOS 27 Core Image APIs (despeckle, render
+    # estimation); the macos-26 image ships the macOS 26 SDK and cannot
+    # compile it. xcode-27 is GitHub's public Xcode 27 image.
+    runs-on: xcode-27
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -22,6 +25,7 @@ jobs:
           uname -m >> output/validation/ci/platform.txt
           swift --version >> output/validation/ci/platform.txt
           xcodebuild -version >> output/validation/ci/platform.txt
+          echo "macOS SDK: $(xcrun --sdk macosx --show-sdk-version)" >> output/validation/ci/platform.txt
           cargo --version >> output/validation/ci/platform.txt
       - name: Cache Rust dependencies
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0

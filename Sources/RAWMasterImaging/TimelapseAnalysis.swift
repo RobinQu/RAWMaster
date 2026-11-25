@@ -54,8 +54,9 @@ enum TimelapseAnalysis {
             context.render(scaled, toBitmap: bytes.baseAddress!, rowBytes: 64*4*MemoryLayout<Float>.size,
                            bounds: CGRect(x: 0, y: 0, width: 64, height: 64), format: .RGBAf, colorSpace: linearSpace)
         }
-        return (0..<(64*64)).map { i in
-            max(0, Double(samples[i*4]) * 0.2126 + Double(samples[i*4+1]) * 0.7152 + Double(samples[i*4+2]) * 0.0722)
+        return (0..<(64*64)).map { (i: Int) -> Double in
+            let r = Double(samples[i*4]), g = Double(samples[i*4+1]), b = Double(samples[i*4+2])
+            return max(0, r * 0.2126 + g * 0.7152 + b * 0.0722)
         }
     }
     static func logLuminance(_ image: CIImage, context: CIContext, region: CGRect) -> Double {
