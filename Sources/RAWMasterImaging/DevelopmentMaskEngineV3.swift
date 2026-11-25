@@ -10,7 +10,7 @@ enum DevelopmentMaskEngineV3 {
   static let operatorVersion="mask-v14-local-dehaze/linear-radial-range-subject/ordered-f32/source-normalized/local-glow-fused-v1/local-point-color-v1/local-light-extended-v1/local-wb-composite-v1/local-hue-colorize-v1/local-log-bands-v1/local-grain-v1/local-curves-v1/local-grading-v1/local-detail-v1/local-defringe-protection-v1/point-library-isolated-v1"
   private struct Kernels { let layer,glowLayer,pointColor,pointColorOnly,composite,grain,sourceGrain,moire,dehaze,scopeCoverage:CIKernel }
   private static let kernels:Result<Kernels,Error>=Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     let source = try RAWMasterImageKernel.source(.mask)
     let all=try CIKernel.kernels(withMetalString:source)
     // Keep the point-cloud kernel isolated from differently parameterized layer kernels.

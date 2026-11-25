@@ -14,7 +14,7 @@ enum DevelopmentGlobalEngineV3 {
   static let operatorVersion = "rawmaster-global-v3.11-point-uniforms/clipping-preview/hue-isolation/definition-log-guide/selective-hsv-legacy6-current8-variance-v1/defringe-v1/imageNR-ci/noise-luminance-contrast-color-detail-v1/sharp-radius-detail-masking-preview-v1/"+vignetteOperatorVersion+"/"+DevelopmentOpticsEngineV3.operatorVersion
   private struct Kernels { let guide, definition, selective, selectiveVariance, selectivePointCloud, noiseDetail, sharp, sharpResponse, sharpMask, vignette, alpha, clipping: CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let all = try CIKernel.kernels(withMetalString:metalSource)
     func get(_ name: String) throws -> CIKernel { guard let k = all.first(where: { $0.name == name }) else { throw DevelopmentError.unsupportedEngine }; return k }
     return try .init(guide:get("rmGlobalGuide"),definition:get("rmDefinition"),selective:get("rmSelective"),selectiveVariance:get("rmSelectiveVariance"),selectivePointCloud:get("rmSelectivePointCloud"),noiseDetail:get("rmNoiseDetail"),sharp:get("rmSharp"),sharpResponse:get("rmNativeSharpResponse"),sharpMask:get("rmNativeSharpMask"),vignette:get("rmVignette"),alpha:get("rmRestoreAlpha"),clipping:get("rmClippingPreview"))

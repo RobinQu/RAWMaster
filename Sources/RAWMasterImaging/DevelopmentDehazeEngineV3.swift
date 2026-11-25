@@ -27,7 +27,7 @@ enum DevelopmentDehazeEngineV3 {
   }
   private struct Kernels { let guide,apply:CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let kernels=try CIKernel.kernels(withMetalString:metalSource)
     guard let guide=kernels.first(where:{$0.name=="rmDehazeGuideV1"}),let apply=kernels.first(where:{$0.name=="rmDehazeApplyV1"}) else { throw DevelopmentError.unsupportedEngine }
     return .init(guide:guide,apply:apply)

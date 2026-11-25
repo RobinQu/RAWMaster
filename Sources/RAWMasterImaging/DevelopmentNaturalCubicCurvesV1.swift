@@ -136,7 +136,7 @@ enum DevelopmentNaturalCubicCurvesV1 {
     return .init(try finite(result.x*pixel.w),try finite(result.y*pixel.w),try finite(result.z*pixel.w),pixel.w)
   }
   private static let loaded:Result<CIKernel,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     guard let kernel=try CIKernel.kernels(withMetalString:metalSource).first(where:{$0.name=="rmNaturalCubicCurvesV1"})else{throw DevelopmentError.unsupportedEngine};return kernel
   }
   /// Immutable actual data/lookup object passed to the same kernel invocation, never a regenerated guess.

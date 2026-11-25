@@ -23,7 +23,7 @@ enum PreviewFITCoverageV1 {
   """
 
   private static let kernel: Result<CIKernel, Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else {
+    guard DevelopmentKernelCapability.supported else {
       throw DevelopmentError.unsupportedEngine
     }
     guard let kernel = try CIKernel.kernels(withMetalString: metalSource).first(where: { $0.name == "rmFITUpperCoverageV1" }) else {

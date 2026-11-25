@@ -8,7 +8,7 @@ enum DevelopmentDehazeRAWCoverageV1 {
   static let version="raw-dehaze-v1-upper-coverage-maxbits-1065353219-v1"
   static let maximumAlpha=Float(bitPattern:1065353219) // 1 + 3 F32 ULP; actual native A witness.
   private static let kernel:Result<CIKernel,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else {
+    guard DevelopmentKernelCapability.supported else {
       throw DevelopmentError.unsupportedEngine
     }
     let source = #"""

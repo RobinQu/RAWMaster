@@ -7,7 +7,7 @@ import RAWMasterCore
 enum DevelopmentGeometryEngineV3 {
   static let operatorVersion = "rawmaster-geometry-v3.1/late-D4-v1/Core-top-left-map/linear-premultiplied-sampling"
   private static let loaded: Result<CIKernel,Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let all = try CIKernel.kernels(withMetalString:metalSource)
     guard let kernel = all.first(where: { $0.name == "rmProjectiveGeometry" }) else { throw DevelopmentError.unsupportedEngine }
     return kernel

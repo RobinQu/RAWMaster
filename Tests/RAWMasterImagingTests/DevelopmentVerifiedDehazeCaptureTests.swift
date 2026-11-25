@@ -242,8 +242,8 @@ final class DevelopmentVerifiedDehazeCaptureTests: XCTestCase {
   }
 
   func testIsolatedClassicCatalogReplacementClosesTheOldStoreAndChangesTheLiveStageIdentity() throws {
-    guard MTLCreateSystemDefaultDevice()?.supportsDynamicLibraries == true else {
-      throw XCTSkip("The Classic stage requires a Metal device with dynamic library support.")
+    guard DevelopmentKernelCapability.supported else {
+      throw XCTSkip("The Classic stage requires a Metal device that compiles stitchable kernels.")
     }
     let bundled = try XCTUnwrap(DevelopmentPhotoFilterResourceStore.bundledRoot)
     let sourceManifest = bundled.appendingPathComponent("catalog-v1.json")

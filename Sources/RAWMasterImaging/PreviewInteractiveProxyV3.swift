@@ -64,7 +64,7 @@ enum PreviewInteractiveProxyV3 {
     }
     } }
     """#
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries,
+    guard DevelopmentKernelCapability.supported,
       let kernel=try CIKernel.kernels(withMetalString:source).first(where:{$0.name=="rmProxyTransportAlpha"}) else {
       throw DevelopmentError.unsupportedEngine
     }
@@ -91,7 +91,7 @@ enum PreviewInteractiveProxyV3 {
     }
     } }
     """#
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries,
+    guard DevelopmentKernelCapability.supported,
       let kernel=try CIKernel.kernels(withMetalString:source).first(where:{$0.name=="rmProxyInvalidTile"}) else {
       throw DevelopmentError.unsupportedEngine
     }

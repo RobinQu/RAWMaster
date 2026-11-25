@@ -7,7 +7,7 @@ import RAWMasterCore
 enum DevelopmentRefineSaturationEngineV3 {
   static let operatorVersion="rawmaster-refine-saturation-v1/encoded-srgb-luma/f32"
   private static let kernel:Result<CIKernel,Error>=Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     let all=try CIKernel.kernels(withMetalString:metalSource)
     guard let value=all.first(where:{$0.name=="rmRefineSaturation"})else{throw DevelopmentError.unsupportedEngine};return value
   }

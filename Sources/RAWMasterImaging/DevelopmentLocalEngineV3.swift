@@ -8,7 +8,7 @@ enum DevelopmentLocalEngineV3 {
   static let operatorVersion = "local-v3/retouch-texture-transfer25/clone-direct/manual4nearest-f32/ordered-coverage/red-eye-local-v1/alpha-preserved/work-retouch212-clone5-redEye2"
   static let alphaMinimum: Float = 1/65535
   private static let kernels: Result<[CIKernel],Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     return try CIKernel.kernels(withMetalString:metalSource)
   }
   static func kernel(_ name: String) throws -> CIKernel {

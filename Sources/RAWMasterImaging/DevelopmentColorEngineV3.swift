@@ -14,7 +14,7 @@ enum DevelopmentColorEngineV3 {
   }
   struct Kernels { let point, curvesLevels: CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let kernels = try CIKernel.kernels(withMetalString:metalSource)
     guard let point = kernels.first(where:{$0.name == "rawmasterPointV3"}), let curves = kernels.first(where:{$0.name == "rawmasterCurvesLevelsV3"}) else { throw DevelopmentError.unsupportedEngine }
     return .init(point:point,curvesLevels:curves)

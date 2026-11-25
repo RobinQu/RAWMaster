@@ -7,7 +7,7 @@ enum DevelopmentDehazeColorGuideV2 {
   static let version = "rawmaster-dehaze-v2/channel-min-luma/native-light-support/split-inverse"
   private struct Kernels { let guide, restore: CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else {
+    guard DevelopmentKernelCapability.supported else {
       throw DevelopmentError.unsupportedEngine
     }
     let kernels = try CIKernel.kernels(withMetalString: metalSource)

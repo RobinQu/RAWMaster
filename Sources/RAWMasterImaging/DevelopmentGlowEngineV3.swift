@@ -9,7 +9,7 @@ enum DevelopmentGlowEngineV3 {
   static let operatorVersion = "rawmaster-glow-v1/highlight-range/isotropic-directional/f32"
   private struct Kernels { let source, directional, composite: CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let all = try CIKernel.kernels(withMetalString:metalSource)
     func get(_ name: String) throws -> CIKernel { guard let k = all.first(where: { $0.name == name }) else { throw DevelopmentError.unsupportedEngine }; return k }
     return try .init(source:get("rmGlowSource"),directional:get("rmGlowDirectional"),composite:get("rmGlowComposite"))

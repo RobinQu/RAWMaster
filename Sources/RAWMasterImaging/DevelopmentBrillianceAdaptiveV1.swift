@@ -124,7 +124,7 @@ enum DevelopmentBrillianceAdaptiveV1 {
   }
   private struct AlphaKernels {let straight,restore:CIKernel}
   private static let alphaKernels:Result<AlphaKernels,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else {throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else {throw DevelopmentError.unsupportedEngine}
     let kernels=try CIKernel.kernels(withMetalString:alphaSource)
     guard let straight=kernels.first(where:{$0.name=="rmBrillianceStraightV1"}),
       let restore=kernels.first(where:{$0.name=="rmBrillianceRestoreAlphaV1"}) else {throw DevelopmentError.unsupportedEngine}

@@ -11,7 +11,7 @@ enum DevelopmentColorEngineV2 {
     .workingFormat: CIFormat.RGBAf.rawValue, .cacheIntermediates: false])
   struct Kernels { let color: CIKernel; let finite: CIKernel; let compileNanoseconds: UInt64 }
   private static let loaded: Result<Kernels, Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let started = DispatchTime.now().uptimeNanoseconds
     let kernels = try CIKernel.kernels(withMetalString: metalSource)
     guard let color = kernels.first(where: { $0.name == "rawmasterColorV2" }),

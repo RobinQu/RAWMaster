@@ -8,7 +8,7 @@ import RAWMasterCore
 enum DevelopmentBlackAndWhiteMixerEngineV3 {
   static let operatorVersion = "rawmaster-bw-mixer-v1/eight-hue-bands/pre-pointwise-f32"
   private static let kernel: Result<CIKernel,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     let all=try CIKernel.kernels(withMetalString:metalSource)
     guard let result=all.first(where:{$0.name=="rmBlackAndWhiteMixer"})else{throw DevelopmentError.unsupportedEngine}
     return result

@@ -8,7 +8,7 @@ enum DevelopmentLensBlurEngineV3 {
   static let operatorVersion="rawmaster-lens-blur-v8-scene-depth/sparse-refinement/native-device-map/procedural-radial-focus/two-gaussian-levels/five-bokeh-samplers/depth-preview/f32"
   private struct Kernels {let blur,bokeh,depth:CIKernel}
   private static let kernels:Result<Kernels,Error>=Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     let all=try CIKernel.kernels(withMetalString:metalSource)
     guard let blur=all.first(where:{$0.name=="rmLensBlurProcedural"}),let bokeh=all.first(where:{$0.name=="rmLensBlurBokeh"}),let depth=all.first(where:{$0.name=="rmLensBlurDepth"})else{throw DevelopmentError.unsupportedEngine}
     return .init(blur:blur,bokeh:bokeh,depth:depth)

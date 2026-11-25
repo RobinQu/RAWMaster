@@ -11,7 +11,7 @@ enum DevelopmentPhotoFilterEngineV3 {
   static let spektrafilmOperatorVersion = "spektrafilm-v1/srgb-axis64/linear-delta/endpoint-strength/HDR-boundary-residual/alpha-bypass65535"
   static let alphaMinimum:Float=1.0/65535
   private static let loaded: Result<CIKernel,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentPhotoFilterError.unavailableDevice}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentPhotoFilterError.unavailableDevice}
     let kernels=try CIKernel.kernels(withMetalString:RAWMasterImageKernel.source(.photoFilter))
     guard let kernel=kernels.first(where:{$0.name=="rmPhotoFilterV1"}) else{throw DevelopmentPhotoFilterError.invalidGraph}
     return kernel

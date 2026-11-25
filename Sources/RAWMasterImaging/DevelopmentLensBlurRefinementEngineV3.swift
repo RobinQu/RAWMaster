@@ -8,7 +8,7 @@ import RAWMasterCore
 enum DevelopmentLensBlurRefinementEngineV3 {
   static let operatorVersion="lens-blur-refinement-v2-auto-mask/sparse-grid/source-short-edge/dab-color-similarity/flow-capped-by-amount/f32"
   private static let kernel:Result<CIKernel,Error>=Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     let all=try CIKernel.kernels(withMetalString:metalSource)
     guard let value=all.first(where:{$0.name=="rmLensBlurRefine"})else{throw DevelopmentError.unsupportedEngine}
     return value

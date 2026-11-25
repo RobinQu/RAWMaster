@@ -9,7 +9,7 @@ enum DevelopmentAdvancedDetailEngineV3 {
   static let operatorVersion = "rawmaster-advanced-v2/logband-native-canonical-landscape/materialized-rgba32f/guide-logA-A-zero-one/Texture-.0003-.35/Clarity-.004-.60"
   private struct Kernels { let guide,band: CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let kernels=try CIKernel.kernels(withMetalString:metalSource)
     guard let guide=kernels.first(where:{$0.name == "rmAdvancedGuideV1"}),let band=kernels.first(where:{$0.name == "rmAdvancedBandV1"}) else { throw DevelopmentError.unsupportedEngine }
     return .init(guide:guide,band:band)

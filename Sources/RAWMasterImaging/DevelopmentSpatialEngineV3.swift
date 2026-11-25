@@ -9,7 +9,7 @@ enum DevelopmentSpatialEngineV3 {
   static let radiusFraction = 0.012
   private struct Kernels { let guide, light: CIKernel }
   private static let loaded: Result<Kernels,Error> = Result {
-    guard let device = MTLCreateSystemDefaultDevice(), device.supportsDynamicLibraries else { throw DevelopmentError.unsupportedEngine }
+    guard DevelopmentKernelCapability.supported else { throw DevelopmentError.unsupportedEngine }
     let kernels = try CIKernel.kernels(withMetalString:metalSource)
     guard let guide = kernels.first(where:{$0.name == "rawmasterGuideV3"}), let light = kernels.first(where:{$0.name == "rawmasterLocalLightV3"}) else { throw DevelopmentError.unsupportedEngine }
     return .init(guide:guide,light:light)

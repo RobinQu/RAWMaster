@@ -8,7 +8,7 @@ enum DevelopmentOpticsEngineV3 {
   static let operatorVersion="rawmaster-optics-v3/radial-distortion/automatic-chroma-edge-ca/lens-profile-correction"
   private struct Kernels{let distortion,ca:CIKernel;let vignette:CIColorKernel}
   private static let loaded:Result<Kernels,Error>=Result{
-    guard let device=MTLCreateSystemDefaultDevice(),device.supportsDynamicLibraries else{throw DevelopmentError.unsupportedEngine}
+    guard DevelopmentKernelCapability.supported else{throw DevelopmentError.unsupportedEngine}
     let all=try CIKernel.kernels(withMetalString:metalSource)
     guard let distortion=all.first(where:{$0.name=="rmOpticsDistortion"}),let vignette=CIColorKernel(source:vignetteSource),let ca=CIKernel(source:caSource)else{throw DevelopmentError.unsupportedEngine}
     return .init(distortion:distortion,ca:ca,vignette:vignette)
