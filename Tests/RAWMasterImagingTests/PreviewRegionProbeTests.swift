@@ -112,4 +112,51 @@ final class PreviewRegionProbeTests: XCTestCase {
         .write(to: URL(fileURLWithPath: output), options: .withoutOverwriting)
     }
   }
+
+  /// Opt-in: what the decoder's cost knobs buy on this file. `flashraw_decode_options
+  /// .max_dimension` is a safety limit, not a downscale (it rejects the file), so the only
+  /// remaining decode levers are the demosaic choice and a region decode. Nothing here
+  /// changes production code.
+  func testOptInDecodeCostKnobs() throws {
+    let environment = ProcessInfo.processInfo.environment
+    guard environment["RAWMASTER_DECODE_PROBE"] == "1",
+          let path = environment["RAWMASTER_REGION_PROBE_SOURCE"] else {
+      throw XCTSkip("Explicit source is required")
+    }
+    #if DEBUG
+    throw XCTSkip("Release measurements required")
+    #endif
+    let source = try FlashRawSource.open(URL(fileURLWithPath: path))
+    let geometry = source.geometry
+    let nativeArea = Double(geometry.width) * Double(geometry.height)
+    var rows: [[String: Any]] = []
+    for demosaic in [FlashRawDemosaic.bilinear, .half, .edgeAware] {
+      // Warm the process so the first decode is not charged to the first row.
+      _ = try? source.decode(output: .linearRGBF16, backend: .gpu, demosaic: .bilinear)
+      let (frame, ms) = try measure {
+        try source.decode(output: .linearRGBF16, backend: .gpu, demosaic: demosaic)
+      }
+      let info = frame.info
+      let oriented = (5...8).contains(info.orientation)
+        ? CGSize(width: info.height, height: info.width)
+        : CGSize(width: info.width, height: info.height)
+      let backend = frame.statistics.map { "\($0.decoderBackend)/\($0.postprocessBackend ?? "-") threads=\($0.availableThreads)" } ?? "none"
+      print("DECODE-PROBE demosaic=\(demosaic) \(ms) ms size=\(Int(oriented.width))x\(Int(oriented.height)) backend=\(backend)")
+      rows.append(["demosaic": demosaic.rawValue, "milliseconds": ms,
+                   "width": Int(oriented.width), "height": Int(oriented.height),
+                   "fractionOfNative": Double(oriented.width * oriented.height) / nativeArea])
+    }
+    if let output = environment["RAWMASTER_DECODE_PROBE_OUTPUT"] {
+      let payload: [String: Any] = [
+        "schemaVersion": 1, "build": "release",
+        "sourceSHA256": try RenderFiles.hash(URL(fileURLWithPath: path)),
+        "nativeWidth": Int(geometry.width), "nativeHeight": Int(geometry.height),
+        "scope": "FlashRaw decode: demosaic cost and returned frame size (max_dimension is a safety limit, not a downscale)",
+        "rows": rows,
+        "caveats": ["One sample per row on a warm process; the first decode is discarded."],
+      ]
+      try JSONSerialization.data(withJSONObject: payload, options: [.prettyPrinted, .sortedKeys])
+        .write(to: URL(fileURLWithPath: output), options: .withoutOverwriting)
+    }
+  }
 }

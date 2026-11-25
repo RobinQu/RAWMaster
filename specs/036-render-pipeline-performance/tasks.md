@@ -39,6 +39,8 @@
 
 ## 已否决
 
+- [x] **透出 `flashraw_decode_options.max_dimension` 做解码降采样。** 该字段是安全上限而不是降采样：传 4800 会直接报错。`HALF_SIZE` 去马赛克只把输出减到 25% 像素、耗时几乎不变（39.6 vs 43.5 ms），没有收益。C 包装的改动已撤回。[实测](evidence/flashraw-decode-cost.json)
+
 - [x] **定稿目标长边：保持 2400。** 4096 会把定稿中位从 6.81 ms 推回约 47 ms，越过 25.92 ms 门槛；换来的只是 1.0–1.7× 缩放的清晰度。
 - [x] **视口尺寸跟随画布。** 与上一条同一决定：2400 已覆盖当前画布的设备像素；收窄窗口时多算的部分换不到可见收益，加宽显示器时再单独立项。
 - [x] **ROI 的可行性先按 2 个配方估算为 1.8×，实测后更正为 2.62×。** 早期探针只测了扫描与物化两个子项，低估了物化在 1:1 中的占比；真正接通窗口后 50 个配方的中位倍数是 2.62×，因此改为实现（传输层已完成）。[实测](spec.md#11-可见窗口传输层已实现画布待接) · [探针](evidence/roi-probe.json)
@@ -46,7 +48,8 @@
 
 ## 待办
 
-- [ ] **解码端降分辨率。** 给 `Sources/CFlashRaw` 增加 `max_dimension` 透出（底层 `flashraw_decode_options.max_dimension` 已支持），让拖动与松手不必先解全尺寸 CFA。参考 Alcedo `DecodeRes`。需要单独的像素差记录，因为它是解码头而非重采样差。
+- [ ] **区域解码（`use_region`）配合 1:1 窗口。** 解码端没有降采样开关可透出（见[已否决](#已否决)）；唯一剩下的是只解可见区域，省掉一次约 78 ms 的全幅解码。要等窗口接到画布后再评估。
+- [ ] **`rawDetails` 的 AHD 代价。** 选 RAW 细节算法时解码从 43.5 ms 升到 118.9 ms（2.7×）；需要确认这条只在显式选择时生效，且 UI 有可见的代价提示。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。
 - [ ] **把窗口接到画布。** 窗口位图只覆盖画布一部分，需要：`ImageCanvas` 增加 `window` 与 `canvasPixelSize`（`pixelSize` 仍按整幅算，位图绘进 `window` 子矩形）；`ZoomableImageView` 透传；画布把可见矩形（`destination ∩ bounds` 归一化）报给控制器；控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅在可见矩形越出当前窗口时重发 `.detail`，越界期间继续绘制旧位图。必须用真实窗口走查平移、缩放、叠加层与吸管后再默认开启；回退开关 `RAWMASTER_DETAIL_WINDOW=0`。

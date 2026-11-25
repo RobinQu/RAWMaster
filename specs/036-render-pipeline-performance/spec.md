@@ -81,6 +81,20 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 窗口化不改有限值证明的范围：扫描仍是整幅。把扫描也收窄到窗口是下一步，实测还能再省一部分，但它把证明从「整幅有限」缩小为「显示窗口有限」，需要单独审计 `thumbnailCanonicalWitness` 与 `FlashRawNativeFiniteCheck` 的复用域。
 
+## 解码端：没有可用的降采样开关
+
+原计划给 `CFlashRaw` 透出 `flashraw_decode_options.max_dimension`，把预览的解码降到 1/2 或 1/4（对应 Alcedo 的 `DecodeRes`）。实测后撤回：
+
+| 手段 | 结果 |
+| --- | --- |
+| `max_dimension = 4800` | **直接报错** `limit exceeded: dimension 9728x6656 exceeds 4800`。源码 `crates/flashraw-capi/src/frame.rs:156` 把该字段写进 `limits`，是安全上限而不是降采样。 |
+| `demosaic = HALF_SIZE` | 输出 4752×3168（原生 25% 像素），耗时 39.6 ms vs bilinear 43.5 ms。**只减尺寸不减时间**，因为解码与去马赛克的工作量不变。 |
+| `demosaic = EDGE_AWARE` | 118.9 ms，是 bilinear 的 2.7 倍。`rawDetails` 选 AHD 时会付这个代价。 |
+
+因此 FlashRaw 0.3.1 上唯一还剩的解码杠杆是**区域解码**（`use_region`，已在 C 包装里），它的用法与 1:1 可见窗口绑定：窗口帧可以只解那一块，省掉一次约 78 ms 的全幅解码。这项要等窗口接到画布之后再评估，因为窗口帧的纹理通常已经由定稿帧的解码驻留。
+
+代理基图仍用 bilinear 全幅解码，再经 Metal 采样到 2400×1600。
+
 ## 交互与像素契约
 
 | 从哪里进入 | 对象、完成与退出 |

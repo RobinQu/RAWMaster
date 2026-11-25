@@ -1,0 +1,34 @@
+{
+  "build" : "release",
+  "caveats" : [
+    "One sample per row on a warm process; the first decode is discarded."
+  ],
+  "nativeHeight" : 6336,
+  "nativeWidth" : 9504,
+  "rows" : [
+    {
+      "demosaic" : 0,
+      "fractionOfNative" : 1,
+      "height" : 6336,
+      "milliseconds" : 43.500041000000003,
+      "width" : 9504
+    },
+    {
+      "demosaic" : 1,
+      "fractionOfNative" : 0.25,
+      "height" : 3168,
+      "milliseconds" : 39.596375000000002,
+      "width" : 4752
+    },
+    {
+      "demosaic" : 2,
+      "fractionOfNative" : 1,
+      "height" : 6336,
+      "milliseconds" : 118.88633299999999,
+      "width" : 9504
+    }
+  ],
+  "schemaVersion" : 1,
+  "scope" : "FlashRaw decode: demosaic cost and returned frame size (max_dimension is a safety limit, not a downscale)",
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c"
+}

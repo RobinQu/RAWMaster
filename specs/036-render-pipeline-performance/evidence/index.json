@@ -75,6 +75,12 @@
       "scope": "1:1 matrix: 50 recipes, window = 2400x1600 crop at (0.37,0.31); scan stays whole-frame",
       "settledTransport": "viewport",
       "sha256": "2380a8148653ccd918c9ca2b3137b25c57625e3e6356644a3793704db358bd69"
+    },
+    {
+      "file": "flashraw-decode-cost.json",
+      "name": "flashraw-decode-cost",
+      "scope": "FlashRaw 0.3.1 decode cost knobs: demosaic choice and frame size",
+      "sha256": "7f2052ba58484810b7193e99b2a232e198b5918c028a583258323509cf24c692"
     }
   ]
 }

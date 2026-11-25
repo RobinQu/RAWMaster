@@ -199,7 +199,7 @@ FlashRaw 是解码库，没有编辑 DAG。它只提供 `source → linear RGB` 
 | --- | --- | --- | --- | --- | --- |
 | 1 | 整幅渲染，目标长边压到远小于原图 | 整帧 2400 | 整帧 ≤2560 / ≤4096 | 整帧原生 60 MP，末端 FIT | **50 个配方定稿中位 255 → 6.8 ms**（已落地） |
 | 2 | 1:1 只渲染可见 ROI | `rect`/`offset` | `DETAIL_ROI_PREVIEW`（zoom > 1 才切） | 整幅原生 60 MP | **中位 2.62×**（传输层已实现，画布待接） |
-| 3 | 解码端降分辨率 | 多级源 | `DecodeRes` | 仅全尺寸 | 待做 |
+| 3 | 解码端降分辨率 | 多级源 | `DecodeRes` | 仅全尺寸 | **FlashRaw 0.3.1 没有此开关**：`max_dimension` 是安全上限，`HALF_SIZE` 只减尺寸不减时间。唯一剩下的是区域解码 |
 | 4 | 静态计划缓存 | `editKey` 门控 | `StaticExecutionPlanCache` | 每帧重建 | 待做 |
 | 5 | 按节点结果缓存 | `segments`/`cached` | `GraphImageCache` + `Revision` | `cacheIntermediates:false` + 每帧 `clearCaches` | 待做 |
 | 6 | 点运算融合 | 融合程序 | 16 个 `GpuPassKind` | 每控件一棵 CI 树 | 不做（CI 已融合点运算） |
