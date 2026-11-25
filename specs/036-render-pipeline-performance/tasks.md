@@ -37,6 +37,15 @@
 - [x] 交互性能用例新增 `RAWMASTER_INTERACTIVE_DETAIL=1` 的 1:1 探针，记录 `detailMilliseconds`。默认不跑，报文形状不变。
 - [x] 50 个控件配方的同机前后实测，见[验证记录](validation.md)。
 
+**极速模式**
+
+- [x] `PreviewPerformanceMode`（均衡/极速）+ `PreviewQualityPolicy`，设置 → 编辑 → 渲染速度，`UserDefaults` 持久化，启动时应用。
+- [x] 1:1 拖动降档：极速下拖动使用画布分辨率代理帧，松手回原生。判定由 `PreviewQualityPolicyTests` 固定（均衡不降级、仅叠加层变化不降级）。
+- [x] 极速下 1:1 松手先渲染紧贴现可见窗口，250 ms 后后台补齐 50% 外扩。
+- [x] 探针 `GaussianRectIndependenceProbe`：证明 `CIGaussianBlur` 与 3σ halo 裁剪在本机逐位矩形无关（半径 4/18/60，307,200 样本最大差 0）。
+- [x] 尝试去掉高级细节的整帧冻结：1:1 `texture` 快 1.75×、`clarity` 快 1.37×，但 `DevelopmentSemanticMaskTests` 报 21,635 处蒙版零覆盖像素差异，**撤回**并记录原因。
+- [x] 尝试代理基图半分辨率解码：一次性省 34 ms，永久改变基图像素（最大 72–99/255），**不采纳**。
+
 ## 已否决
 
 - [x] **透出 `flashraw_decode_options.max_dimension` 做解码降采样。** 该字段是安全上限而不是降采样：传 4800 会直接报错。`HALF_SIZE` 去马赛克只把输出减到 25% 像素、耗时几乎不变（39.6 vs 43.5 ms），没有收益。C 包装的改动已撤回。[实测](evidence/flashraw-decode-cost.json)

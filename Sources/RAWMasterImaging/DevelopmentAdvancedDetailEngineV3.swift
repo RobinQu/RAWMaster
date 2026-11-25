@@ -38,6 +38,8 @@ enum DevelopmentAdvancedDetailEngineV3 {
     }
     return .init(fine:blur(radius),wide:blur(4*radius))
   }
+  /// Measurement seam only: skip the whole-frame freeze. Never a production setting.
+  static let unfrozen = ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_DETAIL_UNFREEZE"] == "1"
   /// Evaluate the native graph exactly once. Later canvas/export reads sample this F32 result
   /// instead of letting Core Image select a different Gaussian path for each destination rect.
   private static func materialize(_ image: CIImage,context: CIContext,checkCancellation:(() throws -> Void)?) throws -> CIImage {
@@ -81,7 +83,14 @@ enum DevelopmentAdvancedDetailEngineV3 {
     var output=image
     if texture { output=try applyBand(.texture,amount:parameters.texture.amount,to:output,radius:r.texture) }
     if clarity { output=try applyBand(.clarity,amount:parameters.clarity.amount,to:output,radius:r.clarity) }
-    output=try materialize(output,context:context,checkCancellation:checkCancellation)
+    // The freeze is NOT only about Core Image's Gaussian path. The Gaussian itself is
+    // rect-independent (see GaussianRectIndependenceProbe), but a masked composite reads this
+    // result from more than one branch; without the freeze each branch re-evaluates the blur and
+    // the zero-coverage pixels stop being bit-exact. DevelopmentSemanticMaskTests catches that.
+    // Removing it measured 1.75x on a plain 1:1 texture frame and 21,635 changed protected pixels
+    // on a masked export, so it stays. RAWMASTER_QA_ADVANCED_DETAIL_UNFREEZE=1 reproduces the
+    // removal for measurement only.
+    if !Self.unfrozen { output=try materialize(output,context:context,checkCancellation:checkCancellation) }
     if !deferValidation { try DevelopmentColorEngineV3.validateFinite(output,context:context,checkCancellation:checkCancellation) }
     return output
   }

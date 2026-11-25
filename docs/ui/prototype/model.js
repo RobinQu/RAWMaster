@@ -71,7 +71,7 @@ const Studio = (() => {
       history: [],
       edits: {},
       jobs: [],
-      prefs: { theme: 'system', ground: '深灰', runtime: '待准备', cloud: '未配置' },
+      prefs: { theme: 'system', ground: '深灰', runtime: '待准备', cloud: '未配置', performance: '均衡' },
       presets: [
         { name: '河谷暖调', group: 'Classic Filters', values: { warmth: 48, contrast: 12, sat: 14 } },
         { name: '克制黑白', group: 'Classic Filters', values: { mono: true, contrast: 20 } },

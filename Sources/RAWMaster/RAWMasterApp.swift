@@ -24,7 +24,10 @@ struct RAWMasterApp: App {
                 .environment(\.resolvedAppAppearance, appearance.resolved)
                 .focusedSceneValue(\.workbenchModel, model)
                 .frame(minWidth: 1100, minHeight: 720)
-                .onAppear { appDelegate.model = model; ImageEngines.startPrewarming() }
+                .onAppear {
+                    PreviewPerformancePreferences.apply(stored: UserDefaults.standard.string(forKey: PreviewPerformanceMode.storageKey) ?? "")
+                    appDelegate.model = model; ImageEngines.startPrewarming()
+                }
                 .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in model.saveBrowse(); model.flushProjectReviewState(); model.cancelJob() }
         }
         .windowStyle(.titleBar)

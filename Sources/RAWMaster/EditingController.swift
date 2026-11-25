@@ -303,6 +303,7 @@ import RAWMasterLibrary
     private(set) var detailWindow: CGRect?
     private var lastVisibleDetailWindow: CGRect?
     private var detailWindowTask: Task<Void, Never>?
+    private var detailWindowExpandTask: Task<Void, Never>?
     private var sourceRevalidationTask: Task<Void, Never>?
     private var focusTask: Task<Void, Never>?
     private var startupTask: Task<Void, Never>?
@@ -695,6 +696,13 @@ import RAWMasterLibrary
         let input = EditingPreviewInput.capture(control: control, phase: active ? "begin" : "end", nativeEvent: nativeEvent, gestureID: previewGestureID)
         InteractionTrace.shared.preview("preview.interaction", input: input, role: .primary, revision: previews.primary.currentRevision)
         if !active {
+            // Turbo: the first settled 1:1 frame covers only what is on screen, then the pan margin
+            // is filled in the background once the user stops.
+            if actualPixels, PreviewPerformancePreferences.isTurbo, let visible = lastVisibleDetailWindow {
+                detailWindow = ImageViewportGeometry.quantized(
+                    ImageViewportGeometry.servedWindow(visible: visible, margin: 0), steps: 32)
+                scheduleDetailWindowExpansion()
+            }
             // The settled publication belongs to the latest parameter operation; never sample a later NSApp.currentEvent for it.
             requestSettledPreview(input: (lastPreviewAdjustmentInput ?? input).settling(after: input))
             if !previewInteracting {
@@ -749,7 +757,9 @@ import RAWMasterLibrary
         // frame is already scoped instead of rendering the whole canvas and then re-rendering.
         if detailWindow == nil, let visible = lastVisibleDetailWindow {
             detailWindow = ImageViewportGeometry.quantized(
-                ImageViewportGeometry.servedWindow(visible: visible, margin: 0.5), steps: 32)
+                ImageViewportGeometry.servedWindow(visible: visible,
+                    margin: PreviewQualityPolicy.windowMargin(interacting: previewInteracting,
+                        turbo: PreviewPerformancePreferences.isTurbo)), steps: 32)
         }
         setActualPixels(true, nativeEvent: nativeEvent)
     }
@@ -815,6 +825,22 @@ import RAWMasterLibrary
         }
         stage = .development; selectVersion(version, continueEditing: true)
     }
+    /// Fill in the pan margin after the fast tight first 1:1 frame has landed.
+    private func scheduleDetailWindowExpansion() {
+        detailWindowExpandTask?.cancel()
+        guard PreviewPerformancePreferences.isTurbo else { return }
+        detailWindowExpandTask = Task { @MainActor [weak self] in
+            try? await Task.sleep(nanoseconds: 250_000_000)
+            guard let self, !Task.isCancelled, self.actualPixels, !self.previewInteracting,
+                  let visible = self.lastVisibleDetailWindow else { return }
+            let expanded = ImageViewportGeometry.quantized(
+                ImageViewportGeometry.servedWindow(visible: visible,
+                    margin: PreviewPerformancePreferences.settledWindowMargin), steps: 32)
+            guard expanded != self.detailWindow else { return }
+            self.detailWindow = expanded
+            self.requestPreview(input: .capture(control: "detail-window-expand", phase: "discrete"))
+        }
+    }
     /// The 1:1 canvas reports which part of the canvas it can see. Ask for a bitmap that covers
     /// it plus a margin, so panning within the margin never re-renders.
     func updateDetailVisibleWindow(_ visible: CGRect) {
@@ -824,7 +850,9 @@ import RAWMasterLibrary
         lastVisibleDetailWindow = visible
         guard actualPixels, !previewInteracting else { return }
         let desired = ImageViewportGeometry.quantized(
-            ImageViewportGeometry.servedWindow(visible: visible, margin: 0.5), steps: 32)
+            ImageViewportGeometry.servedWindow(visible: visible,
+                margin: PreviewQualityPolicy.windowMargin(interacting: previewInteracting,
+                    turbo: PreviewPerformancePreferences.isTurbo)), steps: 32)
         let served = previews.primary.frame?.window
         if let served, ImageViewportGeometry.window(served, covers: visible) { return }
         guard desired != detailWindow else { return }
@@ -866,10 +894,13 @@ import RAWMasterLibrary
             else { currentRecipe.crop = .init() }
         }
         let overlayOnly = cropEditing && previewControls == ["crop"]
-        let quality: PreviewQuality = actualPixels ? .detail : (previewInteracting && !overlayOnly ? .interactive : .settled)
+        // Turbo keeps a 1:1 gesture on the canvas-sized proxy and only renders native pixels once
+        // the gesture ends, which is what makes dragging at 100% responsive.
+        let quality = PreviewQualityPolicy.quality(actualPixels: actualPixels, interacting: previewInteracting,
+            overlayOnly: overlayOnly, turbo: PreviewPerformancePreferences.isTurbo)
 
         let presentationID = developmentPreviewPresentationID
-        let draftPresentation: EditingDraftPresentation? = editingDraft && !actualPixels && CaptureFileFormat.isRAW(work.source.sourceLocation.lastPathComponent)
+        let draftPresentation: EditingDraftPresentation? = editingDraft && !actualPixels && quality != .interactive && CaptureFileFormat.isRAW(work.source.sourceLocation.lastPathComponent)
             ? .init(focusID: focusGeneration, workID: work.id, draftParentID: draftParentID, selectedVersionID: selectedVersionID,
                     cropOverlay: cropEditing, comparing: comparing, draftBranchID: developmentBranchID.rawValue,
                     draftBranchEpoch: developmentContext?.draftBranchEpoch) : nil

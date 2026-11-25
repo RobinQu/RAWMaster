@@ -121,6 +121,29 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 1. **点运算配方的 1:1 首次成本主要是一次性准备**（约 90 ms：私有上下文的首次内核编译与全幅原片解码/上传），热态只有约 12 ms。这也解释了扫描不是大头——分带扫描在热态里只占十几毫秒，收窄它换不到多少，却要把证明从「整幅有限」缩成「窗口有限」。因此**窗口化扫描不做**。
 2. **邻域配方的成本是算子内部的整幅工作**，与请求区块无关。`DevelopmentAdvancedDetailEngineV3.materialize` 把整幅 9504×6336 渲染进一张 RGBA32F 纹理（约 964 MB）并同步等待，`texture`/`clarity` 的 480 ms 主要来自这里；`dehaze` 与 `adaptive-brilliance` 的 1.5 s / 3.9 s 同理来自各自的整幅归约。要吃掉它们必须逐算子做邻域分解、把内部物化改成窗口＋halo，那是算子级工程，不是传输层能解决的。
 
+## 极速模式（用户可选）
+
+设置 → 编辑 → 「渲染速度」提供 `均衡` / `极速`。默认 `均衡`，行为与上一版完全相同；`极速` 才启用降级项。选择保存在 `UserDefaults` 的 `editing.preview.performanceMode`，启动时应用到 `PreviewPerformancePreferences`，无法识别的值回落到 `均衡`。
+
+| 项 | 均衡 | 极速 |
+| --- | --- | --- |
+| 1:1 拖动中 | 每帧完整原生渲染 | 画布分辨率代理帧（`PreviewQualityPolicy.quality`） |
+| 1:1 松手首帧 | 可见 + 50% 外扩窗口 | **先紧贴现可见**，250 ms 后后台补齐外扩 |
+| 裁切叠加单独变化 | 原生 | 原生（不降级） |
+| 导出 / 保存 / 缩略图 / 直方图 / 分析 | 原生 | 原生 |
+
+1:1 拖动从「每 tick 一次原生渲染」降到「每 tick 一次代理帧」：同一组配方的交互帧中位 7.2 ms，而 1:1 原生帧中位 111.4 ms、`texture` 285.9 ms、`adaptive-brilliance` 3961 ms。级联判定抽成 `PreviewQualityPolicy` 并由 `PreviewQualityPolicyTests` 固定：均衡模式下即使拖动也保持 `.detail`；极速模式下只有「1:1 + 正在拖动 + 不是仅叠加层变化」才降级。
+
+### 已试并撤回：去掉高级细节的整帧冻结
+
+`DevelopmentAdvancedDetailEngineV3` 会把整幅结果冻结进 RGBA32F 纹理。探针证明 `CIGaussianBlur` 与「带 3σ halo 的裁剪输入」在本机是逐位矩形无关的（半径 4/18/60，307,200 个样本最大差 0），所以曾尝试去掉冻结：1:1 的 `texture` 快 1.75×、`clarity` 快 1.37×，像素差只有 1/255（`texture` 0.001%、`clarity` 0.44% 通道）。
+
+但完整回归立刻否掉：`DevelopmentSemanticMaskTests.testHistoricalColorAndCropKeepProtectedCodesInLosslessExports` 出现 **21,635 处差异**。原因不是高斯路径，而是**蒙版合成会从多个分支读取同一结果**——没有冻结时每个分支各自重算模糊，零覆盖区不再逐位不变。因此冻结保留，`RAWMASTER_QA_ADVANCED_DETAIL_UNFREEZE=1` 只作为测量口。
+
+### 已试并撤回：代理基图半分辨率解码
+
+用 `FLASHRAW_DEMOSAIC_HALF_SIZE` 解码代理基图（4752×3168 再采样到 2400）只省一次性 34 ms（neutral 首次帧 130.1 → 96.5 ms），却永久改变基图像素（相对均衡基图 p99 2–4、最大 72–99/255 的高对比边缘差异）。一次性收益换永久画质代价，不采纳。
+
 ## 交互与像素契约
 
 | 从哪里进入 | 对象、完成与退出 |

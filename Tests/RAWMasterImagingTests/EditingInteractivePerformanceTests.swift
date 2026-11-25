@@ -70,6 +70,9 @@ final class EditingInteractivePerformanceTests: XCTestCase {
             contentSHA256: try RenderFiles.hash(sourceURL), byteCount: try XCTUnwrap(attributes[.size] as? NSNumber).int64Value,
             admissionFingerprint: "interactive-performance-v1", sourceLocation: sourceURL)
         let rawBaseCacheBytes = environment["RAWMASTER_INTERACTIVE_RAW_BASE_CACHE"] == "1" ? 1_073_741_824:0
+        // Turbo is the user-selectable fast profile; the harness only reads it.
+        PreviewPerformancePreferences.mode = environment["RAWMASTER_INTERACTIVE_PERF_TURBO"] == "1" ? .turbo : .balanced
+        defer { PreviewPerformancePreferences.mode = .balanced }
         // Product construction keeps a 128 MB display cache, so a settled frame for an
         // unchanged recipe replays the gesture frame instead of re-running the suffix.
         let bitmapCacheBytes = Int(environment["RAWMASTER_INTERACTIVE_BITMAP_CACHE"] ?? "0") ?? 0
@@ -484,6 +487,7 @@ final class EditingInteractivePerformanceTests: XCTestCase {
             "sourceOverlayVersion": PreviewInteractiveProxyV3.sourceOverlayVersion,
             "policy": "proxyV1 interactive; \(settledTransport.rawValue) settled; bitmapCache=\(bitmapCacheBytes); rawBaseCache=\(rawBaseCacheBytes)",
             "settledTransport": settledTransport.rawValue,
+            "performanceMode": PreviewPerformancePreferences.mode.rawValue,
             "settledReferenceTransport": referenceService == nil ? settledTransport.rawValue : PreviewSettledTransport.canonical.rawValue,
             "measurements": try JSONSerialization.jsonObject(with: JSONEncoder().encode(measurements)),
             "caveats": [

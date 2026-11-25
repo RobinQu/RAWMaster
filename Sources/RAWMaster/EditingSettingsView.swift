@@ -124,8 +124,22 @@ private struct SettingsPathRow: View {
 
 private struct EditingPerformanceSettings: View {
     @State private var statistics: PreviewStatistics?
+    @AppStorage(PreviewPerformanceMode.storageKey) private var mode = PreviewPerformanceMode.balanced.rawValue
     var body: some View {
         Form {
+            Section("预览速度") {
+                Picker("渲染速度", selection: $mode) {
+                    ForEach(PreviewPerformanceMode.allCases) { mode in
+                        Text(mode.title).tag(mode.rawValue)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .accessibilityIdentifier("settings.performance.mode")
+                Text(mode == PreviewPerformanceMode.turbo.rawValue
+                     ? "极速：1:1 拖动时显示画布分辨率的过渡帧，停止后只渲染可见区域，再补齐平移余量；代理基图按半分辨率解码。导出、保存、缩略图与直方图始终使用原生像素。"
+                     : "均衡：每一帧都按算子图定义的完整质量渲染。适合检查细节或复现历史效果。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
             Section("预览") {
                 Text("拖动调整时使用交互预览；停止后呈现完整的当前预览。实际像素模式按屏幕物理像素检查细节。")
                 LabeledContent("已保存版本", value: "保持原有调整效果")
@@ -145,6 +159,8 @@ private struct EditingPerformanceSettings: View {
             }
         }.formStyle(.grouped)
             .task { statistics = await ImageEngines.previewLifecycle.statistics() }
+            .onAppear { PreviewPerformancePreferences.apply(stored: mode) }
+            .onChange(of: mode) { _, value in PreviewPerformancePreferences.apply(stored: value) }
     }
     private func bytes(_ value: Int64) -> String { ByteCountFormatter.string(fromByteCount: value, countStyle: .file) }
 }

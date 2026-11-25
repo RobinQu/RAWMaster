@@ -24,7 +24,16 @@ function settingsPanel(key) {
       ['模型目录', p.modelDir || '受管目录'],
     ])}${btn('打开备份与还原', 'goto', 'tools/package')}</section>`;
   if (key === 'editing')
-    return `<section class="settings-box"><h3>编辑预览</h3>${select('暗房背景', 'ground', ['深灰', '中灰', '浅灰', '纯黑'], p.ground)}${factList(
+    return `<section class="settings-box"><h3>编辑预览</h3>${select('暗房背景', 'ground', ['深灰', '中灰', '浅灰', '纯黑'], p.ground)}${select(
+      '渲染速度',
+      'performance',
+      ['均衡', '极速'],
+      p.performance || '均衡',
+    )}<p>${
+      (p.performance || '均衡') === '极速'
+        ? '极速：1:1 拖动显示画布分辨率的过渡帧，停止后先渲染可见区域，再补齐平移余量。导出、保存与缩略图始终使用原生像素。'
+        : '均衡：每一帧都按算子图定义的完整质量渲染。'
+    }</p>${factList(
       [
         ['当前预览', '仓库 JPEG 衍生图'],
         ['实际像素复核', '在原生工作区验证'],
