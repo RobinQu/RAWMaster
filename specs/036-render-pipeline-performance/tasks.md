@@ -52,7 +52,7 @@
 - [ ] **`rawDetails` 的 AHD 代价。** 选 RAW 细节算法时解码从 43.5 ms 升到 118.9 ms（2.7×）；需要确认这条只在显式选择时生效，且 UI 有可见的代价提示。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。
-- [x] **把窗口接到画布。** `ImageCanvas` 增加 `window` 与 `canvasPixelSize`：`pixelSize` 仍按整幅画布算（缩放、命中、叠加层坐标不变），位图绘进 `window` 对应的子矩形；`ZoomableImageView` 透传并发布可见窗口。控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅当可见矩形越出当前窗口时重发 `.detail`，并合并 120 ms 内的连续平移。窗口帧不再能充当整幅缩略图见证，吸管取样时请求整幅帧。
+- [x] **把窗口接到画布（出厂窗口 = 可见矩形 + 50% 外扩）。** 50 个配方 1:1 中位 191.8 → 111.4 ms（1.72×）。`ImageCanvas` 增加 `window` 与 `canvasPixelSize`：`pixelSize` 仍按整幅画布算（缩放、命中、叠加层坐标不变），位图绘进 `window` 对应的子矩形；`ZoomableImageView` 透传并发布可见窗口。控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅当可见矩形越出当前窗口时重发 `.detail`，并合并 120 ms 内的连续平移。窗口帧不再能充当整幅缩略图见证，吸管取样时请求整幅帧。
 - [ ] **真实窗口走查。** 平移、缩放、叠加层、吸管、裁切在窗口帧上的视觉与手感仍需桌面签收；几何与绘制由 `ImageViewportWindowGeometryTests` 覆盖（含「位图只绘进窗口子矩形」）。
 - [x] **窗口化后把有限值扫描也收窄：不做。** 三次连测显示热态 1:1 只有约 12 ms，分带扫描在其中的份额只有十几毫秒；收窄它要把证明从「整幅有限」缩成「窗口有限」，不划算。[热态样本](evidence/native-detail-warm-samples.json)
 - [ ] **1:1 的算子成本（下一步的主战场，需要算子重写）。** `DevelopmentAdvancedDetailEngineV3.materialize` 的注释写明它是为了「让 Core Image 对同一个图只选一条 Gaussian 路径」——也就是说这张整幅 F32 纹理是**像素一致性**的前提，窗口帧与整幅帧逐字节相同正依赖它。因此不能靠缩小或改存储模式来省：`.private` 与 `.shared` 实测无差异（`texture` 576/475 → 553/470 ms，噪声内）。要压缩它必须把模糊改成可确定复现的分带实现并带 halo，属于算子级工程。三次连测已经稳定复现：`texture` 480 ms、`dehaze-v2` 1.5 s、`adaptive-brilliance` 3.9 s，热态不降；`dehaze` 与 `adaptive-brilliance` 各自有同形的整幅归约，需要同样的处理。

@@ -395,8 +395,15 @@ final class EditingInteractivePerformanceTests: XCTestCase {
                     revision += 1
                     // RAWMASTER_INTERACTIVE_DETAIL_WINDOW=1 scopes the 1:1 frame to the pixels a
                     // 2400x1600 canvas would show, centred away from the origin.
-                    let detailWindow: CGRect? = environment["RAWMASTER_INTERACTIVE_DETAIL_WINDOW"] == "1"
-                        ? CGRect(x: 0.37, y: 0.31, width: 0.2525, height: 0.2525) : nil
+                    // `1` is a tight viewport window; `margin` is the 50%-per-side window the
+                    // canvas asks for, which is what ships.
+                    let windowMode = environment["RAWMASTER_INTERACTIVE_DETAIL_WINDOW"]
+                    let detailWindow: CGRect?
+                    switch windowMode {
+                    case "1": detailWindow = CGRect(x: 0.37, y: 0.31, width: 0.2525, height: 0.2525)
+                    case "margin": detailWindow = CGRect(x: 0.2475, y: 0.1875, width: 0.505, height: 0.505)
+                    default: detailWindow = nil
+                    }
                     let detailSamples = Int(environment["RAWMASTER_INTERACTIVE_DETAIL_SAMPLES"] ?? "1") ?? 1
                     var detailTimes: [Double] = []
                     var detail: DevelopmentPreviewFrame?

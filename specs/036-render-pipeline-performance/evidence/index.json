@@ -89,6 +89,14 @@
       "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
       "scope": "1:1 warm vs cold: windowed detail sampled three times per recipe",
       "sha256": "8401fe19d637de7b2c9283ef303d757269d55fc9617aaa000a4c10dd491ed4fd"
+    },
+    {
+      "file": "native-detail-window-margin.json",
+      "measurements": 50,
+      "name": "native-detail-window-margin",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 shipped window: visible rect plus 50% per side (0.505x0.505), 50 recipes",
+      "sha256": "9a22f67de57e458b340686ac2f7a78cfd9d79a9f717bb797903e4b5a8f6f3550"
     }
   ]
 }
