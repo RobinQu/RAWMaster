@@ -19,6 +19,13 @@
 - [x] 状态行区分 `原生像素` / `预览 … · 原生 …` / `快速预览 … 待完整预览`。
 - [x] `PreviewSettledTransportTests`：默认策略不变、定稿帧与交互帧逐字节相同、不可缩放算子回退原生、`detail` 保持原生。
 
+**1:1 可见窗口传输**
+
+- [x] `PreviewViewport.window`（归一化、左上原点）贯通到 `V3PreviewMaterializer`；只在 `detail` 生效，其余质量拒绝窗口。
+- [x] `DevelopmentPreviewFrame.window` 让调用方知道这张位图覆盖画布的哪一块；`canonicalPixelSize` 保持整幅。
+- [x] 窗口参与缓存键；`testDetailWindowIsExactlyTheCropOfTheWholeNativeFrame` 断言窗口帧与整幅帧同区域逐字节相同。
+- [x] 50 个配方的 1:1 矩阵实测：中位 191.8 → 73.1 ms（2.62×），合计 1.51×。[证据](evidence/native-detail-window-scoped.json)
+
 **原生扫描**
 
 - [x] 通用原生有限值扫描接到分带归约传输（默认开，`RAWMASTER_QA_CANONICAL_BANDED_NATIVE_FINITE=0` 回退）：1:1 快 12–46%，输出逐字节不变，接受／拒绝集合有逐模式对照用例。
@@ -34,7 +41,7 @@
 
 - [x] **定稿目标长边：保持 2400。** 4096 会把定稿中位从 6.81 ms 推回约 47 ms，越过 25.92 ms 门槛；换来的只是 1.0–1.7× 缩放的清晰度。
 - [x] **视口尺寸跟随画布。** 与上一条同一决定：2400 已覆盖当前画布的设备像素；收窄窗口时多算的部分换不到可见收益，加宽显示器时再单独立项。
-- [x] **1:1 按可见 ROI 裁剪。** 探针实测窗口占原生 6.38%，扫描 4.8×、物化 2.2×，但端到端只 1.8×（154.8 → ~87 ms）：算子自身在整幅上的邻域／全局归约不会因请求区块而下降。改造需要 pan/zoom 可见矩形、窗口缓存键、region 贯通阶段校验与非整帧 extent 不变量，不满足「有效且不大重构」的门槛。[决策与数据](spec.md#已否决11-按可见-roi-裁剪) · [探针证据](evidence/roi-probe.json)
+- [x] **ROI 的可行性先按 2 个配方估算为 1.8×，实测后更正为 2.62×。** 早期探针只测了扫描与物化两个子项，低估了物化在 1:1 中的占比；真正接通窗口后 50 个配方的中位倍数是 2.62×，因此改为实现（传输层已完成）。[实测](spec.md#11-可见窗口传输层已实现画布待接) · [探针](evidence/roi-probe.json)
 - [x] **用 `cacheIntermediates` 合并「校验 + 物化」两次求值。** 实测只省 1–3%（`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1`，默认关）。
 
 ## 待办
@@ -42,6 +49,8 @@
 - [ ] **解码端降分辨率。** 给 `Sources/CFlashRaw` 增加 `max_dimension` 透出（底层 `flashraw_decode_options.max_dimension` 已支持），让拖动与松手不必先解全尺寸 CFA。参考 Alcedo `DecodeRes`。需要单独的像素差记录，因为它是解码头而非重采样差。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。
+- [ ] **把窗口接到画布。** 窗口位图只覆盖画布一部分，需要：`ImageCanvas` 增加 `window` 与 `canvasPixelSize`（`pixelSize` 仍按整幅算，位图绘进 `window` 子矩形）；`ZoomableImageView` 透传；画布把可见矩形（`destination ∩ bounds` 归一化）报给控制器；控制器按「可见矩形 + 50% 外扩、量化到 1/32」求服务窗口，仅在可见矩形越出当前窗口时重发 `.detail`，越界期间继续绘制旧位图。必须用真实窗口走查平移、缩放、叠加层与吸管后再默认开启；回退开关 `RAWMASTER_DETAIL_WINDOW=0`。
+- [ ] **窗口化后把有限值扫描也收窄。** 现在窗口帧仍整幅扫描。收窄要审计 `thumbnailCanonicalWitness` 与 `FlashRawNativeFiniteCheck` 的复用域，因为证明会从「整幅有限」变成「显示窗口有限」。
 - [ ] **1:1 的算子成本。** `texture` 约 0.3 s、`dehaze` 约 1.5 s 是整幅邻域／全局归约，只能逐算子做邻域分解与分带，与传输层无关。
 - [ ] **Linux。** 本规格只覆盖 macOS。
 - [ ] **原型与原生对照走查。** 需要按 AGENTS.md 在 `docs/ui/prototype/index.html` 的暗房视图标注视口定稿与 1:1 原生两态，并附走查截图。

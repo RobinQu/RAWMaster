@@ -53,19 +53,28 @@
       "sha256": "60dd11911353353be84e667476b4172b0ee7c0d0be3e03b596191a789b9d17fb"
     },
     {
-      "file": "native-detail-banded-scan.json",
-      "measurements": 5,
-      "name": "native-detail-banded-scan",
-      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
-      "scope": "targeted 1:1 probe: 5 of 50 recipes, RAWMASTER_INTERACTIVE_DETAIL=1",
-      "settledTransport": "viewport",
-      "sha256": "6fd6ee02525cec90050e4ef248bd8ebe6cd8840a44e7d15a771a35e9f060a305"
-    },
-    {
       "file": "roi-probe.json",
       "name": "roi-probe",
       "scope": "ROI feasibility: unmodified graph, region-scoped scan and materialize",
       "sha256": "5d38058d65e72fe3c1b98c84601082be11beaf0d70678ce9d9085e12d0cf4060"
+    },
+    {
+      "file": "native-detail-window-whole.json",
+      "measurements": 50,
+      "name": "native-detail-window-whole",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 matrix: 50 recipes, window = 2400x1600 crop at (0.37,0.31); scan stays whole-frame",
+      "settledTransport": "viewport",
+      "sha256": "1b0cbcbcf5a902dc23e84a118c5dbd05f83bd1f8c4bb49766facb9f5a524980d"
+    },
+    {
+      "file": "native-detail-window-scoped.json",
+      "measurements": 50,
+      "name": "native-detail-window-scoped",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 matrix: 50 recipes, window = 2400x1600 crop at (0.37,0.31); scan stays whole-frame",
+      "settledTransport": "viewport",
+      "sha256": "2380a8148653ccd918c9ca2b3137b25c57625e3e6356644a3793704db358bd69"
     }
   ]
 }

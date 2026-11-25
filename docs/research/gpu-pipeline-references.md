@@ -198,7 +198,7 @@ FlashRaw 是解码库，没有编辑 DAG。它只提供 `source → linear RGB` 
 | # | 手法 | LightFlow | Alcedo | RAWMaster 改动前 | 实测 / 结论 |
 | --- | --- | --- | --- | --- | --- |
 | 1 | 整幅渲染，目标长边压到远小于原图 | 整帧 2400 | 整帧 ≤2560 / ≤4096 | 整帧原生 60 MP，末端 FIT | **50 个配方定稿中位 255 → 6.8 ms**（已落地） |
-| 2 | 1:1 只渲染可见 ROI | `rect`/`offset` | `DETAIL_ROI_PREVIEW`（zoom > 1 才切） | 整幅原生 60 MP | 端到端只 1.8×，改造面大，**已否决** |
+| 2 | 1:1 只渲染可见 ROI | `rect`/`offset` | `DETAIL_ROI_PREVIEW`（zoom > 1 才切） | 整幅原生 60 MP | **中位 2.62×**（传输层已实现，画布待接） |
 | 3 | 解码端降分辨率 | 多级源 | `DecodeRes` | 仅全尺寸 | 待做 |
 | 4 | 静态计划缓存 | `editKey` 门控 | `StaticExecutionPlanCache` | 每帧重建 | 待做 |
 | 5 | 按节点结果缓存 | `segments`/`cached` | `GraphImageCache` + `Revision` | `cacheIntermediates:false` + 每帧 `clearCaches` | 待做 |
@@ -212,7 +212,7 @@ FlashRaw 是解码库，没有编辑 DAG。它只提供 `source → linear RGB` 
 ## 6. 本轮采用的取舍
 
 1. **#1 已落地**：定稿帧改为整幅按 2400 目标求值，交互与定稿共用同一计划与缓存键。50 个控件配方的定稿中位 255.47 → 6.81 ms、P95 842.57 → 20.24 ms。
-2. **#2 经实测否决**：`PreviewRegionProbeTests` 显示 2400×1600 窗口只占原生 6.38% 像素，扫描 4.8×、物化 2.2×，但算子自身的整幅邻域／全局归约不随之下降，端到端仅 1.8×。改造需要可见矩形贯通、窗口缓存键与非整帧 extent 不变量，不划算。[决策](../../specs/036-render-pipeline-performance/spec.md#已否决11-按可见-roi-裁剪)
+2. **#2 传输层已实现**：请求可带归一化窗口，`detail` 只物化可见那块。50 个配方实测 1:1 中位 191.8 → 73.1 ms（2.62×），点运算档 4.2–4.9×，邻域档 1.1–1.2×（邻域归约仍在整幅）。画布接线需要新的绘制与平移路径，待真实窗口走查。[规格](../../specs/036-render-pipeline-performance/spec.md#11-可见窗口传输层已实现画布待接)
 3. **#8 已扩展**：通用原生有限值扫描接到分带归约，1:1 快 12–46%，输出逐字节不变。
 4. **#6 不做**：Core Image 已在单个 kernel 内融合点运算，自研融合要重写全部算子，收益与风险不匹配。
 5. **像素契约不变**：导出、保存、1:1 详细视图继续走原生全尺寸与既有有限值证明。定稿预览明确标记为近似，并在帧上报告尺度，和 Alcedo 的 `FAST_PREVIEW`、LightFlow 的 `provisional` 同义。

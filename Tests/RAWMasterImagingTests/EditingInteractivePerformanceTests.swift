@@ -393,14 +393,19 @@ final class EditingInteractivePerformanceTests: XCTestCase {
                 var detailMilliseconds: Double?
                 if environment["RAWMASTER_INTERACTIVE_DETAIL"] == "1" {
                     revision += 1
+                    // RAWMASTER_INTERACTIVE_DETAIL_WINDOW=1 scopes the 1:1 frame to the pixels a
+                    // 2400x1600 canvas would show, centred away from the origin.
+                    let detailWindow: CGRect? = environment["RAWMASTER_INTERACTIVE_DETAIL_WINDOW"] == "1"
+                        ? CGRect(x: 0.37, y: 0.31, width: 0.2525, height: 0.2525) : nil
                     let detailStarted = DispatchTime.now().uptimeNanoseconds
                     let detail = try await service.render(.init(sessionID: session.id, sourceGeneration: session.sourceGeneration,
                         consumerID: consumer, role: .primary, revision: revision, recipe: recipe,
-                        quality: .detail, viewport: .init(maxPixel: 0)))
+                        quality: .detail, viewport: .init(maxPixel: 0, window: detailWindow)))
                     detailMilliseconds = Double(DispatchTime.now().uptimeNanoseconds - detailStarted) / 1_000_000
                     XCTAssertNil(detail.approximation, "detail must stay native: \(label)")
                     XCTAssertEqual(detail.outputPixelSize, detail.canonicalPixelSize)
-                    print("DETAIL-FRAME \(label) \(detailMilliseconds ?? 0)")
+                    XCTAssertEqual(detail.window, detailWindow)
+                    print("DETAIL-FRAME \(label) \(detailMilliseconds ?? 0) out=\(Int(detail.outputPixelSize.width))x\(Int(detail.outputPixelSize.height)) canvas=\(Int(detail.canonicalPixelSize.width))x\(Int(detail.canonicalPixelSize.height))")
                     if environment["RAWMASTER_INTERACTIVE_WRITE_IMAGES"] == "1" {
                         guard let cg = detail.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
                               let data = NSBitmapImageRep(cgImage: cg).representation(using: .png, properties: [:])

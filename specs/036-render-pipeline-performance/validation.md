@@ -208,19 +208,53 @@ swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerforman
 done
 ```
 
+### 可见窗口（本轮已实现，画布未接）
+
+`detail` 现在可以带一个归一化窗口，只物化 2400×1600 那一块。9504×6336、50 个控件配方、同一二进制：
+
+| 指标 | 整幅物化 | 窗口物化 | 倍数 |
+| --- | ---: | ---: | ---: |
+| 1:1 中位 | 191.8 ms | **73.1 ms** | 2.62× |
+| 1:1 P95 | 1,742.7 ms | 1,381.7 ms | 1.26× |
+| 1:1 合计 | 20,596 ms | 13,678 ms | 1.51× |
+| 逐配方倍数 | — | 中位 2.48× | 最好 4.96× / 最差 1.12× |
+
+分档看：
+
+| 类别 | 代表配方 | 整幅 → 窗口 |
+| --- | --- | ---: |
+| 点运算 | exposure-color | 120.0 → **26.3**（4.57×） |
+| 点运算 | defringe | 115.0 → **23.3**（4.93×） |
+| 点运算 | targeted-hsl | 102.2 → **24.3**（4.21×） |
+| 邻域 | texture | 539.2 → 482.3（1.12×） |
+| 邻域 | dehaze-v2 | 1,836.7 → 1,586.2（1.16×） |
+| 邻域 | adaptive-brilliance | 4,470.4 → 3,883.8（1.15×） |
+
+邻域与全局归约仍在整幅上算，窗口只省掉物化，所以这一档只有 1.1–1.2×。
+
+窗口帧与整幅帧同区域逐字节相同（`testDetailWindowIsExactlyTheCropOfTheWholeNativeFrame`，3000×2000 合成源）；非 `detail` 请求与越界／退化窗口由 `testNonDetailRequestsRejectAWindow` 拒绝。
+
+**未接线**：窗口位图只覆盖画布一部分，画布需要知道它落在哪并在平移越界时重发。这会改变 1:1 的绘制与平移，按仓库约定须先做真实窗口走查，因此本轮只交付传输层与上表数据。
+
+```sh
+for MODE in 0 1; do
+RAWMASTER_INTERACTIVE_DETAIL_WINDOW=$MODE \
+RAWMASTER_FLASHRAW_LIBRARY=$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib \
+RAWMASTER_REQUIRE_FLASHRAW=1 RAWMASTER_INTERACTIVE_PERF=1 RAWMASTER_INTERACTIVE_DETAIL=1 \
+RAWMASTER_INTERACTIVE_PERF_SOURCE=$PWD/output/performance/acr-benchmark.ARW \
+RAWMASTER_INTERACTIVE_PERF_OUTPUT=$PWD/output/performance/perf-detail-window2-$MODE \
+RAWMASTER_INTERACTIVE_RAW_BASE_CACHE=1 \
+swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerformanceTests
+done
+```
+
 ### 仍未压缩的部分
 
 `createCGImage` 仍会把同一棵图再算一遍。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 让上下文缓存中间值，实测只省 1–3%，因此默认关闭。
 
-按可见 ROI 裁剪的可行性已用 `PreviewRegionProbeTests`（`RAWMASTER_REGION_PROBE=1`）实测：同一棵未修改的整帧图，窗口占原生像素 6.38%。扫描 127.3 → 26.5 ms、物化 44.1 → 19.7 ms，但端到端只从 154.8 降到约 87 ms（1.8×），因为 `texture`／`dehaze` 的整幅邻域与全局归约不随请求区块下降。改造需要 pan/zoom 可见矩形、窗口缓存键、region 贯通阶段校验与非整帧 extent 不变量，判定不划算，本轮不做。[决策](spec.md#已否决11-按可见-roi-裁剪) · [探针数据](evidence/roi-probe.json)
+把有限值扫描也收窄到窗口还能再省一部分，但它把证明从「整幅有限」变成「显示窗口有限」，需要审计 `thumbnailCanonicalWitness` 与 `FlashRawNativeFiniteCheck` 的复用域，本轮未做。
 
-```sh
-RAWMASTER_REGION_PROBE=1 \
-RAWMASTER_REGION_PROBE_OUTPUT=$PWD/output/performance/roi-probe.json \
-RAWMASTER_REGION_PROBE_SOURCE=$PWD/output/performance/acr-benchmark.ARW \
-RAWMASTER_FLASHRAW_LIBRARY=$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib \
-swift test -c release --jobs 4 --filter PreviewRegionProbeTests
-```
+早期用 2 个配方的探针估算 ROI 只有 1.8×，那个数字只覆盖扫描与物化两项、且未算上真实路径里的占比，已被上表替代。[旧探针数据](evidence/roi-probe.json)
 
 ## 参考实现策略复核
 

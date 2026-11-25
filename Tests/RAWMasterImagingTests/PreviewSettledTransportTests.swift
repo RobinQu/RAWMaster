@@ -131,4 +131,85 @@ final class PreviewSettledTransportTests: XCTestCase {
     XCTAssertNil(settled.approximation)
     await service.closeAll()
   }
+
+  private func detailRequest(_ lease: PreviewSessionInfo, _ consumer: PreviewConsumerID,
+                             _ revision: UInt64, window: CGRect?) -> DevelopmentPreviewRequest {
+    .init(sessionID: lease.id, sourceGeneration: lease.sourceGeneration, consumerID: consumer,
+      role: .primary, revision: revision, recipe: .init(adjustmentsV3: .init()),
+      quality: .detail, viewport: .init(maxPixel: 0, window: window))
+  }
+
+  /// A windowed 1:1 frame must be exactly the corresponding crop of the whole 1:1 frame, and it
+  /// must keep reporting the whole canvas so overlays, crop and pickers keep their coordinates.
+  func testDetailWindowIsExactlyTheCropOfTheWholeNativeFrame() async throws {
+    let (root, source) = try fixture()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 64 * 1024 * 1024,
+      rawBaseCacheBytes: 0, interactiveEvaluation: .proxyV1, settledTransport: .viewport))
+    let consumer = PreviewConsumerID()
+    let lease = try await service.open(source: .raw(source))
+    let whole = try await service.render(detailRequest(lease, consumer, 1, window: nil))
+    XCTAssertNil(whole.window)
+    XCTAssertEqual(whole.outputPixelSize, whole.canonicalPixelSize)
+
+    let window = CGRect(x: 0.21, y: 0.17, width: 0.37, height: 0.41)
+    let scoped = try await service.render(detailRequest(lease, consumer, 2, window: window))
+    XCTAssertEqual(scoped.window, window)
+    XCTAssertEqual(scoped.canonicalPixelSize, whole.canonicalPixelSize,
+      "The canvas identity must stay whole-frame")
+    XCTAssertNotEqual(scoped.outputKey, whole.outputKey, "A window cannot reuse the whole-frame key")
+
+    let canvas = CGRect(origin: .zero, size: whole.canonicalPixelSize)
+    let expected = try V3PreviewMaterializer.visibleRect(window, of: canvas)
+    XCTAssertEqual(scoped.outputPixelSize, expected.size)
+    XCTAssertGreaterThan(scoped.outputPixelSize.width, 100)
+    XCTAssertLessThan(scoped.outputPixelSize.width, whole.outputPixelSize.width)
+
+    // Crop the whole native frame at the same rect and compare RGBA bytes.
+    guard let wholeImage = whole.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+      return XCTFail("whole frame has no raster")
+    }
+    // The materialized canvas uses a top-left origin; the crop rect from `visibleRect` is in
+    // Core Graphics coordinates, so flip it for CGImage cropping.
+    let flipped = CGRect(x: expected.minX, y: canvas.height - expected.maxY,
+                         width: expected.width, height: expected.height)
+    guard let crop = wholeImage.cropping(to: flipped) else { return XCTFail("crop failed") }
+    XCTAssertEqual(try bytes(NSImage(cgImage: crop, size: .zero)), try bytes(scoped.image),
+      "The windowed frame must be byte-identical to the crop of the whole frame")
+
+    // The same recipe must still replay the cached whole-frame result.
+    let replay = try await service.render(detailRequest(lease, consumer, 3, window: nil))
+    XCTAssertEqual(replay.outputKey, whole.outputKey)
+    await service.closeAll()
+  }
+
+  func testNonDetailRequestsRejectAWindow() async throws {
+    let (root, source) = try fixture()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0, rawBaseCacheBytes: 0,
+      interactiveEvaluation: .proxyV1, settledTransport: .viewport))
+    let consumer = PreviewConsumerID()
+    let lease = try await service.open(source: .raw(source))
+    let window = CGRect(x: 0.1, y: 0.1, width: 0.5, height: 0.5)
+    for quality in [PreviewQuality.interactive, .settled] {
+      var request = self.request(lease, consumer, .init(adjustmentsV3: .init()), 1, quality: quality)
+      request = .init(sessionID: request.sessionID, sourceGeneration: request.sourceGeneration,
+        consumerID: request.consumerID, role: request.role, revision: request.revision,
+        recipe: request.recipe, quality: request.quality,
+        viewport: .init(maxPixel: 2400, window: window))
+      do {
+        _ = try await service.render(request)
+        XCTFail("\(quality) must reject a window")
+      } catch DevelopmentPreviewError.invalidRequest {}
+    }
+    // Out-of-bounds and degenerate windows are rejected too.
+    for bad in [CGRect(x: -0.1, y: 0, width: 0.5, height: 0.5), .init(x: 0, y: 0, width: 0, height: 0.5),
+                .init(x: 0.8, y: 0.8, width: 0.5, height: 0.5), .init(x: 0, y: 0, width: .nan, height: 0.5)] {
+      do {
+        _ = try await service.render(detailRequest(lease, consumer, 2, window: bad))
+        XCTFail("window \(bad) must be rejected")
+      } catch DevelopmentPreviewError.invalidRequest {}
+    }
+    await service.closeAll()
+  }
 }
