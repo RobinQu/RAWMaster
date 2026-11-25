@@ -47,6 +47,14 @@ final class PreviewQualityPolicyTests: XCTestCase {
     XCTAssertGreaterThan(PreviewPerformancePreferences.settledWindowMargin, 0)
   }
 
+  /// A burst of releases pays for one native 1:1 render in turbo and one per release otherwise.
+  func testOnlyTurboDefersTheNativeOneToOneSettle() {
+    XCTAssertTrue(PreviewQualityPolicy.delaysDetailSettle(actualPixels: true, turbo: true))
+    XCTAssertFalse(PreviewQualityPolicy.delaysDetailSettle(actualPixels: true, turbo: false))
+    XCTAssertFalse(PreviewQualityPolicy.delaysDetailSettle(actualPixels: false, turbo: true))
+    XCTAssertGreaterThan(PreviewQualityPolicy.detailSettleDelayNanoseconds, 0)
+  }
+
   func testStoredValuesFallBackToBalanced() {
     let saved = PreviewPerformancePreferences.mode
     defer { PreviewPerformancePreferences.mode = saved }

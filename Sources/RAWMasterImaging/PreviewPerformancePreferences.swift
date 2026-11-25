@@ -57,4 +57,13 @@ public enum PreviewQualityPolicy {
   public static func windowMargin(interacting: Bool, turbo: Bool) -> Double {
     turbo && interacting ? 0 : PreviewPerformancePreferences.settledWindowMargin
   }
+
+  /// Turbo waits a moment before the native 1:1 render. A neighbour operator costs the same on
+  /// every release (texture 561 ms, clarity 455 ms, brilliance 3800 ms steady), so a burst of
+  /// adjustments should pay for one render, not one per release. The canvas keeps showing the
+  /// gesture proxy during the wait.
+  public static let detailSettleDelayNanoseconds: UInt64 = 250_000_000
+  public static func delaysDetailSettle(actualPixels: Bool, turbo: Bool) -> Bool {
+    actualPixels && turbo
+  }
 }

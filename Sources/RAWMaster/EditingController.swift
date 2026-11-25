@@ -698,13 +698,15 @@ import RAWMasterLibrary
         if !active {
             // Turbo: the first settled 1:1 frame covers only what is on screen, then the pan margin
             // is filled in the background once the user stops.
-            if actualPixels, PreviewPerformancePreferences.isTurbo, let visible = lastVisibleDetailWindow {
-                detailWindow = ImageViewportGeometry.quantized(
-                    ImageViewportGeometry.servedWindow(visible: visible, margin: 0), steps: 32)
-                scheduleDetailWindowExpansion()
+            if PreviewQualityPolicy.delaysDetailSettle(actualPixels: actualPixels,
+                turbo: PreviewPerformancePreferences.isTurbo) {
+                // A burst of releases must not pay one native 1:1 render each.
+                scheduleDetailSettle(input: (lastPreviewAdjustmentInput ?? input).settling(after: input))
+            } else {
+                // The settled publication belongs to the latest parameter operation; never sample a
+                // later NSApp.currentEvent for it.
+                requestSettledPreview(input: (lastPreviewAdjustmentInput ?? input).settling(after: input))
             }
-            // The settled publication belongs to the latest parameter operation; never sample a later NSApp.currentEvent for it.
-            requestSettledPreview(input: (lastPreviewAdjustmentInput ?? input).settling(after: input))
             if !previewInteracting {
                 previewGestureID = nil; lastPreviewAdjustmentInput = nil
                 // An early canonical frame plus an unchanged end request has no new onChange.
@@ -824,6 +826,25 @@ import RAWMasterLibrary
             selectedVersionID = version.id; stage = .ai; message = "已选择此版本作为下一次 AI 编辑的输入。"; requestPreview(); return
         }
         stage = .development; selectVersion(version, continueEditing: true)
+    }
+    /// Turbo only: wait for a short pause, then render the native 1:1 frame for the visible window
+    /// and fill the pan margin afterwards. The gesture proxy stays on screen while waiting.
+    private func scheduleDetailSettle(input: EditingPreviewInput) {
+        settledPreviewTask?.cancel()
+        let focus = focusGeneration, branch = developmentBranchID
+        settledPreviewTask = Task { @MainActor [weak self] in
+            do { try await Task.sleep(nanoseconds: PreviewQualityPolicy.detailSettleDelayNanoseconds) }
+            catch { return }
+            guard let self, !Task.isCancelled, self.actualPixels, !self.previewInteracting,
+                  !self.shuttingDown, self.focusGeneration == focus,
+                  self.developmentBranchID == branch, self.stage == .development else { return }
+            if let visible = self.lastVisibleDetailWindow {
+                self.detailWindow = ImageViewportGeometry.quantized(
+                    ImageViewportGeometry.servedWindow(visible: visible, margin: 0), steps: 32)
+                self.scheduleDetailWindowExpansion()
+            }
+            self.requestPreview(input: input)
+        }
     }
     /// Fill in the pan margin after the fast tight first 1:1 frame has landed.
     private func scheduleDetailWindowExpansion() {

@@ -53,16 +53,26 @@ final class DetailStageProfileProbe: XCTestCase {
     try await Task.sleep(nanoseconds: 1_200_000_000)
     print("DETAIL-PROFILE prewarmed=\(DevelopmentPreviewService.detailPrewarmEnabled)")
 
-    for attempt in 0..<4 {
+    // A real adjustment sequence: the same kind of edit released five times with a different
+    // value each time, so no bitmap cache entry can serve the next render.
+    let heavy = environment["RAWMASTER_DETAIL_PROFILE_HEAVY"]
+    for attempt in 0..<5 {
       revision += 1
+      var varied = recipe
+      switch heavy {
+      case "texture": varied.adjustmentsV3?.advancedDetail.texture = .init(enabled: true, amount: 20 + Double(attempt) * 5)
+      case "clarity": varied.adjustmentsV3?.advancedDetail.clarity = .init(enabled: true, amount: 20 + Double(attempt) * 5)
+      case "brilliance": varied.adjustmentsV3?.light = .init(enabled: true, brilliance: 0.3 + Double(attempt) * 0.02, brillianceVersion: .adaptiveLocalV1)
+      default: varied.adjustmentsV3?.light = .init(enabled: true, exposure: 0.1 + Double(attempt) * 0.02)
+      }
       ImagePerformanceTelemetry.shared.reset()
       let started = DispatchTime.now().uptimeNanoseconds
       let frame = try await service.render(.init(sessionID: session.id,
         sourceGeneration: session.sourceGeneration, consumerID: consumer, role: .primary,
-        revision: revision, recipe: recipe, quality: .detail,
+        revision: revision, recipe: varied, quality: .detail,
         viewport: .init(maxPixel: 0, window: window)))
       let total = Double(DispatchTime.now().uptimeNanoseconds - started) / 1_000_000
-      print("DETAIL-PROFILE attempt=\(attempt) total=\(String(format: "%.1f", total))ms out=\(Int(frame.outputPixelSize.width))x\(Int(frame.outputPixelSize.height))")
+      print("DETAIL-PROFILE heavy=\(heavy ?? "exposure") attempt=\(attempt) total=\(String(format: "%.1f", total))ms out=\(Int(frame.outputPixelSize.width))x\(Int(frame.outputPixelSize.height))")
       for (name, ms) in stages(ImagePerformanceTelemetry.shared.snapshot()) {
         print("    \(String(format: "%8.2f", ms))  \(name)")
       }
