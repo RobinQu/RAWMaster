@@ -202,14 +202,15 @@
         }
         if let err = s.error { Text(err).foregroundStyle(.red) }
         if let r = s.result {
-          Text(
-            "目录水位 " + r["watermark"].integerLabel + "，范围 " + r["eligible"].integerLabel + "，命中 "
-              + r["count"].integerLabel)
+          let watermark = r["watermark"].integerLabel
+          let eligible = r["eligible"].integerLabel
+          let hits = r["count"].integerLabel
+          Text("目录水位 " + watermark + "，范围 " + eligible + "，命中 " + hits)
           if r["indexed"] != .null {
-            Text(
-              "已索引 " + r["indexed"].integerLabel + "，待索引 " + r["missing"].integerLabel + " · "
-                + (r["model"]?.stringValue ?? "")
-            ).font(.caption)
+            let indexed = r["indexed"].integerLabel
+            let missing = r["missing"].integerLabel
+            let model = r["model"]?.stringValue ?? ""
+            Text("已索引 " + indexed + "，待索引 " + missing + " · " + model).font(.caption)
           }
           if r["status"] == .string("indexDisabled") {
             Text("该库已关闭画面索引。").foregroundStyle(.secondary)
