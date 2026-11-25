@@ -140,6 +140,26 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 但完整回归立刻否掉：`DevelopmentSemanticMaskTests.testHistoricalColorAndCropKeepProtectedCodesInLosslessExports` 出现 **21,635 处差异**。原因不是高斯路径，而是**蒙版合成会从多个分支读取同一结果**——没有冻结时每个分支各自重算模糊，零覆盖区不再逐位不变。因此冻结保留，`RAWMASTER_QA_ADVANCED_DETAIL_UNFREEZE=1` 只作为测量口。
 
+### 已试并撤回：窗口化冻结（ROI 原型，决定性否决）
+
+要让 1:1 的邻域算子真正降到十倍量级，唯一正确的形态是「窗口 + halo 的一次性物化，并让全部下游消费同一窗口结果」。先做了这个方向的决定性探针 `AdvancedDetailWindowFreezeProbe`（真实 9504×6336 ARW，`RAWMASTER_ADVANCED_FREEZE_PROBE=1`）：
+
+| 探针 | 结果 |
+| --- | --- |
+| 引导图高斯：整幅物化 vs 只物化 2400×1600 窗口 | **最大差 0.0**，所有分量逐位相同 |
+| 整条 band 图（texture + clarity）：同上 | **最大差 5.7e-4，15.4M 个分量里 11.5M 有差异** |
+
+也就是说：`CIGaussianBlur` 本身在原生尺寸上确实是矩形无关的，但把它接进 `rmAdvancedBandV1` 之后，Core Image 对子窗口的**内部分块**改变了高斯的取样结果，边缘附近逐位不同。这与之前"去掉冻结"的实验结论一致（去掉冻结后蒙版零覆盖区出现 21,635 处差异）——根因不是高斯公式，而是**分块边界**。
+
+结论：**当前的 advanced-detail 图无法只靠调节 materialize 的覆盖范围变成 ROI 安全**。要走到十倍量级，必须同时接管两件事：
+
+1. 自写可分离高斯（显式 halo，不依赖 CI 的分块）；
+2. 自写 band 合成，同样显式 halo，并在窗口化时把 halo 纳入请求。
+
+两者都会改变像素（因为离开了 CI 的高斯路径），需要重新基线，并且要给「窗口帧 == 整幅帧同区域」逐字节证据。这是算子级重写，不是传输层调整。`texture`/`clarity` 之外，`dehaze`、`adaptive-brilliance`、`local detail`、`lens blur` 各自有同形的整幅归约，都要各自处理。
+
+本轮到此为止：传输层与画布已经拿到 1.72×（1:1 出厂窗口）、2.62×（紧贴窗口）、51.6×（定稿），剩下的十倍量级属于算子重写项目。
+
 ### 已试并撤回：代理基图半分辨率解码
 
 用 `FLASHRAW_DEMOSAIC_HALF_SIZE` 解码代理基图（4752×3168 再采样到 2400）只省一次性 34 ms（neutral 首次帧 130.1 → 96.5 ms），却永久改变基图像素（相对均衡基图 p99 2–4、最大 72–99/255 的高对比边缘差异）。一次性收益换永久画质代价，不采纳。

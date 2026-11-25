@@ -97,6 +97,12 @@
       "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
       "scope": "1:1 shipped window: visible rect plus 50% per side (0.505x0.505), 50 recipes",
       "sha256": "9a22f67de57e458b340686ac2f7a78cfd9d79a9f717bb797903e4b5a8f6f3550"
+    },
+    {
+      "file": "advanced-detail-freeze-probe.json",
+      "name": "advanced-detail-freeze-probe",
+      "scope": "ROI feasibility: windowed freeze and guide-blur rect independence at native scale",
+      "sha256": "672655925a162bf1cabd1aa9ad3fc075f8ed966143d06a2986d7647c22a16c57"
     }
   ]
 }

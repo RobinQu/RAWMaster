@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "build": "release",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "source": "Sony ILCE-7RM5 ARW, 9504x6336",
+  "probe": "RAWMASTER_ADVANCED_FREEZE_PROBE=1 swift test -c release --filter AdvancedDetailWindowFreezeProbe",
+  "window": [2400, 1600],
+  "results": {
+    "guideBlurWholeVsWindow": { "maxAbsDiff": 0.0, "differingComponents": 0 },
+    "bandGraphWholeVsWindow": { "maxAbsDiff": 0.00057023764, "differingComponents": 11518788, "totalComponents": 15360000 }
+  },
+  "interpretation": "CIGaussianBlur is rect-independent at native scale, but the band graph is not: Core Image's internal tiling of the Gaussian changes the sampled values when only a sub-window is requested. A windowed freeze therefore cannot reproduce the whole-frame texels, and the advanced-detail operator cannot be scoped by adjusting its materialize extent."
+}
