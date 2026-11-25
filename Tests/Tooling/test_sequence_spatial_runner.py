@@ -4,10 +4,12 @@ import json
 import subprocess
 import os
 from pathlib import Path
+import signal
 import sys
 import tempfile
 import time
 import unittest
+from unittest import mock
 
 SCRIPT = Path(__file__).resolve().parents[2] / 'scripts/sequence-spatial-experiment.py'
 spec = importlib.util.spec_from_file_location('spatial_runner', SCRIPT)
@@ -90,6 +92,32 @@ class SpatialRunnerTests(unittest.TestCase):
         direct = runner.edge_evidence([gate, nearby, final], 1, 2, False)
         self.assertEqual(direct['evidenceStatus'], 'target-decision-observed')
         self.assertEqual(direct['decisionEvidence'], [final])
+
+    def test_cleanup_accepts_an_empty_group_despite_stale_signal_errors(self):
+        # macOS can report EPERM when the group leader was reaped. An empty
+        # process table means cleanup succeeded and must not become a failure.
+        process = subprocess.Popen([sys.executable, '-c', 'pass'], start_new_session=True)
+        process.wait()
+        with mock.patch.object(runner.os, 'killpg', side_effect=PermissionError(1, 'Operation not permitted')), \
+             mock.patch.object(runner, 'live_group_members', return_value=[]):
+            self.assertEqual(runner.stop_group(process), [])
+
+    def test_cleanup_reports_a_member_that_is_still_alive(self):
+        process = subprocess.Popen([sys.executable, '-c', 'pass'], start_new_session=True)
+        process.wait()
+        with mock.patch.object(runner.os, 'killpg', side_effect=PermissionError(1, 'Operation not permitted')), \
+             mock.patch.object(runner, 'live_group_members', return_value=[process.pid + 100000]):
+            failures = runner.stop_group(process)
+        self.assertTrue(any('survived' in failure for failure in failures), failures)
+
+    def test_live_group_members_reads_the_process_table_not_signal_zero(self):
+        process = subprocess.Popen([sys.executable, '-c', 'import time; time.sleep(10)'], start_new_session=True)
+        try:
+            self.assertIn(process.pid, runner.live_group_members(process.pid))
+        finally:
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+        self.assertEqual(runner.live_group_members(process.pid), [])
 
     def test_watchdog_terminates_parent_and_same_group_grandchild(self):
         with tempfile.TemporaryDirectory() as temporary:

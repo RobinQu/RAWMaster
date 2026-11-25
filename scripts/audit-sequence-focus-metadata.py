@@ -21,7 +21,7 @@ _spec.loader.exec_module(base)
 AuditError, NumberText, parse_json = base.AuditError, base.NumberText, base.parse_json
 VERSION = 'sequence-focus-metadata-audit-v1'
 NORMALIZER = 'qualified-focus-facts-v1'
-HELPER_SHA = 'dc3e68496081614eb846d22ad542cd2989bc7ed6ad1bcc5665004ab4af284b00'
+HELPER_SHA = 'c16e989c85a10b1986c212846ecc1acff8cba229dd59a932491216ebf7806eb0'
 METADATA_INDEX_SHA = 'ec832150d7cf51675f29a3851206e314722fe0d39d2bc0df40cf1761c85b0e36'
 REGISTRY_SHA = '98ff3bd7b9fe7d6468a6ecaeb195fbefc291c6ad33d9a11c2243763a1631d399'
 AUDIT_SEAL = 'ba663312eec6cfd0aabfcc2837bd39e75fa45f64d4585c63a60c20c4497c3f17'

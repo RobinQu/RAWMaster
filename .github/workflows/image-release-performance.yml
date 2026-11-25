@@ -31,6 +31,10 @@ jobs:
       RAWMASTER_RUNTIME_ARTIFACTS_DIR: ${{ vars.RAWMASTER_RUNTIME_ARTIFACTS_DIR }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Fetch pinned Rust dependencies
+        # SwiftPM plugin sandboxes deny network access; populate Cargo's cache
+        # before the build that runs inside them.
+        run: scripts/fetch-rust-dependencies.sh
       - name: Verify baseline, fixtures and generated reports
         run: |
           test -d "$RAW_CORPUS"

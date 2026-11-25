@@ -65,9 +65,12 @@ git -C output/tools/exiftool checkout --detach 2200871d9cef988051d2a99d67df3bda6
 M2a 已获批准并分阶段实现：[功能取舍与体验方案](docs/planning/09-next-batch-review.md)、[004 规格](specs/004-client-next-batch/spec.md)、[技术计划](specs/004-client-next-batch/plan.md)、[实际验证与限制](specs/004-client-next-batch/validation.md)。主题三档、原片重新定位、人工组编辑与恢复已实现。连拍已有开发组和独立边界样本；时间窗试评估未建立通过验收的生产规则，按 SC05 仅交付 [隔离诊断与评估](docs/diagnostics/README.md)，暂不提供正式建议入口。最终普通测试与同机发布性能门通过；前两次绘制波动及桌面矩阵限制保留于验证记录。
 
 ```sh
+scripts/fetch-rust-dependencies.sh
 swift test --jobs 4
 swift run RAWMasterDiagnostics /absolute/path/photo.ARW --output output/probe --smoke
 ```
+
+SwiftPM 构建插件在无网络、只读 Cargo 缓存的沙箱中运行，因此照片导出、图像核心和资料库三个 Rust 库都以 `cargo --offline --locked` 构建。首次检出或在任一 `Modules/*/Cargo.lock` 变更后先运行 `scripts/fetch-rust-dependencies.sh`：它下载并解包依赖到插件实际读取的 `~/.cargo`（需要网络，重复执行是幂等的）。之后 `swift build` / `swift test` 不再访问 crates.io，也不需要再下载或解包 crates。需要只校验缓存时可运行 `scripts/fetch-rust-dependencies.sh --check`。
 
 诊断工具使用应用同一套预览和 RAW 解码代码。可选界面布局诊断：设置 `RAWMASTER_OFFSCREEN_SNAPSHOT_DIR` 和 `RAWMASTER_OFFSCREEN_LIBRARY` 后运行 `swift test --filter testOptionalOffscreenWorkbenchSnapshot`。
 

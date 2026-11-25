@@ -110,16 +110,41 @@ def verify_fixture_controls(repository, frozen):
             raise ValueError('Frozen fixture controls changed')
 
 
+def live_group_members(pgid):
+    """Non-zombie PIDs still in pgid, or None when liveness cannot be verified.
+
+    macOS can report EPERM for killpg after the group leader was reaped, so an
+    errno is not proof that descendants survived. The process table is the
+    authority; zombies are already dead for cleanup purposes.
+    """
+    try:
+        value = subprocess.run(['/bin/ps', '-A', '-o', 'pid=,pgid=,stat='], capture_output=True,
+                                text=True, timeout=2)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    if value.returncode != 0:
+        return None
+    live = []
+    for line in value.stdout.splitlines():
+        fields = line.split()
+        if len(fields) != 3: continue
+        pid, group, state = fields
+        try:
+            if int(group) == pgid and not state.startswith('Z'): live.append(int(pid))
+        except ValueError: continue
+    return live
+
+
 def stop_group(process):
     """Bounded TERM/wait/KILL/reap; never use signal 0 as a liveness oracle on macOS."""
     failures = []
-    group_absent = False
+    signal_failures = []
     try:
         os.killpg(process.pid, signal.SIGTERM)
     except ProcessLookupError:
-        group_absent = True
+        pass
     except OSError as error:
-        failures.append(f'SIGTERM group {process.pid}: {error}')
+        signal_failures.append(f'SIGTERM group {process.pid}: {error}')
     try:
         process.wait(timeout=GRACE_SECONDS)
     except subprocess.TimeoutExpired:
@@ -127,18 +152,25 @@ def stop_group(process):
     except OSError as error:
         failures.append(f'wait after TERM {process.pid}: {error}')
     # Even when the leader has exited, descendants may still own the group.
-    # A final real KILL is attempted; EPERM is a cleanup failure, never proof of death.
-    if not group_absent:
+    # Only escalate while members may remain; never signal a group that is
+    # already empty, because the pgid can be reused by an unrelated process.
+    live = live_group_members(process.pid)
+    if live != []:
         try:
             os.killpg(process.pid, signal.SIGKILL)
         except ProcessLookupError:
             pass
         except OSError as error:
-            failures.append(f'SIGKILL group {process.pid}: {error}')
-    try:
-        process.wait(timeout=GRACE_SECONDS)
-    except (subprocess.TimeoutExpired, OSError) as error:
-        failures.append(f'final reap {process.pid}: {error}')
+            signal_failures.append(f'SIGKILL group {process.pid}: {error}')
+        try:
+            process.wait(timeout=GRACE_SECONDS)
+        except (subprocess.TimeoutExpired, OSError) as error:
+            failures.append(f'final reap {process.pid}: {error}')
+        live = live_group_members(process.pid)
+    if live:
+        failures.append(f'{len(live)} live process(es) survived in group {process.pid}: {live}')
+    elif live is None:
+        failures.extend(signal_failures)
     return failures
 
 

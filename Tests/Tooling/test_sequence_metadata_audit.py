@@ -5,6 +5,7 @@ import io
 import json
 import os
 from pathlib import Path
+import signal
 import subprocess
 import struct
 import sys
@@ -348,6 +349,35 @@ class MetadataAuditTests(unittest.TestCase):
             return None
         with mock.patch.object(audit, 'CANCELLED', False), mock.patch.object(audit, 'child_rss', side_effect=cancel_after_spawn):
             self.assertCode('cancelled', audit.run_child, [sys.executable,'-c','import time; time.sleep(10)'], time.monotonic()+5, measurement())
+
+    def test_cleanup_accepts_an_empty_group_despite_stale_signal_errors(self):
+        # macOS can report EPERM when the group leader was reaped. An empty
+        # process table means cleanup succeeded and must not become a failure.
+        process = subprocess.Popen([sys.executable, '-c', 'pass'], start_new_session=True)
+        process.wait()
+        with mock.patch.object(audit.os, 'killpg', side_effect=PermissionError(1, 'Operation not permitted')), \
+             mock.patch.object(audit, 'live_group_members', return_value=[]):
+            self.assertEqual(audit.stop_child(process), [])
+
+    def test_cleanup_reports_a_member_that_is_still_alive(self):
+        process = subprocess.Popen([sys.executable, '-c', 'pass'], start_new_session=True)
+        process.wait()
+        with mock.patch.object(audit.os, 'killpg', side_effect=PermissionError(1, 'Operation not permitted')), \
+             mock.patch.object(audit, 'live_group_members', return_value=[process.pid + 100000]):
+            self.assertIn('groupSurvived', audit.stop_child(process))
+
+    def test_cleanup_failure_does_not_mask_the_measured_timeout(self):
+        def fake_stop(process):
+            os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
+            return ['groupSurvived']
+        with mock.patch.dict(audit.LIMITS, childSeconds=.2, pollSeconds=.01, graceSeconds=.2), \
+             mock.patch.object(audit, 'child_rss', return_value=None), \
+             mock.patch.object(audit, 'stop_child', side_effect=fake_stop):
+            error = self.assertCode('childTimeout', audit.run_child,
+                [sys.executable, '-c', 'import time; time.sleep(10)'], time.monotonic() + 5, measurement())
+        self.assertIsInstance(error.__cause__, audit.AuditError)
+        self.assertEqual(error.__cause__.code, 'childCleanupFailed')
 
     def test_timeout_terminates_parent_and_same_group_grandchild(self):
         with tempfile.TemporaryDirectory() as temporary:

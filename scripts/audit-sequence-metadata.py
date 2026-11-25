@@ -247,19 +247,49 @@ def normalize_tool(data,fields,key,expected_source):
 
 def child_environment(): return {'PATH':'/usr/bin:/bin','LC_ALL':'C','LANG':'C'}
 
+def live_group_members(pgid):
+    """Non-zombie PIDs still in pgid, or None when liveness cannot be verified.
+
+    macOS can report EPERM for killpg after the group leader was reaped, so an
+    errno is not proof that descendants survived. The process table is the
+    authority; zombies are already dead for cleanup purposes.
+    """
+    try:
+        value=subprocess.run(['/bin/ps','-A','-o','pid=,pgid=,stat='],capture_output=True,text=True,
+                              timeout=2,env=child_environment())
+    except (OSError,subprocess.TimeoutExpired): return None
+    if value.returncode!=0: return None
+    live=[]
+    for line in value.stdout.splitlines():
+        fields=line.split()
+        if len(fields)!=3: continue
+        pid,group,state=fields
+        try:
+            if int(group)==pgid and not state.startswith('Z'): live.append(int(pid))
+        except ValueError: continue
+    return live
+
 def stop_child(process):
-    failures=[]
+    """Bounded TERM/wait/KILL/reap; returns cleanup failure codes."""
+    failures=[]; signal_failures=[]
     try: os.killpg(process.pid,signal.SIGTERM)
     except ProcessLookupError: pass
-    except OSError: failures.append('terminateGroupFailed')
+    except OSError: signal_failures.append('terminateGroupFailed')
     try: process.wait(timeout=LIMITS['graceSeconds'])
     except subprocess.TimeoutExpired: pass
-    try: os.killpg(process.pid,signal.SIGKILL)
-    except ProcessLookupError: pass
-    except OSError: failures.append('killGroupFailed')
-    try: process.wait(timeout=LIMITS['graceSeconds'])
-    except subprocess.TimeoutExpired: failures.append('reapFailed')
-    if failures: raise AuditError('childCleanupFailed')
+    # Only escalate when a live member may remain; never signal a group that is
+    # already empty (its pgid can be reused by an unrelated process).
+    live=live_group_members(process.pid)
+    if live!=[]:
+        try: os.killpg(process.pid,signal.SIGKILL)
+        except ProcessLookupError: pass
+        except OSError: signal_failures.append('killGroupFailed')
+        try: process.wait(timeout=LIMITS['graceSeconds'])
+        except subprocess.TimeoutExpired: failures.append('reapFailed')
+        live=live_group_members(process.pid)
+    if live: failures.append('groupSurvived')
+    elif live is None: failures.extend(signal_failures)
+    return failures
 
 def child_rss(pid):
     # Sampled process RSS; no claim of an OS-hard allocation limit. No tool stdout is passed to ps.
@@ -270,7 +300,7 @@ def child_rss(pid):
 
 def run_child(command,deadline,measurement):
     check(deadline); started=time.monotonic(); process=None; poller=selectors.DefaultSelector()
-    buffers={'stdout':bytearray(),'stderr':bytearray()}
+    buffers={'stdout':bytearray(),'stderr':bytearray()}; failure=None
     try:
         process=subprocess.Popen(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=child_environment(),start_new_session=True)
         for name,pipe in [('stdout',process.stdout),('stderr',process.stderr)]:
@@ -299,14 +329,23 @@ def run_child(command,deadline,measurement):
         check(deadline)
         measurement['metadataSeconds']+=time.monotonic()-started
         return bytes(buffers['stdout'])
+    except BaseException as error:
+        failure=error
+        raise
     finally:
         poller.close()
+        cleanup_failures=[]
         if process is not None:
-            stop_child(process)
+            cleanup_failures=stop_child(process)
             for pipe in (process.stdout,process.stderr):
                 if pipe: pipe.close()
         # Never write raw stdout/stderr/serials, including failed subprocess diagnostics.
         buffers['stdout'].clear(); buffers['stderr'].clear()
+        if cleanup_failures:
+            # Preserve the measured failure (e.g. childTimeout) and carry the
+            # cleanup diagnostics as its cause instead of masking it.
+            if failure is not None: raise failure from AuditError('childCleanupFailed')
+            raise AuditError('childCleanupFailed')
 
 def tool_command(perl,tool,fields,source):
     return [str(perl),str(tool),'-config','','-j','-n','-a','-G0:1:4'] + ['-'+f['selector'] for f in fields if f['selector']] + ['-'+tag for tag in DIAGNOSTIC_SELECTORS] + [str(source)]
