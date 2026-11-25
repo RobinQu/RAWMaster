@@ -20,6 +20,14 @@ public struct PreviewViewport: Equatable, Sendable {
   public init(maxPixel: Int = 2400) { self.maxPixel = maxPixel }
 }
 public enum PreviewInteractiveEvaluation:String,Equatable,Sendable { case canonical,proxyV1,nativePointwiseCertificateV1 }
+/// Where a settled (post-gesture) canvas frame is evaluated.
+///
+/// `canonical` renders the always-native graph and downscales at the last step, so a
+/// fit-to-window frame costs the full sensor pixel count. `viewport` evaluates the same
+/// operator sequence at the requested viewport resolution and validates those pixels:
+/// the frame reports its scale, native pixel identity stays with `detail` and export.
+/// See `docs/research/gpu-pipeline-references.md` for the LightFlow/Alcedo precedent.
+public enum PreviewSettledTransport: String, Equatable, Sendable { case canonical, viewport }
 public struct PreviewApproximationInfo:Equatable,Sendable {
   public let version:String
   public let nativeInputSize,proxyInputSize,canonicalCanvasSize,outputPixelSize:CGSize
@@ -42,11 +50,15 @@ public struct PreviewResourcePolicy: Equatable, Sendable {
   public let interactiveMaxPixel: Int
   public let comparisonQuiescenceMilliseconds: Int
   public let rawBaseCacheBytes: Int
+  /// Default stays `canonical`: every settled frame keeps full native evaluation.
+  public let settledTransport: PreviewSettledTransport
   public static let `default` = PreviewResourcePolicy()
   public init(maximumSessions: Int = 2, maximumPendingRequests: Int = 2,
               bitmapCacheBytes: Int = 134_217_728, sourceSnapshotDiskBytes: Int64 = 536_870_912,
               contextMemoryLimitMiB: Int = 512, interactiveMaxPixel: Int = 2400,
-              comparisonQuiescenceMilliseconds: Int = 150, rawBaseCacheBytes: Int = 0, interactiveEvaluation:PreviewInteractiveEvaluation = .canonical,nativePointwiseProfile:Bool = false,nativeCanonicalFiniteProof:Bool = false) {
+              comparisonQuiescenceMilliseconds: Int = 150, rawBaseCacheBytes: Int = 0, interactiveEvaluation:PreviewInteractiveEvaluation = .canonical,nativePointwiseProfile:Bool = false,nativeCanonicalFiniteProof:Bool = false,
+              settledTransport: PreviewSettledTransport = .canonical) {
+    self.settledTransport=settledTransport
     self.nativeCanonicalFiniteProof=nativeCanonicalFiniteProof
     self.nativePointwiseProfile=nativePointwiseProfile
     self.interactiveEvaluation=interactiveEvaluation

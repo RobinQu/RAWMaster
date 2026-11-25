@@ -68,7 +68,13 @@ final class EditingInteractivePerformanceTests: XCTestCase {
             contentSHA256: try RenderFiles.hash(sourceURL), byteCount: try XCTUnwrap(attributes[.size] as? NSNumber).int64Value,
             admissionFingerprint: "interactive-performance-v1", sourceLocation: sourceURL)
         let rawBaseCacheBytes = environment["RAWMASTER_INTERACTIVE_RAW_BASE_CACHE"] == "1" ? 1_073_741_824:0
-        let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0, rawBaseCacheBytes: rawBaseCacheBytes, interactiveEvaluation: .proxyV1))
+        // Product construction keeps a 128 MB display cache, so a settled frame for an
+        // unchanged recipe replays the gesture frame instead of re-running the suffix.
+        let bitmapCacheBytes = Int(environment["RAWMASTER_INTERACTIVE_BITMAP_CACHE"] ?? "0") ?? 0
+        // Match the shipped policy: the settled canvas frame uses the viewport-resolution graph.
+        // RAWMASTER_INTERACTIVE_SETTLED_TRANSPORT=canonical reproduces the previous native render.
+        let settledTransport: PreviewSettledTransport = environment["RAWMASTER_INTERACTIVE_SETTLED_TRANSPORT"] == "canonical" ? .canonical : .viewport
+        let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: bitmapCacheBytes, rawBaseCacheBytes: rawBaseCacheBytes, interactiveEvaluation: .proxyV1, settledTransport: settledTransport))
         let consumer = PreviewConsumerID()
         let session = try await service.open(source: .raw(source))
         let dehazeContext = try DevelopmentDehazeContextFactoryV1.fromCapture(sourceURL, generation: session.sourceGeneration)
@@ -406,11 +412,12 @@ final class EditingInteractivePerformanceTests: XCTestCase {
             "decoderVersion": session.decoderVersion,
             "proxyVersion": PreviewInteractiveProxyV3.version,
             "sourceOverlayVersion": PreviewInteractiveProxyV3.sourceOverlayVersion,
-            "policy": "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=\(rawBaseCacheBytes)",
+            "policy": "proxyV1 interactive; \(settledTransport.rawValue) settled; bitmapCache=\(bitmapCacheBytes); rawBaseCache=\(rawBaseCacheBytes)",
+            "settledTransport": settledTransport.rawValue,
             "measurements": try JSONSerialization.jsonObject(with: JSONEncoder().encode(measurements)),
             "caveats": [
                 "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
-                "Interactive proxy is bounded to 2400px and settled/save/export remain canonical",
+                "Interactive and settled are bounded to the 2400px canvas; detail/save/export remain native",
                 "Cold process and OS caches are not purged; three consecutive samples per operation"
             ]
         ]

@@ -890,7 +890,9 @@ import RAWMasterLibrary
         if let frame = previews.primary.frame {
             let native = "\(Int(frame.nativeSize.width)) × \(Int(frame.nativeSize.height))"
             let bitmap = "\(Int(frame.outputSize.width)) × \(Int(frame.outputSize.height))"
-            previewDimensions = frame.approximate ? "快速预览 \(bitmap) · 待完整预览" : (frame.quality == .detail ? "原生像素 \(native)" : "预览 \(bitmap) · 原生 \(native)")
+            previewDimensions = frame.quality == .detail ? "原生像素 \(native)"
+                : frame.quality == .settled ? "预览 \(bitmap) · 原生 \(native)"
+                : (frame.approximate ? "快速预览 \(bitmap) · 待完整预览" : "预览 \(bitmap) · 原生 \(native)")
         } else { previewDimensions = "" }
         prepareDevelopmentSessionIfNeeded()
         requestDevelopmentHistogramIfNeeded()
@@ -2884,7 +2886,7 @@ import RAWMasterLibrary
               let source = developmentSession.source, let frame = previews.primary.frame,
               frame.generation == context.sourceGeneration, frame.revision == previews.primary.currentRevision,
               previews.primary.currentFrameWasDrawn,
-              !frame.approximate, frame.quality != .interactive, previews.primary.frameRecipe == recipe,
+              frame.quality != .interactive, previews.primary.frameRecipe == recipe,
               previews.primary.framePresentationID == developmentPreviewPresentationID,
               let mapping = try? developmentGeometry.mapping(sourceSize: source.sourceSize),
               frame.nativeSize == CGSize(width: mapping.outputSize.width, height: mapping.outputSize.height),
@@ -3114,8 +3116,7 @@ import RAWMasterLibrary
               developmentSession.page == .adjust, developmentSourceFacts?.sourceBinding == developmentSession.source,
               targetedActive || picker.recipeFingerprint == (try? EditingFingerprint.of(recipe)),
               let frame = previews.primary.frame, targetedActive || frame.revision == previews.primary.currentRevision,
-              frame.generation == picker.context.sourceGeneration, targetedActive || !frame.approximate,
-              targetedActive || frame.quality != .interactive,
+              frame.generation == picker.context.sourceGeneration, targetedActive || frame.quality != .interactive,
               targetedActive || previews.primary.frameRecipe == recipe,
               previews.primary.framePresentationID == developmentPreviewPresentationID,
               let source = developmentSession.source,
@@ -3847,7 +3848,7 @@ import RAWMasterLibrary
         guard developmentInterfaceActive, isPresented, sourceReady, !shuttingDown, stage == .development, cropEditing,
               !developmentShowingOriginal, !comparing, developmentContext == context, developmentSession.page == .crop,
               let frame = previews.primary.frame, frame.generation == context.sourceGeneration,
-              frame.revision == previews.primary.currentRevision, !frame.approximate, frame.quality != .interactive,
+              frame.revision == previews.primary.currentRevision, frame.quality != .interactive,
               previews.primary.framePresentationID == developmentPreviewPresentationID,
               let source = developmentSession.source else { return nil }
         var expected = recipe

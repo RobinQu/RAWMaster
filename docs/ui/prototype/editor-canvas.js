@@ -33,14 +33,22 @@ function dock() {
     ${command('缩小 · −', 'edit-zoom', 'out', 'zoomOut', { disabled: S.editZoom <= 0.25 })}
     ${command('放大 · +', 'edit-zoom', 'in', 'zoomIn', { disabled: S.editZoom >= 4 })}
     ${command('FIT', 'edit-zoom', 'fit', null, { title: '适合可用画面 · 0 / ⌘0', cls: 'dock-fit' })}
+    ${command('1:1 · Z', 'edit-zoom', 'pixels', null, { title: '按原生像素查看 · Z', cls: 'dock-fit' })}
     ${command('裁切与拉直 · C', 'canvas-crop', '', 'crop', { pressed: !!S.cropOpen, expanded: !!S.cropOpen, disabled: S.tool === 'versions' })}
     <span class="dock-divider"></span>
     ${command('对比模式 · V', 'canvas-menu', 'compare', 'compare', { pressed: S.compare, expanded: S.canvasMenu === 'compare', disabled: S.cropOpen })}
     ${command('暗房背景 · B', 'canvas-menu', 'ground', 'background', { expanded: S.canvasMenu === 'ground' })}
     <span class="dock-divider"></span>${quickEntry()}</div>`;
 }
-function compareMenu() {
-  const refs = [
+// The canvas shows the viewport-resolution frame at fit zoom; 1:1 renders native pixels.
+// See specs/036-render-pipeline-performance/spec.md.
+function resolutionChip() {
+  const native = '原生 9504 × 6336';
+  return `<small class="pane-label canvas-resolution" aria-live="polite">${
+    S.pixelView ? '原生像素 ' + '9504 × 6336' : '预览 2400 × 1600 · ' + native
+  }</small>`;
+}
+function compareMenu() {  const refs = [
     ['original', '原片（当前几何）'],
     ...currentEdit()
       .versions.filter((v) => !v.discarded)
@@ -131,7 +139,7 @@ function canvasContent(r, id) {
   else contents = pane(base, overlay, comparisonModes[mode] + ' · ' + refName);
   return `<section class="canvas-panel${prompt ? ' has-quick-prompt' : ''}" aria-label="暗房画布">
     <div class="dark-canvas" data-comparison="${mode}" style="--ratio:${ratio};--view-scale:${S.editZoom};--compare-amount:${S.comparePosition}%">${contents}</div>
-    <small class="look-preview pane-label" hidden></small>${S.cropOpen ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
+    <small class="look-preview pane-label" hidden></small>${resolutionChip()}${S.cropOpen ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
 }
 actions['canvas-nav'] = (direction) => {
   const id = neighbors()[direction];
@@ -152,12 +160,20 @@ actions['edit-zoom'] = (direction) => {
     scale =
       S.editZoom === 1 ? view.querySelector('img').naturalWidth / view.getBoundingClientRect().width : 1;
   S.editZoom = Math.max(0.25, Math.min(4, scale));
+  // 1:1 switches the canvas to native pixels; leaving it returns to the viewport frame.
+  S.pixelView = direction === 'pixels';
   render();
   for (const fit of $$('.canvas-fit')) {
     fit.scrollLeft = (fit.scrollWidth - fit.clientWidth) / 2;
     fit.scrollTop = (fit.scrollHeight - fit.clientHeight) / 2;
   }
-  notify(direction === 'fit' ? '适合可用画面' : '相对 FIT · ' + Math.round(S.editZoom * 100) + '%');
+  notify(
+    direction === 'fit'
+      ? '适合可用画面 · 视口预览'
+      : direction === 'pixels'
+        ? '1:1 原生像素'
+        : '相对 FIT · ' + Math.round(S.editZoom * 100) + '%'
+  );
 };
 function dockFocus(act, val = '') {
   document

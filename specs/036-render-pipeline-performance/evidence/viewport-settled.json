@@ -1,0 +1,2003 @@
+{
+  "binarySHA256": "0f21957b15cb997e14269d7d6af021db1389f5ea50214402d4b837734bd6fd75",
+  "build": "release",
+  "canonicalFlashRaw": true,
+  "caveats": [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive and settled are bounded to the 2400px canvas; detail/save/export remain native",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderOverride": false,
+  "decoderVersion": "8",
+  "flashRawAvailable": true,
+  "flashRawDemosaic": 0,
+  "flashRawTextureCache": {
+    "bytesPerPixel": 8,
+    "fills": 5,
+    "guideBytesPerPixel": 4,
+    "hits": 23,
+    "peakReservedBytes": 722608128,
+    "pinnedBytes": 0,
+    "residentBytes": 0
+  },
+  "latestFlashRawDecode": {
+    "availableThreads": 16,
+    "decoderBackend": "CPU NEON x16 threads",
+    "inputBytes": 69488640,
+    "nativeWallMilliseconds": 58.0113750000005,
+    "outputBytes": 361304064,
+    "postprocessBackend": "GPU Apple M4 Max (Metal, integrated), kernel 16.82 ms",
+    "stages": [
+      {
+        "milliseconds": 0.06737500000008367,
+        "name": "containerParse"
+      },
+      {
+        "milliseconds": 0,
+        "name": "metadata"
+      },
+      {
+        "milliseconds": 26.082166000000143,
+        "name": "entropyDecode"
+      },
+      {
+        "milliseconds": 0,
+        "name": "unpack"
+      },
+      {
+        "milliseconds": 0,
+        "name": "predictor"
+      },
+      {
+        "milliseconds": 0,
+        "name": "calibration"
+      },
+      {
+        "milliseconds": 0,
+        "name": "postprocess"
+      },
+      {
+        "milliseconds": 1.9840829999998277,
+        "name": "gpuUpload"
+      },
+      {
+        "milliseconds": 23.303209000000606,
+        "name": "gpuCompute"
+      },
+      {
+        "milliseconds": 5.829917000000478,
+        "name": "gpuDownload"
+      },
+      {
+        "milliseconds": 0,
+        "name": "preview"
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 1.578458,
+      "interactiveMilliseconds": [
+        139.743417,
+        1.578458,
+        1.414458
+      ],
+      "label": "neutral",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 1.400333,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.886417,
+      "interactiveMilliseconds": [
+        6.743875,
+        4.886417,
+        4.372
+      ],
+      "label": "exposure-color",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.269167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 22.760542,
+      "interactiveMilliseconds": [
+        33.957208,
+        22.760542,
+        17.530792
+      ],
+      "label": "adaptive-brilliance",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 21.277916,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.592458,
+      "interactiveMilliseconds": [
+        16.28225,
+        3.429375,
+        3.592458
+      ],
+      "label": "texture",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.904417,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.416458,
+      "interactiveMilliseconds": [
+        11.135792,
+        4.416458,
+        4.314334
+      ],
+      "label": "clarity",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.455875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 10.73825,
+      "interactiveMilliseconds": [
+        13.377875,
+        10.73825,
+        6.349667
+      ],
+      "label": "dehaze-v1",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 6.547167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.739,
+      "interactiveMilliseconds": [
+        18.324292,
+        12.739,
+        9.966375
+      ],
+      "label": "dehaze-v2",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 11.176334,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1337,
+      "interactiveMedianMilliseconds": 6.163125,
+      "interactiveMilliseconds": [
+        7.8,
+        6.163125,
+        5.896542
+      ],
+      "label": "geometry",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1337,
+      "settledMilliseconds": 5.364167,
+      "settledWidth": 1973,
+      "width": 1973
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1337,
+      "interactiveMedianMilliseconds": 7.7285,
+      "interactiveMilliseconds": [
+        9.804042,
+        7.7285,
+        7.641459
+      ],
+      "label": "post-crop-vignette",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1337,
+      "settledMilliseconds": 7.658833,
+      "settledWidth": 1973,
+      "width": 1973
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 15.415167,
+      "interactiveMilliseconds": [
+        9.853542,
+        21.479583,
+        15.415167
+      ],
+      "label": "lens-blur-procedural",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 11.051875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 16.160917,
+      "interactiveMilliseconds": [
+        10.413541,
+        16.460125,
+        16.160917
+      ],
+      "label": "lens-blur-device-depth",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.762125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 18.355958,
+      "interactiveMilliseconds": [
+        13.361,
+        19.719167,
+        18.355958
+      ],
+      "label": "lens-blur-refine-focus",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 12.600459,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 19.097458,
+      "interactiveMilliseconds": [
+        12.320959,
+        19.309292,
+        19.097458
+      ],
+      "label": "lens-blur-refine-blur",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 13.58275,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 14.870958,
+      "interactiveMilliseconds": [
+        12.514417,
+        18.780959,
+        14.870958
+      ],
+      "label": "lens-blur-refine-auto-mask",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 12.395416,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.352916,
+      "interactiveMilliseconds": [
+        12.352916,
+        14.717,
+        11.392459
+      ],
+      "label": "lens-blur-bokeh-bubble",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.62425,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.169584,
+      "interactiveMilliseconds": [
+        9.208042,
+        20.145208,
+        12.169584
+      ],
+      "label": "lens-blur-bokeh-five-blade",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.969209,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.549167,
+      "interactiveMilliseconds": [
+        9.154,
+        18.268792,
+        11.549167
+      ],
+      "label": "lens-blur-bokeh-ring",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.557625,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 14.028333,
+      "interactiveMilliseconds": [
+        14.028333,
+        14.142208,
+        8.904208
+      ],
+      "label": "lens-blur-bokeh-anamorphic",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.970084,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.90925,
+      "interactiveMilliseconds": [
+        11.929625,
+        8.90925,
+        8.770417
+      ],
+      "label": "lens-blur-cat-eye",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.355917,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 9.822833,
+      "interactiveMilliseconds": [
+        12.398625,
+        9.822833,
+        8.377917
+      ],
+      "label": "lens-blur-bokeh-boost",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.167417,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.184583,
+      "interactiveMilliseconds": [
+        3.876708,
+        7.340584,
+        6.184583
+      ],
+      "label": "lens-blur-depth-preview",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.685916,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.588041,
+      "interactiveMilliseconds": [
+        9.122083,
+        7.588041,
+        7.21775
+      ],
+      "label": "local-glow",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.64425,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.63475,
+      "interactiveMilliseconds": [
+        6.230292,
+        4.628667,
+        4.63475
+      ],
+      "label": "bw-mixer",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.4015,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.621625,
+      "interactiveMilliseconds": [
+        6.611791,
+        4.621625,
+        4.468042
+      ],
+      "label": "point-variance",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.005083,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.273916,
+      "interactiveMilliseconds": [
+        4.273916,
+        3.461,
+        4.614125
+      ],
+      "label": "targeted-hsl",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.434333,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.155125,
+      "interactiveMilliseconds": [
+        122.031333,
+        8.155125,
+        7.595625
+      ],
+      "label": "visualise-range",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.538875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.165209,
+      "interactiveMilliseconds": [
+        8.845416,
+        7.508666,
+        8.165209
+      ],
+      "label": "hue-isolation",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.717291,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.785916,
+      "interactiveMilliseconds": [
+        3.885709,
+        3.785916,
+        3.672292
+      ],
+      "label": "clipping-shadows",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.774167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.828083,
+      "interactiveMilliseconds": [
+        3.828083,
+        3.952125,
+        3.4025
+      ],
+      "label": "clipping-highlights",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.944417,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.633458,
+      "interactiveMilliseconds": [
+        5.192,
+        3.633458,
+        3.463208
+      ],
+      "label": "wb-flash-preset",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.665583,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.0745,
+      "interactiveMilliseconds": [
+        5.90275,
+        4.92925,
+        5.0745
+      ],
+      "label": "refine-saturation",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.072584,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.034875,
+      "interactiveMilliseconds": [
+        5.07775,
+        3.993792,
+        4.034875
+      ],
+      "label": "point-curve-targeted",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.500125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.861875,
+      "interactiveMilliseconds": [
+        6.289583,
+        3.861875,
+        3.659583
+      ],
+      "label": "defringe",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.511959,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.435208,
+      "interactiveMilliseconds": [
+        5.150583,
+        3.933333,
+        4.435208
+      ],
+      "label": "point-color-samples",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.850875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.889292,
+      "interactiveMilliseconds": [
+        7.9305,
+        3.889292,
+        3.650417
+      ],
+      "label": "local-point-color",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.574333,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.326666,
+      "interactiveMilliseconds": [
+        4.180458,
+        3.172083,
+        3.326666
+      ],
+      "label": "local-light-extended",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.30825,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.685625,
+      "interactiveMilliseconds": [
+        6.685625,
+        6.90725,
+        6.63225
+      ],
+      "label": "local-wb",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 6.340334,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.615709,
+      "interactiveMilliseconds": [
+        4.074708,
+        3.615709,
+        3.539625
+      ],
+      "label": "local-hue-colorize",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.594166,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 20.857708,
+      "interactiveMilliseconds": [
+        20.613125,
+        21.77425,
+        20.857708
+      ],
+      "label": "local-texture-clarity",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 20.242041,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.979333,
+      "interactiveMilliseconds": [
+        8.131625,
+        9.180291,
+        8.979333
+      ],
+      "label": "local-dehaze",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.621083,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.030042,
+      "interactiveMilliseconds": [
+        8.729917,
+        4.010042,
+        4.030042
+      ],
+      "label": "local-grain",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.279166,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.072,
+      "interactiveMilliseconds": [
+        7.072,
+        7.226,
+        6.690375
+      ],
+      "label": "local-curves",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.078917,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.47525,
+      "interactiveMilliseconds": [
+        7.477375,
+        6.771542,
+        7.47525
+      ],
+      "label": "local-grading",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.062917,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 33.21575,
+      "interactiveMilliseconds": [
+        23.061709,
+        33.21575,
+        33.715167
+      ],
+      "label": "local-detail",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 19.651125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.599791,
+      "interactiveMilliseconds": [
+        12.283834,
+        12.714458,
+        12.599791
+      ],
+      "label": "local-defringe",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 33.105458,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.964833,
+      "interactiveMilliseconds": [
+        9.238583,
+        3.370208,
+        3.964833
+      ],
+      "label": "global-sharpen-detail",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.928334,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 15.523708,
+      "interactiveMilliseconds": [
+        96.153459,
+        15.523708,
+        15.367792
+      ],
+      "label": "global-sharpen-mask-preview",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 15.972958,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.375167,
+      "interactiveMilliseconds": [
+        24.267625,
+        7.375167,
+        6.002625
+      ],
+      "label": "global-noise-detail",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.414917,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.832833,
+      "interactiveMilliseconds": [
+        6.956333,
+        5.832833,
+        4.974583
+      ],
+      "label": "optics-ca-distortion",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.008,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.104875,
+      "interactiveMilliseconds": [
+        5.5915,
+        3.959458,
+        4.104875
+      ],
+      "label": "optics-lens-profile",
+      "maximumChannelError": 0,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.847334,
+      "settledWidth": 2400,
+      "width": 2400
+    }
+  ],
+  "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+  "prewarming": false,
+  "proxyVersion": "actual-parameters-linear-proxy-v3-flashraw-neutral/integral-noise-snap-v1/filter-global-v1/point-cache-retract-v1/sharpen-noise-detail-v1",
+  "rawBaseCacheBytes": 1073741824,
+  "recordedAt": "2026-11-25T00:02:46Z",
+  "schemaVersion": 1,
+  "settledTransport": "viewport",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourceOverlayVersion": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1/scalar-mask-r32f-v2",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "stages": [
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.811208,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.776583,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.743708,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.182459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.750833,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.698125,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.934709,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.571875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.584958,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.59375,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.668666,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.632583,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.576292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.558208,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.618125,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.683541,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.752833,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.758875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.724167,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.715416,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 4.344667,
+      "operation": "PreviewInteractiveDetailGuide",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "交互细节邻域"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.778667,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.797292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.865333,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.872084,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.788167,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.001292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.78,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.7415,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.789375,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.782917,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.760625,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.779042,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.735459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.712625,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.786459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.724708,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.804708,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.719541,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.774917,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.723875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.593792,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.724167,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.765541,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.789458,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.72925,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.643166,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.089792,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.749333,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.752,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.721166,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.703917,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.766625,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.684292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.725875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.76975,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.78,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.752583,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.732042,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.720209,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.770833,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.724291,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.768542,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.706959,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.738666,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.734584,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.76225,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.736125,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.746958,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.691459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.7055,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.730458,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.739,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.590416,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.740042,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.723416,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.755083,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.798875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.744042,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.768125,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.78075,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.758541,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.875083,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.73625,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.744875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.7795,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.696417,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.748875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.727292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.793459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.760209,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.783334,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.600083,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.688292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.6135,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.566667,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.585625,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.536375,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.52825,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.629417,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.624167,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "RAW 解码",
+      "durationMilliseconds": 57.968708,
+      "operation": "FlashRaw.decode",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "output 7 · backend 3 · bilinear · 全图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.720542,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.057875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.557167,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.58925,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.781958,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.266958,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.222167,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.137917,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.697875,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.97475,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.972958,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 1.302292,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.914083,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.875959,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.559459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.557042,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.616083,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 0.571459,
+      "operation": "PreviewMetalFrameValidator",
+      "outcome": "成功",
+      "pixelCount": 3840000,
+      "stage": "F32 全帧校验和 sRGB8 显示转换"
+    }
+  ],
+  "transparentFrameFailures": []
+}

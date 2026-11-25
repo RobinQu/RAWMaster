@@ -1,0 +1,38 @@
+{
+  "canvas": [
+    2400,
+    1600
+  ],
+  "machine": "Apple M4 Max / 128 GB / macOS 27.0.1",
+  "nativeSize": [
+    9504,
+    6336
+  ],
+  "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "runs": [
+    {
+      "file": "canonical-settled.json",
+      "measurements": 50,
+      "name": "canonical-settled",
+      "policy": "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=1073741824",
+      "settledTransport": "canonical",
+      "sha256": "595e0897d42f3d02753922b5e89b94c0ba34d4375c3fe2c850858bb701b58696"
+    },
+    {
+      "file": "viewport-settled.json",
+      "measurements": 50,
+      "name": "viewport-settled",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "settledTransport": "viewport",
+      "sha256": "181d6b1620a15770b8b27bbc4073a5f0650f108d104e81ff276b26356463e89d"
+    },
+    {
+      "file": "viewport-settled-product-cache.json",
+      "measurements": 50,
+      "name": "viewport-settled-product-cache",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=134217728; rawBaseCache=1073741824",
+      "settledTransport": "viewport",
+      "sha256": "6b72ba82df4cf67bef111246341403d3a92a69cfacca8d28ba6dd1d0e2ffc42f"
+    }
+  ]
+}

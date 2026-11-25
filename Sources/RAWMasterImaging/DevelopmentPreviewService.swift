@@ -199,9 +199,11 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let bytes = qa ? 1_073_741_824:DevelopmentPreviewApplicationCacheProfile.currentSharedBytes()
     policy = PreviewResourcePolicy(rawBaseCacheBytes:bytes,
       interactiveEvaluation:qa ? .nativePointwiseCertificateV1:.proxyV1,nativePointwiseProfile:qa,
-      nativeCanonicalFiniteProof:PreviewCanonicalFiniteEvidenceV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,environment:ProcessInfo.processInfo.environment))
-    // Interactive gestures reuse a bounded 2400px Metal proxy. Settled frames, saves and exports
-    // still use the canonical full-resolution renderer; unsupported operators fail closed to it.
+      nativeCanonicalFiniteProof:PreviewCanonicalFiniteEvidenceV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,environment:ProcessInfo.processInfo.environment),
+      settledTransport:.viewport)
+    // Interactive gestures and the settled canvas frame both use the viewport-resolution
+    // graph; only `detail` (1:1), save and export evaluate at native resolution.
+    // Unsupported operators still fail closed to the canonical native renderer.
     interactivePresentation = PreviewPresentationScope()
     rawBasePool = bytes > 0 ? PreviewRawBasePool(byteBudget: bytes, nativeFillMode: .whole) : nil
   }
@@ -1347,6 +1349,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     return PreviewGrainFinalTransportV1.eligible(recipe:request.recipe,sourceIsRAW:native.hasRAWFilter,artifact:native.artifact,maxPixel:request.viewport.maxPixel)
   }
   private func canonicalHalfFIT(_ request: DevelopmentPreviewRequest, sourceKey: String) -> CanonicalHalfFIT? {
+    if settledUsesViewport(request) { return nil }
     guard Self.qaCanonicalHalfFIT || PreviewPortableHalfFIT.enabled || PreviewPortableMaskTone.enabled || PreviewPortableGrading.enabled,
           renderOverride == nil, request.role == .primary,
           request.viewport.maxPixel == 2400, let adjustments = request.recipe.adjustmentsV3,
@@ -1395,8 +1398,17 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       DevelopmentDehazeTIFFPreviewV1.recipeDomain(request.recipe),let native=sources[sourceKey]?.native else{return false}
     return DevelopmentDehazeTIFFPreviewV1.sourceDomain(native)
   }
+  private func settledUsesViewport(_ request:DevelopmentPreviewRequest)->Bool {
+    guard policy.settledTransport == .viewport, request.quality == .settled,
+          request.recipe.schemaVersion == 3, request.role == .primary,
+          request.viewport.maxPixel > 0, request.viewport.maxPixel <= 2400 else { return false }
+    return true
+  }
   private func usesInteractiveEvaluation(_ request:DevelopmentPreviewRequest)->Bool {
-    policy.interactiveEvaluation != .canonical && request.recipe.schemaVersion==3 && request.role == .primary && request.quality == .interactive && request.viewport.maxPixel>0 && request.viewport.maxPixel<=2400
+    guard policy.interactiveEvaluation != .canonical, request.recipe.schemaVersion==3, request.role == .primary,
+          request.viewport.maxPixel>0, request.viewport.maxPixel<=2400 else { return false }
+    if request.quality == .interactive { return true }
+    return settledUsesViewport(request) && policy.interactiveEvaluation == .proxyV1
   }
   private func prepareInteractivePlan(_ request:DevelopmentPreviewRequest,sourceKey:String)throws->PreviewInteractivePlan? {
     if DevelopmentBrilliancePublicV1.active(request.recipe) || requestsDehazeTIFF(request,sourceKey:sourceKey){return nil}

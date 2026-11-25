@@ -79,6 +79,8 @@ swift run RAWMasterDiagnostics /absolute/path/photo.ARW --output output/probe --
 
 ## 图片交互性能回归
 
+**当前性能入口：[036 渲染 Pipeline 与编辑 DAG 的性能水位](specs/036-render-pipeline-performance/spec.md)、[参考实现对照](docs/research/gpu-pipeline-references.md)、[实测记录](specs/036-render-pipeline-performance/validation.md)。** 画布定稿帧改为按视口分辨率构图后，9504×6336 原片上 50 个控件配方的定稿中位由 255.47 ms 降到 6.81 ms、P95 由 842.57 ms 降到 20.24 ms；产品 128 MB 位图缓存下松手重放的中位为 0.250 ms。1:1、保存与导出仍走原生像素。更早的门槛与记录见 [002](specs/002-image-interaction-performance/validation.md)。
+
 2026-10-22 起，普通测试包含立即单击、双击/多选、导航跟随、旧图片结果隔离及图像资源限制的回归。发布前另外执行：
 
 ```sh
