@@ -397,17 +397,34 @@ final class EditingInteractivePerformanceTests: XCTestCase {
                     // 2400x1600 canvas would show, centred away from the origin.
                     let detailWindow: CGRect? = environment["RAWMASTER_INTERACTIVE_DETAIL_WINDOW"] == "1"
                         ? CGRect(x: 0.37, y: 0.31, width: 0.2525, height: 0.2525) : nil
-                    let detailStarted = DispatchTime.now().uptimeNanoseconds
-                    let detail = try await service.render(.init(sessionID: session.id, sourceGeneration: session.sourceGeneration,
-                        consumerID: consumer, role: .primary, revision: revision, recipe: recipe,
-                        quality: .detail, viewport: .init(maxPixel: 0, window: detailWindow)))
-                    detailMilliseconds = Double(DispatchTime.now().uptimeNanoseconds - detailStarted) / 1_000_000
-                    XCTAssertNil(detail.approximation, "detail must stay native: \(label)")
-                    XCTAssertEqual(detail.outputPixelSize, detail.canonicalPixelSize)
-                    XCTAssertEqual(detail.window, detailWindow)
-                    print("DETAIL-FRAME \(label) \(detailMilliseconds ?? 0) out=\(Int(detail.outputPixelSize.width))x\(Int(detail.outputPixelSize.height)) canvas=\(Int(detail.canonicalPixelSize.width))x\(Int(detail.canonicalPixelSize.height))")
+                    let detailSamples = Int(environment["RAWMASTER_INTERACTIVE_DETAIL_SAMPLES"] ?? "1") ?? 1
+                    var detailTimes: [Double] = []
+                    var detail: DevelopmentPreviewFrame?
+                    for _ in 0..<max(1, detailSamples) {
+                        revision += 1
+                        let detailStarted = DispatchTime.now().uptimeNanoseconds
+                        detail = try await service.render(.init(sessionID: session.id, sourceGeneration: session.sourceGeneration,
+                            consumerID: consumer, role: .primary, revision: revision, recipe: recipe,
+                            quality: .detail, viewport: .init(maxPixel: 0, window: detailWindow)))
+                        detailTimes.append(Double(DispatchTime.now().uptimeNanoseconds - detailStarted) / 1_000_000)
+                    }
+                    detailMilliseconds = detailTimes.first
+                    if detailTimes.count > 1 {
+                        print("DETAIL-SAMPLES \(label) \(detailTimes.map { String(format: "%.1f", $0) }.joined(separator: ","))")
+                    }
+                    let detailFrame = try XCTUnwrap(detail)
+                    XCTAssertNil(detailFrame.approximation, "detail must stay native: \(label)")
+                    XCTAssertEqual(detailFrame.window, detailWindow)
+                    if let detailWindow {
+                        let expected = try V3PreviewMaterializer.visibleRect(
+                            detailWindow, of: CGRect(origin: .zero, size: detailFrame.canonicalPixelSize))
+                        XCTAssertEqual(detailFrame.outputPixelSize, expected.size, "windowed size for \(label)")
+                    } else {
+                        XCTAssertEqual(detailFrame.outputPixelSize, detailFrame.canonicalPixelSize)
+                    }
+                    print("DETAIL-FRAME \(label) \(detailMilliseconds ?? 0) out=\(Int(detailFrame.outputPixelSize.width))x\(Int(detailFrame.outputPixelSize.height)) canvas=\(Int(detailFrame.canonicalPixelSize.width))x\(Int(detailFrame.canonicalPixelSize.height))")
                     if environment["RAWMASTER_INTERACTIVE_WRITE_IMAGES"] == "1" {
-                        guard let cg = detail.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
+                        guard let cg = detailFrame.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
                               let data = NSBitmapImageRep(cgImage: cg).representation(using: .png, properties: [:])
                         else { throw DevelopmentError.unreadable }
                         try data.write(to: output.appendingPathComponent("\(label)-detail.png"), options: .withoutOverwriting)

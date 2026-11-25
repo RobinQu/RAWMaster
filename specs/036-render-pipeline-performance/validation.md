@@ -248,6 +248,33 @@ swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerforman
 done
 ```
 
+### 冷热拆分
+
+同一配方在窗口帧上连测三次（每次重新请求）：
+
+| 配方 | 第 1 次 | 第 2 次 | 第 3 次 |
+| --- | ---: | ---: | ---: |
+| neutral | 104.4 | **11.7** | 12.6 |
+| exposure-color | 27.7 | 32.0 | 30.5 |
+| texture | 474.8 | 490.9 | 486.3 |
+| dehaze-v2 | 1,554.2 | 1,490.2 | 1,505.1 |
+| adaptive-brilliance | 3,878.0 | 4,226.4 | 3,942.7 |
+
+点运算配方首次约 100 ms、热态约 12 ms，差额是一次性的上下文与内核准备加全幅原片解码。邻域配方三次一致，说明成本在算子内部。据此否决了「把有限值扫描也收窄到窗口」：热态下扫描只占十几毫秒，而收窄要把证明范围改成「显示窗口有限」。
+
+复现：
+
+```sh
+RAWMASTER_INTERACTIVE_DETAIL_SAMPLES=3 RAWMASTER_INTERACTIVE_DETAIL_WINDOW=1 \
+RAWMASTER_FLASHRAW_LIBRARY=$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib \
+RAWMASTER_REQUIRE_FLASHRAW=1 RAWMASTER_INTERACTIVE_PERF=1 RAWMASTER_INTERACTIVE_DETAIL=1 \
+RAWMASTER_INTERACTIVE_PERF_ONLY='neutral,exposure-color,texture,dehaze-v2,adaptive-brilliance' \
+RAWMASTER_INTERACTIVE_PERF_SOURCE=$PWD/output/performance/acr-benchmark.ARW \
+RAWMASTER_INTERACTIVE_PERF_OUTPUT=$PWD/output/performance/perf-detail-warm \
+RAWMASTER_INTERACTIVE_RAW_BASE_CACHE=1 \
+swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerformanceTests
+```
+
 ### 仍未压缩的部分
 
 `createCGImage` 仍会把同一棵图再算一遍。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 让上下文缓存中间值，实测只省 1–3%，因此默认关闭。

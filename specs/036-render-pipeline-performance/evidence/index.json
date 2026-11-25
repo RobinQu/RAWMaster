@@ -81,6 +81,14 @@
       "name": "flashraw-decode-cost",
       "scope": "FlashRaw 0.3.1 decode cost knobs: demosaic choice and frame size",
       "sha256": "7f2052ba58484810b7193e99b2a232e198b5918c028a583258323509cf24c692"
+    },
+    {
+      "file": "native-detail-warm-samples.json",
+      "measurements": 5,
+      "name": "native-detail-warm-samples",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 warm vs cold: windowed detail sampled three times per recipe",
+      "sha256": "8401fe19d637de7b2c9283ef303d757269d55fc9617aaa000a4c10dd491ed4fd"
     }
   ]
 }
