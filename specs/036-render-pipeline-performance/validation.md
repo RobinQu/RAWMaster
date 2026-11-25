@@ -210,7 +210,34 @@ done
 
 ### 仍未压缩的部分
 
-`createCGImage` 仍会把同一棵图再算一遍，1:1 需要一次性物化 60 MP RGBA8。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 让上下文缓存中间值，实测只省 1–3%，因此默认关闭。真正的下一步是 1:1 只渲染可见 ROI（Alcedo `DETAIL_ROI_PREVIEW`、LightFlow 的 `RenderTarget`），它同时解掉「整幅扫描」和「整幅物化」两笔成本，但会改变原生有限值证明与几何映射的契约，需要单独验收。
+`createCGImage` 仍会把同一棵图再算一遍。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 让上下文缓存中间值，实测只省 1–3%，因此默认关闭。
+
+按可见 ROI 裁剪的可行性已用 `PreviewRegionProbeTests`（`RAWMASTER_REGION_PROBE=1`）实测：同一棵未修改的整帧图，窗口占原生像素 6.38%。扫描 127.3 → 26.5 ms、物化 44.1 → 19.7 ms，但端到端只从 154.8 降到约 87 ms（1.8×），因为 `texture`／`dehaze` 的整幅邻域与全局归约不随请求区块下降。改造需要 pan/zoom 可见矩形、窗口缓存键、region 贯通阶段校验与非整帧 extent 不变量，判定不划算，本轮不做。[决策](spec.md#已否决11-按可见-roi-裁剪) · [探针数据](evidence/roi-probe.json)
+
+```sh
+RAWMASTER_REGION_PROBE=1 \
+RAWMASTER_REGION_PROBE_OUTPUT=$PWD/output/performance/roi-probe.json \
+RAWMASTER_REGION_PROBE_SOURCE=$PWD/output/performance/acr-benchmark.ARW \
+RAWMASTER_FLASHRAW_LIBRARY=$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib \
+swift test -c release --jobs 4 --filter PreviewRegionProbeTests
+```
+
+## 参考实现策略复核
+
+先前的总结有两处需要更正，依据是源码而非印象：
+
+| | 拖动 | 松手定稿 | 缩放 > 1× | 导出 / 全图任务 |
+| --- | --- | --- | --- | --- |
+| LightFlow | 整帧 → 目标 `cw×ch`（含 dpr） | 同左 | 同左（常驻多级源） | `exportTile` 1024，整帧原生 |
+| Alcedo | 整帧 ≤2560 | **整帧 ≤4096** | **可见 ROI → 视口设备像素** | `FULL_RES_EXPORT`，整帧原生 |
+| RAWMaster 现状 | 整帧 → 2400 | 整帧 → 2400 | **整帧原生** | 整帧原生 |
+
+- Alcedo 的 `QUALITY_BASE_PREVIEW` 是 `metadata.source_roi_norm = {}` + `max_edge = kQualityBaseMaxLongEdge (4096)`（`include/edit/runtime/pipeline_apply_request.hpp:67,88-93`）；`use_viewport_region_` 只在 `Detail` 或 `ScopeRefresh` 为真（`ui/alcedo_main/album_backend/editor_session_render_scheduler_port.cpp:106`）。
+- zoom 跨过 1.0 才切 Detail：`emitViewChange(zoom() > 1.0f + 1.0e-4f ? .DetailRefresh : …)`（`ui/editor_rhi/editor_interaction_controller.cpp:61`），ROI 与目标尺寸由 `ViewportMapper::ComputeViewportRenderRegion` 从 `widget×dpr×zoom` 推出（`ui/edit_viewer/viewport_mapper.cpp:132-210`）。
+- LightFlow 的每次采样都写着 `{"kind":"image","maxSize":2400,"exact":true}`，即整帧 2400；源 `s.load(id,"full")` 常驻。
+- 仓库内 Adobe 的实测边界是「完整 RAW 打开为 Photoshop 文档」，`outputPixels: [9504,6336]`；早前引用的 24.35／25.92 ms 方法与分辨率不在 `performance-data.json`，不能当作分辨率策略的证据。
+
+结论：两条实现都在**整幅**上完成定稿（分别 2400 与 4096），只有 Alcedo 在 zoom > 1 时切成可见 ROI。RAWMaster 的定稿与它们一致；不一致的是 zoom ≥ 1 时跳到整帧原生，而不是切 ROI —— 该项经实测否决，见[已否决](spec.md#已否决11-按可见-roi-裁剪)。
 
 ## 未覆盖
 

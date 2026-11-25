@@ -60,6 +60,12 @@
       "scope": "targeted 1:1 probe: 5 of 50 recipes, RAWMASTER_INTERACTIVE_DETAIL=1",
       "settledTransport": "viewport",
       "sha256": "6fd6ee02525cec90050e4ef248bd8ebe6cd8840a44e7d15a771a35e9f060a305"
+    },
+    {
+      "file": "roi-probe.json",
+      "name": "roi-probe",
+      "scope": "ROI feasibility: unmodified graph, region-scoped scan and materialize",
+      "sha256": "5d38058d65e72fe3c1b98c84601082be11beaf0d70678ce9d9085e12d0cf4060"
     }
   ]
 }

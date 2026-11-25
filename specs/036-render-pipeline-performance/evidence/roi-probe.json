@@ -1,0 +1,37 @@
+{
+  "build" : "release",
+  "caveats" : [
+    "develop() here rebuilds the FlashRaw base per call, so buildMs is not the shipped detail path",
+    "finiteScanFullMs measures the legacy full-frame reduction, not the banded native transport now shipped"
+  ],
+  "rows" : [
+    {
+      "buildPlusShippedScanMs" : 295.40558299999998,
+      "finiteScanFullMs" : 127.32808300000001,
+      "finiteScanRoiMs" : 26.526250000000001,
+      "label" : "neutral",
+      "materializeFullMs" : 44.055708000000003,
+      "materializeRoiMs" : 19.656165999999999,
+      "nativeHeight" : 6336,
+      "nativeWidth" : 9504,
+      "windowHeight" : 1600,
+      "windowWidth" : 2400
+    },
+    {
+      "buildPlusShippedScanMs" : 589.75145899999995,
+      "finiteScanFullMs" : 125.040042,
+      "finiteScanRoiMs" : 23.170041999999999,
+      "label" : "texture",
+      "materializeFullMs" : 50.706707999999999,
+      "materializeRoiMs" : 15.288,
+      "nativeHeight" : 6336,
+      "nativeWidth" : 9504,
+      "windowHeight" : 1600,
+      "windowWidth" : 2400
+    }
+  ],
+  "schemaVersion" : 1,
+  "scope" : "ROI probe: unmodified graph, region-scoped scan and materialize only",
+  "sourceSHA256" : "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "windowFractionOfNativePixels" : 0.063769003162942553
+}

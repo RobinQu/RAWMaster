@@ -36,11 +36,11 @@ LightFlow 用既有发布镜像 `output/035-processing/lightflow/site/`（构建
    │      → 未命中：只重算该节点及其下游
    │
    └─ ④ 提交设备工作 ────── 点运算融合成少数 compute pass
-          → 目标 = 视口尺寸 × 缩放（不是原图尺寸）
+          → 目标 = 有界长边（2400 / 2560 / 4096），不是原图像素
           → 完成后 fence 才发布；过期结果整体丢弃
 ```
 
-**三者的预览都按视口尺寸渲染，不是按原图尺寸渲染。** 这是与本项目当前实现最大的结构差异。
+**三者的预览都在整幅上渲染，只是把目标长边压到远小于原图。** 只有进入深度缩放时才切成可见 ROI。这是与本项目改动前实现的主要结构差异（改动前是整幅原生）。
 
 ---
 
@@ -133,12 +133,15 @@ enum class RenderType { FAST_PREVIEW, QUALITY_BASE_PREVIEW, DETAIL_ROI_PREVIEW,
 enum class DecodeRes  { FULL, HALF, QUARTER, EIGHTH };
 ```
 
-- `FAST_PREVIEW`：目标长边 **2560**，并要求 `ViewportRenderRegion`。
-- `DETAIL_ROI_PREVIEW`：目标长边 = **视口目标尺寸**，只渲染可见区域。1:1 查看时不会重算整张 60 MP。
-- `FULL_RES_PREVIEW`：8192；`FULL_RES_EXPORT`：`max_edge = 0`（不缩）。
+- `FAST_PREVIEW`：**整帧**，目标长边 **2560**。
+- `QUALITY_BASE_PREVIEW`（松手定稿）：**整帧**，目标长边 **4096**，`source_roi_norm = {}`、`DecodeRes::FULL`、`ResultPersistenceScope::SensorDevelopOnly`（只保留传感器结果）。见 `include/edit/runtime/pipeline_apply_request.hpp:67,84-93`。
+- `DETAIL_ROI_PREVIEW`：目标长边 = **视口目标尺寸**，只渲染可见 ROI；`use_viewport_region_` 只在 `quality == Detail` 或 `reason == ScopeRefresh` 时为真（`editor_session_render_scheduler_port.cpp:106`）。
+- `FULL_RES_PREVIEW`：整帧 8192；`FULL_RES_EXPORT`：`max_edge = 0`（不缩）。
 - `DecodeRes` 让解码本身可降到 1/2、1/4、1/8 像素。
 
-`ViewportMapper::ComputeViewportRenderRegion`（`ui/edit_viewer/viewport_mapper.cpp:132`）把 widget 尺寸 + zoom + pan 变成 `{x, y, scale_x, scale_y, target_width, target_height}`，随每帧请求下发。可见区域之外的像素**不参与渲染**。
+zoom 跨过 1.0 才切 Detail：`emitViewChange(zoom() > 1.0f + 1.0e-4f ? .DetailRefresh : …)`（`ui/editor_rhi/editor_interaction_controller.cpp:61`）。`ViewportMapper::ComputeViewportRenderRegion`（`ui/edit_viewer/viewport_mapper.cpp:132-210`）把 widget 尺寸 + dpr + zoom + pan 变成 `{x, y, scale_x, scale_y, reference_w/h, target_w/h}`，随每帧请求下发。
+
+即：**松手定稿仍在整幅上算，只是长边压到 4096；只有深度缩放才切成 ROI。**
 
 ### 3.5 调度
 
@@ -192,27 +195,27 @@ FlashRaw 是解码库，没有编辑 DAG。它只提供 `source → linear RGB` 
 
 ## 5. 对照表：差异与收益
 
-| # | 手法 | LightFlow | Alcedo | RAWMaster 现状 | 预期收益 |
+| # | 手法 | LightFlow | Alcedo | RAWMaster 改动前 | 实测 / 结论 |
 | --- | --- | --- | --- | --- | --- |
-| 1 | 预览按视口尺寸构图 | `RenderTarget` | `RenderQuality::Preview` + `max_edge` | 原生 60 MP，末端 FIT | **~25×** 像素量 |
-| 2 | 1:1 只渲染可见 ROI | `rect`/`offset` | `DETAIL_ROI_PREVIEW` | 原生 60 MP | 同 #1 |
-| 3 | 解码端降分辨率 | 多级源 | `DecodeRes` | 仅全尺寸 | 再 4×（解码） |
-| 4 | 静态计划缓存 | `editKey` 门控 | `StaticExecutionPlanCache` | 每帧重建 | 图构建 + 内核编译 |
-| 5 | 按节点结果缓存 | `segments`/`cached` | `GraphImageCache` + `Revision` | `cacheIntermediates:false` + 每帧 `clearCaches` | 参数微调只重算后缀 |
-| 6 | 点运算融合 | 融合程序 | 16 个 `GpuPassKind` | 每控件一棵 CI 树 | CI 自行融合，但边界多 |
-| 7 | 需求优先编译 + 空闲预热 | `compileDemanded` | — | `ImageEnginePrewarming`（仅启动） | 首帧 |
-| 8 | 瓦片/分带 + halo | `exportTile` 1024 | `pass_encoder` | 分带已用于锐化/去雾/半幅 | 大图导出 |
+| 1 | 整幅渲染，目标长边压到远小于原图 | 整帧 2400 | 整帧 ≤2560 / ≤4096 | 整帧原生 60 MP，末端 FIT | **50 个配方定稿中位 255 → 6.8 ms**（已落地） |
+| 2 | 1:1 只渲染可见 ROI | `rect`/`offset` | `DETAIL_ROI_PREVIEW`（zoom > 1 才切） | 整幅原生 60 MP | 端到端只 1.8×，改造面大，**已否决** |
+| 3 | 解码端降分辨率 | 多级源 | `DecodeRes` | 仅全尺寸 | 待做 |
+| 4 | 静态计划缓存 | `editKey` 门控 | `StaticExecutionPlanCache` | 每帧重建 | 待做 |
+| 5 | 按节点结果缓存 | `segments`/`cached` | `GraphImageCache` + `Revision` | `cacheIntermediates:false` + 每帧 `clearCaches` | 待做 |
+| 6 | 点运算融合 | 融合程序 | 16 个 `GpuPassKind` | 每控件一棵 CI 树 | 不做（CI 已融合点运算） |
+| 7 | 需求优先编译 + 空闲预热 | `compileDemanded` | — | `ImageEnginePrewarming`（仅启动） | 待做 |
+| 8 | 瓦片/分带 + halo | `exportTile` 1024 | `pass_encoder` | 分带已用于锐化/去雾/半幅 | 已扩展到通用原生扫描 |
 | 9 | 单帧在途 + 过期丢弃 | `viewerTick` | `IsStaleForSink` | 已有 | — |
 
 ---
 
 ## 6. 本轮采用的取舍
 
-1. **先做 #1 + #5**：视口尺寸构图与节点级前缀复用。这两项合计覆盖了从 102 ms 到 25 ms 的绝大部分差距，且不改变导出与 1:1 的像素契约。
-2. **#3 作为解码加速**：给 `CFlashRaw` 包一层 `max_dimension`，只用于预览意图；导出与 1:1 继续全尺寸。
-3. **#4 以「阶段内容键」形式落地**：不引入完整图编译器，而是给 `DevelopmentRendererV3` 的既有阶段序列标注内容键，让下游能判断哪些前缀可复用。
-4. **不做 #6 的自研融合**：Core Image 已经在单个 kernel 内融合点运算，自研融合需要重写全部算子，收益与风险不匹配。改为减少阶段边界，把可合并的点运算并入既有 stitched kernel。
-5. **像素契约不变**：导出、保存、1:1 详细视图继续走原生全尺寸与既有有限值证明。视口预览明确标记为近似，并在帧上报告近似原因与尺度，和 Alcedo 的 `FAST_PREVIEW`、LightFlow 的 `provisional` 同义。
+1. **#1 已落地**：定稿帧改为整幅按 2400 目标求值，交互与定稿共用同一计划与缓存键。50 个控件配方的定稿中位 255.47 → 6.81 ms、P95 842.57 → 20.24 ms。
+2. **#2 经实测否决**：`PreviewRegionProbeTests` 显示 2400×1600 窗口只占原生 6.38% 像素，扫描 4.8×、物化 2.2×，但算子自身的整幅邻域／全局归约不随之下降，端到端仅 1.8×。改造需要可见矩形贯通、窗口缓存键与非整帧 extent 不变量，不划算。[决策](../../specs/036-render-pipeline-performance/spec.md#已否决11-按可见-roi-裁剪)
+3. **#8 已扩展**：通用原生有限值扫描接到分带归约，1:1 快 12–46%，输出逐字节不变。
+4. **#6 不做**：Core Image 已在单个 kernel 内融合点运算，自研融合要重写全部算子，收益与风险不匹配。
+5. **像素契约不变**：导出、保存、1:1 详细视图继续走原生全尺寸与既有有限值证明。定稿预览明确标记为近似，并在帧上报告尺度，和 Alcedo 的 `FAST_PREVIEW`、LightFlow 的 `provisional` 同义。
 
 ---
 
