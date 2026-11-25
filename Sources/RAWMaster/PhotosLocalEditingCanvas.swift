@@ -18,7 +18,13 @@ struct PhotosLocalEditingCanvas: View {
                 frameID: editing.previews.primary.frame?.id, onFrameDrawn: input.frameWasDrawn,
                 onPointerEvent: { input.pointer($0, context: context) },
                 onViewportChange: { input.updateViewport($0, context: context) },
-                onPointerHover: { input.hover($0, context: context) })
+                onPointerHover: { input.hover($0, context: context) },
+                onVisibleWindow: { [weak editing] visible in
+                    guard let editing, editing.developmentContext == context else { return }
+                    editing.updateDetailVisibleWindow(visible)
+                },
+                window: editing.previews.primary.frame?.window,
+                canvasPixelSize: editing.previews.primary.frame?.nativeSize)
             if let frame = editing.developmentLocalFrame(context: context), let viewport = input.viewport, viewport.frameID == frame.frameID {
                 localOverlay(frame, imageRect: viewport.imageRect).allowsHitTesting(false).accessibilityHidden(true)
             }

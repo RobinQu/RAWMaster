@@ -84,17 +84,21 @@ struct EditingPreviewBitmap: @unchecked Sendable {
     let nativeSize: CGSize
     let outputSize: CGSize
     let approximate: Bool
+    /// Canvas window this bitmap covers at 1:1. `nil` is the whole canvas.
+    let window: CGRect?
     init(id: UUID, image: NSImage, leaseID: DevelopmentPreviewSessionID, generation: UInt64,
          consumerID: PreviewConsumerID, revision: UInt64, quality: PreviewQuality,
-         nativeSize: CGSize, outputSize: CGSize, approximate: Bool) {
+         nativeSize: CGSize, outputSize: CGSize, approximate: Bool, window: CGRect? = nil) {
         self.id = id; self.image = image; self.leaseID = leaseID; self.generation = generation
         self.consumerID = consumerID; self.revision = revision; self.quality = quality
         self.nativeSize = nativeSize; self.outputSize = outputSize; self.approximate = approximate
+        self.window = window
     }
     init(_ frame: DevelopmentPreviewFrame) {
         self.init(id: frame.frameID, image: frame.image, leaseID: frame.sessionID, generation: frame.sourceGeneration,
                   consumerID: frame.consumerID, revision: frame.revision, quality: frame.quality,
-                  nativeSize: frame.canonicalPixelSize, outputSize: frame.outputPixelSize, approximate: frame.approximate)
+                  nativeSize: frame.canonicalPixelSize, outputSize: frame.outputPixelSize,
+                  approximate: frame.approximate, window: frame.window)
     }
 }
 struct SharedEditingPreviewBackend: EditingPreviewBackend {
@@ -152,15 +156,19 @@ struct EditingPreviewIntent: Sendable, Equatable {
     let draftPresentation: EditingDraftPresentation?
     let presentationID: String
     var isRaw: Bool { if case .raw = source { return true }; return false }
-    var viewport: PreviewViewport { .init(maxPixel: quality == .detail ? 0 : 2400) }
-    init(source: DevelopmentPreviewSource, recipe: DevelopmentRecipe, quality: PreviewQuality, draftPresentation: EditingDraftPresentation? = nil, presentationID: String = "fixed") throws {
+    /// Visible canvas window for a 1:1 frame. `nil` materializes the whole canvas.
+    let detailWindow: CGRect?
+    var viewport: PreviewViewport { .init(maxPixel: quality == .detail ? 0 : 2400,
+                                         window: quality == .detail ? detailWindow : nil) }
+    init(source: DevelopmentPreviewSource, recipe: DevelopmentRecipe, quality: PreviewQuality, draftPresentation: EditingDraftPresentation? = nil, presentationID: String = "fixed", detailWindow: CGRect? = nil) throws {
+        self.detailWindow = detailWindow
         self.source = source; self.recipe = recipe; self.quality = quality; self.draftPresentation = draftPresentation; self.presentationID = presentationID
         switch source {
         case .raw(let snapshot): sourceKey = "raw:" + (try EditingFingerprint.of(snapshot))
         case .artifact(let url, let artifact): sourceKey = "artifact:" + url.path + ":" + (try EditingFingerprint.of(artifact))
         }
     }
-    static func == (lhs: Self, rhs: Self) -> Bool { lhs.sourceKey == rhs.sourceKey && lhs.recipe == rhs.recipe && lhs.quality == rhs.quality && lhs.draftPresentation == rhs.draftPresentation && lhs.presentationID == rhs.presentationID }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.sourceKey == rhs.sourceKey && lhs.recipe == rhs.recipe && lhs.quality == rhs.quality && lhs.draftPresentation == rhs.draftPresentation && lhs.presentationID == rhs.presentationID && lhs.detailWindow == rhs.detailWindow }
 }
 /// QA-only scheduling change. The existing canonical capability still decides the image domain.
 enum EditingPreviewPromptDispatch {
@@ -399,7 +407,7 @@ enum EditingPreviewPromptDispatch {
         guard canInspectDevelopmentSource, let lease, let target = desired, let frame,
               displayedEpoch == publicationEpoch, frame.leaseID == lease.id, frame.generation == lease.generation,
               frame.consumerID == consumerID, frame.revision == target.revision, frame.revision == revision,
-              !frame.approximate, frame.quality == .settled || frame.quality == .detail,
+              !frame.approximate, frame.window == nil, frame.quality == .settled || frame.quality == .detail,
               frame.quality == target.intent.quality, frameRecipe == recipe, target.intent.recipe == recipe,
               framePresentationID == presentationID, target.intent.presentationID == presentationID,
               let fingerprint = try? EditingFingerprint.of(recipe) else { return nil }

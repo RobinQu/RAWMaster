@@ -1,0 +1,1576 @@
+{
+  "binarySHA256": "219317b729e2c4ded80b5a32e73c475e826250cffd5cbacbaebab66940193e8f",
+  "build": "release",
+  "canonicalFlashRaw": true,
+  "caveats": [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive and settled are bounded to the 2400px canvas; detail/save/export remain native",
+    "Channel error is the settled frame against the native settled render, not against the gesture frame",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderOverride": false,
+  "decoderVersion": "8",
+  "flashRawAvailable": true,
+  "flashRawDemosaic": 0,
+  "flashRawTextureCache": {
+    "bytesPerPixel": 8,
+    "fills": 14,
+    "guideBytesPerPixel": 4,
+    "hits": 116,
+    "peakReservedBytes": 963477504,
+    "pinnedBytes": 0,
+    "residentBytes": 0
+  },
+  "latestFlashRawDecode": {
+    "availableThreads": 16,
+    "decoderBackend": "CPU NEON x16 threads",
+    "inputBytes": 69488640,
+    "nativeWallMilliseconds": 49.54337400000077,
+    "outputBytes": 361304064,
+    "postprocessBackend": "GPU Apple M4 Max (Metal, integrated)",
+    "stages": [
+      {
+        "milliseconds": 0.05954100000235485,
+        "name": "containerParse"
+      },
+      {
+        "milliseconds": 0,
+        "name": "metadata"
+      },
+      {
+        "milliseconds": 25.75854099999924,
+        "name": "entropyDecode"
+      },
+      {
+        "milliseconds": 0,
+        "name": "unpack"
+      },
+      {
+        "milliseconds": 0,
+        "name": "predictor"
+      },
+      {
+        "milliseconds": 0,
+        "name": "calibration"
+      },
+      {
+        "milliseconds": 0,
+        "name": "postprocess"
+      },
+      {
+        "milliseconds": 1.9468750000014552,
+        "name": "gpuUpload"
+      },
+      {
+        "milliseconds": 15.516374999999243,
+        "name": "gpuCompute"
+      },
+      {
+        "milliseconds": 5.540583000001789,
+        "name": "gpuDownload"
+      },
+      {
+        "milliseconds": 0,
+        "name": "preview"
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "approximate": true,
+      "detailMilliseconds": 104.493584,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 1.722208,
+      "interactiveMilliseconds": [
+        134.447625,
+        1.722208,
+        1.324292
+      ],
+      "label": "neutral",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 1.313334,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 26.262542,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.32125,
+      "interactiveMilliseconds": [
+        5.477958,
+        4.32125,
+        3.907208
+      ],
+      "label": "exposure-color",
+      "maximumChannelError": 26,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.944958,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 3883.766958,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 19.402875,
+      "interactiveMilliseconds": [
+        31.696458,
+        19.402875,
+        18.973459
+      ],
+      "label": "adaptive-brilliance",
+      "maximumChannelError": 25,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 19.203417,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 482.259959,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.613667,
+      "interactiveMilliseconds": [
+        23.562208,
+        4.415958,
+        4.613667
+      ],
+      "label": "texture",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.484625,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 444.813541,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.496708,
+      "interactiveMilliseconds": [
+        12.969625,
+        3.496708,
+        3.379125
+      ],
+      "label": "clarity",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.385916,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 1164.892708,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 10.68125,
+      "interactiveMilliseconds": [
+        15.476125,
+        10.68125,
+        7.207958
+      ],
+      "label": "dehaze-v1",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.097375,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 1586.243,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.485,
+      "interactiveMilliseconds": [
+        13.577125,
+        11.128542,
+        11.485
+      ],
+      "label": "dehaze-v2",
+      "maximumChannelError": 34,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.934792,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 28.730958,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1337,
+      "interactiveMedianMilliseconds": 5.839208,
+      "interactiveMilliseconds": [
+        9.251125,
+        5.839208,
+        5.760167
+      ],
+      "label": "geometry",
+      "maximumChannelError": 211,
+      "p99ChannelError": 3,
+      "qualityComparison": "settled-resampled-to-proxy",
+      "settledHeight": 1337,
+      "settledMilliseconds": 5.53575,
+      "settledWidth": 1973,
+      "width": 1973
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 19.336833,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1337,
+      "interactiveMedianMilliseconds": 6.69475,
+      "interactiveMilliseconds": [
+        8.219917,
+        6.69475,
+        6.691417
+      ],
+      "label": "post-crop-vignette",
+      "maximumChannelError": 211,
+      "p99ChannelError": 3,
+      "qualityComparison": "settled-resampled-to-proxy",
+      "settledHeight": 1337,
+      "settledMilliseconds": 6.566292,
+      "settledWidth": 1973,
+      "width": 1973
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 131.707625,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.054292,
+      "interactiveMilliseconds": [
+        11.054292,
+        11.770834,
+        9.969458
+      ],
+      "label": "lens-blur-procedural",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.583167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 139.908417,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 10.508958,
+      "interactiveMilliseconds": [
+        9.032875,
+        12.693292,
+        10.508958
+      ],
+      "label": "lens-blur-device-depth",
+      "maximumChannelError": 18,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.511375,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 146.168833,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.94975,
+      "interactiveMilliseconds": [
+        11.580791,
+        13.568834,
+        11.94975
+      ],
+      "label": "lens-blur-refine-focus",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.719458,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 147.673458,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.287708,
+      "interactiveMilliseconds": [
+        10.167417,
+        12.847166,
+        11.287708
+      ],
+      "label": "lens-blur-refine-blur",
+      "maximumChannelError": 17,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.461459,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 152.819042,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.438416,
+      "interactiveMilliseconds": [
+        10.305625,
+        13.15625,
+        11.438416
+      ],
+      "label": "lens-blur-refine-auto-mask",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.598292,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 85.992375,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.349166,
+      "interactiveMilliseconds": [
+        16.05825,
+        6.956083,
+        7.349166
+      ],
+      "label": "lens-blur-bokeh-bubble",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 6.438958,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 46.147917,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.368541,
+      "interactiveMilliseconds": [
+        4.8505,
+        5.389875,
+        5.368541
+      ],
+      "label": "lens-blur-bokeh-five-blade",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.761084,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 48.39425,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.432291,
+      "interactiveMilliseconds": [
+        4.999416,
+        5.795958,
+        5.432291
+      ],
+      "label": "lens-blur-bokeh-ring",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.755666,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 45.321375,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.329417,
+      "interactiveMilliseconds": [
+        5.177292,
+        5.483875,
+        5.329417
+      ],
+      "label": "lens-blur-bokeh-anamorphic",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.7845,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 46.039,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.810708,
+      "interactiveMilliseconds": [
+        4.913292,
+        4.810708,
+        4.739541
+      ],
+      "label": "lens-blur-cat-eye",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.628167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 45.860709,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.652167,
+      "interactiveMilliseconds": [
+        4.921125,
+        4.652167,
+        4.647459
+      ],
+      "label": "lens-blur-bokeh-boost",
+      "maximumChannelError": 39,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.601042,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 22.023375,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.102209,
+      "interactiveMilliseconds": [
+        3.313417,
+        3.102209,
+        3.017458
+      ],
+      "label": "lens-blur-depth-preview",
+      "maximumChannelError": 120,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.997792,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 288.217791,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.479916,
+      "interactiveMilliseconds": [
+        8.530375,
+        7.479916,
+        7.165334
+      ],
+      "label": "local-glow",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.553,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 36.865875,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.351417,
+      "interactiveMilliseconds": [
+        6.483666,
+        4.003292,
+        4.351417
+      ],
+      "label": "bw-mixer",
+      "maximumChannelError": 19,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.404333,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 29.9485,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.187334,
+      "interactiveMilliseconds": [
+        4.120208,
+        3.187334,
+        3.05025
+      ],
+      "label": "point-variance",
+      "maximumChannelError": 36,
+      "p99ChannelError": 12,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.012625,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 24.262208,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.905708,
+      "interactiveMilliseconds": [
+        3.62625,
+        4.035333,
+        3.905708
+      ],
+      "label": "targeted-hsl",
+      "maximumChannelError": 22,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.89625,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 39.477458,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.978875,
+      "interactiveMilliseconds": [
+        13.422833,
+        7.978875,
+        7.87625
+      ],
+      "label": "visualise-range",
+      "maximumChannelError": 1,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.597,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 23.073708,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.848417,
+      "interactiveMilliseconds": [
+        8.854375,
+        7.829417,
+        7.848417
+      ],
+      "label": "hue-isolation",
+      "maximumChannelError": 1,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.7775,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 27.769208,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.809042,
+      "interactiveMilliseconds": [
+        3.300167,
+        2.809042,
+        2.774708
+      ],
+      "label": "clipping-shadows",
+      "maximumChannelError": 53,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.70325,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 30.646333,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.064417,
+      "interactiveMilliseconds": [
+        3.231833,
+        3.064417,
+        2.830042
+      ],
+      "label": "clipping-highlights",
+      "maximumChannelError": 69,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.697333,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 21.762417,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.837375,
+      "interactiveMilliseconds": [
+        4.00775,
+        2.837375,
+        2.790708
+      ],
+      "label": "wb-flash-preset",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.7005,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 36.045,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.405208,
+      "interactiveMilliseconds": [
+        4.97025,
+        4.405208,
+        4.194792
+      ],
+      "label": "refine-saturation",
+      "maximumChannelError": 25,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.24325,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 27.40525,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.942333,
+      "interactiveMilliseconds": [
+        3.501125,
+        2.942333,
+        2.894542
+      ],
+      "label": "point-curve-targeted",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.931125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 23.316875,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.974625,
+      "interactiveMilliseconds": [
+        4.489417,
+        2.974625,
+        2.802042
+      ],
+      "label": "defringe",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.719875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 28.951917,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.076042,
+      "interactiveMilliseconds": [
+        3.897083,
+        3.076042,
+        2.954291
+      ],
+      "label": "point-color-samples",
+      "maximumChannelError": 25,
+      "p99ChannelError": 18,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.865084,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 192.68025,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.086834,
+      "interactiveMilliseconds": [
+        6.970334,
+        3.086834,
+        3.073958
+      ],
+      "label": "local-point-color",
+      "maximumChannelError": 21,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.19425,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 191.635083,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.214292,
+      "interactiveMilliseconds": [
+        3.790209,
+        2.960542,
+        3.214292
+      ],
+      "label": "local-light-extended",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.523167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 195.314625,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.787333,
+      "interactiveMilliseconds": [
+        5.437667,
+        6.04675,
+        5.787333
+      ],
+      "label": "local-wb",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.741,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 190.262792,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.655417,
+      "interactiveMilliseconds": [
+        4.283042,
+        3.655417,
+        3.146541
+      ],
+      "label": "local-hue-colorize",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.607417,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 1381.673416,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 19.715458,
+      "interactiveMilliseconds": [
+        20.42325,
+        19.715458,
+        16.226792
+      ],
+      "label": "local-texture-clarity",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 16.577291,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 316.903625,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.825125,
+      "interactiveMilliseconds": [
+        16.4155,
+        8.797375,
+        8.825125
+      ],
+      "label": "local-dehaze",
+      "maximumChannelError": 44,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.296459,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 216.577291,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.861291,
+      "interactiveMilliseconds": [
+        8.079708,
+        3.861291,
+        3.698125
+      ],
+      "label": "local-grain",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.602666,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 205.287208,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.245875,
+      "interactiveMilliseconds": [
+        6.396541,
+        6.245875,
+        5.904542
+      ],
+      "label": "local-curves",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.525709,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 205.061291,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.131625,
+      "interactiveMilliseconds": [
+        6.277833,
+        6.0595,
+        6.131625
+      ],
+      "label": "local-grading",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.675291,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 513.004709,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 22.3055,
+      "interactiveMilliseconds": [
+        18.754167,
+        28.542125,
+        22.3055
+      ],
+      "label": "local-detail",
+      "maximumChannelError": 91,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 18.194459,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 348.704084,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.050709,
+      "interactiveMilliseconds": [
+        13.498583,
+        11.050709,
+        10.170917
+      ],
+      "label": "local-defringe",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.125084,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 72.96125,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.222291,
+      "interactiveMilliseconds": [
+        9.511542,
+        3.058791,
+        3.222291
+      ],
+      "label": "global-sharpen-detail",
+      "maximumChannelError": 163,
+      "p99ChannelError": 13,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.547167,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 73.310084,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 15.236083,
+      "interactiveMilliseconds": [
+        74.398459,
+        15.236083,
+        14.981583
+      ],
+      "label": "global-sharpen-mask-preview",
+      "maximumChannelError": 1,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 15.495583,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 71.446416,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.82725,
+      "interactiveMilliseconds": [
+        12.489208,
+        5.032333,
+        5.82725
+      ],
+      "label": "global-noise-detail",
+      "maximumChannelError": 25,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 6.032833,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 40.289375,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.660542,
+      "interactiveMilliseconds": [
+        6.435667,
+        4.660542,
+        4.559041
+      ],
+      "label": "optics-ca-distortion",
+      "maximumChannelError": 125,
+      "p99ChannelError": 7,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.662583,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 26.269083,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.073167,
+      "interactiveMilliseconds": [
+        3.409375,
+        3.073167,
+        2.827708
+      ],
+      "label": "optics-lens-profile",
+      "maximumChannelError": 51,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.844917,
+      "settledWidth": 2400,
+      "width": 2400
+    }
+  ],
+  "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+  "prewarming": false,
+  "proxyVersion": "actual-parameters-linear-proxy-v3-flashraw-neutral/integral-noise-snap-v1/filter-global-v1/point-cache-retract-v1/sharpen-noise-detail-v1",
+  "rawBaseCacheBytes": 1073741824,
+  "recordedAt": "2026-11-25T06:22:23Z",
+  "schemaVersion": 1,
+  "scope": "1:1 matrix: 50 recipes, window = 2400x1600 crop at (0.37,0.31); scan stays whole-frame",
+  "settledReferenceTransport": "canonical",
+  "settledTransport": "viewport",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourceOverlayVersion": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1/scalar-mask-r32f-v2",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "stages": [
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 13.683834,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 13.62575,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 11.428791,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 16.525792,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 16.470125,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 10.015125,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 21.901875,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 21.834833,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 17.163458,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 32.052542,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 31.987625,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 22.244458,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 55.934625,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 55.853,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 53.653834,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 60.3655,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 60.281792,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 50.993333,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 57.452875,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 49.795542,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 49.745,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 7.570584,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 4.404292,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 59.054709,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 56.186709,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 56.119042,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 54.089167,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 53.983917,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 51.611,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 50.766417,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 50.64975,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 50.5705,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 325.8405,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 316.073542,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 9.670208,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 6.684291,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 334.062584,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 333.901833,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 486.457875,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 479.887166,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 6.367041,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 6.017291,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 476.142833,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 475.942333,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 191.620417,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 187.550375,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 3.844458,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 3.407875,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 38.11125,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 30.156542,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 30.094333,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 192.092667,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 188.517125,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 3.337792,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 2.920541,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 36.507709,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 33.394917,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 33.333708,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 201.150625,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 191.392125,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    }
+  ],
+  "transparentFrameFailures": []
+}

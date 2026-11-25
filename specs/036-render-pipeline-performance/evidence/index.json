@@ -1,0 +1,102 @@
+{
+  "canvas": [
+    2400,
+    1600
+  ],
+  "machine": "Apple M4 Max / 128 GB / macOS 27.0.1",
+  "nativeSize": [
+    9504,
+    6336
+  ],
+  "rawSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "runs": [
+    {
+      "file": "canonical-settled.json",
+      "measurements": 50,
+      "name": "canonical-settled",
+      "policy": "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=1073741824",
+      "settledTransport": "canonical",
+      "sha256": "595e0897d42f3d02753922b5e89b94c0ba34d4375c3fe2c850858bb701b58696"
+    },
+    {
+      "file": "viewport-settled.json",
+      "measurements": 50,
+      "name": "viewport-settled",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "settledTransport": "viewport",
+      "sha256": "181d6b1620a15770b8b27bbc4073a5f0650f108d104e81ff276b26356463e89d"
+    },
+    {
+      "file": "viewport-settled-product-cache.json",
+      "measurements": 50,
+      "name": "viewport-settled-product-cache",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=134217728; rawBaseCache=1073741824",
+      "settledTransport": "viewport",
+      "sha256": "6b72ba82df4cf67bef111246341403d3a92a69cfacca8d28ba6dd1d0e2ffc42f"
+    },
+    {
+      "file": "viewport-settled-vs-native.json",
+      "measurements": 50,
+      "name": "viewport-settled-vs-native",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "referenceTransport": "canonical",
+      "settledTransport": "viewport",
+      "sha256": "7a6f85b6c38cdd72a7a13163e88751fc8328eb0e0a1127e3d3e0aa479c4de902"
+    },
+    {
+      "file": "native-detail-fullframe-scan.json",
+      "measurements": 5,
+      "name": "native-detail-fullframe-scan",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "targeted 1:1 probe: 5 of 50 recipes, RAWMASTER_INTERACTIVE_DETAIL=1",
+      "settledTransport": "viewport",
+      "sha256": "60dd11911353353be84e667476b4172b0ee7c0d0be3e03b596191a789b9d17fb"
+    },
+    {
+      "file": "roi-probe.json",
+      "name": "roi-probe",
+      "scope": "ROI feasibility: unmodified graph, region-scoped scan and materialize",
+      "sha256": "5d38058d65e72fe3c1b98c84601082be11beaf0d70678ce9d9085e12d0cf4060"
+    },
+    {
+      "file": "native-detail-window-whole.json",
+      "measurements": 50,
+      "name": "native-detail-window-whole",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 matrix: 50 recipes, window = 2400x1600 crop at (0.37,0.31); scan stays whole-frame",
+      "settledTransport": "viewport",
+      "sha256": "1b0cbcbcf5a902dc23e84a118c5dbd05f83bd1f8c4bb49766facb9f5a524980d"
+    },
+    {
+      "file": "native-detail-window-scoped.json",
+      "measurements": 50,
+      "name": "native-detail-window-scoped",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 matrix: 50 recipes, window = 2400x1600 crop at (0.37,0.31); scan stays whole-frame",
+      "settledTransport": "viewport",
+      "sha256": "2380a8148653ccd918c9ca2b3137b25c57625e3e6356644a3793704db358bd69"
+    },
+    {
+      "file": "flashraw-decode-cost.json",
+      "name": "flashraw-decode-cost",
+      "scope": "FlashRaw 0.3.1 decode cost knobs: demosaic choice and frame size",
+      "sha256": "7f2052ba58484810b7193e99b2a232e198b5918c028a583258323509cf24c692"
+    },
+    {
+      "file": "native-detail-warm-samples.json",
+      "measurements": 5,
+      "name": "native-detail-warm-samples",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 warm vs cold: windowed detail sampled three times per recipe",
+      "sha256": "8401fe19d637de7b2c9283ef303d757269d55fc9617aaa000a4c10dd491ed4fd"
+    },
+    {
+      "file": "native-detail-window-margin.json",
+      "measurements": 50,
+      "name": "native-detail-window-margin",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "1:1 shipped window: visible rect plus 50% per side (0.505x0.505), 50 recipes",
+      "sha256": "9a22f67de57e458b340686ac2f7a78cfd9d79a9f717bb797903e4b5a8f6f3550"
+    }
+  ]
+}

@@ -339,6 +339,12 @@ struct EditingImageCanvas: View {
 
     private func imageCanvas(frame: EditingPreviewBitmap?, primary: Bool,
                              insets: NSEdgeInsets = EditingLayout.fitInsets) -> ZoomableImageView {
+        var visibleSink: (@MainActor (CGRect) -> Void)?
+        if primary, frame?.quality == .detail {
+            visibleSink = { @MainActor [weak editing] visible in
+                editing?.updateDetailVisibleWindow(visible)
+            }
+        }
         let hover: (@MainActor (ImageCanvasHoverEvent) -> Void)?
         if primary, !editing.comparing, editing.stage == .development, let id = frame?.id {
             hover = { [weak editing] event in
@@ -359,7 +365,9 @@ struct EditingImageCanvas: View {
             },
             onViewportChange: primary ? InteractionTrace.shared.initialWindowViewportSink(frameID: frame?.id, quality: frame?.quality) : nil,
             onPointerHover: hover,
-            onCanvasDiagnostic: primary ? InteractionTrace.shared.canvasDiagnosticSink : nil)
+            onCanvasDiagnostic: primary ? InteractionTrace.shared.canvasDiagnosticSink : nil,
+            onVisibleWindow: visibleSink,
+            window: frame?.window, canvasPixelSize: frame?.nativeSize)
             .borrowingImage(frame?.image)
             .lowLatency((primary && (editing.filterHoverFrame != nil || editing.sharpeningMaskPreviewFrame != nil || editing.lensBlurDepthPreviewFrame != nil)) || frame?.quality == .interactive)
             .fitting(around: insets)

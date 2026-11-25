@@ -199,9 +199,11 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     let bytes = qa ? 1_073_741_824:DevelopmentPreviewApplicationCacheProfile.currentSharedBytes()
     policy = PreviewResourcePolicy(rawBaseCacheBytes:bytes,
       interactiveEvaluation:qa ? .nativePointwiseCertificateV1:.proxyV1,nativePointwiseProfile:qa,
-      nativeCanonicalFiniteProof:PreviewCanonicalFiniteEvidenceV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,environment:ProcessInfo.processInfo.environment))
-    // Interactive gestures reuse a bounded 2400px Metal proxy. Settled frames, saves and exports
-    // still use the canonical full-resolution renderer; unsupported operators fail closed to it.
+      nativeCanonicalFiniteProof:PreviewCanonicalFiniteEvidenceV1.bootstrap(bundleIdentifier:Bundle.main.bundleIdentifier,environment:ProcessInfo.processInfo.environment),
+      settledTransport:.viewport)
+    // Interactive gestures and the settled canvas frame both use the viewport-resolution
+    // graph; only `detail` (1:1), save and export evaluate at native resolution.
+    // Unsupported operators still fail closed to the canonical native renderer.
     interactivePresentation = PreviewPresentationScope()
     rawBasePool = bytes > 0 ? PreviewRawBasePool(byteBudget: bytes, nativeFillMode: .whole) : nil
   }
@@ -486,6 +488,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     guard request.viewport.maxPixel >= 0, request.viewport.maxPixel <= 4096,
       (request.quality == .detail ? request.viewport.maxPixel == 0 : request.viewport.maxPixel != 0),
       (request.clientCorrelation?.count ?? 0) <= 4096 else { throw DevelopmentPreviewError.invalidRequest }
+    try Self.validateWindow(request.viewport.window, quality: request.quality)
     guard let lease = leases[request.sessionID] else { throw DevelopmentPreviewError.closed }
     if let scene = request.recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth {
       let hash: String
@@ -837,7 +840,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       } else {
         nativeFiniteCheck = nil
       }
-      return try native.render(recipe:request.recipe,maxPixel:request.viewport.maxPixel,rawBasePool:pool,sourceKey:item.key,
+      return try native.render(recipe:request.recipe,maxPixel:request.viewport.maxPixel,window:request.viewport.window,rawBasePool:pool,sourceKey:item.key,
         localMaskValidation:localMaskValidation,thumbnailNativeSink:thumbnailHook.map{$0.consume},grainFinalTransport:grainTransport,
         brillianceFinalTransport:brillianceRequest,dehazeTIFFRequest:dehazeRequest,spatialScan:spatialScan,
         checkDehazeTexture:checkDehazeTexture,checkCanonicalCache:checkCanonicalCache,
@@ -1004,7 +1007,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     }
     let value = DevelopmentPreviewFrame(frameID: UUID(), image: pixels.image, sessionID: request.sessionID,
       sourceGeneration: request.sourceGeneration, consumerID: request.consumerID, revision: request.revision,
-      quality: request.quality, canonicalPixelSize: pixels.nativeSize, outputPixelSize: pixels.outputSize, outputKey: key, approximate: pixels.approximation != nil,approximation:pixels.approximation,brillianceTransportVersion:pixels.brilliancePublicObservation?.transport,brillianceMapSHA256:pixels.brilliancePublicObservation?.mapSHA256,dehazePreviewContract:pixels.dehazeTIFFObservation?.version,dehazePreviewFallback:pixels.dehazeTIFFObservation?.fallbackReason,dehazePlaneSHA256:pixels.dehazeTIFFObservation?.planeSHA256)
+      quality: request.quality, canonicalPixelSize: pixels.nativeSize, outputPixelSize: pixels.outputSize, outputKey: key, window: pixels.window, approximate: pixels.approximation != nil,approximation:pixels.approximation,brillianceTransportVersion:pixels.brilliancePublicObservation?.transport,brillianceMapSHA256:pixels.brilliancePublicObservation?.mapSHA256,dehazePreviewContract:pixels.dehazeTIFFObservation?.version,dehazePreviewFallback:pixels.dehazeTIFFObservation?.fallbackReason,dehazePlaneSHA256:pixels.dehazeTIFFObservation?.planeSHA256)
     qaLifecycle(.render,.frame,id:value.frameID,request:request,sourceID:leases[request.sessionID].flatMap { sources[$0.key]?.native.captureID },receipt:pixels.nativePointwise,frameID:value.frameID,sharedFITRequested:sharedFITRequested,bitmapReplay:bitmapReplay,grainFinalTransport:pixels.actualGrainFinalTransport,presentationTicketID:PreviewQAMainPresentationWitness.registeredTicketID(pixels.presentationTicket?.id))
     return value
   }
@@ -1347,6 +1350,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
     return PreviewGrainFinalTransportV1.eligible(recipe:request.recipe,sourceIsRAW:native.hasRAWFilter,artifact:native.artifact,maxPixel:request.viewport.maxPixel)
   }
   private func canonicalHalfFIT(_ request: DevelopmentPreviewRequest, sourceKey: String) -> CanonicalHalfFIT? {
+    if settledUsesViewport(request) { return nil }
     guard Self.qaCanonicalHalfFIT || PreviewPortableHalfFIT.enabled || PreviewPortableMaskTone.enabled || PreviewPortableGrading.enabled,
           renderOverride == nil, request.role == .primary,
           request.viewport.maxPixel == 2400, let adjustments = request.recipe.adjustmentsV3,
@@ -1387,7 +1391,25 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       (requestsDehazeTIFF(request,sourceKey:sourceKey) ? "":DevelopmentDehazeNativeRfV1.keySuffix(request.recipe.adjustmentsV3?.advancedDetail))
     let halfFITQuality = request.quality == .settled || (settledHalfFITReplay && request.quality == .interactive)
     let halfFITSuffix = halfFITQuality ? canonicalHalfFIT(request,sourceKey:sourceKey).map { "/" + $0.rawValue } ?? "" : ""
-    return digest(Data((sourceKey + ":canonical-v1:" + String(request.viewport.maxPixel) + ":"+suffix+proxySuffix+grainInputSuffix+grainTransportSuffix+dehazeCoverageSuffix+brillianceSuffix+brillianceNativeSuffix+dehazeTIFFSuffix+halfFITSuffix).utf8) + data)
+    return digest(Data((sourceKey + ":canonical-v1:" + String(request.viewport.maxPixel) + ":"+windowSuffix(request.viewport.window)+suffix+proxySuffix+grainInputSuffix+grainTransportSuffix+dehazeCoverageSuffix+brillianceSuffix+brillianceNativeSuffix+dehazeTIFFSuffix+halfFITSuffix).utf8) + data)
+  }
+  /// A window changes which pixels a native frame contains, so it belongs in the identity.
+  /// Settled and interactive frames ignore the window, and so does their key.
+  /// A window is meaningful only for the native 1:1 frame. Everything else is a whole-canvas
+  /// render, so a window there would silently change the meaning of the request.
+  static func validateWindow(_ window:CGRect?, quality:PreviewQuality) throws {
+    guard let window else { return }
+    guard quality == .detail else { throw DevelopmentPreviewError.invalidRequest }
+    let values = [window.minX,window.minY,window.width,window.height]
+    guard values.allSatisfy({ $0.isFinite }),
+          window.minX >= 0, window.minY >= 0, window.width > 0, window.height > 0,
+          window.maxX <= 1.0000001, window.maxY <= 1.0000001 else {
+      throw DevelopmentPreviewError.invalidRequest
+    }
+  }
+  private func windowSuffix(_ window:CGRect?)->String{
+    guard let window, window != CGRect(x:0,y:0,width:1,height:1) else { return "" }
+    return ":window:"+String(format:"%.6f,%.6f,%.6f,%.6f",window.minX,window.minY,window.width,window.height)
   }
   private func requestsDehazeTIFF(_ request:DevelopmentPreviewRequest,sourceKey:String)->Bool{
     guard qaDehazeTIFFPreview,policy.contextMemoryLimitMiB==512,renderOverride==nil,
@@ -1395,8 +1417,17 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       DevelopmentDehazeTIFFPreviewV1.recipeDomain(request.recipe),let native=sources[sourceKey]?.native else{return false}
     return DevelopmentDehazeTIFFPreviewV1.sourceDomain(native)
   }
+  private func settledUsesViewport(_ request:DevelopmentPreviewRequest)->Bool {
+    guard policy.settledTransport == .viewport, request.quality == .settled,
+          request.recipe.schemaVersion == 3, request.role == .primary,
+          request.viewport.maxPixel > 0, request.viewport.maxPixel <= 2400 else { return false }
+    return true
+  }
   private func usesInteractiveEvaluation(_ request:DevelopmentPreviewRequest)->Bool {
-    policy.interactiveEvaluation != .canonical && request.recipe.schemaVersion==3 && request.role == .primary && request.quality == .interactive && request.viewport.maxPixel>0 && request.viewport.maxPixel<=2400
+    guard policy.interactiveEvaluation != .canonical, request.recipe.schemaVersion==3, request.role == .primary,
+          request.viewport.maxPixel>0, request.viewport.maxPixel<=2400 else { return false }
+    if request.quality == .interactive { return true }
+    return settledUsesViewport(request) && policy.interactiveEvaluation == .proxyV1
   }
   private func prepareInteractivePlan(_ request:DevelopmentPreviewRequest,sourceKey:String)throws->PreviewInteractivePlan? {
     if DevelopmentBrilliancePublicV1.active(request.recipe) || requestsDehazeTIFF(request,sourceKey:sourceKey){return nil}

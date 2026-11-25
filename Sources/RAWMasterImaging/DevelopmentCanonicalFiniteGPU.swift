@@ -8,6 +8,12 @@ import RAWMasterCore
 enum DevelopmentCanonicalFiniteGPU {
   @TaskLocal static var residentPhotoWorkingBudget: Int?
   static let enabled = ProcessInfo.processInfo.environment["RAWMASTER_CANONICAL_SERIAL_FINITE"] != "1"
+  /// The general native scan uses the same banded mask+reduction transport as the sharpen
+  /// outputs: every native frame is admitted only when all of its groups decode as finite.
+  /// Output pixels are unchanged (the scan never writes to the graph); the earlier separate
+  /// full-frame mask surface is gone. `RAWMASTER_QA_CANONICAL_BANDED_NATIVE_FINITE=0` restores
+  /// the previous scan.
+  static let bandedNativeValidation = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_BANDED_NATIVE_FINITE"] != "0"
   static let scratchLimit = 128 * 1024 * 1024
   static let workingSetLimit = 512 * 1024 * 1024
   static let spatialWorkingBudget = 128 * 1024 * 1024

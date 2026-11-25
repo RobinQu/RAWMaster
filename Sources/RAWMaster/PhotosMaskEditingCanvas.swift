@@ -26,7 +26,13 @@ struct PhotosMaskEditingCanvas: View {
                 onRequestDetail:{if input.canvasOwner == owner { editing.requestDetailPreview(nativeEvent:true) }},
                 frameID:editing.previews.primary.frame?.id,onFrameDrawn:{if input.canvasOwner == owner { editing.previews.primary.didDraw($0) }},
                 onPointerEvent:{input.canvasOwner == owner && input.pointer($0,context:context)},
-                onViewportChange:{input.canvasViewportChanged($0,owner:owner)})
+                onViewportChange:{input.canvasViewportChanged($0,owner:owner)},
+                onVisibleWindow:{ [weak editing] visible in
+                    guard let editing, input.canvasOwner == owner else { return }
+                    editing.updateDetailVisibleWindow(visible)
+                },
+                window:editing.previews.primary.frame?.window,
+                canvasPixelSize:editing.previews.primary.frame?.nativeSize)
             if let frame, let viewport = input.viewport, viewport.frameID == frame.frameID {
                 Canvas { graphics,size in
                     guard viewport.viewportSize == size else { return }

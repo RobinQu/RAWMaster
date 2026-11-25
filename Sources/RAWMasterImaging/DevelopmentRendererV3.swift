@@ -245,7 +245,15 @@ enum DevelopmentRendererV3 {
       if output == .photo, !hasActiveMask, let previewHalfFIT,
          try previewHalfFIT.validateAndPrepare(image,using:context) { return }
       guard sharpenOutput == output else {
-        return try DevelopmentColorEngineV3.validateFinite(image, context: context, checkCancellation: checkCancellation)
+        guard DevelopmentCanonicalFiniteGPU.bandedNativeValidation else {
+          return try DevelopmentColorEngineV3.validateFinite(image, context: context, checkCancellation: checkCancellation)
+        }
+        // Candidate: the general native scan renders and reduces the finite mask in the same
+        // bounded command buffers instead of a separate full-frame mask surface.
+        return try DevelopmentCanonicalFiniteGPU.$residentPhotoWorkingBudget.withValue(
+          DevelopmentCanonicalFiniteGPU.workingSetLimit) {
+          try DevelopmentColorEngineV3.validateFinite(image, context: context, checkCancellation: checkCancellation)
+        }
       }
       try CanonicalPreviewDiagnostic.measure(output.rawValue) {
         try DevelopmentCanonicalFiniteGPU.$residentPhotoWorkingBudget.withValue(DevelopmentCanonicalFiniteGPU.sharpenWorkingBudget) {

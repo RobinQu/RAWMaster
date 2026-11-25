@@ -20,6 +20,8 @@ final class EditingInteractivePerformanceTests: XCTestCase {
         let qualityComparison: String
         let p99ChannelError: Int
         let maximumChannelError: Int
+        /// Opt-in `RAWMASTER_INTERACTIVE_DETAIL=1`: the native 1:1 render for the same recipe.
+        let detailMilliseconds: Double?
     }
 
     private func pixels(_ image: NSImage, fitting size: CGSize? = nil) throws -> (data: Data, width: Int, height: Int, stride: Int) {
@@ -68,7 +70,22 @@ final class EditingInteractivePerformanceTests: XCTestCase {
             contentSHA256: try RenderFiles.hash(sourceURL), byteCount: try XCTUnwrap(attributes[.size] as? NSNumber).int64Value,
             admissionFingerprint: "interactive-performance-v1", sourceLocation: sourceURL)
         let rawBaseCacheBytes = environment["RAWMASTER_INTERACTIVE_RAW_BASE_CACHE"] == "1" ? 1_073_741_824:0
-        let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0, rawBaseCacheBytes: rawBaseCacheBytes, interactiveEvaluation: .proxyV1))
+        // Product construction keeps a 128 MB display cache, so a settled frame for an
+        // unchanged recipe replays the gesture frame instead of re-running the suffix.
+        let bitmapCacheBytes = Int(environment["RAWMASTER_INTERACTIVE_BITMAP_CACHE"] ?? "0") ?? 0
+        // Match the shipped policy: the settled canvas frame uses the viewport-resolution graph.
+        // RAWMASTER_INTERACTIVE_SETTLED_TRANSPORT=canonical reproduces the previous native render.
+        let settledTransport: PreviewSettledTransport = environment["RAWMASTER_INTERACTIVE_SETTLED_TRANSPORT"] == "canonical" ? .canonical : .viewport
+        let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: bitmapCacheBytes, rawBaseCacheBytes: rawBaseCacheBytes, interactiveEvaluation: .proxyV1, settledTransport: settledTransport))
+        // The viewport transport publishes the gesture pixels as the settled frame, so the
+        // settled-vs-gesture error would be zero by construction. Keep a second session on the
+        // native transport to measure the real deviation the caller accepts.
+        let referenceService = settledTransport == .viewport
+            ? DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0, rawBaseCacheBytes: 0,
+                interactiveEvaluation: .canonical, settledTransport: .canonical)) : nil
+        let referenceConsumer = PreviewConsumerID()
+        var referenceSession: PreviewSessionInfo?
+        if let referenceService { referenceSession = try await referenceService.open(source: .raw(source)) }
         let consumer = PreviewConsumerID()
         let session = try await service.open(source: .raw(source))
         let dehazeContext = try DevelopmentDehazeContextFactoryV1.fromCapture(sourceURL, generation: session.sourceGeneration)
@@ -323,13 +340,22 @@ final class EditingInteractivePerformanceTests: XCTestCase {
                     consumerID: consumer, role: .primary, revision: revision, recipe: recipe,
                     quality: .settled, viewport: .init(maxPixel: 2400)))
                 let settledTime = Double(DispatchTime.now().uptimeNanoseconds - settledStarted) / 1_000_000
+                // `published` is the frame the caller receives; `reference` is the native render it
+                // replaces. Under the canonical transport both are the same frame, which keeps the
+                // historical proxy-vs-native comparison.
+                let published = settled
+                let reference: DevelopmentPreviewFrame
+                if let referenceSession {
+                    reference = try await referenceService!.render(.init(sessionID: referenceSession.id,
+                        sourceGeneration: referenceSession.sourceGeneration, consumerID: referenceConsumer,
+                        role: .primary, revision: revision, recipe: recipe,
+                        quality: .settled, viewport: .init(maxPixel: 2400)))
+                } else { reference = published }
                 let a = try pixels(interactiveFrame.image)
-                let sameCanvas = settled.canonicalPixelSize == interactiveFrame.canonicalPixelSize
+                let sameCanvas = reference.canonicalPixelSize == interactiveFrame.canonicalPixelSize
                 guard sameCanvas else { throw DevelopmentError.invalidEncoding }
-                let sameSize = settled.outputPixelSize == CGSize(width: a.width,height: a.height)
-                // A cropped FIT proxy can use fewer pixels than the native FIT. Compare the
-                // same crop at the interactive resolution; retain both actual output sizes.
-                let b = try pixels(settled.image,fitting:sameSize ? nil : CGSize(width:a.width,height:a.height))
+                let referenceSize = CGSize(width: a.width,height: a.height)
+                let b = try pixels(reference.image,fitting:reference.outputPixelSize == referenceSize ? nil : referenceSize)
                 let interactiveHasAlpha=stride(from:3,to:a.data.count,by:4).contains{a.data[$0]>0}
                 let settledHasAlpha=stride(from:3,to:b.data.count,by:4).contains{b.data[$0]>0}
                 if !interactiveHasAlpha { transparentFrameFailures.append(label+":interactive") }
@@ -338,7 +364,7 @@ final class EditingInteractivePerformanceTests: XCTestCase {
                 XCTAssertTrue(settledHasAlpha,"Settled output is entirely transparent: \(label)")
                 if environment["RAWMASTER_INTERACTIVE_WRITE_IMAGES"] == "1",
                    label == "neutral" || outputCases.contains(label) {
-                    for (name,frame) in [("interactive",interactiveFrame.image),("settled",settled.image)] {
+                    for (name,frame) in [("interactive",interactiveFrame.image),("settled",published.image),("reference",reference.image)] {
                         guard let cg=frame.cgImage(forProposedRect:nil,context:nil,hints:nil),
                           let data=NSBitmapImageRep(cgImage:cg).representation(using:.png,properties:[:])else{throw DevelopmentError.unreadable}
                         try data.write(to:output.appendingPathComponent("\(label)-\(name).png"),options:.withoutOverwriting)
@@ -362,14 +388,64 @@ final class EditingInteractivePerformanceTests: XCTestCase {
                 let payload = try XCTUnwrap(recipe.adjustmentsV3)
                 let effectiveDecoder = DevelopmentRAWSourcePolicy.usesFlashRaw(payload)
                     ? DevelopmentRAWDecoder.flashRaw031.rawValue : "CIRAW/" + session.decoderVersion
+                // Opt-in: the native 1:1 frame for the same recipe, to size the remaining
+                // full-resolution cost that `detail` still pays.
+                var detailMilliseconds: Double?
+                if environment["RAWMASTER_INTERACTIVE_DETAIL"] == "1" {
+                    revision += 1
+                    // RAWMASTER_INTERACTIVE_DETAIL_WINDOW=1 scopes the 1:1 frame to the pixels a
+                    // 2400x1600 canvas would show, centred away from the origin.
+                    // `1` is a tight viewport window; `margin` is the 50%-per-side window the
+                    // canvas asks for, which is what ships.
+                    let windowMode = environment["RAWMASTER_INTERACTIVE_DETAIL_WINDOW"]
+                    let detailWindow: CGRect?
+                    switch windowMode {
+                    case "1": detailWindow = CGRect(x: 0.37, y: 0.31, width: 0.2525, height: 0.2525)
+                    case "margin": detailWindow = CGRect(x: 0.2475, y: 0.1875, width: 0.505, height: 0.505)
+                    default: detailWindow = nil
+                    }
+                    let detailSamples = Int(environment["RAWMASTER_INTERACTIVE_DETAIL_SAMPLES"] ?? "1") ?? 1
+                    var detailTimes: [Double] = []
+                    var detail: DevelopmentPreviewFrame?
+                    for _ in 0..<max(1, detailSamples) {
+                        revision += 1
+                        let detailStarted = DispatchTime.now().uptimeNanoseconds
+                        detail = try await service.render(.init(sessionID: session.id, sourceGeneration: session.sourceGeneration,
+                            consumerID: consumer, role: .primary, revision: revision, recipe: recipe,
+                            quality: .detail, viewport: .init(maxPixel: 0, window: detailWindow)))
+                        detailTimes.append(Double(DispatchTime.now().uptimeNanoseconds - detailStarted) / 1_000_000)
+                    }
+                    detailMilliseconds = detailTimes.first
+                    if detailTimes.count > 1 {
+                        print("DETAIL-SAMPLES \(label) \(detailTimes.map { String(format: "%.1f", $0) }.joined(separator: ","))")
+                    }
+                    let detailFrame = try XCTUnwrap(detail)
+                    XCTAssertNil(detailFrame.approximation, "detail must stay native: \(label)")
+                    XCTAssertEqual(detailFrame.window, detailWindow)
+                    if let detailWindow {
+                        let expected = try V3PreviewMaterializer.visibleRect(
+                            detailWindow, of: CGRect(origin: .zero, size: detailFrame.canonicalPixelSize))
+                        XCTAssertEqual(detailFrame.outputPixelSize, expected.size, "windowed size for \(label)")
+                    } else {
+                        XCTAssertEqual(detailFrame.outputPixelSize, detailFrame.canonicalPixelSize)
+                    }
+                    print("DETAIL-FRAME \(label) \(detailMilliseconds ?? 0) out=\(Int(detailFrame.outputPixelSize.width))x\(Int(detailFrame.outputPixelSize.height)) canvas=\(Int(detailFrame.canonicalPixelSize.width))x\(Int(detailFrame.canonicalPixelSize.height))")
+                    if environment["RAWMASTER_INTERACTIVE_WRITE_IMAGES"] == "1" {
+                        guard let cg = detailFrame.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
+                              let data = NSBitmapImageRep(cgImage: cg).representation(using: .png, properties: [:])
+                        else { throw DevelopmentError.unreadable }
+                        try data.write(to: output.appendingPathComponent("\(label)-detail.png"), options: .withoutOverwriting)
+                    }
+                }
                 measurements.append(.init(label: label, effectiveDecoder: effectiveDecoder, interactiveMilliseconds: interactiveTimes,
                     interactiveMedianMilliseconds: median(interactiveTimes), settledMilliseconds: settledTime,
                     approximate: interactiveFrame.approximate, width: a.width, height: a.height,
-                    settledWidth:Int(settled.outputPixelSize.width),settledHeight:Int(settled.outputPixelSize.height),
-                    qualityComparison:sameSize ? "matched-pixels" : "settled-resampled-to-proxy",
-                    p99ChannelError: p99, maximumChannelError: maximum))
+                    settledWidth:Int(published.outputPixelSize.width),settledHeight:Int(published.outputPixelSize.height),
+                    qualityComparison:reference.outputPixelSize == referenceSize ? "matched-pixels" : "settled-resampled-to-proxy",
+                    p99ChannelError: p99, maximumChannelError: maximum, detailMilliseconds: detailMilliseconds))
             }
             await service.closeAll()
+            await referenceService?.closeAll()
         } catch {
             await service.closeAll()
             throw error
@@ -406,11 +482,14 @@ final class EditingInteractivePerformanceTests: XCTestCase {
             "decoderVersion": session.decoderVersion,
             "proxyVersion": PreviewInteractiveProxyV3.version,
             "sourceOverlayVersion": PreviewInteractiveProxyV3.sourceOverlayVersion,
-            "policy": "proxyV1 interactive; canonical settled; bitmapCache=0; rawBaseCache=\(rawBaseCacheBytes)",
+            "policy": "proxyV1 interactive; \(settledTransport.rawValue) settled; bitmapCache=\(bitmapCacheBytes); rawBaseCache=\(rawBaseCacheBytes)",
+            "settledTransport": settledTransport.rawValue,
+            "settledReferenceTransport": referenceService == nil ? settledTransport.rawValue : PreviewSettledTransport.canonical.rawValue,
             "measurements": try JSONSerialization.jsonObject(with: JSONEncoder().encode(measurements)),
             "caveats": [
                 "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
-                "Interactive proxy is bounded to 2400px and settled/save/export remain canonical",
+                "Interactive and settled are bounded to the 2400px canvas; detail/save/export remain native",
+                "Channel error is the settled frame against the native settled render, not against the gesture frame",
                 "Cold process and OS caches are not purged; three consecutive samples per operation"
             ]
         ]

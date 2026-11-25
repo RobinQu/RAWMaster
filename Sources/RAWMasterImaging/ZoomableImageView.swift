@@ -22,6 +22,54 @@ public struct ImageTransform: Equatable, Sendable {
 
 /// Pure geometry shared by the native canvas and executable diagnostics.
 public enum ImageViewportGeometry {
+    /// Rect covered by a windowed bitmap inside the whole-canvas destination rect.
+    ///
+    /// `window` is normalized with a top-left origin, matching Core Image materialization and
+    /// `DevelopmentPreviewFrame.window`. The canvas view is flipped, so the top edge maps to
+    /// `destination.minY`. A `nil` window covers the whole destination.
+    public static func windowRect(_ window: CGRect?, in destination: CGRect) -> CGRect {
+        guard let window else { return destination }
+        let rect = CGRect(x: destination.minX + window.minX * destination.width,
+                          y: destination.minY + window.minY * destination.height,
+                          width: window.width * destination.width,
+                          height: window.height * destination.height)
+        return rect.intersection(destination)
+    }
+    /// Normalized window of a whole-canvas `destination` that `bounds` can see, top-left origin.
+    public static func visibleWindow(destination: CGRect, bounds: CGRect) -> CGRect? {
+        guard destination.width > 0, destination.height > 0 else { return nil }
+        let visible = destination.intersection(bounds)
+        guard !visible.isNull, visible.width > 0, visible.height > 0 else { return nil }
+        let minX = max(0, (visible.minX - destination.minX) / destination.width)
+        let minY = max(0, (visible.minY - destination.minY) / destination.height)
+        let maxX = min(1, (visible.maxX - destination.minX) / destination.width)
+        let maxY = min(1, (visible.maxY - destination.minY) / destination.height)
+        guard maxX > minX, maxY > minY else { return nil }
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+    /// Expand `visible` by `margin` of its own size on every side, then clamp to the unit canvas.
+    public static func servedWindow(visible: CGRect, margin: CGFloat) -> CGRect {
+        let dx = visible.width * max(0, margin), dy = visible.height * max(0, margin)
+        let minX = max(0, visible.minX - dx), minY = max(0, visible.minY - dy)
+        let maxX = min(1, visible.maxX + dx), maxY = min(1, visible.maxY + dy)
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+    /// Snap a window to a `1/steps` grid so small pans keep the same cache identity.
+    public static func quantized(_ window: CGRect, steps: Int) -> CGRect {
+        guard steps > 1 else { return window }
+        let step = 1 / CGFloat(steps)
+        let minX = (window.minX / step).rounded(.down) * step
+        let minY = (window.minY / step).rounded(.down) * step
+        let maxX = min(1, (window.maxX / step).rounded(.up) * step)
+        let maxY = min(1, (window.maxY / step).rounded(.up) * step)
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
+    /// True when `window` fully covers `visible` (with a small tolerance for grid snapping).
+    public static func window(_ window: CGRect, covers visible: CGRect) -> Bool {
+        let eps: CGFloat = 1e-4
+        return window.minX <= visible.minX + eps && window.minY <= visible.minY + eps
+            && window.maxX >= visible.maxX - eps && window.maxY >= visible.maxY - eps
+    }
     public static func fitScale(pixelSize: CGSize, viewport: CGSize,
                                 fitInsets: NSEdgeInsets = .zero) -> CGFloat {
         let available = fitViewport(viewport, insets: fitInsets).size
@@ -146,6 +194,11 @@ public struct ZoomableImageView: NSViewRepresentable {
     public var onCanvasDiagnostic: (@MainActor (ImageCanvasDiagnosticEvent) -> Void)?
     public var onPointerEvent: (@MainActor (ImageCanvasPointerEvent) -> Bool)?
     public var onViewportChange: (@MainActor (ImageCanvasViewportSnapshot) -> Void)?
+    /// Normalized canvas window visible at 1:1. The owner requests a bitmap covering it.
+    public var onVisibleWindow: (@MainActor (CGRect) -> Void)?
+    /// Whole-canvas pixel size when `image` covers only `window` of the canvas.
+    public var canvasPixelSize: CGSize?
+    public var window: CGRect?
     public var onPointerHover: (@MainActor (ImageCanvasHoverEvent) -> Void)?
     public var onDoubleClick: (() -> Void)?
     public var fitInsets: NSEdgeInsets = .zero
@@ -157,7 +210,9 @@ public struct ZoomableImageView: NSViewRepresentable {
                 onViewportChange: (@MainActor (ImageCanvasViewportSnapshot) -> Void)? = nil,
                 onPointerHover: (@MainActor (ImageCanvasHoverEvent) -> Void)? = nil,
                 onDoubleClick: (() -> Void)? = nil,
-                onCanvasDiagnostic: (@MainActor (ImageCanvasDiagnosticEvent) -> Void)? = nil) {
+                onCanvasDiagnostic: (@MainActor (ImageCanvasDiagnosticEvent) -> Void)? = nil,
+                onVisibleWindow: (@MainActor (CGRect) -> Void)? = nil,
+                window: CGRect? = nil, canvasPixelSize: CGSize? = nil) {
         self.image = image; self.actualPixels = actualPixels; self._transform = transform
         self.backgroundColor = backgroundColor
         self.onActualPixelsChange = onActualPixelsChange; self.onRequestDetail = onRequestDetail
@@ -165,6 +220,7 @@ public struct ZoomableImageView: NSViewRepresentable {
         self.onPointerEvent = onPointerEvent; self.onViewportChange = onViewportChange
         self.onPointerHover = onPointerHover; self.onDoubleClick = onDoubleClick
         self.onCanvasDiagnostic = onCanvasDiagnostic
+        self.onVisibleWindow = onVisibleWindow; self.window = window; self.canvasPixelSize = canvasPixelSize
     }
     /// The caller owns this exact image until the canvas installs it.
     public func borrowingImage(_ image: NSImage?) -> Self {
@@ -205,12 +261,22 @@ public struct ZoomableImageView: NSViewRepresentable {
         canvas.onTransform = { transform = $0 }
         canvas.onActualPixelsChange = onActualPixelsChange
         canvas.onRequestDetail = onRequestDetail
+        // Publish the visible window before requesting, so the request already carries it.
+        canvas.onVisibleWindow = { visible in
+            guard let onVisibleWindow else { return }
+            onVisibleWindow(visible)
+        }
+        canvas.onRequestDetail = {
+            onVisibleWindow?(canvas.visibleCanvasWindow)
+            onRequestDetail?()
+        }
         canvas.onDoubleClick = onDoubleClick
         canvas.frameID = frameID; canvas.onFrameDrawn = onFrameDrawn
         canvas.setInteractionHandlers(pointer:onPointerEvent,viewport:onViewportChange,hover:onPointerHover)
         canvas.update(image: image, actualPixels: actualPixels, transform: transform, backgroundColor: backgroundColor,
                       lowLatency: lowLatency, fitInsets: fitInsets,
-                      comparisonImage: borrowedComparisonImage, comparison: comparisonPresentation)
+                      comparisonImage: borrowedComparisonImage, comparison: comparisonPresentation,
+                      window: window, canvasPixelSize: canvasPixelSize)
         if onCanvasDiagnostic != nil || canvas.hasCanvasDiagnostic {
             canvas.updateCanvasDiagnostic(onCanvasDiagnostic, installedFrame: image == nil ? nil : frameID)
         }
@@ -281,10 +347,18 @@ public final class ImageCanvas: NSView {
     private var pointerOwner: PointerOwner?
     private var pointerEpoch: UInt64 = 0
     private var lastViewport: ImageCanvasViewportSnapshot?
+    private var lastVisibleWindow: CGRect?
+    var onVisibleWindow: (@MainActor (CGRect) -> Void)?
+    /// Whole-canvas pixel size when `image` covers only `window` of the canvas.
+    private var canvasPixelSize: CGSize?
+    /// Normalized top-left window of the canvas that `image` covers. `nil` is the whole canvas.
+    private var frameWindow: CGRect?
     private var windowObserver: NSObjectProtocol?
     public override var isFlipped: Bool { true }
     public override var acceptsFirstResponder: Bool { true }
     private var pixelSize: CGSize {
+        // A windowed frame navigates and zooms as the whole canvas, not as its own bitmap.
+        if let canvasPixelSize, canvasPixelSize.width > 0, canvasPixelSize.height > 0 { return canvasPixelSize }
         guard let image else { return .zero }
         // Shared previews draw their producer's CGImage directly. Retina representations
         // synthesized by AppKit are display caches and must not redefine zoom or hit testing.
@@ -298,16 +372,19 @@ public final class ImageCanvas: NSView {
     func update(image: NSImage?, actualPixels: Bool, transform: ImageTransform,
                 backgroundColor: NSColor = .controlBackgroundColor, lowLatency: Bool = false,
                 fitInsets: NSEdgeInsets = .zero, comparisonImage: NSImage? = nil,
-                comparisonSplit: CGFloat = 0.5, comparison requestedComparison: ImageComparisonPresentation? = nil) {
+                comparisonSplit: CGFloat = 0.5, comparison requestedComparison: ImageComparisonPresentation? = nil,
+                window: CGRect? = nil, canvasPixelSize: CGSize? = nil) {
         let enteringActual = actualPixels && !self.actualPixels
         var resolvedTransform = transform
         if actualPixels { resolvedTransform.physicalMagnification = 1 }
         let insetsChanged = !NSEdgeInsetsEqual(self.fitInsets, fitInsets)
         var comparison = requestedComparison ?? .init(amount: comparisonSplit)
         comparison.amount = comparison.mode == .mix ? max(0, min(1, comparison.amount)) : max(0.05, min(0.95, comparison.amount))
+        let geometryChanged = self.frameWindow != window || self.canvasPixelSize != canvasPixelSize
         let changed = self.image !== image || self.actualPixels != actualPixels
             || self.transform != resolvedTransform || self.lowLatency != lowLatency || insetsChanged
             || self.comparisonImage !== comparisonImage || self.comparison != comparison
+            || geometryChanged
         self.image = image
         let backgroundChanged = !self.backgroundColor.isEqual(backgroundColor)
         if resolvedBackgroundColor == nil || backgroundChanged {
@@ -316,6 +393,8 @@ public final class ImageCanvas: NSView {
         }
         self.actualPixels = actualPixels
         self.transform = resolvedTransform
+        self.frameWindow = window
+        self.canvasPixelSize = canvasPixelSize
         self.lowLatency = lowLatency
         self.fitInsets = fitInsets
         self.comparisonImage = comparisonImage
@@ -436,10 +515,25 @@ public final class ImageCanvas: NSView {
         .init(frameID:frameID,viewportSize:bounds.size,imagePixelSize:pixelSize,imageRect:imageRect(transform),backingScale:backing,transform:transform)
     }
     private func publishViewport() {
+        publishVisibleWindow()
         guard let onViewportChange else { return }
         let snapshot = viewportSnapshot
         guard snapshot != lastViewport else { return }
         lastViewport = snapshot; onViewportChange(snapshot)
+    }
+    /// Normalized canvas window the view can see right now, top-left origin.
+    var visibleCanvasWindow: CGRect {
+        let canvas = imageRect(transform)
+        return ImageViewportGeometry.visibleWindow(destination: canvas, bounds: bounds) ?? CGRect(x: 0, y: 0, width: 1, height: 1)
+    }
+    /// Report the normalized canvas window the view can see, so the owner can request a
+    /// matching 1:1 bitmap. Only published while the canvas is showing native pixels.
+    private func publishVisibleWindow() {
+        guard let onVisibleWindow, actualPixels else { return }
+        let canvas = imageRect(transform)
+        guard let visible = ImageViewportGeometry.visibleWindow(destination: canvas, bounds: bounds) else { return }
+        guard visible != lastVisibleWindow else { return }
+        lastVisibleWindow = visible; onVisibleWindow(visible)
     }
     private func pointerEvent(_ phase: ImageCanvasPointerPhase, owner: PointerOwner, event: NSEvent?) -> ImageCanvasPointerEvent {
         let tablet = event.map { $0.type == .tabletPoint || $0.subtype == .tabletPoint } ?? false
@@ -474,7 +568,9 @@ public final class ImageCanvas: NSView {
             diagnosticCanvasID.flatMap { canvas in frameID.map { (sink, canvas, $0) } }
         }
         let began = DispatchTime.now().uptimeNanoseconds
-        let destination = imageRect(transform)
+        let canvas = imageRect(transform)
+        // A windowed frame draws only the part of the canvas it actually covers.
+        let destination = ImageViewportGeometry.windowRect(frameWindow, in: canvas)
         let drawn = destination.intersection(bounds).intersection(dirtyRect)
         let token = ImagePerformanceTelemetry.shared.begin(operation: "画布绘制",
           stage: comparisonImage == nil ? "主图" : "比较", queue: "画布", boundary: .canvasDrawReturn)

@@ -17,9 +17,25 @@ public enum PreviewConsumerRole: String, Sendable { case primary, comparison }
 public enum PreviewQuality: String, Sendable { case interactive, settled, detail }
 public struct PreviewViewport: Equatable, Sendable {
   public let maxPixel: Int
-  public init(maxPixel: Int = 2400) { self.maxPixel = maxPixel }
+  /// Visible window in the final canvas, normalized with a top-left origin.
+  /// `nil` renders and materializes the whole canvas. A window only narrows the
+  /// materialized region; the canonical identity stays the full canvas so overlays,
+  /// pickers and geometry mapping keep their existing coordinates.
+  public let window: CGRect?
+  public init(maxPixel: Int = 2400, window: CGRect? = nil) {
+    self.maxPixel = maxPixel
+    self.window = window
+  }
 }
 public enum PreviewInteractiveEvaluation:String,Equatable,Sendable { case canonical,proxyV1,nativePointwiseCertificateV1 }
+/// Where a settled (post-gesture) canvas frame is evaluated.
+///
+/// `canonical` renders the always-native graph and downscales at the last step, so a
+/// fit-to-window frame costs the full sensor pixel count. `viewport` evaluates the same
+/// operator sequence at the requested viewport resolution and validates those pixels:
+/// the frame reports its scale, native pixel identity stays with `detail` and export.
+/// See `docs/research/gpu-pipeline-references.md` for the LightFlow/Alcedo precedent.
+public enum PreviewSettledTransport: String, Equatable, Sendable { case canonical, viewport }
 public struct PreviewApproximationInfo:Equatable,Sendable {
   public let version:String
   public let nativeInputSize,proxyInputSize,canonicalCanvasSize,outputPixelSize:CGSize
@@ -42,11 +58,15 @@ public struct PreviewResourcePolicy: Equatable, Sendable {
   public let interactiveMaxPixel: Int
   public let comparisonQuiescenceMilliseconds: Int
   public let rawBaseCacheBytes: Int
+  /// Default stays `canonical`: every settled frame keeps full native evaluation.
+  public let settledTransport: PreviewSettledTransport
   public static let `default` = PreviewResourcePolicy()
   public init(maximumSessions: Int = 2, maximumPendingRequests: Int = 2,
               bitmapCacheBytes: Int = 134_217_728, sourceSnapshotDiskBytes: Int64 = 536_870_912,
               contextMemoryLimitMiB: Int = 512, interactiveMaxPixel: Int = 2400,
-              comparisonQuiescenceMilliseconds: Int = 150, rawBaseCacheBytes: Int = 0, interactiveEvaluation:PreviewInteractiveEvaluation = .canonical,nativePointwiseProfile:Bool = false,nativeCanonicalFiniteProof:Bool = false) {
+              comparisonQuiescenceMilliseconds: Int = 150, rawBaseCacheBytes: Int = 0, interactiveEvaluation:PreviewInteractiveEvaluation = .canonical,nativePointwiseProfile:Bool = false,nativeCanonicalFiniteProof:Bool = false,
+              settledTransport: PreviewSettledTransport = .canonical) {
+    self.settledTransport=settledTransport
     self.nativeCanonicalFiniteProof=nativeCanonicalFiniteProof
     self.nativePointwiseProfile=nativePointwiseProfile
     self.interactiveEvaluation=interactiveEvaluation
@@ -114,6 +134,10 @@ public struct DevelopmentPreviewFrame: @unchecked Sendable {
   public let canonicalPixelSize: CGSize
   public let outputPixelSize: CGSize
   public let outputKey: String
+  /// Visible window in the canvas, normalized with a top-left origin. `nil` is the whole canvas.
+  /// `canonicalPixelSize` always describes the whole canvas, so overlays and pickers keep their
+  /// existing normalized coordinates.
+  public let window: CGRect?
   public let approximate: Bool
   public let approximation:PreviewApproximationInfo?
   public let brillianceTransportVersion:String?
@@ -121,12 +145,12 @@ public struct DevelopmentPreviewFrame: @unchecked Sendable {
   public let dehazePreviewContract:String?
   public let dehazePreviewFallback:String?
   public let dehazePlaneSHA256:String?
-  public init(frameID:UUID,image:NSImage,sessionID:DevelopmentPreviewSessionID,sourceGeneration:UInt64,consumerID:PreviewConsumerID,revision:UInt64,quality:PreviewQuality,canonicalPixelSize:CGSize,outputPixelSize:CGSize,outputKey:String,approximate:Bool,approximation:PreviewApproximationInfo?=nil,brillianceTransportVersion:String?=nil,brillianceMapSHA256:String?=nil,dehazePreviewContract:String?=nil,dehazePreviewFallback:String?=nil,dehazePlaneSHA256:String?=nil) {
+  public init(frameID:UUID,image:NSImage,sessionID:DevelopmentPreviewSessionID,sourceGeneration:UInt64,consumerID:PreviewConsumerID,revision:UInt64,quality:PreviewQuality,canonicalPixelSize:CGSize,outputPixelSize:CGSize,outputKey:String,window:CGRect?=nil,approximate:Bool,approximation:PreviewApproximationInfo?=nil,brillianceTransportVersion:String?=nil,brillianceMapSHA256:String?=nil,dehazePreviewContract:String?=nil,dehazePreviewFallback:String?=nil,dehazePlaneSHA256:String?=nil) {
     self.brillianceTransportVersion=brillianceTransportVersion;self.brillianceMapSHA256=brillianceMapSHA256
     self.dehazePreviewContract=dehazePreviewContract;self.dehazePreviewFallback=dehazePreviewFallback;self.dehazePlaneSHA256=dehazePlaneSHA256
     self.frameID=frameID;self.image=image;self.sessionID=sessionID;self.sourceGeneration=sourceGeneration
     self.consumerID=consumerID;self.revision=revision;self.quality=quality;self.canonicalPixelSize=canonicalPixelSize
-    self.outputPixelSize=outputPixelSize;self.outputKey=outputKey;self.approximation=approximation
+    self.outputPixelSize=outputPixelSize;self.outputKey=outputKey;self.window=window;self.approximation=approximation
     self.approximate=approximation != nil
   }
 }

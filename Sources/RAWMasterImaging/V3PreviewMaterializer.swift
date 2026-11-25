@@ -29,6 +29,7 @@ enum V3PreviewMaterializer {
   static let writesOwnedBitmap = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_OWNED_BITMAP"] == "1"
 
   static func materialize(_ graph: DevelopedV3Graph, context: CIContext, maxPixel: Int,
+                          window: CGRect? = nil,
                           presentation: PreviewPresentationScope? = nil,
                           device: (any MTLDevice)? = nil, observation: ((String) -> Void)? = nil,
                           managedOutput:PreviewInteractiveManagedOutput? = nil,
@@ -108,8 +109,9 @@ enum V3PreviewMaterializer {
        }) {
       return wrap(compact, nativeSize: graph.canonicalSize)
     }
+    let materialized = try Self.visibleRect(window, of: bounds)
     let cg = try CanonicalPreviewDiagnostic.measure("create sRGB8 CGImage") {
-      guard let cg = context.createCGImage(image,from:bounds,format:.RGBA8,colorSpace:PhotoRenderer.sRGB,deferred:false) else {
+      guard let cg = context.createCGImage(image,from:materialized,format:.RGBA8,colorSpace:PhotoRenderer.sRGB,deferred:false) else {
         throw DevelopmentError.unreadable
       }
       return cg
@@ -124,16 +126,36 @@ enum V3PreviewMaterializer {
       guard let compact = owned.makeImage() else { throw DevelopmentError.unreadable }
       return compact
     }
-    return wrap(compact, nativeSize: graph.canonicalSize)
+    return wrap(compact, nativeSize: graph.canonicalSize, window: window)
   }
 
-  private static func wrap(_ compact: CGImage, nativeSize: CGSize) -> PreviewPixels {
+  /// Map a normalized top-left window onto the materialized canvas, snapped to the pixel grid.
+  /// The whole canvas has a bottom-left origin in Core Image, so the window's top edge becomes
+  /// `bounds.maxY - (minY + height) * bounds.height`.
+  static func visibleRect(_ window: CGRect?, of bounds: CGRect) throws -> CGRect {
+    guard let window else { return bounds }
+    guard window.minX >= 0, window.minY >= 0, window.width > 0, window.height > 0,
+          window.maxX <= 1.0000001, window.maxY <= 1.0000001 else {
+      throw PreviewPresentationError.invalidLayout
+    }
+    let x = (bounds.minX + window.minX * bounds.width).rounded()
+    let top = (bounds.minY + window.minY * bounds.height).rounded()
+    let maxX = (bounds.minX + window.maxX * bounds.width).rounded()
+    let maxY = (bounds.minY + window.maxY * bounds.height).rounded()
+    let rect = CGRect(x: x, y: bounds.maxY - maxY, width: max(1, maxX - x), height: max(1, maxY - top))
+    guard rect.width >= 1, rect.height >= 1, bounds.contains(rect) else {
+      throw PreviewPresentationError.invalidLayout
+    }
+    return rect
+  }
+
+  private static func wrap(_ compact: CGImage, nativeSize: CGSize, window: CGRect? = nil) -> PreviewPixels {
     CanonicalPreviewDiagnostic.measure("wrap NSBitmapImageRep") {
       let bitmap = NSBitmapImageRep(cgImage:compact)
       let outputSize = CGSize(width: compact.width, height: compact.height)
       let result = NSImage(size: outputSize)
       result.addRepresentation(bitmap)
-      return .init(image:result,nativeSize:nativeSize,outputSize:outputSize,bytes:bitmap.bytesPerRow*bitmap.pixelsHigh)
+      return .init(image:result,nativeSize:nativeSize,outputSize:outputSize,window:window,bytes:bitmap.bytesPerRow*bitmap.pixelsHigh)
     }
   }
 

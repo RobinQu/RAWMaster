@@ -30,6 +30,8 @@ struct PreviewPixels: @unchecked Sendable {
   let image: NSImage
   let nativeSize: CGSize
   let outputSize: CGSize
+  /// Visible window in the canvas, normalized with a top-left origin. `nil` is the whole canvas.
+  let window: CGRect?
   let bytes: Int
   let settledReplayKey: String?
   let approximation:PreviewApproximationInfo?
@@ -40,8 +42,8 @@ struct PreviewPixels: @unchecked Sendable {
   let dehazeTIFFObservation:DevelopmentDehazeTIFFPreviewV1.Observation?
   let presentationTicket:PreviewPresentationReservation?
   var managedPresentation:Bool{presentationTicket != nil}
-  init(image:NSImage,nativeSize:CGSize,outputSize:CGSize,bytes:Int,settledReplayKey:String?=nil,approximation:PreviewApproximationInfo?=nil,interactiveCanonicalFallbackReason:String?=nil,presentationTicket:PreviewPresentationReservation?=nil,nativePointwise:PreviewNativePointwiseReceiptV1?=nil,actualGrainFinalTransport:String?=nil,brilliancePublicObservation:DevelopmentBrilliancePublicV1.Observation?=nil,dehazeTIFFObservation:DevelopmentDehazeTIFFPreviewV1.Observation?=nil) {
-    self.image=image;self.nativeSize=nativeSize;self.outputSize=outputSize;self.bytes=bytes
+  init(image:NSImage,nativeSize:CGSize,outputSize:CGSize,window:CGRect?=nil,bytes:Int,settledReplayKey:String?=nil,approximation:PreviewApproximationInfo?=nil,interactiveCanonicalFallbackReason:String?=nil,presentationTicket:PreviewPresentationReservation?=nil,nativePointwise:PreviewNativePointwiseReceiptV1?=nil,actualGrainFinalTransport:String?=nil,brilliancePublicObservation:DevelopmentBrilliancePublicV1.Observation?=nil,dehazeTIFFObservation:DevelopmentDehazeTIFFPreviewV1.Observation?=nil) {
+    self.image=image;self.nativeSize=nativeSize;self.outputSize=outputSize;self.window=window;self.bytes=bytes
     self.settledReplayKey=settledReplayKey;self.approximation=approximation;self.interactiveCanonicalFallbackReason=interactiveCanonicalFallbackReason;self.presentationTicket=presentationTicket;self.nativePointwise=nativePointwise
     self.actualGrainFinalTransport=actualGrainFinalTransport
     self.brilliancePublicObservation=brilliancePublicObservation;self.dehazeTIFFObservation=dehazeTIFFObservation
@@ -87,6 +89,9 @@ final class PreviewNativeSource: @unchecked Sendable {
   private static let retainsFullValidationCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"] == "1" &&
     ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] != "1"
   private static let reusesCanonicalContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] == "1"
+  /// Opt-in candidate for the native path: cache intermediates so the validation scan and the
+  /// final materialization evaluate the graph once. Default off; no production caller sets it.
+  private static let nativeIntermediateCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] == "1"
   private static let reusesPortableHalfContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_HALF_CONTEXT_REUSE"] == "1"
   private static let cachesSpatialMasks = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE"] == "1"
   private(set) var context: CIContext
@@ -357,7 +362,8 @@ final class PreviewNativeSource: @unchecked Sendable {
     } catch RawBaseCacheError.capacity { disposition = "capacity-fallback"; return nil }
     catch { disposition = "failed"; throw error }
   }
-  func render(recipe: DevelopmentRecipe, maxPixel: Int, rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "",
+  func render(recipe: DevelopmentRecipe, maxPixel: Int, window: CGRect? = nil,
+              rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "",
               localMaskValidation: DevelopmentMaskEngineV3.CanonicalValidation? = nil,
               thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
               grainFinalTransport: PreviewGrainFinalTransportV1.Request? = nil,
@@ -399,7 +405,7 @@ final class PreviewNativeSource: @unchecked Sendable {
       let legacyInput = raw != nil && recipe.adjustmentsV3?.blackAndWhite.requiresLegacyGrainCanonicalInput == true
       if legacyInput { try validateCaptureAuthority(); rawBasePool?.evictUnpinned() }
       do {
-        return try renderV3(recipe:recipe,maxPixel:maxPixel,rawBasePool:legacyInput ? nil:rawBasePool,sourceKey:sourceKey,
+        return try renderV3(recipe:recipe,maxPixel:maxPixel,window:window,rawBasePool:legacyInput ? nil:rawBasePool,sourceKey:sourceKey,
           localMaskValidation:localMaskValidation,thumbnailNativeSink:thumbnailNativeSink,grainFinalTransport:grainFinalTransport,
           brillianceFinalTransport:brillianceFinalTransport,spatialScan:spatialScan,checkDehazeTexture:checkDehazeTexture,
           checkCanonicalCache:checkCanonicalCache,checkCanonicalHalfFIT:checkCanonicalHalfFIT,
@@ -492,6 +498,11 @@ final class PreviewNativeSource: @unchecked Sendable {
     result.addRepresentation(bitmap)
     return PreviewPixels(image: result, nativeSize: canonicalSize, outputSize: CGSize(width: cg.width, height: cg.height), bytes: bitmap.bytesPerRow * bitmap.pixelsHigh)
   }
+  /// A window narrows only the native 1:1 materialization. Settled and interactive frames are
+  /// whole-canvas proxies whose canvas already equals the display, so they ignore it.
+  private func detailWindow(maxPixel: Int, window: CGRect?) -> CGRect? {
+    maxPixel == 0 ? window : nil
+  }
   private func hasCanonicalCacheHeadroom(for extent: CGRect) -> Bool {
     guard #available(macOS 27, *), verifiedCapture != nil, contextMemoryLimitMiB == 512,
           ProcessInfo.processInfo.physicalMemory >= 32 * 1024 * 1024 * 1024,
@@ -540,7 +551,8 @@ final class PreviewNativeSource: @unchecked Sendable {
     return adjustments == curveOnly
   }
 
-  private func renderV3(recipe: DevelopmentRecipe, maxPixel: Int, rawBasePool: PreviewRawBasePool?, sourceKey: String,
+  private func renderV3(recipe: DevelopmentRecipe, maxPixel: Int, window: CGRect?,
+                        rawBasePool: PreviewRawBasePool?, sourceKey: String,
                         localMaskValidation: DevelopmentMaskEngineV3.CanonicalValidation? = nil,
                         thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
                         grainFinalTransport: PreviewGrainFinalTransportV1.Request? = nil,brillianceFinalTransport:DevelopmentBrilliancePublicV1.Request? = nil,
@@ -555,7 +567,7 @@ final class PreviewNativeSource: @unchecked Sendable {
     try DevelopmentRendererV3.validateSupport(recipe,sourceIsRAW:raw != nil)
     try validateCaptureAuthority()
     if let legacy = try DevelopmentRendererV3.legacyEquivalent(recipe) {
-      return try render(recipe:legacy,maxPixel:maxPixel,rawBasePool:rawBasePool,sourceKey:sourceKey,thumbnailNativeSink:thumbnailNativeSink)
+      return try render(recipe:legacy,maxPixel:maxPixel,window:window,rawBasePool:rawBasePool,sourceKey:sourceKey,thumbnailNativeSink:thumbnailNativeSink)
     }
     if DevelopmentBrilliancePublicV1.active(recipe) {
       guard let request=brillianceFinalTransport,maxPixel==2400,!hasRAWFilter,!artifact else{throw PreviewPresentationError.unsupported}
@@ -583,6 +595,10 @@ final class PreviewNativeSource: @unchecked Sendable {
       CanonicalPreviewDiagnostic.measure("clear before render") { self.context.clearCaches() }
       var options: [CIContextOption: Any] = [.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,
         .workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:contextMemoryLimitMiB]
+      // Candidate: the native path validates the whole graph and then materializes it again.
+      // Caching intermediates lets the second evaluation reuse the first. Still off by default:
+      // measured gain on the native 1:1 path is 1-3%, below the option's documented risk.
+      if Self.nativeIntermediateCache { options[.cacheIntermediates] = true }
       let pointwise = DevelopmentCanonicalFiniteGPU.eligible(adjustments,maxPixel:maxPixel)
       let grading = checkCanonicalHalfFIT != nil && PreviewPortableGrading.enabled
         ? PreviewPortableGrading(adjustments) : nil
@@ -832,7 +848,8 @@ final class PreviewNativeSource: @unchecked Sendable {
             .workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,
             .memoryTarget:DevelopmentResidentDehazeGuide.sharedTextureDisplayMemoryTargetMiB])
           defer { display.clearCaches() }
-          return try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
+          return try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
+            window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
         }
         try Task.checkCancellation()
         try checkDehazeTexture()
@@ -851,6 +868,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           ownedBitmapAuthority = nil
         }
         result = try V3PreviewMaterializer.materialize(graph,context:renderContext,maxPixel:maxPixel,
+          window:detailWindow(maxPixel:maxPixel,window:window),
           grainFinalTransport:grainFinalTransport,checkedLinearHalf:half,ownedBitmapAuthority:ownedBitmapAuthority)
       }
       try checkPresentation?()
@@ -896,13 +914,15 @@ final class PreviewNativeSource: @unchecked Sendable {
                                            localSourceValidation:bindingCheck)
         }
         let result = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { display in
-          try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
+          try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
+            window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
         }
         try validateCaptureAuthority(); return result
       }
       let graph = try DevelopmentRendererV3.develop(capture,recipe:recipe,context:context,thumbnailNativeSink:thumbnailNativeSink,
                                                    localSourceValidation:bindingCheck)
-      let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
+      let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,
+        window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
       try validateCaptureAuthority(); return result
     } catch {
       if let flashRawCacheSourceKey { FlashRawCanonicalTexturePool.shared.retire(sourceKey:flashRawCacheSourceKey) }

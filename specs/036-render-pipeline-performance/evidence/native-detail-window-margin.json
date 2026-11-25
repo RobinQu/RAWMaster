@@ -1,0 +1,1094 @@
+{
+  "binarySHA256": "8562e622e27caace2fbc8645f2c435155e7f60c82974511c2f224496f1b81538",
+  "build": "release",
+  "canonicalFlashRaw": true,
+  "caveats": [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive and settled are bounded to the 2400px canvas; detail/save/export remain native",
+    "Channel error is the settled frame against the native settled render, not against the gesture frame",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderOverride": false,
+  "decoderVersion": "8",
+  "flashRawAvailable": true,
+  "flashRawDemosaic": 0,
+  "flashRawTextureCache": {
+    "bytesPerPixel": 8,
+    "fills": 14,
+    "guideBytesPerPixel": 4,
+    "hits": 116,
+    "peakReservedBytes": 963477504,
+    "pinnedBytes": 0,
+    "residentBytes": 0
+  },
+  "latestFlashRawDecode": {
+    "availableThreads": 16,
+    "decoderBackend": "CPU NEON x16 threads",
+    "inputBytes": 69488640,
+    "nativeWallMilliseconds": 48.78458300000784,
+    "outputBytes": 361304064,
+    "postprocessBackend": "GPU Apple M4 Max (Metal, integrated), kernel 13.13 ms",
+    "stages": [
+      {
+        "milliseconds": 0.06075000000419095,
+        "name": "containerParse"
+      },
+      {
+        "milliseconds": 0,
+        "name": "metadata"
+      },
+      {
+        "milliseconds": 25.104832999997598,
+        "name": "entropyDecode"
+      },
+      {
+        "milliseconds": 0,
+        "name": "unpack"
+      },
+      {
+        "milliseconds": 0,
+        "name": "predictor"
+      },
+      {
+        "milliseconds": 0,
+        "name": "calibration"
+      },
+      {
+        "milliseconds": 0,
+        "name": "postprocess"
+      },
+      {
+        "milliseconds": 2.0522909999999683,
+        "name": "gpuUpload"
+      },
+      {
+        "milliseconds": 15.337375999995857,
+        "name": "gpuCompute"
+      },
+      {
+        "milliseconds": 5.540582999994513,
+        "name": "gpuDownload"
+      },
+      {
+        "milliseconds": 0,
+        "name": "preview"
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "approximate": true,
+      "detailMilliseconds": 112.676834,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 1.56425,
+      "interactiveMilliseconds": [
+        151.615,
+        1.56425,
+        1.382042
+      ],
+      "label": "neutral",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 1.250125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 43.045042,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.986292,
+      "interactiveMilliseconds": [
+        5.364625,
+        3.986292,
+        3.957
+      ],
+      "label": "exposure-color",
+      "maximumChannelError": 26,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.317292,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 3985.326292,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 20.54125,
+      "interactiveMilliseconds": [
+        33.272375,
+        20.54125,
+        19.541958
+      ],
+      "label": "adaptive-brilliance",
+      "maximumChannelError": 25,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 20.888792,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 501.456792,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.364875,
+      "interactiveMilliseconds": [
+        21.132042,
+        4.034167,
+        4.364875
+      ],
+      "label": "texture",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.535875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 470.877,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.494542,
+      "interactiveMilliseconds": [
+        13.3575,
+        3.443375,
+        3.494542
+      ],
+      "label": "clarity",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.456417,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 1474.284375,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.493833,
+      "interactiveMilliseconds": [
+        15.208875,
+        11.493833,
+        7.009333
+      ],
+      "label": "dehaze-v1",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.051666,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 1647.457417,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 10.971042,
+      "interactiveMilliseconds": [
+        13.637542,
+        10.971042,
+        10.739125
+      ],
+      "label": "dehaze-v2",
+      "maximumChannelError": 34,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.803541,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 32.16775,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1337,
+      "interactiveMedianMilliseconds": 5.993625,
+      "interactiveMilliseconds": [
+        8.769375,
+        5.993625,
+        5.801625
+      ],
+      "label": "geometry",
+      "maximumChannelError": 211,
+      "p99ChannelError": 3,
+      "qualityComparison": "settled-resampled-to-proxy",
+      "settledHeight": 1337,
+      "settledMilliseconds": 5.541292,
+      "settledWidth": 1973,
+      "width": 1973
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 35.181542,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1337,
+      "interactiveMedianMilliseconds": 6.775041,
+      "interactiveMilliseconds": [
+        8.628292,
+        6.775041,
+        6.7695
+      ],
+      "label": "post-crop-vignette",
+      "maximumChannelError": 211,
+      "p99ChannelError": 3,
+      "qualityComparison": "settled-resampled-to-proxy",
+      "settledHeight": 1337,
+      "settledMilliseconds": 6.969917,
+      "settledWidth": 1973,
+      "width": 1973
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 169.649917,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.161208,
+      "interactiveMilliseconds": [
+        11.161208,
+        12.385917,
+        10.316916
+      ],
+      "label": "lens-blur-procedural",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.867083,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 181.502125,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 10.30975,
+      "interactiveMilliseconds": [
+        9.338375,
+        12.091167,
+        10.30975
+      ],
+      "label": "lens-blur-device-depth",
+      "maximumChannelError": 18,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.060542,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 213.605291,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.87575,
+      "interactiveMilliseconds": [
+        22.582875,
+        12.87575,
+        11.907125
+      ],
+      "label": "lens-blur-refine-focus",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.539209,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 211.935417,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.596167,
+      "interactiveMilliseconds": [
+        12.773292,
+        12.596167,
+        11.909416
+      ],
+      "label": "lens-blur-refine-blur",
+      "maximumChannelError": 17,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.597125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 207.993542,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 12.594542,
+      "interactiveMilliseconds": [
+        12.594542,
+        14.113708,
+        11.983958
+      ],
+      "label": "lens-blur-refine-auto-mask",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.589875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 99.331666,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.83425,
+      "interactiveMilliseconds": [
+        7.83425,
+        10.293375,
+        7.035375
+      ],
+      "label": "lens-blur-bokeh-bubble",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.950208,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 64.189458,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.499167,
+      "interactiveMilliseconds": [
+        4.980083,
+        5.499167,
+        5.694416
+      ],
+      "label": "lens-blur-bokeh-five-blade",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.890708,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 66.135625,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.350833,
+      "interactiveMilliseconds": [
+        5.084167,
+        5.450208,
+        5.350833
+      ],
+      "label": "lens-blur-bokeh-ring",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.766375,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 63.234,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.935125,
+      "interactiveMilliseconds": [
+        5.148541,
+        4.935125,
+        4.669542
+      ],
+      "label": "lens-blur-bokeh-anamorphic",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.658459,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 64.4505,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.042625,
+      "interactiveMilliseconds": [
+        5.15775,
+        4.966625,
+        5.042625
+      ],
+      "label": "lens-blur-cat-eye",
+      "maximumChannelError": 19,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.784959,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 64.073292,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.727542,
+      "interactiveMilliseconds": [
+        5.095416,
+        4.727542,
+        4.643583
+      ],
+      "label": "lens-blur-bokeh-boost",
+      "maximumChannelError": 39,
+      "p99ChannelError": 1,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.639833,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 40.537666,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.384458,
+      "interactiveMilliseconds": [
+        3.498083,
+        3.384458,
+        3.13775
+      ],
+      "label": "lens-blur-depth-preview",
+      "maximumChannelError": 120,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.337875,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 316.968875,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.647583,
+      "interactiveMilliseconds": [
+        8.299959,
+        7.383875,
+        7.647583
+      ],
+      "label": "local-glow",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.566125,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 64.063042,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.446583,
+      "interactiveMilliseconds": [
+        8.854334,
+        4.446583,
+        4.273583
+      ],
+      "label": "bw-mixer",
+      "maximumChannelError": 19,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.57625,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 46.998334,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.259667,
+      "interactiveMilliseconds": [
+        4.882333,
+        3.259667,
+        3.202
+      ],
+      "label": "point-variance",
+      "maximumChannelError": 36,
+      "p99ChannelError": 12,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.008667,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 35.856666,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.2015,
+      "interactiveMilliseconds": [
+        3.320291,
+        3.2015,
+        3.060208
+      ],
+      "label": "targeted-hsl",
+      "maximumChannelError": 22,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.946208,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 42.58,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 7.752334,
+      "interactiveMilliseconds": [
+        14.54375,
+        7.752334,
+        7.705
+      ],
+      "label": "visualise-range",
+      "maximumChannelError": 1,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.646209,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 43.9185,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.290833,
+      "interactiveMilliseconds": [
+        9.291875,
+        8.149833,
+        8.290833
+      ],
+      "label": "hue-isolation",
+      "maximumChannelError": 1,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 8.135583,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 42.902875,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.739417,
+      "interactiveMilliseconds": [
+        3.193708,
+        2.739417,
+        2.660166
+      ],
+      "label": "clipping-shadows",
+      "maximumChannelError": 53,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.791667,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 44.571042,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.841209,
+      "interactiveMilliseconds": [
+        3.15,
+        2.785041,
+        2.841209
+      ],
+      "label": "clipping-highlights",
+      "maximumChannelError": 69,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.173208,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 37.236125,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 2.878333,
+      "interactiveMilliseconds": [
+        4.166875,
+        2.878333,
+        2.818292
+      ],
+      "label": "wb-flash-preset",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.818958,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 56.912958,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.170584,
+      "interactiveMilliseconds": [
+        5.418042,
+        4.170584,
+        4.166042
+      ],
+      "label": "refine-saturation",
+      "maximumChannelError": 25,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.9965,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 46.638959,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.2865,
+      "interactiveMilliseconds": [
+        3.841292,
+        3.210541,
+        3.2865
+      ],
+      "label": "point-curve-targeted",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.005,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 36.443667,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.064084,
+      "interactiveMilliseconds": [
+        4.388375,
+        2.878958,
+        3.064084
+      ],
+      "label": "defringe",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 2.778458,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 43.68275,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.256291,
+      "interactiveMilliseconds": [
+        3.568958,
+        3.256291,
+        3.093417
+      ],
+      "label": "point-color-samples",
+      "maximumChannelError": 25,
+      "p99ChannelError": 18,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.30775,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 210.883167,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.275459,
+      "interactiveMilliseconds": [
+        7.835917,
+        3.173625,
+        3.275459
+      ],
+      "label": "local-point-color",
+      "maximumChannelError": 21,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.130625,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 206.868208,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.678667,
+      "interactiveMilliseconds": [
+        3.806666,
+        3.678667,
+        3.483375
+      ],
+      "label": "local-light-extended",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.466666,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 221.925209,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.841084,
+      "interactiveMilliseconds": [
+        6.56925,
+        5.841084,
+        5.729625
+      ],
+      "label": "local-wb",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.298375,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 212.957625,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.445333,
+      "interactiveMilliseconds": [
+        3.864291,
+        3.342,
+        3.445333
+      ],
+      "label": "local-hue-colorize",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.274084,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 1463.191667,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 20.231833,
+      "interactiveMilliseconds": [
+        20.737625,
+        20.231833,
+        17.120625
+      ],
+      "label": "local-texture-clarity",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 17.544416,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 346.420667,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 8.643208,
+      "interactiveMilliseconds": [
+        8.705958,
+        8.4615,
+        8.643208
+      ],
+      "label": "local-dehaze",
+      "maximumChannelError": 44,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 7.780291,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 245.407583,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.904292,
+      "interactiveMilliseconds": [
+        13.670125,
+        3.671458,
+        3.904292
+      ],
+      "label": "local-grain",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.882709,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 239.519666,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.646792,
+      "interactiveMilliseconds": [
+        9.695417,
+        6.646792,
+        6.353792
+      ],
+      "label": "local-curves",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 6.1905,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 237.179041,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.509458,
+      "interactiveMilliseconds": [
+        6.509458,
+        6.742,
+        5.994542
+      ],
+      "label": "local-grading",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 5.30425,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 577.002667,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 20.371209,
+      "interactiveMilliseconds": [
+        20.371209,
+        29.315375,
+        15.204083
+      ],
+      "label": "local-detail",
+      "maximumChannelError": 91,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 26.538959,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 412.470792,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 11.206375,
+      "interactiveMilliseconds": [
+        18.281,
+        9.070416,
+        11.206375
+      ],
+      "label": "local-defringe",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 9.45275,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 111.727375,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.985666,
+      "interactiveMilliseconds": [
+        13.912,
+        3.121875,
+        3.985666
+      ],
+      "label": "global-sharpen-detail",
+      "maximumChannelError": 163,
+      "p99ChannelError": 13,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.533833,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 113.367,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 16.206042,
+      "interactiveMilliseconds": [
+        81.198708,
+        16.206042,
+        15.079125
+      ],
+      "label": "global-sharpen-mask-preview",
+      "maximumChannelError": 1,
+      "p99ChannelError": 0,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 14.863792,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 111.064167,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 6.823041,
+      "interactiveMilliseconds": [
+        12.700125,
+        5.406333,
+        6.823041
+      ],
+      "label": "global-noise-detail",
+      "maximumChannelError": 25,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 6.007833,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 70.822708,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.782125,
+      "interactiveMilliseconds": [
+        7.135334,
+        4.668958,
+        4.782125
+      ],
+      "label": "optics-ca-distortion",
+      "maximumChannelError": 125,
+      "p99ChannelError": 7,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.569458,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 45.656708,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 3.083292,
+      "interactiveMilliseconds": [
+        3.630667,
+        3.083292,
+        2.903417
+      ],
+      "label": "optics-lens-profile",
+      "maximumChannelError": 51,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.123542,
+      "settledWidth": 2400,
+      "width": 2400
+    }
+  ],
+  "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+  "prewarming": false,
+  "proxyVersion": "actual-parameters-linear-proxy-v3-flashraw-neutral/integral-noise-snap-v1/filter-global-v1/point-cache-retract-v1/sharpen-noise-detail-v1",
+  "rawBaseCacheBytes": 1073741824,
+  "recordedAt": "2026-11-25T08:35:51Z",
+  "schemaVersion": 1,
+  "scope": "1:1 shipped window: visible rect plus 50% per side (0.505x0.505), 50 recipes",
+  "settledReferenceTransport": "canonical",
+  "settledTransport": "viewport",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourceOverlayVersion": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1/scalar-mask-r32f-v2",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "transparentFrameFailures": []
+}

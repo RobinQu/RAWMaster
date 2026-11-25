@@ -1,0 +1,396 @@
+{
+  "binarySHA256": "2d50afa15f3a75bda850b63ac64f1dd93ccf28172bf1774739aeea44bc5fa5b9",
+  "build": "release",
+  "canonicalFlashRaw": true,
+  "caveats": [
+    "API return timing only; no WindowServer presentation or Adobe Camera Raw timing",
+    "Interactive and settled are bounded to the 2400px canvas; detail/save/export remain native",
+    "Channel error is the settled frame against the native settled render, not against the gesture frame",
+    "Cold process and OS caches are not purged; three consecutive samples per operation"
+  ],
+  "decoderOverride": false,
+  "decoderVersion": "8",
+  "flashRawAvailable": true,
+  "flashRawDemosaic": 0,
+  "flashRawTextureCache": {
+    "bytesPerPixel": 8,
+    "fills": 6,
+    "guideBytesPerPixel": 4,
+    "hits": 9,
+    "peakReservedBytes": 963477504,
+    "pinnedBytes": 0,
+    "residentBytes": 0
+  },
+  "latestFlashRawDecode": {
+    "availableThreads": 16,
+    "decoderBackend": "CPU NEON x16 threads",
+    "inputBytes": 69488640,
+    "nativeWallMilliseconds": 54.41641600000003,
+    "outputBytes": 361304064,
+    "postprocessBackend": "GPU Apple M4 Max (Metal, integrated), kernel 4.12 ms",
+    "stages": [
+      {
+        "milliseconds": 0.060500000000047294,
+        "name": "containerParse"
+      },
+      {
+        "milliseconds": 0,
+        "name": "metadata"
+      },
+      {
+        "milliseconds": 24.341875000000073,
+        "name": "entropyDecode"
+      },
+      {
+        "milliseconds": 0,
+        "name": "unpack"
+      },
+      {
+        "milliseconds": 0,
+        "name": "predictor"
+      },
+      {
+        "milliseconds": 0,
+        "name": "calibration"
+      },
+      {
+        "milliseconds": 0,
+        "name": "postprocess"
+      },
+      {
+        "milliseconds": 2.200333999999657,
+        "name": "gpuUpload"
+      },
+      {
+        "milliseconds": 19.866041000000678,
+        "name": "gpuCompute"
+      },
+      {
+        "milliseconds": 6.954458000000159,
+        "name": "gpuDownload"
+      },
+      {
+        "milliseconds": 0,
+        "name": "preview"
+      }
+    ]
+  },
+  "measurements": [
+    {
+      "approximate": true,
+      "detailMilliseconds": 281.090625,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 1.675333,
+      "interactiveMilliseconds": [
+        135.332292,
+        1.675333,
+        1.35025
+      ],
+      "label": "neutral",
+      "maximumChannelError": 20,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 1.323041,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 660.057167,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 4.095583,
+      "interactiveMilliseconds": [
+        16.474209,
+        4.095583,
+        3.689708
+      ],
+      "label": "texture",
+      "maximumChannelError": 21,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 3.177334,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 2116.79025,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 14.635042,
+      "interactiveMilliseconds": [
+        15.771292,
+        14.635042,
+        12.1365
+      ],
+      "label": "dehaze-v2",
+      "maximumChannelError": 34,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 13.864333,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 922.498458,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 20.5255,
+      "interactiveMilliseconds": [
+        28.786084,
+        20.5255,
+        18.370584
+      ],
+      "label": "local-detail",
+      "maximumChannelError": 91,
+      "p99ChannelError": 2,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 21.739542,
+      "settledWidth": 2400,
+      "width": 2400
+    },
+    {
+      "approximate": true,
+      "detailMilliseconds": 317.404875,
+      "effectiveDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+      "height": 1600,
+      "interactiveMedianMilliseconds": 5.001167,
+      "interactiveMilliseconds": [
+        39.949291,
+        4.46925,
+        5.001167
+      ],
+      "label": "optics-lens-profile",
+      "maximumChannelError": 51,
+      "p99ChannelError": 3,
+      "qualityComparison": "matched-pixels",
+      "settledHeight": 1600,
+      "settledMilliseconds": 4.662125,
+      "settledWidth": 2400,
+      "width": 2400
+    }
+  ],
+  "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+  "prewarming": false,
+  "proxyVersion": "actual-parameters-linear-proxy-v3-flashraw-neutral/integral-noise-snap-v1/filter-global-v1/point-cache-retract-v1/sharpen-noise-detail-v1",
+  "rawBaseCacheBytes": 1073741824,
+  "recordedAt": "2026-11-25T04:52:37Z",
+  "schemaVersion": 1,
+  "scope": "targeted 1:1 probe: 5 of 50 recipes, RAWMASTER_INTERACTIVE_DETAIL=1",
+  "settledReferenceTransport": "canonical",
+  "settledTransport": "viewport",
+  "sourceDecoder": "flashraw-0.3.1-linear-srgb-bilinear",
+  "sourceOverlayVersion": "flashraw-native-hue-sharpen-mask/source-lattice-local-grain-v1/scalar-mask-r32f-v2",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "sourceSHA256After": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "stages": [
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 200.75925,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 200.67525,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 162.241583,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 162.181917,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 588.53025,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 461.5835,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 126.748958,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 455.085875,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 454.905791,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 1746.280084,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 357.058125,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 386.10075,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 121.422583,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 124.520542,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 677.353,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 152.995167,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 140.824209,
+      "operation": "NativeFiniteReduction",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "原生宽度分带 · 标记、并行归约与 GPU 完成"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 575.124333,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 357.449166,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 131.126959,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 442.484958,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 352.162583,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 129.303041,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    },
+    {
+      "boundary": "GPU 完成",
+      "durationMilliseconds": 129.19425,
+      "operation": "显影有限值检查",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "全域归约"
+    },
+    {
+      "boundary": "图构建与校验",
+      "durationMilliseconds": 3.252875,
+      "operation": "DevelopmentRendererV3.develop",
+      "outcome": "成功",
+      "pixelCount": 60217344,
+      "stage": "完整显影图"
+    }
+  ],
+  "transparentFrameFailures": []
+}

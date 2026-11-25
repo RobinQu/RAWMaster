@@ -125,4 +125,33 @@ final class DevelopmentCheckedFiniteV3Tests: XCTestCase {
     catch is CancellationError {} catch { XCTFail("Unexpected cancellation error: \(error)") }
     XCTAssertEqual(joined.wait(timeout:.now()+1),.success)
   }
+  /// The banded native transport is a candidate admission for the general full-frame scan.
+  /// Both transports must accept and reject exactly the same inputs.
+  func testBandedNativeAdmissionAgreesWithTheLegacyFullFrameScan() throws {
+    func validate(_ image:CIImage, budget:Int?) throws {
+      let c=context();defer { c.clearCaches() }
+      if let budget {
+        try DevelopmentCanonicalFiniteGPU.$residentPhotoWorkingBudget.withValue(budget) {
+          try DevelopmentColorEngineV3.validateFinite(image,context:c)
+        }
+      } else {
+        try DevelopmentColorEngineV3.validateFinite(image,context:c)
+      }
+    }
+    for mode in ["valid","nanR-alpha0","positiveInfG-alpha0","negativeInfB","nanAlpha"] {
+      let id=UUID().uuidString
+      defer { FiniteProcessorReceipt.remove(id) }
+      let input=try image(mode,id:id)
+      let legacy=Result { try validate(input,budget:nil) }
+      let banded=Result { try validate(input,budget:DevelopmentCanonicalFiniteGPU.workingSetLimit) }
+      switch (legacy,banded) {
+      case (.success,.success): XCTAssertTrue(mode=="valid","Both transports accepted \(mode)")
+      case (.failure(let a),.failure(let b)):
+        guard case DevelopmentError.invalidEncoding=a else { return XCTFail("Legacy error for \(mode): \(a)") }
+        guard case DevelopmentError.invalidEncoding=b else { return XCTFail("Banded error for \(mode): \(b)") }
+      case (.success,.failure(let b)): XCTFail("Banded transport rejected \(mode) that the legacy scan accepted: \(b)")
+      case (.failure(let a),.success): XCTFail("Banded transport accepted \(mode) that the legacy scan rejected: \(a)")
+      }
+    }
+  }
 }

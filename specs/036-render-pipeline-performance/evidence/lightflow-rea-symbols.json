@@ -1,0 +1,944 @@
+{
+ "artifact": {
+  "architecture": null,
+  "digest": {
+   "sha256": "839cc57f015d24c2826aa835bfa5cf038feb78c911e0825e9d6341386367ed97"
+  },
+  "format": "directory",
+  "local_path": "/Users/robinqu/Workspace/github/robinqu/RAWMaster/output/035-processing/lightflow/site",
+  "name": "site"
+ },
+ "evidence_id": "ev_5a4b2dfcea9ece8079448d8f4e8ce849f87955a214031d11df04c330cecce5a8",
+ "limitations": [
+  "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+  "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+  "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+  "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+  "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+  "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.",
+  "assets/entry.client-DsBqhnPk.js: Resource constraint during analyze_javascript_application: Owned JavaScript worker exhausted its heap while analyzing assets/entry.client-DsBqhnPk.js during static",
+  "index.html has 5 inline JavaScript bodies starting at lines 1, 16, 16, 76, 76 that were not analyzed; endpoints, storage, imports and other facts in them are absent from the evidence.",
+  "license.html has 5 inline JavaScript bodies starting at lines 1, 16, 16, 93, 93 that were not analyzed; endpoints, storage, imports and other facts in them are absent from the evidence."
+ ],
+ "statistics": {
+  "findings": 846,
+  "invalid_utf8_files": 0,
+  "modules": 0,
+  "nested_asar_containers": 0,
+  "parse_failures": 0,
+  "parsed_javascript_files": 43,
+  "relevant_files": 47,
+  "skipped_javascript_files": 1,
+  "text_bytes_read": 2980705,
+  "visited_ast_nodes": 670783
+ },
+ "symbols": {
+  "bitmapBand": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_e48866748a5baf2d591d926b9f2e36efc4e4febe4682030a7e7bc9cd76bbc14f",
+    "role_key": "callable:callable:method:7321:7668",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 187
+     },
+     "start": {
+      "column": 4,
+      "line": 180
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_f8badd5f88bac415294cb8600f027f48e7a4ceb95950db83983e580d76cdfb3a",
+    "role_key": "callable:callable:method:7318:7665",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 187
+     },
+     "start": {
+      "column": 4,
+      "line": 180
+     }
+    }
+   }
+  ],
+  "bitmapBegin": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_8e478b5e5db466e317330478db06833a394b052b8b24c162b310900e0cddbe94",
+    "role_key": "callable:callable:method:7878:8223",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 201
+     },
+     "start": {
+      "column": 4,
+      "line": 194
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_047980714793b4fb498bb00f147d00cd9217a6737bcb5c856dfc357147e97ab1",
+    "role_key": "callable:callable:method:7875:8220",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 201
+     },
+     "start": {
+      "column": 4,
+      "line": 194
+     }
+    }
+   }
+  ],
+  "bitmapFinish": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_0d821eb6faf67d4817901feb0d27d7f9ef18d34b3a2ecdeb13e7176ac52b45c5",
+    "role_key": "callable:callable:method:8429:9307",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 229
+     },
+     "start": {
+      "column": 4,
+      "line": 208
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_887746b598730e81c96e978162206603d00aae7df52c47833bdef81947463900",
+    "role_key": "callable:callable:method:8426:9304",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 229
+     },
+     "start": {
+      "column": 4,
+      "line": 208
+     }
+    }
+   }
+  ],
+  "commitSource": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_fca0606854ac29738e790abef7de22e43d90477d71973e1162d6eac2ceaa21fc",
+    "role_key": "callable:callable:method:9446:9763",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 241
+     },
+     "start": {
+      "column": 4,
+      "line": 234
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_4a798eeab9c43dfd2d885887f0a18262fd0b4860cc9c55a50bdd9802e2ca0e3b",
+    "role_key": "callable:callable:method:9443:9760",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 241
+     },
+     "start": {
+      "column": 4,
+      "line": 234
+     }
+    }
+   }
+  ],
+  "compileDemanded": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_ff481cab7338da696b795a7345273aab4c4f8ed7dd59ee677b105fc9173a9efe",
+    "role_key": "callable:callable:method:10041:10170",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 251
+     },
+     "start": {
+      "column": 4,
+      "line": 248
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_6a44909ae8f5cace45f0588ae3c525d1cf48bd0ad74a230899fcd3a2b97335a6",
+    "role_key": "callable:callable:method:10038:10167",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 251
+     },
+     "start": {
+      "column": 4,
+      "line": 248
+     }
+    }
+   }
+  ],
+  "compileLog": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_0a65cf372f3b2724ea75b5ccf37f8f7922c167f9a8e56cf2b9a3f32e9e1aed76",
+    "role_key": "callable:callable:method:10319:10688",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 267
+     },
+     "start": {
+      "column": 4,
+      "line": 256
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_db1ad0062e89b3d798294cbeb492e34ac996098b8cb30080ea8c8ca781f99ed2",
+    "role_key": "callable:callable:method:10316:10685",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 267
+     },
+     "start": {
+      "column": 4,
+      "line": 256
+     }
+    }
+   }
+  ],
+  "compileQueued": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_16ad38a86a1ce04ddf3588abcecb7cefdcd9444148fba42aebe69fe576f541d1",
+    "role_key": "callable:callable:method:10869:10994",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 276
+     },
+     "start": {
+      "column": 4,
+      "line": 273
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_430c1454839679c41d7e22c4877eb31caaf34fd20b124811101339447014f5f5",
+    "role_key": "callable:callable:method:10866:10991",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 276
+     },
+     "start": {
+      "column": 4,
+      "line": 273
+     }
+    }
+   }
+  ],
+  "copyHandle": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_c89ae63183a57ec4ad3cffc5a04b7a97d1599ebc2ffe8977971fef597a718d67",
+    "role_key": "callable:callable:method:11160:11371",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 288
+     },
+     "start": {
+      "column": 4,
+      "line": 282
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_e1d566510d2268b53b7db144802d26a28990a2682627e95e8f3b027aa2e92ac5",
+    "role_key": "callable:callable:method:11157:11368",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 288
+     },
+     "start": {
+      "column": 4,
+      "line": 282
+     }
+    }
+   }
+  ],
+  "dropSource": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_0c27325baf95d918d91e89a95e1e357356b8b1d8075e86dc44154f1992084a5c",
+    "role_key": "callable:callable:method:14289:14507",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 361
+     },
+     "start": {
+      "column": 4,
+      "line": 357
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_3c66883add832d178616bef96153ab607d85a6a52f2aeb806d2e37fbf1a302ab",
+    "role_key": "callable:callable:method:14286:14504",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 361
+     },
+     "start": {
+      "column": 4,
+      "line": 357
+     }
+    }
+   }
+  ],
+  "exportBegin": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_ea45788be55c0b1e545228267e37256e5b277f6565562b0ee52a051e19ee5a9f",
+    "role_key": "callable:callable:method:15238:15923",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 397
+     },
+     "start": {
+      "column": 4,
+      "line": 385
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_0d02d60506da436971ee0a6f397fee6e2280e8b36e86b1d7ca046fe9224d2dd6",
+    "role_key": "callable:callable:method:15235:15920",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 397
+     },
+     "start": {
+      "column": 4,
+      "line": 385
+     }
+    }
+   }
+  ],
+  "exportEnd": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_02be053dad20919b312450721af6a84f1a15701c62039c20a65f00b24f4b75c0",
+    "role_key": "callable:callable:method:16007:16086",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 404
+     },
+     "start": {
+      "column": 4,
+      "line": 402
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_389383c22ea3c9e77af6b31681a3079f94cd4675054a1ef12b5ef790488624b4",
+    "role_key": "callable:callable:method:16004:16083",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 404
+     },
+     "start": {
+      "column": 4,
+      "line": 402
+     }
+    }
+   }
+  ],
+  "exportTile": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_9315e1e7bc92c6a1c102a16a2905eaa778dea32c72d2d016f28f36003c5d14f7",
+    "role_key": "callable:callable:method:16406:16627",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 419
+     },
+     "start": {
+      "column": 4,
+      "line": 413
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_e744e9cdc11ddafc3198e30cb6758504b26e896b323e8837d22df937359efd40",
+    "role_key": "callable:callable:method:16403:16624",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 419
+     },
+     "start": {
+      "column": 4,
+      "line": 413
+     }
+    }
+   }
+  ],
+  "readTicket": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_6d1e5ecce4678db24c82bd0f4977e71787a8fbbfaab2b4c8d9e7888b658e7591",
+    "role_key": "callable:callable:method:34193:34312",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 839
+     },
+     "start": {
+      "column": 4,
+      "line": 836
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_ccccd4dc99c1c4fd8a1f84dbd2a90b40069eedbb676d065c47e8f178281e3f0b",
+    "role_key": "callable:callable:method:34190:34309",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 839
+     },
+     "start": {
+      "column": 4,
+      "line": 836
+     }
+    }
+   }
+  ],
+  "release": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_66caa6e9d0e977fb56651680f16747e58e99f502aceb8b0713ac5f0ebddd4673",
+    "role_key": "callable:callable:method:34438:34519",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 846
+     },
+     "start": {
+      "column": 4,
+      "line": 844
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_6e664c9b2cb37b5569c7bf2bb8273e53e491bc68a85701ece9cbb6f4544575b7",
+    "role_key": "callable:callable:method:34435:34516",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 846
+     },
+     "start": {
+      "column": 4,
+      "line": 844
+     }
+    }
+   },
+   {
+    "artifact_sha256": "6ea14c9f2b5c8c5141597d9e28ea2fff807d50816c7c9c777706b43f895fbc4e",
+    "module": "assets/codecWorker-Dt1VOinP.js",
+    "node_id": "jsrg_node_d56942f0b35b6e75a00e7d1017124e732f2695b04f2ef94aad55f8e67e8c7d8a",
+    "role_key": "callable:callable:method:1877:1948",
+    "source_range": {
+     "end": {
+      "column": 1948,
+      "line": 1
+     },
+     "start": {
+      "column": 1877,
+      "line": 1
+     }
+    }
+   },
+   {
+    "artifact_sha256": "82cb8a8b22f6cf3278b583153bb8c5081fdf1edebdc87c9858b0f1dfc421980c",
+    "module": "assets/cpuWorker-DaXiU2P4.js",
+    "node_id": "jsrg_node_0055e79559447d3f2733ee4e30e0cf0ed99bc1e03a70f18bf95c5a18ec4b2fd8",
+    "role_key": "callable:callable:method:31540:31609",
+    "source_range": {
+     "end": {
+      "column": 31609,
+      "line": 1
+     },
+     "start": {
+      "column": 31540,
+      "line": 1
+     }
+    }
+   },
+   {
+    "artifact_sha256": "82cb8a8b22f6cf3278b583153bb8c5081fdf1edebdc87c9858b0f1dfc421980c",
+    "module": "assets/cpuWorker-DaXiU2P4.js",
+    "node_id": "jsrg_node_4397ba4fb8a30e1b30f253693a1039ce3c4e2969db42668198698136d84fc7b2",
+    "role_key": "callable:callable:method:24653:24701",
+    "source_range": {
+     "end": {
+      "column": 24701,
+      "line": 1
+     },
+     "start": {
+      "column": 24653,
+      "line": 1
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_0491b971d4d69122a88a6123ab7b2d7c41b1d015a0cbd427c7caa10ae0ef0a60",
+    "role_key": "callable:callable:method:332555:332572",
+    "source_range": {
+     "end": {
+      "column": 44436,
+      "line": 29
+     },
+     "start": {
+      "column": 44419,
+      "line": 29
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_0bfd177a73512ef74da458a2fed375fef306739651f59dc0760d972cada2b9fc",
+    "role_key": "callable:callable:method:298943:298954",
+    "source_range": {
+     "end": {
+      "column": 10818,
+      "line": 29
+     },
+     "start": {
+      "column": 10807,
+      "line": 29
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_19e7aac7676a85338e060beed4b2b9c92e76f24c0d755c56e7d042d4880f095e",
+    "role_key": "callable:callable:method:422627:422902",
+    "source_range": {
+     "end": {
+      "column": 36320,
+      "line": 30
+     },
+     "start": {
+      "column": 36045,
+      "line": 30
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_656003901dd8824b72b943b5682ce5d2e1ea5558d2c62b0dd5baa651fe58a681",
+    "role_key": "callable:callable:method:399506:399521",
+    "source_range": {
+     "end": {
+      "column": 12939,
+      "line": 30
+     },
+     "start": {
+      "column": 12924,
+      "line": 30
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_a35c824e09279ee748fd9c6442d0b0b0ff370ec6dcfa43bdb50282cdfacf7571",
+    "role_key": "callable:callable:method:470858:470906",
+    "source_range": {
+     "end": {
+      "column": 84324,
+      "line": 30
+     },
+     "start": {
+      "column": 84276,
+      "line": 30
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_f957d92cb6ecd3529431cd4257b439cb56983506322f1a3c76f8be74cbff3c09",
+    "role_key": "callable:callable:method:327393:327495",
+    "source_range": {
+     "end": {
+      "column": 39359,
+      "line": 29
+     },
+     "start": {
+      "column": 39257,
+      "line": 29
+     }
+    }
+   }
+  ],
+  "render": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_511fc974d4873eef2c72114dacea572cee25f94a225798522ca8a0f65971f43d",
+    "role_key": "callable:callable:method:36712:37558",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 903
+     },
+     "start": {
+      "column": 4,
+      "line": 889
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_75e000fbf3ee06a799f84e3b9eabf7f76a04a9dfee296f7ec7cb5f75a4477b53",
+    "role_key": "callable:callable:method:36709:37555",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 903
+     },
+     "start": {
+      "column": 4,
+      "line": 889
+     }
+    }
+   },
+   {
+    "artifact_sha256": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "module": "assets/chunk-OB3PAWPO-CFl22NXe.js",
+    "node_id": "jsrg_node_33788dd94741858bcb7b1a0874d657503ce985e636f62b1b14c3f5b71293ae6a",
+    "role_key": "callable:callable:method:76652:77016",
+    "source_range": {
+     "end": {
+      "column": 3061,
+      "line": 29
+     },
+     "start": {
+      "column": 2697,
+      "line": 29
+     }
+    }
+   },
+   {
+    "artifact_sha256": "419040e8b41cdb0f8f39a4f8866552949f12b66f2b7ab728f4209b6d02d3e77a",
+    "module": "assets/chunk-OB3PAWPO-CFl22NXe.js",
+    "node_id": "jsrg_node_f6daef55c8e6d5527d77d0f8c97297e4a1445f5b7144cc7620c295939cc325b0",
+    "role_key": "callable:callable:method:121271:121390",
+    "source_range": {
+     "end": {
+      "column": 1760,
+      "line": 47
+     },
+     "start": {
+      "column": 1641,
+      "line": 47
+     }
+    }
+   },
+   {
+    "artifact_sha256": "0ca67eaec7788ac79439d6700c6791cff845bbb8938d6b2d295831871afc678e",
+    "module": "assets/index-zP4kU_H7.js",
+    "node_id": "jsrg_node_12d3c353d46f495c605b9a01d0b7d0638ae1d61fad19dd8769673931ebe10067",
+    "role_key": "callable:callable:method:1013866:1014292",
+    "source_range": {
+     "end": {
+      "column": 627710,
+      "line": 30
+     },
+     "start": {
+      "column": 627284,
+      "line": 30
+     }
+    }
+   }
+  ],
+  "scopeAccumulate": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_eb6425c95148e2783d0b014492c4f07e02cd205187adf7f713e7d8880639da6f",
+    "role_key": "callable:callable:method:37854:38261",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 919
+     },
+     "start": {
+      "column": 4,
+      "line": 911
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_ed735f1e4a51c1cf2600f81dadd7584fbcf054cb6303b4b1ecfa55bc13d6c847",
+    "role_key": "callable:callable:method:37851:38258",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 919
+     },
+     "start": {
+      "column": 4,
+      "line": 911
+     }
+    }
+   }
+  ],
+  "viewerDone": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_dd7d2858a4af169c47decc9368daa55e83b0a9948d7e0507e9395e809de66039",
+    "role_key": "callable:callable:method:48868:49191",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1200
+     },
+     "start": {
+      "column": 4,
+      "line": 1193
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_c4909a8370308b721b0a3fe22791f345e982f4490d7b1d0b03914ee667176374",
+    "role_key": "callable:callable:method:48865:49188",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1200
+     },
+     "start": {
+      "column": 4,
+      "line": 1193
+     }
+    }
+   }
+  ],
+  "viewerFrame": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_71e0e86539879c467a2c47c90235a09c12cf1837f8373918e3735584db70a6b2",
+    "role_key": "callable:callable:method:49715:51249",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1242
+     },
+     "start": {
+      "column": 4,
+      "line": 1213
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_7c1bbc13204e38697acabf703b23fd04864cb7a5a4166516aa666ca06315a6d2",
+    "role_key": "callable:callable:method:49712:51246",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1242
+     },
+     "start": {
+      "column": 4,
+      "line": 1213
+     }
+    }
+   }
+  ],
+  "viewerInvalidate": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_7b6c0ade936f0c0aafd822d1721e94bd1f7bd2777eda62c6974fcfe05ba4bb14",
+    "role_key": "callable:callable:method:51370:51705",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1255
+     },
+     "start": {
+      "column": 4,
+      "line": 1248
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_bd413d244cb6d122980fb13d77112cb685e34ab47325244f309a38ed562bb901",
+    "role_key": "callable:callable:method:51367:51702",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1255
+     },
+     "start": {
+      "column": 4,
+      "line": 1248
+     }
+    }
+   }
+  ],
+  "viewerTick": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_d88112bea6f2f65b57eed90e274b34243d4e6076b8ea9abbd5acd3cb3a2ee405",
+    "role_key": "callable:callable:method:55375:55769",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1366
+     },
+     "start": {
+      "column": 4,
+      "line": 1358
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_c3aa47b3dd2c1b0b1522b3160c12a96837fc12d96e0bca94fa178cf3ffcb282a",
+    "role_key": "callable:callable:method:55372:55766",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1366
+     },
+     "start": {
+      "column": 4,
+      "line": 1358
+     }
+    }
+   }
+  ],
+  "warmStep": [
+   {
+    "artifact_sha256": "4ba8bdddca77d75c12d57f9822cfa854dd602c696c98ba0375f9ff9b8d89461d",
+    "module": "_b/20261111155800-2d41ab1/rust/web-mt/lightflow_host_wasm_mt.js",
+    "node_id": "jsrg_node_efbdc980d762015024846f6cf492739325f18af3a191dfb4accb961396b4b424",
+    "role_key": "callable:callable:method:56320:56427",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1384
+     },
+     "start": {
+      "column": 4,
+      "line": 1381
+     }
+    }
+   },
+   {
+    "artifact_sha256": "abfbf794fd93d16630a9a4427b73ae1ee0d6a370f5ecd496a00c0ea261aee055",
+    "module": "_b/20261111155800-2d41ab1/rust/web/lightflow_host_wasm.js",
+    "node_id": "jsrg_node_aa30a8cd0c0c05aa883302598a56a683c3e1498489006dc5a9bafcf049ddda04",
+    "role_key": "callable:callable:method:56317:56424",
+    "source_range": {
+     "end": {
+      "column": 5,
+      "line": 1384
+     },
+     "start": {
+      "column": 4,
+      "line": 1381
+     }
+    }
+   }
+  ]
+ },
+ "tool": "REA analyze_javascript_application"
+}
