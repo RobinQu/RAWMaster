@@ -87,6 +87,9 @@ final class PreviewNativeSource: @unchecked Sendable {
   private static let retainsFullValidationCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_FULL_VALIDATION_CACHE"] == "1" &&
     ProcessInfo.processInfo.environment["RAWMASTER_MAXIMUM_QA_SCALARS"] != "1"
   private static let reusesCanonicalContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_CONTEXT_REUSE"] == "1"
+  /// Opt-in candidate for the native path: cache intermediates so the validation scan and the
+  /// final materialization evaluate the graph once. Default off; no production caller sets it.
+  private static let nativeIntermediateCache = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE"] == "1"
   private static let reusesPortableHalfContext = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_HALF_CONTEXT_REUSE"] == "1"
   private static let cachesSpatialMasks = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_SPATIAL_MASK_CACHE"] == "1"
   private(set) var context: CIContext
@@ -583,6 +586,10 @@ final class PreviewNativeSource: @unchecked Sendable {
       CanonicalPreviewDiagnostic.measure("clear before render") { self.context.clearCaches() }
       var options: [CIContextOption: Any] = [.workingColorSpace:DevelopmentColorEngineV3.linearSRGB,
         .workingFormat:CIFormat.RGBAf.rawValue,.cacheIntermediates:false,.memoryTarget:contextMemoryLimitMiB]
+      // Candidate: the native path validates the whole graph and then materializes it again.
+      // Caching intermediates lets the second evaluation reuse the first. Still off by default:
+      // measured gain on the native 1:1 path is 1-3%, below the option's documented risk.
+      if Self.nativeIntermediateCache { options[.cacheIntermediates] = true }
       let pointwise = DevelopmentCanonicalFiniteGPU.eligible(adjustments,maxPixel:maxPixel)
       let grading = checkCanonicalHalfFIT != nil && PreviewPortableGrading.enabled
         ? PreviewPortableGrading(adjustments) : nil

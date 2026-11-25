@@ -13,11 +13,15 @@
 - [x] 状态行区分 `原生像素` / `预览 … · 原生 …` / `快速预览 … 待完整预览`。
 - [x] 新增 `PreviewSettledTransportTests`：默认策略不变、视口定稿与交互帧逐字节相同、不可缩放算子回退原生、`detail` 保持原生。
 - [x] 交互性能用例记录 `settledTransport` 并提供 `RAWMASTER_INTERACTIVE_SETTLED_TRANSPORT=canonical` 复现旧口径。
+- [x] 交互性能用例在 `viewport` 下另开 `canonical` 会话，把「视口定稿 vs 原生定稿」的逐通道差写回 `p99ChannelError` / `maximumChannelError`，避免质量门因同一次求值退化为恒零。
+- [x] 交互性能用例新增 `RAWMASTER_INTERACTIVE_DETAIL=1` 的 1:1 探针，记录 `detailMilliseconds`，并把 7 个配方与遥测记入[验证记录](validation.md#11detail-仍是原生全帧)。默认不跑，报文形状不变。
+- [x] 通用原生有限值扫描接到分带归约传输（默认开，可回退）：1:1 快 12–46%，输出逐字节不变，接受／拒绝集合有逐模式对照用例。
+- [ ] **把归约与物化合成一次求值。** `createCGImage` 仍把同一棵图再算一遍。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 只省 1–3%，已判定不作为默认。真正的解法是分带物化＋分带归约＋分带 FIT 的统一传输（现有 grain／sharpen／dehaze 三条分带路径各自实现了一份）。
 - [x] 50 个控件配方的同机前后实测，见[验证记录](validation.md)。
 
 ## 待办
 
-- [ ] **1:1 只渲染可见 ROI。** 现在 `detail` 仍是整帧原生构图。参考 Alcedo `RenderType.DETAIL_ROI_PREVIEW`：按视口 `{x, y, scale, target}` 求源 ROI，邻域算子按 halo 外扩。需要先决定 `canonicalPixelSize` 之外的 ROI 身份如何进入缓存键。
+- [ ] **1:1 只渲染可见 ROI。** 现在 `detail` 仍是整帧原生构图。参考 Alcedo `RenderType.DETAIL_ROI_PREVIEW`：按视口 `{x, y, scale, target}` 求源 ROI，邻域算子按 halo 外扩。需要先决定 `canonicalPixelSize` 之外的 ROI 身份如何进入缓存键。这是 1:1 剩余成本（154–1820 ms）的主要来源。
 - [ ] **解码端降分辨率。** 给 `Sources/CFlashRaw` 增加 `max_dimension` 透出（底层 `flashraw_decode_options.max_dimension` 已支持），让视口帧不必先解全尺寸 CFA。参考 Alcedo `DecodeRes`。需要单独的像素差记录，因为它是解码头而非重采样差。
 - [ ] **视口尺寸跟随画布。** 现在固定 2400 px。收窄窗口或外接显示器时应在合理的 1×/2× 档位内跟随，避免放大。
 - [ ] **`local-defringe` 无缓存重求值 33 ms。** 交互帧 12.6 ms，产品位图缓存下回落到 0.275 ms，说明额外成本在重求值。先看是否重复求值了后缀（`renderInteractiveProxy` 在非 `identityDisplay` 路径上会再走一次 `suffix`）。

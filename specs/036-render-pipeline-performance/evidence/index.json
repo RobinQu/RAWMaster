@@ -33,6 +33,33 @@
       "policy": "proxyV1 interactive; viewport settled; bitmapCache=134217728; rawBaseCache=1073741824",
       "settledTransport": "viewport",
       "sha256": "6b72ba82df4cf67bef111246341403d3a92a69cfacca8d28ba6dd1d0e2ffc42f"
+    },
+    {
+      "file": "viewport-settled-vs-native.json",
+      "measurements": 50,
+      "name": "viewport-settled-vs-native",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "referenceTransport": "canonical",
+      "settledTransport": "viewport",
+      "sha256": "7a6f85b6c38cdd72a7a13163e88751fc8328eb0e0a1127e3d3e0aa479c4de902"
+    },
+    {
+      "file": "native-detail-fullframe-scan.json",
+      "measurements": 5,
+      "name": "native-detail-fullframe-scan",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "targeted 1:1 probe: 5 of 50 recipes, RAWMASTER_INTERACTIVE_DETAIL=1",
+      "settledTransport": "viewport",
+      "sha256": "60dd11911353353be84e667476b4172b0ee7c0d0be3e03b596191a789b9d17fb"
+    },
+    {
+      "file": "native-detail-banded-scan.json",
+      "measurements": 5,
+      "name": "native-detail-banded-scan",
+      "policy": "proxyV1 interactive; viewport settled; bitmapCache=0; rawBaseCache=1073741824",
+      "scope": "targeted 1:1 probe: 5 of 50 recipes, RAWMASTER_INTERACTIVE_DETAIL=1",
+      "settledTransport": "viewport",
+      "sha256": "6fd6ee02525cec90050e4ef248bd8ebe6cd8840a44e7d15a771a35e9f060a305"
     }
   ]
 }

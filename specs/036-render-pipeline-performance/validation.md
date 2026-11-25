@@ -29,6 +29,9 @@ swift test -c release --jobs 4 --filter EditingInteractivePerformanceTests
 | 原生定稿（改前口径） | `output/performance/perf-viewport-full-075150/` | [canonical-settled.json](evidence/canonical-settled.json) |
 | 视口定稿，无位图缓存（新求值） | `output/performance/perf-viewport-final/` | [viewport-settled.json](evidence/viewport-settled.json) |
 | 视口定稿，产品 128 MB 位图缓存 | `output/performance/perf-viewport-product/` | [viewport-settled-product-cache.json](evidence/viewport-settled-product-cache.json) |
+| 视口定稿 vs 原生定稿逐像素 | `output/performance/perf-viewport-quality/` | [viewport-settled-vs-native.json](evidence/viewport-settled-vs-native.json) |
+| 1:1 整幅扫描（改前） | `output/performance/perf-detail-banded-0/` | [native-detail-fullframe-scan.json](evidence/native-detail-fullframe-scan.json) |
+| 1:1 分带归约（改后） | `output/performance/perf-detail-banded-1/` | [native-detail-banded-scan.json](evidence/native-detail-banded-scan.json) |
 
 证据目录只保留测量矩阵、策略标识与相关阶段遥测；完整原始日志留在各自的 `output/` 目录（该目录被 git 忽略）。[索引](evidence/index.json)
 
@@ -115,16 +118,18 @@ swift test -c release --jobs 4 --filter EditingInteractivePerformanceTests
 
 ## 像素差
 
-定稿视口帧与松手前的交互帧是同一次求值（同一 `outputKey`，产品缓存直接命中），所以「改前 vs 改后」的像素差等于「交互代理 vs 原生定稿」的差。该差由同一二进制在原生定稿那一轮里逐像素记录（`measurements[].p99ChannelError` / `maximumChannelError`，把原生定稿整帧以高质量重采样到 2400 后比较）：
+定稿视口帧与松手前的交互帧是同一次求值（同一 `outputKey`，产品缓存直接命中），所以「改前 vs 改后」的像素差等于「视口构图 vs 原生定稿」的差。交互性能用例为此在 `viewport` 策略下另开一个 `canonical` 会话，把原生定稿整帧以高质量重采样到 2400 后逐通道比较，记录 `p99ChannelError` / `maximumChannelError`。
 
 | 项 | 结果 |
 | --- | --- |
 | p99 通道差中位 | 2/255（0.8%） |
 | p99 通道差最大 | 18/255 |
 | 最大通道差中位 | 20/255 |
-| 最大通道差最大 | 211/255（`geometry`、`post-crop-vignette`，集中在校正边缘的个别像素；这两项 p99 均为 3） |
+| 最大通道差最大 | 211/255（`geometry`、`post-crop-vignette`；两项 p99 均为 3/255，差值集中在几何校正边缘的个别像素） |
 
 纯点运算配方（曝光、白平衡、曲线、色阶、色轮、黑白、饱和度细化）的最大差在 19–26/255，p99 在 2–3/255，差值集中在高对比边缘的重采样振铃。
+
+同一轮视口定稿的时延：中位 4.97 ms、P95 16.35 ms、最大 28.07 ms（`local-detail`），合计 337.1 ms。
 
 ## 逐字节等价
 
@@ -144,7 +149,7 @@ swift test -c release --jobs 4 --filter PreviewSettledTransportTests
 
 | 范围 | 结果 |
 | --- | --- |
-| `RAWMasterImagingTests`（1,052 项） | 0 失败，79 项 opt-in／真实原片用例按设计跳过 |
+| `RAWMasterImagingTests`（1,053 项） | 0 失败，79 项 opt-in／真实原片用例按设计跳过 |
 | `PreviewInteractiveProxyTests`（18 项） | 0 失败；其中两项断言「定稿仍是原生」，因为它们使用 `PreviewResourcePolicy.default`（`canonical`） |
 | `DevelopmentPreviewServiceTests` | 0 失败 |
 | `scripts/check-ui-prototype.py`（37 组） | 0 失败 |
@@ -157,9 +162,59 @@ swift test -c release --jobs 4 --filter PreviewSettledTransportTests
 - [三份参考实现对照](../../docs/research/gpu-pipeline-references.md)：Alcedo `68a2c235`、FlashRaw `bee2ca1a`、LightFlow 发布构建 `20261111155800-2d41ab1`。
 - [LightFlow REA 符号](evidence/lightflow-rea-symbols.json)：`analyze_javascript_application` 覆盖 43 个 JS、670,783 个 AST 节点，提取 21 个引擎方法的模块 SHA 与源码区间；发现此前 035 未覆盖的多线程绑定 `web-mt/lightflow_host_wasm_mt.js`。WABT 未配置，本轮未做 WAT 级验证，沿用 035 的既有取证。
 
+## 1:1（`detail`）仍是原生全帧
+
+1:1 仍按原生分辨率构图（未做 ROI 裁剪）。用 `RAWMASTER_INTERACTIVE_DETAIL=1` 在同一原片上取 7 个配方，先看改前的成本构成：
+
+| 配方 | 定稿（视口）ms | 1:1（原生）ms，整幅扫描 |
+| --- | ---: | ---: |
+| neutral | 1.26 | 275.0 |
+| exposure-color | 4.78 | 257.6 |
+| texture | 3.47 | 662.6 |
+| clarity | 4.79 | 630.7 |
+| dehaze-v2 | 10.69 | 2177.3 |
+| local-detail | 22.90 | 923.5 |
+| optics-lens-profile | 3.80 | 333.8 |
+
+遥测显示 `optics-lens-profile` 的 333.8 ms 里，`DevelopmentRendererV3.develop` 占 208.2 ms，其中 `显影有限值检查` 的**全域归约**就是 208.1 ms，图构建本身只有 0.01 ms。也就是说原生路径的可压缩部分不在算子，而在对 60 MP 浮点图做整幅有限值扫描。
+
+### 分带归约（本轮已默认启用）
+
+把通用原生扫描接到锐化输出已在用的分带传输上（见[规格](spec.md#原生扫描改用分带归约)）。同机逐配方：
+
+| 1:1 配方 | 整幅扫描 ms | 分带归约 ms | 变化 |
+| --- | ---: | ---: | ---: |
+| neutral | 281.1 | 154.8 | −45% |
+| optics-lens-profile | 317.4 | 171.9 | −46% |
+| texture | 660.1 | 536.6 | −19% |
+| local-detail | 922.5 | 808.0 | −12% |
+| dehaze-v2 | 2,116.8 | 1,820.0 | −14% |
+
+输出不变：同一轮的 1:1 成片 PNG 在两种传输下逐字节相同（`neutral`、`texture`、`dehaze-v2`、`optics-lens-profile`、`local-detail`）。接受／拒绝集合由 `testBandedNativeAdmissionAgreesWithTheLegacyFullFrameScan` 逐模式对照。
+
+复现：
+
+```sh
+for MODE in 0 1; do
+RAWMASTER_QA_CANONICAL_BANDED_NATIVE_FINITE=$MODE \
+RAWMASTER_FLASHRAW_LIBRARY=$PWD/output/tools/flashraw-target/release/libflashraw_capi.dylib \
+RAWMASTER_REQUIRE_FLASHRAW=1 RAWMASTER_INTERACTIVE_PERF=1 RAWMASTER_INTERACTIVE_DETAIL=1 \
+RAWMASTER_INTERACTIVE_WRITE_IMAGES=1 \
+RAWMASTER_INTERACTIVE_PERF_ONLY='neutral,texture,dehaze-v2,optics-lens-profile,local-detail' \
+RAWMASTER_INTERACTIVE_PERF_SOURCE=$PWD/output/performance/acr-benchmark.ARW \
+RAWMASTER_INTERACTIVE_PERF_OUTPUT=$PWD/output/performance/perf-detail-pixels-$MODE \
+RAWMASTER_INTERACTIVE_RAW_BASE_CACHE=1 \
+swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerformanceTests
+done
+```
+
+### 仍未压缩的部分
+
+`createCGImage` 仍会把同一棵图再算一遍，1:1 需要一次性物化 60 MP RGBA8。`RAWMASTER_QA_CANONICAL_INTERMEDIATE_CACHE=1` 让上下文缓存中间值，实测只省 1–3%，因此默认关闭。真正的下一步是 1:1 只渲染可见 ROI（Alcedo `DETAIL_ROI_PREVIEW`、LightFlow 的 `RenderTarget`），它同时解掉「整幅扫描」和「整幅物化」两笔成本，但会改变原生有限值证明与几何映射的契约，需要单独验收。
+
 ## 未覆盖
 
-- **`RAWMasterUITests` 有 13 条失败与本次改动无关。** 同一组用例在 `main@d77d099e`（暂存全部改动后重建）与本次分支上失败名称、断言文本和数量一致：`EditingDevelopmentSessionTests.testDevelopmentPreset1075MetadataDirectorySearchStableReferencesAndHiddenRows`（4）、`PhotosDevelopmentIntegrationTests`（5）、`SessionWorkflowActionTests`（4）。报错为 `13 is not equal to 10`、`[] is not equal to [.light]` 与 `初筛会话已关闭…`，都与预览传输无关，属本机既有状态。`RAWMasterImagingTests` 全 1,052 项通过（79 项 opt-in 跳过）。
+- **`RAWMasterUITests` 有 13 条失败与本次改动无关。** 同一组用例在 `main@d77d099e`（暂存全部改动后重建）与本次分支上失败名称、断言文本和数量一致：`EditingDevelopmentSessionTests.testDevelopmentPreset1075MetadataDirectorySearchStableReferencesAndHiddenRows`（4）、`PhotosDevelopmentIntegrationTests`（5）、`SessionWorkflowActionTests`（4）。报错为 `13 is not equal to 10`、`[] is not equal to [.light]` 与 `初筛会话已关闭…`，都与预览传输和有限值扫描无关，属本机既有状态。
 - 窗口级呈现（WindowServer 合成）未测量；以上均为 API 返回计时。
 - 真实桌面走查、浅深色、窗口收窄、1:1 切换未在本轮执行。
 - Linux 未执行。

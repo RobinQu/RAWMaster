@@ -43,6 +43,24 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 无法按视口缩放的算子（`definition`、`sharpen.intensity`、`localEdits`、`grain`、`superResolution`、投影几何等）继续 fail closed 到原生渲染，帧上不带近似标记。判定沿用 `PreviewInteractiveProxyV3.support` 的单一清单。
 
+## 原生扫描改用分带归约
+
+原生帧（1:1、导出、不可缩放算子的回退）原先对 60 MP 浮点图单独铺一张全幅有限值遮罩，再对遮罩做整幅归约。这与锐化输出已经在用的分带传输是同一件事，只是入口不同：分带路径把遮罩写进有界的 r8 纹理，并在同一个命令缓冲里归约，每组只用 `0xa0` 表示「全部有限」。
+
+现在通用原生扫描走分带传输（`DevelopmentCanonicalFiniteGPU.bandedNativeValidation`，默认开，`RAWMASTER_QA_CANONICAL_BANDED_NATIVE_FINITE=0` 回退）。准入条件与原锐化路径一致：统一内存设备、`workingSetLimit` 预算、逐带等待并核对每组实写。任何带无法入场时回落到原来的整幅扫描。
+
+扫描不写图，因此输出像素不变：5 个配方（neutral、texture、dehaze-v2、optics-lens-profile、local-detail）的 1:1 成片 PNG 在两种传输下逐字节相同。接受／拒绝集合由 `DevelopmentCheckedFiniteV3Tests.testBandedNativeAdmissionAgreesWithTheLegacyFullFrameScan` 逐模式对照（valid、NaN、两个无穷、NaN alpha）。
+
+| 1:1 配方 | 整幅扫描 | 分带归约 | 变化 |
+| --- | ---: | ---: | ---: |
+| neutral | 281.1 ms | 154.8 ms | −45% |
+| optics-lens-profile | 317.4 ms | 171.9 ms | −46% |
+| texture | 660.1 ms | 536.6 ms | −19% |
+| local-detail | 922.5 ms | 808.0 ms | −12% |
+| dehaze-v2 | 2,116.8 ms | 1,820.0 ms | −14% |
+
+1:1 仍按原生像素出帧，没有做 ROI 裁剪；上表的剩余成本主要来自算子本身，`dehaze-v2` 的 1.8 s 即为代表。
+
 ## 交互与像素契约
 
 | 从哪里进入 | 对象、完成与退出 |
@@ -62,7 +80,8 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 | 50 个配方的定稿 P95 | ≤ 210.23 ms（LightFlow 同机 P95） | 20.24 ms |
 | 单配方最慢定稿 | 不高于同配方交互帧的 1.5 倍 | 33.11 ms（local-defringe，交互 12.60 ms，2.6×；产品位图缓存下 0.275 ms，见验证记录） |
 | 松手后的定稿成本 | 重放同一视口帧，不重跑 GPU | 中位 0.250 ms，最大 0.505 ms |
-| 视口帧与原生定稿的重采样差 | p99 ≤ 8/255，最大通道差只出现在几何与锐化边缘 | p99 中位 2/255，最大中位 20/255 |
+| 视口帧与原生定稿的重采样差 | p99 ≤ 8/255，最大通道差只出现在几何与锐化边缘 | p99 中位 2/255、最大 18/255；最大通道差中位 20/255 |
+| 1:1（`detail`）行为 | 保持原生像素，不改语义 | 未改；测得 258–2177 ms，作为下一轮目标 |
 | 原生路径未被削弱 | `detail`、导出与 `PreviewResourcePolicy.default` 逐位不变 | 由既有回归与新增用例覆盖 |
 
 ## 取证与参考
