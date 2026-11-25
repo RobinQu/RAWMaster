@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "build": "release",
+  "sourceSHA256": "8f96d2fd4fa0c76741ee09b486a4a5e17c8c893ce714060f2fe65eb34c891e1c",
+  "source": "Sony ILCE-7RM5 ARW, 9504x6336",
+  "probe": "RAWMASTER_DETAIL_PROFILE=1 swift test -c release --filter DetailStageProfileProbe",
+  "sequence": "settled frame, 1.2 s idle, then the first windowed 1:1 frame (0.505x0.505)",
+  "window": [4800, 3200],
+  "coldFirstOneToOneMs": { "balancedNoPrewarm": [182.8, 182.1, 181.8], "turboPrewarm": [83.0, 83.4, 79.2] },
+  "steadyStateOneToOneMs": { "balanced": [30.6], "turbo": [37.4] },
+  "coldBreakdownMs": { "flashRawDecode": 78.4, "flashRawUpload": 40.0, "developAndScan": 14.5, "materializeAndCopy": 23.0 },
+  "interpretation": "The first 1:1 frame on a photo is dominated by the full-resolution RAW decode and upload (118 ms), not by the graph. Warming the canonical base once per source while the canvas is idle removes it: 182 -> 82 ms. Steady state is about 30 ms and is unchanged. The warm-up occupies the single native worker for about one decode, so it is scoped to the turbo profile and waits 750 ms of idle."
+}

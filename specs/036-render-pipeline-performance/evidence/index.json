@@ -109,6 +109,12 @@
       "name": "advanced-detail-guide-window-probe",
       "scope": "Operator rewrite research: guide freeze over window+halo, byte-exactness gate",
       "sha256": "9e753209956315115fdaab5f3927ef66c841c5555815ea9d4f5254b6c1897dec"
+    },
+    {
+      "file": "detail-prewarm.json",
+      "name": "detail-prewarm",
+      "scope": "Turbo: idle warm-up of the canonical 1:1 base",
+      "sha256": "4cdad9b93da785638bc951c75d5fa3699295bb584621d09ec4975ce00b5b70fb"
     }
   ]
 }

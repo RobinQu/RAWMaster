@@ -286,6 +286,14 @@ final class PreviewNativeSource: @unchecked Sendable {
     else { retainedInteractiveContext = made }
     return made
   }
+  /// Warm the canonical full-resolution FlashRaw texture and the canonical graph context while the
+  /// canvas is idle. The first 1:1 frame otherwise pays that decode and upload itself (about
+  /// 118 ms on a 9504x6336 ARW); afterwards it is a cache hit.
+  func prewarmCanonicalDetail(sourceKey: String) {
+    guard hasRAWFilter, !artifact else { return }
+    let parameters = DevelopmentAdjustmentsV3()
+    _ = try? pinFlashRawSource(parameters, sourceKey: sourceKey)?.release()
+  }
   func pinFlashRawSource(_ parameters:DevelopmentAdjustmentsV3, sourceKey:String) throws -> FlashRawCanonicalTexturePool.Pin? {
     let key = FlashRawCanonicalTextureKey(sourceKey:sourceKey,captureStamp:captureStamp,
       contract:parameters.rawDetails?.rawValue ?? "flashraw-0.3.1-bilinear-canonical-rgba16f-v2",

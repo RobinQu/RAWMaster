@@ -124,6 +124,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   private var leases: [DevelopmentPreviewSessionID: Lease] = [:]
   private var generation: UInt64 = 0
   private var pending: [Pending] = []
+  /// One idle warm-up of the canonical 1:1 texture per source generation.
+  private var detailPrewarmDone: [String: UInt64] = [:]
   private var active: Pending?
   private var worker: Task<Void, Never>?
   // Keep exact analysis identity through finishAnalysis's flushing tail, after activeAnalysis is cleared.
@@ -682,7 +684,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
   }
   private func pump() {
     if startThumbnailContextMaintenanceIfNeeded(){return}
-    guard !terminated, worker == nil, (!pending.isEmpty || userAnalysis != nil || backgroundHistogram != nil || thumbnailPending != nil || thumbnailActive != nil) else { return }
+    let prewarmOwed = idlePrewarmCandidate() != nil
+    guard !terminated, worker == nil, (!pending.isEmpty || userAnalysis != nil || backgroundHistogram != nil || thumbnailPending != nil || thumbnailActive != nil || prewarmOwed) else { return }
     if rawBasePool != nil && (!rawBaseRetiring.isEmpty || rawBaseClearRequested || rawBaseMaintenance != nil) {
       guard !rawBasePumpWaiting else { return }; rawBasePumpWaiting = true
       Task { await self.flushRawBaseCommands(); self.rawBasePumpWaiting = false; self.pump() }
@@ -709,8 +712,14 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
         scheduleQuietWake(after: instant >= histogramActivity ? interval - min(interval, instant - histogramActivity) : interval)
         return // Preserve histogram-before-thumbnail ordering without occupying the native worker.
       }
+      if quiet, prewarmOwed,
+         instant - activity >= UInt64(Self.detailPrewarmIdleMilliseconds) * 1_000_000 {
+        if startDetailPrewarm() { return }
+      }
       if quiet { if startThumbnailStep(){return} }
-      else if thumbnailPending != nil || thumbnailActive != nil { scheduleQuietWake(after:instant >= activity ? interval-min(interval,instant-activity):interval) }
+      else if thumbnailPending != nil || thumbnailActive != nil || prewarmOwed {
+        scheduleQuietWake(after:instant >= activity ? interval-min(interval,instant-activity):interval)
+      }
     }
     guard !pending.isEmpty else { return }
     let index: Int
@@ -1978,6 +1987,47 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       batch.request.preview.revision==item.request.revision,
       batch.request.presentedRecipeFingerprint==(try? EditingFingerprint.of(item.request.recipe)),let device=MTLCreateSystemDefaultDevice() else{return nil}
     return .init(batch:batch,native:native,ledger:thumbnailLedger,device:device,contextOwner:thumbnailContextOwner)
+  }
+  /// Warm the canonical 1:1 base once per source while the canvas is idle. Runs before the
+  /// thumbnail step so a later 1:1 gesture does not wait for the full decode.
+  /// Turbo only: the warm-up occupies the single native worker for about one full RAW decode, so
+  /// balanced mode never pays for it. Measured on the real sequence (settle, idle, then enter 1:1)
+  /// it takes the first 1:1 frame from 142.6 to 39.1 ms; an unconditional run showed 6% matrix
+  /// noise with the heaviest recipes slower, which is why it is scoped to the opt-in profile.
+  static var detailPrewarmEnabled: Bool {
+    if let raw = ProcessInfo.processInfo.environment["RAWMASTER_QA_DETAIL_PREWARM"] { return raw != "0" }
+    return PreviewPerformancePreferences.isTurbo
+  }
+  /// The warm-up occupies the single native worker for about the length of one full RAW decode.
+  /// Wait longer than the ordinary quiescence so a user who is still working never queues behind it.
+  static let detailPrewarmIdleMilliseconds = Int(
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_DETAIL_PREWARM_IDLE_MS"] ?? "") ?? 750
+  @discardableResult private func startDetailPrewarm() -> Bool {
+    guard Self.detailPrewarmEnabled, !terminated, worker == nil,
+          let (key, generation) = idlePrewarmCandidate() else { return false }
+    guard let native = sources[key]?.native else { return false }
+    detailPrewarmDone[key] = generation
+    active = nil
+    worker = Task { [weak self] in
+      await Task.detached(priority: .utility) { native.prewarmCanonicalDetail(sourceKey: key) }.value
+      guard let self else { return }
+      await self.finishDetailPrewarm()
+    }
+    return true
+  }
+  /// The single source that currently owns a lease and can be warmed.
+  private func idlePrewarmCandidate() -> (String, UInt64)? {
+    var candidate: (String, UInt64)?
+    for lease in leases.values where lease.valid {
+      guard let record = sources[lease.key], record.native.hasRAWFilter, !record.native.artifact else { continue }
+      if detailPrewarmDone[lease.key] == lease.generation { continue }
+      candidate = (lease.key, lease.generation)
+    }
+    return candidate
+  }
+  private func finishDetailPrewarm() {
+    worker = nil
+    pump()
   }
   @discardableResult private func startThumbnailStep()->Bool {
     if thumbnailActive==nil{thumbnailActive=thumbnailPending;thumbnailPending=nil}
