@@ -181,7 +181,10 @@ final class SessionWorkflowActionTests: XCTestCase {
         let model = AppModel(libraryURL: f.library, defaults: f.defaults, postIngest: { _, _, _ in })
         model.selectScope(.session, id: session.id); model.select(failed); model.setTriage(.excluded)
         XCTAssertTrue(model.canFinishSession(sessionID: session.id))
-        model.prepareCompletion(); model.acknowledgeManualCompletion(true)
+        model.prepareCompletion()
+        var draft = try XCTUnwrap(model.sealDraft)
+        draft.confirmedFailures = true
+        model.updateSealDraft(draft); model.acknowledgeManualCompletion(true)
         XCTAssertTrue(try XCTUnwrap(model.completionPreview).canCommit, model.errorMessage ?? "")
         XCTAssertTrue(model.completeTriage(), model.errorMessage ?? "")
         model.selectScope(.session, id: session.id)
@@ -192,7 +195,7 @@ final class SessionWorkflowActionTests: XCTestCase {
 
     @MainActor func testInterruptedLegacyImportCanContinueWithoutGainingExplicitRegroupPermission() async throws {
         let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
-        var session = try await f.populate("Legacy")
+        var session = try await f.populate("Legacy", screening: true)
         try f.store.writeWorkflow(SessionWorkflow(sessionID: session.id, projectID: session.projectID, isNewProject: false, phase: .legacyHistory))
         session.status = "partial"; session.scanCompleted = false; try f.store.saveSession(session)
         let model = AppModel(libraryURL: f.library, defaults: f.defaults, postIngest: { _, _, _ in })

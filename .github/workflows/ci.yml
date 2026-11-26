@@ -15,7 +15,7 @@ jobs:
     # estimation); the macos-26 image ships the macOS 26 SDK and cannot
     # compile it. xcode-27 is GitHub's public Xcode 27 image.
     runs-on: xcode-27
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Record platform

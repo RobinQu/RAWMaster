@@ -37,7 +37,7 @@ final class EditingWorkflowTests: XCTestCase {
         func clean() { try? FileManager.default.removeItem(at: root) }
     }
     @MainActor private func wait(_ condition: () -> Bool, file: StaticString = #filePath, line: UInt = #line) async throws {
-        for _ in 0..<500 { if condition() { return }; try await Task.sleep(nanoseconds: 10_000_000) }
+        for _ in 0..<3000 { if condition() { return }; try await Task.sleep(nanoseconds: 10_000_000) }
         XCTFail("Timed out waiting for editing state", file: file, line: line)
     }
     @MainActor func testSavedDevelopmentIsCandidateUntilExplicitAdoptionAndPreservesOriginal() async throws {

@@ -14,15 +14,19 @@ final class CanonicalFiniteGPUTests:XCTestCase {
         let context = DevelopmentColorEngineV3.makeContext()
         let oneRowBudget = 648 * 1024
         var commands = [MTLCommandBuffer]()
-        XCTAssertThrowsError(try DevelopmentCanonicalFiniteGPU.check(cleanMask, domain: extent, context: context,
-            workingBudget: oneRowBudget, makeReductionEncoder: { command in
-                commands.append(command)
-                return commands.count == 2 ? nil : command.makeComputeCommandEncoder()
-            })) { error in
-                guard case DevelopmentError.invalidEncoding = error else {
-                    return XCTFail("Expected the incomplete reduction to fail, received \(error)")
-                }
-            }
+        var rejected: Error?
+        do {
+            _ = try DevelopmentCanonicalFiniteGPU.check(cleanMask, domain: extent, context: context,
+                workingBudget: oneRowBudget, makeReductionEncoder: { command in
+                    commands.append(command)
+                    return commands.count == 2 ? nil : command.makeComputeCommandEncoder()
+                })
+        } catch { rejected = error }
+        // A paravirtual GPU can satisfy the budget without the two-band reduction.
+        guard commands.count == 2 else { throw XCTSkip("This GPU does not use the banded reduction path") }
+        guard case DevelopmentError.invalidEncoding? = rejected else {
+            return XCTFail("Expected the incomplete reduction to fail, received \(String(describing: rejected))")
+        }
         XCTAssertEqual(commands.count, 2)
         XCTAssertTrue(commands.allSatisfy { $0.status == .completed })
         XCTAssertTrue(try DevelopmentCanonicalFiniteGPU.check(cleanMask, domain: extent, context: context,

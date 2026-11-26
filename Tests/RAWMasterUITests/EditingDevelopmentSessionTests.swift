@@ -761,13 +761,17 @@ extension EditingDevelopmentSessionTests {
         }
         let all = DevelopmentPresetDirectory.folders(records: rows, favorites: ["0", "1", "1074"],
             looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "")
-        XCTAssertEqual(all.first?.rows.map(\.id), ["classic.vivid", "0", "1"])
+        func nestedRows(_ folder: DevelopmentPresetFolder) -> [DevelopmentPresetBrowserItem] {
+            folder.rows + folder.children.flatMap(\.rows)
+        }
+        let allRows = all.flatMap(nestedRows)
+        XCTAssertEqual(all.first(where: { $0.id == "favorites" })?.rows.map(\.id), ["classic.vivid", "0", "1"])
         XCTAssertEqual(all.first(where: { $0.id == "classic" })?.rows.count, 10)
-        XCTAssertEqual(Set(all.flatMap { $0.rows.map(\.id) }).count, 1086)
+        XCTAssertEqual(Set(allRows.map(\.id)).count, 1086)
         let results = DevelopmentPresetDirectory.folders(records: Array(rows.reversed()), favorites: [],
             looks: [], favoriteLooks: [], query: "同名")
-        XCTAssertEqual(Set(results.flatMap { $0.rows.map(\.id) }), ["0", "1"])
-        XCTAssertTrue(all.flatMap(\.rows).contains { $0.id == "1072" })
+        XCTAssertEqual(Set(results.flatMap(nestedRows).map(\.id)), ["0", "1"])
+        XCTAssertTrue(allRows.contains { $0.id == "1072" })
         XCTAssertEqual(all.first(where: { $0.id == "film" })?.rows.count, 3)
     }
 }

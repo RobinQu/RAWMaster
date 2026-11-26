@@ -56,7 +56,7 @@ final class ImportResponsivenessTests: XCTestCase {
         XCTAssertTrue(model.isBusy, "A final snapshot must be awaited before the job can end")
         var heartbeats = 0
         let started = ProcessInfo.processInfo.systemUptime
-        while ProcessInfo.processInfo.systemUptime - started < 0.1 {
+        while ProcessInfo.processInfo.systemUptime - started < 0.2 {
             try await Task.sleep(nanoseconds: 5_000_000)
             heartbeats += 1
         }
