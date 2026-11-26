@@ -24,12 +24,10 @@ struct PhotosColorScopes: View {
     }
 
     private var scopes: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: PhotosControlLayout.descriptionSpacing) {
             HStack {
-                Picker("示波器", selection: $vectorscope) {
-                    Text("直方图").tag(false)
-                    Text("矢量示波器").tag(true)
-                }.pickerStyle(.segmented).labelsHidden()
+                PhotosFlatTabs(title: "示波器", selection: $vectorscope, options: [false, true],
+                    label: { $0 ? "矢量示波器" : "直方图" })
                     .accessibilityIdentifier("photos.scopes.mode")
                 if !floating {
                     Button { openWindow(id: "editing-color-scopes") } label: {
@@ -46,17 +44,17 @@ struct PhotosColorScopes: View {
             }
             if vectorscope {
                 PhotosVectorscope(histogram: editing.developmentHistogram, skinIndicator: skinIndicator, redAtThree: redAtThree)
-                    .frame(minHeight: floating ? 130 : 95, maxHeight: floating ? .infinity : 95)
+                    .frame(minHeight: floating ? 130 : 144, maxHeight: floating ? .infinity : 144)
                 HStack {
                     Toggle("肤色参考线", isOn: $skinIndicator)
                     Toggle("红色在三点钟", isOn: $redAtThree)
-                }.toggleStyle(.checkbox).font(.caption2).frame(maxWidth: .infinity, alignment: .leading)
+                }.toggleStyle(PhotosFlatCheckboxStyle()).font(.caption2).frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 PhotosHistogramView(histogram: editing.developmentHistogram, session: editing.developmentSession,
                     context: editing.developmentContext, clipping: editing.developmentClippingPreview,
                     onClipping: { value in
                         if let context = editing.developmentContext { editing.setDevelopmentClippingPreview(value, context: context) }
-                    }, resizable: floating)
+                    }, resizable: floating, plotHeight: floating ? 72 : 108)
             }
             PhotosColorReadoutView(readout: editing.colorReadout)
             if let context = editing.developmentContext {

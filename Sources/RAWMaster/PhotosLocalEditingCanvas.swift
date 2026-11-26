@@ -10,21 +10,36 @@ struct PhotosLocalEditingCanvas: View {
     @Binding var transform: ImageTransform
     var body: some View {
         ZStack {
-            ZoomableImageView(image: editing.preview, actualPixels: editing.actualPixels && editing.previews.primary.frame?.quality == .detail,
+            let frame = editing.previews.primary.frame, fit = editing.previews.primary.fitFallback
+            ZoomableImageView(image: nil, actualPixels: editing.actualPixels,
                 transform: .init(get: { transform }, set: { value in if editing.developmentContext == context { transform = value } }),
                 backgroundColor: AppPalette.canvasNSColor,
-                onActualPixelsChange: { if editing.developmentContext == context { editing.setActualPixels($0, nativeEvent: true) } },
-                onRequestDetail: { if editing.developmentContext == context { editing.setActualPixels(true, nativeEvent: true) } },
-                frameID: editing.previews.primary.frame?.id, onFrameDrawn: input.frameWasDrawn,
+                onActualPixelsChange: { value in
+                    if editing.developmentContext == context {
+                        editing.setActualPixels(value, nativeEvent: true, requestPreview: value || transform == .init())
+                    }
+                },
+                frameID: frame?.id, onFrameDrawn: input.frameWasDrawn,
                 onPointerEvent: { input.pointer($0, context: context) },
-                onViewportChange: { input.updateViewport($0, context: context) },
+                onViewportChange: { snapshot in
+                    input.updateViewport(snapshot, context: context)
+                    DispatchQueue.main.async {
+                        guard editing.developmentContext == context, snapshot.transform == transform else { return }
+                        editing.updateCanvasSampling(snapshot, role: .primary)
+                    }
+                },
                 onPointerHover: { input.hover($0, context: context) },
                 onVisibleWindow: { [weak editing] visible in
                     guard let editing, editing.developmentContext == context else { return }
                     editing.updateDetailVisibleWindow(visible)
                 },
-                window: editing.previews.primary.frame?.window,
-                canvasPixelSize: editing.previews.primary.frame?.nativeSize)
+                window: frame?.window, canvasPixelSize: frame?.nativeSize ?? fit?.nativeSize)
+                .borrowingImage(frame?.image ?? fit?.image)
+                .fallbackImage(frame?.window == nil ? nil : fit?.image)
+                .trackingFreeZoom { active, snapshot in
+                    guard editing.developmentContext == context else { return }
+                    editing.updateCanvasSampling(snapshot, role: .primary, zooming: active)
+                }
             if let frame = editing.developmentLocalFrame(context: context), let viewport = input.viewport, viewport.frameID == frame.frameID {
                 localOverlay(frame, imageRect: viewport.imageRect).allowsHitTesting(false).accessibilityHidden(true)
             }

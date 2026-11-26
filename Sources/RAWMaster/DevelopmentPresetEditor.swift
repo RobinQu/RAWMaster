@@ -98,7 +98,7 @@ struct DevelopmentPresetEditor: View {
                                     if field == .legacyBasis { fields.remove(.grading) }
                                     if field == .grading { fields.remove(.legacyBasis) }
                                 } else { fields.remove(field) }
-                            })).toggleStyle(.checkbox)
+                            })).toggleStyle(PhotosFlatCheckboxStyle())
                                 .disabled(field == .legacyBasis && (try? request.recipe.promotingToV3().adjustmentsV3?.legacyBasis) == nil)
                         }
                     }
@@ -112,7 +112,7 @@ struct DevelopmentPresetEditor: View {
                                     let allowed = (try? DevelopmentPresetMaskIntent(capturing: layer)) != nil
                                     Toggle(layer.name + (allowed ? "" : " · 限本张"), isOn: Binding(get: { maskIDs.contains(layer.id) }, set: { on in
                                         if on { maskIDs.insert(layer.id) } else { maskIDs.remove(layer.id) }
-                                    })).toggleStyle(.checkbox).disabled(!allowed)
+                                    })).toggleStyle(PhotosFlatCheckboxStyle()).disabled(!allowed)
                                 }
                             }.frame(maxWidth: .infinity, alignment: .leading)
                         }.frame(maxHeight: 110)

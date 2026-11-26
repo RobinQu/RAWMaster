@@ -1,0 +1,337 @@
+{
+  "device" : "Apple M2",
+  "operatorVersion" : "scene-color-v1\/ocio-studio-v4-aces2\/matrix-exposure-premul-f32",
+  "os" : "Version 27.2.1 (Build 26B131)",
+  "referenceConfigSHA256" : "3a48b0421e51d4284ec07187f86b74387321550b65f5a2f237885bf269dbc99e",
+  "setupMs" : 4.171334,
+  "workloads" : [
+    {
+      "bytesPerSurface" : 9830400,
+      "height" : 640,
+      "identityP50Ms" : 0.775084,
+      "identityP95Ms" : 2.720458,
+      "medianPairedRatio" : 0.5190934421865294,
+      "onePassP50Ms" : 0.75625,
+      "onePassP95Ms" : 3.20475,
+      "samples" : [
+        {
+          "identityMs" : 0.743292,
+          "onePassMs" : 0.739917,
+          "twoPassMs" : 1.441125
+        },
+        {
+          "identityMs" : 0.802375,
+          "onePassMs" : 0.997041,
+          "twoPassMs" : 5.280708
+        },
+        {
+          "identityMs" : 0.913625,
+          "onePassMs" : 0.75625,
+          "twoPassMs" : 1.555083
+        },
+        {
+          "identityMs" : 0.715583,
+          "onePassMs" : 0.730292,
+          "twoPassMs" : 1.369042
+        },
+        {
+          "identityMs" : 1.633667,
+          "onePassMs" : 1.117375,
+          "twoPassMs" : 1.776917
+        },
+        {
+          "identityMs" : 1.883625,
+          "onePassMs" : 2.790666,
+          "twoPassMs" : 2.125958
+        },
+        {
+          "identityMs" : 0.747917,
+          "onePassMs" : 0.858083,
+          "twoPassMs" : 1.452667
+        },
+        {
+          "identityMs" : 0.744875,
+          "onePassMs" : 0.952833,
+          "twoPassMs" : 1.436541
+        },
+        {
+          "identityMs" : 0.796542,
+          "onePassMs" : 0.74,
+          "twoPassMs" : 1.564375
+        },
+        {
+          "identityMs" : 0.815708,
+          "onePassMs" : 3.136958,
+          "twoPassMs" : 4.008291
+        },
+        {
+          "identityMs" : 0.775084,
+          "onePassMs" : 0.752208,
+          "twoPassMs" : 1.544333
+        },
+        {
+          "identityMs" : 0.746,
+          "onePassMs" : 0.747792,
+          "twoPassMs" : 1.499666
+        },
+        {
+          "identityMs" : 2.58825,
+          "onePassMs" : 0.751125,
+          "twoPassMs" : 1.48575
+        },
+        {
+          "identityMs" : 0.823,
+          "onePassMs" : 0.731667,
+          "twoPassMs" : 4.790958
+        },
+        {
+          "identityMs" : 0.733167,
+          "onePassMs" : 0.867208,
+          "twoPassMs" : 1.415875
+        },
+        {
+          "identityMs" : 0.780833,
+          "onePassMs" : 0.727208,
+          "twoPassMs" : 1.545584
+        },
+        {
+          "identityMs" : 2.720458,
+          "onePassMs" : 3.20475,
+          "twoPassMs" : 1.442042
+        },
+        {
+          "identityMs" : 1.306666,
+          "onePassMs" : 1.752042,
+          "twoPassMs" : 1.727084
+        },
+        {
+          "identityMs" : 0.843708,
+          "onePassMs" : 0.803875,
+          "twoPassMs" : 1.53975
+        },
+        {
+          "identityMs" : 0.784,
+          "onePassMs" : 0.741875,
+          "twoPassMs" : 1.539291
+        },
+        {
+          "identityMs" : 7.044,
+          "onePassMs" : 0.930959,
+          "twoPassMs" : 1.555667
+        },
+        {
+          "identityMs" : 0.730459,
+          "onePassMs" : 0.827458,
+          "twoPassMs" : 1.440083
+        },
+        {
+          "identityMs" : 0.763708,
+          "onePassMs" : 0.73325,
+          "twoPassMs" : 1.603041
+        },
+        {
+          "identityMs" : 0.707583,
+          "onePassMs" : 7.701209,
+          "twoPassMs" : 1.539
+        },
+        {
+          "identityMs" : 0.731375,
+          "onePassMs" : 0.731208,
+          "twoPassMs" : 1.408625
+        },
+        {
+          "identityMs" : 0.747791,
+          "onePassMs" : 0.747417,
+          "twoPassMs" : 1.559
+        },
+        {
+          "identityMs" : 0.718417,
+          "onePassMs" : 0.706375,
+          "twoPassMs" : 7.221416
+        },
+        {
+          "identityMs" : 0.744125,
+          "onePassMs" : 0.81625,
+          "twoPassMs" : 1.454833
+        },
+        {
+          "identityMs" : 0.781542,
+          "onePassMs" : 0.708167,
+          "twoPassMs" : 1.423667
+        },
+        {
+          "identityMs" : 0.757959,
+          "onePassMs" : 0.772333,
+          "twoPassMs" : 1.444208
+        }
+      ],
+      "twoPassP50Ms" : 1.539291,
+      "twoPassP95Ms" : 5.280708,
+      "width" : 960
+    },
+    {
+      "bytesPerSurface" : 96000000,
+      "height" : 2000,
+      "identityP50Ms" : 10.778416,
+      "identityP95Ms" : 16.136125,
+      "medianPairedRatio" : 0.48520475385184336,
+      "onePassP50Ms" : 9.930083,
+      "onePassP95Ms" : 16.791125,
+      "samples" : [
+        {
+          "identityMs" : 18.81475,
+          "onePassMs" : 11.182292,
+          "twoPassMs" : 23.24625
+        },
+        {
+          "identityMs" : 13.350125,
+          "onePassMs" : 7.752917,
+          "twoPassMs" : 29.907792
+        },
+        {
+          "identityMs" : 13.070208,
+          "onePassMs" : 17.931333,
+          "twoPassMs" : 32.727666
+        },
+        {
+          "identityMs" : 10.905375,
+          "onePassMs" : 16.791125,
+          "twoPassMs" : 24.247583
+        },
+        {
+          "identityMs" : 8.6285,
+          "onePassMs" : 15.167875,
+          "twoPassMs" : 22.1325
+        },
+        {
+          "identityMs" : 9.523958,
+          "onePassMs" : 9.166042,
+          "twoPassMs" : 21.955792
+        },
+        {
+          "identityMs" : 15.10975,
+          "onePassMs" : 11.052208,
+          "twoPassMs" : 22.429083
+        },
+        {
+          "identityMs" : 9.166167,
+          "onePassMs" : 11.828166,
+          "twoPassMs" : 17.076708
+        },
+        {
+          "identityMs" : 7.558416,
+          "onePassMs" : 7.198458,
+          "twoPassMs" : 15.334208
+        },
+        {
+          "identityMs" : 7.274791,
+          "onePassMs" : 8.491833,
+          "twoPassMs" : 16.692166
+        },
+        {
+          "identityMs" : 11.128459,
+          "onePassMs" : 6.387,
+          "twoPassMs" : 15.683416
+        },
+        {
+          "identityMs" : 10.339708,
+          "onePassMs" : 7.09625,
+          "twoPassMs" : 17.560208
+        },
+        {
+          "identityMs" : 12.248625,
+          "onePassMs" : 10.965542,
+          "twoPassMs" : 21.095583
+        },
+        {
+          "identityMs" : 14.3035,
+          "onePassMs" : 6.910416,
+          "twoPassMs" : 15.897917
+        },
+        {
+          "identityMs" : 12.892208,
+          "onePassMs" : 13.805333,
+          "twoPassMs" : 18.7165
+        },
+        {
+          "identityMs" : 10.652875,
+          "onePassMs" : 7.285125,
+          "twoPassMs" : 16.035458
+        },
+        {
+          "identityMs" : 6.879958,
+          "onePassMs" : 9.930083,
+          "twoPassMs" : 15.674334
+        },
+        {
+          "identityMs" : 6.426291,
+          "onePassMs" : 10.133042,
+          "twoPassMs" : 17.27225
+        },
+        {
+          "identityMs" : 6.7375,
+          "onePassMs" : 13.603292,
+          "twoPassMs" : 19.300125
+        },
+        {
+          "identityMs" : 10.094708,
+          "onePassMs" : 6.93175,
+          "twoPassMs" : 16.422375
+        },
+        {
+          "identityMs" : 10.337833,
+          "onePassMs" : 6.505375,
+          "twoPassMs" : 16.322917
+        },
+        {
+          "identityMs" : 11.102417,
+          "onePassMs" : 10.050416,
+          "twoPassMs" : 21.186792
+        },
+        {
+          "identityMs" : 16.136125,
+          "onePassMs" : 8.980333,
+          "twoPassMs" : 18.30075
+        },
+        {
+          "identityMs" : 8.214917,
+          "onePassMs" : 13.833458,
+          "twoPassMs" : 18.553709
+        },
+        {
+          "identityMs" : 15.295083,
+          "onePassMs" : 15.232125,
+          "twoPassMs" : 18.6825
+        },
+        {
+          "identityMs" : 15.984916,
+          "onePassMs" : 7.092167,
+          "twoPassMs" : 17.926375
+        },
+        {
+          "identityMs" : 9.659375,
+          "onePassMs" : 7.067666,
+          "twoPassMs" : 17.691417
+        },
+        {
+          "identityMs" : 11.465375,
+          "onePassMs" : 10.110292,
+          "twoPassMs" : 20.837166
+        },
+        {
+          "identityMs" : 15.262333,
+          "onePassMs" : 7.307333,
+          "twoPassMs" : 16.970917
+        },
+        {
+          "identityMs" : 10.778416,
+          "onePassMs" : 13.654625,
+          "twoPassMs" : 19.586375
+        }
+      ],
+      "twoPassP50Ms" : 18.30075,
+      "twoPassP95Ms" : 29.907792,
+      "width" : 3000
+    }
+  ]
+}

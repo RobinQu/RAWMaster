@@ -1,0 +1,299 @@
+Test Suite 'Selected tests' started at 2026-11-26 16:47:09.999.
+Test Suite 'RAWMasterUITests.xctest' started at 2026-11-26 16:47:10.000.
+Test Suite 'DevelopmentNumberInputTests' started at 2026-11-26 16:47:10.000.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testInvalidNativeReturnConsumesWithoutChangingEditorSelectionOrUndoOwnership]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testInvalidNativeReturnConsumesWithoutChangingEditorSelectionOrUndoOwnership]' passed (0.097 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testMarkedInputPassesThroughAndValidReturnWritesOnlyOnceThenBlurDoesNotWrite]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testMarkedInputPassesThroughAndValidReturnWritesOnlyOnceThenBlurDoesNotWrite]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRealNativeInvalidMarkedEscapeAndRevokedEditorsDoNotWriteOnBlur]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRealNativeInvalidMarkedEscapeAndRevokedEditorsDoNotWriteOnBlur]' passed (0.143 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRealNativeOwnedFlushPreservesRoundedValueAndReentrantRevocation]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRealNativeOwnedFlushPreservesRoundedValueAndReentrantRevocation]' passed (0.020 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRealNativeTabBacktabAndBlurCommitOnceAndReturnDoesNotDoubleCommit]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRealNativeTabBacktabAndBlurCommitOnceAndReturnDoesNotDoubleCommit]' passed (0.039 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testReentrantRevocationBeforeOrDuringSetterNeverFinishesOrAdmitsAnotherWrite]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testReentrantRevocationBeforeOrDuringSetterNeverFinishesOrAdmitsAnotherWrite]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRoundedConfirmationPreservesExactBitsAndRejectedOrCanonicalValuesRemainModelOwned]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testRoundedConfirmationPreservesExactBitsAndRejectedOrCanonicalValuesRemainModelOwned]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testSetterCaptureLateTokensDisableAndDismantleNeverRebindAnOldEdit]' started.
+Test Case '-[RAWMasterUITests.DevelopmentNumberInputTests testSetterCaptureLateTokensDisableAndDismantleNeverRebindAnOldEdit]' passed (0.000 seconds).
+Test Suite 'DevelopmentNumberInputTests' passed at 2026-11-26 16:47:10.300.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.299 (0.300) seconds
+Test Suite 'EditingLayoutInteractionTests' started at 2026-11-26 16:47:10.300.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testAdjustmentSectionKeepsTightSymmetricTrackInsets]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testAdjustmentSectionKeepsTightSymmetricTrackInsets]' passed (0.036 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testColorTrackUsesRealNSSliderAndPreservesNativeAction]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testColorTrackUsesRealNSSliderAndPreservesNativeAction]' passed (0.003 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip]' passed (2.670 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFilterHeaderActionsStayAlignedIndependentAndRecipeScoped]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFilterHeaderActionsStayAlignedIndependentAndRecipeScoped]' passed (1.914 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxKeepsToggleAccessibilityAndBinding]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxKeepsToggleAccessibilityAndBinding]' passed (0.024 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances]' started.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/RAWMaster/PhotosFlatControls.swift:67: warning: -[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances] : Accessing FocusState's value outside of the body of a View. This will result in a constant Binding of the initial value and will not update.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances]' passed (1.083 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatMenuFillsRowAndUsesNativeSelection]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatMenuFillsRowAndUsesNativeSelection]' passed (0.003 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testMaskToolIconsAreAvailableAndDistinct]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testMaskToolIconsAreAvailableAndDistinct]' passed (0.009 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testRailTooltipRendersItsArrowLeftOfTheEntireButton]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testRailTooltipRendersItsArrowLeftOfTheEntireButton]' passed (0.003 seconds).
+Test Suite 'EditingLayoutInteractionTests' passed at 2026-11-26 16:47:16.047.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 5.746 (5.747) seconds
+Test Suite 'PhotosColorSamplerTests' started at 2026-11-26 16:47:16.047.
+Test Case '-[RAWMasterUITests.PhotosColorSamplerTests testNinePositionsPersistByPhotoAndEditingThemDoesNotChangeTheRecipe]' started.
+Test Case '-[RAWMasterUITests.PhotosColorSamplerTests testNinePositionsPersistByPhotoAndEditingThemDoesNotChangeTheRecipe]' passed (0.390 seconds).
+Test Suite 'PhotosColorSamplerTests' passed at 2026-11-26 16:47:16.438.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.390 (0.390) seconds
+Test Suite 'PhotosDevelopmentIntegrationTests' started at 2026-11-26 16:47:16.438.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testActualFilterSaveArchivesCanonicalRecipeAndLeavesSourceUntouched]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testActualFilterSaveArchivesCanonicalRecipeAndLeavesSourceUntouched]' passed (0.393 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testActualFilterThumbnailContentKeySkipsFilterOnlyAndRetainsImagesThroughColorChanges]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testActualFilterThumbnailContentKeySkipsFilterOnlyAndRetainsImagesThroughColorChanges]' passed (2.114 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testAdvancedDetailFocusAndBranchRejectCapturedOldCallbacksIncludingNoop]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testAdvancedDetailFocusAndBranchRejectCapturedOldCallbacksIncludingNoop]' passed (0.249 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testAdvancedDetailOneGestureRemembersDisabledValuesAndResetsOnlyItsGroup]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testAdvancedDetailOneGestureRemembersDisabledValuesAndResetsOnlyItsGroup]' passed (0.310 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testAdvancedDetailRequiresActualIndividualCapabilitiesAndRejectsDehaze]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testAdvancedDetailRequiresActualIndividualCapabilitiesAndRejectsDehaze]' passed (0.305 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testB7bBridgePassesActualFilterCatalogForGridAndNonzeroSummary]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testB7bBridgePassesActualFilterCatalogForGridAndNonzeroSummary]' passed (0.294 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testB7bCanonicalBridgePreservesDetailViewportAndSeparatesCacheKeys]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testB7bCanonicalBridgePreservesDetailViewportAndSeparatesCacheKeys]' passed (0.089 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testBlockedV1ProgressCannotCrossOriginalHoldAndReleaseFence]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testBlockedV1ProgressCannotCrossOriginalHoldAndReleaseFence]' passed (0.277 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testBWSummaryV2SelectionIsExplicitAndRestrictedToQAImportedRAW]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testBWSummaryV2SelectionIsExplicitAndRestrictedToQAImportedRAW]' passed (0.001 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCancelledLocalPreparationIgnoresLateBackendResultSilently]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCancelledLocalPreparationIgnoresLateBackendResultSilently]' passed (0.087 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCanonicalGestureEarlyFrameEndResumesCurrentHistogramAndVisibleThumbnails]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCanonicalGestureEarlyFrameEndResumesCurrentHistogramAndVisibleThumbnails]' passed (0.270 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testChangingDisplayedToolModeRevokesLateWhiteBalanceAutoWithoutWritingRecipe]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testChangingDisplayedToolModeRevokesLateWhiteBalanceAutoWithoutWritingRecipe]' passed (0.083 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testClockwiseCropRotationWithSingleAxisFlipPreservesMappedSourcePoints]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testClockwiseCropRotationWithSingleAxisFlipPreservesMappedSourcePoints]' passed (0.266 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticBlockedChildCancellationJoinsWithoutUndoingHistoryOrAcceptingLateResult]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticBlockedChildCancellationJoinsWithoutUndoingHistoryOrAcceptingLateResult]' passed (3.009 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticMetadataAdmissionUsesDedicatedOperationAndUncroppedVisibleFingerprint]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticMetadataAdmissionUsesDedicatedOperationAndUncroppedVisibleFingerprint]' passed (0.318 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticNoResultAndWrongOuterEnvelopeNeverPromoteOrWrite]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticNoResultAndWrongOuterEnvelopeNeverPromoteOrWrite]' passed (0.242 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticSharedBackendEarlyCancellationKeepsControllerBusyUntilActualServiceWorkerReturns]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropAutomaticSharedBackendEarlyCancellationKeepsControllerBusyUntilActualServiceWorkerReturns]' passed (0.134 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropFocusAndNativeResignObserversCancelDeterministicallyInEitherOrder]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropFocusAndNativeResignObserversCancelDeterministicallyInEitherOrder]' passed (0.257 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropNativePointerUsesContinuousPlaneOneUndoAndViewportCancelCannotCommit]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropNativePointerUsesContinuousPlaneOneUndoAndViewportCancelCannotCommit]' passed (0.267 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropShiftRotationSnapsToFifteenDegrees]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCropShiftRotationSnapsToFifteenDegrees]' passed (0.093 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCurvePickerUsesExactDisplayedGeometryInverseAndOneSourceBoundUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testCurvePickerUsesExactDisplayedGeometryInverseAndOneSourceBoundUndo]' passed (0.273 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeCurrentContextAndFullDraftFencesCannotBeReplacedByEqualInputOrResultContext]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeCurrentContextAndFullDraftFencesCannotBeReplacedByEqualInputOrResultContext]' passed (0.399 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeHeldLatestScalarWaitsForReleaseThenPromotesOriginalInOneUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeHeldLatestScalarWaitsForReleaseThenPromotesOriginalInOneUndo]' passed (0.284 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeLiveExportRejectsBlockedAndHeldPreparationWithoutCreatingCandidates]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeLiveExportRejectsBlockedAndHeldPreparationWithoutCreatingCandidates]' passed (0.302 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeMenuUndoRedoCancelsPendingWithoutMovingHistoryAndOldContextCannotCancelNewIntent]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeMenuUndoRedoCancelsPendingWithoutMovingHistoryAndOldContextCannotCancelNewIntent]' passed (0.700 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeMetadataPreparationWorksWithMissingAWhileOrdinaryBitmapFailsAndCapabilityIsAttested]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeMetadataPreparationWorksWithMissingAWhileOrdinaryBitmapFailsAndCapabilityIsAttested]' passed (0.379 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeSourceBranchEpochFocusOriginalComparisonAndCropRevokeLateResultAndOldUp]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeSourceBranchEpochFocusOriginalComparisonAndCropRevokeLateResultAndOldUp]' passed (0.701 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeZeroRevokesButJoinsOriginalChildBeforeAnotherUserRequestAndNoResultStaysClean]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDehazeZeroRevokesButJoinsOriginalChildBeforeAnotherUserRequestAndNoResultStaysClean]' passed (0.466 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDevelopmentPresetAdoptionPersistsThroughRealSaveAndVerifiedDatabaseBackup]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDevelopmentPresetAdoptionPersistsThroughRealSaveAndVerifiedDatabaseBackup]' passed (0.754 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDevelopmentPresetHoverNeverCommitsOrRequestsDirectoryThumbnailsAndBlocksUnavailableSources]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDevelopmentPresetHoverNeverCommitsOrRequestsDirectoryThumbnailsAndBlocksUnavailableSources]' passed (0.078 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDisplayHistogramUsesTypedBackgroundRequestWithoutChangingRecipeOrAutoRoute]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testDisplayHistogramUsesTypedBackgroundRequestWithoutChangingRecipeOrAutoRoute]' passed (0.287 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testExplicitDehazeChoicePreservesStoredVersionsAndUsesV2OnlyForNewIntent]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testExplicitDehazeChoicePreservesStoredVersionsAndUsesV2OnlyForNewIntent]' passed (0.001 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testExplicitDehazeV2AndLegacyReprepareKeepVersionThroughPauseAndReset]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testExplicitDehazeV2AndLegacyReprepareKeepVersionThroughPauseAndReset]' passed (0.309 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testExplicitNaturalCurvesDenyAutoAndAdmitOnlySupportedPickerWithoutMutation]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testExplicitNaturalCurvesDenyAutoAndAdmitOnlySupportedPickerWithoutMutation]' passed (0.309 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterFavoritesIgnoreCorruptUnknownAndOriginalIDs]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterFavoritesIgnoreCorruptUnknownAndOriginalIDs]' passed (0.074 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterFavoritesPersistAndKeepStableDisplayOrder]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterFavoritesPersistAndKeepStableDisplayOrder]' passed (0.076 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterHoverCrossingAndLateFrameCannotOverrideCommittedPresentation]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterHoverCrossingAndLateFrameCannotOverrideCommittedPresentation]' passed (0.387 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterHoverUsesIndependentConsumerAndNeverCommitsRecipeOrHistory]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFilterHoverUsesIndependentConsumerAndNeverCommitsRecipeOrHistory]' passed (0.107 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFocusLossCancelsPendingFactsAndLateFrameCannotReactivateSession]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testFocusLossCancelsPendingFactsAndLateFrameCannotReactivateSession]' passed (0.277 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testGlobalCapabilitiesAndResolvedWhiteBalanceEditsKeepSourceAndRememberedModes]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testGlobalCapabilitiesAndResolvedWhiteBalanceEditsKeepSourceAndRememberedModes]' passed (0.277 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLateCropCommandsPreserveProjectedSourcePointsAndAllPreGeometry]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLateCropCommandsPreserveProjectedSourcePointsAndAllPreGeometry]' passed (0.349 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLateRotationRejectsOldFrameMouseUpAndReflectedStraightenKeepsDisplayDirection]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLateRotationRejectsOldFrameMouseUpAndReflectedStraightenKeepsDisplayDirection]' passed (0.301 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalLateBranchResultCannotAppendAndTerminationJoinsOwnedAnalysis]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalLateBranchResultCannotAppendAndTerminationJoinsOwnedAnalysis]' passed (0.300 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalNoResultDoesNotPromoteAndRedEyeAutomaticDonorOrderedEditsDeleteResetReplay]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalNoResultDoesNotPromoteAndRedEyeAutomaticDonorOrderedEditsDeleteResetReplay]' passed (0.316 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalRetouchUsesActualProjectedSourceDonorAndOneAtomicHistoryEntry]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalRetouchUsesActualProjectedSourceDonorAndOneAtomicHistoryEntry]' passed (0.281 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalSpacePanPreservesFieldEditorPriorityAndNeverRevivesCancelledStroke]' started.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:1763: -[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalSpacePanPreservesFieldEditorPriorityAndNeverRevivesCancelledStroke] : Test skipped - WindowServer did not activate the xctest host; run native window acceptance for this axis
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalSpacePanPreservesFieldEditorPriorityAndNeverRevivesCancelledStroke]' skipped (3.654 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalViewportOriginalAndZeroPressureRevokeStrokeWithoutWritesOrLateUp]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testLocalViewportOriginalAndZeroPressureRevokeStrokeWithoutWritesOrLateUp]' passed (0.289 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManagedThumbnailOffscreenCancelsOnlyItsChildAndShutdownJoins]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManagedThumbnailOffscreenCancelsOnlyItsChildAndShutdownJoins]' passed (0.093 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManagedThumbnailOldContextCannotRegisterAfterFocusEpochChanges]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManagedThumbnailOldContextCannotRegisterAfterFocusEpochChanges]' passed (0.083 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManagedThumbnailRequestUsesPrimaryScopeAndUnsupportedNeverWritesRecipe]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManagedThumbnailRequestUsesPrimaryScopeAndUnsupportedNeverWritesRecipe]' passed (0.065 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManualCropReadsDoNotPromoteAndLockedAngleDragNeverAccumulatesShrink]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testManualCropReadsDoNotPromoteAndLockedAngleDragNeverAccumulatesShrink]' passed (0.256 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testNaturalPickerBindsDisplayedGeometryAndCommitsOneUndoRedo]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testNaturalPickerBindsDisplayedGeometryAndCommitsOneUndoRedo]' passed (0.292 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testNaturalPickerRejectsLateResultAfterSameRecipePublicationEpochChanges]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testNaturalPickerRejectsLateResultAfterSameRecipePublicationEpochChanges]' passed (0.293 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testNaturalPickerRejectsStaleFrameAndCancelsJoinedLateResultOnClose]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testNaturalPickerRejectsStaleFrameAndCancelsJoinedLateResultOnClose]' passed (0.292 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOriginalHoldCancelsCropGestureAndAnalysisErrorsGiveActionableCopy]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOriginalHoldCancelsCropGestureAndAnalysisErrorsGiveActionableCopy]' passed (0.290 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOwnedNativeNumberFlushKeepsCurrentDraftAcrossWorkAndViewNavigation]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOwnedNativeNumberFlushKeepsCurrentDraftAcrossWorkAndViewNavigation]' passed (0.410 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOwnedNativeNumberInvalidationAndReentrantSaveCannotWriteOrSaveNewOwner]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOwnedNativeNumberInvalidationAndReentrantSaveCannotWriteOrSaveNewOwner]' passed (0.341 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOwnedNativeNumberSaveAndDraftExportFreezeSubmittedValueExactlyOnce]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testOwnedNativeNumberSaveAndDraftExportFreezeSubmittedValueExactlyOnce]' passed (0.356 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPhotoFilterFactsSelectionOriginalMemoryAndIntensityShareTypedHistory]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPhotoFilterFactsSelectionOriginalMemoryAndIntensityShareTypedHistory]' passed (0.317 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPickerRejectsLateFrameBranchAndOriginalComparisonOrCropModes]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPickerRejectsLateFrameBranchAndOriginalComparisonOrCropModes]' passed (0.294 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPresenceControlsBelongToEffectsNavigation]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPresenceControlsBelongToEffectsNavigation]' passed (0.001 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPreviewRetryClearsRevokedInteractionAndRecoversSettledCropWithoutRecipeWrites]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPreviewRetryClearsRevokedInteractionAndRecoversSettledCropWithoutRecipeWrites]' passed (0.566 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testProductionInspectorNeverMountsOrSchedulesAdjustmentThumbnails]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testProductionInspectorNeverMountsOrSchedulesAdjustmentThumbnails]' passed (0.644 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPromptDispatchNeedsLiveSupportedCapabilityBeforeEarlyHistogramCancellation]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPromptDispatchNeedsLiveSupportedCapabilityBeforeEarlyHistogramCancellation]' passed (0.564 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPromptDispatchValidCommitCancelsOnlyDisplayHistogramBeforeItsReturn]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testPromptDispatchValidCommitCancelsOnlyDisplayHistogramBeforeItsReturn]' passed (0.599 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testReadyDehazeSliderAndUpstreamPauseShareHistoryWhileLocalAndGeometryKeepPreparedValue]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testReadyDehazeSliderAndUpstreamPauseShareHistoryWhileLocalAndGeometryKeepPreparedValue]' passed (0.322 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticBatchEnablesProjectedPrefixAtomicallyAndKeepsOneUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticBatchEnablesProjectedPrefixAtomicallyAndKeepsOneUndo]' passed (0.288 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticCapabilityAndDedicatedWholeSourceDispatchNeedNoDraw]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticCapabilityAndDedicatedWholeSourceDispatchNeedNoDraw]' passed (0.300 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticMenuAndKeyboardUndoCancelPendingAndJoinWithoutMovingHistory]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticMenuAndKeyboardUndoCancelPendingAndJoinWithoutMovingHistory]' passed (1.417 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticNoResultBudgetAndRemainingCapacityNeverWriteOrPartiallyAppend]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticNoResultBudgetAndRemainingCapacityNeverWriteOrPartiallyAppend]' passed (0.581 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticPreservesPreparedDehazeRejectsMissingAirlightAndFullDraftOrOuterMismatch]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticPreservesPreparedDehazeRejectsMissingAirlightAndFullDraftOrOuterMismatch]' passed (0.284 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticScopeRevocationAndOldContextNeverAppendOrCancelNewIntent]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testRedEyeAutomaticScopeRevocationAndOldContextNeverAppendOrCancelNewIntent]' passed (0.737 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSaveJoinsHeldMetadataHistogramAndThumbnailOwnersBeforeRealPNG]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSaveJoinsHeldMetadataHistogramAndThumbnailOwnersBeforeRealPNG]' passed (1.338 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSaveThenImmediateCloseReopensLaterDraftOnNewParent]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSaveThenImmediateCloseReopensLaterDraftOnNewParent]' passed (0.338 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingFocusObserverOrderViewTeardownAndBranchReplacementCancelOldScope]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingFocusObserverOrderViewTeardownAndBranchReplacementCancelOldScope]' passed (0.261 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingKeepsWhitesAndNeutralLegacyReadsDoNotPromote]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingKeepsWhitesAndNeutralLegacyReadsDoNotPromote]' passed (0.268 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingKeyRepeatEndsOnceAndEscapeCancelsWithCapturedDeadlineFence]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingKeyRepeatEndsOnceAndEscapeCancelsWithCapturedDeadlineFence]' passed (0.288 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingRegionReplacementRejectsCapturedOldCallbacksWithoutCancellingNewGesture]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testScopedGradingRegionReplacementRejectsCapturedOldCallbacksWithoutCancellingNewGesture]' passed (0.297 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testShutdownRevokesAnalysisBeforeJoiningItsOwnedChildAndNeverCommitsLateResult]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testShutdownRevokesAnalysisBeforeJoiningItsOwnedChildAndNeverCommitsLateResult]' passed (0.094 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSourceFactsUseExistingLeaseAndExplicitSameVersionSelectionCreatesNewBranch]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSourceFactsUseExistingLeaseAndExplicitSameVersionSelectionCreatesNewBranch]' passed (0.269 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testStraightenPointerContinuesAcrossItsOwnFrameAndRejectsOldBranchMouseUp]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testStraightenPointerContinuesAcrossItsOwnFrameAndRejectsOldBranchMouseUp]' passed (0.274 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSummaryControllerMenuUndoKeyboardRedoRestoreExactAmountAndOtherGroupEditsKeepIt]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSummaryControllerMenuUndoKeyboardRedoRestoreExactAmountAndOtherGroupEditsKeepIt]' passed (0.301 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSummaryLatestPendingResultUsesOneGestureAndOriginalRecipeUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSummaryLatestPendingResultUsesOneGestureAndOriginalRecipeUndo]' passed (0.251 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSupersededLiveWriteCannotRetryOverNewerBranchAfterPhotoSwitch]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testSupersededLiveWriteCannotRetryOverNewerBranchAfterPhotoSwitch]' passed (0.488 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailAdmissionStillRejectsActiveGestureAndOriginalAndRestoresWithoutRecipeWrites]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailAdmissionStillRejectsActiveGestureAndOriginalAndRestoresWithoutRecipeWrites]' passed (0.064 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailAwaitingSourceRetriesOnceOnlyWhenActualMatchingCanonicalFrameArrives]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailAwaitingSourceRetriesOnceOnlyWhenActualMatchingCanonicalFrameArrives]' passed (0.079 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailCanonicalWitnessRejectsWrongPresentationAndModeWithoutChangingRecipe]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailCanonicalWitnessRejectsWrongPresentationAndModeWithoutChangingRecipe]' passed (0.058 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailDiagnosticsAreLazyBoundedFiniteAndHaveNoAssociationOrIdentityPayload]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailDiagnosticsAreLazyBoundedFiniteAndHaveNoAssociationOrIdentityPayload]' passed (0.002 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailHostedRetryIsAnAccessibleActionWithoutStartingSummaryTracking]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailHostedRetryIsAnAccessibleActionWithoutStartingSummaryTracking]' passed (0.330 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailImageTrackingRequiresImagesToBeginButEndsOnceAfterTheyDisappear]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailImageTrackingRequiresImagesToBeginButEndsOnceAfterTheyDisappear]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailNewVisibilityWaitsForOldChildJoinAndOldRetryCannotTouchNewEpoch]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailNewVisibilityWaitsForOldChildJoinAndOldRetryCannotTouchNewEpoch]' passed (0.052 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailTypedTerminalsExitBusyAndOrdinaryRefreshCannotLoop]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailTypedTerminalsExitBusyAndOrdinaryRefreshCannotLoop]' passed (0.468 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailVisibilityRealHostRecomputesUnchangedRectWhenViewportBecomesPositiveForAllKinds]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testThumbnailVisibilityRealHostRecomputesUnchangedRectWhenViewportBecomesPositiveForAllKinds]' passed (0.360 seconds).
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testWhiteBalanceAutoKeepsOriginalSourceStageWithinTheSameInteractiveBranch]' started.
+Test Case '-[RAWMasterUITests.PhotosDevelopmentIntegrationTests testWhiteBalanceAutoKeepsOriginalSourceStageWithinTheSameInteractiveBranch]' passed (0.267 seconds).
+Test Suite 'PhotosDevelopmentIntegrationTests' passed at 2026-11-26 16:47:53.282.
+	 Executed 94 tests, with 1 test skipped and 0 failures (0 unexpected) in 36.821 (36.844) seconds
+Test Suite 'PhotosInspectorTextLayoutTests' started at 2026-11-26 16:47:53.282.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testDetailTextRhythmKeepsDescriptionsCompleteInBothAppearances]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testDetailTextRhythmKeepsDescriptionsCompleteInBothAppearances]' passed (0.075 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSamplerRowsShowActualColourAndFullWidthFlatAction]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSamplerRowsShowActualColourAndFullWidthFlatAction]' passed (0.168 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSliderAndIntegratedNumberKeepNativeInputWithoutFocusRings]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSliderAndIntegratedNumberKeepNativeInputWithoutFocusRings]' passed (0.107 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testUnavailableSamplersKeepNumbersAndLimitOnlyDisablesAdding]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testUnavailableSamplersKeepNumbersAndLimitOnlyDisablesAdding]' passed (0.071 seconds).
+Test Suite 'PhotosInspectorTextLayoutTests' passed at 2026-11-26 16:47:53.704.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.421 (0.422) seconds
+Test Suite 'PresetMaskEntryPointTests' started at 2026-11-26 16:47:53.704.
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testDirectoryKeepsSourceAdaptiveGroupsAheadOfImportedFolders]' started.
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testDirectoryKeepsSourceAdaptiveGroupsAheadOfImportedFolders]' passed (0.001 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testImportedPresetPreviewsMappedFieldsWithoutCommitting]' started.
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testImportedPresetPreviewsMappedFieldsWithoutCommitting]' passed (0.178 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testQuickPromptDockReplacesCanvasControlsInTheNativeWindow]' started.
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testQuickPromptDockReplacesCanvasControlsInTheNativeWindow]' passed (0.232 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testSearchFindsAndAppliesPresetInWindowAlongsideMaskControls]' started.
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testSearchFindsAndAppliesPresetInWindowAlongsideMaskControls]' passed (0.425 seconds).
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testUnifiedDirectoryCancelsPreparationWhenCollapsedAndRestoresOnReopen]' started.
+Test Case '-[RAWMasterUITests.PresetMaskEntryPointTests testUnifiedDirectoryCancelsPreparationWhenCollapsedAndRestoresOnReopen]' passed (0.639 seconds).
+Test Suite 'PresetMaskEntryPointTests' passed at 2026-11-26 16:47:55.180.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 1.476 (1.476) seconds
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-26 16:47:55.180.
+	 Executed 121 tests, with 1 test skipped and 0 failures (0 unexpected) in 45.153 (45.181) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:47:55.180.
+	 Executed 121 tests, with 1 test skipped and 0 failures (0 unexpected) in 45.153 (45.182) seconds
+Local Space host actual application and own key window failed active false key false ownKey false visible true responder Optional(NSTextView) fieldEditor true panHeld false collecting false
+Test Suite 'Selected tests' started at 2026-11-26 16:47:55.355.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' started at 2026-11-26 16:47:55.358.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' passed at 2026-11-26 16:47:55.358.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:47:55.358.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.003) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:47:55.501.
+Test Suite 'RAWMasterImagingTests.xctest' started at 2026-11-26 16:47:55.503.
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-26 16:47:55.503.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:47:55.503.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:47:55.646.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' started at 2026-11-26 16:47:55.648.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' passed at 2026-11-26 16:47:55.648.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:47:55.648.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:47:55.773.
+Test Suite 'RAWMasterCoreTests.xctest' started at 2026-11-26 16:47:55.774.
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-26 16:47:55.774.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:47:55.774.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:47:55.895.
+Test Suite 'RAWMasterAITests.xctest' started at 2026-11-26 16:47:55.896.
+Test Suite 'RAWMasterAITests.xctest' passed at 2026-11-26 16:47:55.897.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:47:55.897.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds

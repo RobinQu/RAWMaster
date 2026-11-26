@@ -88,6 +88,35 @@ final class ImageCanvasTests: XCTestCase {
             XCTAssertEqual(observed,expected)
         }
     }
+    @MainActor func testFreeZoomRetainsItsTransformWhenTheRasterChanges() {
+        let canvas = ImageCanvas(frame: CGRect(x: 0, y: 0, width: 800, height: 600))
+        let sourceSize = CGSize(width: 6000, height: 4000)
+        canvas.update(image: NSImage(size: sourceSize), actualPixels: false, transform: .init(), canvasPixelSize: sourceSize)
+        var gesture: [(Bool, ImageCanvasViewportSnapshot)] = []
+        var latest: ImageCanvasViewportSnapshot?
+        canvas.onFreeZoom = { gesture.append(($0, $1)) }
+        canvas.setInteractionHandlers(pointer: nil, viewport: { latest = $0 })
+        let anchor = CGPoint(x: 550, y: 320)
+        canvas.layout()
+        let initialRect = latest!.imageRect
+        canvas.handleZoom(factor: 1, at: anchor, phase: .began)
+        canvas.handleZoom(factor: 2, at: anchor, phase: .changed)
+        canvas.handleZoom(factor: 1, at: anchor, phase: .ended)
+        XCTAssertEqual(gesture.map { $0.0 }, [true, true, false])
+        let after = gesture.last!.1
+        XCTAssertEqual(after.transform.scale, 2)
+        XCTAssertNil(after.transform.physicalMagnification)
+        XCTAssertEqual((anchor.x - after.imageRect.minX) / after.imageRect.width,
+                       (anchor.x - initialRect.minX) / initialRect.width, accuracy: 0.0001)
+        canvas.update(image: NSImage(size: CGSize(width: 800, height: 600)), actualPixels: false,
+                      transform: after.transform, window: CGRect(x: 0.25, y: 0.25, width: 0.5, height: 0.5), canvasPixelSize: sourceSize)
+        canvas.layout()
+        XCTAssertEqual(latest?.imageRect, after.imageRect)
+        canvas.handleZoom(factor: 1.2, at: anchor, phase: .began)
+        canvas.handleZoom(factor: 1, at: anchor, phase: .cancelled)
+        XCTAssertEqual(gesture.last?.1.transform, after.transform)
+    }
+
     func testMixedSizeCompareUsesPhysicalOneToOneAndNormalizedCenters() {
         let shared = ImageTransform(centerX: 0.61, centerY: 0.42, physicalMagnification: 1)
         let panes: [(CGSize, CGSize)] = [

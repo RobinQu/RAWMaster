@@ -13,7 +13,7 @@ struct PhotosAIDenoiseControls: View {
             let selected = session.parameters.aiDenoise
             let available = facts.aiDenoiseCapability != nil && session.parameters.rawDetails == nil &&
                 !session.parameters.blackAndWhite.requiresLegacyGrainCanonicalInput
-            VStack(alignment: .leading, spacing: 7) {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
                 Toggle("AI 降噪", isOn: .init(get: { selected != nil }, set: { enabled in
                     if enabled {
                         guard available, let model = facts.aiDenoiseCapability else { return }
@@ -41,8 +41,8 @@ struct PhotosAIDenoiseControls: View {
                         }, onError: { errorText = $0.localizedDescription })
                         .accessibilityIdentifier("photos.detail.aiDenoise.amount")
                 }
-                Text(help(selected: selected, available: available)).font(.caption).foregroundStyle(.secondary)
-                if let errorText { Text(errorText).font(.caption).foregroundStyle(AppPalette.warning) }
+                Text(help(selected: selected, available: available)).photosInspectorParagraph().foregroundStyle(.secondary)
+                if let errorText { Text(errorText).photosInspectorParagraph().foregroundStyle(AppPalette.warning) }
             }
             .onDisappear { cancelPreparation() }
             .onChange(of: context) { _, _ in cancelPreparation(); errorText = nil }

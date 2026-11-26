@@ -6,11 +6,19 @@
   "license": "CC BY-SA 4.0",
   "licenseURL": "https://creativecommons.org/licenses/by-sa/4.0/",
   "sourceFileSHA256": {
+    "src/spektrafilm/data/profiles/fujifilm_provia_100f.json": "f061f7aa55e3fefe1c89ee2edb8555a2d44fe8167d02f663c787067d131137b6",
     "src/spektrafilm/data/profiles/fujifilm_velvia_100.json": "af696fa9662e0483cb9428d2939675044f2016fc3fad760b50a20a0a586fc04b",
     "src/spektrafilm/data/profiles/kodak_2383.json": "eb7fdfa3b75a909bf5c400802f7401160c8017ed1ac3e8e0d1c8448d56fbe184",
+    "src/spektrafilm/data/profiles/kodak_ektachrome_100.json": "ef194fd80c60a1ac42bbbf1df458b4d047fc07bc17eebce674bb3bcba2ccf62a",
+    "src/spektrafilm/data/profiles/kodak_ektar_100.json": "60acbd46c75005771569eafb97f534a4495e9d4e1e9c1e419b90cea2676ec7cf",
+    "src/spektrafilm/data/profiles/kodak_gold_200.json": "aa8a0c1c7851fface3752f968cdf6c6d74a26fc9756a4460d3155d2382506b7c",
     "src/spektrafilm/data/profiles/kodak_portra_400.json": "b5cdc73dbec8f462f488bca70bedf23fd13ce79969c0457e8ac2a2565d92bf5d",
+    "src/spektrafilm/data/profiles/kodak_portra_800.json": "5b0c6e861c6273a2ecdf552525e80738037918e650a0dc206e095acfd02f8b43",
     "src/spektrafilm/data/profiles/kodak_portra_endura.json": "e3bb6069e02d088d8080d38ce28035816038f62786e2aff9176bf4aeeb4820a0",
+    "src/spektrafilm/data/profiles/kodak_supra_endura.json": "3a0928013effbb33e81acd01db426937faa3a12021a267c54b4d96e916286bd6",
+    "src/spektrafilm/data/profiles/kodak_ultra_endura.json": "319fa2514e9a6809fd09ce587c4f714effc035e7f9ebaeb3b55d9bc1b52c2a72",
     "src/spektrafilm/data/profiles/kodak_vision3_250d.json": "9ab85c8627c0533beb925b747e441e93beabe9e98c2429695b0a53866b56fcc7",
+    "src/spektrafilm/data/profiles/kodak_vision3_500t.json": "d7beca68bf16db88dbb7373fd13a6a1150a57a911a54bb0309a760a6f9883329",
     "src/spektrafilm/data/filters/neutral_print_filters.json": "8bbf8d8db76aecdc9e94bc0b1e31f3329553eeda56d210ab36294fa5e4bf3b13",
     "SPEKTRAFILM_LICENSE.txt": "76d629501783ae52e8d63aee1e054c1e1a9713b9fe7d36fb306e25b1d14b24e9"
   },
@@ -31,23 +39,74 @@
     "printExposure": 1,
     "stockSpecifics": true
   },
-  "stored": "Little-endian RGBA32Float; linear output minus linear grid input, alpha lane 1. R fastest, then G and B.",
+  "stored": "Little-endian RGBA32Float linear delta, alpha lane 1. R fastest, then G and B. Original three endpoints preserve their direct64 nodes; new endpoints fit the full dense127 reference with fixed cube faces.",
   "strength": "Linear blend from the original to the stock endpoint in working RGB. Outside [0,1] preserve the signed source residual.",
+  "scope": "Official-model/default-parameter SDR colour and tone endpoints, not named community-authored looks. Grain, halation and HDR output rendering are not included.",
+  "fit": {
+    "method": "fixed-faces-simpson-trilinear-fit-v1",
+    "referenceGrid": 127,
+    "storedGrid": 64,
+    "inputMeasure": "uniform encoded sRGB, tensor-product Simpson quadrature",
+    "preservedDirectEndpoints": [
+      "spektraPortra400Endura",
+      "spektraVelvia100",
+      "spektraVision250D2383"
+    ]
+  },
   "looks": {
     "spektraPortra400Endura": {
       "film": "kodak_portra_400",
       "print": "kodak_portra_endura",
-      "scanFilmDirectly": false
+      "scanFilmDirectly": false,
+      "bakeMethod": "direct64-v1"
     },
     "spektraVelvia100": {
       "film": "fujifilm_velvia_100",
       "print": null,
-      "scanFilmDirectly": true
+      "scanFilmDirectly": true,
+      "bakeMethod": "direct64-v1"
     },
     "spektraVision250D2383": {
       "film": "kodak_vision3_250d",
       "print": "kodak_2383",
-      "scanFilmDirectly": false
+      "scanFilmDirectly": false,
+      "bakeMethod": "direct64-v1"
+    },
+    "spektraGold200UltraEndura": {
+      "film": "kodak_gold_200",
+      "print": "kodak_ultra_endura",
+      "scanFilmDirectly": false,
+      "bakeMethod": "dense127-fit-v1"
+    },
+    "spektraPortra800SupraEndura": {
+      "film": "kodak_portra_800",
+      "print": "kodak_supra_endura",
+      "scanFilmDirectly": false,
+      "bakeMethod": "dense127-fit-v1"
+    },
+    "spektraEktar100Endura": {
+      "film": "kodak_ektar_100",
+      "print": "kodak_portra_endura",
+      "scanFilmDirectly": false,
+      "bakeMethod": "dense127-fit-v1"
+    },
+    "spektraProvia100F": {
+      "film": "fujifilm_provia_100f",
+      "print": null,
+      "scanFilmDirectly": true,
+      "bakeMethod": "dense127-fit-v1"
+    },
+    "spektraEktachrome100": {
+      "film": "kodak_ektachrome_100",
+      "print": null,
+      "scanFilmDirectly": true,
+      "bakeMethod": "dense127-fit-v1"
+    },
+    "spektraVision500T2383": {
+      "film": "kodak_vision3_500t",
+      "print": "kodak_2383",
+      "scanFilmDirectly": false,
+      "bakeMethod": "dense127-fit-v1"
     }
   }
 }

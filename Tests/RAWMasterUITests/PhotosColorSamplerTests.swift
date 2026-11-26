@@ -12,11 +12,13 @@ final class PhotosColorSamplerTests: XCTestCase {
         model.selectScope(.project, id: fixture.assets[0].projectID)
         model.select(fixture.assets[0]); model.setMode(.single); model.openNativeEditing()
         let editing = try XCTUnwrap(model.editing)
-        for _ in 0..<500 where editing.developmentContext == nil {
+        let admissionDeadline = ContinuousClock.now + .seconds(20)
+        while editing.developmentContext == nil, ContinuousClock.now < admissionDeadline {
             if editing.work != nil { editing.beginDevelopmentInterface() }
             try await Task.sleep(for: .milliseconds(10))
         }
-        let context = try XCTUnwrap(editing.developmentContext), original = editing.recipe
+        let context = try XCTUnwrap(editing.developmentContext,
+            "Source admission: ready=\(editing.sourceReady), inspectable=\(editing.previews.primary.canInspectDevelopmentSource), presented=\(editing.isPresented), stage=\(editing.stage), preview=\(editing.previews.primary.error ?? "none"), message=\(editing.message ?? "none")"), original = editing.recipe
         func pick(_ point: DevelopmentSourcePoint, replacing index: Int? = nil) async throws {
             for _ in 0..<500 where editing.developmentPicker == nil {
                 editing.beginDevelopmentPicker(.colorSampler(replacing: index), context: context)

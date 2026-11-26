@@ -5,6 +5,7 @@ from contextlib import suppress
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+import json
 import os
 import shutil
 import subprocess
@@ -24,7 +25,9 @@ class QuietHandler(SimpleHTTPRequestHandler):
 def main():
     parser = ArgumentParser(description=__doc__)
     parser.add_argument("--editing-only", action="store_true", help="Run the filter and Quick Prompt walkthrough with its setup scenarios.")
-    editing_only = parser.parse_args().editing_only
+    parser.add_argument("--hdr-only", action="store_true", help="Run the Spec 037 darkroom and 032 walkthrough.")
+    args = parser.parse_args()
+    editing_only = args.editing_only
     cli = shutil.which("agent-browser")
     if not cli:
         raise SystemExit("This browser check uses agent-browser. Manual review routes are in docs/ui/coverage.md.")
@@ -49,20 +52,34 @@ def main():
       const hash=async path=>{location.hash=path;await wait(()=>location.hash==='#'+path);await new Promise(ok=>setTimeout(ok,35));};
       const page=async selector=>wait(()=>document.body.dataset.route===(decodeURI(location.hash.slice(1))||'library/project/river')&&el(selector)?.checkVisibility());
       const modal=()=>el('#sheet');
+      const pickNode=id=>{
+        if(['source','geometry','output'].includes(id)) return tap('[data-dag-node="'+id+'"]');
+        act('dag-picker');act('dag-picker-select',id,el('#dag-node-picker'));
+      };
+      const foldTool=id=>{const button=el('[data-act=canvas-tool-fold][data-val='+id+']');if(button.getAttribute('aria-expanded')!=='true')act('canvas-tool-fold',id);};
+      const maskType=type=>{foldTool('mask-types');act('canvas-mask-type',type);};
+      const markCenter=()=>{foldTool('remove-more');act('canvas-remove-center');};
+      const addNodeMenu=()=>{act('dag-picker');act('dag-picker-command','add',el('#dag-node-picker'));};
+      const menuAction=(name,val=null)=>{act('dag-menu');const target=el('[data-act="'+name+'"]',modal()),details=target?.closest('details');if(details&&!details.open)tap('summary',details);act(name,val,modal());};
       const key=(target,k,mod={})=>target.dispatchEvent(new KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true,...mod}));
       const route=async path=>wait(()=>location.hash==='#'+path&&document.querySelector('#workspace'));
     """
 
+    def check_browser_errors():
+        errors = json.loads(browser("errors", "--json"))["data"]["errors"]
+        if errors:
+            raise AssertionError(json.dumps(errors, ensure_ascii=False, indent=2))
+
     def scenario(title, js):
-        if editing_only and "快速 Prompt" not in title and title not in {
+        if editing_only and "快速 Prompt" not in title and not title.startswith("Node DAG") and title not in {
             "双击入口与本地照片", "标题栏与资料库侧栏开关", "搜索、筛选、多选比较与批量标签",
-            "导入、续接、分组、初筛封存与历史恢复", "暗房布局、智能预设与胶片采用", "浮动工具条、邻片、裁切与参考对比", "胶片带对齐、折叠和离线照片",
+            "导入、续接、分组、初筛封存与历史恢复", "暗房布局、智能预设与胶片采用", "浮动工具条、邻片、裁切与参考对比", "胶片带对齐、折叠和离线照片", "紧凑示波器、白平衡与蒙版分层",
         }:
             return
         try:
             output = browser("eval", "(async()=>{" + helpers + js + ";return 'PASS';})()")
         except RuntimeError as error:
-            state = browser("eval", "({url:location.href, route:document.body.dataset.route, title:document.title, message:document.body.innerText.slice(0,160), heading:document.querySelector('h1')?.textContent, dialog:document.querySelector('dialog[open]')?.innerText, filters:document.querySelector('.chips')?.innerText})")
+            state = browser("eval", "({url:location.href, route:document.body.dataset.route, title:document.title, message:document.body.innerText.slice(0,160), heading:document.querySelector('h1')?.textContent, canvasTool:typeof S!=='undefined'&&S.canvasTool?{kind:S.canvasTool.kind,legacy:S.canvasTool.legacy,revisionMatches:JSON.stringify(Studio.edit(S.canvasTool.photo).recipe)===JSON.stringify(S.canvasTool.before),notice:document.querySelector('#notice')?.textContent,invalid:Array.from(document.querySelectorAll('.canvas-tool-dock input:invalid')).map(el=>({name:el.name,key:el.dataset.key,value:el.value,min:el.min,max:el.max,step:el.step}))}:null, dialog:document.querySelector('dialog[open]')?.innerText, filters:document.querySelector('.chips')?.innerText, exportState:{heading:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job-title')?.textContent,open:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job')?.open,result:document.querySelector('#export-frame')?.contentDocument?.querySelector('#job')?.innerText.slice(-1600)}})")
             raise AssertionError(f"{title}\n{state}\n{browser('errors')}\n{error}") from error
         if "PASS" not in output:
             raise AssertionError(title + ": " + output)
@@ -74,6 +91,154 @@ def main():
         threading.Thread(target=server.serve_forever, daemon=True).start()
         try:
             options = ["--executable-path", chrome] if Path(chrome).exists() else []
+            if not editing_only or args.hdr_only:
+                browser(*options, "open", host.replace('127.0.0.1', 'localhost') + ENTRY)
+                browser("set", "viewport", "1440", "900")
+                scenario("037 HDR 暗房状态与冻结交付", """
+                  await page('.photo-card');
+                  act('workflow','edit'); await page('.inspector-rail'); act('edit-tool','basic'); await page('.scene-mode-bar');
+                  act('scene-mode','hdr');
+                  assert(!el('#scene-mode-reason')&&el('.edit-center .scene-warning').textContent.includes('场景校准')&&!Studio.edit('r1').recipe.sceneOutput,'unqualified HDR is explained on canvas only');
+                  act('scene-dismiss'); assert(!el('.scene-warning'),'warning dismisses');
+                  act('goto','library/project/river'); await page('.photo-card');
+                  act('photo','b1'); act('workflow','edit'); await page('.inspector-rail');
+                  act('edit-tool','basic'); await page('.scene-mode-bar');
+                  act('scene-mode','hdr');
+                  const edit=Studio.edit('b1');
+                  assert(edit.recipe.sceneOutput?.intent==='hdr'&&!Studio.edit('r1').recipe.sceneOutput,'version-scoped intent');
+                  const history=edit.past.length;
+                  const marker=el('.scene-chart-ok').getAttribute('d');
+                  const limit=el('[name=sceneLimit]');
+                  assert(limit.labels[0]?.textContent==='HDR 高光限制','HDR Limit has an accessible label');
+                  limit.value='1.5';limit.dispatchEvent(new Event('input',{bubbles:true}));
+                  assert(el('.scene-limit output').value==='+1.5 EV'&&edit.past.length===history,'dragging updates the live readout before committing');
+                  limit.dispatchEvent(new Event('change',{bubbles:true}));
+                  assert(edit.recipe.sceneOutput.limitEV===1.5&&edit.recipe.sceneOutput.peak===1000&&el('.scene-chart-ok').getAttribute('d')===marker,'HDR Limit is separate from display and file target');
+                  act('edit-step','undo');
+                  tap('.scene-rendition summary');set('.scene-rendition [name=sceneExposure]','0.5');
+                  act('scene-view','sdr',el('.scene-rendition'));
+                  assert(el('.scene-rendition [name=sceneExposure]').value==='0.5'&&edit.past.length===history,'inline SDR preview keeps draft and history');
+                  act('scene-trim','',el('.scene-rendition'));assert(edit.recipe.sceneOutput.trim.exposure===0.5,'inline SDR apply');
+                  act('edit-step','undo');
+                  act('scene-scope','scene'); act('scene-sample');
+                  assert(el('.scene-scopes').textContent.includes('−0.02'),'signed AP1 sample');
+                  act('scene-overlay','sensor');act('scene-overlay','target');
+                  assert(all('.scene-marks i').length===2,'independent overlays');
+                  key(document.activeElement,'Escape');
+                  assert(!all('.scene-marks i').length&&document.activeElement.dataset.act==='scene-overlay','overlay Escape restores focus');
+                  tap('.scene-entry'); set('[name=sceneExposure]','1',modal()); act('scene-screen','hdr',modal());
+                  assert(el('[name=sceneExposure]',modal()).value==='1'&&edit.past.length===history,'view preserves draft and history');
+                  act('scene-trim','',modal());
+                  assert(edit.recipe.sceneOutput.trim.exposure===1&&edit.past.length===history+1,'one SDR history step');
+                  act('edit-step','undo');assert(edit.recipe.sceneOutput.trim.exposure===0,'undo trim only');
+                  const film=el('[data-act=film-stock]');tap('[data-act=film-stock][data-val="'+CSS.escape(film.dataset.val)+'"]');
+                  assert(modal().textContent.includes('仅 SDR')&&el('.scene-film-preview',modal()),'separate film preview');
+                  act('close',null,modal());assert(!edit.recipe.sceneOutput.film,'cancel film leaves recipe');
+                  act('workflow','export');act('export-choice','draft',modal());await page('#export-frame[src]');
+                  const frame=el('#export-frame');
+                  const d=()=>frame.contentDocument;
+                  await wait(()=>d()?.readyState==='complete' && el('#scene-target',d())?.checkVisibility() && el('#out-name',d())?.textContent.includes('.jpg'));
+                  set('#scene-target','both',d());
+                  const name=el('#out-name',d()).textContent;
+                  assert(name.includes('.avif')&&name.includes('.jpg'),'dual files: '+name+' / '+el('#out-facts',d()).textContent);
+                  assert(el('#count',d()).textContent.includes('2 项'),'file count');
+                  tap('#submit',d());tap('#job details summary',d());tap('#fail-job',d());
+                  await wait(()=>el('#job-summary',d()).textContent.includes('写入失败 1 项')&&el('#job-summary',d()).textContent.includes('已核验 1 / 2'));
+                  tap('#retry',d());await wait(()=>el('#job-summary',d()).textContent.includes('已核验 2 / 2'));
+                  tap('#close-job',d());act('workflow','library');await page('.photo-card');
+                  assert(activeBrowser().focus==='b1','return to selected photo');
+                  const saved=edit.lastSaved;edit.adopted=saved;
+                  Studio.asset('b1').online=false;Studio.save();
+                  act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic');await page('.scene-entry');tap('.scene-entry');
+                  assert(modal().textContent.includes('原片已离线')&&el('[name=sceneExposure]',modal()).disabled,'offline HDR settings');
+                  act('close',null,modal());act('workflow','library');await page('.photo-card');
+                  act('multi');act('photo','r1');act('workflow','export');await page('#export-frame[src]');
+                  const mix=()=>el('#export-frame').contentDocument;
+                  await wait(()=>mix()?.readyState==='complete'&&el('#scene-target',mix())?.checkVisibility());
+                  set('#scene-target','hdr',mix());
+                  let count=el('#count',mix()).textContent;
+                  assert(count.includes('待找回 1 项')&&count.includes('无 HDR 母版 1 张')&&el('#submit',mix()).disabled,'offline + unqualified is blocked');
+                  set('#scene-fallback',true,mix());
+                  assert(el('#count',mix()).textContent.includes('可交付 1 项'),'explicit fallback only for ineligible version');
+                  tap('#submit',mix());tap('#cancel-job',mix());
+                  assert(el('#job-title',mix()).textContent.includes('已取消'),'cancel mixed batch');
+                """)
+                browser("set", "viewport", "390", "844")
+                scenario("037 HDR 窄窗与外观", """
+                  const options=['light','dark'];
+                  for(const theme of options){
+                    await hash('settings/general');await page('[name=theme]');set('[name=theme]',theme);
+                    await hash('edit/basic');await page('.scene-entry');
+                    const bounds=el('.edit-right').getBoundingClientRect();
+                    assert(bounds.left>=0&&bounds.right<=innerWidth&&all('.scene-modes button').length===3,'mode bar fits '+theme);
+                    tap('.scene-entry');
+                    assert(document.documentElement.dataset.theme===theme&&modal().getBoundingClientRect().width<=innerWidth,'dialog fits '+theme);
+                    assert(el('[data-act=scene-screen][data-val=hdr]',modal()).checkVisibility(),'screen control reachable at 390px');
+                    act('close',null,modal());
+                  }
+                """)
+                browser("set", "viewport", "1440", "900")
+                scenario("037 HDR 旧版外观冲突", """
+                  await hash('library/project/river');await page('.photo-card');
+                  act('photo','m1');act('workflow','edit');await page('.inspector-rail'); act('edit-tool','basic'); await page('.scene-entry');
+                  const old=Studio.edit('m1');
+                  act('film-stock',el('[data-act=film-stock]').dataset.val);
+                  const recipe=JSON.stringify(old.recipe);
+                  act('scene-mode','hdr');
+                  assert(modal().textContent.includes('胶片外观'),'conflict explains incompatible Look');
+                  act('close',null,modal());assert(JSON.stringify(old.recipe)===recipe&&!old.versions.length,'cancel creates no versions');
+                  act('scene-mode','hdr');act('scene-new',null,modal());
+                  assert(old.recipe.sceneOutput?.intent==='hdr'&&!old.recipe.filmStock,'HDR draft carries no old film');
+                  assert(old.versions.some(v=>JSON.stringify(v.recipe)===recipe)&&old.adopted==='original','old SDR retained without auto-adoption');
+                """)
+                scenario("037 色彩模式与 Graph 面板分区", """
+                  await hash('edit/basic');await page('.scene-mode-bar');
+                  const panel=el('.edit-inspector'), modeBar=el('.scene-mode-bar'), graphBar=el('.dag-scope-head');
+                  assert(graphBar.nextElementSibling===panel&&modeBar.parentElement.id==='adjustment-panel'&&modeBar.compareDocumentPosition(el('.scene-scopes'))&Node.DOCUMENT_POSITION_FOLLOWING,'mode section inside Basic before scopes');
+                  act('edit-tool','tones');await page('#adjustment-panel');assert(!el('.scene-mode-bar'),'mode section is not repeated in Curves');
+                  act('edit-tool','basic');await page('.scene-mode-bar');
+                  assert(el('.dag-scope-head').getBoundingClientRect().bottom<el('.edit-inspector').getBoundingClientRect().top&&getComputedStyle(el('.scene-mode-bar')).borderBottomWidth==='1px','gap and separator');
+                  assert(!el('.edit-head [data-act=scene-open]'),'no duplicate settings');
+                  act('dag-view-toggle');await page('.dag-floating');
+                  act('dag-picker');
+                  assert(all('.dag-picker-list [data-act=dag-picker-select]').map(b=>b.dataset.val).join()==='grade'&&el('[data-val=base]',el('#dag-node-picker')),'fixed stages excluded from node list');
+                  act('dag-picker-select','grade',el('#dag-node-picker'));
+                  const menu=()=>el('#dag-context');
+                  key(el('[data-dag-node=grade]'),'F10',{shiftKey:true});
+                  assert(menu().matches(':popover-open')&&menu().textContent.includes('Solo')&&!menu().textContent.includes('适合全图'),'node-only context');
+                  key(document.activeElement,'Escape');
+                  assert(!menu()?.matches(':popover-open')&&document.activeElement===el('[data-dag-node=grade]')&&el('.dag-floating'),'node context Escape returns to the node without closing Graph');
+                  key(el('[data-dag-viewport]'),'ContextMenu');
+                  assert(menu().matches(':popover-open')&&menu().textContent.includes('适合全图')&&!menu().textContent.includes('复位本节点'),'canvas context');key(document.activeElement,'Escape');
+                  assert(!menu()?.matches(':popover-open')&&document.activeElement===el('[data-dag-viewport]')&&el('.dag-floating'),'canvas context Escape returns to the canvas');
+                  const e=Studio.edit('m1'), selected=dagView().selection.join(), graphNodeBytes=()=>JSON.stringify([e.recipe.dag.nodes,e.recipe.dag.edges]);
+                  const nodes=graphNodeBytes(), past=e.past.length, recipe=JSON.stringify(e.recipe);
+                  act('dag-solo'); assert(el('.dag-photo-status').textContent.includes('Solo')&&el('.dag-monitor').textContent.includes('Solo'),'Solo labels both previews');
+                  act('dag-preview-bypass');assert(el('.dag-photo-status').textContent.includes('旁路')&&!dagPreviewState().solo,'view overrides are exclusive');
+                  act('dag-preview-final'); assert(JSON.stringify(e.recipe)===recipe&&e.past.length===past,'temporary view does not change recipe or export');
+                  const sw=m=>el('[data-act=scene-mode][data-val='+m+']');
+                  sw('hdr').focus();key(sw('hdr'),'ArrowRight');
+                  assert(document.activeElement===sw('bw')&&e.past.length===past&&sw('hdr').getAttribute('aria-pressed')==='true','keyboard focus only');
+                  act('scene-mode','bw');assert(modal().open&&e.past.length===past,'leaving HDR needs confirmation');
+                  act('close',null,modal());await wait(()=>document.activeElement===sw('bw'));
+                  assert(e.recipe.sceneOutput&&graphNodeBytes()===nodes,'cancel keeps HDR and graph');
+                  act('scene-mode','bw');act('scene-confirm-sdr','bw',modal());
+                  assert(!e.recipe.sceneOutput&&RMPhotos.displayLook(e.recipe).mono&&el('.developed').style.filter.includes('grayscale(1)'),'B&W applies grayscale');
+                  assert(graphNodeBytes()===nodes&&dagView().selection.join()===selected&&el('.dag-floating')&&e.past.length===past+1,'mode does not change graph topology, state or selection');
+                  act('dag-toggle-current');
+                  assert(el('[data-act=dag-toggle-current]').getAttribute('aria-pressed')==='true'&&e.recipe.colorMode==='bw'&&!e.recipe.sceneOutput,'bypass preserves mode');
+                  act('edit-step','undo');act('edit-step','undo');
+                  assert(e.recipe.sceneOutput?.intent==='hdr'&&sw('hdr').getAttribute('aria-pressed')==='true'&&dagView().selection.join()===selected,'undo restores HDR without losing selection');
+                  act('dag-toggle-current');assert(e.recipe.sceneOutput?.intent==='hdr','subsequent node edit preserves HDR');
+                  act('scene-overlay','bands');act('dag-picker');key(document.activeElement,'Escape');
+                  assert(!el('#dag-node-picker').matches(':popover-open')&&el('.scene-marks .bands')&&document.activeElement===el('[name=dagNode]'),'picker Escape does not clear HDR diagnostics');
+                  act('dag-view-toggle');assert(!el('.dag-floating')&&sw('hdr').getAttribute('aria-pressed')==='true','Graph control remains independent');
+                  act('open-versions');await page('#adjustment-panel');
+                  assert(!el('.scene-modes')&&!el('.dag-scope-head'),'saved version is read-only');
+                """)
+                if args.hdr_only:
+                    check_browser_errors()
+                    return
             browser(*options, "open", (ROOT / ENTRY).as_uri())
             scenario("双击入口与本地照片", """
               await page('.photo-card');await wait(()=>all('.photo-card img').every(i=>i.complete&&i.naturalWidth));
@@ -129,26 +294,58 @@ def main():
             """)
             scenario("胶片带对齐、折叠和离线照片", """
               act('mode','single');
-              const centers=()=>all('.filmstrip-photo img').map(img=>{const r=img.getBoundingClientRect();return r.top+r.height/2;});
-              assert(Math.max(...centers())-Math.min(...centers())<1,'grouped and ungrouped thumbnails align');
-              const label=el('.filmstrip-group .filmstrip-label'), first=label.nextElementSibling;
-              assert(label.getBoundingClientRect().right<first.getBoundingClientRect().left,'group label before first photo');
-              const count=all('.filmstrip-photo').length, selected=activeBrowser().focus;
-              act('filmstrip-group',label.dataset.val);assert(all('.filmstrip-photo').length<count&&activeBrowser().focus===selected,'collapse preserves focus');
-              act('filmstrip-group',label.dataset.val);assert(all('.filmstrip-photo').length===count,'expand restores members');
-              act('workflow','edit');await page('.edit-center .filmstrip');
-              assert(Math.max(...centers())-Math.min(...centers())<1,'editing strip also aligns');
-              act('edit-photo','w1');assert(modal().textContent.includes('原片待找回'),'offline entry explains recovery');
-              act('close',null,modal());assert(Studio.data.work===selected,'offline cancel retains photo');
-              act('workflow','library');await page('.loupe');act('mode','grid');
+              const near=(a,b)=>Math.abs(a-b)<1;
+              const checkAlignment=()=>{
+                const photos=all('.filmstrip .filmstrip-photo img').map(img=>img.getBoundingClientRect());
+                assert(el('.filmstrip > .filmstrip-photo')&&photos.every(r=>near(r.top,photos[0].top)),'grouped and ungrouped thumbnails align');
+                const selected=el('.filmstrip > .filmstrip-photo.chosen').getBoundingClientRect();
+                for(const group of all('.filmstrip-group')) {
+                  const outline=group.getBoundingClientRect(), heading=el('.filmstrip-heading',group).getBoundingClientRect();
+                  const button=el('.filmstrip-toggle',group), toggle=button.getBoundingClientRect();
+                  const arrow=el('.icon',button).getBoundingClientRect(), name=el('.filmstrip-name',button).getBoundingClientRect();
+                  const meta=el('.filmstrip-meta',group).getBoundingClientRect();
+                  assert(near(outline.top,selected.top)&&near(outline.bottom,selected.bottom),'group and selected standalone outlines align');
+                  assert(near(heading.top+heading.height/2,outline.top+outline.height/2),'group heading is vertically centered');
+                  assert(arrow.right<name.left&&arrow.top<name.bottom&&name.top<arrow.bottom&&toggle.bottom<=meta.top&&near(toggle.width,heading.width)&&heading.width<=selected.width,'compact two-row heading');
+                  for(const photo of all('.filmstrip-photo',group)) {
+                    const card=photo.getBoundingClientRect(), above=card.top-outline.top, below=outline.bottom-card.bottom;
+                    assert(above>=3&&near(above,below)&&heading.right<card.left,'group cards follow the heading with equal vertical spacing');
+                  }
+                }
+              };
+              checkAlignment();
+              const toggle=()=>el('.filmstrip-toggle'), group=toggle().dataset.val, original=el('.filmstrip-name').textContent;
+              const stripHeight=()=>el('.filmstrip').getBoundingClientRect().height;
+              const firstPhotoLeft=()=>el('.filmstrip-group .filmstrip-photo').getBoundingClientRect().left;
+              const count=all('.filmstrip-photo').length, selected=activeBrowser().focus, initialHeight=stripHeight(), initialLeft=firstPhotoLeft();
+              tap('.filmstrip-toggle .filmstrip-name');assert(toggle().ariaExpanded==='false'&&all('.filmstrip-photo').length<count&&activeBrowser().focus===selected&&near(stripHeight(),initialHeight),'title click collapses without changing focus or height');
+              act('filmstrip-group',group);assert(toggle().ariaExpanded==='true'&&all('.filmstrip-photo').length===count,'expand restores members');
+              const settings=()=>act('manage-group',group,el('.filmstrip'));
+              const groupName=()=>el('[name=groupName]',modal());
+              const rename=(name)=>{set('[name=groupName]',name,modal());act('save-group',group,modal());};
+              const longName='河谷日落延时拍摄 · Camera B 第 02 段';
+              settings();assert(modal().open&&groupName().value===original,'settings target the visible group');
+              rename(longName);
+              const name=el('.filmstrip-name',toggle());
+              assert(name.scrollWidth>name.clientWidth&&getComputedStyle(name).textOverflow==='ellipsis'&&near(firstPhotoLeft(),initialLeft),'long name uses an ellipsis without moving thumbnails');
+              assert(name.textContent===longName&&toggle().title===longName&&toggle().ariaLabel.includes(longName),'full name preserved for hover and accessibility');
+              checkAlignment();
+              settings();assert(groupName().value===longName,'settings retains the full group name');
+              act('close',null,modal());assert(activeBrowser().focus===selected&&toggle().ariaExpanded==='true','cancel preserves the photo and expansion');
+              settings();rename(original);
+              act('workflow','edit');await page('.canvas-dock');
+              assert(!el('.filmstrip')&&Studio.data.work===selected,'editing replaces the strip with the canvas dock');
+              act('workflow','library');await page('.loupe');
+              assert(all('.filmstrip-photo').length===count&&activeBrowser().focus===selected,'return preserves the library filmstrip and focus');
+              act('mode','grid');
             """)
             scenario("暗房布局、智能预设与胶片采用", """
               await hash('library/group/dusk');act('photo','d1');act('workflow','edit');await page('.smart-panel');
               assert(!el('.edit-head .switch,.edit-left .switch,.edit-inspector .tool-palette,.agent-panel'),'single darkroom');
-              const headings=all('.edit-left > section h2');
+              const headings=all('.edit-left > section[aria-labelledby]').map(section=>el('#'+section.getAttribute('aria-labelledby'),section));
               assert(headings.map(n=>n.textContent).join('/')==='滤镜/快照/历史'&&headings[0].offsetTop<headings[1].offsetTop&&headings[1].offsetTop<headings[2].offsetTop,'stacked left sections');
               const rail=el('.inspector-rail').getBoundingClientRect(),pane=el('.inspector-content').getBoundingClientRect();
-              assert(rail.width<51&&rail.right<=pane.left+1&&all('.rail-tool').every(b=>!b.textContent.trim()&&b.title),'vertical labeled icon rail');
+              assert(rail.width<51&&rail.right<=pane.left+1&&all('.rail-tool').every(b=>!b.textContent.trim()&&b.getAttribute('aria-label')&&!b.title),'vertical icon rail with accessible labels and no system tooltips');
               assert(!el('[name=aiPrompt]')&&el('[data-act=edit-tool][data-val=agent]'),'opt in to Agent');
               act('scene-card','暮色冷暖');act('scene-preview');act('close',null,modal());assert(all('.edit-history li').length===1,'cancel scene');
               act('scene-preview');act('apply-scene',null,modal());assert(el('.edit-history').textContent.includes('暮色冷暖'),'smart preset adopted');
@@ -158,14 +355,23 @@ def main():
               const neutral=el('.developed').style.filter;
               assert(all('.preset-directory > details > summary > span').slice(0,3).map(x=>x.textContent).join('|')==='Adaptive|胶片模拟|Imported'&&!el('.preset-folder img'),'three primary folders without thumbnails');
               assert(all('[data-folder=adaptive] > .preset-children > details > summary > span').map(x=>x.textContent).join('|')==='Sky|Subject','preserve source folders');
-              assert(el('[data-key=filmAmount]').disabled&&el('.filter-actions').compareDocumentPosition(el('.preset-directory'))&Node.DOCUMENT_POSITION_FOLLOWING,'amount and import before folders');
-              act('preset-import');set('[name=presetName]','走查 XMP',modal());act('preset-command',null,modal());
+              assert(all('[data-act=film-stock]').length===9&&el('[data-folder=film]').textContent.includes('Spektrafilm 官方模型 · SDR 色彩外观'),'nine official SDR film endpoints');
+              for(const stock of ['gold','portrait800','ektar','provia','ektachrome','tungsten']){
+                set('[name=presetQuery]',stock==='tungsten'?'500T':RMPhotos.filmStocks[stock].name);
+                assert(all('[data-act=film-stock]').length===1&&el('[data-act=film-stock]').dataset.val===stock,'new film searchable: '+stock);
+              }
+              set('[name=presetQuery]','');
+              const filterMenu=()=>el('.filter-options');
+              assert(el('[data-key=filmAmount]').disabled&&(el('.film-strength').compareDocumentPosition(el('.preset-directory'))&Node.DOCUMENT_POSITION_FOLLOWING),'film strength remains above folders');
+              assert(!el('.filter-header-actions > [data-val=save]')&&!el('.filter-header-actions > [data-act=preset-import]')&&all('.filter-options [data-act]').length===3,'save, import and export live only in the contextual menu');
+              tap('summary',filterMenu());act('preset-manage','save',filterMenu());assert(value('presetOperation')==='保存当前调整','Save still routes to saving adjustments');act('close',null,modal());await wait(()=>document.activeElement===el('summary',filterMenu()));
+              tap('summary',filterMenu());act('preset-import',null,filterMenu());assert(value('presetOperation').includes('Lightroom')&&!modal().textContent.includes('迁移'),'XMP import remains separate from migration');set('[name=presetName]','走查 XMP',modal());act('preset-command',null,modal());
               const imported=el('[data-act=apply-preset][data-val="走查 XMP"]');
               imported.dispatchEvent(new PointerEvent('pointerover',{bubbles:true}));assert(el('.developed').style.filter!==neutral,'import hover changes the canvas');
               imported.dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));assert(el('.developed').style.filter===neutral,'import hover restores');
               set('[name=presetQuery]','无匹配输入');assert(el('.preset-directory').textContent.includes('没有匹配'),'search empty');
               set('[name=presetQuery]','');
-              act('preset-manage');assert(all('[name=presetOperation] option',modal()).some(x=>x.value.includes('Lightroom'))&&!modal().textContent.includes('迁移'),'XMP import without migration UI');act('close',null,modal());
+              tap('summary',filterMenu());act('preset-manage','export',filterMenu());assert(value('presetOperation')==='导出原生预设','Export opens its own dialog');act('close',null,modal());
               act('adaptive-preset','subject');act('adaptive-mask-preview','subject',modal());assert(el('.adaptive-mask-proof .subject'),'current-photo mask review');act('close',null,modal());
               let film=el('[data-act=film-stock][data-val=cinema]');film.focus();assert(el('.developed').style.filter!==neutral,'keyboard film preview');
               key(film,'Escape');assert(el('.developed').style.filter===neutral&&el('.look-preview').hidden,'Escape restores applied image');
@@ -181,12 +387,37 @@ def main():
               snap.focus();assert(el('.developed').style.filter===blend&&el('[data-key=filmAmount]').value==='100','snapshot preview leaves recipe untouched');
               window.dispatchEvent(new Event('blur'));assert(snap.checkVisibility()&&el('.look-preview').hidden&&el('.developed').style.filter===fullLook,'window blur keeps snapshots and ends preview');
               act('restore-snap','0');assert(el('.developed').style.filter===blend,'snapshot restore');
-              act('edit-tool','basic',el('.inspector-rail'));await page('[data-adjustment-section=light] summary');const basic=el('.rail-tool[data-val=basic]');
-              assert(document.activeElement===basic&&el('[data-adjustment-section=whiteBalance]').open,'first section and rail focus');
-              tap('[data-adjustment-section=light] summary');
+              act('edit-tool','basic',el('.inspector-rail'));await page('[data-adjustment-section=light] .adjustment-disclosure');const basic=el('.rail-tool[data-val=basic]');
+              assert(document.activeElement===basic&&el('[data-adjustment-section=whiteBalance] button').ariaExpanded==='true','first section and rail focus');
+              const light='[data-adjustment-section=light] .adjustment-disclosure';
+              tap(light);
               const slider=el('[data-key=ev]'), numeric=el('[data-adjustment=ev]');
-              assert(slider.getBoundingClientRect().top>numeric.getBoundingClientRect().bottom&&slider.getBoundingClientRect().width>numeric.getBoundingClientRect().width*2,'slider has its own wide row');
-              key(basic,'ArrowDown');await page('.curve-chart');assert(document.activeElement.dataset.val==='tones','keyboard navigates rail');
+              const box=slider.getBoundingClientRect(), readout=numeric.getBoundingClientRect();
+              assert(box.top<=readout.top&&box.bottom>=readout.bottom&&box.width>readout.width*2,'slider and number share a single wide row');
+              const rows=all('#adjustment-body-light .range'), bounds=rows.map(row=>row.getBoundingClientRect()), scrollBeforeScale=el('.inspector-content').scrollTop;
+              assert(bounds.every((r,i)=>r.height===26&&(i===0||r.top-bounds[i-1].bottom===10)),'stable equal slider spacing');
+              const ticks=slider.parentElement.querySelector('.range-ticks');
+              assert(getComputedStyle(ticks).visibility==='hidden','scale hidden at rest');
+              slider.focus();assert(getComputedStyle(ticks).visibility==='visible'&&ticks.children.length===21,'scale available at keyboard focus');
+              assert(rows.every((r,i)=>r.getBoundingClientRect().top+el('.inspector-content').scrollTop===bounds[i].top+scrollBeforeScale),'scale never moves rows within the inspector, including native focus scroll');
+              const curveTool=el('.rail-tool[data-val=tones]'), tip=el('.rail-tip');
+              curveTool.dispatchEvent(new PointerEvent('pointerover',{bubbles:true}));
+              assert(!tip.hidden&&tip.textContent==='曲线'&&!curveTool.hasAttribute('title')&&getComputedStyle(tip).pointerEvents==='none','single passive tooltip');
+              assert(tip.dataset.side==='left'&&getComputedStyle(tip,'::after').content!=='none'&&tip.getBoundingClientRect().right+6<curveTool.getBoundingClientRect().left,'tooltip and arrow are left of the button');
+              const panel=el('#adjustment-body-light').getBoundingClientRect();
+              assert(Math.abs(bounds[0].left-panel.left-(panel.right-bounds[0].right))<1,'tight equal slider insets');
+              curveTool.dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));
+              assert(tip.hidden,'tooltip dismisses on leave');
+              slider.blur();
+              assert(el('[data-act=adjustment-reset][data-val=light]').disabled,'no reset available before edits');
+              set('[data-adjustment=ev]','0.137');
+              assert(el('[data-adjustment=ev]').value==='0.137','numeric input retains precision beyond slider steps');
+              await wait(()=>!el('[data-act=adjustment-reset][data-val=light]').disabled);
+              act('adjustment-reset','light');
+              assert(el('[data-adjustment=ev]').value==='0'&&document.activeElement===el(light),'group reset restores only its values and keeps disclosure focus');
+              act('edit-step','undo');assert(el('[data-adjustment=ev]').value==='0.137','group reset is undoable');
+              act('edit-step','undo');
+              key(el('.rail-tool[data-val=basic]'),'ArrowDown');await page('.curve-chart');assert(document.activeElement.dataset.val==='tones','keyboard navigates rail');
               act('edit-tool','grading');await page('[data-key=warmHighlights]');
               const base=el('.developed').style.filter;
               set('[data-adjustment=warmHighlights]','35');const grade=el('.developed').style.filter;
@@ -197,7 +428,40 @@ def main():
               assert(el('.developed').style.filter===grade&&el('[data-key=warmHighlights]').value==='35','toggle preserves values');
               act('edit-step','undo');act('edit-step','undo');act('edit-step','undo');
               act('edit-tool','basic');await page('[data-key=ev]');
-              assert(el('[data-adjustment-section=light]').open,'right panel remembers disclosure');
+              assert(el(light).ariaExpanded==='true','right panel remembers disclosure');
+            """)
+            scenario("紧凑示波器、白平衡与蒙版分层", """
+              assert(el('.docked .histogram svg').getBoundingClientRect().height===108,'docked histogram triple height');
+              const scope=el('[data-act=scope-plot][data-val=histogram]');scope.focus();key(scope,'ArrowRight');
+              const selectedStyle=getComputedStyle(document.activeElement);
+              assert(selectedStyle.backgroundColor==='rgba(0, 0, 0, 0)'&&selectedStyle.boxShadow==='none'&&selectedStyle.borderBottomWidth==='2px','flat selected tab with no raised background');
+              assert(el('.docked .vector-plot').getBoundingClientRect().height===144&&document.activeElement.dataset.val==='vector','docked vector triple height and keyboard selection');
+              act('scopes');assert(el('.vector-plot',modal()).getBoundingClientRect().height===130,'detached plot height');
+              act('scope-plot','histogram',modal());act('close',null,modal());
+              const stacked=()=>{const menu=el('[name=wbMode]').getBoundingClientRect(),buttons=all('.wb-actions button').map(b=>b.getBoundingClientRect());assert(buttons.length===2&&buttons.every(b=>Math.abs(b.width-menu.width)<1&&Math.abs(b.left-menu.left)<1)&&buttons[0].bottom<buttons[1].top,'one full-width correction per row');assert(el('.wb-refinement').getBoundingClientRect().top-el('.wb-correction').getBoundingClientRect().bottom>=12,'correction refinement spacing');};stacked();
+              assert(el('[name=wbPreset]').value===''&&el('[data-key=wbTemperature]').ariaLabel==='色温 K','no false daylight selection');
+              set('[name=wbPreset]','cloudy');assert(el('[data-key=wbTemperature]').value==='6500'&&el('.wb-panel [role=status]').textContent.includes('阴天'),'RAW preset');
+              const history=all('.edit-history li').length;
+              set('[name=wbMode]','gray');stacked();assert(!el('[name=wbPreset]')&&all('.edit-history li').length===history,'choose method without editing');
+              act('wb-pick','gray');key(el('[data-act=wb-pick]'),'Escape');assert(all('.edit-history li').length===history,'cancel picker without editing');
+              act('wb-pick','gray');const image=el('[data-act=canvas-point]'), rect=image.getBoundingClientRect();image.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:rect.left+rect.width/2,clientY:rect.top+rect.height/2}));assert(el('[data-key=warmth]')&&all('.edit-history li').length===history+1,'sample unlocks refinement');
+              act('edit-step','undo');act('edit-step','undo');set('[name=wbMode]','temperature');
+              act('edit-tool','masks');await page('.mask-panel');
+              assert(!el('[data-act=choose-mask]'),'empty layer list');
+              el('.mask-create').open=true;const maskButtons=all('.mask-tool-grid button');assert(maskButtons.length===7&&maskButtons.every(b=>b.querySelector('svg'))&&new Set(maskButtons.map(b=>b.querySelector('path').getAttribute('d'))).size===7,'distinct mask tool icons with labels');act('add-mask','径向渐变');assert(el('.mask-stage').textContent.includes('拖动'),'geometric draw instructions');
+              key(el('[data-act=cancel-selection]'),'Escape');assert(!el('[data-act=choose-mask]'),'cancel does not append a layer');
+              el('.mask-create').open=true;act('add-mask','主体');assert(el('.mask-mark')&&!el('[data-act=choose-mask]'),'unadopted overlay only');
+              act('mask-overlay');assert(!el('.mask-mark'),'overlay visibility separate');
+              act('mask-adopt');assert(el('.mask-layer.selected')&&el('.mask-mark'),'one adopted layer');
+              act('mask-review');assert(el('[data-act=mask-adopt]').disabled,'review alone does not edit');act('cancel-selection');
+              el('.mask-create').open=true;act('add-mask','亮度范围');
+              el('[data-mask-group=region]').open=true;set('[data-key=rangeLower]','90');
+              assert(el('[data-mask-group=region]').open&&el('[data-key=rangeLower]').value==='74','range bounds and open state persist');
+              el('.mask-manage').open=true;act('mask-op','delete');assert(all('.mask-layer').length===1,'delete selected only');
+              act('edit-step','undo');assert(all('.mask-layer').length===2,'restore removed layer');
+              for(let i=0;i<3;i++)act('edit-step','undo');act('canvas-tool-done');
+              act('edit-tool','detail');await page('.detail-options');const checkbox=el('[name=detailOption][data-key=rawDetails]'),checkStyle=getComputedStyle(checkbox);assert(checkStyle.appearance==='none'&&checkStyle.boxShadow==='none'&&checkStyle.backgroundImage==='none','flat checkbox without native relief');set('[name=detailOption][data-key=rawDetails]',true);assert(el('[data-key=aiDenoise]').disabled&&el('[data-key=rawDetails]').checked,'detail mutual exclusion');act('edit-step','undo');assert(!el('[data-key=rawDetails]').checked&&!el('[data-key=aiDenoise]').disabled,'detail checkbox undo restores availability');
+              act('edit-tool','basic');await page('[name=wbMode]');
             """)
             scenario("浮动工具条、邻片、裁切与参考对比", """
               const bar=el('.canvas-dock').getBoundingClientRect(),canvas=el('.canvas-panel').getBoundingClientRect();
@@ -205,12 +469,17 @@ def main():
               assert(el('[data-act=canvas-nav][data-val=previous]').disabled,'start of current group');
               el('[data-act=canvas-nav][data-val=next]').focus();assert(all('.neighbor-preview').filter(n=>n.checkVisibility()).length===1,'single adjacent preview');
               act('canvas-nav','next');assert(el('[data-key=filmAmount]').disabled,'separate photo recipe');act('canvas-nav','next');
-              assert(el('[data-act=canvas-nav][data-val=next]').disabled,'end of group');key(el('#workspace'),'ArrowLeft');act('canvas-nav','previous');
+              assert(el('[data-act=canvas-nav][data-val=next]').disabled,'end of group');
+              key(el('#workspace'),'ArrowRight');assert(Studio.data.work==='d3','right arrow stops at the end');
+              key(el('#workspace'),'ArrowLeft');assert(Studio.data.work==='d2','left arrow stays in the group');
+              key(el('#workspace'),'ArrowRight');assert(Studio.data.work==='d3','right arrow moves to the next photo');
+              act('canvas-nav','previous');act('canvas-nav','previous');
+              assert(el('[data-act=canvas-nav][data-val=previous]').disabled&&!el('.filmstrip'),'start of group without an editing strip');
               assert(el('[data-key=filmAmount]').value==='45','draft survives round trip');
               const width=el('.edit-image').getBoundingClientRect().width;act('edit-zoom','in');assert(el('.edit-image').getBoundingClientRect().width>width,'zoom in');
               key(el('#workspace'),'0',{metaKey:true});assert(Math.abs(el('.edit-image').getBoundingClientRect().width-width)<1,'FIT');
-              key(el('#workspace'),'c');assert(el('.crop-panel')&&el('[data-val=compare][data-act=canvas-menu]').disabled,'crop on canvas');
-              set('[name=crop]','4:5');key(el('[name=crop]'),'Escape');assert(!el('.crop-panel'),'crop escape');
+              key(el('#workspace'),'c');assert(el('.canvas-tool-dock[data-canvas-expanded=crop]')&&!el('[data-val=compare][data-act=canvas-menu]')&&!S.compare,'expanded crop tool owns the canvas without comparison commands');
+              const beforeCrop=JSON.stringify(Studio.edit(Studio.data.work).recipe);set('[name=crop]','4:5');key(el('[name=crop]'),'Escape');assert(!el('.canvas-tool-dock')&&JSON.stringify(Studio.edit(Studio.data.work).recipe)===beforeCrop,'crop Escape discards draft and restores the normal dock');
               act('canvas-menu','compare');set('[name=compareMode]','wipeVertical');set('[name=comparePosition]','73');
               assert(el('.comparison-layer')&&el('.dark-canvas').style.getPropertyValue('--compare-amount')==='73%','wipe position');
               for(const mode of ['reference','wipeHorizontal','mix','difference','checkerboard','sideTopBottom']) {
@@ -231,13 +500,13 @@ def main():
             """)
             scenario("调整、蒙版、裁切、候选采用与显式草稿导出", """
               act('photo','r1');act('multi');act('photo','b1');act('workflow','edit');await page('.edit-inspector');
-              act('edit-tool','basic');await page('[data-adjustment-section=light] summary');if(!el('[data-adjustment-section=light]').open)tap('[data-adjustment-section=light] summary');set('[data-key=ev]','0.5');act('edit-tool','masks');await page('[data-act=add-mask]');act('add-mask');
+              act('edit-tool','basic');await page('[data-adjustment-section=light] .adjustment-disclosure');if(el('[data-adjustment-section=light] .adjustment-disclosure').ariaExpanded==='false')act('adjustment-disclosure','light');set('[data-key=ev]','0.5');act('edit-tool','masks');await page('.mask-create');el('.mask-create').open=true;act('add-mask','亮度范围');
               assert(el('.mask-mark'),'mask preview');act('edit-step','undo');assert(!el('.mask-mark'),'undo layer');
-              act('edit-step','redo');act('canvas-crop');set('[name=crop]','1:1');act('canvas-crop');act('save-version');
+              act('edit-step','redo');act('canvas-tool-done');act('canvas-crop');set('[name=crop]','1:1');act('canvas-tool-done');act('save-version');
               act('open-versions');await page('.version-row');
               assert(el('.version-row').textContent.includes('候选'),'saved independently');
               act('adopt',null,el('.version-row'));assert(el('.version-row').textContent.includes('当前采用'),'explicit adoption');
-              act('return-adjustments');await page('[data-act=add-mask]');act('edit-tool','basic');await page('[data-adjustment-section=light] summary');if(!el('[data-adjustment-section=light]').open)tap('[data-adjustment-section=light] summary');set('[data-key=ev]','0.75');
+              act('return-adjustments');await page('[data-adjustment-section=light]');act('edit-tool','basic');await page('[data-adjustment-section=light] .adjustment-disclosure');if(el('[data-adjustment-section=light] .adjustment-disclosure').ariaExpanded==='false')act('adjustment-disclosure','light');set('[data-key=ev]','0.75');
               act('workflow','export');assert(modal().open&&modal().textContent.includes('导出哪个版本'),'draft decision');
               act('export-choice','draft',modal());await page('#export-frame[src]');
               const f=el('#export-frame');await wait(()=>f.contentDocument?.querySelector('#selected')?.textContent==='2 / 2');
@@ -317,10 +586,25 @@ def main():
               const dock=el('.canvas-dock').getBoundingClientRect();
               assert(dock.left>=0&&dock.right<=innerWidth&&dock.bottom<=innerHeight,'all dock controls fit');
               const icons=all('.rail-tool');assert(icons.every(b=>b.offsetLeft===icons[0].offsetLeft)&&icons.at(-1).offsetTop>icons[0].offsetTop,'narrow vertical rail');
+              icons[1].dispatchEvent(new PointerEvent('pointerover',{bubbles:true}));
+              const tip=el('.rail-tip'), tipBounds=tip.getBoundingClientRect(), iconBounds=icons[1].getBoundingClientRect();
+              assert(!tip.hidden&&tip.classList.contains('rail-tip-stacked')&&tipBounds.left>=0&&tipBounds.right<=el('.inspector-content').getBoundingClientRect().left&&(tipBounds.bottom<iconBounds.top||tipBounds.top>iconBounds.bottom),'narrow tooltip stays outside the parameter pane');
+              icons[1].dispatchEvent(new PointerEvent('pointerout',{bubbles:true}));
               el('[data-act=edit-tool][data-val=agent]').scrollIntoView();act('edit-tool','agent');await page('.agent-panel');
               const box=el('[name=aiPrompt]');box.focus();key(box,'b');assert(!el('.canvas-popover'),'typing stays in field');
               await hash('settings/general');set('[name=theme]','dark');await hash('edit/agent');assert(el('.chat-turn')&&document.documentElement.dataset.theme==='dark','same photo across themes');
+              await hash('edit/basic');await page('[data-adjustment-section=light] .adjustment-disclosure');
+              if(el('[data-adjustment-section=light] .adjustment-disclosure').ariaExpanded==='false')act('adjustment-disclosure','light');
+              set('[data-adjustment=ev]','-0.35');
+              const track=el('[data-key=ev]'), value=el('[data-adjustment=ev]'), row=track.getBoundingClientRect();
+              assert(row.left>=0&&value.getBoundingClientRect().right<=innerWidth&&value.value==='-0.35','narrow number and track fit');
+              track.focus();assert(document.activeElement===track,'focusable slider');value.focus();
+              value.value='99';key(value,'Enter');assert(document.activeElement===value&&value.ariaInvalid==='true','invalid Return keeps numeric focus');
+              key(value,'Escape');assert(value.value==='-0.35'&&value.ariaInvalid===null,'Escape cancels the edit');
+              el('[data-adjustment-section=light]').scrollIntoView({block:'nearest'});
             """)
+            if not editing_only and (adjustment_evidence := os.environ.get("RAWMASTER_UI_ADJUSTMENT_EVIDENCE")):
+                browser("screenshot", str(Path(adjustment_evidence).resolve()))
             scenario("窄窗导航、筛选与空结果", """
               await hash('library/project/river');act('drawer');assert(el('.rail.revealed').getBoundingClientRect().width<390,'drawer');
               act('drawer');assert(!el('.rail.revealed'),'close drawer');act('drawer');
@@ -447,7 +731,7 @@ def main():
             """)
             browser("set", "viewport", "1100", "720")
             scenario("快速 Prompt 已有蒙版、严格纪实和窄窗", """
-              act('quick-close');await hash('edit/masks');await page('[data-act=add-mask]');act('add-mask');
+              act('quick-close');await hash('edit/masks');await page('.mask-create');el('.mask-create').open=true;act('add-mask','亮度范围');act('canvas-tool-done');
               act('quick-open');await wait(()=>!el('.canvas-dock').classList.contains('quick-morphing'));
               el('.quick-menu[data-menu=selection]').open=true;act('quick-mask',null,el('#quick-prompt'));act('quick-use-mask',null,modal());
               assert(el('#quick-scope').textContent.includes('蒙版')&&el('.quick-outline').checkVisibility(),'confirmed mask scope');
@@ -642,9 +926,303 @@ def main():
                   tap('#close-job',doc);act('workflow','library');await page('.contact-grid');
                   assert(JSON.stringify(activeIDs())===JSON.stringify(saved.context)&&Studio.data.work===saved.focus,'browse selection and focus preserved');
                 """)
-            errors = browser("errors")
-            if errors:
-                raise AssertionError(errors)
+            browser("set", "viewport", "1440", "900")
+            scenario("界面规范画廊：令牌、四态与外观", """
+              await hash('tools/design');await page('.ds-page');
+              const slider=el('[data-ds-slider][data-value="0.35"]'),number=slider.querySelector('.ds-number');
+              assert(el('.ds-page').textContent.includes('26 + 6')&&el('.ds-page').textContent.includes('AppDesign'),'token tables present');
+              assert(Math.round(slider.getBoundingClientRect().height)===32,'slider keeps 26 track plus 6 scale');
+              number.value='99';number.dispatchEvent(new Event('change',{bubbles:true}));
+              assert(number.getAttribute('aria-invalid')==='true','out-of-range value flagged');
+              key(number,'Escape');
+              assert(number.value==='0.35'&&number.getAttribute('aria-invalid')==='false','escape restores value');
+              const check=el('.ds-check');tap('.ds-check');assert(check.getAttribute('aria-checked')==='false','flat checkbox toggles');
+              tap('.ds-tabs [role=tab]:nth-child(2)');assert(all('.ds-tabs [role=tab]')[1].getAttribute('aria-selected')==='true','tabs switch');
+              tap('.ds-section-toggle');assert(el('.ds-section-body').hidden===true,'section collapses');
+              await hash('settings/general');await page('select[name=theme]');set('[name=theme]','dark');
+              await hash('tools/design');await page('.ds-page');
+              assert(getComputedStyle(el('.ds-page')).color==='rgb(232, 232, 232)','dark ink applied');
+              await hash('settings/general');await page('select[name=theme]');set('[name=theme]','system');
+            """)
+            browser("open", host + ENTRY)
+            tabs = json.loads(browser("tab", "list", "--json"))["data"]["tabs"]
+            workbench = next(tab for tab in tabs if tab["active"])
+            for tab in tabs:
+                if tab["type"] == "page" and tab["tabId"] != workbench["tabId"]:
+                    browser("tab", "close", tab["tabId"])
+            browser("tab", workbench["tabId"])
+            scenario("Node DAG 九域作用域、图事务与显示状态", """
+              await hash('library/project/river');act('photo','r1');act('workflow','edit');
+              await page('.dag-scope-head');assert(!el('.edit-left .dag-library,.edit-left [data-act^=dag-]')&&all('.edit-left > section').map(n=>el('#'+n.getAttribute('aria-labelledby'),n).textContent).join('/')==='滤镜/快照/历史','darkroom left sidebar has only filters, snapshots and history');act('dag-view-toggle');await page('.dag-workspace');
+              assert(dagTransform().scale===1&&!el('.dag-photo-status'),'one editable node opens at readable size without a routine status chip');
+              menuAction('dag-preview');assert(el('.dag-photo-status').innerText.includes('不用于导出')&&el('[data-act=dag-preview-final]'),'explicit node output still warns with one editable node');act('dag-preview-final');assert(!el('.dag-photo-status'),'return to final hides routine single-node status');
+              pickNode('output');act('dag-failure');assert(el('.dag-photo-status.failed [data-act=dag-retry]'),'a failure still offers retry with one editable node');act('dag-retry');assert(!el('.dag-photo-status'),'successful retry restores quiet single-node state');pickNode('grade');
+              act('dag-fit');
+              const nodes=()=>currentEdit().recipe.dag.nodes;
+              const graph=()=>currentEdit().recipe.dag;
+              set('[name=dagNumber][data-key=ev]',1.25);
+              assert(nodes().find(n=>n.id==='grade').params.ev===1.25,'base node owns exposure');
+              for(const category of dagPanels) {act('edit-tool',category,el('.inspector-rail'));await page('[name=dagNumber][data-key='+dagFields(category,dagNode().params)[0][0]+']');assert(all('[name=dagNumber]').length===dagFields(category,dagNode().params).length+1&&all('[name=dagNumber]').every(input=>input.dataset.node==='grade'),'all declared '+category+' values and node strength are node-scoped');assert(!el('.inspector-content [data-act=dag-reset],.inspector-content [data-act=dag-preview]'),category+' has no duplicate Graph commands');}
+              act('edit-tool','basic',el('.inspector-rail'));await page('[name=dagNumber][data-key=ev]');
+              addNodeMenu();act('dag-add','serial',modal());const serial=dagView().active;
+              set('[name=dagNumber][data-key=ev]',0.5);
+              assert(nodes().find(n=>n.id===serial).params.ev===0.5&&nodes().find(n=>n.id==='grade').params.ev===1.25,'node scope does not leak');
+              pickNode('grade');assert(el('[name=dagNumber][data-key=ev]').value==='1.25','switch restores its value');
+              const before=JSON.stringify(dagEvaluate(graph()));addNodeMenu();act('dag-add','parallel',modal());const branch=dagView().active;
+              const mix=nodes().find(n=>n.kind==='mix');assert(mix.params.amount===0&&JSON.stringify(dagEvaluate(graph()))===before,'neutral parallel insertion');
+              set('[name=dagNumber][data-key=ev]',1);pickNode(mix.id);set('[name=dagNumber][data-key=amount]',50);
+              const final=JSON.stringify(dagEvaluate(graph()));act('dag-swap');act('edit-step','undo');
+              assert(JSON.stringify(dagEvaluate(graph()))===final,'undo restores blend and port semantics');
+              pickNode(branch);const rootBefore=JSON.stringify(graph());act('dag-menu');act('dag-preview',null,modal());await page('.dag-photo-status');assert(!modal().open,'node preview exits the menu');
+              assert(dagView().target===branch&&JSON.stringify(graph())===rootBefore&&el('.dag-photo-status.intermediate').innerText.includes('不用于导出')&&el('.dag-floating'),'middle preview stays labelled without closing Graph or changing recipe');
+              assert(el('.dag-photo-status').getBoundingClientRect().width<el('.edit-center').clientWidth,'workflow status is a compact chip, not a full-width banner');
+              act('dag-preview-final');if(!el('.dag-floating'))act('dag-view-toggle');act('dag-fit');
+              const pixelHistory=currentEdit().past.length;menuAction('dag-layout');
+              assert(currentEdit().past.length===pixelHistory,'layout is outside pixel history');
+              assert(dagPosition(nodes().find(n=>n.id===branch)).y>dagPosition(nodes().find(n=>n.id==='grade')).y&&dagPosition(mix).x>dagPosition(nodes().find(n=>n.id===branch)).x,'auto-layout separates layer branch and its merge');
+              menuAction('dag-connect-menu');
+              set('[name=dagFrom]',branch,modal());set('[name=dagTo]',branch,modal());set('[name=dagSlot]','image',modal());act('dag-connect-propose',null,modal());
+              assert(el('[data-act=dag-connect-apply]').disabled&&el('.dag-status').textContent.includes('自身')&&JSON.stringify(graph())===rootBefore,'invalid graph cannot publish');
+              act('dag-connect-cancel');assert(!S.dagConnectionDraft&&JSON.stringify(graph())===rootBefore,'cancel restores valid graph');
+              menuAction('dag-connect-menu');set('[name=dagTo]','output',modal());act('dag-connect-disconnect',null,modal());
+              assert(el('[data-act=dag-connect-apply]').disabled,'missing input cannot publish');act('dag-connect-cancel');
+              sessionStorage.setItem('qa.dag',JSON.stringify({photo:Studio.data.work,branch,serial,mix:mix.id,rootBefore}));
+            """)
+            scenario("Node DAG 蒙版、组路径与模板身份", """
+              const qa=JSON.parse(sessionStorage.getItem('qa.dag')), {branch,serial,rootBefore}=qa;
+              const nodes=()=>currentEdit().recipe.dag.nodes,graph=()=>currentEdit().recipe.dag,mix=nodes().find(n=>n.id===qa.mix);
+              assert(Studio.data.work===qa.photo&&JSON.stringify(graph())===rootBefore,'graph fixture and photo persist across scenario boundaries');
+              pickNode(branch);act('edit-tool','masks');maskType('径向渐变');
+              act('canvas-tool-done');assert(!nodes().find(n=>n.id===branch).mask&&JSON.stringify(graph())===rootBefore,'opening or choosing the current mask tool does not create an empty mask');act('edit-tool','masks');
+              assert(S.canvasTool?.kind==='mask'&&el('.developed')&&el('.dag-floating.minimized'),'Mask expands on the photo and temporarily collapses Graph');
+              assert(el('[name=dagNode]').disabled,'picker disables switching during a photo tool');changes.dagNode({value:'grade'});assert(dagView().active===branch&&dagView().selection.join()===branch&&S.canvasTool?.owner===branch,'pending photo tool refuses even a late scope change');act('canvas-tool-cancel');
+              assert(dagView().mode==='graph'&&!nodes().find(n=>n.id===branch).mask,'mask cancel returns to Graph');
+              act('edit-tool','masks');maskType('主体');act('canvas-tool-done');
+              assert(dagView().mode==='graph'&&nodes().find(n=>n.id===branch).mask.kind==='主体','mask adoption is node-scoped');
+              act('edit-tool','masks');foldTool('mask-more');act('canvas-mask-missing');assert(el('[data-act=canvas-tool-done]').disabled,'missing mask draft cannot be committed');act('canvas-mask-rebuild');act('canvas-tool-done');
+              assert(!nodes().find(n=>n.id===branch).mask.missing,'asset retry clears missing state');
+              dagView().selection=[serial];dagView().active=serial;render();menuAction('dag-group');
+              const group=dagView().active;assert(nodes().find(n=>n.id===group).kind==='group','single-IO fragment groups');
+              act('dag-enter',group);assert(dagView().path[0]===group,'enter group');act('dag-path','0');
+              pickNode(group);act('dag-template-save','group');set('[name=dagTemplateName]','DAG 测试组',modal());act('dag-template-save-confirm',null,modal());
+              const template=Studio.data.dagTemplates.at(-1);assert(template.kind==='group','save group template');
+              pickNode('grade');const ambiguous=JSON.stringify(graph());menuAction('dag-template-library');act('dag-template-open',template.id,modal());act('dag-template-apply',null,modal());
+              assert(JSON.stringify(graph())===ambiguous&&modal().open,'template refuses ambiguous fan-out');act('close',null,modal());
+              pickNode(mix.id);const next=graph().edges.find(e=>e.from===mix.id).to,count=nodes().length;
+              menuAction('dag-template-library');act('dag-template-open',template.id,modal());act('dag-template-apply',null,modal());const inserted=dagView().active;
+              assert(nodes().length===count+1&&graph().edges.some(e=>e.from===mix.id&&e.to===inserted)&&graph().edges.some(e=>e.from===inserted&&e.to===next),'template inserts at current edge, not graph tail');
+              act('dag-enter',group);const innerCount=dagCurrent().nodes.length;pickNode(dagCurrent().nodes.find(n=>n.kind==='grade').id);
+              menuAction('dag-template-library');act('dag-template-open',template.id,modal());act('dag-template-apply',null,modal());assert(dagView().path.join()===group&&dagCurrent().nodes.length===innerCount+1,'template insertion preserves current group path');act('dag-path','0');
+              const copiedIDs=nodes().filter(n=>n.kind==='group').flatMap(n=>dagAllNodes(n.graph).map(x=>x.node.id));
+              assert(new Set(copiedIDs).size===copiedIDs.length,'template remaps internal IDs');
+            """)
+            scenario("Node DAG 批量、取消与修订冲突", """
+              const qa=JSON.parse(sessionStorage.getItem('qa.dag')),nodes=()=>currentEdit().recipe.dag.nodes,graph=()=>currentEdit().recipe.dag;
+              assert(Studio.data.work===qa.photo&&!dagError(graph()),'batch starts from the same valid photo workflow');
+              pickNode('grade');const frozen=JSON.stringify(graph());act('workflow','library');await page('.contact-grid');
+              act('photo','b1');act('selection-menu');assert(el('[data-act=dag-batch-menu]',modal()).disabled,'single photo cannot be a batch');act('close',null,modal());
+              act('multi');act('photo',qa.photo);const selection=activeIDs().slice();
+              const openBatch=()=>{act('selection-menu');act('dag-batch-menu',null,modal());};
+              openBatch();assert(S.dagBatchSource.id===qa.photo&&S.dagBatchChosen.join()==='b1'&&modal().textContent.includes('源照片不写入'),'library focus is frozen as source; other selections alone are targets');
+              set('[name=dagBatchOperation]','template',modal());assert(el('.dag-batch-template',modal()).checkVisibility()&&el('[name=dagBatchTemplate]',modal()).options.length>=2,'saved templates remain available to batch from the library');
+              act('close',null,modal());assert(activeIDs().join()===selection.join()&&JSON.stringify(graph())===frozen,'cancel returns to the same selection and preserves source');
+              openBatch();tap('.dag-menu-advanced summary',modal());act('dag-batch-samples','20',modal());
+              act('dag-batch-preflight',null,modal());assert(modal().textContent.includes('20 张'),'batch full scope reviewed');act('dag-batch-start',null,modal());
+              const batch=Studio.data.dagBatches.at(-1);await wait(()=>!batch.running);
+              assert(batch.items.length===20&&batch.items.every(i=>i.state==='done'),'all 20 target versions created');
+              act('dag-batch-undo',batch.id,modal());assert(batch.items.every(i=>i.state==='undone'),'batch undo restores each target');
+              act('close',null,modal());act('selection-menu');act('dag-batch-results',batch.id,modal());assert(modal().textContent.includes('已撤销'),'batch results reopen from the library list');act('close',null,modal());
+              openBatch();tap('.dag-menu-advanced summary',modal());act('dag-batch-samples','200',modal());act('dag-batch-preflight',null,modal());act('dag-batch-start',null,modal());
+              const large=Studio.data.dagBatches.at(-1);act('dag-batch-cancel',large.id,modal());
+              assert(large.items.length===200&&large.items.some(i=>i.state==='cancelled')&&!large.running,'200 target cancellation preserves completed items');
+              act('dag-batch-conflict',null,modal());act('dag-batch-undo',large.id,modal());assert(large.items.some(i=>i.state==='conflict'),'undo refuses newer target revisions');
+              act('close',null,modal());assert(activeIDs().join()===selection.join()&&JSON.stringify(graph())===frozen,'batch and rollback leave the library selection and source intact');act('workflow','edit');await page('.dag-scope-head');act('edit-tool','basic',el('.inspector-rail'));await page('[name=dagNumber]');pickNode('output');act('dag-failure');act('dag-retry');assert(!S.dagRenderFailed,'render failure retry');
+              pickNode('grade');if(!el('.dag-floating'))act('dag-view-toggle');act('dag-fit');
+              el('[data-dag-viewport]').focus();key(document.activeElement,'a',{metaKey:true});assert(dagView().selection.length>1&&!el('[name=dagNumber]'),'Graph multi-selection never broadcasts values');
+              pickNode('grade');const stable=JSON.stringify(graph());el('[data-dag-viewport]').focus();key(document.activeElement,'0',{metaKey:true});assert(JSON.stringify(graph())===stable,'Graph fit is not a pixel edit');
+              menuAction('dag-layout');assert(!dagError(graph()),'final graph validates');
+            """)
+            scenario("Node DAG 悬浮窗口、九域子域与画布工具事务", """
+              const graph=()=>Studio.edit(Studio.data.work).recipe.dag, history=()=>Studio.edit(Studio.data.work).past.length;
+              const base=JSON.stringify(graph()),past=history(),photo=Studio.data.work;
+              act('edit-zoom','in');const fit=el('.canvas-fit');fit.scrollLeft=20;fit.scrollTop=10;
+              const view={zoom:S.editZoom,left:fit.scrollLeft,top:fit.scrollTop},imageBox=el('.edit-image').getBoundingClientRect();
+              dagTransform().y=10000;delete dagWindowFrame().layoutVersion;
+              act('dag-view','photo');assert(!el('.dag-floating')&&el('.developed'),'close only Graph');if(!el('.dag-floating'))act('dag-view-toggle');await wait(()=>dagWindowFrame().layoutVersion===3);
+              const graphViewport=el('.dag-viewport').getBoundingClientRect(),visibleCard=el('.dag-card.active').getBoundingClientRect();
+              assert(dagTransform().scale===1&&dagTransform().framing==='readable'&&visibleCard.left>=graphViewport.left&&visibleCard.right<=graphViewport.right&&visibleCard.top>=graphViewport.top&&visibleCard.bottom<=graphViewport.bottom,'old blank view is migrated to readable scale with the active card in view');
+              act('dag-fit');const initialCards=all('.dag-card').map(card=>card.getBoundingClientRect());assert(initialCards.length===graph().nodes.length&&initialCards.every(card=>card.left>=graphViewport.left-1&&card.right<=graphViewport.right+1&&card.top>=graphViewport.top-1&&card.bottom<=graphViewport.bottom+1),'explicit fit still contains all cards');
+              act('dag-readable');act('dag-zoom','in');const manual={...dagTransform()};act('dag-view-toggle');act('dag-view-toggle');await wait(()=>el('.dag-stage'));assert(JSON.stringify(dagTransform())===JSON.stringify(manual),'reopening respects a deliberate manual zoom');act('dag-readable');
+              assert(S.editZoom===view.zoom&&el('.canvas-fit').scrollLeft===view.left&&el('.canvas-fit').scrollTop===view.top&&el('.edit-image').getBoundingClientRect().width===imageBox.width,'Graph reopening preserves photo zoom, pan and geometry');
+              const resize=el('.dag-window-resize');resize.focus();key(resize,'ArrowRight');
+              act('dag-window-minimize');assert(el('.dag-floating.minimized'),'minimize');act('dag-window-minimize');
+              assert(JSON.stringify(graph())===base&&history()===past&&Studio.data.work===photo,'window resize and collapse create no pixel history');
+              act('canvas-crop');assert(el('.canvas-crop-box')&&el('.dag-floating.minimized'),'crop range and unobstructed collapsed Graph');
+              const cropDraft=JSON.stringify(S.canvasTool.draft),film=el('[data-act=film-stock]');assert(film,'film fixture exists');film.closest('details').open=true;act('film-stock',film.dataset.val);assert(JSON.stringify(S.canvasTool.draft)===cropDraft&&JSON.stringify(graph())===base,'photo-level look cannot leak into a Crop draft');
+              set('[name=canvasCropwidth]',70);set('[name=canvasCropheight]',60);set('[name=canvasCropx]',10);act('canvas-turn');
+              assert(history()===past&&JSON.stringify(graph())===base,'Crop only changes draft');act('canvas-tool-cancel');assert(history()===past&&JSON.stringify(graph())===base,'Crop cancel discards draft');
+              act('canvas-crop');set('[name=canvasCropwidth]',70);act('canvas-tool-done');assert(history()===past+1&&graph().nodes.find(n=>n.kind==='geometry').params.cropBox.width===70,'Crop finish commits one geometry edit');act('edit-step','undo');assert(JSON.stringify(graph())===base,'Crop undo restores graph');
+              pickNode('grade');act('edit-tool','warper',el('.inspector-rail'));await page('.dag-warper-grid');
+              assert(!el('[name=dagNumber]:invalid'),'valid initial grid values');el('.dag-warper-grid').focus();key(document.activeElement,'Enter');assert(dagNode().params.pins.length===1,'keyboard adds a scoped grid point');act('dag-warper-clear');
+              act('edit-tool','color',el('.inspector-rail'));await page('[name=dagCategoryChoice]');set('[name=dagCategoryChoice]','RGB 矩阵');assert(all('[name=dagNumber]').length===10,'nine RGB matrix values plus node strength');
+              pickNode(graph().nodes.find(n=>n.kind==='mix').id);assert(all('.inspector-rail [data-act=edit-tool]').length===1&&!el('.dag-warper-grid'),'Mixer does not inherit Corrector categories');
+              set('[name=dagMixMode]','layer');for(const mode of dagBlendModes){set('[name=dagBlend]',mode);assert(dagNode().params['blend:layer']===mode,'Layer mode '+mode+' persists independently');}
+              const mixer=dagNode().id,ids=new Set(graph().nodes.map(n=>n.id));act('dag-add-input');const owner=graph().nodes.find(n=>!ids.has(n.id)&&n.kind==='grade').id;
+              assert(graph().nodes.find(n=>n.id===mixer).params['weight:layer2']===0,'additional Layer input is initially neutral');
+              set('[name=dagNumber][data-key="weight:layer2"]',25);set('[name=dagBlend][data-slot=layer2]','multiply');act('dag-input-move','layer2:-1');
+              assert(graph().edges.find(e=>e.to===mixer&&e.slot==='layer').from===owner&&dagNode().params.amount===25&&dagNode().params['blend:layer']==='multiply','moving an input preserves its weight and blend mode');
+              pickNode(owner);const beforeMask=JSON.stringify(graph()),maskPast=history();act('edit-tool','masks');actions['quick-open']();assert(!quickPromptVisible()&&S.canvasTool.owner===owner,'Prompt cannot overlap a Mask transaction');
+              maskType('亮度范围');set('[name=canvasMaskLow]',80);set('[name=canvasMaskHigh]',60);assert(el('[data-act=canvas-tool-done]').disabled,'inverted range cannot commit');set('[name=canvasMaskLow]',20);
+              act('canvas-mask-op','subtract');act('canvas-mask-component');set('[name=canvasComponentOpacity]',40);act('canvas-component-invert','0');foldTool('mask-refine');set('[name=canvasRefinehairRefine]',30);
+              assert(S.canvasTool.mask.components[0].op==='subtract'&&el('.canvas-mask-component .icon')&&el('[data-canvas-number=canvasRefinehairRefine]').value==='30','semantic group controls and numeric slider stay in sync');
+              assert(S.canvasTool.owner===owner&&S.canvasTool.mask.components[0].opacity===40&&S.canvasTool.mask.components[0].invert&&S.canvasTool.mask.refine.hairRefine===30,'component and refinement are owner-scoped draft values');
+              act('edit-step','undo',el('.canvas-tool-footer'));assert(!S.canvasTool.mask.refine?.hairRefine,'draft undo restores the mask');act('edit-step','redo',el('.canvas-tool-footer'));
+              assert(history()===maskPast&&JSON.stringify(graph())===beforeMask,'mask draft never publishes early');act('canvas-tool-done');assert(history()===maskPast+1&&graph().nodes.find(n=>n.id===owner).mask.components[0].opacity===40,'Mask finish commits once');
+              const masked=dagNode();addNodeMenu();tap('.dag-menu-advanced summary',modal());act('dag-outside',null,modal());assert(dagNode().id!==owner&&dagNode().mask.invert!==masked.mask.invert&&Object.keys(dagNode().params).length===0,'Outside is a new neutral Corrector with inverse copied coverage');
+              const dependency=structuredClone(graph());dependency.nodes.find(n=>n.id===owner).mask={kind:'来自节点',reference:owner};assert(dagError(dependency).includes('自身'),'Mask self-reference is rejected');
+              const beforeRemove=JSON.stringify(graph()),removePast=history();act('edit-tool','repair');assert(all('.canvas-remove-modes button .icon').length===4&&!el('[data-act=canvas-remove-preview]'),'four graphic modes, no irrelevant generation action');
+              act('canvas-remove-kind','clone');markCenter();assert(el('[data-act=canvas-tool-done]').disabled,'Clone requires a sample');markCenter();assert(S.canvasTool.draft.repairs.at(-1).source,'second mark is the Clone sample');
+              act('canvas-remove-kind','inpaint');markCenter();assert(el('[data-act=canvas-tool-done]').disabled,'Inpaint waits for a candidate');foldTool('remove-more');act('canvas-remove-fail');assert(S.canvasTool.removeState==='failed'&&el('[data-act=canvas-remove-preview]').textContent.includes('重试'),'candidate failure is explicit');act('canvas-remove-preview');
+              assert(history()===removePast&&JSON.stringify(graph())===beforeRemove,'Remove preview is not published');act('canvas-tool-done');assert(history()===removePast+1&&Studio.edit(photo).recipe.repairs.length>=2,'Remove finish commits one ordered stage');act('edit-step','undo');assert(JSON.stringify(graph())===beforeRemove,'Remove undo restores original recipe');
+              act('edit-tool','repair');const image=el('.edit-image'),box=image.getBoundingClientRect(),count=S.canvasTool.draft.repairs.length;image.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:box.left+box.width/2,clientY:box.top+box.height/2}));assert(S.canvasTool.draft.repairs.length===count+1,'one click creates exactly one repair mark');act('canvas-tool-cancel');
+              pickNode('grade');act('edit-tool','basic',el('.inspector-rail'));act('edit-zoom','fit');act('dag-fit');assert(!dagError(graph()),'expanded feature graph remains valid');
+            """)
+            scenario("Node DAG 单行选择器、精简菜单与忽略撤销", """
+              pickNode('grade');act('edit-tool','basic',el('.inspector-rail'));await page('[name=dagNumber][data-key=ev]');
+              const before=JSON.stringify(currentEdit().recipe.dag),past=currentEdit().past.length,view={zoom:S.editZoom,left:el('.canvas-fit').scrollLeft,top:el('.canvas-fit').scrollTop};
+              assert(!el('.dag-view-tabs')&&!el('.dag-scope-head [data-act=dag-menu]')&&all('.dag-picker-row > button').length===3,'one selector plus ignore and Graph, no duplicated menus or view tabs');
+              act('dag-picker');assert(el('#dag-node-picker').matches(':popover-open')&&all('.dag-picker-list button').map(b=>b.dataset.val).join()===dagCurrent().nodes.filter(dagEditable).map(n=>n.id).join()&&el('.dag-picker-base [data-val=base]')&&all('.dag-picker-commands button').length===3,'editable node list, separate base correction and three common commands share one dropdown');
+              key(document.activeElement,'Escape');assert(!el('#dag-node-picker').matches(':popover-open')&&document.activeElement===el('[name=dagNode]')&&el('.dag-floating'),'Escape closes only the picker and returns focus');
+              act('dag-toggle-current','grade');assert(dagNode().enabled===false&&el('[data-act=dag-toggle-current]').getAttribute('aria-pressed')==='true'&&el('.dag-card[data-dag-card=grade]').classList.contains('bypass')&&currentEdit().past.length===past+1,'ignore is scoped, visible and one history step');
+              assert(JSON.stringify(dagNode().params)===JSON.stringify(JSON.parse(before).nodes.find(n=>n.id==='grade').params),'ignore preserves node parameters');
+              act('edit-step','undo');assert(JSON.stringify(currentEdit().recipe.dag)===before,'undo restores the original graph');
+              pickNode('source');assert(el('[data-act=dag-toggle-current]').disabled&&el('[data-act=dag-toggle-current]').title.includes('固定'),'fixed stages explain why ignore is disabled');
+              pickNode('grade');act('dag-menu');assert(all('.dialog-body > .dag-menu-grid > button',modal()).length===6&&!el('.dag-menu-advanced',modal()).open,'node menu has six first-level commands and folded advanced commands');act('close',null,modal());
+              act('dag-picker');act('dag-picker-command','add',el('#dag-node-picker'));assert(modal().open&&!el('.dag-menu-advanced',modal()).open,'alternate insertion choices are folded in Add, not removed');act('close',null,modal());
+              act('dag-view-toggle');assert(!el('.dag-floating')&&el('.developed')&&el('[data-act=dag-view-toggle]').getAttribute('aria-pressed')==='false','Graph toggle closes only the floating window');act('dag-view-toggle');
+              assert(el('.dag-floating')&&el('[data-act=dag-view-toggle]').getAttribute('aria-pressed')==='true'&&S.editZoom===view.zoom&&el('.canvas-fit').scrollLeft===view.left&&el('.canvas-fit').scrollTop===view.top&&JSON.stringify(currentEdit().recipe.dag)===before,'Graph toggle restores without changing photo or recipe');
+              act('dag-picker');act('dag-picker-command','layout',el('#dag-node-picker'));pickNode('source');act('dag-fit');
+            """)
+            browser("click", ".dag-card[data-dag-card=grade] .dag-node-title")
+            scenario("Node DAG 真实节点点击与键盘选择联动", """
+              assert(dagView().active==='grade'&&dagView().selection.join()==='grade'&&el('[name=dagNode]').textContent.includes('基础调色')&&el('.dag-node-title[data-val=grade]').getAttribute('aria-pressed')==='true','trusted pointer selection synchronizes graph, picker and inspector');
+              const before=JSON.stringify(currentEdit().recipe.dag),past=currentEdit().past.length;
+              const next=dagCurrent().nodes[(dagCurrent().nodes.findIndex(n=>n.id==='grade')+1)%dagCurrent().nodes.length];
+              key(document.activeElement,'ArrowRight');assert(dagView().active===next.id&&el('[name=dagNode]').textContent.includes(next.name),'Graph keyboard selection synchronizes the picker');
+              el('[data-dag-viewport]').focus();key(document.activeElement,'a',{metaKey:true});assert(dagView().selection.length>1&&el('[data-act=dag-toggle-current]').disabled&&el('[name=dagNode]').textContent.includes('已选')&&!el('[name=dagNumber]'),'multi-selection disables single-node ignore and parameter broadcasting');
+              pickNode('grade');assert(JSON.stringify(currentEdit().recipe.dag)===before&&currentEdit().past.length===past,'selection creates no pixel history');
+            """)
+            node_x, node_y = browser("eval", "(() => {const r = document.querySelector('[data-dag-node=grade]').getBoundingClientRect(); return `${Math.round(r.x + r.width / 2)} ${Math.round(r.y + r.height / 2)}`;})()").strip('"').split()
+            browser("mouse", "move", node_x, node_y)
+            browser("mouse", "down", "right")
+            browser("mouse", "up", "right")
+            scenario("Node DAG 鼠标右键打开节点菜单", """
+              const menu=el('#dag-context:popover-open');
+              assert(menu?.textContent.includes('基础调色')&&menu.textContent.includes('Solo')&&!menu.textContent.includes('适合全图'),'right pointer opens the node menu rather than dragging or opening the canvas menu');
+              key(document.activeElement,'Escape');
+              assert(!menu.matches(':popover-open')&&document.activeElement===el('[data-dag-node=grade]'),'right-click menu Escape returns focus');
+            """)
+            browser("set", "viewport", "900", "360")
+            scenario("Node DAG 短窗保留可关闭标题条", """
+              assert(document.visibilityState==='visible','the active workbench must receive viewport changes');
+              await wait(()=>el('.dag-floating.minimized')?.checkVisibility());
+              assert(innerWidth===900&&innerHeight===360&&dagWindowShort()&&!el('.dag-viewport')&&el('.dag-window-head').textContent.includes('增高窗口'),'short window explains why the graph cannot expand');
+              const box=el('.dag-floating').getBoundingClientRect();assert(box.top>=0&&box.bottom<=innerHeight&&el('[data-act=dag-window-minimize]').disabled,'title controls stay reachable without squeezing the canvas');
+            """)
+            dag_evidence = os.environ.get("RAWMASTER_UI_DAG_EVIDENCE")
+            if dag_evidence and not editing_only:
+                Path(dag_evidence).mkdir(parents=True, exist_ok=True)
+                browser("screenshot", str(Path(dag_evidence) / "graph-short-window.png"))
+            browser("click", ".dag-window-head [data-act=dag-view][data-val=photo]")
+            scenario("Node DAG 短窗真实关闭", """
+              assert(!el('.dag-floating')&&el('.developed')&&el('[data-act=dag-view-toggle]').getAttribute('aria-pressed')==='false','short-window close removes the floating panel and leaves the primary photo in place');
+            """)
+            browser("set", "viewport", "1440", "900")
+            scenario("Node DAG 短窗关闭后恢复工作区", """
+              act('dag-view-toggle');assert(el('.dag-viewport')&&el('[data-act=dag-view-toggle]').getAttribute('aria-pressed')==='true','Graph can reopen when the workspace has room');
+            """)
+            if dag_evidence and not editing_only:
+                scenario("Node DAG 视觉样本准备与正常添加入口", """
+                  Studio.setRecipe(Studio.data.work,'视觉评审中性底稿',Studio.freshRecipe());dagLeavePhoto();S.graphOpen=true;S.tool='basic';dagEnsure();render();
+                  addNodeMenu();act('dag-add','parallel',modal());set('[name=dagNumber][data-key=ev]',0.2);
+                  const mixer=dagCurrent().nodes.find(n=>n.kind==='mix').id;pickNode(mixer);set('[name=dagNumber][data-key=amount]',50);pickNode('grade');menuAction('dag-layout');
+                  assert(dagCurrent().nodes.length===6&&Math.abs(dagEvaluate(dagCurrent()).ev-0.1)<0.0001,'neutral base and 0.2EV parallel branch at 50% make a reproducible visual fixture');
+                """)
+                for kind in ["crop", "mask", "remove"]:
+                    scenario(f"Node DAG {kind} 工具视觉与返回上下文", """
+                      await hash('settings/general');await page('[name=theme]');set('[name=theme]','dark');await hash('edit/dag');await page('.dag-workspace');pickNode('grade');
+                      const before=JSON.stringify(Studio.edit(Studio.data.work).recipe),kind='""" + kind + """';sessionStorage.setItem('qa.canvas.before',before);
+                      if(kind==='crop'){act('canvas-crop');set('[name=canvasCropwidth]',80);}
+                      if(kind==='mask'){act('edit-tool','masks');maskType('颜色范围');act('canvas-mask-component');set('[name=canvasMaskOpacity]',70);foldTool('mask-refine');const scroller=el('.canvas-tool-body');scroller.scrollTop=scroller.scrollHeight;assert(el('.canvas-tool-scope').getBoundingClientRect().top>=scroller.getBoundingClientRect().top-1,'mask owner remains visible while scrolling');scroller.scrollTop=0;act('canvas-tool-fold','mask-refine');}
+                      if(kind==='remove'){act('edit-tool','repair');act('canvas-remove-kind','inpaint');markCenter();foldTool('remove-more');act('canvas-remove-fail');assert(el('[data-act=canvas-tool-done]').disabled,'failed repair cannot finish');}
+                      await wait(()=>el('.canvas-tool-dock').getAnimations().every(a=>a.playState==='finished')&&!el('#notice').classList.contains('show'));
+                      assert(el('.canvas-tool-dock').dataset.canvasExpanded===kind&&el('.edit-center .developed').checkVisibility(),'expanded tool and primary image visible');
+                      if(kind!=='remove')assert(getComputedStyle(el('.canvas-tool-footer .primary')).backgroundColor!=='rgba(0, 0, 0, 0)','enabled finish has a visible primary background');
+                      assert(JSON.stringify(Studio.edit(Studio.data.work).recipe)===before,'visual drafts do not publish');
+                    """)
+                    browser("screenshot", str(Path(dag_evidence) / f"canvas-{kind}-desktop.png"))
+                    browser("eval", "actions['canvas-tool-cancel'](); if(JSON.stringify(Studio.edit(Studio.data.work).recipe)!==sessionStorage.getItem('qa.canvas.before'))throw Error('cancel changed recipe');")
+            for width, height, theme in [(1440, 900, "dark"), (1440, 900, "light"), (390, 844, "dark"), (390, 844, "light")]:
+                browser("set", "viewport", str(width), str(height))
+                scenario(f"Node DAG {width}×{height} {theme} 布局、监看与焦点", """
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');
+                  await hash('edit/dag');await page('.dag-workspace');act('dag-fit');
+                  pickNode('grade');
+                  const graph=JSON.stringify(currentEdit().recipe.dag),history=currentEdit().past.length;
+                  const box=el('.dag-workspace').getBoundingClientRect();
+                  assert(!el('.inspector-content [data-act=dag-reset],.inspector-content [data-act=dag-preview]'),'inspector contains parameters, not duplicate graph commands');
+                  assert(document.documentElement.scrollWidth<=innerWidth&&box.left>=0&&box.right<=innerWidth,'Graph fits viewport without horizontal document overflow');
+                  assert(document.documentElement.dataset.theme==='""" + theme + """','requested theme');
+                  const floating=el('.dag-floating'),windowBox=floating.getBoundingClientRect();
+                  assert(getComputedStyle(floating).position==='fixed'&&floating.getAttribute('aria-modal')==='false'&&el('.edit-center .developed').checkVisibility(),'non-modal floating Graph keeps primary photo visible');
+                  assert(windowBox.left>=0&&windowBox.right<=innerWidth&&windowBox.top>=0&&windowBox.bottom<=innerHeight,'floating window remains reachable within viewport');
+                  const viewport=el('.dag-viewport').getBoundingClientRect(),cards=all('.dag-card').map(card=>card.getBoundingClientRect());assert(viewport.height>=240&&viewport.width>=Math.min(480,innerWidth-26)&&windowBox.height>=392&&windowBox.width>=Math.min(520,innerWidth-24),'minimum applies to actual graph viewport, not just the outer window');const row=all('.dag-picker-row > button').map(button=>button.getBoundingClientRect());assert(row.length===3&&row.every(rect=>Math.abs(rect.top-row[0].top)<1)&&row[0].right<=row[1].left&&row[1].right<=row[2].left,'selector, ignore and Graph stay on one line');assert(cards.length===dagCurrent().nodes.length&&cards.every(card=>card.left>=viewport.left-1&&card.right<=viewport.right+1&&card.top>=viewport.top-1&&card.bottom<=viewport.bottom+1),'FIT contains all actual node cards, not just the floating window');
+                  const midX=(Math.min(...cards.map(c=>c.left))+Math.max(...cards.map(c=>c.right)))/2,midY=(Math.min(...cards.map(c=>c.top))+Math.max(...cards.map(c=>c.bottom)))/2;
+                  assert(Math.abs(midX-(viewport.left+viewport.right)/2)<1&&Math.abs(midY-(viewport.top+viewport.bottom)/2)<1,'explicit fit centers the actual node bounds');
+                  act('dag-readable');const focused=el('.dag-card.active').getBoundingClientRect();assert(dagTransform().scale===1&&focused.left>=viewport.left&&focused.right<=viewport.right&&focused.top>=viewport.top&&focused.bottom<=viewport.bottom,'readable framing keeps the current node on-screen even if the whole graph cannot fit');act('dag-fit');
+                  const monitoring=dagView().monitor;menuAction('dag-monitor');assert(dagView().monitor!==monitoring,'monitor can be hidden');
+                  menuAction('dag-monitor');assert(dagView().monitor===monitoring&&JSON.stringify(currentEdit().recipe.dag)===graph&&currentEdit().past.length===history,'monitor and fit do not alter recipe or history');
+                  const opener=el('.dag-workspace [data-act=dag-menu]');opener.focus();act('dag-menu');act('close',null,modal());await wait(()=>document.activeElement===opener);
+                """)
+                if dag_evidence and not editing_only:
+                    browser("screenshot", str(Path(dag_evidence) / f"graph-{width}-{theme}.png"))
+                    if width == 1440 and theme == "light":
+                        browser("click", ".dag-zoom-controls [data-act=dag-readable]")
+                        browser("screenshot", str(Path(dag_evidence) / "graph-readable-desktop.png"))
+                        browser("click", ".dag-commandbar [data-act=dag-menu]")
+                        browser("click", "#sheet [data-act=dag-preview]")
+                        browser("screenshot", str(Path(dag_evidence) / "photo-node-preview-status.png"))
+                        browser("eval", "document.querySelector('.dag-photo-status [data-act=dag-preview-final]').click()")
+                    if width == 1440 and theme == "dark":
+                        scenario("Node DAG 下拉与六项菜单视觉证据", """
+                          pickNode('grade');act('dag-picker');assert(el('#dag-node-picker').matches(':popover-open'),'unified dropdown opens from the normal selector');
+                          const rect=el('#dag-node-picker').getBoundingClientRect();assert(rect.left>=0&&rect.right<=innerWidth&&rect.top>=0&&rect.bottom<=innerHeight,'dropdown remains within the viewport');
+                        """)
+                        browser("screenshot", str(Path(dag_evidence) / "node-picker-desktop.png"))
+                        browser("press", "Escape")
+                        browser("click", ".dag-commandbar [data-act=dag-menu]")
+                        browser("screenshot", str(Path(dag_evidence) / "node-menu-desktop.png"))
+                        browser("press", "Escape")
+            for theme in ['light', 'dark']:
+                scenario(f"Node DAG 390px {theme} 紧凑 Mask／Remove", """
+                  await hash('settings/general');await page('[name=theme]');set('[name=theme]','""" + theme + """');await hash('edit/dag');await page('.dag-workspace');pickNode('grade');
+                  const before=JSON.stringify(currentEdit().recipe),past=currentEdit().past.length;
+                  const bounds=()=>{const dock=el('.canvas-compact-tool').getBoundingClientRect(),canvas=el('.dark-canvas').getBoundingClientRect();assert(dock.left>=0&&dock.right<=innerWidth&&document.documentElement.scrollWidth<=innerWidth&&canvas.height>=150&&canvas.bottom<=dock.top+1,'narrow compact panel keeps photo space without overlap or horizontal overflow');};
+                  tap('[data-canvas-tool=mask] button');await wait(()=>el('.canvas-tool-dock').getAnimations().every(a=>a.playState==='finished'));bounds();
+                  assert(document.activeElement.dataset.val==='mask-types'&&el('.canvas-tool-scope').textContent.includes('基础调色'),'Mask focuses its type picker and identifies the owner');
+                  foldTool('mask-types');assert(all('.canvas-mask-family').length===3&&all('[data-act=canvas-mask-type] .icon').length===14,'all mask types retain icons in three families');
+                  key(document.activeElement,'Escape');assert(!el('.canvas-tool-dock')&&document.activeElement.closest('[data-canvas-tool=mask]'),'Escape returns focus to Mask');
+                  tap('[data-canvas-tool=remove] button');await wait(()=>el('.canvas-tool-dock').getAnimations().every(a=>a.playState==='finished'));bounds();
+                  const s=S.canvasTool,edit=Studio.edit(s.photo),conversation=edit.conversation;edit.conversation={...conversation,strict:true};render();assert(all('.canvas-remove-modes button').every(b=>b.disabled)&&el('.canvas-tool-state').textContent.includes('严格纪实'),'strict documentary makes mode buttons unavailable with a reason');
+                  edit.conversation=conversation;Studio.asset(s.photo).online=false;render();assert(all('.canvas-remove-modes button').every(b=>b.disabled)&&el('.canvas-tool-state').textContent.includes('离线'),'offline explains why marking is unavailable');
+                  Studio.asset(s.photo).online=true;act('canvas-tool-cancel');assert(JSON.stringify(currentEdit().recipe)===before&&currentEdit().past.length===past,'both exits leave recipe and history untouched');
+                """)
+                if dag_evidence and not editing_only:
+                    browser("eval", "document.querySelector('[data-canvas-tool=mask] button').click()")
+                    browser("eval", "Promise.all(document.querySelector('.canvas-tool-dock').getAnimations().map(animation=>animation.finished))")
+                    browser("screenshot", str(Path(dag_evidence) / f"canvas-mask-390-{theme}.png"))
+                    browser("press", "Escape")
+            check_browser_errors()
         finally:
             with suppress(Exception):
                 browser("close")

@@ -12,11 +12,17 @@ final class PhotosWhiteBalancePresetTests: XCTestCase {
     model.selectScope(.project, id: fixture.assets[0].projectID)
     model.select(fixture.assets[0]); model.setMode(.single); model.openNativeEditing()
     let editing = try XCTUnwrap(model.editing)
-    for _ in 0..<500 where editing.developmentContext == nil {
-      if editing.work != nil { editing.beginDevelopmentInterface() }
+    let deadline = ContinuousClock.now + .seconds(20)
+    while editing.developmentContext == nil, editing.previews.primary.error == nil, ContinuousClock.now < deadline {
+      if editing.work != nil && editing.developmentToolsPaused { editing.beginDevelopmentInterface() }
       try await Task.sleep(for: .milliseconds(10))
     }
-    let context = try XCTUnwrap(editing.developmentContext), before = editing.recipe
+    guard let context = editing.developmentContext else {
+      let status = "active=\(!editing.developmentToolsPaused), ready=\(editing.sourceReady), inspectable=\(editing.previews.primary.canInspectDevelopmentSource), rendering=\(editing.previews.primary.rendering), lease=\(String(describing: editing.previews.primary.currentSourceGeneration)), revision=\(editing.previews.primary.currentRevision), previewError=\(editing.previews.primary.error ?? "none"), error=\(editing.message ?? "none")"
+      await editing.shutdown()
+      return XCTFail("The editor never opened its white-balance context: " + status)
+    }
+    let before = editing.recipe
     editing.requestDevelopmentWhiteBalanceAutomatic(.temperatureTint, context: context)
     for _ in 0..<800 where editing.recipe == before { try await Task.sleep(for: .milliseconds(10)) }
     let after = editing.recipe
@@ -62,6 +68,20 @@ final class PhotosWhiteBalancePresetTests: XCTestCase {
       try value.validate()
     }
   }
+  func testUseOriginalPreservesSavedFineTuningWithoutApplyingIt() throws {
+    let preset = try PhotosWhiteBalanceStateEditing.command(state: raw, preset: .cloudy)
+    guard case .setParameters(.whiteBalance(let chosen)) = preset,
+          let resolved = chosen.resolvedState else { return XCTFail("Expected a resolved RAW preset") }
+    let original = try PhotosWhiteBalanceStateEditing.useOriginal(state: resolved)
+    guard case .setParameters(.whiteBalance(let next)) = original,
+          case .raw(let binding, let state) = next.resolvedState else { return XCTFail("Expected a source-bound RAW state") }
+    XCTAssertEqual(binding, source)
+    XCTAssertEqual(next.adjustment, .asShot)
+    XCTAssertEqual(state.temperatureTint, PhotosWhiteBalancePreset.cloudy.target)
+    XCTAssertEqual(state.selectedMode, .asShot)
+    try next.validate()
+  }
+
   func testNonRAWDoesNotAdmitCameraPresets()throws {
     let image=DevelopmentResolvedWhiteBalanceV3.image(source:source,state:.init())
     XCTAssertThrowsError(try PhotosWhiteBalanceStateEditing.command(state:image,preset:.daylight))

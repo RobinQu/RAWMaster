@@ -19,20 +19,35 @@ struct PhotosMaskEditingCanvas: View {
         let frame = input.canvasOwner == owner ? editing.developmentLocalFrame(context:context) : nil
         let overlayKey = OverlayKey(revision:input.overlayRevision,mapping:frame?.mapping,visible:input.candidate != nil && input.showsOverlay)
         ZStack {
-            ZoomableImageView(image:editing.preview,actualPixels:editing.actualPixels && editing.previews.primary.frame?.quality == .detail,
+            let bitmap = editing.previews.primary.frame, fit = editing.previews.primary.fitFallback
+            ZoomableImageView(image:nil,actualPixels:editing.actualPixels,
                 transform:.init(get:{transform},set:{if input.canvasOwner == owner { transform = $0 }}),
                 backgroundColor:editing.darkroomBackground.nsColor,
-                onActualPixelsChange:{if input.canvasOwner == owner { editing.setActualPixels($0,nativeEvent:true) }},
-                onRequestDetail:{if input.canvasOwner == owner { editing.requestDetailPreview(nativeEvent:true) }},
-                frameID:editing.previews.primary.frame?.id,onFrameDrawn:{if input.canvasOwner == owner { editing.previews.primary.didDraw($0) }},
+                onActualPixelsChange:{value in
+                    if input.canvasOwner == owner {
+                        editing.setActualPixels(value,nativeEvent:true,requestPreview:value || transform == .init())
+                    }
+                },
+                frameID:bitmap?.id,onFrameDrawn:{if input.canvasOwner == owner { editing.previews.primary.didDraw($0) }},
                 onPointerEvent:{input.canvasOwner == owner && input.pointer($0,context:context)},
-                onViewportChange:{input.canvasViewportChanged($0,owner:owner)},
+                onViewportChange:{snapshot in
+                    input.canvasViewportChanged(snapshot,owner:owner)
+                    DispatchQueue.main.async {
+                        guard input.canvasOwner == owner, snapshot.transform == transform else { return }
+                        editing.updateCanvasSampling(snapshot,role:.primary)
+                    }
+                },
                 onVisibleWindow:{ [weak editing] visible in
                     guard let editing, input.canvasOwner == owner else { return }
                     editing.updateDetailVisibleWindow(visible)
                 },
-                window:editing.previews.primary.frame?.window,
-                canvasPixelSize:editing.previews.primary.frame?.nativeSize)
+                window:bitmap?.window,canvasPixelSize:bitmap?.nativeSize ?? fit?.nativeSize)
+                .borrowingImage(bitmap?.image ?? fit?.image)
+                .fallbackImage(bitmap?.window == nil ? nil : fit?.image)
+                .trackingFreeZoom { active, snapshot in
+                    guard input.canvasOwner == owner else { return }
+                    editing.updateCanvasSampling(snapshot,role:.primary,zooming:active)
+                }
             if let frame, let viewport = input.viewport, viewport.frameID == frame.frameID {
                 Canvas { graphics,size in
                     guard viewport.viewportSize == size else { return }

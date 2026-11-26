@@ -244,7 +244,9 @@ struct EditingImageCanvas: View {
 
     private func fit() {
         transform = ImageTransform()
+        let wasZoomed = editing.resetCanvasSampling()
         if editing.actualPixels { editing.setActualPixels(false, nativeEvent: true) }
+        else if wasZoomed { editing.requestPreview() }
     }
     private func center() {
         transform.centerX = 0.5; transform.centerY = 0.5
@@ -340,7 +342,7 @@ struct EditingImageCanvas: View {
     private func imageCanvas(frame: EditingPreviewBitmap?, primary: Bool,
                              insets: NSEdgeInsets = EditingLayout.fitInsets) -> ZoomableImageView {
         var visibleSink: (@MainActor (CGRect) -> Void)?
-        if primary, frame?.quality == .detail {
+        if primary {
             visibleSink = { @MainActor [weak editing] visible in
                 editing?.updateDetailVisibleWindow(visible)
             }
@@ -354,23 +356,42 @@ struct EditingImageCanvas: View {
         } else {
             hover = nil
         }
-        return ZoomableImageView(image: nil, actualPixels: editing.actualPixels && frame?.quality == .detail, transform: $transform,
+        let role: PreviewConsumerRole = primary ? .primary : .comparison
+        let zoomContext = editing.canvasZoomContext, versionID = editing.selectedVersionID
+        let fallback = primary ? editing.previews.primary.fitFallback : editing.comparisonCanvasFallback
+        let trace = primary ? InteractionTrace.shared.initialWindowViewportSink(frameID: frame?.id, quality: frame?.quality) : nil
+        var canvas = ZoomableImageView(image: nil, actualPixels: editing.actualPixels, transform: $transform,
             backgroundColor: editing.darkroomBackground.nsColor,
-            onActualPixelsChange: { editing.setActualPixels($0, nativeEvent: true, requestPreview: false) },
-            onRequestDetail: { editing.requestDetailPreview(nativeEvent: true) }, frameID: frame?.id,
+            onActualPixelsChange: { value in
+                editing.setActualPixels(value, nativeEvent: true, requestPreview: value || transform == .init())
+            },
+            frameID: frame?.id,
             onFrameDrawn: {
                 if primary {
                     if editing.filterHoverFrame == nil && editing.sharpeningMaskPreviewFrame == nil && editing.lensBlurDepthPreviewFrame == nil { editing.previews.primary.didDraw($0, canvasDiagnostic: true) }
                 } else { editing.previews.comparison.didDraw($0) }
             },
-            onViewportChange: primary ? InteractionTrace.shared.initialWindowViewportSink(frameID: frame?.id, quality: frame?.quality) : nil,
+            onViewportChange: { snapshot in
+                trace?(snapshot)
+                DispatchQueue.main.async {
+                    guard editing.canvasZoomContext == zoomContext, editing.selectedVersionID == versionID,
+                          snapshot.transform == transform else { return }
+                    editing.updateCanvasSampling(snapshot, role: role)
+                }
+            },
             onPointerHover: hover,
             onCanvasDiagnostic: primary ? InteractionTrace.shared.canvasDiagnosticSink : nil,
             onVisibleWindow: visibleSink,
-            window: frame?.window, canvasPixelSize: frame?.nativeSize)
-            .borrowingImage(frame?.image)
+            window: frame?.window, canvasPixelSize: frame?.nativeSize ?? fallback?.nativeSize)
+            .borrowingImage(frame?.image ?? fallback?.image)
+            .fallbackImage(frame?.window == nil ? nil : fallback?.image)
             .lowLatency((primary && (editing.filterHoverFrame != nil || editing.sharpeningMaskPreviewFrame != nil || editing.lensBlurDepthPreviewFrame != nil)) || frame?.quality == .interactive)
             .fitting(around: insets)
+        canvas.onFreeZoom = { active, snapshot in
+            guard editing.canvasZoomContext == zoomContext, editing.selectedVersionID == versionID else { return }
+            editing.updateCanvasSampling(snapshot, role: role, zooming: active)
+        }
+        return canvas
     }
 
     private func sidePane(frame: EditingPreviewBitmap?, primary: Bool, title: String,
@@ -410,7 +431,9 @@ struct EditingImageCanvas: View {
             .padding(.horizontal, EditingLayout.sidebarWidth + EditingLayout.outerPadding * 2)
         default:
             imageCanvas(frame: primaryFrame, primary: true)
-                .comparison(referenceFrame?.image, presentation: comparisonPresentation)
+                .comparison(referenceFrame?.image ?? editing.comparisonCanvasFallback?.image,
+                            presentation: comparisonPresentation, window: referenceFrame?.window,
+                            fallback: referenceFrame?.window == nil ? nil : editing.comparisonCanvasFallback?.image)
         }
     }
 
@@ -423,7 +446,7 @@ struct EditingImageCanvas: View {
                     imageCanvas(frame: editing.previews.primary.frame, primary: true, insets: quickPromptFitInsets).overlay {
                         if let frame = editing.previews.primary.frame {
                             GeometryReader { geometry in
-                                let available = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: geometry.size,
+                                let available = ImageViewportGeometry.imageRect(pixelSize: frame.nativeSize, viewport: geometry.size,
                                     transform: transform, backingScale: backingScale, fitInsets: quickPromptFitInsets)
                                 QuickPromptAreaOverlay(editing: editing, viewport: available)
                             }
@@ -454,7 +477,7 @@ struct EditingImageCanvas: View {
                             if !editing.comparing, editing.stage == .development, let frame = editing.previews.primary.frame,
                                let mapping = editing.presentedSamplerMapping {
                                 GeometryReader { geometry in
-                                    let rect = ImageViewportGeometry.imageRect(pixelSize: frame.outputSize, viewport: geometry.size,
+                                    let rect = ImageViewportGeometry.imageRect(pixelSize: frame.nativeSize, viewport: geometry.size,
                                         transform: transform, backingScale: backingScale, fitInsets: EditingLayout.fitInsets)
                                     PhotosColorSamplerMarkers(samplers: editing.colorSamplers, mapping: mapping, rect: rect)
                                 }.allowsHitTesting(false)
@@ -469,7 +492,7 @@ struct EditingImageCanvas: View {
                         Text(error).font(.caption).foregroundStyle(AppPalette.warning)
                         if !editing.sourceNeedsRevalidation { Button("重试预览") { editing.retryPreview() } }
                     }.padding(20)
-                } else if editing.previews.primary.rendering && editing.preview != nil {
+                } else if editing.previews.primary.rendering && (editing.preview != nil || editing.previews.primary.fitFallback != nil) {
                     VStack { HStack { Spacer(); ProgressView("计算中…").controlSize(.small).font(.caption).padding(10).background(AppPalette.overlay) }; Spacer() }
                 }
                 if editing.preview == nil && editing.previews.primary.error == nil {

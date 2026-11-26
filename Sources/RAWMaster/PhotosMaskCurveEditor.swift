@@ -13,9 +13,9 @@ struct PhotosMaskCurveEditor: View {
   }
   private var current:DevelopmentCurveChannelV3{curves[keyPath:path]}
   var body:some View{
-    VStack(alignment:.leading,spacing:8){
-      Picker("局部曲线通道",selection:$channel){ForEach(DevelopmentCurveChannel.allCases){Text($0.rawValue).tag($0)}}
-        .pickerStyle(.segmented).onChange(of:channel){_,_ in selected=0}
+    VStack(alignment:.leading,spacing:PhotosControlLayout.groupSpacing){
+      PhotosFlatTabs(title: "局部曲线通道", selection: $channel, options: DevelopmentCurveChannel.allCases, label: \.rawValue)
+        .accessibilityIdentifier("photos.mask.curves.channel").onChange(of:channel){_,_ in selected=0}
       PhotosMaskCurveCanvas(curves:curves,channel:channel,selected:$selected,onChange:update)
         .frame(height:160).accessibilityIdentifier("photos.mask.curves.canvas")
       HStack{
@@ -30,8 +30,10 @@ struct PhotosMaskCurveEditor: View {
         Text("点 \(selected+1) · 输入 \(point.x.formatted(.number.precision(.fractionLength(3)))) · 输出 \(point.y.formatted(.number.precision(.fractionLength(3))))")
           .font(.caption2).foregroundStyle(.secondary)
       }
-      endpoint("输入黑点",value:current.inputBlack,upper:max(0,current.inputWhite.nextDown),black:true)
-      endpoint("输入白点",value:current.inputWhite,lower:min(1,current.inputBlack.nextUp),black:false)
+      VStack(spacing:PhotosControlLayout.spacing){
+        endpoint("输入黑点",value:current.inputBlack,upper:max(0,current.inputWhite.nextDown),black:true)
+        endpoint("输入白点",value:current.inputWhite,lower:min(1,current.inputBlack.nextUp),black:false)
+      }
     }
   }
   private var displayModel:DevelopmentCurveDisplayModel?{

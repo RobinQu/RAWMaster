@@ -29,7 +29,7 @@ enum V3PreviewMaterializer {
   static let writesOwnedBitmap = ProcessInfo.processInfo.environment["RAWMASTER_QA_CANONICAL_OWNED_BITMAP"] == "1"
 
   static func materialize(_ graph: DevelopedV3Graph, context: CIContext, maxPixel: Int,
-                          window: CGRect? = nil,
+                          window: CGRect? = nil, detailScale: CGFloat? = nil,
                           presentation: PreviewPresentationScope? = nil,
                           device: (any MTLDevice)? = nil, observation: ((String) -> Void)? = nil,
                           managedOutput:PreviewInteractiveManagedOutput? = nil,
@@ -83,7 +83,7 @@ enum V3PreviewMaterializer {
     let size=graph.canonicalSize, longEdge=max(size.width,size.height)
     let limit=maxPixel <= 0 ? longEdge:CGFloat(max(64,min(4096,maxPixel)))
     let image = CanonicalPreviewDiagnostic.measure("scale graph") {
-      let scale = min(1, limit/longEdge)
+      let scale = detailScale ?? min(1, limit/longEdge)
       if let checkedLinearHalf { return checkedLinearHalf.transformed(by:.init(scaleX:scale*2,y:scale*2)) }
       return graph.displayImage(scale:scale)
     }
@@ -109,9 +109,10 @@ enum V3PreviewMaterializer {
        }) {
       return wrap(compact, nativeSize: graph.canonicalSize)
     }
-    let materialized = try Self.visibleRect(window, of: bounds)
+    let region = try Self.displayRegion(window, of: bounds, sampled: detailScale != nil)
+    let displayImage = detailScale == nil ? image : image.clampedToExtent()
     let cg = try CanonicalPreviewDiagnostic.measure("create sRGB8 CGImage") {
-      guard let cg = context.createCGImage(image,from:materialized,format:.RGBA8,colorSpace:PhotoRenderer.sRGB,deferred:false) else {
+      guard let cg = context.createCGImage(displayImage,from:region.pixels,format:.RGBA8,colorSpace:PhotoRenderer.sRGB,deferred:false) else {
         throw DevelopmentError.unreadable
       }
       return cg
@@ -126,7 +127,22 @@ enum V3PreviewMaterializer {
       guard let compact = owned.makeImage() else { throw DevelopmentError.unreadable }
       return compact
     }
-    return wrap(compact, nativeSize: graph.canonicalSize, window: window)
+    return wrap(compact, nativeSize: graph.canonicalSize, window: region.window)
+  }
+
+  static func displayRegion(_ window: CGRect?, of extent: CGRect, sampled: Bool) throws -> (pixels: CGRect, window: CGRect?) {
+    guard sampled else { return (try visibleRect(window, of: extent), window) }
+    let bounds = extent.integral
+    guard let window else { return (bounds, nil) }
+    let pixels = CGRect(x: bounds.minX + window.minX * bounds.width,
+                        y: bounds.maxY - window.maxY * bounds.height,
+                        width: window.width * bounds.width, height: window.height * bounds.height)
+      .integral.intersection(bounds)
+    guard !pixels.isEmpty else { throw PreviewPresentationError.invalidLayout }
+    let placement = CGRect(x: (pixels.minX - bounds.minX) / bounds.width,
+                           y: (bounds.maxY - pixels.maxY) / bounds.height,
+                           width: pixels.width / bounds.width, height: pixels.height / bounds.height)
+    return (pixels, placement)
   }
 
   /// Map a normalized top-left window onto the materialized canvas, snapped to the pixel grid.

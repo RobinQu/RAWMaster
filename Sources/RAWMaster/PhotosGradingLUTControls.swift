@@ -29,12 +29,12 @@ struct PhotosGradingLUTControls: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
             if maskID != nil {
                 Text("应用 LUT").font(.system(size: 12, weight: .semibold))
             }
             ForEach(stack.layers) { layer in
-                VStack(spacing: 5) {
+                VStack(spacing: PhotosControlLayout.descriptionSpacing) {
                     HStack {
                         if maskID == nil, stack.layers.count > 1 {
                             Image(systemName: "line.3.horizontal").draggable(layer.id.uuidString)

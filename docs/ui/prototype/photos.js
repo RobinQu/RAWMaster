@@ -96,6 +96,7 @@ const RMPhotos = (() => {
             h: v.h,
             archive: v.archive === true,
             look: cleanLook(v.look),
+            sceneOutput: item.id.endsWith('@jpeg') || v.id === 'original' ? undefined : RMSceneOutput.eligible(source, v.sceneOutput),
           }));
         if (!versions.length) versions.push({ label: '原始版本', w: p.w, h: p.h });
         result.push({
@@ -136,16 +137,23 @@ const RMPhotos = (() => {
   }
   function filter(input) {
     const p = cleanLook(input);
-    return `brightness(${Math.pow(2, p.ev * 0.55)}) contrast(${1 + p.contrast * 0.006}) saturate(${p.mono ? 0 : 1 + p.sat * 0.01}) sepia(${Math.max(0, p.warmth) * 0.004}) hue-rotate(${Math.min(0, p.warmth) * 0.13}deg)`;
+    const color = p.mono ? 'grayscale(1)' : `saturate(${1 + p.sat * 0.01}) sepia(${Math.max(0, p.warmth) * 0.004}) hue-rotate(${Math.min(0, p.warmth) * 0.13}deg)`;
+    return `brightness(${Math.pow(2, p.ev * 0.55)}) contrast(${1 + p.contrast * 0.006}) ${color}`;
   }
   const filmStocks = {
-    daylight: { name: 'Portra 400 / Endura', contrast: -16, sat: -19, warmth: 56 },
+    daylight: { name: 'Portra 400 / Portra Endura', contrast: -16, sat: -19, warmth: 56 },
     chrome: { name: 'Velvia 100', contrast: 30, sat: 28, warmth: -68 },
     cinema: { name: 'VISION3 250D / 2383', contrast: 18, sat: -14, warmth: 23 },
+    gold: { name: 'Gold 200 / Ultra Endura', contrast: 8, sat: 12, warmth: 34 },
+    portrait800: { name: 'Portra 800 / Supra Endura', contrast: -10, sat: -8, warmth: 22 },
+    ektar: { name: 'Ektar 100 / Portra Endura', contrast: 17, sat: 24, warmth: 8 },
+    provia: { name: 'Provia 100F', contrast: 16, sat: 10, warmth: -12 },
+    ektachrome: { name: 'Ektachrome 100', contrast: 22, sat: 18, warmth: -22 },
+    tungsten: { name: 'VISION3 500T / 2383', contrast: 14, sat: -8, warmth: -18 },
   };
   function displayLook(r) {
     const film = Object.hasOwn(filmStocks, r.filmStock) ? filmStocks[r.filmStock] : null;
-    const amount = film ? (r.filmAmount ?? 100) / 100 : 0;
+    const amount = film && r.filmEnabled !== false ? (r.filmAmount ?? 100) / 100 : 0;
     const enabled = (group) => r.sectionEnabled?.[group] !== false;
     const n = (key, group) => enabled(group) ? Number(r[key]) || 0 : 0;
     const light = (key) => n(key, 'light');
@@ -162,11 +170,11 @@ const RMPhotos = (() => {
           (1 + ((film?.sat ?? 0) * amount) / 100) -
         100,
       warmth:
-        n('warmth', 'whiteBalance') +
+        (r.wbApplied === 'temperature' ? (r.wbTemperature == null ? 0 : r.wbTemperature >= 2000 ? (r.wbTemperature - 5500) / 65 : r.wbTemperature) * (enabled('whiteBalance') ? 1 : 0) + n('tint', 'whiteBalance') * 0.25 : n('warmth', 'whiteBalance')) +
         (film?.warmth ?? 0) * amount +
         (n('warmHighlights', 'grading') - n('coolShadows', 'grading') + n('balance', 'grading')) * 0.35 +
         (enabled('lut') ? r.lut === '柔和胶片' ? 25 : r.lut === '冷调' ? -25 : 0 : 0),
-      mono: r.mono,
+      mono: r.colorMode ? r.colorMode === 'bw' : r.mono,
     });
   }
   return { photos, file, url, readHandoff, cleanLook, displayLook, filter, filmStocks };

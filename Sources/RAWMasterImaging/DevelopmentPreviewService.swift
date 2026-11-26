@@ -491,6 +491,11 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       (request.quality == .detail ? request.viewport.maxPixel == 0 : request.viewport.maxPixel != 0),
       (request.clientCorrelation?.count ?? 0) <= 4096 else { throw DevelopmentPreviewError.invalidRequest }
     try Self.validateWindow(request.viewport.window, quality: request.quality)
+    if let scale = request.viewport.detailScale {
+      guard request.quality == .detail, scale.isFinite, scale > 0, scale <= 1 else {
+        throw DevelopmentPreviewError.invalidRequest
+      }
+    }
     guard let lease = leases[request.sessionID] else { throw DevelopmentPreviewError.closed }
     if let scene = request.recipe.adjustmentsV3?.effects?.lensBlur?.sceneDepth {
       let hash: String
@@ -849,7 +854,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       } else {
         nativeFiniteCheck = nil
       }
-      return try native.render(recipe:request.recipe,maxPixel:request.viewport.maxPixel,window:request.viewport.window,rawBasePool:pool,sourceKey:item.key,
+      return try native.render(recipe:request.recipe,maxPixel:request.viewport.maxPixel,window:request.viewport.window,
+        detailScale:request.viewport.detailScale,rawBasePool:pool,sourceKey:item.key,
         localMaskValidation:localMaskValidation,thumbnailNativeSink:thumbnailHook.map{$0.consume},grainFinalTransport:grainTransport,
         brillianceFinalTransport:brillianceRequest,dehazeTIFFRequest:dehazeRequest,spatialScan:spatialScan,
         checkDehazeTexture:checkDehazeTexture,checkCanonicalCache:checkCanonicalCache,
@@ -1404,7 +1410,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       (requestsDehazeTIFF(request,sourceKey:sourceKey) ? "":DevelopmentDehazeNativeRfV1.keySuffix(request.recipe.adjustmentsV3?.advancedDetail))
     let halfFITQuality = request.quality == .settled || (settledHalfFITReplay && request.quality == .interactive)
     let halfFITSuffix = halfFITQuality ? canonicalHalfFIT(request,sourceKey:sourceKey).map { "/" + $0.rawValue } ?? "" : ""
-    return digest(Data((sourceKey + ":canonical-v1:" + String(request.viewport.maxPixel) + ":"+windowSuffix(request.viewport.window)+suffix+proxySuffix+grainInputSuffix+grainTransportSuffix+dehazeCoverageSuffix+brillianceSuffix+brillianceNativeSuffix+dehazeTIFFSuffix+halfFITSuffix).utf8) + data)
+    let detailScaleSuffix = request.viewport.detailScale.map { ":sample:" + String(Double($0).bitPattern) } ?? ""
+    return digest(Data((sourceKey + ":canonical-v1:" + String(request.viewport.maxPixel) + ":"+windowSuffix(request.viewport.window)+detailScaleSuffix+suffix+proxySuffix+grainInputSuffix+grainTransportSuffix+dehazeCoverageSuffix+brillianceSuffix+brillianceNativeSuffix+dehazeTIFFSuffix+halfFITSuffix).utf8) + data)
   }
   /// A window changes which pixels a native frame contains, so it belongs in the identity.
   /// Settled and interactive frames ignore the window, and so does their key.
@@ -2002,7 +2009,8 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       batch.request.preview.sessionID==item.request.sessionID,batch.request.preview.sourceGeneration==item.request.sourceGeneration,
       batch.request.preview.revision==item.request.revision,
       batch.request.presentedRecipeFingerprint==(try? EditingFingerprint.of(item.request.recipe)),let device=MTLCreateSystemDefaultDevice() else{return nil}
-    return .init(batch:batch,native:native,ledger:thumbnailLedger,device:device,contextOwner:thumbnailContextOwner)
+    // When the hook cannot reuse this frame, the independent thumbnail step reports its own failure.
+    return try? .init(batch:batch,native:native,ledger:thumbnailLedger,device:device,contextOwner:thumbnailContextOwner)
   }
   /// Warm the canonical 1:1 base once per source while the canvas is idle. Runs before the
   /// thumbnail step so a later 1:1 gesture does not wait for the full decode.

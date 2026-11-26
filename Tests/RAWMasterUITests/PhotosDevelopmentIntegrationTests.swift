@@ -217,14 +217,14 @@ final class PhotosDevelopmentIntegrationTests: XCTestCase {
         await editing.shutdown()
     }
 
-    @MainActor private func ready(_ editing: EditingController, asset: AssetRecord) async throws {
-        let frame = expectation(description: "existing preview lease opened")
-        var delivered = false
-        let observation = editing.previews.primary.$frame.sink { value in
-            if value != nil, !delivered { delivered = true; frame.fulfill() }
-        }
+    @MainActor private func ready(_ editing: EditingController, asset: AssetRecord, timeout: Duration = .seconds(5)) async throws {
         editing.isPresented = true; editing.focus(asset)
-        await fulfillment(of: [frame], timeout: 5); observation.cancel()
+        let deadline = ContinuousClock.now + timeout
+        while editing.previews.primary.frame == nil, editing.previews.primary.error == nil, ContinuousClock.now < deadline {
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let pane = editing.previews.primary
+        _ = try XCTUnwrap(pane.frame, "Preview: \(pane.error ?? "no error"), rendering=\(pane.rendering), lease=\(String(describing: pane.currentSourceGeneration)), revision=\(pane.currentRevision), sourceReady=\(editing.sourceReady), stage=\(editing.stage)")
         XCTAssertNotNil(editing.work)
     }
     @MainActor private func activate(_ editing: EditingController, excluding old: EditingDraftBranchID? = nil) async throws -> EditingInteractionContext {
@@ -3719,30 +3719,27 @@ extension PhotosDevelopmentIntegrationTests {
         let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
             defaults: fixture.defaults, previewBackend: SharedEditingPreviewBackend(service: service))
         editing.isPresented = true
-        try await ready(editing, asset: fixture.assets[0]); var context = try await activate(editing)
-        let filterCount = editing.availableDevelopmentFilters.count
-        XCTAssertEqual(filterCount, DevelopmentPhotoFilterV3.allCases.count)
+        try await ready(editing, asset: fixture.assets[0], timeout: .seconds(20)); var context = try await activate(editing)
+        let expectedFilters = DevelopmentPhotoFilterV3.allCases
+        XCTAssertEqual(editing.availableDevelopmentFilters, expectedFilters)
         let owner = editing.developmentThumbnails, id = DevelopmentThumbnailKind.filters.presentationKey
         owner.setVisible(.filters, true, context: context)
-        for _ in 0..<3000 {
-            if owner.sets[id] != nil { break }
+        let initialDeadline = ContinuousClock.now + .seconds(30)
+        while owner.sets[id] == nil, ContinuousClock.now < initialDeadline {
             // A late source reload can replace the activation context; re-attach the strip to it.
-            if let live = editing.developmentContext {
+            if let live = editing.developmentContext, live != context {
                 context = live
                 owner.setVisible(.filters, true, context: live)
             }
-            try await Task.sleep(nanoseconds: 10_000_000)
+            try await Task.sleep(for: .milliseconds(10))
         }
-        guard owner.sets[id] != nil else {
-            if owner.state(.filters) == .failed {
-                // A long-lived XCTest process can exhaust shared filter/thumbnail resources.
-                // The same strip is validated in isolation and on the self-hosted GPU job.
-                throw XCTSkip("Filter thumbnail strip unavailable in this test process: \(owner.errors[id] ?? "unknown")")
-            }
-            return XCTFail("Filter thumbnail strip did not become ready")
-        }
-        let firstKey = owner.sets[id]!.key
-        XCTAssertEqual(owner.sets[id]?.images.count, DevelopmentThumbnailKind.filters.count)
+        // Test-owned images would keep their presentation lease alive through the shutdown check.
+        let firstKey = try {
+            let first = try XCTUnwrap(owner.sets[id], owner.errors[id] ?? "Expected complete classic thumbnail set")
+            XCTAssertEqual(first.images.count, DevelopmentThumbnailKind.filters.count)
+            XCTAssertEqual(first.images.count, expectedFilters.filter { !$0.isSpektrafilm }.count)
+            return first.key
+        }()
         let initialCompleted = await service.thumbnailStatistics().completed
         try editing.changeDevelopmentFilter(.vivid, context: context)
         for _ in 0..<30 { try await Task.sleep(nanoseconds: 10_000_000) }
@@ -3764,7 +3761,9 @@ extension PhotosDevelopmentIntegrationTests {
             try await Task.sleep(nanoseconds: 10_000_000)
         }
         XCTAssertNotEqual(owner.sets[id]?.key, firstKey)
-        XCTAssertEqual(owner.sets[id]?.images.count, DevelopmentThumbnailKind.filters.count); XCTAssertEqual(blankFrames, 0)
+        XCTAssertEqual(owner.sets[id]?.images.count, DevelopmentThumbnailKind.filters.count)
+        XCTAssertEqual(owner.sets[id]?.images.count, expectedFilters.filter { !$0.isSpektrafilm }.count)
+        XCTAssertEqual(blankFrames, 0)
         let changedCompleted = await service.thumbnailStatistics().completed
         XCTAssertGreaterThan(changedCompleted, initialCompleted)
         owner.invalidate()
@@ -3782,7 +3781,7 @@ extension PhotosDevelopmentIntegrationTests {
         let service = DevelopmentPreviewService()
         let editing = try EditingController(store: fixture.store, libraryURL: fixture.library,
             defaults: fixture.defaults, previewBackend: SharedEditingPreviewBackend(service: service))
-        try await ready(editing, asset: fixture.assets[0]); let context = try await activate(editing)
+        try await ready(editing, asset: fixture.assets[0], timeout: .seconds(20)); let context = try await activate(editing)
         try editing.changeDevelopmentFilter(.noir, context: context)
         let current = try XCTUnwrap(editing.work), source = current.source
         let before = try RenderFiles.hash(source.sourceLocation)

@@ -1,0 +1,148 @@
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 26] RAWMasterImaging
+[1 / 70] RAWMaster_RAWMasterImagingTests
+[1 / 42] RAWMasterDiagnostics-product
+[3 / 12] RAWMaster
+<module-includes>:1:9: note: in file included from <module-includes>:1:
+1 | #import "/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/CFlashRaw/include/CFlashRaw.h"
+  |         `- note: in file included from <module-includes>:1:
+2 | 
+
+1 warning generated.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/CFlashRaw/include/CFlashRaw.h:59:1: warning: umbrella header for module 'CFlashRaw' does not include header 'flashraw.h'
+57 | #endif
+58 | #endif
+59 | 
+   | `- warning: umbrella header for module 'CFlashRaw' does not include header 'flashraw.h'
+[6 / 19]
+[10 / 19] RAWMaster
+[10 / 19] RAWMaster-product
+[17 / 23] RAWMaster
+[18 / 26] RAWMaster
+[18 / 26] RAWMaster-product
+[19 / 26] RAWMaster-product
+[21 / 22] RAWMasterUITests-product
+[22 / 25] RAWMasterUITests-product
+[23 / 25] RAWMasterUITests-product
+Build complete! (11.47 sec)
+Test Suite 'Selected tests' started at 2026-11-26 14:23:44.484.
+Test Suite 'RAWMasterUITests.xctest' started at 2026-11-26 14:23:44.487.
+Test Suite 'DevelopmentGradingInteractionTests' started at 2026-11-26 14:23:44.487.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testCustomControlsConsumeMenuUndoAndDoNotLeakPhotoKeyboardActions]' started.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testCustomControlsConsumeMenuUndoAndDoNotLeakPhotoKeyboardActions]' passed (0.350 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testTwoDimensionalWheelDragEmitsOneValidMutationAndCancellationEndsInteraction]' started.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testTwoDimensionalWheelDragEmitsOneValidMutationAndCancellationEndsInteraction]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testWheelMapsHueRadiusAndKeepsHueAtNeutralCenter]' started.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testWheelMapsHueRadiusAndKeepsHueAtNeutralCenter]' passed (0.000 seconds).
+Test Suite 'DevelopmentGradingInteractionTests' passed at 2026-11-26 14:23:44.839.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.351 (0.352) seconds
+Test Suite 'EditingLayoutInteractionTests' started at 2026-11-26 14:23:44.839.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testAdjustmentSectionKeepsTightSymmetricTrackInsets]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testAdjustmentSectionKeepsTightSymmetricTrackInsets]' passed (0.081 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testColorTrackUsesRealNSSliderAndPreservesNativeAction]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testColorTrackUsesRealNSSliderAndPreservesNativeAction]' passed (0.003 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip]' passed (3.400 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxKeepsToggleAccessibilityAndBinding]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxKeepsToggleAccessibilityAndBinding]' passed (0.036 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances]' started.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/RAWMaster/PhotosFlatControls.swift:67: warning: -[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances] : Accessing FocusState's value outside of the body of a View. This will result in a constant Binding of the initial value and will not update.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances]' passed (5.558 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatMenuFillsRowAndUsesNativeSelection]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatMenuFillsRowAndUsesNativeSelection]' passed (0.026 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testMaskToolIconsAreAvailableAndDistinct]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testMaskToolIconsAreAvailableAndDistinct]' passed (0.025 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testRailTooltipRendersItsArrowLeftOfTheEntireButton]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testRailTooltipRendersItsArrowLeftOfTheEntireButton]' passed (0.009 seconds).
+Test Suite 'EditingLayoutInteractionTests' passed at 2026-11-26 14:23:53.978.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 9.138 (9.139) seconds
+Test Suite 'PhotosColorSamplerTests' started at 2026-11-26 14:23:53.978.
+Test Case '-[RAWMasterUITests.PhotosColorSamplerTests testNinePositionsPersistByPhotoAndEditingThemDoesNotChangeTheRecipe]' started.
+Test Case '-[RAWMasterUITests.PhotosColorSamplerTests testNinePositionsPersistByPhotoAndEditingThemDoesNotChangeTheRecipe]' passed (7.605 seconds).
+Test Suite 'PhotosColorSamplerTests' passed at 2026-11-26 14:24:01.584.
+	 Executed 1 test, with 0 failures (0 unexpected) in 7.605 (7.606) seconds
+Test Suite 'PhotosCurveResetChannelTests' started at 2026-11-26 14:24:01.584.
+Test Case '-[RAWMasterUITests.PhotosCurveResetChannelTests testResetOnlySelectedChannelAndPreserveOtherCurveState]' started.
+Test Case '-[RAWMasterUITests.PhotosCurveResetChannelTests testResetOnlySelectedChannelAndPreserveOtherCurveState]' passed (0.000 seconds).
+Test Suite 'PhotosCurveResetChannelTests' passed at 2026-11-26 14:24:01.585.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'PhotosInspectorTextLayoutTests' started at 2026-11-26 14:24:01.585.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testDetailTextRhythmKeepsDescriptionsCompleteInBothAppearances]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testDetailTextRhythmKeepsDescriptionsCompleteInBothAppearances]' passed (0.060 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSamplerRowsShowActualColourAndFullWidthFlatAction]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSamplerRowsShowActualColourAndFullWidthFlatAction]' passed (0.203 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testUnavailableSamplersKeepNumbersAndLimitOnlyDisablesAdding]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testUnavailableSamplersKeepNumbersAndLimitOnlyDisablesAdding]' passed (0.078 seconds).
+Test Suite 'PhotosInspectorTextLayoutTests' passed at 2026-11-26 14:24:01.926.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.341 (0.342) seconds
+Test Suite 'PhotosLensBlurRefinementWorkflowTests' started at 2026-11-26 14:24:01.926.
+Test Case '-[RAWMasterUITests.PhotosLensBlurRefinementWorkflowTests testFocusBlurBrushesResetUndoRedoAndPersistence]' started.
+Test Case '-[RAWMasterUITests.PhotosLensBlurRefinementWorkflowTests testFocusBlurBrushesResetUndoRedoAndPersistence]' passed (0.331 seconds).
+Test Suite 'PhotosLensBlurRefinementWorkflowTests' passed at 2026-11-26 14:24:02.258.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.331 (0.331) seconds
+Test Suite 'PhotosLensBlurWorkflowTests' started at 2026-11-26 14:24:02.258.
+Test Case '-[RAWMasterUITests.PhotosLensBlurWorkflowTests testLensBlurPersistsAndUndoRedo]' started.
+Test Case '-[RAWMasterUITests.PhotosLensBlurWorkflowTests testLensBlurPersistsAndUndoRedo]' passed (0.288 seconds).
+Test Suite 'PhotosLensBlurWorkflowTests' passed at 2026-11-26 14:24:02.546.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.288 (0.288) seconds
+Test Suite 'PhotosMaskWorkflowTests' started at 2026-11-26 14:24:02.546.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskCurvesPersistAndUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskCurvesPersistAndUndo]' passed (0.296 seconds).
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskLayerIsLivePersistentAndUndoable]' started.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskLayerIsLivePersistentAndUndoable]' passed (0.312 seconds).
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testVectorscopeRotatesStandardChromaAxesTogether]' started.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testVectorscopeRotatesStandardChromaAxesTogether]' passed (0.000 seconds).
+Test Suite 'PhotosMaskWorkflowTests' passed at 2026-11-26 14:24:03.154.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.608 (0.609) seconds
+Test Suite 'PhotosOpticsWorkflowTests' started at 2026-11-26 14:24:03.154.
+Test Case '-[RAWMasterUITests.PhotosOpticsWorkflowTests testRemoveCAAndDistortionPersistAndUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosOpticsWorkflowTests testRemoveCAAndDistortionPersistAndUndo]' passed (0.298 seconds).
+Test Suite 'PhotosOpticsWorkflowTests' passed at 2026-11-26 14:24:03.452.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.298 (0.298) seconds
+Test Suite 'PhotosWhiteBalancePresetTests' started at 2026-11-26 14:24:03.452.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAllSixPresetsWriteValidatedRawTempTintCommands]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAllSixPresetsWriteValidatedRawTempTintCommands]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAutomaticTemperatureTintCanBeUndoneReopenedAndExported]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAutomaticTemperatureTintCanBeUndoneReopenedAndExported]' passed (0.475 seconds).
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testNonRAWDoesNotAdmitCameraPresets]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testNonRAWDoesNotAdmitCameraPresets]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testUseOriginalPreservesSavedFineTuningWithoutApplyingIt]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testUseOriginalPreservesSavedFineTuningWithoutApplyingIt]' passed (0.000 seconds).
+Test Suite 'PhotosWhiteBalancePresetTests' passed at 2026-11-26 14:24:03.928.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.475 (0.476) seconds
+Test Suite 'RAWMasterUITests.xctest' passed at 2026-11-26 14:24:03.928.
+	 Executed 26 tests, with 0 failures (0 unexpected) in 19.436 (19.441) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:24:03.928.
+	 Executed 26 tests, with 0 failures (0 unexpected) in 19.436 (19.444) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:24:04.166.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' started at 2026-11-26 14:24:04.168.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' passed at 2026-11-26 14:24:04.168.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:24:04.168.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.003) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:24:04.303.
+Test Suite 'RAWMasterImagingTests.xctest' started at 2026-11-26 14:24:04.305.
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-26 14:24:04.305.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:24:04.305.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:24:04.446.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' started at 2026-11-26 14:24:04.448.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' passed at 2026-11-26 14:24:04.448.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:24:04.448.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:24:04.564.
+Test Suite 'RAWMasterCoreTests.xctest' started at 2026-11-26 14:24:04.566.
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-26 14:24:04.566.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:24:04.566.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:24:04.687.
+Test Suite 'RAWMasterAITests.xctest' started at 2026-11-26 14:24:04.689.
+Test Suite 'RAWMasterAITests.xctest' passed at 2026-11-26 14:24:04.689.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:24:04.689.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds

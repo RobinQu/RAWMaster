@@ -43,6 +43,9 @@ import RAWMasterLibrary
             framePresentationID: previews.comparison.framePresentationID) == true else { return nil }
         return previews.comparison.frame
     }
+    var comparisonCanvasFallback: EditingPreviewBitmap? {
+        comparisonAdmission == nil ? nil : previews.comparison.fitFallback
+    }
     var comparisonReferenceTitle: String {
         guard let version = comparison.reference.resolve(work: work, versions: versions) else { return "参考" }
         return comparison.reference == .original ? "原片" : version.editingTitle
@@ -92,9 +95,6 @@ import RAWMasterLibrary
     @Published var darkroomBackground: DarkroomBackground {
         didSet { defaults.set(darkroomBackground.rawValue, forKey: "editing.darkroomBackground") }
     }
-    /// Latch only the source-native detail request. Zoom presentation may change actualPixels
-    /// without asking for another full RAW render on every gesture event.
-    private var detailPreviewRequested = false
     @Published var cropEditing = false { willSet { if newValue { developmentPicker = nil; cancelDevelopmentLocalInput(clearTool: true); developmentDehazeInput.cancel() } } }
     private var developmentCropReturnPage: EditingDevelopmentPage = .adjust
     private var developmentCropEntryRecipe: DevelopmentRecipe?
@@ -299,6 +299,23 @@ import RAWMasterLibrary
     private var previewGestureID: UUID?
     private var lastPreviewAdjustmentInput: EditingPreviewInput?
     private var settledPreviewTask: Task<Void, Never>?
+    private struct CanvasSampling: Equatable {
+        let scale: CGFloat
+        let window: CGRect?
+        init?(_ snapshot: ImageCanvasViewportSnapshot) {
+            guard snapshot.transform.scale > 1 || snapshot.transform.physicalMagnification != nil,
+                  snapshot.imagePixelSize.width > 0,
+                  let visible = ImageViewportGeometry.visibleWindow(destination: snapshot.imageRect,
+                      bounds: CGRect(origin: .zero, size: snapshot.viewportSize)) else { return nil }
+            scale = min(1, snapshot.imageRect.width * snapshot.backingScale / snapshot.imagePixelSize.width)
+            let served = ImageViewportGeometry.quantized(ImageViewportGeometry.servedWindow(visible: visible, margin: 0.25), steps: 32)
+            window = served == CGRect(x: 0, y: 0, width: 1, height: 1) ? nil : served
+        }
+    }
+    private var canvasSampling: [PreviewConsumerRole: CanvasSampling] = [:]
+    private var canvasZooming = false
+    private var canvasZoomTask: Task<Void, Never>?
+    var canvasZoomContext: UUID { focusGeneration }
     /// Canvas window a 1:1 frame should cover. `nil` materializes the whole canvas.
     private(set) var detailWindow: CGRect?
     private var lastVisibleDetailWindow: CGRect?
@@ -481,7 +498,10 @@ import RAWMasterLibrary
         focusedAdmissionFingerprint = admissionFingerprint
         asset = newAsset; work = nil; versions = []; dispositions = [:]; selectedVersionID = nil
         preview = nil; previewDimensions = ""; comparison = .init(); comparisonAdmission = nil; message = nil; sourceReady = false
-        actualPixels = false; detailPreviewRequested = false; canvasCommand = .init(action: .fit)
+        _ = resetCanvasSampling()
+        detailWindowTask?.cancel(); detailWindowExpandTask?.cancel()
+        detailWindow = nil; lastVisibleDetailWindow = nil
+        actualPixels = false; canvasCommand = .init(action: .fit)
         sourceNeedsRevalidation = false; revalidatingSource = false
         recipe = .init(); savedRecipe = .init(); draftParentID = nil
         guard let newAsset else { loading = false; return }
@@ -744,26 +764,51 @@ import RAWMasterLibrary
         previewControls = []; previewInteracting = false; previewGestureID = nil; lastPreviewAdjustmentInput = nil
         requestPreview(input: input)
     }
-    func setActualPixels(_ value: Bool, nativeEvent: Bool = false, requestPreview: Bool = true) {
-        guard !shuttingDown, actualPixels != value, !(value && cropEditing && stage == .development) else { return }
-        actualPixels = value
-        if requestPreview {
-            detailPreviewRequested = value
-            previewContextChanged(input: .capture(control: "actualPixels", phase: "discrete", nativeEvent: nativeEvent))
+    func resetCanvasSampling() -> Bool {
+        canvasZoomTask?.cancel(); canvasZoomTask = nil
+        canvasZooming = false
+        let wasZoomed = !canvasSampling.isEmpty
+        canvasSampling.removeAll()
+        return wasZoomed
+    }
+    func updateCanvasSampling(_ snapshot: ImageCanvasViewportSnapshot, role: PreviewConsumerRole, zooming: Bool? = nil) {
+        guard !shuttingDown, !actualPixels, !cropEditing, developmentPicker == nil else { return }
+        let wasZooming = canvasZooming
+        if let zooming { canvasZooming = zooming }
+        let sample = CanvasSampling(snapshot)
+        let changed = canvasSampling[role] != sample
+        canvasSampling[role] = sample
+        guard changed || wasZooming != canvasZooming else { return }
+        if PreviewPerformancePreferences.isTurbo && canvasZooming {
+            if !wasZooming { requestPreview(input: .capture(control: "canvas-zoom", phase: "begin", nativeEvent: true)) }
+            return
+        }
+        if canvasZooming || (zooming == nil && !canvasSampling.isEmpty) {
+            guard canvasZoomTask == nil else { return }
+            canvasZoomTask = Task { @MainActor [weak self] in
+                do { try await Task.sleep(for: .milliseconds(55)) } catch { return }
+                guard let self, !Task.isCancelled else { return }
+                self.canvasZoomTask = nil
+                self.requestPreview(input: .capture(control: "canvas-zoom", phase: "update"))
+            }
+        } else {
+            canvasZoomTask?.cancel(); canvasZoomTask = nil
+            requestPreview(input: .capture(control: "canvas-zoom", phase: "end", nativeEvent: true))
         }
     }
-    func requestDetailPreview(nativeEvent: Bool = false) {
-        guard !shuttingDown, !detailPreviewRequested, !(cropEditing && stage == .development) else { return }
-        detailPreviewRequested = true
-        // Seed the window from the visible rect the canvas just published, so the first 1:1
-        // frame is already scoped instead of rendering the whole canvas and then re-rendering.
-        if detailWindow == nil, let visible = lastVisibleDetailWindow {
-            detailWindow = ImageViewportGeometry.quantized(
-                ImageViewportGeometry.servedWindow(visible: visible,
-                    margin: PreviewQualityPolicy.windowMargin(interacting: previewInteracting,
-                        turbo: PreviewPerformancePreferences.isTurbo)), steps: 32)
+    func setActualPixels(_ value: Bool, nativeEvent: Bool = false, requestPreview: Bool = true) {
+        guard !shuttingDown, actualPixels != value, !(value && cropEditing && stage == .development) else { return }
+        if value {
+            _ = resetCanvasSampling()
+            if let visible = lastVisibleDetailWindow {
+                detailWindow = ImageViewportGeometry.quantized(ImageViewportGeometry.servedWindow(visible: visible,
+                    margin: PreviewPerformancePreferences.settledWindowMargin), steps: 32)
+            }
         }
-        setActualPixels(true, nativeEvent: nativeEvent)
+        actualPixels = value
+        if requestPreview {
+            previewContextChanged(input: .capture(control: "actualPixels", phase: "discrete", nativeEvent: nativeEvent))
+        }
     }
     func resetRecipe(nativeEvent: Bool = false) {
         setRecipe(control: "reset.all", nativeEvent: nativeEvent) { recipe in
@@ -903,7 +948,6 @@ import RAWMasterLibrary
         }
         settledPreviewTask?.cancel(); settledPreviewTask = nil
         guard !shuttingDown, !developmentSavePreviewSuspended, let work else { return }
-        if !actualPixels { detailPreviewRequested = false }
         let input = input ?? .capture(control: "view", phase: "discrete")
         let editingDraft = stage == .development && sourceReady
         var currentRecipe = editingDraft ? recipe : (selectedVersion?.recipe ?? recipe)
@@ -917,22 +961,29 @@ import RAWMasterLibrary
         let overlayOnly = cropEditing && previewControls == ["crop"]
         // Turbo keeps a 1:1 gesture on the canvas-sized proxy and only renders native pixels once
         // the gesture ends, which is what makes dragging at 100% responsive.
-        let quality = PreviewQualityPolicy.quality(actualPixels: actualPixels, interacting: previewInteracting,
-            overlayOnly: overlayOnly, turbo: PreviewPerformancePreferences.isTurbo)
+        let turbo = PreviewPerformancePreferences.isTurbo
+        let usesCanvasSampling = !actualPixels && !cropEditing && developmentPicker == nil && !(turbo && canvasZooming)
+        let primarySample = usesCanvasSampling ? canvasSampling[.primary] : nil
+        let referenceSample = usesCanvasSampling
+            ? (comparisonMode.isSideBySide || comparisonMode == .referenceOnly ? canvasSampling[.comparison] : primarySample) : nil
+        let quality: PreviewQuality = primarySample != nil ? .detail : PreviewQualityPolicy.quality(
+            actualPixels: actualPixels, interacting: previewInteracting, overlayOnly: overlayOnly, turbo: turbo)
+        let window = primarySample?.window ?? (actualPixels && developmentPicker == nil ? detailWindow : nil)
 
         let presentationID = developmentPreviewPresentationID
-        let draftPresentation: EditingDraftPresentation? = editingDraft && !actualPixels && quality != .interactive && CaptureFileFormat.isRAW(work.source.sourceLocation.lastPathComponent)
+        let draftPresentation: EditingDraftPresentation? = editingDraft && !actualPixels && quality == .settled && CaptureFileFormat.isRAW(work.source.sourceLocation.lastPathComponent)
             ? .init(focusID: focusGeneration, workID: work.id, draftParentID: draftParentID, selectedVersionID: selectedVersionID,
                     cropOverlay: cropEditing, comparing: comparing, draftBranchID: developmentBranchID.rawValue,
                     draftBranchEpoch: developmentContext?.draftBranchEpoch) : nil
         do {
             if !editingDraft, let artifact = selectedVersion?.artifact {
                 let source = DevelopmentPreviewSource.artifact(fileURL: try archive.artifactURL(artifact), artifact: artifact)
-                previews.primary.submit(try .init(source: source, recipe: .init(), quality: quality, presentationID: presentationID), input: input)
+                previews.primary.submit(try .init(source: source, recipe: .init(), quality: quality, presentationID: presentationID,
+                    detailWindow: primarySample?.window, detailScale: primarySample?.scale), input: input)
             } else if sourceReady {
                 let intent = try EditingPreviewIntent(source: .raw(work.source), recipe: currentRecipe, quality: quality,
                     draftPresentation: draftPresentation, presentationID: presentationID,
-                    detailWindow: quality == .detail && developmentPicker == nil ? detailWindow : nil)
+                    detailWindow: window, detailScale: primarySample?.scale)
                 if !previews.primary.reuseForPresentation(intent, input: input) {
                     previews.primary.submit(intent, input: input,
                         duplicateReason: cropEditing && ["crop", "crop-number", "crop-aspect"].contains(input.control) ? "overlay-only" : nil,
@@ -953,7 +1004,8 @@ import RAWMasterLibrary
                 }
                 let baselinePresentation = "baseline:\(focusGeneration.uuidString):\(work.id):\(baseline.id)"
                 let intent = try EditingPreviewIntent(source: source, recipe: baselineRecipe,
-                    quality: actualPixels ? .detail : .settled, presentationID: baselinePresentation)
+                    quality: actualPixels || referenceSample != nil ? .detail : .settled, presentationID: baselinePresentation,
+                    detailWindow: referenceSample?.window, detailScale: referenceSample?.scale)
                 comparisonAdmission = .init(focusID: focusGeneration, workID: work.id, referenceID: baseline.id,
                     sourceKey: intent.sourceKey, presentationID: baselinePresentation)
                 previews.comparison.submit(intent, input: input)
@@ -3027,6 +3079,7 @@ import RAWMasterLibrary
             var masks = developmentSession.parameters.masks; masks.append(layer)
             try developmentSession.apply(.setMasks(masks), event: .init(context: context,
                 control: .init(group: nil, name: "新建" + kind.title), nativeInput: .capture(control: "mask.add", phase: "discrete", nativeEvent: true)))
+            selectDevelopmentScopeMask(layer.id)
         } catch { message = "未能新建蒙版，请重试。" }
     }
     func allowsDevelopmentMaskInput(_ context: EditingInteractionContext) -> Bool {

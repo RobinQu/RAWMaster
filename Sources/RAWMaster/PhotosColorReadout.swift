@@ -21,7 +21,15 @@ final class PhotosColorReadout: ObservableObject {
 
     func refresh(_ frame: EditingPreviewBitmap?) {
         guard let frame, let location, frame.leaseID == source, frame.nativeSize == nativeSize else { clear(); return }
-        let next = DevelopmentDisplayPixel.sample(frame.image, at: location)
+        let sample: DevelopmentSourcePoint
+        if let window = frame.window {
+            guard window.contains(CGPoint(x: location.x, y: location.y)) else {
+                if pixel != nil { pixel = nil }
+                return
+            }
+            sample = .init(x: (location.x - window.minX) / window.width, y: (location.y - window.minY) / window.height)
+        } else { sample = location }
+        let next = DevelopmentDisplayPixel.sample(frame.image, at: sample)
         if next != pixel { pixel = next }
     }
 

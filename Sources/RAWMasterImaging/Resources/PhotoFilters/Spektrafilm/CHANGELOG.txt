@@ -20,3 +20,15 @@ The upstream LUT mode uses fixed exposure and deterministic pointwise density an
 stages. Spatial grain, halation, diffusion, sharpening and global exposure metering are
 excluded. The bundled resources require no Python interpreter or upstream runtime.
 See provenance.json for the data sources, their checksums, parameters and tool versions.
+
+2026-11-26 — RAWMaster catalogue expansion
+Added six official model endpoints from the same unmodified upstream revision:
+Gold 200 / Ultra Endura, Portra 800 / Supra Endura, Ektar 100 / Portra Endura,
+Provia 100F direct scan, Ektachrome 100 direct scan, and Vision3 500T / 2383.
+These are official-model/default-parameter derivatives, not community-authored
+P800 Vintage, Clean, or Velveetia presets. All nine remain SDR colour/tone looks;
+extended-range residual preservation does not establish HDR rendering support.
+New endpoints use a constrained 64-cubed trilinear fit to the complete 127-cubed
+reference grid. Cube faces remain at their direct reference knots; the original
+three endpoints retain their existing direct64 payloads. Runtime interpolation,
+linear strength, alpha and signed-residual semantics are unchanged.

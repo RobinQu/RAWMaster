@@ -137,8 +137,8 @@ private struct EditingPerformanceSettings: View {
                 .pickerStyle(.segmented)
                 .accessibilityIdentifier("settings.performance.mode")
                 Text(mode == PreviewPerformanceMode.turbo.rawValue
-                     ? "极速：1:1 拖动时显示画布分辨率的过渡帧，停止后只渲染可见区域，再补齐平移余量；代理基图按半分辨率解码。导出、保存、缩略图与直方图始终使用原生像素。"
-                     : "均衡：每一帧都按算子图定义的完整质量渲染。适合检查细节或复现历史效果。")
+                     ? "极速：缩放中可暂用低分辨率预览；停止后按当前倍率从原图取样，不改变倍率。"
+                     : "均衡：缩放中按当前倍率请求原图细节；停止后的画质与极速相同。")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Section("预览") {

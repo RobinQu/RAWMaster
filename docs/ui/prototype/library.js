@@ -80,7 +80,7 @@ function histogram(id) {
   if (!channels) return '';
   return `<figure class="histogram" aria-label="示例 JPEG 的 RGB 直方图"><figcaption>直方图 <small>RGB</small></figcaption><svg viewBox="0 0 160 49" preserveAspectRatio="none" role="img" aria-label="红绿蓝三通道分布"><path d="M40 2v45m40-45v45m40-45v45" stroke="#455057" stroke-dasharray="2 3"/>${channels.map((points, i) => `<path d="M0 48 ${points.map((n, j) => `L${(j * 160) / (points.length - 1)} ${47 - n}`).join(' ')} L160 48Z" fill="${['#e68c7f', '#81bc98', '#79aeea'][i]}" opacity=".62" style="mix-blend-mode:screen"/>`).join('')}</svg></figure>`;
 }
-function filmstrip(ids, focus, act = 'photo') {
+function filmstrip(ids, focus) {
   const groups = [...Studio.catalog().groups].sort((a, b) => a.id.localeCompare(b.id));
   const preferred = Studio.scopeInfo(S.scope).group;
   if (preferred) groups.unshift(preferred);
@@ -98,12 +98,15 @@ function filmstrip(ids, focus, act = 'photo') {
   }
   const photo = (id) => {
     const asset = Studio.asset(id);
-    return `<button class="filmstrip-photo${id === focus ? ' chosen' : ''}" data-act="${act}" data-val="${h(id)}" aria-label="${h(asset.name)}${asset.online ? '' : '，离线'}" aria-pressed="${id === focus}">${pic(id)}<span>${h(asset.name)}</span></button>`;
+    return `<button class="filmstrip-photo${id === focus ? ' chosen' : ''}" data-act="photo" data-val="${h(id)}" aria-label="${h(asset.name)}${asset.online ? '' : '，离线'}" aria-pressed="${id === focus}">${pic(id)}<span>${h(asset.name)}</span></button>`;
   };
   return `<div class="filmstrip" aria-label="胶片带">${runs.map(({ group, ids }) => {
     if (!group) return ids.map(photo).join('');
     const open = !collapsed.has(group.id);
-    return `<div class="filmstrip-group">${btn(group.name + ' · ' + ids.length + ' 张', 'filmstrip-group', group.id, { icon: open ? 'down' : 'chevron', cls: 'filmstrip-label', expanded: open })}${open ? ids.map(photo).join('') : ''}</div>`;
+    return `<div class="filmstrip-group"><div class="filmstrip-heading">
+      <button type="button" class="filmstrip-toggle" data-act="filmstrip-group" data-val="${h(group.id)}" aria-expanded="${open}" aria-label="${h((open ? '收起' : '展开') + '拍摄组：' + group.name)}" title="${h(group.name)}">${icon(open ? 'down' : 'chevron')}<span class="filmstrip-name">${h(group.name)}</span></button>
+      <div class="filmstrip-meta"><span>${ids.length} 张</span>${btn('编辑拍摄组属性：' + group.name, 'manage-group', group.id, { icon: 'sliders', only: true, cls: 'filmstrip-settings' })}</div>
+    </div>${open ? ids.map(photo).join('') : ''}</div>`;
   }).join('')}</div>`;
 }
 actions['filmstrip-group'] = (id) => {
@@ -398,7 +401,7 @@ changes.colorLabel = (el) => {
 actions['selection-menu'] = () =>
   dialog(
     '选片操作',
-    `<div class="menu-list">${btn('清除决定', 'menu-decision', 'none')}${isTriage() ? btn('仅用于序列', 'menu-decision', 'sequence') : btn('标记为已审 / 未审', 'review-toggle') + btn('批量编辑标签…', 'tags') + btn('组织所选作品…', 'goto-close', 'tools/organization') + btn('新建拍摄组…', 'new-group') + btn('复制所选原文件…', 'original-review', 'selection') + btn('交付精选…', 'original-review', 'picks')}${btn('操作记录与撤销…', 'library-log')}</div>`,
+    `<div class="menu-list">${btn('清除决定', 'menu-decision', 'none')}${isTriage() ? btn('仅用于序列', 'menu-decision', 'sequence') : btn('标记为已审 / 未审', 'review-toggle') + btn('批量编辑标签…', 'tags') + btn('组织所选作品…', 'goto-close', 'tools/organization') + btn('新建拍摄组…', 'new-group') + btn('复制所选原文件…', 'original-review', 'selection') + btn('交付精选…', 'original-review', 'picks') + btn('批量工作流…', 'dag-batch-menu', '', { icon:'layers', disabled:activeIDs().filter(validWork).length<2, title:activeIDs().filter(validWork).length<2?'批量工作流：请至少选中两张照片':'批量工作流…' }) + (Studio.data.dagBatches?.length ? btn('最近工作流批次与撤销…', 'dag-batch-results', Studio.data.dagBatches.at(-1).id, { icon:'clock' }) : '')}${btn('操作记录与撤销…', 'library-log')}</div>`,
   );
 actions['goto-close'] = (v) => {
   closeSheet();

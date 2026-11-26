@@ -10,14 +10,14 @@ struct PhotosPointColorControls: View {
     private var samples: [DevelopmentPointColorSampleV3] { session.parameters.selectiveColor.pointColors ?? [] }
     private var selected: DevelopmentPointColorSampleV3? { samples.first(where:{$0.id==selectedID}) ?? samples.last }
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
+        VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
             HStack {
                 Text("独立 Point Color").font(.caption.weight(.semibold))
                 Spacer()
                 Button("添加色样", action: onAdd).disabled(samples.count>=8)
                     .accessibilityIdentifier("photos.pointColor.add")
             }
-            if samples.isEmpty { Text("从照片建立独立颜色样本，不占用固定 HSL 色域。").font(.caption2).foregroundStyle(.secondary) }
+            if samples.isEmpty { Text("从照片建立独立颜色样本，不占用固定 HSL 色域。").photosInspectorParagraph().foregroundStyle(.secondary) }
             HStack(spacing: 8) {
                 ForEach(samples) { sample in
                     Button { selectedID=sample.id } label: {
@@ -27,6 +27,7 @@ struct PhotosPointColorControls: View {
                 }
             }
             if let sample=selected {
+                VStack(spacing: PhotosControlLayout.spacing) {
                 row("色相", value: sample.hue, range: -60...60, path: \.hue)
                 row("饱和度", value: sample.saturation, range: -100...100, path: \.saturation)
                 row("明度", value: sample.luminance, range: -70...70, path: \.luminance)
@@ -35,6 +36,7 @@ struct PhotosPointColorControls: View {
                     name: "差异", value: sample.variance ?? 0, range: -100...100, command: { value in
                         try update(sample.id){$0.variance=value}
                     }, onError: onError)
+                }
                 Button("删除当前色样") { remove(sample.id) }.buttonStyle(.borderless).font(.caption)
                     .accessibilityIdentifier("photos.pointColor.remove")
             }

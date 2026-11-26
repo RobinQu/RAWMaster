@@ -156,19 +156,18 @@ struct EditingPreviewIntent: Sendable, Equatable {
     let draftPresentation: EditingDraftPresentation?
     let presentationID: String
     var isRaw: Bool { if case .raw = source { return true }; return false }
-    /// Visible canvas window for a 1:1 frame. `nil` materializes the whole canvas.
-    let detailWindow: CGRect?
-    var viewport: PreviewViewport { .init(maxPixel: quality == .detail ? 0 : 2400,
-                                         window: quality == .detail ? detailWindow : nil) }
-    init(source: DevelopmentPreviewSource, recipe: DevelopmentRecipe, quality: PreviewQuality, draftPresentation: EditingDraftPresentation? = nil, presentationID: String = "fixed", detailWindow: CGRect? = nil) throws {
-        self.detailWindow = detailWindow
+    let viewport: PreviewViewport
+    init(source: DevelopmentPreviewSource, recipe: DevelopmentRecipe, quality: PreviewQuality, draftPresentation: EditingDraftPresentation? = nil, presentationID: String = "fixed", detailWindow: CGRect? = nil, detailScale: CGFloat? = nil) throws {
+        viewport = .init(maxPixel: quality == .detail ? 0 : 2400,
+                         window: quality == .detail ? detailWindow : nil,
+                         detailScale: quality == .detail ? detailScale : nil)
         self.source = source; self.recipe = recipe; self.quality = quality; self.draftPresentation = draftPresentation; self.presentationID = presentationID
         switch source {
         case .raw(let snapshot): sourceKey = "raw:" + (try EditingFingerprint.of(snapshot))
         case .artifact(let url, let artifact): sourceKey = "artifact:" + url.path + ":" + (try EditingFingerprint.of(artifact))
         }
     }
-    static func == (lhs: Self, rhs: Self) -> Bool { lhs.sourceKey == rhs.sourceKey && lhs.recipe == rhs.recipe && lhs.quality == rhs.quality && lhs.draftPresentation == rhs.draftPresentation && lhs.presentationID == rhs.presentationID && lhs.detailWindow == rhs.detailWindow }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.sourceKey == rhs.sourceKey && lhs.recipe == rhs.recipe && lhs.quality == rhs.quality && lhs.draftPresentation == rhs.draftPresentation && lhs.presentationID == rhs.presentationID && lhs.viewport == rhs.viewport }
 }
 /// QA-only scheduling change. The existing canonical capability still decides the image domain.
 enum EditingPreviewPromptDispatch {
@@ -200,6 +199,7 @@ enum EditingPreviewPromptDispatch {
 /// One pane owns a serial lifecycle driver, one resource child, and either a strict waiter or a channel reader.
 @MainActor final class EditingPreviewPane: ObservableObject {
     @Published private(set) var frame: EditingPreviewBitmap?
+    private(set) var fitFallback: EditingPreviewBitmap?
     @Published private(set) var rendering = false
     @Published private(set) var error: String?
     @Published private(set) var sourceInvalidated = false
@@ -497,6 +497,12 @@ enum EditingPreviewPromptDispatch {
             channel?.noteActivity()
             diagnoseNoRender(input, quality: next.quality, outcome: duplicateReason ?? "deduplicated", reason: "unchanged-pixels"); return
         }
+        if let previous = desired?.intent,
+           previous.sourceKey != next.sourceKey || previous.presentationID != next.presentationID ||
+           previous.recipe.crop != next.recipe.crop || previous.recipe.straightenDegrees != next.recipe.straightenDegrees ||
+           previous.recipe.adjustmentsV3?.geometry != next.recipe.adjustmentsV3?.geometry {
+            fitFallback = nil
+        }
         let changedFence = desired.map { Fence($0.intent) != Fence(next) } ?? true
         if changedFence {
             publicationEpoch &+= 1; resourceChild?.cancel()
@@ -507,7 +513,7 @@ enum EditingPreviewPromptDispatch {
         revision &+= 1
         desired = Desired(intent: next, input: input, revision: revision, epoch: publicationEpoch)
         suspendedAfterRevalidation = false; blockedAfterError = false
-        if frame?.quality == .detail && next.quality != .detail { clearFrame() }
+        if frame?.quality == .detail && next.quality != .detail { clearFrame(keepingFitFallback: true) }
         rendering = true; error = nil; onChange?()
         if usesProgress(next), let channel, channelEpoch == publicationEpoch, channelFence == Fence(next), let lease {
             submitToChannel(channel, lease: lease, target: desired!)
@@ -744,6 +750,7 @@ enum EditingPreviewPromptDispatch {
     }
     private func publish(_ output: EditingPreviewBitmap, request: DevelopmentPreviewRequest, input: EditingPreviewInput?, epoch: UInt64,
                          token: PreviewSubmissionID?, channel: PreviewProgressChannelID?) {
+        if output.quality != .detail, output.window == nil { fitFallback = output }
         frame = output; frameRecipe = request.recipe; framePresentationID = desired?.intent.presentationID
         frameSourceKey = desired?.intent.sourceKey; frameInput = input; frameDrawn = false
         displayedEpoch = epoch; displayedRevision = request.revision; displayedToken = token; displayedChannel = channel
@@ -869,7 +876,8 @@ enum EditingPreviewPromptDispatch {
         await retireRenderer()
         if let old = lease { lease = nil; boundSourceKey = nil; await backend.close(old.id) }
     }
-    private func clearFrame() {
+    private func clearFrame(keepingFitFallback: Bool = false) {
+        if !keepingFitFallback { fitFallback = nil }
         frame = nil; frameRecipe = nil; framePresentationID = nil; frameSourceKey = nil; frameInput = nil
         displayedToken = nil; displayedChannel = nil; displayedRevision = 0; displayedEpoch = 0
     }

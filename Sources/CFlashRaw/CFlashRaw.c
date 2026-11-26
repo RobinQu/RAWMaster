@@ -207,6 +207,77 @@ rm_flashraw_frame_info rm_flashraw_frame_get_info(rm_flashraw_frame *frame) {
     return info;
 }
 
+int rm_flashraw_scene_dimensions(const rm_flashraw_context *context, uint32_t *width, uint32_t *height) {
+    if (!context || !width || !height) return 0;
+    __typeof__(&flashraw_file_format_name) format = symbol(context->library, "flashraw_file_format_name");
+    __typeof__(&flashraw_file_raw_width) raw_width = symbol(context->library, "flashraw_file_raw_width");
+    __typeof__(&flashraw_file_raw_height) raw_height = symbol(context->library, "flashraw_file_raw_height");
+    if (!format || !raw_width || !raw_height) return 0;
+    const char *name = format(context->file);
+    if (!name || strcmp(name, "ARW") != 0) return 0;
+    *width = raw_width(context->file);
+    *height = raw_height(context->file);
+    return *width > 0 && *height > 0;
+}
+
+int rm_flashraw_frame_scene_bayer(rm_flashraw_frame *frame, rm_flashraw_scene_bayer *out) {
+    if (!frame || !out) return 0;
+    rm_flashraw_context *c = frame->context;
+    flashraw_frame *f = frame->handle;
+    if (c->file_sensor_layout(c->file) != FLASHRAW_LAYOUT_BAYER ||
+        c->frame_output_format(f) != FLASHRAW_OUTPUT_RAW_U16 || c->frame_sample_type(f) != FLASHRAW_SAMPLE_U16 ||
+        c->frame_cpp(f) != 1 || c->frame_source(f) != FLASHRAW_SOURCE_SENSOR || c->frame_incomplete(f)) return 0;
+
+    /* A decoder without these metadata functions still works for existing SDR paths. */
+#define SCENE_LOAD(name) __typeof__(&flashraw_##name) name = symbol(c->library, "flashraw_" #name); if (!name) return 0
+    SCENE_LOAD(file_active_area);
+    SCENE_LOAD(file_crop);
+    SCENE_LOAD(file_color_source);
+    SCENE_LOAD(frame_cfa);
+    SCENE_LOAD(frame_black_level);
+    SCENE_LOAD(frame_white_level);
+    SCENE_LOAD(frame_white_balance);
+    SCENE_LOAD(frame_white_balance_applied);
+    SCENE_LOAD(frame_color_matrix_count);
+    SCENE_LOAD(frame_color_matrix);
+#undef SCENE_LOAD
+
+    uint32_t x, y, width, height;
+    flashraw_rect active, crop;
+    flashraw_cfa cfa;
+    flashraw_color_matrix matrix;
+    flashraw_black_level black_info;
+    float black_levels[4];
+    float white_balance[4];
+    uint32_t white_level;
+    if (c->frame_origin(f, &x, &y) != FLASHRAW_OK || x != 0 || y != 0 ||
+        !rm_flashraw_scene_dimensions(c, &width, &height) || c->frame_width(f) != width || c->frame_height(f) != height ||
+        file_active_area(c->file, &active) != FLASHRAW_OK || file_crop(c->file, &crop) != FLASHRAW_OK ||
+        file_color_source(c->file) != FLASHRAW_COLOR_SOURCE_CAMERA_DB ||
+        frame_color_matrix_count(f, FLASHRAW_MATRIX_COLOR) != 1 || frame_color_matrix_count(f, FLASHRAW_MATRIX_FORWARD) != 0 ||
+        frame_color_matrix_count(f, FLASHRAW_MATRIX_CALIBRATION) != 0 ||
+        frame_color_matrix(f, FLASHRAW_MATRIX_COLOR, 0, &matrix) != FLASHRAW_OK || matrix.rows != 3 || matrix.cols != 3 || matrix.illuminant != 21 ||
+        !frame_cfa(f, &cfa) || cfa.width != 2 || cfa.height != 2 ||
+        !frame_white_balance(f, white_balance) || frame_white_balance_applied(f) ||
+        frame_white_level(f, &white_level, 1) != 1) return 0;
+    size_t nblack = frame_black_level(f, &black_info, black_levels, 4);
+    if (nblack == 0 || nblack > 4 || black_info.has_deltas || black_info.samples != 1 ||
+        (black_info.rows != 1 && black_info.rows != 2) || (black_info.cols != 1 && black_info.cols != 2) ||
+        nblack != black_info.rows * black_info.cols) return 0;
+
+    rm_flashraw_scene_bayer result = {.active = {active.x, active.y, active.width, active.height},
+                                    .crop = {crop.x, crop.y, crop.width, crop.height}};
+    for (size_t i = 0; i < 4; ++i) {
+        result.colors[i] = cfa.colors[i];
+        result.black[i] = black_levels[((i / 2) % black_info.rows) * black_info.cols + ((i % 2) % black_info.cols)];
+        result.white[i] = (float)white_level;
+        result.white_balance[i] = white_balance[i];
+    }
+    memcpy(result.xyz_to_camera, matrix.values, sizeof(result.xyz_to_camera));
+    *out = result;
+    return 1;
+}
+
 const void *rm_flashraw_frame_data(rm_flashraw_frame *frame, size_t *byte_count) {
     if (byte_count) *byte_count = 0;
     if (!frame) return NULL;

@@ -98,10 +98,11 @@ struct DevelopmentNumberField: View {
     let range: ClosedRange<Double>
     var fractionDigits = 1
     var disabled = false
+    var integrated = false
     @State private var invalid = false
     var body: some View {
         DevelopmentNumberInput(title: title, value: $value, range: range, fractionDigits: fractionDigits,
-            disabled: disabled, invalidChanged: { invalid = $0 })
+            disabled: disabled, integrated: integrated, invalidChanged: { invalid = $0 })
             .disabled(disabled).accessibilityLabel(title)
             .help((invalid ? "请输入 \(format(range.lowerBound)) 至 \(format(range.upperBound)) 的有限数值。" : title + "；") + DevelopmentNumericText.guidance)
             .overlay(RoundedRectangle(cornerRadius: 5).stroke(invalid ? Color.red : .clear))
@@ -199,7 +200,7 @@ struct DevelopmentBasicAdjustments: View {
             DevelopmentParameterRow(title: "曝光 EV", control: "exposure", value: Binding(get: { editing.recipe.exposureEV }, set: { value in editing.setRecipe(control: "exposure", nativeEvent: true) { $0.exposureEV = value } }), range: -5...5, step: 0.05, fractionDigits: 2) { editing.previewInteractionChanged("exposure", active: $0, nativeEvent: true) }
             Toggle("使用拍摄白平衡", isOn: Binding(get: { editing.recipe.whiteBalance == .asShot }, set: { value in
                 editing.setRecipe(control: "whiteBalance.mode", nativeEvent: true) { $0.whiteBalance = value ? .asShot : .temperatureTint(temperature: 6500, tint: 0) }
-            })).toggleStyle(.checkbox).accessibilityIdentifier("editing.whiteBalance.asShot")
+            })).toggleStyle(PhotosFlatCheckboxStyle()).accessibilityIdentifier("editing.whiteBalance.asShot")
             if case let .temperatureTint(temperature, tint) = editing.recipe.whiteBalance {
                 DevelopmentParameterRow(title: "色温 K", control: "whiteBalance.temperature", value: Binding(get: { temperature }, set: { value in
                     editing.setRecipe(control: "whiteBalance.temperature", nativeEvent: true) { $0.whiteBalance = .temperatureTint(temperature: value, tint: tint) }

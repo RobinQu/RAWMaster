@@ -103,7 +103,7 @@ enum PreviewRawBaseRenderer {
     return payload.legacyBasis?.version == .v2 && payload.legacyBasis?.color?.isNeutral == false
   }
   static func renderV3(capture: URL, sourceKey: String, recipe: DevelopmentRecipe, maxPixel: Int,
-                       pool: PreviewRawBasePool, memoryHint: Int, captureStamp: PreviewFileStamp,
+                       window: CGRect? = nil, detailScale: CGFloat? = nil, pool: PreviewRawBasePool, memoryHint: Int, captureStamp: PreviewFileStamp,
                        decoderIdentity: String, decoderDefaultsFingerprint: String,
                        noiseDefaults: DevelopmentRAWNoiseReductionDefaultsV3,
                        thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
@@ -155,7 +155,8 @@ enum PreviewRawBaseRenderer {
         let graph = try DevelopmentRendererV3.develop(capture,recipe:recipe,suppliedRawBase:pin.image,context:context,
           thumbnailNativeSink:thumbnailNativeSink,localSourceValidation:localSourceValidation)
         try pool.checkpoint("v3-finite-joined")
-        let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,grainFinalTransport:grainFinalTransport)
+        let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,window:window,
+          detailScale:detailScale,grainFinalTransport:grainFinalTransport)
         try pool.checkpoint("v3-owned-display-joined")
         return result
       }

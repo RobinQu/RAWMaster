@@ -9,9 +9,9 @@ struct PhotosMaskGradingEditor:View{
   @State private var region:DevelopmentGradingRegion = .shadows
   private var wheel:DevelopmentGradingWheel{grading[keyPath:region.path]}
   var body:some View{
-    VStack(alignment:.leading,spacing:8){
-      Picker("局部分级区域",selection:$region){ForEach(DevelopmentGradingRegion.allCases){Text($0.rawValue).tag($0)}}
-        .pickerStyle(.segmented).accessibilityIdentifier("photos.mask.grading.region")
+    VStack(alignment:.leading,spacing:PhotosControlLayout.groupSpacing){
+      PhotosFlatTabs(title: "局部分级区域", selection: $region, options: DevelopmentGradingRegion.allCases, label: \.rawValue)
+        .accessibilityIdentifier("photos.mask.grading.region")
       PhotosMaskGradingWheel(wheel:wheel,region:region,onChange:updateWheel)
         .frame(height:160).accessibilityIdentifier("photos.mask.grading.wheel")
       HStack{
@@ -19,11 +19,13 @@ struct PhotosMaskGradingEditor:View{
           .frame(width:34,height:22).overlay(RoundedRectangle(cornerRadius:4).stroke(Color.secondary.opacity(0.3)))
         Button("复位此区域"){updateWheel(.init())}.buttonStyle(.borderless).font(.caption)
       }
+      VStack(spacing:PhotosControlLayout.spacing){
       component("色相 °",path:\.hueDegrees,range:0...360)
       component("饱和度",path:\.saturation,range:0...100)
       component("亮度",path:\.luminance,range:-100...100)
       mix("混合",value:grading.blending,range:0...100,balance:false)
       mix("平衡",value:grading.balance,range:-100...100,balance:true)
+      }
     }
   }
   private func updateWheel(_ value:DevelopmentGradingWheel){var next=grading;next[keyPath:region.path]=value;write(next)}

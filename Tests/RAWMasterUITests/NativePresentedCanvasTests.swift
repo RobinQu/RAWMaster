@@ -128,6 +128,94 @@ final class NativePresentedCanvasTests: XCTestCase {
         return (mapping, read)
     }
 
+    @MainActor func testOptInRealRAWFreeZoomKeepsMagnificationAndSamplesAtTheViewport() async throws {
+        guard let path = ProcessInfo.processInfo.environment["RAWMASTER_PRESENTED_CANVAS_SOURCE"] else {
+            throw XCTSkip("Set RAWMASTER_PRESENTED_CANVAS_SOURCE to a RAW fixture")
+        }
+        _ = NSApplication.shared
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: false)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = root.appendingPathComponent("fixture.sqlite")
+        let asset = try Self.register(source: URL(fileURLWithPath: path), library: library)
+        let name = "ZoomCanvas-" + UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
+        let restoreMode = PreviewPerformancePreferences.mode
+        defer { defaults.removePersistentDomain(forName: name); PreviewPerformancePreferences.mode = restoreMode }
+        let model = AppModel(libraryURL: library, defaults: defaults)
+        let editing = try XCTUnwrap(model.editing)
+        let rect = CGRect(x: 0, y: 0, width: 1280, height: 700)
+        let window = NSPanel(contentRect: rect, styleMask: [.borderless, .nonactivatingPanel], backing: .buffered, defer: false)
+        window.isReleasedWhenClosed = false
+        let host = NSHostingView(rootView: EditingImageCanvas(editing: editing).environmentObject(model))
+        window.contentView = host
+        window.setFrame(rect, display: false)
+        defer { window.contentView = nil; window.close() }
+        let drawing = try XCTUnwrap(CGContext(data: nil, width: 1280, height: 700, bitsPerComponent: 8,
+            bytesPerRow: 1280 * 4, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        func drawCanvas() {
+            host.layoutSubtreeIfNeeded()
+            guard let canvas = findCanvas(host) else { return }
+            NSGraphicsContext.saveGraphicsState()
+            defer { NSGraphicsContext.restoreGraphicsState() }
+            NSGraphicsContext.current = NSGraphicsContext(cgContext: drawing, flipped: true)
+            canvas.draw(canvas.bounds)
+        }
+        do {
+            editing.isPresented = true
+            editing.focus(asset)
+            try await waitFor("initial RAW frame") { editing.previews.primary.frame != nil || editing.previews.primary.error != nil }
+            XCTAssertNil(editing.previews.primary.error)
+            _ = try XCTUnwrap(editing.previews.primary.frame)
+            editing.beginDevelopmentInterface()
+            try await waitFor("development context") { editing.developmentContext != nil }
+            try await waitFor("current RAW frame") {
+                drawCanvas()
+                return editing.previews.primary.currentFrameWasDrawn
+            }
+            let canvas = try XCTUnwrap(findCanvas(host))
+            let anchor = CGPoint(x: canvas.bounds.midX + 100, y: canvas.bounds.midY + 30)
+            var balancedRaster: Data?
+            for mode in PreviewPerformanceMode.allCases {
+                PreviewPerformancePreferences.mode = mode
+                let start = canvas.viewportSnapshot
+                let fitDensity = start.imageRect.width * start.backingScale / start.imagePixelSize.width
+                canvas.handleZoom(factor: 1, at: anchor, phase: .began)
+                canvas.handleZoom(factor: 0.65 / fitDensity, at: anchor, phase: .changed)
+                let stopped = canvas.viewportSnapshot
+                XCTAssertFalse(editing.actualPixels)
+                if mode == .turbo {
+                    XCTAssertNotEqual(editing.previews.primary.frame?.quality, .detail)
+                } else {
+                    try await waitFor("balanced requests details during zoom") { editing.previews.primary.frame?.quality == .detail }
+                }
+                canvas.handleZoom(factor: 1, at: anchor, phase: .ended)
+                try await waitFor("stable detail at \(mode)") {
+                    drawCanvas()
+                    return editing.previews.primary.currentFrameWasDrawn && editing.previews.primary.frame?.quality == .detail
+                }
+                let frame = try XCTUnwrap(editing.previews.primary.frame)
+                let landed = canvas.viewportSnapshot
+                XCTAssertEqual(landed.transform, stopped.transform)
+                XCTAssertEqual(landed.imageRect, stopped.imageRect)
+                XCTAssertEqual(landed.imageRect.width * landed.backingScale / frame.nativeSize.width, 0.65, accuracy: 0.0001)
+                XCTAssertFalse(frame.approximate)
+                let region = frame.window?.size ?? CGSize(width: 1, height: 1)
+                XCTAssertEqual(frame.outputSize.width, frame.nativeSize.width * 0.65 * region.width, accuracy: 1)
+                XCTAssertEqual(frame.outputSize.height, frame.nativeSize.height * 0.65 * region.height, accuracy: 1)
+                let raster = try XCTUnwrap(frame.image.tiffRepresentation)
+                if mode == .balanced { balancedRaster = raster } else { XCTAssertEqual(raster, balancedRaster) }
+                print("Zoom \(mode.rawValue): \(frame.nativeSize) → \(frame.outputSize) visible at 65%, window \(String(describing: frame.window))")
+                editing.requestCanvasCommand(.fit)
+                try await waitFor("return to FIT") {
+                    drawCanvas()
+                    return canvas.viewportSnapshot.transform == .init() && editing.previews.primary.frame?.quality == .settled
+                }
+            }
+            await editing.shutdown()
+        } catch { await editing.shutdown(); throw error }
+    }
+
     @MainActor func testOptInRealRAWPresentedCanvas() async throws {
         let env = ProcessInfo.processInfo.environment
         guard let folder = env["RAWMASTER_PRESENTED_CANVAS_JOB"], let path = env["RAWMASTER_PRESENTED_CANVAS_SOURCE"] else {

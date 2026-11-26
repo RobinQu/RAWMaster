@@ -96,6 +96,10 @@ import RAWMasterCore
         defer { window.orderOut(nil); window.contentView = nil; window.close() }
         window.orderBack(nil)
         host.layoutSubtreeIfNeeded(); window.displayIfNeeded()
+        try await eventually("The new-mask entry must be reachable in the window") {
+            self.element("photos.mask.create", in: window) != nil
+        }
+        try press("photos.mask.create", in: window)
         try await eventually("Preset search and mask tools must be reachable in the window") {
             ["editing.presets.search", "editing.presets.create", "photos.mask.subject", "photos.mask.brush"].allSatisfy {
                 self.element($0, in: window) != nil
@@ -184,6 +188,10 @@ import RAWMasterCore
             catch { if Task.isCancelled { cancelled.fulfill() }; throw error }
         })
         mount(editing, first.context)
+        try await eventually("The new-mask entry must be reachable in the window") {
+            self.element("photos.mask.create", in: window) != nil
+        }
+        try press("photos.mask.create", in: window)
         try await eventually("The text directory and the right-hand masks appear together") {
             self.element("editing.presets.search", in: window) != nil && self.element("editing.presets.folder.classic", in: window) != nil
                 && self.element("photos.mask.subject", in: window) != nil

@@ -32,9 +32,11 @@ const glyphs = {
   chevron: 'm9 5 7 7-7 7',
   down: 'm5 9 7 7 7-7',
   close: 'm5 5 14 14m0-14L5 19',
+  sampler: 'm15 3 6 6-3 3-6-6Zm-2 5L4 17l-1 4 4-1 9-9M11 6l7 7',
   tag: 'M3 3h8l10 10-8 8L3 11z M7 7h.5',
   pin: 'M12 22s8-8 8-14a8 8 0 0 0-16 0c0 6 8 14 8 14z M12 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z',
   layers: 'M4 4h13v12H4z M8 20h13V8',
+  bypass: 'M8 8h8v8H8z M2 12h6m8 0h6 M3 7V4h18v3m-3-3 3 3 3-3',
   plus: 'M12 4v16M4 12h16',
   undo: 'M8 5 3 10l5 5m-4-5h10a6 6 0 0 1 0 12',
   check: 'm4 12 5 5L20 6',
@@ -43,6 +45,7 @@ const glyphs = {
   film: 'M3 4h18v16H3z M7 4v16m10-16v16M3 8h4m-4 7h4m10-7h4m-4 7h4',
   camera: 'M3 7h4l2-3h6l2 3h4v13H3z M12 10a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z',
   menu: 'M3 6h18M3 12h18M3 18h18',
+  ellipsis: 'M5 11a1 1 0 1 0 0 2a1 1 0 1 0 0-2 M12 11a1 1 0 1 0 0 2a1 1 0 1 0 0-2 M19 11a1 1 0 1 0 0 2a1 1 0 1 0 0-2',
   disk: 'M5 5h14l3 11v3H2v-3z M3 15h18 M16 17h2',
   book: 'M3 4h7l2 2 2-2h7v15h-7l-2 2-2-2H3z M12 6v15',
   minus: 'M5 12h14',
@@ -62,6 +65,19 @@ const glyphs = {
   zoomIn: 'M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M15 15l6 6M7 10h6m-3-3v6',
   zoomOut: 'M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14z M15 15l6 6M7 10h6',
   eye: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z',
+  eyeOff: 'M3 3l18 18 M9 5c6-2 13 7 13 7l-3 4 M6 6l-4 6s6 9 14 6 M10 10l4 4',
+  subject: 'M12 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6z M6 21v-4a6 6 0 0 1 12 0v4 M3 3v4m-2-2h4',
+  maskBackground: 'M3 3h18v18H3z M12 6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z M8 19v-4a4 4 0 0 1 8 0v4 M3 9l4-4m-4 9 4-4m10 0 4-4m-4 12 4-4',
+  instance: 'M3 8V3h5m8 0h5v5m0 8v5h-5m-8 0H3v-5 M8 8h8v8H8z M11 5h8v8',
+  brush: 'M9 14 18 3l3 3-11 10 M9 14c-5-2-5 5-7 6 7 1 10-2 7-6z',
+  linearMask: 'M3 3h18v18H3z M3 9h18m-18 6h18 M7 3v6m5-6v6m5-6v6 M7 9v6m10-6v6',
+  radialMask: 'M12 4a10 8 0 1 0 0 16 10 8 0 1 0 0-16z M12 8a5 4 0 1 0 0 8 5 4 0 1 0 0-8z M12 11v2m-1-1h2',
+  rangeMask: 'M3 7h18v10H3z M7 7v10m4-10v10m4-10v10m4-10v10 M5 3v4m14-4v4M5 17v4m14-4v4',
+  overlay: 'M3 3h14v14H3z M7 21h14V7 M3 9l6-6m-6 12L15 3m-6 14 8-8',
+  invert: 'M12 3a9 9 0 1 0 0 18 9 9 0 1 0 0-18z M12 3v18 M12 7l4-3m-4 8 7-4m-7 9 8-4',
+  trash: 'M3 6h18 M9 6V3h6v3 M6 6v15h12V6 M10 10v7m4-7v7',
+  arrowUp: 'M12 20V4m-6 6 6-6 6 6',
+  arrowDown: 'M12 4v16m-6-6 6 6 6-6',
 };
 function icon(name, size = 17) {
   return `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${glyphs[name] || glyphs.photo}"/></svg>`;
@@ -82,8 +98,8 @@ function select(label, name, items, current) {
 function field(label, name, value = '', type = 'text') {
   return `<label class="field"><span>${h(label)}</span><input name="${h(name)}" type="${type}" value="${h(value)}" autocomplete="off"></label>`;
 }
-function check(label, name, checked = false) {
-  return `<label class="check"><input type="checkbox" name="${h(name)}" ${checked ? 'checked' : ''}>${h(label)}</label>`;
+function check(label, name, checked = false, opts = {}) {
+  return `<label class="check"><input type="checkbox" name="${h(name)}" ${checked ? 'checked' : ''}${opts.disabled ? ' disabled' : ''}${opts.key ? ` data-key="${h(opts.key)}"` : ''}>${h(label)}</label>`;
 }
 function fact(label, value) {
   return `<div class="fact"><dt>${h(label)}</dt><dd>${h(value)}</dd></div>`;
@@ -131,6 +147,7 @@ const sheet = $('#sheet');
 let sheetOpener;
 function dialog(title, body, footer = '') {
   delete sheet.dataset.job;
+  delete sheet.dataset.dagBatch;
   if (!sheet.open) sheetOpener = document.activeElement;
   $('#sheet-content').innerHTML =
     `<div class="dialog-head"><h2 id="sheet-title">${h(title)}</h2>${btn('关闭', 'close', '', { icon: 'close', only: true, cls: 'icon-btn' })}</div><div class="dialog-body">${body}</div>${footer ? `<div class="dialog-foot">${footer}</div>` : ''}`;
@@ -165,6 +182,7 @@ function mutate(label, fn) {
   notify(label);
 }
 function withPhoto(id) {
+  dagLeavePhoto();
   quickExitCanvas();
   S.quickView = null;
   S.quickResume = null;
@@ -173,6 +191,8 @@ function withPhoto(id) {
   S.zoom = false;
   S.compare = false;
   S.selectedLayer = 0;
+  S.canvasSelection = null;
+  S.wbMode = null;
   S.versionView = null;
   S.reference = 'original';
   S.editZoom = 1;
@@ -198,6 +218,7 @@ function openEditor(id) {
   go('edit/development');
 }
 function route() {
+  if (S.canvasTool) { S.canvasTool = null; S.cropOpen = false; S.canvasSelection = null; notify('已取消未提交的画布草案'); }
   quickExitCanvas();
   S.quickView = null;
   const raw = decodeURI(location.hash.slice(1)) || 'library/project/river';
@@ -211,7 +232,9 @@ function route() {
     Studio.save();
   }
   if (S.page === 'edit') {
-    S.tool = Object.hasOwn(editTools, S.sub) || ['agent', 'versions'].includes(S.sub) ? S.sub : 'smart';
+    S.tool = S.sub === 'dag' ? 'basic' : Object.hasOwn(editTools, S.sub) || ['agent', 'versions'].includes(S.sub) ? S.sub : 'smart';
+    if (S.sub === 'dag') { S.graphOpen = true; dagEnsure(); dagView().mode = 'graph'; }
+    if (['masks','repair'].includes(S.tool)) { S.canvasRouteTool = S.tool === 'masks' ? 'mask' : 'remove'; S.tool = 'basic'; }
     S.editReturn = 'edit/' + (S.sub || 'development');
     S.canvasMenu = '';
     if (S.tool === 'versions') S.cropOpen = false;

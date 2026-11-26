@@ -40,7 +40,8 @@ struct PhotosSharpeningControls: View {
     let onError: (Error) -> Void
     var onMaskingInteraction: ((Bool) -> Void)? = nil
     var body: some View {
-        VStack(spacing: 9) {
+        VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+            VStack(spacing: PhotosControlLayout.spacing) {
             PhotosScalarAdjustmentControls(session: session, context: context, group: .sharpen, onError: onError)
             ForEach(PhotosSharpeningControl.allCases) { control in
                 PhotosTypedValueRow(session: session, context: context, group: .sharpen,
@@ -52,8 +53,9 @@ struct PhotosSharpeningControls: View {
                     onInteraction: control == .masking ? { active in onMaskingInteraction?(active) } : nil)
                     .accessibilityIdentifier("photos.sharpen." + control.rawValue)
             }
+            }
             Text("按住 Option 拖动“蒙版”可查看黑白锐化区域；松开后恢复原照片。")
-                .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                .photosInspectorParagraph().foregroundStyle(.secondary)
         }
     }
 }

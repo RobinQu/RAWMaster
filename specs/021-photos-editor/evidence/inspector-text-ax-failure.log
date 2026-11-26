@@ -1,0 +1,251 @@
+Building for debugging...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 1]
+[1 / 56] RAWMaster
+[1 / 65] MaskAI
+[1 / 14] RAWMasterDiagnosticsTests-product
+[2 / 7] RAWMasterUITests-product
+<module-includes>:1:9: note: in file included from <module-includes>:1:
+1 | #import "/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/CFlashRaw/include/CFlashRaw.h"
+  |         `- note: in file included from <module-includes>:1:
+2 | 
+
+1 warning generated.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/CFlashRaw/include/CFlashRaw.h:59:1: warning: umbrella header for module 'CFlashRaw' does not include header 'flashraw.h'
+57 | #endif
+58 | #endif
+59 | 
+   | `- warning: umbrella header for module 'CFlashRaw' does not include header 'flashraw.h'
+[5 / 12]
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:333:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m331 |[0;0m         _ = NSApplication.shared
+[0;36m332 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:334:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m332 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+[0;36m336 |[0;0m         final class CheckboxState: ObservableObject {
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:2896:37: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2894 |[0;0m         _ = NSApplication.shared
+[0;36m2895 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m2896 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+     [0;36m|[0;0m                                     `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2897 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m2898 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:2897:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2895 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m2896 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m2897 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+     [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2898 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+[0;36m2899 |[0;0m         func axValue(_ node: NSObject, _ name: String) -> Any? {
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift:11:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+  [0;36m9 |[0;0m         _ = NSApplication.shared
+ [0;36m10 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m11 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift:12:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m10 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m11 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+ [0;36m14 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 3)
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[7 / 12] RAWMasterUITests-product
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:45:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m43 |[0;0m         NSApp.activate(ignoringOtherApps: true)
+ [0;36m44 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m45 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m46 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m47 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:46:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m44 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m45 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m46 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m47 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+ [0;36m48 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:47:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m45 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m46 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m47 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m48 |[0;0m 
+ [0;36m49 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 3); defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:333:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m331 |[0;0m         _ = NSApplication.shared
+[0;36m332 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:334:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m332 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+[0;36m336 |[0;0m         final class CheckboxState: ObservableObject {
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:335:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m336 |[0;0m         final class CheckboxState: ObservableObject {
+[0;36m337 |[0;0m             @Published var checked = false
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[10 / 13] RAWMasterUITests-product
+[12 / 16] RAWMasterUITests-product
+[13 / 16] RAWMasterUITests-product
+[14 / 16] RAWMasterUITests-product
+Build complete! (7.23 sec)
+Test Suite 'Selected tests' started at 2026-11-26 14:20:55.661.
+Test Suite 'RAWMasterUITests.xctest' started at 2026-11-26 14:20:55.663.
+Test Suite 'DevelopmentGradingInteractionTests' started at 2026-11-26 14:20:55.663.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testCustomControlsConsumeMenuUndoAndDoNotLeakPhotoKeyboardActions]' started.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testCustomControlsConsumeMenuUndoAndDoNotLeakPhotoKeyboardActions]' passed (0.313 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testTwoDimensionalWheelDragEmitsOneValidMutationAndCancellationEndsInteraction]' started.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testTwoDimensionalWheelDragEmitsOneValidMutationAndCancellationEndsInteraction]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testWheelMapsHueRadiusAndKeepsHueAtNeutralCenter]' started.
+Test Case '-[RAWMasterUITests.DevelopmentGradingInteractionTests testWheelMapsHueRadiusAndKeepsHueAtNeutralCenter]' passed (0.000 seconds).
+Test Suite 'DevelopmentGradingInteractionTests' passed at 2026-11-26 14:20:55.977.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.313 (0.314) seconds
+Test Suite 'EditingLayoutInteractionTests' started at 2026-11-26 14:20:55.977.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testAdjustmentSectionKeepsTightSymmetricTrackInsets]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testAdjustmentSectionKeepsTightSymmetricTrackInsets]' passed (0.104 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testColorTrackUsesRealNSSliderAndPreservesNativeAction]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testColorTrackUsesRealNSSliderAndPreservesNativeAction]' passed (0.004 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip]' started.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:167: error: -[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip] : failed - Timed out waiting for editing layout
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:183: error: -[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip] : failed - White balance measurement unavailable: nodes=131, context=true, paused=false, ready=true, stage=development, balance=["photos.whiteBalance.section:  / ", "photos.whiteBalance.refinement:  / 无法读取此照片的白平衡基准。", "photos.whiteBalance.refinement: 微调 / ", "photos.whiteBalance.applied: 白平衡调整已关闭，已保留数值 / ", "photos.whiteBalance.original: 恢复原照 / ", "photos.whiteBalance.auto: 自动白平衡 / ", "photos.whiteBalance.mode: 校正方式 / 色温与色调", "photos.whiteBalance.correction.heading: 校正方式 / ", "photos.whiteBalance.enabled: 启用白平衡 / 已停用", "photos.whiteBalance.reset: 复位白平衡 / ", "photos.whiteBalance.disclosure: 白平衡，收起 / "]
+<unknown>:0: error: -[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip] : failed: caught error: "InvalidTransition { 
+  phase: idle
+  targetPhase: failed(deinit)
+}"
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testEditingLayoutUsesCanvasNavigationWithoutFilmstrip]' failed (17.710 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxKeepsToggleAccessibilityAndBinding]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxKeepsToggleAccessibilityAndBinding]' passed (0.037 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances]' started.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Sources/RAWMaster/PhotosFlatControls.swift:67: warning: -[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances] : Accessing FocusState's value outside of the body of a View. This will result in a constant Binding of the initial value and will not update.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatCheckboxRendersAnOutlineWithoutReliefInBothAppearances]' passed (0.013 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatMenuFillsRowAndUsesNativeSelection]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFlatMenuFillsRowAndUsesNativeSelection]' passed (0.003 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testMaskToolIconsAreAvailableAndDistinct]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testMaskToolIconsAreAvailableAndDistinct]' passed (0.012 seconds).
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testRailTooltipRendersItsArrowLeftOfTheEntireButton]' started.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testRailTooltipRendersItsArrowLeftOfTheEntireButton]' passed (0.004 seconds).
+Test Suite 'EditingLayoutInteractionTests' failed at 2026-11-26 14:21:13.863.
+	 Executed 8 tests, with 3 failures (1 unexpected) in 17.885 (17.886) seconds
+Test Suite 'PhotosColorSamplerTests' started at 2026-11-26 14:21:13.863.
+Test Case '-[RAWMasterUITests.PhotosColorSamplerTests testNinePositionsPersistByPhotoAndEditingThemDoesNotChangeTheRecipe]' started.
+Test Case '-[RAWMasterUITests.PhotosColorSamplerTests testNinePositionsPersistByPhotoAndEditingThemDoesNotChangeTheRecipe]' passed (8.116 seconds).
+Test Suite 'PhotosColorSamplerTests' passed at 2026-11-26 14:21:21.980.
+	 Executed 1 test, with 0 failures (0 unexpected) in 8.116 (8.116) seconds
+Test Suite 'PhotosCurveResetChannelTests' started at 2026-11-26 14:21:21.980.
+Test Case '-[RAWMasterUITests.PhotosCurveResetChannelTests testResetOnlySelectedChannelAndPreserveOtherCurveState]' started.
+Test Case '-[RAWMasterUITests.PhotosCurveResetChannelTests testResetOnlySelectedChannelAndPreserveOtherCurveState]' passed (0.000 seconds).
+Test Suite 'PhotosCurveResetChannelTests' passed at 2026-11-26 14:21:21.980.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'PhotosInspectorTextLayoutTests' started at 2026-11-26 14:21:21.980.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testDetailTextRhythmKeepsDescriptionsCompleteInBothAppearances]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testDetailTextRhythmKeepsDescriptionsCompleteInBothAppearances]' passed (0.055 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSamplerRowsShowActualColourAndFullWidthFlatAction]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testSamplerRowsShowActualColourAndFullWidthFlatAction]' passed (0.192 seconds).
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testUnavailableSamplersKeepNumbersAndLimitOnlyDisablesAdding]' started.
+Test Case '-[RAWMasterUITests.PhotosInspectorTextLayoutTests testUnavailableSamplersKeepNumbersAndLimitOnlyDisablesAdding]' passed (0.081 seconds).
+Test Suite 'PhotosInspectorTextLayoutTests' passed at 2026-11-26 14:21:22.309.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.329 (0.329) seconds
+Test Suite 'PhotosLensBlurRefinementWorkflowTests' started at 2026-11-26 14:21:22.309.
+Test Case '-[RAWMasterUITests.PhotosLensBlurRefinementWorkflowTests testFocusBlurBrushesResetUndoRedoAndPersistence]' started.
+Test Case '-[RAWMasterUITests.PhotosLensBlurRefinementWorkflowTests testFocusBlurBrushesResetUndoRedoAndPersistence]' passed (0.326 seconds).
+Test Suite 'PhotosLensBlurRefinementWorkflowTests' passed at 2026-11-26 14:21:22.635.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.326 (0.326) seconds
+Test Suite 'PhotosLensBlurWorkflowTests' started at 2026-11-26 14:21:22.635.
+Test Case '-[RAWMasterUITests.PhotosLensBlurWorkflowTests testLensBlurPersistsAndUndoRedo]' started.
+Test Case '-[RAWMasterUITests.PhotosLensBlurWorkflowTests testLensBlurPersistsAndUndoRedo]' passed (0.291 seconds).
+Test Suite 'PhotosLensBlurWorkflowTests' passed at 2026-11-26 14:21:22.926.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.291 (0.291) seconds
+Test Suite 'PhotosMaskWorkflowTests' started at 2026-11-26 14:21:22.926.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskCurvesPersistAndUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskCurvesPersistAndUndo]' passed (0.277 seconds).
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskLayerIsLivePersistentAndUndoable]' started.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testMaskLayerIsLivePersistentAndUndoable]' passed (0.281 seconds).
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testVectorscopeRotatesStandardChromaAxesTogether]' started.
+Test Case '-[RAWMasterUITests.PhotosMaskWorkflowTests testVectorscopeRotatesStandardChromaAxesTogether]' passed (0.000 seconds).
+Test Suite 'PhotosMaskWorkflowTests' passed at 2026-11-26 14:21:23.484.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.558 (0.558) seconds
+Test Suite 'PhotosOpticsWorkflowTests' started at 2026-11-26 14:21:23.484.
+Test Case '-[RAWMasterUITests.PhotosOpticsWorkflowTests testRemoveCAAndDistortionPersistAndUndo]' started.
+Test Case '-[RAWMasterUITests.PhotosOpticsWorkflowTests testRemoveCAAndDistortionPersistAndUndo]' passed (0.306 seconds).
+Test Suite 'PhotosOpticsWorkflowTests' passed at 2026-11-26 14:21:23.790.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.306 (0.306) seconds
+Test Suite 'PhotosWhiteBalancePresetTests' started at 2026-11-26 14:21:23.790.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAllSixPresetsWriteValidatedRawTempTintCommands]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAllSixPresetsWriteValidatedRawTempTintCommands]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAutomaticTemperatureTintCanBeUndoneReopenedAndExported]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testAutomaticTemperatureTintCanBeUndoneReopenedAndExported]' passed (0.482 seconds).
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testNonRAWDoesNotAdmitCameraPresets]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testNonRAWDoesNotAdmitCameraPresets]' passed (0.000 seconds).
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testUseOriginalPreservesSavedFineTuningWithoutApplyingIt]' started.
+Test Case '-[RAWMasterUITests.PhotosWhiteBalancePresetTests testUseOriginalPreservesSavedFineTuningWithoutApplyingIt]' passed (0.000 seconds).
+Test Suite 'PhotosWhiteBalancePresetTests' passed at 2026-11-26 14:21:24.273.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.483 (0.483) seconds
+Test Suite 'RAWMasterUITests.xctest' failed at 2026-11-26 14:21:24.273.
+	 Executed 26 tests, with 3 failures (1 unexpected) in 28.606 (28.610) seconds
+Test Suite 'Selected tests' failed at 2026-11-26 14:21:24.273.
+	 Executed 26 tests, with 3 failures (1 unexpected) in 28.606 (28.612) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:21:24.501.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' started at 2026-11-26 14:21:24.503.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' passed at 2026-11-26 14:21:24.503.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:21:24.503.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:21:24.643.
+Test Suite 'RAWMasterImagingTests.xctest' started at 2026-11-26 14:21:24.645.
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-26 14:21:24.645.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:21:24.645.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:21:24.781.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' started at 2026-11-26 14:21:24.783.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' passed at 2026-11-26 14:21:24.783.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:21:24.783.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:21:24.903.
+Test Suite 'RAWMasterCoreTests.xctest' started at 2026-11-26 14:21:24.904.
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-26 14:21:24.904.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:21:24.905.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 14:21:25.019.
+Test Suite 'RAWMasterAITests.xctest' started at 2026-11-26 14:21:25.021.
+Test Suite 'RAWMasterAITests.xctest' passed at 2026-11-26 14:21:25.021.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 14:21:25.021.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Note: Some test targets reported failures:
+  - RAWMasterUITests (XCTest)

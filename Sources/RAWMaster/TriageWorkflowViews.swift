@@ -364,10 +364,12 @@ struct WorkflowAssetTile: View {
     let asset: AssetRecord
     let compact: Bool
     var sequenceMemberships: [CaptureGroup] = []
+    var showsCardOutline = true
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             AssetCard(asset: asset, selected: model.selectedIDs.contains(asset.id), compact: compact,
-                      previewAsset: model.previewAsset(for: asset), triageDisposition: (model.isTriageScope || model.isHistoryScope) ? model.disposition(of: asset.id) : nil)
+                      previewAsset: model.previewAsset(for: asset), triageDisposition: (model.isTriageScope || model.isHistoryScope) ? model.disposition(of: asset.id) : nil,
+                      showsCardOutline: showsCardOutline)
                 .overlay(CardInputLayer(onPress: { model.select(asset, modifiers: $0) }, onDoubleClick: { model.select(asset); model.setMode(.single) }))
                 .accessibilityAddTraits(.isButton).accessibilityAction { model.select(asset) }
             if let pair = model.pair(for: asset.id) {

@@ -1,0 +1,440 @@
+{
+  "referenceRevision": "3bb2c2d2801ff68b92019cf1dbcbb133d60832bc",
+  "photoLicense": "CC BY-SA 4.0",
+  "sampleWidth": 160,
+  "sampleHeight": 240,
+  "columns": [
+    "Input",
+    "spektraPortra400Endura",
+    "spektraVelvia100",
+    "spektraVision250D2383",
+    "spektraGold200UltraEndura",
+    "spektraPortra800SupraEndura",
+    "spektraEktar100Endura",
+    "spektraProvia100F",
+    "spektraEktachrome100",
+    "spektraVision500T2383"
+  ],
+  "photos": {
+    "person": {
+      "creator": "Hung Pham",
+      "source": "https://discuss.pixls.us/t/cinematic-portrait-in-golden-hour/54881",
+      "inputSourceSHA256": "fa306ba4e333247c4a3769281a42f83384f8e112e29929b3309c6be0adbdc31e",
+      "inputKind": "unfiltered first column of the frozen sRGB photographic fixture",
+      "inputRGB8SHA256": "dde3e04f34e10c760360ef5c0253bfbad5b2aed7a4ec3cf2d5da7762cd0e3036",
+      "looks": {
+        "spektraPortra400Endura": {
+          "atlasVsDirectLinear": {
+            "mean": 2.3379627722001458e-05,
+            "p99": 0.0002855348447520803,
+            "max": 0.0011621510298061577
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.02382506308976349,
+            "p99": 0.14822314983082946,
+            "max": 0.360699628870519
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.050882032752167926,
+            "p99": 1.0202834274432202,
+            "max": 2.019661282994611
+          }
+        },
+        "spektraVelvia100": {
+          "atlasVsDirectLinear": {
+            "mean": 2.1124705674849535e-05,
+            "p99": 0.0002529025129161592,
+            "max": 0.001461987453969249
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.03227938617702144,
+            "p99": 0.2489600687994824,
+            "max": 1.3565069013914852
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.06287025923878774,
+            "p99": 1.2194706998164309,
+            "max": 4.925181160330504
+          }
+        },
+        "spektraVision250D2383": {
+          "atlasVsDirectLinear": {
+            "mean": 2.0859842221205424e-05,
+            "p99": 0.00025304881200860794,
+            "max": 0.0014937623915223797
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.02785420248977359,
+            "p99": 0.16533503426074714,
+            "max": 0.7828378426519295
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.05871396355609372,
+            "p99": 1.173327413248814,
+            "max": 2.4723309402456835
+          }
+        },
+        "spektraGold200UltraEndura": {
+          "atlasVsDirectLinear": {
+            "mean": 1.4124757270542328e-05,
+            "p99": 0.00021140013536534343,
+            "max": 0.0008841686321142128
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.014491482244593838,
+            "p99": 0.09097352497342907,
+            "max": 0.32704027451811324
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.03818799603195321,
+            "p99": 0.7990619908795996,
+            "max": 2.1446040082009903
+          }
+        },
+        "spektraPortra800SupraEndura": {
+          "atlasVsDirectLinear": {
+            "mean": 1.4065841925384373e-05,
+            "p99": 0.00018415634904284206,
+            "max": 0.0007000991029000314
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.013887107023168845,
+            "p99": 0.09248199873825108,
+            "max": 0.290653814630627
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.04930213727126183,
+            "p99": 1.089429198360771,
+            "max": 2.16680494068492
+          }
+        },
+        "spektraEktar100Endura": {
+          "atlasVsDirectLinear": {
+            "mean": 1.5693082383638764e-05,
+            "p99": 0.00019827220207816872,
+            "max": 0.0007592825888772525
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.013915357590457084,
+            "p99": 0.09955418813016254,
+            "max": 0.21537374192804964
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.04514637238208297,
+            "p99": 0.9135522104501881,
+            "max": 1.7789332876739048
+          }
+        },
+        "spektraProvia100F": {
+          "atlasVsDirectLinear": {
+            "mean": 9.323325445883318e-06,
+            "p99": 0.00012553005657334193,
+            "max": 0.0004649426605006224
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.010607589255340761,
+            "p99": 0.059501194956429304,
+            "max": 0.23889406782260422
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.07515989083661966,
+            "p99": 1.1983803350674156,
+            "max": 3.364372105126667
+          }
+        },
+        "spektraEktachrome100": {
+          "atlasVsDirectLinear": {
+            "mean": 7.80770087600231e-06,
+            "p99": 9.01342907020233e-05,
+            "max": 0.0003779434204901344
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.010380928784120535,
+            "p99": 0.06305834241068878,
+            "max": 0.1744611001100487
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.07276579050388947,
+            "p99": 1.2097354543249985,
+            "max": 3.5436000322729786
+          }
+        },
+        "spektraVision500T2383": {
+          "atlasVsDirectLinear": {
+            "mean": 1.210473975761994e-05,
+            "p99": 0.00015018786993243466,
+            "max": 0.0008215130762834477
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.015428637538480462,
+            "p99": 0.09288381700260154,
+            "max": 0.35649335390219383
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.05864220370338173,
+            "p99": 1.2020653034151094,
+            "max": 2.323287580651065
+          }
+        }
+      },
+      "pairwiseMeanDifference8": {
+        "Input / spektraPortra400Endura": 12.398085511342243,
+        "Input / spektraVelvia100": 11.196686281067693,
+        "spektraPortra400Endura / spektraVelvia100": 12.466999022437815,
+        "Input / spektraVision250D2383": 11.136612203240313,
+        "spektraPortra400Endura / spektraVision250D2383": 12.08418443357066,
+        "spektraVelvia100 / spektraVision250D2383": 2.3101043289179013,
+        "Input / spektraGold200UltraEndura": 13.359655359028325,
+        "spektraPortra400Endura / spektraGold200UltraEndura": 7.73587716702974,
+        "spektraVelvia100 / spektraGold200UltraEndura": 7.383381427972422,
+        "spektraVision250D2383 / spektraGold200UltraEndura": 7.545119233968226,
+        "Input / spektraPortra800SupraEndura": 12.489819659935073,
+        "spektraPortra400Endura / spektraPortra800SupraEndura": 3.355250161939131,
+        "spektraVelvia100 / spektraPortra800SupraEndura": 9.768271452791604,
+        "spektraVision250D2383 / spektraPortra800SupraEndura": 9.164973129551763,
+        "spektraGold200UltraEndura / spektraPortra800SupraEndura": 4.80337949605823,
+        "Input / spektraEktar100Endura": 13.401949213974001,
+        "spektraPortra400Endura / spektraEktar100Endura": 1.5479245811957956,
+        "spektraVelvia100 / spektraEktar100Endura": 13.516964641225263,
+        "spektraVision250D2383 / spektraEktar100Endura": 13.112418293547476,
+        "spektraGold200UltraEndura / spektraEktar100Endura": 8.433828256480766,
+        "spektraPortra800SupraEndura / spektraEktar100Endura": 4.254219675468253,
+        "Input / spektraProvia100F": 8.902407206321111,
+        "spektraPortra400Endura / spektraProvia100F": 10.404259496518437,
+        "spektraVelvia100 / spektraProvia100F": 3.0049365836753643,
+        "spektraVision250D2383 / spektraProvia100F": 3.588449288524764,
+        "spektraGold200UltraEndura / spektraProvia100F": 7.241914842403942,
+        "spektraPortra800SupraEndura / spektraProvia100F": 8.578068956266838,
+        "spektraEktar100Endura / spektraProvia100F": 11.693496000260968,
+        "Input / spektraEktachrome100": 9.700968258772766,
+        "spektraPortra400Endura / spektraEktachrome100": 11.380847495427735,
+        "spektraVelvia100 / spektraEktachrome100": 2.5472088248758737,
+        "spektraVision250D2383 / spektraEktachrome100": 1.8218761560789025,
+        "spektraGold200UltraEndura / spektraEktachrome100": 7.794109541244888,
+        "spektraPortra800SupraEndura / spektraEktachrome100": 9.201501790743722,
+        "spektraEktar100Endura / spektraEktachrome100": 12.709842798826184,
+        "spektraProvia100F / spektraEktachrome100": 1.952506316180788,
+        "Input / spektraVision500T2383": 11.272339472227348,
+        "spektraPortra400Endura / spektraVision500T2383": 12.21054914022181,
+        "spektraVelvia100 / spektraVision500T2383": 2.5140992322798965,
+        "spektraVision250D2383 / spektraVision500T2383": 0.3899038261690612,
+        "spektraGold200UltraEndura / spektraVision500T2383": 7.508834592494581,
+        "spektraPortra800SupraEndura / spektraVision500T2383": 9.315149044903611,
+        "spektraEktar100Endura / spektraVision500T2383": 13.228935054570627,
+        "spektraProvia100F / spektraVision500T2383": 3.748744565905522,
+        "spektraEktachrome100 / spektraVision500T2383": 1.9475328688117475
+      },
+      "sourceAndReferencesRGB8SHA256": "504b516202f06545a211bae6ad4a2ccb7f56bb2a35bf43b5bb5c17b7add7a76d"
+    },
+    "snow": {
+      "creator": "Sean Liu",
+      "source": "https://discuss.pixls.us/t/snow-and-sunset/55869",
+      "inputSourceSHA256": "ad1985f534e79fcc197fbbee68330c86548004b382434e4c7bd936245e8b4054",
+      "inputKind": "unfiltered first column of the frozen sRGB photographic fixture",
+      "inputRGB8SHA256": "6ce35a4f2e140eb8c1acb8bed26bcefee8485a895e6d3cea954cd2930c943c1b",
+      "looks": {
+        "spektraPortra400Endura": {
+          "atlasVsDirectLinear": {
+            "mean": 5.31338093765865e-05,
+            "p99": 0.0003930405230491241,
+            "max": 0.0012386411441849265
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.02820478950742634,
+            "p99": 0.14398979827941583,
+            "max": 0.30095410278071455
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.22192433100007497,
+            "p99": 1.2929896589133532,
+            "max": 1.8193371472357347
+          }
+        },
+        "spektraVelvia100": {
+          "atlasVsDirectLinear": {
+            "mean": 4.213017421749693e-05,
+            "p99": 0.0003376609416934216,
+            "max": 0.0007625916263280241
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.02912109764114851,
+            "p99": 0.13274295280541976,
+            "max": 0.9930262393555718
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.24896722855048717,
+            "p99": 1.573053818616898,
+            "max": 2.0629830620588594
+          }
+        },
+        "spektraVision250D2383": {
+          "atlasVsDirectLinear": {
+            "mean": 5.278382414316725e-05,
+            "p99": 0.0003894488669934308,
+            "max": 0.0009644371339195268
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.032513298209120675,
+            "p99": 0.16077476669863713,
+            "max": 0.42810513650621673
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.2263093957853966,
+            "p99": 1.2739379510657498,
+            "max": 1.5435281531091938
+          }
+        },
+        "spektraGold200UltraEndura": {
+          "atlasVsDirectLinear": {
+            "mean": 4.9003619222345686e-05,
+            "p99": 0.00036014608411521576,
+            "max": 0.0008695225761117253
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.026410837406031146,
+            "p99": 0.11570351309802913,
+            "max": 0.340539663042681
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.2206158857515611,
+            "p99": 1.4159172118566539,
+            "max": 2.104913836730418
+          }
+        },
+        "spektraPortra800SupraEndura": {
+          "atlasVsDirectLinear": {
+            "mean": 4.329303194663377e-05,
+            "p99": 0.00029471164285032356,
+            "max": 0.0007506455410283275
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.023958077856807394,
+            "p99": 0.12609902559523364,
+            "max": 0.2505101486192519
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.2356681771979828,
+            "p99": 1.3314110913970258,
+            "max": 1.800261136830118
+          }
+        },
+        "spektraEktar100Endura": {
+          "atlasVsDirectLinear": {
+            "mean": 4.417987311276844e-05,
+            "p99": 0.0003117948599536402,
+            "max": 0.0007281349506935708
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.02407613010550276,
+            "p99": 0.14671955152394084,
+            "max": 0.3234393217342299
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.2194329277433259,
+            "p99": 1.2860245390891,
+            "max": 1.8764546088108158
+          }
+        },
+        "spektraProvia100F": {
+          "atlasVsDirectLinear": {
+            "mean": 2.2454766024123797e-05,
+            "p99": 0.00018572206744695783,
+            "max": 0.0004648350517199029
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.014944324197287126,
+            "p99": 0.09840997805097523,
+            "max": 0.12366111852233436
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.26752019368818003,
+            "p99": 1.3435881662141842,
+            "max": 1.8573512707516882
+          }
+        },
+        "spektraEktachrome100": {
+          "atlasVsDirectLinear": {
+            "mean": 1.7446445081143614e-05,
+            "p99": 0.00013547097657456986,
+            "max": 0.00029072468166874144
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.013472870441382847,
+            "p99": 0.10010531206621882,
+            "max": 0.11603456284141314
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.24949206896015036,
+            "p99": 1.2956615082266045,
+            "max": 1.7096709334716287
+          }
+        },
+        "spektraVision500T2383": {
+          "atlasVsDirectLinear": {
+            "mean": 3.1278206727511785e-05,
+            "p99": 0.00020545351588003102,
+            "max": 0.0006012160965173652
+          },
+          "atlasVsDirectDisplay8": {
+            "mean": 0.020967696628768594,
+            "p99": 0.11112603422796151,
+            "max": 0.21581375674840614
+          },
+          "linearSRGBVsConvertedProPhotoDisplay8": {
+            "mean": 0.22287804717845547,
+            "p99": 1.2338132595028535,
+            "max": 1.549736152006792
+          }
+        }
+      },
+      "pairwiseMeanDifference8": {
+        "Input / spektraPortra400Endura": 10.440364692801964,
+        "Input / spektraVelvia100": 11.832600270175837,
+        "spektraPortra400Endura / spektraVelvia100": 11.64308124985697,
+        "Input / spektraVision250D2383": 11.853699065116656,
+        "spektraPortra400Endura / spektraVision250D2383": 8.840113500236331,
+        "spektraVelvia100 / spektraVision250D2383": 5.136594949483463,
+        "Input / spektraGold200UltraEndura": 14.746312367139165,
+        "spektraPortra400Endura / spektraGold200UltraEndura": 7.999973932199002,
+        "spektraVelvia100 / spektraGold200UltraEndura": 10.217853184113409,
+        "spektraVision250D2383 / spektraGold200UltraEndura": 6.687400261784011,
+        "Input / spektraPortra800SupraEndura": 10.975688765001484,
+        "spektraPortra400Endura / spektraPortra800SupraEndura": 2.874844444229939,
+        "spektraVelvia100 / spektraPortra800SupraEndura": 9.78368476841663,
+        "spektraVision250D2383 / spektraPortra800SupraEndura": 6.717677215861646,
+        "spektraGold200UltraEndura / spektraPortra800SupraEndura": 5.970103352842239,
+        "Input / spektraEktar100Endura": 12.643346039526282,
+        "spektraPortra400Endura / spektraEktar100Endura": 2.428317072887686,
+        "spektraVelvia100 / spektraEktar100Endura": 13.194099598902447,
+        "spektraVision250D2383 / spektraEktar100Endura": 10.121702637825264,
+        "spektraGold200UltraEndura / spektraEktar100Endura": 7.455107404772931,
+        "spektraPortra800SupraEndura / spektraEktar100Endura": 3.8596985573813556,
+        "Input / spektraProvia100F": 9.901694289802538,
+        "spektraPortra400Endura / spektraProvia100F": 11.299063555621107,
+        "spektraVelvia100 / spektraProvia100F": 3.4461698103523295,
+        "spektraVision250D2383 / spektraProvia100F": 6.0657047960878705,
+        "spektraGold200UltraEndura / spektraProvia100F": 10.421112497434878,
+        "spektraPortra800SupraEndura / spektraProvia100F": 9.666966148469516,
+        "spektraEktar100Endura / spektraProvia100F": 12.972720320544195,
+        "Input / spektraEktachrome100": 9.74201478125963,
+        "spektraPortra400Endura / spektraEktachrome100": 10.788617535778693,
+        "spektraVelvia100 / spektraEktachrome100": 3.5431793611757314,
+        "spektraVision250D2383 / spektraEktachrome100": 3.90935609956645,
+        "spektraGold200UltraEndura / spektraEktachrome100": 9.667281736637854,
+        "spektraPortra800SupraEndura / spektraEktachrome100": 9.263045507906309,
+        "spektraEktar100Endura / spektraEktachrome100": 12.6034166949552,
+        "spektraProvia100F / spektraEktachrome100": 2.9990149366100445,
+        "Input / spektraVision500T2383": 12.117264856310555,
+        "spektraPortra400Endura / spektraVision500T2383": 9.13695237683648,
+        "spektraVelvia100 / spektraVision500T2383": 5.983574282531593,
+        "spektraVision250D2383 / spektraVision500T2383": 1.3758407634974836,
+        "spektraGold200UltraEndura / spektraVision500T2383": 6.666262435635212,
+        "spektraPortra800SupraEndura / spektraVision500T2383": 7.404822918594643,
+        "spektraEktar100Endura / spektraVision500T2383": 10.504922705357941,
+        "spektraProvia100F / spektraVision500T2383": 6.696512842500259,
+        "spektraEktachrome100 / spektraVision500T2383": 4.558106179488949
+      },
+      "sourceAndReferencesRGB8SHA256": "54a478580ce5f4de090b2ba64d5ca48a7c6e83e6de9553234fbd6333540e86ac"
+    }
+  }
+}

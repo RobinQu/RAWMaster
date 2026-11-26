@@ -22,9 +22,13 @@ public struct PreviewViewport: Equatable, Sendable {
   /// materialized region; the canonical identity stays the full canvas so overlays,
   /// pickers and geometry mapping keep their existing coordinates.
   public let window: CGRect?
-  public init(maxPixel: Int = 2400, window: CGRect? = nil) {
+  /// For detail requests only: physical display pixels per canonical pixel, capped at one.
+  /// `nil` retains the existing native-pixel materialization contract.
+  public let detailScale: CGFloat?
+  public init(maxPixel: Int = 2400, window: CGRect? = nil, detailScale: CGFloat? = nil) {
     self.maxPixel = maxPixel
     self.window = window
+    self.detailScale = detailScale
   }
 }
 public enum PreviewInteractiveEvaluation:String,Equatable,Sendable { case canonical,proxyV1,nativePointwiseCertificateV1 }

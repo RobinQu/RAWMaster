@@ -188,6 +188,7 @@ function quickRestorePan() {
   S.quickView = null;
 }
 function quickBegin() {
+  if (S.canvasTool) return notify('请先完成或取消画布工具，再打开 Prompt');
   if (S.cropOpen || S.tool === 'versions') return;
   const fit = $('.canvas-fit');
   S.canvasMenu = '';

@@ -182,8 +182,13 @@
     </div>
       <div class="controls">
         <div class="controls" id="render-fields">
+          <div id="scene-delivery" class="controls" hidden>
+            <label>成片目标<select id="scene-target"><option value="legacy">现有 SDR 格式</option><option value="sdr">SDR 分享</option><option value="hdr">HDR 成片</option><option value="both">HDR 成片 + SDR 分享（两个文件）</option><option disabled>双兼容增益图（未验证）</option><option disabled>继续编辑 · 浮点归档（未验证）</option></select></label>
+            <label id="scene-fallback-field" hidden><input type="checkbox" id="scene-fallback"> 对没有 HDR 母版的照片，明确改为交付 SDR 分享文件</label>
+            <small>原型只模拟选择和交付，不写入真实 HDR 文件。</small>
+          </div>
           <div class="two">
-            <label>格式<select id="format"><option value="jpeg">JPEG · 8 位</option><option value="tiff">TIFF · 16 位</option><option value="png">PNG · 16 位</option></select></label>
+            <label id="format-field">格式<select id="format"><option value="jpeg">JPEG · 8 位</option><option value="tiff">TIFF · 16 位</option><option value="png">PNG · 16 位</option></select></label>
             <label>尺寸<select id="size"><option value="0">版本全尺寸</option><option value="1080">长边 1080</option><option value="1350">长边 1350</option><option value="2048" selected>长边 2048</option><option value="4096">长边 4096</option><option value="custom">自定长边</option></select></label>
           </div>
           <label id="edge-field" hidden>长边像素<input type="number" id="edge" min="64" max="100000" value="3000"></label>
@@ -299,6 +304,7 @@
   </form>
 </dialog>
 <script src="../../docs/ui/prototype/photos.js"></script>
+<script src="../../docs/ui/prototype/scene-output.js"></script>
 <script src="export-layout.js"></script>
 <script src="export-preset.js"></script>
 <script src="workspace-selection.js"></script>
@@ -365,12 +371,12 @@
 
   function imageURL(photo) { return root + (workbenchPhotos?.file(photo) ?? photo.image + '/files/asset0000.jpg'); }
   function inputAvailable(photo, kind, version = photo.versions[photo.choice]) {
-    return photo.online || (kind === 'render' && version.archive === true);
+    return photo.online || (kind === 'render' && !version.sceneOutput && version.archive === true);
   }
   function statusText(photo) {
     if (mode === 'original') return photo.online ? '原文件在线' : '原文件离线';
     const version = photo.versions[photo.choice];
-    if (version.archive && !photo.online) return '归档可用 · 原片离线';
+    if (!photo.online) return version.sceneOutput ? 'HDR 版本 · 原片离线，不能重算' : version.archive ? '归档可用 · 原片离线' : '原片离线';
     return photo.online ? version.label : '原片离线';
   }
   function metadataSummary(photo, settings = planningSettings()) {
@@ -404,16 +410,19 @@
   function geometry(version, limit = Number(byId('size').value === 'custom' ? byId('edge').value : byId('size').value)) {
     return ExportLayout.plan(version,limit,layout);
   }
-  function itemSpec(photo, index, sequence, used, settings = planningSettings()) {
+  function itemSpec(photo, index, sequence, used, settings, target = 'legacy') {
     const cfgError = settings.error;
     const version = photo.versions[photo.choice];
-    const ready = inputAvailable(photo,mode);
+    const requiresSource = target === 'hdr' || !!version.sceneOutput;
+    const ready = requiresSource && mode === 'render' ? photo.online : inputAvailable(photo,mode);
+    if (target === 'unavailable') return {index,name:photo.name,version,target,state:'无 HDR 母版',
+      facts:'所选版本没有 HDR 母版；可另选版本或明确改交 SDR。'};
     let name = photo.name, baseName = name;
     let facts = '原始文件字节 · 保留原有元数据';
     let state = ready ? '待执行' : '待找回';
     let composition=null;
     if (mode === 'render') {
-      const [ext,bits] = formats[settings.format];
+      const [ext,bits] = target === 'hdr' ? ['avif',10] : target === 'sdr' ? formats.jpeg : formats[settings.format];
       const values = {name:photo.name.replace(/\.[^.]+$/,''),index:String(sequence).padStart(4,'0'),date:exportDate,captureDate:photo.date};
       const stem = settings.template.replace(/\{(name|index|date|captureDate)\}/g,(_,key)=>values[key]).trim();
       name = stem + '.' + ext;
@@ -430,7 +439,9 @@
         const geo=settings.geometries.get(version) || geometry(version,settings.limit);
         settings.geometries.set(version,geo);
         composition={geometry:geo,lines:ExportLayout.lettering(layout,photo)};
-        facts=geo.width+' × '+geo.height+' px · '+bits+' 位 · sRGB';
+        const signal = RMSceneOutput.targets[target]?.signal ?? bits+' 位 · sRGB';
+        const origin = version.sceneOutput ? target === 'hdr' ? 'HDR 母版' : 'SDR 派生' : 'SDR 版本';
+        facts=geo.width+' × '+geo.height+' px · '+(target === 'legacy' && !version.sceneOutput ? '' : origin+' · ')+signal;
         if (layout.frame!=='none') facts+=' · 照片区域 '+geo.photo.w+' × '+geo.photo.h;
       }
     } else if (settings.copyMode === 'manifest') {
@@ -440,7 +451,8 @@
       const filter = settings.copyFilter;
       if ((filter === 'raw' && !raw) || (filter === 'jpeg' && raw)) state = '不匹配交付格式';
     }
-    return {index,name,baseName,facts,version,composition,metadata:metadataSummary(photo,settings),state:cfgError ? '设置待修正' : state};
+    return {index,name,baseName,facts,version,composition,target,requiresSource:mode === 'render' && requiresSource,
+      metadata:metadataSummary(photo,settings),state:cfgError ? '设置待修正' : state};
   }
   function planningSettings() {
     const size = byId('size').value;
@@ -452,23 +464,31 @@
       geometries:new Map(), suffixes:new Map()
     };
   }
+  const sceneTarget = () => handoff && mode === 'render' ? byId('scene-target').value : 'legacy';
   let plannedKey = '', plannedRows = [], plannedByIndex = new Map();
-  let planCounts = {ready:0,missing:0,skipped:0};
+  let planCounts;
   function getPlan(forPreview = false) {
     const settings = planningSettings();
     const occupied = demoFiles[settings.folder];
-    const key = JSON.stringify([mode,selection.revision,occupied.size,settings,{...layout,logo:layout.logo?.sha256}]);
+    const target = sceneTarget();
+    const fallback = byId('scene-fallback').checked;
+    const key = JSON.stringify([mode,target,fallback,selection.revision,occupied.size,settings,{...layout,logo:layout.logo?.sha256}]);
     if (key !== plannedKey) {
       const used = new Set(occupied);
       plannedByIndex = new Map();
-      planCounts = {ready:0,missing:0,skipped:0};
-      plannedRows = selection.ordered.map((index,offset) => {
-        const row = itemSpec(photos[index],index,offset + 1,used,settings);
-        plannedByIndex.set(index,row);
-        if (row.state === '待执行') planCounts.ready++;
-        else if (row.state === '待找回') planCounts.missing++;
-        else if (row.state === '按重名策略跳过' || row.state === '不匹配交付格式') planCounts.skipped++;
-        return row;
+      planCounts = {ready:0,missing:0,skipped:0,blocked:0};
+      plannedRows = selection.ordered.flatMap((index,offset) => {
+        const photo = photos[index], version = photo.versions[photo.choice];
+        const targets = target === 'legacy' ? ['legacy'] : RMSceneOutput.files(target,version,fallback);
+        const rows = (targets.length ? targets : ['unavailable']).map(t => itemSpec(photo,index,offset + 1,used,settings,t));
+        plannedByIndex.set(index,rows);
+        for (const row of rows) {
+          if (row.state === '待执行') planCounts.ready++;
+          else if (row.state === '待找回') planCounts.missing++;
+          else if (row.state === '无 HDR 母版') planCounts.blocked++;
+          else if (row.state === '按重名策略跳过' || row.state === '不匹配交付格式') planCounts.skipped++;
+        }
+        return rows;
       });
       plannedKey = key;
     }
@@ -487,16 +507,22 @@
     byId('render-fields').hidden = !render; byId('copy-fields').hidden = render; byId('extra').hidden = !render;
     byId('copy-filter').hidden = manifest;
     byId('edge-field').hidden = byId('size').value !== 'custom';
-    byId('quality-field').hidden = byId('format').value !== 'jpeg';
+    const target = sceneTarget(), explicit = target !== 'legacy';
+    byId('scene-delivery').hidden = !render || !handoff;
+    byId('scene-fallback-field').hidden = !['hdr','both'].includes(target);
+    byId('format-field').hidden = explicit;
+    byId('quality-field').hidden = target === 'hdr' && !byId('scene-fallback').checked || !explicit && byId('format').value !== 'jpeg';
     byId('gps-field').hidden = byId('metadata').value !== 'photo';
     byId('settings-title').textContent = render ? '成片设置' : '原件交付';
-    byId('encoding-hint').textContent = '嵌入 sRGB ICC · ' + (byId('format').value === 'jpeg' ? '透明处合成白色' : layout.frame==='none' ? '保留透明通道' : '底板覆盖成品画布');
+    byId('encoding-hint').textContent = explicit ? (target === 'both' ? RMSceneOutput.targets.hdr.signal + '；' + RMSceneOutput.targets.sdr.signal : RMSceneOutput.targets[target].signal) + ' · 模拟'
+      : '嵌入 sRGB ICC · ' + (byId('format').value === 'jpeg' ? '透明处合成白色' : layout.frame==='none' ? '保留透明通道' : '底板覆盖成品画布');
     byId('percent').value = byId('quality').value + '%';
     byId('validation').textContent = validateSettings();
     byId('save-preset').disabled = Boolean(validateSettings());
     byId('share-preset').disabled = byId('save-preset').disabled;
     const plan = getPlan(true);
-    const item = plannedByIndex.get(focus);
+    const items = plannedByIndex.get(focus) ?? [];
+    const item = items[0];
     const photo = photos[focus];
     if (byId('photo').getAttribute('src')!==imageURL(photo)) byId('photo').src=imageURL(photo);
     byId('photo').alt=photo.scene+'的示例照片';
@@ -514,14 +540,18 @@
     byId('input-info').textContent = version.hidden ? statusText(photo) : (!photo.online ? ' · 原片离线' : '');
     byId('name-label').textContent = manifest ? '清单项' : '文件名';
     byId('out-metadata').textContent = item?.metadata ?? '—';
-    byId('out-name').textContent = item && !validateSettings() ? item.name : '—';
+    byId('out-name').textContent = item && item.target !== 'unavailable' && !validateSettings() ? items.map(r => r.name).join(' / ') : '—';
     byId('out-facts').textContent = !item ? '未勾选' : validateSettings() ? '待修正设置'
-      : ['不匹配交付格式','按重名策略跳过'].includes(item.state) ? item.state : item.facts + (item.state === '待找回' ? ' · 待找回' : '');
+      : items.map(r => ['不匹配交付格式','按重名策略跳过'].includes(r.state) ? r.state : r.facts + (r.state === '待找回' ? ' · 待找回原片' : '')).join('；');
+    if (explicit && render && !validateSettings() && item?.target !== 'unavailable') byId('preview-kind').textContent = '构图预览 · SDR 代理，不代表 HDR 亮度';
+    if (item?.target === 'unavailable') byId('preview-kind').textContent = '资料库缩略图 · 无 HDR 母版';
     byId('reconnect').hidden = photo.online || manifest;
-    const {ready,missing,skipped} = planCounts;
-    byId('count').textContent = manifest ? '清单覆盖 ' + plan.length + ' 张' : '可交付 ' + ready + ' 张' + (missing ? ' · 待找回 ' + missing + ' 张' : '') + (skipped ? ' · 跳过 ' + skipped + ' 张' : '');
+    const {ready,missing,skipped,blocked} = planCounts;
+    const unit = explicit ? ' 项' : ' 张';
+    byId('count').textContent = manifest ? '清单覆盖 ' + plan.length + ' 张' : '可交付 ' + ready + unit + (missing ? ' · 待找回 ' + missing + unit : '') + (skipped ? ' · 跳过 ' + skipped + unit : '') + (blocked ? ' · 无 HDR 母版 ' + blocked + ' 张' : '');
     const button = byId('submit');
-    button.textContent = manifest ? '输出清单' : (missing ? '先' : '') + (render ? '导出' : '复制') + (missing ? '可用的 ' : ' ') + ready + ' 张';
+    const partial = missing || blocked;
+    button.textContent = manifest ? '输出清单' : (partial ? '先' : '') + (render ? '导出' : '复制') + (partial ? '可用的 ' : ' ') + ready + unit;
     if (selection.overLimit) {
       byId('count').textContent = '本批已勾选 ' + included.size.toLocaleString('zh-CN') + ' 张，单批上限 200 张';
       button.textContent = '请先调整选片';
@@ -659,7 +689,7 @@
       byId('preset').value = selection;
     }
     job = {id:crypto.randomUUID?.() ?? String(Date.now()),mode,folder,directory:folderNames[folder] + (mode === 'original' ? ' / RAWMaster精选' : ''),
-      recipe:mode === 'render' ? byId('format').selectedOptions[0].textContent+' · '+styleName(layout) : '原件清单',
+      recipe:mode === 'render' ? (sceneTarget() === 'legacy' ? byId('format') : byId('scene-target')).selectedOptions[0].textContent+' · '+styleName(layout) : '原件清单',
       settings:currentSettings(),items,running:true};
     if (mode === 'render') {
       PhotoDelivery.freeze(job);
@@ -676,7 +706,9 @@
   }
   byId('render').onclick = () => switchMode('render');
   byId('original').onclick = () => switchMode('original');
-  byId('preset').onchange = () => { presetStatus(''); loadPreset(); refresh(); };
+  byId('preset').onchange = () => { presetStatus(''); byId('scene-target').value = 'legacy'; byId('scene-fallback').checked = false; loadPreset(); refresh(); };
+  byId('scene-target').onchange = () => { byId('scene-fallback').checked = false; refresh(); };
+  byId('scene-fallback').onchange = refresh;
   byId('save-preset').onclick = () => { byId('preset-name').value = ''; byId('save-error').textContent=''; byId('save-dialog').showModal(); byId('preset-name').focus(); };
   byId('cancel-save').onclick = () => byId('save-dialog').close();
   byId('save-form').onsubmit = event => {

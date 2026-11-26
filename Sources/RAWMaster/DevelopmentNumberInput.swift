@@ -108,6 +108,7 @@ struct DevelopmentNumberInput: NSViewRepresentable {
     let range: ClosedRange<Double>
     let fractionDigits: Int
     let disabled: Bool
+    var integrated = false
     let invalidChanged: (Bool) -> Void
     @Environment(\.developmentNumberInputOwner) private var inputOwner
     @Environment(\.isEnabled) private var environmentEnabled
@@ -121,7 +122,15 @@ struct DevelopmentNumberInput: NSViewRepresentable {
     func makeCoordinator() -> Coordinator { Coordinator(presentation, owner: inputOwner) }
     func makeNSView(context: Context) -> NSTextField {
         let field = NSTextField()
-        field.isBordered = false; field.isBezeled = true; field.bezelStyle = .roundedBezel
+        field.isBordered = false
+        field.isBezeled = !integrated
+        if integrated {
+            field.drawsBackground = false
+            field.focusRingType = .none
+            field.cell?.focusRingType = .none
+        } else {
+            field.bezelStyle = .roundedBezel
+        }
         field.alignment = .right; field.isEditable = true; field.isSelectable = true
         field.maximumNumberOfLines = 1; field.cell?.usesSingleLineMode = true
         field.setContentHuggingPriority(.defaultLow, for: .horizontal)

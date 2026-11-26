@@ -7,10 +7,14 @@ import RAWMasterCore
 
 final class DevelopmentSpektrafilmTests: XCTestCase {
     // Keep the order of the independently developed photographic reference strips explicit.
-    private let looks: [DevelopmentPhotoFilterV3] = [.spektraPortra400Endura, .spektraVelvia100, .spektraVision250D2383]
+    private let looks: [DevelopmentPhotoFilterV3] = [
+        .spektraPortra400Endura, .spektraVelvia100, .spektraVision250D2383,
+        .spektraGold200UltraEndura, .spektraPortra800SupraEndura, .spektraEktar100Endura,
+        .spektraProvia100F, .spektraEktachrome100, .spektraVision500T2383
+    ]
     private let display = CGColorSpace(name: CGColorSpace.sRGB)!
     private let classicSHA = "0a8a0e9aa4fb7dacdf6ad20d12d5f24dda4132c4b7880acd7fab1c28fa6c61f9"
-    private let filmSHA = "4ba7b660e27a22f0d0cbeb2b51792b99575b0999e78726990ca02e3f0c4cc7e6"
+    private let filmSHA = "73c220dfae5e1a88abf219f48977c58ac7014f70f57ee7e77342b0c4a84644ed"
 
     private func fixtures() throws -> URL { try XCTUnwrap(Bundle.module.resourceURL).appending(path: "Fixtures") }
 
@@ -35,7 +39,7 @@ final class DevelopmentSpektrafilmTests: XCTestCase {
         return Float(value <= 0.04045 ? value / 12.92 : pow((value + 0.055) / 1.055, 2.4))
     }
 
-    func testThreeFilmEndpointsAgainstDirectScanAndContinuousLinearAmount() throws {
+    func testAllNineFilmEndpointsAgainstDirectScanAndContinuousLinearAmount() throws {
         struct Reference: Decodable { let inputSRGB8: [[Int]]; let expectedLinearRGB: [String: [[Float]]] }
         let url = try fixtures().appending(path: "spektrafilm-v1-reference.json")
         let reference = try JSONDecoder().decode(Reference.self, from: Data(contentsOf: url))
@@ -102,9 +106,9 @@ final class DevelopmentSpektrafilmTests: XCTestCase {
         let evidence = ProcessInfo.processInfo.environment["RAWMASTER_SPEKTRAFILM_OUTPUT"].map { URL(fileURLWithPath: $0, isDirectory: true) }
         if let evidence { try FileManager.default.createDirectory(at: evidence, withIntermediateDirectories: true) }
         for photo in ["person", "snow"] {
-            let url = try fixtures().appending(path: "Spektrafilm/\(photo).png")
+            let url = try fixtures().appending(path: "Spektrafilm/\(photo)-catalog-v2.png")
             let strips = try XCTUnwrap(CIImage(contentsOf: url))
-            XCTAssertEqual(strips.extent.size, CGSize(width: 640, height: 240))
+            XCTAssertEqual(strips.extent.size, CGSize(width: CGFloat(looks.count + 1) * size.width, height: size.height))
             let input = strips.cropped(to: size)
             var native = input
             for (index, look) in looks.enumerated() {
@@ -121,7 +125,12 @@ final class DevelopmentSpektrafilmTests: XCTestCase {
                 XCTAssertLessThan(diff.mean, 0.25, "\(photo), \(look)")
                 XCTAssertLessThanOrEqual(diff.p99, 1, "\(photo), \(look)")
                 XCTAssertLessThanOrEqual(diff.max, 2, "\(photo), \(look)")
-                if evidence != nil { native = output.transformed(by: .init(translationX: offset, y: 0)).composited(over: native) }
+                if evidence != nil {
+                    // Evidence must not retain nine live 4 MiB LUT graphs under the shared 32 MiB cap.
+                    let pixels = CIImage(bitmapData: Data(actual), bytesPerRow: Int(size.width) * 4,
+                        size: size.size, format: .RGBA8, colorSpace: display)
+                    native = pixels.transformed(by: .init(translationX: offset, y: 0)).composited(over: native)
+                }
             }
             if let evidence {
                 try ctx.writePNGRepresentation(of: native, to: evidence.appending(path: "\(photo)-native.png"), format: .RGBA8, colorSpace: display)

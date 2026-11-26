@@ -183,6 +183,61 @@ final class PreviewSettledTransportTests: XCTestCase {
     await service.closeAll()
   }
 
+  func testFreeZoomSamplesTheCanonicalImageAtTheRequestedDensity() async throws {
+    let (root, source) = try fixture()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let service = DevelopmentPreviewService(policy: .init(interactiveEvaluation: .proxyV1, settledTransport: .viewport))
+    let lease = try await service.open(source: .raw(source)), consumer = PreviewConsumerID()
+    let window = CGRect(x: 0.2, y: 0.1, width: 0.5, height: 0.6)
+    func render(_ revision: UInt64, scale: CGFloat, window: CGRect?) async throws -> DevelopmentPreviewFrame {
+      try await service.render(.init(sessionID: lease.id, sourceGeneration: lease.sourceGeneration, consumerID: consumer,
+        role: .primary, revision: revision, recipe: .init(adjustmentsV3: .init()), quality: .detail,
+        viewport: .init(maxPixel: 0, window: window, detailScale: scale)))
+    }
+    let full = try await render(1, scale: 0.5, window: nil)
+    let crop = try await render(2, scale: 0.5, window: window)
+    let closer = try await render(3, scale: 0.8, window: window)
+    XCTAssertEqual(full.canonicalPixelSize, CGSize(width: 3000, height: 2000))
+    XCTAssertEqual(full.outputPixelSize, CGSize(width: 1500, height: 1000))
+    XCTAssertEqual(crop.outputPixelSize, CGSize(width: 750, height: 600))
+    XCTAssertEqual(closer.outputPixelSize, CGSize(width: 1200, height: 960))
+    XCTAssertNil(crop.approximation)
+    XCTAssertNil(closer.approximation)
+    XCTAssertNotEqual(crop.outputKey, closer.outputKey)
+    let fullImage = try XCTUnwrap(full.image.cgImage(forProposedRect: nil, context: nil, hints: nil))
+    let expected = try XCTUnwrap(fullImage.cropping(to: CGRect(x: 300, y: 100, width: 750, height: 600)))
+    XCTAssertEqual(try bytes(crop.image), try bytes(NSImage(cgImage: expected, size: .zero)))
+    await service.closeAll()
+  }
+
+  func testOptInSensorRAWZoomSamplesTheRequestedDensity() async throws {
+    guard let path = ProcessInfo.processInfo.environment["RAWMASTER_PRESENTED_CANVAS_SOURCE"] else {
+      throw XCTSkip("Set RAWMASTER_PRESENTED_CANVAS_SOURCE to a RAW fixture")
+    }
+    let file = URL(fileURLWithPath: path)
+    let size = try XCTUnwrap(FileManager.default.attributesOfItem(atPath: file.path)[.size] as? NSNumber)
+    let source = EditingSourceSnapshot(projectID: "zoom", assetID: "sensor-raw",
+      contentSHA256: try RenderFiles.hash(file), byteCount: size.int64Value,
+      admissionFingerprint: "zoom", sourceLocation: file)
+    XCTAssertTrue(PhotoRenderer.rawExtensions.contains(file.pathExtension.lowercased()))
+    let service = DevelopmentPreviewService(policy: .init(interactiveEvaluation: .proxyV1, settledTransport: .viewport))
+    let lease = try await service.open(source: .raw(source)), consumer = PreviewConsumerID()
+    let window = CGRect(x: 0.25, y: 0.25, width: 0.5, height: 0.5)
+    do {
+      let detail = try await service.render(.init(sessionID: lease.id, sourceGeneration: lease.sourceGeneration,
+        consumerID: consumer, role: .primary, revision: 1, recipe: .init(adjustmentsV3: .init()), quality: .detail,
+        viewport: .init(maxPixel: 0, window: window, detailScale: 0.65)))
+      XCTAssertEqual(detail.canonicalPixelSize, lease.orientedNativeSize)
+      XCTAssertFalse(detail.approximate)
+      let placement = try XCTUnwrap(detail.window)
+      XCTAssertEqual(detail.outputPixelSize.width, detail.canonicalPixelSize.width * 0.65 * placement.width, accuracy: 1)
+      XCTAssertEqual(detail.outputPixelSize.height, detail.canonicalPixelSize.height * 0.65 * placement.height, accuracy: 1)
+      XCTAssertGreaterThan(Set(try bytes(detail.image)).count, 32)
+      print("Sensor RAW zoom: \(detail.canonicalPixelSize) → \(detail.outputPixelSize) visible at 65%")
+      await service.closeAll()
+    } catch { await service.closeAll(); throw error }
+  }
+
   func testNonDetailRequestsRejectAWindow() async throws {
     let (root, source) = try fixture()
     defer { try? FileManager.default.removeItem(at: root) }

@@ -788,6 +788,9 @@ small {
   height: 150px;
 }
 .filmstrip {
+  --filmstrip-card-height: 64px;
+  --filmstrip-group-inset: 4px;
+  --filmstrip-outline-height: calc(var(--filmstrip-card-height) + 2 * var(--filmstrip-group-inset));
   display: flex;
   align-items: center;
   min-width: 0;
@@ -800,20 +803,67 @@ small {
   align-items: center;
   flex: none;
   gap: 5px;
-  min-height: 70px;
-  padding: 2px 5px;
+  height: var(--filmstrip-outline-height);
+  padding: 0 5px;
   border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
   border-radius: 8px;
   background: color-mix(in srgb, var(--accent) 6%, var(--inset));
 }
-.filmstrip .filmstrip-label {
-  max-width: 146px;
-  padding: 4px 2px;
-  overflow: hidden;
+.filmstrip-heading {
+  --heading-inset: 2px;
+  --heading-chevron: 12px;
+  --heading-gap: 3px;
+  width: 78px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--accent);
+  font-size: 11px;
+}
+.filmstrip-heading button {
+  height: 22px;
+  min-height: 0;
+  padding: 0;
   background: transparent;
   border-color: transparent;
   color: var(--accent);
-  font-size: 11px;
+}
+.filmstrip-heading button:hover {
+  background: var(--inset);
+}
+.filmstrip-heading .filmstrip-toggle {
+  width: 100%;
+  justify-content: flex-start;
+  gap: var(--heading-gap);
+  padding-inline: var(--heading-inset);
+  font-size: inherit;
+}
+.filmstrip-toggle .icon {
+  flex: none;
+  width: var(--heading-chevron);
+  height: var(--heading-chevron);
+}
+.filmstrip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.filmstrip-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline-start: calc(1px + var(--heading-inset) + var(--heading-chevron) + var(--heading-gap));
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.filmstrip-settings {
+  width: 24px;
+}
+.filmstrip-settings .icon {
+  width: 14px;
+  height: 14px;
 }
 .filmstrip-photo {
   display: grid;
@@ -821,10 +871,14 @@ small {
   gap: 2px;
   flex: none;
   width: 78px;
-  height: 64px;
+  height: var(--filmstrip-card-height);
   padding: 2px 3px;
   background: var(--inset);
   font-size: 9px;
+}
+.filmstrip > .filmstrip-photo {
+  height: var(--filmstrip-outline-height);
+  padding-block: calc(2px + var(--filmstrip-group-inset));
 }
 .filmstrip-photo.chosen {
   border-color: var(--accent);
@@ -972,29 +1026,95 @@ dialog::backdrop {
   pointer-events: none;
 }
 .range {
+  position: relative;
   display: grid;
-  gap: 2px;
-  margin: 14px 0;
-}
-.range-readout {
-  display: flex;
+  grid-template-columns: minmax(0, 1fr) 64px;
   align-items: center;
-  justify-content: space-between;
-  font-size: 12px;
+  height: 26px;
+  margin: 0 0 10px;
+  border-radius: 5px;
+  background: color-mix(in srgb, currentColor 7%, transparent);
+  isolation: isolate;
 }
-.range-readout input[type='number'] {
-  width: 62px;
-  min-height: 23px;
-  height: 23px;
-  padding: 1px 4px;
-  text-align: right;
-  font: 11px ui-monospace, monospace;
+.range-ticks {
+  position: absolute;
+  inset: calc(100% + 1px) 1px auto;
+  height: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  visibility: hidden;
+  pointer-events: none;
+}
+.range:hover:has(input[type='range']:enabled) .range-ticks,
+.range:has(input[type='range']:focus-visible) .range-ticks { visibility: visible; }
+.range-ticks i { width: 1px; height: 2px; background: currentColor; opacity: .33; }
+.range-ticks i:nth-child(5n + 1) { height: 4px; opacity: .58; }
+.range::before, .range::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+.range::before {
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to right, transparent var(--fill-start),
+    color-mix(in srgb, currentColor 12%, transparent) var(--fill-start) calc(var(--fill-start) + var(--fill-size)),
+    transparent calc(var(--fill-start) + var(--fill-size)));
+  z-index: -1;
+}
+.range::after {
+  left: clamp(0px, var(--fill-end), calc(100% - 1px));
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: currentColor;
+  opacity: .34;
+}
+.range-name {
+  grid-column: 1;
+  min-width: 0;
+  padding-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  pointer-events: none;
 }
 .range > input[type='range'] {
+  appearance: none;
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
   padding: 0;
-  height: 15px;
+  border: 0;
+  background: transparent;
+  cursor: ew-resize;
+  touch-action: none;
 }
+.range > input[type='range']::-webkit-slider-thumb { appearance: none; }
+.range > input[type='number'] {
+  appearance: textfield;
+  z-index: 1;
+  grid-column: 2;
+  width: 100%;
+  min-height: 0;
+  height: 26px;
+  padding: 0 8px 0 3px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: right;
+  font: 12px system-ui, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.range > input[type='number']::-webkit-inner-spin-button { appearance: none; }
+.range > input[type='number']:is(:hover, :focus) { background: var(--panel); }
+.range > input[aria-invalid='true'] { border-color: var(--warn); }
+.range:has(input[type='range']:disabled) { opacity: .55; }
+.adjustment-section fieldset:disabled .range { opacity: 1; }
 .version-row small {
   display: block;
   color: var(--accent);

@@ -1,0 +1,31 @@
+{
+  "sha256": "ccdb9da0f5f1afa9ac465a4cad7d8f51ef88a1535c50fd2c38d2ad364b649cc6",
+  "ffprobe": {
+    "codec_name": "av1",
+    "width": 128,
+    "height": 64,
+    "pix_fmt": "yuv420p10le",
+    "color_range": "pc",
+    "color_space": "bt709",
+    "color_transfer": "smpte2084",
+    "color_primaries": "bt2020",
+    "side_data_list": [
+      {}
+    ]
+  },
+  "swatches": [
+    {
+      "expectedPQ": 0.32983699440956116,
+      "decodedPQMean": 0.3291065842679484,
+      "maxAbsolutePQError": 0.0007304101416127362,
+      "decodedNits": 14.38431830630937
+    },
+    {
+      "expectedPQ": 0.6839182376861572,
+      "decodedPQMean": 0.6816510261692226,
+      "maxAbsolutePQError": 0.002267211516934653,
+      "decodedNits": 524.0262083600697
+    }
+  ],
+  "decoder": "ffmpeg RGB48LE, interior crops"
+}

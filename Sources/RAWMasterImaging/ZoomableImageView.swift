@@ -182,6 +182,9 @@ public struct ZoomableImageView: NSViewRepresentable {
     public var image: NSImage?
     private weak var borrowedImage: NSImage?
     private weak var borrowedComparisonImage: NSImage?
+    private weak var borrowedFallbackImage: NSImage?
+    private weak var borrowedComparisonFallback: NSImage?
+    private var comparisonWindow: CGRect?
     private var comparisonPresentation = ImageComparisonPresentation()
     public var actualPixels: Bool
     public var lowLatency = false
@@ -189,6 +192,7 @@ public struct ZoomableImageView: NSViewRepresentable {
     public var backgroundColor: NSColor
     public var onActualPixelsChange: ((Bool) -> Void)?
     public var onRequestDetail: (() -> Void)?
+    public var onFreeZoom: (@MainActor (Bool, ImageCanvasViewportSnapshot) -> Void)?
     public var frameID: UUID?
     public var onFrameDrawn: (@MainActor @Sendable (ImageFrameDrawEvent) -> Void)?
     public var onCanvasDiagnostic: (@MainActor (ImageCanvasDiagnosticEvent) -> Void)?
@@ -234,6 +238,11 @@ public struct ZoomableImageView: NSViewRepresentable {
         view.lowLatency = enabled
         return view
     }
+    public func trackingFreeZoom(_ callback: @escaping @MainActor (Bool, ImageCanvasViewportSnapshot) -> Void) -> Self {
+        var view = self
+        view.onFreeZoom = callback
+        return view
+    }
     public func fitting(around insets: NSEdgeInsets) -> Self {
         var view = self
         view.fitInsets = insets
@@ -242,10 +251,18 @@ public struct ZoomableImageView: NSViewRepresentable {
     public func beforeAfter(_ image: NSImage?, split: CGFloat) -> Self {
         comparison(image, presentation: .init(mode: .wipeHorizontal, amount: split))
     }
-    public func comparison(_ image: NSImage?, presentation: ImageComparisonPresentation) -> Self {
+    public func comparison(_ image: NSImage?, presentation: ImageComparisonPresentation,
+                           window: CGRect? = nil, fallback: NSImage? = nil) -> Self {
         var view = self
         view.borrowedComparisonImage = image
+        view.borrowedComparisonFallback = fallback
+        view.comparisonWindow = window
         view.comparisonPresentation = presentation
+        return view
+    }
+    public func fallbackImage(_ image: NSImage?) -> Self {
+        var view = self
+        view.borrowedFallbackImage = image
         return view
     }
     public func makeNSView(context: Context) -> ImageCanvas {
@@ -260,14 +277,10 @@ public struct ZoomableImageView: NSViewRepresentable {
         let image = self.image ?? borrowedImage
         canvas.onTransform = { transform = $0 }
         canvas.onActualPixelsChange = onActualPixelsChange
-        canvas.onRequestDetail = onRequestDetail
-        // Publish the visible window before requesting, so the request already carries it.
-        canvas.onVisibleWindow = { visible in
-            guard let onVisibleWindow else { return }
-            onVisibleWindow(visible)
-        }
-        canvas.onRequestDetail = {
-            onVisibleWindow?(canvas.visibleCanvasWindow)
+        canvas.onFreeZoom = onFreeZoom
+        canvas.onVisibleWindow = onVisibleWindow
+        canvas.onRequestDetail = { [weak canvas] in
+            if let canvas { onVisibleWindow?(canvas.visibleCanvasWindow) }
             onRequestDetail?()
         }
         canvas.onDoubleClick = onDoubleClick
@@ -276,7 +289,8 @@ public struct ZoomableImageView: NSViewRepresentable {
         canvas.update(image: image, actualPixels: actualPixels, transform: transform, backgroundColor: backgroundColor,
                       lowLatency: lowLatency, fitInsets: fitInsets,
                       comparisonImage: borrowedComparisonImage, comparison: comparisonPresentation,
-                      window: window, canvasPixelSize: canvasPixelSize)
+                      window: window, canvasPixelSize: canvasPixelSize, fallbackImage: borrowedFallbackImage,
+                      comparisonWindow: comparisonWindow, comparisonFallback: borrowedComparisonFallback)
         if onCanvasDiagnostic != nil || canvas.hasCanvasDiagnostic {
             canvas.updateCanvasDiagnostic(onCanvasDiagnostic, installedFrame: image == nil ? nil : frameID)
         }
@@ -320,6 +334,9 @@ public final class ImageCanvas: NSView {
     }
     private var image: NSImage?
     private var comparisonImage: NSImage?
+    private var fallbackImage: NSImage?
+    private var comparisonFallback: NSImage?
+    private var comparisonWindow: CGRect?
     private var comparison = ImageComparisonPresentation()
     var invalidationObserverForTesting: (() -> Void)?
     private var backgroundColor: NSColor = .controlBackgroundColor
@@ -333,6 +350,9 @@ public final class ImageCanvas: NSView {
     var onTransform: ((ImageTransform) -> Void)?
     var onActualPixelsChange: ((Bool) -> Void)?
     var onRequestDetail: (() -> Void)?
+    var onFreeZoom: (@MainActor (Bool, ImageCanvasViewportSnapshot) -> Void)?
+    private var zoomStart: (transform: ImageTransform, actualPixels: Bool)?
+    private var zoomEndTask: Task<Void, Never>?
     var onDoubleClick: (() -> Void)?
     private var onPointerEvent: (@MainActor (ImageCanvasPointerEvent) -> Bool)?
     private var onViewportChange: (@MainActor (ImageCanvasViewportSnapshot) -> Void)?
@@ -373,7 +393,8 @@ public final class ImageCanvas: NSView {
                 backgroundColor: NSColor = .controlBackgroundColor, lowLatency: Bool = false,
                 fitInsets: NSEdgeInsets = .zero, comparisonImage: NSImage? = nil,
                 comparisonSplit: CGFloat = 0.5, comparison requestedComparison: ImageComparisonPresentation? = nil,
-                window: CGRect? = nil, canvasPixelSize: CGSize? = nil) {
+                window: CGRect? = nil, canvasPixelSize: CGSize? = nil, fallbackImage: NSImage? = nil,
+                comparisonWindow: CGRect? = nil, comparisonFallback: NSImage? = nil) {
         let enteringActual = actualPixels && !self.actualPixels
         var resolvedTransform = transform
         if actualPixels { resolvedTransform.physicalMagnification = 1 }
@@ -384,8 +405,12 @@ public final class ImageCanvas: NSView {
         let changed = self.image !== image || self.actualPixels != actualPixels
             || self.transform != resolvedTransform || self.lowLatency != lowLatency || insetsChanged
             || self.comparisonImage !== comparisonImage || self.comparison != comparison
-            || geometryChanged
+            || self.fallbackImage !== fallbackImage || self.comparisonFallback !== comparisonFallback
+            || self.comparisonWindow != comparisonWindow || geometryChanged
         self.image = image
+        self.fallbackImage = fallbackImage
+        self.comparisonFallback = comparisonFallback
+        self.comparisonWindow = comparisonWindow
         let backgroundChanged = !self.backgroundColor.isEqual(backgroundColor)
         if resolvedBackgroundColor == nil || backgroundChanged {
             self.backgroundColor = backgroundColor
@@ -406,7 +431,10 @@ public final class ImageCanvas: NSView {
         if enteringActual {
             let next = self.transform
             // All panes publish the same physical value, never their different fit scales.
-            DispatchQueue.main.async { [weak self] in self?.onTransform?(next) }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.actualPixels, self.transform == next else { return }
+                self.onTransform?(next)
+            }
         }
     }
     public override func layout() { super.layout(); needsDisplay = true; publishViewport() }
@@ -460,12 +488,16 @@ public final class ImageCanvas: NSView {
         // Drop only this canvas's ownership. Other presentation aliases keep their bytes.
         image = nil
         comparisonImage = nil
+        fallbackImage = nil; comparisonFallback = nil; comparisonWindow = nil
         frameID = nil
         lastDrawnFrameID = nil
         onFrameDrawn = nil
         onTransform = nil
         onActualPixelsChange = nil
         onRequestDetail = nil
+        onFreeZoom = nil
+        onVisibleWindow = nil
+        zoomEndTask?.cancel(); zoomEndTask = nil; zoomStart = nil
         onDoubleClick = nil
         PreviewQAMainPresentationWitness.canvasCleared(store: qaStore, canvasID: qaCanvas, frameID: qaFrame,
             ticketID: qaTicket, fieldsCleared: image == nil && frameID == nil && lastDrawnFrameID == nil &&
@@ -511,7 +543,7 @@ public final class ImageCanvas: NSView {
     public override func mouseEntered(with event: NSEvent) { publishHover(event, inside: true); super.mouseEntered(with: event) }
     public override func mouseExited(with event: NSEvent) { publishHover(event, inside: false); super.mouseExited(with: event) }
     public override func flagsChanged(with event: NSEvent) { publishHover(event, inside: true); super.flagsChanged(with: event) }
-    private var viewportSnapshot: ImageCanvasViewportSnapshot {
+    var viewportSnapshot: ImageCanvasViewportSnapshot {
         .init(frameID:frameID,viewportSize:bounds.size,imagePixelSize:pixelSize,imageRect:imageRect(transform),backingScale:backing,transform:transform)
     }
     private func publishViewport() {
@@ -579,8 +611,26 @@ public final class ImageCanvas: NSView {
             ImagePerformanceTelemetry.shared.end(token, pixelCount: area)
         }
         if let comparisonImage {
-            drawComparison(current: image, reference: comparisonImage, destination: destination)
-        } else if Self.drawsSharedRaster, let raster = PreviewSharedImageBridge.canvasRaster(for: image), let graphics = NSGraphicsContext.current {
+            drawComparison(current: image, reference: comparisonImage, canvas: canvas)
+        } else {
+            drawFallback(fallbackImage, under: destination, canvas: canvas)
+            drawMainRaster(image, in: destination)
+        }
+        if let (sink, canvas, frame) = diagnosticSnapshot, frame != lastDiagnosticDrawnFrameID {
+            lastDiagnosticDrawnFrameID = frame
+            sink(.drawn(canvas: canvas, frame: frame, began: began, returned: DispatchTime.now().uptimeNanoseconds))
+        }
+        if let frameID, frameID != lastDrawnFrameID, let callback = onFrameDrawn {
+            lastDrawnFrameID = frameID
+            let event = ImageFrameDrawEvent(frameID: frameID, drawBeganUptimeNanoseconds: began,
+                drawReturnedUptimeNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                imagePixelWidth: Int(pixelSize.width), imagePixelHeight: Int(pixelSize.height))
+            // AppKit draw return only; this is not WindowServer presentation or input-to-photon.
+            DispatchQueue.main.async { callback(event) }
+        }
+    }
+    private func drawMainRaster(_ image: NSImage, in destination: CGRect) {
+        if Self.drawsSharedRaster, let raster = PreviewSharedImageBridge.canvasRaster(for: image), let graphics = NSGraphicsContext.current {
             // NSView and offscreen/printing contexts can use opposite coordinate systems.
             let cg = graphics.cgContext
             cg.saveGState()
@@ -597,21 +647,26 @@ public final class ImageCanvas: NSView {
             image.draw(in: destination, from: .zero, operation: .sourceOver, fraction: 1,
                        respectFlipped: true, hints: nil)
         }
-        if let (sink, canvas, frame) = diagnosticSnapshot, frame != lastDiagnosticDrawnFrameID {
-            lastDiagnosticDrawnFrameID = frame
-            sink(.drawn(canvas: canvas, frame: frame, began: began, returned: DispatchTime.now().uptimeNanoseconds))
-        }
-        if let frameID, frameID != lastDrawnFrameID, let callback = onFrameDrawn {
-            lastDrawnFrameID = frameID
-            let event = ImageFrameDrawEvent(frameID: frameID, drawBeganUptimeNanoseconds: began,
-                drawReturnedUptimeNanoseconds: DispatchTime.now().uptimeNanoseconds,
-                imagePixelWidth: Int(pixelSize.width), imagePixelHeight: Int(pixelSize.height))
-            // AppKit draw return only; this is not WindowServer presentation or input-to-photon.
-            DispatchQueue.main.async { callback(event) }
-        }
     }
-    private func drawComparison(current: NSImage, reference: NSImage, destination: CGRect) {
+    private func drawFallback(_ image: NSImage?, under destination: CGRect, canvas: CGRect,
+                              operation: NSCompositingOperation = .sourceOver, fraction: CGFloat = 1) {
+        let visible = canvas.intersection(bounds)
+        guard let image, !visible.isEmpty, !destination.contains(visible) else { return }
+        let outside = NSBezierPath(rect: visible)
+        let overlap = destination.intersection(visible)
+        if !overlap.isEmpty { outside.appendRect(overlap) }
+        outside.windingRule = .evenOdd
+        NSGraphicsContext.saveGraphicsState()
+        outside.addClip()
+        image.draw(in: canvas, from: .zero, operation: operation, fraction: fraction, respectFlipped: true, hints: nil)
+        NSGraphicsContext.restoreGraphicsState()
+    }
+    private func drawComparison(current: NSImage, reference: NSImage, canvas: CGRect) {
         func draw(_ image: NSImage, operation: NSCompositingOperation = .sourceOver, fraction: CGFloat = 1) {
+            let isCurrent = image === current
+            let destination = ImageViewportGeometry.windowRect(isCurrent ? frameWindow : comparisonWindow, in: canvas)
+            drawFallback(isCurrent ? fallbackImage : comparisonFallback, under: destination, canvas: canvas,
+                         operation: operation, fraction: fraction)
             image.draw(in: destination, from: .zero, operation: operation, fraction: fraction,
                        respectFlipped: true, hints: nil)
         }
@@ -638,7 +693,7 @@ public final class ImageCanvas: NSView {
         case .difference:
             // Explicit display-space diagnostic: equal displayed pixels become black.
             NSGraphicsContext.saveGraphicsState()
-            destination.clip()
+            canvas.clip()
             draw(reference)
             draw(current, operation: .difference)
             NSGraphicsContext.restoreGraphicsState()
@@ -650,7 +705,7 @@ public final class ImageCanvas: NSView {
             for row in 0..<rows {
                 for column in 0..<columns where (row + column).isMultiple(of: 2) {
                     let tileRect = CGRect(x: CGFloat(column) * tile, y: CGFloat(row) * tile,
-                                          width: tile, height: tile).intersection(destination)
+                                          width: tile, height: tile).intersection(canvas)
                     guard !tileRect.isNull, tileRect.width > 0, tileRect.height > 0 else { continue }
                     NSGraphicsContext.saveGraphicsState()
                     tileRect.clip()
@@ -727,24 +782,72 @@ public final class ImageCanvas: NSView {
         var next = transform
         let leavingActualPixels = actualPixels
         if let physical = next.physicalMagnification {
-            next.physicalMagnification = max(0.025, min(16, physical * factor))
+            if onFreeZoom != nil {
+                next.scale = max(1, min(64, pointScale(transform) * factor / pointScale(.init())))
+                next.physicalMagnification = nil
+            } else {
+                next.physicalMagnification = max(0.025, min(16, physical * factor))
+            }
         } else { next.scale = max(1, min(64, next.scale * factor)) }
         let width = pixelSize.width * pointScale(next), height = pixelSize.height * pointScale(next)
         next.centerX = normalizedX - (point.x - bounds.midX) / max(1, width)
         next.centerY = normalizedY - (point.y - bounds.midY) / max(1, height)
         actualPixels = false
-        publish(next)
         if leavingActualPixels { onActualPixelsChange?(false) }
-        if next.scale > 1 || next.physicalMagnification != nil { onRequestDetail?() }
+        publish(next)
+        if onFreeZoom == nil, next.scale > 1 || next.physicalMagnification != nil { onRequestDetail?() }
+    }
+    func handleZoom(factor: CGFloat, at point: NSPoint, phase: NSEvent.Phase) {
+        guard onFreeZoom != nil else {
+            if factor != 1 { zoom(by: factor, at: point) }
+            return
+        }
+        if phase.contains(.began) || (zoomStart == nil && factor != 1) {
+            zoomStart = (transform, actualPixels)
+        }
+        if phase.contains(.cancelled) {
+            if let start = zoomStart, start.transform != transform {
+                actualPixels = start.actualPixels
+                publish(start.transform)
+                if actualPixels { onActualPixelsChange?(true) }
+            }
+            finishFreeZoom()
+            return
+        }
+        if factor != 1 { zoom(by: factor, at: point) }
+        if phase.contains(.ended) {
+            finishFreeZoom()
+        } else if zoomStart != nil {
+            onFreeZoom?(true, viewportSnapshot)
+            if phase.isEmpty {
+                zoomEndTask?.cancel()
+                zoomEndTask = Task { @MainActor [weak self] in
+                    do { try await Task.sleep(for: .milliseconds(140)) } catch { return }
+                    self?.finishFreeZoom()
+                }
+            }
+        }
+    }
+    private func finishFreeZoom() {
+        zoomEndTask?.cancel(); zoomEndTask = nil
+        guard zoomStart != nil else { return }
+        zoomStart = nil
+        onFreeZoom?(false, viewportSnapshot)
     }
     public override func magnify(with event: NSEvent) {
         cancelPointer()
-        zoom(by: max(0.1, 1 + event.magnification), at: convert(event.locationInWindow, from: nil))
+        handleZoom(factor: max(0.1, 1 + event.magnification), at: convert(event.locationInWindow, from: nil), phase: event.phase)
+    }
+    public override func endGesture(with event: NSEvent) {
+        finishFreeZoom()
+        super.endGesture(with: event)
     }
     public override func scrollWheel(with event: NSEvent) {
         cancelPointer()
         if !event.hasPreciseScrollingDeltas || event.modifierFlags.contains(.option) {
-            zoom(by: exp(event.scrollingDeltaY * 0.035), at: convert(event.locationInWindow, from: nil))
+            if event.momentumPhase.isEmpty {
+                handleZoom(factor: exp(event.scrollingDeltaY * 0.035), at: convert(event.locationInWindow, from: nil), phase: event.phase)
+            }
         } else {
             let rect = imageRect(transform)
             var next = transform

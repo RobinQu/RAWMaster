@@ -251,9 +251,9 @@ final class DevelopmentThumbnailTests:XCTestCase {
     do {
       let _:DevelopmentThumbnailReadyLease = try await withCheckedThrowingContinuation{continuation in
         let batch=ThumbnailBatch(request:r,key:"actual-tiny-source",source:binding,progress:{_ in},continuation:continuation,gate:.init())
-        let hook=ThumbnailSettledHook(batch:batch,native:native,ledger:ledger,device:device,contextOwner:contextOwner)
-        defer{hook.take()?.surface.retire();batch.retireTiles()}
         do {
+          let hook=try ThumbnailSettledHook(batch:batch,native:native,ledger:ledger,device:device,contextOwner:contextOwner)
+          defer{hook.take()?.surface.retire();batch.retireTiles()}
           try autoreleasepool {
             _ = try native.render(recipe:original,maxPixel:128,thumbnailNativeSink:hook.consume)
             if let failure=hook.takeFailure(){throw failure}

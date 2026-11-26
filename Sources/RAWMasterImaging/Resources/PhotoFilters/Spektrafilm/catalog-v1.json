@@ -74,8 +74,8 @@
   "inputICCsha256": "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e",
   "alphaPolicy": "source-alpha-preserved/lowalpha-1over65535-bypass",
   "hdrPolicy": "boundary-residual-v1",
-  "sourceBindingsSHA256": "0d67e28c7e55f49ca680b566985af4cb12ea7cb2f61bc7cf154b4308c021281f",
-  "builderSHA256": "048c120eff1e4a2ccdb2b09af4a681b74b359ac75c107ac8fa3198318d89e816",
+  "sourceBindingsSHA256": "e5ffaff983ccf2cfda7e06b8558ffa5b1682ec0bbcded3728daa33a3ae327403",
+  "builderSHA256": "e3b5de08df00af6d43e01f4f48192fc523bbcdbb28310aa309123d8d4363c934",
   "looks": [
     {
       "id": "spektraPortra400Endura",
@@ -107,6 +107,72 @@
           "byteCount": 4194304,
           "intensityPercent": 100,
           "sha256": "a67661da29719772555418543dd6a046c390d7c183422578cf792541d248e128"
+        }
+      ]
+    },
+    {
+      "id": "spektraGold200UltraEndura",
+      "planes": [
+        {
+          "file": "spektraGold200UltraEndura-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "45034a71c677e4c1c140f728f9844fb55a0e770c9dbce7bd58fb2c40e4e1e84d"
+        }
+      ]
+    },
+    {
+      "id": "spektraPortra800SupraEndura",
+      "planes": [
+        {
+          "file": "spektraPortra800SupraEndura-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "656d76e734b859fd7017553e21dc6c5b20c77d9ca04d0059e5d3027cfa068b28"
+        }
+      ]
+    },
+    {
+      "id": "spektraEktar100Endura",
+      "planes": [
+        {
+          "file": "spektraEktar100Endura-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "236271a93b7202798fb53d05e3709266c8d9e390c66a631cde0866e03790c297"
+        }
+      ]
+    },
+    {
+      "id": "spektraProvia100F",
+      "planes": [
+        {
+          "file": "spektraProvia100F-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "eaf79911b90ea70be9b19acc4685d1180c345736e3aae0d1754c3d26b3b20041"
+        }
+      ]
+    },
+    {
+      "id": "spektraEktachrome100",
+      "planes": [
+        {
+          "file": "spektraEktachrome100-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "9367dce9dec365ed1edfd1f819a4eed2e8c2c1973613ecd63efdaee322563209"
+        }
+      ]
+    },
+    {
+      "id": "spektraVision500T2383",
+      "planes": [
+        {
+          "file": "spektraVision500T2383-100.delta64.rgba32f",
+          "byteCount": 4194304,
+          "intensityPercent": 100,
+          "sha256": "05251d28c2957998c8d22fa2f1286ade33384a01bd0f00d39c60710fcbcfcafc"
         }
       ]
     }

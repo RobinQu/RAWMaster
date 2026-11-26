@@ -3,6 +3,13 @@ import CoreImage
 import Metal
 import RAWMasterCore
 
+struct ThumbnailProxyInput: Sendable {
+  let fingerprint: String
+  let source: DevelopmentLocalEditSourceBinding
+  let generation: UInt64
+  let settledBakedEV: Float
+}
+
 extension PreviewNativeSource {
   /// Closed native-input key. Suffix recipe/summary changes do not reopen RAW; native WB/EV/NR do.
   func thumbnailInputFingerprint(recipe:DevelopmentRecipe,source:DevelopmentLocalEditSourceBinding,generation:UInt64)throws->String {
@@ -25,21 +32,30 @@ extension PreviewNativeSource {
       encoding:DevelopmentThumbnailEngine.version,nativeExposure:params?.exposure.bitPattern,nativeWB:params?.whiteBalance,
       nativeNR:hasRAWFilter ? p.noiseReduction:nil))
   }
-  /// Quiet cold preparation is ONE step for a native-input key, never one decode per candidate.
-  /// A settled hook may pass its current native image instead, without retaining that graph here.
-  func prepareThumbnailProxy(recipe:DevelopmentRecipe,source:DevelopmentLocalEditSourceBinding,generation:UInt64,
-                             ledger:ThumbnailLedger,device:MTLDevice,contextOwner:ThumbnailWorkerContextV1? = nil,settledNativeImage:CIImage?=nil,
-                             interest:()->Bool={true})throws->ThumbnailProxy {
-    try validateCaptureAuthority();guard interest()else{throw DevelopmentThumbnailError.cancelled}
-    let start=DispatchTime.now().uptimeNanoseconds,key=try thumbnailInputFingerprint(recipe:recipe,source:source,generation:generation)
-    let p=recipe.adjustmentsV3!
-    var created:ThumbnailSurface?
-    do {
-    let result=try DevelopmentThumbnailEngine.withContext(ledger:ledger,device:device,contextOwner:contextOwner){context in
-      let image:CIImage,bakedEV:Float
-      if let settledNativeImage {
-        image=settledNativeImage;bakedEV=hasRAWFilter ? Float((p.legacyBasis?.exposureEV ?? 0)+(p.light.enabled ? 2*p.light.exposure:0)):0
-      }else if hasRAWFilter {
+  func thumbnailProxyInput(recipe: DevelopmentRecipe, source: DevelopmentLocalEditSourceBinding,
+                           generation: UInt64) throws -> ThumbnailProxyInput {
+    let fingerprint = try thumbnailInputFingerprint(recipe: recipe, source: source, generation: generation)
+    guard let p = recipe.adjustmentsV3 else { throw DevelopmentThumbnailError.unsupportedGraph }
+    let bakedEV = hasRAWFilter ? Float((p.legacyBasis?.exposureEV ?? 0) + (p.light.enabled ? 2 * p.light.exposure : 0)) : 0
+    return .init(fingerprint: fingerprint, source: source, generation: generation, settledBakedEV: bakedEV)
+  }
+
+  func prepareSettledThumbnailProxy(input: ThumbnailProxyInput, image: CIImage, ledger: ThumbnailLedger,
+                                    device: MTLDevice, contextOwner: ThumbnailWorkerContextV1?,
+                                    interest: () -> Bool) throws -> ThumbnailProxy {
+    try materializeThumbnailProxy(input: input, cold: false, ledger: ledger, device: device,
+                                  contextOwner: contextOwner, interest: interest) { (image, input.settledBakedEV) }
+  }
+
+  /// Quiet cold preparation is one step for a native-input key, never one decode per candidate.
+  func prepareThumbnailProxy(recipe: DevelopmentRecipe, source: DevelopmentLocalEditSourceBinding, generation: UInt64,
+                             ledger: ThumbnailLedger, device: MTLDevice, contextOwner: ThumbnailWorkerContextV1? = nil,
+                             interest: () -> Bool = { true }) throws -> ThumbnailProxy {
+    let input = try thumbnailProxyInput(recipe: recipe, source: source, generation: generation)
+    guard let p = recipe.adjustmentsV3 else { throw DevelopmentThumbnailError.unsupportedGraph }
+    return try materializeThumbnailProxy(input: input, cold: true, ledger: ledger, device: device,
+                                         contextOwner: contextOwner, interest: interest) {
+      if hasRAWFilter {
         guard let raw=CIRAWFilter(imageURL:capture)else{throw DevelopmentError.unreadable}
         let original=try DevelopmentRendererV3.decoderDefaultsFingerprint(raw)
         let actual=try DevelopmentRendererV3.localDecoderFingerprint(decoder:raw.decoderVersion.rawValue,
@@ -50,25 +66,36 @@ extension PreviewNativeSource {
         if flashRaw || p.aiDenoise != nil {
           let neutral = try p.aiDenoise.map { try DevelopmentPhotoDenoise.neuralRAWInput(capture, settings:$0) } ?? FlashRawImageFactory.linearImage(capture: capture, rawDetails: p.rawDetails)
           guard neutral.extent.size == nativeSize else { throw DevelopmentError.unreadable }
-          image = try FlashRawImageFactory.applyInputAdjustments(p, to: neutral, asShotWhiteBalance: asShotWhiteBalance)
-          bakedEV = parameters.exposure
+          return (try FlashRawImageFactory.applyInputAdjustments(p, to: neutral, asShotWhiteBalance: asShotWhiteBalance), parameters.exposure)
         } else {
           try DevelopmentRendererV3.configure(raw,parameters:parameters)
           guard let output=raw.outputImage,output.extent.size==nativeSize else{throw DevelopmentError.unreadable}
-          image=output;bakedEV=raw.exposure
+          return (output, raw.exposure)
         }
       }else{
         guard let decoded=CIImage(contentsOf:capture,options:[.applyOrientationProperty:true])else{throw DevelopmentError.unreadable}
-        image=try p.aiDenoise.map { try DevelopmentPhotoDenoise.apply($0, at:capture, to:decoded) } ?? decoded
-        bakedEV=0 // Image WB/legacyEV remain strictly unbaked.
+        let image = try p.aiDenoise.map { try DevelopmentPhotoDenoise.apply($0, at: capture, to: decoded) } ?? decoded
+        return (image, 0) // Image WB/legacyEV remain strictly unbaked.
       }
-      guard interest()else{throw DevelopmentThumbnailError.cancelled}
-      let e=image.extent,s=min(1,256.0/max(e.width,e.height))
-      let w=try PreviewInteractiveProxyV3.scaledPixelDimension(e.width,scale:s),h=try PreviewInteractiveProxyV3.scaledPixelDimension(e.height,scale:s)
-      let normalized=image.transformed(by:.init(translationX:-e.minX,y:-e.minY))
-      let small=PreviewInteractiveProxyV3.canvas(normalized.samplingLinear().transformed(by:.init(scaleX:s,y:s)),width:w,height:h)
-      let owner=try ThumbnailSurface(width:w,height:h,float:true,kind:.proxy,ledger:ledger,device:device)
-      created=owner
+    }
+  }
+
+  private func materializeThumbnailProxy(input: ThumbnailProxyInput, cold: Bool, ledger: ThumbnailLedger,
+                                         device: MTLDevice, contextOwner: ThumbnailWorkerContextV1?,
+                                         interest: () -> Bool, resolve: () throws -> (CIImage, Float)) throws -> ThumbnailProxy {
+    try validateCaptureAuthority(); guard interest() else { throw DevelopmentThumbnailError.cancelled }
+    let start = DispatchTime.now().uptimeNanoseconds
+    var created: ThumbnailSurface?
+    do {
+      let result = try DevelopmentThumbnailEngine.withContext(ledger: ledger, device: device, contextOwner: contextOwner) { context in
+        let (image, bakedEV) = try resolve()
+        guard interest() else { throw DevelopmentThumbnailError.cancelled }
+        let e=image.extent,s=min(1,256.0/max(e.width,e.height))
+        let w=try PreviewInteractiveProxyV3.scaledPixelDimension(e.width,scale:s),h=try PreviewInteractiveProxyV3.scaledPixelDimension(e.height,scale:s)
+        let normalized=image.transformed(by:.init(translationX:-e.minX,y:-e.minY))
+        let small=PreviewInteractiveProxyV3.canvas(normalized.samplingLinear().transformed(by:.init(scaleX:s,y:s)),width:w,height:h)
+        let owner=try ThumbnailSurface(width:w,height:h,float:true,kind:.proxy,ledger:ledger,device:device)
+        created=owner
         try owner.fill(small,context:context)
         if hasRAWFilter {
           // Exact one-ULP RAW proxy alpha roundoff only; legal partial/zero alpha is untouched.
@@ -81,11 +108,16 @@ extension PreviewNativeSource {
           }
         }
         try validateCaptureAuthority();guard interest()else{throw DevelopmentThumbnailError.cancelled}
-        return ThumbnailProxy(surface:owner,fingerprint:key,sourceBinding:source,sourceGeneration:generation,
-          sourceIsRAW:hasRAWFilter,bakedBaseEV:bakedEV,preparationNanoseconds:DispatchTime.now().uptimeNanoseconds-start,cold:settledNativeImage==nil)
+        return ThumbnailProxy(surface: owner, fingerprint: input.fingerprint, sourceBinding: input.source,
+          sourceGeneration: input.generation, sourceIsRAW: hasRAWFilter, bakedBaseEV: bakedEV,
+          preparationNanoseconds: DispatchTime.now().uptimeNanoseconds - start, cold: cold)
+      }
+      result.surface.finishProducer() // Context/native/CI views drained before producer pin ends.
+      try validateCaptureAuthority()
+      return result
+    } catch {
+      created?.finishProducer(); created?.retire()
+      throw error
     }
-    result.surface.finishProducer() // Context/native/CI views drained before producer pin ends.
-    try validateCaptureAuthority();return result
-    }catch{created?.finishProducer();created?.retire();throw error}
   }
 }

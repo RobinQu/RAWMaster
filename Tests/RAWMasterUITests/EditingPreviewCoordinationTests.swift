@@ -308,29 +308,40 @@ final class EditingPreviewCoordinationTests: XCTestCase {
         XCTAssertEqual(detail.count, 1); XCTAssertEqual(detail.first?.viewport.maxPixel, 0)
         await controller.shutdown()
     }
-    @MainActor func testContinuousZoomDoesNotRepeatNativeDetailRendering() async throws {
+    @MainActor func testContinuousZoomDeduplicatesTheSameSamplesWithoutEnteringActualPixels() async throws {
         let f = try EditingWorkflowTests.Fixture(); defer { f.clean() }
+        let mode = PreviewPerformancePreferences.mode
+        defer { PreviewPerformancePreferences.mode = mode }
         let backend = ControllablePreviewBackend()
         let controller = try EditingController(store: f.store, libraryURL: f.library, defaults: f.defaults, previewBackend: backend)
+        PreviewPerformancePreferences.mode = .balanced
         controller.focus(f.assets[0]); try await wait { controller.preview != nil }
-        controller.requestDetailPreview()
+        let source = CGSize(width: 6000, height: 4000), viewport = CGSize(width: 1500, height: 1000)
+        let zoom = ImageTransform(scale: 1.3)
+        let snapshot = ImageCanvasViewportSnapshot(frameID: controller.previews.primary.frame?.id, viewportSize: viewport,
+            imagePixelSize: source, imageRect: ImageViewportGeometry.imageRect(pixelSize: source, viewport: viewport,
+                transform: zoom, backingScale: 2), backingScale: 2, transform: zoom)
+        controller.updateCanvasSampling(snapshot, role: .primary, zooming: true)
         try await wait { controller.previews.primary.frame?.quality == .detail }
         let initialRequests = await backend.requests.count
-        for _ in 0..<20 {
-            controller.setActualPixels(false, requestPreview: false)
-            controller.requestDetailPreview()
-        }
+        for _ in 0..<20 { controller.updateCanvasSampling(snapshot, role: .primary, zooming: true) }
+        controller.updateCanvasSampling(snapshot, role: .primary, zooming: false)
         await Task.yield()
         let zoomRequests = await backend.requests
         XCTAssertEqual(zoomRequests.count, initialRequests)
-        XCTAssertEqual(zoomRequests.filter { $0.quality == .detail }.count, 1)
+        let sampled = zoomRequests.filter { $0.quality == .detail }
+        XCTAssertEqual(sampled.count, 1)
+        XCTAssertEqual(try XCTUnwrap(sampled.first?.viewport.detailScale), 0.65, accuracy: 0.0001)
         XCTAssertFalse(controller.actualPixels)
+        XCTAssertTrue(controller.resetCanvasSampling())
         controller.previewContextChanged()
         try await wait { controller.previews.primary.frame?.quality == .settled }
-        controller.requestDetailPreview()
+        controller.setActualPixels(true)
         try await wait { await backend.requests.count == initialRequests + 2 }
-        let explicitDetailRequests = await backend.requests.filter { $0.quality == .detail }
-        XCTAssertEqual(explicitDetailRequests.count, 2)
+        let detailRequests = await backend.requests.filter { $0.quality == .detail }
+        XCTAssertEqual(detailRequests.count, 2)
+        XCTAssertNil(detailRequests.last?.viewport.detailScale, "Explicit 1:1 does not inherit the free zoom density")
+        XCTAssertTrue(controller.actualPixels)
         await controller.shutdown()
     }
 

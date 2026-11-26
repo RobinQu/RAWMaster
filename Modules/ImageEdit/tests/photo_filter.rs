@@ -5,7 +5,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-const LOOKS: [&str; 12] = [
+const LOOKS: [&str; 18] = [
     "vivid",
     "vividWarm",
     "vividCool",
@@ -18,6 +18,12 @@ const LOOKS: [&str; 12] = [
     "spektraPortra400Endura",
     "spektraVelvia100",
     "spektraVision250D2383",
+    "spektraGold200UltraEndura",
+    "spektraPortra800SupraEndura",
+    "spektraEktar100Endura",
+    "spektraProvia100F",
+    "spektraEktachrome100",
+    "spektraVision500T2383",
 ];
 const PIXELS: [Pixel; 6] = [
     [0.0; 4],

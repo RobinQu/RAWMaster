@@ -73,6 +73,7 @@ struct DevelopmentPhotoFilterCatalog: Codable {
 
     init(_ look: DevelopmentPhotoFilterV3) { self = look.isSpektrafilm ? .spektrafilm : .classic }
     var intensities: [Int] { self == .classic ? DevelopmentPhotoFilterCatalog.intensities : [100] }
+    var maximumLookCount: Int { DevelopmentPhotoFilterV3.allCases.filter { $0 != .original && Family($0) == self }.count }
     var operatorVersion: String {
       self == .classic ? DevelopmentPhotoFilterEngineV3.operatorVersion : DevelopmentPhotoFilterEngineV3.spektrafilmOperatorVersion
     }
@@ -89,7 +90,7 @@ struct DevelopmentPhotoFilterCatalog: Codable {
     do{object=try JSONSerialization.jsonObject(with:data)}catch{throw DevelopmentPhotoFilterError.invalidCatalog}
     guard let top=object as? [String:Any] else{throw DevelopmentPhotoFilterError.invalidCatalog}
     let keys:Set<String>=["schemaVersion","operatorVersion","representation","cubeDimension","atlasWidth","atlasHeight","axisCodes","inputICCsha256","alphaPolicy","hdrPolicy","sourceBindingsSHA256","builderSHA256","looks"]
-    guard Set(top.keys)==keys,let rawLooks=top["looks"] as? [[String:Any]],(1...(family == .classic ? 9 : 3)).contains(rawLooks.count) else {throw DevelopmentPhotoFilterError.invalidCatalog}
+    guard Set(top.keys)==keys,let rawLooks=top["looks"] as? [[String:Any]],(1...family.maximumLookCount).contains(rawLooks.count) else {throw DevelopmentPhotoFilterError.invalidCatalog}
     for look in rawLooks {
       guard Set(look.keys)==["id","planes"],let planes=look["planes"] as? [[String:Any]],planes.count==family.intensities.count else {throw DevelopmentPhotoFilterError.invalidCatalog}
       for plane in planes { guard Set(plane.keys)==["intensityPercent","file","byteCount","sha256"] else {throw DevelopmentPhotoFilterError.invalidCatalog} }

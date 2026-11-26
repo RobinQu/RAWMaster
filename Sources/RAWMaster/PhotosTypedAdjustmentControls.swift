@@ -21,32 +21,10 @@ struct PhotosTypedValueRow: View {
     var onInteraction: ((Bool) -> Void)? = nil
     @State private var token: EditingGestureToken?
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 8) {
-                Text(name).font(.system(size: 11)).foregroundStyle(.secondary)
-                Spacer(minLength: 0)
-                DevelopmentNumberField(title: name, value: makeBinding(gesture: { nil }),
-                    range: range, fractionDigits: digits).frame(width: 62)
+        PhotosSliderRow(title: name, value: makeBinding(gesture: { nil }), range: range, step: step,
+            digits: digits, trackColors: trackColors, onEditing: interaction) { candidate in
+                change(candidate, token: token)
             }
-            if range.lowerBound < range.upperBound {
-                if let trackColors {
-                    PhotosNativeSlider(value: currentValue, range: range, trackColors: trackColors,
-                        onChange: { candidate in
-                            if let snapped = PhotosSliderInput.snapped(candidate, range: range, step: step) {
-                                change(snapped, token: token)
-                            }
-                        }, onEditing: interaction)
-                        .frame(height: 26).frame(maxWidth: .infinity).accessibilityLabel(name)
-                } else {
-                    Slider(value: .init(get: { currentValue }, set: { candidate in
-                        if let snapped = PhotosSliderInput.snapped(candidate, range: range, step: step) {
-                            change(snapped, token: token)
-                        }
-                    }), in: range, onEditingChanged: interaction)
-                        .controlSize(.small).frame(height: 26).frame(maxWidth: .infinity).accessibilityLabel(name)
-                }
-            }
-        }
         .onDisappear { finish(); onInteraction?(false) }
     }
     // Both controls read the current scoped value without waiting for a parent body refresh.
@@ -127,12 +105,12 @@ struct PhotosSelectiveColorControls: View {
     @State private var slot: DevelopmentSelectiveColorSlotV3 = .red
     @State private var organization: PhotosMixerOrganization = .color
     var body: some View {
-        VStack(spacing: 10) {
-            Picker("HSL 组织方式", selection: $organization) {
-                ForEach(PhotosMixerOrganization.allCases) { mode in Text(mode.title).tag(mode) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("photos.selectiveColor.organization")
+        VStack(spacing: PhotosControlLayout.groupSpacing) {
+            PhotosFlatTabs(title: "HSL 组织方式", selection: $organization,
+                options: PhotosMixerOrganization.allCases, label: \.title)
+                .accessibilityIdentifier("photos.selectiveColor.organization")
             if organization == .color {
-                VStack(alignment: .leading, spacing: 9) {
+                VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
                     HStack(spacing: 10) {
                         ForEach(DevelopmentSelectiveColorSlotV3.allCases, id: \.self) { item in
                             Button { slot = item } label: {
@@ -256,7 +234,7 @@ struct PhotosBlackAndWhiteMixerControls: View {
     let onError: (Error) -> Void
     private let slots = DevelopmentSelectiveColorSlotV3.allCases
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
+        VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
             Text("黑白混合").font(.caption.weight(.semibold))
             Text("按原始照片的八种颜色调整黑白明暗；仅在启用黑白处理后生效。")
                 .font(.caption2).foregroundStyle(.secondary)
@@ -295,10 +273,9 @@ struct PhotosCurveParameterControls: View {
     @State private var pointIndex = 0
     @State private var mode: PhotosCurveEditorMode = .point
     var body: some View {
-        VStack(spacing: 10) {
-            Picker("曲线类型", selection: $mode) {
-                ForEach(PhotosCurveEditorMode.allCases, id: \.self) { Text($0.rawValue).tag($0) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("photos.curves.mode")
+        VStack(spacing: PhotosControlLayout.groupSpacing) {
+            PhotosFlatTabs(title: "曲线类型", selection: $mode, options: PhotosCurveEditorMode.allCases, label: \.rawValue)
+                .accessibilityIdentifier("photos.curves.mode")
                 .onChange(of: mode) { _, _ in finishGesture(); onChannelChange?() }
             if mode == .parametric {
                 if let parametricTargetedAction {
@@ -310,18 +287,21 @@ struct PhotosCurveParameterControls: View {
                 PhotosParametricCurveControls(session: session, context: context, onError: onError)
             }
             if mode == .point {
-            Picker("曲线通道", selection: $channel) {
-                ForEach(DevelopmentCurveChannel.allCases) { Text($0.rawValue).tag($0) }
-            }.pickerStyle(.segmented).onChange(of: channel) { _, _ in finishGesture(); pointIndex = 0; onChannelChange?() }
+            PhotosFlatMenu(title: "曲线通道", selection: $channel, options: DevelopmentCurveChannel.allCases, label: \.rawValue)
+                .onChange(of: channel) { _, _ in finishGesture(); pointIndex = 0; onChannelChange?() }
             if let pickerAction {
-                HStack {
+                HStack(spacing: PhotosControlLayout.spacing) {
                     ForEach([DevelopmentCurvePickerPointV3.black, .midtone, .white, .addPoint], id: \.self) { point in
                         Button { finishGesture(); pickerAction(pickerChannel, point) } label: {
-                            Image(systemName: "eyedropper"); Text(pickerTitle(point))
+                            VStack(spacing: 0) {
+                                Image(systemName: point == .addPoint ? "plus" : "eyedropper")
+                                Text(pickerTitle(point)).font(.system(size: 8))
+                            }
                         }.help("在照片上选取" + pickerTitle(point))
+                            .accessibilityLabel(pickerTitle(point))
                             .disabled(point == .addPoint && curve.curve.points.count >= 16)
                     }
-                }.buttonStyle(.borderless).font(.caption2)
+                }.buttonStyle(PhotosFlatButtonStyle(stretches: true))
             }
             if let targetedAction {
                 Button { finishGesture();targetedAction(pickerChannel) } label: {
@@ -339,14 +319,14 @@ struct PhotosCurveParameterControls: View {
                     next.refineSaturation = value; next.enabled = true; try next.validate()
                     return .setParameters(.curves(next))
                 }, onError: onError)
-            Picker("控制点", selection: $pointIndex) {
-                ForEach(curve.curve.points.indices, id: \.self) { Text("点 \($0 + 1)").tag($0) }
-            }
+            VStack(spacing: PhotosControlLayout.spacing) {
+            PhotosFlatMenu(title: "控制点", selection: $pointIndex, options: Array(curve.curve.points.indices)) { "点 \($0 + 1)" }
             if curve.curve.points.indices.contains(pointIndex) {
                 let point = curve.curve.points[pointIndex]
                 let range = DevelopmentCurveInteraction.inputRange(curve.curve, index: pointIndex)
                 pointRow("输入", value: point.x, range: range, coordinate: true, channelPath: path, index: pointIndex)
                 pointRow("输出", value: point.y, range: 0...1, coordinate: false, channelPath: path, index: pointIndex)
+            }
             }
             HStack {
                 Button("添加点") {
@@ -372,8 +352,10 @@ struct PhotosCurveParameterControls: View {
                     }
                 }.accessibilityIdentifier("photos.curves.resetChannel")
             }.buttonStyle(.borderless).font(.caption)
-            rangeRow("输入黑点", value: curve.inputBlack, range: 0...max(0, curve.inputWhite.nextDown), black: true, channelPath: path)
-            rangeRow("输入白点", value: curve.inputWhite, range: min(1, curve.inputBlack.nextUp)...1, black: false, channelPath: path)
+            VStack(spacing: PhotosControlLayout.spacing) {
+                rangeRow("输入黑点", value: curve.inputBlack, range: 0...max(0, curve.inputWhite.nextDown), black: true, channelPath: path)
+                rangeRow("输入白点", value: curve.inputWhite, range: min(1, curve.inputBlack.nextUp)...1, black: false, channelPath: path)
+            }
             }
         }.onChange(of: curve.curve.points.count) { _, count in pointIndex = min(pointIndex, max(0, count - 1)) }
             .id(context)
@@ -450,9 +432,10 @@ private struct PhotosParametricCurveControls: View {
     let onError: (Error) -> Void
     private var value: DevelopmentParametricCurveV3 { session.parameters.curves.parametric ?? .init() }
     var body: some View {
-        VStack(spacing: 9) {
+        VStack(spacing: PhotosControlLayout.descriptionSpacing) {
             DevelopmentParametricCurvePreview(value: value)
                 .accessibilityIdentifier("photos.curves.parametric.preview")
+            VStack(spacing: PhotosControlLayout.spacing) {
             row("高光", \.highlights)
             row("亮部", \.lights)
             row("暗部", \.darks)
@@ -461,8 +444,9 @@ private struct PhotosParametricCurveControls: View {
             row("阴影 / 暗部分隔", \.split1, 0...1)
             row("暗部 / 亮部分隔", \.split2, 0...1)
             row("亮部 / 高光分隔", \.split3, 0...1)
+            }
             Text("区域范围由三个分隔点决定。参数曲线在点曲线和色阶之前执行；使用 RawMaster 自有映射。")
-                .font(.caption2).foregroundStyle(.secondary)
+                .photosInspectorParagraph().foregroundStyle(.secondary)
         }
     }
     private func row(_ name: String, _ path: WritableKeyPath<DevelopmentParametricCurveV3, Double>,
@@ -587,7 +571,7 @@ struct PhotosLevelsManualControls: View {
     let onError: (Error) -> Void
     var body: some View {
         if (try? handles.validate()) != nil {
-            VStack(spacing: 9) {
+            VStack(spacing: PhotosControlLayout.spacing) {
                 row("黑点", handles.black, 0...min(handles.shadows, handles.white.nextDown), \.black)
                 row("阴影", handles.shadows, handles.black...handles.midtones, \.shadows)
                 row("中间调", handles.midtones, handles.shadows...handles.highlights, \.midtones)

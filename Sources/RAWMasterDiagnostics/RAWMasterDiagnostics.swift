@@ -27,8 +27,23 @@ struct RAWMasterDiagnostics {
             let arguments = Array(CommandLine.arguments.dropFirst())
             if arguments.first == "--burst-evidence" { exit(try await BurstEvidenceCLI.run(arguments)) }
             if arguments.first == "--migrate-frozen-presets" { exit(try FrozenPresetMigrationCLI.run(Array(arguments.dropFirst()))) }
+            let sceneUsage = "RAWMasterDiagnostics --scene-hdr-avif <ARW> <new.avif> [exposure-EV]"
+            if arguments.first == "--scene-hdr-avif" {
+                try require(arguments.count == 3 || arguments.count == 4, sceneUsage)
+                guard let ev = arguments.count == 4 ? Float(arguments[3]) : 0 else {
+                    try require(false, sceneUsage)
+                    return
+                }
+                let receipt = try DevelopmentSceneHDRDiagnostics.exportARW(URL(fileURLWithPath: arguments[1]),
+                    to: URL(fileURLWithPath: arguments[2]), exposureEV: ev)
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                print(String(decoding: try encoder.encode(receipt), as: UTF8.self))
+                return
+            }
             guard let path = arguments.first, !path.hasPrefix("--") else {
                 print("Usage: RAWMasterDiagnostics <RAW-file> [--output <directory>] [--smoke]")
+                print(sceneUsage)
                 print(FrozenPresetMigrationCLI.usage)
                 return
             }

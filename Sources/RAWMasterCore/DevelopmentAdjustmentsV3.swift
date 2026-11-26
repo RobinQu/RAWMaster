@@ -699,12 +699,20 @@ public struct DevelopmentSelectiveColorV3: Codable, Equatable, Sendable {
 public enum DevelopmentPhotoFilterV3: String, Codable, CaseIterable, Sendable {
   case original, vivid, vividWarm, vividCool, dramatic, dramaticWarm, dramaticCool, mono, silvertone, noir
   case spektraPortra400Endura, spektraVelvia100, spektraVision250D2383
+  case spektraGold200UltraEndura, spektraPortra800SupraEndura, spektraEktar100Endura
+  case spektraProvia100F, spektraEktachrome100, spektraVision500T2383
 
   public var spektrafilmTitle: String? {
     switch self {
     case .spektraPortra400Endura: return "Portra 400 / Portra Endura"
     case .spektraVelvia100: return "Velvia 100"
     case .spektraVision250D2383: return "Vision3 250D / 2383"
+    case .spektraGold200UltraEndura: return "Gold 200 / Ultra Endura"
+    case .spektraPortra800SupraEndura: return "Portra 800 / Supra Endura"
+    case .spektraEktar100Endura: return "Ektar 100 / Portra Endura"
+    case .spektraProvia100F: return "Provia 100F"
+    case .spektraEktachrome100: return "Ektachrome 100"
+    case .spektraVision500T2383: return "Vision3 500T / 2383"
     default: return nil
     }
   }

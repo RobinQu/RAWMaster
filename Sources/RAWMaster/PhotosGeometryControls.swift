@@ -84,11 +84,10 @@ struct PhotosGeometryControls: View {
                 }
             }
             if session.cropConstraint.aspect != .freeform && session.cropConstraint.aspect != .square {
-                Picker("裁切方向", selection: Binding(get: { session.cropConstraint.orientation }, set: { value in
+                PhotosFlatTabs(title: "裁切方向", selection: Binding(get: { session.cropConstraint.orientation }, set: { value in
                     var next = session.cropConstraint; next.orientation = value; constrain(next)
-                })) {
-                    ForEach(PhotosCropOrientation.allCases) { Text($0.rawValue).tag($0) }
-                }.pickerStyle(.segmented)
+                }), options: PhotosCropOrientation.allCases, label: \.rawValue)
+                    .accessibilityIdentifier("photos.crop.orientation")
             }
             HStack(spacing: 8) {
                 Menu {

@@ -49,6 +49,19 @@ enum PhotosWhiteBalanceStateEditing {
         try result.validate()
         return .setParameters(.whiteBalance(.init(enabled:true,resolvedState:result)))
     }
+    static func useOriginal(state: DevelopmentResolvedWhiteBalanceV3?) throws -> DevelopmentAdjustmentCommand {
+        let next: DevelopmentResolvedWhiteBalanceV3
+        switch state {
+        case .raw(let source, var raw):
+            raw.selectedMode = .asShot; next = .raw(source: source, state: raw)
+        case .image(let source, var image):
+            image.selectedMode = .asShot; next = .image(source: source, state: image)
+        case nil:
+            return .setParameters(.whiteBalance(.init(enabled: true)))
+        }
+        try next.validate()
+        return .setParameters(.whiteBalance(.init(enabled: true, resolvedState: next)))
+    }
     enum Component: Equatable { case warmth, temperature, tint }
     static func command(state: DevelopmentResolvedWhiteBalanceV3, mode: PhotosWhiteBalanceMode,
                         component: Component, value: Double) throws -> DevelopmentAdjustmentCommand {
@@ -98,72 +111,104 @@ struct PhotosWhiteBalanceControls: View {
     let isRAW: Bool
     let supportsAutomatic: Bool
     let supportsPicker: Bool
+    let pickerActive: Bool
     let onAutomatic: (PhotosWhiteBalanceMode) -> Void
     let onPicker: (PhotosWhiteBalanceMode) -> Void
     let onModeChange: () -> Void
     let onError: (Error) -> Void
-    @State private var mode: PhotosWhiteBalanceMode = .neutralGray
-    @State private var preset: PhotosWhiteBalancePreset = .daylight
-    @State private var startingTemperatureAuto = false
+    @State private var mode: PhotosWhiteBalanceMode = .temperatureTint
+    @Environment(\.colorScheme) private var colorScheme
+    private var hintColor: Color { photosAdjustmentTextColor(in: colorScheme).opacity(0.7) }
+    private var balance: DevelopmentWhiteBalanceV3 { session.parameters.whiteBalance }
+    private var appliedMode: PhotosWhiteBalanceMode? { PhotosWhiteBalanceMode.matching(balance.adjustment) }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Picker("白平衡模式", selection: $mode) {
-                    ForEach(PhotosWhiteBalanceMode.allCases) { Text($0.rawValue).tag($0) }
-                }.labelsHidden().pickerStyle(.menu).accessibilityLabel("白平衡模式")
-                if supportsAutomatic {
-                    Button("自动白平衡") {
-                        finishGesture()
-                        if mode == .temperatureTint { onAutomatic(.temperatureTint) }
-                        else { startingTemperatureAuto = true; mode = .temperatureTint }
-                    }.buttonStyle(.borderless).accessibilityIdentifier("photos.whiteBalance.auto")
-                    if mode != .temperatureTint {
-                        Button(mode == .skinTone ? "自动找肤色" : "自动找中性灰") {
-                            finishGesture(); onAutomatic(mode)
-                        }.buttonStyle(.borderless)
-                    }
+        VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+                heading("校正方式", identifier: "photos.whiteBalance.correction.heading")
+                PhotosFlatMenu(title: "校正方式", selection: Binding(get: { mode }, set: chooseMode),
+                    options: PhotosWhiteBalanceMode.allCases, label: \.rawValue)
+                    .accessibilityIdentifier("photos.whiteBalance.mode")
+                correctionActions
+                if isRAW && mode == .temperatureTint {
+                    PhotosFlatMenu(title: "光源预设（近似）", selection: Binding<PhotosWhiteBalancePreset?>(get: { nil }, set: {
+                        if let preset = $0 { applyPreset(preset) }
+                    }), options: [nil] + PhotosWhiteBalancePreset.allCases.map(Optional.some),
+                        label: { $0?.title ?? "选择 RAW 光源预设…" })
+                        .disabled(state == nil).accessibilityIdentifier("photos.whiteBalance.preset")
                 }
-                if supportsPicker && mode != .temperatureTint {
-                    Button { finishGesture(); onPicker(mode) } label: { Image(systemName: "eyedropper") }
-                        .buttonStyle(.borderless).help("在照片上选取\(mode == .skinTone ? "肤色" : "中性色")")
-                        .accessibilityLabel("选取白平衡样本").accessibilityIdentifier("photos.whiteBalance.picker")
-                }
-            }.onChange(of: mode) { _, new in
-                finishGesture(); onModeChange()
-                if startingTemperatureAuto {
-                    startingTemperatureAuto = false
-                    if new == .temperatureTint { onAutomatic(.temperatureTint) }
+                Text(appliedDescription).photosInspectorParagraph().foregroundStyle(hintColor)
+                    .accessibilityElement(children: .ignore).accessibilityLabel(appliedDescription)
+                    .accessibilityIdentifier("photos.whiteBalance.applied")
+                if pickerActive {
+                    Text(mode == .skinTone ? "点选清晰的肤色，或按 Escape 取消。" : "点选有细节的灰色或白色，或按 Escape 取消。")
+                        .font(.caption2).foregroundStyle(hintColor)
                 }
             }
-            if isRAW {
-                Picker("白平衡预设", selection: $preset) {
-                    ForEach(PhotosWhiteBalancePreset.allCases, id: \.self) { Text($0.title).tag($0) }
-                }.pickerStyle(.menu).accessibilityIdentifier("photos.whiteBalance.preset")
-                    .onChange(of: preset) { _, value in applyPreset(value) }
-                Text("预设使用 RawMaster 固定近似 Temp/Tint 映射。").font(.caption2).foregroundStyle(.secondary)
-            }
-            if !session.parameters.whiteBalance.enabled {
-                Text("白平衡调整已关闭").font(.caption).foregroundStyle(.secondary)
-            } else if case .asShot = session.parameters.whiteBalance.adjustment {
-                Text(isRAW ? "使用拍摄白平衡" : "保留原有白平衡").font(.caption).foregroundStyle(.secondary)
-            }
-            if let state, let adjustment = PhotosWhiteBalanceStateEditing.adjustment(in: state, mode: mode) {
-                switch adjustment {
-                case .neutralGray(let warmth), .skinTone(let warmth):
-                    row("暖色", value: warmth * 200, range: -100...100, component: .warmth, scale: 200)
-                case .temperatureTint(let temperature, let tint):
-                    if isRAW { row("色温 K", value: temperature, range: 2000...50000, component: .temperature) }
-                    else { row("色温（近似）", value: imageTemperatureOffset, range: -100...100, component: .temperature) }
-                    row("色调", value: tint, range: -150...150, component: .tint)
-                case .asShot: EmptyView()
-                }
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+                heading("微调", identifier: "photos.whiteBalance.refinement.heading")
+                VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) { refinement }
+            }.padding(.top, 12).accessibilityElement(children: .contain)
+                .accessibilityIdentifier("photos.whiteBalance.refinement")
+        }
+        .onAppear { mode = appliedMode ?? .temperatureTint }
+        .onChange(of: appliedMode) { _, applied in mode = applied ?? .temperatureTint }
+        .id(context)
+    }
+    private var appliedDescription: String {
+        if !balance.enabled { return "白平衡调整已关闭，已保留数值" }
+        let name = appliedMode?.rawValue ?? (isRAW ? "拍摄白平衡" : "原有白平衡")
+        return "当前：" + name
+    }
+    private func heading(_ title: String, identifier: String) -> some View {
+        Text(title).font(.caption2.weight(.semibold)).foregroundStyle(hintColor)
+            .accessibilityElement(children: .ignore).accessibilityLabel(title)
+            .accessibilityAddTraits(.isHeader).accessibilityIdentifier(identifier)
+    }
+    private var correctionActions: some View {
+        VStack(spacing: PhotosControlLayout.spacing) {
+            Button(mode == .temperatureTint ? "自动白平衡" : "自动找" + mode.rawValue) {
+                finishGesture(); if pickerActive { onModeChange() }; onAutomatic(mode)
+            }.disabled(!supportsAutomatic).accessibilityIdentifier("photos.whiteBalance.auto")
+            if mode == .temperatureTint {
+                Button("恢复原照", action: restoreOriginal).disabled(appliedMode == nil)
+                    .accessibilityIdentifier("photos.whiteBalance.original")
             } else {
-                Text(mode == .temperatureTint ? "无法读取此照片的白平衡基准。" : "先在照片上选取样本，再调整暖色。")
-                    .font(.caption).foregroundStyle(.secondary)
+                Button {
+                    finishGesture()
+                    if pickerActive { onModeChange() } else { onPicker(mode) }
+                } label: {
+                    Label(pickerActive ? "取消取样" : "在照片上取样", systemImage: "eyedropper")
+                }.disabled(!supportsPicker).accessibilityIdentifier("photos.whiteBalance.picker")
             }
-        }.onAppear {
-            if let saved = PhotosWhiteBalanceMode.matching(session.parameters.whiteBalance.adjustment) { mode = saved }
-        }.id(context)
+        }.buttonStyle(PhotosFlatButtonStyle(stretches: true))
+    }
+    @ViewBuilder private var refinement: some View {
+        if let state, let adjustment = PhotosWhiteBalanceStateEditing.adjustment(in: state, mode: mode) {
+            switch adjustment {
+            case .neutralGray(let warmth), .skinTone(let warmth):
+                row("暖色", value: warmth * 200, range: -100...100, component: .warmth, scale: 200)
+            case .temperatureTint(let temperature, let tint):
+                if isRAW { row("色温 K", value: temperature, range: 2000...50000, component: .temperature) }
+                else { row("色温（近似）", value: imageTemperatureOffset, range: -100...100, component: .temperature) }
+                row("色调", value: tint, range: -150...150, component: .tint)
+            case .asShot: EmptyView()
+            }
+        } else {
+            Text(mode == .temperatureTint ? "无法读取此照片的白平衡基准。" : "自动分析或在照片上取样后，即可微调暖色。")
+                .photosInspectorParagraph().foregroundStyle(hintColor)
+        }
+    }
+    private func chooseMode(_ next: PhotosWhiteBalanceMode) {
+        guard next != mode else { return }
+        finishGesture(); onModeChange(); mode = next
+    }
+    private func restoreOriginal() {
+        finishGesture(); onModeChange()
+        do {
+            try session.apply(PhotosWhiteBalanceStateEditing.useOriginal(state: state),
+                event: .init(context: context, control: .init(group: .whiteBalance, name: "恢复原照白平衡")))
+        } catch { onError(error) }
     }
     private var imageTemperatureOffset: Double {
         switch state { case .image(_, let imageState): return imageState.temperatureOffset; default: return 0 }
@@ -186,7 +231,7 @@ struct PhotosWhiteBalanceControls: View {
             }, onError: onError)
     }
     private func applyPreset(_ value: PhotosWhiteBalancePreset) {
-        finishGesture()
+        finishGesture(); onModeChange()
         guard let current = state else { return }
         do {
             let command = try PhotosWhiteBalanceStateEditing.command(state: current, preset: value)

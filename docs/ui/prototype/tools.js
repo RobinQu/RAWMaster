@@ -10,6 +10,7 @@ const toolPages = {
   files: '受管文件',
   migration: '迁入 Lightroom',
   process: '分组制作',
+  design: '界面规范',
   server: 'Server · 规划预演',
 };
 const settingsPages = {
@@ -52,6 +53,7 @@ function toolView() {
             files: 'tray',
             migration: 'import',
             process: 'film',
+            design: 'grid',
             server: 'layers',
           }[k] || 'sliders',
           prefix + k,
@@ -101,6 +103,8 @@ function catalogPanel(key) {
       ${field('目标文件夹', 'moveTarget', '作品盘 / 河谷')}${field('新文件名前缀（可留空）', 'movePrefix')}${btn('预演移动…', 'move-plan', '', { cls: 'primary', disabled: !ids.length })}`;
     case 'process':
       return processPanel();
+    case 'design':
+      return designSystemPanel();
     case 'server':
       return `<p class="callout">后续立项 · 此页推演客户端与 Server 的协作状态。</p><div class="tool-columns"><section><h3>归档与异机恢复</h3>${factList(
         [

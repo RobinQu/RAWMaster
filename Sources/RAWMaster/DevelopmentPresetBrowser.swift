@@ -106,6 +106,7 @@ struct DevelopmentPresetBrowser: View {
     let context: EditingInteractionContext
     let scroller: ScrollViewProxy
     var catalog: DevelopmentPresetCatalog = .shared
+    var sectionExpanded: Binding<Bool> = .constant(true)
     @State private var query = ""
     @State private var records: [DevelopmentPresetRecord] = []
     @State private var favoriteIDs: Set<String> = []
@@ -208,44 +209,61 @@ struct DevelopmentPresetBrowser: View {
 
     private var content: some View {
         let revision = session.revision
-        return VStack(alignment: .leading, spacing: 8) {
-            toolbar(revision)
-            amountControl
-            directory(revision)
-            selectedDetails(revision).id("editing.presets.details")
+        return LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: sectionExpanded,
+            headingIdentifier: "editing.leftRail.filters",
+            enabled: Binding(get: { selection.enabled && selection.selection != .original },
+                             set: { changeFilter(.setEnabled(.filter, $0)) }),
+            enableDisabled: editing.availableDevelopmentFilters.count <= 1 || selection.selection == .original,
+            resetAction: { changeFilter(.reset(.filter)) }, resetDisabled: selection.selection == .original,
+            accessory: AnyView(headerActions(revision))) {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
+                VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+                    searchControl
+                    amountControl
+                }
+                directory(revision)
+                VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+                    selectedDetails(revision)
+                }.id("editing.presets.details")
+            }
+            .buttonStyle(PhotosFlatButtonStyle())
+            .padding(.horizontal, 12).padding(.bottom, 12)
+            .onDisappear {
+                fullOperation?.cancel(); preparation.cancel(); endRowPreview(); focusRow = nil
+                if let id = editing.hoveredPresetID, !id.hasPrefix("snapshot.") { editing.cancelPresetHover(id: id) }
+            }
         }
     }
 
-    private func toolbar(_ revision: UUID) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 6) {
-                Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
-                TextField("搜索名称或组", text: $query).textFieldStyle(.plain)
-                    .accessibilityLabel("搜索预设或配置文件").accessibilityIdentifier("editing.presets.search")
-            }
-            .padding(6)
-            .background(.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
+    private var searchControl: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
+            TextField("搜索名称或组", text: $query).textFieldStyle(.plain)
+                .accessibilityLabel("搜索预设或配置文件").accessibilityIdentifier("editing.presets.search")
+        }
+        .font(AppDesign.Typography.controlLabel).padding(6)
+        .background(.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 5))
+    }
 
-            HStack(spacing: 7) {
-                exchangeControls(revision)
-                Spacer(minLength: 0)
-                Button { openEditor(.create) } label: { Image(systemName: "plus") }
-                    .buttonStyle(.plain).help("保存当前调整为预设").accessibilityLabel("保存当前调整为预设")
-                    .accessibilityIdentifier("editing.presets.create")
-                Menu {
-                    if let selected, selected.kind == .user {
-                        Button("更改名称或分组…") { openEditor(.organize(selected)) }
-                        Button("用当前调整更新…") { openEditor(.replace(selected)) }
-                        Button("创建副本…") { openEditor(.duplicate(selected)) }
-                        Button("导出 RAWMaster 预设…") { exportNative(selected) }
-                        Button("删除…", role: .destructive) { deleting = selected }
-                    } else {
-                        Button("保存当前调整为预设…") { openEditor(.create) }
-                    }
-                } label: { Image(systemName: "ellipsis.circle") }
-                    .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize().accessibilityLabel("预设管理")
+    private func headerActions(_ revision: UUID) -> some View {
+        HStack(spacing: 4) {
+            Button { openEditor(.create) } label: {
+                Image(systemName: "plus").font(.system(size: 12)).frame(width: 26, height: 28).contentShape(Rectangle())
             }
-        }.font(.system(size: 11))
+            .buttonStyle(.plain).help("保存当前设置为滤镜").accessibilityLabel("保存当前设置为滤镜")
+            .accessibilityIdentifier("editing.presets.create")
+            exchangeControls(revision)
+        }
+    }
+
+    @ViewBuilder private var managementActions: some View {
+        if let selected, selected.kind == .user {
+            Button("更改名称或分组…") { openEditor(.organize(selected)) }
+            Button("用当前调整更新…") { openEditor(.replace(selected)) }
+            Button("创建副本…") { openEditor(.duplicate(selected)) }
+            Button("导出 RAWMaster 预设…") { exportNative(selected) }
+            Button("删除…", role: .destructive) { deleting = selected }
+        }
     }
 
     @ViewBuilder private func directory(_ renderedRevision: UUID) -> some View {
@@ -257,6 +275,11 @@ struct DevelopmentPresetBrowser: View {
                 Divider().padding(.vertical, 4)
                 folderHeader(folder)
                 if isExpanded(folder.id) {
+                    if folder.id == "film" {
+                        Text("Spektrafilm 官方模型 · SDR 色彩外观")
+                            .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
+                            .accessibilityIdentifier("editing.presets.film.scope")
+                    }
                     if folder.count == 0 {
                         Text(emptyMessage(for: folder.id))
                             .font(.caption2).foregroundStyle(.secondary).padding(.leading, 12)
@@ -302,7 +325,7 @@ struct DevelopmentPresetBrowser: View {
                 }.controlSize(.small).accessibilityIdentifier("editing.presets.adoptFull")
             }
             if let reason = editing.sourceIssueForPreset(selected, context: context) {
-                Text(reason).font(.caption2).foregroundStyle(.secondary).lineLimit(4).help(reason)
+                Text(reason).photosInspectorParagraph().foregroundStyle(.secondary).help(reason)
             }
             if selected.metadata["capability"] == "lensBlur", selected.metadata["analysis"] == "perPhotoDepth" {
                 let ticket = PresetLensBlurReconstructionControls.Ticket(id: selected.id, version: selected.version,
@@ -341,20 +364,11 @@ struct DevelopmentPresetBrowser: View {
         } else {
             classicAmount
             if selection.selection == .original {
-                Text("采用支持强度的滤镜后可调整").font(.caption2).foregroundStyle(.secondary)
+                Text("采用支持强度的滤镜后可调整").photosInspectorParagraph().foregroundStyle(.secondary)
+            } else if !selection.enabled {
+                Text("滤镜已关闭，已保留选择与强度。").photosInspectorParagraph().foregroundStyle(.secondary)
             }
         }
-        HStack(spacing: 6) {
-            Text("基础与胶片滤镜").font(.caption2).foregroundStyle(.secondary)
-            Spacer(minLength: 0)
-            Toggle("启用当前滤镜", isOn: Binding(get: { selection.enabled }, set: { changeFilter(.setEnabled(.filter, $0)) }))
-                .toggleStyle(.switch).controlSize(.mini).labelsHidden()
-                .disabled(editing.availableDevelopmentFilters.count <= 1 || selection.selection == .original)
-            Button { changeFilter(.reset(.filter)) } label: { Image(systemName: "arrow.counterclockwise") }
-                .buttonStyle(.plain).help("复位当前滤镜").accessibilityLabel("复位当前滤镜")
-                .accessibilityIdentifier("editing.filters.reset")
-                .disabled(selection.selection == .original)
-        }.font(.system(size: 11))
     }
 
     private func exchangeControls(_ renderedRevision: UUID) -> some View {
@@ -366,7 +380,8 @@ struct DevelopmentPresetBrowser: View {
             }, onPrepareSemantic: { record in
                 selectedID = record.id
                 startMasks(record, revision: renderedRevision)
-            }, onImportNative: importNative).id(context.historyKey)
+            }, onImportNative: importNative, compact: true,
+            additionalActions: selected?.kind == .user ? AnyView(managementActions) : nil).id(context.historyKey)
     }
 
     private func rebuild() {
@@ -432,14 +447,15 @@ struct DevelopmentPresetBrowser: View {
     }
     private func row(_ item: DevelopmentPresetBrowserItem, in folder: DevelopmentPresetFolder, revision: UUID) -> some View {
         let key = rowKey(item, folder)
-        let favorite: Bool, available: Bool, detail: String, active: Bool, identifier: String, hint: String
+        let favorite: Bool, available: Bool, detail: String, active: Bool, highlighted: Bool, identifier: String, hint: String
         switch item {
         case .classic(let look):
             favorite = editing.favoriteDevelopmentFilters.contains(look)
             available = true
-            detail = "经典滤镜"
-            hint = "聚焦试看，回车采用滤镜"
+            detail = look.isSpektrafilm ? "Spektrafilm 官方模型 · SDR 色彩外观" : "经典滤镜"
+            hint = look.isSpektrafilm ? detail + "。聚焦试看，回车采用滤镜" : "聚焦试看，回车采用滤镜"
             active = look == .original ? !selection.enabled || selection.selection == .original : selection.enabled && selection.selection == look
+            highlighted = active
             identifier = "editing.filter." + look.rawValue
         case .record(let record):
             favorite = favoriteIDs.contains(record.id)
@@ -450,6 +466,7 @@ struct DevelopmentPresetBrowser: View {
             else if record.patch.semanticMasks != nil { hint = "回车查看准备选区与确认采用选项" }
             else { hint = "聚焦试看，回车采用" }
             active = session.presetAmountSession?.record.id == item.id
+            highlighted = active || selectedID == item.id
             identifier = "editing.preset." + record.id
         }
         let activate = {
@@ -470,7 +487,7 @@ struct DevelopmentPresetBrowser: View {
         return HStack(spacing: 4) {
             Button(action: activate) {
                 EditingSidebarRowLabel(title: item.name, symbol: available ? "slider.horizontal.3" : "info.circle",
-                    active: active || selectedID == item.id) { inside in
+                    active: highlighted) { inside in
                     if inside { preview(item, key: key) }
                     else { endRowPreview(key) }
                 }

@@ -15,7 +15,7 @@ extension DevelopmentAdjustmentID {
         case .levels: return "色阶"
         case .definition: return "清晰度"
         case .texture: return "纹理"
-        case .clarity: return "清晰度（Clarity）"
+        case .clarity: return "清晰度"
         case .dehaze: return "去朦胧"
         case .selectiveColor: return "可选颜色"
         case .noiseReduction: return "降噪"
@@ -65,29 +65,24 @@ struct PhotosAdjustmentSection<Content: View>: View {
     var autoInProgress = false
     var onCancelAutomatic: (() -> Void)? = nil
     var showsDisclosure = true
+    @Environment(\.colorScheme) private var colorScheme
     @State private var hovering = false
     @ViewBuilder let content: () -> Content
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 7) {
-                Button(action: onExpand) {
-                    HStack(spacing: 7) {
-                        if showsDisclosure {
-                            Image(systemName: expanded ? "chevron.down" : "chevron.right").font(.caption.weight(.semibold)).frame(width: 12)
-                        }
-                        Image(systemName: symbol).frame(width: 17)
-                        Text(title).font(.system(size: 13, weight: .semibold))
-                        if modified { Image(systemName: "circle.fill").font(.system(size: 4)).accessibilityLabel("已调整") }
-                    }.frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .disabled(!showsDisclosure)
-                .accessibilityLabel("\(title)，\(expanded ? "收起" : "展开")")
-                .accessibilityIdentifier("photos.\(key).disclosure")
+        VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
+            HStack(spacing: 4) {
+                if showsDisclosure {
+                    Button(action: onExpand) { sectionTitle }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(title)，\(expanded ? "收起" : "展开")")
+                        .accessibilityIdentifier("photos.\(key).disclosure")
+                } else { sectionTitle }
                 if let onReset {
-                    Button(action: onReset) { Image(systemName: "arrow.uturn.backward").frame(width: 24, height: 28) }
-                        .buttonStyle(.plain).disabled(!modified).help("复位\(title)")
+                    Button(action: onReset) {
+                        Image(systemName: "arrow.uturn.backward").font(.system(size: 12))
+                            .foregroundStyle(modified ? .secondary : .tertiary)
+                            .frame(width: 26, height: 28).contentShape(Rectangle())
+                    }.buttonStyle(.plain).disabled(!modified).help("复位\(title)")
                         .accessibilityLabel("复位\(title)").accessibilityIdentifier("photos.\(key).reset")
                 }
                 if autoInProgress, let onCancelAutomatic {
@@ -95,26 +90,50 @@ struct PhotosAdjustmentSection<Content: View>: View {
                     Button("取消", action: onCancelAutomatic).buttonStyle(.borderless).font(.caption)
                         .accessibilityLabel("取消自动调整\(title)")
                 } else if let autoAction {
-                    Button("自动", action: autoAction).buttonStyle(.borderless).font(.caption)
+                    Button(action: autoAction) {
+                        Text("自动").font(.caption2.weight(.semibold))
+                            .padding(.horizontal, 6).padding(.vertical, 1)
+                            .overlay(Capsule().strokeBorder(.secondary.opacity(0.65)))
+                            .frame(minHeight: 28).contentShape(Rectangle())
+                    }.buttonStyle(.plain).foregroundStyle(.secondary)
                         .accessibilityLabel("自动调整\(title)")
                 }
-                Toggle("启用\(title)", isOn: .init(get: { enabled }, set: onEnable))
-                    .labelsHidden().toggleStyle(.switch).controlSize(.mini)
+                Button { onEnable(!enabled) } label: {
+                    Image(systemName: enabled ? "circle.inset.filled" : "circle")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(enabled ? Color.accentColor : Color.secondary)
+                        .frame(width: 27, height: 28).contentShape(Rectangle())
+                }.buttonStyle(.plain)
+                    .help("启用或停用\(title)，保留已设置的数值")
+                    .accessibilityAddTraits(.isToggle)
+                    .accessibilityLabel("启用\(title)")
+                    .accessibilityValue(enabled ? "已启用" : "已停用")
                     .accessibilityIdentifier("photos.\(key).enabled")
             }
-            .frame(minHeight: 34)
-            .padding(.horizontal, 4)
-            .background(hovering && showsDisclosure ? Color.primary.opacity(0.035) : Color.clear,
-                        in: RoundedRectangle(cornerRadius: 6))
+            .frame(minHeight: 32)
+            .foregroundStyle(photosAdjustmentTextColor(in: colorScheme))
+            .background(hovering && showsDisclosure ? Color.primary.opacity(0.04) : Color.clear,
+                        in: RoundedRectangle(cornerRadius: 5))
             .onHover { hovering = $0 }
             if expanded {
-                content().padding(.leading, showsDisclosure ? 19 : 0)
+                content().frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 4)
                     .transition(.opacity)
             }
-        }.padding(.horizontal, 12).padding(.vertical, 9)
-            .animation(.easeOut(duration: 0.18), value: expanded)
+        }.padding(.horizontal, 12).padding(.vertical, 2)
+            .animation(.easeOut(duration: 0.16), value: expanded)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("photos.\(key).section")
+    }
+
+    private var sectionTitle: some View {
+        HStack(spacing: 6) {
+            if showsDisclosure {
+                Image(systemName: expanded ? "chevron.down" : "chevron.right")
+                    .font(.system(size: 10, weight: .semibold)).frame(width: 11).foregroundStyle(.secondary)
+            }
+            Image(systemName: symbol).font(.system(size: 13)).frame(width: 16).foregroundStyle(.secondary)
+            Text(title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
+        }.frame(maxWidth: .infinity, minHeight: 28, alignment: .leading).contentShape(Rectangle())
     }
 }
 
@@ -303,7 +322,7 @@ struct PhotosScalarAdjustmentControls: View {
     var automaticAction: ((PhotosScalarField) -> Void)? = nil
     var onClipping: ((DevelopmentClippingPreviewV3?) -> Void)? = nil
     var body: some View {
-        VStack(spacing: 9) {
+        VStack(spacing: PhotosControlLayout.spacing) {
             ForEach(PhotosScalarField.fields(for: group, noiseReduction: session.noiseReductionCapability)
                 .filter { supportedFieldIDs?.contains($0.id) ?? true }) { field in
                 PhotosScopedParameterRow(session: session, context: context, group: group, field: field, onError: onError,
@@ -322,34 +341,15 @@ private struct PhotosScopedParameterRow: View {
     let onAutomatic: (() -> Void)?
     let onClipping: ((DevelopmentClippingPreviewV3?) -> Void)?
     @State private var token: EditingGestureToken?
-    @State private var dragOrigin: Double?
     @State private var optionClipping = false
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 8) {
-                Text(field.title)
-                    .font(.system(size: 11)).foregroundStyle(.secondary)
-                    .contentShape(Rectangle())
-                    .onTapGesture(count: 2) { automaticOrReset() }
-                    .gesture(DragGesture(minimumDistance: 2).onChanged(scrub).onEnded { _ in scrubEnded() })
-                    .help("横向拖动名称或滑杆调整；双击复位；支持时 Shift＋双击单独自动调整")
-                    .accessibilityAction(named: "复位" + field.title) { reset() }
-                Spacer(minLength: 0)
-                DevelopmentNumberField(title: field.title, value: .init(get: { value }, set: { change($0, gesture: nil) }),
-                    range: field.displayRange, fractionDigits: field.digits)
-                    .frame(width: 62).accessibilityIdentifier(identifier + ".number")
+        PhotosSliderRow(title: field.title, value: .init(get: { value }, set: { change($0, gesture: nil) }),
+            range: field.displayRange, step: field.step, digits: field.digits, identifier: identifier,
+            onReset: automaticOrReset, onEditing: interaction) { candidate in
+                change(candidate, gesture: token)
             }
-            Slider(value: .init(get: { value }, set: { candidate in
-                if let snapped = PhotosSliderInput.snapped(candidate, range: field.displayRange, step: field.step) {
-                    change(snapped, gesture: token)
-                }
-            }), in: field.displayRange, onEditingChanged: interaction)
-                .controlSize(.small)
-                .frame(height: 26)
-                .frame(maxWidth: .infinity)
-                .accessibilityLabel(field.title).accessibilityIdentifier(identifier)
-        }
-        .onDisappear { finish() }
+            .help("横向拖动调整；双击复位；支持时 Shift＋双击单独自动调整")
+            .onDisappear { finish() }
     }
     private var value: Double { field.displayed(session.parameters[keyPath: field.path]) }
     private var identifier: String { "photos.\(group.rawValue).\(field.id)" }
@@ -375,32 +375,21 @@ private struct PhotosScopedParameterRow: View {
             do { token = try session.beginGesture(control, context: context) } catch { onError(error) }
         } else { finish() }
     }
-    private func scrub(_ drag: DragGesture.Value) {
-        if dragOrigin == nil {
-            do { token = try session.beginGesture(control, context: context); dragOrigin = value }
-            catch { onError(error); return }
-        }
-        guard let dragOrigin, let next = PhotosSliderInput.scrubbed(origin: dragOrigin,
-            translation: drag.translation.width, range: field.displayRange, step: field.step) else { return }
-        change(next, gesture: token)
-    }
-    private func scrubEnded() {
-        dragOrigin = nil
-        finish()
-    }
     private func finish() {
         if optionClipping { onClipping?(nil);optionClipping=false }
         guard let token else { return }; self.token = nil
+        guard session.context == context, session.activeGesture == token else { return }
         do { try session.endGesture(token, .commit) } catch { onError(error) }
     }
-    private func automaticOrReset() {
-        if NSApp.currentEvent?.modifierFlags.contains(.shift) == true, let onAutomatic {
+    private func automaticOrReset(_ shift: Bool) {
+        if shift, let onAutomatic {
             finish(); onAutomatic()
         } else { reset() }
     }
     private func reset() {
-        dragOrigin = nil
         finish()
-        change(0, gesture: nil)
+        let neutral = DevelopmentAdjustmentsV3()[keyPath: field.path]
+        let target = field.displayed(neutral)
+        if target != value, field.displayRange.contains(target) { change(target, gesture: nil) }
     }
 }

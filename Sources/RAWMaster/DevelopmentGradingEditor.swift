@@ -31,9 +31,8 @@ struct DevelopmentGradingEditor: View {
     private var wheel: DevelopmentGradingWheel { editing.developmentColor.grading[keyPath: region.path] }
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Picker("分级区域", selection: $region) {
-                ForEach(DevelopmentGradingRegion.allCases) { Text($0.rawValue).tag($0) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("editing.grading.region")
+            PhotosFlatTabs(title: "分级区域", selection: $region, options: DevelopmentGradingRegion.allCases, label: \.rawValue)
+                .accessibilityIdentifier("editing.grading.region")
                 .onChange(of: region) { _, _ in editing.endPreviewInteractions(prefix: "grading.") }
             DevelopmentGradingCanvas(wheel: wheel, region: region, onChange: { editing.setGrading(region, wheel: $0, component: "wheel", nativeEvent: true) }, interaction: {
                 editing.previewInteractionChanged("grading." + region.key + ".wheel", active: $0, nativeEvent: $1)

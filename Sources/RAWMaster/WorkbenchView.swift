@@ -510,11 +510,14 @@ struct GridSelectionActionBar: View {
 }
 
 struct AssetCard: View {
+    static let compactHeight: CGFloat = 82
+
     let asset: AssetRecord
     let selected: Bool
     let compact: Bool
     var previewAsset: AssetRecord? = nil
     var triageDisposition: TriageDisposition? = nil
+    var showsCardOutline = true
     var body: some View {
         VStack(spacing: compact ? 3 : 8) {
             ZStack(alignment: .topTrailing) {
@@ -542,12 +545,31 @@ struct AssetCard: View {
                 }.font(.system(size: 9)).foregroundStyle(.tertiary).padding(.horizontal, 8).padding(.bottom, 7)
             }
         }.padding(compact ? 3 : 5)
-            .background(selected ? AppPalette.accent.opacity(0.12) : Color.clear, in: RoundedRectangle(cornerRadius: 10))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(selected ? AppPalette.accent : AppPalette.boundary.opacity(0.45), lineWidth: selected ? 2 : 0.5))
-            .shadow(color: .black.opacity(selected ? 0.10 : 0.035), radius: selected ? 8 : 3, y: 1)
+            .frame(height: compact ? Self.compactHeight : nil)
+            .modifier(AssetCardOutline(selected: selected, visible: showsCardOutline))
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(triageDisposition.map { "\(asset.filename)，初筛处置：\($0.title)" } ?? "\(asset.filename)，\(asset.decision.title)，\(asset.rating) 星")
+    }
+}
+
+private struct AssetCardOutline: ViewModifier {
+    let selected: Bool
+    var visible = true
+
+    func body(content: Content) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 10)
+        return content
+            .background {
+                if visible && selected { shape.fill(AppPalette.accent.opacity(0.12)) }
+            }
+            .overlay {
+                if visible {
+                    shape.strokeBorder(selected ? AppPalette.accent : AppPalette.boundary.opacity(0.45), lineWidth: selected ? 2 : 0.5)
+                        .allowsHitTesting(false)
+                }
+            }
+            .shadow(color: visible ? .black.opacity(selected ? 0.10 : 0.035) : .clear, radius: selected ? 8 : 3, y: 1)
     }
 }
 
@@ -650,20 +672,25 @@ struct ImagePanel: View {
 struct FilmstripView: View {
     @EnvironmentObject var model: AppModel
     @State private var collapsedGroupIDs = Set<String>()
-    var inEditor = false
     var body: some View {
         let layout = model.sequenceBrowserLayout
-        let cardHeight = filmstripCardHeight(layout)
-        let rowHeight = cardHeight + 6
+        let tileHeight = filmstripTileHeight(layout)
+        let verticalInset: CGFloat = 5
+        let rowHeight = tileHeight + 2 * verticalInset
         ScrollViewReader { proxy in
             ScrollView(.horizontal) {
                 LazyHStack(alignment: .center, spacing: 9) {
                     ForEach(layout.segments) { segment in
                         SequenceFilmstripSection(segment: segment, height: rowHeight, collapsedGroupIDs: $collapsedGroupIDs) {
-                            LazyHStack(alignment: .top, spacing: 8) {
+                            let grouped = segment.group != nil
+                            LazyHStack(spacing: 8) {
                                 ForEach(segment.assets, id: \.id) { asset in
-                                    WorkflowAssetTile(asset: asset, compact: true, sequenceMemberships: layout.memberships[asset.id] ?? [])
-                                        .frame(width: 110, height: cardHeight, alignment: .top)
+                                    WorkflowAssetTile(asset: asset, compact: true,
+                                                      sequenceMemberships: layout.memberships[asset.id] ?? [],
+                                                      showsCardOutline: grouped)
+                                        .frame(width: 110, height: tileHeight, alignment: .top)
+                                        .frame(height: grouped ? tileHeight : rowHeight)
+                                        .modifier(AssetCardOutline(selected: model.selectedIDs.contains(asset.id), visible: !grouped))
                                         .id(asset.id)
                                 }
                             }
@@ -681,22 +708,21 @@ struct FilmstripView: View {
                 }
                 .onAppear { if let id = model.focusedID { reveal(id, layout: layout, proxy: proxy) } }
                 .accessibilityElement(children: .contain)
-                .accessibilityIdentifier(inEditor ? "editing.filmstrip" : "browser.filmstrip")
+                .accessibilityIdentifier("browser.filmstrip")
         }
     }
-    private func filmstripCardHeight(_ layout: BrowserSequenceLayout) -> CGFloat {
-        // All tiles share one top edge, with room for whichever accessory rows appear in this scope.
+    private func filmstripTileHeight(_ layout: BrowserSequenceLayout) -> CGFloat {
+        // Use the entire scope so folding a group cannot move the thumbnail baseline.
         var accessoryRows = 0
         for segment in layout.segments {
-            if let group = segment.group, collapsedGroupIDs.contains(group.id) { continue }
             for asset in segment.assets {
                 let hasPair = model.pair(for: asset.id) != nil
                 let hasMemberships = (layout.memberships[asset.id]?.count ?? 0) > 1
-                if hasPair && hasMemberships { return 114 }
+                if hasPair && hasMemberships { return AssetCard.compactHeight + 32 }
                 if hasPair || hasMemberships { accessoryRows = 1 }
             }
         }
-        return accessoryRows == 0 ? 86 : 100
+        return AssetCard.compactHeight + CGFloat(accessoryRows) * 16
     }
 
     private func reveal(_ id: String, layout: BrowserSequenceLayout, proxy: ScrollViewProxy) {

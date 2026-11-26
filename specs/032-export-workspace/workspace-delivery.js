@@ -78,7 +78,7 @@ const PhotoDelivery = (() => {
     persist(batch);
     return batch;
   }
-  function available(row) { return row.online || row.version.archive === true; }
+  function available(row) { return row.target !== 'unavailable' && (row.online || !row.requiresSource && row.version.archive === true); }
   function canRun(batch, row) {
     return batch.volumeOnline && !batch.running && batch.phase !== 'cancelled' && available(row)
       && ['待继续','待执行','写入失败','待找回'].includes(row.state);
@@ -87,7 +87,7 @@ const PhotoDelivery = (() => {
     return !!(row.ticket && file && row.ticket.fileID === file.fileID && row.ticket.content === file.content);
   }
   function checkRow(batch, row) {
-    if (['已取消','按重名策略跳过'].includes(row.state)) return;
+    if (row.target === 'unavailable' || ['已取消','按重名策略跳过'].includes(row.state)) return;
     if (!batch.volumeOnline) return;
     const file = fileAt(batch,row.name);
     if (file) demoFiles[batch.folder].add(row.name);
@@ -101,7 +101,7 @@ const PhotoDelivery = (() => {
   function verify(batch) {
     batch.items.forEach(row => checkRow(batch,row));
     if (batch.phase !== 'cancelled' && batch.volumeOnline) {
-      if (batch.items.every(row => ['已核验','按重名策略跳过'].includes(row.state))) batch.phase = 'done';
+      if (batch.items.every(row => ['已核验','按重名策略跳过','无 HDR 母版'].includes(row.state))) batch.phase = 'done';
       else if (batch.phase === 'done') batch.phase = 'waiting';
     }
   }
@@ -112,7 +112,7 @@ const PhotoDelivery = (() => {
     const parts = ['已核验 ' + verified + ' / ' + batch.items.length + ' 项'];
     const pending = ['待继续','待执行','处理中','待核验'].reduce((n, key) => n + (counts.get(key) || 0), 0);
     if (pending) parts.push('待完成 ' + pending + ' 项');
-    for (const key of ['待找回','写入失败','同名文件待核对','已交付文件缺失','已取消','按重名策略跳过']) {
+    for (const key of ['待找回','无 HDR 母版','写入失败','同名文件待核对','已交付文件缺失','已取消','按重名策略跳过']) {
       if (counts.has(key)) parts.push(key + ' ' + counts.get(key) + ' 项');
     }
     return parts.join(' · ');
@@ -209,7 +209,7 @@ const PhotoDelivery = (() => {
     return batch.volumeOnline;
   }
   function reconnectInput(batch,row) {
-    row.online = true;
+    for (const item of batch.items) if (item.asset === row.asset) item.online = true;
     const photo = photos.find(p => assetKey(p) === row.asset);
     if (photo) photo.online = true;
     selection.changed(); verify(batch); update();

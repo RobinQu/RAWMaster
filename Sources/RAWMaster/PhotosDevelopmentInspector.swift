@@ -18,7 +18,7 @@ struct PhotosDevelopmentInspector: View {
                     .disabled(editing.developmentContext == nil)
                     .id(context)
             } else {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                     if editing.sourceNeedsRevalidation {
                         Button(editing.revalidatingSource ? "正在验证原片…" : "重新验证原片") { editing.revalidatePreviewSource() }
                             .disabled(editing.revalidatingSource)
@@ -93,6 +93,8 @@ private struct PhotosDevelopmentContent: View {
     @State private var levelsChannel: PhotosLevelsChannel = .luminance
     @Binding var destination: PhotosAdjustmentDestination
     @State private var hoveredDestination: PhotosAdjustmentDestination?
+    @FocusState private var focusedTool: PhotosAdjustmentDestination?
+    @Environment(\.colorScheme) private var colorScheme
 
     private var destinations: [PhotosAdjustmentDestination] {
         let available = Set(editing.availablePhotosGroups)
@@ -129,7 +131,7 @@ private struct PhotosDevelopmentContent: View {
                     VStack(spacing: 0) {
                         if destination == .basic {
                             PhotosColorScopes(editing: editing, floating: false)
-                                .padding(.horizontal, 12).padding(.vertical, 10)
+                                .padding(.horizontal, 12).padding(.vertical, 6)
                             Divider()
                         }
                         ScrollView {
@@ -150,6 +152,7 @@ private struct PhotosDevelopmentContent: View {
                 }
             }
         }
+        .toggleStyle(PhotosFlatCheckboxStyle())
         .onAppear(perform: validateDestination)
         .onChange(of: editing.availablePhotosGroups) { _, _ in validateDestination() }
         .onChange(of: editing.developmentContext) { _, _ in initializeSections() }
@@ -181,7 +184,7 @@ private struct PhotosDevelopmentContent: View {
         default:
             LazyVStack(spacing: 0) {
                 if destination == .detail {
-                    VStack(alignment: .leading, spacing: 12) {
+                    VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
                         PhotosAIDenoiseControls(editing: editing, session: session, context: context)
                         PhotosRawDetailsControl(editing: editing, session: session, context: context)
                         PhotosSuperResolutionControl(session: session, context: context)
@@ -217,23 +220,13 @@ private struct PhotosDevelopmentContent: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .help(item.title)
+                .focused($focusedTool, equals: item)
                 .onHover { hovering in
-                    withAnimation(.easeOut(duration: 0.16)) { hoveredDestination = hovering ? item : nil }
+                    if hovering { hoveredDestination = item }
+                    else if hoveredDestination == item { hoveredDestination = nil }
                 }
                 .overlay(alignment: .leading) {
-                    if hoveredDestination == item {
-                        Text(item.title)
-                            .font(.system(size: 11, weight: .medium))
-                            .padding(.horizontal, 9).padding(.vertical, 6)
-                            .background(AppPalette.overlay, in: RoundedRectangle(cornerRadius: 6))
-                            .overlay(RoundedRectangle(cornerRadius: 6).stroke(AppPalette.boundary.opacity(0.5), lineWidth: 0.5))
-                            .shadow(color: .black.opacity(0.18), radius: 5, y: 2)
-                            .fixedSize()
-                            .offset(x: 34)
-                            .transition(.opacity.combined(with: .scale(scale: 0.95)))
-                            .allowsHitTesting(false)
-                    }
+                    if hoveredDestination == item { PhotosRailTooltip(title: item.title) }
                 }
                 .zIndex(hoveredDestination == item ? 3 : 0)
                 .accessibilityLabel(item.title)
@@ -297,6 +290,7 @@ private struct PhotosDevelopmentContent: View {
     }
 
     private func select(_ item: PhotosAdjustmentDestination) {
+        hoveredDestination = nil
         destination = item
         if item != .masks { editing.developmentMaskInput.cancel() }
     }
@@ -318,7 +312,7 @@ private struct PhotosDevelopmentContent: View {
                     PhotosLocalAdjustmentControls(editing: editing, session: session, input: editing.developmentLocalInput,
                         context: context, tool: group == .retouch ? .retouch : .redEye)
                 case .light, .color:
-                    VStack(spacing: 14) {
+                    VStack(spacing: PhotosControlLayout.spacing) {
                         PhotosSummaryStrengthControl(editing: editing, session: session, context: context,
                             group: group, viewportHeight: viewportHeight)
                         PhotosScalarAdjustmentControls(session: session, context: context, group: group, onError: report,
@@ -329,7 +323,7 @@ private struct PhotosDevelopmentContent: View {
                             onClipping: group == .light ? { editing.setDevelopmentClippingPreview($0, context: context) }:nil)
                     }
                 case .blackAndWhite:
-                    VStack(spacing: 14) {
+                    VStack(spacing: PhotosControlLayout.spacing) {
                         PhotosSummaryStrengthControl(editing: editing, session: session, context: context,
                             group: group, viewportHeight: viewportHeight)
                         PhotosScalarAdjustmentControls(session: session, context: context, group: group, onError: report)
@@ -347,9 +341,8 @@ private struct PhotosDevelopmentContent: View {
                         .help(editing.developmentCurvePickerHelp)
                 case .levels:
                     PhotosHistogramView(histogram: editing.developmentHistogram)
-                    Picker("色阶通道", selection: $levelsChannel) {
-                        ForEach(PhotosLevelsChannel.allCases) { Text($0.rawValue).tag($0) }
-                    }.onChange(of: levelsChannel) { _, _ in perform { try finishGesture() } }
+                    PhotosFlatMenu(title: "色阶通道", selection: $levelsChannel, options: PhotosLevelsChannel.allCases, label: \.rawValue)
+                        .onChange(of: levelsChannel) { _, _ in perform { try finishGesture() } }
                     if case .manual(let handles) = session.parameters.levels[keyPath: levelsChannel.path] {
                         PhotosLevelsManualControls(session: session, context: context, channel: levelsChannel, handles: handles, onError: report)
                     } else {
@@ -360,6 +353,7 @@ private struct PhotosDevelopmentContent: View {
                         baseline: editing.developmentWhiteBalanceBaseline,
                         isRAW: editing.developmentSourceFacts?.noiseReduction.sourceCapability == .raw,
                         supportsAutomatic: editing.supportsDevelopmentAutomatic(.whiteBalance), supportsPicker: true,
+                        pickerActive: editing.developmentPicker?.kind.group == .whiteBalance,
                         onAutomatic: { editing.requestDevelopmentWhiteBalanceAutomatic($0, context: context) },
                         onPicker: { editing.beginDevelopmentPicker(.whiteBalance($0), context: context) },
                         onModeChange: { editing.cancelDevelopmentToolAnalysis(context: context) }, onError: report)
@@ -446,21 +440,11 @@ private struct PhotosSummaryStrengthControl: View {
     @State private var amount = 0.0
     @State private var token: EditingGestureToken?
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 6) {
-                Text("整体强度").font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
-                Spacer(minLength: 0)
-                if editing.developmentAnalysisBusy { ProgressView().controlSize(.mini) }
-                Text(editing.developmentSummaryAmounts[group] == nil && token == nil && session.parameters.isEnabled(group)
-                    ? "自定" : DevelopmentNumericText.format(amount, fractionDigits: 2))
-                    .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
-            }
-            Slider(value: Binding(get: { amount }, set: { candidate in
-                if let snapped = PhotosSliderInput.snapped(candidate, range: -1...1, step: 0.01) { change(snapped) }
-            }), in: -1...1, onEditingChanged: interaction)
-                .controlSize(.small).frame(height: 26).frame(maxWidth: .infinity)
-                .accessibilityLabel(group.photosTitle + "强度").accessibilityIdentifier("photos.\(group.rawValue).summary")
-        }
+        let custom = editing.developmentSummaryAmounts[group] == nil && token == nil && session.parameters.isEnabled(group)
+        PhotosSliderRow(title: "整体强度", value: .constant(amount), range: -1...1,
+            identifier: "photos.\(group.rawValue).summary", sliderLabel: group.photosTitle + "强度",
+            readout: custom ? "自定" : DevelopmentNumericText.format(amount, fractionDigits: 2),
+            showProgress: editing.developmentAnalysisBusy, onEditing: interaction, onChange: change)
         .onAppear { amount = editing.developmentSummaryAmounts[group] ?? 0 }
         .onChange(of: editing.developmentSummaryAmounts[group]) { _, value in if token == nil { amount = value ?? 0 } }
         .onDisappear { finish() }
@@ -524,6 +508,7 @@ struct PhotosHistogramView: View {
     var clipping: DevelopmentClippingPreviewV3? = nil
     var onClipping: ((DevelopmentClippingPreviewV3?) -> Void)? = nil
     var resizable = false
+    var plotHeight: CGFloat = 72
     @State private var optionClipping = false
     @State private var hoveredZone: PhotosHistogramZone?
     @State private var dragZone: PhotosHistogramZone?
@@ -571,9 +556,14 @@ struct PhotosHistogramView: View {
                         .onChanged { drag in change(drag) }
                         .onEnded { _ in finish() })
                     .accessibilityLabel("RGB 直方图，\(histogram.visibleSamples)个预览采样；可拖动调整曝光和色调区域")
-                } else { ProgressView("读取直方图…").controlSize(.mini) }
-            }.frame(minHeight: 72, maxHeight: resizable ? .infinity : 72).clipShape(RoundedRectangle(cornerRadius: 6))
+                } else {
+                    ProgressView("读取直方图…").controlSize(.mini)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .background(Color(white: 0.055))
+                }
+            }.frame(minHeight: plotHeight, maxHeight: resizable ? .infinity : plotHeight).clipShape(RoundedRectangle(cornerRadius: 6))
                 .overlay(RoundedRectangle(cornerRadius: 6).stroke(AppPalette.boundary.opacity(0.45), lineWidth: 0.5))
+                .accessibilityIdentifier("photos.scopes.histogram.plot")
                 .overlay(alignment:.topLeading){ clippingButton(.shadows).padding(4) }
                 .overlay(alignment:.topTrailing){ clippingButton(.highlights).padding(4) }
             HStack {
@@ -649,23 +639,13 @@ struct PhotosRecipeValueRow: View {
     let onError: (Error) -> Void
     @State private var token: EditingGestureToken?
     var body: some View {
-        VStack(spacing: 4) {
-            HStack {
-                Text(title).font(.caption); Spacer()
-                DevelopmentNumberField(title: title, value: .init(get: { value }, set: { change($0, token: nil) }), range: range, fractionDigits: digits).frame(width: 78)
-            }
-            if range.lowerBound < range.upperBound {
-                // AppKit can materialize a tick for every SwiftUI step (millions for Kelvin).
-                // Keep the native track continuous; quantize slider input, never the text field.
-                Slider(value: .init(get: { value }, set: { candidate in
-                    if let snapped = PhotosSliderInput.snapped(candidate, range: range, step: step) { change(snapped, token: token) }
-                }), in: range,
-                    onEditingChanged: { active in
-                        if active { do { token = try session.beginGesture(.init(group: nil, name: control), context: context) } catch { onError(error) } }
-                        else { finish() }
-                    }).accessibilityLabel(title)
-            }
-        }.onDisappear { finish() }
+        PhotosSliderRow(title: title, value: .init(get: { value }, set: { change($0, token: nil) }),
+            range: range, step: step, digits: digits, numericWidth: 78, onEditing: { active in
+                if active { do { token = try session.beginGesture(.init(group: nil, name: control), context: context) } catch { onError(error) } }
+                else { finish() }
+            }) { candidate in
+                change(candidate, token: token)
+            }.onDisappear { finish() }
     }
     private func change(_ value: Double, token: EditingGestureToken?) {
         do { try session.validateInteraction(context, gesture: token); try apply(value, token) } catch { onError(error) }
@@ -698,11 +678,10 @@ private struct PhotosEffectsControls: View {
             Divider().opacity(0.65)
             PhotosEffectSection(session: session, context: context, key: "effects.glow", title: "光晕", symbol: "sun.haze",
                 enabled: glow.enabled, onEnable: { enabled in applyGlow { $0.enabled = enabled } }, onError: report) {
-                Picker("光晕风格", selection: Binding(get: { glow.style }, set: { style in
+                PhotosFlatMenu(title: "光晕风格", selection: Binding(get: { glow.style }, set: { style in
                     applyGlow { $0.style = style }
-                })) {
-                    ForEach(DevelopmentGlowStyleV3.allCases, id: \.self) { Text(glowStyleTitle($0)).tag($0) }
-                }.disabled(!glow.enabled).accessibilityIdentifier("photos.effects.glow.style")
+                }), options: DevelopmentGlowStyleV3.allCases, label: glowStyleTitle)
+                    .disabled(!glow.enabled).accessibilityIdentifier("photos.effects.glow.style")
                 glowRow("光晕数量", control: "amount", value: glow.amount, range: 0...100) { $0.amount = $1 }
                 glowRow("范围", control: "range", value: glow.range, range: 0...100) { $0.range = $1 }
                 glowRow("扩散", control: "spread", value: glow.spread, range: 0...100) { $0.spread = $1 }
@@ -715,11 +694,10 @@ private struct PhotosEffectsControls: View {
             Divider().opacity(0.65)
             PhotosEffectSection(session: session, context: context, key: "effects.postCrop", title: "裁切后晕影", symbol: "circle.dashed",
                 enabled: postCrop.enabled, onEnable: { enabled in applyPostCrop { $0.enabled = enabled } }, onError: report) {
-                Picker("晕影风格", selection: Binding(get: { postCrop.style }, set: { style in
+                PhotosFlatMenu(title: "晕影风格", selection: Binding(get: { postCrop.style }, set: { style in
                     applyPostCrop { $0.style = style }
-                })) {
-                    ForEach(DevelopmentPostCropVignetteStyleV3.allCases, id: \.self) { Text(postCropStyleTitle($0)).tag($0) }
-                }.disabled(!postCrop.enabled).accessibilityIdentifier("photos.effects.postCrop.style")
+                }), options: DevelopmentPostCropVignetteStyleV3.allCases, label: postCropStyleTitle)
+                    .disabled(!postCrop.enabled).accessibilityIdentifier("photos.effects.postCrop.style")
                 postCropRow("数量", control: "amount", value: postCrop.amount, range: -100...100) { $0.amount = $1 }
                 postCropRow("中点", control: "midpoint", value: postCrop.midpoint, range: 0...100) { $0.midpoint = $1 }
                 postCropRow("圆度", control: "roundness", value: postCrop.roundness, range: -100...100) { $0.roundness = $1 }
@@ -824,12 +802,11 @@ private struct PhotosColorGradingControls: View {
     @State private var region: DevelopmentGradingRegion = .shadows
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Picker("色彩分级", selection: Binding(get: { region }, set: { value in
+        VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
+            PhotosFlatTabs(title: "色彩分级", selection: Binding(get: { region }, set: { value in
                 editing.cancelDevelopmentGradingInteraction(); region = value
-            })) {
-                ForEach(DevelopmentGradingRegion.allCases) { Text($0.rawValue).tag($0) }
-            }.pickerStyle(.segmented)
+            }), options: DevelopmentGradingRegion.allCases, label: \.rawValue)
+                .accessibilityIdentifier("photos.grading.region")
             PhotosScopedGradingCanvas(editing: editing, context: context, region: region,
                 wheel: color.grading[keyPath: region.path]).frame(height: 180)
                 .id(PhotosGradingScope(context: context, region: region.key))
@@ -842,6 +819,7 @@ private struct PhotosColorGradingControls: View {
                 Button("复位此区域") { resetGrading(all: false) }
                 Button("复位分级") { resetGrading(all: true) }
             }.buttonStyle(.borderless).font(.caption)
+            VStack(spacing: PhotosControlLayout.spacing) {
             gradingRow("色相 °", path: \.hueDegrees, range: 0...360)
             gradingRow("饱和度", path: \.saturation, range: 0...100)
             gradingRow("亮度", path: \.luminance, range: -100...100)
@@ -850,6 +828,7 @@ private struct PhotosColorGradingControls: View {
             }
             row("分级平衡", control: "legacy.grading.balance", value: color.grading.balance, range: -100...100) { basis, value in
                 var c = basis.color ?? .init(); c.grading.balance = value; basis.color = c
+            }
             }
         }.font(.caption)
     }

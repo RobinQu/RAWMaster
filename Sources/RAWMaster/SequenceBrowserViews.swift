@@ -235,41 +235,47 @@ struct SequenceFilmstripSection<Content: View>: View {
     }
 
     private func groupControls(_ group: CaptureGroup, collapsed: Bool) -> some View {
-        HStack(spacing: 4) {
+        let selected = collapsed ? segment.assets.filter { model.selectedIDs.contains($0.id) }.count : 0
+        return VStack(alignment: .leading, spacing: 3) {
             Button {
                 if collapsed { collapsedGroupIDs.remove(group.id) }
                 else { collapsedGroupIDs.insert(group.id) }
             } label: {
-                HStack(spacing: 5) {
+                HStack(spacing: 3) {
                     Image(systemName: collapsed ? "chevron.right" : "chevron.down")
-                        .font(.system(size: 9, weight: .semibold))
-                    Image(systemName: group.kind.contains("延时") ? "timelapse" : "square.stack.3d.up")
-                    Text(group.name).lineLimit(1).truncationMode(.middle)
-                    if segment.isContinuation { Text("续").foregroundStyle(.secondary) }
-                    Text("\(segment.assets.count) 张").foregroundStyle(.secondary).monospacedDigit()
-                    let selected = segment.assets.filter { model.selectedIDs.contains($0.id) }.count
-                    if collapsed && selected > 0 { Text("\(selected) 已选") }
+                        .font(.system(size: 10, weight: .semibold))
+                        .frame(width: 11)
+                        .accessibilityHidden(true)
+                    Text(group.name).fontWeight(.semibold).lineLimit(1).truncationMode(.tail)
+                    if segment.isContinuation {
+                        Text("续").foregroundStyle(.secondary).fixedSize()
+                    }
                 }
-                .font(.system(size: 10))
-                .foregroundStyle(AppPalette.accent)
-                .frame(minHeight: 26)
+                .frame(maxWidth: .infinity, minHeight: 22, alignment: .leading)
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("\(collapsed ? "展开" : "收起")序列：\(group.name)，当前段 \(segment.assets.count) 张")
             .accessibilityIdentifier("browser.filmstrip.group." + segment.id)
             .help(group.name + " · " + group.kind + "。键盘定位到组内照片时自动展开。")
-            .contextMenu {
-                Button("编辑拍摄组…") { model.editGroup(group.id) }.disabled(!model.canEditGroup(group.id))
-                if model.isTimelapseGroup(group) {
-                    Button("合成延时视频…") { model.openTimelapse(groupID: group.id) }
-                        .disabled(!model.canComposeTimelapse(groupID: group.id))
-                }
+            HStack(spacing: 3) {
+                Text("\(segment.assets.count) 张" + (selected > 0 ? " · \(selected) 已选" : ""))
+                    .foregroundStyle(.secondary).monospacedDigit().lineLimit(1).minimumScaleFactor(0.7)
+                Spacer(minLength: 0)
+                GroupPropertiesButton(groupID: group.id, compact: true)
+                    .frame(minWidth: 22, minHeight: 22)
             }
-            GroupPropertiesButton(groupID: group.id, compact: true)
         }
-        .frame(maxWidth: 185)
-        .fixedSize(horizontal: true, vertical: false)
+        .font(.system(size: 10))
+        .foregroundStyle(AppPalette.accent)
+        .frame(width: 80, alignment: .leading)
+        .contextMenu {
+            Button("编辑拍摄组…") { model.editGroup(group.id) }.disabled(!model.canEditGroup(group.id))
+            if model.isTimelapseGroup(group) {
+                Button("合成延时视频…") { model.openTimelapse(groupID: group.id) }
+                    .disabled(!model.canComposeTimelapse(groupID: group.id))
+            }
+        }
     }
 }
 

@@ -48,3 +48,10 @@
 - 合并 `codex/editing-ui-polish` 与 `codex/portable-processing-acceptance` 后重建 Release。两次干净浏览器走查各 37 组通过；原生 `EditingLayoutInteractionTests`、`EditingSnapshotTests`、`EditingWorkflowTests`、`PresetMaskEntryPointTests`、`SequenceBrowserLayoutTests`、`DevelopmentColorEngineV2Tests`、`QuickPromptProviderTests`、`EditingMaskCanvasOwnershipTests` 共 48 项执行、0 失败，其中 1 项按模型包条件跳过。
 - 右栏展开偏好、快照试看与失焦、胶片带折叠和离线找回仍由原窗口用例覆盖。目录任务租约、Prompt 归档与渲染导出沿用可移植处理批次的路径，本轮没有新增可见界面改动。
 - 原始日志：`output/acceptance/editing-ui-merge-20261125/`。Release 应用 `f2bbe0c3…`，UI 测试 `cbd440cb…`。
+
+## 编辑暗房移除胶片带
+
+[浏览器走查](prototype-review.md#编辑翻片与资料库胶片带)与原生回归使用同一条路径：从资料库进入编辑，使用画布工具条往返翻片，再返回资料库。
+
+- [原生窗口用例](../../Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift)使用三张合成样片和隔离资料库，确认编辑辅助功能树没有胶片带，实际触发「下一张」「上一张」切换当前照片，再返回资料库检查胶片带与焦点。
+- [键盘回归](../../Tests/RAWMasterUITests/AppModelTests.swift)从编辑键盘处理入口投递左右方向键。[序列回归](../../Tests/RAWMasterUITests/SequenceBrowserLayoutTests.swift)确认分组折叠与照片顺序没有变化。原生定向 14 项全部通过；没有替换已安装的应用。

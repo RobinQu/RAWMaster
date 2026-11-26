@@ -34,3 +34,17 @@
 正式应用恢复原“全部素材”网格、照片焦点和原有项目/序列，新增颜色标签菜单可见，无初始化错误。仅观察正常启动，未对正式库执行开发选片、颜色、分组或导出操作。最终安装二进制SHA256及深度严格签名再次核验通过。
 
 没有Git提交或推送。
+
+## 资料库胶片带上下留白
+
+[原型走查](../025-editing-workspace/prototype-review.md#资料库胶片带上下留白) · [原生浅色截图](../025-editing-workspace/evidence/library-filmstrip-spacing-native.webp)
+
+- 浏览器回归 37 组通过。几何断言覆盖分组边框上下等量留白、组名居中、组内外缩略图同一水平线，以及折叠不改变行高和选片。
+- [原生布局用例](../../Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift)在隔离窗口中验证两张组片和一张散片的实际卡片中心与胶片带中心一致（容差 0.5 pt）。另用仓库连拍样片截取 1100 × 900 浅色资料库窗口，核对分组边框的上下留白。布局、序列和编辑翻片定向回归共 16 项通过；未替换已安装应用。
+
+## 资料库胶片带边框与组头
+
+[原型走查](../025-editing-workspace/prototype-review.md#资料库胶片带边框与组头) · [原生双行组头截图](../025-editing-workspace/evidence/library-filmstrip-two-row-native.webp)
+
+- 浏览器 37 组通过。验证等高边框、两行布局、点击组名折叠，以及长组名显示省略号时不移动缩略图。悬停提示、辅助功能名称和设置保留全名，键盘可以折叠和进入设置，退出后保持选片。
+- 原生 15 项通过。[胶片带窗口测试](../../Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift)验证长组名在展开、折叠状态下的完整辅助功能标签、对应组属性及原选片，并核对行高与卡片中心。1100 × 900 浅色原生截图确认两行组头、尾部省略和边框对齐；未替换已安装应用。

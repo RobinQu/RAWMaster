@@ -304,7 +304,8 @@ const Studio = (() => {
           w: v.w,
           h: v.h,
           archive: true,
-          look: RMPhotos.displayLook(v.recipe),
+          look: RMPhotos.displayLook(RMSceneOutput.sdrPreview(v.recipe)),
+          sceneOutput: RMSceneOutput.eligible(a.source || id, v.recipe.sceneOutput),
         })),
     ];
     const first = versions.find((v) => v.id === (preferred ?? e.adopted)) ?? original;

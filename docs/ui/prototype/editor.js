@@ -81,7 +81,7 @@ const panelIcons = {
   masks: 'mask',
   repair: 'repair',
 };
-const currentEdit = () => Studio.edit(Studio.data.work);
+const currentEdit = () => canvasToolEdit();
 const toneBands = [
   ['black', '黑色色阶', -100, 100, 1],
   ['shadow', '阴影', -100, 100, 1],
@@ -95,15 +95,29 @@ function toneCurve(r) {
   return `<figure class="curve-chart" aria-label="影调曲线示意"><svg viewBox="0 0 160 90" role="img" aria-label="阴影和高光控制点"><path d="M0 45h160M80 0v90M0 90 160 0" fill="none" stroke="var(--line)"/><path d="M0 89 Q32 ${low} 40 ${low} T120 ${high} Q139 ${high} 160 1" fill="none" stroke="var(--accent)" stroke-width="2"/><g fill="var(--accent)"><circle cx="40" cy="${low}" r="3"/><circle cx="120" cy="${high}" r="3"/></g></svg></figure>`;
 }
 function adjustments(key, fields) {
+  if (S.canvasTool) {
+    const allowed = S.canvasTool.kind === 'crop' ? ['crop','angle','quarterTurns','flipH','flipV','cropBox'] : S.canvasTool.kind === 'mask' && S.canvasTool.legacy ? ['masks'] : [];
+    if (!Object.keys(fields).every(field => allowed.includes(field))) return notify('请先完成或取消画布工具，不能同时采用其他调整');
+    return canvasToolPatch(key, fields);
+  }
+  if (dagEnabled()) return dagPatch(key, fields);
   Studio.patchRecipe(Studio.data.work, key, fields);
   render();
 }
+function rangeFill(value, low, high) {
+  const percent = (n) => 100 * (Math.max(low, Math.min(high, n)) - low) / (high - low);
+  const start = percent(low < 0 && high > 0 ? 0 : low), end = percent(value);
+  return `--fill-start:${Math.min(start, end)}%;--fill-size:${Math.abs(start - end)}%;--fill-end:${end}%`;
+}
 function rangeRow(key, label, low = -100, high = 100, step = 1, v = 0, unavailable = false) {
-  const bounds = `min="${low}" max="${high}" step="${step}" value="${v}"${unavailable ? ' disabled' : ''}`;
-  return `<div class="range"><div class="range-readout"><label for="value-${key}">${h(label)}</label>
+  const bounds = `min="${low}" max="${high}" value="${v}"${unavailable ? ' disabled' : ''}`;
+  const reset = key === 'filmAmount' || key === 'opacity' ? 100 : key === 'wbTemperature' && low === 2000 ? 5500 : Math.max(low, Math.min(high, 0));
+  return `<div class="range" style="${rangeFill(v, low, high)}"><span class="range-name" aria-hidden="true">${h(label)}</span>
+    <input aria-label="${h(label)}" type="range" name="adjust" data-key="${key}" data-label="${h(label)}"
+      data-default="${reset}" step="${step}" ${bounds}>
     <input id="value-${key}" aria-label="${h(label)}数值" type="number" name="adjustNumber"
-      data-adjustment="${key}" data-label="${h(label)}" ${bounds}></div>
-    <input aria-label="${h(label)}" type="range" name="adjust" data-key="${key}" data-label="${h(label)}" ${bounds}></div>`;
+      data-adjustment="${key}" step="any" ${bounds}>
+    <span class="range-ticks" aria-hidden="true">${Array.from({ length: 21 }, () => '<i></i>').join('')}</span></div>`;
 }
 const adaptivePresets = [
   { name: '主体柔光', value: 'subject', group: 'Subject', target: '主体', values: { ev: 0.22, contrast: -8 } },
@@ -145,7 +159,8 @@ function filterDirectory(recipe) {
     .map(([group, list]) => presetFolder(prefix + group, group, list.length, list.map(row).join(''), true)).join('');
   const folders = [
     adaptive.length && presetFolder('adaptive', 'Adaptive', adaptive.length, children('adaptive.', adaptive, renderAdaptive), true),
-    film.length && presetFolder('film', '胶片模拟', film.length, film.map(([key, p]) =>
+    film.length && presetFolder('film', '胶片模拟', film.length,
+      '<p class="muted">Spektrafilm 官方模型 · SDR 色彩外观</p>' + film.map(([key, p]) =>
       presetRow('film-stock', key, p.name, 'film.' + key, recipe.filmStock === key)).join(''), true),
     (imported.length || !term && !S.favoriteOnly) && presetFolder('imported', 'Imported', imported.length,
       children('imported.', imported, renderPreset) || '<p class="muted">尚无导入预设</p>'),
@@ -157,24 +172,35 @@ function presetList() {
   const e = currentEdit();
   const recipe = e.recipe;
   const filmAmountEnabled = !!recipe.filmStock;
+  const available = Studio.asset(Studio.data.work).online;
+  const enabled = recipe.filmEnabled !== false;
+  const expanded = S.filtersExpanded !== false;
   return `<aside class="edit-left" aria-label="照片工具"${S.tool === 'versions' ? ' inert' : ''}>
-    <section aria-labelledby="preset-heading"><h2 id="preset-heading">滤镜</h2>
-      <div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="查找预设" name="presetQuery" placeholder="查找预设" value="${h(S.presetQuery)}"></label>
-      ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
-      <div class="filter-actions">
-        ${btn('导入预设…', 'preset-import', '', { icon: 'plus' })}
-        ${btn('预设管理', 'preset-manage', '', { only: true, icon: 'menu', cls: 'icon-btn' })}
+    <section aria-labelledby="preset-heading">
+      <div class="filter-panel-heading">
+        <button class="filter-disclosure" data-act="filters-panel-toggle" aria-expanded="${expanded}" aria-label="滤镜，${expanded ? '收起' : '展开'}">${icon('chevron', 10)}${icon('photo', 13)}<span id="preset-heading">滤镜</span></button>
+        <div class="filter-header-actions">
+          ${btn('复位滤镜', 'remove-film', '', { icon: 'undo', only: true, cls: 'icon-btn', disabled: !available || !filmAmountEnabled })}
+          <button class="filter-enabled" data-act="filter-enabled" aria-label="启用滤镜" aria-pressed="${enabled && filmAmountEnabled}"${!available || !filmAmountEnabled ? ' disabled' : ''}><span aria-hidden="true"></span></button>
+          <details class="filter-options"${!available ? ' inert' : ''}><summary aria-label="滤镜与预设操作">${icon('ellipsis', 14)}</summary><div>
+            ${btn('保存当前设置为滤镜…', 'preset-manage', 'save', { icon: 'plus' })}
+            ${btn('导入 Lightroom / Camera Raw 预设…', 'preset-import', '', { icon: 'import' })}
+            ${btn('导出原生预设…', 'preset-manage', 'export', { icon: 'export' })}
+          </div></details>
+        </div>
       </div>
-      <div class="film-strength">${rangeRow('filmAmount', '滤镜强度', 0, 100, 1, recipe.filmAmount ?? 100, !filmAmountEnabled)}
-        ${filmAmountEnabled ? btn('移除胶片模拟', 'remove-film', '', { cls: 'link' }) : '<small>采用支持强度的滤镜后可调整</small>'}</div>
-      ${filterDirectory(recipe)}</section>
+      ${expanded ? `<div class="filter-panel-content"><div class="preset-search"><label class="search-box">${icon('search')}<input aria-label="查找预设" name="presetQuery" placeholder="查找预设" value="${h(S.presetQuery)}"></label>
+      ${btn('仅显示收藏', 'favorite-only', '', { icon: 'star', only: true, pressed: !!S.favoriteOnly, cls: 'icon-btn' })}</div>
+      <div class="film-strength">${rangeRow('filmAmount', '滤镜强度', 0, 100, 1, recipe.filmAmount ?? 100, !filmAmountEnabled || !available)}
+        ${!filmAmountEnabled ? '<p class="muted">采用支持强度的滤镜后可调整</p>' : !enabled ? '<p class="muted">滤镜已关闭，已保留选择与强度。</p>' : ''}</div>
+      ${filterDirectory(recipe)}</div>` : ''}</section>
     <section aria-labelledby="snapshot-heading"><div class="row between"><h2 id="snapshot-heading">快照</h2>${btn('存储快照', 'snapshot', '', { icon: 'plus', only: true, cls: 'icon-btn' })}</div>
       <div class="snapshot-list">${e.snapshots.map((x, i) => `<div class="preset-item">
         ${btn(x.name, 'restore-snap', i, { icon: 'photo', cls: 'sidebar-row' })}
         <details class="snapshot-menu"><summary aria-label="管理快照 ${h(x.name)}">${icon('menu', 14)}</summary><div>
         ${btn('重命名…', 'rename-snap', i)}${btn('删除', 'delete-snap', i)}</div></details></div>`).join('') || '<p class="muted">尚无快照</p>'}</div></section>
     <section aria-labelledby="history-heading"><div class="row between"><h2 id="history-heading">历史</h2><div class="row">
-      ${btn('撤销', 'edit-step', 'undo', { icon: 'undo', only: true, cls: 'icon-btn', disabled: !e.past.length })}${btn('重做', 'edit-step', 'redo', { icon: 'undo', only: true, cls: 'icon-btn redo', disabled: !e.future.length })}</div></div>
+      ${btn(S.canvasTool?'撤销草案':'撤销', 'edit-step', 'undo', { icon: 'undo', only: true, cls: 'icon-btn', disabled: !(S.canvasTool ?? e).past.length })}${btn(S.canvasTool?'重做草案':'重做', 'edit-step', 'redo', { icon: 'undo', only: true, cls: 'icon-btn redo', disabled: !(S.canvasTool ?? e).future.length })}</div></div>
       <ol class="edit-history">${e.past.map((p) => '<li>' + h(p.label) + '</li>').join('')}<li>初始状态</li></ol></section></aside>`;
 }
 function activeLayer(r) {
@@ -204,50 +230,51 @@ function adjustmentSection(id, title, contents, first, recipe) {
   const photoPanel = Studio.data.work + ':' + S.tool;
   const open = S.adjustmentDisclosure?.get(photoPanel)?.get(id) ?? first;
   const enabled = recipe.sectionEnabled?.[id] !== false;
-  return `<div class="adjustment-section"><details data-adjustment-section="${id}" data-photo-panel="${h(photoPanel)}"${open ? ' open' : ''}>
-    <summary>${icon('chevron', 12)}<strong>${h(title)}</strong></summary>
-    <fieldset${enabled ? '' : ' disabled'}>${contents}</fieldset></details>
-    <input type="checkbox" role="switch" aria-label="启用${h(title)}" name="adjustmentEnabled"
-      data-key="${id}" data-title="${h(title)}"${enabled ? ' checked' : ''}></div>`;
+  const defaults = adjustmentDefaults(id);
+  const changed = Object.entries(defaults).some(([key, value]) => JSON.stringify(recipe[key] ?? value) !== JSON.stringify(value));
+  const symbol = { light: 'spark', whiteBalance: 'background', color: 'mix', curves: 'curve', levels: 'pulse',
+    optics: 'lens', repair: 'repair', grading: 'grading', lut: 'layers' }[id] || panelIcons[S.tool];
+  return `<section class="adjustment-section" data-adjustment-section="${id}" data-photo-panel="${h(photoPanel)}">
+    <div class="adjustment-header">
+      <button type="button" class="adjustment-disclosure" data-act="adjustment-disclosure" data-val="${id}"
+        aria-expanded="${open}" aria-controls="adjustment-body-${id}">${icon('chevron', 12)}${icon(symbol, 15)}<span>${h(title)}</span></button>
+      ${btn('复位' + title, 'adjustment-reset', id, { icon: 'undo', only: true, cls: 'adjustment-reset', disabled: !changed })}
+      <input type="checkbox" role="switch" aria-label="启用${h(title)}" title="启用／停用${h(title)}（保留数值）" name="adjustmentEnabled"
+        data-key="${id}" data-title="${h(title)}"${enabled ? ' checked' : ''}>
+    </div><fieldset id="adjustment-body-${id}"${open ? '' : ' hidden'}${enabled ? '' : ' disabled'}>${contents}</fieldset></section>`;
 }
-document.addEventListener('click', (event) => {
-  const el = event.target.closest('[data-adjustment-section] > summary')?.parentElement;
-  if (!el) return;
-  event.preventDefault();
-  el.open = !el.open;
-  const panels = (S.adjustmentDisclosure ??= new Map()), panel = el.dataset.photoPanel;
+function adjustmentDefaults(id) {
+  if (id === 'whiteBalance') return { warmth: 0, wbTemperature: null, tint: 0, wbApplied: 'original', wbPreset: '' };
+  if (id === 'repair') return { repairs: [] };
+  if (id === 'lut') return { lut: '无' };
+  const section = adjustmentSections[S.tool].find(([key]) => key === id);
+  const defaults = Studio.freshRecipe();
+  return Object.fromEntries(section[2].map((key) => [key, defaults[key] ?? 0]));
+}
+actions['adjustment-disclosure'] = (id, _event, button) => {
+  const panel = button.closest('[data-adjustment-section]').dataset.photoPanel;
+  const open = button.getAttribute('aria-expanded') === 'false';
+  const panels = (S.adjustmentDisclosure ??= new Map());
   if (!panels.has(panel)) panels.set(panel, new Map());
-  panels.get(panel).set(el.dataset.adjustmentSection, el.open);
-});
+  panels.get(panel).set(id, open);
+  button.setAttribute('aria-expanded', open);
+  $('#adjustment-body-' + id).hidden = !open;
+};
+actions['adjustment-reset'] = (id, _event, button) => {
+  adjustments(button.getAttribute('aria-label'), adjustmentDefaults(id));
+  $(`.adjustment-disclosure[data-val="${id}"]`)?.focus({ preventScroll: true });
+};
 changes.adjustmentEnabled = (el) => adjustments('启停' + el.dataset.title, {
   sectionEnabled: { ...currentEdit().recipe.sectionEnabled, [el.dataset.key]: el.checked },
 });
+changes.detailOption = (el) => adjustments('启停' + el.closest('label').textContent, {
+  detailOptions: { ...currentEdit().recipe.detailOptions, [el.dataset.key]: el.checked },
+});
 function toolFields(r) {
-  if (S.tool === 'masks') {
-    const m = activeLayer(r);
-    return (
-      select(
-        '新建类型',
-        'maskKind',
-        ['线性渐变', '径向渐变', '亮度范围', '画笔', 'AI 主体', 'AI 天空'],
-        '线性渐变',
-      ) +
-      btn('添加蒙版', 'add-mask', '', { icon: 'plus' }) +
-      r.masks
-        .map(
-          (m, i) =>
-            `<div class="list-row">${btn(m.kind + ' ' + (i + 1), 'choose-mask', i, { pressed: activeLayer(r) === m })}${btn(m.on ? '停用' : '启用', 'toggle-mask', i, { cls: 'link' })}</div>`,
-        )
-        .join('') +
-      (m
-        ? `<p class="muted">点画面定位选区中心。</p>${select('组合方式', 'maskBlend', ['添加', '减去', '交集'], m.blend)}${rangeRow('opacity', '蒙版不透明度', 0, 100, 1, m.opacity)}${rangeRow('feather', '羽化', 0, 100, 1, m.feather)}${rangeRow('localEV', '局部曝光', -3, 3, 0.1, m.localEV)}
-      <div class="row wrap">${btn('反转', 'mask-op', 'invert', { pressed: !!m.invert })}${btn('上移', 'mask-op', 'up', { disabled: r.masks[0] === m })}${btn('删除图层', 'mask-op', 'delete')}</div>`
-        : '<p class="muted">为一个局部区域单独调整曝光。</p>')
-    );
-  }
+  if (S.tool === 'masks') return maskPanel(r);
   if (S.tool === 'repair')
     return adjustmentSection('repair', '修复',
-      select('修复工具', 'repairKind', ['移除', '修复', '仿制'], S.repairKind || '修复') +
+      flatTabs('修复方式', 'repair-kind', ['移除','修复','仿制'].map(mode => [mode,mode]), S.repairKind || '修复') +
       '<p class="muted">在画面点选目标位置。仿制需再点一次取样位置。</p>' +
       btn('在中心标记', 'center-repair') +
       r.repairs
@@ -258,8 +285,17 @@ function toolFields(r) {
         .join(''), true, r
     );
   const controls = editTools[S.tool][1];
-  return adjustmentSections[S.tool].map(([id, title, fields], i) => {
-    const content = id === 'lut'
+  const available = Studio.asset(Studio.data.work).online;
+  const detail = r.detailOptions ?? {};
+  const detailOptions = S.tool === 'detail' ? `<section class="detail-options" aria-label="细节处理">
+    <div class="inspector-text-group">${check('AI 降噪', 'detailOption', detail.aiDenoise, {key:'aiDenoise', disabled:!available || !!detail.rawDetails})}
+      <p class="control-hint">可用于支持的马赛克 RAW 和系统能解码的 RGB 照片。</p></div>
+    <div class="inspector-text-group">${check('RAW 细节', 'detailOption', detail.rawDetails, {key:'rawDetails', disabled:!available || !wbIsRaw() || !!detail.aiDenoise})}
+      <p class="control-hint">Bayer · AHD · 保持原始分辨率</p></div>
+    <div class="inspector-text-group">${check('超分辨率 2×', 'detailOption', detail.superResolution, {key:'superResolution', disabled:!available})}
+      <p class="control-hint">示例演示启停与撤销；真实处理能力以原生源与模型状态为准。</p></div></section>` : '';
+  return detailOptions + adjustmentSections[S.tool].map(([id, title, fields], i) => {
+    const content = id === 'whiteBalance' ? whiteBalancePanel(r) : id === 'lut'
       ? select('查找表', 'lut', ['无', '柔和胶片', '冷调'], r.lut || '无')
       : (id === 'curves' ? toneCurve(r) : '') + fields.map((key) => {
         const [k, n, lo = -100, hi = 100, step = 1] = controls.find(([k]) => k === key);
@@ -268,9 +304,136 @@ function toolFields(r) {
     return adjustmentSection(id, title, content, i === 0, r);
   }).join('') + (S.tool === 'detail' ? btn('增强细节…', 'enhance') : '');
 }
+const wbModes = [['temperature', '色温与色调'], ['gray', '中性灰'], ['skin', '肤色']];
+const wbPresets = [['', '选择 RAW 光源预设…'], ['daylight', '日光'], ['cloudy', '阴天'], ['shade', '阴影'],
+  ['tungsten', '白炽灯'], ['fluorescent', '荧光灯'], ['flash', '闪光灯']];
+const wbTargets = { daylight: [5500, 10], cloudy: [6500, 10], shade: [7500, 10], tungsten: [2850, 0], fluorescent: [4000, 20], flash: [6000, 0] };
+const wbIsRaw = () => /\.(dng|cr[23]|nef|arw|raf|rw2|orf)$/i.test(Studio.asset(Studio.data.work).name);
+const wbMode = (r) => S.wbMode?.id === Studio.data.work ? S.wbMode.mode : (!r.wbApplied || r.wbApplied === 'original' ? 'temperature' : r.wbApplied);
+const wbModeName = (mode) => wbModes.find(([key]) => key === mode)?.[1];
+const maskGroupOpen = (key) => (S.maskGroups?.has(key) ?? (key === 'light')) ? ' open' : '';
+function whiteBalancePanel(r) {
+  const raw = wbIsRaw(), mode = wbMode(r), available = Studio.asset(Studio.data.work).online;
+  const armed = S.canvasSelection?.kind === 'wb' && S.canvasSelection.id === Studio.data.work;
+  const applied = r.wbApplied ?? 'original';
+  const status = r.sectionEnabled?.whiteBalance === false ? '白平衡调整已关闭，已保留数值' :
+    applied === 'original' ? (raw ? '当前：拍摄白平衡' : '当前：原有白平衡') : '当前：' + (wbPresets.find(([key]) => key && key === r.wbPreset)?.[1] ?? wbModeName(applied));
+  return `<div class="wb-panel">
+    <div class="wb-correction">${select('校正方式', 'wbMode', wbModes, mode)}
+    <div class="wb-actions">${btn(mode === 'temperature' ? '自动白平衡' : '自动找' + wbModeName(mode), 'wb-auto', mode, {disabled: !available})}
+      ${mode === 'temperature' ? btn('恢复原照', 'wb-original', '', {disabled: applied === 'original'}) : btn(armed ? '取消取样' : '在照片上取样', 'wb-pick', mode, {pressed: armed, disabled: !available})}</div>
+    ${raw && mode === 'temperature' ? select('光源预设（近似）', 'wbPreset', wbPresets, r.wbPreset || '') : ''}
+    <p class="control-hint" role="status">${status}</p>
+    ${armed ? `<p class="control-hint">点选${mode === 'skin' ? '清晰的肤色' : '亮度适中的灰或白色'}，或按 Escape 取消。</p>` : ''}</div>
+    <div class="wb-refinement"><h3 class="control-heading">微调</h3><div class="inspector-control-stack">
+    ${mode === 'temperature' ? rangeRow('wbTemperature', raw ? '色温 K' : '色温（近似）', raw ? 2000 : -100, raw ? 50000 : 100, 1, r.wbTemperature ?? (raw ? 5500 : 0), !available) + rangeRow('tint', '色调', -150, 150, 1, r.tint ?? 0, !available)
+      : applied === mode ? rangeRow('warmth', '暖色', -100, 100, 1, r.warmth ?? 0, !available) : '<p class="control-hint">自动分析或在照片上取样后，即可微调暖色。</p>'}</div></div>
+  </div>`;
+}
+function flatTabs(title, action, options, current, icons = {}) {
+  return `<div class="flat-tabs" role="group" aria-label="${h(title)}">${options.map(([value, label]) => btn(label, action, value, {pressed: value === current, icon: icons[value]})).join('')}</div>`;
+}
+document.addEventListener('keydown', (event) => {
+  if (!['ArrowLeft', 'ArrowRight'].includes(event.key) || event.defaultPrevented) return;
+  const button = event.target.closest('.flat-tabs button');
+  if (!button) return;
+  event.preventDefault();
+  const tabs = [...button.parentElement.querySelectorAll('button:not(:disabled)')];
+  tabs[tabs.indexOf(button) + (event.key === 'ArrowLeft' ? -1 : 1)]?.click();
+});
+function colorSamplerPoints() {
+  return Studio.data.colorSamplers?.[Studio.data.work] ?? [];
+}
+function samplerRGB(point) {
+  const current = $('.developed');
+  if (!Studio.asset(Studio.data.work).online || !current) return null;
+  if (current.complete && current.naturalWidth) S.samplerImage = {src:current.src, image:current};
+  const image = current.complete && current.naturalWidth ? current : S.samplerImage?.src === current.src ? S.samplerImage.image : null;
+  if (!image) return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 1;
+  const context = canvas.getContext('2d', {willReadFrequently:true});
+  context.filter = RMPhotos.filter(RMPhotos.displayLook(currentEdit().recipe));
+  context.drawImage(image, Math.min(image.naturalWidth - 1, Math.floor(point.x * image.naturalWidth / 100)),
+    Math.min(image.naturalHeight - 1, Math.floor(point.y * image.naturalHeight / 100)), 1, 1, 0, 0, 1, 1);
+  return [...context.getImageData(0, 0, 1, 1).data].slice(0, 3);
+}
+function colorSamplerPanel() {
+  const points = colorSamplerPoints(), available = Studio.asset(Studio.data.work).online;
+  const armed = S.canvasSelection?.id === Studio.data.work && S.canvasSelection.kind === 'sampler';
+  return `<section class="sampler-panel" aria-label="颜色采样点">
+    ${btn('添加颜色采样点', 'sampler-pick', '', {icon:'sampler', disabled:!available || points.length >= 9 || !!S.compare || !!S.cropOpen})}
+    ${armed ? '<p class="control-hint" role="status">在照片上点选颜色，或按 Escape 取消。</p>' : ''}
+    <ol class="sampler-list">${points.map((point, i) => {
+      const rgb = samplerRGB(point);
+      return `<li class="sampler-row${rgb ? '' : ' outside'}" data-sampler="${i}">
+        <span class="sampler-swatch" aria-hidden="true"${rgb ? ` style="--sample-color:rgb(${rgb.join(',')})"` : ''}></span>
+        <span class="sampler-readout"><strong>${i + 1}</strong>　${rgb ? `R ${rgb[0]}　G ${rgb[1]}　B ${rgb[2]}` : '当前画面外'}</span>
+        <details class="sampler-manage"><summary aria-label="编辑采样点 ${i + 1}">${icon('menu', 14)}</summary><div>
+          ${btn('重新取样', 'sampler-pick', i, {icon:'sampler', disabled:!available || !!S.compare || !!S.cropOpen})}
+          ${btn('移除采样点', 'sampler-remove', i, {icon:'trash'})}</div></details></li>`;
+    }).join('')}</ol></section>`;
+}
+function refreshSamplerPanel() {
+  const panel = $('.sampler-panel');
+  if (panel) panel.outerHTML = colorSamplerPanel();
+}
+document.addEventListener('load', event => {
+  if (event.target.matches?.('.developed')) refreshSamplerPanel();
+}, true);
+actions['sampler-pick'] = (index) => {
+  if (!Studio.asset(Studio.data.work).online || S.compare || S.cropOpen) return;
+  if (sheet.open) closeSheet();
+  S.canvasSelection = {id:Studio.data.work, kind:'sampler', replacing:index === '' ? null : Number(index)};
+  render(); $('[data-act=sampler-pick]')?.focus({preventScroll:true});
+};
+actions['sampler-remove'] = (index) => {
+  (Studio.data.colorSamplers ??= {})[Studio.data.work] = colorSamplerPoints().filter((_, i) => i !== Number(index));
+  S.canvasSelection = null; Studio.save(); render(); $('[data-act=sampler-pick]')?.focus({preventScroll:true});
+};
+function scopesPanel(docked) {
+  if (SceneEditor.hdr()) return SceneEditor.scope(docked);
+  const mode = S.scopePlot ?? 'histogram';
+  const plots = [['histogram', '直方图'], ['vector', '矢量示波器']];
+  const vector = `<svg class="vector-plot" viewBox="0 0 120 48" role="img" aria-label="矢量分布示意"><g fill="none" stroke="#52616a"><circle cx="60" cy="24" r="16"/><circle cx="60" cy="24" r="8"/><path d="M44 24h32m-16-16v32"/></g><path fill="#aab8bd" opacity=".6" d="M52 28l7-11 9 3 4 5-10 6z"/><path stroke="#ffbb80" stroke-dasharray="2 2" d="M60 24l11-12"/></svg>`;
+  return `<section class="editing-scopes${docked ? ' docked' : ''}"><div class="row">${flatTabs('示波器', 'scope-plot', plots, mode)}${docked ? btn('在独立窗口显示示波器', 'scopes', '', {icon:'pulse', only: true, cls:'icon-btn'}) : ''}</div>
+    ${mode === 'vector' ? vector : `<div${docked ? ' class="tone-control" title="左右拖动色调区域调整亮度"' : ''}>${histogram(Studio.data.work)}</div>`}
+    ${colorSamplerPanel()}</section>`;
+}
+const maskTools = [['主体', '背景', '前景实例', '画笔'], ['线性渐变', '径向渐变', '亮度范围']];
+const maskToolIcons = { '主体':'subject', '背景':'maskBackground', '前景实例':'instance', '画笔':'brush', '线性渐变':'linearMask', '径向渐变':'radialMask', '亮度范围':'rangeMask' };
+function maskPanel(r) {
+  const m = activeLayer(r), i = r.masks.indexOf(m), draft = S.canvasSelection?.id === Studio.data.work ? S.canvasSelection : null;
+  const candidate = draft?.kind === 'mask' && draft.candidate;
+  const drawing = draft?.kind === 'mask' && !candidate;
+  const unavailable = !Studio.asset(Studio.data.work).online;
+  const semantic = m && maskTools[0].includes(m.kind);
+  return `<section class="mask-panel" aria-label="蒙版">
+    <details class="mask-create"><summary>${icon('plus')} 新建蒙版</summary><div class="mask-tools">
+      <h3 class="control-heading">自动与画笔</h3><div class="mask-tool-grid">${maskTools[0].map(k => btn(k, 'add-mask', k, {disabled: unavailable, pressed: draft?.type === k, icon: maskToolIcons[k]})).join('')}</div>
+      <h3 class="control-heading">几何与范围</h3><div class="mask-tool-grid">${maskTools[1].map(k => btn(k, 'add-mask', k, {disabled: unavailable, pressed: draft?.type === k, icon: maskToolIcons[k]})).join('')}</div>
+      <p class="control-hint">可用的 AI 工具随本机模型包而定。</p></div></details>
+    ${unavailable ? '<p class="control-hint">原片离线，无法在画布上创建蒙版。</p>' : ''}
+    ${drawing ? `<div class="mask-stage" role="status"><p>${draft.type === '前景实例' ? '在照片上点选前景实例。' : '在照片上拖动以确定选取范围。'}</p>${btn('取消', 'cancel-selection', '', {icon:'close'})}</div>` : ''}
+    ${candidate ? `<div class="mask-stage"><h3 class="control-heading">${h(draft.type)}选区 · 示例预览</h3><div class="wb-actions">${btn('显示蒙版叠加', 'mask-overlay', '', {pressed: draft.overlay !== false, icon:'overlay'})}</div>
+      ${flatTabs('精修画笔', 'mask-brush', [['add', '添加画笔'], ['subtract', '减去画笔']], draft.brush, {add:'plus', subtract:'minus'})}
+      <div class="mask-actions">${btn('采用选区', 'mask-adopt', '', {icon:'check', cls:'primary', disabled: draft.review != null && !draft.changed})}${btn('关闭', 'cancel-selection', '', {icon:'close'})}</div></div>` : ''}
+    <div class="mask-stack"><h3 class="control-heading">图层 <span>${r.masks.length}</span></h3>
+    ${r.masks.map((item, index) => `<div class="mask-layer${m === item ? ' selected' : ''}">${btn((item.name || item.kind) + ' ' + (index + 1), 'choose-mask', index, {icon:maskToolIcons[item.kind] || 'mask', pressed: m === item})}${btn(item.on === false ? '启用图层' : '停用图层', 'toggle-mask', index, {icon:item.on === false ? 'eyeOff' : 'eye', only:true, pressed: item.on !== false})}</div>`).join('') || '<p class="control-hint">还没有蒙版。新建选区后，只调整照片中该区域。</p>'}</div>
+    ${m && !drawing && !candidate ? `<div class="mask-adjustments"><div class="row between"><h3>${h(m.name || m.kind)}</h3><details class="mask-manage"><summary aria-label="管理选中蒙版">${icon('menu')}</summary><div>
+      ${btn('上移', 'mask-op', 'up', {icon:'arrowUp', disabled: i === 0})}${btn('下移', 'mask-op', 'down', {icon:'arrowDown', disabled: i === r.masks.length - 1})}${btn('删除图层', 'mask-op', 'delete', {icon:'trash'})}</div></details></div>
+      ${semantic ? btn('查看与修正选区', 'mask-review', '', {icon:'edit', disabled: unavailable}) : ''}
+      <details class="mask-group" data-mask-group="region"${maskGroupOpen('region')}><summary>选区</summary>${btn('反转蒙版', 'mask-op', 'invert', {pressed: !!m.invert, icon:'invert'})}${rangeRow('opacity', '不透明度', 0, 100, 1, m.opacity ?? 100)}${!semantic ? rangeRow('feather', '羽化', 0, 100, 1, m.feather ?? 45) : ''}
+      ${m.kind === '亮度范围' ? rangeRow('rangeLower', '范围下限', 0, 99, 1, m.rangeLower ?? 25) + rangeRow('rangeUpper', '范围上限', 1, 100, 1, m.rangeUpper ?? 75) : ''}</details>
+      <details class="mask-group" data-mask-group="light"${maskGroupOpen('light')}><summary>光效</summary>${rangeRow('localEV', '曝光', -2, 2, 0.05, m.localEV ?? 0)}${rangeRow('localHighlight', '高光', -100, 100, 1, m.localHighlight ?? 0)}${rangeRow('localShadow', '阴影', -100, 100, 1, m.localShadow ?? 0)}</details>
+      <details class="mask-group" data-mask-group="color"${maskGroupOpen('color')}><summary>颜色</summary>${rangeRow('localSat', '饱和度', -100, 100, 1, m.localSat ?? 0)}</details>
+      <details class="mask-group" data-mask-group="effects"${maskGroupOpen('effects')}><summary>效果</summary>${rangeRow('localTexture', '纹理', -100, 100, 1, m.localTexture ?? 0)}</details>
+      <details class="mask-group" data-mask-group="detail"${maskGroupOpen('detail')}><summary>细节</summary>${rangeRow('localSharp', '锐化', -100, 100, 1, m.localSharp ?? 0)}</details></div>` : ''}
+  </section>`;
+}
 function developInspector(r) {
-  return `<div class="row between"><h2>${editTools[S.tool][0]}</h2>${btn('颜色示波器', 'scopes', '', { icon: 'pulse', only: true, cls: 'icon-btn' })}</div>
-    <div class="tone-control" title="左右拖动色调区域调整亮度">${histogram(Studio.data.work)}</div>${toolFields(r)}
+  return `<div class="row between"><h2>${editTools[S.tool][0]}</h2></div>
+    ${S.tool === 'basic' ? scopesPanel(true) : ''}${toolFields(r)}
     <div class="ins-block">${btn('复位当前照片…', 'reset-recipe', '', { cls: 'link' })}</div>`;
 }
 const cards = {
@@ -333,17 +496,55 @@ function inspectorRail() {
   return `<div class="inspector-rail" role="toolbar" aria-label="调整面板" aria-orientation="vertical">${Object.entries(
     panelIcons,
   )
+    .filter(([key]) => dagCapabilities().includes(key))
     .map(([key, symbol]) =>
-      btn(editTools[key][0], 'edit-tool', key, {
-        icon: symbol,
-        only: true,
-        cls: 'rail-tool',
-        controls: 'adjustment-panel',
-        pressed: active === key,
-      }),
+      `<button type="button" class="rail-tool" data-act="edit-tool" data-val="${key}"
+        aria-label="${h(editTools[key][0])}"${S.canvasTool ? ' disabled' : ''} aria-controls="adjustment-panel" aria-pressed="${active === key}">${icon(symbol)}</button>`,
     )
     .join('')}</div>`;
 }
+function showRailTip(button) {
+  const tip = $('.rail-tip');
+  if (!tip || !button) return;
+  tip.textContent = button.getAttribute('aria-label');
+  tip.hidden = false;
+  tip.classList.remove('rail-tip-stacked');
+  const box = button.getBoundingClientRect();
+  const width = tip.offsetWidth, height = tip.offsetHeight;
+  const fitsLeft = box.left >= width + 15;
+  const rail = button.closest('.inspector-rail').getBoundingClientRect();
+  tip.classList.toggle('rail-tip-stacked', !fitsLeft);
+  const stackedHeight = tip.offsetHeight;
+  const above = !fitsLeft && box.top >= stackedHeight + 14;
+  tip.dataset.side = fitsLeft ? 'left' : above ? 'above' : 'below';
+  tip.style.left = `${fitsLeft ? box.left - width - 10 : rail.left + (rail.width - tip.offsetWidth) / 2}px`;
+  const top = fitsLeft ? box.top + (box.height - height) / 2 : above ? box.top - stackedHeight - 10 : box.bottom + 10;
+  const y = Math.max(4, Math.min(top, innerHeight - stackedHeight - 4));
+  if (box.bottom <= 0 || box.top >= innerHeight || (!fitsLeft && (above ? y + stackedHeight + 6 > box.top : y - 6 < box.bottom))) { tip.hidden = true; return; }
+  tip.style.top = `${y}px`;
+  tip.style.setProperty('--tip-arrow-y', `${Math.max(5, Math.min(box.top + box.height / 2 - y, stackedHeight - 5))}px`);
+}
+function hideRailTip() {
+  const tip = $('.rail-tip');
+  if (tip) tip.hidden = true;
+}
+document.addEventListener('pointerover', (event) => {
+  const button = event.target.closest('.rail-tool');
+  if (button && !button.contains(event.relatedTarget)) showRailTip(button);
+});
+document.addEventListener('pointerout', (event) => {
+  const button = event.target.closest('.rail-tool');
+  if (button && !button.contains(event.relatedTarget)) hideRailTip();
+});
+document.addEventListener('focusin', (event) => {
+  if (event.target.matches('.rail-tool:focus-visible')) showRailTip(event.target);
+});
+document.addEventListener('focusout', (event) => {
+  if (event.target.matches('.rail-tool')) hideRailTip();
+});
+document.addEventListener('scroll', hideRailTip, true);
+window.addEventListener('resize', hideRailTip);
+window.addEventListener('blur', hideRailTip);
 function versionsInspector() {
   const e = currentEdit(),
     rows = [{ id: 'original', name: '原始版本', recipe: Studio.freshRecipe() }, ...e.versions].reverse();
@@ -367,11 +568,15 @@ narrowEditor.addEventListener('change', () => {
   if (S.page === 'edit') render();
 });
 function editorView() {
+  if (S.canvasRouteTool) { const tool = S.canvasRouteTool; S.canvasRouteTool = null; queueMicrotask(() => { if (S.page === 'edit' && !S.canvasTool) canvasToolOpen(tool); }); }
   const id = Studio.data.work,
     e = currentEdit(),
     versions = S.tool === 'versions';
-  const r = versions ? versionRecipe(S.versionView || e.adopted) : e.recipe;
-  const inspector = versions
+  const r = canvasToolPreview(versions ? versionRecipe(S.versionView || e.adopted) : e.recipe);
+  if (dagEnabled() && !S.canvasTool && !versions && !['smart','agent'].includes(S.tool) && !dagCapabilities().includes(S.tool)) S.tool = dagCapabilities()[0] || 'basic';
+  const inspector = S.canvasTool ? '<h2>画布工具已展开</h2><p>在照片底部完成或取消草案后，继续编辑当前节点。节点参数不会被工具草案覆盖。</p>' : !versions && dagEnabled() && !['smart', 'agent'].includes(S.tool)
+    ? dagInspector()
+    : versions
     ? versionsInspector()
     : S.tool === 'agent'
       ? agentInspector()
@@ -379,18 +584,19 @@ function editorView() {
         ? smartInspector()
         : developInspector(r);
   const left = presetList();
-  const strip = filmstrip(Studio.visible(S.scope).filter(validWork), id, 'edit-photo');
-  const canvas = `<div class="edit-center">${canvasContent(r, id)}${strip}</div>`;
-  const right =
-    '<aside class="edit-inspector" aria-label="调整工具">' +
-    inspectorRail() +
-    '<div class="inspector-content" id="adjustment-panel" tabindex="-1">' +
-    inspector +
-    '</div></aside>';
+  const sceneTool = SceneEditor.toolNote();
+  const canvas = `<div class="edit-center">${SceneEditor.warning()}${dagPhotoCanvas(r, id)}</div>`;
+  const basic = S.tool === 'basic' && !S.canvasTool;
+  const sceneControls = basic ? SceneEditor.modeBar() + (dagEnabled() ? scopesPanel(true) : '') : '';
+  const right = `<div class="edit-right">${versions ? '' : dagToolbar()}
+    <aside class="edit-inspector" aria-label="调整工具">${inspectorRail()}
+    <div class="inspector-content${versions || ['smart', 'agent'].includes(S.tool) ? '' : ' manual-inspector'}" id="adjustment-panel" tabindex="-1">` +
+    sceneControls + (sceneTool ? `<p class="control-hint">${h(sceneTool)}</p><fieldset class="scene-tool-controls" disabled>${inspector}</fieldset>` : inspector) +
+    (basic && SceneEditor.hdr() ? SceneEditor.rendition() : '') + '</div></aside></div>';
   return `<div class="edit-page" data-photo="${h(id)}"><header class="edit-head"><div class="edit-identity">${btn('返回资料库', 'goto', 'library/' + S.scope, { icon: 'previous', only: true, cls: 'icon-btn' })}
-      <strong>${h(Studio.asset(id).name)}</strong><span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
-      <div class="row">${btn('作品版本', 'open-versions', '', { icon: 'layers', pressed: versions })}${btn('保存候选', 'save-version', '', { cls: 'primary', disabled: versions || !Studio.dirty(id) })}</div></header>
-    <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div></div>`;
+      <strong>${h(Studio.asset(id).name)}</strong>${SceneEditor.badge()}<span class="muted">${versions ? '查看版本' : Studio.dirty(id) ? '草稿有调整' : '当前照片'}</span></div>
+      <div class="row">${btn('智能编辑', 'edit-tool', 'smart', { icon:'spark' })}${btn('作品版本', 'open-versions', '', { icon: 'layers', pressed: versions })}${btn('保存候选', 'save-version', '', { cls: 'primary', disabled: versions || !Studio.dirty(id) })}</div></header>
+    <div class="edit-body" style="--ground:${grounds[Studio.data.prefs.ground] ?? grounds.深灰}">${narrowEditor.matches ? canvas + right + left : left + canvas + right}</div>${dagFloatingWindow()}<div class="rail-tip" aria-hidden="true" hidden></div></div>`;
 }
 function editPanel(path, focus) {
   S.editFocus = focus;
@@ -478,34 +684,120 @@ actions['external-result'] = () => {
 function adjusted(el) {
   const r = structuredClone(currentEdit().recipe),
     k = el.dataset.key;
-  if (['opacity', 'feather', 'localEV'].includes(k)) {
+  if (['opacity', 'feather', 'localEV', 'localHighlight', 'localShadow', 'localSat', 'localTexture', 'localSharp', 'rangeLower', 'rangeUpper'].includes(k)) {
     const m = activeLayer(r);
-    if (m) m[k] = Number(el.value);
-  } else r[k] = Number(el.value);
+    if (m) {
+      m[k] = Number(el.value);
+      if (k === 'rangeLower') m[k] = Math.min(m[k], (m.rangeUpper ?? 75) - 1);
+      if (k === 'rangeUpper') m[k] = Math.max(m[k], (m.rangeLower ?? 25) + 1);
+    }
+  } else {
+    r[k] = Number(el.value);
+    if (k === 'filmAmount' && r.filmStock) r.filmEnabled = true;
+    if (['wbTemperature','tint','warmth'].includes(k)) { r.wbApplied = k === 'warmth' ? wbMode(r) : 'temperature'; r.wbPreset = ''; }
+  }
   return r;
 }
 inputs.adjust = (el) => {
-  const r = adjusted(el);
-  el.closest('.range').querySelector('[name=adjustNumber]').value = el.value;
-  paintEditPreview(r);
+  const row = el.closest('.range');
+  row.querySelector('[name=adjustNumber]').value = el.value;
+  row.style.cssText = rangeFill(Number(el.value), Number(el.min), Number(el.max));
+  paintEditPreview(adjusted(el));
 };
 changes.adjust = (el) => {
+  if (S.canvasTool) return canvasToolPatch(el.dataset.label, adjusted(el));
   Studio.setRecipe(Studio.data.work, el.dataset.label, adjusted(el));
   render();
 };
+let numericPointer = null, deferredNumericRender = null;
+document.addEventListener('pointerdown', (event) => {
+  const field = document.activeElement;
+  if (field.name === 'adjustNumber' && event.target !== field && event.isPrimary)
+    numericPointer = event.pointerId;
+}, true);
+for (const type of ['pointerup', 'pointercancel', 'blur']) {
+  window.addEventListener(type, (event) => {
+    if (numericPointer == null || (type !== 'blur' && event.pointerId !== numericPointer)) return;
+    numericPointer = null;
+    if (deferredNumericRender) requestAnimationFrame(deferredNumericRender);
+    deferredNumericRender = null;
+  });
+}
 changes.adjustNumber = (el) => {
-  const slider = el.closest('.range').querySelector('[name=adjust]');
-  if (el.value !== '' && Number.isFinite(el.valueAsNumber)) {
-    const number = Math.max(Number(el.min), Math.min(Number(el.max), el.valueAsNumber));
-    Studio.setRecipe(Studio.data.work, slider.dataset.label, adjusted({
-      dataset: slider.dataset, value: number,
-    }));
+  if (el.value === '' || !el.validity.valid) {
+    el.setAttribute('aria-invalid', 'true');
+    return;
   }
-  render();
+  const row = el.closest('.range'), slider = row.querySelector('[name=adjust]'), value = el.valueAsNumber;
+  const recipe = adjusted({ dataset: slider.dataset, value });
+  if (S.canvasTool) canvasToolPatch(slider.dataset.label, recipe, false);
+  else Studio.setRecipe(Studio.data.work, slider.dataset.label, recipe);
+  el.defaultValue = el.value;
+  el.removeAttribute('aria-invalid');
+  slider.value = String(value);
+  row.style.cssText = rangeFill(value, Number(slider.min), Number(slider.max));
+  paintEditPreview(recipe);
+  // Replacing the panel during native blur drops the pending Tab focus or pointer click.
+  const refresh = () => { if (el.isConnected) render(); };
+  if (numericPointer == null) requestAnimationFrame(refresh);
+  else deferredNumericRender = refresh;
 };
 document.addEventListener('keydown', (event) => {
-  if (event.target.name === 'adjustNumber' && event.key === 'Enter' && !event.isComposing)
-    event.target.blur();
+  const field = event.target;
+  if (field.name !== 'adjustNumber' || event.isComposing) return;
+  if (event.key === 'Escape') {
+    field.value = field.defaultValue;
+    field.removeAttribute('aria-invalid');
+    event.stopPropagation();
+  } else if (event.key === 'Enter') {
+    event.preventDefault();
+    if (field.value !== '' && field.validity.valid) field.blur();
+    else field.setAttribute('aria-invalid', 'true');
+  }
+});
+document.addEventListener('pointerdown', (event) => {
+  const slider = event.target.closest('input[name=adjust]');
+  if (!slider || slider.matches(':disabled') || event.button !== 0 || !event.isPrimary) return;
+  event.preventDefault();
+  slider.focus();
+  if (!slider.isConnected) return;
+  const number = slider.closest('.range').querySelector('[name=adjustNumber]');
+  const origin = Number(number.defaultValue), initial = event.clientX, photo = Studio.data.work;
+  const low = Number(slider.min), high = Number(slider.max), step = Number(slider.step);
+  let moved = false;
+  slider.setPointerCapture(event.pointerId);
+  function move(e) {
+    const delta = e.clientX - initial;
+    if (!moved && Math.abs(delta) < 2) return;
+    moved = true;
+    slider.value = String(Math.max(low, Math.min(high, low + Math.round((origin - low + delta / 200 * (high - low)) / step) * step)));
+    if (delta === 0) {
+      number.value = String(origin);
+      slider.closest('.range').style.cssText = rangeFill(origin, low, high);
+      paintEditPreview(currentEdit().recipe);
+    } else inputs.adjust(slider);
+  }
+  function finish(e) {
+    slider.removeEventListener('pointermove', move);
+    slider.removeEventListener('pointerup', finish);
+    slider.removeEventListener('lostpointercapture', finish);
+    delete slider.dataset.dragging;
+    if (!moved || !slider.isConnected || Studio.data.work !== photo) return;
+    if (e.type === 'pointerup' && Number(number.value) !== origin) changes.adjust(slider);
+    else render();
+  }
+  slider.dataset.dragging = 'true';
+  slider.addEventListener('pointermove', move);
+  slider.addEventListener('pointerup', finish);
+  slider.addEventListener('lostpointercapture', finish);
+});
+document.addEventListener('dblclick', (event) => {
+  const slider = event.target.closest('input[name=adjust]');
+  if (!slider || slider.matches(':disabled')) return;
+  const number = slider.closest('.range').querySelector('[name=adjustNumber]');
+  if (Number(number.defaultValue) === Number(slider.dataset.default)) return;
+  slider.value = slider.dataset.default;
+  changes.adjust(slider);
 });
 document.addEventListener('pointerdown', (event) => {
   const chart = event.target.closest('.tone-control svg');
@@ -559,8 +851,36 @@ actions['confirm-reset'] = () => {
   Studio.setRecipe(Studio.data.work, '复位调整', Studio.freshRecipe());
   render();
 };
-actions.scopes = () =>
-  dialog('颜色示波器', histogram(Studio.data.work) + '<p>数据取自当前示例 JPEG。</p>', btn('完成', 'close'));
+actions.scopes = () => dialog('颜色示波器', scopesPanel(false) + (SceneEditor.hdr() ? '' : '<p>直方图取自示例 JPEG；矢量图为示意。</p>'), btn('完成', 'close'));
+actions['scope-plot'] = (mode, _event, button) => {
+  S.scopePlot = mode;
+  const detached = button.closest('dialog');
+  if (detached) button.closest('.editing-scopes').outerHTML = scopesPanel(false);
+  else render();
+  (detached || document).querySelector(`[data-act="scope-plot"][data-val="${mode}"]`)?.focus({ preventScroll: true });
+};
+changes.wbMode = (el) => {
+  S.canvasSelection = null;
+  S.wbMode = {id: Studio.data.work, mode: el.value};
+  render(); $('[name=wbMode]')?.focus({preventScroll:true});
+};
+changes.wbPreset = (el) => {
+  const target = wbTargets[el.value];
+  if (!target) return;
+  adjustments('白平衡光源预设', {wbApplied:'temperature', wbPreset:el.value, wbTemperature:target[0], tint:target[1]});
+  $('[name=wbPreset]')?.focus({preventScroll:true});
+};
+actions['wb-original'] = () => adjustments('恢复原照白平衡', adjustmentDefaults('whiteBalance'));
+actions['wb-auto'] = (mode) => {
+  S.canvasSelection = null;
+  adjustments('自动白平衡 · 示例', mode === 'temperature'
+    ? {wbApplied:mode, wbPreset:'', wbTemperature:wbIsRaw() ? 5700 : 8, tint:3}
+    : {wbApplied:mode, wbPreset:'', warmth:12});
+};
+actions['wb-pick'] = (mode) => {
+  S.canvasSelection = S.canvasSelection?.kind === 'wb' ? null : {id:Studio.data.work,kind:'wb',type:mode};
+  render(); $('[data-act=wb-pick]')?.focus({preventScroll:true});
+};
 actions.enhance = () =>
   dialog(
     '增强细节',
@@ -578,42 +898,80 @@ function alterMasks(label, fn) {
   fn(masks);
   adjustments(label, { masks });
 }
-actions['add-mask'] = () => {
-  const kind = value('maskKind', $('#workspace'));
-  alterMasks('添加' + kind, (ms) => {
+function makeMask(kind, location = {x:50,y:50}) {
+  S.canvasSelection = null;
+  alterMasks('新建' + kind, (ms) => {
     S.selectedLayer = ms.length;
-    ms.push({ kind, on: true, blend: '添加', opacity: 75, feather: 45, localEV: 0, x: 50, y: 50 });
+    ms.push({ kind, on: true, opacity: 100, feather: 45, localEV: 0, ...location });
   });
+  $(`.mask-layer.selected [data-act=choose-mask]`)?.focus({preventScroll:true});
+}
+actions['add-mask'] = (kind) => {
+  if (kind === '亮度范围') return makeMask(kind);
+  S.canvasSelection = {id:Studio.data.work, kind:'mask', type:kind, candidate:['主体','背景','画笔'].includes(kind), x:50, y:50, brush:kind === '画笔' ? 'add' : null};
+  render(); $('.mask-stage button')?.focus({preventScroll:true});
 };
 actions['choose-mask'] = (i) => {
-  S.selectedLayer = Number(i);
-  render();
+  S.canvasSelection = null; S.selectedLayer = Number(i); render();
+  $(`.mask-layer.selected [data-act=choose-mask]`)?.focus({preventScroll:true});
 };
-actions['toggle-mask'] = (i) => alterMasks('切换蒙版', (ms) => (ms[i].on = !ms[i].on));
-actions['mask-op'] = (op) =>
-  alterMasks('编辑蒙版', (ms) => {
-    const i = Math.min(S.selectedLayer, ms.length - 1);
+actions['toggle-mask'] = (i) => {
+  S.canvasSelection = null;
+  alterMasks('切换蒙版', (ms) => (ms[i].on = ms[i].on === false));
+  $(`[data-act=toggle-mask][data-val="${i}"]`)?.focus({preventScroll:true});
+};
+actions['cancel-selection'] = () => {
+  const kind = S.canvasSelection?.kind;
+  S.canvasSelection = null; render();
+  $(kind === 'wb' ? '[data-act=wb-pick]' : kind === 'sampler' ? '[data-act=sampler-pick]' : '.mask-create > summary')?.focus({preventScroll:true});
+};
+actions['mask-review'] = () => {
+  const m = activeLayer(currentEdit().recipe);
+  S.canvasSelection = {id:Studio.data.work,kind:'mask',type:m.kind,candidate:true,review:S.selectedLayer,x:m.x ?? 50,y:m.y ?? 50,strokes:[...(m.strokes || [])]};
+  render(); $('.mask-stage button')?.focus({preventScroll:true});
+};
+actions['mask-overlay'] = () => { S.canvasSelection.overlay = S.canvasSelection.overlay === false; render(); $('[data-act=mask-overlay]')?.focus({preventScroll:true}); };
+actions['mask-brush'] = (brush) => { S.canvasSelection.brush = brush; S.canvasSelection.overlay = true; render(); $(`[data-act=mask-brush][data-val="${brush}"]`)?.focus({preventScroll:true}); };
+actions['mask-adopt'] = () => {
+  const { type, x, y, review, changed, strokes } = S.canvasSelection;
+  if (review == null) return makeMask(type, {x,y,strokes});
+  if (!changed) return;
+  S.canvasSelection = null;
+  alterMasks('修正蒙版', (ms) => Object.assign(ms[review], {x,y,strokes}));
+};
+actions['mask-op'] = (op) => {
+  alterMasks(op === 'delete' ? '删除蒙版' : '编辑蒙版', (ms) => {
+    const i = ms.indexOf(activeLayer({ masks:ms }));
     if (i < 0) return;
-    if (op === 'delete') {
-      ms.splice(i, 1);
-      S.selectedLayer = Math.max(0, i - 1);
-    } else if (op === 'up' && i > 0) {
-      [ms[i - 1], ms[i]] = [ms[i], ms[i - 1]];
-      S.selectedLayer = i - 1;
-    } else ms[i].invert = !ms[i].invert;
+    if (op === 'delete') { ms.splice(i, 1); S.selectedLayer = Math.max(0, i - 1); }
+    else if (op === 'invert') ms[i].invert = !ms[i].invert;
+    else {
+      const next = i + (op === 'up' ? -1 : 1);
+      if (ms[next]) { [ms[i], ms[next]] = [ms[next], ms[i]]; S.selectedLayer = next; }
+    }
   });
-changes.maskBlend = (el) =>
-  alterMasks('蒙版组合', (ms) => {
-    activeLayer({ masks: ms }).blend = el.value;
-  });
-changes.repairKind = (el) => {
-  S.repairKind = el.value;
+  $(`.mask-layer.selected [data-act=choose-mask]`)?.focus({preventScroll:true});
 };
+actions['repair-kind'] = (mode) => { S.repairKind = mode; render(); };
 function point(x, y) {
   if (S.tool === 'repair' && currentEdit().recipe.sectionEnabled?.repair === false) return;
   if (S.cropOpen || S.compare) return;
-  if (S.tool === 'masks' && activeLayer(currentEdit().recipe))
-    alterMasks('定位选区', (ms) => Object.assign(activeLayer({ masks: ms }), { x, y }));
+  const draft = S.canvasSelection;
+  if (draft?.id === Studio.data.work && draft.kind === 'sampler' && S.tool === 'basic') {
+    const points = [...colorSamplerPoints()], point = {x:Math.max(0, Math.min(100, x)), y:Math.max(0, Math.min(100, y))};
+    if (draft.replacing == null) { if (points.length >= 9) return; points.push(point); }
+    else { if (!points[draft.replacing]) return; points[draft.replacing] = point; }
+    (Studio.data.colorSamplers ??= {})[Studio.data.work] = points;
+    S.canvasSelection = null; Studio.save(); render(); $('[data-act=sampler-pick]')?.focus({preventScroll:true});
+    return;
+  }
+  if (draft?.id === Studio.data.work && draft.kind === 'wb' && S.tool === 'basic') {
+    S.canvasSelection = null;
+    adjustments('白平衡取样 · 示例', {wbApplied:draft.type, wbPreset:'', warmth:Math.round((x - 50) * 0.4)});
+  }
+  if (draft?.id === Studio.data.work && draft.kind === 'mask' && S.tool === 'masks' && draft.type === '前景实例' && !draft.candidate) {
+    Object.assign(draft, {x,y,candidate:true}); render();
+  }
   if (S.tool === 'repair') {
     const repairs = structuredClone(currentEdit().recipe.repairs),
       last = repairs.at(-1);
@@ -622,6 +980,30 @@ function point(x, y) {
     adjustments('修复取样', { repairs });
   }
 }
+document.addEventListener('pointerdown', (event) => {
+  const image = event.target.closest('[data-act=canvas-point]'), draft = S.canvasSelection;
+  if (!image || event.button !== 0 || S.tool !== 'masks' || draft?.id !== Studio.data.work || draft.kind !== 'mask') return;
+  if (draft.candidate ? !draft.brush : draft.type === '前景实例') return;
+  const box = image.getBoundingClientRect();
+  const location = (e) => ({x: Math.max(0, Math.min(100, (e.clientX-box.left)*100/box.width)), y: Math.max(0, Math.min(100, (e.clientY-box.top)*100/box.height))});
+  const start = location(event);
+  image.setPointerCapture(event.pointerId);
+  const cancel = () => { image.removeEventListener('pointerup', finish); };
+  function finish(e) {
+    image.removeEventListener('pointercancel', cancel);
+    const end = location(e);
+    if (S.canvasSelection !== draft || Math.hypot(event.clientX-e.clientX, event.clientY-e.clientY) < 4) return;
+    if (draft.candidate) {
+      (draft.strokes ??= []).push({...end, mode:draft.brush}); draft.changed = true; render();
+    } else makeMask(draft.type, {...start, end});
+  }
+  image.addEventListener('pointerup', finish, {once:true});
+  image.addEventListener('pointercancel', cancel, {once:true});
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || event.defaultPrevented || sheet.open || quickPromptVisible() || !S.canvasSelection) return;
+  event.preventDefault(); actions['cancel-selection']();
+});
 actions['canvas-point'] = (_, event, el) => {
   const box = el.getBoundingClientRect();
   point(
@@ -633,10 +1015,12 @@ actions['center-repair'] = () => point(50, 50);
 actions['remove-repair'] = (i) =>
   adjustments('移除修复点', { repairs: currentEdit().recipe.repairs.filter((_, n) => n !== Number(i)) });
 actions['apply-preset'] = (name) => {
+  if (SceneEditor.hdr()) return notify('该预设尚未验证 HDR 母版运算。请使用支持的场景工具，或在单独的 SDR 版本中采用。');
   const p = Studio.data.presets.find((p) => p.name === name);
   adjustments('套用 ' + name, { ...p.values, preset: name });
 };
 actions['adaptive-preset'] = (key) => {
+  if (SceneEditor.hdr()) return notify('自适应预设尚未验证 HDR；不会以 SDR 处理替换当前版本。');
   const p = adaptivePresets.find((item) => item.value === key);
   dialog(p.name, `<p>在当前照片上生成${p.target}蒙版。确认覆盖范围后再采用。</p>`,
     btn('取消', 'close') + btn('生成预览', 'adaptive-mask-preview', key, { cls: 'primary' }));
@@ -653,11 +1037,17 @@ actions['adaptive-mask-apply'] = (key) => {
   adjustments('套用 ' + p.name, { masks: [...masks, { name: p.target, kind: p.target, values: p.values }] });
 };
 actions['film-stock'] = (key) => {
-  if (!Object.hasOwn(RMPhotos.filmStocks, key) || currentEdit().recipe.filmStock === key) return;
-  adjustments('胶片模拟 · ' + RMPhotos.filmStocks[key].name, { filmStock: key, filmAmount: 100 });
+  if (!Object.hasOwn(RMPhotos.filmStocks, key) || S.tool === 'versions' || SceneEditor.film(key) || currentEdit().recipe.filmStock === key) return;
+  adjustments('胶片模拟 · ' + RMPhotos.filmStocks[key].name, { filmStock: key, filmAmount: 100, filmEnabled: true });
+};
+actions['filters-panel-toggle'] = () => { S.filtersExpanded = S.filtersExpanded === false; render(); };
+actions['filter-enabled'] = () => {
+  if (!Studio.asset(Studio.data.work).online || !currentEdit().recipe.filmStock) return;
+  const enable = currentEdit().recipe.filmEnabled === false;
+  adjustments(enable ? '启用滤镜' : '停用滤镜', { filmEnabled: enable });
 };
 actions['remove-film'] = () => {
-  const { filmStock, filmAmount, ...recipe } = currentEdit().recipe;
+  const { filmStock, filmAmount, filmEnabled, ...recipe } = currentEdit().recipe;
   Studio.setRecipe(Studio.data.work, '移除胶片模拟', recipe);
   render();
 };
@@ -683,7 +1073,7 @@ let previewChoice;
 function paintEditPreview(recipe) {
   const img = $('.developed');
   if (!img) return;
-  img.style.filter = RMPhotos.filter(RMPhotos.displayLook(recipe));
+  img.style.filter = RMPhotos.filter(RMPhotos.displayLook(SceneEditor.preview(recipe)));
   img.style.transform = 'rotate(' + (recipe.angle || 0) + 'deg)';
   $('.dark-canvas').style.setProperty('--ratio', editImageRatio(recipe, Studio.data.work));
 }
@@ -699,6 +1089,7 @@ function endEditPreview() {
 function rowPreview(el) {
   const recipe = currentEdit().recipe;
   const key = el.dataset.val;
+  if (SceneEditor.hdr() && el.dataset.act !== 'restore-snap') return;
   switch (el.dataset.act) {
     case 'film-stock':
       return { ...recipe, filmStock: key, filmAmount: recipe.filmStock === key ? (recipe.filmAmount ?? 100) : 100 };
@@ -731,6 +1122,10 @@ for (const type of ['pointerover', 'focusin', 'pointerout', 'focusout']) {
 window.addEventListener('blur', endEditPreview);
 document.addEventListener('keydown', (event) => {
   if (S.page !== 'edit' || sheet.open) return;
+  const menu = event.target.closest('.filter-options[open]');
+  if (event.key === 'Escape' && menu) {
+    menu.open = false; menu.querySelector('summary').focus(); event.preventDefault(); return;
+  }
   if (event.key === 'Escape' && previewChoice?.isConnected) {
     endEditPreview();
     event.preventDefault();
@@ -748,21 +1143,24 @@ document.addEventListener('keydown', (event) => {
 actions['preset-import'] = () => {
   actions['preset-manage']('import');
 };
-actions['preset-manage'] = (operation) =>
+actions['preset-manage'] = (operation) => {
+  const menu = $('.filter-options[open]');
+  if (menu) { menu.open = false; menu.querySelector('summary').focus(); }
   dialog(
     '预设管理',
     field('预设名称', 'presetName', '我的调整') +
       select(
         '操作',
         'presetOperation',
-        ['保存当前调整', '导入 Lightroom / Camera Raw 预设', '导出原生预设'],
-        operation === 'import' ? '导入 Lightroom / Camera Raw 预设' : '保存当前调整',
+        operation === 'import' ? ['导入 Lightroom / Camera Raw 预设'] : operation === 'export' ? ['导出原生预设'] : ['保存当前调整'],
+        operation === 'import' ? '导入 Lightroom / Camera Raw 预设' : operation === 'export' ? '导出原生预设' : '保存当前调整',
       ) +
       (operation === 'import'
         ? '<p id="preset-detail" class="muted">示例导入。为预设命名，再从 Imported 查看。</p>'
-        : '<p id="preset-detail" class="muted">保存可跨片复用的调整字段。</p>'),
+        : operation === 'export' ? '<p id="preset-detail" class="muted">可查看和下载本次选择的示例参数。</p>' : '<p id="preset-detail" class="muted">保存可跨片复用的调整字段。</p>'),
     btn('取消', 'close') + btn('执行', 'preset-command'),
   );
+};
 changes.presetOperation = (el) => {
   $('#preset-detail').textContent = {
     '导入 Lightroom / Camera Raw 预设': '选择 .xmp 或 .zip 后先查看支持的字段与缺失依赖。',

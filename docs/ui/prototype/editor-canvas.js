@@ -23,6 +23,7 @@ function navButton(direction, name, glyph, id) {
     ${id ? `<span class="neighbor-preview" aria-hidden="true">${pic(id)}<span>${h(Studio.asset(id).name)}</span></span>` : ''}</span>`;
 }
 function dock() {
+  if (S.canvasTool) return canvasToolDock();
   if (quickPromptVisible()) return promptDock();
   const { previous, next } = neighbors();
   const command = (name, act, key, glyph, options = {}) =>
@@ -30,28 +31,56 @@ function dock() {
   return `<div class="canvas-dock" role="toolbar" aria-label="照片查看工具">
     ${navButton('previous', '上一张', 'previous', previous)}${navButton('next', '下一张', 'chevron', next)}
     <span class="dock-divider"></span>
-    ${command('缩小 · −', 'edit-zoom', 'out', 'zoomOut', { disabled: S.editZoom <= 0.25 })}
-    ${command('放大 · +', 'edit-zoom', 'in', 'zoomIn', { disabled: S.editZoom >= 4 })}
+    ${command('缩小 · −', 'edit-zoom', 'out', 'zoomOut', { disabled: S.editZoom <= 1 })}
+    ${command('放大 · +', 'edit-zoom', 'in', 'zoomIn', { disabled: S.editZoom >= 64 })}
     ${command('FIT', 'edit-zoom', 'fit', null, { title: '适合可用画面 · 0 / ⌘0', cls: 'dock-fit' })}
     ${command('1:1 · Z', 'edit-zoom', 'pixels', null, { title: '按原生像素查看 · Z', cls: 'dock-fit' })}
-    ${command('裁切与拉直 · C', 'canvas-crop', '', 'crop', { pressed: !!S.cropOpen, expanded: !!S.cropOpen, disabled: S.tool === 'versions' })}
+    <span data-canvas-tool="crop">${command('Crop · 裁切与拉直 · C', 'canvas-crop', '', 'crop', { pressed: !!S.cropOpen, expanded: !!S.cropOpen, disabled: S.tool === 'versions' })}</span><span data-canvas-tool="mask">${command('Mask · 蒙版', 'edit-tool', 'masks', 'mask', { disabled: S.tool === 'versions' })}</span><span data-canvas-tool="remove">${command('Remove · 修饰', 'edit-tool', 'repair', 'repair', { disabled: S.tool === 'versions' })}</span>
     <span class="dock-divider"></span>
     ${command('对比模式 · V', 'canvas-menu', 'compare', 'compare', { pressed: S.compare, expanded: S.canvasMenu === 'compare', disabled: S.cropOpen })}
     ${command('暗房背景 · B', 'canvas-menu', 'ground', 'background', { expanded: S.canvasMenu === 'ground' })}
     <span class="dock-divider"></span>${quickEntry()}</div>`;
 }
-// The canvas shows the viewport-resolution frame at fit zoom; 1:1 renders native pixels.
-// See specs/036-render-pipeline-performance/spec.md.
-function resolutionChip() {
-  const native = '原生 9504 × 6336';
-  // 1:1 renders only the visible window of the canvas (plus a pan margin); FIT renders the
-  // whole frame at the canvas size. See specs/036-render-pipeline-performance/spec.md.
-  return `<small class="pane-label canvas-resolution" aria-live="polite">${
-    S.pixelView
-      ? '原生像素 9504 × 6336 · 视口 2400 × 1600'
-      : '预览 2400 × 1600 · ' + native
-  }</small>`;
+function resolutionText(scale = S.editZoom, active = false) {
+  if (S.pixelView) return '100% · 原生像素（示意）';
+  if (scale === 1) return '适合窗口 · 视口预览（示意）';
+  const image = $('.edit-image');
+  const physical = image ? image.offsetWidth * devicePixelRatio / 9504 : null;
+  return `${physical === null ? '' : Math.round(physical * 100) + '% · '}${active && Studio.data.prefs.performance === '极速' ? '缩放中 · 临时预览' : '按倍率取样'}（示意）`;
 }
+function resolutionChip() {
+  requestAnimationFrame(() => updateZoomStatus());
+  return '<small class="pane-label canvas-resolution" aria-live="polite"></small>';
+}
+function updateZoomStatus(active = false) {
+  const status = $('.canvas-resolution');
+  if (status) status.textContent = resolutionText(S.editZoom, active);
+}
+let canvasZoomEnd;
+document.addEventListener('wheel', (event) => {
+  const fit = event.target.closest('.canvas-fit');
+  if (!fit || !event.ctrlKey || S.page !== 'edit' || S.cropOpen || quickPromptVisible()) return;
+  event.preventDefault();
+  const canvas = fit.closest('.dark-canvas'), bounds = fit.getBoundingClientRect();
+  const image = fit.querySelector('.edit-image');
+  const before = image.getBoundingClientRect();
+  const oldScale = S.editZoom;
+  const scale = Math.max(1, Math.min(64, oldScale * Math.exp(-event.deltaY * 0.012)));
+  if (scale === oldScale) return;
+  const nx = (event.clientX - before.left) / before.width;
+  const ny = (event.clientY - before.top) / before.height;
+  S.editZoom = scale;
+  S.pixelView = false;
+  canvas.style.setProperty('--view-scale', scale);
+  const after = image.getBoundingClientRect();
+  fit.scrollLeft += after.left - bounds.left + nx * after.width - (event.clientX - bounds.left);
+  fit.scrollTop += after.top - bounds.top + ny * after.height - (event.clientY - bounds.top);
+  updateZoomStatus(true);
+  clearTimeout(canvasZoomEnd);
+  canvasZoomEnd = setTimeout(() => {
+    if (canvas.isConnected) updateZoomStatus();
+  }, 180);
+}, { passive: false });
 function compareMenu() {  const refs = [
     ['original', '原片（当前几何）'],
     ...currentEdit()
@@ -89,17 +118,21 @@ function cropPanel(r) {
     ${btn('复位裁切', 'crop-reset', '', { cls: 'link' })}</section>`;
 }
 function editingMarks(r) {
-  if (S.cropOpen) return '<span class="thirds"></span>';
+  if (S.cropOpen) { const box=S.canvasTool?.cropBox || {x:0,y:0,width:100,height:100}; return `<span class="thirds"></span><span class="canvas-crop-box" aria-label="裁切范围示意" style="left:${box.x}%;top:${box.y}%;width:${box.width}%;height:${box.height}%"><i></i><i></i><i></i><i></i></span>`; }
   const mark = (m, label, kind, style = '') =>
     `<span class="marker ${kind}" style="left:${m.x}%;top:${m.y}%;${style}">${h(label)}</span>`;
-  if (S.tool === 'masks')
-    return r.masks
-      .map((m, i) =>
-        m.on
-          ? mark(m, i + 1, 'mask-mark' + (m.invert ? ' inverse' : ''), 'opacity:' + (0.2 + 0.007 * m.opacity))
-          : '',
-      )
-      .join('');
+  if (S.tool === 'basic') return colorSamplerPoints().map((point, i) => mark(point, i + 1, 'sampler-mark')).join('');
+  if (S.tool === 'masks') {
+    const draft = S.canvasSelection;
+    const strokes = (m) => (m.strokes || []).map((p) => mark(p, p.mode === 'add' ? '+' : '−', 'mask-stroke ' + p.mode)).join('');
+    if (draft?.id === Studio.data.work && draft.kind === 'mask' && draft.candidate)
+      return draft.overlay === false ? '' : mark(draft, '预览', 'mask-mark') + strokes(draft);
+    const m = activeLayer(r);
+    if (m?.on === false || !Number.isFinite(m?.x)) return '';
+    const exposure = m.localEV || 0;
+    const style = `opacity:${0.2 + 0.007 * (m.opacity ?? 100)};backdrop-filter:brightness(${Math.pow(2, exposure * 0.5)})`;
+    return mark(m, r.masks.indexOf(m) + 1, 'mask-mark' + (m.invert ? ' inverse' : ''), style) + strokes(m);
+  }
   if (S.tool === 'repair' && r.sectionEnabled?.repair !== false)
     return r.repairs
       .map((m, i) => mark(m, i + 1, 'repair-mark') + (m.source ? mark(m.source, '源', 'repair-mark') : ''))
@@ -122,15 +155,15 @@ function canvasContent(r, id) {
   const pane = (side, layer = '', label = '') => {
     const image = (which, cls = '') => {
       const current = which === 'current', recipe = current ? r : reference;
-      const filter = RMPhotos.filter(RMPhotos.displayLook(recipe));
+      const filter = RMPhotos.filter(RMPhotos.displayLook(SceneEditor.preview(recipe)));
       const version = current ? (S.tool === 'versions' ? S.versionView || currentEdit().adopted : null) : ref;
       const original = pic(id, current ? 'developed' : 'reference-image',
-        'style="filter:' + filter + ';transform:rotate(' + (recipe.angle || 0) + 'deg)"');
+        'style="filter:' + filter + ';transform:rotate(' + ((recipe.angle || 0) + (recipe.quarterTurns || 0) * 90) + 'deg) scaleX(' + (recipe.flipH ? -1 : 1) + ') scaleY(' + (recipe.flipV ? -1 : 1) + ')"');
       const result = quickCanvasEffect(id, recipe, version);
       return `<div class="canvas-layer ${cls}">${original}${result}</div>`;
     };
     return `<div class="canvas-fit"><div class="zoom-plane"><div class="edit-image" ${side === 'current' && mode === 'off' && !prompt ? 'data-act="canvas-point"' : ''} role="img" aria-label="${h(p.scene)}，${h(label || '调整预览')}">
-      ${image(side)}${layer ? image(layer, 'comparison-layer') : ''}${side === 'current' && mode === 'off' ? (prompt ? quickCanvasControls(id) : editingMarks(r)) : ''}</div></div>${label ? `<small class="pane-label">${h(label)}</small>` : ''}</div>`;
+      ${image(side)}${layer ? image(layer, 'comparison-layer') : ''}${side === 'current' && mode === 'off' ? (prompt ? quickCanvasControls(id) : editingMarks(r) + SceneEditor.overlayMarkup()) : ''}</div></div>${label ? `<small class="pane-label">${h(label)}</small>` : ''}</div>`;
   };
   const base = S.inverted ? 'reference' : 'current',
     overlay = S.inverted ? 'current' : 'reference';
@@ -141,9 +174,9 @@ function canvasContent(r, id) {
     contents =
       pane(overlay, '', S.inverted ? '当前' : refName) + pane(base, '', S.inverted ? refName : '当前');
   else contents = pane(base, overlay, comparisonModes[mode] + ' · ' + refName);
-  return `<section class="canvas-panel${prompt ? ' has-quick-prompt' : ''}" aria-label="暗房画布">
-    <div class="dark-canvas" data-comparison="${mode}" style="--ratio:${ratio};--view-scale:${S.editZoom};--compare-amount:${S.comparePosition}%">${contents}</div>
-    <small class="look-preview pane-label" hidden></small>${resolutionChip()}${S.cropOpen ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
+  return `<section class="canvas-panel${prompt ? ' has-quick-prompt' : ''}" data-photo="${h(id)}" aria-label="暗房画布">
+    ${SceneEditor.hud()}<div class="dark-canvas" data-comparison="${mode}" style="--ratio:${ratio};--view-scale:${S.editZoom};--compare-amount:${S.comparePosition}%">${contents}</div>
+    <small class="look-preview pane-label" hidden></small>${resolutionChip()}${S.cropOpen && !S.canvasTool ? cropPanel(r) : ''}${S.canvasMenu === 'compare' ? compareMenu() : S.canvasMenu === 'ground' ? groundMenu() : ''}${dock()}</section>`;
 }
 actions['canvas-nav'] = (direction) => {
   const id = neighbors()[direction];
@@ -160,13 +193,12 @@ actions['edit-photo'] = (id) => {
 actions['edit-zoom'] = (direction) => {
   const view = $('.edit-image');
   let scale = direction === 'fit' ? 1 : S.editZoom * (direction === 'in' ? 1.25 : 0.8);
-  if (direction === 'pixels' && view)
-    scale =
-      S.editZoom === 1 ? view.querySelector('img').naturalWidth / view.getBoundingClientRect().width : 1;
-  S.editZoom = Math.max(0.25, Math.min(4, scale));
-  // 1:1 switches the canvas to native pixels; leaving it returns to the viewport frame.
-  S.pixelView = direction === 'pixels';
+  const pixels = direction === 'pixels' && !S.pixelView && view;
+  if (direction === 'pixels') scale = pixels ? S.editZoom * 9504 / (view.offsetWidth * devicePixelRatio) : 1;
+  S.editZoom = Math.max(1, Math.min(64, scale));
+  S.pixelView = Boolean(pixels);
   render();
+  dockFocus('edit-zoom', direction);
   for (const fit of $$('.canvas-fit')) {
     fit.scrollLeft = (fit.scrollWidth - fit.clientWidth) / 2;
     fit.scrollTop = (fit.scrollHeight - fit.clientHeight) / 2;

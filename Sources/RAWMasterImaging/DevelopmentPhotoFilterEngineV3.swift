@@ -45,21 +45,22 @@ enum DevelopmentPhotoFilterEngineV3 {
                     repairRAWTransportAlpha:Bool = false)throws->CIImage {
     try filter.validate() // Even malformed disabled/zero parameters must never bypass validation.
     guard filter.enabled,filter.selection != .original,filter.intensity != 0 else{return image}
-    let binding = try bind(filter, repairRAWTransportAlpha: repairRAWTransportAlpha)
-    let pair=try resources.pair(filter, binding: binding),kernel=try loaded.get()
-    try resourceLease?(pair)
-    let extent=image.extent
-    guard extent.minX.isFinite,extent.minY.isFinite,extent.width.isFinite,extent.height.isFinite,
-      extent.width>0,extent.height>0,!extent.isInfinite else{throw DevelopmentPhotoFilterError.invalidGraph}
-    let params = CIVector(x: CGFloat(binding.weight), y: binding.lowerPercent == 0 ? 1 : 0,
-                          z: CGFloat(binding.hdrMode), w: CGFloat(binding.amount))
-    let transport = CIVector(x: binding.repairRawAlpha ? 1 : 0, y: 0, z: 0, w: 0)
-    let atlas=CGRect(x:0,y:0,width:512,height:512)
-    guard let graph=kernel.apply(extent:extent,roiCallback:{index,rect in index==0 ? rect.intersection(extent):atlas},
-      arguments:[image.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params,transport]) else{throw DevelopmentPhotoFilterError.invalidGraph}
-    // CI graph/texture aliases keep their actual MTLBuffer and its charge alive after pair dies.
-    // No actual task is launched here; canonical callers keep their existing checked finite/join.
-    return graph
+    // Drain SDK factory aliases; the returned graph still owns every texture until its final use.
+    return try autoreleasepool {
+      let binding = try bind(filter, repairRAWTransportAlpha: repairRAWTransportAlpha)
+      let pair=try resources.pair(filter, binding: binding),kernel=try loaded.get()
+      try resourceLease?(pair)
+      let extent=image.extent
+      guard extent.minX.isFinite,extent.minY.isFinite,extent.width.isFinite,extent.height.isFinite,
+        extent.width>0,extent.height>0,!extent.isInfinite else{throw DevelopmentPhotoFilterError.invalidGraph}
+      let params = CIVector(x: CGFloat(binding.weight), y: binding.lowerPercent == 0 ? 1 : 0,
+                            z: CGFloat(binding.hdrMode), w: CGFloat(binding.amount))
+      let transport = CIVector(x: binding.repairRawAlpha ? 1 : 0, y: 0, z: 0, w: 0)
+      let atlas=CGRect(x:0,y:0,width:512,height:512)
+      guard let graph=kernel.apply(extent:extent,roiCallback:{index,rect in index==0 ? rect.intersection(extent):atlas},
+        arguments:[image.samplingNearest(),pair.lower.image.samplingNearest(),pair.upper.image.samplingNearest(),params,transport]) else{throw DevelopmentPhotoFilterError.invalidGraph}
+      return graph
+    }
   }
   static func bind(_ filter: DevelopmentFilterV3, repairRAWTransportAlpha: Bool = false) throws -> RAWMasterImageKernel.FilterBinding {
     let family: RAWMasterImageKernel.FilterFamily

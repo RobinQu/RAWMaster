@@ -37,16 +37,21 @@ final class ThumbnailSettledHook: @unchecked Sendable {
   private var failure:Error?
   private let native:PreviewNativeSource,ledger:ThumbnailLedger,device:MTLDevice
   private let contextOwner:ThumbnailWorkerContextV1?
-  init(batch:ThumbnailBatch,native:PreviewNativeSource,ledger:ThumbnailLedger,device:MTLDevice,contextOwner:ThumbnailWorkerContextV1? = nil){self.batch=batch;self.native=native;self.ledger=ledger;self.device=device;self.contextOwner=contextOwner}
-  func consume(_ image:CIImage)throws {
-    guard batch.gate.isOpen else{return}
-    // A thumbnail capacity/capability failure cannot fail/re-render the primary pipeline.
-    // The independent quiet preparation path later reports its own typed failure.
+  private let input: ThumbnailProxyInput
+  init(batch: ThumbnailBatch, native: PreviewNativeSource, ledger: ThumbnailLedger,
+       device: MTLDevice, contextOwner: ThumbnailWorkerContextV1? = nil) throws {
+    // Validation belongs outside the native render callback's already deep stack.
+    let recipe = try DevelopmentThumbnailEngine.proxyPreparationRecipe(batch.request)
+    input = try native.thumbnailProxyInput(recipe: recipe, source: batch.source,
+                                           generation: batch.request.preview.sourceGeneration)
+    self.batch = batch; self.native = native; self.ledger = ledger
+    self.device = device; self.contextOwner = contextOwner
+  }
+  func consume(_ image: CIImage) throws {
+    guard batch.gate.isOpen else { return }
     do {
-      let inputRecipe=try DevelopmentThumbnailEngine.proxyPreparationRecipe(batch.request)
-      let proxy=try native.prepareThumbnailProxy(recipe:inputRecipe,source:batch.source,
-        generation:batch.request.preview.sourceGeneration,ledger:ledger,device:device,contextOwner:contextOwner,settledNativeImage:image,
-        interest:{self.batch.gate.isOpen})
+      let proxy = try native.prepareSettledThumbnailProxy(input: input, image: image, ledger: ledger,
+        device: device, contextOwner: contextOwner, interest: { self.batch.gate.isOpen })
       lock.lock();if value==nil{value=proxy;lock.unlock()}else{lock.unlock();proxy.surface.retire()}
     }catch{lock.lock();if failure==nil{failure=error};lock.unlock()}
   }

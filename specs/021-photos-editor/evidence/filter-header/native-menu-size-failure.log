@@ -1,0 +1,528 @@
+Building for production...
+[Computing dependencies]
+[Using on-disk description]
+[1 / 21] RAWMasterSequenceProbe
+[1 / 9] RAWMaster_RAWMasterImagingTests
+[2 / 6] RAWMasterUITests-product
+[5 / 9]
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/DevelopmentFilmCatalogUITests.swift:39:25: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m37 |[0;0m         _ = NSApplication.shared
+ [0;36m38 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m39 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+    [0;36m|[0;0m                         `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m40 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+ [0;36m41 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/DevelopmentFilmCatalogUITests.swift:40:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m38 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m39 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+ [0;36m40 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m41 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+ [0;36m42 |[0;0m         let fixture = try EditingWorkflowTests.Fixture()
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/DevelopmentFilmCatalogUITests.swift:41:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m39 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+ [0;36m40 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+ [0;36m41 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m42 |[0;0m         let fixture = try EditingWorkflowTests.Fixture()
+ [0;36m43 |[0;0m         defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingComparisonTests.swift:113:27: [1;33mwarning: [1;39mresult of call to 'appendEditingVersion(_:commandID:)' is unused[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m111 |[0;0m         let version = EditingVersion(workID: work.id, parentVersionID: work.originalVersionID,
+[0;36m112 |[0;0m                                      kind: .development, source: work.source, recipe: .init(adjustmentsV3: .init()))
+[0;36m113 |[0;0m         try fixture.store.appendEditingVersion(version)
+    [0;36m|[0;0m                           `- [1;33mwarning: [1;39mresult of call to 'appendEditingVersion(_:commandID:)' is unused[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+[0;36m114 |[0;0m         model.select(fixture.assets[1])
+[0;36m115 |[0;0m         try await wait { editing.work?.source.assetID == fixture.assets[1].id }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:45:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m43 |[0;0m         NSApp.activate(ignoringOtherApps: true)
+ [0;36m44 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m45 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m46 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m47 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:46:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m44 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m45 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m46 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m47 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+ [0;36m48 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:47:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m45 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m46 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m47 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m48 |[0;0m 
+ [0;36m49 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 3); defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:333:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m331 |[0;0m         _ = NSApplication.shared
+[0;36m332 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(ax)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: ax) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:334:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m332 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(ax)
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: ax) }
+[0;36m336 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 1)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:335:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m333 |[0;0m         let previous = NSApp.accessibilityAttributeValue(ax)
+[0;36m334 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+[0;36m335 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: ax) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m336 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 1)
+[0;36m337 |[0;0m         defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:418:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m416 |[0;0m         _ = NSApplication.shared
+[0;36m417 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m418 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m419 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m420 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:419:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m417 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m418 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m419 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m420 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+[0;36m421 |[0;0m         final class CheckboxState: ObservableObject {
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:420:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m418 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m419 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m420 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m421 |[0;0m         final class CheckboxState: ObservableObject {
+[0;36m422 |[0;0m             @Published var checked = false
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingMaskCanvasOwnershipTests.swift:80:63: [1;33mwarning: [1;39mbackward matching of the unlabeled trailing closure is deprecated; label the argument with 'generate' to suppress this warning[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching\TrailingClosureMatching]8;;\]
+ [0;36m78 |[0;0m         defer { Task { await gate.deliver() } }
+ [0;36m79 |[0;0m         let png = try DevelopmentMaskBitmap(width: 4, height: 4, values: Array(repeating: 200, count: 16)).png()
+ [0;36m80 |[0;0m         let input = EditingMaskInputSession(editing: editing) { _, source, target, _ in
+    [0;36m|[0;0m                                                               `- [1;33mwarning: [1;39mbackward matching of the unlabeled trailing closure is deprecated; label the argument with 'generate' to suppress this warning[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching\TrailingClosureMatching]8;;\]
+ [0;36m81 |[0;0m             if target == .background { await gate.suspend() }
+ [0;36m82 |[0;0m             let snapshot = DevelopmentSemanticMaskSnapshot(source: source, target: target, generator: "fixture", width: 4, height: 4, png: png)
+
+RAWMaster.EditingMaskInputSession.init:2:21: [1;39mnote: [1;39m'init(editing:pack:install:generate:)' declared here[0;0m
+[0;36m1 |[0;0m class EditingMaskInputSession {
+[0;36m2 |[0;0m @MainActor internal init(editing: RAWMaster.EditingController, pack: RAWMasterImaging.DevelopmentMaskModelPack = .installed, install: RAWMaster.EditingMaskInputSession.Install? = nil, generate: RAWMaster.EditingMaskInputSession.Generate? = nil)}
+  [0;36m|[0;0m                     `- [1;39mnote: [1;39m'init(editing:pack:install:generate:)' declared here[0;0m
+[0;36m3 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingPreviewCoordinationTests.swift:537:36: [1;33mwarning: [1;39minstance method 'wait' is unavailable from asynchronous contexts; Await a Task handle instead; this is an error in the Swift 6 language mode[0;0m
+[0;36m535 |[0;0m         let child = EditingPreviewPromptDispatch.start(backend: backend, request: request)
+[0;36m536 |[0;0m         // A bounded synchronous hold of this executor: the production helper must genuinely enter elsewhere.
+[0;36m537 |[0;0m         let status = probe.entered.wait(timeout: .now() + 2)
+    [0;36m|[0;0m                                    `- [1;33mwarning: [1;39minstance method 'wait' is unavailable from asynchronous contexts; Await a Task handle instead; this is an error in the Swift 6 language mode[0;0m
+[0;36m538 |[0;0m         if status != .success { child.cancel() }
+[0;36m539 |[0;0m         let result = await EditingPreviewPromptDispatch.join(child)
+
+Dispatch.DispatchSemaphore.wait:2:13: [1;39mnote: [1;39m'wait(timeout:)' declared here[0;0m
+[0;36m1 |[0;0m class DispatchSemaphore {
+[0;36m2 |[0;0m public func wait(timeout: DispatchTime) -> DispatchTimeoutResult}
+  [0;36m|[0;0m             `- [1;39mnote: [1;39m'wait(timeout:)' declared here[0;0m
+[0;36m3 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingPreviewCoordinationTests.swift:551:37: [1;33mwarning: [1;39minstance method 'wait' is unavailable from asynchronous contexts; Await a Task handle instead; this is an error in the Swift 6 language mode[0;0m
+[0;36m549 |[0;0m             consumerID: .init(), role: .primary, revision: 1, recipe: .init(), quality: .settled, viewport: .init(maxPixel: 2400))
+[0;36m550 |[0;0m         let child = EditingPreviewPromptDispatch.start(backend: backend, request: request)
+[0;36m551 |[0;0m         let entered = probe.entered.wait(timeout: .now() + 2)
+    [0;36m|[0;0m                                     `- [1;33mwarning: [1;39minstance method 'wait' is unavailable from asynchronous contexts; Await a Task handle instead; this is an error in the Swift 6 language mode[0;0m
+[0;36m552 |[0;0m         var returned = false
+[0;36m553 |[0;0m         let waiter = Task { let value = await EditingPreviewPromptDispatch.join(child); returned = true; return value }
+
+Dispatch.DispatchSemaphore.wait:2:13: [1;39mnote: [1;39m'wait(timeout:)' declared here[0;0m
+[0;36m1 |[0;0m class DispatchSemaphore {
+[0;36m2 |[0;0m public func wait(timeout: DispatchTime) -> DispatchTimeoutResult}
+  [0;36m|[0;0m             `- [1;39mnote: [1;39m'wait(timeout:)' declared here[0;0m
+[0;36m3 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingPreviewDiagnosticsTests.swift:196:17: [1;33mwarning: [1;39mvariable 'published' was written to, but never read[0;0m
+[0;36m194 |[0;0m             let context = CIContext(mtlDevice: device)
+[0;36m195 |[0;0m             let layout = try PreviewInteractiveLayout.make(width: 8, height: 8, float: false)
+[0;36m196 |[0;0m             var published: NSImage?, escapedCG: CGImage?
+    [0;36m|[0;0m                 `- [1;33mwarning: [1;39mvariable 'published' was written to, but never read[0;0m
+[0;36m197 |[0;0m             weak var imageWitness: NSImage?
+[0;36m198 |[0;0m             let ticket = try scope.reserveSharedSurface(bytes: layout.bytes)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/ExportWorkspaceInteractionTests.swift:104:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m102 |[0;0m         _ = NSApplication.shared
+[0;36m103 |[0;0m         let enhanced = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m104 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhanced)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m105 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhanced)
+[0;36m106 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhanced) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/ExportWorkspaceInteractionTests.swift:105:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m103 |[0;0m         let enhanced = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m104 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhanced)
+[0;36m105 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhanced)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m106 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhanced) }
+[0;36m107 |[0;0m         let fixture = try AppModelTests.Fixture()
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/ExportWorkspaceInteractionTests.swift:106:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m104 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhanced)
+[0;36m105 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhanced)
+[0;36m106 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhanced) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m107 |[0;0m         let fixture = try AppModelTests.Fixture()
+[0;36m108 |[0;0m         defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/GroupEditingLayoutTests.swift:11:37: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+  [0;36m9 |[0;0m         _ = NSApplication.shared
+ [0;36m10 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m11 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                                     `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/GroupEditingLayoutTests.swift:12:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m10 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m11 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+ [0;36m14 |[0;0m         let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/GroupEditingLayoutTests.swift:13:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m11 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m14 |[0;0m         let f = try ProjectReviewUITests.Fixture(); defer { f.clean() }
+ [0;36m15 |[0;0m         _ = try await f.populate("PropertiesEntry")
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/LibraryCatalogCaptureTests.swift:46:18: [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m44 |[0;0m             Color.clear.frame(width: 0, height: 0).allowsHitTesting(false).accessibilityHidden(true)
+ [0;36m45 |[0;0m                 .onAppear { record() }
+ [0;36m46 |[0;0m                 .onChange(of: reduceTransparency) { _ in record() }
+    [0;36m|[0;0m                  `- [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m47 |[0;0m                 .onChange(of: contrast) { _ in record() }
+ [0;36m48 |[0;0m         }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/LibraryCatalogCaptureTests.swift:47:18: [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m45 |[0;0m                 .onAppear { record() }
+ [0;36m46 |[0;0m                 .onChange(of: reduceTransparency) { _ in record() }
+ [0;36m47 |[0;0m                 .onChange(of: contrast) { _ in record() }
+    [0;36m|[0;0m                  `- [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m48 |[0;0m         }
+ [0;36m49 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotoInspectionPerformanceTests.swift:44:83: [1;33mwarning: [1;39mmain actor-isolated static property 'skinHue' can not be referenced from a nonisolated context[0;0m
+ [0;36m42 |[0;0m         init(off: Data, on: Data) throws {
+ [0;36m43 |[0;0m             guard off.count == width * height * 4, on.count == off.count else { throw Failure("Scope geometry mismatch") }
+ [0;36m44 |[0;0m             let angle = PhotosVectorscopeOrientation.angle(hue: PhotosVectorscope.skinHue, redAtThree: false)
+    [0;36m|[0;0m                                                                                   `- [1;33mwarning: [1;39mmain actor-isolated static property 'skinHue' can not be referenced from a nonisolated context[0;0m
+ [0;36m45 |[0;0m             let radius = Double(min(width, height)) / 2 - 9
+ [0;36m46 |[0;0m             func candidates(sign: Int) -> [Pixel] {
+
+RAWMaster.PhotosVectorscope.skinHue:2:32: [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m1 |[0;0m struct PhotosVectorscope {
+[0;36m2 |[0;0m @MainActor internal static let skinHue: Double}
+  [0;36m|[0;0m                                `- [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m3 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosCompactControlsTests.swift:48:37: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m46 |[0;0m         _ = NSApplication.shared
+ [0;36m47 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m48 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                                     `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m49 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m50 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosCompactControlsTests.swift:49:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m47 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m48 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m49 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m50 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+ [0;36m51 |[0;0m         var parameters = DevelopmentAdjustmentsV3()
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosCompactControlsTests.swift:50:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m48 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m49 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m50 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m51 |[0;0m         var parameters = DevelopmentAdjustmentsV3()
+ [0;36m52 |[0;0m         parameters.light = .init(enabled: true, exposure: 0.5, contrast: 0.2)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosCompactControlsTests.swift:92:22: [1;33mwarning: [1;39mresult of call to function returning 'Bool?' is unused[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m90 |[0;0m         let reset = try XCTUnwrap(actions.first { $0.name == "复位曝光" })
+ [0;36m91 |[0;0m         XCTAssertNotNil(reset.handler)
+ [0;36m92 |[0;0m         reset.handler?()
+    [0;36m|[0;0m                      `- [1;33mwarning: [1;39mresult of call to function returning 'Bool?' is unused[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/no-usage\NoUsage]8;;\]
+ [0;36m93 |[0;0m         try await wait { recipe.adjustmentsV3?.light.exposure == 0 }
+ [0;36m94 |[0;0m         XCTAssertEqual(recipe.adjustmentsV3?.light.contrast, 0.2)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:2896:37: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2894 |[0;0m         _ = NSApplication.shared
+[0;36m2895 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m2896 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+     [0;36m|[0;0m                                     `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2897 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m2898 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:2897:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2895 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m2896 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m2897 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+     [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2898 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+[0;36m2899 |[0;0m         func axValue(_ node: NSObject, _ name: String) -> Any? {
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift:2898:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2896 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+[0;36m2897 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+[0;36m2898 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+     [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m2899 |[0;0m         func axValue(_ node: NSObject, _ name: String) -> Any? {
+[0;36m2900 |[0;0m             let selector = NSSelectorFromString(name)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosInspectorTextLayoutTests.swift:43:39: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m41 |[0;0m         NSApp.activate(ignoringOtherApps: true)
+ [0;36m42 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m43 |[0;0m         previousAccessibility = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                                       `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m44 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m45 |[0;0m         let host = NSHostingView(rootView: AnyView(view.environment(\.colorScheme, scheme)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosInspectorTextLayoutTests.swift:44:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m42 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m43 |[0;0m         previousAccessibility = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m44 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m45 |[0;0m         let host = NSHostingView(rootView: AnyView(view.environment(\.colorScheme, scheme)
+ [0;36m46 |[0;0m             .frame(width: width, height: 350, alignment: .topLeading).padding(8)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosInspectorTextLayoutTests.swift:57:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m55 |[0;0m     @MainActor private func close(_ window: NSWindow) {
+ [0;36m56 |[0;0m         window.orderOut(nil); window.contentView = nil; window.close()
+ [0;36m57 |[0;0m         NSApp.accessibilitySetValue(previousAccessibility, forAttribute: NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface"))
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m58 |[0;0m         previousAccessibility = nil
+ [0;36m59 |[0;0m     }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosRecipeSliderHostingTests.swift:28:24: [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+ [0;36m26 |[0;0m         XCTAssertNil(PhotosSliderInput.scrubbed(origin: .nan, translation: 2, range: -2...2, step: 0.01))
+ [0;36m27 |[0;0m         XCTAssertNil(PhotosSliderInput.scrubbed(origin: 0, translation: .infinity, range: -2...2, step: 0.01))
+ [0;36m28 |[0;0m         XCTAssertEqual(try DevelopmentNumericText.parse("0.123456789", range: -2...2), 0.123456789)
+    [0;36m|[0;0m                        `- [1;33mwarning: [1;39mno calls to throwing functions occur within 'try' expression[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker\UnnecessaryEffectMarker]8;;\]
+ [0;36m29 |[0;0m     }
+ [0;36m30 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosRecipeSliderHostingTests.swift:34:37: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m32 |[0;0m         _ = NSApplication.shared
+ [0;36m33 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m34 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                                     `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m35 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m36 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosRecipeSliderHostingTests.swift:35:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m33 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m34 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m35 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m36 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+ [0;36m37 |[0;0m         let original = DevelopmentRecipe()
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosRecipeSliderHostingTests.swift:36:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m34 |[0;0m         let previousAXValue = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m35 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m36 |[0;0m         defer { NSApp.accessibilitySetValue(previousAXValue, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m37 |[0;0m         let original = DevelopmentRecipe()
+ [0;36m38 |[0;0m         var recipe = original, writes = 0
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosSemanticMaskInteractionTests.swift:115:62: [1;33mwarning: [1;39mbackward matching of the unlabeled trailing closure is deprecated; label the argument with 'generate' to suppress this warning[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching\TrailingClosureMatching]8;;\]
+[0;36m113 |[0;0m         let gate = MaskCompletionGate()
+[0;36m114 |[0;0m         let png = try DevelopmentMaskBitmap(width:4,height:4,values:Array(repeating:210,count:16)).png()
+[0;36m115 |[0;0m         let input = EditingMaskInputSession(editing:editing) { _,source,_,_ in
+    [0;36m|[0;0m                                                              `- [1;33mwarning: [1;39mbackward matching of the unlabeled trailing closure is deprecated; label the argument with 'generate' to suppress this warning[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching\TrailingClosureMatching]8;;\]
+[0;36m116 |[0;0m             await gate.hold()
+[0;36m117 |[0;0m             let snapshot = DevelopmentSemanticMaskSnapshot(source:source,target:.subject,generator:"fixture",width:4,height:4,png:png)
+
+RAWMaster.EditingMaskInputSession.init:2:21: [1;39mnote: [1;39m'init(editing:pack:install:generate:)' declared here[0;0m
+[0;36m1 |[0;0m class EditingMaskInputSession {
+[0;36m2 |[0;0m @MainActor internal init(editing: RAWMaster.EditingController, pack: RAWMasterImaging.DevelopmentMaskModelPack = .installed, install: RAWMaster.EditingMaskInputSession.Install? = nil, generate: RAWMaster.EditingMaskInputSession.Generate? = nil)}
+  [0;36m|[0;0m                     `- [1;39mnote: [1;39m'init(editing:pack:install:generate:)' declared here[0;0m
+[0;36m3 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PhotosSemanticMaskInteractionTests.swift:170:62: [1;33mwarning: [1;39mbackward matching of the unlabeled trailing closure is deprecated; label the argument with 'generate' to suppress this warning[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching\TrailingClosureMatching]8;;\]
+[0;36m168 |[0;0m         let gate = MaskCompletionGate()
+[0;36m169 |[0;0m         let data = try DevelopmentMaskBitmap(width:4,height:4,values:[UInt8](repeating:200,count:16)).png()
+[0;36m170 |[0;0m         let input = EditingMaskInputSession(editing:editing) { _,source,_,_ in
+    [0;36m|[0;0m                                                              `- [1;33mwarning: [1;39mbackward matching of the unlabeled trailing closure is deprecated; label the argument with 'generate' to suppress this warning[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching\TrailingClosureMatching]8;;\]
+[0;36m171 |[0;0m             await gate.hold()
+[0;36m172 |[0;0m             let snapshot = DevelopmentSemanticMaskSnapshot(source:source,target:.subject,generator:"fixture",width:4,height:4,png:data)
+
+RAWMaster.EditingMaskInputSession.init:2:21: [1;39mnote: [1;39m'init(editing:pack:install:generate:)' declared here[0;0m
+[0;36m1 |[0;0m class EditingMaskInputSession {
+[0;36m2 |[0;0m @MainActor internal init(editing: RAWMaster.EditingController, pack: RAWMasterImaging.DevelopmentMaskModelPack = .installed, install: RAWMaster.EditingMaskInputSession.Install? = nil, generate: RAWMaster.EditingMaskInputSession.Generate? = nil)}
+  [0;36m|[0;0m                     `- [1;39mnote: [1;39m'init(editing:pack:install:generate:)' declared here[0;0m
+[0;36m3 |[0;0m 
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:58:25: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m56 |[0;0m         _ = NSApplication.shared
+ [0;36m57 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m58 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+    [0;36m|[0;0m                         `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m59 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+ [0;36m60 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:59:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m57 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m58 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+ [0;36m59 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m60 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+ [0;36m61 |[0;0m         let fixture = try EditingWorkflowTests.Fixture()
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:60:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m58 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+ [0;36m59 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+ [0;36m60 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m61 |[0;0m         let fixture = try EditingWorkflowTests.Fixture()
+ [0;36m62 |[0;0m         defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:147:25: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m145 |[0;0m         _ = NSApplication.shared
+[0;36m146 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m147 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+    [0;36m|[0;0m                         `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m148 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+[0;36m149 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:148:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m146 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m147 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+[0;36m148 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m149 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+[0;36m150 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:149:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m147 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+[0;36m148 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+[0;36m149 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m150 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+[0;36m151 |[0;0m         let catalog = DevelopmentPresetCatalog(root: fixture.root.appending(path: "switch-presets"))
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:310:25: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m308 |[0;0m         _ = NSApplication.shared
+[0;36m309 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m310 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+    [0;36m|[0;0m                         `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m311 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+[0;36m312 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:311:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m309 |[0;0m         let ax = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+[0;36m310 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+[0;36m311 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m312 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+[0;36m313 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/PresetMaskEntryPointTests.swift:312:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m310 |[0;0m         let old = NSApp.accessibilityAttributeValue(ax)
+[0;36m311 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: ax)
+[0;36m312 |[0;0m         defer { NSApp.accessibilitySetValue(old, forAttribute: ax) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m313 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(); defer { fixture.clean() }
+[0;36m314 |[0;0m         let app = AppModel(libraryURL: fixture.library, defaults: fixture.defaults, editingPreviewBackend: PhotosDevelopmentBackend())
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift:11:30: [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+  [0;36m9 |[0;0m         _ = NSApplication.shared
+ [0;36m10 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m11 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+    [0;36m|[0;0m                              `- [1;33mwarning: [1;39m'accessibilityAttributeValue' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift:12:15: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m10 |[0;0m         let enhancedUI = NSAccessibility.Attribute(rawValue: "AXEnhancedUserInterface")
+ [0;36m11 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+    [0;36m|[0;0m               `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+ [0;36m14 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 3)
+
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/SequenceFlowCaptureTests.swift:13:23: [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m11 |[0;0m         let previous = NSApp.accessibilityAttributeValue(enhancedUI)
+ [0;36m12 |[0;0m         NSApp.accessibilitySetValue(NSNumber(value: true), forAttribute: enhancedUI)
+ [0;36m13 |[0;0m         defer { NSApp.accessibilitySetValue(previous, forAttribute: enhancedUI) }
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39m'accessibilitySetValue(_:forAttribute:)' was deprecated in macOS 10.10: Use the NSAccessibility protocol methods instead (see NSAccessibilityProtocols.h)[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+ [0;36m14 |[0;0m         let fixture = try EditingWorkflowTests.Fixture(photoCount: 3)
+ [0;36m15 |[0;0m         defer { fixture.clean() }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[#NoUsage]: <https://docs.swift.org/compiler/documentation/diagnostics/no-usage>
+[#TrailingClosureMatching]: <https://docs.swift.org/compiler/documentation/diagnostics/trailing-closure-matching>
+[#UnnecessaryEffectMarker]: <https://docs.swift.org/compiler/documentation/diagnostics/unnecessary-effect-marker>
+[6 / 9] RAWMasterUITests-product
+[9 / 13] RAWMasterUITests-product
+[11 / 13] RAWMasterUITests-product
+Build complete! (69.83 sec)
+Test Suite 'Selected tests' started at 2026-11-26 16:37:14.903.
+Test Suite 'RAWMasterUITests.xctest' started at 2026-11-26 16:37:14.905.
+Test Suite 'EditingLayoutInteractionTests' started at 2026-11-26 16:37:14.906.
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFilterHeaderActionsStayAlignedIndependentAndRecipeScoped]' started.
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:372: error: -[RAWMasterUITests.EditingLayoutInteractionTests testFilterHeaderActionsStayAlignedIndependentAndRecipeScoped] : XCTAssertGreaterThanOrEqual failed: ("14.0") is less than ("26.0") - editing.presets.options frame: (272.0, 569.0, 20.0, 14.0)
+/Users/robinqu/workspace/github/robinqu/RAWMaster/Tests/RAWMasterUITests/EditingLayoutInteractionTests.swift:372: error: -[RAWMasterUITests.EditingLayoutInteractionTests testFilterHeaderActionsStayAlignedIndependentAndRecipeScoped] : XCTAssertGreaterThanOrEqual failed: ("14.0") is less than ("26.0") - editing.presets.options frame: (272.0, 569.0, 20.0, 14.0)
+Test Case '-[RAWMasterUITests.EditingLayoutInteractionTests testFilterHeaderActionsStayAlignedIndependentAndRecipeScoped]' failed (3.507 seconds).
+Test Suite 'EditingLayoutInteractionTests' failed at 2026-11-26 16:37:18.413.
+	 Executed 1 test, with 2 failures (0 unexpected) in 3.507 (3.507) seconds
+Test Suite 'RAWMasterUITests.xctest' failed at 2026-11-26 16:37:18.413.
+	 Executed 1 test, with 2 failures (0 unexpected) in 3.507 (3.507) seconds
+Test Suite 'Selected tests' failed at 2026-11-26 16:37:18.413.
+	 Executed 1 test, with 2 failures (0 unexpected) in 3.507 (3.509) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:37:18.554.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' started at 2026-11-26 16:37:18.556.
+Test Suite 'RAWMasterSequenceProbeTests.xctest' passed at 2026-11-26 16:37:18.556.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:37:18.556.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:37:18.669.
+Test Suite 'RAWMasterImagingTests.xctest' started at 2026-11-26 16:37:18.671.
+Test Suite 'RAWMasterImagingTests.xctest' passed at 2026-11-26 16:37:18.671.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:37:18.671.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:37:18.773.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' started at 2026-11-26 16:37:18.775.
+Test Suite 'RAWMasterDiagnosticsTests.xctest' passed at 2026-11-26 16:37:18.775.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:37:18.775.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:37:18.877.
+Test Suite 'RAWMasterCoreTests.xctest' started at 2026-11-26 16:37:18.879.
+Test Suite 'RAWMasterCoreTests.xctest' passed at 2026-11-26 16:37:18.879.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:37:18.879.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.002) seconds
+Test Suite 'Selected tests' started at 2026-11-26 16:37:18.983.
+Test Suite 'RAWMasterAITests.xctest' started at 2026-11-26 16:37:18.984.
+Test Suite 'RAWMasterAITests.xctest' passed at 2026-11-26 16:37:18.984.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.000) seconds
+Test Suite 'Selected tests' passed at 2026-11-26 16:37:18.984.
+	 Executed 0 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Note: Some test targets reported failures:
+  - RAWMasterUITests (XCTest)

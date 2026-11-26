@@ -2,6 +2,10 @@
 
 从资料库选择一张照片，打开顶栏「编辑」。暗房保留同一张照片、同一份草稿和同一个历史栈。右栏首次打开「智能编辑」中的「智能预设」。「作品版本」从文件名旁的命令进入，查看候选后可返回先前的调整面板。[打开暗房](../../docs/ui/prototype/index.html#edit/development)
 
+## 自由缩放与原图取样
+
+从[暗房画布](../../docs/ui/prototype/index.html#edit/development)点 `+` 或在图像上 Ctrl + 滚轮放大，停止后仍留在该倍率。`1:1` 单独进入 100%，`FIT` 或 `0` 返回适合窗口。设置 → 编辑切换「极速」再回来：缩放中状态显示「临时预览」，停止后显示「按倍率取样」，不改变倍率或所在照片。换片后回到 FIT。浏览器内已验证 `+` 到 15%、显式 1:1 和 FIT 的区分；对极速派发滚轮后，31% 的临时与最终状态使用同一倍率。在 560 × 800 窄窗的均衡模式下，29% 的倍率和滚动位置在手势结束前后相同；浅色与深色均可用 Enter 在工具条放大，再用 `0` 返回 FIT。原型使用样片模拟状态，不用于判断 RAW 清晰度，参见[原生验证](../036-render-pipeline-performance/validation.md#自由缩放与原图取样)。
+
 | 区域 | 走查步骤 | 可观察结果 |
 | --- | --- | --- |
 | 左侧照片工具 | 从「预设」向下浏览至「快照」「历史」。在滤镜预览里悬停或用键盘聚焦一种胶片，再移开，随后点击采用、调整强度、撤销 | 三块垂直排列。胶片模拟作为特殊的 Adaptive Filter 使用本张照片预览。临时试看可退出，采用和调整强度各写入本张的一步历史，存储快照后可恢复 |
@@ -27,7 +31,29 @@
 
 2026-11-22 在 Release 31.4 的隔离资料库中用实际鼠标事件验证。旧版 31.3 标题栏空白处的拖动没有改变窗口位置。31.4 在资料库、编辑与导出分别通过空白处拖动、右边缘缩放、底边缩放和恢复原尺寸。标题栏空白处双击可缩放并恢复。侧栏收起和恢复后仍可打开同一张照片。原生回归还核对了工作流与窗口按钮的点击范围。[窗口测量](../../output/release-window-integration/native-window-verification.json) · [输入路由回归](../../Tests/RAWMasterUITests/TitlebarInputTests.swift) · [安装收据](../../output/release-window-integration/install-receipt.json)
 
+## 编辑翻片与资料库胶片带
+
+1. 在[河谷拍摄](../../docs/ui/prototype/index.html#library/project/river)选择 DJI_0348.DNG，切换单张查看。折叠、展开拍摄组，焦点不变。进入编辑，画布下方不再有水平照片列表；返回资料库后胶片带和选片保持。
+2. 在[暮色延时](../../docs/ui/prototype/index.html#library/group/dusk)选择组内首张后进入编辑。点「下一张」或按 `→` 到组内末张，末张的「下一张」不可用。按 `←` 或点「上一张」回到首张，原草稿仍在，「上一张」不可用。
+3. 从河谷拍摄的 DJI_0348.DNG 在编辑里点「下一张」，离线样片仍提示找回原片；取消后留在当前照片。
+
+本次通过内置浏览器实际点击并投递方向键，验证了 1440 × 900 深色和 390 × 844 浅色窗口中的翻片，以及桌面窗口的首尾边界、离线取消和返回资料库后的胶片带与选片。[浏览器回归](../../scripts/check-ui-prototype.py) 37 组全部通过。
+
+## 资料库胶片带上下留白
+
+在[河谷拍摄](../../docs/ui/prototype/index.html#library/project/river)切换「单张 · E」。同时查看散片和带边框的拍摄组：卡片上沿和缩略图上沿在各自的同一水平线上，组名居中，分组边框在卡片上方和下方留等量空间。收起、展开组，胶片条高度和原选片不变。切回网格或进入编辑不改变选片。
+
+用 1100 × 720 浅色窗口点击折叠／展开，再在 850 × 660 深色窗口滚动到胶片带核对边框。浏览器回归 37 组通过，含边距、缩略图位置和折叠高度的几何检查。[窄窗深色截图](evidence/library-filmstrip-spacing-browser.webp) · [浏览器回归](../../scripts/check-ui-prototype.py) · [原生验证](../011-browser-sequences/validation.md#资料库胶片带上下留白)
+
+## 资料库胶片带边框与组头
+
+在[河谷拍摄](../../docs/ui/prototype/index.html#library/project/river)选中组外的 DJI_0348.DNG，再切换「单张 · E」。选中框与分组外框等高且上下沿对齐，组内外缩略图上沿对齐。组头固定两行：第一行点箭头或组名均能折叠，第二行是张数和独立设置。折叠不改变外框高度或选片。
+
+从胶片带打开「岸边连拍」的组属性，在示例库临时改名为「河谷日落延时拍摄 · Camera B 第 02 段」，保存后核对单行尾部省略，悬停标题或重新打开设置可看全名。用 Space 展开或收起，Tab 到设置并用 Enter 打开，按 Escape 取消，仍回到原选片。以窄窗和浅／深色复查。浏览器完整回归 37 组通过，包含鼠标折叠、长名省略与全名保留的检查。[窄窗长组名截图](evidence/library-filmstrip-two-row-browser.webp) · [原生证据](../011-browser-sequences/validation.md#资料库胶片带边框与组头)
+
 ## 胶片带与调整面板
+
+以下为历史走查；当前胶片带只保留在资料库。
 
 2026-11-23 在 Chrome 走查。1440 × 900 使用深色查看资料库与编辑布局，390 × 844 使用浅色复查 Prompt、焦点和操作边界。工作台 22 组场景均通过。[暗房面板](evidence/panels-browser.webp) · [桌面 Prompt](evidence/prompt-browser.webp) · [窄窗 Prompt](evidence/prompt-compact-browser.webp) · [回归脚本](../../scripts/check-ui-prototype.py)
 

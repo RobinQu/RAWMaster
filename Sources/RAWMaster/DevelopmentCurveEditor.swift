@@ -57,9 +57,8 @@ struct DevelopmentCurveEditor: View {
     private var selected: Int { min(max(0, selectedPoint), curve.points.count - 1) }
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Picker("曲线通道", selection: $channel) {
-                ForEach(DevelopmentCurveChannel.allCases) { Text($0.rawValue).tag($0) }
-            }.pickerStyle(.segmented).accessibilityIdentifier("editing.curves.channel")
+            PhotosFlatTabs(title: "曲线通道", selection: $channel, options: DevelopmentCurveChannel.allCases, label: \.rawValue)
+                .accessibilityIdentifier("editing.curves.channel")
                 .onChange(of: channel) { _, _ in editing.endPreviewInteractions(prefix: "curve."); selectedPoint = 0; selectionActive = true }
             DevelopmentCurveCanvas(curve: curve, channel: channel, selected: Binding(get: { selected }, set: { selectedPoint = $0 }),
                 selectionActive: Binding(get: { selectionActive }, set: { selectionActive = $0 }),

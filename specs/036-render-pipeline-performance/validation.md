@@ -313,6 +313,23 @@ swift test -c release --skip-build --jobs 4 --filter EditingInteractivePerforman
 
 结论：两条实现都在**整幅**上完成定稿（分别 2400 与 4096），只有 Alcedo 在 zoom > 1 时切成可见 ROI。RAWMaster 的定稿与它们一致；不一致的是 zoom ≥ 1 时跳到整帧原生，而不是切 ROI —— 该项经实测否决，见[已否决](spec.md#已否决11-按可见-roi-裁剪)。
 
+## 自由缩放与原图取样
+
+- [浏览器走查](../025-editing-workspace/prototype-review.md#自由缩放与原图取样)：验证两种模式、结束后倍率与位置、1:1、FIT、键盘，以及窄窗浅深外观。样片状态不作为像素质量证据。
+- [AppKit 几何回归](../../Tests/RAWMasterImagingTests/ImageCanvasTests.swift)记录缩放开始、更新、结束和取消；安装窗口细节帧不能更改倍率、画布矩形或锚点。
+- [像素传输回归](../../Tests/RAWMasterImagingTests/PreviewSettledTransportTests.swift)用 3000 × 2000 的图验证 50% 整图 1500 × 1000、可见块 750 × 600、同一块在 80% 时 1200 × 960；50% 的窗口帧与同倍率整图的对应裁块逐字节一致。不同倍率不共用位图缓存条目，显式 1:1 的裁块一致性测试仍通过。
+
+真实样片为本机 FlashRaw 测试夹具 `canon-5d3-lossy.dng`（3960 × 2640）。[原生画布回归](../../Tests/RAWMasterUITests/NativePresentedCanvasTests.swift)在 SwiftUI 承载的 AppKit 编辑画布上注入缩放阶段，实测两档均停在 65%、整幅输出 2574 × 1716、交付前后同一变换和图像矩形、最终位图数据相同。极速手势中没有交付 detail，均衡手势中已有 detail；`FIT` 返回原来的视口模式。引擎另以此 DNG 渲染画面中间 50% × 50% 的窗口，结果为 1288 × 858（边界向外对齐像素）。未用实体触控板复核系统事件投递。
+
+最终定向回归共 71 项（界面 30、成像 41），全部通过。仓库的全量原型脚本因本机缺少 `agent-browser` 未运行；上面的原型场景已在内置浏览器走查。
+
+本机 RAW 输入可通过 `RAWMASTER_PRESENTED_CANVAS_SOURCE` 指定。复验命令：
+
+```bash
+RAWMASTER_PRESENTED_CANVAS_SOURCE=/absolute/path/to/sample.dng \
+  swift test --jobs 4 --filter 'ImageCanvasTests|ImageViewportWindowGeometryTests|PreviewQualityPolicyTests|PreviewSettledTransportTests|EditingPreviewCoordinationTests|PhotosLocalCanvasInputTests|testOptInRealRAWFreeZoom'
+```
+
 ## 未覆盖
 
 - **`RAWMasterUITests` 有 13 条失败与本次改动无关。** 同一组用例在 `main@d77d099e`（暂存全部改动后重建）与本次分支上失败名称、断言文本和数量一致：`EditingDevelopmentSessionTests.testDevelopmentPreset1075MetadataDirectorySearchStableReferencesAndHiddenRows`（4）、`PhotosDevelopmentIntegrationTests`（5）、`SessionWorkflowActionTests`（4）。报错为 `13 is not equal to 10`、`[] is not equal to [.light]` 与 `初筛会话已关闭…`，都与预览传输和有限值扫描无关，属本机既有状态。

@@ -761,18 +761,25 @@ extension EditingDevelopmentSessionTests {
         }
         let all = DevelopmentPresetDirectory.folders(records: rows, favorites: ["0", "1", "1074"],
             looks: DevelopmentPhotoFilterV3.allCases, favoriteLooks: [.vivid], query: "")
-        func nestedRows(_ folder: DevelopmentPresetFolder) -> [DevelopmentPresetBrowserItem] {
-            folder.rows + folder.children.flatMap(\.rows)
+        func flattened(_ folders: [DevelopmentPresetFolder]) -> [DevelopmentPresetBrowserItem] {
+            folders.flatMap { $0.rows + flattened($0.children) }
         }
-        let allRows = all.flatMap(nestedRows)
+        XCTAssertEqual(all.map(\.id), ["adaptive", "film", "imported", "classic", "favorites"])
         XCTAssertEqual(all.first(where: { $0.id == "favorites" })?.rows.map(\.id), ["classic.vivid", "0", "1"])
         XCTAssertEqual(all.first(where: { $0.id == "classic" })?.rows.count, 10)
-        XCTAssertEqual(Set(allRows.map(\.id)).count, 1086)
+        let films = DevelopmentPhotoFilterV3.allCases.filter(\.isSpektrafilm)
+        XCTAssertEqual(films.count, 9)
+        XCTAssertEqual(Set(all.first(where: { $0.id == "film" })?.rows.map(\.id) ?? []),
+            Set(films.map { "classic." + $0.rawValue }))
+        let ids = Set(flattened(all).map(\.id))
+        XCTAssertEqual(ids.count, 1092)
+        XCTAssertTrue(ids.contains("1072"), "The profile stays independently browsable")
+        XCTAssertFalse(ids.contains("1073"), "Photo sidecars are not styles")
+        XCTAssertFalse(ids.contains("1074"), "Even a saved favorite cannot expose an internal Look")
         let results = DevelopmentPresetDirectory.folders(records: Array(rows.reversed()), favorites: [],
             looks: [], favoriteLooks: [], query: "同名")
-        XCTAssertEqual(Set(results.flatMap(nestedRows).map(\.id)), ["0", "1"])
-        XCTAssertTrue(allRows.contains { $0.id == "1072" })
-        XCTAssertEqual(all.first(where: { $0.id == "film" })?.rows.count, 3)
+        XCTAssertEqual(Set(flattened(results).map(\.id)), ["0", "1"])
+
     }
 }
 

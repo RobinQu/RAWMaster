@@ -1,0 +1,96 @@
+{
+  "person" : {
+    "spektraEktachrome100" : {
+      "max" : 1,
+      "mean" : 0.019166666666666665,
+      "p99" : 1
+    },
+    "spektraEktar100Endura" : {
+      "max" : 1,
+      "mean" : 0.013862847222222223,
+      "p99" : 1
+    },
+    "spektraGold200UltraEndura" : {
+      "max" : 1,
+      "mean" : 0.017821180555555555,
+      "p99" : 1
+    },
+    "spektraPortra400Endura" : {
+      "max" : 1,
+      "mean" : 0.02140625,
+      "p99" : 1
+    },
+    "spektraPortra800SupraEndura" : {
+      "max" : 1,
+      "mean" : 0.017204861111111112,
+      "p99" : 1
+    },
+    "spektraProvia100F" : {
+      "max" : 1,
+      "mean" : 0.016675347222222223,
+      "p99" : 1
+    },
+    "spektraVelvia100" : {
+      "max" : 2,
+      "mean" : 0.026970486111111112,
+      "p99" : 1
+    },
+    "spektraVision250D2383" : {
+      "max" : 1,
+      "mean" : 0.028394097222222223,
+      "p99" : 1
+    },
+    "spektraVision500T2383" : {
+      "max" : 1,
+      "mean" : 0.01657986111111111,
+      "p99" : 1
+    }
+  },
+  "snow" : {
+    "spektraEktachrome100" : {
+      "max" : 1,
+      "mean" : 0.019470486111111112,
+      "p99" : 1
+    },
+    "spektraEktar100Endura" : {
+      "max" : 1,
+      "mean" : 0.031241319444444443,
+      "p99" : 1
+    },
+    "spektraGold200UltraEndura" : {
+      "max" : 1,
+      "mean" : 0.040364583333333336,
+      "p99" : 1
+    },
+    "spektraPortra400Endura" : {
+      "max" : 1,
+      "mean" : 0.034869791666666664,
+      "p99" : 1
+    },
+    "spektraPortra800SupraEndura" : {
+      "max" : 1,
+      "mean" : 0.030703125,
+      "p99" : 1
+    },
+    "spektraProvia100F" : {
+      "max" : 1,
+      "mean" : 0.020121527777777776,
+      "p99" : 1
+    },
+    "spektraVelvia100" : {
+      "max" : 1,
+      "mean" : 0.03180555555555555,
+      "p99" : 1
+    },
+    "spektraVision250D2383" : {
+      "max" : 1,
+      "mean" : 0.03825520833333333,
+      "p99" : 1
+    },
+    "spektraVision500T2383" : {
+      "max" : 1,
+      "mean" : 0.022682291666666667,
+      "p99" : 1
+    }
+  }
+}

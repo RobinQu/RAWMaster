@@ -71,30 +71,53 @@ struct PhotosColorSamplerRows: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
             Button { onPick(nil) } label: { Label("添加颜色采样点", systemImage: "eyedropper") }
-                .buttonStyle(.borderless).disabled(samplers.points.count >= PhotosColorSamplers.limit)
+                .buttonStyle(PhotosFlatButtonStyle(stretches: true))
+                .disabled(samplers.points.count >= PhotosColorSamplers.limit)
                 .accessibilityIdentifier("photos.scopes.sampler.add")
-            ForEach(samplers.points.indices, id: \.self) { i in
-                HStack(spacing: 8) {
-                    Text("\(i + 1)").fontWeight(.semibold)
-                    if colors.indices.contains(i), let sample = colors[i] {
-                        let rgb = sample.rgb * 255
-                        Text(String(format: "R %.0f   G %.0f   B %.0f", rgb.x, rgb.y, rgb.z)).monospacedDigit()
-                    } else { Text("当前画面外").foregroundStyle(.secondary) }
-                    Spacer()
-                    Menu {
-                        Button("重新取样") { onPick(i) }
-                        Button("移除采样点") { samplers.remove(i) }
-                    } label: { Image(systemName: "ellipsis") }
-                        .menuStyle(.borderlessButton).fixedSize()
-                        .accessibilityLabel("编辑采样点 \(i + 1)")
+            VStack(spacing: PhotosControlLayout.spacing) {
+                ForEach(samplers.points.indices, id: \.self) { i in
+                    samplerRow(i)
                 }
             }
         }.font(.caption2).frame(maxWidth: .infinity, alignment: .leading)
             .task(id: Input(frameID: frame?.id, points: samplers.points, mapping: mapping)) {
                 colors = samplers.colors(frame: frame, mapping: mapping)
             }
+    }
+    private func samplerRow(_ index: Int) -> some View {
+        let sample = colors.indices.contains(index) ? colors[index] : nil
+        return HStack(spacing: 8) {
+            swatch(sample).accessibilityHidden(true)
+            Text("\(index + 1)").fontWeight(.semibold)
+            if let sample {
+                let rgb = sample.rgb * 255
+                Text(String(format: "R %.0f   G %.0f   B %.0f", rgb.x, rgb.y, rgb.z))
+                    .monospacedDigit().fixedSize(horizontal: false, vertical: true)
+            } else { Text("当前画面外").foregroundStyle(.secondary) }
+            Spacer(minLength: 0)
+            Menu {
+                Button { onPick(index) } label: { Label("重新取样", systemImage: "eyedropper") }
+                Button(role: .destructive) { samplers.remove(index) } label: { Label("移除采样点", systemImage: "trash") }
+            } label: { PhotosFlatControlLabel(label: Image(systemName: "ellipsis")) }
+                .menuStyle(.borderlessButton).menuIndicator(.hidden).fixedSize()
+                .accessibilityLabel("编辑采样点 \(index + 1)")
+                .accessibilityIdentifier("photos.scopes.sampler.manage.\(index + 1)")
+        }
+        .frame(minHeight: 28).padding(.horizontal, 6).padding(.vertical, 2)
+        .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 5))
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("photos.scopes.sampler.row.\(index + 1)")
+    }
+    private func swatch(_ sample: DevelopmentDisplayPixel?) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 4)
+        return shape.fill(sample.map {
+            Color(.sRGB, red: Double(min(1, max(0, $0.rgb.x))),
+                  green: Double(min(1, max(0, $0.rgb.y))), blue: Double(min(1, max(0, $0.rgb.z))))
+        } ?? .clear)
+        .overlay(shape.strokeBorder(.primary.opacity(0.35), style: StrokeStyle(lineWidth: 1, dash: sample == nil ? [3, 2] : [])))
+        .frame(width: 18, height: 18)
     }
 }
 

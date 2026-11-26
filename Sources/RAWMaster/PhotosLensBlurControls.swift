@@ -37,10 +37,11 @@ struct PhotosLensBlurControls: View {
     }
 
     private var controls: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            Picker("焦外光斑", selection: .init(get: { blur.bokehStyle ?? .circle }, set: { applyStyle($0) })) {
-                ForEach(DevelopmentLensBokehStyleV3.allCases, id: \.self) { style in Text(styleTitle(style)).tag(style) }
-            }.disabled(!blur.enabled).accessibilityIdentifier("photos.effects.lensBlur.bokehStyle")
+        VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
+            PhotosFlatMenu(title: "焦外光斑", selection: .init(get: { blur.bokehStyle ?? .circle }, set: applyStyle),
+                options: DevelopmentLensBokehStyleV3.allCases, label: styleTitle)
+                .disabled(!blur.enabled).accessibilityIdentifier("photos.effects.lensBlur.bokehStyle")
             HStack(spacing: 12) {
                 Button("点选焦点") { editing.beginDevelopmentPicker(.lensBlurFocus, context: context) }
                     .accessibilityIdentifier("photos.effects.lensBlur.pointFocus")
@@ -70,13 +71,18 @@ struct PhotosLensBlurControls: View {
                     if editing.developmentDeviceDepthInProgress { ProgressView().controlSize(.mini) }
                 }.buttonStyle(.borderless).font(.caption)
             }
+            }
+            VStack(spacing: PhotosControlLayout.spacing) {
             ForEach(Field.allCases) { field in
                 PhotosRecipeValueRow(session: session, context: context, title: field.title,
                     control: "effects.lensBlur." + field.rawValue, value: value(field) * 100, range: 0...100, step: 1, digits: 0,
                     apply: { number, token in apply(field, value: number / 100, gesture: token) }, onError: onError)
                     .disabled(!blur.enabled).accessibilityIdentifier("photos.effects.lensBlur." + field.rawValue)
             }
-            Text("深度精修").font(.caption.weight(.semibold))
+            }
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+            Text("深度精修").font(.caption2.weight(.semibold)).accessibilityAddTraits(.isHeader)
+            VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
             HStack(spacing: 10) {
                 Button("Focus 笔刷") { editing.beginDevelopmentPicker(.lensBlurRefineFocus, context: context) }
                     .accessibilityIdentifier("photos.effects.lensBlur.refineFocus")
@@ -94,15 +100,17 @@ struct PhotosLensBlurControls: View {
                     apply: { number, token in applyBrush(field, value: number / 100, gesture: token) }, onError: onError)
                     .accessibilityIdentifier("photos.effects.lensBlur.brush." + field.rawValue)
             }
+            }
             Text("已记录 \((blur.refinementStrokes ?? []).count) 笔；Focus 减少失焦，Blur 增强失焦。Auto Mask 使用当前图像颜色，不执行 AI 推断。")
-                .font(.caption2).foregroundStyle(.secondary)
+                .photosInspectorParagraph().foregroundStyle(.secondary)
             Text(blur.deviceDepth != nil ? "正在使用设备深度图。" :
                  (blur.sceneDepth != nil ? "正在使用 Depth Anything V2 估算的相对场景深度。" : "当前使用按位置计算的焦平面。"))
-                .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                .photosInspectorParagraph().foregroundStyle(.secondary)
             if editing.developmentSourceFacts?.deviceDepthAvailable == true {
                 Text(blur.deviceDepth == nil ? "检测到设备深度图；可点击“使用设备深度”接入渲染。" : "设备深度图已读取并用于当前 Lens Blur。")
-                    .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                    .photosInspectorParagraph().foregroundStyle(.secondary)
                     .accessibilityIdentifier("photos.effects.lensBlur.deviceDepthAvailable")
+            }
             }
         }
     }

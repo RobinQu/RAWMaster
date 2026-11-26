@@ -1,6 +1,6 @@
 # RAWMaster 界面设计与研发
 
-[打开摄影工作台](prototype/index.html) · [按功能找原型与规格](coverage.md) · [单独打开导出面板](../../specs/032-export-workspace/prototype.html)
+[打开摄影工作台](prototype/index.html) · [界面规范画廊](prototype/index.html#tools/design) · [按功能找原型与规格](coverage.md) · [单独打开导出面板](../../specs/032-export-workspace/prototype.html)
 
 在仓库中双击 `docs/ui/prototype/index.html` 即可开始。默认打开「河谷拍摄」，包含 12 次拍摄和 14 个文件。点击照片聚焦，⌘/Ctrl 点选、⇧ 连选或使用「多选」。顶部的资料库、编辑和导出沿用同一组照片。浏览器会在本机保存示例数据，设置 → 通用 → 恢复初始样本可以重置工作台。导出预设由 Spec 032 的预设库管理。
 
@@ -11,6 +11,8 @@ python3 -m http.server 8765 --bind 127.0.0.1
 ```
 
 打开 [本机摄影工作台](http://127.0.0.1:8765/docs/ui/prototype/index.html)。文件方式与 HTTP 方式各自保存示例状态。
+
+节点工作流从编辑右栏的节点工具条切入 Graph，也可直接打开 [Node DAG 评审入口](prototype/index.html#edit/dag)。节点下拉整合当前组的节点列表、添加、整理与更多操作；右侧是「忽略该节点」与 Graph 开关，没有「主图 / Graph」双按钮。Graph 选择与下拉及检查器联动，更多菜单折叠高级动作。Graph 是 Liquid Glass 非模态悬浮窗口，不替换主图；桌面最小外框 520×392，实际画布至少 480×240，窄窗缩减宽度但保留 240px 高画布，高度不足时仅保留标题条。Graph 首开按 100% 可读居中，长图保留当前卡可见；「适合全图」可主动缩小，点百分比回到可读取景。主图默认显示完整最终结果，单节点健康终稿不显示提示，查看中间节点或遇到预览失败时显示同色系小提示。Crop、Mask、Remove 从照片底部工具条展开，完成或取消后收回；Mask 始终标出节点拥有者，类型采用原有语义图标，细化按需展开；Remove 用四个图标按钮切换方式，按状态显示取样、生成或重试。左栏只保留滤镜、快照、历史；批量工作流和结果在资料库选片底栏「更多」。场景见 [Spec 038](../../specs/038-node-dag-workflow/spec.md) 与 [验证记录](../../specs/038-node-dag-workflow/validation.md#可读-graph-与暗房减项)。这些状态和处理均为本地原型模拟。
 
 ## 一次 UI 变更怎样交付
 
@@ -41,4 +43,4 @@ python3 scripts/check-ui-prototype.py
 
 ## 文件归属
 
-工作台由普通 HTML、CSS 和相对路径的经典脚本组成。共享照片身份、浏览范围、版本与决定在 `prototype/model.js`。样片映射在 `photos.js`，导出范围、版本交接和交付回执在 `delivery.js`。资料库、初筛/拍摄组、编辑、管理面板分别在 `library.js`、`sessions.js`、`editor.js`（暗房画布和浮动条见 `editor-canvas.js`，快速 Prompt 面板见 `quick-prompt.js` 和 `quick-prompt.css`）、`tools.js`。设置、任务与顶栏在 `app.js`。导出选片、版式、预设交换、预检及逐文件结果继续由 Spec 032 的原型维护。归档或分享完整工作台时一并包含该目录及仓库样片。[导出专项](../../specs/032-export-workspace/spec.md) · [样片说明](../fixtures/offline-regression.md)
+工作台由普通 HTML、CSS 和相对路径的经典脚本组成。共享照片身份、浏览范围、版本与决定在 `prototype/model.js`。样片映射在 `photos.js`，导出范围、版本交接和交付回执在 `delivery.js`。资料库、初筛/拍摄组、编辑、管理面板分别在 `library.js`、`sessions.js`、`editor.js`（暗房画布和浮动条见 `editor-canvas.js`，快速 Prompt 面板见 `quick-prompt.js` 和 `quick-prompt.css`，节点图、作用域、模板和批量原型见 `dag.js` 与 `dag.css`，节点能力及悬浮窗口见 `dag-window.js`，展开画布工具见 `canvas-tools.js` 与 `canvas-tools.css`）、`tools.js`。设置、任务与顶栏在 `app.js`。导出选片、版式、预设交换、预检及逐文件结果继续由 Spec 032 的原型维护。归档或分享完整工作台时一并包含该目录及仓库样片。[导出专项](../../specs/032-export-workspace/spec.md) · [样片说明](../fixtures/offline-regression.md)

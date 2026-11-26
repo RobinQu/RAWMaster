@@ -87,6 +87,14 @@ final class FlashRawFrame {
       deallocator: .custom { [self] _, _ in _ = self })
   }
 
+  func sceneBayerMetadata() throws -> rm_flashraw_scene_bayer {
+    var metadata = rm_flashraw_scene_bayer()
+    guard rm_flashraw_frame_scene_bayer(handle, &metadata) != 0 else {
+      throw FlashRawError.invalidFrame("scene intake requires an unbalanced Bayer mosaic with single database calibration")
+    }
+    return metadata
+  }
+
   var statistics: FlashRawDecodeStatistics? {
     var stats = rm_flashraw_decode_statistics()
     guard rm_flashraw_frame_statistics(handle, &stats) != 0 else { return nil }
@@ -196,6 +204,14 @@ final class FlashRawSource {
       throw FlashRawError.invalidFrame("ROI must lie on the unsigned integer pixel grid")
     }
     return .init(x,y,width,height)
+  }
+
+  func sceneSensorSize() throws -> (width: Int, height: Int) {
+    var width: UInt32 = 0, height: UInt32 = 0
+    guard rm_flashraw_scene_dimensions(handle, &width, &height) != 0 else {
+      throw FlashRawError.invalidFrame("scene intake requires a supported ARW sensor buffer")
+    }
+    return (Int(width), Int(height))
   }
 
   var geometry: (width: Int, height: Int, orientation: Int) {

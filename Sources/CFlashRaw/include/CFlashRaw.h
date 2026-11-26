@@ -52,6 +52,20 @@ rm_flashraw_frame_info rm_flashraw_frame_get_info(rm_flashraw_frame *frame);
 int rm_flashraw_frame_statistics(rm_flashraw_frame *frame, rm_flashraw_decode_statistics *out);
 const void *rm_flashraw_frame_data(rm_flashraw_frame *frame, size_t *byte_count);
 
+/* Narrow scene intake: unbalanced Bayer frame with one database XYZ-to-camera matrix.
+   Zero means the decoder or the frame does not satisfy this contract. */
+typedef struct rm_flashraw_scene_bayer {
+    uint32_t active[4];
+    uint32_t crop[4];
+    uint32_t colors[4];
+    float black[4];
+    float white[4];
+    float white_balance[4];
+    float xyz_to_camera[9];
+} rm_flashraw_scene_bayer;
+int rm_flashraw_scene_dimensions(const rm_flashraw_context *context, uint32_t *width, uint32_t *height);
+int rm_flashraw_frame_scene_bayer(rm_flashraw_frame *frame, rm_flashraw_scene_bayer *out);
+
 #ifdef __cplusplus
 }
 #endif

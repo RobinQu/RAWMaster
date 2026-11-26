@@ -11,6 +11,8 @@ struct PresetExchangeControls: View {
   let onApplySubset: (DevelopmentPresetRecord) -> Void
   let onPrepareSemantic: (DevelopmentPresetRecord) -> Void
   let onImportNative: () -> Void
+  var compact = false
+  var additionalActions: AnyView? = nil
 
   private enum Page { case loading, review, details, sourceFields, projection, original, undo, message }
   @State private var page = Page.loading
@@ -63,12 +65,25 @@ struct PresetExchangeControls: View {
       Button("从本张非零全局调整新建 XMP…") {
         makeProjection(name: "RAWMaster 调整") { try DevelopmentPresetExchange.projectedXMP(for: currentRecipe, name: "RAWMaster 调整") }
       }
+      if let additionalActions {
+        Divider()
+        additionalActions
+      }
     } label: {
-      Label("导入预设…", systemImage: "square.and.arrow.down")
+      if compact {
+        PhotosFlatControlLabel(label: Image(systemName: "ellipsis"))
+          .frame(width: 26, height: 28).contentShape(Rectangle())
+      } else {
+        Label("导入预设…", systemImage: "square.and.arrow.down")
+      }
     }
     .menuStyle(.borderlessButton)
+    .menuIndicator(compact ? .hidden : .automatic)
     .fixedSize()
-    .accessibilityIdentifier("editing.presets.import")
+    .frame(width: compact ? 26 : nil, height: compact ? 28 : nil)
+    .contentShape(Rectangle())
+    .accessibilityLabel(compact ? "滤镜与预设操作" : "导入预设")
+    .accessibilityIdentifier(compact ? "editing.presets.options" : "editing.presets.import")
     .sheet(isPresented: $open, onDismiss: cancel) {
       VStack(alignment: .leading, spacing: 12) {
         switch page {

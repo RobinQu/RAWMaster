@@ -131,7 +131,9 @@ extension DevelopmentPhotoFilterV3 {
         case .mono: return "单色"
         case .silvertone: return "银色调"
         case .noir: return "黑白"
-        case .spektraPortra400Endura, .spektraVelvia100, .spektraVision250D2383:
+        case .spektraPortra400Endura, .spektraVelvia100, .spektraVision250D2383,
+             .spektraGold200UltraEndura, .spektraPortra800SupraEndura, .spektraEktar100Endura,
+             .spektraProvia100F, .spektraEktachrome100, .spektraVision500T2383:
             return spektrafilmTitle ?? rawValue
         }
     }

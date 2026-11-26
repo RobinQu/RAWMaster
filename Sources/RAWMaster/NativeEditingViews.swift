@@ -97,7 +97,7 @@ struct NativeEditingInspector: View {
                 VStack(alignment: .leading, spacing: 8) {
                 HStack { Spacer(); Button("复位") { editing.setRecipe(nativeEvent: true) { $0.straightenDegrees = 0; $0.crop = .init() } }.buttonStyle(.borderless).font(.caption) }
                 labeledValue("角度 °", value: recipeBinding(\.straightenDegrees), range: -45...45)
-                Toggle("在照片上调整裁切", isOn: $editing.cropEditing).toggleStyle(.checkbox)
+                Toggle("在照片上调整裁切", isOn: $editing.cropEditing).toggleStyle(PhotosFlatCheckboxStyle())
                     .onChange(of: editing.cropEditing) { _, _ in editing.setActualPixels(false); editing.previewContextChanged() }
                 HStack {
                     Text("比例").foregroundStyle(.secondary)

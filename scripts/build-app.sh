@@ -84,12 +84,12 @@ if film.is_symlink() or not film.is_dir():
     raise SystemExit('Missing film simulation assets')
 film_catalog=film/'catalog-v1.json'
 film_license=film/'SPEKTRAFILM_LICENSE.txt'
-if (film_catalog.is_symlink() or sha(film_catalog)!='4ba7b660e27a22f0d0cbeb2b51792b99575b0999e78726990ca02e3f0c4cc7e6'
+if (film_catalog.is_symlink() or sha(film_catalog)!='73c220dfae5e1a88abf219f48977c58ac7014f70f57ee7e77342b0c4a84644ed'
         or film_license.is_symlink() or sha(film_license)!='76d629501783ae52e8d63aee1e054c1e1a9713b9fe7d36fb306e25b1d14b24e9'):
     raise SystemExit('Unverified film simulation catalog or upstream license')
 film_manifest=json.loads(film_catalog.read_text())
 film_files={'catalog-v1.json','SPEKTRAFILM_LICENSE.txt','CHANGELOG.txt','provenance.json'}
-if sha(film/'provenance.json')!=film_manifest['sourceBindingsSHA256'] or sha(film/'CHANGELOG.txt')!='ce51d4e4fcd8d82770fb6110f4d8b0d229cc87211a6b6ce8deec0cdab4904edf':
+if sha(film/'provenance.json')!=film_manifest['sourceBindingsSHA256'] or sha(film/'CHANGELOG.txt')!='2179a59961e90f834ffe213e6609c6d5e530b8a35d97a9cfe595f8b5282e53d5':
     raise SystemExit('Missing film simulation attribution or provenance')
 for look in film_manifest['looks']:
     plane,=look['planes']

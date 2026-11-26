@@ -31,7 +31,7 @@ struct PhotosNoiseReductionDetailControls: View {
     let supportedFieldIDs: Set<String>
     let onError: (Error) -> Void
     var body: some View {
-        VStack(spacing: 9) {
+        VStack(spacing: PhotosControlLayout.spacing) {
             PhotosScalarAdjustmentControls(session: session, context: context, group: .noiseReduction,
                 onError: onError, supportedFieldIDs: supportedFieldIDs)
             ForEach(PhotosNoiseReductionDetailControl.allCases) { control in

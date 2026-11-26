@@ -1,0 +1,45 @@
+✓ 双击入口与本地照片
+✓ 标题栏与资料库侧栏开关
+✓ 搜索、筛选、多选比较与批量标签
+✓ 导入、续接、分组、初筛封存与历史恢复
+✓ 胶片带对齐、折叠和离线照片
+Traceback (most recent call last):
+  File "/Users/robinqu/workspace/github/robinqu/RAWMaster/scripts/check-ui-prototype.py", line 65, in scenario
+    output = browser("eval", "(async()=>{" + helpers + js + ";return 'PASS';})()")
+  File "/Users/robinqu/workspace/github/robinqu/RAWMaster/scripts/check-ui-prototype.py", line 37, in browser
+    raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+RuntimeError: ✗ Evaluation error: Error: stacked left sections
+    at assert (<anonymous>:4:40)
+    at <anonymous>:21:15
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/robinqu/workspace/github/robinqu/RAWMaster/scripts/check-ui-prototype.py", line 974, in <module>
+    main()
+    ~~~~^^
+  File "/Users/robinqu/workspace/github/robinqu/RAWMaster/scripts/check-ui-prototype.py", line 179, in main
+    scenario("暗房布局、智能预设与胶片采用", """
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      await hash('library/group/dusk');act('photo','d1');act('workflow','edit');await page('.smart-panel');
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<84 lines>...
+      assert(el(light).ariaExpanded==='true','right panel remembers disclosure');
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    """)
+    ^^^^
+  File "/Users/robinqu/workspace/github/robinqu/RAWMaster/scripts/check-ui-prototype.py", line 68, in scenario
+    raise AssertionError(f"{title}\n{state}\n{browser('errors')}\n{error}") from error
+AssertionError: 暗房布局、智能预设与胶片采用
+{
+  "canvasTool": null,
+  "exportState": {},
+  "message": "跳至工作区\n资料库\n编辑\n导出\nDSC_0901.ARW\n当前照片\n智能编辑\n作品版本\n保存候选\n工作流\n开始节点工作流\n添加局部调整\n保存整个工作流…\n应用到所选照片…\n评审场景与模拟状态\n滤镜\n滤镜强度\n\n采用支持强度的滤镜后可调整\n\nAdaptive\n2\nSky\n1\n日出天空\nSubject\n1\n主体柔光\n胶片模",
+  "route": "edit/development",
+  "title": "RAWMaster · 摄影工作台",
+  "url": "http://127.0.0.1:62456/docs/ui/prototype/index.html#edit/development"
+}
+
+✗ Evaluation error: Error: stacked left sections
+    at assert (<anonymous>:4:40)
+    at <anonymous>:21:15

@@ -1,0 +1,31 @@
+{
+  "scope": "CLI diagnostic, one native full-resolution source and one measured execution; not application export or presentation performance",
+  "device": "Apple M2",
+  "os": "macOS 27.2.1 (26B131)",
+  "source": "Sean Liu, Snow and sunset (CC BY-SA 4.0)",
+  "sourceURL": "https://discuss.pixls.us/t/snow-and-sunset/55869",
+  "inputSHA256": "ba70e98cc4b7caf453aaf96f6b9da3f28a460d07aec992a2c6a49a93f90f5af2",
+  "exposureEV": 1,
+  "outputSHA256": "a7d339cbd9a40acc218f965cf3f7f837ad25995cde176713804958ac06501045",
+  "outputBytes": 5486263,
+  "referenceWhiteNits": 100,
+  "targetPeakNits": 1000,
+  "wallSeconds": 4.67,
+  "peakProcessFootprintBytes": 1964623192,
+  "alreadyExistsRejected": true,
+  "independentDecoder": {
+    "tool": "avifdec (dav1d)",
+    "decodedFrames": 1,
+    "width": 4000,
+    "height": 6000,
+    "bitDepth": 10,
+    "sampling": "YUV420",
+    "fullRange": true,
+    "primaries": 9,
+    "transfer": 16,
+    "matrix": 1,
+    "gainMap": false,
+    "icc": false,
+    "contentLightInformationWrittenByImageIO": [1000, 64]
+  }
+}

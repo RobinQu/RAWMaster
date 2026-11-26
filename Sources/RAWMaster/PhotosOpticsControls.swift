@@ -11,8 +11,10 @@ struct PhotosOpticsControls: View {
     private var value: DevelopmentDefringeV3 { session.parameters.optics?.defringe ?? .init() }
     private var profile:DevelopmentLensProfileV3?{session.parameters.optics?.lensProfile}
     var body: some View {
-        VStack(alignment: .leading, spacing: 9) {
-            Text("镜头配置").font(.caption.weight(.semibold))
+        VStack(alignment: .leading, spacing: PhotosControlLayout.groupSpacing) {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+            Text("镜头配置").font(.caption2.weight(.semibold))
+            VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
             Toggle("启用镜头配置校正",isOn:.init(get:{session.parameters.optics?.lensProfileEnabled == true},set:{enabled in
                 update{$0.lensProfileEnabled=enabled}
             })).accessibilityIdentifier("photos.optics.profileEnabled")
@@ -29,10 +31,14 @@ struct PhotosOpticsControls: View {
                 }.buttonStyle(.borderless).font(.caption)
                 .accessibilityIdentifier("photos.optics.profileDefaults")
             }
-            if session.parameters.optics?.lensProfileEnabled == true && profile == nil {
-                Text("没有已匹配配置；请手动选择。内置系数为 RawMaster 近似值。").font(.caption2).foregroundStyle(.secondary)
             }
-            Text("镜头晕影校正（非创作型）").font(.caption2).foregroundStyle(.secondary)
+            if session.parameters.optics?.lensProfileEnabled == true && profile == nil {
+                Text("没有已匹配配置；请手动选择。内置系数为 RawMaster 近似值。").photosInspectorParagraph().foregroundStyle(.secondary)
+            }
+            }
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+            Text("镜头晕影校正（非创作型）").font(.caption2.weight(.semibold)).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
             PhotosTypedValueRow(session:session,context:context,group:.optics,name:"镜头晕影校正量",
               value:(session.parameters.optics?.lensVignettingAmount ?? 0)*100,range:0...200,step:1,digits:1,command:{number in
                 var next=session.parameters.optics ?? .init();next.lensVignettingAmount=number/100
@@ -51,7 +57,11 @@ struct PhotosOpticsControls: View {
                 var next=session.parameters.optics ?? .init();next.distortion=number/100
                 try next.validate();return .setParameters(.optics(next))
               },onError:onError).accessibilityIdentifier("photos.optics.distortion")
-            Text("去除色边").font(.caption.weight(.semibold))
+            }
+            }
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
+            Text("去除色边").font(.caption2.weight(.semibold))
+            VStack(alignment: .leading, spacing: PhotosControlLayout.spacing) {
             row("紫色强度", value: value.purpleAmount, range: 0...100) { $0.purpleAmount=$1 }
             row("绿色强度", value: value.greenAmount, range: 0...100) { $0.greenAmount=$1 }
             rangeRows("紫色", lower: value.purpleHueLower, upper: value.purpleHueUpper,
@@ -62,7 +72,9 @@ struct PhotosOpticsControls: View {
                 Button("选取紫色边") { onPicker(.purple) }.accessibilityIdentifier("photos.optics.defringe.purplePicker")
                 Button("选取绿色边") { onPicker(.green) }.accessibilityIdentifier("photos.optics.defringe.greenPicker")
             }.buttonStyle(.borderless).font(.caption)
-            Text("Defringe 使用 RawMaster 的色带与局部边缘近似模型。").font(.caption2).foregroundStyle(.secondary)
+            }
+            Text("Defringe 使用 RawMaster 的色带与局部边缘近似模型。").photosInspectorParagraph().foregroundStyle(.secondary)
+            }
         }
     }
     @ViewBuilder private func profilePickers()->some View{
@@ -71,15 +83,16 @@ struct PhotosOpticsControls: View {
         let models=profiles.filter{$0.make==make}
         let model=profile?.model ?? models[0].model
         let visible=profiles.filter{$0.make==make && $0.model==model}
-        Picker("制造商",selection:.init(get:{make},set:{value in
-            if let first=profiles.first(where:{$0.make==value}){select(first)}
-        })){ForEach(Set(profiles.map(\.make)).sorted(),id:\.self){Text($0).tag($0)}}
-        Picker("型号",selection:.init(get:{model},set:{value in
-            if let first=profiles.first(where:{$0.make==make && $0.model==value}){select(first)}
-        })){ForEach(models.map(\.model),id:\.self){Text($0).tag($0)}}
-        Picker("配置文件",selection:.init(get:{profile?.id ?? visible[0].id},set:{value in
-            if let selected=DevelopmentLensProfileCatalogV3.profile(id:value){select(selected)}
-        })){ForEach(visible){Text($0.name).tag($0.id)}}.accessibilityIdentifier("photos.optics.profile")
+        PhotosFlatMenu(title: "制造商", selection: .init(get: { make }, set: { value in
+            if let first = profiles.first(where: { $0.make == value }) { select(first) }
+        }), options: Set(profiles.map(\.make)).sorted(), label: { $0 })
+        PhotosFlatMenu(title: "型号", selection: .init(get: { model }, set: { value in
+            if let first = profiles.first(where: { $0.make == make && $0.model == value }) { select(first) }
+        }), options: Set(models.map(\.model)).sorted(), label: { $0 })
+        PhotosFlatMenu(title: "配置文件", selection: .init(get: { profile?.id ?? visible[0].id }, set: { value in
+            if let selected = DevelopmentLensProfileCatalogV3.profile(id: value) { select(selected) }
+        }), options: visible.map(\.id), label: { id in visible.first(where: { $0.id == id })?.name ?? id })
+            .accessibilityIdentifier("photos.optics.profile")
     }
     func matchMetadata() {
         if let match = DevelopmentLensProfileCatalogV3.match(lensMetadata) { select(match) }

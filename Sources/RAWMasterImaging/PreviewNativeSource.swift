@@ -370,7 +370,7 @@ final class PreviewNativeSource: @unchecked Sendable {
     } catch RawBaseCacheError.capacity { disposition = "capacity-fallback"; return nil }
     catch { disposition = "failed"; throw error }
   }
-  func render(recipe: DevelopmentRecipe, maxPixel: Int, window: CGRect? = nil,
+  func render(recipe: DevelopmentRecipe, maxPixel: Int, window: CGRect? = nil, detailScale: CGFloat? = nil,
               rawBasePool: PreviewRawBasePool? = nil, sourceKey: String = "",
               localMaskValidation: DevelopmentMaskEngineV3.CanonicalValidation? = nil,
               thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
@@ -413,7 +413,7 @@ final class PreviewNativeSource: @unchecked Sendable {
       let legacyInput = raw != nil && recipe.adjustmentsV3?.blackAndWhite.requiresLegacyGrainCanonicalInput == true
       if legacyInput { try validateCaptureAuthority(); rawBasePool?.evictUnpinned() }
       do {
-        return try renderV3(recipe:recipe,maxPixel:maxPixel,window:window,rawBasePool:legacyInput ? nil:rawBasePool,sourceKey:sourceKey,
+        return try renderV3(recipe:recipe,maxPixel:maxPixel,window:window,detailScale:detailScale,rawBasePool:legacyInput ? nil:rawBasePool,sourceKey:sourceKey,
           localMaskValidation:localMaskValidation,thumbnailNativeSink:thumbnailNativeSink,grainFinalTransport:grainFinalTransport,
           brillianceFinalTransport:brillianceFinalTransport,spatialScan:spatialScan,checkDehazeTexture:checkDehazeTexture,
           checkCanonicalCache:checkCanonicalCache,checkCanonicalHalfFIT:checkCanonicalHalfFIT,
@@ -425,7 +425,7 @@ final class PreviewNativeSource: @unchecked Sendable {
       }
     }
     guard recipe.engineVersion == "core-image-v1" || recipe.engineVersion == "rawmaster-color-v2" else { throw DevelopmentError.unsupportedEngine }
-    if let rawBasePool, raw != nil, !artifact, recipe.schemaVersion == 2, recipe.color?.isNeutral == false {
+    if window == nil, detailScale == nil, let rawBasePool, raw != nil, !artifact, recipe.schemaVersion == 2, recipe.color?.isNeutral == false {
       do { try validateCaptureAuthority() }
       catch { rawBasePool.retire(sourceKey:sourceKey); throw error }
       do {
@@ -491,9 +491,11 @@ final class PreviewNativeSource: @unchecked Sendable {
     image = image.cropped(to: pixels).transformed(by: CGAffineTransform(translationX: -pixels.minX, y: -pixels.minY))
     let canonicalSize = image.extent.size
     let limit = maxPixel <= 0 ? max(image.extent.width, image.extent.height) : CGFloat(max(64, min(4096, maxPixel)))
-    let factor = min(1, limit / max(image.extent.width, image.extent.height))
+    let factor = detailScale ?? min(1, limit / max(image.extent.width, image.extent.height))
     if factor < 1 { image = image.transformed(by: CGAffineTransform(scaleX: factor, y: factor)) }
-    guard let cg = context.createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: PhotoRenderer.sRGB, deferred: false) else { throw DevelopmentError.unreadable }
+    let region = try V3PreviewMaterializer.displayRegion(detailWindow(maxPixel:maxPixel,window:window), of:image.extent, sampled:detailScale != nil)
+    let display = detailScale == nil ? image : image.clampedToExtent()
+    guard let cg = context.createCGImage(display, from: region.pixels, format: .RGBA8, colorSpace: PhotoRenderer.sRGB, deferred: false) else { throw DevelopmentError.unreadable }
     // Own a compact CPU image independently of any CI/filter/context backing graph. Both the
     // materialization and copy are inside the render duration; preserve sRGB and premultiplied alpha.
     guard let owned = CGContext(data: nil, width: cg.width, height: cg.height, bitsPerComponent: 8,
@@ -504,7 +506,8 @@ final class PreviewNativeSource: @unchecked Sendable {
     guard let ownedCG = owned.makeImage() else { throw DevelopmentError.unreadable }
     let bitmap = NSBitmapImageRep(cgImage: ownedCG), result = NSImage(size: CGSize(width: cg.width, height: cg.height))
     result.addRepresentation(bitmap)
-    return PreviewPixels(image: result, nativeSize: canonicalSize, outputSize: CGSize(width: cg.width, height: cg.height), bytes: bitmap.bytesPerRow * bitmap.pixelsHigh)
+    return PreviewPixels(image: result, nativeSize: canonicalSize, outputSize: CGSize(width: cg.width, height: cg.height),
+      window: region.window, bytes: bitmap.bytesPerRow * bitmap.pixelsHigh)
   }
   /// A window narrows only the native 1:1 materialization. Settled and interactive frames are
   /// whole-canvas proxies whose canvas already equals the display, so they ignore it.
@@ -559,7 +562,7 @@ final class PreviewNativeSource: @unchecked Sendable {
     return adjustments == curveOnly
   }
 
-  private func renderV3(recipe: DevelopmentRecipe, maxPixel: Int, window: CGRect?,
+  private func renderV3(recipe: DevelopmentRecipe, maxPixel: Int, window: CGRect?, detailScale: CGFloat?,
                         rawBasePool: PreviewRawBasePool?, sourceKey: String,
                         localMaskValidation: DevelopmentMaskEngineV3.CanonicalValidation? = nil,
                         thumbnailNativeSink: ((CIImage) throws -> Void)? = nil,
@@ -575,7 +578,7 @@ final class PreviewNativeSource: @unchecked Sendable {
     try DevelopmentRendererV3.validateSupport(recipe,sourceIsRAW:raw != nil)
     try validateCaptureAuthority()
     if let legacy = try DevelopmentRendererV3.legacyEquivalent(recipe) {
-      return try render(recipe:legacy,maxPixel:maxPixel,window:window,rawBasePool:rawBasePool,sourceKey:sourceKey,thumbnailNativeSink:thumbnailNativeSink)
+      return try render(recipe:legacy,maxPixel:maxPixel,window:window,detailScale:detailScale,rawBasePool:rawBasePool,sourceKey:sourceKey,thumbnailNativeSink:thumbnailNativeSink)
     }
     if DevelopmentBrilliancePublicV1.active(recipe) {
       guard let request=brillianceFinalTransport,maxPixel==2400,!hasRAWFilter,!artifact else{throw PreviewPresentationError.unsupported}
@@ -857,7 +860,7 @@ final class PreviewNativeSource: @unchecked Sendable {
             .memoryTarget:DevelopmentResidentDehazeGuide.sharedTextureDisplayMemoryTargetMiB])
           defer { display.clearCaches() }
           return try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
-            window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
+            window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
         }
         try Task.checkCancellation()
         try checkDehazeTexture()
@@ -876,7 +879,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           ownedBitmapAuthority = nil
         }
         result = try V3PreviewMaterializer.materialize(graph,context:renderContext,maxPixel:maxPixel,
-          window:detailWindow(maxPixel:maxPixel,window:window),
+          window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,
           grainFinalTransport:grainFinalTransport,checkedLinearHalf:half,ownedBitmapAuthority:ownedBitmapAuthority)
       }
       try checkPresentation?()
@@ -903,7 +906,7 @@ final class PreviewNativeSource: @unchecked Sendable {
           v3DecoderDefaultsFingerprint = try? DevelopmentRendererV3.decoderDefaultsFingerprint(fresh)
         }
         if let defaults = v3DecoderDefaultsFingerprint, let cached = try PreviewRawBaseRenderer.renderV3(capture:capture,sourceKey:sourceKey,recipe:recipe,maxPixel:maxPixel,
-          pool:rawBasePool,memoryHint:contextMemoryLimitMiB,captureStamp:captureStamp,decoderIdentity:decoder,
+          window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,pool:rawBasePool,memoryHint:contextMemoryLimitMiB,captureStamp:captureStamp,decoderIdentity:decoder,
           decoderDefaultsFingerprint:defaults,noiseDefaults:.init(luminance:noiseReductionFacts.raw!.defaultLuminanceNoise,
             color:noiseReductionFacts.raw!.defaultColorNoise,detail:noiseReductionFacts.raw!.defaultDetail,
             luminanceSupported:noiseReductionFacts.raw!.luminanceNoiseSupported,colorSupported:noiseReductionFacts.raw!.colorNoiseSupported,
@@ -925,7 +928,7 @@ final class PreviewNativeSource: @unchecked Sendable {
         }
         let result = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { display in
           try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
-            window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
+            window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
         }
         try validateCaptureAuthority(); return result
       }
@@ -934,7 +937,7 @@ final class PreviewNativeSource: @unchecked Sendable {
                                           localSourceValidation:bindingCheck)
       }
       let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,
-        window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
+        window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)
       try validateCaptureAuthority(); return result
     } catch {
       if let flashRawCacheSourceKey { FlashRawCanonicalTexturePool.shared.retire(sourceKey:flashRawCacheSourceKey) }

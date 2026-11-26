@@ -12,6 +12,17 @@ pub const ATLAS_PIXELS: usize = 64 * 64 * 64;
 const ATLAS_BYTES: usize = ATLAS_PIXELS * 16;
 const CLASSIC: &[u32] = &[1, 25, 50, 100];
 const FILM: &[u32] = &[100];
+const FILM_LOOKS: &[&str] = &[
+    "spektraPortra400Endura",
+    "spektraVelvia100",
+    "spektraVision250D2383",
+    "spektraGold200UltraEndura",
+    "spektraPortra800SupraEndura",
+    "spektraEktar100Endura",
+    "spektraProvia100F",
+    "spektraEktachrome100",
+    "spektraVision500T2383",
+];
 const CLASSIC_VERSION: &str = "photo-filter-v1/observed-delta64/planes0-1-25-50-100/manual-trilinear-f32/linear-strength/HDR-boundary-residual-mono-noir-endpoint-v2/alpha-bypass65535";
 const FILM_VERSION: &str = "spektrafilm-v1/srgb-axis64/linear-delta/endpoint-strength/HDR-boundary-residual/alpha-bypass65535";
 const INPUT_PROFILE: &str = "2b3aa1645779a9e634744faf9b01e9102b0c9b88fd6deced7934df86b949af7e";
@@ -80,7 +91,7 @@ fn family(look: &str) -> Result<u32, String> {
         "original" | "vivid" | "vividWarm" | "vividCool" | "dramatic" | "dramaticWarm"
         | "dramaticCool" | "silvertone" => Ok(0),
         "mono" | "noir" => Ok(1),
-        "spektraPortra400Endura" | "spektraVelvia100" | "spektraVision250D2383" => Ok(2),
+        look if FILM_LOOKS.contains(&look) => Ok(2),
         _ => Err(format!("unknown photo filter {look}")),
     }
 }
@@ -177,7 +188,7 @@ impl Catalog {
             || !digest_valid(&c.source_hash)
             || !digest_valid(&c.builder_hash)
             || c.looks.is_empty()
-            || c.looks.len() > if film { 3 } else { 9 }
+            || c.looks.len() > if film { FILM_LOOKS.len() } else { 9 }
         {
             return Err("unsupported filter catalog contract".into());
         }

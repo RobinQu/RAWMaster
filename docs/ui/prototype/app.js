@@ -98,8 +98,8 @@ function settingsPanel(key) {
       p.performance || '均衡',
     )}<p>${
       (p.performance || '均衡') === '极速'
-        ? '极速：1:1 拖动显示画布分辨率的过渡帧，停止后先渲染可见区域，再补齐平移余量。导出、保存与缩略图始终使用原生像素。'
-        : '均衡：每一帧都按算子图定义的完整质量渲染。'
+        ? '极速：缩放中可暂用低分辨率预览；停止后按当前倍率从原图取样，不改变倍率。'
+        : '均衡：缩放中按当前倍率请求原图细节；停止后的画质与极速相同。'
     }</p>${factList(
       [
         ['当前预览', '仓库 JPEG 衍生图'],
@@ -175,6 +175,12 @@ changes.theme = (el) => {
   Studio.data.prefs.theme = el.value;
   Studio.save();
   render();
+};
+changes.performance = (el) => {
+  Studio.data.prefs.performance = el.value;
+  Studio.save();
+  render();
+  $('[name=performance]')?.focus({ preventScroll: true });
 };
 changes.modelDir = (el) => {
   Studio.data.prefs.modelDir = el.value;
@@ -510,6 +516,8 @@ function chrome() {
 }
 function render() {
   const previous = document.activeElement;
+  const details = $$('.mask-group[data-mask-group]');
+  if (details.length) S.maskGroups = new Set(details.filter((group) => group.open).map((group) => group.dataset.maskGroup));
   const root = $('#workspace'),
     exp = S.page === 'export',
     p = Studio.data.prefs;
@@ -526,6 +534,8 @@ function render() {
     stripFocus = root.querySelector('.filmstrip .chosen')?.dataset.val,
     side = root.querySelector('.inspector,.inspector-content')?.scrollTop ?? 0,
     toolsLeft = root.querySelector('.edit-left')?.scrollTop ?? 0,
+    previousDock = root.querySelector('.canvas-tool-dock'),
+    toolScroll = previousDock?.querySelector('.canvas-tool-body').scrollTop ?? 0,
     darkroom = root.querySelector('.edit-body')?.scrollTop ?? 0,
     pan =
       root.querySelector('.edit-page')?.dataset.photo === Studio.data.work
@@ -556,6 +566,8 @@ function render() {
   if (S.page === 'edit' && S.renderRoute?.startsWith('#edit/')) {
     root.querySelector('.edit-left').scrollTop = toolsLeft;
     root.querySelector('.edit-body').scrollTop = darkroom;
+    const dock = root.querySelector('.canvas-tool-dock');
+    if (dock && dock.dataset.canvasExpanded === previousDock?.dataset.canvasExpanded) dock.querySelector('.canvas-tool-body').scrollTop = toolScroll;
     $$('.canvas-fit').forEach((fit, i) => {
       if (pan[i]) [fit.scrollLeft, fit.scrollTop] = pan[i];
     });
@@ -577,6 +589,7 @@ function render() {
   S.renderRoute = location.hash;
 }
 window.addEventListener('hashchange', () => {
+  S.canvasSelection = null;
   if (sheet.open) closeSheet();
   route();
   const resumeQuick = S.page === 'edit' && S.tool !== 'versions' && S.quickResume === quickSubject();

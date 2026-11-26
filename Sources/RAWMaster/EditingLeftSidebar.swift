@@ -52,10 +52,8 @@ struct EditingLeftSidebar: View {
                             rawSummary
                         }
                         Divider().opacity(0.65)
-                        LeftRailSection(title: "滤镜", symbol: "camera.filters", expanded: $filtersExpanded, headingIdentifier: "editing.leftRail.filters") {
-                            DevelopmentPresetBrowser(editing: editing, session: session, context: context, scroller: proxy, catalog: presetCatalog)
-                                .padding(.horizontal, 12).padding(.bottom, 12)
-                        }
+                        DevelopmentPresetBrowser(editing: editing, session: session, context: context, scroller: proxy,
+                            catalog: presetCatalog, sectionExpanded: $filtersExpanded)
                         Divider().opacity(0.65)
                         LeftRailSection(title: "快照", symbol: "camera.viewfinder", expanded: $snapshotsExpanded,
                                         actionSymbol: "plus", actionLabel: "创建快照", actionIdentifier: "editing.snapshots.create") {
@@ -80,11 +78,11 @@ struct EditingLeftSidebar: View {
             }
             .disabled(editing.developmentContext == nil)
         } else {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: PhotosControlLayout.descriptionSpacing) {
                 Label("保留当前工具状态", systemImage: "checkmark.circle")
                     .font(.caption).foregroundStyle(.secondary)
                 Text("照片恢复后会继续显示滤镜、快照和操作历史。")
-                    .font(.caption2).foregroundStyle(.tertiary)
+                    .photosInspectorParagraph().foregroundStyle(.secondary)
             }
             .padding(16).frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
@@ -127,7 +125,7 @@ struct EditingLeftSidebar: View {
                                            context: EditingInteractionContext) -> some View {
         let snapshots = session.snapshots(in: context)
         if snapshots.isEmpty {
-            Text("尚无快照").font(.caption2).foregroundStyle(.secondary)
+            Text("尚无快照").photosInspectorParagraph().foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 14).padding(.bottom, 12)
         } else {
@@ -200,7 +198,7 @@ struct EditingLeftSidebar: View {
             .padding(.horizontal, 14).padding(.bottom, 8)
             if session.historyItems.isEmpty {
                 Text("尚无调整记录。完成的调整会记录在这里。")
-                    .font(.caption2).foregroundStyle(.tertiary)
+                    .photosInspectorParagraph().foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 14).padding(.bottom, 12)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -270,7 +268,7 @@ struct EditingLeftSidebar: View {
     }
 }
 
-private struct LeftRailSection<Content: View>: View {
+struct LeftRailSection<Content: View>: View {
     let title: String
     let symbol: String
     @Binding var expanded: Bool
@@ -278,6 +276,10 @@ private struct LeftRailSection<Content: View>: View {
     var enabled: Binding<Bool>? = nil
     var enableDisabled = false
     var resetAction: (() -> Void)? = nil
+    var resetDisabled = false
+    var accessory: AnyView? = nil
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var hovering = false
     var actionSymbol: String? = nil
     var actionLabel = ""
     var actionIdentifier = ""
@@ -286,37 +288,55 @@ private struct LeftRailSection<Content: View>: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 7) {
-                Button { withAnimation(.easeOut(duration: 0.18)) { expanded.toggle() } } label: {
-                    HStack(spacing: 7) {
-                        Image(systemName: expanded ? "chevron.down" : "chevron.right").font(.system(size: 9, weight: .semibold))
-                        Image(systemName: symbol).font(.system(size: 11)).frame(width: 16)
-                        Text(title).font(.system(size: 12, weight: .semibold))
-                        Spacer(minLength: 0)
+            HStack(spacing: 4) {
+                Button { withAnimation(.easeOut(duration: 0.16)) { expanded.toggle() } } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: expanded ? "chevron.down" : "chevron.right")
+                            .font(.system(size: 10, weight: .semibold)).frame(width: 11).foregroundStyle(.secondary)
+                        Image(systemName: symbol).font(.system(size: 13)).frame(width: 16).foregroundStyle(.secondary)
+                        Text(title).font(.system(size: 13, weight: .semibold)).lineLimit(1)
                     }
-                    .frame(maxWidth: .infinity, minHeight: 34)
+                    .frame(maxWidth: .infinity, minHeight: 28, alignment: .leading)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(title)，\(expanded ? "收起" : "展开")")
                 .accessibilityIdentifier(headingIdentifier)
                 if let resetAction {
-                    Button(action: resetAction) { Image(systemName: "arrow.uturn.backward").frame(width: 24, height: 26) }
-                        .buttonStyle(.plain).help("复位滤镜").accessibilityLabel("复位滤镜")
-                        .accessibilityIdentifier("editing.filters.reset")
+                    Button(action: resetAction) {
+                        Image(systemName: "arrow.uturn.backward").font(.system(size: 12))
+                            .foregroundStyle(resetDisabled ? .tertiary : .secondary)
+                            .frame(width: 26, height: 28).contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain).disabled(resetDisabled).help("复位滤镜").accessibilityLabel("复位滤镜")
+                    .accessibilityIdentifier("editing.filters.reset")
                 }
                 if let enabled {
-                    Toggle("启用" + title, isOn: enabled).labelsHidden().toggleStyle(.checkbox)
-                        .disabled(enableDisabled).accessibilityIdentifier("editing.filters.enabled")
+                    Button { enabled.wrappedValue.toggle() } label: {
+                        Image(systemName: enabled.wrappedValue ? "circle.inset.filled" : "circle")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundStyle(enabled.wrappedValue ? Color.accentColor : Color.secondary)
+                            .frame(width: 27, height: 28).contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain).disabled(enableDisabled)
+                    .help("启用或停用\(title)，保留已设置的数值")
+                    .accessibilityAddTraits(.isToggle).accessibilityLabel("启用" + title)
+                    .accessibilityValue(enabled.wrappedValue ? "已启用" : "已停用")
+                    .accessibilityIdentifier("editing.filters.enabled")
                 }
                 if let action, let actionSymbol {
-                    Button(action: action) { Image(systemName: actionSymbol).frame(width: 26, height: 26) }
+                    Button(action: action) { Image(systemName: actionSymbol).font(.system(size: 12)).frame(width: 26, height: 28) }
                         .buttonStyle(.plain).help(actionLabel).accessibilityLabel(actionLabel)
                         .accessibilityIdentifier(actionIdentifier)
                 }
+                if let accessory { accessory }
             }
-            .padding(.horizontal, 10)
-            if expanded { content().transition(.opacity) }
+            .frame(minHeight: 32)
+            .foregroundStyle(photosAdjustmentTextColor(in: colorScheme))
+            .background(hovering ? Color.primary.opacity(0.04) : Color.clear, in: RoundedRectangle(cornerRadius: 5))
+            .onHover { hovering = $0 }
+            .padding(.horizontal, 12).padding(.vertical, 2)
+            if expanded { content().padding(.top, PhotosControlLayout.spacing).transition(.opacity) }
         }
     }
 }

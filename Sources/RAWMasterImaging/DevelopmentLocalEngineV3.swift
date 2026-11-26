@@ -26,16 +26,19 @@ enum DevelopmentLocalEngineV3 {
                    _ body: (UnsafeBufferPointer<SIMD4<Float>>) throws -> Void) throws {
     guard rect.width > 0,rect.height > 0,rect.width <= 512,rect.height <= 512,
       rect.width == floor(rect.width),rect.height == floor(rect.height) else { throw DevelopmentPreviewError.memoryBudgetExceeded }
-    let width = Int(rect.width),height = Int(rect.height),row = width*16
-    let storage = try DevelopmentLocalAllocationV3(bytes:row*height,kind:.analysis)
-    let destination = CIRenderDestination(bitmapData:storage.pointer,width:width,height:height,bytesPerRow:row,format:.RGBAf)
-    destination.colorSpace = DevelopmentColorEngineV3.linearSRGB; destination.alphaMode = .premultiplied
-    destination.isClamped = false; destination.isDithered = false; destination.isFlipped = true
-    let task = try context.startTask(toRender:image,from:rect,to:destination,at:.zero)
-    _ = try task.waitUntilCompleted() // resource/worker ownership never ends at cancellation alone
-    let values = UnsafeBufferPointer(start:storage.pointer.assumingMemoryBound(to:SIMD4<Float>.self),count:width*height)
-    for p in values { guard p.x.isFinite,p.y.isFinite,p.z.isFinite,p.w.isFinite else { throw DevelopmentError.invalidEncoding } }
-    try body(values)
+    // Completed SDK task aliases must not retain unrelated input graphs until an outer pool drains.
+    try autoreleasepool {
+      let width = Int(rect.width),height = Int(rect.height),row = width*16
+      let storage = try DevelopmentLocalAllocationV3(bytes:row*height,kind:.analysis)
+      let destination = CIRenderDestination(bitmapData:storage.pointer,width:width,height:height,bytesPerRow:row,format:.RGBAf)
+      destination.colorSpace = DevelopmentColorEngineV3.linearSRGB; destination.alphaMode = .premultiplied
+      destination.isClamped = false; destination.isDithered = false; destination.isFlipped = true
+      let task = try context.startTask(toRender:image,from:rect,to:destination,at:.zero)
+      _ = try task.waitUntilCompleted() // resource/worker ownership never ends at cancellation alone
+      let values = UnsafeBufferPointer(start:storage.pointer.assumingMemoryBound(to:SIMD4<Float>.self),count:width*height)
+      for p in values { guard p.x.isFinite,p.y.isFinite,p.z.isFinite,p.w.isFinite else { throw DevelopmentError.invalidEncoding } }
+      try body(values)
+    }
   }
   static func reduction(_ image: CIImage, context: CIContext,
                         checkCancellation: (() throws -> Void)? = nil) throws -> SIMD4<Float> {
