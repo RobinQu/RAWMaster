@@ -173,8 +173,8 @@ attention 的实际 FLOPs 为 \(4 \cdot H \cdot L^2 \cdot D = 857\) GFLOP；0.06
 
 ## 验收记录（2026-11-26）
 
-- `swift test --skip RAWMasterImagingTests --jobs 4`：退出 0。UI 552 个（32 跳过）、Core 398 个（9 跳过）、AI 40 个（6 个 live opt-in 跳过）、Diagnostics/SequenceProbe 均 0 失败。
-- `RAWMasterImagingTests` 在当前环境和干净 HEAD worktree 中都会以 signal 5 中止（`testProfileImageThumbnailProxyPressureAndLeaseCloseRetireSameAllocation` 等 thumbnail pressure 测试）；这是本机/既有测试问题，不由本轮改动引入，也未计为通过。
+- `swift test --jobs 4`：退出 0。UI 552 个（32 跳过）、Imaging 1083 个（88 跳过）、Core 398 个（9 跳过）、AI 40 个（6 个 live opt-in 跳过）、Diagnostics/SequenceProbe 均 0 失败。
+- 修复 debug 下的 native render 栈与 raw-base pool 队列顺序：`DevelopmentRenderStack` 的大栈线程现在包住 `pool.withWorker`，而不是反过来。这样 pointwise/分析渲染仍在 pool 队列上执行，`dispatchPrecondition` 不再中止。此前 signal 5 的 thumbnail pressure 测试已通过，Imaging 全套 0 失败。
 - live：Rust worker 64×64、16 步通过；130 MB 文件从 1 MiB 处 HTTP Range 续传通过（首响应 206，25–26s，最终 SHA-256 一致）；小文件 HTTPS 下载通过。
 - `python3 scripts/check-ui-prototype.py`：38 个场景通过。
 - `output/RAWMaster.app`：debug 包重建，`codesign --verify --deep --strict` 通过；包内 worker 与源文件 SHA-256 一致，175 MB `mlx.metallib` 随包，启动 smoke 通过。
