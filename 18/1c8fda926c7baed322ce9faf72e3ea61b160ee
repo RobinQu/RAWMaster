@@ -1,0 +1,86 @@
+scripts/check-ui-prototype.py
+  s_e98f96aeb1103b::t_5c5ae46094d9e0 240
+  s_e98f96aeb1103b::t_dec774bb10b17e 68-72
+  s_e98f96aeb1103b::t_d539e4d34e4a1d 1225
+  s_e98f96aeb1103b::t_473be40a168098 111-115
+specs/037-color-film-hdr/plan.md
+  s_e98f96aeb1103b::t_00b14d3df84ab5 67
+Sources/RAWMasterImaging/DevelopmentSceneWorkflowRendererV1.swift
+  s_e98f96aeb1103b::t_2b984273d37771 1
+  s_e98f96aeb1103b::t_ed3a26ff4d6a49 2-61
+Tests/RAWMasterUITests/PhotosDevelopmentIntegrationTests.swift
+  s_a858c0352bf71b::t_af64957f522305 3764-3766
+  s_a858c0352bf71b::t_bcd34557cac255 220,222-223,3784
+  s_a858c0352bf71b::t_7cf08df2ffa3a1 3722-3724,3727-3728,3730,3734
+  s_a858c0352bf71b::t_db89ade73485c6 3736
+  s_a858c0352bf71b::t_2dc27b13d9dab6 224-227
+  s_a858c0352bf71b::t_6fd5223681c71e 3737-3742
+specs/038-node-dag-workflow/validation.md
+  s_e98f96aeb1103b::t_8b3d39320c3d8b 3
+  s_e98f96aeb1103b::t_b46c9bc7303de3 9-11
+Sources/RAWMasterImaging/DevelopmentPreviewService.swift
+  s_f75c20822beb69::t_dec8cb43911615 494-498,857-858,1413-1414
+  s_a858c0352bf71b::t_d9c6c33a75690e 2012-2013
+specs/038-node-dag-workflow/plan.md
+  s_e98f96aeb1103b::t_6b2b71827021fe 7
+  s_e98f96aeb1103b::t_815397a3d69d02 42
+docs/ui/prototype/scene-editor.js
+  s_e98f96aeb1103b::t_b5cb9b6cf61931 93
+  s_e98f96aeb1103b::t_ac5ab54aad36ec 186
+specs/036-render-pipeline-performance/spec.md
+  s_f75c20822beb69::t_dec8cb43911615 124-129
+Tests/RAWMasterImagingTests/DevelopmentSceneOutputV1Tests.swift
+  s_e98f96aeb1103b::t_60678d8cd1d275 105-140
+  s_e98f96aeb1103b::t_39c4e1bd2723e6 3
+docs/ui/prototype/scene-editor.css
+  s_e98f96aeb1103b::t_7e41435a8879f7 22
+Sources/RAWMasterImaging/DevelopmentSceneHDRDiagnostics.swift
+  s_e98f96aeb1103b::t_12242e0270ba13 5
+  s_e98f96aeb1103b::t_a853c67fe8fda3 37-41
+Tests/RAWMasterCoreTests/DevelopmentSceneWorkflowV1Tests.swift
+  s_e98f96aeb1103b::t_9573e9424c7bab 1-44
+Sources/RAWMasterCore/DevelopmentSceneWorkflowV1.swift
+  s_e98f96aeb1103b::t_85aaa84588fae3 40-44
+  s_e98f96aeb1103b::t_77996b5905adfe 1-39,45-81
+Sources/RAWMasterImaging/PreviewNativeSource.swift
+  s_f75c20822beb69::t_dec8cb43911615 373,416,428,494,496-498,509-510,565,581,863,882,909,931,940
+specs/037-color-film-hdr/validation.md
+  s_e98f96aeb1103b::t_a95a9a65565a15 131
+  s_e98f96aeb1103b::t_eb5825faf98712 122-130,132
+  s_e98f96aeb1103b::t_e8ebf9fe4dde8a 23
+  s_e98f96aeb1103b::t_3eff426ddd1f01 17
+specs/038-node-dag-workflow/spec.md
+  s_e98f96aeb1103b::t_ec0bf0430286b8 235
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.52-trip",
+  "base_commit_sha": "181c8fda926c7baed322ce9faf72e3ea61b160ee",
+  "prompts": {},
+  "sessions": {
+    "s_a858c0352bf71b": {
+      "agent_id": {
+        "tool": "chengxiaobang",
+        "id": "s_48ogh3ejacfu",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": null
+    },
+    "s_e98f96aeb1103b": {
+      "agent_id": {
+        "tool": "chengxiaobang",
+        "id": "s_qrlf40tj9yj0",
+        "model": "gpt-6.2-sol-aws"
+      },
+      "human_author": "RobinQu <qulong@trip.com>"
+    },
+    "s_f75c20822beb69": {
+      "agent_id": {
+        "tool": "chengxiaobang",
+        "id": "s_ckuvrwepmkm8",
+        "model": "gpt-6.2-sol"
+      },
+      "human_author": null
+    }
+  }
+}
