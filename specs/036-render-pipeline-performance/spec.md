@@ -279,7 +279,7 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 渲染器接线时发现一个边界：3000×2000 TIFF 上“窗口内 factor”与整幅 factor 的 crop 有 **1 LSB / 0.55% 分量** 差异，而整幅重复渲染为 0。9504 ARW 探针恰好为 0，但这是数据相关的 1 ULP。
 
-**严格全幅 factor 模式通过服务级逐字节验收：** 整幅与窗口都用同一张全幅 factor，并在 texture band 后先物化全幅 texture 输出；3000×2000 TIFF 的 whole vs window crop 为 **0**，9504 ARW 引擎级也为 0。3000×2000 首次整幅 114 ms、随后窗口 48 ms。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。该模式仍由 QA 开关控制。**固定输出 tile 已实施并默认用于单 band 1:1：** 每个 1024² 输出 tile 单独物化，整幅和窗口共享 tile 纹理；60 MP ARW 整幅/窗口 **0 差异**，窗口 **101.8 ms**（inline 471 ms，4.6×），整幅 1375 ms（全 tile 重建）。单 band 默认启用；双 band 仍走原 inline 路径，下一步再 tile 化 texture→clarity 串联。
+**严格全幅 factor 模式通过服务级逐字节验收：** 整幅与窗口都用同一张全幅 factor，并在 texture band 后先物化全幅 texture 输出；3000×2000 TIFF 的 whole vs window crop 为 **0**，9504 ARW 引擎级也为 0。3000×2000 首次整幅 114 ms、随后窗口 48 ms。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。该模式仍由 QA 开关控制。**固定输出 tile 已验证但未采纳为默认：** 60 MP 整幅/窗口 0 差异，但出厂 4800×3200 窗口上 inline/tiled 为 texture 1322/1341 ms、clarity 1365/1321 ms、local-texture-clarity 2806/2727 ms，差异在 ±3% 内；2400×1600 窗口 tiled 101.8 ms 对 inline 25–40 ms 更慢。之前 4.6× 是拿 tiled 窗口对比整幅 inline，不是同一窗口。生产默认回退 inline，tile 仅保留 QA。
 
 证据：[advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [再调研与下一步规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
 

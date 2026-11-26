@@ -214,15 +214,15 @@ enum DevelopmentRendererV3 {
       try body(context)
     }
   }
-  // Single-band 1:1 uses the strict full-frame factor path by default: first frame is close
-  // to inline, and every amount change is a pointwise window restore. Set the QA switch to 0
-  // for an A/B against the old inline band.
+  // Verification on the shipped 4800x3200 1:1 window showed no win over the inline band
+  // (texture 1341 vs 1322 ms, clarity 1321 vs 1365 ms on the 9504 CIRAW path), and the tiled
+  // window was slower at 2400x1600. Keep the experiment opt-in; production stays inline.
   static let advancedDetailFactorWindowEnabled =
-    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WINDOW"] != "0"
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WINDOW"] == "1"
   static let advancedDetailFactorWholeEnabled =
-    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WHOLE"] != "0"
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WHOLE"] == "1"
   static let advancedDetailFactorFullEnabled =
-    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] != "0"
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] == "1"
   static let advancedDetailFactorBothEnabled =
     ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_BOTH"] == "1"
   static let advancedDetailFactorWindowStrict =

@@ -179,7 +179,20 @@ v7 的 2.4 s 是更老 schema 的一次性迁移；v8 升级约 0.7–1.0 s，�
 
 **严格全幅 factor 模式已通过服务级验收。** 使用 `RAWMASTER_QA_ADVANCED_FACTOR_FULL=1`（整幅和窗口都消费同一张全幅 factor），并在 texture band 后先物化全幅 texture 输出，3000×2000 TIFF 的 whole vs window crop 为 **0 差异**；9504 ARW 引擎级也为 0。首次整幅约 114 ms、随后窗口约 48 ms（factor 缓存后，3000×2000）。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。
 
-**固定输出 tile 已实施并默认用于单 band 1:1。** 每个 1024×1024 输出 tile 的 restore 结果单独物化为 RGBA32F 纹理，整幅和窗口都从同一组 tile 取样。60 MP ARW 实测：整幅/窗口 **0 差异**；窗口 **101.8 ms**（inline 471 ms，4.6×），整幅 1375 ms（全 tile 重建，较慢）。3000×2000 服务级：整幅 79 ms、窗口 27 ms，0 差异。单 band（texture 或 clarity）默认走这条路径；双 band 仍走原 inline 路径，后续可扩展到 tile 化 texture→clarity 串联。
+**固定输出 tile 已验证，但不作为默认。** 每个 1024×1024 输出 tile 的 restore 结果单独物化为 RGBA32F 纹理，整幅和窗口都从同一组 tile 取样，逐字节门确实通过：60 MP 整幅/窗口 0 差异，3000×2000 服务级 0 差异。
+
+但真实 9504×6336、出厂 4800×3200 窗口的 A/B 否定了收益：
+
+| 配方 | inline | tiled |
+| --- | ---: | ---: |
+| texture | 1322 ms | 1341 ms |
+| clarity | 1365 ms | 1321 ms |
+| local-texture-clarity | 2806 ms | 2727 ms |
+| adaptive-brilliance | 8573 ms | 8332 ms |
+
+差异在噪声/±3% 内；2400×1600 窗口时 tiled 101.8 ms 对比 inline 25–40 ms，反而更慢。之前说的 4.6× 是拿 tiled 窗口对比**整幅** inline（471 ms），不是同一个窗口的 inline。整幅 tiled 也要 1339 ms，比 inline 471 ms 慢 2.8×。
+
+因此生产默认已回退到 inline，tile 代码仅保留为 QA 实验；**下一步不再沿 tile 方向投入**，算子的真正杠杆是减少整幅归约本身（dehaze/adaptive-brilliance）或更好的邻域算法。
 
 下一步仍可继续做**双 band 固定 tile**：
 

@@ -142,6 +142,8 @@ final class PreviewSettledTransportTests: XCTestCase {
   /// Fixed output-tile path: the whole and window frames both consume the same materialized
   /// tile textures, so the window is byte-identical to the whole crop.
   func testAdvancedDetailTiledWindowIsByteExact() async throws {
+    try XCTSkipUnless(ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WINDOW"] == "1",
+                      "Explicit tiled-window QA switch required")
     let (root, source) = try fixture()
     defer { try? FileManager.default.removeItem(at: root) }
     let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0,
