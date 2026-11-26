@@ -400,9 +400,9 @@ fn read<T>(
         return Err("workbench resource SHA-256 mismatch".into());
     }
     if durable {
-        file.sync_all()?;
+        super::durable_sync(&file, "resource-file")?;
         for dir in dirs.into_iter().rev() {
-            File::open(dir)?.sync_all()?;
+            super::durable_sync(&File::open(dir)?, "resource-dir")?;
         }
     }
     let verified = Verified {

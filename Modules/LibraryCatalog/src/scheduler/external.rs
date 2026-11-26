@@ -111,11 +111,11 @@ pub(super) fn prepare(
     let metadata = input.metadata()?;
     let binding = file_identity(&metadata);
     let (sha, count) = digest_stable(&input, &stage, &metadata)?;
-    input.sync_all()?;
+    super::batch::durable_sync(&input, "external-input")?;
     let stage_parent = stage.parent().ok_or("missing stage directory")?;
-    File::open(stage_parent)?.sync_all()?;
+    super::batch::durable_sync(&File::open(stage_parent)?, "external-stage-parent")?;
     if stage_parent != root {
-        File::open(root)?.sync_all()?;
+        super::batch::durable_sync(&File::open(root)?, "external-root")?;
     }
     let row = json!({"stage":stage.to_str().ok_or("non-UTF-8 stage")?, "destination":destination.to_str().ok_or("non-UTF-8 destination")?,
                     "sha256":sha,"byteCount":count});
@@ -248,8 +248,11 @@ impl Verification {
         if actual != count || self.ticket["sha256"] != sha {
             return Err("external output has a different SHA-256".into());
         }
-        file.sync_all()?;
-        File::open(path.parent().ok_or("missing publication directory")?)?.sync_all()?;
+        super::batch::durable_sync(&file, "external-publish-file")?;
+        super::batch::durable_sync(
+            &File::open(path.parent().ok_or("missing publication directory")?)?,
+            "external-publish-dir",
+        )?;
         Ok(true)
     }
 }

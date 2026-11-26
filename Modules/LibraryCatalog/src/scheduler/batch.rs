@@ -23,6 +23,24 @@ pub(crate) fn catalog_file_identity(path: &Path) -> Result<Value> {
     directory::catalog_file_identity(path)
 }
 
+/// `File::sync_all` is `fcntl(F_FULLFSYNC)` on Apple targets, the expensive call behind the
+/// export per-item fixed cost. `RAWMASTER_SYNC_TIMING=1` prints one line per call so a batch can
+/// be counted exactly without a profiler.
+pub(crate) fn durable_sync(file: &std::fs::File, label: &str) -> Result<()> {
+    static TIMING: std::sync::OnceLock<bool> = std::sync::OnceLock::new();
+    let timing =
+        *TIMING.get_or_init(|| std::env::var("RAWMASTER_SYNC_TIMING").as_deref() == Ok("1"));
+    let started = timing.then(std::time::Instant::now);
+    file.sync_all()?;
+    if let Some(started) = started {
+        eprintln!(
+            "SYNC {label} {:.3}",
+            started.elapsed().as_secs_f64() * 1000.0
+        );
+    }
+    Ok(())
+}
+
 fn lease_duration() -> u32 {
     90_000
 }

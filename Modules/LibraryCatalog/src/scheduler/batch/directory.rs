@@ -299,7 +299,7 @@ impl Verified {
         if n <= 0 || stamp.size != n as u64 || Stamp::read(&file)? != stamp {
             return Err("workbench bytes changed while hashing".into());
         }
-        file.sync_all()?;
+        super::durable_sync(&file, "hash-file")?;
         Ok((Self { file, stamp }, sha, n))
     }
     fn at(&self, dir: &File, name: &str) -> Result<()> {
@@ -389,8 +389,8 @@ impl Stage {
         if verified.stamp.identity != original.identity {
             return Err("workbench stage identity changed before verification".into());
         }
-        dir.sync_all()?;
-        root.file.sync_all()?;
+        super::durable_sync(&dir, "stage-dir")?;
+        super::durable_sync(&root.file, "stage-root")?;
         let ticket = Ticket {
             folder: folder.into(),
             file: file.into(),
@@ -503,8 +503,8 @@ impl Stage {
     pub fn sync_publication(&self, root: &Root) -> Result<()> {
         // Both descriptors still refer to the directories used for the exclusive syscall. The
         // SQLite lock has been released; its separately committed PREPARED receipt spans a crash.
-        root.file.sync_all()?;
-        self.folder.sync_all()?;
+        super::durable_sync(&root.file, "publish-root")?;
+        super::durable_sync(&self.folder, "publish-folder")?;
         Ok(())
     }
 }
@@ -581,7 +581,7 @@ impl Ticket {
         if sha != self.sha256 || n != self.byte_count {
             return Ok(Final::Conflict);
         }
-        root.file.sync_all()?;
+        super::durable_sync(&root.file, "verify-final-root")?;
         Ok(Final::Verified(file))
     }
     pub fn check_final(&self, root: &Root, file: &Verified) -> Result<()> {
@@ -607,7 +607,7 @@ impl Ticket {
                 if unsafe { libc::unlinkat(dir.as_raw_fd(), name.as_ptr(), 0) } != 0 {
                     return Err(io::Error::last_os_error().into());
                 }
-                dir.sync_all()?;
+                super::durable_sync(&dir, "cleanup-dir")?;
             }
             Ok(_) => return Ok(()),
             Err(e) if e.kind() == io::ErrorKind::NotFound => (),
@@ -618,7 +618,7 @@ impl Ticket {
             if unsafe { libc::unlinkat(root.file.as_raw_fd(), name.as_ptr(), libc::AT_REMOVEDIR) }
                 == 0
             {
-                root.file.sync_all()?;
+                super::durable_sync(&root.file, "cleanup-root")?;
             }
         }
         Ok(())

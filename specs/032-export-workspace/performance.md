@@ -60,36 +60,39 @@ RAWMASTER_EXPORT_TIMING=1 RAWMASTER_EXPORT_BENCH_ROOT="$PWD/output/performance/e
 
 注意：分项累计包含 `ProcessingAdmission` 的许可等待，不能直接当作单项耗时；判断瓶颈以整批墙钟与采样为准。
 
-## fsync 复核：持久化同步不是瓶颈（2026-11-26 续）
+## fsync 复核：它确实是每张固定开销的主因（2026-11-26 修正）
 
-上一节把「每张固定开销」列为主要嫌疑。按要求单独复核 fsync，先确认系统调用口径：
+上一版这一节把 fsync 排除了，结论是错的。错在两个口径：
 
-| 同一个 700 KB 文件，同一卷 | 每次耗时 |
-| --- | ---: |
-| `write` + `fsync(2)` | **0.23 ms** |
-| `write` + `fcntl(F_FULLFSYNC)` | **4.99 ms** |
+1. 微基准用的是 Swift/Python 的 `fsync(2)`，而 macOS 上真正要求驱动器刷缓存的是 `fcntl(F_FULLFSYNC)`。同一个 700 KB 文件、同一卷：`fsync(2)` **0.23 ms**，`F_FULLFSYNC` **4.99 ms**，差 22 倍。
+2. A/B 改的是 SQLite 的 `synchronous=NORMAL`。SQLite 在 macOS 上即使 `synchronous=FULL`，默认也只调用 `fsync(2)`；只有 `PRAGMA fullfsync=ON` 才升级为 `F_FULLFSYNC`。实测 200 次自动提交：默认 **8.3 ms（0.042 ms/次）**，`fullfsync=ON` **896 ms（4.48 ms/次）**。所以改 `synchronous` 根本碰不到导出路径里的 Rust `sync_all`。
 
-差 22 倍。macOS 上真正的持久化是 `F_FULLFSYNC`（要求驱动器刷缓存），`fsync(2)` 只保证进入内核页缓存。先前的 fsync 微基准用的是 `os.fsync`，因此低估了真实成本——这一点已在下表修正。
+Rust 的 `std::fs::File::sync_all` 在 Apple 目标上就是 `fcntl(F_FULLFSYNC)`（工具链 `library/std/src/sys/fs/unix.rs` 可查）。导出的发布路径大量使用它。
 
-目录库是 WAL；`synchronous=FULL` 每次提交一次 `F_FULLFSYNC`。批量交付每张有 3 次目录提交（prepare / publish / acknowledge）加一次产出文件的 `sync_publication`，合计约 4 次持久化同步 ≈ **20 ms/张**，与实测的 30–48 ms/张 同量级。
+给 `Modules/LibraryCatalog/src/scheduler` 的每个 `sync_all` 套上 `RAWMASTER_SYNC_TIMING=1` 可开关的计时后，跑一遍 442 张（221 张 × 预热+计时两轮）的批量导出，得到每张的同步次数：
 
-但把目录连接改成 `synchronous=NORMAL` 后，整批**反而更慢**（交替三轮：NORMAL 9.61 / 10.03 / 10.11 s，FULL 8.56 / 9.17 / 9.42 s）。原因是 NORMAL 把同步推迟到检查点，200 张累积的检查点突发比逐次提交更贵。改动已撤回，默认保持 FULL。
+| 调用点 | 每张次数 | 平均耗时 |
+| --- | ---: | ---: |
+| `hash-file`（暂存/最终校验重复哈希） | 3 | 5.29 ms |
+| `stage-dir` | 2 | 2.36 ms |
+| `stage-root` | 2 | 1.99 ms |
+| `publish-root` | 1 | 5.29 ms |
+| `publish-folder` | 1 | 2.74 ms |
+| `verify-final-root` | 1 | 2.03 ms |
+| `cleanup-dir`（acknowledge 后清理） | 1 | 6.17 ms |
+| `cleanup-root` | 1 | 6.13 ms |
+| **合计** | **12** | **约 47 ms** |
 
-进程采样（`sample` 4 秒，200 张 2048 批次）给出的是同一个结论的另一面：
+这正好覆盖实测的 30–48 ms/张固定开销。200 张批次墙钟 6.78 s（33.9 ms/张），低于 47 ms 是因为多个 worker 的同步等待重叠；同步总量仍然是主因。之前采样里的 `__fcntl` 1,391 个样本也就是这些调用，不是“零散的几十分之一”。
 
-| 顶端栈 | 样本数 |
-| --- | ---: |
-| `__workq_kernreturn`（空闲工作线程） | 25,448 |
-| `mach_msg2_trap` | 2,001 |
-| `__psynch_mutexwait` | 1,926 |
-| `__fcntl` | 1,391 |
-| AppleJPEG 解码（各段合计） | ~1,300 |
-| CoreGraphics 重采样 | 629 |
-| SHA-256 | 220 |
-| JPEG 编码 | ~270 |
+结论要改写为：**导出批量不是 CPU 密集，也不是解码/重采样/编码密集；它是被每张 12 次 `F_FULLFSYNC` 串行化的。** 改变 SQLite 提交模式、连接池、准入额度都不会动到它。
 
-扣掉空闲样本后，没有任何函数占绝对多数；解码、重采样、编码、哈希与同步都在几十分之一。也就是说这一档**既不是 CPU 密集也不是单点 I/O 密集**，而是被串行化的协调与等待摊薄。
+下一步是减少每张的同步次数，而不是继续换旋钮。安全的下限是：
 
-已用实测排除的杠杆：调度往返次数（合并 publish/acknowledge）、SQLite 连接复用与连接池、`synchronous` 模式、准入闸门的 io 额度（3 → 8）、图片内容（64×64 与 2400×1600 同速）。全部改动均已撤回，只保留 `RAWMASTER_EXPORT_TIMING=1` 的分项诊断。
+- 暂存文件写完后同步一次（`hash-file` 只保留一次）；
+- 暂存目录项建立后同步一次；
+- rename 到目标目录后同步目标目录一次；
+- `acknowledge` 的清理同步移到批次级，或直接省去（清理失败可由恢复扫描兜底）；
+- 最终校验重复哈希时不再 `sync_all`（字节未变，第一次同步已经覆盖）。
 
-下一步需要的不是再加猜测，而是等时机标识：在 prepare / publish / acknowledge / 编码 / 落盘各段加 `os_signpost`，用 Instruments 看真实的等待归属（当前采样中工作线程大半空闲，说明等待发生在任务调度或续体上，而不是某个系统调用里）。
+目标是把 12 次降到 3–4 次，预计每张省 25–35 ms。任何合并都必须保留现有崩溃一致性证明：文件身份、SHA、PREPARED 回执与 rename 的顺序不能变；只去掉“同一不可变文件/同一目录项的重复同步”。改完用同一套 200 张 A/B 复测，并跑 `ExportPerformanceTests` 与恢复测试。
