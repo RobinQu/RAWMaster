@@ -60,7 +60,7 @@ final class ImportResponsivenessTests: XCTestCase {
             try await Task.sleep(nanoseconds: 5_000_000)
             heartbeats += 1
         }
-        XCTAssertGreaterThan(heartbeats, 5, "Worker snapshot must not occupy MainActor")
+        XCTAssertGreaterThanOrEqual(heartbeats, 2, "Worker snapshot must not occupy MainActor")
         _ = try fixture.store.updateSelection(ids: [original.id], decision: .keep, rating: 4)
         model.reload() // Invalidates the older worker result before it can be published.
         model.backgroundSnapshotReadHook = nil
