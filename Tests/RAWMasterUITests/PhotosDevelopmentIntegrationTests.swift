@@ -3733,7 +3733,7 @@ extension PhotosDevelopmentIntegrationTests {
             }
             try await Task.sleep(nanoseconds: 10_000_000)
         }
-        guard let first = owner.sets[id] else {
+        guard owner.sets[id] != nil else {
             if owner.state(.filters) == .failed {
                 // A long-lived XCTest process can exhaust shared filter/thumbnail resources.
                 // The same strip is validated in isolation and on the self-hosted GPU job.
@@ -3741,7 +3741,8 @@ extension PhotosDevelopmentIntegrationTests {
             }
             return XCTFail("Filter thumbnail strip did not become ready")
         }
-        let firstKey = first.key; XCTAssertEqual(first.images.count, DevelopmentThumbnailKind.filters.count)
+        let firstKey = owner.sets[id]!.key
+        XCTAssertEqual(owner.sets[id]?.images.count, DevelopmentThumbnailKind.filters.count)
         let initialCompleted = await service.thumbnailStatistics().completed
         try editing.changeDevelopmentFilter(.vivid, context: context)
         for _ in 0..<30 { try await Task.sleep(nanoseconds: 10_000_000) }
@@ -3766,8 +3767,13 @@ extension PhotosDevelopmentIntegrationTests {
         XCTAssertEqual(owner.sets[id]?.images.count, DevelopmentThumbnailKind.filters.count); XCTAssertEqual(blankFrames, 0)
         let changedCompleted = await service.thumbnailStatistics().completed
         XCTAssertGreaterThan(changedCompleted, initialCompleted)
+        owner.invalidate()
         await editing.shutdown(); await service.closeAll()
-        let finalStatistics = await service.thumbnailStatistics()
+        var finalStatistics = await service.thumbnailStatistics()
+        for _ in 0..<500 where finalStatistics.unionBytes != 0 {
+            try await Task.sleep(nanoseconds: 10_000_000)
+            finalStatistics = await service.thumbnailStatistics()
+        }
         XCTAssertEqual(finalStatistics.unionBytes, 0)
     }
 
