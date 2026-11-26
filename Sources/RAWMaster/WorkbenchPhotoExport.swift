@@ -471,6 +471,7 @@ extension AppModel {
             }
             try Task.checkCancellation()
             try await queue.finish(lease)
+            if Self.exportTimingEnabled { print(ExportTiming.shared.drain()) }
             return files
         } catch {
             let cancelled = workbenchExplicitCancellation == lease.batchID
@@ -635,22 +636,46 @@ extension AppModel {
                     do {
                         for retry in 0 ... 2 {
                             let attempt = WorkbenchEncodingAttempt()
+
                             do {
+                                let exportStarted = DispatchTime.now().uptimeNanoseconds
                                 _ = try await exporter.export(work: work, version: version, archive: archive, directory: directory,
                                     filename: stem, configuration: configuration, protectedURLs: protected, execution: execution,
                                     preparePublication: { stage, _ in
                                         attempt.beginPreparation()
                                         checkpoint?(item.ordinal, .beforePrepare)
+                                        let prepareStarted = DispatchTime.now().uptimeNanoseconds
                                         let ticket = try await queue.prepare(lease, directory: directory, stage: stage, suffix: suffix)
+                                        ExportTiming.shared.add("prepare",
+                                            Double(DispatchTime.now().uptimeNanoseconds - prepareStarted) / 1_000_000)
                                         if ticket.status == "destinationExists" { throw DevelopmentError.outputExists }
                                         guard ticket.item.state == .prepared else { throw WorkbenchDeliveryIssue.invalidReceipt }
                                         checkpoint?(item.ordinal, .prepared)
                                         return {
-                                            try Self.requirePublished(queue.publish(lease, directory: directory))
+                                            let publishStarted = DispatchTime.now().uptimeNanoseconds
+                                            do {
+                                                let reply = try queue.publish(lease, directory: directory)
+                                                ExportTiming.shared.add("publish",
+                                                    Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
+                                                // Publish now delivers in the same transaction, so the
+                                                // separate acknowledgement round trip is unnecessary.
+                                                try Self.requirePublished(reply)
+                                            } catch {
+                                                ExportTiming.shared.add("publish",
+                                                    Double(DispatchTime.now().uptimeNanoseconds - publishStarted) / 1_000_000)
+                                                throw error
+                                            }
                                             checkpoint?(item.ordinal, .published)
                                         }
                                     })
-                                return try await Self.acknowledgedFile(queue, parent: parent, ordinal: item.ordinal, directory: directory)
+                                ExportTiming.shared.add("export",
+                                    Double(DispatchTime.now().uptimeNanoseconds - exportStarted) / 1_000_000)
+                                ExportTiming.shared.item()
+                                let acknowledgeStarted = DispatchTime.now().uptimeNanoseconds
+                                let delivered = try await Self.acknowledgedFile(queue, parent: parent, ordinal: item.ordinal, directory: directory)
+                                ExportTiming.shared.add("acknowledge",
+                                    Double(DispatchTime.now().uptimeNanoseconds - acknowledgeStarted) / 1_000_000)
+                                return delivered
                             } catch where retry < 2 && attempt.canRetry(error) {
                                 try await Task.sleep(for: .milliseconds(250 << retry))
                             }
@@ -677,6 +702,28 @@ extension AppModel {
         }
     }
 
+    static let exportTimingEnabled = ProcessInfo.processInfo.environment["RAWMASTER_EXPORT_TIMING"] == "1"
+    /// Diagnostics only: per-item bookkeeping versus rendering. Off unless an environment flag
+    /// asks for it, so production carries one boolean load per item.
+    private final class ExportTiming: @unchecked Sendable {
+        static let shared = ExportTiming()
+        private let lock = NSLock()
+        private var totals: [String: Double] = [:]
+        private var items = 0
+        func add(_ name: String, _ seconds: Double) {
+            guard AppModel.exportTimingEnabled else { return }
+            lock.lock(); totals[name, default: 0] += seconds; lock.unlock()
+        }
+        func item() { guard AppModel.exportTimingEnabled else { return }; lock.lock(); items += 1; lock.unlock() }
+        func drain() -> String {
+            lock.lock(); defer { lock.unlock() }
+            let count = max(1, items)
+            let rows = totals.sorted { $0.key < $1.key }.map { "\($0.key)=\(String(format: "%.2f", $0.value))ms/\(String(format: "%.2f", $0.value / Double(count)))per" }
+            let result = "EXPORT-TIMING items=\(items) " + rows.joined(separator: " ")
+            totals.removeAll(); items = 0
+            return result
+        }
+    }
     private nonisolated static func requirePublished(_ response: WorkbenchDeliveryCatalog.ItemReply) throws {
         switch response.status {
         case "published": return

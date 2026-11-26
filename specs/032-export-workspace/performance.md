@@ -32,3 +32,30 @@ RAWMASTER_EXPORT_BENCH_ROOT="$benchmark_dir" swift test --filter ExportPerforman
 ```
 
 在新版资料库模式下，原生测试从项目导出入口冻结全体分页 ID，先检查未挂载照片的成片预览，再比较 1、20、200 张的产物。最长耗时统计从提交成片起，导入和建立工作台范围作为独立的步骤。
+
+## 逐张成本与图片内容无关（2026-11-26）
+
+为定位 200 张 JPEG 批次为何比合并基线慢，用同一台机器、同一入口、同一 2048 长边 / q0.9 配置做了对照：把 200 张源图换成 **64×64** 的同名 JPEG，其余不变。
+
+| 输入 | 200 张整批 |
+| --- | ---: |
+| 2400×1600 JPEG | 8.47 / 9.47 s |
+| **64×64 JPEG** | **8.84 / 9.62 s** |
+
+两者相同。也就是说：缩图、重采样、编码、写盘的数据量在这一档完全不构成成本；**整批时间由每张的固定开销决定**（约 30–48 ms/张，随机器负载浮动）。同一轮里 1 张为 0.05–0.06 s、20 张为 0.62–0.70 s，与「200 × 固定开销」一致。
+
+已排除的两个假设：
+
+- **不是调度往返次数。** 把 `publish` 与 `acknowledge` 合成一个事务（每张 3 次调度往返降为 2 次）后交替 A/B：合并 9.89 / 8.51 / 9.17 s，未合并 9.23 / 9.01 / 8.62 s，差异在噪声内。改动已撤回。
+- **不是 SQLite 的提交持久化。** 把调度连接改为 `synchronous=NORMAL` 后逐张计时无变化。改动已撤回。
+
+剩余嫌疑集中在每张产出文件的多次落盘与 fsync（私有暂存、标记文件、最终文件，以及目录同步）。下一步用进程采样把时间归到具体调用，再决定合并哪几次写入；单纯减少目录事务已被证明无效。
+
+诊断入口默认关闭，仅在 `RAWMASTER_EXPORT_TIMING=1` 时按批打印 prepare／publish／acknowledge／export 的分项累计：
+
+```sh
+RAWMASTER_EXPORT_TIMING=1 RAWMASTER_EXPORT_BENCH_ROOT="$PWD/output/performance/export-bench" \
+  swift test -c release --filter ExportPerformanceTests
+```
+
+注意：分项累计包含 `ProcessingAdmission` 的许可等待，不能直接当作单项耗时；判断瓶颈以整批墙钟与采样为准。
