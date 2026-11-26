@@ -184,6 +184,66 @@ final class AdvancedFactorRestoreProbe: XCTestCase {
   /// window+halo and restoring only the window must equal the full-frame crop. This is the
   /// difference between "factor/restore" and "windowed factor/restore", and the only route to
   /// skipping the 60 MP materialize for 1:1.
+  /// Production single-band path: fixed output tiles must make the window equal the whole crop
+  /// on the real 60 MP RAW, and the window must not re-evaluate all 70 tiles.
+  func testTiledBandWholeAndWindowAgree() throws {
+    try XCTSkipUnless(ProcessInfo.processInfo.environment["RAWMASTER_FACTOR_PROBE"] == "1",
+                      "Explicit probe opt-in is required")
+    try XCTSkipUnless(MTLCreateSystemDefaultDevice()?.hasUnifiedMemory == true)
+    let input = try source()
+    let extent = input.extent
+    let size = DevelopmentPixelSize(width: Int(extent.width), height: Int(extent.height))
+    let window = CGRect(x: (extent.width * 0.31).rounded(), y: (extent.height * 0.27).rounded(),
+                        width: min(2400, extent.width - 100), height: min(1600, extent.height - 100))
+    var parameters = DevelopmentAdvancedDetailV3()
+    parameters.texture = .init(enabled: true, amount: 25)
+    let context = context()
+    let wholeStart = DispatchTime.now().uptimeNanoseconds
+    let whole = try DevelopmentAdvancedDetailEngineV3.applyWindowed(parameters, to: input,
+      sourceSize: size, window: extent, textureCacheIdentity: "probe-tiled", clarityCacheIdentity: "probe-tiled",
+      context: context)
+    let wholeMs = Double(DispatchTime.now().uptimeNanoseconds - wholeStart) / 1_000_000
+    let windowStart = DispatchTime.now().uptimeNanoseconds
+    let scoped = try DevelopmentAdvancedDetailEngineV3.applyWindowed(parameters, to: input,
+      sourceSize: size, window: window, textureCacheIdentity: "probe-tiled", clarityCacheIdentity: "probe-tiled",
+      context: context)
+    let windowMs = Double(DispatchTime.now().uptimeNanoseconds - windowStart) / 1_000_000
+    let diff = compare(try freeze(whole, from: window), try freeze(scoped, from: window))
+    print("FACTOR-PROBE tiled whole=\(String(format: "%.1f", wholeMs))ms window=\(String(format: "%.1f", windowMs))ms max=\(diff.max) differing=\(diff.differing)")
+    XCTAssertEqual(diff.max, 0, "tiled single-band whole and window must be byte-identical")
+  }
+
+  /// Strict full-frame factor mode: the whole frame and the window both consume the same
+  /// full-frame factor texture, so the window must equal the crop without the regional 1 ULP
+  /// boundary found in the service integration.
+  func testFullFactorWholeAndWindowAgree() throws {
+    try XCTSkipUnless(ProcessInfo.processInfo.environment["RAWMASTER_FACTOR_PROBE"] == "1",
+                      "Explicit probe opt-in is required")
+    try XCTSkipUnless(ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] == "1",
+                      "Explicit full-factor opt-in is required")
+    try XCTSkipUnless(MTLCreateSystemDefaultDevice()?.hasUnifiedMemory == true)
+    let input = try source()
+    let extent = input.extent
+    let size = DevelopmentPixelSize(width: Int(extent.width), height: Int(extent.height))
+    let window = CGRect(x: (extent.width * 0.31).rounded(), y: (extent.height * 0.27).rounded(),
+                        width: min(2400, extent.width - 100), height: min(1600, extent.height - 100))
+    var parameters = DevelopmentAdvancedDetailV3()
+    parameters.texture = .init(enabled: true, amount: 25)
+    parameters.clarity = .init(enabled: true, amount: 40)
+    let context = context()
+    let whole = try DevelopmentAdvancedDetailEngineV3.applyWindowed(parameters, to: input,
+      sourceSize: size, window: extent, textureCacheIdentity: "probe-full", clarityCacheIdentity: "probe-full",
+      context: context)
+    let scoped = try DevelopmentAdvancedDetailEngineV3.applyWindowed(parameters, to: input,
+      sourceSize: size, window: window, textureCacheIdentity: "probe-full", clarityCacheIdentity: "probe-full",
+      context: context)
+    let wholeValues = try freeze(whole, from: window)
+    let scopedValues = try freeze(scoped, from: window)
+    let diff = compare(wholeValues, scopedValues)
+    print("FACTOR-PROBE full-factor whole-vs-window max=\(diff.max) differing=\(diff.differing)/\(wholeValues.count)")
+    XCTAssertEqual(diff.max, 0, "full-frame factor must make whole and window byte-identical")
+  }
+
   func testWindowFactorAndRestoreAreByteExact() throws {
     try XCTSkipUnless(ProcessInfo.processInfo.environment["RAWMASTER_FACTOR_PROBE"] == "1",
                       "Explicit probe opt-in is required")

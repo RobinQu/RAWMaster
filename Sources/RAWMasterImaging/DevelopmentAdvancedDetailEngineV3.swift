@@ -149,7 +149,7 @@ enum DevelopmentAdvancedDetailEngineV3 {
           region.width > 0, region.height > 0, region.width <= 16384, region.height <= 16384 else {
       throw DevelopmentV3Error.invalidGraph
     }
-    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r32Float,
       width: Int(region.width), height: Int(region.height), mipmapped: false)
     descriptor.storageMode = .shared
     descriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
@@ -202,6 +202,60 @@ enum DevelopmentAdvancedDetailEngineV3 {
     return drawn.transformed(by: .init(translationX: window.minX, y: window.minY))
   }
 
+  private final class TileEntry {
+    let image: CIImage
+    init(image: CIImage) { self.image = image }
+  }
+  private static let tileCache: NSCache<NSString, TileEntry> = {
+    let cache = NSCache<NSString, TileEntry>()
+    cache.countLimit = 64
+    cache.totalCostLimit = 256 * 1024 * 1024
+    return cache
+  }()
+  /// Fixed-origin output tiles. Whole and window both sample the exact same materialized tile
+  /// textures, so the CI extent cannot change the restore result.
+  private static func applyTiledBand(_ band: Band, amount: Double, to image: CIImage,
+                                     sourceSize: DevelopmentPixelSize, window: CGRect,
+                                     cacheIdentity: String, radius: Double, halo: CGFloat,
+                                     context: CIContext, checkCancellation: (() throws -> Void)?) throws -> CIImage {
+    let tileSize: CGFloat = 1024
+    let extent = image.extent
+    let clipped = window.intersection(extent)
+    guard !clipped.isEmpty else { throw DevelopmentV3Error.invalidGraph }
+    var composite: CIImage?
+    let minCol = Int(floor(clipped.minX / tileSize))
+    let maxCol = Int(floor((clipped.maxX - 1) / tileSize))
+    let minRow = Int(floor(clipped.minY / tileSize))
+    let maxRow = Int(floor((clipped.maxY - 1) / tileSize))
+    for row in minRow...maxRow {
+      for col in minCol...maxCol {
+        let tile = CGRect(x: CGFloat(col) * tileSize, y: CGFloat(row) * tileSize,
+                          width: tileSize, height: tileSize).intersection(extent)
+        guard !tile.isEmpty, tile.intersects(clipped) else { continue }
+        let factorRegion = tile.insetBy(dx: -halo, dy: -halo).intersection(extent)
+        let factorKey = cacheIdentity + "|factor|" + String(radius.bitPattern, radix: 16)
+          + "|" + regionKey(factorRegion)
+        let factor = try cachedFactor(image, radius: radius, region: factorRegion, key: factorKey,
+                                      context: context, checkCancellation: checkCancellation)
+        let x = Int(tile.minX), y = Int(tile.minY)
+        let outputKey = cacheIdentity + "|output|" + String(amount.bitPattern, radix: 16)
+          + "|" + String(x) + "," + String(y)
+        let entry: TileEntry
+        if let cached = tileCache.object(forKey: outputKey as NSString) {
+          entry = cached
+        } else {
+          let restored = try applyBandWindow(band, amount: amount, to: image, factor: factor, extent: tile)
+          let materialized = try materializeWindow(restored, window: tile, context: context)
+          entry = TileEntry(image: materialized)
+          tileCache.setObject(entry, forKey: outputKey as NSString,
+                              cost: Int(tile.width * tile.height * 4))
+        }
+        composite = composite.map { entry.image.composited(over: $0) } ?? entry.image
+      }
+    }
+    guard let composite else { throw DevelopmentV3Error.invalidGraph }
+    return composite.composited(over: image)
+  }
   /// Window-local advanced detail. The guide Gaussian, factor and restore all run over
   /// `window + halo`; the result is composited back into the full source so later pointwise
   /// stages and the materializer keep the whole-frame canvas identity. Only callers with no
@@ -223,17 +277,36 @@ enum DevelopmentAdvancedDetailEngineV3 {
       throw DevelopmentV3Error.invalidGraph
     }
     let r = try radii(sourceSize: sourceSize)
+    if texture != clarity {
+      let band: Band = texture ? .texture : .clarity
+      let radius = texture ? r.texture : r.clarity
+      let halo = CGFloat((radius * 24).rounded(.up) + 16)
+      let identity = texture ? textureCacheIdentity : clarityCacheIdentity
+      return try applyTiledBand(band, amount: texture ? parameters.texture.amount : parameters.clarity.amount,
+        to: image, sourceSize: sourceSize, window: window, cacheIdentity: identity,
+        radius: radius, halo: halo, context: context, checkCancellation: checkCancellation)
+    }
     let textureHalo = CGFloat((r.texture * 24).rounded(.up) + 16)
     let clarityHalo = CGFloat((r.clarity * 24).rounded(.up) + 16)
-    let clarityRegion = window.insetBy(dx: -clarityHalo, dy: -clarityHalo).intersection(image.extent)
+    // Strict mode keeps one full-frame factor image for both the whole and window paths. This
+    // is the byte-exact fallback; the regional factor is faster but can differ by 1 ULP.
+    let fullFactor = ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] == "1"
+    let clarityRegion = fullFactor ? image.extent
+      : window.insetBy(dx: -clarityHalo, dy: -clarityHalo).intersection(image.extent)
     var output = image
     if texture {
-      let textureRegion = clarity ? clarityRegion : window.insetBy(dx: -textureHalo, dy: -textureHalo).intersection(image.extent)
+      let textureRegion = fullFactor ? image.extent
+        : (clarity ? clarityRegion : window.insetBy(dx: -textureHalo, dy: -textureHalo).intersection(image.extent))
       let key = textureCacheIdentity + "|texture|" + String(r.texture.bitPattern, radix: 16) + "|" + regionKey(textureRegion)
       let factor = try cachedFactor(image, radius: r.texture, region: textureRegion, key: key,
                                     context: context, checkCancellation: checkCancellation)
-      let textureImage = try applyBandWindow(.texture, amount: parameters.texture.amount,
+      var textureImage = try applyBandWindow(.texture, amount: parameters.texture.amount,
         to: image, factor: factor, extent: clarity ? clarityRegion : window)
+      if fullFactor && clarity {
+        // The clarity factor must not sample a lazy texture-band graph at a different extent;
+        // materialize the full texture output once so whole and window see identical bytes.
+        textureImage = try materializeWindow(textureImage, window: textureImage.extent, context: context)
+      }
       if clarity {
         let clarityKey = clarityCacheIdentity + "|clarity|" + String(r.clarity.bitPattern, radix: 16)
           + "|texture:" + String(parameters.texture.amount.bitPattern, radix: 16)

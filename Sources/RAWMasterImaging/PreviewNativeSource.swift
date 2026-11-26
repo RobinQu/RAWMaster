@@ -839,7 +839,9 @@ final class PreviewNativeSource: @unchecked Sendable {
             sharpenOutput:sharpenOutput,thumbnailNativeSink:thumbnailNativeSink,
             checkCancellation:checkSpatialScan ?? checkDehazeTexture ?? checkCache ?? checkHalf ?? checkSpatialTiles,
             previewHalfFIT:checkedHalf,nativeFiniteCheck:verifiedFiniteRequest,localSourceValidation:bindingCheck,
-            nativeSharpenMean:nativeSharpenMean,nativeNoiseDomain:noiseDomain)
+            nativeSharpenMean:nativeSharpenMean,nativeNoiseDomain:noiseDomain,
+            advancedDetailWindow:detailWindow(maxPixel:maxPixel,window:window),advancedDetailCacheIdentity:sourceKey,
+            advancedDetailDetailRequest:maxPixel == 0)
       }
       try checkPresentation?()
       try noiseDomain?.requireCurrent()
@@ -923,7 +925,10 @@ final class PreviewNativeSource: @unchecked Sendable {
         let graph = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { validation in
           try DevelopmentRenderStack.run {
             try DevelopmentRendererV3.develop(self.capture,recipe:recipe,context:validation,thumbnailNativeSink:thumbnailNativeSink,
-                                             localSourceValidation:bindingCheck)
+                                             localSourceValidation:bindingCheck,
+                                             advancedDetailWindow:detailWindow(maxPixel:maxPixel,window:window),
+                                             advancedDetailCacheIdentity:sourceKey,
+                                             advancedDetailDetailRequest:maxPixel == 0)
           }
         }
         let result = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { display in
@@ -934,7 +939,10 @@ final class PreviewNativeSource: @unchecked Sendable {
       }
       let graph = try DevelopmentRenderStack.run {
         try DevelopmentRendererV3.develop(self.capture,recipe:recipe,context:self.context,thumbnailNativeSink:thumbnailNativeSink,
-                                          localSourceValidation:bindingCheck)
+                                          localSourceValidation:bindingCheck,
+                                          advancedDetailWindow:detailWindow(maxPixel:maxPixel,window:window),
+                                          advancedDetailCacheIdentity:sourceKey,
+                                          advancedDetailDetailRequest:maxPixel == 0)
       }
       let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,
         window:detailWindow(maxPixel:maxPixel,window:window),detailScale:detailScale,grainFinalTransport:grainFinalTransport)

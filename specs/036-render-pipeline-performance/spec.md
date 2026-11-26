@@ -277,7 +277,9 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 整幅 factor/restore 只省约 15%，因为整幅 materialize 还在；**窗口内重算 factor + restore** 才是 5.3–7.1× 首帧、约 12× 改参数。`halo = ceil(12*radius + 8)`：texture 31 px、clarity 313 px。factor 区域约 65/108 MB，而不是 964 MB。
 
-渲染器接线时发现一个边界：3000×2000 TIFF 上“窗口内 factor”与整幅 factor 的 crop 有 **1 LSB / 0.55% 分量** 差异，而整幅重复渲染为 0。9504 ARW 探针恰好为 0，但这是数据相关的 1 ULP。该路径没有默认启用；下一步用**固定 tile factor**（整幅与窗口共享同一组 tile 像素）来同时保留窗口速度和逐字节一致性，全幅 factor 作为严格回退。
+渲染器接线时发现一个边界：3000×2000 TIFF 上“窗口内 factor”与整幅 factor 的 crop 有 **1 LSB / 0.55% 分量** 差异，而整幅重复渲染为 0。9504 ARW 探针恰好为 0，但这是数据相关的 1 ULP。
+
+**严格全幅 factor 模式通过服务级逐字节验收：** 整幅与窗口都用同一张全幅 factor，并在 texture band 后先物化全幅 texture 输出；3000×2000 TIFF 的 whole vs window crop 为 **0**，9504 ARW 引擎级也为 0。3000×2000 首次整幅 114 ms、随后窗口 48 ms。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。该模式仍由 QA 开关控制。**固定输出 tile 已实施并默认用于单 band 1:1：** 每个 1024² 输出 tile 单独物化，整幅和窗口共享 tile 纹理；60 MP ARW 整幅/窗口 **0 差异**，窗口 **101.8 ms**（inline 471 ms，4.6×），整幅 1375 ms（全 tile 重建）。单 band 默认启用；双 band 仍走原 inline 路径，下一步再 tile 化 texture→clarity 串联。
 
 证据：[advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [再调研与下一步规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
 

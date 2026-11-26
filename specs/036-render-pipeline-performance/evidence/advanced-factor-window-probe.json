@@ -94,5 +94,48 @@
     },
     "status": "not enabled; window-local factor differs from full factor by 1 ULP on this fixture",
     "next": "fixed-origin tile factor shared by whole and window; full-frame factor is the strict fallback"
+  },
+  "strict_full_factor": {
+    "service_fixture": "3000x2000 TIFF, texture25+clarity40",
+    "whole_vs_window": {
+      "maxDiff": 0,
+      "differingBytes": 0
+    },
+    "service_ms": {
+      "whole_first": 114.5,
+      "window_after_whole": 47.9
+    },
+    "engine_9504": {
+      "whole_vs_window": {
+        "maxDiff": 0,
+        "differing": 0,
+        "components": 15360000
+      }
+    },
+    "requirements": "full-frame factor for both frames; materialize the texture band before deriving the clarity factor",
+    "status": "QA only; both-band first frame is slower, single-band first frame is near inline and amount changes are restore-only"
+  },
+  "tiled_output": {
+    "tile_size": 1024,
+    "engine_9504": {
+      "whole_ms": 1375.0,
+      "window_ms": 101.8,
+      "whole_vs_window": {
+        "maxDiff": 0,
+        "differing": 0,
+        "components": 15360000
+      },
+      "inline_window_ms": 471.0
+    },
+    "service_3000x2000": {
+      "whole_ms": 79.1,
+      "window_ms": 27.2,
+      "whole_vs_window": {
+        "maxDiff": 0,
+        "differingBytes": 0
+      }
+    },
+    "policy": "single-band 1:1 default; both-band falls back to the inline path",
+    "tradeoff": "whole 1:1 recomputes all tiles (about 2.9x inline at 60 MP); window is 4.6x faster and amount changes reuse factor tiles"
   }
 }

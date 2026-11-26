@@ -139,6 +139,52 @@ final class PreviewSettledTransportTests: XCTestCase {
       quality: .detail, viewport: .init(maxPixel: 0, window: window))
   }
 
+  /// Fixed output-tile path: the whole and window frames both consume the same materialized
+  /// tile textures, so the window is byte-identical to the whole crop.
+  func testAdvancedDetailTiledWindowIsByteExact() async throws {
+    let (root, source) = try fixture()
+    defer { try? FileManager.default.removeItem(at: root) }
+    let service = DevelopmentPreviewService(policy: .init(bitmapCacheBytes: 0,
+      rawBaseCacheBytes: 0, interactiveEvaluation: .proxyV1, settledTransport: .viewport))
+    let consumer = PreviewConsumerID()
+    let lease = try await service.open(source: .raw(source))
+    var adjustments = DevelopmentAdjustmentsV3()
+    adjustments.advancedDetail.texture = .init(enabled: true, amount: 25)
+    let recipe = DevelopmentRecipe(adjustmentsV3: adjustments)
+    func request(_ revision: UInt64, window: CGRect?) -> DevelopmentPreviewRequest {
+      .init(sessionID: lease.id, sourceGeneration: lease.sourceGeneration, consumerID: consumer,
+        role: .primary, revision: revision, recipe: recipe, quality: .detail,
+        viewport: .init(maxPixel: 0, window: window))
+    }
+    let wholeStart = DispatchTime.now().uptimeNanoseconds
+    let whole = try await service.render(request(1, window: nil))
+    let wholeMs = Double(DispatchTime.now().uptimeNanoseconds - wholeStart) / 1_000_000
+    let window = CGRect(x: 0.21, y: 0.17, width: 0.37, height: 0.41)
+    let windowStart = DispatchTime.now().uptimeNanoseconds
+    let scoped = try await service.render(request(2, window: window))
+    let windowMs = Double(DispatchTime.now().uptimeNanoseconds - windowStart) / 1_000_000
+    print("STRICT-FACTOR whole=\(wholeMs)ms window=\(windowMs)ms")
+    let canvas = CGRect(origin: .zero, size: whole.canonicalPixelSize)
+    let expected = try V3PreviewMaterializer.visibleRect(window, of: canvas)
+    guard let wholeImage = whole.image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+      return XCTFail("whole frame has no raster")
+    }
+    let flipped = CGRect(x: expected.minX, y: canvas.height - expected.maxY,
+                         width: expected.width, height: expected.height)
+    guard let crop = wholeImage.cropping(to: flipped) else { return XCTFail("crop failed") }
+    let wholeBytes = try bytes(NSImage(cgImage: crop, size: .zero))
+    let scopedBytes = try bytes(scoped.image)
+    var maxDiff = 0, differing = 0
+    for i in 0..<min(wholeBytes.count, scopedBytes.count) {
+      let d = abs(Int(wholeBytes[i]) - Int(scopedBytes[i]))
+      if d > 0 { differing += 1; maxDiff = max(maxDiff, d) }
+    }
+    print("STRICT-FACTOR diff max", maxDiff, "differing", differing, "of", wholeBytes.count)
+    XCTAssertEqual(wholeBytes, scopedBytes,
+      "The tiled window must be byte-identical to the whole-frame crop")
+    await service.closeAll()
+  }
+
   /// A windowed 1:1 frame must be exactly the corresponding crop of the whole 1:1 frame, and it
   /// must keep reporting the whole canvas so overlays, crop and pickers keep their coordinates.
   func testDetailWindowIsExactlyTheCropOfTheWholeNativeFrame() async throws {

@@ -214,6 +214,20 @@ enum DevelopmentRendererV3 {
       try body(context)
     }
   }
+  // Single-band 1:1 uses the strict full-frame factor path by default: first frame is close
+  // to inline, and every amount change is a pointwise window restore. Set the QA switch to 0
+  // for an A/B against the old inline band.
+  static let advancedDetailFactorWindowEnabled =
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WINDOW"] != "0"
+  static let advancedDetailFactorWholeEnabled =
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WHOLE"] != "0"
+  static let advancedDetailFactorFullEnabled =
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] != "0"
+  static let advancedDetailFactorBothEnabled =
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_BOTH"] == "1"
+  static let advancedDetailFactorWindowStrict =
+    ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WINDOW_STRICT"] == "1"
+
   static func develop(_ capture: URL, recipe: DevelopmentRecipe, applyGeometry: Bool = true,
                       suppliedRawBase: CIImage? = nil, suppliedImageBase: DevelopmentSuppliedImageBaseV1? = nil, context suppliedContext: CIContext? = nil,
                       residentGlobalSource: FlashRawCanonicalTexturePool.Pin? = nil, localMaskValidation: DevelopmentMaskEngineV3.CanonicalValidation? = nil, residentDehazeGuide: DevelopmentResidentDehazeGuide? = nil,
@@ -223,7 +237,10 @@ enum DevelopmentRendererV3 {
                       nativeFiniteCheck: FlashRawNativeFiniteCheck.Request? = nil,
                       localSourceValidation: PreviewNativeSource.LocalSourceValidation? = nil,
                       nativeSharpenMean suppliedSharpenMean: PreviewNativeSharpenMean? = nil,
-                      nativeNoiseDomain: PreviewNativeNoiseDomain? = nil) throws -> DevelopedV3Graph {
+                      nativeNoiseDomain: PreviewNativeNoiseDomain? = nil,
+                      advancedDetailWindow: CGRect? = nil,
+                      advancedDetailCacheIdentity: String? = nil,
+                      advancedDetailDetailRequest: Bool = false) throws -> DevelopedV3Graph {
     let performanceToken = ImagePerformanceTelemetry.shared.begin(operation: "DevelopmentRendererV3.develop",
       stage: applyGeometry ? "完整显影图" : "分析图", queue: "显影引擎", boundary: .graphAndValidation)
     var performanceOutcome = ImagePerformanceOutcome.failed
@@ -486,11 +503,56 @@ enum DevelopmentRendererV3 {
         sourceSize.width<=Double(DevelopmentLocalEditLimits.maximumSourceDimension),
         sourceSize.height<=Double(DevelopmentLocalEditLimits.maximumSourceDimension) else { throw DevelopmentV3Error.invalidGraph }
       var bands=p.advancedDetail;bands.dehaze = .init() // T/C engine owns only its unchanged bands.
-      image = try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,
-        sourceSize:.init(width:Int(sourceSize.width),height:Int(sourceSize.height)),context:context,checkCancellation:checkCancellation,
-        checkedInput: checkedImage)
-      if bands.texture.enabled && bands.texture.amount != 0 || bands.clarity.enabled && bands.clarity.amount != 0 {
-        checkedImage = image
+      let sourcePixels = DevelopmentPixelSize(width:Int(sourceSize.width),height:Int(sourceSize.height))
+      let activeBands = (bands.texture.enabled && bands.texture.amount != 0)
+        || (bands.clarity.enabled && bands.clarity.amount != 0)
+      let singleBand = (bands.texture.enabled && bands.texture.amount != 0)
+        != (bands.clarity.enabled && bands.clarity.amount != 0)
+      let windowEligible = Self.advancedDetailFactorWindowEnabled
+        && Self.advancedDetailFactorFullEnabled
+        && (singleBand || Self.advancedDetailFactorBothEnabled) && activeBands
+        && !(p.advancedDetail.dehaze.enabled && p.advancedDetail.dehaze.amount != 0)
+        && p.localEdits == DevelopmentLocalEditsV3()
+        && !DevelopmentMaskEngineV3.active(p.masks)
+        && !(p.effects?.lensBlur?.isActive == true)
+        && p.effects?.postCropVignette == nil
+        && (p.effects?.grain ?? 0) == 0
+        && previewHalfFIT == nil
+        && thumbnailNativeSink == nil
+        && brillianceQARequest == nil
+        && dehazeTIFFInvocation == nil
+      let normalizedWindow = advancedDetailWindow
+        ?? (advancedDetailDetailRequest && Self.advancedDetailFactorWholeEnabled
+            ? CGRect(x: 0, y: 0, width: 1, height: 1) : nil)
+      if windowEligible, let normalized = normalizedWindow, let identity = advancedDetailCacheIdentity,
+         let rect = try? V3PreviewMaterializer.visibleRect(normalized, of: image.extent) {
+        var textureUpstream = p
+        textureUpstream.advancedDetail = .init()
+        var clarityUpstream = p
+        clarityUpstream.advancedDetail.clarity = .init()
+        clarityUpstream.advancedDetail.dehaze = .init()
+        let textureKey = (try? EditingFingerprint.of(textureUpstream)).map { identity + "/" + $0 } ?? identity
+        let clarityKey = (try? EditingFingerprint.of(clarityUpstream)).map { identity + "/" + $0 } ?? identity
+        do {
+          if ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_WINDOW_TRACE"] == "1" {
+            print("FACTOR-WINDOW rect=\(rect) extent=\(image.extent) source=\(sourcePixels)")
+          }
+          image = try DevelopmentAdvancedDetailEngineV3.applyWindowed(bands, to: image,
+            sourceSize: sourcePixels, window: rect, textureCacheIdentity: textureKey,
+            clarityCacheIdentity: clarityKey, context: context, checkCancellation: checkCancellation)
+          checkedImage = image
+        } catch {
+          if Self.advancedDetailFactorWindowStrict { throw error }
+          image = try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,
+            sourceSize: sourcePixels,context:context,checkCancellation:checkCancellation,
+            checkedInput: checkedImage)
+          checkedImage = image
+        }
+      } else {
+        image = try DevelopmentAdvancedDetailEngineV3.apply(bands,to:image,
+          sourceSize: sourcePixels,context:context,checkCancellation:checkCancellation,
+          checkedInput: checkedImage)
+        if activeBands { checkedImage = image }
       }
     }
     if p.advancedDetail.dehaze.enabled && p.advancedDetail.dehaze.amount != 0 {

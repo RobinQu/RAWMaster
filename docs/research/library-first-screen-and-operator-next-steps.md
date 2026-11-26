@@ -177,7 +177,11 @@ v7 的 2.4 s 是更老 schema 的一次性迁移；v8 升级约 0.7–1.0 s，�
 - 加 halo、窗口内 materialize 都没有消除；差异来自“窗口内重算 factor”与“整幅 factor”在浮点求和/裁剪边界上的 1 ULP，而不是 restore 的像素公式；
 - 9504×6336 ARW 探针恰好为 0，但这是数据相关的结果，不能当成普遍保证。
 
-因此**没有把这条路径默认打开**，也没有保留临时服务接线。要同时拿到窗口速度和逐字节一致性，下一步应做**固定 tile factor**：
+**严格全幅 factor 模式已通过服务级验收。** 使用 `RAWMASTER_QA_ADVANCED_FACTOR_FULL=1`（整幅和窗口都消费同一张全幅 factor），并在 texture band 后先物化全幅 texture 输出，3000×2000 TIFF 的 whole vs window crop 为 **0 差异**；9504 ARW 引擎级也为 0。首次整幅约 114 ms、随后窗口约 48 ms（factor 缓存后，3000×2000）。代价是双 band 首帧约 2×；单 band 首帧与 inline 接近，改参数只 restore。
+
+**固定输出 tile 已实施并默认用于单 band 1:1。** 每个 1024×1024 输出 tile 的 restore 结果单独物化为 RGBA32F 纹理，整幅和窗口都从同一组 tile 取样。60 MP ARW 实测：整幅/窗口 **0 差异**；窗口 **101.8 ms**（inline 471 ms，4.6×），整幅 1375 ms（全 tile 重建，较慢）。3000×2000 服务级：整幅 79 ms、窗口 27 ms，0 差异。单 band（texture 或 clarity）默认走这条路径；双 band 仍走原 inline 路径，后续可扩展到 tile 化 texture→clarity 串联。
+
+下一步仍可继续做**双 band 固定 tile**：
 
 1. 把 factor 按固定原点/尺寸的 tile（例如 1024/2048 + halo）计算并缓存；
 2. 整幅帧和窗口帧都从同一组 tile 取样，窗口只计算覆盖它的 tile；
