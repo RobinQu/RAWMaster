@@ -87,12 +87,13 @@ Rust 的 `std::fs::File::sync_all` 在 Apple 目标上就是 `fcntl(F_FULLFSYNC)
 
 结论要改写为：**导出批量不是 CPU 密集，也不是解码/重采样/编码密集；它是被每张 12 次 `F_FULLFSYNC` 串行化的。** 改变 SQLite 提交模式、连接池、准入额度都不会动到它。
 
-下一步是减少每张的同步次数，而不是继续换旋钮。安全的下限是：
+下一步是减少每张的同步次数，而不是继续换旋钮。已实施的安全合并：
 
-- 暂存文件写完后同步一次（`hash-file` 只保留一次）；
-- 暂存目录项建立后同步一次；
-- rename 到目标目录后同步目标目录一次；
-- `acknowledge` 的清理同步移到批次级，或直接省去（清理失败可由恢复扫描兜底）；
-- 最终校验重复哈希时不再 `sync_all`（字节未变，第一次同步已经覆盖）。
+- `Verified::hash` 增加 `durable` 参数：只有 prepare 阶段那次哈希同步 `hash-file`；
+- prepare 的 `Stage::read` 同步 `stage-dir` 和 `stage-root`；publish 阶段 `Stage::from_ticket` 重新读取同一不可变暂存文件时传 `durable=false`，不再重复同步；
+- `verify_final` 仍重新计算 SHA-256 检查篡改，但不再 `sync_all`（这些字节在 prepare 已同步，publish 只做 rename/link）；
+- `acknowledge` 的清理只做 unlink/rmdir，不再逐张同步目录；清理是幂等的，崩溃后由恢复扫描兜底。
 
-目标是把 12 次降到 3–4 次，预计每张省 25–35 ms。任何合并都必须保留现有崩溃一致性证明：文件身份、SHA、PREPARED 回执与 rename 的顺序不能变；只去掉“同一不可变文件/同一目录项的重复同步”。改完用同一套 200 张 A/B 复测，并跑 `ExportPerformanceTests` 与恢复测试。
+每张从 **12 次降到 5 次**：`hash-file`、`stage-dir`、`stage-root`、`publish-root`、`publish-folder` 各 1 次。`RAWMASTER_SYNC_TIMING=1` 复测：200 张（预热+计时两轮共 442 张）每张正好 5 次，同步合计 **21.65 ms/张**；200 张批次墙钟从 **6.78 s 降到 5.58 s**（三次 5.11 / 5.57 / 5.58 s），约省 18%。
+
+崩溃一致性边界没有改变：prepare 的文件内容、暂存目录项、根目录项仍各同步一次；publish 的 rename/link 仍同步目标根目录和暂存目录；acknowledge 只验证已发布字节并清理，不再重复制造持久化点。`cargo test` 的 33 项 workbench 恢复/交付测试与 200 张 `ExportPerformanceTests` 通过。

@@ -28,7 +28,9 @@ CREATE INDEX docs_rating ON documents(gen,rating);
 CREATE INDEX docs_session ON documents(gen,session_id);
 CREATE TABLE doc_tags (
     doc INTEGER NOT NULL REFERENCES documents(doc) ON DELETE CASCADE,
-    key TEXT NOT NULL, display TEXT NOT NULL, PRIMARY KEY(doc,key)
+    key TEXT NOT NULL, display TEXT NOT NULL,
+    gen INTEGER, file_id TEXT, capture_id TEXT,
+    PRIMARY KEY(doc,key)
 ) WITHOUT ROWID;
 CREATE INDEX tags_lookup ON doc_tags(key,doc);
 CREATE TABLE doc_groups (

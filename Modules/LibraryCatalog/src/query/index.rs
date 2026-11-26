@@ -133,6 +133,184 @@ fn ensure_cjk(db: &Connection) -> Result<()> {
     Ok(())
 }
 
+fn facets_ready(db: &Connection) -> Result<bool> {
+    let table: bool = db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_features')",
+        [],
+        |r| r.get(0),
+    )?;
+    if !table {
+        return Ok(false);
+    }
+    Ok(db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM search_features WHERE key='facets_v1' AND value='1')",
+        [],
+        |r| r.get(0),
+    )?)
+}
+
+/// Add the library-scope facet summary. `doc_tags` carries its parent's identity so the tag
+/// triggers still work when the parent document is removed by the foreign-key cascade.
+fn ensure_facets(db: &Connection) -> Result<()> {
+    if facets_ready(db)? {
+        return Ok(());
+    }
+    let tx = Transaction::new_unchecked(db, TransactionBehavior::Immediate)?;
+    if facets_ready(&tx)? {
+        tx.commit()?;
+        return Ok(());
+    }
+    let mut columns = Vec::new();
+    {
+        let mut stmt = tx.prepare("PRAGMA table_info(doc_tags)")?;
+        let mut rows = stmt.query([])?;
+        while let Some(row) = rows.next()? {
+            columns.push(row.get::<_, String>(1)?);
+        }
+    }
+    for (name, kind) in [
+        ("gen", "INTEGER"),
+        ("file_id", "TEXT"),
+        ("capture_id", "TEXT"),
+    ] {
+        if !columns.iter().any(|column| column == name) {
+            tx.execute_batch(&format!("ALTER TABLE doc_tags ADD COLUMN {name} {kind}"))?;
+        }
+    }
+    tx.execute_batch(
+        "CREATE TABLE IF NOT EXISTS search_features(
+             key TEXT PRIMARY KEY, value TEXT NOT NULL
+         ) WITHOUT ROWID;
+         CREATE TABLE IF NOT EXISTS facet_ref(
+             gen INTEGER NOT NULL, facet TEXT NOT NULL, value TEXT NOT NULL,
+             kind TEXT NOT NULL, id TEXT NOT NULL, n INTEGER NOT NULL, display TEXT,
+             PRIMARY KEY(gen,facet,value,kind,id)
+         ) WITHOUT ROWID;
+         CREATE TABLE IF NOT EXISTS facet_count(
+             gen INTEGER NOT NULL, facet TEXT NOT NULL, value TEXT NOT NULL,
+             display TEXT, files INTEGER NOT NULL, captures INTEGER NOT NULL,
+             PRIMARY KEY(gen,facet,value)
+         ) WITHOUT ROWID;",
+    )?;
+    tx.execute(
+        "UPDATE doc_tags SET
+             gen=coalesce(gen,(SELECT gen FROM documents WHERE doc=doc_tags.doc)),
+             file_id=coalesce(file_id,(SELECT file_id FROM documents WHERE doc=doc_tags.doc)),
+             capture_id=coalesce(capture_id,(SELECT capture_id FROM documents WHERE doc=doc_tags.doc))
+         WHERE gen IS NULL OR file_id IS NULL OR capture_id IS NULL",
+        [],
+    )?;
+    // Drop the count triggers before the set-based backfill. A cache that lost only the
+    // feature marker can still have live triggers; leaving them on would count every backfilled
+    // reference and then insert the grouped counts a second time.
+    tx.execute_batch(
+        "DROP TRIGGER IF EXISTS facet_ref_add;
+         DROP TRIGGER IF EXISTS facet_ref_remove;
+         DROP TRIGGER IF EXISTS facet_document_add;
+         DROP TRIGGER IF EXISTS facet_document_remove;
+         DROP TRIGGER IF EXISTS facet_tag_add;
+         DROP TRIGGER IF EXISTS facet_tag_remove;
+         DELETE FROM facet_ref;
+         DELETE FROM facet_count;",
+    )?;
+    for sql in [
+        "INSERT INTO facet_ref(gen,facet,value,kind,id,n,display)
+         SELECT gen,'rating',CAST(rating AS TEXT),'file',file_id,count(*),CAST(rating AS TEXT)
+         FROM documents GROUP BY gen,rating,file_id",
+        "INSERT INTO facet_ref(gen,facet,value,kind,id,n,display)
+         SELECT gen,'rating',CAST(rating AS TEXT),'capture',capture_id,count(*),CAST(rating AS TEXT)
+         FROM documents GROUP BY gen,rating,capture_id",
+        "INSERT INTO facet_ref(gen,facet,value,kind,id,n,display)
+         SELECT gen,'camera',coalesce(camera_key,''),'file',file_id,count(*),min(camera)
+         FROM documents GROUP BY gen,camera_key,file_id",
+        "INSERT INTO facet_ref(gen,facet,value,kind,id,n,display)
+         SELECT gen,'camera',coalesce(camera_key,''),'capture',capture_id,count(*),min(camera)
+         FROM documents GROUP BY gen,camera_key,capture_id",
+        "INSERT INTO facet_ref(gen,facet,value,kind,id,n,display)
+         SELECT gen,'tag',key,'file',file_id,count(*),min(display)
+         FROM doc_tags WHERE gen IS NOT NULL AND file_id IS NOT NULL AND capture_id IS NOT NULL
+         GROUP BY gen,key,file_id",
+        "INSERT INTO facet_ref(gen,facet,value,kind,id,n,display)
+         SELECT gen,'tag',key,'capture',capture_id,count(*),min(display)
+         FROM doc_tags WHERE gen IS NOT NULL AND file_id IS NOT NULL AND capture_id IS NOT NULL
+         GROUP BY gen,key,capture_id",
+        "INSERT INTO facet_count(gen,facet,value,display,files,captures)
+         SELECT gen,facet,value,min(display),sum(kind='file'),sum(kind='capture')
+         FROM facet_ref GROUP BY gen,facet,value",
+    ] {
+        tx.execute(sql, [])?;
+    }
+    tx.execute_batch(
+        "CREATE TRIGGER IF NOT EXISTS facet_ref_add AFTER INSERT ON facet_ref BEGIN
+             INSERT INTO facet_count VALUES(new.gen,new.facet,new.value,new.display,
+                 new.kind='file',new.kind='capture')
+             ON CONFLICT(gen,facet,value) DO UPDATE SET
+                 files=files+excluded.files, captures=captures+excluded.captures,
+                 display=min(coalesce(display,excluded.display),
+                             coalesce(excluded.display,display));
+         END;
+         CREATE TRIGGER IF NOT EXISTS facet_ref_remove AFTER DELETE ON facet_ref BEGIN
+             UPDATE facet_count SET
+                 files=files-(old.kind='file'), captures=captures-(old.kind='capture')
+             WHERE gen=old.gen AND facet=old.facet AND value=old.value;
+             DELETE FROM facet_count
+             WHERE gen=old.gen AND facet=old.facet AND value=old.value
+               AND files=0 AND captures=0;
+         END;
+         CREATE TRIGGER IF NOT EXISTS facet_document_add AFTER INSERT ON documents BEGIN
+             INSERT INTO facet_ref VALUES(new.gen,'rating',CAST(new.rating AS TEXT),
+                 'file',new.file_id,1,CAST(new.rating AS TEXT))
+             ON CONFLICT DO UPDATE SET n=n+1;
+             INSERT INTO facet_ref VALUES(new.gen,'rating',CAST(new.rating AS TEXT),
+                 'capture',new.capture_id,1,CAST(new.rating AS TEXT))
+             ON CONFLICT DO UPDATE SET n=n+1;
+             INSERT INTO facet_ref VALUES(new.gen,'camera',coalesce(new.camera_key,''),
+                 'file',new.file_id,1,new.camera)
+             ON CONFLICT DO UPDATE SET n=n+1;
+             INSERT INTO facet_ref VALUES(new.gen,'camera',coalesce(new.camera_key,''),
+                 'capture',new.capture_id,1,new.camera)
+             ON CONFLICT DO UPDATE SET n=n+1;
+         END;
+         CREATE TRIGGER IF NOT EXISTS facet_document_remove AFTER DELETE ON documents BEGIN
+             UPDATE facet_ref SET n=n-1 WHERE gen=old.gen
+               AND ((facet='rating' AND value=CAST(old.rating AS TEXT))
+                 OR (facet='camera' AND value=coalesce(old.camera_key,'')))
+               AND ((kind='file' AND id=old.file_id)
+                 OR (kind='capture' AND id=old.capture_id));
+             DELETE FROM facet_ref WHERE gen=old.gen AND n=0
+               AND ((facet='rating' AND value=CAST(old.rating AS TEXT))
+                 OR (facet='camera' AND value=coalesce(old.camera_key,'')))
+               AND ((kind='file' AND id=old.file_id)
+                 OR (kind='capture' AND id=old.capture_id));
+         END;
+         CREATE TRIGGER IF NOT EXISTS facet_tag_add AFTER INSERT ON doc_tags
+         WHEN new.gen IS NOT NULL AND new.file_id IS NOT NULL AND new.capture_id IS NOT NULL
+         BEGIN
+             INSERT INTO facet_ref VALUES(new.gen,'tag',new.key,'file',new.file_id,1,new.display)
+             ON CONFLICT DO UPDATE SET n=n+1;
+             INSERT INTO facet_ref VALUES(new.gen,'tag',new.key,'capture',new.capture_id,1,new.display)
+             ON CONFLICT DO UPDATE SET n=n+1;
+         END;
+         CREATE TRIGGER IF NOT EXISTS facet_tag_remove AFTER DELETE ON doc_tags
+         WHEN old.gen IS NOT NULL AND old.file_id IS NOT NULL AND old.capture_id IS NOT NULL
+         BEGIN
+             UPDATE facet_ref SET n=n-1 WHERE gen=old.gen AND facet='tag' AND value=old.key
+               AND ((kind='file' AND id=old.file_id)
+                 OR (kind='capture' AND id=old.capture_id));
+             DELETE FROM facet_ref WHERE gen=old.gen AND n=0
+               AND facet='tag' AND value=old.key
+               AND ((kind='file' AND id=old.file_id)
+                 OR (kind='capture' AND id=old.capture_id));
+         END;",
+    )?;
+    tx.execute(
+        "INSERT OR REPLACE INTO search_features VALUES('facets_v1','1')",
+        [],
+    )?;
+    tx.commit()?;
+    Ok(())
+}
+
 pub(super) fn initialize(db: &Connection) -> Result<()> {
     let application = id(db)?;
     if application != APPLICATION && application != 0 {
@@ -211,6 +389,7 @@ pub(super) fn initialize(db: &Connection) -> Result<()> {
     }
     ensure_cjk(db)?;
     ensure_facet_cache(db)?;
+    ensure_facets(db)?;
     let journal: String = db.query_row("PRAGMA journal_mode", [], |r| r.get(0))?;
     if !journal.eq_ignore_ascii_case("wal") {
         let result: String = db.query_row("PRAGMA journal_mode=WAL", [], |r| r.get(0))?;
@@ -574,8 +753,10 @@ fn project(source: &Connection, index: &Connection, gen: i64, assets: &[String])
         session_ord,asset_ord,filename,name_key,relative_path,path_tie,camera,camera_key,captured,missing_time,time_asc,time_desc,
         rating,rating_desc,decision,availability,color_label,reviewed,format,sequence_only,body,record,role)
         VALUES(?1,?2,?3,?4,?5,?6,?7,?8,?9,?10,?11,?12,?13,?14,?15,?16,?17,?18,?19,?20,?21,?22,?23,?24,?25,?26,?27,?28,?29)")?;
-    let mut insert_tag =
-        index.prepare_cached("INSERT OR IGNORE INTO doc_tags(doc,key,display) VALUES(?,?,?)")?;
+    let mut insert_tag = index.prepare_cached(
+        "INSERT OR IGNORE INTO doc_tags(doc,key,display,gen,file_id,capture_id)
+         VALUES(?,?,?,?,?,?)",
+    )?;
     let mut insert_member =
         index.prepare_cached("INSERT INTO doc_groups(doc,group_id,position) VALUES(?,?,?)")?;
     let with_inspection: bool = source.query_row(
@@ -701,11 +882,12 @@ fn project(source: &Connection, index: &Connection, gen: i64, assets: &[String])
             .to_ascii_lowercase();
         let captured = asset.captured_at;
         let t = captured.unwrap_or(0.);
+        let capture: String = row.get(2)?;
         insert.execute(params![
             gen,
             aid,
             file,
-            row.get::<_, String>(2)?,
+            capture,
             project,
             row.get::<_, String>(4)?,
             row.get::<_, Option<i64>>(6)?.unwrap_or(i64::MAX),
@@ -734,7 +916,7 @@ fn project(source: &Connection, index: &Connection, gen: i64, assets: &[String])
         ])?;
         let doc = index.last_insert_rowid();
         for tag in &tags {
-            insert_tag.execute(params![doc, text::tag_key(tag), tag])?;
+            insert_tag.execute(params![doc, text::tag_key(tag), tag, gen, file, capture])?;
         }
         for member in joined {
             insert_member.execute(params![doc, member.group_id, member.position])?;

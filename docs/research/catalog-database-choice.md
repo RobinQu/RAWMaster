@@ -133,12 +133,12 @@ DuckDB 的增量插入成本约 **139 µs/行**，在 2 万、20 万、100 万�
 
 ### 如果 facets 上首屏（P1）
 
-优先在 SQLite 里做**按 generation + watermark 的汇总/缓存**，而不是换引擎：
+在 SQLite 里做**增量汇总 + 按 watermark 缓存**，而不是换引擎：
 
-- 评分/相机 facet 可以用 `documents` 上的触发器维护 `(gen, scope, rating/camera_key, files, captures)`，每条文档 4 次 upsert（library + project 两个 scope × file/capture）；
-- 标签 facet 需要 `doc_tags` 与 `documents` 的 file/capture 去重，触发器成本更高；先做“按 watermark 的持久缓存”，同一代内重复请求 O(1)，首次请求仍按现有 GROUP BY 计算；
-- 如果之后证明标签 facet 的首屏成本不可接受，再用 `facet_refs`/`facet_counts`（模式与 `object_refs`/`scope_counts` 相同）做增量维护；
-- 全库 facets 从 0.9–1.0 s 降到缓存命中后的 O(1)，代价是写入/首次计算的成本，需要单独测量。
+- library 范围的 rating/camera/tag 用 `facet_ref`/`facet_count` 触发器增量维护；`doc_tags` 带父文档的 `gen/file_id/capture_id`，级联删除也能正确递减；
+- project 范围和带筛选的查询继续用原 GROUP BY，并用 `facet_cache` 按 generation/watermark/查询指纹缓存；
+- 全库 facets 从 0.9–1.0 s 降到 **0.003–0.013 ms**（20 万数据集），代价是投影构建变慢和缓存文件变大；实测数据见文末“实施记录”。
+- 如果以后要覆盖任意谓词组合，再考虑只读 DuckDB sidecar；不要为了 facets 换掉权威库。
 
 只有当 facets 的筛选组合是**任意谓词**、无法用预聚合覆盖时，才考虑 DuckDB sidecar。
 
@@ -204,13 +204,25 @@ output/research/db-bench/.venv/bin/python docs/research/catalog-database-bench.p
 - 真实搜索缓存的分页索引不需要新增：`query/index.rs::initialize` 已有 `library_original`/`project_original`/`library_descending`/`project_descending`/`library_filename`/`project_filename`/`library_stars`/`project_stars` 等 keyset 索引。用真实索引复测 20 万文档：默认“拍摄顺序”首页 **0.0735 ms**，拍摄时间倒序 **0.0757 ms**，计划分别走 `project_original`、`project_descending`。因此没有加重复的 `docs_time`/`docs_project_time`。
 - `name_key` B-tree 没有加：真实 `filename` 过滤是 `instr` 子串（<3 字符）或 trigram FTS（≥3 字符），B-tree 前缀索引帮不上；短查询由下面的 CJK unigram 表解决。
 
-### P1：按 watermark 的 facets 缓存
+### P1：增量 facets 汇总表 + watermark 缓存
 
-- 新增 `facet_cache(gen, watermark, fingerprint, names, payload)`。
-- `read::run` 在同一个读快照里查缓存；未命中时计算 facets，`query::page` 在快照结束后写入。键包含 generation、watermark、查询指纹和排序后的 facet 名，所以翻页、重复筛选、同一 watermark 下的再次请求都是 O(1)。
-- 写入时清理旧 generation 和更旧 watermark 的行。
-- 测试 `repeated_facet_pages_reuse_the_watermark_cache` 通过改写缓存 payload 证明第二次请求确实命中缓存。
-- **没有立刻上增量触发器汇总表**：原型在 20 万文档上只维护 library 的 rating/camera（每文档 8 次 upsert）就把 5000 行插入从 **191 ms 拖到 262.5 ms（+37%）**；标签还要再乘，且当前 `CatalogGridRequest` 根本没有请求 facets。等 facets 真的上首屏、且首次请求成本不可接受时，再用 `facet_refs`/`facet_counts`（模式与 `object_refs`/`scope_counts` 相同）做增量维护。
+- library 范围新增 `facet_ref(gen,facet,value,kind,id,n,display)` 和
+  `facet_count(gen,facet,value,display,files,captures)`，用与 `object_refs`/`scope_counts` 相同的
+  “ref 计数 + 首次/最后触发”模式维护 file/capture 去重：
+  - `documents` 插入/删除触发器维护 rating 和 camera；
+  - `doc_tags` 插入/删除触发器维护 tag；
+  - `doc_tags` 增加 `gen`/`file_id`/`capture_id`，这样外键级联删除文档时 tag 触发器仍能拿到父身份；
+  - 旧缓存原地加列、回填、建表建触发器（`search_features.facets_v1` 标记）。
+- `summary_facet` 在 `tally_scope == "L"` 时直接读 `facet_count`；project 范围和带筛选的查询继续走原 SQL。
+- 仍保留 `facet_cache(gen,watermark,fingerprint,names,payload)`：project/筛选 facets 的重复请求是 O(1)，
+  写入时清理旧 generation/watermark。
+- 20 万文档实测：
+  - 回填 **1.84 s**，1.52M refs、64 个 count 行；缓存文件 355.0 → **441.5 MB（+86.5 MB / +24%）**；
+  - 全库 facets：rating **80.6 → 0.004 ms**，camera **94.6 → 0.003 ms**，tag **225.1 → 0.013 ms**；
+  - 5000 文档 + 1.5 万标签导入：**210 → 584 ms（+178%）**；其中 rating/camera 约占 +37%，
+    其余主要是 tag 的 2 次 ref upsert/标签。
+- 取舍：这是一次性投影构建成本，换来 facets 首次请求也是 O(1)。如果以后更在意导入时间，
+  先去掉 tag 汇总（保留 rating/camera），tag 退回 watermark 缓存。
 
 ### 东亚 FTS
 

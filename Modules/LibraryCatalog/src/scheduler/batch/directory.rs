@@ -293,13 +293,15 @@ pub(super) struct Verified {
     stamp: Stamp,
 }
 impl Verified {
-    fn hash(file: File) -> Result<(Self, String, i64)> {
+    fn hash(file: File, durable: bool) -> Result<(Self, String, i64)> {
         let stamp = Stamp::read(&file)?;
         let (sha, n) = resources::transfer(&file, std::io::sink())?;
         if n <= 0 || stamp.size != n as u64 || Stamp::read(&file)? != stamp {
             return Err("workbench bytes changed while hashing".into());
         }
-        super::durable_sync(&file, "hash-file")?;
+        if durable {
+            super::durable_sync(&file, "hash-file")?;
+        }
         Ok((Self { file, stamp }, sha, n))
     }
     fn at(&self, dir: &File, name: &str) -> Result<()> {
@@ -350,6 +352,7 @@ impl Stage {
         filename: String,
         extension: &str,
         initial: bool,
+        durable: bool,
     ) -> Result<Self> {
         let (folder, file) = relative
             .split_once('/')
@@ -385,12 +388,14 @@ impl Stage {
                 return Err("workbench stage has no original identity witness".into());
             }
         }
-        let (verified, sha256, byte_count) = Verified::hash(input)?;
+        let (verified, sha256, byte_count) = Verified::hash(input, durable)?;
         if verified.stamp.identity != original.identity {
             return Err("workbench stage identity changed before verification".into());
         }
-        super::durable_sync(&dir, "stage-dir")?;
-        super::durable_sync(&root.file, "stage-root")?;
+        if durable {
+            super::durable_sync(&dir, "stage-dir")?;
+            super::durable_sync(&root.file, "stage-root")?;
+        }
         let ticket = Ticket {
             folder: folder.into(),
             file: file.into(),
@@ -430,6 +435,7 @@ impl Stage {
             &format!("{}/{}", ticket.folder, ticket.file),
             ticket.filename.clone(),
             extension,
+            false,
             false,
         ) {
             Ok(stage) => stage,
@@ -577,11 +583,10 @@ impl Ticket {
         {
             return Ok(Final::Conflict);
         }
-        let (file, sha, n) = Verified::hash(file)?;
+        let (file, sha, n) = Verified::hash(file, false)?;
         if sha != self.sha256 || n != self.byte_count {
             return Ok(Final::Conflict);
         }
-        super::durable_sync(&root.file, "verify-final-root")?;
         Ok(Final::Verified(file))
     }
     pub fn check_final(&self, root: &Root, file: &Verified) -> Result<()> {
@@ -607,7 +612,6 @@ impl Ticket {
                 if unsafe { libc::unlinkat(dir.as_raw_fd(), name.as_ptr(), 0) } != 0 {
                     return Err(io::Error::last_os_error().into());
                 }
-                super::durable_sync(&dir, "cleanup-dir")?;
             }
             Ok(_) => return Ok(()),
             Err(e) if e.kind() == io::ErrorKind::NotFound => (),
@@ -615,11 +619,7 @@ impl Ticket {
         }
         if self.current_folder(root)?.is_some() {
             let name = component(OsStr::new(&self.folder))?;
-            if unsafe { libc::unlinkat(root.file.as_raw_fd(), name.as_ptr(), libc::AT_REMOVEDIR) }
-                == 0
-            {
-                super::durable_sync(&root.file, "cleanup-root")?;
-            }
+            unsafe { libc::unlinkat(root.file.as_raw_fd(), name.as_ptr(), libc::AT_REMOVEDIR) };
         }
         Ok(())
     }

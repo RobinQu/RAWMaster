@@ -598,3 +598,52 @@ fn cjk_index_is_backfilled_when_an_existing_cache_is_opened() {
         .unwrap();
     assert!(has_cjk);
 }
+
+#[test]
+fn library_facets_use_the_incremental_summary() {
+    let library = Library::basic();
+    let request = json!({
+        "facets":["rating","camera","tag"],
+        "includeOrderedIDs":true
+    });
+    let first = library.page(request.clone());
+    assert_eq!(
+        first["facets"]["rating"],
+        json!([
+            {"value":2,"files":1,"captures":1,"count":1},
+            {"value":5,"files":2,"captures":2,"count":2}
+        ])
+    );
+    assert_eq!(first["facets"]["camera"][0]["value"], "Ｃafé");
+    assert_eq!(first["facets"]["camera"][0]["files"], 3);
+    assert_eq!(first["facets"]["camera"][0]["captures"], 2);
+    assert_eq!(
+        first["facets"]["tag"],
+        json!([
+            {"value":"山","files":1,"captures":1,"count":1},
+            {"value":"旅行","files":2,"captures":1,"count":2}
+        ])
+    );
+
+    // Removing the RAW member must decrement the file and capture summaries through the
+    // document and tag triggers, not just the page query.
+    library
+        .db
+        .execute("DELETE FROM lc_scopes WHERE asset_id='b'", [])
+        .unwrap();
+    library.change(Some("b"));
+    let second = library.page(request);
+    assert_eq!(
+        second["facets"]["rating"],
+        json!([
+            {"value":2,"files":1,"captures":1,"count":1},
+            {"value":5,"files":1,"captures":1,"count":1}
+        ])
+    );
+    assert_eq!(second["facets"]["camera"][0]["files"], 2);
+    assert_eq!(second["facets"]["camera"][0]["captures"], 2);
+    assert_eq!(
+        second["facets"]["tag"],
+        json!([{"value":"旅行","files":1,"captures":1,"count":1}])
+    );
+}

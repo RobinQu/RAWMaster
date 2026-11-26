@@ -120,9 +120,56 @@ fn counts(db: &Connection, state: &State, m: &Matched, fingerprint: &str) -> Res
     }
     Ok(value)
 }
-fn facets(db: &Connection, m: &Matched, r: &Request) -> Result<Value> {
+/// Library-scope facets are maintained incrementally by the facet_ref triggers. The stored
+/// `display` is what the existing SQL returns as `value` (for camera and tag it is the display
+/// string, not the key).
+fn summary_facet(db: &Connection, gen: i64, name: &str, level: &str) -> Result<Option<Value>> {
+    let facet = match name {
+        "rating" => "rating",
+        "camera" => "camera",
+        "tag" => "tag",
+        _ => return Ok(None),
+    };
+    let order = if facet == "rating" {
+        "CAST(value AS INTEGER)"
+    } else {
+        "value"
+    };
+    let mut stmt = db.prepare(&format!(
+        "SELECT display,files,captures FROM facet_count
+         WHERE gen=? AND facet=? ORDER BY {order} IS NULL,{order}"
+    ))?;
+    let mut rows = stmt.query(params![gen, facet])?;
+    let mut values = Vec::new();
+    while let Some(row) = rows.next()? {
+        let display: Option<String> = row.get(0)?;
+        let value = if facet == "rating" {
+            json!(display
+                .as_deref()
+                .and_then(|s| s.parse::<i64>().ok())
+                .unwrap_or(0))
+        } else {
+            display.map(|s| json!(s)).unwrap_or(Value::Null)
+        };
+        let files: i64 = row.get(1)?;
+        let captures: i64 = row.get(2)?;
+        values.push(json!({
+            "value":value,"files":files,"captures":captures,
+            "count":if level=="file"{files}else{captures}
+        }));
+    }
+    Ok(Some(Value::Array(values)))
+}
+
+fn facets(db: &Connection, m: &Matched, r: &Request, gen: i64) -> Result<Value> {
     let mut result = Map::new();
     for name in &r.facets {
+        if m.tally_scope.as_deref() == Some("L") {
+            if let Some(values) = summary_facet(db, gen, name, &r.level)? {
+                result.insert(name.clone(), values);
+                continue;
+            }
+        }
         let (key, display, join) = match name.as_str() {
             "tag" => (
                 "t.key",
@@ -364,7 +411,7 @@ pub(super) fn run(
         if let Some(payload) = cached_facets {
             result["facets"] = serde_json::from_str(&payload)?;
         } else {
-            let value = facets(db, &m, r)?;
+            let value = facets(db, &m, r, state.gen)?;
             result["facets"] = value;
             if let Some(names) = facet_key {
                 facet_write = Some(FacetWrite {

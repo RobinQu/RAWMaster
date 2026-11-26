@@ -664,6 +664,7 @@ impl Request {
                 snapshot.name(self.suffix.ok_or("missing workbench filename suffix")?)?,
                 &snapshot.target.extension,
                 snapshot.item.ticket.is_none(),
+                true,
             )?),
             PublishItem if matches!(verified, Some(Final::Missing)) => Stage::from_ticket(
                 root.as_ref().unwrap(),
