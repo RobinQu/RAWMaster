@@ -918,8 +918,10 @@ final class PreviewNativeSource: @unchecked Sendable {
         // from final display. Both contexts use the original V3 options and graph.
         retireIdleCanonicalContextForIndependentWork()
         let graph = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { validation in
-          try DevelopmentRendererV3.develop(capture,recipe:recipe,context:validation,thumbnailNativeSink:thumbnailNativeSink,
-                                           localSourceValidation:bindingCheck)
+          try DevelopmentRenderStack.run {
+            try DevelopmentRendererV3.develop(self.capture,recipe:recipe,context:validation,thumbnailNativeSink:thumbnailNativeSink,
+                                             localSourceValidation:bindingCheck)
+          }
         }
         let result = try Self.withOwnedV3Context(memoryLimit:contextMemoryLimitMiB) { display in
           try V3PreviewMaterializer.materialize(graph,context:display,maxPixel:maxPixel,
@@ -927,8 +929,10 @@ final class PreviewNativeSource: @unchecked Sendable {
         }
         try validateCaptureAuthority(); return result
       }
-      let graph = try DevelopmentRendererV3.develop(capture,recipe:recipe,context:context,thumbnailNativeSink:thumbnailNativeSink,
-                                                   localSourceValidation:bindingCheck)
+      let graph = try DevelopmentRenderStack.run {
+        try DevelopmentRendererV3.develop(self.capture,recipe:recipe,context:self.context,thumbnailNativeSink:thumbnailNativeSink,
+                                          localSourceValidation:bindingCheck)
+      }
       let result = try V3PreviewMaterializer.materialize(graph,context:context,maxPixel:maxPixel,
         window:detailWindow(maxPixel:maxPixel,window:window),grainFinalTransport:grainFinalTransport)
       try validateCaptureAuthority(); return result

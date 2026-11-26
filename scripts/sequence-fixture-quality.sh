@@ -43,7 +43,7 @@ export RAWMASTER_SEQUENCE_FIXTURE_REQUIRE_QUALITY=1
 export RAWMASTER_SEQUENCE_FIXTURE_REPORT="$run_directory/report.json"
 export RAWMASTER_SEQUENCE_FIXTURE_SWIFT_VERSION="$(swift --version)"
 set +e
-swift test --filter SequenceFixtureRegressionTests/testFullOfflineDataset
+swift test -c release --filter SequenceFixtureRegressionTests/testFullOfflineDataset
 swift_status=$?
 set -e
 # A current complete typed report is mandatory. Old reports cannot mask a failed run.

@@ -907,13 +907,13 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
                 let v2Eligible = request.recipe.schemaVersion == 2 && request.recipe.color?.isNeutral == false && native.hasRAWFilter
                 let v3Eligible = PreviewRawBaseRenderer.v3CacheEligible(request.recipe,sourceIsRAW:native.hasRAWFilter)
                 if request.quality == .detail && !v2Eligible && !v3Eligible { pool.evictUnpinned() }
-                let rendered = Result { try DevelopmentDehazeNativeResources.run {
-                  try renderNative(qaIPTiming)
+                let rendered = Result { try DevelopmentRenderStack.run {
+                  try DevelopmentDehazeNativeResources.run { try renderNative(qaIPTiming) }
                 } }
                 return (rendered,pool.statistics,packet(rendered))
               }
             }
-            let rendered=Result { try DevelopmentDehazeNativeResources.run { try renderNative(qaIPTiming) } };return (rendered,nil,packet(rendered))
+            let rendered=Result { try DevelopmentRenderStack.run { try DevelopmentDehazeNativeResources.run { try renderNative(qaIPTiming) } } };return (rendered,nil,packet(rendered))
           }.value
         }
       } catch {
@@ -1749,11 +1749,11 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
         PreviewQALifecycleTrace.record(qaKind,.entered,id:item.token,request:item.request.preview,sourceID:native.captureID)
         defer { PreviewQALifecycleTrace.record(qaKind,.returned,id:item.token,request:item.request.preview,sourceID:native.captureID) }
         func operation() -> Result<DevelopmentAnalysisResult,Error> {
-          Result { try DevelopmentDehazeNativeResources.run {
+          Result { try DevelopmentRenderStack.run { try DevelopmentDehazeNativeResources.run {
             try native.validateCaptureAuthority()
             let result = try override?(item.request,binding) ?? native.analyze(item.request,sourceContentID:item.sourceContentID,cancellation:item.cancellation,rawBasePool:pool,sourceKey:item.key,residentObserver:residentObserver,analysisImages:images)
             try native.validateCaptureAuthority(); return result
-          } }
+          } } }
         }
         if let pool { return pool.withWorker { (operation(),pool.statistics) } }
         return (operation(),nil)
@@ -2066,7 +2066,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
       let result=await Task.detached(priority:.utility){()->Result<ThumbnailStepResult,Error> in
         PreviewQALifecycleTrace.record(qaKind,.entered,id:qaStep,request:batch.request.preview,sourceID:native.captureID,thumbnailStep:step)
         defer { PreviewQALifecycleTrace.record(qaKind,.returned,id:qaStep,request:batch.request.preview,sourceID:native.captureID,thumbnailStep:step) }
-        return Result{try autoreleasepool{
+        return Result{try DevelopmentRenderStack.run { try autoreleasepool{
         try native.validateCaptureAuthority();guard batch.gate.isOpen else{throw DevelopmentThumbnailError.cancelled}
         try beforeStep?();guard batch.gate.isOpen else{throw DevelopmentThumbnailError.cancelled}
         guard let device=MTLCreateSystemDefaultDevice()else{throw DevelopmentThumbnailError.unavailableDevice}
@@ -2088,7 +2088,7 @@ public actor DevelopmentPreviewService: ImageEngineMonitoring {
           result = .proxy(try native.prepareThumbnailProxy(recipe:inputRecipe,source:batch.source,generation:batch.request.preview.sourceGeneration,ledger:ledger,device:device,contextOwner:contextOwner,interest:{batch.gate.isOpen}))
         }
         try native.validateCaptureAuthority();return result
-      }}}.value
+      } }}}.value
       telemetry.end(token, result: result)
       await self.finishThumbnailStep(batch:batch,result:result,started:started,qaStep:qaStep,step:step)
     }

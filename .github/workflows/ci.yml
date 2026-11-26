@@ -52,7 +52,9 @@ jobs:
         run: |
           set -o pipefail
           export RAWMASTER_SEQUENCE_FIXTURE_SWIFT_VERSION="$(swift --version)"
-          CARGO_NET_OFFLINE=true swift test --jobs 3 2>&1 | tee output/validation/ci/tests.log
+          # Release test frames stay inside the cooperative task stack; the debug
+          # native render chain overflows it on the hosted runner.
+          CARGO_NET_OFFLINE=true swift test -c release --jobs 3 2>&1 | tee output/validation/ci/tests.log
       - name: Build client
         env:
           CARGO_NET_OFFLINE: 'true'
@@ -60,7 +62,7 @@ jobs:
       - name: Compare accepted annotations with versioned grouping rules
         run: |
           set -o pipefail
-          binary_dir="$(swift build --show-bin-path)"
+          binary_dir="$(swift build -c release --show-bin-path)"
           test_bundle="$binary_dir/RAWMasterImagingTests.xctest"
           if [ ! -d "$test_bundle" ]; then
             test_bundle="$binary_dir/RAWMasterPackageTests.xctest"
