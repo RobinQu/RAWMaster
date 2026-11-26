@@ -271,6 +271,8 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 整幅 factor/restore 只省约 15%，因为整幅 materialize 还在；**窗口内重算 factor + restore** 才是 5.3–7.1× 首帧、约 12× 改参数。`halo = ceil(12*radius + 8)`：texture 31 px、clarity 313 px。factor 区域约 65/108 MB，而不是 964 MB。
 
+渲染器接线时发现一个边界：3000×2000 TIFF 上“窗口内 factor”与整幅 factor 的 crop 有 **1 LSB / 0.55% 分量** 差异，而整幅重复渲染为 0。9504 ARW 探针恰好为 0，但这是数据相关的 1 ULP。该路径没有默认启用；下一步用**固定 tile factor**（整幅与窗口共享同一组 tile 像素）来同时保留窗口速度和逐字节一致性，全幅 factor 作为严格回退。
+
 证据：[advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [再调研与下一步规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
 
 生产化顺序：

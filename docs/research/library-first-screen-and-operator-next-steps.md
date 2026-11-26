@@ -155,6 +155,24 @@ xcrun xctest -XCTest RAWMasterUITests.LibraryGridPerformanceTests \
 
 证据：[advanced-factor-window-probe.json](../../specs/036-render-pipeline-performance/evidence/advanced-factor-window-probe.json)。
 
+### 渲染器接线边界（2026-11-26 追加）
+
+把 `applyWindowed` 临时接到服务的 1:1 路径后，用一个 3000×2000 的 TIFF fixture 做“窗口帧 == 整幅 crop”验收：
+
+- 整幅重复渲染（不同 revision/context）逐字节 **0 差异**，排除上下文不确定性；
+- 窗口 factor + restore 与整幅 factor 的 crop 仍有 **最大 1 LSB、0.55% 分量** 差异（19,844 / 3,640,800 字节）；
+- 加 halo、窗口内 materialize 都没有消除；差异来自“窗口内重算 factor”与“整幅 factor”在浮点求和/裁剪边界上的 1 ULP，而不是 restore 的像素公式；
+- 9504×6336 ARW 探针恰好为 0，但这是数据相关的结果，不能当成普遍保证。
+
+因此**没有把这条路径默认打开**，也没有保留临时服务接线。要同时拿到窗口速度和逐字节一致性，下一步应做**固定 tile factor**：
+
+1. 把 factor 按固定原点/尺寸的 tile（例如 1024/2048 + halo）计算并缓存；
+2. 整幅帧和窗口帧都从同一组 tile 取样，窗口只计算覆盖它的 tile；
+3. 每个像素只属于一个 tile，窗口与整幅的 factor 像素完全相同，避免 1 ULP 差异；
+4. tile 边界用 halo，边缘 clamp；缓存键含 source generation、band、radius、tile 坐标。
+
+在全幅 factor 与固定 tile 之间，固定 tile 是首选；它保留 5–7× 首帧潜力，同时满足逐字节硬门。若 tile 边界仍出现 1 LSB，再退回全幅 factor（窗口 restore 仍可省下游 materialize，但首帧约慢 10–20%）。
+
 ### 生产化规划
 
 **第 1 步：窗口 factor 缓存（P0）**

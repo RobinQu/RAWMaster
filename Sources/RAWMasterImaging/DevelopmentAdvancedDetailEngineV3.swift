@@ -130,6 +130,137 @@ enum DevelopmentAdvancedDetailEngineV3 {
       arguments:[image.samplingNearest(),factor.samplingNearest(),CIVector(x:amount/100,y:band == .texture ? 0:1,z:0,w:0)]) else { throw DevelopmentV3Error.invalidGraph }
     return result
   }
+  private final class FactorEntry {
+    let image: CIImage
+    let texture: MTLTexture
+    init(image: CIImage, texture: MTLTexture) { self.image = image; self.texture = texture }
+  }
+  private static let factorCache: NSCache<NSString, FactorEntry> = {
+    let cache = NSCache<NSString, FactorEntry>()
+    cache.countLimit = 8
+    cache.totalCostLimit = 256 * 1024 * 1024
+    return cache
+  }()
+  private static func regionKey(_ r: CGRect) -> String {
+    "\(Int(r.minX)),\(Int(r.minY)),\(Int(r.width)),\(Int(r.height))"
+  }
+  private static func freezeFactor(_ image: CIImage, region: CGRect, context: CIContext) throws -> FactorEntry {
+    guard let device = MTLCreateSystemDefaultDevice(),
+          region.width > 0, region.height > 0, region.width <= 16384, region.height <= 16384 else {
+      throw DevelopmentV3Error.invalidGraph
+    }
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+      width: Int(region.width), height: Int(region.height), mipmapped: false)
+    descriptor.storageMode = .shared
+    descriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+    guard let texture = device.makeTexture(descriptor: descriptor) else {
+      throw DevelopmentPreviewError.memoryBudgetExceeded
+    }
+    let destination = CIRenderDestination(mtlTexture: texture, commandBuffer: nil)
+    destination.colorSpace = DevelopmentColorEngineV3.linearSRGB
+    destination.alphaMode = .premultiplied
+    destination.isFlipped = false
+    let task = try context.startTask(toRender: image, from: region, to: destination, at: .zero)
+    _ = try task.waitUntilCompleted()
+    guard let drawn = CIImage(mtlTexture: texture, options: [.colorSpace: DevelopmentColorEngineV3.linearSRGB]) else {
+      throw DevelopmentV3Error.invalidGraph
+    }
+    let placed = drawn.transformed(by: .init(translationX: region.minX, y: region.minY))
+    return FactorEntry(image: placed, texture: texture)
+  }
+  private static func cachedFactor(_ source: CIImage, radius: Double, region: CGRect, key: String,
+                                   context: CIContext, checkCancellation: (() throws -> Void)?) throws -> CIImage {
+    if let entry = factorCache.object(forKey: key as NSString) { return entry.image }
+    try checkCancellation?()
+    let factor = try bandFactor(source.cropped(to: region), radius: radius)
+    try checkCancellation?()
+    let entry = try freezeFactor(factor, region: region, context: context)
+    factorCache.setObject(entry, forKey: key as NSString, cost: Int(region.width * region.height * 4))
+    return entry.image
+  }
+  private static func materializeWindow(_ image: CIImage, window: CGRect, context: CIContext) throws -> CIImage {
+    guard let device = MTLCreateSystemDefaultDevice(),
+          window.width > 0, window.height > 0, window.width <= 16384, window.height <= 16384 else {
+      throw DevelopmentV3Error.invalidGraph
+    }
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba32Float,
+      width: Int(window.width), height: Int(window.height), mipmapped: false)
+    descriptor.storageMode = .shared
+    descriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+    guard let texture = device.makeTexture(descriptor: descriptor) else {
+      throw DevelopmentPreviewError.memoryBudgetExceeded
+    }
+    let destination = CIRenderDestination(mtlTexture: texture, commandBuffer: nil)
+    destination.colorSpace = DevelopmentColorEngineV3.linearSRGB
+    destination.alphaMode = .premultiplied
+    destination.isFlipped = false
+    let task = try context.startTask(toRender: image, from: window, to: destination, at: .zero)
+    _ = try task.waitUntilCompleted()
+    guard let drawn = CIImage(mtlTexture: texture, options: [.colorSpace: DevelopmentColorEngineV3.linearSRGB]) else {
+      throw DevelopmentV3Error.invalidGraph
+    }
+    return drawn.transformed(by: .init(translationX: window.minX, y: window.minY))
+  }
+
+  /// Window-local advanced detail. The guide Gaussian, factor and restore all run over
+  /// `window + halo`; the result is composited back into the full source so later pointwise
+  /// stages and the materializer keep the whole-frame canvas identity. Only callers with no
+  /// downstream spatial operator may use this seam.
+  static func applyWindowed(_ parameters: DevelopmentAdvancedDetailV3, to image: CIImage,
+                            sourceSize: DevelopmentPixelSize, window: CGRect,
+                            textureCacheIdentity: String, clarityCacheIdentity: String,
+                            context: CIContext, checkCancellation: (() throws -> Void)? = nil) throws -> CIImage {
+    try parameters.validate()
+    guard parameters.dehaze.enabled == false || parameters.dehaze.amount == 0 else {
+      throw DevelopmentV3Error.unsupportedAdjustment(.dehaze)
+    }
+    let texture = parameters.texture.enabled && parameters.texture.amount != 0
+    let clarity = parameters.clarity.enabled && parameters.clarity.amount != 0
+    guard texture || clarity else { return image }
+    guard window.origin.x == window.origin.x.rounded(), window.origin.y == window.origin.y.rounded(),
+          window.width == window.width.rounded(), window.height == window.height.rounded(),
+          window.width >= 1, window.height >= 1, image.extent.contains(window) else {
+      throw DevelopmentV3Error.invalidGraph
+    }
+    let r = try radii(sourceSize: sourceSize)
+    let textureHalo = CGFloat((r.texture * 24).rounded(.up) + 16)
+    let clarityHalo = CGFloat((r.clarity * 24).rounded(.up) + 16)
+    let clarityRegion = window.insetBy(dx: -clarityHalo, dy: -clarityHalo).intersection(image.extent)
+    var output = image
+    if texture {
+      let textureRegion = clarity ? clarityRegion : window.insetBy(dx: -textureHalo, dy: -textureHalo).intersection(image.extent)
+      let key = textureCacheIdentity + "|texture|" + String(r.texture.bitPattern, radix: 16) + "|" + regionKey(textureRegion)
+      let factor = try cachedFactor(image, radius: r.texture, region: textureRegion, key: key,
+                                    context: context, checkCancellation: checkCancellation)
+      let textureImage = try applyBandWindow(.texture, amount: parameters.texture.amount,
+        to: image, factor: factor, extent: clarity ? clarityRegion : window)
+      if clarity {
+        let clarityKey = clarityCacheIdentity + "|clarity|" + String(r.clarity.bitPattern, radix: 16)
+          + "|texture:" + String(parameters.texture.amount.bitPattern, radix: 16)
+          + "|" + regionKey(clarityRegion)
+        let clarityFactor = try cachedFactor(textureImage, radius: r.clarity, region: clarityRegion,
+          key: clarityKey, context: context, checkCancellation: checkCancellation)
+        output = try applyBandWindow(.clarity, amount: parameters.clarity.amount,
+          to: textureImage, factor: clarityFactor, extent: window)
+      } else {
+        output = textureImage
+      }
+    } else {
+      let clarityKey = clarityCacheIdentity + "|clarity|" + String(r.clarity.bitPattern, radix: 16)
+        + "|" + regionKey(clarityRegion)
+      let factor = try cachedFactor(image, radius: r.clarity, region: clarityRegion,
+        key: clarityKey, context: context, checkCancellation: checkCancellation)
+      output = try applyBandWindow(.clarity, amount: parameters.clarity.amount,
+        to: image, factor: factor, extent: window)
+    }
+    try DevelopmentColorEngineV3.validateFinite(output, context: context, checkCancellation: checkCancellation)
+    try checkCancellation?()
+    // Match the whole-frame path's explicit RGBA32F materialization. Downstream pointwise
+    // stages must sample a concrete window texture, not a lazy restore graph.
+    let materialized = try materializeWindow(output, window: window, context: context)
+    return materialized.composited(over: image)
+  }
+
   /// CPU equations only: public CI Gaussian evaluation remains the authoritative blur primitive.
   /// Stable log ratio is algebraically log2(max(Y,2^-16)), without RGB/A overflow in a tiny-alpha guide.
   static func referenceGuide(_ p: SIMD4<Double>) throws -> SIMD4<Double> {

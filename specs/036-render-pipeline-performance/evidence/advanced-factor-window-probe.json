@@ -79,5 +79,20 @@
     "Window-local factor + pointwise restore is byte-exact and removes the 60 MP materialize: first window ~75 ms texture / ~115 ms clarity, amount changes ~43-50 ms.",
     "Clarity factor depends on the texture band output; changing texture amount invalidates the clarity factor."
   ],
-  "next": "Implement a factor-texture cache keyed by source generation, band, radius and window+halo; use applyBandWindow for 1:1 preview. Keep the full-frame path for export until the masked-composite gate is re-run."
+  "next": "Implement a factor-texture cache keyed by source generation, band, radius and window+halo; use applyBandWindow for 1:1 preview. Keep the full-frame path for export until the masked-composite gate is re-run.",
+  "renderer_integration": {
+    "fixture": "3000x2000 TIFF, texture25+clarity40, service detail render",
+    "window_vs_whole": {
+      "maxDiff": 1,
+      "differingBytes": 19844,
+      "totalBytes": 3640800,
+      "fraction": 0.00545
+    },
+    "whole_repeat": {
+      "maxDiff": 0,
+      "differingBytes": 0
+    },
+    "status": "not enabled; window-local factor differs from full factor by 1 ULP on this fixture",
+    "next": "fixed-origin tile factor shared by whole and window; full-frame factor is the strict fallback"
+  }
 }
