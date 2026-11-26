@@ -116,6 +116,20 @@ enum DevelopmentAdvancedDetailEngineV3 {
       arguments:[image.samplingNearest(),factor.samplingNearest(),CIVector(x:amount/100,y:band == .texture ? 0:1,z:0,w:0)]) else { throw DevelopmentV3Error.invalidGraph }
     return result
   }
+  /// Windowed restore against a frozen full-frame factor. The restore kernel is pointwise in
+  /// source and factor coordinates, so evaluating only `extent` must reproduce that crop of the
+  /// full restore. This is the measurement seam for the factor/restore operator split.
+  static func applyBandWindow(_ band:Band,amount:Double,to image:CIImage,factor:CIImage,extent:CGRect) throws -> CIImage {
+    guard amount.isFinite,(-100...100).contains(amount),
+          extent.origin.x.isFinite,extent.origin.y.isFinite,
+          extent.width.isFinite,extent.height.isFinite,
+          !extent.isEmpty,extent.width>0,extent.height>0,
+          factor.extent.contains(extent) else {throw DevelopmentV3Error.invalidGraph}
+    if amount == 0 { return image.cropped(to:extent) }
+    guard let result=try cachedBandKernels.get().restore.apply(extent:extent,roiCallback:{_,r in r},
+      arguments:[image.samplingNearest(),factor.samplingNearest(),CIVector(x:amount/100,y:band == .texture ? 0:1,z:0,w:0)]) else { throw DevelopmentV3Error.invalidGraph }
+    return result
+  }
   /// CPU equations only: public CI Gaussian evaluation remains the authoritative blur primitive.
   /// Stable log ratio is algebraically log2(max(Y,2^-16)), without RGB/A overflow in a tiny-alpha guide.
   static func referenceGuide(_ p: SIMD4<Double>) throws -> SIMD4<Double> {

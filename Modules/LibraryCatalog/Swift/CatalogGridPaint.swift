@@ -79,9 +79,13 @@ public struct CatalogGridPaintMark: NSViewRepresentable {
         fileprivate var photo = false
 
         public override func hitTest(_ point: NSPoint) -> NSView? { nil }
+        // The headless QA runner has no WindowServer occlusion state. Production still requires
+        // a visible, on-screen window; the opt-in only changes the first-screen measurement harness.
+        private static let headless = ProcessInfo.processInfo.environment["RAWMASTER_QA_GRID_PAINT_HEADLESS"] == "1"
+
         public override func draw(_ dirtyRect: NSRect) {
             super.draw(dirtyRect)
-            guard let window, window.isVisible, window.occlusionState.contains(.visible),
+            guard let window, (Self.headless || (window.isVisible && window.occlusionState.contains(.visible))),
                   !isHiddenOrHasHiddenAncestor, !visibleRect.intersection(dirtyRect).isEmpty else { return }
             recorder?.draw(start: start, card: cardID, photo: photo)
         }

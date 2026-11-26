@@ -1,0 +1,185 @@
+{
+  "catalogAssets": 6928,
+  "fixture": "output/release-window-integration/pre-install-backup-20261122-225258 (schema v7, migrated to v10 once per trial)",
+  "boundary": "input event to visible AppKit grid draw",
+  "headlessQA": true,
+  "coldOpen": {
+    "open": {
+      "p50ms": 2592.48,
+      "p95ms": 2765.86,
+      "maxMs": 2765.86,
+      "n": 4
+    },
+    "catalogOpenMs": [
+      2164.72,
+      2148.7,
+      2187.72,
+      2169.66
+    ],
+    "note": "v7 to v10 migration + backup/hash; not a normal v10 cold launch"
+  },
+  "warm": {
+    "reopen": {
+      "p50ms": 165.84,
+      "p95ms": 169.0,
+      "maxMs": 169.0,
+      "n": 4
+    },
+    "reopenPhoto": {
+      "p50ms": 174.39,
+      "p95ms": 179.26,
+      "maxMs": 179.26,
+      "n": 4
+    },
+    "idle": {
+      "p50ms": 63.93,
+      "p95ms": 76.34,
+      "maxMs": 77.41,
+      "n": 24
+    },
+    "idlePhoto": {
+      "p50ms": 67.69,
+      "p95ms": 84.89,
+      "maxMs": 86.9,
+      "n": 24
+    },
+    "import": {
+      "p50ms": 69.76,
+      "p95ms": 77.86,
+      "maxMs": 78.23,
+      "n": 36
+    },
+    "importPhoto": {
+      "p50ms": 79.93,
+      "p95ms": 88.42,
+      "maxMs": 88.53,
+      "n": 36
+    }
+  },
+  "warmSecondRun": {
+    "reopen": {
+      "p50ms": 163.84,
+      "p95ms": 165.02,
+      "maxMs": 165.02,
+      "n": 4
+    },
+    "reopenPhoto": {
+      "p50ms": 173.8,
+      "p95ms": 181.09,
+      "maxMs": 181.09,
+      "n": 4
+    },
+    "idle": {
+      "p50ms": 63.24,
+      "p95ms": 75.95,
+      "maxMs": 77.79,
+      "n": 24
+    },
+    "idlePhoto": {
+      "p50ms": 67.24,
+      "p95ms": 82.44,
+      "maxMs": 88.22,
+      "n": 24
+    }
+  },
+  "startupPhasesMs": [
+    {
+      "beforeNavigationMs": 2167.103709,
+      "catalogOpenMs": 2164.721667,
+      "editingServicesReadyMs": 2166.468834,
+      "navigationLoadMs": 28.372708
+    },
+    {
+      "beforeNavigationMs": 2149.231417,
+      "catalogOpenMs": 2148.700542,
+      "editingServicesReadyMs": 2149.1295,
+      "navigationLoadMs": 27.671583
+    },
+    {
+      "beforeNavigationMs": 2188.198375,
+      "catalogOpenMs": 2187.721084,
+      "editingServicesReadyMs": 2188.098792,
+      "navigationLoadMs": 27.370334
+    },
+    {
+      "beforeNavigationMs": 2170.202333,
+      "catalogOpenMs": 2169.663875,
+      "editingServicesReadyMs": 2170.104916,
+      "navigationLoadMs": 27.330792
+    }
+  ],
+  "reopenPhasesMs": [
+    {
+      "beforeNavigationMs": 4.507916,
+      "catalogOpenMs": 4.071208,
+      "editingServicesReadyMs": 4.41825,
+      "navigationLoadMs": 32.318625
+    },
+    {
+      "beforeNavigationMs": 4.348458,
+      "catalogOpenMs": 3.971958,
+      "editingServicesReadyMs": 4.26325,
+      "navigationLoadMs": 32.000875
+    },
+    {
+      "beforeNavigationMs": 4.37925,
+      "catalogOpenMs": 3.95325,
+      "editingServicesReadyMs": 4.2945,
+      "navigationLoadMs": 32.767625
+    },
+    {
+      "beforeNavigationMs": 4.382542,
+      "catalogOpenMs": 3.990917,
+      "editingServicesReadyMs": 4.294125,
+      "navigationLoadMs": 32.127208
+    }
+  ],
+  "indexBytesIncludingWAL": [
+    8081408,
+    8081408,
+    8081408,
+    8081408
+  ],
+  "peakProcessRSSBytes": 685785088,
+  "dropTargetPoC": {
+    "rootDropOn": {
+      "p50ms": 165.84,
+      "p95ms": 169.0,
+      "maxMs": 169.0,
+      "n": 4
+    },
+    "rootDropOff": {
+      "p50ms": 163.84,
+      "p95ms": 165.02,
+      "maxMs": 165.02,
+      "n": 4
+    },
+    "idleOn": {
+      "p50ms": 63.93,
+      "p95ms": 76.34,
+      "maxMs": 77.41,
+      "n": 24
+    },
+    "idleOff": {
+      "p50ms": 63.24,
+      "p95ms": 75.95,
+      "maxMs": 77.79,
+      "n": 24
+    },
+    "conclusion": "Removing the root onDrop preference did not change first paint; not a lever."
+  },
+  "dbCost": {
+    "page200kMs": 0.0735,
+    "facetsLibraryMs": {
+      "rating": 0.004,
+      "camera": 0.003,
+      "tag": 0.013
+    },
+    "note": "from catalog-database evidence; not part of this UI run"
+  },
+  "hotspotSample": {
+    "mainThread": "SwiftUICore AttributeGraph/DynamicPreferenceCombiner, 478 of 1542 samples; AppKit draw boundary completes before the dominant preference work in many trials",
+    "background": "EditingController.recoverJobs -> EditingArchive.recoverPublications scanning 6,928 files (stat/getattrlist/SHA-256)",
+    "conclusion": "No DB or thumbnail bottleneck on the first-paint boundary; archive recovery should be deferred to idle."
+  }
+}

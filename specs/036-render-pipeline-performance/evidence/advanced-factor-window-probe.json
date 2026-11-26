@@ -1,0 +1,83 @@
+{
+  "probe": "RAWMASTER_FACTOR_PROBE=1 RAWMASTER_REGION_PROBE_SOURCE=.../DSC05994.ARW swift test -c release --filter AdvancedFactorRestoreProbe",
+  "date": "2026-11-26",
+  "source": {
+    "width": 9504,
+    "height": 6336,
+    "file": "DSC05994.ARW",
+    "filter": "CIRAWFilter fallback (FlashRawImageFactory unavailable in test host)"
+  },
+  "window": {
+    "width": 2400,
+    "height": 1600
+  },
+  "correctness": {
+    "texture_inline_vs_restore": {
+      "maxDiff": 0.0,
+      "differing": 0,
+      "components": 240869376
+    },
+    "texture_window_vs_crop": {
+      "maxDiff": 0.0,
+      "differing": 0,
+      "components": 15360000
+    },
+    "clarity_inline_vs_restore": {
+      "maxDiff": 0.0,
+      "differing": 0,
+      "components": 240869376
+    },
+    "clarity_window_vs_crop": {
+      "maxDiff": 0.0,
+      "differing": 0,
+      "components": 15360000
+    },
+    "texture25_then_clarity40_sequence": {
+      "maxDiff": 0.0,
+      "differing": 0
+    },
+    "window_local_texture": {
+      "factorMaxDiff": 0.0,
+      "restoreMaxDiff": 0.0,
+      "components": 15360000
+    },
+    "window_local_clarity": {
+      "factorMaxDiff": 0.0,
+      "restoreMaxDiff": 0.0,
+      "components": 15360000
+    }
+  },
+  "timingMs": {
+    "texture": {
+      "factorFull": 588.0,
+      "inlineFull": 531.2,
+      "restoreFull": 457.0,
+      "inlineWindow": 32.8,
+      "restoreWindow": 32.8,
+      "windowLocal": {
+        "halo": 31,
+        "factorRegion": 31.4,
+        "restoreWindow": 43.2
+      }
+    },
+    "clarity": {
+      "factorFull": 620.1,
+      "inlineFull": 609.5,
+      "restoreFull": 455.9,
+      "inlineWindow": 47.0,
+      "restoreWindow": 32.0,
+      "windowLocal": {
+        "halo": 313,
+        "factorRegion": 64.8,
+        "restoreWindow": 50.0
+      }
+    }
+  },
+  "notes": [
+    "Single run, 9504x6336, unified memory, macOS 27 arm64.",
+    "Full-frame factor/restore alone saves only ~15% because the 60 MP materialize remains.",
+    "Window-local factor + pointwise restore is byte-exact and removes the 60 MP materialize: first window ~75 ms texture / ~115 ms clarity, amount changes ~43-50 ms.",
+    "Clarity factor depends on the texture band output; changing texture amount invalidates the clarity factor."
+  ],
+  "next": "Implement a factor-texture cache keyed by source generation, band, radius and window+halo; use applyBandWindow for 1:1 preview. Keep the full-frame path for export until the masked-composite gate is re-run."
+}

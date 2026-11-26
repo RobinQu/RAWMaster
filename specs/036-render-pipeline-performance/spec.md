@@ -245,6 +245,41 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 - [GPU Pipeline 与编辑 DAG 的三份参考实现](../../docs/research/gpu-pipeline-references.md)：LightFlow 发布包引擎接口与帧循环、Alcedo 的编译计划／节点缓存／渲染意图／解码分辨率、FlashRaw 的 C ABI 开关。
 - [LightFlow REA 符号取证](evidence/lightflow-rea-symbols.json)：本轮 `analyze_javascript_application` 的 21 个引擎方法、模块 SHA-256 与精确源码区间；含此前未覆盖的多线程绑定 `web-mt/lightflow_host_wasm_mt.js`。
 
+## 算子 factor/restore 窗口化（PoC 通过）
+
+上一轮结论是 band 核由 Core Image 求值时无法逐字节窗口化，必须连 band 合成一起重写。本轮找到了不重写高斯的替代路径：现有引擎里已有未被 `apply` 使用的 `rmAdvancedBandFactor` / `rmAdvancedBandRestore`，两者都是逐像素的；把 factor 冻结成纹理，restore 只读窗口，就可以把高斯留在 Core Image，同时跳过 60 MP 的整幅 materialize。
+
+真实 9504×6336 ARW 探针（`AdvancedFactorRestoreProbe`，`RAWMASTER_FACTOR_PROBE=1`）：
+
+| 检查 | 最大差 | 差异分量 |
+| --- | ---: | ---: |
+| texture inline vs factor/restore（整幅） | **0.0** | 0 / 240,869,376 |
+| texture window restore vs crop | **0.0** | 0 / 15,360,000 |
+| clarity inline vs factor/restore（整幅） | **0.0** | 0 / 240,869,376 |
+| clarity window restore vs crop | **0.0** | 0 / 15,360,000 |
+| texture25 → clarity40 串联 | **0.0** | 0 |
+| 窗口内重算 factor：texture / clarity | **0.0** | 0 / 15,360,000 |
+
+耗时：
+
+| 项 | texture | clarity |
+| --- | ---: | ---: |
+| 整幅 inline（当前） | 531 ms | 609 ms |
+| 整幅 restore（factor 冻结） | 457 ms | 456 ms |
+| 窗口 inline | 32.8 ms | 47.0 ms |
+| **窗口 factor + restore** | **31.4 + 43.2 ms** | **64.8 + 50.0 ms** |
+
+整幅 factor/restore 只省约 15%，因为整幅 materialize 还在；**窗口内重算 factor + restore** 才是 5.3–7.1× 首帧、约 12× 改参数。`halo = ceil(12*radius + 8)`：texture 31 px、clarity 313 px。factor 区域约 65/108 MB，而不是 964 MB。
+
+证据：[advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [再调研与下一步规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
+
+生产化顺序：
+
+1. `AdvancedDetailFactorCache` 键 `(sourceGeneration, band, radius, quantizedWindow+halo)`；1:1 `.detail` 走窗口 factor/restore，整幅/导出/缩略图保持现状。
+2. texture factor 从输入源算；clarity factor 从 texture restore 后的窗口输出算；改 clarity amount 只 restore，改 texture amount 使 clarity factor 失效。
+3. 生产路径逐字节测试 + `DevelopmentSemanticMaskTests` 零覆盖回归 + 50 配方矩阵；导出路径暂不切换，直到蒙版/裁切/吸管全部通过。
+4. `dehaze` / `adaptive-brilliance` 的整幅归约另做分块确定性归约 PoC。
+
 ## 任务
 
 见[任务清单](tasks.md)。剩余项：

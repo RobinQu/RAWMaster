@@ -69,6 +69,9 @@
 - [x] **窗口化后把有限值扫描也收窄：不做。** 三次连测显示热态 1:1 只有约 12 ms，分带扫描在其中的份额只有十几毫秒；收窄它要把证明从「整幅有限」缩成「窗口有限」，不划算。[热态样本](evidence/native-detail-warm-samples.json)
 - [x] **引导图窗口化原型：否决（逐字节硬门）。** 引导图本身矩形无关（0.0）、纹理往返无损（0.0），但 band 核输出随输入 extent 变化：texture 最大差 1.6e-5、clarity 最大差 7.0e-4（11.1M 分量）。halo 0→110 全试过。结论：CI 求值的 band 核无法做逐字节窗口化，必须连 band 合成一起接管。
 - [x] **窗口化冻结原型：否决。** 探针证明高斯本身矩形无关（整幅 vs 窗口最大差 0.0），但整条 band 图不是（最大差 5.7e-4，11.5M/15.4M 分量有差异）——CI 对子窗口的内部分块改变了取样。要 ROI 安全必须同时自写高斯与 band 合成，属算子级重写。[探针](evidence/advanced-detail-freeze-probe.json)
+- [x] **factor/restore 窗口化 PoC：通过。** 真实 9504×6336 ARW：整幅 factor/restore、窗口 restore、texture→clarity 串联、窗口内重算 factor 全部 0 差异（240.9M / 15.36M 分量）。窗口 factor + restore：texture 31.4+43.2 ms，clarity 64.8+50.0 ms；对比整幅 531/609 ms，首帧 5.3–7.1×、改参数约 12×。整幅 factor/restore 只省 15%，因为整幅 materialize 仍在，所以生产化必须窗口化 factor。证据 [advanced-factor-window-probe.json](evidence/advanced-factor-window-probe.json) · [规划](../../docs/research/library-first-screen-and-operator-next-steps.md)。
+- [ ] **生产化 factor 缓存与窗口 restore。** 键 `(sourceGeneration, band, radius, quantizedWindow+halo)`；texture factor 从输入源、clarity factor 从 texture restore 输出；QA 开关灰度，逐字节/蒙版/50 配方矩阵通过后默认。导出暂用整幅。
+- [ ] **dehaze / adaptive-brilliance 的分块确定性归约。** 先 profile 整幅归约占比，再做带 halo 的分块统计 PoC；不要假设 factor/restore 可直接复用。
 - [ ] **1:1 的算子成本（下一步的主战场，需要算子重写）。** `DevelopmentAdvancedDetailEngineV3.materialize` 的注释写明它是为了「让 Core Image 对同一个图只选一条 Gaussian 路径」——也就是说这张整幅 F32 纹理是**像素一致性**的前提，窗口帧与整幅帧逐字节相同正依赖它。因此不能靠缩小或改存储模式来省：`.private` 与 `.shared` 实测无差异（`texture` 576/475 → 553/470 ms，噪声内）。要压缩它必须把模糊改成可确定复现的分带实现并带 halo，属于算子级工程。三次连测已经稳定复现：`texture` 480 ms、`dehaze-v2` 1.5 s、`adaptive-brilliance` 3.9 s，热态不降；`dehaze` 与 `adaptive-brilliance` 各自有同形的整幅归约，需要同样的处理。
 - [x] **1:1 首次进入的冷启动。** 已由极速模式的空闲预热解决（182 → 82 ms）。剩余约 50 ms 是规范上下文首次创建与内核编译，属一次性成本。
 - [ ] **Linux。** 本规格只覆盖 macOS。
