@@ -57,7 +57,7 @@ pub(crate) fn validate_rule(v: &Value) -> Result<()> {
     {
         return Err("invalid smart collection rule or recursive collection dependency".into());
     }
-    filter::matching(&Request::parse(v)?, 0, false)?;
+    filter::matching(&Request::parse(v)?, 0, filter::Fts::default())?;
     Ok(())
 }
 fn register(db: &Connection) -> Result<()> {
@@ -194,7 +194,7 @@ fn scope(r: &Request, b: &mut Bindings, folder: &str, volume: &str, work: &str) 
     terms
 }
 fn descriptor(r: &Request, b: &mut Bindings) -> Result<String> {
-    let m = filter::matching(r, 0, false)?;
+    let m = filter::matching(r, 0, filter::Fts::default())?;
     let mut sql = b.merge(&m.select, m.binds);
     for t in scope(r, b, "d.source_folder_id", "d.volume_id", "d.work_id") {
         sql.push_str(" AND ");

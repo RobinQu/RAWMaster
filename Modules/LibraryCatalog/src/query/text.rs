@@ -194,3 +194,114 @@ pub(super) const COLLATION_VERSION: &str = if cfg!(target_os = "macos") {
 } else {
     "unicode-numeric-v1"
 };
+
+// East Asian search needs tokenization that does not depend on spaces. Han, kana, Hangul and
+// Bopomofo characters become single-character tokens; a private-use marker keeps runs separated
+// by Latin text or punctuation from producing a false phrase match.
+const CJK_GAP: char = '\u{E000}';
+
+pub(super) fn is_cjk(c: char) -> bool {
+    let c = c as u32;
+    matches!(
+        c,
+        0x1100..=0x11FF
+            | 0x2E80..=0x2EFF
+            | 0x3005
+            | 0x3007
+            | 0x3021..=0x3029
+            | 0x3038..=0x303B
+            | 0x3040..=0x309F
+            | 0x30A0..=0x30FF
+            | 0x3100..=0x312F
+            | 0x3130..=0x318F
+            | 0x31A0..=0x31BF
+            | 0x31F0..=0x31FF
+            | 0x3400..=0x4DBF
+            | 0x4E00..=0x9FFF
+            | 0xA960..=0xA97F
+            | 0xAC00..=0xD7AF
+            | 0xD7B0..=0xD7FF
+            | 0xF900..=0xFAFF
+            | 0xFF66..=0xFF9F
+            | 0x1B000..=0x1B16F
+            | 0x20000..=0x2FA1F
+            | 0x30000..=0x3FFFF
+    )
+}
+
+/// A space-separated unigram index for CJK runs. Non-CJK text is a gap, not a token, so a phrase
+/// query cannot span "富士Nikon山" while still matching "富士山".
+pub(super) fn cjk_index(s: &str) -> String {
+    let folded = searchable(s);
+    let mut tokens: Vec<String> = Vec::new();
+    let mut gap = false;
+    for c in folded.chars() {
+        if is_cjk(c) {
+            if gap && !tokens.is_empty() {
+                tokens.push(CJK_GAP.to_string());
+            }
+            gap = false;
+            tokens.push(c.to_string());
+        } else {
+            gap = true;
+        }
+    }
+    tokens.join(" ")
+}
+
+/// Build an FTS5 query for a one or two character CJK needle. Longer needles use the trigram
+/// index; mixed or Latin short needles stay on `instr`.
+pub(super) fn cjk_query(s: &str) -> Option<String> {
+    let folded = searchable(s);
+    let mut chars = folded.chars().filter(|c| !c.is_whitespace());
+    let first = chars.next()?;
+    if !is_cjk(first) {
+        return None;
+    }
+    let mut tokens = vec![first.to_string()];
+    for c in chars {
+        if !is_cjk(c) || tokens.len() == 2 {
+            return None;
+        }
+        tokens.push(c.to_string());
+    }
+    Some(if tokens.len() == 1 {
+        format!("\"{}\"", tokens[0])
+    } else {
+        format!("\"{} {}\"", tokens[0], tokens[1])
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{cjk_index, cjk_query, is_cjk};
+
+    #[test]
+    fn cjk_tokens_cover_east_asian_scripts() {
+        assert!(is_cjk('富'));
+        assert!(is_cjk('ふ'));
+        assert!(is_cjk('カ'));
+        assert!(is_cjk('한'));
+        assert!(is_cjk('ㄅ'));
+        assert!(!is_cjk('a'));
+        assert!(!is_cjk('、'));
+    }
+
+    #[test]
+    fn cjk_index_marks_gaps_between_runs() {
+        assert_eq!(cjk_index("富士山"), "富 士 山");
+        assert_eq!(cjk_index("富士Nikon山"), "富 士 \u{E000} 山");
+        assert_eq!(cjk_index("写真、山"), "写 真 \u{E000} 山");
+        assert_eq!(cjk_index("plain latin"), "");
+    }
+
+    #[test]
+    fn cjk_query_accepts_one_or_two_characters_only() {
+        assert_eq!(cjk_query("富").as_deref(), Some("\"富\""));
+        assert_eq!(cjk_query("富士").as_deref(), Some("\"富 士\""));
+        assert_eq!(cjk_query("富 士").as_deref(), Some("\"富 士\""));
+        assert_eq!(cjk_query("富士山"), None);
+        assert_eq!(cjk_query("富士a"), None);
+        assert_eq!(cjk_query("ab"), None);
+    }
+}

@@ -18,6 +18,121 @@ fn id(db: &Connection) -> rusqlite::Result<i64> {
     db.query_row("PRAGMA application_id", [], |r| r.get(0))
 }
 
+fn ensure_facet_cache(db: &Connection) -> Result<()> {
+    let exists: bool = db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='facet_cache')",
+        [],
+        |r| r.get(0),
+    )?;
+    if !exists {
+        db.execute_batch(
+            "CREATE TABLE facet_cache(
+                 gen INTEGER NOT NULL, watermark INTEGER NOT NULL,
+                 fingerprint TEXT NOT NULL, names TEXT NOT NULL, payload TEXT NOT NULL,
+                 PRIMARY KEY(gen,watermark,fingerprint,names)
+             ) WITHOUT ROWID",
+        )?;
+    }
+    Ok(())
+}
+
+fn cjk_table(db: &Connection) -> Result<bool> {
+    Ok(db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_cjk')",
+        [],
+        |r| r.get(0),
+    )?)
+}
+
+fn cjk_marker(db: &Connection) -> Result<bool> {
+    let table: bool = db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_features')",
+        [],
+        |r| r.get(0),
+    )?;
+    if !table {
+        return Ok(false);
+    }
+    Ok(db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM search_features WHERE key='cjk_v1' AND value='1')",
+        [],
+        |r| r.get(0),
+    )?)
+}
+
+/// Create the CJK unigram table and its document triggers. Returns false when FTS5 is not
+/// available; the caller then keeps the `instr` fallback.
+fn create_cjk(db: &Connection) -> Result<bool> {
+    let triggers = "CREATE TRIGGER IF NOT EXISTS cjk_add AFTER INSERT ON documents BEGIN
+             INSERT INTO search_cjk(rowid,name,body)
+             VALUES(new.doc,rm_cjk(new.name_key),rm_cjk(new.body)); END;
+         CREATE TRIGGER IF NOT EXISTS cjk_remove AFTER DELETE ON documents BEGIN
+             DELETE FROM search_cjk WHERE rowid=old.doc; END;";
+    // Contentless saves the stored copy of name/body; contentless_delete keeps rowid deletes
+    // cheap. Older SQLite builds without the option fall back to a regular FTS5 table.
+    let contentless = db.execute_batch(
+        "CREATE VIRTUAL TABLE IF NOT EXISTS search_cjk USING fts5(
+             name,body,content='',contentless_delete=1,tokenize='unicode61'
+         )",
+    );
+    match contentless {
+        Ok(()) => (),
+        Err(e)
+            if e.to_string().contains("contentless_delete")
+                || e.to_string().contains("unrecognized option") =>
+        {
+            db.execute_batch(
+                "CREATE VIRTUAL TABLE IF NOT EXISTS search_cjk USING fts5(
+                     name,body,tokenize='unicode61'
+                 )",
+            )?;
+        }
+        Err(e)
+            if e.to_string().contains("no such module: fts5")
+                || e.to_string().contains("tokenizer") =>
+        {
+            return Ok(false)
+        }
+        Err(e) => return Err(e.into()),
+    }
+    db.execute_batch(triggers)?;
+    db.execute_batch(
+        "CREATE TABLE IF NOT EXISTS search_features(
+             key TEXT PRIMARY KEY, value TEXT NOT NULL
+         ) WITHOUT ROWID",
+    )?;
+    Ok(true)
+}
+
+/// Existing caches gain the CJK table in place. The marker makes the full backfill once-only;
+/// a crash before the marker is committed simply repeats it.
+fn ensure_cjk(db: &Connection) -> Result<()> {
+    if cjk_table(db)? && cjk_marker(db)? {
+        return Ok(());
+    }
+    let tx = Transaction::new_unchecked(db, TransactionBehavior::Immediate)?;
+    if !cjk_table(&tx)? || !cjk_marker(&tx)? {
+        if !create_cjk(&tx)? {
+            tx.commit()?;
+            return Ok(());
+        }
+        if !cjk_table(&tx)? || !cjk_marker(&tx)? {
+            tx.execute("DELETE FROM search_cjk", [])?;
+            tx.execute(
+                "INSERT INTO search_cjk(rowid,name,body)
+                 SELECT doc,rm_cjk(name_key),rm_cjk(body) FROM documents",
+                [],
+            )?;
+            tx.execute(
+                "INSERT OR REPLACE INTO search_features VALUES('cjk_v1','1')",
+                [],
+            )?;
+        }
+    }
+    tx.commit()?;
+    Ok(())
+}
+
 pub(super) fn initialize(db: &Connection) -> Result<()> {
     let application = id(db)?;
     if application != APPLICATION && application != 0 {
@@ -94,6 +209,8 @@ pub(super) fn initialize(db: &Connection) -> Result<()> {
         )?;
         tx.commit()?;
     }
+    ensure_cjk(db)?;
+    ensure_facet_cache(db)?;
     let journal: String = db.query_row("PRAGMA journal_mode", [], |r| r.get(0))?;
     if !journal.eq_ignore_ascii_case("wal") {
         let result: String = db.query_row("PRAGMA journal_mode=WAL", [], |r| r.get(0))?;

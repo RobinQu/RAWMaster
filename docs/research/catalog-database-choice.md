@@ -61,7 +61,7 @@ DuckDB 的列式压缩确实更好（100 万时小 40%），但导入慢 9.6 倍
 
 ### 读：100 万文档（中位数，ms）
 
-| 查询 | SQLite 现有索引 | SQLite + 两个索引 | DuckDB |
+| 查询 | SQLite 基础 schema | SQLite + 两个索引 | DuckDB |
 | --- | ---: | ---: | ---: |
 | 全库按拍摄时间倒序首页 | 37.11 | **0.02** | 6.24 |
 | 项目 + 评分 + 拍摄时间升序首页 | 7.60 | **0.04** | 1.13 |
@@ -83,9 +83,10 @@ DuckDB 的列式压缩确实更好（100 万时小 40%），但导入慢 9.6 倍
 
 读的结论分三层：
 
-1. **分页不是 DuckDB 的优势**。只要 SQLite 有匹配排序的索引，分页是 0.02–0.04 ms，比 DuckDB 快 30–270 倍。现有 schema 缺的是 `(gen,time_desc)`、`(gen,project_id,time_asc/desc)`、`(gen,name_key)` 这几条索引。
-2. **默认“拍摄顺序”排序 SQLite 会退化**（100 万时 7.5–21.9 ms），因为它要排序项目子集；DuckDB 的 Top-N 是 2.4 ms。7.5 ms 仍在 UI 一帧内，不是必须换引擎的理由；如果以后要压到亚毫秒，需要一条覆盖 `session_ord` 等排序键、并带 `rm_natural` collation 的索引，成本较高。
+1. **分页不是 DuckDB 的优势**。只要 SQLite 有匹配排序的索引，分页是 0.02–0.04 ms，比 DuckDB 快 30–270 倍。
+2. **真实搜索缓存已经为五种排序建了 keyset 索引**，上表第一列只用了基础 `query/schema.sql`，所以“缺索引”的结论要收窄。`query/index.rs::initialize` 另外创建了 `library_original`、`project_original`、`library_descending`、`project_descending`、`library_filename`、`project_filename`、`library_stars`、`project_stars` 等索引，全部带完整的 tie-breaker。用这组真实索引复测 20 万文档：默认“拍摄顺序”首页 **0.0735 ms**，拍摄时间倒序 **0.0757 ms**，`EXPLAIN QUERY PLAN` 直接走 `project_original` / `project_descending`。因此 P0 **不需要新增分页索引**，只需要确认这些索引存在。
 3. **全库 facets 是 DuckDB 唯一决定性的读优势**（50–90 倍）。但当前 `AppModel.submitCatalogPage` 构造的 `CatalogGridRequest` 没有传 `facets`，所以这条路径还没被 UI 使用。等 facets 真的上首屏，再用汇总表或 sidecar 解决，不必现在就为它换库。
+4. **文件名前缀的 150 ms 不是真实查询**。真实 `filename` 过滤是 `instr` 子串（<3 字符）或 trigram FTS（≥3 字符），不是 B-tree 前缀；补 `(gen,name_key)` 索引只能加速前缀，不能加速 `instr`。短查询的正确解法是下一节的东亚 FTS，而不是再加一条 B-tree。
 
 ### 写：100 万文档（中位数，ms）
 
@@ -126,29 +127,30 @@ DuckDB 的增量插入成本约 **139 µs/行**，在 2 万、20 万、100 万�
    PRAGMA cache_size=-262144;  -- 256 MiB
    PRAGMA temp_store=MEMORY;
    ```
-   100 万文档默认首页 21.9 → 7.5 ms。Swift 的 `LibraryStore` 和 Rust 的 `open_reader`/`Queue::open` 都要加；注意 Rust 的只读连接也要设，不能只设写连接。
-3. **补索引**（Rust `query/schema.sql` 的下一版迁移）：
-   ```sql
-   CREATE INDEX docs_time ON documents(gen, time_desc);
-   CREATE INDEX docs_project_time_desc ON documents(gen, project_id, time_desc);
-   CREATE INDEX docs_project_time_asc ON documents(gen, project_id, time_asc);
-   CREATE INDEX docs_name ON documents(gen, name_key);
-   ```
-   100 万实测：全库时间首页 37.1 → 0.02 ms；项目时间首页 7.6 → 0.04 ms；文件名前缀 150.5 → 0.02 ms。
-   默认“拍摄顺序”排序不在覆盖范围内，7.5 ms 可接受；若以后要压，再单独评估带 `rm_natural` collation 的覆盖索引。
-4. **文本搜索走 FTS5**（`search_fts` 已存在），不要用 `LIKE '%...%'` 扫全表。
+   100 万文档的排序型查询（基础 schema）21.9 → 7.5 ms；真实搜索缓存已有 keyset 索引，默认首页 0.07 ms，缓存主要帮助 facets 和临时排序。Swift 的 `LibraryStore` 和 Rust 的 `open_actual`/`open_reader`/`Queue::open` 都要加；注意 Rust 的只读连接也要设，不能只设写连接。
+3. **不要重复加分页索引**：`query/index.rs::initialize` 已经为 `original`、`filename`、`capturedAscending`、`capturedDescending`、`ratingDescending` 建了 library/project 两套 keyset 索引，并带完整 tie-breaker。20 万文档实测 0.0735–0.0757 ms；先验证 `EXPLAIN QUERY PLAN`，缺哪条再补，不要照搬本文早期基于基础 schema 的 DDL。
+4. **文本搜索走 FTS5**：`search_fts`（trigram）已存在，覆盖 ≥3 字符的子串；1–2 字符的东亚查询需要新增 CJK unigram 索引，见下一节。不要用 `LIKE '%...%'` 扫全表。
 
 ### 如果 facets 上首屏（P1）
 
-优先在 SQLite 里做**增量汇总表**，而不是换引擎：
+优先在 SQLite 里做**按 generation + watermark 的汇总/缓存**，而不是换引擎：
 
-- `rating_counts(gen, scope, rating, files, captures)`；
-- `camera_counts(gen, scope, camera_key, files, captures)`；
-- `tag_counts(gen, scope, key, files, captures)`；
-- 用触发器或投影构建时增量维护，模式与现有 `scope_counts` 一致；
-- 这样全库 facets 从 0.9–1.0 s 降到 O(1)，代价是导入/更新的少量触发器开销（需要单独测量）。
+- 评分/相机 facet 可以用 `documents` 上的触发器维护 `(gen, scope, rating/camera_key, files, captures)`，每条文档 4 次 upsert（library + project 两个 scope × file/capture）；
+- 标签 facet 需要 `doc_tags` 与 `documents` 的 file/capture 去重，触发器成本更高；先做“按 watermark 的持久缓存”，同一代内重复请求 O(1)，首次请求仍按现有 GROUP BY 计算；
+- 如果之后证明标签 facet 的首屏成本不可接受，再用 `facet_refs`/`facet_counts`（模式与 `object_refs`/`scope_counts` 相同）做增量维护；
+- 全库 facets 从 0.9–1.0 s 降到缓存命中后的 O(1)，代价是写入/首次计算的成本，需要单独测量。
 
 只有当 facets 的筛选组合是**任意谓词**、无法用预聚合覆盖时，才考虑 DuckDB sidecar。
+
+### 东亚 FTS
+
+现有 `search_fts` 用 `tokenize='trigram'`，只对 ≥3 字符的查询走索引；1–2 个汉字/假名/谚文会退回 `instr` 全表扫描。补一张 `search_cjk`：
+
+- 只存 CJK 字符的 unigram（汉字、平假名、片假名、谚文、注音），用 `unicode61`；
+- 查询 1 字符时匹配单个 token，2 字符时用短语 `"富 士"` 保证相邻；
+- 非 CJK 段落插入一个 gap token，避免“富士Nikon山”被 `"士 山"` 误命中；
+- ≥3 字符继续走 trigram，不增加第二张大表；
+- 现有缓存原地建表并回填，不要求用户手动“重建索引”。
 
 ### 如果确实需要 DuckDB（P2）
 
@@ -192,3 +194,40 @@ output/research/db-bench/.venv/bin/python docs/research/catalog-database-bench.p
 - `body_search` 用了 `LIKE ... LIMIT 60`，只用于说明“没有 FTS 时不要用它做全文搜索”，不是 FTS5/DuckDB FTS 的对比。
 - 写测试的 `insert_5k` 包含 1.5 万标签行；DuckDB 的每行固定成本在三个规模一致，结论不受表大小影响。
 - 多进程测试只验证了“第一个进程读写、第二个进程读写/只读”这一种组合；全只读并发的组合单独验证过。
+
+## 实施记录（2026-11-26）
+
+### P0：页缓存与真实索引
+
+- Swift `LibraryStore`、Rust `query::open_actual`（source + cache）、`navigation::open_reader`、`scheduler::Queue::open`、`processing::db`、`managed_files::writer` 都加了
+  `PRAGMA cache_size=-262144; PRAGMA temp_store=MEMORY;`。
+- 真实搜索缓存的分页索引不需要新增：`query/index.rs::initialize` 已有 `library_original`/`project_original`/`library_descending`/`project_descending`/`library_filename`/`project_filename`/`library_stars`/`project_stars` 等 keyset 索引。用真实索引复测 20 万文档：默认“拍摄顺序”首页 **0.0735 ms**，拍摄时间倒序 **0.0757 ms**，计划分别走 `project_original`、`project_descending`。因此没有加重复的 `docs_time`/`docs_project_time`。
+- `name_key` B-tree 没有加：真实 `filename` 过滤是 `instr` 子串（<3 字符）或 trigram FTS（≥3 字符），B-tree 前缀索引帮不上；短查询由下面的 CJK unigram 表解决。
+
+### P1：按 watermark 的 facets 缓存
+
+- 新增 `facet_cache(gen, watermark, fingerprint, names, payload)`。
+- `read::run` 在同一个读快照里查缓存；未命中时计算 facets，`query::page` 在快照结束后写入。键包含 generation、watermark、查询指纹和排序后的 facet 名，所以翻页、重复筛选、同一 watermark 下的再次请求都是 O(1)。
+- 写入时清理旧 generation 和更旧 watermark 的行。
+- 测试 `repeated_facet_pages_reuse_the_watermark_cache` 通过改写缓存 payload 证明第二次请求确实命中缓存。
+- **没有立刻上增量触发器汇总表**：原型在 20 万文档上只维护 library 的 rating/camera（每文档 8 次 upsert）就把 5000 行插入从 **191 ms 拖到 262.5 ms（+37%）**；标签还要再乘，且当前 `CatalogGridRequest` 根本没有请求 facets。等 facets 真的上首屏、且首次请求成本不可接受时，再用 `facet_refs`/`facet_counts`（模式与 `object_refs`/`scope_counts` 相同）做增量维护。
+
+### 东亚 FTS
+
+- 新增 `search_cjk(name, body)`，`unicode61`，只存 CJK unigram。
+- `text::cjk_index` 把汉字、平假名、片假名、谚文、注音拆成单字 token；非 CJK 段落插入 `U+E000` gap token，避免“富士Nikon山”命中 `"士 山"`。
+- 1 字符查询匹配单 token；2 字符查询用短语 `"富 士"` 保证相邻；≥3 字符继续走 `search_fts` trigram。
+- 现有缓存原地建表并回填（`search_features.cjk_v1` 标记），不需要用户手动“重建索引”；测试覆盖新缓存、旧缓存回填、汉字/假名/谚文、`filename` 与 `body` 两个字段、跨 Latin 的假相邻。
+- 使用 `content='', contentless_delete=1`，不重复存 `name`/`body` 原文；旧 SQLite 不支持该选项时回退到普通 FTS5 表。
+- 10 万条中文正文（每条约 144 个汉字 + 文件名）实测：
+  - 只有 trigram：构建 2.21 s，文件 175.9 MB；
+  - trigram + 普通 unigram：构建 4.27 s，文件 254.3 MB；
+  - trigram + contentless unigram：构建 4.10 s，文件 203.2 MB；
+  - 2 字查询 0.039 ms，3 字 1.84 ms，1 字 1.83 ms（匹配全部 10 万条）。
+- 也就是说 CJK 表在 10 万条中文正文上增加约 27 MB 和约 1.9 s 构建时间；100 万条大致线性到 270 MB 量级。真实目录的中文正文通常比这个合成样本短，成本会更低。若仍嫌大，下一步只对 `filename` + caption/title/tag 建 CJK 表，而不是整个 `body`。
+
+### 验证
+
+- `cargo test --release --manifest-path Modules/LibraryCatalog/Cargo.toml`：全部通过（含 12 项 `query_pages`）。
+- `swift test -c release --filter RAWMasterImagingTests`：1,081 项，86 跳过，0 失败。
+- `swift build -c release --product RAWMaster`：通过。

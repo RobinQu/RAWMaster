@@ -1746,5 +1746,14 @@
     "DuckDB secondary index docs_asset(gen,asset_id) is not used for point lookups; plan is a sequential scan.",
     "body_search is LIMIT 60 and not an FTS benchmark.",
     "Write and multi-process tests run on scratch copies."
-  ]
+  ],
+  "targeted_real_cache_200k": {
+    "default_page_ms": 0.0735,
+    "captured_descending_page_ms": 0.0757,
+    "plans": {
+      "default": "SEARCH documents USING INDEX project_original (gen=? AND project_id=?) | USE TEMP B-TREE FOR LAST TERM OF ORDER BY",
+      "captured_descending": "SEARCH documents USING INDEX project_descending (gen=? AND project_id=?) | USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+    },
+    "note": "The query/index.rs per-sort keyset indexes are present in the real search cache; the earlier base-schema benchmark did not include them."
+  }
 }

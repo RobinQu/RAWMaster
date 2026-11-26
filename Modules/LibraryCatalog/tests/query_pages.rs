@@ -462,3 +462,139 @@ fn unreadable_owned_cache_recovers_without_erasing_diagnostic_bytes() {
     assert_eq!(std::fs::read(&l.search).unwrap(), original);
     assert_eq!(l.page(json!({}))["totalCaptures"], 2);
 }
+
+#[test]
+fn east_asian_short_queries_use_the_unigram_index() {
+    let library = Library::new();
+    for (id, name) in [
+        ("fuji", "富士山樱花.RAW"),
+        ("gap", "富士Nikon山.RAW"),
+        ("seoul", "서울한강.JPG"),
+        ("kana", "ふじさん.JPG"),
+    ] {
+        library.asset(id, id, id, name, Some(1.), 0);
+        library.admit(id, id, "p");
+    }
+    let query = |needle: &str| {
+        ids(&library.page(json!({
+            "projectID":"p",
+            "query":{"filename":needle},
+            "includeOrderedIDs":true
+        }))["items"])
+    };
+    assert_eq!(query("富").len(), 2);
+    assert_eq!(query("富士").len(), 2);
+    // A Latin word between the two ideographs must not produce a false phrase match.
+    assert_eq!(query("士山"), vec!["fuji"]);
+    assert_eq!(query("富士山"), vec!["fuji"]);
+    assert_eq!(query("한강"), vec!["seoul"]);
+    assert_eq!(query("ふじ"), vec!["kana"]);
+    let body = |needle: &str| {
+        ids(&library.page(json!({
+            "projectID":"p",
+            "query":{"text":needle},
+            "includeOrderedIDs":true
+        }))["items"])
+    };
+    assert_eq!(body("富士").len(), 2);
+    assert_eq!(body("한강"), vec!["seoul"]);
+
+    let cache = Connection::open(&library.search).unwrap();
+    let has_fts: bool = cache
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_fts')",
+            [],
+            |r| r.get(0),
+        )
+        .unwrap();
+    let has_cjk: bool = cache
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_cjk')",
+            [],
+            |r| r.get(0),
+        )
+        .unwrap();
+    if has_fts {
+        assert!(has_cjk, "CJK index is missing while FTS5 is available");
+    }
+    if has_cjk {
+        let count: i64 = cache
+            .query_row("SELECT count(*) FROM search_cjk", [], |r| r.get(0))
+            .unwrap();
+        assert!(count >= 4, "CJK index has {count} rows");
+    }
+}
+
+#[test]
+fn repeated_facet_pages_reuse_the_watermark_cache() {
+    let library = Library::basic();
+    let request = json!({
+        "projectID":"p",
+        "facets":["rating","camera"],
+        "includeOrderedIDs":true
+    });
+    let first = library.page(request.clone());
+    let cache = Connection::open(&library.search).unwrap();
+    cache
+        .create_collation("rm_natural", |a, b| a.cmp(b))
+        .unwrap();
+    let rows: i64 = cache
+        .query_row("SELECT count(*) FROM facet_cache", [], |r| r.get(0))
+        .unwrap();
+    assert_eq!(rows, 1);
+
+    // Overwrite the cached payload with a sentinel. If the second page consults the cache for
+    // this generation and watermark it must return the sentinel, not the recomputed histogram.
+    cache
+        .execute(
+            "UPDATE facet_cache SET payload=?",
+            [r#"{"rating":[{"value":"cached","files":1,"captures":1,"count":1}]}"#],
+        )
+        .unwrap();
+    let second = library.page(request);
+    assert_eq!(second["facets"]["rating"][0]["value"], "cached");
+    assert_ne!(first["facets"]["rating"][0]["value"], "cached");
+}
+
+#[test]
+fn cjk_index_is_backfilled_when_an_existing_cache_is_opened() {
+    let library = Library::new();
+    library.asset("cjk", "cjk", "cjk", "富士山樱花.RAW", Some(1.), 0);
+    library.admit("cjk", "cjk", "p");
+    assert_eq!(
+        ids(&library.page(json!({"projectID":"p","query":{"filename":"富士"}}))["items"]),
+        vec!["cjk"]
+    );
+
+    {
+        let cache = Connection::open(&library.search).unwrap();
+        cache
+            .create_collation("rm_natural", |a, b| a.cmp(b))
+            .unwrap();
+        cache
+            .execute_batch(
+                "DROP TRIGGER IF EXISTS cjk_add;
+                 DROP TRIGGER IF EXISTS cjk_remove;
+                 DROP TABLE IF EXISTS search_cjk;
+                 DROP TABLE IF EXISTS search_features;",
+            )
+            .unwrap();
+    }
+
+    assert_eq!(
+        ids(&library.page(json!({"projectID":"p","query":{"filename":"士山"}}))["items"]),
+        vec!["cjk"]
+    );
+    let cache = Connection::open(&library.search).unwrap();
+    cache
+        .create_collation("rm_natural", |a, b| a.cmp(b))
+        .unwrap();
+    let has_cjk: bool = cache
+        .query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_cjk')",
+            [],
+            |r| r.get(0),
+        )
+        .unwrap();
+    assert!(has_cjk);
+}

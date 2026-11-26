@@ -34,6 +34,10 @@ public final class LibraryStore: @unchecked Sendable {
     else { throw LibraryError.database("无法打开资料库") }
     sqlite3_busy_timeout(db, 5000)
     do {
+      // The catalog is a single hot file for browsing, editing and export. The SQLite default
+      // page cache is 2 MiB, which turns large facet scans into repeated reads.
+      try exec("PRAGMA cache_size=-262144")
+      try exec("PRAGMA temp_store=MEMORY")
       try exec("PRAGMA foreign_keys=ON")
       if inspected.0 == DatabaseSchema.version {
         let needsReplay = try withReadSnapshot {

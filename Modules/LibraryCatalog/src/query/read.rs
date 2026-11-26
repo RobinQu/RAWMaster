@@ -233,7 +233,17 @@ fn unique_member_ids(rows: &[Value], field: &str) -> Vec<String> {
         .collect()
 }
 
-pub(super) fn run(db: &Connection, state: &State, r: &Request) -> Result<Value> {
+pub(super) struct FacetWrite {
+    pub fingerprint: String,
+    pub names: String,
+    pub payload: String,
+}
+
+pub(super) fn run(
+    db: &Connection,
+    state: &State,
+    r: &Request,
+) -> Result<(Value, Option<FacetWrite>)> {
     let hash = r.fingerprint()?;
     let object = if r.level == "file" {
         "file_id"
@@ -247,17 +257,42 @@ pub(super) fn run(db: &Connection, state: &State, r: &Request) -> Result<Value> 
             || cursor["watermark"].as_i64() != Some(state.watermark)
             || cursor["query"].as_str() != Some(&hash)
         {
-            return Ok(
+            return Ok((
                 json!({"status":"staleCursor","generation":state.token,"watermark":state.watermark,"libraryID":state.library}),
-            );
+                None,
+            ));
         }
     }
-    let fts: bool = db.query_row(
-        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_fts')",
+    let fts: filter::Fts = db.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_fts'),
+                EXISTS(SELECT 1 FROM sqlite_schema WHERE name='search_cjk')",
         [],
-        |r| r.get(0),
+        |r| {
+            Ok(filter::Fts {
+                trigram: r.get(0)?,
+                cjk: r.get(1)?,
+            })
+        },
     )?;
     let m = filter::matching(r, state.gen, fts)?;
+    let facet_key = if r.facets.is_empty() {
+        None
+    } else {
+        let mut names = r.facets.clone();
+        names.sort();
+        Some(names.join(","))
+    };
+    let cached_facets: Option<String> = match &facet_key {
+        Some(names) => db
+            .query_row(
+                "SELECT payload FROM facet_cache
+                 WHERE gen=? AND watermark=? AND fingerprint=? AND names=?",
+                params![state.gen, state.watermark, hash, names],
+                |row| row.get(0),
+            )
+            .optional()?,
+        None => None,
+    };
     let (file_count, capture_count) = counts(db, state, &m, &hash)?;
     let ordered = sort.join(",");
     let guard = representative(r, object);
@@ -324,8 +359,21 @@ pub(super) fn run(db: &Connection, state: &State, r: &Request) -> Result<Value> 
         result["orderedAssetIDs"] = json!(ordered_ids(db, &m, "asset_id", "1", &ordered)?);
         result["orderedObjectIDs"] = json!(ordered_ids(db, &m, object, &guard, &ordered)?);
     }
+    let mut facet_write = None;
     if !r.facets.is_empty() {
-        result["facets"] = facets(db, &m, r)?;
+        if let Some(payload) = cached_facets {
+            result["facets"] = serde_json::from_str(&payload)?;
+        } else {
+            let value = facets(db, &m, r)?;
+            result["facets"] = value;
+            if let Some(names) = facet_key {
+                facet_write = Some(FacetWrite {
+                    fingerprint: hash,
+                    names,
+                    payload: serde_json::to_string(&result["facets"])?,
+                });
+            }
+        }
     }
-    Ok(result)
+    Ok((result, facet_write))
 }

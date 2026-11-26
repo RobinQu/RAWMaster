@@ -34,6 +34,7 @@ fn writer(catalog: &Path) -> Result<Connection> {
         OpenFlags::SQLITE_OPEN_READ_WRITE | OpenFlags::SQLITE_OPEN_NOFOLLOW,
     )?;
     db.busy_timeout(Duration::from_secs(5))?;
+    db.execute_batch("PRAGMA cache_size=-262144; PRAGMA temp_store=MEMORY;")?;
     db.pragma_update(None, "foreign_keys", true)?;
     crate::validate_catalog_objects(&db)?;
     Ok(db)

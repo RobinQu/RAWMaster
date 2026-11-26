@@ -8,7 +8,7 @@ mod text;
 pub(crate) mod works;
 
 use crate::Result;
-use rusqlite::{Connection, OpenFlags};
+use rusqlite::{functions::FunctionFlags, params, Connection, OpenFlags};
 use serde_json::{json, Value};
 use std::{
     collections::HashSet,
@@ -147,6 +147,7 @@ fn open_actual(catalog: &Path, index: &Path) -> Result<(Connection, Connection, 
         OpenFlags::SQLITE_OPEN_READ_ONLY | OpenFlags::SQLITE_OPEN_NO_MUTEX,
     )?;
     source.busy_timeout(Duration::from_secs(5))?;
+    source.execute_batch("PRAGMA cache_size=-262144; PRAGMA temp_store=MEMORY;")?;
     source.pragma_update(None, "query_only", true)?;
     index::validate_source(&source)?;
     if source_stamp != index::stamp(catalog)? {
@@ -157,7 +158,14 @@ fn open_actual(catalog: &Path, index: &Path) -> Result<(Connection, Connection, 
     separate_files(catalog, index)?;
     let cache = Connection::open(index)?;
     cache.busy_timeout(Duration::from_secs(5))?;
+    cache.execute_batch("PRAGMA cache_size=-262144; PRAGMA temp_store=MEMORY;")?;
     cache.create_collation("rm_natural", text::natural)?;
+    cache.create_scalar_function(
+        "rm_cjk",
+        1,
+        FunctionFlags::SQLITE_UTF8 | FunctionFlags::SQLITE_DETERMINISTIC,
+        |ctx| Ok(text::cjk_index(&ctx.get::<String>(0)?)),
+    )?;
     cache.pragma_update(None, "foreign_keys", true)?;
     index::initialize(&cache)?;
     Ok((source, cache, source_stamp))
@@ -197,6 +205,25 @@ pub fn page(catalog: &Path, index: &Path, request: &Value) -> Result<Value> {
         if state != expected {
             continue;
         }
-        return read::run(&snapshot, &state, &options);
+        let (result, facet_write) = read::run(&snapshot, &state, &options)?;
+        drop(snapshot);
+        if let Some(write) = facet_write {
+            cache.execute(
+                "INSERT OR REPLACE INTO facet_cache
+                 (gen,watermark,fingerprint,names,payload) VALUES(?,?,?,?,?)",
+                params![
+                    state.gen,
+                    state.watermark,
+                    write.fingerprint,
+                    write.names,
+                    write.payload
+                ],
+            )?;
+            cache.execute(
+                "DELETE FROM facet_cache WHERE gen<>? OR (gen=? AND watermark<?)",
+                params![state.gen, state.gen, state.watermark],
+            )?;
+        }
+        return Ok(result);
     }
 }

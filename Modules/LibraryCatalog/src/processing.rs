@@ -42,7 +42,10 @@ fn db(p: &Path, write: bool) -> Result<Connection> {
         }) | OpenFlags::SQLITE_OPEN_NOFOLLOW,
     )?;
     c.busy_timeout(Duration::from_secs(5))?;
-    c.execute_batch("PRAGMA trusted_schema=OFF;PRAGMA foreign_keys=ON;")?;
+    c.execute_batch(
+        "PRAGMA trusted_schema=OFF;PRAGMA foreign_keys=ON;\
+         PRAGMA cache_size=-262144;PRAGMA temp_store=MEMORY;",
+    )?;
     Ok(c)
 }
 fn attempt_dir(catalog: &Path, jid: &str, token: &str) -> Result<PathBuf> {

@@ -43,7 +43,8 @@ impl Queue {
         )?;
         db.busy_timeout(Duration::from_secs(5))?;
         db.execute_batch(
-            "PRAGMA trusted_schema=OFF; PRAGMA foreign_keys=ON; PRAGMA synchronous=FULL;",
+            "PRAGMA trusted_schema=OFF; PRAGMA foreign_keys=ON; PRAGMA synchronous=FULL; \
+             PRAGMA cache_size=-262144; PRAGMA temp_store=MEMORY;",
         )?;
         crate::require_scheduler_schema(&db)?;
         Ok(Self { db, path })

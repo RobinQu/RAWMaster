@@ -185,10 +185,15 @@ pub(super) struct Matched {
     pub binds: Vec<Bind>,
     pub tally_scope: Option<String>,
 }
+#[derive(Clone, Copy, Default)]
+pub(super) struct Fts {
+    pub trigram: bool,
+    pub cjk: bool,
+}
 struct Where {
     values: Vec<Bind>,
     terms: Vec<String>,
-    fts: bool,
+    fts: Fts,
 }
 impl Where {
     fn bind(&mut self, v: impl Into<Bind>) -> String {
@@ -207,15 +212,32 @@ impl Where {
         let needle = text::searchable(needle);
         let exact = self.bind(needle.clone());
         let exact = format!("instr(d.{col},{exact})>0");
-        if !self.fts || needle.contains('\0') || needle.chars().count() < 3 {
+        if needle.contains('\0') {
             return exact;
         }
         let fts_column = if col == "name_key" { "name" } else { "body" };
-        let literal = needle.replace('"', "\"\"");
-        let token = self.bind(format!("{fts_column} : \"{literal}\""));
-        format!(
-            "(d.doc IN (SELECT rowid FROM search_fts WHERE search_fts MATCH {token}) AND {exact})"
-        )
+        let count = needle.chars().count();
+        if count >= 3 {
+            if !self.fts.trigram {
+                return exact;
+            }
+            let literal = needle.replace('"', "\"\"");
+            let token = self.bind(format!("{fts_column} : \"{literal}\""));
+            return format!(
+                "(d.doc IN (SELECT rowid FROM search_fts WHERE search_fts MATCH {token}) AND {exact})"
+            );
+        }
+        // A trigram token is three characters, so one- and two-character CJK queries need the
+        // unigram table. The exact `instr` check remains the final authority for both paths.
+        if self.fts.cjk {
+            if let Some(query) = text::cjk_query(&needle) {
+                let token = self.bind(format!("{fts_column} : {query}"));
+                return format!(
+                    "(d.doc IN (SELECT rowid FROM search_cjk WHERE search_cjk MATCH {token}) AND {exact})"
+                );
+            }
+        }
+        exact
     }
     fn tag(&mut self, value: &str) -> String {
         let key = self.bind(text::tag_key(value.trim()));
@@ -363,7 +385,7 @@ impl Where {
     }
 }
 
-pub(super) fn matching(r: &Request, gen: i64, fts: bool) -> Result<Matched> {
+pub(super) fn matching(r: &Request, gen: i64, fts: Fts) -> Result<Matched> {
     let mut w = Where {
         values: Vec::new(),
         terms: Vec::new(),
