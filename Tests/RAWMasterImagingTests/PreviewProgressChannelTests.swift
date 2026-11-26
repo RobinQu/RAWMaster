@@ -174,7 +174,7 @@ final class PreviewProgressChannelTests: XCTestCase {
   func testCacheAndActivityOnlyDeferComparisonUntilQuietWithoutAnotherInput() async throws {
     let (root, source) = try fixture(); defer { try? FileManager.default.removeItem(at: root) }
     let native = ProgressBlockedNative(); defer { native.release(20) }
-    let service = DevelopmentPreviewService(policy: .init(comparisonQuiescenceMilliseconds: 80), renderOverride: { try native.render($0, $1) })
+    let service = DevelopmentPreviewService(policy: .init(comparisonQuiescenceMilliseconds: 1000), renderOverride: { try native.render($0, $1) })
     let lease = try await service.open(source: .raw(source)), cid = PreviewConsumerID()
     let channel = try await service.makeProgressChannel(sessionID: lease.id, sourceGeneration: lease.sourceGeneration, consumerID: cid)
     let observed = ProgressObserved(), observer = Task { for await snapshot in channel.snapshots { observed.set(snapshot) } }

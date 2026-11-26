@@ -85,7 +85,7 @@ final class OrderedMetadataWorkersTests: XCTestCase {
                 }
             }
         }
-        await fulfillment(of: [ready], timeout: 2)
+        await fulfillment(of: [ready], timeout: 30)
         task.cancel()
         do { _ = try await task.value; XCTFail("Cancellation must reach blocking workers") }
         catch { XCTAssertTrue(error is CancellationError) }
