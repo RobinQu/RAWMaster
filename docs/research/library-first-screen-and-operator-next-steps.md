@@ -54,8 +54,19 @@ xcrun xctest -XCTest RAWMasterUITests.LibraryGridPerformanceTests \
 | 导航装载 | 30–41 ms |
 | 温态网格绘制 | 64–82 ms |
 
+补充一个更接近当前用户的 v8 目录（同样是 6,928 文件，`output/library-033-delivery/plan-v8.sqlite`）：
+
+| 路径 | P50 | P95 |
+| --- | ---: | ---: |
+| v8→v10 迁移（`catalogOpenMs`） | 258–303 ms | — |
+| 首次打开 + 首屏（含首次建搜索缓存） | 694 ms | 958 ms |
+| 同 trial 温态重开 + 首屏 | **160 ms** | **161 ms** |
+| 改筛选 → 可见网格 | 62 ms | 73 ms |
+
+v7 的 2.4 s 是更老 schema 的一次性迁移；v8 升级约 0.7–1.0 s，当前 v10 温态 160–166 ms。证据：[measurement-v8-20261126.json](evidence/library-first-screen/measurement-v8-20261126.json)。
+
 因此：
-- **当前 v10 库的首屏不是 2.6 s，而是 166 ms**；
+- **当前 v10 库的首屏不是 2.6 s，而是 160–166 ms**；
 - 旧库升级的一次性 2.4 s 应做成明确的迁移进度/后台任务，不能拿它当网格性能基线；
 - 首次导入后的搜索缓存构建还没有单独测。下一步用 v10、无搜索缓存的库测一次；若超过 300 ms，再考虑首屏先用 authority 分页、后台构建缓存。
 
