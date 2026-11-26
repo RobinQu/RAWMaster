@@ -1,0 +1,1750 @@
+{
+  "method": "synthetic documents matching Modules/LibraryCatalog/src/query/schema.sql; Python 3.14; DuckDB 2.0.1; SQLite 3.53.4; macOS arm64",
+  "scales": [
+    {
+      "assets": 20000,
+      "versions": {
+        "duckdb": {
+          "file_mb": 13.1,
+          "read": {
+            "first_page": {
+              "median": 1.122,
+              "p95": 1.17,
+              "samples": [
+                1.17,
+                1.133,
+                1.079,
+                1.077,
+                1.122
+              ]
+            },
+            "project_page": {
+              "median": 0.304,
+              "p95": 0.333,
+              "samples": [
+                0.333,
+                0.304,
+                0.299,
+                0.312,
+                0.295
+              ]
+            },
+            "facet_rating": {
+              "median": 0.734,
+              "p95": 0.758,
+              "samples": [
+                0.715,
+                0.734,
+                0.753,
+                0.691,
+                0.758
+              ]
+            },
+            "facet_camera": {
+              "median": 1.026,
+              "p95": 1.166,
+              "samples": [
+                1.166,
+                1.026,
+                1.062,
+                0.97,
+                0.982
+              ]
+            },
+            "facet_rating_all": {
+              "median": 1.167,
+              "p95": 1.253,
+              "samples": [
+                1.253,
+                1.174,
+                1.125,
+                1.167,
+                1.114
+              ]
+            },
+            "facet_camera_all": {
+              "median": 1.862,
+              "p95": 1.904,
+              "samples": [
+                1.853,
+                1.904,
+                1.884,
+                1.862,
+                1.682
+              ]
+            },
+            "facet_tag_all": {
+              "median": 2.048,
+              "p95": 2.282,
+              "samples": [
+                2.169,
+                2.282,
+                2.048,
+                2.009,
+                1.966
+              ]
+            },
+            "tag_page": {
+              "median": 0.845,
+              "p95": 0.871,
+              "samples": [
+                0.845,
+                0.797,
+                0.871,
+                0.865,
+                0.736
+              ]
+            },
+            "name_prefix": {
+              "median": 0.465,
+              "p95": 0.503,
+              "samples": [
+                0.447,
+                0.502,
+                0.465,
+                0.448,
+                0.503
+              ]
+            },
+            "body_search": {
+              "median": 0.214,
+              "p95": 0.228,
+              "samples": [
+                0.222,
+                0.214,
+                0.228,
+                0.204,
+                0.186
+              ]
+            },
+            "hydrate": {
+              "median": 0.52,
+              "p95": 0.572,
+              "samples": [
+                0.54,
+                0.572,
+                0.52,
+                0.507,
+                0.484
+              ]
+            },
+            "asset_lookup": {
+              "median": 203.373,
+              "p95": 205.621,
+              "samples": [
+                205.621,
+                201.272,
+                205.531,
+                203.373,
+                202.039
+              ]
+            }
+          },
+          "plans": {
+            "first_page": "╭─ Projection ─────────────────────────╮\n│ Projections: #0, #1                  │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Top N ───────────┴──────────────────╮\n│ Top: 60                              │\n│ Order By: #2 ASC                     │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Seq Scan ────────┴──────────────────╮\n│ Table: duck.main.documents           │\n│ Type: Sequential Scan                │\n│ Projections: doc, record, time_desc  │\n│ Filters:                             │\n│ optional: Dynamic Filter (time_desc) │\n│ ~20,000 rows                         │\n╰──────────────────────────────────────╯\n",
+            "project_page": "╭─ Projection ─────────────────────────╮\n│ Projections: #0, #1                  │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Top N ───────────┴──────────────────╮\n│ Top: 60                              │\n│ Order By: #2 ASC                     │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Projection ──────┴──────────────────╮\n│ Projections: doc, record, time_asc   │\n│ ~488 rows                            │\n╰───────────────────┬──────────────────╯\n╭─ Seq Scan ────────┴──────────────────╮\n│ Table: duck.main.documents           │\n│ Type: Sequential Scan                │\n│ Projections: time_asc, doc, record   │\n│ Filters:                             │\n│ project_id = 'p07', rating >= 3,     │\n│ optional: Dynamic Filter (time_asc)  │\n│ ~488 rows                            │\n╰──────────────────────────────────────╯\n",
+            "asset_lookup": "╭─ Seq Scan ─────────────────────╮\n│ Table: duck.main.documents     │\n│ Type: Sequential Scan          │\n│ Projections: record            │\n│ Filters: asset_id = 'a0000007' │\n│ ~1 row                         │\n╰────────────────────────────────╯\n"
+          },
+          "write": {
+            "point_update": {
+              "median": 31.795,
+              "p95": 31.795,
+              "samples": [
+                31.795
+              ]
+            },
+            "bulk_update": {
+              "median": 0.584,
+              "p95": 0.584,
+              "samples": [
+                0.584,
+                0.584
+              ]
+            },
+            "insert_5k": {
+              "median": 694.787,
+              "p95": 694.787,
+              "samples": [
+                694.787
+              ]
+            },
+            "page_after_insert": {
+              "median": 1.207,
+              "p95": 1.245,
+              "samples": [
+                1.245,
+                1.169
+              ]
+            },
+            "delete_5k": {
+              "median": 14.427,
+              "p95": 14.427,
+              "samples": [
+                14.427
+              ]
+            },
+            "checkpoint": {
+              "median": 2.341,
+              "p95": 2.341,
+              "samples": [
+                2.341
+              ]
+            },
+            "file_mb_before_checkpoint": 17.5,
+            "file_mb_after_checkpoint": 18.4
+          },
+          "commit": {
+            "median": 22.5,
+            "samples": [
+              23.1,
+              22.5,
+              20.9
+            ],
+            "per_commit_ms": 0.113
+          },
+          "commit_full": {
+            "median": 978.2,
+            "samples": [
+              978.2,
+              974.2,
+              1037.8
+            ],
+            "per_commit_ms": 4.891
+          }
+        },
+        "sqlite": {
+          "file_mb": 18.1,
+          "read": {
+            "first_page": {
+              "median": 0.785,
+              "p95": 0.849,
+              "samples": [
+                0.749,
+                0.785,
+                0.777,
+                0.785,
+                0.849
+              ]
+            },
+            "project_page": {
+              "median": 0.119,
+              "p95": 0.147,
+              "samples": [
+                0.147,
+                0.119,
+                0.114,
+                0.115,
+                0.126
+              ]
+            },
+            "facet_rating": {
+              "median": 0.173,
+              "p95": 0.187,
+              "samples": [
+                0.181,
+                0.173,
+                0.172,
+                0.163,
+                0.187
+              ]
+            },
+            "facet_camera": {
+              "median": 0.198,
+              "p95": 0.217,
+              "samples": [
+                0.197,
+                0.198,
+                0.196,
+                0.217,
+                0.21
+              ]
+            },
+            "facet_rating_all": {
+              "median": 5.824,
+              "p95": 6.356,
+              "samples": [
+                5.757,
+                5.824,
+                6.299,
+                5.677,
+                6.356
+              ]
+            },
+            "facet_camera_all": {
+              "median": 6.377,
+              "p95": 6.674,
+              "samples": [
+                6.674,
+                6.414,
+                6.351,
+                6.351,
+                6.377
+              ]
+            },
+            "facet_tag_all": {
+              "median": 13.643,
+              "p95": 13.663,
+              "samples": [
+                13.647,
+                13.643,
+                13.663,
+                13.337,
+                13.643
+              ]
+            },
+            "tag_page": {
+              "median": 0.294,
+              "p95": 0.306,
+              "samples": [
+                0.3,
+                0.306,
+                0.293,
+                0.294,
+                0.288
+              ]
+            },
+            "name_prefix": {
+              "median": 1.262,
+              "p95": 1.285,
+              "samples": [
+                1.261,
+                1.278,
+                1.285,
+                1.262,
+                1.249
+              ]
+            },
+            "body_search": {
+              "median": 0.03,
+              "p95": 0.032,
+              "samples": [
+                0.032,
+                0.031,
+                0.03,
+                0.03,
+                0.03
+              ]
+            },
+            "hydrate": {
+              "median": 0.024,
+              "p95": 0.026,
+              "samples": [
+                0.026,
+                0.024,
+                0.024,
+                0.023,
+                0.023
+              ]
+            },
+            "asset_lookup": {
+              "median": 7.364,
+              "p95": 7.471,
+              "samples": [
+                7.471,
+                7.364,
+                7.35,
+                7.364,
+                7.343
+              ]
+            }
+          },
+          "plans": {
+            "first_page": "SEARCH documents USING INDEX docs_camera (gen=?) | USE TEMP B-TREE FOR ORDER BY",
+            "project_page": "SEARCH documents USING INDEX sqlite_autoindex_documents_1 (gen=? AND project_id=?) | USE TEMP B-TREE FOR ORDER BY",
+            "asset_lookup": "SEARCH documents USING INDEX docs_asset (gen=? AND asset_id=?)"
+          },
+          "write_full": {
+            "point_update": {
+              "median": 13.608,
+              "p95": 13.608,
+              "samples": [
+                13.608
+              ]
+            },
+            "bulk_update": {
+              "median": 7.742,
+              "p95": 7.795,
+              "samples": [
+                7.795,
+                7.689
+              ]
+            },
+            "insert_5k": {
+              "median": 75.577,
+              "p95": 75.577,
+              "samples": [
+                75.577
+              ]
+            },
+            "page_after_insert": {
+              "median": 0.025,
+              "p95": 0.026,
+              "samples": [
+                0.026,
+                0.024
+              ]
+            },
+            "delete_5k": {
+              "median": 20.348,
+              "p95": 20.348,
+              "samples": [
+                20.348
+              ]
+            },
+            "checkpoint": {
+              "median": 7.989,
+              "p95": 7.989,
+              "samples": [
+                7.989
+              ]
+            },
+            "file_mb_before_checkpoint": 32.0,
+            "file_mb_after_checkpoint": 23.5
+          },
+          "commit_full": {
+            "median": 7.9,
+            "samples": [
+              8.9,
+              7.9,
+              7.4
+            ],
+            "per_commit_ms": 0.039
+          },
+          "fullfsync_default": 0,
+          "commit_fullfsync": {
+            "median": 921.3,
+            "samples": [
+              901.9,
+              949.7,
+              921.3
+            ],
+            "per_commit_ms": 4.606
+          },
+          "write_normal": {
+            "point_update": {
+              "median": 20.719,
+              "p95": 20.719,
+              "samples": [
+                20.719
+              ]
+            },
+            "bulk_update": {
+              "median": 12.739,
+              "p95": 13.995,
+              "samples": [
+                13.995,
+                11.482
+              ]
+            },
+            "insert_5k": {
+              "median": 76.738,
+              "p95": 76.738,
+              "samples": [
+                76.738
+              ]
+            },
+            "page_after_insert": {
+              "median": 0.03,
+              "p95": 0.031,
+              "samples": [
+                0.03,
+                0.031
+              ]
+            },
+            "delete_5k": {
+              "median": 17.637,
+              "p95": 17.637,
+              "samples": [
+                17.637
+              ]
+            },
+            "checkpoint": {
+              "median": 5.653,
+              "p95": 5.653,
+              "samples": [
+                5.653
+              ]
+            },
+            "file_mb_before_checkpoint": 33.6,
+            "file_mb_after_checkpoint": 23.5
+          },
+          "commit_normal": {
+            "median": 2.2,
+            "samples": [
+              2.2,
+              2.3,
+              2.2
+            ],
+            "per_commit_ms": 0.011
+          }
+        }
+      },
+      "import_seconds": {
+        "sqlite_s": 0.26,
+        "duckdb_s": 2.78
+      },
+      "file_mb": {
+        "sqlite": 18.1,
+        "duckdb": 13.1
+      },
+      "cold_open_first_page_ms": {
+        "sqlite": 1.9,
+        "duckdb": 10.35
+      },
+      "reads": {
+        "first_page": {
+          "sqlite": 0.785,
+          "sqlite_indexed": 0.026,
+          "duckdb": 1.122
+        },
+        "project_page": {
+          "sqlite": 0.119,
+          "sqlite_indexed": 0.039,
+          "duckdb": 0.304
+        },
+        "facet_rating": {
+          "sqlite": 0.173,
+          "sqlite_indexed": 0.181,
+          "duckdb": 0.734
+        },
+        "facet_camera": {
+          "sqlite": 0.198,
+          "sqlite_indexed": 0.21,
+          "duckdb": 1.026
+        },
+        "facet_rating_all": {
+          "sqlite": 5.824,
+          "sqlite_indexed": 5.807,
+          "duckdb": 1.167
+        },
+        "facet_camera_all": {
+          "sqlite": 6.377,
+          "sqlite_indexed": 6.558,
+          "duckdb": 1.862
+        },
+        "facet_tag_all": {
+          "sqlite": 13.643,
+          "sqlite_indexed": 13.904,
+          "duckdb": 2.048
+        },
+        "tag_page": {
+          "sqlite": 0.294,
+          "sqlite_indexed": 0.304,
+          "duckdb": 0.845
+        },
+        "name_prefix": {
+          "sqlite": 1.262,
+          "sqlite_indexed": 1.257,
+          "duckdb": 0.465
+        },
+        "hydrate": {
+          "sqlite": 0.024,
+          "sqlite_indexed": 0.025,
+          "duckdb": 0.52
+        },
+        "asset_lookup": {
+          "sqlite": 7.364,
+          "sqlite_indexed": 7.945,
+          "duckdb": 203.373
+        }
+      },
+      "writes": {
+        "point_update": {
+          "sqlite_full": 13.608,
+          "sqlite_normal": 20.719,
+          "duckdb": 31.795
+        },
+        "bulk_update": {
+          "sqlite_full": 7.742,
+          "sqlite_normal": 12.739,
+          "duckdb": 0.584
+        },
+        "insert_5k": {
+          "sqlite_full": 75.577,
+          "sqlite_normal": 76.738,
+          "duckdb": 694.787
+        },
+        "delete_5k": {
+          "sqlite_full": 20.348,
+          "sqlite_normal": 17.637,
+          "duckdb": 14.427
+        },
+        "checkpoint": {
+          "sqlite_full": 7.989,
+          "sqlite_normal": 5.653,
+          "duckdb": 2.341
+        }
+      },
+      "durability": {
+        "sqlite_commit_ms": 0.039,
+        "sqlite_normal_commit_ms": 0.011,
+        "sqlite_fullfsync_commit_ms": 4.606,
+        "duckdb_commit_ms": 0.113,
+        "duckdb_fullfsync_commit_ms": 4.891
+      },
+      "writers_4x50": {
+        "sqlite": 33.8,
+        "duckdb": 22.0
+      },
+      "second_process": {
+        "sqlite": "ok",
+        "duckdb": "lock conflict"
+      }
+    },
+    {
+      "assets": 200000,
+      "versions": {
+        "duckdb": {
+          "file_mb": 110.4,
+          "read": {
+            "first_page": {
+              "median": 5.563,
+              "p95": 5.648,
+              "samples": [
+                5.648,
+                5.55,
+                5.561,
+                5.563,
+                5.606
+              ]
+            },
+            "project_page": {
+              "median": 0.852,
+              "p95": 0.88,
+              "samples": [
+                0.879,
+                0.852,
+                0.807,
+                0.88,
+                0.833
+              ]
+            },
+            "facet_rating": {
+              "median": 1.282,
+              "p95": 1.349,
+              "samples": [
+                1.349,
+                1.248,
+                1.328,
+                1.177,
+                1.282
+              ]
+            },
+            "facet_camera": {
+              "median": 1.735,
+              "p95": 1.877,
+              "samples": [
+                1.827,
+                1.735,
+                1.877,
+                1.73,
+                1.651
+              ]
+            },
+            "facet_rating_all": {
+              "median": 6.244,
+              "p95": 6.27,
+              "samples": [
+                6.27,
+                6.209,
+                6.269,
+                6.183,
+                6.244
+              ]
+            },
+            "facet_camera_all": {
+              "median": 9.173,
+              "p95": 9.531,
+              "samples": [
+                9.173,
+                9.176,
+                9.531,
+                8.922,
+                9.121
+              ]
+            },
+            "facet_tag_all": {
+              "median": 5.706,
+              "p95": 5.826,
+              "samples": [
+                5.56,
+                5.61,
+                5.706,
+                5.732,
+                5.826
+              ]
+            },
+            "tag_page": {
+              "median": 2.242,
+              "p95": 2.388,
+              "samples": [
+                2.388,
+                2.116,
+                2.242,
+                2.225,
+                2.297
+              ]
+            },
+            "name_prefix": {
+              "median": 1.11,
+              "p95": 1.182,
+              "samples": [
+                1.134,
+                1.102,
+                1.11,
+                1.182,
+                1.1
+              ]
+            },
+            "body_search": {
+              "median": 0.245,
+              "p95": 0.291,
+              "samples": [
+                0.291,
+                0.242,
+                0.25,
+                0.245,
+                0.22
+              ]
+            },
+            "hydrate": {
+              "median": 0.578,
+              "p95": 0.61,
+              "samples": [
+                0.61,
+                0.522,
+                0.608,
+                0.578,
+                0.502
+              ]
+            },
+            "asset_lookup": {
+              "median": 693.144,
+              "p95": 696.07,
+              "samples": [
+                696.07,
+                695.834,
+                689.441,
+                691.404,
+                693.144
+              ]
+            }
+          },
+          "plans": {
+            "first_page": "╭─ Projection ─────────────────────────╮\n│ Projections: #0, #1                  │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Top N ───────────┴──────────────────╮\n│ Top: 60                              │\n│ Order By: #2 ASC                     │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Seq Scan ────────┴──────────────────╮\n│ Table: duck.main.documents           │\n│ Type: Sequential Scan                │\n│ Projections: doc, record, time_desc  │\n│ Filters:                             │\n│ optional: Dynamic Filter (time_desc) │\n│ ~200,000 rows                        │\n╰──────────────────────────────────────╯\n",
+            "project_page": "╭─ Projection ─────────────────────────╮\n│ Projections: #0, #1                  │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Top N ───────────┴──────────────────╮\n│ Top: 60                              │\n│ Order By: #2 ASC                     │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Projection ──────┴──────────────────╮\n│ Projections: doc, record, time_asc   │\n│ ~4,879 rows                          │\n╰───────────────────┬──────────────────╯\n╭─ Seq Scan ────────┴──────────────────╮\n│ Table: duck.main.documents           │\n│ Type: Sequential Scan                │\n│ Projections: time_asc, doc, record   │\n│ Filters:                             │\n│ project_id = 'p07', rating >= 3,     │\n│ optional: Dynamic Filter (time_asc)  │\n│ ~4,879 rows                          │\n╰──────────────────────────────────────╯\n",
+            "asset_lookup": "╭─ Seq Scan ─────────────────────╮\n│ Table: duck.main.documents     │\n│ Type: Sequential Scan          │\n│ Projections: record            │\n│ Filters: asset_id = 'a0000007' │\n│ ~2 rows                        │\n╰────────────────────────────────╯\n"
+          },
+          "write": {
+            "point_update": {
+              "median": 32.072,
+              "p95": 32.072,
+              "samples": [
+                32.072
+              ]
+            },
+            "bulk_update": {
+              "median": 0.725,
+              "p95": 0.732,
+              "samples": [
+                0.732,
+                0.718
+              ]
+            },
+            "insert_5k": {
+              "median": 701.601,
+              "p95": 701.601,
+              "samples": [
+                701.601
+              ]
+            },
+            "page_after_insert": {
+              "median": 5.57,
+              "p95": 5.655,
+              "samples": [
+                5.655,
+                5.486
+              ]
+            },
+            "delete_5k": {
+              "median": 14.111,
+              "p95": 14.111,
+              "samples": [
+                14.111
+              ]
+            },
+            "checkpoint": {
+              "median": 3.726,
+              "p95": 3.726,
+              "samples": [
+                3.726
+              ]
+            },
+            "file_mb_before_checkpoint": 114.8,
+            "file_mb_after_checkpoint": 116.1
+          },
+          "commit": {
+            "median": 21.3,
+            "samples": [
+              20.8,
+              21.3,
+              21.4
+            ],
+            "per_commit_ms": 0.106
+          },
+          "commit_full": {
+            "median": 1021.2,
+            "samples": [
+              1011.1,
+              1021.2,
+              1030.5
+            ],
+            "per_commit_ms": 5.106
+          }
+        },
+        "sqlite": {
+          "file_mb": 181.9,
+          "read": {
+            "first_page": {
+              "median": 7.24,
+              "p95": 7.547,
+              "samples": [
+                7.547,
+                7.304,
+                7.24,
+                7.231,
+                7.199
+              ]
+            },
+            "project_page": {
+              "median": 1.098,
+              "p95": 1.621,
+              "samples": [
+                1.621,
+                1.155,
+                1.076,
+                1.098,
+                1.069
+              ]
+            },
+            "facet_rating": {
+              "median": 2.053,
+              "p95": 2.098,
+              "samples": [
+                1.916,
+                1.999,
+                2.053,
+                2.089,
+                2.098
+              ]
+            },
+            "facet_camera": {
+              "median": 2.364,
+              "p95": 2.387,
+              "samples": [
+                2.364,
+                2.358,
+                2.375,
+                2.387,
+                2.352
+              ]
+            },
+            "facet_rating_all": {
+              "median": 85.138,
+              "p95": 86.665,
+              "samples": [
+                86.665,
+                85.138,
+                84.097,
+                82.214,
+                85.423
+              ]
+            },
+            "facet_camera_all": {
+              "median": 97.659,
+              "p95": 98.877,
+              "samples": [
+                96.414,
+                97.659,
+                95.915,
+                98.389,
+                98.877
+              ]
+            },
+            "facet_tag_all": {
+              "median": 162.449,
+              "p95": 181.966,
+              "samples": [
+                181.966,
+                167.929,
+                162.449,
+                157.954,
+                159.166
+              ]
+            },
+            "tag_page": {
+              "median": 2.856,
+              "p95": 2.965,
+              "samples": [
+                2.965,
+                2.861,
+                2.846,
+                2.848,
+                2.856
+              ]
+            },
+            "name_prefix": {
+              "median": 26.456,
+              "p95": 26.84,
+              "samples": [
+                26.34,
+                26.456,
+                26.598,
+                26.84,
+                26.386
+              ]
+            },
+            "body_search": {
+              "median": 0.027,
+              "p95": 0.03,
+              "samples": [
+                0.03,
+                0.028,
+                0.027,
+                0.027,
+                0.027
+              ]
+            },
+            "hydrate": {
+              "median": 0.024,
+              "p95": 0.026,
+              "samples": [
+                0.026,
+                0.025,
+                0.024,
+                0.024,
+                0.023
+              ]
+            },
+            "asset_lookup": {
+              "median": 7.5,
+              "p95": 7.73,
+              "samples": [
+                7.73,
+                7.552,
+                7.5,
+                7.497,
+                7.47
+              ]
+            }
+          },
+          "plans": {
+            "first_page": "SEARCH documents USING INDEX docs_camera (gen=?) | USE TEMP B-TREE FOR ORDER BY",
+            "project_page": "SEARCH documents USING INDEX sqlite_autoindex_documents_1 (gen=? AND project_id=?) | USE TEMP B-TREE FOR ORDER BY",
+            "asset_lookup": "SEARCH documents USING INDEX docs_asset (gen=? AND asset_id=?)"
+          },
+          "write_full": {
+            "point_update": {
+              "median": 11.972,
+              "p95": 11.972,
+              "samples": [
+                11.972
+              ]
+            },
+            "bulk_update": {
+              "median": 8.684,
+              "p95": 8.759,
+              "samples": [
+                8.759,
+                8.609
+              ]
+            },
+            "insert_5k": {
+              "median": 101.278,
+              "p95": 101.278,
+              "samples": [
+                101.278
+              ]
+            },
+            "page_after_insert": {
+              "median": 0.03,
+              "p95": 0.032,
+              "samples": [
+                0.032,
+                0.028
+              ]
+            },
+            "delete_5k": {
+              "median": 22.786,
+              "p95": 22.786,
+              "samples": [
+                22.786
+              ]
+            },
+            "checkpoint": {
+              "median": 14.528,
+              "p95": 14.528,
+              "samples": [
+                14.528
+              ]
+            },
+            "file_mb_before_checkpoint": 203.8,
+            "file_mb_after_checkpoint": 193.9
+          },
+          "commit_full": {
+            "median": 7.8,
+            "samples": [
+              7.8,
+              8.4,
+              7.8
+            ],
+            "per_commit_ms": 0.039
+          },
+          "fullfsync_default": 0,
+          "commit_fullfsync": {
+            "median": 928.0,
+            "samples": [
+              899.0,
+              928.0,
+              938.0
+            ],
+            "per_commit_ms": 4.64
+          },
+          "write_normal": {
+            "point_update": {
+              "median": 16.255,
+              "p95": 16.255,
+              "samples": [
+                16.255
+              ]
+            },
+            "bulk_update": {
+              "median": 13.464,
+              "p95": 14.892,
+              "samples": [
+                14.892,
+                12.037
+              ]
+            },
+            "insert_5k": {
+              "median": 95.884,
+              "p95": 95.884,
+              "samples": [
+                95.884
+              ]
+            },
+            "page_after_insert": {
+              "median": 0.03,
+              "p95": 0.032,
+              "samples": [
+                0.032,
+                0.027
+              ]
+            },
+            "delete_5k": {
+              "median": 22.705,
+              "p95": 22.705,
+              "samples": [
+                22.705
+              ]
+            },
+            "checkpoint": {
+              "median": 14.583,
+              "p95": 14.583,
+              "samples": [
+                14.583
+              ]
+            },
+            "file_mb_before_checkpoint": 206.1,
+            "file_mb_after_checkpoint": 193.9
+          },
+          "commit_normal": {
+            "median": 2.2,
+            "samples": [
+              2.3,
+              2.2,
+              2.1
+            ],
+            "per_commit_ms": 0.011
+          }
+        }
+      },
+      "import_seconds": {
+        "sqlite_s": 2.71,
+        "duckdb_s": 27.66
+      },
+      "file_mb": {
+        "sqlite": 181.9,
+        "duckdb": 110.4
+      },
+      "cold_open_first_page_ms": {
+        "sqlite": 1.68,
+        "duckdb": 15.59
+      },
+      "reads": {
+        "first_page": {
+          "sqlite": 7.24,
+          "sqlite_indexed": 0.023,
+          "duckdb": 5.563
+        },
+        "project_page": {
+          "sqlite": 1.098,
+          "sqlite_indexed": 0.038,
+          "duckdb": 0.852
+        },
+        "facet_rating": {
+          "sqlite": 2.053,
+          "sqlite_indexed": 2.128,
+          "duckdb": 1.282
+        },
+        "facet_camera": {
+          "sqlite": 2.364,
+          "sqlite_indexed": 2.438,
+          "duckdb": 1.735
+        },
+        "facet_rating_all": {
+          "sqlite": 85.138,
+          "sqlite_indexed": 83.508,
+          "duckdb": 6.244
+        },
+        "facet_camera_all": {
+          "sqlite": 97.659,
+          "sqlite_indexed": 95.755,
+          "duckdb": 9.173
+        },
+        "facet_tag_all": {
+          "sqlite": 162.449,
+          "sqlite_indexed": 158.95,
+          "duckdb": 5.706
+        },
+        "tag_page": {
+          "sqlite": 2.856,
+          "sqlite_indexed": 2.903,
+          "duckdb": 2.242
+        },
+        "name_prefix": {
+          "sqlite": 26.456,
+          "sqlite_indexed": 26.293,
+          "duckdb": 1.11
+        },
+        "hydrate": {
+          "sqlite": 0.024,
+          "sqlite_indexed": 0.025,
+          "duckdb": 0.578
+        },
+        "asset_lookup": {
+          "sqlite": 7.5,
+          "sqlite_indexed": 8.039,
+          "duckdb": 693.144
+        }
+      },
+      "writes": {
+        "point_update": {
+          "sqlite_full": 11.972,
+          "sqlite_normal": 16.255,
+          "duckdb": 32.072
+        },
+        "bulk_update": {
+          "sqlite_full": 8.684,
+          "sqlite_normal": 13.464,
+          "duckdb": 0.725
+        },
+        "insert_5k": {
+          "sqlite_full": 101.278,
+          "sqlite_normal": 95.884,
+          "duckdb": 701.601
+        },
+        "delete_5k": {
+          "sqlite_full": 22.786,
+          "sqlite_normal": 22.705,
+          "duckdb": 14.111
+        },
+        "checkpoint": {
+          "sqlite_full": 14.528,
+          "sqlite_normal": 14.583,
+          "duckdb": 3.726
+        }
+      },
+      "durability": {
+        "sqlite_commit_ms": 0.039,
+        "sqlite_normal_commit_ms": 0.011,
+        "sqlite_fullfsync_commit_ms": 4.64,
+        "duckdb_commit_ms": 0.106,
+        "duckdb_fullfsync_commit_ms": 5.106
+      },
+      "writers_4x50": {
+        "sqlite": 33.7,
+        "duckdb": 22.3
+      },
+      "second_process": {
+        "sqlite": "ok",
+        "duckdb": "lock conflict"
+      }
+    },
+    {
+      "assets": 1000000,
+      "versions": {
+        "duckdb": {
+          "file_mb": 545.8,
+          "read": {
+            "first_page": {
+              "median": 6.244,
+              "p95": 6.384,
+              "samples": [
+                6.384,
+                6.244,
+                6.165
+              ]
+            },
+            "project_page": {
+              "median": 1.129,
+              "p95": 1.417,
+              "samples": [
+                1.417,
+                1.129,
+                1.064
+              ]
+            },
+            "facet_rating": {
+              "median": 1.776,
+              "p95": 1.776,
+              "samples": [
+                1.776,
+                1.776,
+                1.776
+              ]
+            },
+            "facet_camera": {
+              "median": 2.396,
+              "p95": 2.503,
+              "samples": [
+                2.396,
+                2.503,
+                2.273
+              ]
+            },
+            "facet_rating_all": {
+              "median": 10.643,
+              "p95": 10.844,
+              "samples": [
+                10.41,
+                10.643,
+                10.844
+              ]
+            },
+            "facet_camera_all": {
+              "median": 15.527,
+              "p95": 15.813,
+              "samples": [
+                15.813,
+                15.527,
+                15.099
+              ]
+            },
+            "facet_tag_all": {
+              "median": 19.348,
+              "p95": 19.416,
+              "samples": [
+                19.416,
+                19.348,
+                19.175
+              ]
+            },
+            "tag_page": {
+              "median": 5.336,
+              "p95": 5.615,
+              "samples": [
+                5.615,
+                5.336,
+                5.293
+              ]
+            },
+            "name_prefix": {
+              "median": 1.148,
+              "p95": 1.228,
+              "samples": [
+                1.228,
+                1.146,
+                1.148
+              ]
+            },
+            "body_search": {
+              "median": 0.28,
+              "p95": 0.431,
+              "samples": [
+                0.431,
+                0.28,
+                0.254
+              ]
+            },
+            "hydrate": {
+              "median": 0.546,
+              "p95": 0.549,
+              "samples": [
+                0.546,
+                0.549,
+                0.518
+              ]
+            },
+            "asset_lookup": {
+              "median": 679.215,
+              "p95": 685.981,
+              "samples": [
+                678.953,
+                679.215,
+                685.981
+              ]
+            }
+          },
+          "plans": {
+            "first_page": "╭─ Projection ─────────────────────────╮\n│ Projections: #0, #1                  │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Top N ───────────┴──────────────────╮\n│ Top: 60                              │\n│ Order By: #2 ASC                     │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Seq Scan ────────┴──────────────────╮\n│ Table: duck.main.documents           │\n│ Type: Sequential Scan                │\n│ Projections: doc, record, time_desc  │\n│ Filters:                             │\n│ optional: Dynamic Filter (time_desc) │\n│ ~1,000,000 rows                      │\n╰──────────────────────────────────────╯\n",
+            "project_page": "╭─ Projection ─────────────────────────╮\n│ Projections: #0, #1                  │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Top N ───────────┴──────────────────╮\n│ Top: 60                              │\n│ Order By: #2 ASC                     │\n│ ~60 rows                             │\n╰───────────────────┬──────────────────╯\n╭─ Projection ──────┴──────────────────╮\n│ Projections: doc, record, time_asc   │\n│ ~24,391 rows                         │\n╰───────────────────┬──────────────────╯\n╭─ Seq Scan ────────┴──────────────────╮\n│ Table: duck.main.documents           │\n│ Type: Sequential Scan                │\n│ Projections: time_asc, doc, record   │\n│ Filters:                             │\n│ project_id = 'p07', rating >= 3,     │\n│ optional: Dynamic Filter (time_asc)  │\n│ ~24,391 rows                         │\n╰──────────────────────────────────────╯\n",
+            "asset_lookup": "╭─ Seq Scan ─────────────────────╮\n│ Table: duck.main.documents     │\n│ Type: Sequential Scan          │\n│ Projections: record            │\n│ Filters: asset_id = 'a0000007' │\n│ ~1 row                         │\n╰────────────────────────────────╯\n"
+          },
+          "write": {
+            "point_update": {
+              "median": 31.947,
+              "p95": 31.947,
+              "samples": [
+                31.947
+              ]
+            },
+            "bulk_update": {
+              "median": 0.721,
+              "p95": 0.743,
+              "samples": [
+                0.699,
+                0.743
+              ]
+            },
+            "insert_5k": {
+              "median": 693.198,
+              "p95": 693.198,
+              "samples": [
+                693.198
+              ]
+            },
+            "page_after_insert": {
+              "median": 6.185,
+              "p95": 6.191,
+              "samples": [
+                6.18,
+                6.191
+              ]
+            },
+            "delete_5k": {
+              "median": 14.734,
+              "p95": 14.734,
+              "samples": [
+                14.734
+              ]
+            },
+            "checkpoint": {
+              "median": 4.452,
+              "p95": 4.452,
+              "samples": [
+                4.452
+              ]
+            },
+            "file_mb_before_checkpoint": 550.2,
+            "file_mb_after_checkpoint": 552.1
+          },
+          "commit": {
+            "median": 20.9,
+            "samples": [
+              21.1,
+              20.2,
+              20.9
+            ],
+            "per_commit_ms": 0.105
+          },
+          "commit_full": {
+            "median": 1026.7,
+            "samples": [
+              1005.0,
+              1046.0,
+              1026.7
+            ],
+            "per_commit_ms": 5.134
+          }
+        },
+        "sqlite": {
+          "file_mb": 911.1,
+          "read": {
+            "first_page": {
+              "median": 37.112,
+              "p95": 37.223,
+              "samples": [
+                37.112,
+                37.223,
+                35.381
+              ]
+            },
+            "project_page": {
+              "median": 7.601,
+              "p95": 9.882,
+              "samples": [
+                9.882,
+                7.601,
+                6.42
+              ]
+            },
+            "facet_rating": {
+              "median": 11.925,
+              "p95": 11.926,
+              "samples": [
+                11.718,
+                11.925,
+                11.926
+              ]
+            },
+            "facet_camera": {
+              "median": 14.016,
+              "p95": 14.389,
+              "samples": [
+                14.016,
+                14.389,
+                13.621
+              ]
+            },
+            "facet_rating_all": {
+              "median": 916.782,
+              "p95": 923.488,
+              "samples": [
+                916.782,
+                915.502,
+                923.488
+              ]
+            },
+            "facet_camera_all": {
+              "median": 1038.973,
+              "p95": 1043.442,
+              "samples": [
+                1031.474,
+                1043.442,
+                1038.973
+              ]
+            },
+            "facet_tag_all": {
+              "median": 964.995,
+              "p95": 975.933,
+              "samples": [
+                956.11,
+                975.933,
+                964.995
+              ]
+            },
+            "tag_page": {
+              "median": 16.706,
+              "p95": 17.127,
+              "samples": [
+                16.706,
+                17.127,
+                16.054
+              ]
+            },
+            "name_prefix": {
+              "median": 150.459,
+              "p95": 150.725,
+              "samples": [
+                150.427,
+                150.725,
+                150.459
+              ]
+            },
+            "body_search": {
+              "median": 0.029,
+              "p95": 0.034,
+              "samples": [
+                0.034,
+                0.029,
+                0.028
+              ]
+            },
+            "hydrate": {
+              "median": 0.025,
+              "p95": 0.028,
+              "samples": [
+                0.028,
+                0.025,
+                0.024
+              ]
+            },
+            "asset_lookup": {
+              "median": 7.579,
+              "p95": 7.642,
+              "samples": [
+                7.642,
+                7.579,
+                7.488
+              ]
+            }
+          },
+          "plans": {
+            "first_page": "SEARCH documents USING INDEX docs_camera (gen=?) | USE TEMP B-TREE FOR ORDER BY",
+            "project_page": "SEARCH documents USING INDEX sqlite_autoindex_documents_1 (gen=? AND project_id=?) | USE TEMP B-TREE FOR ORDER BY",
+            "asset_lookup": "SEARCH documents USING INDEX docs_asset (gen=? AND asset_id=?)"
+          },
+          "write_full": {
+            "point_update": {
+              "median": 14.593,
+              "p95": 14.593,
+              "samples": [
+                14.593
+              ]
+            },
+            "bulk_update": {
+              "median": 9.045,
+              "p95": 9.13,
+              "samples": [
+                9.13,
+                8.96
+              ]
+            },
+            "insert_5k": {
+              "median": 105.338,
+              "p95": 105.338,
+              "samples": [
+                105.338
+              ]
+            },
+            "page_after_insert": {
+              "median": 0.025,
+              "p95": 0.026,
+              "samples": [
+                0.026,
+                0.024
+              ]
+            },
+            "delete_5k": {
+              "median": 43.81,
+              "p95": 43.81,
+              "samples": [
+                43.81
+              ]
+            },
+            "checkpoint": {
+              "median": 0.442,
+              "p95": 0.442,
+              "samples": [
+                0.442
+              ]
+            },
+            "file_mb_before_checkpoint": 964.8,
+            "file_mb_after_checkpoint": 953.7
+          },
+          "commit_full": {
+            "median": 8.1,
+            "samples": [
+              8.4,
+              8.1,
+              7.8
+            ],
+            "per_commit_ms": 0.041
+          },
+          "fullfsync_default": 0,
+          "commit_fullfsync": {
+            "median": 925.0,
+            "samples": [
+              925.0,
+              929.0,
+              913.0
+            ],
+            "per_commit_ms": 4.625
+          },
+          "write_normal": {
+            "point_update": {
+              "median": 18.619,
+              "p95": 18.619,
+              "samples": [
+                18.619
+              ]
+            },
+            "bulk_update": {
+              "median": 13.47,
+              "p95": 14.944,
+              "samples": [
+                14.944,
+                11.996
+              ]
+            },
+            "insert_5k": {
+              "median": 96.913,
+              "p95": 96.913,
+              "samples": [
+                96.913
+              ]
+            },
+            "page_after_insert": {
+              "median": 0.028,
+              "p95": 0.029,
+              "samples": [
+                0.027,
+                0.029
+              ]
+            },
+            "delete_5k": {
+              "median": 38.599,
+              "p95": 38.599,
+              "samples": [
+                38.599
+              ]
+            },
+            "checkpoint": {
+              "median": 0.125,
+              "p95": 0.125,
+              "samples": [
+                0.125
+              ]
+            },
+            "file_mb_before_checkpoint": 966.1,
+            "file_mb_after_checkpoint": 953.7
+          },
+          "commit_normal": {
+            "median": 2.3,
+            "samples": [
+              2.1,
+              2.3,
+              2.3
+            ],
+            "per_commit_ms": 0.011
+          }
+        }
+      },
+      "import_seconds": {
+        "sqlite_s": 14.65,
+        "duckdb_s": 140.91
+      },
+      "file_mb": {
+        "sqlite": 911.1,
+        "duckdb": 545.8
+      },
+      "cold_open_first_page_ms": {
+        "sqlite": 1.81,
+        "duckdb": 15.23
+      },
+      "reads": {
+        "first_page": {
+          "sqlite": 37.112,
+          "sqlite_indexed": 0.023,
+          "duckdb": 6.244
+        },
+        "project_page": {
+          "sqlite": 7.601,
+          "sqlite_indexed": 0.04,
+          "duckdb": 1.129
+        },
+        "facet_rating": {
+          "sqlite": 11.925,
+          "sqlite_indexed": 13.494,
+          "duckdb": 1.776
+        },
+        "facet_camera": {
+          "sqlite": 14.016,
+          "sqlite_indexed": 13.12,
+          "duckdb": 2.396
+        },
+        "facet_rating_all": {
+          "sqlite": 916.782,
+          "sqlite_indexed": 925.863,
+          "duckdb": 10.643
+        },
+        "facet_camera_all": {
+          "sqlite": 1038.973,
+          "sqlite_indexed": 1052.243,
+          "duckdb": 15.527
+        },
+        "facet_tag_all": {
+          "sqlite": 964.995,
+          "sqlite_indexed": 944.456,
+          "duckdb": 19.348
+        },
+        "tag_page": {
+          "sqlite": 16.706,
+          "sqlite_indexed": 16.172,
+          "duckdb": 5.336
+        },
+        "name_prefix": {
+          "sqlite": 150.459,
+          "sqlite_indexed": 151.474,
+          "duckdb": 1.148
+        },
+        "hydrate": {
+          "sqlite": 0.025,
+          "sqlite_indexed": 0.028,
+          "duckdb": 0.546
+        },
+        "asset_lookup": {
+          "sqlite": 7.579,
+          "sqlite_indexed": 8.107,
+          "duckdb": 679.215
+        }
+      },
+      "writes": {
+        "point_update": {
+          "sqlite_full": 14.593,
+          "sqlite_normal": 18.619,
+          "duckdb": 31.947
+        },
+        "bulk_update": {
+          "sqlite_full": 9.045,
+          "sqlite_normal": 13.47,
+          "duckdb": 0.721
+        },
+        "insert_5k": {
+          "sqlite_full": 105.338,
+          "sqlite_normal": 96.913,
+          "duckdb": 693.198
+        },
+        "delete_5k": {
+          "sqlite_full": 43.81,
+          "sqlite_normal": 38.599,
+          "duckdb": 14.734
+        },
+        "checkpoint": {
+          "sqlite_full": 0.442,
+          "sqlite_normal": 0.125,
+          "duckdb": 4.452
+        }
+      },
+      "durability": {
+        "sqlite_commit_ms": 0.041,
+        "sqlite_normal_commit_ms": 0.011,
+        "sqlite_fullfsync_commit_ms": 4.625,
+        "duckdb_commit_ms": 0.105,
+        "duckdb_fullfsync_commit_ms": 5.134
+      },
+      "writers_4x50": {
+        "sqlite": 56.4,
+        "duckdb": 23.4
+      },
+      "second_process": {
+        "sqlite": "ok",
+        "duckdb": "lock conflict"
+      }
+    }
+  ],
+  "targeted_1m": {
+    "default_sort_page_ms": {
+      "sqlite_cache_256m": 7.538,
+      "sqlite_cache_2m": 21.917,
+      "duckdb": 2.4
+    },
+    "filtered_count_ms": {
+      "sqlite": 8.656,
+      "duckdb": 1.929
+    },
+    "name_prefix_ms": {
+      "sqlite_no_index": 140.796,
+      "sqlite_with_index": 0.02
+    },
+    "asset_lookup_secondary_index_plan": "DuckDB sequential scan (index docs_asset not used); 0.65 ms/lookup"
+  },
+  "notes": [
+    "SQLite cache_size is 256 MiB in the panel; the 2 MiB number is the shipped default.",
+    "sqlite_indexed adds documents(gen,time_desc) and documents(gen,project_id,time_asc) only.",
+    "DuckDB secondary index docs_asset(gen,asset_id) is not used for point lookups; plan is a sequential scan.",
+    "body_search is LIMIT 60 and not an FTS benchmark.",
+    "Write and multi-process tests run on scratch copies."
+  ]
+}
