@@ -4,6 +4,8 @@
 
 2026-11-22 已确认资料库的四阶段交付顺序。目录与导入先行，随后是管理与 Lightroom 迁移、分组制作与智能检索，最后验收 Server 存储及远程计算。下方较早的 W／M 顺序作为历史记录。[资料库生命周期规格](../../specs/033-library-lifecycle/spec.md)
 
+2026-11-26 Server 1.0 功能设计见[总览计划](27-server-version-plan.md)与[040 规格](../../specs/040-server/spec.md)：先交付归档、独立备份、异机恢复、冷热数据和多设备同步，远程 AI／批处理作为 1.1。**本轮仅规划，未开始服务端实现。**
+
 ## 最新下一批计划（2026-10-30）
 
 [20 原生制作工作台与可替换AI后端](20-native-ai-editing-next-batch.md)是结合本机实验后的最新提案：RAWMaster使用原生SwiftUI/AppKit界面，ComfyUI仅作为受管后台服务；按制作版本/任务底座、原生初修与AI候选、本地运行时、三家云编辑、成片导出/外部回流分段交付。复用已有工作台/外部副本/序列与延时功能，不按早期计划重复建设。具体证据见[18](18-comfyui-ai-backend-evaluation.md)，安装/供应商设计见[19](19-ai-runtime-and-cloud-providers.md)。

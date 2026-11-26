@@ -54,6 +54,8 @@ git -C output/tools/exiftool checkout --detach 2200871d9cef988051d2a99d67df3bda6
 
 **当前交付入口：[023 效果一致性与版本闭环规格](specs/023-effects-delivery/spec.md)、[研发任务](specs/023-effects-delivery/tasks.md)、[实际验证记录](specs/023-effects-delivery/validation.md)。** 018 已实现原生制作、版本、AI 工程链路和成片导出；020 已安装基础影调、曲线与 Color Grading；021/022 为后续研究预览和效果修复。023 优先收口当前调整能力、操作完成性能、保存重放与安全安装，未通过的窗口或外部质量门必须明确保留。已有“交付精选”复制原文件与渲染导出是不同能力。
 
+**Server 版本规划：[Server 1.0 总览](docs/planning/27-server-version-plan.md)、[040 功能设计](specs/040-server/spec.md)。** 先规划归档、独立备份、异机恢复、冷热数据和多设备同步，远程 AI／批处理作为 1.1；本轮仅规划，未开始服务端实现。
+
 本轮会话操作调整：[016 导入与初筛会话操作](specs/016-import-triage-actions/spec.md)、[验证记录](specs/016-import-triage-actions/validation.md)。
 
 项目检索交付入口：[007 项目检索与审阅](specs/007-project-review/spec.md)、[研发任务](specs/007-project-review/tasks.md)、[验证记录](specs/007-project-review/validation.md)。本轮实现组合搜索、项目独立审阅进度与恢复、批量标签预览及持久恢复；schema5沿用升级前一致备份，旧评分不会推断为已审。搜索优化已与最新导入自动分组整合，完整回归、真实素材工作流及安装证据见[整合合同](specs/007-project-review/integration.md)和验证记录。
