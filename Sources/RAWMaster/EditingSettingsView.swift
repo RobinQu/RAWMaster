@@ -41,7 +41,7 @@ struct RAWMasterSettingsView: View {
         case .storage: ApplicationStorageSettings(libraryURL: model.libraryURL, archiveRoot: model.editing?.archive.root, services: model.editingServices)
         case .editing: EditingPerformanceSettings()
         case .localAI:
-            if let services = model.editingServices { EditingRuntimeSettings(services: services) }
+            if let services = model.editingServices { FluxLocalAISettings(services: services) }
             else { unavailable }
         case .cloudServices:
             if let services = model.editingServices { EditingProviderSettings(services: services) }
@@ -96,9 +96,10 @@ private struct ApplicationStorageSettings: View {
             }
             if let services {
                 Section("本机 AI") {
-                    SettingsPathRow(title: "运行环境", url: services.runtimeRoot)
-                    SettingsPathRow(title: services.borrowedModels ? "已有模型（只读复用）" : "受管模型", url: services.modelRoot)
-                    Text("模型的下载与校验可在“本机 AI”中准备。已有模型目录只读复用，不复制原有权重。")
+                    SettingsPathRow(title: "FLUX.3 Klein 模型", url: services.fluxModel.root)
+                    SettingsPathRow(title: "实验运行环境", url: services.runtimeRoot)
+                    SettingsPathRow(title: services.borrowedModels ? "已有 Qwen 模型（只读复用）" : "Qwen 受管模型", url: services.modelRoot)
+                    Text("FLUX 模型在“本机 AI”中下载、校验和删除；实验 Qwen 运行时保留在独立入口。")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }

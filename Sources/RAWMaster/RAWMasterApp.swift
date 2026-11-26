@@ -8,6 +8,7 @@ struct RAWMasterApp: App {
     private var model: AppModel { librarySession.model }
     @StateObject private var appearance = AppearanceController()
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
     @NSApplicationDelegateAdaptor(ApplicationDelegate.self) private var appDelegate
     @MainActor @ViewBuilder private var workbenchRoot: some View {
         if let probe = appDelegate.workbenchTeardown {
@@ -27,6 +28,13 @@ struct RAWMasterApp: App {
                 .onAppear {
                     PreviewPerformancePreferences.apply(stored: UserDefaults.standard.string(forKey: PreviewPerformanceMode.storageKey) ?? "")
                     appDelegate.model = model; ImageEngines.startPrewarming()
+#if DEBUG
+                    if let raw = ProcessInfo.processInfo.environment["RAWMASTER_OPEN_SETTINGS"],
+                       let page = ApplicationSettingsPage(rawValue: raw) {
+                        model.settingsPage = page
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { openSettings() }
+                    }
+#endif
                 }
                 .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in model.saveBrowse(); model.flushProjectReviewState(); model.cancelJob() }
         }

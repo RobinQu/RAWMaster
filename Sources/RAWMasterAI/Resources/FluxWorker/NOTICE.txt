@@ -1,0 +1,19 @@
+RAWMaster FLUX worker notices
+=============================
+
+The native FLUX worker is built from Rust and links the following components:
+
+- MLX (Apple) — MIT License
+- mlx-rs / mlx-sys — MIT OR Apache-2.0
+- tokenizers — Apache-2.0
+- safetensors — Apache-2.0
+- image / png — MIT OR Apache-2.0
+- serde / serde_json — MIT OR Apache-2.0
+- rand / rand_chacha / rand_distr — MIT OR Apache-2.0
+- fs2 — MIT OR Apache-2.0
+
+FLUX.3 Image Klein model weights are not distributed inside this application.
+They are downloaded separately after the user accepts the FLUX Kommunity
+License. The downloaded package retains its own LICENSE.md, NOTICE.md and
+text-encoder license. See ModelLicenses/FLUX.3-LICENSE.md and
+ModelLicenses/FLUX.3-NOTICE.md in this bundle.

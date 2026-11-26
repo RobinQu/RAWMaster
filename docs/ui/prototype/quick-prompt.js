@@ -76,7 +76,7 @@ function quickStatus(draft, job = quickTask()) {
   const local = draft.model === 'flux';
   if (!local && !navigator.onLine) return { text: '当前离线。可选择已就绪的本机模型。', blocked: true };
   const p = Studio.data.prefs;
-  if (local && p.runtime !== '就绪') return { text: '本机模型待准备。', blocked: true, setup: 'runtime' };
+  if (local && p.flux?.status !== '就绪') return { text: '本机模型待准备。', blocked: true, setup: 'runtime' };
   if (!local && (p.cloud !== '已配置' || p.cloudName !== 'Seedream / 中国方舟'))
     return { text: '请先配置北京方舟服务。', blocked: true, setup: 'cloud' };
   if (draft.drawing) return { text: draft.notice || '在照片上拖出要修改的范围。', blocked: true };

@@ -148,7 +148,8 @@ struct QuickPromptProviderEvidence: Codable {
       width = request.inputArtifact.pixelWidth; height = request.inputArtifact.pixelHeight
       guard proof.configuration["modelRevision"] == LocalFluxProvider.modelRevision,
         proof.configuration["weightsRevision"] == LocalFluxProvider.weightsRevision,
-        proof.configuration["runtimeRevision"] == LocalFluxProvider.runtimeRevision else { throw EditingError.archiveMismatch }
+        let runtimeRevision = proof.configuration["runtimeRevision"],
+        runtimeRevision == LocalFluxProvider.runtimeRevision || LocalFluxProvider.legacyRuntimeRevisions.contains(runtimeRevision) else { throw EditingError.archiveMismatch }
     }
     let receivedBytes = try output.fileURL.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
     guard proof.configuration["size"] == "\(width)x\(height)", output.artifact.pixelWidth == width, output.artifact.pixelHeight == height,

@@ -11,7 +11,7 @@
 open output/RAWMaster.app
 ```
 
-应用包必须包含经校验的离线 AI 运行时。可用 `RAWMASTER_RUNTIME_ARTIFACTS_DIR` 指向既有固定包目录，并用 `RAWMASTER_BUILD_VERSION` 指定本次构建版本；不得把本机模型权重或付费云凭证打进包内。
+应用包必须包含经校验的离线 AI 运行时。可用 `RAWMASTER_RUNTIME_ARTIFACTS_DIR` 指向既有固定包目录，并用 `RAWMASTER_BUILD_VERSION` 指定本次构建版本；不得把本机模型权重或付费云凭证打进包内。FLUX.3 本机 worker 由 `scripts/build-app.sh` 在打包前用 `Modules/FluxWorker/build-worker.sh` 构建，再复制进 `RAWMasterAI` 资源包；首次需要网络准备 MLX C++ 源，之后使用 `Modules/FluxWorker/target` 缓存。单独运行 `swift build` 只用于不调用本机 FLUX 的开发或测试。
 
 首次构建自动分组组件前，准备固定的官方 ExifTool 源码；打包脚本校验提交与文件内容，应用运行时使用包内副本，不依赖全局安装：
 

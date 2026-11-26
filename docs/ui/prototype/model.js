@@ -1,5 +1,17 @@
 'use strict';
 
+const defaultFlux = () => ({
+  status: '未安装',
+  progress: 0,
+  completed: 0,
+  total: 10281238171,
+  file: '',
+  license: false,
+  paused: false,
+  error: '',
+  firstRunShown: false,
+});
+
 const Studio = (() => {
   const key = 'rawmaster.ui.workbench.v1';
   const photo = (id) => RMPhotos.photos[data?.catalog?.records[id]?.source || id];
@@ -71,7 +83,7 @@ const Studio = (() => {
       history: [],
       edits: {},
       jobs: [],
-      prefs: { theme: 'system', ground: '深灰', runtime: '待准备', cloud: '未配置', performance: '均衡' },
+      prefs: { theme: 'system', ground: '深灰', runtime: '待准备', cloud: '未配置', performance: '均衡', flux: defaultFlux() },
       presets: [
         { name: '河谷暖调', group: 'Classic Filters', values: { warmth: 48, contrast: 12, sat: 14 } },
         { name: '克制黑白', group: 'Classic Filters', values: { mono: true, contrast: 20 } },
@@ -87,6 +99,7 @@ const Studio = (() => {
     data = JSON.parse(localStorage.getItem(key));
   } catch {}
   if (!data?.catalog?.projects?.length || !data.prefs || !data.browse) data = seed();
+  data.prefs.flux ??= defaultFlux();
   function save() {
     try {
       localStorage.setItem(key, JSON.stringify(data));

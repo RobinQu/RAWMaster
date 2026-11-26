@@ -21,6 +21,9 @@ swift_build_options=(--configuration "$configuration")
 if [[ -n "${RAWMASTER_BUILD_PATH:-}" ]]; then
   swift_build_options+=(--scratch-path "$RAWMASTER_BUILD_PATH")
 fi
+flux_worker_root="$PWD/Modules/FluxWorker"
+flux_worker_binary="$PWD/Sources/RAWMasterAI/Resources/FluxWorker/flux-worker"
+"$flux_worker_root/build-worker.sh" "$flux_worker_root" "$flux_worker_root/target" "$flux_worker_binary"
 swift build "${swift_build_options[@]}" --jobs 4 --product RAWMaster
 binary_dir="$(swift build "${swift_build_options[@]}" --show-bin-path)"
 app="${RAWMASTER_APP_OUTPUT:-$PWD/output/RAWMaster.app}"

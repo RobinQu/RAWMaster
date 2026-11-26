@@ -47,6 +47,8 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
     @Published private(set) var setupSnapshot: LocalAISetupSnapshot?
     let repository: ProviderProfileRepository
     let coordinator: LocalAIEnvironmentCoordinator
+    /// App-owned model download. Settings views observe it but never own or cancel its task.
+    let fluxModel: FluxModelManager
     let runtimeRoot: URL
     let libraryURL: URL
     let catalog: RuntimeArtifactCatalog?
@@ -86,9 +88,10 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
         modelLicenseSHA256 = try? LocalAIModelConsent.currentLicenseSHA256()
         catalogError = loadedCatalog == nil ? "此发行版的固定运行包尚不可用。安装包含运行包的完整 RAWMaster 后可重试。" : nil
         coordinator = LocalAIEnvironmentCoordinator(configuration: .init(runtimeRoot: resolvedRuntime, modelRoot: resolvedModels), catalog: loadedCatalog)
+        fluxModel = FluxModelManager()
         startupTask = Task { [weak self] in
             guard let self else { return }
-            await self.reloadProfiles(); await self.refreshEnvironment()
+            await self.reloadProfiles(); await self.refreshEnvironment(); await self.activateFluxProfile()
             self.startupTask = nil
         }
     }
@@ -200,6 +203,33 @@ enum ApplicationSettingsPage: String, CaseIterable, Identifiable {
         let versions = (try? await runtime.installedRuntimeVersions()) ?? []
         guard !shuttingDown, environmentReadID == readID else { return }
         setupSnapshot = snapshot; runtimeState = status.state; runtimeMessage = status.message; runtimeVersions = versions
+    }
+
+    func activateFluxProfile() async {
+        guard fluxModel.isReady, fluxModel.licenseAccepted, !shuttingDown else { return }
+        do {
+            let profiles = try await repository.profiles()
+            var profile = profiles.first(where: { LocalFluxProvider.matches($0) }) ?? AIProviderProfile(
+                id: "quick-prompt-flux3-klein", kind: .localComfy, displayName: "FLUX.3 Image Klein · 本机",
+                model: LocalFluxProvider.modelID, endpoint: URL(string: "http://127.0.0.1")!,
+                capabilities: .init(capabilityID: LocalFluxProvider.capabilityID, supportsCancellation: true,
+                                    supportsReconciliation: true, maxInputPixels: 1_048_576))
+            profile.acceptedForUse = true
+            profile.configuration["weightsDirectory"] = fluxModel.root.path
+            _ = try await repository.save(profile)
+            await reloadProfiles()
+        } catch { profileError = "本机模型已就绪，但未能更新本机配置；请重试。" }
+    }
+
+    func deactivateFluxProfile() async {
+        do {
+            let profiles = try await repository.profiles()
+            guard var profile = profiles.first(where: { LocalFluxProvider.matches($0) }) else { return }
+            profile.acceptedForUse = false
+            profile.configuration.removeValue(forKey: "weightsDirectory")
+            _ = try await repository.save(profile)
+            await reloadProfiles()
+        } catch { profileError = "模型已删除，但本机配置未更新；请在“本机 AI”重试。" }
     }
 
     func chooseExistingModels() {

@@ -458,18 +458,14 @@ private struct QuickPromptSetup: View {
     let model: QuickPromptModel
     let profile: AIProviderProfile
     @ObservedObject var editing: EditingController
-    @State private var python: String
-    @State private var runtime: String
-    @State private var weights: String
+    @ObservedObject private var fluxModel: FluxModelManager
     @State private var credential = ""
     @State private var saving = false
     @State private var issue: String?
 
     init(model: QuickPromptModel, profile: AIProviderProfile, editing: EditingController) {
         self.model = model; self.profile = profile; self.editing = editing
-        _python = State(initialValue: profile.configuration["pythonExecutable"] ?? "")
-        _runtime = State(initialValue: profile.configuration["runtimeDirectory"] ?? "")
-        _weights = State(initialValue: profile.configuration["weightsDirectory"] ?? "")
+        _fluxModel = ObservedObject(wrappedValue: editing.applicationServices.fluxModel)
     }
 
     var body: some View {
@@ -477,12 +473,18 @@ private struct QuickPromptSetup: View {
             Text(model.title).font(.headline)
             switch model {
             case .flux:
-                Text("选择已安装的 Python、固定 MLX 运行时和 FLUX.3 Klein Q8 权重目录。").font(.callout)
-                Form {
-                    location("Python 可执行文件", path: $python, directory: false)
-                    location("MLX 运行时", path: $runtime, directory: true)
-                    location("Q8 权重", path: $weights, directory: true)
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: fluxStatusSymbol)
+                        .font(.title2).foregroundStyle(fluxStatusColor).frame(width: 26)
+                    VStack(alignment: .leading, spacing: 5) {
+                        Text(fluxTitle).font(.callout.weight(.medium))
+                        Text(fluxDetail).font(.caption).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
+                Text("本机模型由“设置 → 本机 AI”下载和管理。普通修图不再需要 Python、ComfyUI 或手动选择运行时目录。")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             case .seedream:
                 SecureField(profile.credentialReference == nil ? "北京方舟 API Key" : "替换已保存的 API Key", text: $credential)
                 Text("凭证保存在本机钥匙串。每次生成前均需确认发送内容。")
@@ -492,33 +494,74 @@ private struct QuickPromptSetup: View {
             HStack {
                 Spacer()
                 Button("取消") { dismiss() }.keyboardShortcut(.cancelAction)
-                Button("保存", action: save).keyboardShortcut(.defaultAction)
-                    .disabled(saving || (model == .seedream && credential.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && profile.credentialReference == nil))
+                if model == .flux {
+                    Button(fluxModel.isReady && fluxModel.licenseAccepted ? "完成" : "打开设置") {
+                        if fluxModel.isReady && fluxModel.licenseAccepted { dismiss() } else { openLocalAISettings() }
+                    }
+                    .keyboardShortcut(.defaultAction)
+                    .buttonStyle(.borderedProminent)
+                } else {
+                    Button("保存", action: save).keyboardShortcut(.defaultAction)
+                        .disabled(saving || (credential.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && profile.credentialReference == nil))
+                }
             }
         }.padding(22).frame(width: 460).interactiveDismissDisabled(saving)
     }
 
-    private func location(_ title: String, path: Binding<String>, directory: Bool) -> some View {
-        HStack {
-            TextField(title, text: path)
-            Button("选择…") {
-                let panel = NSOpenPanel()
-                panel.canChooseDirectories = directory; panel.canChooseFiles = !directory
-                if panel.runModal() == .OK, let url = panel.url { path.wrappedValue = url.path }
-            }.accessibilityLabel("选择" + title)
+    private var fluxTitle: String {
+        switch fluxModel.status {
+        case .ready: return fluxModel.licenseAccepted ? "本机模型已就绪" : "模型已下载，等待接受许可"
+        case .downloading: return "正在下载本机模型"
+        case .paused: return "下载已暂停"
+        case .verifying: return "正在校验模型"
+        case .failed: return "模型下载需要继续"
+        case .notInstalled: return "本机模型尚未下载"
+        }
+    }
+
+    private var fluxDetail: String {
+        switch fluxModel.status {
+        case .ready:
+            return fluxModel.licenseAccepted
+                ? "9.58 GiB · FLUX.3 Image Klein Q8 · 16 步。生成时载入权重，不上传照片。"
+                : "模型文件已就绪；请在“设置 → 本机 AI”接受 FLUX Kommunity License 后使用。"
+        case .downloading: return "已完成 \(Int(fluxModel.progress * 100))%。可关闭此窗口，下载在设置中继续。"
+        case .paused: return "已完成的文件会保留；可在设置中继续。"
+        case .verifying: return "正在核对文件大小与 SHA-256。"
+        case .failed: return fluxModel.errorMessage ?? "下载未完成，可在设置中重试。"
+        case .notInstalled: return "需要先下载约 9.58 GiB 的权重、分词器和 VAE。不会上传照片。"
+        }
+    }
+
+    private var fluxStatusSymbol: String {
+        switch fluxModel.status {
+        case .ready: return fluxModel.licenseAccepted ? "checkmark.circle.fill" : "lock.circle.fill"
+        case .downloading, .verifying: return "arrow.down.circle"
+        case .paused: return "pause.circle"
+        case .failed: return "exclamationmark.triangle.fill"
+        case .notInstalled: return "externaldrive.badge.plus"
+        }
+    }
+
+    private var fluxStatusColor: Color {
+        switch fluxModel.status {
+        case .ready: return fluxModel.licenseAccepted ? .green : .secondary
+        case .failed: return AppPalette.warning
+        case .downloading, .verifying: return AppPalette.accent
+        case .paused, .notInstalled: return .secondary
+        }
+    }
+
+    private func openLocalAISettings() {
+        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            editing.applicationServices.requestSettings?(.localAI)
         }
     }
 
     private func save() {
         var configured = profile
         configured.acceptedForUse = true
-        if model == .flux {
-            configured.configuration["pythonExecutable"] = python
-            configured.configuration["runtimeDirectory"] = runtime
-            configured.configuration["weightsDirectory"] = weights
-            do { try LocalFluxProvider.validateConfiguration(configured) }
-            catch { issue = error.localizedDescription; return }
-        }
         let secret = credential.trimmingCharacters(in: .whitespacesAndNewlines)
         saving = true
         Task { @MainActor in

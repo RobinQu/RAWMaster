@@ -3,6 +3,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 import RAWMasterCore
 import RAWMasterImaging
+import RAWMasterAI
 
 private let canvasColor = AppPalette.canvas
 private let panelColor = AppPalette.panel
@@ -11,6 +12,7 @@ struct WorkbenchView: View {
     @EnvironmentObject var model: AppModel
     @State private var sidebarBeforeEditing: Bool?
     @State private var appearanceBeforeEditing: NSAppearance?
+    @State private var showFluxFirstRun = false
     private var workbenchSurface: some View {
         VStack(spacing: 0) {
             if model.exportWorkspacePresented {
@@ -125,6 +127,15 @@ struct WorkbenchView: View {
         .sheet(isPresented: $model.showTagPreview) { BatchTagPreviewSheet() }
         .sheet(isPresented: $model.showTagHistory) { TagOperationHistorySheet() }
     }
+    private func presentFluxFirstRunIfNeeded() {
+        guard !showFluxFirstRun, let services = model.editingServices else { return }
+        guard services.fluxModel.shouldShowFirstRunPrompt else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            guard !showFluxFirstRun, services.fluxModel.shouldShowFirstRunPrompt else { return }
+            showFluxFirstRun = true
+        }
+    }
+
     var body: some View {
         workflowSheets
         .preferredColorScheme(model.isNativeEditing ? .dark : nil)
@@ -139,6 +150,18 @@ struct WorkbenchView: View {
             }; return true
         }
         .onChange(of: model.hasBusinessSheet) { if $0 { model.closeSearchControls() } }
+        .onChange(of: model.editingServices != nil, initial: true) { _, available in
+            if available { presentFluxFirstRunIfNeeded() }
+        }
+        .sheet(isPresented: $showFluxFirstRun, onDismiss: { model.editingServices?.fluxModel.markFirstRunPromptShown() }) {
+            if let services = model.editingServices {
+                FluxFirstRunSheet(
+                    model: services.fluxModel,
+                    openSettings: { model.openApplicationSettings(.localAI) },
+                    dismiss: { showFluxFirstRun = false }
+                )
+            }
+        }
         .onChange(of: model.isNativeEditing, initial: true) { _, editing in
             if editing {
                 if sidebarBeforeEditing == nil { sidebarBeforeEditing = model.showSidebar }

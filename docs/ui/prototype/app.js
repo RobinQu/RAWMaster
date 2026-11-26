@@ -1,6 +1,73 @@
 'use strict';
 
 const providers = ['GPT Image', 'Seedream / 中国方舟', 'Nano Banana'];
+const fluxFiles = [
+  'q8/manifest.json',
+  'q8/transformer/conditioning.safetensors',
+  'q8/transformer/single_blocks.00.safetensors',
+  'q8/transformer/single_blocks.14.safetensors',
+  'q8/transformer/single_blocks.27.safetensors',
+  'q8/text_encoder/layer-00.safetensors',
+  'q8/text_encoder/layer-16.safetensors',
+  'q8/text_encoder/layer-31.safetensors',
+  'q8/image_conditioning/conditioning.safetensors',
+  'vae-fp32/vae.safetensors',
+  'assets/tokenizer.json',
+];
+let fluxTimer = null;
+function fluxBytes(value) {
+  if (value >= 1073741824) return (value / 1073741824).toFixed(2) + ' GiB';
+  return Math.max(0, Math.round(value / 1048576)) + ' MiB';
+}
+function fluxFileFor(progress) {
+  return fluxFiles[Math.min(fluxFiles.length - 1, Math.floor(progress * fluxFiles.length))];
+}
+function fluxTick() {
+  clearInterval(fluxTimer);
+  fluxTimer = setInterval(() => {
+    const f = Studio.data.prefs.flux;
+    if (f.status !== '下载中') {
+      clearInterval(fluxTimer);
+      return;
+    }
+    f.completed = Math.min(f.total, f.completed + Math.max(12 * 1048576, Math.round(f.total / 36)));
+    f.progress = f.completed / f.total;
+    f.file = fluxFileFor(f.progress);
+    if (f.completed >= f.total) {
+      f.progress = 1;
+      f.status = '校验中';
+      f.file = '正在逐文件校验 SHA-256';
+      clearInterval(fluxTimer);
+      setTimeout(() => {
+        const current = Studio.data.prefs.flux;
+        if (current.status !== '校验中') return;
+        current.status = '就绪';
+        current.file = '';
+        Studio.save();
+        if (S.page === 'settings' && S.sub === 'runtime') render();
+        notify('FLUX.3 Klein 已就绪');
+      }, 900);
+    }
+    Studio.save();
+    if (S.page === 'settings' && S.sub === 'runtime') render();
+  }, 520);
+}
+function firstRunDialog() {
+  const f = Studio.data.prefs.flux;
+  dialog(
+    '开始本机 AI 修图？',
+    `<p>RAWMaster 可以在本机运行 FLUX.3 Image Klein，清理局部干扰、补全背景或调整光色。照片不会上传。</p>
+     ${factList([
+       ['下载', '约 9.58 GiB · 102 个文件'],
+       ['运行', 'Apple Silicon · Metal'],
+       ['许可', 'FLUX Kommunity License'],
+       ['稍后', '可随时从“设置 → 本机 AI”下载'],
+     ])}
+     ${check('我已阅读并接受 FLUX Kommunity License', 'fluxFirstLicense', f.license)}
+     <p class="muted">下载会逐文件校验，支持暂停和继续。首次下载完成前，本机 Quick Prompt 保持不可用。</p>`,
+    btn('稍后', 'flux-first-later') + btn('下载模型', 'flux-first-download', '', { cls: 'primary' }),
+  );
+}
 function settingsPanel(key) {
   const d = Studio.data,
     p = d.prefs,
@@ -39,12 +106,56 @@ function settingsPanel(key) {
         ['实际像素复核', '在原生工作区验证'],
       ],
     )}${btn('查看图像性能监控', 'monitor')}</section>`;
-  if (key === 'runtime')
-    return `<section class="settings-box"><h3>本机 AI 环境</h3>${factList([
-      ['状态', p.runtime],
-      ['模型来源', p.modelDir || '受管目录'],
-    ])}${select('模型目录', 'modelDir', ['受管目录', '已有目录（只读复用）'], p.modelDir)}
-    ${check('已阅读示例模型使用条款', 'licenseAck')}<div class="row wrap">${btn(p.runtime === '就绪' ? '校验并修复' : '准备示例环境', 'prepare-runtime', '', { cls: 'primary' })}${back}</div></section>`;
+  if (key === 'runtime') {
+    const f = p.flux,
+      percent = Math.round(f.progress * 100),
+      ready = f.status === '就绪',
+      busy = f.status === '下载中' || f.status === '校验中',
+      paused = f.status === '已暂停';
+    const main = ready
+      ? btn('校验模型文件', 'flux-verify')
+      : busy
+        ? btn(f.status === '校验中' ? '正在校验…' : '暂停下载', 'flux-pause', '', { disabled: f.status === '校验中' })
+        : paused
+          ? btn('继续下载', 'flux-resume', '', { cls: 'primary' })
+          : f.status === '失败'
+            ? btn('重新下载', 'flux-start', '', { cls: 'primary', disabled: !f.license })
+            : btn('下载模型（9.58 GiB）', 'flux-start', '', { cls: 'primary', disabled: !f.license });
+    return `<section class="settings-box">
+      <h3>FLUX.3 Image Klein · 本机</h3>
+      <div class="flux-status"><span class="flux-dot ${ready ? 'ready' : busy ? 'busy' : f.status === '失败' ? 'error' : ''}"></span><strong>${h(f.status)}</strong><span class="muted">${ready ? '可离线修图' : f.status === '失败' ? '可重试，已下载文件会保留' : '模型权重 + 分词器 + VAE，共约 9.58 GiB'}</span></div>
+      ${factList([
+        ['模型', 'FLUX.3 Image Klein · Q8 · 16 步'],
+        ['下载位置', p.fluxDir || '应用管理目录 / Flux3Klein'],
+        ['许可', 'FLUX Kommunity License'],
+      ])}
+      ${
+        busy || paused || f.completed > 0
+          ? `<div class="flux-progress"><i style="width:${percent}%"></i></div>
+             <div class="flux-progress-line"><span>${fluxBytes(f.completed)} / ${fluxBytes(f.total)} · ${percent}%</span><span>${h(f.file || '等待选择文件')}</span></div>
+             <p class="muted">${busy ? '关闭设置后下载仍在后台继续；暂停时已完成文件和当前断点都保留。' : paused ? '已暂停。继续时从当前文件断点续传，已下载字节不会重复。' : ready ? '已完成逐文件 SHA-256 校验。' : '上次中断，可从断点继续。'}</p>`
+          : ''
+      }
+      ${f.error ? `<p class="flux-error">${h(f.error)}</p>` : ''}
+      <div class="row wrap">${main}${ready ? btn('删除模型', 'flux-delete') : paused ? btn('取消并删除', 'flux-delete') : ''}${btn('在 Finder 中显示', 'flux-reveal', '', { disabled: !ready })}</div>
+      <div class="flux-license">${check('我已阅读并接受 FLUX Kommunity License', 'fluxLicense', f.license)}${btn('阅读许可…', 'flux-license')}</div>
+      <p class="muted">首次下载前必须核对许可。模型只在本机运行，不会上传照片。8 步或 FP16 速度模式在“编辑与预览”中另行评估。</p>
+      <details class="settings-advanced"><summary>实验：Qwen2.1 / ComfyUI 运行时</summary>
+        ${factList([
+          ['状态', p.runtime],
+          ['模型来源', p.modelDir || '受管目录'],
+        ])}
+        ${select('模型目录', 'modelDir', ['受管目录', '已有目录（只读复用）'], p.modelDir)}
+        ${check('已阅读示例模型使用条款', 'licenseAck')}
+        <div class="row wrap">${btn(p.runtime === '就绪' ? '校验并修复' : '准备示例环境', 'prepare-runtime')}</div>
+        <p class="muted">保留旧实验链路；普通修图不再需要 Python、ComfyUI 或手动选择运行时目录。</p>
+      </details>
+      <h3>首次启动提示</h3>
+      <p class="muted">没有模型时，应用首次启动会提供“下载 9.58 GiB / 稍后”。稍后仍可从本页下载。</p>
+      ${btn('预览首次启动提示', 'flux-first-run')}
+      ${back}
+    </section>`;
+  }
   if (key === 'cloud')
     return `<section class="settings-box"><h3>生成服务</h3>${select('服务', 'cloudName', providers, p.cloudName || providers[0])}${factList(
       [
@@ -70,6 +181,15 @@ changes.modelDir = (el) => {
   Studio.save();
   render();
 };
+changes.fluxLicense = (el) => {
+  Studio.data.prefs.flux.license = el.checked;
+  Studio.save();
+  render();
+};
+changes.fluxFirstLicense = (el) => {
+  Studio.data.prefs.flux.license = el.checked;
+  Studio.save();
+};
 changes.cloudName = (el) => {
   Studio.data.prefs.cloudName = el.value;
   Studio.data.prefs.cloud = '未配置';
@@ -93,6 +213,110 @@ actions['prepare-runtime'] = () => {
     return;
   }
   startJob('准备本机 AI 环境', null);
+};
+actions['flux-start'] = () => {
+  const f = Studio.data.prefs.flux;
+  if (!checked('fluxLicense', $('#workspace')) && !f.license) {
+    notify('请先核对 FLUX Kommunity License');
+    return;
+  }
+  f.license = true;
+  if (!navigator.onLine) {
+    f.status = '失败';
+    f.error = '当前离线。已下载的模型仍可离线使用；恢复网络后可续传。';
+    Studio.save();
+    render();
+    return;
+  }
+  f.error = '';
+  f.paused = false;
+  f.status = '下载中';
+  f.file = fluxFileFor(f.progress || 0);
+  Studio.save();
+  render();
+  fluxTick();
+};
+actions['flux-pause'] = () => {
+  const f = Studio.data.prefs.flux;
+  if (f.status !== '下载中') return;
+  clearInterval(fluxTimer);
+  f.status = '已暂停';
+  f.paused = true;
+  Studio.save();
+  render();
+};
+actions['flux-resume'] = () => {
+  const f = Studio.data.prefs.flux;
+  if (f.status !== '已暂停') return;
+  f.status = '下载中';
+  f.paused = false;
+  Studio.save();
+  render();
+  fluxTick();
+};
+actions['flux-verify'] = () => {
+  const f = Studio.data.prefs.flux;
+  if (f.status !== '就绪') return;
+  f.status = '校验中';
+  f.file = '正在逐文件校验 SHA-256';
+  Studio.save();
+  render();
+  setTimeout(() => {
+    const current = Studio.data.prefs.flux;
+    current.status = '就绪';
+    current.file = '';
+    Studio.save();
+    if (S.page === 'settings' && S.sub === 'runtime') render();
+    notify('模型文件校验通过');
+  }, 900);
+};
+actions['flux-delete'] = () => {
+  const f = Studio.data.prefs.flux;
+  if (f.status !== '就绪' && f.status !== '已暂停') return;
+  dialog('删除本机模型？',
+    '<p>删除后 Quick Prompt 的本机模型将不可用；已采用的候选和作品版本不受影响。下次可在设置中重新下载。</p>',
+    btn('取消', 'close') + btn('删除模型', 'flux-delete-confirm', '', { cls: 'danger' }));
+};
+actions['flux-delete-confirm'] = () => {
+  clearInterval(fluxTimer);
+  Object.assign(Studio.data.prefs.flux, defaultFlux(), { firstRunShown: Studio.data.prefs.flux.firstRunShown });
+  Studio.save();
+  closeSheet();
+  render();
+  notify('本机模型已删除');
+};
+actions['flux-license'] = () => dialog(
+  'FLUX Kommunity License',
+  `<p>此示例页面用于核对下载前的许可与用途提示。正式应用会展示随模型包固定版本的许可文本和链接。</p>
+   <p class="muted">FLUX.3 Klein 权重不是 Apache-2.0。商业使用、分发权重或生成内容需按许可条款单独确认。</p>`,
+  btn('完成', 'close'),
+);
+actions['flux-reveal'] = () => {
+  if (Studio.data.prefs.flux.status !== '就绪') return;
+  notify('已在 Finder 中显示模型目录');
+};
+actions['flux-first-run'] = () => firstRunDialog();
+actions['flux-first-download'] = () => {
+  const f = Studio.data.prefs.flux;
+  if (!checked('fluxFirstLicense') && !f.license) {
+    notify('请先勾选并接受 FLUX Kommunity License');
+    return;
+  }
+  f.license = true;
+  f.firstRunShown = true;
+  f.status = '下载中';
+  f.file = fluxFileFor(f.progress || 0);
+  f.error = '';
+  Studio.save();
+  closeSheet();
+  go('settings/runtime');
+  fluxTick();
+};
+actions['flux-first-later'] = () => {
+  Studio.data.prefs.flux.firstRunShown = true;
+  Studio.save();
+  closeSheet();
+  notify('稍后可从“设置 → 本机 AI”下载模型');
 };
 actions.monitor = () =>
   dialog(

@@ -4,5 +4,8 @@
 output/
 .slim/deepwork/
 *.xcuserstate
+Modules/FluxWorker/target/
+Sources/RAWMasterAI/Resources/FluxWorker/flux-worker
 
 __pycache__/
+mlx.metallib

@@ -179,9 +179,8 @@ extension EditingInteractionPerformanceTests {
         guard try FileSafety.hash(fixture) == originalSHA else { throw ProbeFailure("Expected the signed 034 lake fixture") }
         var profile = QuickPromptModel.flux.defaultProfile
         profile.acceptedForUse = true
-        profile.configuration = ["pythonExecutable": runtime.appending(path: "venv/bin/python").path,
-                                 "runtimeDirectory": runtime.appending(path: "mlx").path,
-                                 "weightsDirectory": runtime.appending(path: "models/q8").path]
+        profile.configuration = ["weightsDirectory": runtime.appending(path: "models/q8").path]
+        if let worker = env["RAWMASTER_035_FLUX_WORKER"] { profile.configuration["workerExecutable"] = worker }
         try LocalFluxProvider.validateConfiguration(profile)
         let fm = FileManager.default
         try fm.createDirectory(at: out.deletingLastPathComponent(), withIntermediateDirectories: true)

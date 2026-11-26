@@ -18,7 +18,9 @@ enum QuickPromptModel: String, CaseIterable, Identifiable {
             return .init(id: "quick-prompt-flux3-klein", kind: .localComfy, displayName: title,
                 model: LocalFluxProvider.modelID, endpoint: URL(string: "http://127.0.0.1")!,
                 capabilities: .init(capabilityID: LocalFluxProvider.capabilityID, supportsCancellation: true,
-                                    supportsReconciliation: true, maxInputPixels: 1_048_576))
+                                    supportsReconciliation: true, maxInputPixels: 1_048_576),
+                acceptedForUse: FluxModelManager.installed() && FluxModelManager.licenseAccepted,
+                configuration: ["weightsDirectory": FluxModelManager.defaultRoot.path])
         case .seedream:
             return .init(id: "quick-prompt-seedream-55-beijing", kind: .seedream, displayName: title,
                 model: Seedream55Adapter.modelID, endpoint: Seedream55Adapter.endpoint, region: "cn-beijing",

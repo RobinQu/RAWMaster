@@ -1414,7 +1414,10 @@ import RAWMasterLibrary
 
     var quickPromptModelProfile: AIProviderProfile? {
         let model = quickPromptDraft.model
-        return profiles.first { model.matches($0) && $0.acceptedForUse }
+        if let saved = profiles.first(where: { model.matches($0) && $0.acceptedForUse }) { return saved }
+        guard model == .flux else { return nil }
+        let fallback = model.defaultProfile
+        return model.matches(fallback) && fallback.acceptedForUse ? fallback : nil
     }
     var quickPromptJob: ProcessingJob? { jobs.first { $0.request.workID == work?.id && $0.request.quickPrompt != nil } }
     var quickPromptUndoVersion: EditingVersion? {

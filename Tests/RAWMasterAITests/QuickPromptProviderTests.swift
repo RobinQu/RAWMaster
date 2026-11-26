@@ -179,6 +179,34 @@ final class QuickPromptProviderTests: XCTestCase {
     XCTAssertThrowsError(try CloudImageProvider.makeRequest(transparent, secret: "unit-fixture"))
   }
 
+  func testLiveRustWorkerIfModelProvided() async throws {
+    let env = ProcessInfo.processInfo.environment
+    guard let modelPath = env["RAWMASTER_LIVE_FLUX_MODEL"], !modelPath.isEmpty else {
+      throw XCTSkip("Set RAWMASTER_LIVE_FLUX_MODEL to a complete Q8 model directory")
+    }
+    let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+    let worker = env["RAWMASTER_LIVE_FLUX_WORKER"].map(URL.init(fileURLWithPath:))
+      ?? repo.appendingPathComponent("Modules/FluxWorker/target/release/flux-worker")
+    let (original, attempt, root) = try fixture(png(64, 64))
+    var request = original
+    var profile = request.profile
+    profile.kind = .localComfy
+    profile.model = LocalFluxProvider.modelID
+    profile.capabilities = .init(capabilityID: LocalFluxProvider.capabilityID)
+    profile.acceptedForUse = true
+    profile.configuration = ["weightsDirectory": modelPath, "workerExecutable": worker.path]
+    request.profile = profile
+    request.prompt = "Remove a small sign and keep the background."
+    request.configuration["seed"] = "8521"
+    let provider = LocalFluxProvider(outputDirectory: root.appendingPathComponent("outputs"))
+    let output = try await provider.edit(request, attempt: attempt, progress: { _ in })
+    XCTAssertEqual(output.artifact.pixelWidth, 64)
+    XCTAssertEqual(output.artifact.pixelHeight, 64)
+    XCTAssertEqual(output.configuration["runtimeRevision"], LocalFluxProvider.runtimeRevision)
+    XCTAssertEqual(output.configuration["rng"], "chacha12+standardnormal+bf16")
+    XCTAssertGreaterThan(Int64(output.configuration["peakMLXBytes"] ?? "0") ?? 0, 0)
+  }
+
   func testLocalPinRejectsOtherInstalledModelAndReleasesAttempt() async throws {
     let (original, attempt, root) = try fixture(png(64, 64))
     var request = original
@@ -190,13 +218,17 @@ final class QuickPromptProviderTests: XCTestCase {
     var other = profile; other.model += "-other"
     XCTAssertFalse(LocalFluxProvider.matches(other))
     XCTAssertThrowsError(try LocalFluxProvider.validateConfiguration(profile))
-    let runtime = root.appendingPathComponent("runtime"), weights = root.appendingPathComponent("weights")
-    let package = runtime.appendingPathComponent("flux_klein_mlx")
-    try FileManager.default.createDirectory(at: package, withIntermediateDirectories: true)
-    try FileManager.default.createDirectory(at: weights, withIntermediateDirectories: true)
-    try Data("pass".utf8).write(to: package.appendingPathComponent("pipeline.py"))
-    try Data("{}".utf8).write(to: weights.appendingPathComponent("release-manifest.json"))
-    profile.configuration = ["pythonExecutable": "/usr/bin/python3", "runtimeDirectory": runtime.path, "weightsDirectory": weights.path]
+    let weights = root.appendingPathComponent("weights")
+    for path in ["q8/manifest.json", "vae-fp32/vae.safetensors", "assets/tokenizer.json"] {
+      let url = weights.appendingPathComponent(path)
+      try FileManager.default.createDirectory(at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+      try Data("{}".utf8).write(to: url)
+    }
+    let worker = root.appendingPathComponent("fake-flux-worker.sh")
+    try Data("#!/bin/sh\nexit 64\n".utf8).write(to: worker)
+    try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: worker.path)
+    profile.acceptedForUse = true
+    profile.configuration = ["weightsDirectory": weights.path, "workerExecutable": worker.path]
     request.profile = profile
     let output = root.appendingPathComponent("outputs"), provider = LocalFluxProvider(outputDirectory: output)
     do { _ = try await provider.edit(request, attempt: attempt, progress: { _ in }); XCTFail("unrecognized runtime") }

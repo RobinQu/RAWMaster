@@ -1,0 +1,126 @@
+{
+  "units": "8-bit RGB code values, interpreted as sRGB",
+  "config": {
+    "worker": "rawmaster-flux-rust-mlx-v1",
+    "weightsRevision": "d9790a1ceaba200e8b773fb236f7c9fa754283a7",
+    "seed": 8521,
+    "step8Grid": [
+      0,
+      2,
+      4,
+      6,
+      8,
+      10,
+      13,
+      15,
+      16
+    ],
+    "step16": "uniform 16-step schedule"
+  },
+  "cases": {
+    "lake": {
+      "assets_sha256": {
+        "input": "17e0c427790397572821339d541e9169b67a4dbb76123bd8d146a441d81c2034",
+        "truth": "9a13489c2216f8b769ababa5fc5eb8f54eea37250ca1b5b5fa1d9445e92ff1cb",
+        "matte": "d33c327dac84278955332816c5459e703c0b2b6cb4f841be48a6edc8393e6208"
+      },
+      "runs": {
+        "step8": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 13.365,
+          "applied_target_mae": 13.365,
+          "raw_exterior_mae": 9.542,
+          "raw_exterior_max": 171,
+          "raw_exterior_any_channel_gt8_pixels": 835028,
+          "raw_exterior_any_channel_gt8_pct": 81.218,
+          "raw_protected_crop_mae": 10.356,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 1.537,
+          "applied_pixels_sha256": "df50e7450d70738f71bcbade4a68a6168845645e15f9311997e024485c3518e5",
+          "candidate_sha256": "a7eb903c92d57ec0388f2c7db36f6492e5da3bf6f0137b20cf3662a02e3b2ff5",
+          "step8_delta_target_mae": 0.548,
+          "applied_face_ev_vs_truth": null
+        },
+        "step16": {
+          "target_pixels": 8786,
+          "exterior_pixels": 1028138,
+          "raw_target_mae": 12.817,
+          "applied_target_mae": 12.817,
+          "raw_exterior_mae": 8.982,
+          "raw_exterior_max": 169,
+          "raw_exterior_any_channel_gt8_pixels": 780466,
+          "raw_exterior_any_channel_gt8_pct": 75.911,
+          "raw_protected_crop_mae": 9.983,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 1.442,
+          "applied_pixels_sha256": "659b7b442eec9aecaed33a9d311b77d04f604a97242d206bdc733e285ad711aa",
+          "candidate_sha256": "4953f8bf981f2106c58d6aa73278fc9962cd56974c92335fc6e34d997560f776",
+          "step8_delta_target_mae": 0.0,
+          "applied_face_ev_vs_truth": null
+        }
+      },
+      "step8_vs_step16": {
+        "raw_psnr_db": 45.9146,
+        "raw_ssim": 0.997606,
+        "raw_max_abs_diff": 32,
+        "applied_psnr_db": 61.5031,
+        "applied_ssim": 0.999915,
+        "applied_max_abs_diff": 10,
+        "target_mae_8_minus_16": 0.548
+      }
+    },
+    "portrait": {
+      "assets_sha256": {
+        "input": "60d1171bebc89e6170873b6815e9b510f3a304578a6dfb54a1596f49e6d7c3cc",
+        "truth": "09fc2049a0c52f366a3fa38cc6cf6e2494cdd934147fe3994192965d78d03bf5",
+        "matte": "e1e2a2b977948d54abe962fcf159e4f0eae7837adb79815a1e1909a46632d297"
+      },
+      "runs": {
+        "step8": {
+          "target_pixels": 37039,
+          "exterior_pixels": 990821,
+          "raw_target_mae": 12.442,
+          "applied_target_mae": 13.147,
+          "raw_exterior_mae": 5.856,
+          "raw_exterior_max": 129,
+          "raw_exterior_any_channel_gt8_pixels": 376331,
+          "raw_exterior_any_channel_gt8_pct": 37.982,
+          "raw_protected_crop_mae": 10.698,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.6,
+          "applied_pixels_sha256": "8464c68b1af1f94c9011b6942aafe4445622045aa9f79c501eda83b937a89908",
+          "applied_face_ev_vs_truth": -0.242,
+          "candidate_sha256": "a459f17a5a4466b6156ebbd7f44c3f0285654e30c9fc09878527869d8c84e63c",
+          "step8_delta_target_mae": 0.277
+        },
+        "step16": {
+          "target_pixels": 37039,
+          "exterior_pixels": 990821,
+          "raw_target_mae": 12.165,
+          "applied_target_mae": 12.947,
+          "raw_exterior_mae": 5.669,
+          "raw_exterior_max": 121,
+          "raw_exterior_any_channel_gt8_pixels": 367131,
+          "raw_exterior_any_channel_gt8_pct": 37.053,
+          "raw_protected_crop_mae": 10.567,
+          "applied_exterior_max": 0,
+          "applied_boundary_mae": 0.599,
+          "applied_pixels_sha256": "46122c6c77334ae8346cd4f1acbd464854ee069269a98c2872322578283ed4ce",
+          "applied_face_ev_vs_truth": -0.239,
+          "candidate_sha256": "414d67c0f92ed693e3f48ae0f3f0e2a8dcb8200f992d049780f51879ecb5df13",
+          "step8_delta_target_mae": 0.0
+        }
+      },
+      "step8_vs_step16": {
+        "raw_psnr_db": 48.9186,
+        "raw_ssim": 0.997667,
+        "raw_max_abs_diff": 30,
+        "applied_psnr_db": 63.1352,
+        "applied_ssim": 0.999922,
+        "applied_max_abs_diff": 14,
+        "target_mae_8_minus_16": 0.277
+      }
+    }
+  }
+}

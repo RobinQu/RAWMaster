@@ -301,6 +301,7 @@ def main():
               act('agent-send');act('edit-tool','smart',el('.agent-panel'));await page('.smart-panel');
               act('edit-tool','agent');await page('[data-act=ai-review]');assert(all('.chat-turn.reply').length===2,'preserved conversation');
               act('ai-review');assert(modal().textContent.includes('需要准备'),'unavailable model');act('goto-close','settings/runtime',modal());
+              await page('.settings-advanced');el('.settings-advanced').open=true;
               await page('[name=licenseAck]');set('[name=licenseAck]',true);act('prepare-runtime');await page('.jobs-page');
               await wait(()=>el('.jobs-page .record small')?.textContent.includes('已完成'));act('goto','edit/agent');await page('[data-act=ai-review]');
               set('[name=strict]',true);act('ai-review');assert(modal().textContent.includes('严格纪实保护'),'strict gate');act('close',null,modal());
@@ -369,10 +370,12 @@ def main():
               assert(!Studio.data.jobs.some(j=>j.quickPrompt),'entry, templates and ranges do not start tasks');
             """)
             scenario("快速 Prompt 本机准备、候选、采用与撤销", """
-              Studio.data.prefs.runtime='待准备';render();
+              Studio.data.prefs.flux.status='未安装'; Studio.data.prefs.flux.completed=0; Studio.data.prefs.flux.progress=0; render();
               const id=Studio.data.work, before=currentEdit().adopted, steps=currentEdit().past.length, recipe=JSON.stringify(currentEdit().recipe);
-              act('quick-setup','runtime');await page('[name=licenseAck]');set('[name=licenseAck]',true);act('prepare-runtime');await page('.jobs-page');
-              await wait(()=>Studio.data.prefs.runtime==='就绪');act('goto','edit/development');await page('#quick-prompt');
+              act('quick-setup','runtime');await page('[name=fluxLicense]');set('[name=fluxLicense]',true);act('flux-start');
+              await wait(()=>Studio.data.prefs.flux.status==='下载中');
+              Object.assign(Studio.data.prefs.flux,{status:'就绪',progress:1,completed:Studio.data.prefs.flux.total});Studio.save();render();
+              act('goto','edit/development');await page('#quick-prompt');
               assert(el('[name=quickPrompt]').value.includes('路牌')&&el('#quick-scope').textContent==='矩形选区','settings round trip');
               key(el('[name=quickPrompt]'),'Enter',{metaKey:true});await wait(()=>el('[data-act=quick-job]'));
               assert(currentEdit().adopted===before&&currentEdit().past.length===steps,'running never applies');
@@ -383,6 +386,23 @@ def main():
               assert(currentEdit().past.length===steps+1&&JSON.stringify(currentEdit().recipe)===recipe,'one version-pointer step');
               key(el('#workspace'),'z',{metaKey:true});assert(currentEdit().adopted===before&&!el('.quick-effect'),'reversible adoption');
               assert(Studio.asset(id).online,'source retained');
+            """)
+            scenario("本机 AI 下载管理、暂停、删除与首次启动提示", """
+              await hash('settings/runtime');
+              Object.assign(Studio.data.prefs.flux,{status:'未安装',completed:0,progress:0,license:false,file:'',error:''});Studio.save();render();
+              assert(el('[data-act=flux-start]').disabled,'license gates download');
+              set('[name=fluxLicense]',true);await wait(()=>!el('[data-act=flux-start]').disabled);
+              act('flux-start');await wait(()=>Studio.data.prefs.flux.status==='下载中');assert(el('.flux-progress'),'download progress visible');
+              act('flux-pause');assert(Studio.data.prefs.flux.status==='已暂停','pause state');
+              act('flux-resume');assert(Studio.data.prefs.flux.status==='下载中','resume state');
+              Object.assign(Studio.data.prefs.flux,{status:'就绪',progress:1,completed:Studio.data.prefs.flux.total});Studio.save();render();
+              assert(el('[data-act=flux-delete]')&&el('[data-act=flux-verify]'),'ready actions');
+              act('flux-first-run');assert(modal().textContent.includes('9.58 GiB')&&modal().textContent.includes('不会上传'));act('flux-first-later');
+              assert(Studio.data.prefs.flux.firstRunShown,'first-run dismissed');
+              act('flux-delete');assert(modal().textContent.includes('删除本机模型'));act('flux-delete-confirm');
+              assert(Studio.data.prefs.flux.status==='未安装'&&Studio.data.prefs.flux.completed===0,'delete resets model');
+              Object.assign(Studio.data.prefs.flux,{status:'就绪',progress:1,completed:Studio.data.prefs.flux.total,license:true});Studio.save();
+              await hash('edit/development');await page('[data-act=quick-open]');
             """)
             scenario("快速 Prompt 云端确认、换片、未知结果和重试", """
               const id=Studio.data.work;

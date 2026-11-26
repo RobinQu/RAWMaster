@@ -8,7 +8,8 @@ public actor LocalFluxProvider: AIEditingProvider {
   public static let modelID = "black-forest-labs/flux-3-image-klein"
   public static let modelRevision = "1755314e2216b2a2c5cc0dd899d4e49ee3404d2c"
   public static let weightsRevision = "d9790a1ceaba200e8b773fb236f7c9fa754283a7"
-  public static let runtimeRevision = "a8a400745949770d4de3b18c31684169da4b0af5"
+  public static let runtimeRevision = "rawmaster-flux-rust-mlx-v1"
+  public static let legacyRuntimeRevisions = ["a8a400745949770d4de3b18c31684169da4b0af5"]
 
   private let outputDirectory: URL
   private var flights: [String: Task<AIEditOutput, Error>] = [:]
@@ -19,17 +20,45 @@ public actor LocalFluxProvider: AIEditingProvider {
     profile.kind == .localComfy && profile.model == modelID && profile.capabilities.capabilityID == capabilityID
   }
 
-  public nonisolated static func validateConfiguration(_ profile: AIProviderProfile) throws {
-    guard matches(profile), profile.acceptedForUse else { throw AIServiceError.invalidConfiguration("请确认本机 FLUX.3 Klein 模型和使用条件") }
-    let config = profile.configuration
-    let fm = FileManager.default
-    guard let python = config["pythonExecutable"], python.hasPrefix("/"), fm.isExecutableFile(atPath: python),
-      let runtime = config["runtimeDirectory"], runtime.hasPrefix("/"),
-      fm.isReadableFile(atPath: URL(fileURLWithPath: runtime).appendingPathComponent("flux_klein_mlx/pipeline.py").path),
-      let weights = config["weightsDirectory"], weights.hasPrefix("/"),
-      fm.isReadableFile(atPath: URL(fileURLWithPath: weights).appendingPathComponent("release-manifest.json").path) else {
-      throw AIServiceError.runtimeUnavailable("请选择本机 Python、已安装的 MLX 运行时目录和 Q8 权重目录")
+  public nonisolated static func weightsDirectory(_ profile: AIProviderProfile) -> URL {
+    if let path = profile.configuration["weightsDirectory"], path.hasPrefix("/") {
+      return URL(fileURLWithPath: path)
     }
+    return FluxModelManager.defaultRoot
+  }
+
+  public nonisolated static func validateConfiguration(_ profile: AIProviderProfile) throws {
+    guard matches(profile) else { throw AIServiceError.invalidConfiguration("请选择本机 FLUX.3 Klein 模型") }
+    let fm = FileManager.default
+    let root = weightsDirectory(profile)
+    guard fm.isReadableFile(atPath: root.appendingPathComponent("q8/manifest.json").path),
+      fm.isReadableFile(atPath: root.appendingPathComponent("vae-fp32/vae.safetensors").path),
+      fm.isReadableFile(atPath: root.appendingPathComponent("assets/tokenizer.json").path) else {
+      throw AIServiceError.runtimeUnavailable("本机 FLUX.3 Klein 模型尚未下载完整")
+    }
+    guard profile.acceptedForUse else { throw AIServiceError.invalidConfiguration("请先接受 FLUX Kommunity License 并启用本机模型") }
+    guard workerExecutable(profile) != nil else { throw AIServiceError.runtimeUnavailable("本机 FLUX 执行器未安装") }
+  }
+
+  nonisolated static func workerExecutable(_ profile: AIProviderProfile) -> URL? {
+    let fm = FileManager.default
+    var candidates: [URL] = []
+    if let path = profile.configuration["workerExecutable"], path.hasPrefix("/") {
+      candidates.append(URL(fileURLWithPath: path))
+    }
+    if let path = ProcessInfo.processInfo.environment["RAWMASTER_FLUX_WORKER"], path.hasPrefix("/") {
+      candidates.append(URL(fileURLWithPath: path))
+    }
+    if let resources = Bundle.module.resourceURL {
+      candidates.append(resources.appendingPathComponent("Resources/FluxWorker/flux-worker"))
+    }
+    if let resources = Bundle.main.resourceURL {
+      candidates.append(resources.appendingPathComponent("FluxWorker/flux-worker"))
+    }
+    let source = URL(fileURLWithPath: #filePath)
+    let repo = source.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+    candidates.append(repo.appendingPathComponent("Modules/FluxWorker/target/release/flux-worker"))
+    return candidates.first { fm.isExecutableFile(atPath: $0.path) }
   }
 
   public func edit(_ request: AIEditRequest, attempt: ProcessingAttempt,
@@ -110,8 +139,7 @@ public actor LocalFluxProvider: AIEditingProvider {
     try fm.createDirectory(at: paths.scratch, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
     do {
       let values: [String: Any] = ["prompt": request.prompt, "seed": seed, "width": request.inputArtifact.pixelWidth,
-        "height": request.inputArtifact.pixelHeight, "runtimeDirectory": request.profile.configuration["runtimeDirectory"]!,
-        "weightsDirectory": request.profile.configuration["weightsDirectory"]!]
+        "height": request.inputArtifact.pixelHeight, "weightsDirectory": weightsDirectory(request.profile).path]
       try bytes.write(to: paths.scratch.appendingPathComponent("input.png"), options: .withoutOverwriting)
       try JSONSerialization.data(withJSONObject: values).write(to: paths.scratch.appendingPathComponent("request.json"), options: .withoutOverwriting)
     } catch {
@@ -122,21 +150,21 @@ public actor LocalFluxProvider: AIEditingProvider {
 
   private static func runWorker(_ profile: AIProviderProfile, paths: LocalFluxFiles) async throws {
     let fm = FileManager.default
-    let worker = Bundle.module.resourceURL!.appendingPathComponent("Resources/flux3_klein_worker.py")
-    guard fm.isReadableFile(atPath: worker.path), let python = profile.configuration["pythonExecutable"] else {
-      throw AIServiceError.runtimeUnavailable("本机模型执行器未安装")
+    guard let worker = Self.workerExecutable(profile) else {
+      throw AIServiceError.runtimeUnavailable("本机 FLUX 执行器未安装")
     }
-    let caches = try fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-      .appendingPathComponent("RAWMaster/flux3-klein-mlx-v1", isDirectory: true)
-    try fm.createDirectory(at: caches, withIntermediateDirectories: true, attributes: [.posixPermissions: 0o700])
     let process = Process()
-    process.executableURL = URL(fileURLWithPath: python)
+    process.executableURL = worker
     process.currentDirectoryURL = paths.scratch
-    process.arguments = ["-I", "-B", worker.path, String(getpid())]
-    // Do not forward cloud credentials, callback destinations, Python module-path overrides or user site packages.
-    process.environment = ["PATH": "/usr/bin:/bin", "HOME": fm.homeDirectoryForCurrentUser.path, "TMPDIR": paths.scratch.path,
-      "HF_HUB_OFFLINE": "1", "TRANSFORMERS_OFFLINE": "1", "PYTHONDONTWRITEBYTECODE": "1", "PYTHONNOUSERSITE": "1",
-      "FLUX_MLX_CACHE_DIR": caches.path, "MLX_ENABLE_TF32": "0", "LC_ALL": "C"]
+    process.arguments = ["--worker"]
+    // Do not forward cloud credentials or unrelated user environment.
+    var environment = ["PATH": "/usr/bin:/bin", "HOME": fm.homeDirectoryForCurrentUser.path,
+      "TMPDIR": paths.scratch.path, "MLX_ENABLE_TF32": "0", "LC_ALL": "C"]
+    if let metallib = Bundle.module.resourceURL?.appendingPathComponent("Resources/FluxWorker/mlx.metallib"),
+       fm.isReadableFile(atPath: metallib.path) {
+      environment["RAWMASTER_MLX_METALLIB"] = metallib.path
+    }
+    process.environment = environment
     process.standardInput = FileHandle.nullDevice
     process.standardOutput = FileHandle.nullDevice
     process.standardError = FileHandle.nullDevice
@@ -154,12 +182,12 @@ public actor LocalFluxProvider: AIEditingProvider {
     case 0: return
     case 75: throw AIServiceError.busy
     case 130: throw CancellationError()
-    default: throw AIServiceError.runtimeUnavailable("FLUX 运行失败，请核对 MLX 0.32.4、固定运行时、Q8 权重及可用内存")
+    default: throw AIServiceError.runtimeUnavailable("FLUX 运行失败，请核对模型文件、可用内存或查看脱敏运行日志")
     }
   }
 
   private struct WorkerReceipt: Decodable {
-    let runtimeRevision, weightsRevision, modelRevision, mlxVersion, preset, outputSHA256: String
+    let runtimeRevision, weightsRevision, modelRevision, mlxVersion, rng, preset, outputSHA256: String
     let steps: Int, seed: Int64, elapsedSeconds: Double, pipelineSeconds: Double, peakMLXBytes: Int64
   }
 
@@ -182,7 +210,8 @@ public actor LocalFluxProvider: AIEditingProvider {
     let candidate = paths.scratch.appendingPathComponent("candidate.png")
     let byteCount = try candidate.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? 0
     guard (1...100 * 1024 * 1024).contains(byteCount), receipt.modelRevision == modelRevision, receipt.weightsRevision == weightsRevision,
-      receipt.runtimeRevision == runtimeRevision, receipt.mlxVersion == "0.32.4", receipt.preset == "q8-16", receipt.steps == 16,
+      receipt.runtimeRevision == runtimeRevision, receipt.mlxVersion == "0.32.2",
+      receipt.rng == "chacha12+standardnormal+bf16", receipt.preset == "q8-16", receipt.steps == 16,
       receipt.seed == Int64(request.configuration["seed"] ?? "8521") else { throw AIServiceError.invalidResponse }
     let data = try Data(contentsOf: candidate, options: .mappedIfSafe)
     guard receipt.outputSHA256 == AIImageBytes.hash(data) else { throw EditingError.archiveMismatch }
@@ -190,7 +219,7 @@ public actor LocalFluxProvider: AIEditingProvider {
     var configuration = request.configuration
     configuration.merge(["provider": ProviderKind.localComfy.rawValue, "capabilityID": capabilityID, "actualModel": modelID, "model": modelID,
       "modelRevision": modelRevision, "weightsRevision": weightsRevision, "runtimeRevision": runtimeRevision, "mlxVersion": receipt.mlxVersion,
-      "preset": receipt.preset, "steps": String(receipt.steps), "seed": String(receipt.seed), "usage": "local",
+      "preset": receipt.preset, "steps": String(receipt.steps), "seed": String(receipt.seed), "rng": receipt.rng, "usage": "local",
       "pipelineSeconds": String(receipt.pipelineSeconds), "workerSeconds": String(receipt.elapsedSeconds),
       "peakMLXBytes": String(receipt.peakMLXBytes), "size": "\(request.inputArtifact.pixelWidth)x\(request.inputArtifact.pixelHeight)"]) { _, actual in actual }
     return try QuickPromptProviderEvidence.save(data, request: request, attempt: attempt, directory: paths.output, configuration: configuration, remoteID: nil)
