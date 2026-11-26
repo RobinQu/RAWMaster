@@ -60,6 +60,13 @@
 
 ## 待办
 
+- [x] **RF 传输 mmap。** 60 MP brilliance 8.4→6.1 s；dehaze 3.69→3.47 s；逐行 pwrite 保留 A/B 开关。
+- [x] **Brilliance map 缓存。** map 0.66 s 首帧→0；5 次 total 5.7–6.0 s。
+- [x] **高级细节 tiled 验收。** 逐字节 0 差异，但出厂窗口无收益，默认回退 inline；只保留 QA。
+- [ ] **Brilliance 上下文池 / tile 调度。** 当前 context 0.85 s/帧、render ~2 s/帧；先做 2–4 上下文池的 QA A/B，验证内存上限。
+- [ ] **Dehaze guide 缓存。** scalar guide 与 amount 无关；按 source/upstream/airlight 缓存单通道 plane。
+- [ ] **Texture/clarity guided filter / domain transform PoC。** 用 O(N) 边缘保持滤波替代大半径 Gaussian，先测 9504 画质与 4 配方。
+
 - [ ] **区域解码（`use_region`）配合 1:1 窗口。** 解码端没有降采样开关可透出（见[已否决](#已否决)）；唯一剩下的是只解可见区域，省掉一次约 78 ms 的全幅解码。要等窗口接到画布后再评估。
 - [ ] **`rawDetails` 的 AHD 代价。** 选 RAW 细节算法时解码从 43.5 ms 升到 118.9 ms（2.7×）；需要确认这条只在显式选择时生效，且 UI 有可见的代价提示。
 - [ ] **段级缓存。** 现在参数变化会重跑整条后缀。参考 Alcedo `GraphImageCache` 的 `(节点, 端口) + RuntimeRevision`，以及 LightFlow `render` 自报的 `segments`/`cached`，把后缀切成可按内容键复用的段。核心图像（解码+白平衡+曝光）已由 `FlashRawCanonicalTexturePool` 承担。

@@ -277,7 +277,8 @@ enum DevelopmentAdvancedDetailEngineV3 {
       throw DevelopmentV3Error.invalidGraph
     }
     let r = try radii(sourceSize: sourceSize)
-    if texture != clarity {
+    let fullFactor = ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] == "1"
+    if texture != clarity && !fullFactor {
       let band: Band = texture ? .texture : .clarity
       let radius = texture ? r.texture : r.clarity
       let halo = CGFloat((radius * 24).rounded(.up) + 16)
@@ -290,7 +291,6 @@ enum DevelopmentAdvancedDetailEngineV3 {
     let clarityHalo = CGFloat((r.clarity * 24).rounded(.up) + 16)
     // Strict mode keeps one full-frame factor image for both the whole and window paths. This
     // is the byte-exact fallback; the regional factor is faster but can differ by 1 ULP.
-    let fullFactor = ProcessInfo.processInfo.environment["RAWMASTER_QA_ADVANCED_FACTOR_FULL"] == "1"
     let clarityRegion = fullFactor ? image.extent
       : window.insetBy(dx: -clarityHalo, dy: -clarityHalo).intersection(image.extent)
     var output = image

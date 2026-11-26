@@ -433,7 +433,12 @@ enum DevelopmentRendererV3 {
       // This version defines its guide/map at this full native WB/EV/legacy-color prefix.
       // Keep the existing shadows/highlights operation after Brilliance; subsequent point/color
       // stages retain their order. No Photos equivalence is claimed for combined adjustments.
-      image = try DevelopmentBrillianceAdaptiveV1.apply(p.light,to:image,sourceIsRAW:isRAW,context:context,checkCancellation:checkCancellation)
+      var mapUpstream=p
+      mapUpstream.light.brilliance=0
+      let brillianceMapKey=advancedDetailCacheIdentity.flatMap { identity in
+        (try? EditingFingerprint.of(mapUpstream)).map { identity + "/brilliance-map/" + $0 }
+      }
+      image = try DevelopmentBrillianceAdaptiveV1.apply(p.light,to:image,sourceIsRAW:isRAW,context:context,checkCancellation:checkCancellation,interactiveMapKey:brillianceMapKey)
       var remainingLight=p.light;remainingLight.brilliance=0
       image = try DevelopmentSpatialEngineV3.applyLight(remainingLight,to:image)
     } else { image = try DevelopmentSpatialEngineV3.applyLight(p.light,to:image) }

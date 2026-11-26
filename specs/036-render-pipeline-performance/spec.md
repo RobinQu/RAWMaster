@@ -223,6 +223,16 @@ viewport 传输沿用已经通过的交互代理图（`PreviewInteractiveProxyV3
 
 用 `FLASHRAW_DEMOSAIC_HALF_SIZE` 解码代理基图（4752×3168 再采样到 2400）只省一次性 34 ms（neutral 首次帧 130.1 → 96.5 ms），却永久改变基图像素（相对均衡基图 p99 2–4、最大 72–99/255 的高对比边缘差异）。一次性收益换永久画质代价，不采纳。
 
+## RF 传输与 adaptive-brilliance 缓存（2026-11-27）
+
+adaptive-brilliance 不是死在公式，而是死在逐行 `pwrite`、每 tile 新建 CIContext 和重复 map：
+
+- `DevelopmentDehazeRfTransportV1.file` 改为 `ftruncate` + `mmap(MAP_SHARED)`，tile 输出直接 copy 到映射，末尾 `msync(MS_SYNC)+fsync`；`RAWMASTER_RF_PWRITE=1` 保留逐行 pwrite A/B。60 MP brilliance 5 次改 strength 从 **8.4 s 降到 6.1 s**，RF write 合计 9.6→0.7 s；dehaze-v2 3.69→3.47 s。
+- 31×31 brilliance map 只依赖 strength 之前的图像；现在用 source identity + 上游 recipe fingerprint 作为 `interactiveMapKey`，canonical 也命中缓存。首帧 map 0.66 s，后续 0；5 次 total **5.7–6.0 s**。
+- 高级细节的固定输出 tile 逐字节正确，但出厂 4800×3200 窗口无收益，默认回退 inline；细节见[再调研文档](../../docs/research/operator-optimization-2026-11.md)与[证据](evidence/operator-transport-20261127.json)。
+
+下一步优先级：brilliance 上下文池（0.85 s/帧）、tile 调度/有限值分带、dehaze guide 缓存、texture/clarity 的 guided filter/domain transform PoC。
+
 ## 交互与像素契约
 
 | 从哪里进入 | 对象、完成与退出 |
