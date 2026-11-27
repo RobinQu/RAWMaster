@@ -10,6 +10,10 @@ pub use filters::{exposure_gain, FilterBinding};
 pub mod gpu;
 mod graph;
 pub use graph::Plan;
+#[cfg(all(target_os = "macos", feature = "metal-surface"))]
+pub mod scene;
+#[cfg(all(target_os = "macos", feature = "metal-surface"))]
+mod scene_ffi;
 use rayon::prelude::*;
 
 pub type Pixel = [f32; 4];

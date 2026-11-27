@@ -18,6 +18,9 @@ final class DevelopmentSceneGraphRendererV1 {
     fileprivate let surface: Surface
     fileprivate let output: DevelopmentSceneOutputStateV1.Version
     var image: Image { Image(texture: surface.texture, port: .working, origin: surface.origin) }
+    /// Deterministic segmentation coverage produced by the model prefix, keyed by stage ID.
+    let modelMasks: [UUID: MTLTexture]
+    let modelScale: Int
   }
 
   fileprivate final class Budget {
@@ -46,6 +49,7 @@ final class DevelopmentSceneGraphRendererV1 {
   private let queue: MTLCommandQueue
   private let color, coverage: MTLComputePipelineState
   private let surfaceBudget: Int
+  private let rust: RustSceneGraphRenderer?
 
   init(device: MTLDevice, surfaceBudget: Int = 1_536 * 1024 * 1024) throws {
     let options = MTLCompileOptions(); options.mathMode = .safe
@@ -56,12 +60,35 @@ final class DevelopmentSceneGraphRendererV1 {
     self.color = try device.makeComputePipelineState(function: color)
     self.coverage = try device.makeComputePipelineState(function: coverage)
     self.surfaceBudget = surfaceBudget
+    self.rust = RustSceneGraphRenderer.enabled
+      ? RustSceneGraphRenderer(device: device, surfaceBudget: surfaceBudget) : nil
   }
 
-  func prepareFinal(_ image: Image, geometry: Geometry, graph: Graph) throws -> Master {
-    let surface = try execute(image, geometry: geometry, graph: graph, view: .init())
+  func prepareFinal(_ image: Image, geometry: Geometry, graph: Graph,
+                    models: DevelopmentSceneModelProgramV1? = nil,
+                    provider: (any DevelopmentSceneModelProvider)? = nil) throws -> Master {
+    let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
+    let surface = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: .init(),
+      externalCoverages: prepared.masks)
     guard surface.domain == .image else { throw Failure.invalidImage }
-    return .init(surface: surface, output: graph.output)
+    return .init(surface: surface, output: graph.output, modelMasks: prepared.masks, modelScale: prepared.scale)
+  }
+
+  private func prepareModels(_ image: Image, geometry: Geometry, models: DevelopmentSceneModelProgramV1?,
+                             provider: (any DevelopmentSceneModelProvider)?) throws
+    -> (image: Image, geometry: Geometry, masks: [UUID: MTLTexture], scale: Int) {
+    guard let models, !models.stages.isEmpty else { return (image, geometry, [:], 1) }
+    let result: DevelopmentSceneModelPipelineV1.Result
+    do {
+      result = try DevelopmentSceneModelPipelineV1.run(models, image: image, geometry: geometry,
+        maximumBytes: surfaceBudget, provider: provider)
+    } catch DevelopmentSceneModelPipelineV1.Failure.surfaceBudget {
+      throw Failure.surfaceBudget
+    } catch DevelopmentSceneModelPipelineV1.Failure.invalidImage {
+      throw Failure.invalidImage
+    }
+    let prepared = Image(texture: result.image, port: .working, origin: image.origin)
+    return (prepared, Geometry(width: result.width, height: result.height), result.masks, result.scale)
   }
 
   // Preview selections deliberately use a separate type that cannot become a delivery Master.
@@ -74,15 +101,22 @@ final class DevelopmentSceneGraphRendererV1 {
     try render(master.image, output: master.output, target: target)
   }
 
-  func preparePreview(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View) throws -> PreviewScene {
-    let selected = try execute(image, geometry: geometry, graph: graph, view: view)
+  func preparePreview(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
+                      models: DevelopmentSceneModelProgramV1? = nil,
+                      provider: (any DevelopmentSceneModelProvider)? = nil) throws -> PreviewScene {
+    let prepared = try prepareModels(image, geometry: geometry, models: models, provider: provider)
+    let selected = try execute(prepared.image, geometry: prepared.geometry, graph: graph, view: view,
+      externalCoverages: prepared.masks)
     guard selected.domain == .image else { throw Failure.invalidImage }
     return PreviewScene(surface: selected)
   }
 
   func renderPreview(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
-                     viewing: DevelopmentSceneOutputStateV1.ViewingConditions) throws -> DevelopmentSceneOutputV1.DisplayImage {
-    try renderPreview(preparePreview(image, geometry: geometry, graph: graph, view: view), output: graph.output, target: viewing.displayedTarget)
+                     viewing: DevelopmentSceneOutputStateV1.ViewingConditions,
+                     models: DevelopmentSceneModelProgramV1? = nil,
+                     provider: (any DevelopmentSceneModelProvider)? = nil) throws -> DevelopmentSceneOutputV1.DisplayImage {
+    try renderPreview(preparePreview(image, geometry: geometry, graph: graph, view: view,
+      models: models, provider: provider), output: graph.output, target: viewing.displayedTarget)
   }
 
   func renderPreview(_ scene: PreviewScene, output: DevelopmentSceneOutputStateV1.Version,
@@ -110,7 +144,8 @@ final class DevelopmentSceneGraphRendererV1 {
     return try stage.render(branch)
   }
 
-  private func execute(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View) throws -> Surface {
+  private func execute(_ image: Image, geometry: Geometry, graph: Graph, view: Graph.View,
+                       externalCoverages: [UUID: MTLTexture] = [:]) throws -> Surface {
     try Task.checkCancellation()
     let t = image.texture
     guard image.port == .working, t.device === device, t.textureType == .type2D, t.pixelFormat == .rgba32Float,
@@ -120,18 +155,55 @@ final class DevelopmentSceneGraphRendererV1 {
           image.origin.x <= geometry.width - t.width, image.origin.y <= geometry.height - t.height else { throw Failure.invalidImage }
     guard t.allocatedSize <= surfaceBudget else { throw Failure.surfaceBudget }
     let budget = Budget(maximum: surfaceBudget, input: t.allocatedSize)
+    if let rust, view.groupPath.isEmpty {
+      if view.target == .bypass || (view.target == .final && graph.graph.output == .input) {
+        return Surface(texture: t, origin: image.origin, domain: .image, budget: budget)
+      }
+      if case let .node(id) = view.target {
+        guard let operation = graph.graph.nodes.first(where: { $0.id == id })?.operation, !operation.isCoverage else {
+          throw Graph.Failure.unknownNode(id)
+        }
+      }
+      let output = try makeTexture(width: t.width, height: t.height, format: .rgba32Float)
+      var reserved = false
+      do {
+        try budget.reserve(output.allocatedSize)
+        reserved = true
+        try rust.render(input: t, output: output, graph: graph, view: view,
+          origin: image.origin, geometry: .init(geometry.width, geometry.height),
+          coverages: externalCoverages)
+        return Surface(texture: output, origin: image.origin, domain: .image, budget: budget)
+      } catch {
+        if reserved { budget.used = max(budget.used - output.allocatedSize, 0) }
+        // Auto mode keeps the shipping path alive if the optional Rust core cannot compile,
+        // load, execute or fit this machine's budget. The strict mode used by shadow tests
+        // never falls back, so a backend regression cannot hide there.
+        guard RustSceneGraphRenderer.mode == .auto else { throw error }
+      }
+    }
     return try evaluate(graph.graph, input: Surface(texture: t, origin: image.origin, domain: .image), geometry: geometry, budget: budget,
-      groupPath: view.groupPath[...], target: view.target)
+      groupPath: view.groupPath[...], target: view.target, externalCoverages: externalCoverages)
+  }
+
+  private func makeTexture(width: Int, height: Int, format: MTLPixelFormat) throws -> MTLTexture {
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: format, width: width, height: height, mipmapped: false)
+    descriptor.storageMode = .private
+    descriptor.usage = [.shaderRead, .shaderWrite]
+    guard let texture = device.makeTexture(descriptor: descriptor) else { throw Failure.surfaceBudget }
+    return texture
   }
 
   private func evaluate(_ scope: Graph.Scope, input: Surface, geometry: Geometry, budget: Budget,
-                        groupPath: ArraySlice<UUID> = [], target: Graph.View.Target = .final) throws -> Surface {
+                        groupPath: ArraySlice<UUID> = [], target: Graph.View.Target = .final,
+                        externalCoverages: [UUID: MTLTexture] = [:]) throws -> Surface {
     let operations = Dictionary(uniqueKeysWithValues: scope.nodes.map { ($0.id, $0.operation) })
     if let first = groupPath.first {
       guard case let .group(image, child, _, _)? = operations[first] else { throw Graph.Failure.unknownGroup(first) }
       // Entering a group examines its own pipeline even if the group is bypassed in the parent.
-      let base = try evaluate(scope, input: input, geometry: geometry, budget: budget, target: Self.target(for: image))
-      return try evaluate(child, input: base, geometry: geometry, budget: budget, groupPath: groupPath.dropFirst(), target: target)
+      let base = try evaluate(scope, input: input, geometry: geometry, budget: budget,
+        target: Self.target(for: image), externalCoverages: externalCoverages)
+      return try evaluate(child, input: base, geometry: geometry, budget: budget,
+        groupPath: groupPath.dropFirst(), target: target, externalCoverages: externalCoverages)
     }
     let output: Graph.Endpoint
     switch target {
@@ -193,7 +265,8 @@ final class DevelopmentSceneGraphRendererV1 {
         let base = try value(image)
         if !enabled || strength == 0 { surface = base }
         else {
-          let rendered = try evaluate(child, input: base, geometry: geometry, budget: budget)
+          let rendered = try evaluate(child, input: base, geometry: geometry, budget: budget,
+            externalCoverages: externalCoverages)
           if strength == 1 || rendered === base { surface = rendered }
           else { surface = try dispatch(color, kind: 1, input: base, secondary: rendered, geometry: geometry,
             budget: budget, scalars: .init(strength, 0, 0, 0)) }
@@ -210,6 +283,16 @@ final class DevelopmentSceneGraphRendererV1 {
       case let .adjustCoverage(mask, strength, inverted):
         surface = try dispatch(coverage, kind: 3, input: value(.node(mask)), geometry: geometry, budget: budget,
           scalars: .init(strength, inverted ? 1 : 0, 0, 0))
+      case let .externalCoverage(id):
+        guard let mask = externalCoverages[id] else { throw Graph.Failure.missingNode(id) }
+        guard mask.device === device, mask.pixelFormat == .r32Float,
+              mask.width == geometry.width, mask.height == geometry.height else { throw Failure.invalidImage }
+        if input.origin == .zero && mask.width == input.texture.width && mask.height == input.texture.height {
+          surface = Surface(texture: mask, origin: input.origin, domain: .coverage)
+        } else {
+          surface = try cropCoverage(mask, origin: input.origin, width: input.texture.width,
+            height: input.texture.height, budget: budget)
+        }
       }
       memo[id] = surface
       for endpoint in dependencies[id, default: []] {
@@ -237,7 +320,7 @@ final class DevelopmentSceneGraphRendererV1 {
     case let .group(image, _, _, _): return [image]
     case let .combineCoverage(base, other, _): return [.node(base), .node(other)]
     case let .adjustCoverage(mask, _, _): return [.node(mask)]
-    case .linearCoverage, .radialCoverage: return []
+    case .linearCoverage, .radialCoverage, .externalCoverage: return []
     }
   }
 
@@ -257,6 +340,29 @@ final class DevelopmentSceneGraphRendererV1 {
     case .color: return 11
     case .luminosity: return 12
     }
+  }
+
+  private func cropCoverage(_ source: MTLTexture, origin: SIMD2<Int>, width: Int, height: Int,
+                            budget: Budget) throws -> Surface {
+    let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .r32Float,
+      width: width, height: height, mipmapped: false)
+    descriptor.storageMode = .private; descriptor.usage = [.shaderRead, .shaderWrite]
+    guard device.heapTextureSizeAndAlign(descriptor: descriptor).size <= budget.maximum - budget.used else {
+      throw Failure.surfaceBudget
+    }
+    guard let texture = device.makeTexture(descriptor: descriptor),
+          let command = queue.makeCommandBuffer(), let blit = command.makeBlitCommandEncoder() else {
+      throw DevelopmentSceneColorV1.Failure.metalUnavailable
+    }
+    try budget.reserve(texture.allocatedSize)
+    let result = Surface(texture: texture, origin: origin, domain: .coverage, budget: budget)
+    blit.copy(from: source, sourceSlice: 0, sourceLevel: 0,
+      sourceOrigin: .init(x: origin.x, y: origin.y, z: 0),
+      sourceSize: .init(width: width, height: height, depth: 1), to: texture,
+      destinationSlice: 0, destinationLevel: 0, destinationOrigin: .init())
+    blit.endEncoding(); command.commit(); command.waitUntilCompleted()
+    guard command.status == .completed else { throw DevelopmentSceneColorV1.Failure.gpuExecutionFailed }
+    return result
   }
 
   private struct Parameters {

@@ -67,10 +67,13 @@ package struct DevelopmentSceneGraphV1: Codable, Equatable, Sendable {
     case radialCoverage(center: SIMD2<Float>, radii: SIMD2<Float>, feather: Float)
     case combineCoverage(base: UUID, other: UUID, mode: CoverageCombine)
     case adjustCoverage(mask: UUID, strength: Float, inverted: Bool)
+    /// Provider-produced coverage (for example a deterministic segmentation mask). The id names
+    /// a model stage supplied beside the graph; it is not a node id.
+    case externalCoverage(id: UUID)
 
     package var isCoverage: Bool {
       switch self {
-      case .linearCoverage, .radialCoverage, .combineCoverage, .adjustCoverage: return true
+      case .linearCoverage, .radialCoverage, .combineCoverage, .adjustCoverage, .externalCoverage: return true
       default: return false
       }
     }
@@ -235,7 +238,7 @@ private struct GraphFields {
 
 extension DevelopmentSceneGraphV1.Operation: Codable {
   typealias Graph = DevelopmentSceneGraphV1
-  private enum Kind: String, Codable { case corrector, parallel, layer, group, linearCoverage, radialCoverage, combineCoverage, adjustCoverage }
+  private enum Kind: String, Codable { case corrector, parallel, layer, group, linearCoverage, radialCoverage, combineCoverage, adjustCoverage, externalCoverage }
 
   package init(from decoder: Decoder) throws {
     let object = try decoder.container(keyedBy: RecipeCodingKey.self)
@@ -266,6 +269,9 @@ extension DevelopmentSceneGraphV1.Operation: Codable {
     case .adjustCoverage:
       let d = try fields("mask", "strength", "inverted")
       self = .adjustCoverage(mask: try d.value("mask"), strength: try d.value("strength"), inverted: try d.value("inverted"))
+    case .externalCoverage:
+      let d = try fields("id")
+      self = .externalCoverage(id: try d.value("id"))
     }
   }
 
@@ -287,6 +293,7 @@ extension DevelopmentSceneGraphV1.Operation: Codable {
       try kind(.radialCoverage); try write("center", center); try write("radii", radii); try write("feather", feather)
     case let .combineCoverage(base, other, mode): try kind(.combineCoverage); try write("base", base); try write("other", other); try write("mode", mode)
     case let .adjustCoverage(mask, strength, inverted): try kind(.adjustCoverage); try write("mask", mask); try write("strength", strength); try write("inverted", inverted)
+    case let .externalCoverage(id): try kind(.externalCoverage); try write("id", id)
     }
   }
 
@@ -326,7 +333,7 @@ extension DevelopmentSceneGraphV1.Operation: Codable {
       guard point(start), point(end), max(abs(end.x - start.x), abs(end.y - start.y)) >= 0.0001 else { throw Graph.Failure.invalidParameter }
     case let .radialCoverage(center, radii, feather):
       guard point(center), (0.0001...2).contains(radii.x), (0.0001...2).contains(radii.y), unit(feather) else { throw Graph.Failure.invalidParameter }
-    case .combineCoverage: break
+    case .combineCoverage, .externalCoverage: break
     }
   }
 
@@ -351,7 +358,7 @@ extension DevelopmentSceneGraphV1.Operation: Codable {
     case let .group(image, graph, strength, enabled): return .group(image: endpoint(image), graph: clone(graph), strength: strength, enabled: enabled)
     case let .combineCoverage(base, other, mode): return .combineCoverage(base: ids[base]!, other: ids[other]!, mode: mode)
     case let .adjustCoverage(mask, strength, inverted): return .adjustCoverage(mask: ids[mask]!, strength: strength, inverted: inverted)
-    case .linearCoverage, .radialCoverage: return self
+    case .linearCoverage, .radialCoverage, .externalCoverage: return self
     }
   }
 }

@@ -5,7 +5,7 @@ import Metal
 #endif
 
 public enum RAWMasterImageKernel {
-    public enum Failure: Error { case unavailable, invalidParameters, invalidShader, renderFailed, staleFrame }
+    public enum Failure: Error { case unavailable, invalidParameters, invalidShader, renderFailed, staleFrame, surfaceBudget }
     public enum Kernel: UInt32 { case photoFilter = 1, exposure, mask, maskAnalytic, colorGrainLattice }
     public enum FilterFamily: UInt32 { case classicColor = 0, classicMonochrome, spektrafilm }
     public enum Backend: UInt32, Sendable { case cpu, gpu }
@@ -381,11 +381,102 @@ public enum RAWMasterImageKernel {
             case 1: throw Failure.invalidParameters
             case 2: throw Failure.unavailable
             case 5: throw Failure.staleFrame
+            case 6: throw Failure.surfaceBudget
             default: throw Failure.renderFailed
             }
         }
 
         deinit { rm_image_host_metal_half_program_close(runtime.handle, program) }
+    }
+    /// Executes the native 037/038 scene-linear AP1 graph. The image surfaces are
+    /// borrowed RGBA32Float Metal textures; output must be an exclusive scratch texture.
+    public enum SceneView {
+        case final
+        case node(String)
+        case bypass
+    }
+
+    public final class SceneProgram {
+        private let runtime: Runtime
+        private let program: OpaquePointer
+
+        public init(graph: Data, device: any MTLDevice) throws {
+            let runtime = try RAWMasterImageKernel.runtime.get()
+            var handle: OpaquePointer?
+            let status = graph.withUnsafeBytes { bytes in
+                withExtendedLifetime(device) {
+                    rm_image_host_scene_open(runtime.handle, bytes.bindMemory(to: UInt8.self).baseAddress,
+                        bytes.count, Unmanaged.passUnretained(device as AnyObject).toOpaque(), &handle)
+                }
+            }
+            guard status == 0, let handle else {
+                throw status == 2 ? Failure.unavailable : Failure.invalidParameters
+            }
+            self.runtime = runtime
+            self.program = handle
+        }
+
+        public func render(input: any MTLTexture, output: any MTLTexture, view: SceneView = .final,
+                           origin: SIMD2<Int> = .zero, geometry: SIMD2<Int>? = nil,
+                           surfaceBudget: Int? = nil,
+                           coverages: [UUID: any MTLTexture] = [:],
+                           revision: UInt64 = 0, isCurrent: @escaping (UInt64) -> Bool = { _ in true }) throws {
+            var payload: [String: Any] = switch view {
+            case .final: ["target": "final"]
+            case .bypass: ["target": "bypass"]
+            case .node(let id): ["target": "node", "id": id]
+            }
+            payload["origin"] = [origin.x, origin.y]
+            if let geometry { payload["geometry"] = [geometry.x, geometry.y] }
+            if let surfaceBudget { payload["surfaceBudget"] = surfaceBudget }
+            let viewData = try JSONSerialization.data(withJSONObject: payload)
+            let entries = Array(coverages)
+            let status = withExtendedLifetime((input, output, entries.map(\.1))) {
+                RAWMasterImageKernel.withFrameAuthorization(isCurrent) { current, context in
+                    viewData.withUnsafeBytes { bytes in
+                        if entries.isEmpty {
+                            return rm_image_host_scene_render(runtime.handle, program,
+                                Unmanaged.passUnretained(input as AnyObject).toOpaque(),
+                                Unmanaged.passUnretained(output as AnyObject).toOpaque(),
+                                bytes.bindMemory(to: UInt8.self).baseAddress, bytes.count,
+                                revision, current, context)
+                        }
+                        var names: [CChar] = [], offsets: [Int] = []
+                        for entry in entries {
+                            offsets.append(names.count)
+                            names.append(contentsOf: entry.0.uuidString.utf8.map { CChar(bitPattern: $0) })
+                            names.append(0)
+                        }
+                        var textures: [UnsafeMutableRawPointer?] = entries.map {
+                            Unmanaged.passUnretained($0.1 as AnyObject).toOpaque()
+                        }
+                        return names.withUnsafeMutableBufferPointer { buffer in
+                            var ids: [UnsafePointer<CChar>?] = offsets.map { UnsafePointer(buffer.baseAddress! + $0) }
+                            return ids.withUnsafeMutableBufferPointer { idPointers in
+                                textures.withUnsafeMutableBufferPointer { texturePointers in
+                                    rm_image_host_scene_render_coverages(runtime.handle, program,
+                                        Unmanaged.passUnretained(input as AnyObject).toOpaque(),
+                                        Unmanaged.passUnretained(output as AnyObject).toOpaque(),
+                                        bytes.bindMemory(to: UInt8.self).baseAddress, bytes.count,
+                                        idPointers.baseAddress, texturePointers.baseAddress,
+                                        entries.count, revision, current, context)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            switch status {
+            case 0: break
+            case 1: throw Failure.invalidParameters
+            case 2: throw Failure.unavailable
+            case 5: throw Failure.staleFrame
+            case 6: throw Failure.surfaceBudget
+            default: throw Failure.renderFailed
+            }
+        }
+
+        deinit { rm_image_host_scene_close(runtime.handle, program) }
     }
     #endif
 }
